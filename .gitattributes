@@ -1,5 +1,6 @@
 *.cs text diff=csharp
-
+*.txt text
+*.md text
 *.targets text
 *.csproj text merge=union
 *.sln text eol=crlf merge=union

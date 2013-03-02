@@ -6,6 +6,7 @@
 *.cs text diff=csharp
 
 *.Config text
+*.config text
 *.targets text
 
 *.exe binary

@@ -1,6 +1,11 @@
-*.cs text diff=csharp
 *.txt text
 *.md text
+
+*.sln text
+*.csproj text
+*.cs text diff=csharp
+
+*.Config text
 *.targets text
-*.csproj text merge=union
-*.sln text eol=crlf merge=union
+
+*.exe binary

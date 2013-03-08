@@ -1,11 +1,22 @@
 ﻿using System.Linq;
 using NUnit.Framework;
+using Shouldly;
 
 namespace Fixie.Tests
 {
     [TestFixture]
     public class FixtureTests
     {
+        [Test]
+        public void ShouldBeNamedAfterTheGivenFixtureClass()
+        {
+            var fixtureClass = typeof(SampleFixture);
+
+            var fixture = new Fixture(fixtureClass);
+
+            fixture.Name.ShouldBe("SampleFixture");
+        }
+
         [Test]
         public void ShouldTreatPublicInstanceNoArgVoidMethodsAsCases()
         {

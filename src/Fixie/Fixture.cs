@@ -14,6 +14,11 @@ namespace Fixie
             this.fixtureClass = fixtureClass;
         }
 
+        public string Name
+        {
+            get { return fixtureClass.Name; }
+        }
+
         public IEnumerable<Case> Cases
         {
             get

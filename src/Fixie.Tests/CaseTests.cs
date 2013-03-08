@@ -9,18 +9,29 @@ namespace Fixie.Tests
     public class CaseTests
     {
         [Test]
+        public void ShouldBeNamedAfterTheGivenMethod()
+        {
+            var fixtureClass = typeof(SampleFixture);
+            var method = fixtureClass.GetMethod("Method", BindingFlags.Public | BindingFlags.Instance);
+
+            var @case = new Case(fixtureClass, method);
+
+            @case.Name.ShouldBe("Method");
+        }
+
+        [Test]
         public void ShouldInvokeTheGivenMethodWhenExecuted()
         {
             var fixtureClass = typeof(SampleFixture);
             var method = fixtureClass.GetMethod("Method", BindingFlags.Public | BindingFlags.Instance);
 
-            var c = new Case(fixtureClass, method);
+            var @case = new Case(fixtureClass, method);
 
             bool threw = false;
 
             try
             {
-                c.Execute();
+                @case.Execute();
             }
             catch (TargetInvocationException expected)
             {
@@ -31,9 +42,7 @@ namespace Fixie.Tests
             threw.ShouldBe(true);
         }
 
-        class MethodInvokedException : Exception
-        {
-        }
+        class MethodInvokedException : Exception { }
 
         class SampleFixture
         {

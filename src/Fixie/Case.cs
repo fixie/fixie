@@ -14,6 +14,11 @@ namespace Fixie
             this.method = method;
         }
 
+        public string Name
+        {
+            get { return method.Name; }
+        }
+
         public void Execute()
         {
             var instance = Activator.CreateInstance(fixtureClass);

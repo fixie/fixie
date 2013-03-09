@@ -10,7 +10,7 @@ namespace Fixie.Tests
         [Test]
         public void ShouldExecuteAllCasesInTheGivenConfiguration()
         {
-            var configuration = new Configuration(typeof(Fixture1Tests), typeof(Fixture2Tests));
+            var configuration = new DefaultConfiguration(typeof(Fixture1Tests), typeof(Fixture2Tests));
             var listener = new StubListener();
             var runner = new Runner(listener);
 
@@ -23,7 +23,7 @@ namespace Fixie.Tests
         [Test]
         public void ShouldLogFailingCases()
         {
-            var configuration = new Configuration(typeof(Fixture1Tests), typeof(Fixture2Tests));
+            var configuration = new DefaultConfiguration(typeof(Fixture1Tests), typeof(Fixture2Tests));
             var listener = new StubListener();
             var runner = new Runner(listener);
 

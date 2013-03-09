@@ -51,7 +51,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunnerTests.cs" />
     <Compile Include="StubListener.cs" />
-    <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="DefaultConfigurationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie\Fixie.csproj">

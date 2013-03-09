@@ -4,12 +4,12 @@ using NUnit.Framework;
 namespace Fixie.Tests
 {
     [TestFixture]
-    public class ConfigurationTests
+    public class DefaultConfigurationTests
     {
         [Test]
         public void ShouldTreatConstructibleClassesFollowingNamingConventionAsFixtures()
         {
-            var configuration = new Configuration(
+            var configuration = new DefaultConfiguration(
                 typeof(PublicInterfaceTests),
                 typeof(PublicAbstractTests),
                 typeof(PublicTests),

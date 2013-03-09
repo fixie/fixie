@@ -8,13 +8,13 @@ namespace Fixie.Tests
     public class RunnerTests
     {
         [Test]
-        public void ShouldExecuteAllCasesInTheGivenSuite()
+        public void ShouldExecuteAllCasesInTheGivenConfiguration()
         {
-            var suite = new Suite(typeof(Fixture1Tests), typeof(Fixture2Tests));
+            var configuration = new Configuration(typeof(Fixture1Tests), typeof(Fixture2Tests));
             var listener = new StubListener();
             var runner = new Runner(listener);
 
-            var result = runner.Execute(suite);
+            var result = runner.Execute(configuration);
 
             result.Passed.ShouldBe(3);
             result.Failed.ShouldBe(1);
@@ -23,11 +23,11 @@ namespace Fixie.Tests
         [Test]
         public void ShouldLogFailingCases()
         {
-            var suite = new Suite(typeof(Fixture1Tests), typeof(Fixture2Tests));
+            var configuration = new Configuration(typeof(Fixture1Tests), typeof(Fixture2Tests));
             var listener = new StubListener();
             var runner = new Runner(listener);
 
-            runner.Execute(suite);
+            runner.Execute(configuration);
 
             listener.ToString().ShouldBe("SampleTestFail failed: Exception!");
         }

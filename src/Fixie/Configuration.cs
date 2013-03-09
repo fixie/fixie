@@ -5,14 +5,14 @@ using System.Reflection;
 
 namespace Fixie
 {
-    public class Suite
+    public class Configuration
     {
         readonly Type[] candidateTypes;
 
-        public Suite(Assembly assembly)
+        public Configuration(Assembly assembly)
             : this(assembly.GetTypes()) { }
 
-        public Suite(params Type[] candidateTypes)
+        public Configuration(params Type[] candidateTypes)
         {
             this.candidateTypes = candidateTypes;
         }

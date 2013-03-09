@@ -11,9 +11,9 @@ properties {
     $version = [IO.File]::ReadAllText('.\VERSION.txt') + '.' + $build
 }
 
-task default -depends Test
+task default -depends NUnitTest
 
-task Test -depends Compile {
+task NUnitTest -depends SelfTest {
     $nunitRunner = join-path $src "packages\NUnit.Runners.2.6.2\tools\nunit-console.exe"
     & $nunitRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll /nologo /nodots /framework:net-4.0
 
@@ -24,6 +24,20 @@ task Test -depends Compile {
     if ($lastexitcode -lt 0)
     {
         throw "Unit test run was terminated by a fatal error."
+    }
+}
+
+task SelfTest -depends Compile {
+    $fixieRunner = join-path $src "$project.Console\bin\$configuration\$project.Console.exe"
+    & $fixieRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll
+
+    if ($lastexitcode -gt 0)
+    {
+         "{0} unit tests failed." -f $lastexitcode
+    }
+    if ($lastexitcode -lt 0)
+    {
+         "Unit test run was terminated by a fatal error."
     }
 }
 

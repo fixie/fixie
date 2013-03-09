@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿using System;
 
 namespace Fixie
 {
@@ -25,9 +25,9 @@ namespace Fixie
                         @case.Execute();
                         passed++;
                     }
-                    catch (TargetInvocationException ex)
+                    catch (Exception ex)
                     {
-                        listener.CaseFailed(@case, ex.InnerException);
+                        listener.CaseFailed(@case, ex);
                         failed++;
                     }
                 }

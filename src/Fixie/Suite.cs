@@ -27,7 +27,7 @@ namespace Fixie
                            !type.IsAbstract &&
                            type.Name.EndsWith("Tests") &&
                            type.GetConstructor(Type.EmptyTypes) != null)
-                    .Select(fixtureClass => new Fixture(fixtureClass));
+                    .Select(fixtureClass => new ClassFixture(fixtureClass));
             }
         }
     }

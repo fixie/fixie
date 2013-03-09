@@ -1,29 +1,8 @@
-﻿using System;
-using System.Reflection;
-
-namespace Fixie
+﻿namespace Fixie
 {
-    public class Case
+    public interface Case
     {
-        private readonly Type fixtureClass;
-        private readonly MethodInfo method;
-
-        public Case(Type fixtureClass, MethodInfo method)
-        {
-            this.fixtureClass = fixtureClass;
-            this.method = method;
-        }
-
-        public string Name
-        {
-            get { return method.Name; }
-        }
-
-        public void Execute()
-        {
-            var instance = Activator.CreateInstance(fixtureClass);
-
-            method.Invoke(instance, null);
-        }
+        string Name { get; }
+        void Execute();
     }
 }

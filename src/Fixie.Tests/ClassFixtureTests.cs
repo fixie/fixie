@@ -5,14 +5,14 @@ using Shouldly;
 namespace Fixie.Tests
 {
     [TestFixture]
-    public class FixtureTests
+    public class ClassFixtureTests
     {
         [Test]
         public void ShouldBeNamedAfterTheGivenFixtureClass()
         {
             var fixtureClass = typeof(SampleFixture);
 
-            var fixture = new Fixture(fixtureClass);
+            var fixture = new ClassFixture(fixtureClass);
 
             fixture.Name.ShouldBe("SampleFixture");
         }
@@ -22,7 +22,7 @@ namespace Fixie.Tests
         {
             var fixtureClass = typeof(SampleFixture);
 
-            var fixture = new Fixture(fixtureClass);
+            var fixture = new ClassFixture(fixtureClass);
 
             var cases = fixture.Cases;
 

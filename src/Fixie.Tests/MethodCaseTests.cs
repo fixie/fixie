@@ -6,7 +6,7 @@ using Shouldly;
 namespace Fixie.Tests
 {
     [TestFixture]
-    public class CaseTests
+    public class MethodCaseTests
     {
         [Test]
         public void ShouldBeNamedAfterTheGivenMethod()
@@ -14,7 +14,7 @@ namespace Fixie.Tests
             var fixtureClass = typeof(SampleFixture);
             var method = fixtureClass.GetMethod("Method", BindingFlags.Public | BindingFlags.Instance);
 
-            var @case = new Case(fixtureClass, method);
+            var @case = new MethodCase(fixtureClass, method);
 
             @case.Name.ShouldBe("Method");
         }
@@ -25,7 +25,7 @@ namespace Fixie.Tests
             var fixtureClass = typeof(SampleFixture);
             var method = fixtureClass.GetMethod("Method", BindingFlags.Public | BindingFlags.Instance);
 
-            var @case = new Case(fixtureClass, method);
+            var @case = new MethodCase(fixtureClass, method);
 
             bool threw = false;
 

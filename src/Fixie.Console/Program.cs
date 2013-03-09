@@ -38,7 +38,7 @@ namespace Fixie.Console
             var configuration = new DefaultConfiguration(assembly);
             var result = runner.Execute(configuration);
 
-            Line("Tests: {0}, Failures: {1}", result.Total, result.Failed);
+            Line("{0} total, {1} failed", result.Total, result.Failed);
 
             return result;
         }

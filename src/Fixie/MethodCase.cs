@@ -16,7 +16,7 @@ namespace Fixie
 
         public string Name
         {
-            get { return method.Name; }
+            get { return fixtureClass.FullName + "." + method.Name; }
         }
 
         public void Execute()

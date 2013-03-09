@@ -14,7 +14,7 @@ namespace Fixie.Tests
 
             var fixture = new ClassFixture(fixtureClass);
 
-            fixture.Name.ShouldBe("SampleFixture");
+            fixture.Name.ShouldBe("Fixie.Tests.ClassFixtureTests+SampleFixture");
         }
 
         [Test]
@@ -26,7 +26,7 @@ namespace Fixie.Tests
 
             var cases = fixture.Cases;
 
-            cases.Select(x => x.Name).ShouldBe("PublicInstanceNoArgsVoid");
+            cases.Select(x => x.Name).ShouldBe("Fixie.Tests.ClassFixtureTests+SampleFixture.PublicInstanceNoArgsVoid");
         }
 
         class SampleFixture

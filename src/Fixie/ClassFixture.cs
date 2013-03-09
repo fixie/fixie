@@ -16,7 +16,7 @@ namespace Fixie
 
         public string Name
         {
-            get { return fixtureClass.Name; }
+            get { return fixtureClass.FullName; }
         }
 
         public IEnumerable<Case> Cases

@@ -16,7 +16,7 @@ namespace Fixie.Tests
 
             var @case = new MethodCase(fixtureClass, method);
 
-            @case.Name.ShouldBe("Method");
+            @case.Name.ShouldBe("Fixie.Tests.MethodCaseTests+SampleFixture.Method");
         }
 
         [Test]

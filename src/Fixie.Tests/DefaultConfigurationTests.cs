@@ -25,7 +25,11 @@ namespace Fixie.Tests
 
             var fixtures = configuration.Fixtures;
 
-            fixtures.Select(x => x.Name).ShouldBe("PublicTests", "OtherPublicTests", "PrivateTests", "OtherPrivateTests");
+            fixtures.Select(x => x.Name).ShouldBe(
+                "Fixie.Tests.DefaultConfigurationTests+PublicTests",
+                "Fixie.Tests.DefaultConfigurationTests+OtherPublicTests",
+                "Fixie.Tests.DefaultConfigurationTests+PrivateTests",
+                "Fixie.Tests.DefaultConfigurationTests+OtherPrivateTests");
         }
 
         public interface PublicInterfaceTests { }

@@ -49,6 +49,8 @@
     <Compile Include="CaseTests.cs" />
     <Compile Include="FixtureTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RunnerTests.cs" />
+    <Compile Include="StubListener.cs" />
     <Compile Include="SuiteTests.cs" />
   </ItemGroup>
   <ItemGroup>

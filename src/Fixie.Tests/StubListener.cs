@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Text;
+using System.Collections.Generic;
 
 namespace Fixie.Tests
 {
     public class StubListener : Listener
     {
-        readonly StringBuilder log = new StringBuilder();
+        readonly List<string> log = new List<string>();
 
         public void CaseFailed(Case @case, Exception ex)
         {
-            log.AppendFormat("{0} failed: {1}", @case.Name, ex.Message);
+            log.Add(string.Format("{0} failed: {1}", @case.Name, ex.Message));
         }
 
-        public override string ToString()
+        public IEnumerable<string> Entries
         {
-            return log.ToString();
+            get { return log; }
         }
     }
 }

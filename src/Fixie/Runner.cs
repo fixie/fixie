@@ -20,20 +20,33 @@ namespace Fixie
             {
                 foreach (var @case in fixture.Cases)
                 {
-                    try
-                    {
-                        @case.Execute();
+                    if (Execute(@case))
                         passed++;
-                    }
-                    catch (Exception ex)
-                    {
-                        listener.CaseFailed(@case, ex);
+                    else
                         failed++;
-                    }
                 }
             }
 
             return new Result(passed, failed);
+        }
+
+        private bool Execute(Case @case)
+        {
+            try
+            {
+                var result = @case.Execute();
+
+                if (result.Passed)
+                    return true;
+
+                listener.CaseFailed(@case, result.Exception);
+            }
+            catch (Exception ex)
+            {
+                listener.CaseFailed(@case, ex);
+            }
+
+            return false;
         }
     }
 }

@@ -8,45 +8,71 @@ namespace Fixie.Tests
     [TestFixture]
     public class MethodCaseTests
     {
+        readonly Type fixtureClass;
+        readonly MethodInfo passingMethod;
+        readonly MethodInfo failingMethod;
+
+        public MethodCaseTests()
+        {
+            fixtureClass = typeof(SampleFixture);
+            passingMethod = fixtureClass.GetMethod("Pass", BindingFlags.Public | BindingFlags.Instance);
+            failingMethod = fixtureClass.GetMethod("Fail", BindingFlags.Public | BindingFlags.Instance);
+        }
+
         [Test]
         public void ShouldBeNamedAfterTheGivenMethod()
         {
-            var fixtureClass = typeof(SampleFixture);
-            var method = fixtureClass.GetMethod("Method", BindingFlags.Public | BindingFlags.Instance);
+            var passingCase = new MethodCase(fixtureClass, passingMethod);
+            var failingCase = new MethodCase(fixtureClass, failingMethod);
 
-            var @case = new MethodCase(fixtureClass, method);
-
-            @case.Name.ShouldBe("Fixie.Tests.MethodCaseTests+SampleFixture.Method");
+            passingCase.Name.ShouldBe("Fixie.Tests.MethodCaseTests+SampleFixture.Pass");
+            failingCase.Name.ShouldBe("Fixie.Tests.MethodCaseTests+SampleFixture.Fail");
         }
 
         [Test]
         public void ShouldInvokeTheGivenMethodWhenExecuted()
         {
-            var fixtureClass = typeof(SampleFixture);
-            var method = fixtureClass.GetMethod("Method", BindingFlags.Public | BindingFlags.Instance);
+            var passingCase = new MethodCase(fixtureClass, passingMethod);
 
-            var @case = new MethodCase(fixtureClass, method);
+            SampleFixture.MethodInvoked = false;
+            passingCase.Execute();
+            SampleFixture.MethodInvoked.ShouldBe(true);
+        }
 
-            bool threw = false;
+        [Test]
+        public void ShouldReportPassingResultUponSuccessfulExecution()
+        {
+            var passingCase = new MethodCase(fixtureClass, passingMethod);
 
-            try
-            {
-                @case.Execute();
-            }
-            catch (TargetInvocationException expected)
-            {
-                threw = true;
-                expected.InnerException.ShouldBeTypeOf<MethodInvokedException>();
-            }
+            var result = passingCase.Execute();
 
-            threw.ShouldBe(true);
+            result.Passed.ShouldBe(true);
+            result.Exception.ShouldBe(null);
+        }
+
+        [Test]
+        public void ShouldReportFailingResultWithOriginalExceptionUponUnsuccessfulExecution()
+        {
+            var failingCase = new MethodCase(fixtureClass, failingMethod);
+
+            var result = failingCase.Execute();
+
+            result.Passed.ShouldBe(false);
+            result.Exception.ShouldBeTypeOf<MethodInvokedException>();
         }
 
         class MethodInvokedException : Exception { }
 
         class SampleFixture
         {
-            public void Method()
+            public static bool MethodInvoked;
+
+            public void Pass()
+            {
+                MethodInvoked = true;
+            }
+
+            public void Fail()
             {
                 throw new MethodInvokedException();
             }

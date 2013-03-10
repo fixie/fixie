@@ -17,9 +17,9 @@ namespace Fixie.Tests
 
             var result = runner.Execute(configuration);
 
-            result.Total.ShouldBe(4);
+            result.Total.ShouldBe(5);
             result.Passed.ShouldBe(3);
-            result.Failed.ShouldBe(1);
+            result.Failed.ShouldBe(2);
         }
 
         [Test]
@@ -31,7 +31,8 @@ namespace Fixie.Tests
 
             runner.Execute(configuration);
 
-            listener.ToString().ShouldBe("Failing Case failed: Exception!");
+            listener.Entries.ShouldBe("Throwing Case failed: Uncaught Exception!",
+                                      "Failing Case failed: Exception in Result!");
         }
 
         class StubConfiguration : Configuration
@@ -41,7 +42,8 @@ namespace Fixie.Tests
                 Fixtures = new[]
                 {
                     new StubFixture("Fixture 1",
-                                    new StubCase("Failing Case", () => { throw new Exception("Exception!"); }),
+                                    new StubCase("Throwing Case", () => { throw new Exception("Uncaught Exception!"); }),
+                                    new StubCase("Failing Case", () => CaseResult.Fail(new Exception("Exception in Result!"))),
                                     new StubCase("Passing Case")),
                     new StubFixture("Fixture 2",
                                     new StubCase("Passing Case A"),
@@ -66,12 +68,12 @@ namespace Fixie.Tests
 
         class StubCase : Case
         {
-            readonly Action execute;
+            readonly Func<CaseResult> execute;
 
             public StubCase(string name)
-                :this(name, () => { }) { }
+                : this(name, CaseResult.Pass) { }
 
-            public StubCase(string name, Action executionAction)
+            public StubCase(string name, Func<CaseResult> executionAction)
             {
                 Name = name;
                 execute = executionAction;
@@ -79,9 +81,9 @@ namespace Fixie.Tests
 
             public string Name { get; private set; }
 
-            public void Execute()
+            public CaseResult Execute()
             {
-                execute();
+                return execute();
             }
         }
     }

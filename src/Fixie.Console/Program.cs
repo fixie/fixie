@@ -25,7 +25,7 @@ namespace Fixie.Console
             }
             catch (Exception ex)
             {
-                Line(ex.ToString());
+                Line("Fatal Error: {0}", ex);
                 return FatalError;
             }
         }

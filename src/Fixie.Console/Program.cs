@@ -35,8 +35,8 @@ namespace Fixie.Console
             var assembly = Assembly.LoadFrom(assemblyFile);
             var listener = new ConsoleListener();
             var runner = new Runner(listener);
-            var configuration = new DefaultConfiguration(assembly);
-            var result = runner.Execute(configuration);
+            var convention = new DefaultConvention(assembly);
+            var result = runner.Execute(convention);
 
             Line("{0} total, {1} failed", result.Total, result.Failed);
 

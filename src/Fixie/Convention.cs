@@ -2,7 +2,7 @@
 
 namespace Fixie
 {
-    public interface Configuration
+    public interface Convention
     {
         IEnumerable<Fixture> Fixtures { get; }
     }

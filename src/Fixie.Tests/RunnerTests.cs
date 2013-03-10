@@ -9,13 +9,13 @@ namespace Fixie.Tests
     public class RunnerTests
     {
         [Test]
-        public void ShouldExecuteAllCasesInTheGivenConfiguration()
+        public void ShouldExecuteAllCasesFoundByTheGivenConvention()
         {
-            var configuration = new StubConfiguration();
+            var convention = new StubConvention();
             var listener = new StubListener();
             var runner = new Runner(listener);
 
-            var result = runner.Execute(configuration);
+            var result = runner.Execute(convention);
 
             result.Total.ShouldBe(5);
             result.Passed.ShouldBe(3);
@@ -25,19 +25,19 @@ namespace Fixie.Tests
         [Test]
         public void ShouldLogFailingCases()
         {
-            var configuration = new StubConfiguration();
+            var convention = new StubConvention();
             var listener = new StubListener();
             var runner = new Runner(listener);
 
-            runner.Execute(configuration);
+            runner.Execute(convention);
 
             listener.Entries.ShouldBe("Throwing Case failed: Uncaught Exception!",
                                       "Failing Case failed: Exception in Result!");
         }
 
-        class StubConfiguration : Configuration
+        class StubConvention : Convention
         {
-            public StubConfiguration()
+            public StubConvention()
             {
                 Fixtures = new[]
                 {

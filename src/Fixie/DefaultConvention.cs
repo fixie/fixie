@@ -5,14 +5,14 @@ using System.Reflection;
 
 namespace Fixie
 {
-    public class DefaultConfiguration : Configuration
+    public class DefaultConvention : Convention
     {
         readonly Type[] candidateTypes;
 
-        public DefaultConfiguration(Assembly assembly)
+        public DefaultConvention(Assembly assembly)
             : this(assembly.GetTypes()) { }
 
-        public DefaultConfiguration(params Type[] candidateTypes)
+        public DefaultConvention(params Type[] candidateTypes)
         {
             this.candidateTypes = candidateTypes;
         }

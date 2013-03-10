@@ -4,12 +4,12 @@ using NUnit.Framework;
 namespace Fixie.Tests
 {
     [TestFixture]
-    public class DefaultConfigurationTests
+    public class DefaultConventionTests
     {
         [Test]
         public void ShouldTreatConstructibleClassesFollowingNamingConventionAsFixtures()
         {
-            var configuration = new DefaultConfiguration(
+            var convention = new DefaultConvention(
                 typeof(PublicInterfaceTests),
                 typeof(PublicAbstractTests),
                 typeof(PublicTests),
@@ -23,13 +23,13 @@ namespace Fixie.Tests
                 typeof(PrivateMissingNamingConvention),
                 typeof(PrivateWithNoDefaultConstructorTests));
 
-            var fixtures = configuration.Fixtures;
+            var fixtures = convention.Fixtures;
 
             fixtures.Select(x => x.Name).ShouldBe(
-                "Fixie.Tests.DefaultConfigurationTests+PublicTests",
-                "Fixie.Tests.DefaultConfigurationTests+OtherPublicTests",
-                "Fixie.Tests.DefaultConfigurationTests+PrivateTests",
-                "Fixie.Tests.DefaultConfigurationTests+OtherPrivateTests");
+                "Fixie.Tests.DefaultConventionTests+PublicTests",
+                "Fixie.Tests.DefaultConventionTests+OtherPublicTests",
+                "Fixie.Tests.DefaultConventionTests+PrivateTests",
+                "Fixie.Tests.DefaultConventionTests+OtherPrivateTests");
         }
 
         public interface PublicInterfaceTests { }

@@ -11,12 +11,12 @@ namespace Fixie
             this.listener = listener;
         }
 
-        public Result Execute(Configuration configuration)
+        public Result Execute(Convention convention)
         {
             var passed = 0;
             var failed = 0;
 
-            foreach (var fixture in configuration.Fixtures)
+            foreach (var fixture in convention.Fixtures)
             {
                 foreach (var @case in fixture.Cases)
                 {

@@ -4,8 +4,8 @@
 *.cmd text
 *.ps1 text
 
-*.sln text
-*.csproj text
+*.sln text eol=crlf merge=union
+*.csproj text merge=union
 *.cs text diff=csharp
 
 *.Config text

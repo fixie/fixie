@@ -4,6 +4,8 @@ using System.Reflection;
 
 namespace Fixie.Console
 {
+    using Console = System.Console;
+
     class Program
     {
         const int FatalError = -1;
@@ -14,7 +16,7 @@ namespace Fixie.Console
             {
                 if (args.Length != 1)
                 {
-                    Line("Usage: Fixie.Console [assembly_file]");
+                    Console.WriteLine("Usage: Fixie.Console [assembly_file]");
                     return FatalError;
                 }
 
@@ -25,7 +27,8 @@ namespace Fixie.Console
             }
             catch (Exception ex)
             {
-                Line("Fatal Error: {0}", ex);
+                using (Foreground.Red)
+                    Console.WriteLine("Fatal Error: {0}", ex);
                 return FatalError;
             }
         }
@@ -38,14 +41,9 @@ namespace Fixie.Console
             var convention = new DefaultConvention(assembly);
             var result = runner.Execute(convention);
 
-            Line("{0} total, {1} failed", result.Total, result.Failed);
+            Console.WriteLine("{0} total, {1} failed", result.Total, result.Failed);
 
             return result;
-        }
-
-        static void Line(string format, params object[] args)
-        {
-            System.Console.WriteLine(format, args);
         }
     }
 }

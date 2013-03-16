@@ -1,13 +1,12 @@
 ﻿using System.Linq;
-using NUnit.Framework;
 using Shouldly;
+using Xunit;
 
 namespace Fixie.Tests
 {
-    [TestFixture]
     public class ClassFixtureTests
     {
-        [Test]
+        [Fact]
         public void ShouldBeNamedAfterTheGivenFixtureClass()
         {
             var fixtureClass = typeof(SampleFixture);
@@ -17,7 +16,7 @@ namespace Fixie.Tests
             fixture.Name.ShouldBe("Fixie.Tests.ClassFixtureTests+SampleFixture");
         }
 
-        [Test]
+        [Fact]
         public void ShouldTreatPublicInstanceNoArgVoidMethodsAsCases()
         {
             var fixtureClass = typeof(SampleFixture);

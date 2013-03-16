@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using Shouldly;
+using Xunit;
 
 namespace Fixie.Tests
 {
-    [TestFixture]
     public class RunnerTests
     {
-        [Test]
+        [Fact]
         public void ShouldExecuteAllCasesFoundByTheGivenConvention()
         {
             var convention = new StubConvention();
@@ -22,7 +21,7 @@ namespace Fixie.Tests
             result.Failed.ShouldBe(2);
         }
 
-        [Test]
+        [Fact]
         public void ShouldLogFailingCases()
         {
             var convention = new StubConvention();

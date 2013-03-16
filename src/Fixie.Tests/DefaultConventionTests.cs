@@ -1,12 +1,11 @@
 ﻿using System.Linq;
-using NUnit.Framework;
+using Xunit;
 
 namespace Fixie.Tests
 {
-    [TestFixture]
     public class DefaultConventionTests
     {
-        [Test]
+        [Fact]
         public void ShouldTreatConstructibleClassesFollowingNamingConventionAsFixtures()
         {
             var convention = new DefaultConvention(

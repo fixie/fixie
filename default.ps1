@@ -4,6 +4,7 @@ properties {
     $project = 'Fixie'
     $birthYear = 2013
     $maintainers = "Patrick Lioi"
+    $description = "A convention-based test framework."
 
     $configuration = 'Release'
     $src = resolve-path '.\src'
@@ -11,20 +12,11 @@ properties {
     $version = [IO.File]::ReadAllText('.\VERSION.txt') + '.' + $build
 }
 
-task default -depends NUnitTest
+task default -depends xUnitTest
 
-task NUnitTest -depends SelfTest {
-    $nunitRunner = join-path $src "packages\NUnit.Runners.2.6.2\tools\nunit-console.exe"
-    & $nunitRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll /nologo /nodots /framework:net-4.0
-
-    if ($lastexitcode -gt 0)
-    {
-        throw "{0} unit tests failed." -f $lastexitcode
-    }
-    if ($lastexitcode -lt 0)
-    {
-        throw "Unit test run was terminated by a fatal error."
-    }
+task xUnitTest -depends SelfTest {
+    $xunitRunner = join-path $src "packages\xunit.runners.1.9.1\tools\xunit.console.clr4.exe"
+    exec { & $xunitRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll }
 }
 
 task SelfTest -depends Compile {
@@ -60,5 +52,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion(""$version"")]
 [assembly: AssemblyFileVersion(""$version"")]
 [assembly: AssemblyCopyright(""$copyright"")]
+[assembly: AssemblyCompany(""$maintainers"")]
+[assembly: AssemblyDescription(""$description"")]
 [assembly: AssemblyConfiguration(""$configuration"")]" | out-file "$src\CommonAssemblyInfo.cs" -encoding "ASCII"
 }

@@ -6,20 +6,10 @@ namespace Fixie.Console
     {
         public void CaseFailed(Case @case, Exception ex)
         {
-            Line("{0} threw {1}:", @case.Name, ex.GetType().FullName);
-            Line(ex.Message);
-            Line(ex.StackTrace);
-            Line();
-        }
-
-        static void Line()
-        {
+            System.Console.WriteLine("{0} threw {1}:", @case.Name, ex.GetType().FullName);
+            System.Console.WriteLine(ex.Message);
+            System.Console.WriteLine(ex.StackTrace);
             System.Console.WriteLine();
-        }
-
-        static void Line(string format, params object[] args)
-        {
-            System.Console.WriteLine(format, args);
         }
     }
 }

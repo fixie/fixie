@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Reflection;
-using NUnit.Framework;
 using Shouldly;
+using Xunit;
 
 namespace Fixie.Tests
 {
-    [TestFixture]
     public class MethodCaseTests
     {
         readonly Type fixtureClass;
@@ -19,7 +18,7 @@ namespace Fixie.Tests
             failingMethod = fixtureClass.GetMethod("Fail", BindingFlags.Public | BindingFlags.Instance);
         }
 
-        [Test]
+        [Fact]
         public void ShouldBeNamedAfterTheGivenMethod()
         {
             var passingCase = new MethodCase(fixtureClass, passingMethod);
@@ -29,7 +28,7 @@ namespace Fixie.Tests
             failingCase.Name.ShouldBe("Fixie.Tests.MethodCaseTests+SampleFixture.Fail");
         }
 
-        [Test]
+        [Fact]
         public void ShouldInvokeTheGivenMethodWhenExecuted()
         {
             var passingCase = new MethodCase(fixtureClass, passingMethod);
@@ -39,7 +38,7 @@ namespace Fixie.Tests
             SampleFixture.MethodInvoked.ShouldBe(true);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReportPassingResultUponSuccessfulExecution()
         {
             var passingCase = new MethodCase(fixtureClass, passingMethod);
@@ -50,7 +49,7 @@ namespace Fixie.Tests
             result.Exception.ShouldBe(null);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReportFailingResultWithOriginalExceptionUponUnsuccessfulExecution()
         {
             var failingCase = new MethodCase(fixtureClass, failingMethod);

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using Shouldly;
+using Should;
 using Xunit;
 
 namespace Fixie.Tests
@@ -24,8 +24,8 @@ namespace Fixie.Tests
             var passingCase = new MethodCase(fixtureClass, passingMethod);
             var failingCase = new MethodCase(fixtureClass, failingMethod);
 
-            passingCase.Name.ShouldBe("Fixie.Tests.MethodCaseTests+SampleFixture.Pass");
-            failingCase.Name.ShouldBe("Fixie.Tests.MethodCaseTests+SampleFixture.Fail");
+            passingCase.Name.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Pass");
+            failingCase.Name.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Fail");
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace Fixie.Tests
 
             SampleFixture.MethodInvoked = false;
             passingCase.Execute();
-            SampleFixture.MethodInvoked.ShouldBe(true);
+            SampleFixture.MethodInvoked.ShouldBeTrue();
         }
 
         [Fact]
@@ -45,8 +45,8 @@ namespace Fixie.Tests
 
             var result = passingCase.Execute();
 
-            result.Passed.ShouldBe(true);
-            result.Exception.ShouldBe(null);
+            result.Passed.ShouldBeTrue();
+            result.Exception.ShouldBeNull();
         }
 
         [Fact]
@@ -56,8 +56,8 @@ namespace Fixie.Tests
 
             var result = failingCase.Execute();
 
-            result.Passed.ShouldBe(false);
-            result.Exception.ShouldBeTypeOf<MethodInvokedException>();
+            result.Passed.ShouldBeFalse();
+            result.Exception.ShouldBeType<MethodInvokedException>();
         }
 
         class MethodInvokedException : Exception { }

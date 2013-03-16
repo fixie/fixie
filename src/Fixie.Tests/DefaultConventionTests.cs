@@ -24,7 +24,7 @@ namespace Fixie.Tests
 
             var fixtures = convention.Fixtures;
 
-            fixtures.Select(x => x.Name).ShouldBe(
+            fixtures.Select(x => x.Name).ShouldEqual(
                 "Fixie.Tests.DefaultConventionTests+PublicTests",
                 "Fixie.Tests.DefaultConventionTests+OtherPublicTests",
                 "Fixie.Tests.DefaultConventionTests+PrivateTests",

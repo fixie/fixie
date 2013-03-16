@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Shouldly;
+using Should;
 using Xunit;
 
 namespace Fixie.Tests
@@ -16,9 +16,9 @@ namespace Fixie.Tests
 
             var result = runner.Execute(convention);
 
-            result.Total.ShouldBe(5);
-            result.Passed.ShouldBe(3);
-            result.Failed.ShouldBe(2);
+            result.Total.ShouldEqual(5);
+            result.Passed.ShouldEqual(3);
+            result.Failed.ShouldEqual(2);
         }
 
         [Fact]
@@ -30,8 +30,8 @@ namespace Fixie.Tests
 
             runner.Execute(convention);
 
-            listener.Entries.ShouldBe("Throwing Case failed: Uncaught Exception!",
-                                      "Failing Case failed: Exception in Result!");
+            listener.Entries.ShouldEqual("Throwing Case failed: Uncaught Exception!",
+                                         "Failing Case failed: Exception in Result!");
         }
 
         class StubConvention : Convention

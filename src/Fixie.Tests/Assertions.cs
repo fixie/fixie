@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
-using Shouldly;
+using System.Linq;
+using Should.Core.Assertions;
 
 namespace Fixie.Tests
 {
     public static class Assertions
     {
-        public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
+        public static void ShouldEqual<T>(this IEnumerable<T> actual, params T[] expected)
         {
-            actual.ShouldBe((IEnumerable<T>)expected);
+            Assert.Equal(expected, actual.ToArray());
         }
     }
 }

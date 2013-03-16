@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Shouldly;
+using Should;
 using Xunit;
 
 namespace Fixie.Tests
@@ -13,7 +13,7 @@ namespace Fixie.Tests
 
             var fixture = new ClassFixture(fixtureClass);
 
-            fixture.Name.ShouldBe("Fixie.Tests.ClassFixtureTests+SampleFixture");
+            fixture.Name.ShouldEqual("Fixie.Tests.ClassFixtureTests+SampleFixture");
         }
 
         [Fact]
@@ -25,7 +25,7 @@ namespace Fixie.Tests
 
             var cases = fixture.Cases;
 
-            cases.Select(x => x.Name).ShouldBe("Fixie.Tests.ClassFixtureTests+SampleFixture.PublicInstanceNoArgsVoid");
+            cases.Select(x => x.Name).ShouldEqual("Fixie.Tests.ClassFixtureTests+SampleFixture.PublicInstanceNoArgsVoid");
         }
 
         class SampleFixture

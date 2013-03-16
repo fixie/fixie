@@ -15,7 +15,7 @@ namespace Fixie.Console
             using (Foreground.DarkGray)
                 Console.WriteLine(Indent(ex.GetType().FullName + ":"));
 
-            Console.WriteLine(Indent(ex.Message));
+            Console.WriteLine(Indent(Indent(ex.Message)));
             Console.WriteLine();
 
             using (Foreground.DarkGray)

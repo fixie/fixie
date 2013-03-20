@@ -7,12 +7,14 @@ namespace Fixie.Tests
 {
     public class MethodCaseTests
     {
+        readonly StubListener listener;
         readonly Type fixtureClass;
         readonly MethodInfo passingMethod;
         readonly MethodInfo failingMethod;
 
         public MethodCaseTests()
         {
+            listener = new StubListener();
             fixtureClass = typeof(SampleFixture);
             passingMethod = fixtureClass.GetMethod("Pass", BindingFlags.Public | BindingFlags.Instance);
             failingMethod = fixtureClass.GetMethod("Fail", BindingFlags.Public | BindingFlags.Instance);
@@ -34,7 +36,7 @@ namespace Fixie.Tests
             var passingCase = new MethodCase(fixtureClass, passingMethod);
 
             SampleFixture.MethodInvoked = false;
-            passingCase.Execute();
+            passingCase.Execute(listener);
             SampleFixture.MethodInvoked.ShouldBeTrue();
         }
 
@@ -43,7 +45,7 @@ namespace Fixie.Tests
         {
             var passingCase = new MethodCase(fixtureClass, passingMethod);
 
-            var result = passingCase.Execute();
+            var result = passingCase.Execute(listener);
 
             result.Passed.ShouldBeTrue();
             result.Exception.ShouldBeNull();
@@ -54,10 +56,12 @@ namespace Fixie.Tests
         {
             var failingCase = new MethodCase(fixtureClass, failingMethod);
 
-            var result = failingCase.Execute();
+            var result = failingCase.Execute(listener);
 
             result.Passed.ShouldBeFalse();
             result.Exception.ShouldBeType<MethodInvokedException>();
+            listener.Entries.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Fail failed: Exception of type " +
+                                         "'Fixie.Tests.MethodCaseTests+MethodInvokedException' was thrown.");
         }
 
         class MethodInvokedException : Exception { }

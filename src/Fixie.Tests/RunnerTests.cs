@@ -22,7 +22,7 @@ namespace Fixie.Tests
         }
 
         [Fact]
-        public void ShouldLogFailingCases()
+        public void ShouldLogFailedCaseExecution()
         {
             var convention = new StubConvention();
             var listener = new StubListener();
@@ -30,8 +30,7 @@ namespace Fixie.Tests
 
             runner.Execute(convention);
 
-            listener.Entries.ShouldEqual("Throwing Case failed: Uncaught Exception!",
-                                         "Failing Case failed: Exception in Result!");
+            listener.Entries.ShouldEqual("Throwing Case failed: Uncaught Exception!");
         }
 
         class StubConvention : Convention
@@ -80,7 +79,7 @@ namespace Fixie.Tests
 
             public string Name { get; private set; }
 
-            public CaseResult Execute()
+            public CaseResult Execute(Listener listener)
             {
                 return execute();
             }

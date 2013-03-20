@@ -34,12 +34,10 @@ namespace Fixie
         {
             try
             {
-                var result = @case.Execute();
+                var result = @case.Execute(listener);
 
                 if (result.Passed)
                     return true;
-
-                listener.CaseFailed(@case, result.Exception);
             }
             catch (Exception ex)
             {

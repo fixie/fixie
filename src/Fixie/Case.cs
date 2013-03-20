@@ -3,6 +3,6 @@
     public interface Case
     {
         string Name { get; }
-        CaseResult Execute();
+        CaseResult Execute(Listener listener);
     }
 }

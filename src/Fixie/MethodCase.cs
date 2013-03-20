@@ -19,7 +19,7 @@ namespace Fixie
             get { return fixtureClass.FullName + "." + method.Name; }
         }
 
-        public CaseResult Execute()
+        public CaseResult Execute(Listener listener)
         {
             var instance = Activator.CreateInstance(fixtureClass);
 
@@ -29,6 +29,7 @@ namespace Fixie
             }
             catch (TargetInvocationException ex)
             {
+                listener.CaseFailed(this, ex.InnerException);
                 return CaseResult.Fail(ex.InnerException);
             }
 

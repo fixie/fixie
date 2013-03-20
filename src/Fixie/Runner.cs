@@ -13,16 +13,25 @@ namespace Fixie
 
         public Result Execute(Convention convention)
         {
-            var result = new Result(0, 0);
+            var result = new Result();
 
             foreach (var fixture in convention.Fixtures)
-                foreach (var @case in fixture.Cases)
-                    result = Result.Combine(result, Execute(@case));
+                result = Result.Combine(result, Execute(fixture));
 
             return result;
         }
 
-        private Result Execute(Case @case)
+        Result Execute(Fixture fixture)
+        {
+            var result = new Result();
+
+            foreach (var @case in fixture.Cases)
+                result = Result.Combine(result, Execute(@case));
+
+            return result;
+        }
+
+        Result Execute(Case @case)
         {
             try
             {

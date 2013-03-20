@@ -6,5 +6,6 @@ namespace Fixie
     {
         string Name { get; }
         IEnumerable<Case> Cases { get; }
+        Result Execute(Listener listener);
     }
 }

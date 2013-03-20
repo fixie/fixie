@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Should;
 using Xunit;
 
@@ -9,26 +10,39 @@ namespace Fixie.Tests
         [Fact]
         public void ShouldBeNamedAfterTheGivenFixtureClass()
         {
-            var fixtureClass = typeof(SampleFixture);
-
+            var fixtureClass = typeof(DiscoverySampleFixture);
             var fixture = new ClassFixture(fixtureClass);
 
-            fixture.Name.ShouldEqual("Fixie.Tests.ClassFixtureTests+SampleFixture");
+            fixture.Name.ShouldEqual("Fixie.Tests.ClassFixtureTests+DiscoverySampleFixture");
         }
 
         [Fact]
         public void ShouldTreatPublicInstanceNoArgVoidMethodsAsCases()
         {
-            var fixtureClass = typeof(SampleFixture);
-
+            var fixtureClass = typeof(DiscoverySampleFixture);
             var fixture = new ClassFixture(fixtureClass);
 
-            var cases = fixture.Cases;
-
-            cases.Select(x => x.Name).ShouldEqual("Fixie.Tests.ClassFixtureTests+SampleFixture.PublicInstanceNoArgsVoid");
+            fixture.Cases.Select(x => x.Name).ShouldEqual("Fixie.Tests.ClassFixtureTests+DiscoverySampleFixture.PublicInstanceNoArgsVoid");
         }
 
-        class SampleFixture
+        [Fact]
+        public void ShouldExecuteAllCases()
+        {
+            var listener = new StubListener();
+            var fixtureClass = typeof(ExecutionSampleFixture);
+            var fixture = new ClassFixture(fixtureClass);
+
+            var result = fixture.Execute(listener);
+
+            result.Total.ShouldEqual(5);
+            result.Passed.ShouldEqual(3);
+            result.Failed.ShouldEqual(2);
+
+            listener.Entries.ShouldEqual("Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseA failed: Failing Case A",
+                                         "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseB failed: Failing Case B");
+        }
+
+        class DiscoverySampleFixture
         {
             public static int PublicStaticWithArgsWithReturn(int x) { return 0; }
             public static int PublicStaticNoArgsWithReturn() { return 0; }
@@ -49,6 +63,19 @@ namespace Fixie.Tests
             private int PrivateInstanceNoArgsWithReturn() { return 0; }
             private void PrivateInstanceWithArgsVoid(int x) { }
             private void PrivateInstanceNoArgsVoid() { }
+        }
+
+        class ExecutionSampleFixture
+        {
+            public void FailingCaseA() { throw new Exception("Failing Case A"); }
+
+            public void PassingCaseA() { }
+
+            public void FailingCaseB() { throw new Exception("Failing Case B"); }
+
+            public void PassingCaseB() { }
+
+            public void PassingCaseC() { }
         }
     }
 }

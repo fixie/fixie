@@ -31,5 +31,28 @@ namespace Fixie
                                    .Select(method => new MethodCase(fixtureClass, method));
             }
         }
+
+        public Result Execute(Listener listener)
+        {
+            var result = new Result();
+
+            foreach (var @case in Cases)
+                result = Result.Combine(result, Execute(@case, listener));
+
+            return result;
+        }
+
+        Result Execute(Case @case, Listener listener)
+        {
+            try
+            {
+                return @case.Execute(listener);
+            }
+            catch (Exception ex)
+            {
+                listener.CaseFailed(@case, ex);
+                return Result.Fail;
+            }
+        }
     }
 }

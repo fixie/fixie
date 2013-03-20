@@ -30,5 +30,15 @@ namespace Fixie
                     .Select(fixtureClass => new ClassFixture(fixtureClass));
             }
         }
+
+        public Result Execute(Listener listener)
+        {
+            var result = new Result();
+
+            foreach (var fixture in Fixtures)
+                result = Result.Combine(result, fixture.Execute(listener));
+
+            return result;
+        }
     }
 }

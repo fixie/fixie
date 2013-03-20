@@ -45,7 +45,6 @@
     <Compile Include="Listener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Result.cs" />
-    <Compile Include="Runner.cs" />
     <Compile Include="DefaultConvention.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

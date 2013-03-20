@@ -40,12 +40,12 @@ namespace Fixie.Tests
                 Fixtures = new[]
                 {
                     new StubFixture("Fixture 1",
-                                    new StubCase("Throwing Case", () => { throw new Exception("Uncaught Exception!"); }),
-                                    new StubCase("Failing Case", () => CaseResult.Fail(new Exception("Exception in Result!"))),
-                                    new StubCase("Passing Case")),
+                                    new StubCase("Throwing Case", listener => { throw new Exception("Uncaught Exception!"); }),
+                                    new StubCase("Failing Case", listener => Result.Fail),
+                                    new StubCase("Passing Case", listener => Result.Pass)),
                     new StubFixture("Fixture 2",
-                                    new StubCase("Passing Case A"),
-                                    new StubCase("Passing Case B"))
+                                    new StubCase("Passing Case A", listener => Result.Pass),
+                                    new StubCase("Passing Case B", listener => Result.Pass))
                 };
             }
 
@@ -66,22 +66,19 @@ namespace Fixie.Tests
 
         class StubCase : Case
         {
-            readonly Func<CaseResult> execute;
+            readonly Func<Listener, Result> execute;
 
-            public StubCase(string name)
-                : this(name, CaseResult.Pass) { }
-
-            public StubCase(string name, Func<CaseResult> executionAction)
+            public StubCase(string name, Func<Listener, Result> execute)
             {
                 Name = name;
-                execute = executionAction;
+                this.execute = execute;
             }
 
             public string Name { get; private set; }
 
-            public CaseResult Execute(Listener listener)
+            public Result Execute(Listener listener)
             {
-                return execute();
+                return execute(listener);
             }
         }
     }

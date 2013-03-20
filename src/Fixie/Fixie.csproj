@@ -38,7 +38,6 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Case.cs" />
-    <Compile Include="CaseResult.cs" />
     <Compile Include="Convention.cs" />
     <Compile Include="Fixture.cs" />
     <Compile Include="MethodCase.cs" />

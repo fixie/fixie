@@ -47,8 +47,7 @@ namespace Fixie.Tests
 
             var result = passingCase.Execute(listener);
 
-            result.Passed.ShouldBeTrue();
-            result.Exception.ShouldBeNull();
+            result.ShouldEqual(Result.Pass);
         }
 
         [Fact]
@@ -58,8 +57,7 @@ namespace Fixie.Tests
 
             var result = failingCase.Execute(listener);
 
-            result.Passed.ShouldBeFalse();
-            result.Exception.ShouldBeType<MethodInvokedException>();
+            result.ShouldEqual(Result.Fail);
             listener.Entries.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Fail failed: Exception of type " +
                                          "'Fixie.Tests.MethodCaseTests+MethodInvokedException' was thrown.");
         }

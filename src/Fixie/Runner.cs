@@ -13,38 +13,26 @@ namespace Fixie
 
         public Result Execute(Convention convention)
         {
-            var passed = 0;
-            var failed = 0;
+            var result = new Result(0, 0);
 
             foreach (var fixture in convention.Fixtures)
-            {
                 foreach (var @case in fixture.Cases)
-                {
-                    if (Execute(@case))
-                        passed++;
-                    else
-                        failed++;
-                }
-            }
+                    result = Result.Combine(result, Execute(@case));
 
-            return new Result(passed, failed);
+            return result;
         }
 
-        private bool Execute(Case @case)
+        private Result Execute(Case @case)
         {
             try
             {
-                var result = @case.Execute(listener);
-
-                if (result.Passed)
-                    return true;
+                return @case.Execute(listener);
             }
             catch (Exception ex)
             {
                 listener.CaseFailed(@case, ex);
+                return Result.Fail;
             }
-
-            return false;
         }
     }
 }

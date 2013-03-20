@@ -19,21 +19,20 @@ namespace Fixie
             get { return fixtureClass.FullName + "." + method.Name; }
         }
 
-        public CaseResult Execute(Listener listener)
+        public Result Execute(Listener listener)
         {
             var instance = Activator.CreateInstance(fixtureClass);
 
             try
             {
                 method.Invoke(instance, null);
+                return Result.Pass;
             }
             catch (TargetInvocationException ex)
             {
                 listener.CaseFailed(this, ex.InnerException);
-                return CaseResult.Fail(ex.InnerException);
+                return Result.Fail;
             }
-
-            return CaseResult.Pass();
         }
     }
 }

@@ -61,7 +61,7 @@ namespace Fixie.Tests
         }
 
         [Fact]
-        public void ShouldFailAllCasesWhenFixtureConstructorThrowsException()
+        public void ShouldFailAllCasesWithOriginalExceptionWhenFixtureConstructorThrowsException()
         {
             var listener = new StubListener();
             var fixtureClass = typeof(ConstructorThrowsSampleFixture);

@@ -3,4 +3,3 @@ bin
 obj
 src/packages
 *.DotSettings.user
-TestResult.xml

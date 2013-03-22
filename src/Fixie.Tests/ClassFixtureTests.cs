@@ -42,6 +42,42 @@ namespace Fixie.Tests
                                          "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseB failed: Failing Case B");
         }
 
+        [Fact]
+        public void ShouldFailAllCasesWhenFixtureConstructorCannotBeInvoked()
+        {
+            var listener = new StubListener();
+            var fixtureClass = typeof(CannotInvokeConstructorSampleFixture);
+            var fixture = new ClassFixture(fixtureClass);
+
+            var result = fixture.Execute(listener);
+
+            result.Total.ShouldEqual(2);
+            result.Passed.ShouldEqual(0);
+            result.Failed.ShouldEqual(2);
+
+            listener.Entries.ShouldEqual(
+                "Fixie.Tests.ClassFixtureTests+CannotInvokeConstructorSampleFixture.UnreachableCaseA failed: No parameterless constructor defined for this object.",
+                "Fixie.Tests.ClassFixtureTests+CannotInvokeConstructorSampleFixture.UnreachableCaseB failed: No parameterless constructor defined for this object.");
+        }
+
+        [Fact]
+        public void ShouldFailAllCasesWhenFixtureConstructorThrowsException()
+        {
+            var listener = new StubListener();
+            var fixtureClass = typeof(ConstructorThrowsSampleFixture);
+            var fixture = new ClassFixture(fixtureClass);
+
+            var result = fixture.Execute(listener);
+
+            result.Total.ShouldEqual(2);
+            result.Passed.ShouldEqual(0);
+            result.Failed.ShouldEqual(2);
+
+            listener.Entries.ShouldEqual(
+                "Fixie.Tests.ClassFixtureTests+ConstructorThrowsSampleFixture.UnreachableCaseA failed: Exception From Constructor",
+                "Fixie.Tests.ClassFixtureTests+ConstructorThrowsSampleFixture.UnreachableCaseB failed: Exception From Constructor");
+        }
+
         class DiscoverySampleFixture
         {
             public static int PublicStaticWithArgsWithReturn(int x) { return 0; }
@@ -76,6 +112,27 @@ namespace Fixie.Tests
             public void PassingCaseB() { }
 
             public void PassingCaseC() { }
+        }
+
+        class CannotInvokeConstructorSampleFixture
+        {
+            public CannotInvokeConstructorSampleFixture(int argument)
+            {
+            }
+
+            public void UnreachableCaseA() { }
+            public void UnreachableCaseB() { }
+        }
+
+        class ConstructorThrowsSampleFixture
+        {
+            public ConstructorThrowsSampleFixture()
+            {
+                throw new Exception("Exception From Constructor");
+            }
+
+            public void UnreachableCaseA() { }
+            public void UnreachableCaseB() { }
         }
     }
 }

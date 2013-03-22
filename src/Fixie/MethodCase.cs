@@ -23,12 +23,17 @@ namespace Fixie
         {
             try
             {
-                method.Invoke(fixture.GetInstance(), null);
+                method.Invoke(fixture.Instance, null);
                 return Result.Pass;
             }
             catch (TargetInvocationException ex)
             {
                 listener.CaseFailed(this, ex.InnerException);
+                return Result.Fail;
+            }
+            catch (Exception ex)
+            {
+                listener.CaseFailed(this, ex);
                 return Result.Fail;
             }
         }

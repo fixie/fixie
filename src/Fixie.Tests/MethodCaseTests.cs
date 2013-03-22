@@ -12,14 +12,16 @@ namespace Fixie.Tests
         readonly ClassFixture fixture;
         readonly MethodInfo passingMethod;
         readonly MethodInfo failingMethod;
+        readonly MethodInfo cannotInvokeMethod;
 
         public MethodCaseTests()
         {
             listener = new StubListener();
             fixtureClass = typeof(SampleFixture);
-            fixture = new ClassFixture(fixtureClass);
+            fixture = new ClassFixture(fixtureClass, new SampleFixture());
             passingMethod = fixtureClass.GetMethod("Pass", BindingFlags.Public | BindingFlags.Instance);
             failingMethod = fixtureClass.GetMethod("Fail", BindingFlags.Public | BindingFlags.Instance);
+            cannotInvokeMethod = fixtureClass.GetMethod("CannotInvoke", BindingFlags.Public | BindingFlags.Instance);
         }
 
         [Fact]
@@ -53,7 +55,18 @@ namespace Fixie.Tests
         }
 
         [Fact]
-        public void ShouldReportFailingResultWithOriginalExceptionUponUnsuccessfulExecution()
+        public void ShouldReportFailingResultWhenCaseMethodCannotBeInvoked()
+        {
+            var cannotInvokeCase = new MethodCase(fixture, cannotInvokeMethod);
+
+            var result = cannotInvokeCase.Execute(listener);
+
+            result.ShouldEqual(Result.Fail);
+            listener.Entries.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.CannotInvoke failed: Parameter count mismatch.");
+        }
+
+        [Fact]
+        public void ShouldReportFailingResultWithOriginalExceptionWhenCaseMethodThrowsException()
         {
             var failingCase = new MethodCase(fixture, failingMethod);
 
@@ -78,6 +91,10 @@ namespace Fixie.Tests
             public void Fail()
             {
                 throw new MethodInvokedException();
+            }
+
+            public void CannotInvoke(int argument)
+            {
             }
         }
     }

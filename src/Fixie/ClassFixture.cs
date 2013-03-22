@@ -14,10 +14,13 @@ namespace Fixie
             this.fixtureClass = fixtureClass;
         }
 
-        public object GetInstance()
+        public ClassFixture(Type fixtureClass, object initialInstance)
         {
-            return Activator.CreateInstance(fixtureClass);
+            this.fixtureClass = fixtureClass;
+            Instance = initialInstance;
         }
+
+        public object Instance { get; private set; }
 
         public string Name
         {
@@ -49,14 +52,30 @@ namespace Fixie
 
         Result Execute(Case @case, Listener listener)
         {
+            Instance = null;
+
             try
             {
+                try
+                {
+                    Instance = Activator.CreateInstance(fixtureClass);
+                }
+                catch (TargetInvocationException ex)
+                {
+                    listener.CaseFailed(@case, ex.InnerException);
+                    return Result.Fail;
+                }
+                catch (Exception ex)
+                {
+                    listener.CaseFailed(@case, ex);
+                    return Result.Fail;
+                }
+
                 return @case.Execute(listener);
             }
-            catch (Exception ex)
+            finally
             {
-                listener.CaseFailed(@case, ex);
-                return Result.Fail;
+                Instance = null;
             }
         }
     }

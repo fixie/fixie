@@ -9,6 +9,7 @@ namespace Fixie.Tests
     {
         readonly StubListener listener;
         readonly Type fixtureClass;
+        readonly ClassFixture fixture;
         readonly MethodInfo passingMethod;
         readonly MethodInfo failingMethod;
 
@@ -16,6 +17,7 @@ namespace Fixie.Tests
         {
             listener = new StubListener();
             fixtureClass = typeof(SampleFixture);
+            fixture = new ClassFixture(fixtureClass);
             passingMethod = fixtureClass.GetMethod("Pass", BindingFlags.Public | BindingFlags.Instance);
             failingMethod = fixtureClass.GetMethod("Fail", BindingFlags.Public | BindingFlags.Instance);
         }
@@ -23,8 +25,8 @@ namespace Fixie.Tests
         [Fact]
         public void ShouldBeNamedAfterTheGivenMethod()
         {
-            var passingCase = new MethodCase(fixtureClass, passingMethod);
-            var failingCase = new MethodCase(fixtureClass, failingMethod);
+            var passingCase = new MethodCase(fixture, passingMethod);
+            var failingCase = new MethodCase(fixture, failingMethod);
 
             passingCase.Name.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Pass");
             failingCase.Name.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Fail");
@@ -33,7 +35,7 @@ namespace Fixie.Tests
         [Fact]
         public void ShouldInvokeTheGivenMethodWhenExecuted()
         {
-            var passingCase = new MethodCase(fixtureClass, passingMethod);
+            var passingCase = new MethodCase(fixture, passingMethod);
 
             SampleFixture.MethodInvoked = false;
             passingCase.Execute(listener);
@@ -43,7 +45,7 @@ namespace Fixie.Tests
         [Fact]
         public void ShouldReportPassingResultUponSuccessfulExecution()
         {
-            var passingCase = new MethodCase(fixtureClass, passingMethod);
+            var passingCase = new MethodCase(fixture, passingMethod);
 
             var result = passingCase.Execute(listener);
 
@@ -53,7 +55,7 @@ namespace Fixie.Tests
         [Fact]
         public void ShouldReportFailingResultWithOriginalExceptionUponUnsuccessfulExecution()
         {
-            var failingCase = new MethodCase(fixtureClass, failingMethod);
+            var failingCase = new MethodCase(fixture, failingMethod);
 
             var result = failingCase.Execute(listener);
 

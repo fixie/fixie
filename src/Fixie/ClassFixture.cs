@@ -14,6 +14,11 @@ namespace Fixie
             this.fixtureClass = fixtureClass;
         }
 
+        public object GetInstance()
+        {
+            return Activator.CreateInstance(fixtureClass);
+        }
+
         public string Name
         {
             get { return fixtureClass.FullName; }
@@ -28,7 +33,7 @@ namespace Fixie
                                           method.ReturnType == typeof(void) &&
                                           method.GetParameters().Length == 0 &&
                                           method.DeclaringType != typeof(object))
-                                   .Select(method => new MethodCase(fixtureClass, method));
+                                   .Select(method => new MethodCase(this, method));
             }
         }
 

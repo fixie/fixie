@@ -31,13 +31,18 @@ namespace Fixie
         {
             get
             {
-                return fixtureClass.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                                   .Where(method =>
-                                          method.ReturnType == typeof(void) &&
-                                          method.GetParameters().Length == 0 &&
-                                          method.DeclaringType != typeof(object))
+                return CaseMethods(fixtureClass)
                                    .Select(method => new MethodCase(this, method));
             }
+        }
+
+        IEnumerable<MethodInfo> CaseMethods(Type fixtureClass)
+        {
+            return fixtureClass.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                               .Where(method =>
+                                      method.ReturnType == typeof(void) &&
+                                      method.GetParameters().Length == 0 &&
+                                      method.DeclaringType != typeof(object));
         }
 
         public Result Execute(Listener listener)

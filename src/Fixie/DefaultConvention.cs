@@ -22,13 +22,14 @@ namespace Fixie
             get
             {
                 return candidateTypes
-                    .Where(type =>
-                           type.IsClass &&
-                           !type.IsAbstract &&
-                           type.Name.EndsWith("Tests") &&
-                           type.GetConstructor(Type.EmptyTypes) != null)
+                    .Where(type => type.IsClass && !type.IsAbstract && ClassIsFixture(type))
                     .Select(fixtureClass => new ClassFixture(fixtureClass));
             }
+        }
+
+        bool ClassIsFixture(Type concreteClass)
+        {
+            return concreteClass.Name.EndsWith("Tests") && concreteClass.GetConstructor(Type.EmptyTypes) != null;
         }
 
         public Result Execute(Listener listener)

@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace Fixie
+﻿namespace Fixie
 {
     public interface Fixture
     {
         string Name { get; }
-        IEnumerable<Case> Cases { get; }
         Result Execute(Listener listener);
     }
 }

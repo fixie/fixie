@@ -8,15 +8,19 @@ namespace Fixie
     public class ClassFixture : Fixture
     {
         readonly Type fixtureClass;
+        readonly Convention convention;
 
-        public ClassFixture(Type fixtureClass)
+        public ClassFixture(Type fixtureClass, Convention convention)
         {
             this.fixtureClass = fixtureClass;
+            this.convention = convention;
         }
 
-        public ClassFixture(Type fixtureClass, object initialInstance)
+        public ClassFixture(Type fixtureClass, Convention convention, object initialInstance)
         {
             this.fixtureClass = fixtureClass;
+            this.convention = convention;
+
             Instance = initialInstance;
         }
 
@@ -27,24 +31,6 @@ namespace Fixie
             get { return fixtureClass.FullName; }
         }
 
-        public IEnumerable<Case> Cases
-        {
-            get
-            {
-                return CaseMethods(fixtureClass)
-                                   .Select(method => new MethodCase(this, method));
-            }
-        }
-
-        IEnumerable<MethodInfo> CaseMethods(Type fixtureClass)
-        {
-            return fixtureClass.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                               .Where(method =>
-                                      method.ReturnType == typeof(void) &&
-                                      method.GetParameters().Length == 0 &&
-                                      method.DeclaringType != typeof(object));
-        }
-
         public Result Execute(Listener listener)
         {
             var result = new Result();
@@ -53,6 +39,11 @@ namespace Fixie
                 result = Result.Combine(result, Execute(@case, listener));
 
             return result;
+        }
+
+        private IEnumerable<Case> Cases
+        {
+            get { return convention.CaseMethods(fixtureClass).Select(method => new MethodCase(this, method)); }
         }
 
         Result Execute(Case @case, Listener listener)

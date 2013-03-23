@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Should;
 using Xunit;
 
 namespace Fixie.Tests
@@ -9,7 +8,8 @@ namespace Fixie.Tests
         [Fact]
         public void ShouldTreatConstructibleClassesFollowingNamingConventionAsFixtures()
         {
-            var convention = new DefaultConvention(
+            var candidateTypes = new[]
+            {
                 typeof(PublicInterfaceTests),
                 typeof(PublicAbstractTests),
                 typeof(PublicTests),
@@ -21,28 +21,14 @@ namespace Fixie.Tests
                 typeof(PrivateTests),
                 typeof(OtherPrivateTests),
                 typeof(PrivateMissingNamingConvention),
-                typeof(PrivateWithNoDefaultConstructorTests));
+                typeof(PrivateWithNoDefaultConstructorTests)
+            };
 
-            convention.Fixtures.Select(x => x.Name).ShouldEqual(
-                "Fixie.Tests.DefaultConventionTests+PublicTests",
-                "Fixie.Tests.DefaultConventionTests+OtherPublicTests",
-                "Fixie.Tests.DefaultConventionTests+PrivateTests",
-                "Fixie.Tests.DefaultConventionTests+OtherPrivateTests");
-        }
+            var convention = new DefaultConvention();
 
-        [Fact]
-        public void ShouldExecuteAllCasesInAllFixtures()
-        {
-            var listener = new StubListener();
-            var convention = new DefaultConvention(typeof(ExecutionSampleTests));
-
-            var result = convention.Execute(listener);
-
-            result.Total.ShouldEqual(2);
-            result.Passed.ShouldEqual(2);
-            result.Failed.ShouldEqual(0);
-
-            listener.Entries.ShouldBeEmpty();
+            convention.FixtureClasses(candidateTypes)
+                        .Select(x => x.Name)
+                        .ShouldEqual("PublicTests", "OtherPublicTests", "PrivateTests", "OtherPrivateTests");
         }
 
         public interface PublicInterfaceTests { }
@@ -59,13 +45,38 @@ namespace Fixie.Tests
         class PrivateMissingNamingConvention { }
         class PrivateWithNoDefaultConstructorTests { public PrivateWithNoDefaultConstructorTests(int x) { } }
 
-        public class ExecutionSampleTests
+        [Fact]
+        public void ShouldTreatPublicInstanceNoArgVoidMethodsAsCases()
         {
-            [Fact]
-            public void PassA() { }
+            var convention = new DefaultConvention();
+            var fixtureClass = typeof(DiscoverySampleFixture);
 
-            [Fact]
-            public void PassB() { }
+            convention.CaseMethods(fixtureClass)
+                        .Select(x => x.Name)
+                        .ShouldEqual("PublicInstanceNoArgsVoid");
+        }
+
+        class DiscoverySampleFixture
+        {
+            public static int PublicStaticWithArgsWithReturn(int x) { return 0; }
+            public static int PublicStaticNoArgsWithReturn() { return 0; }
+            public static void PublicStaticWithArgsVoid(int x) { }
+            public static void PublicStaticNoArgsVoid() { }
+
+            public int PublicInstanceWithArgsWithReturn(int x) { return 0; }
+            public int PublicInstanceNoArgsWithReturn() { return 0; }
+            public void PublicInstanceWithArgsVoid(int x) { }
+            public void PublicInstanceNoArgsVoid() { }
+
+            private static int PrivateStaticWithArgsWithReturn(int x) { return 0; }
+            private static int PrivateStaticNoArgsWithReturn() { return 0; }
+            private static void PrivateStaticWithArgsVoid(int x) { }
+            private static void PrivateStaticNoArgsVoid() { }
+
+            private int PrivateInstanceWithArgsWithReturn(int x) { return 0; }
+            private int PrivateInstanceNoArgsWithReturn() { return 0; }
+            private void PrivateInstanceWithArgsVoid(int x) { }
+            private void PrivateInstanceNoArgsVoid() { }
         }
     }
 }

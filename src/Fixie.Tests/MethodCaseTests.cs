@@ -18,7 +18,7 @@ namespace Fixie.Tests
         {
             listener = new StubListener();
             fixtureClass = typeof(SampleFixture);
-            fixture = new ClassFixture(fixtureClass, new SampleFixture());
+            fixture = new ClassFixture(fixtureClass, null, new SampleFixture());
             passingMethod = fixtureClass.GetMethod("Pass", BindingFlags.Public | BindingFlags.Instance);
             failingMethod = fixtureClass.GetMethod("Fail", BindingFlags.Public | BindingFlags.Instance);
             cannotInvokeMethod = fixtureClass.GetMethod("CannotInvoke", BindingFlags.Public | BindingFlags.Instance);

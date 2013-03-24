@@ -1,5 +1,6 @@
 *.suo
 bin
 obj
+build
 src/packages
 *.DotSettings.user

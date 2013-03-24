@@ -37,8 +37,8 @@ namespace Fixie.Console
         {
             var assembly = Assembly.LoadFrom(assemblyFile);
             var listener = new ConsoleListener();
-            var convention = new Suite(assembly);
-            var result = convention.Execute(listener);
+            var suite = new Suite(assembly);
+            var result = suite.Execute(listener);
 
             Console.WriteLine("{0} total, {1} failed", result.Total, result.Failed);
 

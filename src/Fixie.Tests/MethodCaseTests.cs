@@ -52,6 +52,7 @@ namespace Fixie.Tests
             var result = passingCase.Execute(listener);
 
             result.ShouldEqual(Result.Pass);
+            listener.Entries.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Pass passed.");
         }
 
         [Fact]

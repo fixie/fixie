@@ -36,7 +36,10 @@ namespace Fixie.Tests
             result.Failed.ShouldEqual(2);
 
             listener.Entries.ShouldEqual("Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseA failed: Failing Case A",
-                                         "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseB failed: Failing Case B");
+                                         "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.PassingCaseA passed.",
+                                         "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseB failed: Failing Case B",
+                                         "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.PassingCaseB passed.",
+                                         "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.PassingCaseC passed.");
         }
 
         [Fact]

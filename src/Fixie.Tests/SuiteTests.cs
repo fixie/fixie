@@ -17,7 +17,8 @@ namespace Fixie.Tests
             result.Passed.ShouldEqual(2);
             result.Failed.ShouldEqual(0);
 
-            listener.Entries.ShouldBeEmpty();
+            listener.Entries.ShouldEqual("Fixie.Tests.SuiteTests+ExecutionSampleTests.PassA passed.",
+                                         "Fixie.Tests.SuiteTests+ExecutionSampleTests.PassB passed.");
         }
 
         public class ExecutionSampleTests

@@ -24,6 +24,7 @@ namespace Fixie
             try
             {
                 method.Invoke(fixture.Instance, null);
+                listener.CasePassed(this);
                 return Result.Pass;
             }
             catch (TargetInvocationException ex)

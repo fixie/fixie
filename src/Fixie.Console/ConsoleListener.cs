@@ -7,6 +7,10 @@ namespace Fixie.Console
 
     class ConsoleListener : Listener
     {
+        public void CasePassed(Case @case)
+        {
+        }
+
         public void CaseFailed(Case @case, Exception ex)
         {
             using (Foreground.Red)

@@ -4,7 +4,7 @@ Fixie is a .NET test framework similar to NUnit and xUnit, but with an emphasis 
 
 ## How do I install Fixie?
 
-*Fixie will soon be available as a NuGet package.  Until then, you can clone the repository, issue "build" from the command line, and copy Fixie.dll to be referenced by your test assemblies.*
+*Fixie will soon be available as a NuGet package.  Until then, you can clone the repository, issue "build" from the command line, and copy the contents of the build/ folder so its contents can be referenced by your test assemblies.*
 
 ## How do I use Fixie?
 
@@ -14,8 +14,7 @@ Fixie is a .NET test framework similar to NUnit and xUnit, but with an emphasis 
 4. Use the console runner from a command line to execute your tests:
 
     Fixie.Console.exe path/to/your/test/project.dll
-
-*Fixie will soon provide a TestDriven.net runner so that tests can be executed from within Visual Studio.*
+5. Use the TestDriven.NET runner from within Visual Studio, using the same keyboard shortcuts you would use for NUnit tests.
 
 ## Default Convention
 

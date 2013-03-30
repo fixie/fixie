@@ -3,11 +3,11 @@ using Xunit;
 
 namespace Fixie.Tests
 {
-    public class TypeFilterTests
+    public class ClassFilterTests
     {
         readonly Type[] candidateTypes;
 
-        public TypeFilterTests()
+        public ClassFilterTests()
         {
             candidateTypes = new[]
             {
@@ -22,36 +22,27 @@ namespace Fixie.Tests
         }
 
         [Fact]
-        public void ShouldIncludeAllTypesByDefault()
+        public void ShouldFilterToConcreteClassesByDefault()
         {
-            new TypeFilter()
-                .Filter(candidateTypes)
-                .ShouldEqual(candidateTypes);
-        }
-
-        [Fact]
-        public void ShouldFilterByAllSpecifiedConditions()
-        {
-            new TypeFilter()
-                .Where(type => type.Namespace == "System")
-                .Where(type => type.Name.StartsWith("D"))
-                .Filter(candidateTypes)
-                .ShouldEqual(typeof(Decimal), typeof(DateTime));
-        }
-
-        [Fact]
-        public void CanFilterToConcreteClasses()
-        {
-            new TypeFilter()
-                .ConcreteClasses()
+            new ClassFilter()
                 .Filter(candidateTypes)
                 .ShouldEqual(typeof(DefaultConstructor), typeof(NoDefaultConstructor), typeof(String));
         }
 
         [Fact]
+        public void ShouldFilterByAllSpecifiedConditions()
+        {
+            new ClassFilter()
+                .Where(type => type.Namespace == "Fixie.Tests")
+                .Where(type => type.Name.StartsWith("No"))
+                .Filter(candidateTypes)
+                .ShouldEqual(typeof(NoDefaultConstructor));
+        }
+
+        [Fact]
         public void CanFilterToClassesWithDefaultConstructors()
         {
-            new TypeFilter()
+            new ClassFilter()
                 .HasDefaultConstructor()
                 .Filter(candidateTypes)
                 .ShouldEqual(typeof(DefaultConstructor));
@@ -60,7 +51,7 @@ namespace Fixie.Tests
         [Fact]
         public void CanFilterByTypeNameSuffix()
         {
-            new TypeFilter()
+            new ClassFilter()
                 .NameEndsWith("Constructor")
                 .Filter(candidateTypes)
                 .ShouldEqual(typeof(DefaultConstructor), typeof(NoDefaultConstructor));

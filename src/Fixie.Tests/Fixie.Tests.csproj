@@ -53,7 +53,7 @@
     <Compile Include="StubListener.cs" />
     <Compile Include="DefaultConventionTests.cs" />
     <Compile Include="SuiteTests.cs" />
-    <Compile Include="TypeFilterTests.cs" />
+    <Compile Include="ClassFilterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie\Fixie.csproj">

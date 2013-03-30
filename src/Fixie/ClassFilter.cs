@@ -4,32 +4,29 @@ using System.Linq;
 
 namespace Fixie
 {
-    public class TypeFilter
+    public class ClassFilter
     {
         readonly List<Func<Type, bool>> conditions;
 
-        public TypeFilter()
+        public ClassFilter()
         {
             conditions = new List<Func<Type, bool>>();
+
+            ConcreteClasses();
         }
 
-        public TypeFilter Where(Func<Type, bool> condition)
+        public ClassFilter Where(Func<Type, bool> condition)
         {
             conditions.Add(condition);
             return this;
         }
 
-        public TypeFilter ConcreteClasses()
-        {
-            return Where(type => type.IsClass && !type.IsAbstract);
-        }
-
-        public TypeFilter HasDefaultConstructor()
+        public ClassFilter HasDefaultConstructor()
         {
             return Where(type => type.GetConstructor(Type.EmptyTypes) != null);
         }
 
-        public TypeFilter NameEndsWith(string suffix)
+        public ClassFilter NameEndsWith(string suffix)
         {
             return Where(type => type.Name.EndsWith(suffix));
         }
@@ -42,6 +39,11 @@ namespace Fixie
         private bool IsMatch(Type candidate)
         {
             return conditions.All(condition => condition(candidate));
+        }
+
+        private void ConcreteClasses()
+        {
+            Where(type => type.IsClass && !type.IsAbstract);
         }
     }
 }

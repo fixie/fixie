@@ -8,11 +8,11 @@ namespace Fixie
     {
         protected Convention()
         {
-            Fixtures = new TypeFilter().ConcreteClasses();
+            Fixtures = new ClassFilter();
             Cases = new MethodFilter();
         }
 
-        protected TypeFilter Fixtures { get; private set; }
+        protected ClassFilter Fixtures { get; private set; }
         protected MethodFilter Cases { get; private set; }
 
         public IEnumerable<Type> FixtureClasses(Type[] candidates)

@@ -7,7 +7,6 @@ namespace Fixie
         public DefaultConvention()
         {
             Fixtures
-                .ConcreteClasses()
                 .NameEndsWith("Tests")
                 .HasDefaultConstructor();
 

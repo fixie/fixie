@@ -6,18 +6,18 @@ namespace Fixie.Tests
 {
     public class ClassFixtureTests
     {
-        readonly DefaultConvention convention;
+        readonly DefaultConvention defaultConvention;
 
         public ClassFixtureTests()
         {
-            convention = new DefaultConvention();
+            defaultConvention = new DefaultConvention();
         }
 
         [Fact]
         public void ShouldBeNamedAfterTheGivenFixtureClass()
         {
             var fixtureClass = typeof(ExecutionSampleFixture);
-            var fixture = new ClassFixture(fixtureClass, convention);
+            var fixture = new ClassFixture(fixtureClass, defaultConvention);
 
             fixture.Name.ShouldEqual("Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture");
         }
@@ -27,7 +27,7 @@ namespace Fixie.Tests
         {
             var listener = new StubListener();
             var fixtureClass = typeof(ExecutionSampleFixture);
-            var fixture = new ClassFixture(fixtureClass, convention);
+            var fixture = new ClassFixture(fixtureClass, defaultConvention);
 
             var result = fixture.Execute(listener);
 
@@ -47,7 +47,7 @@ namespace Fixie.Tests
         {
             var listener = new StubListener();
             var fixtureClass = typeof(CannotInvokeConstructorSampleFixture);
-            var fixture = new ClassFixture(fixtureClass, convention);
+            var fixture = new ClassFixture(fixtureClass, defaultConvention);
 
             var result = fixture.Execute(listener);
 
@@ -65,7 +65,7 @@ namespace Fixie.Tests
         {
             var listener = new StubListener();
             var fixtureClass = typeof(ConstructorThrowsSampleFixture);
-            var fixture = new ClassFixture(fixtureClass, convention);
+            var fixture = new ClassFixture(fixtureClass, defaultConvention);
 
             var result = fixture.Execute(listener);
 

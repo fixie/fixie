@@ -39,7 +39,8 @@ namespace Fixie.TestDriven
         static TestRunState Run(ITestListener testListener, params Type[] candidateTypes)
         {
             var listener = new TestDrivenListener(testListener);
-            var suite = new Suite(candidateTypes);
+            var convention = new DefaultConvention();
+            var suite = new Suite(convention, candidateTypes);
             var result = suite.Execute(listener);
 
             return RunState(result);

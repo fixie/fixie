@@ -9,9 +9,10 @@ namespace Fixie.Tests
         public void ShouldExecuteAllCasesInAllFixtures()
         {
             var listener = new StubListener();
-            var convention = new Suite(typeof(ExecutionSampleTests));
+            var convention = new DefaultConvention();
+            var suite = new Suite(convention, typeof(ExecutionSampleTests));
 
-            var result = convention.Execute(listener);
+            var result = suite.Execute(listener);
 
             result.Total.ShouldEqual(2);
             result.Passed.ShouldEqual(2);

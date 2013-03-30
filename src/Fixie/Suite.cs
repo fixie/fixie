@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Fixie
 {
     public class Suite
     {
         readonly Type[] candidateTypes;
-        readonly DefaultConvention convention;
+        readonly Convention convention;
 
-        public Suite(Assembly assembly)
-            : this(assembly.GetTypes()) { }
-
-        public Suite(params Type[] candidateTypes)
+        public Suite(Convention convention, params Type[] candidateTypes)
         {
             this.candidateTypes = candidateTypes;
-            convention = new DefaultConvention();
+            this.convention = convention;
         }
 
         public Result Execute(Listener listener)

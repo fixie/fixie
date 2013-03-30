@@ -24,11 +24,11 @@ namespace Fixie.Tests
                 typeof(PrivateWithNoDefaultConstructorTests)
             };
 
-            var convention = new DefaultConvention();
+            var defaultConvention = new DefaultConvention();
 
-            convention.FixtureClasses(candidateTypes)
-                        .Select(x => x.Name)
-                        .ShouldEqual("PublicTests", "OtherPublicTests", "PrivateTests", "OtherPrivateTests");
+            defaultConvention.FixtureClasses(candidateTypes)
+                             .Select(x => x.Name)
+                             .ShouldEqual("PublicTests", "OtherPublicTests", "PrivateTests", "OtherPrivateTests");
         }
 
         public interface PublicInterfaceTests { }
@@ -48,12 +48,12 @@ namespace Fixie.Tests
         [Fact]
         public void ShouldTreatPublicInstanceNoArgVoidMethodsAsCases()
         {
-            var convention = new DefaultConvention();
+            var defaultConvention = new DefaultConvention();
             var fixtureClass = typeof(DiscoverySampleFixture);
 
-            convention.CaseMethods(fixtureClass)
-                        .Select(x => x.Name)
-                        .ShouldEqual("PublicInstanceNoArgsVoid");
+            defaultConvention.CaseMethods(fixtureClass)
+                             .Select(x => x.Name)
+                             .ShouldEqual("PublicInstanceNoArgsVoid");
         }
 
         class DiscoverySampleFixture

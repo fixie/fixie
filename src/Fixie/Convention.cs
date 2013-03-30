@@ -12,8 +12,8 @@ namespace Fixie
             Cases = new MethodFilter();
         }
 
-        protected ClassFilter Fixtures { get; private set; }
-        protected MethodFilter Cases { get; private set; }
+        public ClassFilter Fixtures { get; private set; }
+        public MethodFilter Cases { get; private set; }
 
         public IEnumerable<Type> FixtureClasses(Type[] candidates)
         {

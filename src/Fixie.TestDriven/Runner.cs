@@ -9,37 +9,38 @@ namespace Fixie.TestDriven
     {
         public TestRunState RunAssembly(ITestListener testListener, Assembly assembly)
         {
-            return Run(testListener, assembly.GetTypes());
+            var convention = new DefaultConvention();
+            return Run(testListener, convention, assembly.GetTypes());
         }
 
         public TestRunState RunNamespace(ITestListener testListener, Assembly assembly, string ns)
         {
-            return Run(testListener, assembly.GetTypes().Where(InNamespace(ns)).ToArray());
+            var convention = new DefaultConvention();
+            return Run(testListener, convention, assembly.GetTypes().Where(InNamespace(ns)).ToArray());
         }
 
         public TestRunState RunMember(ITestListener testListener, Assembly assembly, MemberInfo member)
         {
+            var convention = new DefaultConvention();
+
             var method = member as MethodInfo;
             if (method != null)
             {
-                //TODO: Rather than executing all cases in the method.ReflectedType,
-                //      need a way to limit the fixture to only consider the case(s)
-                //      for the specific method.  Modify the convention?
+                convention.Cases.Where(m => m == method);
 
-                return Run(testListener, method.ReflectedType);
+                return Run(testListener, convention, method.DeclaringType);
             }
 
             var type = member as Type;
             if (type != null)
-                return Run(testListener, type);
+                return Run(testListener, convention, type);
 
             return TestRunState.Error;
         }
 
-        static TestRunState Run(ITestListener testListener, params Type[] candidateTypes)
+        static TestRunState Run(ITestListener testListener, Convention convention, params Type[] candidateTypes)
         {
             var listener = new TestDrivenListener(testListener);
-            var convention = new DefaultConvention();
             var suite = new Suite(convention, candidateTypes);
             var result = suite.Execute(listener);
 

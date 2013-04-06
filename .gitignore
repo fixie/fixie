@@ -2,5 +2,6 @@
 bin
 obj
 build
+package
 src/packages
 *.DotSettings.user

@@ -8,6 +8,7 @@
 *.csproj text merge=union
 *.cs text diff=csharp
 *.tdnet text
+*.nuspec text
 
 *.Config text
 *.config text

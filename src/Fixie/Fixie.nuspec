@@ -1,0 +1,25 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/plioi/fixie/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/plioi/fixie</projectUrl>
+    <iconUrl>https://raw.github.com/plioi/fixie/master/img/fixie_256.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <references>
+      <reference file="Fixie.dll" />
+    </references>
+  </metadata>
+  <files>
+    <file src="..\..\build\Fixie.Console.exe" target="lib/net45"></file>
+    <file src="..\..\build\Fixie.Console.exe.config" target="lib/net45"></file>
+    <file src="..\..\build\Fixie.dll.tdnet" target="lib/net45"></file>
+    <file src="..\..\build\Fixie.TestDriven.dll" target="lib/net45"></file>
+    <file src="..\..\build\TestDriven.Framework.dll" target="lib/net45"></file>
+  </files>
+</package>

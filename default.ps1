@@ -1,7 +1,7 @@
 Framework '4.0'
 
 properties {
-    $project = 'Fixie'
+    $project = "Fixie"
     $birthYear = 2013
     $maintainers = "Patrick Lioi"
     $description = "A convention-based test framework."
@@ -14,13 +14,23 @@ properties {
 
 task default -depends xUnitTest
 
+task Package -depends xUnitTest {
+    rd .\package -recurse -force -ErrorAction SilentlyContinue | out-null
+    mkdir .\package -ErrorAction SilentlyContinue | out-null
+    exec { & $src\.nuget\NuGet.exe pack $src\$project\$project.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
+
+    write-host
+    write-host "To publish these packages, issue the following command:"
+    write-host "   nuget push .\package\$project.$version.nupkg"
+}
+
 task xUnitTest -depends SelfTest {
     $xunitRunner = join-path $src "packages\xunit.runners.1.9.1\tools\xunit.console.clr4.exe"
     exec { & $xunitRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll }
 }
 
 task SelfTest -depends Compile {
-    $fixieRunner = join-path $src "$project.Console\bin\$configuration\$project.Console.exe"
+    $fixieRunner = resolve-path ".\build\$project.Console.exe"
     & $fixieRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll
 
     if ($lastexitcode -gt 0)
@@ -34,6 +44,7 @@ task SelfTest -depends Compile {
 }
 
 task Compile -depends CommonAssemblyInfo {
+  rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
   exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration $src\$project.sln }
   exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration $src\$project.sln }
 }

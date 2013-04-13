@@ -12,8 +12,9 @@ namespace Fixie.Tests
             var convention = new DefaultConvention();
             var suite = new Suite(convention, typeof(ExecutionSampleTests));
 
-            var result = suite.Execute(listener);
+            suite.Execute(listener);
 
+            var result = listener.State.ToResult();
             result.Total.ShouldEqual(2);
             result.Passed.ShouldEqual(2);
             result.Failed.ShouldEqual(0);

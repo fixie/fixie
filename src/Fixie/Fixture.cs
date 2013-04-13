@@ -3,6 +3,6 @@
     public interface Fixture
     {
         string Name { get; }
-        Result Execute(Listener listener);
+        void Execute(Listener listener);
     }
 }

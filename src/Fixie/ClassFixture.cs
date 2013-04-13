@@ -31,14 +31,10 @@ namespace Fixie
             get { return fixtureClass.FullName; }
         }
 
-        public Result Execute(Listener listener)
+        public void Execute(Listener listener)
         {
-            var result = new Result();
-
             foreach (var @case in Cases)
-                result = Result.Combine(result, Execute(@case, listener));
-
-            return result;
+                Execute(@case, listener);
         }
 
         private IEnumerable<Case> Cases
@@ -46,7 +42,7 @@ namespace Fixie
             get { return convention.CaseMethods(fixtureClass).Select(method => new MethodCase(this, method)); }
         }
 
-        Result Execute(Case @case, Listener listener)
+        void Execute(Case @case, Listener listener)
         {
             Instance = null;
 
@@ -59,15 +55,15 @@ namespace Fixie
                 catch (TargetInvocationException ex)
                 {
                     listener.CaseFailed(@case, ex.InnerException);
-                    return Result.Fail;
+                    return;
                 }
                 catch (Exception ex)
                 {
                     listener.CaseFailed(@case, ex);
-                    return Result.Fail;
+                    return;
                 }
 
-                return @case.Execute(listener);
+                @case.Execute(listener);
             }
             finally
             {

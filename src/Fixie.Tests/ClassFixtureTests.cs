@@ -29,8 +29,9 @@ namespace Fixie.Tests
             var fixtureClass = typeof(ExecutionSampleFixture);
             var fixture = new ClassFixture(fixtureClass, defaultConvention);
 
-            var result = fixture.Execute(listener);
+            fixture.Execute(listener);
 
+            var result = listener.State.ToResult();
             result.Total.ShouldEqual(5);
             result.Passed.ShouldEqual(3);
             result.Failed.ShouldEqual(2);
@@ -49,8 +50,9 @@ namespace Fixie.Tests
             var fixtureClass = typeof(CannotInvokeConstructorSampleFixture);
             var fixture = new ClassFixture(fixtureClass, defaultConvention);
 
-            var result = fixture.Execute(listener);
+            fixture.Execute(listener);
 
+            var result = listener.State.ToResult();
             result.Total.ShouldEqual(2);
             result.Passed.ShouldEqual(0);
             result.Failed.ShouldEqual(2);
@@ -67,8 +69,9 @@ namespace Fixie.Tests
             var fixtureClass = typeof(ConstructorThrowsSampleFixture);
             var fixture = new ClassFixture(fixtureClass, defaultConvention);
 
-            var result = fixture.Execute(listener);
+            fixture.Execute(listener);
 
+            var result = listener.State.ToResult();
             result.Total.ShouldEqual(2);
             result.Passed.ShouldEqual(0);
             result.Failed.ShouldEqual(2);

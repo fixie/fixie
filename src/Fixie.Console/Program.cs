@@ -22,8 +22,6 @@ namespace Fixie.Console
                 var assemblyPath = args.Single();
                 var result = Execute(assemblyPath);
 
-                Console.WriteLine("{0} total, {1} failed", result.Total, result.Failed);
-
                 return result.Failed;
             }
             catch (Exception ex)
@@ -39,7 +37,7 @@ namespace Fixie.Console
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
                 var runner = environment.Create<Runner>(assemblyPath);
-                return runner.Execute();
+                return runner.RunAssembly();
             }
         }
     }

@@ -42,18 +42,10 @@ namespace Fixie.TestDriven
         {
             var listener = new TestDrivenListener(testListener);
             var suite = new Suite(convention, candidateTypes);
-            var result = suite.Execute(listener);
+            suite.Execute(listener);
 
-            return RunState(result);
-        }
+            var result = listener.State.ToResult();
 
-        static Func<Type, bool> InNamespace(string ns)
-        {
-            return type => type.Namespace != null && type.Namespace.StartsWith(ns);
-        }
-
-        static TestRunState RunState(Result result)
-        {
             if (result.Total == 0)
                 return TestRunState.NoTests;
 
@@ -61,6 +53,11 @@ namespace Fixie.TestDriven
                 return TestRunState.Failure;
 
             return TestRunState.Success;
+        }
+
+        static Func<Type, bool> InNamespace(string ns)
+        {
+            return type => type.Namespace != null && type.Namespace.StartsWith(ns);
         }
     }
 }

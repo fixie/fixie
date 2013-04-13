@@ -20,14 +20,15 @@ namespace Fixie
             this.listener = listener;
         }
 
-        public Result Execute()
+        public Result RunAssembly()
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
             var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
             var convention = new DefaultConvention();
             var suite = new Suite(convention, assembly.GetTypes());
-            var result = suite.Execute(listener);
-            return result;
+            suite.Execute(listener);
+            listener.AssemblyComplete();
+            return listener.State.ToResult();
         }
     }
 }

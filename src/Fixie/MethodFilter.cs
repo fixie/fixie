@@ -32,14 +32,12 @@ namespace Fixie
 
         public MethodFilter Void()
         {
-            Where(method => method.ReturnType == typeof(void));
-            return this;
+            return Where(method => method.ReturnType == typeof(void));
         }
 
         public MethodFilter ZeroParameters()
         {
-            Where(method => method.GetParameters().Length == 0);
-            return this;
+            return Where(method => method.GetParameters().Length == 0);
         }
 
         public IEnumerable<MethodInfo> Filter(Type type)

@@ -15,14 +15,10 @@ namespace Fixie
             this.convention = convention;
         }
 
-        public Result Execute(Listener listener)
+        public void Execute(Listener listener)
         {
-            var result = new Result();
-
             foreach (var fixture in Fixtures)
-                result = Result.Combine(result, fixture.Execute(listener));
-
-            return result;
+                fixture.Execute(listener);
         }
 
         private IEnumerable<Fixture> Fixtures

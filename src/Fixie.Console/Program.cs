@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 
 namespace Fixie.Console
 {
@@ -20,8 +19,10 @@ namespace Fixie.Console
                     return FatalError;
                 }
 
-                var assemblyFile = args.Single();
-                var result = Execute(assemblyFile);
+                var assemblyPath = args.Single();
+                var result = Execute(assemblyPath);
+
+                Console.WriteLine("{0} total, {1} failed", result.Total, result.Failed);
 
                 return result.Failed;
             }
@@ -33,20 +34,12 @@ namespace Fixie.Console
             }
         }
 
-        static Result Execute(string assemblyFile)
+        static Result Execute(string assemblyPath)
         {
-            var assembly = Assembly.LoadFrom(assemblyFile);
-            var listener = new ConsoleListener();
-            var convention = new DefaultConvention();
-            var suite = new Suite(convention, assembly.GetTypes());
-
-            using (WorkingDirectory.LocationOf(assembly))
+            using (var environment = new ExecutionEnvironment(assemblyPath))
             {
-                var result = suite.Execute(listener);
-
-                Console.WriteLine("{0} total, {1} failed", result.Total, result.Failed);
-
-                return result;
+                var runner = environment.Create<Runner>(assemblyPath);
+                return runner.Execute();
             }
         }
     }

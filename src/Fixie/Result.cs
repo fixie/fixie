@@ -1,5 +1,8 @@
-﻿namespace Fixie
+﻿using System;
+
+namespace Fixie
 {
+    [Serializable]
     public class Result
     {
         public static readonly Result Pass = new Result(passed: 1, failed: 0);

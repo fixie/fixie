@@ -49,6 +49,7 @@
     <Compile Include="MethodFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Result.cs" />
+    <Compile Include="Runner.cs" />
     <Compile Include="Suite.cs" />
     <Compile Include="ClassFilter.cs" />
   </ItemGroup>

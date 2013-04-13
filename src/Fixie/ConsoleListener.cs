@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq;
 
-namespace Fixie.Console
+namespace Fixie
 {
-    using Console = System.Console;
-
-    class ConsoleListener : Listener
+    public class ConsoleListener : Listener
     {
         public void CasePassed(Case @case)
         {

@@ -1,10 +1,8 @@
 ﻿using System;
 
-namespace Fixie.Console
+namespace Fixie
 {
-    using Console = System.Console;
-
-    class Foreground : IDisposable
+    public class Foreground : IDisposable
     {
         readonly ConsoleColor before;
 

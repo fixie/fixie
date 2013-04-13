@@ -38,9 +38,11 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Case.cs" />
+    <Compile Include="ConsoleListener.cs" />
     <Compile Include="Convention.cs" />
     <Compile Include="DefaultConvention.cs" />
     <Compile Include="Fixture.cs" />
+    <Compile Include="Foreground.cs" />
     <Compile Include="MethodCase.cs" />
     <Compile Include="ClassFixture.cs" />
     <Compile Include="Listener.cs" />

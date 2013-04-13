@@ -36,12 +36,12 @@ namespace Fixie
             return candidates.Where(IsMatch);
         }
 
-        private bool IsMatch(Type candidate)
+        bool IsMatch(Type candidate)
         {
             return conditions.All(condition => condition(candidate));
         }
 
-        private void ConcreteClasses()
+        void ConcreteClasses()
         {
             Where(type => type.IsClass && !type.IsAbstract);
         }

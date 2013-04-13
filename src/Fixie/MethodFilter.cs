@@ -45,12 +45,12 @@ namespace Fixie
             return type.GetMethods(bindingFlags).Where(IsMatch).ToArray();
         }
 
-        private bool IsMatch(MethodInfo candidate)
+        bool IsMatch(MethodInfo candidate)
         {
             return conditions.All(condition => condition(candidate));
         }
 
-        private void ExcludeMethodsDefinedOnObject()
+        void ExcludeMethodsDefinedOnObject()
         {
             Where(method => method.DeclaringType != typeof(object));
         }

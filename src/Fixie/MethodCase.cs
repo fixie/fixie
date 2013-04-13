@@ -5,8 +5,8 @@ namespace Fixie
 {
     public class MethodCase : Case
     {
-        private readonly ClassFixture fixture;
-        private readonly MethodInfo method;
+        readonly ClassFixture fixture;
+        readonly MethodInfo method;
 
         public MethodCase(ClassFixture fixture, MethodInfo method)
         {

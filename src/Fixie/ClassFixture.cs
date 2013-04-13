@@ -37,7 +37,7 @@ namespace Fixie
                 Execute(@case, listener);
         }
 
-        private IEnumerable<Case> Cases
+        IEnumerable<Case> Cases
         {
             get { return convention.CaseMethods(fixtureClass).Select(method => new MethodCase(this, method)); }
         }

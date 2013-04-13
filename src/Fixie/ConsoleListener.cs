@@ -38,7 +38,10 @@ namespace Fixie
             Console.WriteLine("{0} total, {1} failed", result.Total, result.Failed);
         }
 
-        public RunState State { get { return runState; } }
+        public RunState State
+        {
+            get { return runState; }
+        }
 
         static string Indent(string text)
         {
@@ -47,7 +50,7 @@ namespace Fixie
             return String.Join(Environment.NewLine, lines.Select(x => "   " + x));
         }
 
-        private static string NormalizeLineEndings(string input)
+        static string NormalizeLineEndings(string input)
         {
             return input.Replace("\r\n", "\n").Replace('\r', '\n');
         }

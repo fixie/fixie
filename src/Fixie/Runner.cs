@@ -27,14 +27,14 @@ namespace Fixie
             return Run(convention, assembly.GetTypes().Where(InNamespace(ns)).ToArray());
         }
 
-        public Result RunType(Assembly assembly, Type type)
+        public Result RunType(Type type)
         {
             var convention = new DefaultConvention();
 
             return Run(convention, type);
         }
 
-        public Result RunMethod(Assembly assembly, MethodInfo method)
+        public Result RunMethod(MethodInfo method)
         {
             var convention = new DefaultConvention();
 

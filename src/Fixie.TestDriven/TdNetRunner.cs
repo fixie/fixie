@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using TestDriven.Framework;
 
@@ -21,11 +20,11 @@ namespace Fixie.TestDriven
         {
             var method = member as MethodInfo;
             if (method != null)
-                return Run(testListener, runner => runner.RunMethod(assembly, method));
+                return Run(testListener, runner => runner.RunMethod(method));
 
             var type = member as Type;
             if (type != null)
-                return Run(testListener, runner => runner.RunType(assembly, type));
+                return Run(testListener, runner => runner.RunType(type));
 
             return TestRunState.Error;
         }

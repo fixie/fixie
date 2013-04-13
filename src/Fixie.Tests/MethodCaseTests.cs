@@ -51,11 +51,6 @@ namespace Fixie.Tests
 
             passingCase.Execute(listener);
 
-            var result = listener.State.ToResult();
-            result.Total.ShouldEqual(1);
-            result.Passed.ShouldEqual(1);
-            result.Failed.ShouldEqual(0);
-
             listener.Entries.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Pass passed.");
         }
 
@@ -66,11 +61,6 @@ namespace Fixie.Tests
 
             cannotInvokeCase.Execute(listener);
 
-            var result = listener.State.ToResult();
-            result.Total.ShouldEqual(1);
-            result.Passed.ShouldEqual(0);
-            result.Failed.ShouldEqual(1);
-
             listener.Entries.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.CannotInvoke failed: Parameter count mismatch.");
         }
 
@@ -80,11 +70,6 @@ namespace Fixie.Tests
             var failingCase = new MethodCase(fixture, failingMethod);
 
             failingCase.Execute(listener);
-
-            var result = listener.State.ToResult();
-            result.Total.ShouldEqual(1);
-            result.Passed.ShouldEqual(0);
-            result.Failed.ShouldEqual(1);
 
             listener.Entries.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Fail failed: Exception of type " +
                                          "'Fixie.Tests.MethodCaseTests+MethodInvokedException' was thrown.");

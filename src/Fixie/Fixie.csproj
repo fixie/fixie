@@ -51,7 +51,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="Runner.cs" />
-    <Compile Include="RunState.cs" />
     <Compile Include="Suite.cs" />
     <Compile Include="ClassFilter.cs" />
   </ItemGroup>

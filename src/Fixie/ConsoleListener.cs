@@ -5,17 +5,12 @@ namespace Fixie
 {
     public class ConsoleListener : Listener
     {
-        readonly RunState runState = new RunState();
-
         public void CasePassed(Case @case)
         {
-            runState.CasePassed();
         }
 
         public void CaseFailed(Case @case, Exception ex)
         {
-            runState.CaseFailed();
-
             using (Foreground.Red)
                 Console.WriteLine("{0}", @case.Name);
 
@@ -32,15 +27,9 @@ namespace Fixie
             Console.WriteLine();
         }
 
-        public void RunComplete()
+        public void RunComplete(Result result)
         {
-            var result = runState.ToResult();
             Console.WriteLine("{0} total, {1} failed", result.Total, result.Failed);
-        }
-
-        public RunState State
-        {
-            get { return runState; }
         }
 
         static string Indent(string text)

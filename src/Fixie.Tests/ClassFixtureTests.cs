@@ -31,11 +31,6 @@ namespace Fixie.Tests
 
             fixture.Execute(listener);
 
-            var result = listener.State.ToResult();
-            result.Total.ShouldEqual(5);
-            result.Passed.ShouldEqual(3);
-            result.Failed.ShouldEqual(2);
-
             listener.Entries.ShouldEqual("Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseA failed: Failing Case A",
                                          "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.PassingCaseA passed.",
                                          "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseB failed: Failing Case B",
@@ -52,11 +47,6 @@ namespace Fixie.Tests
 
             fixture.Execute(listener);
 
-            var result = listener.State.ToResult();
-            result.Total.ShouldEqual(2);
-            result.Passed.ShouldEqual(0);
-            result.Failed.ShouldEqual(2);
-
             listener.Entries.ShouldEqual(
                 "Fixie.Tests.ClassFixtureTests+CannotInvokeConstructorSampleFixture.UnreachableCaseA failed: No parameterless constructor defined for this object.",
                 "Fixie.Tests.ClassFixtureTests+CannotInvokeConstructorSampleFixture.UnreachableCaseB failed: No parameterless constructor defined for this object.");
@@ -70,11 +60,6 @@ namespace Fixie.Tests
             var fixture = new ClassFixture(fixtureClass, defaultConvention);
 
             fixture.Execute(listener);
-
-            var result = listener.State.ToResult();
-            result.Total.ShouldEqual(2);
-            result.Passed.ShouldEqual(0);
-            result.Failed.ShouldEqual(2);
 
             listener.Entries.ShouldEqual(
                 "Fixie.Tests.ClassFixtureTests+ConstructorThrowsSampleFixture.UnreachableCaseA failed: Exception From Constructor",

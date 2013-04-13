@@ -6,7 +6,6 @@ namespace Fixie.TestDriven
     public class TestDrivenListener : Listener
     {
         readonly ITestListener tdnet;
-        readonly RunState runState = new RunState();
 
         public TestDrivenListener(ITestListener tdnet)
         {
@@ -15,7 +14,6 @@ namespace Fixie.TestDriven
 
         public void CasePassed(Case @case)
         {
-            runState.CasePassed();
             tdnet.TestFinished(new TestResult
             {
                 Name = @case.Name,
@@ -25,7 +23,6 @@ namespace Fixie.TestDriven
 
         public void CaseFailed(Case @case, Exception ex)
         {
-            runState.CaseFailed();
             tdnet.TestFinished(new TestResult
             {
                 Name = @case.Name,
@@ -35,10 +32,8 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void RunComplete()
+        public void RunComplete(Result result)
         {
         }
-
-        public RunState State { get { return runState; } }
     }
 }

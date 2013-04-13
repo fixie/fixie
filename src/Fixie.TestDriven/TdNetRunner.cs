@@ -24,7 +24,7 @@ namespace Fixie.TestDriven
 
             var type = member as Type;
             if (type != null)
-                return Run(testListener, runner => runner.RunType(type));
+                return Run(testListener, runner => runner.RunTypes(type));
 
             return TestRunState.Error;
         }

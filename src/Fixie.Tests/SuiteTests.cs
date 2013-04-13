@@ -1,5 +1,4 @@
-﻿using Should;
-using Xunit;
+﻿using Xunit;
 
 namespace Fixie.Tests
 {
@@ -13,11 +12,6 @@ namespace Fixie.Tests
             var suite = new Suite(convention, typeof(ExecutionSampleTests));
 
             suite.Execute(listener);
-
-            var result = listener.State.ToResult();
-            result.Total.ShouldEqual(2);
-            result.Passed.ShouldEqual(2);
-            result.Failed.ShouldEqual(0);
 
             listener.Entries.ShouldEqual("Fixie.Tests.SuiteTests+ExecutionSampleTests.PassA passed.",
                                          "Fixie.Tests.SuiteTests+ExecutionSampleTests.PassB passed.");

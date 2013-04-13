@@ -35,7 +35,7 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void AssemblyComplete()
+        public void RunComplete()
         {
         }
 

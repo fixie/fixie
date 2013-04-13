@@ -1,34 +1,62 @@
 ﻿using System;
-using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Fixie
 {
-    public class Runner : MarshalByRefObject
+    public class Runner
     {
-        readonly string assemblyPath;
         readonly Listener listener;
 
-        public Runner(string assemblyPath)
-            : this(assemblyPath, new ConsoleListener())
+        public Runner(Listener listener)
         {
-        }
-
-        public Runner(string assemblyPath, Listener listener)
-        {
-            this.assemblyPath = assemblyPath;
             this.listener = listener;
         }
 
-        public Result RunAssembly()
+        public Result RunAssembly(Assembly assembly)
         {
-            var assemblyFullPath = Path.GetFullPath(assemblyPath);
-            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
             var convention = new DefaultConvention();
-            var suite = new Suite(convention, assembly.GetTypes());
+
+            return Run(convention, assembly.GetTypes());
+        }
+
+        public Result RunNamespace(Assembly assembly, string ns)
+        {
+            var convention = new DefaultConvention();
+
+            return Run(convention, assembly.GetTypes().Where(InNamespace(ns)).ToArray());
+        }
+
+        public Result RunType(Assembly assembly, Type type)
+        {
+            var convention = new DefaultConvention();
+
+            return Run(convention, type);
+        }
+
+        public Result RunMethod(Assembly assembly, MethodInfo method)
+        {
+            var convention = new DefaultConvention();
+
+            convention.Cases.Where(m => m == method);
+
+            return Run(convention, method.DeclaringType);
+        }
+
+        Result Run(Convention convention, params Type[] candidateTypes)
+        {
+            var suite = new Suite(convention, candidateTypes);
+
             suite.Execute(listener);
-            listener.AssemblyComplete();
+
+            listener.RunComplete();
+
             return listener.State.ToResult();
+        }
+
+        static Func<Type, bool> InNamespace(string ns)
+        {
+            return type => type.Namespace != null && type.Namespace.StartsWith(ns);
         }
     }
 }

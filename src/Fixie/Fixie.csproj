@@ -39,6 +39,7 @@
     </Compile>
     <Compile Include="Case.cs" />
     <Compile Include="ConsoleListener.cs" />
+    <Compile Include="ConsoleRunner.cs" />
     <Compile Include="Convention.cs" />
     <Compile Include="DefaultConvention.cs" />
     <Compile Include="Fixture.cs" />

@@ -36,8 +36,8 @@ namespace Fixie.Console
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
-                var runner = environment.Create<Runner>(assemblyPath);
-                return runner.RunAssembly();
+                var runner = environment.Create<ConsoleRunner>();
+                return runner.RunAssembly(assemblyPath);
             }
         }
     }

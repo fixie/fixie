@@ -32,7 +32,7 @@ namespace Fixie
             Console.WriteLine();
         }
 
-        public void AssemblyComplete()
+        public void RunComplete()
         {
             var result = runState.ToResult();
             Console.WriteLine("{0} total, {1} failed", result.Total, result.Failed);

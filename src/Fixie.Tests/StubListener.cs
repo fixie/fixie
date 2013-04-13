@@ -20,7 +20,7 @@ namespace Fixie.Tests
             log.Add(string.Format("{0} failed: {1}", @case.Name, ex.Message));
         }
 
-        public void AssemblyComplete()
+        public void RunComplete()
         {
         }
 

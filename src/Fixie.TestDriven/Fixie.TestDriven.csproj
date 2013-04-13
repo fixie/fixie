@@ -41,7 +41,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Runner.cs" />
+    <Compile Include="TdNetRunner.cs" />
     <Compile Include="TestDrivenListener.cs" />
   </ItemGroup>
   <ItemGroup>

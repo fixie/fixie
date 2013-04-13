@@ -6,7 +6,7 @@ namespace Fixie
     {
         void CasePassed(Case @case);
         void CaseFailed(Case @case, Exception ex);
-        void AssemblyComplete();
+        void RunComplete();
         RunState State { get; }
     }
 }

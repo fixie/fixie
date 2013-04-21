@@ -20,7 +20,7 @@ First, [install NuGet](http://docs.nuget.org/docs/start-here/installing-nuget). 
 
 ## Default Convention
 
-When using the default convention, a test fixture is any concrete class that has a default constructor and a name ending in "Tests".  Within such a fixture class, a test case is any public instance void method with zero arguments.  If you want to perform setup steps before each test case executes, you can place that in the fixture's default constructor.  One instance of your fixture class is constructed for *each* test case.
+When using the default convention, a test fixture is any concrete class that has a default constructor and a name ending in "Tests".  Within such a fixture class, a test case is any public instance void method with zero arguments.  Additionally, test cases include public instance async methods returning `Task` or `Task<T>`.  If you want to perform setup steps before each test case executes, you can place that in the fixture's default constructor.  One instance of your fixture class is constructed for *each* test case.
 
 No [Attributes], no "using Fixie;" statement, no muss, no fuss.
 
@@ -45,7 +45,7 @@ using Should;
 
 public class CalculatorTests
 {
-    Calculator calculator;
+    readonly Calculator calculator;
 
     public CalculatorTests()
     {
@@ -60,6 +60,18 @@ public class CalculatorTests
     public void ShouldSubtract()
     {
         calculator.Subtract(5, 3).ShouldEqual(2);
+    }
+
+    public async Task SupportsAsyncTestCases()
+    {
+        int result = await AddAsync(2, 3);
+
+        result.ShouldEqual(5);
+    }
+
+    private Task<int> AddAsync(int x, int y)
+    {
+        return Task.Run(() => calculator.Add(x, y));
     }
 }
 ```

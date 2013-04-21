@@ -49,6 +49,7 @@
     <Compile Include="Listener.cs" />
     <Compile Include="MethodFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="Suite.cs" />

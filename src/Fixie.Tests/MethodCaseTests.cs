@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using Should;
 using Xunit;
 
@@ -7,83 +9,87 @@ namespace Fixie.Tests
 {
     public class MethodCaseTests
     {
-        readonly StubListener listener;
-        readonly Type fixtureClass;
-        readonly ClassFixture fixture;
-        readonly MethodInfo passingMethod;
-        readonly MethodInfo failingMethod;
-        readonly MethodInfo cannotInvokeMethod;
-
-        public MethodCaseTests()
+        [Fact]
+        public void ShouldPassUponSuccessfulExecution()
         {
-            listener = new StubListener();
-            fixtureClass = typeof(SampleFixture);
-            fixture = new ClassFixture(fixtureClass, null, new SampleFixture());
-            passingMethod = fixtureClass.GetMethod("Pass", BindingFlags.Public | BindingFlags.Instance);
-            failingMethod = fixtureClass.GetMethod("Fail", BindingFlags.Public | BindingFlags.Instance);
-            cannotInvokeMethod = fixtureClass.GetMethod("CannotInvoke", BindingFlags.Public | BindingFlags.Instance);
+            ExecutionLog<SampleFixture>("Pass")
+                .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Pass passed.");
         }
 
         [Fact]
-        public void ShouldBeNamedAfterTheGivenMethod()
+        public void ShouldFailWhenCaseMethodCannotBeInvoked()
         {
-            var passingCase = new MethodCase(fixture, passingMethod);
-            var failingCase = new MethodCase(fixture, failingMethod);
-
-            passingCase.Name.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Pass");
-            failingCase.Name.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Fail");
+            ExecutionLog<SampleFixture>("CannotInvoke")
+                .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.CannotInvoke failed: Parameter count mismatch.");
         }
 
         [Fact]
-        public void ShouldInvokeTheGivenMethodWhenExecuted()
+        public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
         {
-            var passingCase = new MethodCase(fixture, passingMethod);
-
-            SampleFixture.MethodInvoked = false;
-            passingCase.Execute(listener);
-            SampleFixture.MethodInvoked.ShouldBeTrue();
+            ExecutionLog<SampleFixture>("Fail")
+                .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Fail failed: Exception of type " +
+                             "'Fixie.Tests.MethodCaseTests+MethodInvokedException' was thrown.");
         }
 
         [Fact]
-        public void ShouldReportPassingResultUponSuccessfulExecution()
+        public void ShouldPassUponSuccessfulAsyncExecution()
         {
-            var passingCase = new MethodCase(fixture, passingMethod);
-
-            passingCase.Execute(listener);
-
-            listener.Entries.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Pass passed.");
+            ExecutionLog<SampleFixture>("AwaitThenPass")
+                .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.AwaitThenPass passed.");
         }
 
         [Fact]
-        public void ShouldReportFailingResultWhenCaseMethodCannotBeInvoked()
+        public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
-            var cannotInvokeCase = new MethodCase(fixture, cannotInvokeMethod);
-
-            cannotInvokeCase.Execute(listener);
-
-            listener.Entries.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.CannotInvoke failed: Parameter count mismatch.");
+            ExecutionLog<SampleFixture>("AwaitThenFail")
+                .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.AwaitThenFail failed: Assert.Equal() Failure" + Environment.NewLine +
+                             "Expected: 0" + Environment.NewLine +
+                             "Actual:   3");
         }
 
         [Fact]
-        public void ShouldReportFailingResultWithOriginalExceptionWhenCaseMethodThrowsException()
+        public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
         {
-            var failingCase = new MethodCase(fixture, failingMethod);
-
-            failingCase.Execute(listener);
-
-            listener.Entries.ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Fail failed: Exception of type " +
-                                         "'Fixie.Tests.MethodCaseTests+MethodInvokedException' was thrown.");
+            ExecutionLog<SampleFixture>("AwaitOnTaskThatThrows")
+                .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.AwaitOnTaskThatThrows failed: Attempted to divide by zero.");
         }
 
-        class MethodInvokedException : Exception { }
+        [Fact]
+        public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
+        {
+            ExecutionLog<SampleFixture>("FailBeforeAwait")
+                .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.FailBeforeAwait failed: Exception of type " +
+                             "'Fixie.Tests.MethodCaseTests+MethodInvokedException' was thrown.");
+        }
+
+        [Fact]
+        public void ShouldFailUnsupportedAsyncVoidMethodCases()
+        {
+            ExecutionLog<SampleFixture>("UnsupportedAsyncVoid")
+                .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.UnsupportedAsyncVoid failed: Async void tests are not " +
+                             "supported.  Declare async test methods with a return type of Task to ensure the task actually " +
+                             "runs to completion.");
+        }
+
+        static IEnumerable<string> ExecutionLog<T>(string methodName) where T : new()
+        {
+            var listener = new StubListener();
+            var fixtureClass = typeof(T);
+            var fixture = new ClassFixture(fixtureClass, null, new T());
+
+            var method = fixtureClass.GetMethod(methodName, BindingFlags.Public | BindingFlags.Instance);
+
+            var @case = new MethodCase(fixture, method);
+
+            @case.Execute(listener);
+
+            return listener.Entries;
+        }
 
         class SampleFixture
         {
-            public static bool MethodInvoked;
-
             public void Pass()
             {
-                MethodInvoked = true;
             }
 
             public void Fail()
@@ -94,6 +100,54 @@ namespace Fixie.Tests
             public void CannotInvoke(int argument)
             {
             }
+
+            public async Task AwaitThenPass()
+            {
+                var result = await Divide(15, 5);
+
+                result.ShouldEqual(3);
+            }
+
+            public async Task AwaitThenFail()
+            {
+                var result = await Divide(15, 5);
+
+                result.ShouldEqual(0);
+            }
+
+            public async Task AwaitOnTaskThatThrows()
+            {
+                await Divide(15, 0);
+
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async Task FailBeforeAwait()
+            {
+                throw new MethodInvokedException();
+
+                await Divide(15, 5);
+            }
+
+            public async void UnsupportedAsyncVoid()
+            {
+                await Divide(15, 5);
+
+                throw new ShouldBeUnreachableException();
+            }
+
+            static Task<int> Divide(int numerator, int denominator)
+            {
+                return Task.Run(() => numerator / denominator);
+            }
+        }
+
+        class MethodInvokedException : Exception { }
+
+        class ShouldBeUnreachableException : Exception
+        {
+            public ShouldBeUnreachableException()
+                : base("This exception should not have been reachable.") { }
         }
     }
 }

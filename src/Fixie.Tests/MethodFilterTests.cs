@@ -52,30 +52,6 @@ namespace Fixie.Tests
         }
 
         [Fact]
-        public void CanFilterToVoidMethods()
-        {
-            var methods =
-                new MethodFilter()
-                    .Visibility(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                    .Void()
-                    .Filter(typeof(Sample));
-
-            methods
-                .OrderBy(method => method.Name)
-                .Select(method => method.Name)
-                .ShouldEqual(
-                    "PrivateInstanceNoArgsVoid",
-                    "PrivateInstanceWithArgsVoid",
-                    "PrivateStaticNoArgsVoid",
-                    "PrivateStaticWithArgsVoid",
-                    "PublicInstanceNoArgsVoid",
-                    "PublicInstanceWithArgsVoid",
-                    "PublicStaticNoArgsVoid",
-                    "PublicStaticWithArgsVoid"
-                );
-        }
-
-        [Fact]
         public void CanFilterToMethodsWithZeroParameters()
         {
             var methods =

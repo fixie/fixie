@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Fixie.Tests
@@ -46,7 +47,7 @@ namespace Fixie.Tests
         class PrivateWithNoDefaultConstructorTests { public PrivateWithNoDefaultConstructorTests(int x) { } }
 
         [Fact]
-        public void ShouldTreatPublicInstanceNoArgVoidMethodsAsCases()
+        public void ShouldTreatSynchronousPublicInstanceNoArgVoidMethodsAsCases()
         {
             var defaultConvention = new DefaultConvention();
             var fixtureClass = typeof(DiscoverySampleFixture);
@@ -54,6 +55,17 @@ namespace Fixie.Tests
             defaultConvention.CaseMethods(fixtureClass)
                              .Select(x => x.Name)
                              .ShouldEqual("PublicInstanceNoArgsVoid");
+        }
+
+        [Fact]
+        public void ShouldTreatAsyncPublicInstanceNoArgMethodsAsCases()
+        {
+            var defaultConvention = new DefaultConvention();
+            var fixtureClass = typeof(AsyncDiscoverySampleFixture);
+
+            defaultConvention.CaseMethods(fixtureClass)
+                             .Select(x => x.Name)
+                             .ShouldEqual("PublicInstanceNoArgsWithReturn", "PublicInstanceNoArgsVoid");
         }
 
         class DiscoverySampleFixture
@@ -77,6 +89,34 @@ namespace Fixie.Tests
             private int PrivateInstanceNoArgsWithReturn() { return 0; }
             private void PrivateInstanceWithArgsVoid(int x) { }
             private void PrivateInstanceNoArgsVoid() { }
+        }
+
+        class AsyncDiscoverySampleFixture
+        {
+            public async static Task<int> PublicStaticWithArgsWithReturn(int x) { return await Zero(); }
+            public async static Task<int> PublicStaticNoArgsWithReturn() { return await Zero(); }
+            public async static void PublicStaticWithArgsVoid(int x) { await Zero(); }
+            public async static void PublicStaticNoArgsVoid() { await Zero(); }
+
+            public async Task<int> PublicInstanceWithArgsWithReturn(int x) { return await Zero(); }
+            public async Task<int> PublicInstanceNoArgsWithReturn() { return await Zero(); }
+            public async void PublicInstanceWithArgsVoid(int x) { await Zero(); }
+            public async void PublicInstanceNoArgsVoid() { await Zero(); }
+
+            private async static Task<int> PrivateStaticWithArgsWithReturn(int x) { return await Zero(); }
+            private async static Task<int> PrivateStaticNoArgsWithReturn() { return await Zero(); }
+            private async static void PrivateStaticWithArgsVoid(int x) { await Zero(); }
+            private async static void PrivateStaticNoArgsVoid() { await Zero(); }
+
+            private async Task<int> PrivateInstanceWithArgsWithReturn(int x) { return await Zero(); }
+            private async Task<int> PrivateInstanceNoArgsWithReturn() { return await Zero(); }
+            private async void PrivateInstanceWithArgsVoid(int x) { await Zero(); }
+            private async void PrivateInstanceNoArgsVoid() { await Zero(); }
+
+            static Task<int> Zero()
+            {
+                return Task.Run(() => 0);
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Fixie
 
             Cases
                 .Visibility(BindingFlags.Public | BindingFlags.Instance)
-                .Void()
+                .Where(method => method.Void() || method.Async())
                 .ZeroParameters();
         }
     }

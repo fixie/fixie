@@ -124,7 +124,7 @@ namespace Fixie.Tests
 
             public async Task FailBeforeAwait()
             {
-                throw new MethodInvokedException();
+                ThrowException();
 
                 await Divide(15, 5);
             }
@@ -134,6 +134,11 @@ namespace Fixie.Tests
                 await Divide(15, 5);
 
                 throw new ShouldBeUnreachableException();
+            }
+
+            static void ThrowException()
+            {
+                throw new MethodInvokedException();
             }
 
             static Task<int> Divide(int numerator, int denominator)

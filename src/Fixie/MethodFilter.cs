@@ -30,11 +30,6 @@ namespace Fixie
             return this;
         }
 
-        public MethodFilter Void()
-        {
-            return Where(method => method.ReturnType == typeof(void));
-        }
-
         public MethodFilter ZeroParameters()
         {
             return Where(method => method.GetParameters().Length == 0);

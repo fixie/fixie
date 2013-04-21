@@ -29,7 +29,7 @@ namespace Fixie
         {
             try
             {
-                if (isDeclaredAsync && method.ReturnType == typeof(void))
+                if (isDeclaredAsync && method.Void())
                     ThrowForUnsupportedAsyncVoid();
 
                 object result;

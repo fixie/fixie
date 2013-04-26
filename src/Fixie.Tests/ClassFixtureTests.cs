@@ -31,11 +31,12 @@ namespace Fixie.Tests
 
             fixture.Execute(listener);
 
-            listener.Entries.ShouldEqual("Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseA failed: Failing Case A",
-                                         "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.PassingCaseA passed.",
-                                         "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseB failed: Failing Case B",
-                                         "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.PassingCaseB passed.",
-                                         "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.PassingCaseC passed.");
+            listener.ShouldHaveEntries(
+                "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseA failed: Failing Case A",
+                "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.PassingCaseA passed.",
+                "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.FailingCaseB failed: Failing Case B",
+                "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.PassingCaseB passed.",
+                "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.PassingCaseC passed.");
         }
 
         [Fact]
@@ -47,7 +48,7 @@ namespace Fixie.Tests
 
             fixture.Execute(listener);
 
-            listener.Entries.ShouldEqual(
+            listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtureTests+CannotInvokeConstructorSampleFixture.UnreachableCaseA failed: No parameterless constructor defined for this object.",
                 "Fixie.Tests.ClassFixtureTests+CannotInvokeConstructorSampleFixture.UnreachableCaseB failed: No parameterless constructor defined for this object.");
         }
@@ -61,7 +62,7 @@ namespace Fixie.Tests
 
             fixture.Execute(listener);
 
-            listener.Entries.ShouldEqual(
+            listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtureTests+ConstructorThrowsSampleFixture.UnreachableCaseA failed: Exception From Constructor",
                 "Fixie.Tests.ClassFixtureTests+ConstructorThrowsSampleFixture.UnreachableCaseB failed: Exception From Constructor");
         }

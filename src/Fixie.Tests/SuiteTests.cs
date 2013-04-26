@@ -13,8 +13,8 @@ namespace Fixie.Tests
 
             suite.Execute(listener);
 
-            listener.Entries.ShouldEqual("Fixie.Tests.SuiteTests+ExecutionSampleTests.PassA passed.",
-                                         "Fixie.Tests.SuiteTests+ExecutionSampleTests.PassB passed.");
+            listener.ShouldHaveEntries("Fixie.Tests.SuiteTests+ExecutionSampleTests.PassA passed.",
+                                       "Fixie.Tests.SuiteTests+ExecutionSampleTests.PassB passed.");
         }
 
         public class ExecutionSampleTests

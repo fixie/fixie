@@ -64,8 +64,9 @@ namespace Fixie.Tests
             var fixtureClass = typeof(AsyncDiscoverySampleFixture);
 
             defaultConvention.CaseMethods(fixtureClass)
+                             .OrderBy(x => x.Name)
                              .Select(x => x.Name)
-                             .ShouldEqual("PublicInstanceNoArgsWithReturn", "PublicInstanceNoArgsVoid");
+                             .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn");
         }
 
         class DiscoverySampleFixture

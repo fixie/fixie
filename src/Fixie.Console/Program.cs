@@ -9,6 +9,7 @@ namespace Fixie.Console
     {
         const int FatalError = -1;
 
+        [STAThread]
         static int Main(string[] args)
         {
             try

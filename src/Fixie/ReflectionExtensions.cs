@@ -21,5 +21,18 @@ namespace Fixie
         {
             return method.Has<AsyncStateMachineAttribute>();
         }
+
+        public static bool IsInNamespace(this Type type, string ns)
+        {
+            var actual = type.Namespace;
+
+            if (ns == null)
+                return actual == null;
+
+            if (actual == null)
+                return false;
+
+            return actual == ns || actual.StartsWith(ns + ".");
+        }
     }
 }

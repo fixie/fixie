@@ -30,6 +30,22 @@ namespace Fixie.Tests
             Method("Async").Async().ShouldBeTrue();
         }
 
+        [Fact]
+        public void CanDetectWhetherTypeIsWithinNamespace()
+        {
+            var opCode = typeof(System.Reflection.Emit.OpCode);
+
+            opCode.IsInNamespace(null).ShouldBeFalse();
+            opCode.IsInNamespace("System").ShouldBeTrue();
+            opCode.IsInNamespace("Sys").ShouldBeFalse();
+            opCode.IsInNamespace("System.").ShouldBeFalse();
+
+            opCode.IsInNamespace("System.Reflection").ShouldBeTrue();
+            opCode.IsInNamespace("System.Reflection.Emit").ShouldBeTrue();
+            opCode.IsInNamespace("System.Reflection.Emit.OpCode").ShouldBeFalse();
+            opCode.IsInNamespace("System.Reflection.Typo").ShouldBeFalse();
+        }
+
         void ReturnsVoid() { }
         int ReturnsInt() { return 0; }
         async Task Async() { await Task.Run(() => { }); }

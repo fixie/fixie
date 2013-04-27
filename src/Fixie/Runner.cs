@@ -20,7 +20,7 @@ namespace Fixie
 
         public Result RunNamespace(Assembly assembly, string ns)
         {
-            return RunTypes(assembly.GetTypes().Where(InNamespace(ns)).ToArray());
+            return RunTypes(assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
         public Result RunTypes(params Type[] types)
@@ -51,11 +51,6 @@ namespace Fixie
             resultListener.RunComplete(result);
 
             return result;
-        }
-
-        static Func<Type, bool> InNamespace(string ns)
-        {
-            return type => type.Namespace != null && type.Namespace.StartsWith(ns);
         }
 
         class ResultListener : Listener

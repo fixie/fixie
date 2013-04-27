@@ -1,10 +1,7 @@
-﻿using Xunit;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
     public class SuiteTests
     {
-        [Fact]
         public void ShouldExecuteAllCasesInAllFixtures()
         {
             var listener = new StubListener();
@@ -19,10 +16,7 @@ namespace Fixie.Tests
 
         public class ExecutionSampleTests
         {
-            [Fact]
             public void PassA() { }
-
-            [Fact]
             public void PassB() { }
         }
     }

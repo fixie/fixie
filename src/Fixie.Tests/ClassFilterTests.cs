@@ -1,5 +1,4 @@
 ﻿using System;
-using Xunit;
 
 namespace Fixie.Tests
 {
@@ -21,7 +20,6 @@ namespace Fixie.Tests
             };
         }
 
-        [Fact]
         public void ShouldFilterToConcreteClassesByDefault()
         {
             new ClassFilter()
@@ -29,7 +27,6 @@ namespace Fixie.Tests
                 .ShouldEqual(typeof(DefaultConstructor), typeof(NoDefaultConstructor), typeof(String));
         }
 
-        [Fact]
         public void ShouldFilterByAllSpecifiedConditions()
         {
             new ClassFilter()
@@ -39,7 +36,6 @@ namespace Fixie.Tests
                 .ShouldEqual(typeof(NoDefaultConstructor));
         }
 
-        [Fact]
         public void CanFilterToClassesWithDefaultConstructors()
         {
             new ClassFilter()
@@ -48,7 +44,6 @@ namespace Fixie.Tests
                 .ShouldEqual(typeof(DefaultConstructor));
         }
 
-        [Fact]
         public void CanFilterByTypeNameSuffix()
         {
             new ClassFilter()

@@ -1,6 +1,5 @@
 ﻿using System;
 using Should;
-using Xunit;
 
 namespace Fixie.Tests
 {
@@ -13,7 +12,6 @@ namespace Fixie.Tests
             defaultConvention = new DefaultConvention();
         }
 
-        [Fact]
         public void ShouldBeNamedAfterTheGivenFixtureClass()
         {
             var fixtureClass = typeof(ExecutionSampleFixture);
@@ -22,7 +20,6 @@ namespace Fixie.Tests
             fixture.Name.ShouldEqual("Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture");
         }
 
-        [Fact]
         public void ShouldExecuteAllCases()
         {
             var listener = new StubListener();
@@ -39,7 +36,6 @@ namespace Fixie.Tests
                 "Fixie.Tests.ClassFixtureTests+ExecutionSampleFixture.PassingCaseC passed.");
         }
 
-        [Fact]
         public void ShouldFailAllCasesWhenFixtureConstructorCannotBeInvoked()
         {
             var listener = new StubListener();
@@ -53,7 +49,6 @@ namespace Fixie.Tests
                 "Fixie.Tests.ClassFixtureTests+CannotInvokeConstructorSampleFixture.UnreachableCaseB failed: No parameterless constructor defined for this object.");
         }
 
-        [Fact]
         public void ShouldFailAllCasesWithOriginalExceptionWhenFixtureConstructorThrowsException()
         {
             var listener = new StubListener();

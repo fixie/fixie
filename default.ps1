@@ -12,9 +12,9 @@ properties {
     $version = [IO.File]::ReadAllText('.\VERSION.txt') + '.' + $build
 }
 
-task default -depends xUnitTest
+task default -depends Test
 
-task Package -depends xUnitTest {
+task Package -depends Test {
     rd .\package -recurse -force -ErrorAction SilentlyContinue | out-null
     mkdir .\package -ErrorAction SilentlyContinue | out-null
     exec { & $src\.nuget\NuGet.exe pack $src\$project\$project.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
@@ -24,23 +24,9 @@ task Package -depends xUnitTest {
     write-host "   nuget push .\package\$project.$version.nupkg"
 }
 
-task xUnitTest -depends SelfTest {
-    $xunitRunner = join-path $src "packages\xunit.runners.1.9.1\tools\xunit.console.clr4.exe"
-    exec { & $xunitRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll }
-}
-
-task SelfTest -depends Compile {
+task Test -depends Compile {
     $fixieRunner = resolve-path ".\build\$project.Console.exe"
-    & $fixieRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll
-
-    if ($lastexitcode -gt 0)
-    {
-         "{0} unit tests failed." -f $lastexitcode
-    }
-    if ($lastexitcode -lt 0)
-    {
-         "Unit test run was terminated by a fatal error."
-    }
+    exec { & $fixieRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll }
 }
 
 task Compile -depends CommonAssemblyInfo {

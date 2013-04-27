@@ -3,27 +3,23 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Should;
-using Xunit;
 
 namespace Fixie.Tests
 {
     public class MethodCaseTests
     {
-        [Fact]
         public void ShouldPassUponSuccessfulExecution()
         {
             ExecutionLog<SampleFixture>("Pass")
                 .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.Pass passed.");
         }
 
-        [Fact]
         public void ShouldFailWhenCaseMethodCannotBeInvoked()
         {
             ExecutionLog<SampleFixture>("CannotInvoke")
                 .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.CannotInvoke failed: Parameter count mismatch.");
         }
 
-        [Fact]
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
         {
             ExecutionLog<SampleFixture>("Fail")
@@ -31,14 +27,12 @@ namespace Fixie.Tests
                              "'Fixie.Tests.MethodCaseTests+MethodInvokedException' was thrown.");
         }
 
-        [Fact]
         public void ShouldPassUponSuccessfulAsyncExecution()
         {
             ExecutionLog<SampleFixture>("AwaitThenPass")
                 .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.AwaitThenPass passed.");
         }
 
-        [Fact]
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
             ExecutionLog<SampleFixture>("AwaitThenFail")
@@ -47,14 +41,12 @@ namespace Fixie.Tests
                              "Actual:   3");
         }
 
-        [Fact]
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
         {
             ExecutionLog<SampleFixture>("AwaitOnTaskThatThrows")
                 .ShouldEqual("Fixie.Tests.MethodCaseTests+SampleFixture.AwaitOnTaskThatThrows failed: Attempted to divide by zero.");
         }
 
-        [Fact]
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
         {
             ExecutionLog<SampleFixture>("FailBeforeAwait")
@@ -62,7 +54,6 @@ namespace Fixie.Tests
                              "'Fixie.Tests.MethodCaseTests+MethodInvokedException' was thrown.");
         }
 
-        [Fact]
         public void ShouldFailUnsupportedAsyncVoidMethodCases()
         {
             ExecutionLog<SampleFixture>("UnsupportedAsyncVoid")

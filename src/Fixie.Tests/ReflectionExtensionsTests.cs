@@ -1,28 +1,25 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Should;
-using Xunit;
 
 namespace Fixie.Tests
 {
     public class ReflectionExtensionsTests
     {
-        [Fact]
         public void CanDetectVoidReturnType()
         {
             Method("ReturnsVoid").Void().ShouldBeTrue();
             Method("ReturnsInt").Void().ShouldBeFalse();
         }
 
-        [Fact]
         public void CanDetectMethodAttributes()
         {
-            Method("ReturnsVoid").Has<FactAttribute>().ShouldBeFalse();
-            Method("ReturnsInt").Has<FactAttribute>().ShouldBeFalse();
-            Method("CanDetectMethodAttributes").Has<FactAttribute>().ShouldBeTrue();
+            Method("ReturnsVoid").Has<SampleAttribute>().ShouldBeFalse();
+            Method("ReturnsInt").Has<SampleAttribute>().ShouldBeFalse();
+            Method("Async").Has<SampleAttribute>().ShouldBeTrue();
         }
 
-        [Fact]
         public void CanDetectAsyncDeclarations()
         {
             Method("ReturnsVoid").Async().ShouldBeFalse();
@@ -30,7 +27,6 @@ namespace Fixie.Tests
             Method("Async").Async().ShouldBeTrue();
         }
 
-        [Fact]
         public void CanDetectWhetherTypeIsWithinNamespace()
         {
             var opCode = typeof(System.Reflection.Emit.OpCode);
@@ -47,9 +43,11 @@ namespace Fixie.Tests
             opCode.IsInNamespace("System.Reflection.Typo").ShouldBeFalse();
         }
 
+        class SampleAttribute : Attribute { }
+
         void ReturnsVoid() { }
         int ReturnsInt() { return 0; }
-        async Task Async() { await Task.Run(() => { }); }
+        [Sample] async Task Async() { await Task.Run(() => { }); }
 
         static MethodInfo Method(string name)
         {

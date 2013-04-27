@@ -1,12 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace Fixie.Tests
 {
     public class DefaultConventionTests
     {
-        [Fact]
         public void ShouldTreatConstructibleClassesFollowingNamingConventionAsFixtures()
         {
             var candidateTypes = new[]
@@ -46,7 +44,6 @@ namespace Fixie.Tests
         class PrivateMissingNamingConvention { }
         class PrivateWithNoDefaultConstructorTests { public PrivateWithNoDefaultConstructorTests(int x) { } }
 
-        [Fact]
         public void ShouldTreatSynchronousPublicInstanceNoArgVoidMethodsAsCases()
         {
             var defaultConvention = new DefaultConvention();
@@ -57,7 +54,6 @@ namespace Fixie.Tests
                              .ShouldEqual("PublicInstanceNoArgsVoid");
         }
 
-        [Fact]
         public void ShouldTreatAsyncPublicInstanceNoArgMethodsAsCases()
         {
             var defaultConvention = new DefaultConvention();

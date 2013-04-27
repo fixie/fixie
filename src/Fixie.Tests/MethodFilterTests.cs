@@ -1,13 +1,11 @@
 ﻿using System.Linq;
 using System.Reflection;
 using Should;
-using Xunit;
 
 namespace Fixie.Tests
 {
     public class MethodFilterTests
     {
-        [Fact]
         public void ShouldExcludeAllMethodsByDefaultDueToAmbiguousBindingFlags()
         {
             new MethodFilter()
@@ -15,7 +13,6 @@ namespace Fixie.Tests
                 .ShouldBeEmpty();
         }
 
-        [Fact]
         public void CanFilterToMethodsSatisfyingBindingFlagsVisibility()
         {
             var methods =
@@ -33,7 +30,6 @@ namespace Fixie.Tests
                     "PublicInstanceWithArgsWithReturn");
         }
 
-        [Fact]
         public void ShouldFilterByAllSpecifiedConditions()
         {
             var methods =
@@ -51,7 +47,6 @@ namespace Fixie.Tests
                     "PublicInstanceNoArgsWithReturn");
         }
 
-        [Fact]
         public void CanFilterToMethodsWithZeroParameters()
         {
             var methods =

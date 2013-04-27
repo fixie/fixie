@@ -36,6 +36,7 @@ namespace Fixie.Tests
             var opCode = typeof(System.Reflection.Emit.OpCode);
 
             opCode.IsInNamespace(null).ShouldBeFalse();
+            opCode.IsInNamespace("").ShouldBeFalse();
             opCode.IsInNamespace("System").ShouldBeTrue();
             opCode.IsInNamespace("Sys").ShouldBeFalse();
             opCode.IsInNamespace("System.").ShouldBeFalse();

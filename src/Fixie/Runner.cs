@@ -15,19 +15,17 @@ namespace Fixie
 
         public Result RunAssembly(Assembly assembly)
         {
-            return RunTypes(assembly.GetTypes());
+            return RunTypes(assembly, assembly.GetTypes());
         }
 
         public Result RunNamespace(Assembly assembly, string ns)
         {
-            return RunTypes(assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
+            return RunTypes(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
-        public Result RunTypes(params Type[] types)
+        public Result RunType(Type type)
         {
-            var convention = new DefaultConvention();
-
-            return Run(convention, types);
+            return RunTypes(type.Assembly, type);
         }
 
         public Result RunMethod(MethodInfo method)
@@ -36,13 +34,24 @@ namespace Fixie
 
             convention.Cases.Where(m => m == method);
 
-            return Run(convention, method.DeclaringType);
+            var type = method.DeclaringType;
+
+            return Run(type.Assembly, convention, type);
         }
 
-        Result Run(Convention convention, params Type[] candidateTypes)
+        private Result RunTypes(Assembly context, params Type[] types)
+        {
+            var convention = new DefaultConvention();
+
+            return Run(context, convention, types);
+        }
+
+        Result Run(Assembly context, Convention convention, params Type[] candidateTypes)
         {
             var suite = new Suite(convention, candidateTypes);
             var resultListener = new ResultListener(listener);
+
+            resultListener.RunStarted(context);
 
             suite.Execute(resultListener);
 
@@ -62,6 +71,13 @@ namespace Fixie
             public ResultListener(Listener inner)
             {
                 this.inner = inner;
+            }
+
+            public void RunStarted(Assembly context)
+            {
+                passed = 0;
+                failed = 0;
+                inner.RunStarted(context);
             }
 
             public void CasePassed(Case @case)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using TestDriven.Framework;
 
 namespace Fixie.TestDriven
@@ -10,6 +11,10 @@ namespace Fixie.TestDriven
         public TestDrivenListener(ITestListener tdnet)
         {
             this.tdnet = tdnet;
+        }
+
+        public void RunStarted(Assembly context)
+        {
         }
 
         public void CasePassed(Case @case)

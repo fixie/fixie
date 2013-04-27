@@ -1,10 +1,17 @@
 ﻿using System;
-using System.Linq;
+using System.IO;
+using System.Reflection;
 
 namespace Fixie
 {
     public class ConsoleListener : Listener
     {
+        public void RunStarted(Assembly context)
+        {
+            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(context.Location));
+            Console.WriteLine();
+        }
+
         public void CasePassed(Case @case)
         {
         }
@@ -15,33 +22,24 @@ namespace Fixie
                 Console.WriteLine("{0}", @case.Name);
 
             using (Foreground.DarkGray)
-                Console.WriteLine(Indent(ex.GetType().FullName + ":"));
+                Console.WriteLine(ex.GetType().FullName);
 
-            Console.WriteLine(Indent(Indent(ex.Message)));
-            Console.WriteLine();
+            Console.WriteLine(ex.Message);
 
             using (Foreground.DarkGray)
-                Console.WriteLine(Indent("Stack Trace:"));
+                Console.WriteLine("Stack Trace:");
 
-            Console.WriteLine(Indent(ex.StackTrace));
+            Console.WriteLine(ex.StackTrace);
             Console.WriteLine();
         }
 
         public void RunComplete(Result result)
         {
-            Console.WriteLine("{0} total, {1} failed", result.Total, result.Failed);
-        }
+            var assemblyName = typeof(ConsoleListener).Assembly.GetName();
+            var name = assemblyName.Name;
+            var version = assemblyName.Version;
 
-        static string Indent(string text)
-        {
-            var lines = NormalizeLineEndings(text).Split(new[] { "\n" }, StringSplitOptions.None);
-
-            return String.Join(Environment.NewLine, lines.Select(x => "   " + x));
-        }
-
-        static string NormalizeLineEndings(string input)
-        {
-            return input.Replace("\r\n", "\n").Replace('\r', '\n');
+            Console.WriteLine("{0} passed, {1} failed ({2} {3}).", result.Passed, result.Failed, name, version);
         }
     }
 }

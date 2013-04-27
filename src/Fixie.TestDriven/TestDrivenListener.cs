@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Text;
 using TestDriven.Framework;
 
 namespace Fixie.TestDriven
@@ -28,12 +29,28 @@ namespace Fixie.TestDriven
 
         public void CaseFailed(Case @case, Exception ex)
         {
+            var firstMessage = ex.Message;
+            var stackTrace = new StringBuilder();
+            stackTrace.Append(ex.StackTrace);
+
+            while (ex.InnerException != null)
+            {
+                ex = ex.InnerException;
+                stackTrace.AppendLine();
+                stackTrace.AppendLine();
+                stackTrace.AppendLine("----- Inner Exception -----");
+
+                stackTrace.AppendLine(ex.GetType().FullName);
+                stackTrace.AppendLine(ex.Message);
+                stackTrace.Append(ex.StackTrace);
+            }
+
             tdnet.TestFinished(new TestResult
             {
                 Name = @case.Name,
                 State = TestState.Failed,
-                Message = ex.Message,
-                StackTrace = ex.StackTrace,
+                Message = firstMessage,
+                StackTrace = stackTrace.ToString(),
             });
         }
 

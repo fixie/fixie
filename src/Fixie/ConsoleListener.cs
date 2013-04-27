@@ -21,6 +21,13 @@ namespace Fixie
             using (Foreground.Red)
                 Console.WriteLine("{0}", @case.Name);
 
+            WriteException(ex);
+
+            Console.WriteLine();
+        }
+
+        static void WriteException(Exception ex)
+        {
             using (Foreground.DarkGray)
                 Console.WriteLine(ex.GetType().FullName);
 
@@ -30,7 +37,14 @@ namespace Fixie
                 Console.WriteLine("Stack Trace:");
 
             Console.WriteLine(ex.StackTrace);
-            Console.WriteLine();
+
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine();
+                using (Foreground.DarkGray)
+                    Console.WriteLine("----- Inner Exception -----");
+                WriteException(ex.InnerException);
+            }
         }
 
         public void RunComplete(Result result)

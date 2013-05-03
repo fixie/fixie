@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Fixie.Tests
@@ -65,7 +66,7 @@ namespace Fixie.Tests
                              .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn");
         }
 
-        class DiscoverySampleFixture
+        class DiscoverySampleFixture : IDisposable
         {
             public static int PublicStaticWithArgsWithReturn(int x) { return 0; }
             public static int PublicStaticNoArgsWithReturn() { return 0; }
@@ -86,6 +87,8 @@ namespace Fixie.Tests
             private int PrivateInstanceNoArgsWithReturn() { return 0; }
             private void PrivateInstanceWithArgsVoid(int x) { }
             private void PrivateInstanceNoArgsVoid() { }
+
+            public void Dispose() { }
         }
 
         class AsyncDiscoverySampleFixture

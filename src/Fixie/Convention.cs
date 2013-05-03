@@ -9,7 +9,7 @@ namespace Fixie
         protected Convention()
         {
             Fixtures = new ClassFilter();
-            Cases = new MethodFilter();
+            Cases = new MethodFilter().Where(m => !m.IsDispose());
         }
 
         public ClassFilter Fixtures { get; private set; }

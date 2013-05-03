@@ -63,7 +63,16 @@ namespace Fixie
                     return;
                 }
 
-                @case.Execute(listener);
+                try
+                {
+                    @case.Execute(listener);
+                }
+                finally
+                {
+                    var disposable = Instance as IDisposable;
+                    if (disposable != null)
+                        disposable.Dispose();
+                }
             }
             finally
             {

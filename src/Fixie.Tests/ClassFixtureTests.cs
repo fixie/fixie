@@ -62,6 +62,26 @@ namespace Fixie.Tests
                 "Fixie.Tests.ClassFixtureTests+ConstructorThrowsSampleFixture.UnreachableCaseB failed: Exception From Constructor");
         }
 
+        public void ShouldDisposeFixtureInstancesWhenDisposable()
+        {
+            var listener = new StubListener();
+            var fixtureClass = typeof(DisposableSampleFixture);
+            var fixture = new ClassFixture(fixtureClass, defaultConvention);
+
+            DisposableSampleFixture.ConstructionCount = 0;
+            DisposableSampleFixture.DisposalCount = 0;
+
+            fixture.Execute(listener);
+
+            listener.ShouldHaveEntries(
+                "Fixie.Tests.ClassFixtureTests+DisposableSampleFixture.FailingCase failed: Failing Case",
+                "Fixie.Tests.ClassFixtureTests+DisposableSampleFixture.PassingCase passed."
+                );
+
+            DisposableSampleFixture.ConstructionCount.ShouldEqual(2);
+            DisposableSampleFixture.DisposalCount.ShouldEqual(2);
+        }
+
         class ExecutionSampleFixture
         {
             public void FailingCaseA() { throw new Exception("Failing Case A"); }
@@ -94,6 +114,36 @@ namespace Fixie.Tests
 
             public void UnreachableCaseA() { }
             public void UnreachableCaseB() { }
+        }
+
+        class DisposableSampleFixture : IDisposable
+        {
+            public static int ConstructionCount { get; set; }
+            public static int DisposalCount { get; set; }
+            bool disposed;
+
+            public DisposableSampleFixture()
+            {
+                ConstructionCount++;
+            }
+
+            public void Dispose()
+            {
+                if (disposed)
+                    throw new ShouldBeUnreachableException();
+
+                DisposalCount++;
+                disposed = true;
+            }
+
+            public void FailingCase()
+            {
+                throw new Exception("Failing Case");
+            }
+
+            public void PassingCase()
+            {
+            }
         }
     }
 }

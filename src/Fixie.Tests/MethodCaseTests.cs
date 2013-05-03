@@ -139,11 +139,5 @@ namespace Fixie.Tests
         }
 
         class MethodInvokedException : Exception { }
-
-        class ShouldBeUnreachableException : Exception
-        {
-            public ShouldBeUnreachableException()
-                : base("This exception should not have been reachable.") { }
-        }
     }
 }

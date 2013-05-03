@@ -22,6 +22,11 @@ namespace Fixie
             return this;
         }
 
+        public MethodFilter Has<TAttribute>() where TAttribute : Attribute
+        {
+            return Where(method => method.Has<TAttribute>());
+        }
+
         public MethodFilter ZeroParameters()
         {
             return Where(method => method.GetParameters().Length == 0);

@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using System.Reflection;
-using Should;
+﻿using System;
+using System.Linq;
 
 namespace Fixie.Tests
 {
@@ -27,7 +26,6 @@ namespace Fixie.Tests
                     .Filter(typeof(Sample));
 
             methods
-                .OrderBy(method => method.Name)
                 .Select(method => method.Name)
                 .ShouldEqual("PublicInstanceNoArgsVoid");
         }
@@ -45,6 +43,20 @@ namespace Fixie.Tests
                 .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn");
         }
 
+        public void CanFilterToMethodsWithAttribute()
+        {
+            var methods =
+                new MethodFilter()
+                    .Has<SampleAttribute>()
+                    .Filter(typeof(Sample));
+
+            methods
+                .Select(method => method.Name)
+                .ShouldEqual("PublicInstanceWithArgsWithReturn");
+        }
+
+        class SampleAttribute : Attribute { }
+
         class Sample
         {
             public static int PublicStaticWithArgsWithReturn(int x) { return 0; }
@@ -52,6 +64,7 @@ namespace Fixie.Tests
             public static void PublicStaticWithArgsVoid(int x) { }
             public static void PublicStaticNoArgsVoid() { }
 
+            [Sample]
             public int PublicInstanceWithArgsWithReturn(int x) { return 0; }
             public int PublicInstanceNoArgsWithReturn() { return 0; }
             public void PublicInstanceWithArgsVoid(int x) { }

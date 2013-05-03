@@ -6,68 +6,43 @@ namespace Fixie.Tests
 {
     public class MethodFilterTests
     {
-        public void ShouldExcludeAllMethodsByDefaultDueToAmbiguousBindingFlags()
-        {
-            new MethodFilter()
-                .Filter(typeof(Sample))
-                .ShouldBeEmpty();
-        }
-
-        public void CanFilterToMethodsSatisfyingBindingFlagsVisibility()
+        public void ConsidersOnlyPublicInstanceMethods()
         {
             var methods =
                 new MethodFilter()
-                    .Visibility(BindingFlags.Public | BindingFlags.Instance)
                     .Filter(typeof(Sample));
 
             methods
                 .OrderBy(method => method.Name)
                 .Select(method => method.Name)
-                .ShouldEqual(
-                    "PublicInstanceNoArgsVoid",
-                    "PublicInstanceNoArgsWithReturn",
-                    "PublicInstanceWithArgsVoid",
-                    "PublicInstanceWithArgsWithReturn");
+                .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn", "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
         }
 
         public void ShouldFilterByAllSpecifiedConditions()
         {
             var methods =
                 new MethodFilter()
-                    .Visibility(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-                    .Where(method => method.Name.Contains("Instance"))
+                    .Where(method => method.Name.Contains("Void"))
                     .Where(method => method.Name.Contains("No"))
                     .Filter(typeof(Sample));
 
             methods
                 .OrderBy(method => method.Name)
                 .Select(method => method.Name)
-                .ShouldEqual(
-                    "PublicInstanceNoArgsVoid",
-                    "PublicInstanceNoArgsWithReturn");
+                .ShouldEqual("PublicInstanceNoArgsVoid");
         }
 
         public void CanFilterToMethodsWithZeroParameters()
         {
             var methods =
                 new MethodFilter()
-                    .Visibility(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
                     .ZeroParameters()
                     .Filter(typeof(Sample));
 
             methods
                 .OrderBy(method => method.Name)
                 .Select(method => method.Name)
-                .ShouldEqual(
-                    "PrivateInstanceNoArgsVoid",
-                    "PrivateInstanceNoArgsWithReturn",
-                    "PrivateStaticNoArgsVoid",
-                    "PrivateStaticNoArgsWithReturn",
-                    "PublicInstanceNoArgsVoid",
-                    "PublicInstanceNoArgsWithReturn",
-                    "PublicStaticNoArgsVoid",
-                    "PublicStaticNoArgsWithReturn"
-                );
+                .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn");
         }
 
         class Sample

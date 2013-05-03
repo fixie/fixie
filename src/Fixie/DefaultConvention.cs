@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Fixie
+﻿namespace Fixie
 {
     public class DefaultConvention : Convention
     {
@@ -11,7 +9,6 @@ namespace Fixie
                 .HasDefaultConstructor();
 
             Cases
-                .Visibility(BindingFlags.Public | BindingFlags.Instance)
                 .Where(method => method.Void() || method.Async())
                 .ZeroParameters();
         }

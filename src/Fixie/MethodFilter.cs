@@ -7,21 +7,13 @@ namespace Fixie
 {
     public class MethodFilter
     {
-        BindingFlags bindingFlags;
         readonly List<Func<MethodInfo, bool>> conditions;
 
         public MethodFilter()
         {
-            bindingFlags = BindingFlags.Default;
             conditions = new List<Func<MethodInfo, bool>>();
 
             ExcludeMethodsDefinedOnObject();
-        }
-
-        public MethodFilter Visibility(BindingFlags flags)
-        {
-            bindingFlags |= flags;
-            return this;
         }
 
         public MethodFilter Where(Func<MethodInfo, bool> condition)
@@ -37,7 +29,7 @@ namespace Fixie
 
         public IEnumerable<MethodInfo> Filter(Type type)
         {
-            return type.GetMethods(bindingFlags).Where(IsMatch).ToArray();
+            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(IsMatch).ToArray();
         }
 
         bool IsMatch(MethodInfo candidate)

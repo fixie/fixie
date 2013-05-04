@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -27,42 +28,63 @@ namespace Fixie
 
         public void Execute(Listener listener)
         {
+            var exceptions = new List<Exception>();
+
             try
             {
-                if (isDeclaredAsync && method.Void())
-                    ThrowForUnsupportedAsyncVoid();
-
-                object result;
                 try
                 {
-                    result = method.Invoke(fixture.Instance, null);
-                }
-                catch (TargetInvocationException ex)
-                {
-                    listener.CaseFailed(this, ex.InnerException);
-                    return;
-                }
+                    if (isDeclaredAsync && method.Void())
+                        ThrowForUnsupportedAsyncVoid();
 
-                if (isDeclaredAsync)
-                {
-                    var task = (Task)result;
+                    bool invokeReturned = false;
+                    object result=null;
                     try
                     {
-                        task.Wait();
+                        result = method.Invoke(fixture.Instance, null);
+                        invokeReturned = true;
                     }
-                    catch (AggregateException ex)
+                    catch (TargetInvocationException ex)
                     {
-                        listener.CaseFailed(this, ex.InnerExceptions.First());
-                        return;
+                        exceptions.Add(ex.InnerException);
+                    }
+
+                    if (invokeReturned && isDeclaredAsync)
+                    {
+                        var task = (Task)result;
+                        try
+                        {
+                            task.Wait();
+                        }
+                        catch (AggregateException ex)
+                        {
+                            exceptions.Add(ex.InnerExceptions.First());
+                        }
                     }
                 }
-
-                listener.CasePassed(this);
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
             }
-            catch (Exception ex)
+            finally
             {
-                listener.CaseFailed(this, ex);
+                try
+                {
+                    var disposable = fixture.Instance as IDisposable;
+                    if (disposable != null)
+                        disposable.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
             }
+
+            if (exceptions.Any())
+                listener.CaseFailed(this, exceptions.ToArray());
+            else
+                listener.CasePassed(this);
         }
 
         static void ThrowForUnsupportedAsyncVoid()

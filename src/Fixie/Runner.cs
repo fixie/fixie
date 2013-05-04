@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -86,10 +87,10 @@ namespace Fixie
                 inner.CasePassed(@case);
             }
 
-            public void CaseFailed(Case @case, Exception ex)
+            public void CaseFailed(Case @case, Exception[] exceptions)
             {
                 failed++;
-                inner.CaseFailed(@case, ex);
+                inner.CaseFailed(@case, exceptions);
             }
 
             public void RunComplete(Result result)

@@ -54,25 +54,16 @@ namespace Fixie
                 }
                 catch (TargetInvocationException ex)
                 {
-                    listener.CaseFailed(@case, ex.InnerException);
+                    listener.CaseFailed(@case, new[] { ex.InnerException });
                     return;
                 }
                 catch (Exception ex)
                 {
-                    listener.CaseFailed(@case, ex);
+                    listener.CaseFailed(@case, new[] { ex });
                     return;
                 }
 
-                try
-                {
-                    @case.Execute(listener);
-                }
-                finally
-                {
-                    var disposable = Instance as IDisposable;
-                    if (disposable != null)
-                        disposable.Dispose();
-                }
+                @case.Execute(listener);
             }
             finally
             {

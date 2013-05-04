@@ -7,7 +7,7 @@ namespace Fixie
     {
         void RunStarted(Assembly context);
         void CasePassed(Case @case);
-        void CaseFailed(Case @case, Exception ex);
+        void CaseFailed(Case @case, Exception[] exceptions);
         void RunComplete(Result result);
     }
 }

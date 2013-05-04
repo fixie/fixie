@@ -75,11 +75,24 @@ namespace Fixie.Tests
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtureTests+DisposableSampleFixture.FailingCase failed: Failing Case",
-                "Fixie.Tests.ClassFixtureTests+DisposableSampleFixture.PassingCase passed."
-                );
+                "Fixie.Tests.ClassFixtureTests+DisposableSampleFixture.PassingCase passed.");
 
             DisposableSampleFixture.ConstructionCount.ShouldEqual(2);
             DisposableSampleFixture.DisposalCount.ShouldEqual(2);
+        }
+
+        public void ShouldFailCasesWhenDisposeThrowsExceptionsWithoutSuppressingAnyExceptions()
+        {
+            var listener = new StubListener();
+            var fixtureClass = typeof(DisposeThrowsSampleFixture);
+            var fixture = new ClassFixture(fixtureClass, defaultConvention);
+
+            fixture.Execute(listener);
+
+            listener.ShouldHaveEntries(
+                "Fixie.Tests.ClassFixtureTests+DisposeThrowsSampleFixture.FailingCase failed: Failing Case" + Environment.NewLine +
+                "    Secondary Failure: Exception From IDisposable.Dispose().",
+                "Fixie.Tests.ClassFixtureTests+DisposeThrowsSampleFixture.PassingCase failed: Exception From IDisposable.Dispose().");
         }
 
         class ExecutionSampleFixture
@@ -134,6 +147,23 @@ namespace Fixie.Tests
 
                 DisposalCount++;
                 disposed = true;
+            }
+
+            public void FailingCase()
+            {
+                throw new Exception("Failing Case");
+            }
+
+            public void PassingCase()
+            {
+            }
+        }
+
+        class DisposeThrowsSampleFixture : IDisposable
+        {
+            public void Dispose()
+            {
+                throw new Exception("Exception From IDisposable.Dispose().");
             }
 
             public void FailingCase()

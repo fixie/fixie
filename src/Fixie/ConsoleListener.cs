@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Fixie
 {
@@ -22,49 +20,10 @@ namespace Fixie
         public void CaseFailed(Case @case, Exception[] exceptions)
         {
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", @case.Name, exceptions.First().Message);
-            GetCompoundStackTrace(exceptions);
+                Console.WriteLine("Test '{0}' failed: {1}", @case.Name, exceptions.First().GetType().FullName);
+            Console.Out.WriteCompoundStackTrace(exceptions);
             Console.WriteLine();
             Console.WriteLine();
-        }
-
-        static void GetCompoundStackTrace(IEnumerable<Exception> exceptions)
-        {
-            bool isPrimaryException = true;
-
-            foreach (var ex in exceptions)
-            {
-                if (isPrimaryException)
-                {
-                    Console.Write(ex.StackTrace);
-                }
-                else
-                {
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    Console.WriteLine("===== Secondary Exception =====");
-                    using (Foreground.DarkGray)
-                        Console.WriteLine(ex.GetType().FullName);
-                    Console.WriteLine(ex.Message);
-                    Console.Write(ex.StackTrace);
-                }
-
-                var walk = ex;
-                while (walk.InnerException != null)
-                {
-                    walk = walk.InnerException;
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    using (Foreground.DarkGray)
-                        Console.WriteLine("----- Inner Exception -----");
-
-                    Console.WriteLine(walk.GetType().FullName);
-                    Console.WriteLine(walk.Message);
-                    Console.Write(walk.StackTrace);
-                }
-
-                isPrimaryException = false;
-            }
         }
 
         public void RunComplete(Result result)

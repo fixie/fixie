@@ -20,7 +20,9 @@ First, [install NuGet](http://docs.nuget.org/docs/start-here/installing-nuget). 
 
 ## Default Convention
 
-When using the default convention, a test fixture is any concrete class that has a default constructor and a name ending in "Tests".  Within such a fixture class, a test case is any public instance void method with zero arguments.  Additionally, test cases include public instance async methods returning `Task` or `Task<T>`.  If you want to perform setup steps before each test case executes, you can place that in the fixture's default constructor.  One instance of your fixture class is constructed for *each* test case.
+When using the default convention, a test fixture is any concrete class that has a default constructor and a name ending in "Tests".  Within such a fixture class, a test case is any public instance void method with zero arguments.  Additionally, test cases include public instance async methods returning `Task` or `Task<T>`.
+
+One instance of your fixture class is constructed for *each* test case. To perform setup steps before each test case executes, use the fixture's default constructor. To perform cleanup steps after each test cases executes, implement `IDisposable` and place cleanup code within the `Dispose()` method.
 
 No [Attributes], no "using Fixie;" statement, no muss, no fuss.
 

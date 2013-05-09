@@ -32,53 +32,48 @@ namespace Fixie
 
             try
             {
+                if (isDeclaredAsync && method.Void())
+                    ThrowForUnsupportedAsyncVoid();
+
+                bool invokeReturned = false;
+                object result = null;
                 try
                 {
-                    if (isDeclaredAsync && method.Void())
-                        ThrowForUnsupportedAsyncVoid();
+                    result = method.Invoke(fixture.Instance, null);
+                    invokeReturned = true;
+                }
+                catch (TargetInvocationException ex)
+                {
+                    exceptions.Add(ex.InnerException);
+                }
 
-                    bool invokeReturned = false;
-                    object result=null;
+                if (invokeReturned && isDeclaredAsync)
+                {
+                    var task = (Task)result;
                     try
                     {
-                        result = method.Invoke(fixture.Instance, null);
-                        invokeReturned = true;
+                        task.Wait();
                     }
-                    catch (TargetInvocationException ex)
+                    catch (AggregateException ex)
                     {
-                        exceptions.Add(ex.InnerException);
+                        exceptions.Add(ex.InnerExceptions.First());
                     }
-
-                    if (invokeReturned && isDeclaredAsync)
-                    {
-                        var task = (Task)result;
-                        try
-                        {
-                            task.Wait();
-                        }
-                        catch (AggregateException ex)
-                        {
-                            exceptions.Add(ex.InnerExceptions.First());
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    exceptions.Add(ex);
                 }
             }
-            finally
+            catch (Exception ex)
             {
-                try
-                {
-                    var disposable = fixture.Instance as IDisposable;
-                    if (disposable != null)
-                        disposable.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    exceptions.Add(ex);
-                }
+                exceptions.Add(ex);
+            }
+            
+            try
+            {
+                var disposable = fixture.Instance as IDisposable;
+                if (disposable != null)
+                    disposable.Dispose();
+            }
+            catch (Exception ex)
+            {
+                exceptions.Add(ex);
             }
 
             if (exceptions.Any())

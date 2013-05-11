@@ -7,51 +7,45 @@ namespace Fixie.Tests.ClassFixtures
     {
         public void ShouldConstructInstancePerCase()
         {
+            var fixture = new ClassFixture(typeof(ConstructibleFixture), new DefaultConvention());
             var listener = new StubListener();
-            var defaultConvention = new DefaultConvention();
-            var fixtureClass = typeof(ConstructibleSampleFixture);
-            var fixture = new ClassFixture(fixtureClass, defaultConvention);
 
-            ConstructibleSampleFixture.ConstructionCount = 0;
+            ConstructibleFixture.ConstructionCount = 0;
 
             fixture.Execute(listener);
 
-            ConstructibleSampleFixture.ConstructionCount.ShouldEqual(2);
+            ConstructibleFixture.ConstructionCount.ShouldEqual(2);
         }
 
         public void ShouldFailAllCasesWhenFixtureConstructorCannotBeInvoked()
         {
+            var fixture = new ClassFixture(typeof(CannotInvokeConstructorFixture), new DefaultConvention());
             var listener = new StubListener();
-            var defaultConvention = new DefaultConvention();
-            var fixtureClass = typeof(CannotInvokeConstructorSampleFixture);
-            var fixture = new ClassFixture(fixtureClass, defaultConvention);
 
             fixture.Execute(listener);
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.ConstructionTests+CannotInvokeConstructorSampleFixture.UnreachableCaseA failed: No parameterless constructor defined for this object.",
-                "Fixie.Tests.ClassFixtures.ConstructionTests+CannotInvokeConstructorSampleFixture.UnreachableCaseB failed: No parameterless constructor defined for this object.");
+                "Fixie.Tests.ClassFixtures.ConstructionTests+CannotInvokeConstructorFixture.UnreachableCaseA failed: No parameterless constructor defined for this object.",
+                "Fixie.Tests.ClassFixtures.ConstructionTests+CannotInvokeConstructorFixture.UnreachableCaseB failed: No parameterless constructor defined for this object.");
         }
 
         public void ShouldFailAllCasesWithOriginalExceptionWhenFixtureConstructorThrowsException()
         {
+            var fixture = new ClassFixture(typeof(ConstructorThrowsFixture), new DefaultConvention());
             var listener = new StubListener();
-            var defaultConvention = new DefaultConvention();
-            var fixtureClass = typeof(ConstructorThrowsSampleFixture);
-            var fixture = new ClassFixture(fixtureClass, defaultConvention);
 
             fixture.Execute(listener);
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.ConstructionTests+ConstructorThrowsSampleFixture.UnreachableCaseA failed: Exception From Constructor",
-                "Fixie.Tests.ClassFixtures.ConstructionTests+ConstructorThrowsSampleFixture.UnreachableCaseB failed: Exception From Constructor");
+                "Fixie.Tests.ClassFixtures.ConstructionTests+ConstructorThrowsFixture.UnreachableCaseA failed: Exception From Constructor",
+                "Fixie.Tests.ClassFixtures.ConstructionTests+ConstructorThrowsFixture.UnreachableCaseB failed: Exception From Constructor");
         }
 
-        class ConstructibleSampleFixture
+        class ConstructibleFixture
         {
             public static int ConstructionCount { get; set; }
 
-            public ConstructibleSampleFixture()
+            public ConstructibleFixture()
             {
                 ConstructionCount++;
             }
@@ -66,9 +60,9 @@ namespace Fixie.Tests.ClassFixtures
             }
         }
 
-        class CannotInvokeConstructorSampleFixture
+        class CannotInvokeConstructorFixture
         {
-            public CannotInvokeConstructorSampleFixture(int argument)
+            public CannotInvokeConstructorFixture(int argument)
             {
             }
 
@@ -76,9 +70,9 @@ namespace Fixie.Tests.ClassFixtures
             public void UnreachableCaseB() { }
         }
 
-        class ConstructorThrowsSampleFixture
+        class ConstructorThrowsFixture
         {
-            public ConstructorThrowsSampleFixture()
+            public ConstructorThrowsFixture()
             {
                 throw new Exception("Exception From Constructor");
             }

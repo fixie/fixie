@@ -6,9 +6,7 @@ namespace Fixie.Tests
     {
         public void ShouldBeNamedAfterTheGivenFixtureClass()
         {
-            var defaultConvention = new DefaultConvention();
-            var fixtureClass = typeof(SampleFixture);
-            var fixture = new ClassFixture(fixtureClass, defaultConvention);
+            var fixture = new ClassFixture(typeof(SampleFixture), new DefaultConvention());
 
             fixture.Name.ShouldEqual("Fixie.Tests.ClassFixtureTests+SampleFixture");
         }

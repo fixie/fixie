@@ -16,14 +16,6 @@ namespace Fixie
             this.convention = convention;
         }
 
-        public ClassFixture(Type fixtureClass, Convention convention, object initialInstance)
-        {
-            this.fixtureClass = fixtureClass;
-            this.convention = convention;
-
-            Instance = initialInstance;
-        }
-
         public object Instance { get; private set; }
 
         public string Name

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -32,7 +31,7 @@ namespace Fixie
         {
             var @case = new MethodCase(this, caseMethod);
 
-            var exceptions = new List<Exception>();
+            var exceptions = new ExceptionList();
 
             object instance = null;
 
@@ -81,7 +80,7 @@ namespace Fixie
                 listener.CasePassed(@case);
         }
 
-        private void Execute(MethodInfo caseMethod, object fixtureInstance, List<Exception> exceptions)
+        private void Execute(MethodInfo caseMethod, object fixtureInstance, ExceptionList exceptions)
         {
             bool isDeclaredAsync = caseMethod.Async();
 

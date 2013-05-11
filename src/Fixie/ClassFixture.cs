@@ -55,7 +55,25 @@ namespace Fixie
                     return;
                 }
 
-                @case.Execute(listener);
+                var exceptions = new List<Exception>();
+
+                @case.Execute(listener, exceptions);
+
+                try
+                {
+                    var disposable = Instance as IDisposable;
+                    if (disposable != null)
+                        disposable.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+
+                if (exceptions.Any())
+                    listener.CaseFailed(@case, exceptions.ToArray());
+                else
+                    listener.CasePassed(@case);
             }
             finally
             {

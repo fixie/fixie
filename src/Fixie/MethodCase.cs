@@ -26,10 +26,8 @@ namespace Fixie
             get { return fixture.Name + "." + method.Name; }
         }
 
-        public void Execute(Listener listener)
+        public void Execute(Listener listener, List<Exception> exceptions)
         {
-            var exceptions = new List<Exception>();
-
             try
             {
                 if (isDeclaredAsync && method.Void())
@@ -64,22 +62,6 @@ namespace Fixie
             {
                 exceptions.Add(ex);
             }
-            
-            try
-            {
-                var disposable = fixture.Instance as IDisposable;
-                if (disposable != null)
-                    disposable.Dispose();
-            }
-            catch (Exception ex)
-            {
-                exceptions.Add(ex);
-            }
-
-            if (exceptions.Any())
-                listener.CaseFailed(this, exceptions.ToArray());
-            else
-                listener.CasePassed(this);
         }
 
         static void ThrowForUnsupportedAsyncVoid()

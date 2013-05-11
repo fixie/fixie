@@ -57,7 +57,14 @@ namespace Fixie
 
                 var exceptions = new List<Exception>();
 
-                @case.Execute(listener, exceptions);
+                try
+                {
+                    @case.Execute(listener, exceptions);
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
 
                 try
                 {

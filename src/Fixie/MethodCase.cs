@@ -28,39 +28,32 @@ namespace Fixie
 
         public void Execute(Listener listener, List<Exception> exceptions)
         {
+            if (isDeclaredAsync && method.Void())
+                ThrowForUnsupportedAsyncVoid();
+
+            bool invokeReturned = false;
+            object result = null;
             try
             {
-                if (isDeclaredAsync && method.Void())
-                    ThrowForUnsupportedAsyncVoid();
+                result = method.Invoke(fixture.Instance, null);
+                invokeReturned = true;
+            }
+            catch (TargetInvocationException ex)
+            {
+                exceptions.Add(ex.InnerException);
+            }
 
-                bool invokeReturned = false;
-                object result = null;
+            if (invokeReturned && isDeclaredAsync)
+            {
+                var task = (Task)result;
                 try
                 {
-                    result = method.Invoke(fixture.Instance, null);
-                    invokeReturned = true;
+                    task.Wait();
                 }
-                catch (TargetInvocationException ex)
+                catch (AggregateException ex)
                 {
-                    exceptions.Add(ex.InnerException);
+                    exceptions.Add(ex.InnerExceptions.First());
                 }
-
-                if (invokeReturned && isDeclaredAsync)
-                {
-                    var task = (Task)result;
-                    try
-                    {
-                        task.Wait();
-                    }
-                    catch (AggregateException ex)
-                    {
-                        exceptions.Add(ex.InnerExceptions.First());
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                exceptions.Add(ex);
             }
         }
 

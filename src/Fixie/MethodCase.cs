@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Fixie
@@ -11,14 +10,11 @@ namespace Fixie
     {
         readonly ClassFixture fixture;
         readonly MethodInfo method;
-        readonly bool isDeclaredAsync;
 
         public MethodCase(ClassFixture fixture, MethodInfo method)
         {
             this.fixture = fixture;
             this.method = method;
-
-            isDeclaredAsync = method.GetCustomAttributes<AsyncStateMachineAttribute>(false).Any();
         }
 
         public string Name
@@ -28,6 +24,8 @@ namespace Fixie
 
         public void Execute(Listener listener, List<Exception> exceptions)
         {
+            bool isDeclaredAsync = method.Async();
+
             if (isDeclaredAsync && method.Void())
                 ThrowForUnsupportedAsyncVoid();
 

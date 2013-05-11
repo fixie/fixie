@@ -24,23 +24,35 @@ namespace Fixie
         public void Execute(Listener listener)
         {
             foreach (var caseMethod in convention.CaseMethods(fixtureClass))
-                Execute(caseMethod, listener);
+                Lifecycle(caseMethod, listener);
         }
 
-        void Execute(MethodInfo caseMethod, Listener listener)
+        void Lifecycle(MethodInfo caseMethod, Listener listener)
         {
             var @case = new MethodCase(this, caseMethod);
 
             var exceptions = new ExceptionList();
 
-            object instance = null;
+            object instance;
 
-            bool instanceCreated = false;
+            if (TryConstruct(fixtureClass, exceptions, out instance))
+            {
+                ExecuteCaseMethod(caseMethod, instance, exceptions);
+                Dispose(instance, exceptions);
+            }
 
+            if (exceptions.Any())
+                listener.CaseFailed(@case, exceptions.ToArray());
+            else
+                listener.CasePassed(@case);
+        }
+
+        static bool TryConstruct(Type fixtureClass, ExceptionList exceptions, out object instance)
+        {
             try
             {
                 instance = Activator.CreateInstance(fixtureClass);
-                instanceCreated = true;
+                return true;
             }
             catch (TargetInvocationException ex)
             {
@@ -51,65 +63,61 @@ namespace Fixie
                 exceptions.Add(ex);
             }
 
-            if (instanceCreated)
-            {
-                try
-                {
-                    Execute(caseMethod, instance, exceptions);
-                }
-                catch (Exception ex)
-                {
-                    exceptions.Add(ex);
-                }
-
-                try
-                {
-                    var disposable = instance as IDisposable;
-                    if (disposable != null)
-                        disposable.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    exceptions.Add(ex);
-                }
-            }
-
-            if (exceptions.Any())
-                listener.CaseFailed(@case, exceptions.ToArray());
-            else
-                listener.CasePassed(@case);
+            instance = null;
+            return false;
         }
 
-        private void Execute(MethodInfo caseMethod, object fixtureInstance, ExceptionList exceptions)
+        static void ExecuteCaseMethod(MethodInfo caseMethod, object fixtureInstance, ExceptionList exceptions)
         {
-            bool isDeclaredAsync = caseMethod.Async();
-
-            if (isDeclaredAsync && caseMethod.Void())
-                ThrowForUnsupportedAsyncVoid();
-
-            bool invokeReturned = false;
-            object result = null;
             try
             {
-                result = caseMethod.Invoke(fixtureInstance, null);
-                invokeReturned = true;
-            }
-            catch (TargetInvocationException ex)
-            {
-                exceptions.Add(ex.InnerException);
-            }
+                bool isDeclaredAsync = caseMethod.Async();
 
-            if (invokeReturned && isDeclaredAsync)
-            {
-                var task = (Task)result;
+                if (isDeclaredAsync && caseMethod.Void())
+                    ThrowForUnsupportedAsyncVoid();
+
+                bool invokeReturned = false;
+                object result = null;
                 try
                 {
-                    task.Wait();
+                    result = caseMethod.Invoke(fixtureInstance, null);
+                    invokeReturned = true;
                 }
-                catch (AggregateException ex)
+                catch (TargetInvocationException ex)
                 {
-                    exceptions.Add(ex.InnerExceptions.First());
+                    exceptions.Add(ex.InnerException);
                 }
+
+                if (invokeReturned && isDeclaredAsync)
+                {
+                    var task = (Task)result;
+                    try
+                    {
+                        task.Wait();
+                    }
+                    catch (AggregateException ex)
+                    {
+                        exceptions.Add(ex.InnerExceptions.First());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                exceptions.Add(ex);
+            }
+        }
+
+        static void Dispose(object instance, ExceptionList exceptions)
+        {
+            try
+            {
+                var disposable = instance as IDisposable;
+                if (disposable != null)
+                    disposable.Dispose();
+            }
+            catch (Exception ex)
+            {
+                exceptions.Add(ex);
             }
         }
 

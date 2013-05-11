@@ -24,51 +24,55 @@ namespace Fixie
 
         public void Execute(Listener listener)
         {
-            foreach (var method in convention.CaseMethods(fixtureClass))
-                Execute(method, listener);
+            foreach (var caseMethod in convention.CaseMethods(fixtureClass))
+                Execute(caseMethod, listener);
         }
 
         void Execute(MethodInfo caseMethod, Listener listener)
         {
             var @case = new MethodCase(this, caseMethod);
 
-            object instance;
+            var exceptions = new List<Exception>();
+
+            object instance = null;
+
+            bool instanceCreated = false;
 
             try
             {
                 instance = Activator.CreateInstance(fixtureClass);
+                instanceCreated = true;
             }
             catch (TargetInvocationException ex)
             {
-                listener.CaseFailed(@case, new[] { ex.InnerException });
-                return;
-            }
-            catch (Exception ex)
-            {
-                listener.CaseFailed(@case, new[] { ex });
-                return;
-            }
-
-            var exceptions = new List<Exception>();
-
-            try
-            {
-                Execute(caseMethod, instance, exceptions);
+                exceptions.Add(ex.InnerException);
             }
             catch (Exception ex)
             {
                 exceptions.Add(ex);
             }
 
-            try
+            if (instanceCreated)
             {
-                var disposable = instance as IDisposable;
-                if (disposable != null)
-                    disposable.Dispose();
-            }
-            catch (Exception ex)
-            {
-                exceptions.Add(ex);
+                try
+                {
+                    Execute(caseMethod, instance, exceptions);
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+
+                try
+                {
+                    var disposable = instance as IDisposable;
+                    if (disposable != null)
+                        disposable.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
             }
 
             if (exceptions.Any())

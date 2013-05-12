@@ -47,6 +47,7 @@
     <Compile Include="Fixture.cs" />
     <Compile Include="FixtureCommand.cs" />
     <Compile Include="Foreground.cs" />
+    <Compile Include="Invoke.cs" />
     <Compile Include="MethodCase.cs" />
     <Compile Include="ClassFixture.cs" />
     <Compile Include="Listener.cs" />

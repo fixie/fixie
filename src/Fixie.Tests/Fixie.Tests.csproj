@@ -48,6 +48,7 @@
     <Compile Include="ClassFixtures\DisposalTests.cs" />
     <Compile Include="ClassFixtures\ConstructionTests.cs" />
     <Compile Include="ClassFixtureTests.cs" />
+    <Compile Include="InvokeTests.cs" />
     <Compile Include="MethodFilterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensionsTests.cs" />

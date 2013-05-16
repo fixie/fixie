@@ -7,14 +7,11 @@ namespace Fixie
     {
         readonly Type fixtureClass;
         readonly Convention convention;
-        readonly MethodBehavior caseMethodBehavior;
 
         public ClassFixture(Type fixtureClass, Convention convention)
         {
             this.fixtureClass = fixtureClass;
             this.convention = convention;
-
-            caseMethodBehavior = new Invoke();
         }
 
         public string Name
@@ -38,7 +35,7 @@ namespace Fixie
 
             if (TryConstruct(fixtureClass, exceptions, out instance))
             {
-                caseMethodBehavior.Execute(caseMethod, instance, exceptions);
+                convention.CaseExecutionBehavior.Execute(caseMethod, instance, exceptions);
                 Dispose(instance, exceptions);
             }
 

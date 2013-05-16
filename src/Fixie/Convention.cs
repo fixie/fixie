@@ -10,10 +10,12 @@ namespace Fixie
         {
             Fixtures = new ClassFilter();
             Cases = new MethodFilter().Where(m => !m.IsDispose());
+            CaseExecutionBehavior = new Invoke();
         }
 
         public ClassFilter Fixtures { get; private set; }
         public MethodFilter Cases { get; private set; }
+        public MethodBehavior CaseExecutionBehavior { get; set; }
 
         public IEnumerable<Type> FixtureClasses(Type[] candidates)
         {

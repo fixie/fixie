@@ -4,6 +4,6 @@ namespace Fixie
 {
     public interface MethodBehavior
     {
-        void Execute(MethodInfo method, object fixtureInstance, ExceptionList exceptions);
+        void Execute(MethodInfo method, object instance, ExceptionList exceptions);
     }
 }

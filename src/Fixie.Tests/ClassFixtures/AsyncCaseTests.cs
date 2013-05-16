@@ -61,9 +61,9 @@ namespace Fixie.Tests.ClassFixtures
             fixture.Execute(listener);
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.AsyncCaseTests+UnsupportedAsyncVoidFixture.Test failed: Async void tests are not " +
-                "supported.  Declare async test methods with a return type of Task to ensure the task actually " +
-                "runs to completion.");
+                "Fixie.Tests.ClassFixtures.AsyncCaseTests+UnsupportedAsyncVoidFixture.Test failed: " +
+                "Async void methods are not supported. Declare async methods with a return type of " +
+                "Task to ensure the task actually runs to completion.");
         }
 
         abstract class SampleFixtureBase

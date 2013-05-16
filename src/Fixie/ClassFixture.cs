@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Fixie
 {
@@ -9,11 +7,14 @@ namespace Fixie
     {
         readonly Type fixtureClass;
         readonly Convention convention;
+        readonly MethodBehavior caseMethodBehavior;
 
         public ClassFixture(Type fixtureClass, Convention convention)
         {
             this.fixtureClass = fixtureClass;
             this.convention = convention;
+
+            caseMethodBehavior = new Invoke();
         }
 
         public string Name
@@ -37,7 +38,7 @@ namespace Fixie
 
             if (TryConstruct(fixtureClass, exceptions, out instance))
             {
-                ExecuteCaseMethod(caseMethod, instance, exceptions);
+                caseMethodBehavior.Execute(caseMethod, instance, exceptions);
                 Dispose(instance, exceptions);
             }
 
@@ -67,46 +68,6 @@ namespace Fixie
             return false;
         }
 
-        static void ExecuteCaseMethod(MethodInfo caseMethod, object fixtureInstance, ExceptionList exceptions)
-        {
-            try
-            {
-                bool isDeclaredAsync = caseMethod.Async();
-
-                if (isDeclaredAsync && caseMethod.Void())
-                    ThrowForUnsupportedAsyncVoid();
-
-                bool invokeReturned = false;
-                object result = null;
-                try
-                {
-                    result = caseMethod.Invoke(fixtureInstance, null);
-                    invokeReturned = true;
-                }
-                catch (TargetInvocationException ex)
-                {
-                    exceptions.Add(ex.InnerException);
-                }
-
-                if (invokeReturned && isDeclaredAsync)
-                {
-                    var task = (Task)result;
-                    try
-                    {
-                        task.Wait();
-                    }
-                    catch (AggregateException ex)
-                    {
-                        exceptions.Add(ex.InnerExceptions.First());
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                exceptions.Add(ex);
-            }
-        }
-
         static void Dispose(object instance, ExceptionList exceptions)
         {
             try
@@ -119,13 +80,6 @@ namespace Fixie
             {
                 exceptions.Add(ex);
             }
-        }
-
-        static void ThrowForUnsupportedAsyncVoid()
-        {
-            throw new NotSupportedException(
-                "Async void tests are not supported.  Declare async test methods with " +
-                "a return type of Task to ensure the task actually runs to completion.");
         }
     }
 }

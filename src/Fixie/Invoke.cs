@@ -3,16 +3,9 @@ using System.Reflection;
 
 namespace Fixie
 {
-    public class Invoke : FixtureCommand
+    public class Invoke : MethodBehavior
     {
-        readonly MethodInfo method;
-
-        public Invoke(MethodInfo method)
-        {
-            this.method = method;
-        }
-
-        public void Execute(object fixtureInstance, ExceptionList exceptions)
+        public void Execute(MethodInfo method, object fixtureInstance, ExceptionList exceptions)
         {
             try
             {

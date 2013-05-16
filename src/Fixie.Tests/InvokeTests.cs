@@ -12,8 +12,8 @@ namespace Fixie.Tests
 
         public void ShouldInvokeTheGivenMethod()
         {
-            var invoke = new Invoke(Method("Pass"));
-            invoke.Execute(this, exceptions);
+            var invoke = new Invoke();
+            invoke.Execute(Method("Returns"), this, exceptions);
 
             invocationCount.ShouldEqual(1);
             exceptions.Count.ShouldEqual(0);
@@ -21,8 +21,8 @@ namespace Fixie.Tests
 
         public void ShouldLogExceptionWhenTheGivenMethodCannotBeInvoked()
         {
-            var invoke = new Invoke(Method("CannotInvoke"));
-            invoke.Execute(this, exceptions);
+            var invoke = new Invoke();
+            invoke.Execute(Method("CannotInvoke"), this, exceptions);
             
             invocationCount.ShouldEqual(0);
             exceptions.Count.ShouldEqual(1);
@@ -34,8 +34,8 @@ namespace Fixie.Tests
 
         public void ShouldLogOriginalExceptionWhenTheGivenMethodThrows()
         {
-            var invoke = new Invoke(Method("Fail"));
-            invoke.Execute(this, exceptions);
+            var invoke = new Invoke();
+            invoke.Execute(Method("Throws"), this, exceptions);
 
             invocationCount.ShouldEqual(1);
             exceptions.Count.ShouldEqual(1);
@@ -45,7 +45,7 @@ namespace Fixie.Tests
             exception.Message.ShouldEqual("Exception of type 'Fixie.Tests.InvokeTests+FailureException' was thrown.");
         }
 
-        void Pass()
+        void Returns()
         {
             invocationCount++;
         }
@@ -55,7 +55,7 @@ namespace Fixie.Tests
             invocationCount++;
         }
 
-        void Fail()
+        void Throws()
         {
             invocationCount++;
             throw new FailureException();

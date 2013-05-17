@@ -80,13 +80,13 @@ namespace Fixie
                 inner.RunStarted(context);
             }
 
-            public void CasePassed(Case @case)
+            public void CasePassed(string @case)
             {
                 passed++;
                 inner.CasePassed(@case);
             }
 
-            public void CaseFailed(Case @case, Exception[] exceptions)
+            public void CaseFailed(string @case, Exception[] exceptions)
             {
                 failed++;
                 inner.CaseFailed(@case, exceptions);

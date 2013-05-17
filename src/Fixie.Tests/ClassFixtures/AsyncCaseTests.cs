@@ -53,7 +53,7 @@ namespace Fixie.Tests.ClassFixtures
                 "'Fixie.Tests.ClassFixtures.AsyncCaseTests+MethodInvokedException' was thrown.");
         }
 
-        public void ShouldFailUnsupportedAsyncVoidMethodCases()
+        public void ShouldFailUnsupportedAsyncVoidCases()
         {
             var fixture = new ClassFixture(typeof(UnsupportedAsyncVoidFixture), new DefaultConvention());
             var listener = new StubListener();

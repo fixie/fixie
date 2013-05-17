@@ -13,14 +13,14 @@ namespace Fixie
             Console.WriteLine();
         }
 
-        public void CasePassed(Case @case)
+        public void CasePassed(string @case)
         {
         }
 
-        public void CaseFailed(Case @case, Exception[] exceptions)
+        public void CaseFailed(string @case, Exception[] exceptions)
         {
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", @case.Name, exceptions.First().GetType().FullName);
+                Console.WriteLine("Test '{0}' failed: {1}", @case, exceptions.First().GetType().FullName);
             Console.Out.WriteCompoundStackTrace(exceptions);
             Console.WriteLine();
             Console.WriteLine();

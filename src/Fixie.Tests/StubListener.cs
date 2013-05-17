@@ -14,17 +14,17 @@ namespace Fixie.Tests
         {
         }
 
-        public void CasePassed(Case @case)
+        public void CasePassed(string @case)
         {
-            log.Add(string.Format("{0} passed.", @case.Name));
+            log.Add(string.Format("{0} passed.", @case));
         }
 
-        public void CaseFailed(Case @case, Exception[] exceptions)
+        public void CaseFailed(string @case, Exception[] exceptions)
         {
             var entry = new StringBuilder();
 
             var primary = exceptions.First();
-            entry.Append(string.Format("{0} failed: {1}", @case.Name, primary.Message));
+            entry.Append(string.Format("{0} failed: {1}", @case, primary.Message));
 
             foreach (var exception in exceptions.Skip(1))
             {

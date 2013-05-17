@@ -14,11 +14,6 @@ namespace Fixie
             this.convention = convention;
         }
 
-        public string Name
-        {
-            get { return fixtureClass.FullName; }
-        }
-
         public void Execute(Listener listener)
         {
             foreach (var caseMethod in convention.CaseMethods(fixtureClass))
@@ -27,7 +22,7 @@ namespace Fixie
 
         void Lifecycle(MethodInfo caseMethod, Listener listener)
         {
-            var @case = new MethodCase(this, caseMethod);
+            var @case = fixtureClass.FullName + "." + caseMethod.Name;
 
             var exceptions = new ExceptionList();
 

@@ -26,5 +26,15 @@ namespace Fixie
         {
             return Cases.Filter(fixtureClass);
         }
+
+        public void Execute(Listener listener, params Type[] candidateTypes)
+        {
+            foreach (var fixtureClass in FixtureClasses(candidateTypes))
+            {
+                var classExecutionBehavior = new ClassFixture(fixtureClass, this);
+
+                classExecutionBehavior.Execute(listener);
+            }
+        }
     }
 }

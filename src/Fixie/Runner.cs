@@ -48,12 +48,11 @@ namespace Fixie
 
         Result Run(Assembly context, Convention convention, params Type[] candidateTypes)
         {
-            var suite = new Suite(convention, candidateTypes);
             var resultListener = new ResultListener(listener);
 
             resultListener.RunStarted(context);
 
-            suite.Execute(resultListener);
+            convention.Execute(resultListener, candidateTypes);
 
             var result = resultListener.Result;
 

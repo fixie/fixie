@@ -55,7 +55,7 @@
     <Compile Include="ShouldBeUnreachableException.cs" />
     <Compile Include="StubListener.cs" />
     <Compile Include="DefaultConventionTests.cs" />
-    <Compile Include="SuiteTests.cs" />
+    <Compile Include="ConventionTests.cs" />
     <Compile Include="ClassFilterTests.cs" />
   </ItemGroup>
   <ItemGroup>

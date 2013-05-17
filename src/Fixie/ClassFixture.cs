@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Fixie
 {
-    public class ClassFixture : Fixture
+    public class ClassFixture
     {
         readonly Type fixtureClass;
         readonly Convention convention;

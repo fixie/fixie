@@ -21,7 +21,7 @@ namespace Fixie
                 fixture.Execute(listener);
         }
 
-        private IEnumerable<Fixture> Fixtures
+        private IEnumerable<ClassFixture> Fixtures
         {
             get
             {

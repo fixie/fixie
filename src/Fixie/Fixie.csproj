@@ -43,7 +43,6 @@
     <Compile Include="Convention.cs" />
     <Compile Include="DefaultConvention.cs" />
     <Compile Include="ExceptionList.cs" />
-    <Compile Include="Fixture.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Invoke.cs" />
     <Compile Include="MethodBehavior.cs" />

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Fixie
 {
@@ -17,16 +15,10 @@ namespace Fixie
 
         public void Execute(Listener listener)
         {
-            foreach (var fixture in Fixtures)
-                fixture.Execute(listener);
-        }
-
-        private IEnumerable<ClassFixture> Fixtures
-        {
-            get
+            foreach (var fixtureClass in convention.FixtureClasses(candidateTypes))
             {
-                return convention.FixtureClasses(candidateTypes)
-                                 .Select(fixtureClass => new ClassFixture(fixtureClass, convention));
+                var fixture = new ClassFixture(fixtureClass, convention);
+                fixture.Execute(listener);
             }
         }
     }

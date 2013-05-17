@@ -52,6 +52,7 @@
     <Compile Include="MethodFilterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensionsTests.cs" />
+    <Compile Include="SelfTestConvention.cs" />
     <Compile Include="ShouldBeUnreachableException.cs" />
     <Compile Include="StubListener.cs" />
     <Compile Include="DefaultConventionTests.cs" />

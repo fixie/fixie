@@ -6,7 +6,7 @@ namespace Fixie.Tests.ClassFixtures
     {
         public void ShouldPassUponSuccessfulExecution()
         {
-            var fixture = new ClassFixture(typeof(PassFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(PassFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             fixture.Execute(listener);
@@ -17,7 +17,7 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
         {
-            var fixture = new ClassFixture(typeof(FailFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(FailFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             fixture.Execute(listener);
@@ -29,7 +29,7 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldPassOrFailCasesIndividually()
         {
-            var fixture = new ClassFixture(typeof(PassFailFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(PassFailFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             fixture.Execute(listener);

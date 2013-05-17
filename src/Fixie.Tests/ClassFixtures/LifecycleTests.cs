@@ -10,7 +10,7 @@ namespace Fixie.Tests.ClassFixtures
     {
         public void ShouldInvokeCaseMethodsByDefault()
         {
-            var convention = new LifecycleConvention();
+            var convention = new SelfTestConvention();
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -25,7 +25,7 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldSupportReplacingTheCaseExecutionBehavior()
         {
-            var convention = new LifecycleConvention
+            var convention = new SelfTestConvention
             {
                 CaseExecutionBehavior = new SkipCase()
             };
@@ -43,7 +43,7 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldSupportAugmentingTheCaseExecutionBehavior()
         {
-            var convention = new LifecycleConvention();
+            var convention = new SelfTestConvention();
             convention.CaseExecutionBehavior = new BeforeAfter("SetUp", convention.CaseExecutionBehavior, "TearDown");
 
             OutputFromSampleFixture(convention).ShouldEqual(
@@ -127,8 +127,6 @@ namespace Fixie.Tests.ClassFixtures
                 Console.WriteLine(after);
             }
         }
-
-        class LifecycleConvention : DefaultConvention { }
 
         class RedirectedConsole : IDisposable
         {

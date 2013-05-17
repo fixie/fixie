@@ -8,7 +8,7 @@ namespace Fixie.Tests.ClassFixtures
     {
         public void ShouldPassUponSuccessfulAsyncExecution()
         {
-            var fixture = new ClassFixture(typeof(AwaitThenPassFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(AwaitThenPassFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             fixture.Execute(listener);
@@ -19,7 +19,7 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
-            var fixture = new ClassFixture(typeof(AwaitThenFailFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(AwaitThenFailFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             fixture.Execute(listener);
@@ -32,7 +32,7 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
         {
-            var fixture = new ClassFixture(typeof(AwaitOnTaskThatThrowsFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(AwaitOnTaskThatThrowsFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             fixture.Execute(listener);
@@ -43,7 +43,7 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
         {
-            var fixture = new ClassFixture(typeof(FailBeforeAwaitFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(FailBeforeAwaitFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             fixture.Execute(listener);
@@ -55,7 +55,7 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailUnsupportedAsyncVoidCases()
         {
-            var fixture = new ClassFixture(typeof(UnsupportedAsyncVoidFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(UnsupportedAsyncVoidFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             fixture.Execute(listener);

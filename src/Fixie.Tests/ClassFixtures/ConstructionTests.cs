@@ -7,7 +7,7 @@ namespace Fixie.Tests.ClassFixtures
     {
         public void ShouldConstructInstancePerCase()
         {
-            var fixture = new ClassFixture(typeof(ConstructibleFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(ConstructibleFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             ConstructibleFixture.ConstructionCount = 0;
@@ -19,7 +19,7 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailAllCasesWhenFixtureConstructorCannotBeInvoked()
         {
-            var fixture = new ClassFixture(typeof(CannotInvokeConstructorFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(CannotInvokeConstructorFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             fixture.Execute(listener);
@@ -31,7 +31,7 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailAllCasesWithOriginalExceptionWhenFixtureConstructorThrowsException()
         {
-            var fixture = new ClassFixture(typeof(ConstructorThrowsFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(ConstructorThrowsFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             fixture.Execute(listener);

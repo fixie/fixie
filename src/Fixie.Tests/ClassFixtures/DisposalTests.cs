@@ -7,7 +7,7 @@ namespace Fixie.Tests.ClassFixtures
     {
         public void ShouldDisposeFixtureInstancesWhenDisposable()
         {
-            var fixture = new ClassFixture(typeof(DisposableFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(DisposableFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             DisposableFixture.ConstructionCount = 0;
@@ -25,7 +25,7 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailCasesWhenDisposeThrowsExceptionsWithoutSuppressingAnyExceptions()
         {
-            var fixture = new ClassFixture(typeof(DisposeThrowsFixture), new DefaultConvention());
+            var fixture = new ClassFixture(typeof(DisposeThrowsFixture), new SelfTestConvention());
             var listener = new StubListener();
 
             fixture.Execute(listener);

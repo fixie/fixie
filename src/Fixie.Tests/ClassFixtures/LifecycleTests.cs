@@ -66,10 +66,10 @@ namespace Fixie.Tests.ClassFixtures
             using (var log = new StringWriter())
             using (new RedirectedConsole(log))
             {
-                var fixture = new ClassFixture(typeof(SampleFixture), convention);
+                var fixture = new ClassFixture();
                 var listener = new StubListener();
 
-                fixture.Execute(listener);
+                fixture.Execute(typeof(SampleFixture), convention, listener);
 
                 return log.ToString();
             }

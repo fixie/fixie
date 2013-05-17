@@ -7,22 +7,22 @@ namespace Fixie.Tests.ClassFixtures
     {
         public void ShouldConstructInstancePerCase()
         {
-            var fixture = new ClassFixture(typeof(ConstructibleFixture), new SelfTestConvention());
+            var fixture = new ClassFixture();
             var listener = new StubListener();
 
             ConstructibleFixture.ConstructionCount = 0;
 
-            fixture.Execute(listener);
+            fixture.Execute(typeof(ConstructibleFixture), new SelfTestConvention(), listener);
 
             ConstructibleFixture.ConstructionCount.ShouldEqual(2);
         }
 
         public void ShouldFailAllCasesWhenFixtureConstructorCannotBeInvoked()
         {
-            var fixture = new ClassFixture(typeof(CannotInvokeConstructorFixture), new SelfTestConvention());
+            var fixture = new ClassFixture();
             var listener = new StubListener();
 
-            fixture.Execute(listener);
+            fixture.Execute(typeof(CannotInvokeConstructorFixture), new SelfTestConvention(), listener);
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.ConstructionTests+CannotInvokeConstructorFixture.UnreachableCaseA failed: No parameterless constructor defined for this object.",
@@ -31,10 +31,10 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailAllCasesWithOriginalExceptionWhenFixtureConstructorThrowsException()
         {
-            var fixture = new ClassFixture(typeof(ConstructorThrowsFixture), new SelfTestConvention());
+            var fixture = new ClassFixture();
             var listener = new StubListener();
 
-            fixture.Execute(listener);
+            fixture.Execute(typeof(ConstructorThrowsFixture), new SelfTestConvention(), listener);
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.ConstructionTests+ConstructorThrowsFixture.UnreachableCaseA failed: Exception From Constructor",

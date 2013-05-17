@@ -8,10 +8,10 @@ namespace Fixie.Tests.ClassFixtures
     {
         public void ShouldPassUponSuccessfulAsyncExecution()
         {
-            var fixture = new ClassFixture(typeof(AwaitThenPassFixture), new SelfTestConvention());
+            var fixture = new ClassFixture();
             var listener = new StubListener();
 
-            fixture.Execute(listener);
+            fixture.Execute(typeof(AwaitThenPassFixture), new SelfTestConvention(), listener);
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.AsyncCaseTests+AwaitThenPassFixture.Test passed.");
@@ -19,10 +19,10 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
-            var fixture = new ClassFixture(typeof(AwaitThenFailFixture), new SelfTestConvention());
+            var fixture = new ClassFixture();
             var listener = new StubListener();
 
-            fixture.Execute(listener);
+            fixture.Execute(typeof(AwaitThenFailFixture), new SelfTestConvention(), listener);
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.AsyncCaseTests+AwaitThenFailFixture.Test failed: Assert.Equal() Failure" + Environment.NewLine +
@@ -32,10 +32,10 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
         {
-            var fixture = new ClassFixture(typeof(AwaitOnTaskThatThrowsFixture), new SelfTestConvention());
+            var fixture = new ClassFixture();
             var listener = new StubListener();
 
-            fixture.Execute(listener);
+            fixture.Execute(typeof(AwaitOnTaskThatThrowsFixture), new SelfTestConvention(), listener);
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.AsyncCaseTests+AwaitOnTaskThatThrowsFixture.Test failed: Attempted to divide by zero.");
@@ -43,10 +43,10 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
         {
-            var fixture = new ClassFixture(typeof(FailBeforeAwaitFixture), new SelfTestConvention());
+            var fixture = new ClassFixture();
             var listener = new StubListener();
 
-            fixture.Execute(listener);
+            fixture.Execute(typeof(FailBeforeAwaitFixture), new SelfTestConvention(), listener);
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.AsyncCaseTests+FailBeforeAwaitFixture.Test failed: Exception of type " +
@@ -55,10 +55,10 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailUnsupportedAsyncVoidCases()
         {
-            var fixture = new ClassFixture(typeof(UnsupportedAsyncVoidFixture), new SelfTestConvention());
+            var fixture = new ClassFixture();
             var listener = new StubListener();
 
-            fixture.Execute(listener);
+            fixture.Execute(typeof(UnsupportedAsyncVoidFixture), new SelfTestConvention(), listener);
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.AsyncCaseTests+UnsupportedAsyncVoidFixture.Test failed: " +

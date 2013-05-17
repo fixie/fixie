@@ -5,39 +5,27 @@ namespace Fixie
 {
     public class ClassFixture
     {
-        readonly Type fixtureClass;
-        readonly Convention convention;
-
-        public ClassFixture(Type fixtureClass, Convention convention)
-        {
-            this.fixtureClass = fixtureClass;
-            this.convention = convention;
-        }
-
-        public void Execute(Listener listener)
+        public void Execute(Type fixtureClass, Convention convention, Listener listener)
         {
             foreach (var caseMethod in convention.CaseMethods(fixtureClass))
-                Lifecycle(caseMethod, listener);
-        }
-
-        void Lifecycle(MethodInfo caseMethod, Listener listener)
-        {
-            var @case = fixtureClass.FullName + "." + caseMethod.Name;
-
-            var exceptions = new ExceptionList();
-
-            object instance;
-
-            if (TryConstruct(fixtureClass, exceptions, out instance))
             {
-                convention.CaseExecutionBehavior.Execute(caseMethod, instance, exceptions);
-                Dispose(instance, exceptions);
-            }
+                var @case = fixtureClass.FullName + "." + caseMethod.Name;
 
-            if (exceptions.Any())
-                listener.CaseFailed(@case, exceptions.ToArray());
-            else
-                listener.CasePassed(@case);
+                var exceptions = new ExceptionList();
+
+                object instance;
+
+                if (TryConstruct(fixtureClass, exceptions, out instance))
+                {
+                    convention.CaseExecutionBehavior.Execute(caseMethod, instance, exceptions);
+                    Dispose(instance, exceptions);
+                }
+
+                if (exceptions.Any())
+                    listener.CaseFailed(@case, exceptions.ToArray());
+                else
+                    listener.CasePassed(@case);
+            }
         }
 
         static bool TryConstruct(Type fixtureClass, ExceptionList exceptions, out object instance)

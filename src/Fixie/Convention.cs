@@ -31,9 +31,9 @@ namespace Fixie
         {
             foreach (var fixtureClass in FixtureClasses(candidateTypes))
             {
-                var classExecutionBehavior = new ClassFixture(fixtureClass, this);
+                var classExecutionBehavior = new ClassFixture();
 
-                classExecutionBehavior.Execute(listener);
+                classExecutionBehavior.Execute(fixtureClass, this, listener);
             }
         }
     }

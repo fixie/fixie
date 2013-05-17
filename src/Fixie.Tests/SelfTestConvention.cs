@@ -6,8 +6,7 @@
         {
             Fixtures
                 .Where(fixtureClass => fixtureClass.IsNestedPrivate)
-                .NameEndsWith("Fixture")
-                .HasDefaultConstructor();
+                .NameEndsWith("Fixture");
 
             Cases
                 .Where(method => method.Void() || method.Async())

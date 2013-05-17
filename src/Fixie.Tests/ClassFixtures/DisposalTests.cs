@@ -7,13 +7,12 @@ namespace Fixie.Tests.ClassFixtures
     {
         public void ShouldDisposeFixtureInstancesWhenDisposable()
         {
-            var fixture = new ClassFixture();
             var listener = new StubListener();
 
             DisposableFixture.ConstructionCount = 0;
             DisposableFixture.DisposalCount = 0;
 
-            fixture.Execute(typeof(DisposableFixture), new SelfTestConvention(), listener);
+            new SelfTestConvention().Execute(listener, typeof(DisposableFixture));
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.DisposalTests+DisposableFixture.FailingCase failed: Failing Case",
@@ -25,10 +24,9 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailCasesWhenDisposeThrowsExceptionsWithoutSuppressingAnyExceptions()
         {
-            var fixture = new ClassFixture();
             var listener = new StubListener();
 
-            fixture.Execute(typeof(DisposeThrowsFixture), new SelfTestConvention(), listener);
+            new SelfTestConvention().Execute(listener, typeof(DisposeThrowsFixture));
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.DisposalTests+DisposeThrowsFixture.FailingCase failed: Failing Case" + Environment.NewLine +

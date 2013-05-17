@@ -6,10 +6,9 @@ namespace Fixie.Tests.ClassFixtures
     {
         public void ShouldPassUponSuccessfulExecution()
         {
-            var fixture = new ClassFixture();
             var listener = new StubListener();
 
-            fixture.Execute(typeof(PassFixture), new SelfTestConvention(), listener);
+            new SelfTestConvention().Execute(listener , typeof(PassFixture));
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.CaseTests+PassFixture.Pass passed.");
@@ -17,10 +16,9 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
         {
-            var fixture = new ClassFixture();
             var listener = new StubListener();
 
-            fixture.Execute(typeof(FailFixture), new SelfTestConvention(), listener);
+            new SelfTestConvention().Execute(listener, typeof(FailFixture));
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.CaseTests+FailFixture.Fail failed: Exception of type " +
@@ -29,10 +27,9 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldPassOrFailCasesIndividually()
         {
-            var fixture = new ClassFixture();
             var listener = new StubListener();
 
-            fixture.Execute(typeof(PassFailFixture), new SelfTestConvention(), listener);
+            new SelfTestConvention().Execute(listener, typeof(PassFailFixture));
 
             listener.ShouldHaveEntries(
                 "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.FailingCaseA failed: Failing Case A",

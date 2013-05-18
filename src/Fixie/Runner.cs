@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fixie.Conventions;
@@ -24,42 +25,63 @@ namespace Fixie
             return RunTypes(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
-        public Result RunType(Type type)
+        public Result RunType(Assembly assembly, Type type)
         {
             return RunTypes(type.Assembly, type);
         }
 
-        public Result RunMethod(MethodInfo method)
+        public Result RunMethod(Assembly assembly, MethodInfo method)
         {
-            var convention = new DefaultConvention();
+            var conventions = GetConventions(assembly);
 
-            convention.Cases.Where(m => m == method);
+            foreach (var convention in conventions)
+                convention.Cases.Where(m => m == method);
 
             var type = method.DeclaringType;
 
-            return Run(type.Assembly, convention, type);
+            return Run(assembly, conventions, type);
         }
 
-        private Result RunTypes(Assembly context, params Type[] types)
+        private Result RunTypes(Assembly assembly, params Type[] types)
         {
-            var convention = new DefaultConvention();
-
-            return Run(context, convention, types);
+            return Run(assembly, GetConventions(assembly), types);
         }
 
-        Result Run(Assembly context, Convention convention, params Type[] candidateTypes)
+        static Convention[] GetConventions(Assembly assembly)
         {
-            var resultListener = new ResultListener(listener);
+            var customConventions = assembly
+                .GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(Convention)))
+                .Select(t => (Convention)Activator.CreateInstance(t))
+                .ToArray();
 
-            resultListener.RunStarted(context);
+            if (customConventions.Any())
+                return customConventions;
 
-            convention.Execute(resultListener, candidateTypes);
+            return new[] { (Convention) new DefaultConvention() };
+        }
 
-            var result = resultListener.Result;
+        Result Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
+        {
+            var combinedResult = new Result(0, 0);
 
-            resultListener.RunComplete(result);
+            foreach (var convention in conventions)
+            {
+                var resultListener = new ResultListener(listener);
 
-            return result;
+                resultListener.RunStarted(assembly);
+
+                convention.Execute(resultListener, candidateTypes);
+
+                var result = resultListener.Result;
+
+                resultListener.RunComplete(result);
+
+                combinedResult = new Result(combinedResult.Passed + result.Passed,
+                                            combinedResult.Failed + result.Failed);
+            }
+
+            return combinedResult;
         }
 
         class ResultListener : Listener

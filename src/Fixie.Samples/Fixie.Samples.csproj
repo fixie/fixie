@@ -42,7 +42,14 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Calculator.cs" />
+    <Compile Include="NUnitStyle\CalculatorTests.cs" />
+    <Compile Include="NUnitStyle\CustomConvention.cs" />
+    <Compile Include="NUnitStyle\Attributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="xUnitStyle\CalculatorTests.cs" />
+    <Compile Include="xUnitStyle\CustomConvention.cs" />
+    <Compile Include="xUnitStyle\FactAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

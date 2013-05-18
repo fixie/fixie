@@ -1,4 +1,5 @@
 ﻿using System;
+using Fixie.Conventions;
 using Should;
 
 namespace Fixie.Tests.ClassFixtures

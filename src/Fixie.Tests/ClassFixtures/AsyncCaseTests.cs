@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Fixie.Conventions;
 using Should;
 
 namespace Fixie.Tests.ClassFixtures

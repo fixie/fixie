@@ -5,9 +5,9 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public abstract class Convention
+    public class Convention
     {
-        protected Convention()
+        public Convention()
         {
             Fixtures = new ClassFilter();
             Cases = new MethodFilter().Where(m => !m.IsDispose());

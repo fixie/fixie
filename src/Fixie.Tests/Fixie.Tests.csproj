@@ -55,7 +55,6 @@
     <Compile Include="SelfTestConvention.cs" />
     <Compile Include="ShouldBeUnreachableException.cs" />
     <Compile Include="StubListener.cs" />
-    <Compile Include="Conventions\DefaultConventionTests.cs" />
     <Compile Include="Conventions\ConventionTests.cs" />
     <Compile Include="Conventions\ClassFilterTests.cs" />
   </ItemGroup>

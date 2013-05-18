@@ -4,7 +4,7 @@ using Fixie.Conventions;
 
 namespace Fixie.Behaviors
 {
-    public class CreateInstancePerCase
+    public class CreateInstancePerCase : TypeBehavior
     {
         public void Execute(Type fixtureClass, Convention convention, Listener listener)
         {

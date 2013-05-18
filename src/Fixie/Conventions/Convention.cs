@@ -12,11 +12,13 @@ namespace Fixie.Conventions
             Fixtures = new ClassFilter();
             Cases = new MethodFilter().Where(m => !m.IsDispose());
             CaseExecutionBehavior = new Invoke();
+            FixtureExecutionBehavior = new CreateInstancePerCase();
         }
 
         public ClassFilter Fixtures { get; private set; }
         public MethodFilter Cases { get; private set; }
         public MethodBehavior CaseExecutionBehavior { get; set; }
+        public TypeBehavior FixtureExecutionBehavior { get; set; }
 
         public IEnumerable<Type> FixtureClasses(Type[] candidates)
         {
@@ -31,11 +33,7 @@ namespace Fixie.Conventions
         public void Execute(Listener listener, params Type[] candidateTypes)
         {
             foreach (var fixtureClass in FixtureClasses(candidateTypes))
-            {
-                var classExecutionBehavior = new CreateInstancePerCase();
-
-                classExecutionBehavior.Execute(fixtureClass, this, listener);
-            }
+                FixtureExecutionBehavior.Execute(fixtureClass, this, listener);
         }
     }
 }

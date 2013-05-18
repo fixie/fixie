@@ -47,7 +47,7 @@
     <Compile Include="ClassFixtures\CaseTests.cs" />
     <Compile Include="ClassFixtures\DisposalTests.cs" />
     <Compile Include="ClassFixtures\ConstructionTests.cs" />
-    <Compile Include="ClassFixtures\LifecycleTests.cs" />
+    <Compile Include="ClassFixtures\LifecycleHookTests.cs" />
     <Compile Include="Behaviors\InvokeTests.cs" />
     <Compile Include="Conventions\MethodFilterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -16,11 +16,26 @@ namespace Fixie.Tests
             Method("ReturnsInt").Void().ShouldBeFalse();
         }
 
+        public void CanDetectClassAttributes()
+        {
+            typeof(AttributeSample).Has<InheritedAttribute>().ShouldBeFalse();
+            typeof(AttributeSample).Has<NonInheritedAttribute>().ShouldBeTrue();
+            typeof(AttributeSample).Has<SerializableAttribute>().ShouldBeFalse();
+
+            typeof(AttributeSample).HasOrInherits<InheritedAttribute>().ShouldBeTrue();
+            typeof(AttributeSample).HasOrInherits<NonInheritedAttribute>().ShouldBeTrue();
+            typeof(AttributeSample).HasOrInherits<SerializableAttribute>().ShouldBeFalse();
+        }
+
         public void CanDetectMethodAttributes()
         {
-            Method("ReturnsVoid").Has<SampleAttribute>().ShouldBeFalse();
-            Method("ReturnsInt").Has<SampleAttribute>().ShouldBeFalse();
-            Method("Async").Has<SampleAttribute>().ShouldBeTrue();
+            Method<AttributeSample>("AttributeOnBaseDeclaration").Has<SampleMethodAttribute>().ShouldBeFalse();
+            Method<AttributeSample>("AttributeOnOverrideDeclaration").Has<SampleMethodAttribute>().ShouldBeTrue();
+            Method<AttributeSample>("NoAttrribute").Has<SampleMethodAttribute>().ShouldBeFalse();
+
+            Method<AttributeSample>("AttributeOnBaseDeclaration").HasOrInherits<SampleMethodAttribute>().ShouldBeTrue();
+            Method<AttributeSample>("AttributeOnOverrideDeclaration").HasOrInherits<SampleMethodAttribute>().ShouldBeTrue();
+            Method<AttributeSample>("NoAttrribute").HasOrInherits<SampleMethodAttribute>().ShouldBeFalse();
         }
 
         public void CanDetectAsyncDeclarations()
@@ -56,11 +71,31 @@ namespace Fixie.Tests
             opCode.IsInNamespace("System.Reflection.Typo").ShouldBeFalse();
         }
 
-        class SampleAttribute : Attribute { }
-
         void ReturnsVoid() { }
         int ReturnsInt() { return 0; }
-        [Sample] async Task Async() { await Task.Run(() => { }); }
+        async Task Async() { await Task.Run(() => { }); }
+
+        class SampleMethodAttribute : Attribute { }
+        class InheritedAttribute : Attribute { }
+        class NonInheritedAttribute : Attribute { }
+
+        [Inherited]
+        abstract class AttributeSampleBase
+        {
+            [SampleMethod]
+            public virtual void AttributeOnBaseDeclaration() { }
+            public virtual void AttributeOnOverrideDeclaration() { }
+            public virtual void NoAttrribute() { }
+        }
+
+        [NonInheritedAttribute]
+        class AttributeSample : AttributeSampleBase
+        {
+            public override void AttributeOnBaseDeclaration() { }
+            [SampleMethod]
+            public override void AttributeOnOverrideDeclaration() { }
+            public override void NoAttrribute() { }
+        }
 
         class NonDisposableWithDisposeMethod
         {

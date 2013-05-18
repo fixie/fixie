@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -13,9 +12,24 @@ namespace Fixie
             return method.ReturnType == typeof(void);
         }
 
+        public static bool Has<TAttribute>(this Type type) where TAttribute : Attribute
+        {
+            return type.GetCustomAttributes<TAttribute>(false).Any();
+        }
+
+        public static bool HasOrInherits<TAttribute>(this Type type) where TAttribute : Attribute
+        {
+            return type.GetCustomAttributes<TAttribute>(true).Any();
+        }
+
         public static bool Has<TAttribute>(this MethodInfo method) where TAttribute : Attribute
         {
             return method.GetCustomAttributes<TAttribute>(false).Any();
+        }
+
+        public static bool HasOrInherits<TAttribute>(this MethodInfo method) where TAttribute : Attribute
+        {
+            return method.GetCustomAttributes<TAttribute>(true).Any();
         }
 
         public static bool Async(this MethodInfo method)

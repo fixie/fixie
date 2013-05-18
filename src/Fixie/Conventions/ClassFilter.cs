@@ -21,11 +21,6 @@ namespace Fixie.Conventions
             return this;
         }
 
-        public ClassFilter HasDefaultConstructor()
-        {
-            return Where(type => type.GetConstructor(Type.EmptyTypes) != null);
-        }
-
         public ClassFilter NameEndsWith(string suffix)
         {
             return Where(type => type.Name.EndsWith(suffix));

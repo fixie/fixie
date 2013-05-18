@@ -37,14 +37,6 @@ namespace Fixie.Tests.Conventions
                 .ShouldEqual(typeof(NoDefaultConstructor));
         }
 
-        public void CanFilterToClassesWithDefaultConstructors()
-        {
-            new ClassFilter()
-                .HasDefaultConstructor()
-                .Filter(candidateTypes)
-                .ShouldEqual(typeof(DefaultConstructor));
-        }
-
         public void CanFilterByTypeNameSuffix()
         {
             new ClassFilter()

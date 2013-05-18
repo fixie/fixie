@@ -5,8 +5,7 @@
         public DefaultConvention()
         {
             Fixtures
-                .NameEndsWith("Tests")
-                .HasDefaultConstructor();
+                .NameEndsWith("Tests");
 
             Cases
                 .Where(method => method.Void() || method.Async())

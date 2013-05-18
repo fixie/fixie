@@ -7,7 +7,7 @@ namespace Fixie.Tests.Conventions
 {
     public class DefaultConventionTests
     {
-        public void ShouldTreatConstructibleClassesFollowingNamingConventionAsFixtures()
+        public void ShouldTreatConcreteClassesFollowingNamingConventionAsFixtures()
         {
             var candidateTypes = new[]
             {
@@ -29,7 +29,8 @@ namespace Fixie.Tests.Conventions
 
             defaultConvention.FixtureClasses(candidateTypes)
                              .Select(x => x.Name)
-                             .ShouldEqual("PublicTests", "OtherPublicTests", "PrivateTests", "OtherPrivateTests");
+                             .ShouldEqual("PublicTests", "OtherPublicTests", "PublicWithNoDefaultConstructorTests",
+                                          "PrivateTests", "OtherPrivateTests", "PrivateWithNoDefaultConstructorTests");
         }
 
         public interface PublicInterfaceTests { }

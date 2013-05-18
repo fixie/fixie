@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using Fixie.Conventions;
 
-namespace Fixie.Tests
+namespace Fixie.Tests.Conventions
 {
     public class MethodFilterTests
     {

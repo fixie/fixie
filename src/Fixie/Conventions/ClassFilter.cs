@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Fixie
+namespace Fixie.Conventions
 {
     public class ClassFilter
     {

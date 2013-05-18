@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fixie.Tests
+namespace Fixie.Tests.Conventions
 {
     public class ConventionTests
     {
@@ -11,10 +11,10 @@ namespace Fixie.Tests
 
             convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassFixture), typeof(int), typeof(PassFailFixture));
 
-            listener.ShouldHaveEntries("Fixie.Tests.ConventionTests+PassFailFixture.Pass passed.",
-                                       "Fixie.Tests.ConventionTests+PassFailFixture.Fail failed: Exception of type 'System.Exception' was thrown.",
-                                       "Fixie.Tests.ConventionTests+PassFixture.PassA passed.",
-                                       "Fixie.Tests.ConventionTests+PassFixture.PassB passed.");
+            listener.ShouldHaveEntries("Fixie.Tests.Conventions.ConventionTests+PassFailFixture.Pass passed.",
+                                       "Fixie.Tests.Conventions.ConventionTests+PassFailFixture.Fail failed: Exception of type 'System.Exception' was thrown.",
+                                       "Fixie.Tests.Conventions.ConventionTests+PassFixture.PassA passed.",
+                                       "Fixie.Tests.Conventions.ConventionTests+PassFixture.PassB passed.");
         }
 
         class SampleIrrelevantClass

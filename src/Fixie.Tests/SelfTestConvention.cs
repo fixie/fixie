@@ -1,4 +1,6 @@
-﻿namespace Fixie.Tests
+﻿using Fixie.Conventions;
+
+namespace Fixie.Tests
 {
     public class SelfTestConvention : Convention
     {

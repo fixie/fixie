@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Reflection;
+using Fixie.Conventions;
 
-namespace Fixie
+namespace Fixie.Behaviors
 {
-    public class ClassFixture
+    public class CreateInstancePerCase
     {
         public void Execute(Type fixtureClass, Convention convention, Listener listener)
         {

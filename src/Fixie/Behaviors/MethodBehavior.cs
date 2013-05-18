@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Fixie
+namespace Fixie.Behaviors
 {
     public interface MethodBehavior
     {

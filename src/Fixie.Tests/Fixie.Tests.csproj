@@ -48,16 +48,16 @@
     <Compile Include="ClassFixtures\DisposalTests.cs" />
     <Compile Include="ClassFixtures\ConstructionTests.cs" />
     <Compile Include="ClassFixtures\LifecycleTests.cs" />
-    <Compile Include="InvokeTests.cs" />
-    <Compile Include="MethodFilterTests.cs" />
+    <Compile Include="Behaviors\InvokeTests.cs" />
+    <Compile Include="Conventions\MethodFilterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensionsTests.cs" />
     <Compile Include="SelfTestConvention.cs" />
     <Compile Include="ShouldBeUnreachableException.cs" />
     <Compile Include="StubListener.cs" />
-    <Compile Include="DefaultConventionTests.cs" />
-    <Compile Include="ConventionTests.cs" />
-    <Compile Include="ClassFilterTests.cs" />
+    <Compile Include="Conventions\DefaultConventionTests.cs" />
+    <Compile Include="Conventions\ConventionTests.cs" />
+    <Compile Include="Conventions\ClassFilterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie\Fixie.csproj">

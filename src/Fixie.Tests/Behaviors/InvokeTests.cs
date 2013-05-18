@@ -2,9 +2,10 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Fixie.Behaviors;
 using Should;
 
-namespace Fixie.Tests
+namespace Fixie.Tests.Behaviors
 {
     public class InvokeTests
     {
@@ -36,7 +37,7 @@ namespace Fixie.Tests
 
             invoked.ShouldBeTrue();
 
-            ExpectException("FailureException", "Exception of type 'Fixie.Tests.InvokeTests+FailureException' was thrown.");
+            ExpectException("FailureException", "Exception of type 'Fixie.Tests.Behaviors.InvokeTests+FailureException' was thrown.");
         }
 
         public void ShouldInvokeAsyncMethods()
@@ -74,7 +75,7 @@ namespace Fixie.Tests
 
             invoked.ShouldBeTrue();
 
-            ExpectException("FailureException", "Exception of type 'Fixie.Tests.InvokeTests+FailureException' was thrown.");
+            ExpectException("FailureException", "Exception of type 'Fixie.Tests.Behaviors.InvokeTests+FailureException' was thrown.");
         }
 
         public void ShouldLogExceptionWhenMethodIsUnsupportedAsyncVoid()

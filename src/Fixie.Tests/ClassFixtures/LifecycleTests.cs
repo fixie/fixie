@@ -2,6 +2,8 @@
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Fixie.Behaviors;
+using Fixie.Conventions;
 using Should;
 
 namespace Fixie.Tests.ClassFixtures

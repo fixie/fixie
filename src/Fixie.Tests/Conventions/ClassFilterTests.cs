@@ -1,6 +1,7 @@
 ﻿using System;
+using Fixie.Conventions;
 
-namespace Fixie.Tests
+namespace Fixie.Tests.Conventions
 {
     public class ClassFilterTests
     {
@@ -30,7 +31,7 @@ namespace Fixie.Tests
         public void ShouldFilterByAllSpecifiedConditions()
         {
             new ClassFilter()
-                .Where(type => type.Namespace == "Fixie.Tests")
+                .Where(type => type.IsInNamespace("Fixie.Tests"))
                 .Where(type => type.Name.StartsWith("No"))
                 .Filter(candidateTypes)
                 .ShouldEqual(typeof(NoDefaultConstructor));

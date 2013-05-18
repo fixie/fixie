@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Fixie.Behaviors;
 
-namespace Fixie
+namespace Fixie.Conventions
 {
     public abstract class Convention
     {
@@ -31,7 +32,7 @@ namespace Fixie
         {
             foreach (var fixtureClass in FixtureClasses(candidateTypes))
             {
-                var classExecutionBehavior = new ClassFixture();
+                var classExecutionBehavior = new CreateInstancePerCase();
 
                 classExecutionBehavior.Execute(fixtureClass, this, listener);
             }

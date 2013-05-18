@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Fixie
+namespace Fixie.Behaviors
 {
     public class Invoke : MethodBehavior
     {

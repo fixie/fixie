@@ -26,7 +26,7 @@ task Package -depends Test {
 
 task Test -depends Compile {
     $fixieRunner = resolve-path ".\build\$project.Console.exe"
-    exec { & $fixieRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll }
+    exec { & $fixieRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll $src\$project.Samples\bin\$configuration\$project.Samples.dll }
 }
 
 task Compile -depends CommonAssemblyInfo {

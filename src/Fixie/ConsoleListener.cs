@@ -33,6 +33,7 @@ namespace Fixie
             var version = assemblyName.Version;
 
             Console.WriteLine("{0} passed, {1} failed ({2} {3}).", result.Passed, result.Failed, name, version);
+            Console.WriteLine();
         }
     }
 }

@@ -8,57 +8,59 @@ namespace Fixie.Tests.Conventions
     {
         public void ConsidersOnlyPublicInstanceMethods()
         {
-            var methods =
-                new MethodFilter()
-                    .Filter(typeof(Sample));
-
-            methods
+            new MethodFilter()
+                .Filter(typeof(Sample))
                 .OrderBy(method => method.Name)
                 .Select(method => method.Name)
-                .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn", "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
+                .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
+                             "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
         }
 
         public void ShouldFilterByAllSpecifiedConditions()
         {
-            var methods =
-                new MethodFilter()
-                    .Where(method => method.Name.Contains("Void"))
-                    .Where(method => method.Name.Contains("No"))
-                    .Filter(typeof(Sample));
-
-            methods
+            new MethodFilter()
+                .Where(method => method.Name.Contains("Void"))
+                .Where(method => method.Name.Contains("No"))
+                .Filter(typeof(Sample))
                 .Select(method => method.Name)
                 .ShouldEqual("PublicInstanceNoArgsVoid");
         }
 
         public void CanFilterToMethodsWithZeroParameters()
         {
-            var methods =
-                new MethodFilter()
-                    .ZeroParameters()
-                    .Filter(typeof(Sample));
-
-            methods
+            new MethodFilter()
+                .ZeroParameters()
+                .Filter(typeof(Sample))
                 .OrderBy(method => method.Name)
                 .Select(method => method.Name)
                 .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn");
         }
 
-        public void CanFilterToMethodsWithAttribute()
+        public void CanFilterToMethodsWithAttributes()
         {
-            var methods =
-                new MethodFilter()
-                    .Has<SampleAttribute>()
-                    .Filter(typeof(Sample));
-
-            methods
+            new MethodFilter()
+                .Has<SampleAttribute>()
+                .Filter(typeof(Sample))
                 .Select(method => method.Name)
                 .ShouldEqual("PublicInstanceWithArgsWithReturn");
+
+            new MethodFilter()
+                .HasOrInherits<SampleAttribute>()
+                .Filter(typeof(Sample))
+                .OrderBy(method => method.Name)
+                .Select(method => method.Name)
+                .ShouldEqual("PublicInstanceNoArgsWithReturn", "PublicInstanceWithArgsWithReturn");
         }
 
         class SampleAttribute : Attribute { }
 
-        class Sample
+        class SampleBase
+        {
+            [Sample]
+            public virtual int PublicInstanceNoArgsWithReturn() { return 0; }
+        }
+
+        class Sample : SampleBase
         {
             public static int PublicStaticWithArgsWithReturn(int x) { return 0; }
             public static int PublicStaticNoArgsWithReturn() { return 0; }
@@ -67,7 +69,7 @@ namespace Fixie.Tests.Conventions
 
             [Sample]
             public int PublicInstanceWithArgsWithReturn(int x) { return 0; }
-            public int PublicInstanceNoArgsWithReturn() { return 0; }
+            public override int PublicInstanceNoArgsWithReturn() { return 0; }
             public void PublicInstanceWithArgsVoid(int x) { }
             public void PublicInstanceNoArgsVoid() { }
 

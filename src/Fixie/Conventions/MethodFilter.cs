@@ -27,6 +27,11 @@ namespace Fixie.Conventions
             return Where(method => method.Has<TAttribute>());
         }
 
+        public MethodFilter HasOrInherits<TAttribute>() where TAttribute : Attribute
+        {
+            return Where(method => method.HasOrInherits<TAttribute>());
+        }
+
         public MethodFilter ZeroParameters()
         {
             return Where(method => method.GetParameters().Length == 0);

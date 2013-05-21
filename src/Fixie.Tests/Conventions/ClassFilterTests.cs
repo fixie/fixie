@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Fixie.Conventions;
 
 namespace Fixie.Tests.Conventions
@@ -17,7 +18,9 @@ namespace Fixie.Tests.Conventions
                 typeof(DefaultConstructor),
                 typeof(NoDefaultConstructor),
                 typeof(String),
-                typeof(Interface)
+                typeof(Interface),
+                typeof(AttributeSampleBase),
+                typeof(AttributeSample)
             };
         }
 
@@ -37,6 +40,22 @@ namespace Fixie.Tests.Conventions
                 .ShouldEqual(typeof(NoDefaultConstructor));
         }
 
+        public void CanFilterToClassesWithAttributes()
+        {
+            new ClassFilter()
+                    .Has<NonInheritedAttribute>()
+                    .Filter(candidateTypes)
+                    .Select(type => type.Name)
+                    .ShouldEqual("AttributeSample");
+
+            new ClassFilter()
+                    .HasOrInherits<InheritedAttribute>()
+                    .Filter(candidateTypes)
+                    .OrderBy(type => type.Name)
+                    .Select(type => type.Name)
+                    .ShouldEqual("AttributeSample", "AttributeSampleBase");
+        }
+
         public void CanFilterByTypeNameSuffix()
         {
             new ClassFilter()
@@ -49,5 +68,14 @@ namespace Fixie.Tests.Conventions
         class DefaultConstructor { }
         class NoDefaultConstructor { public NoDefaultConstructor(int arg) { } }
         interface Interface { }
+
+        class InheritedAttribute : Attribute { }
+        class NonInheritedAttribute : Attribute { }
+
+        [Inherited]
+        class AttributeSampleBase { }
+
+        [NonInheritedAttribute]
+        class AttributeSample : AttributeSampleBase { }
     }
 }

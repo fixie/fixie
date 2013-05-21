@@ -21,6 +21,16 @@ namespace Fixie.Conventions
             return this;
         }
 
+        public ClassFilter Has<TAttribute>() where TAttribute : Attribute
+        {
+            return Where(type => type.Has<TAttribute>());
+        }
+
+        public ClassFilter HasOrInherits<TAttribute>() where TAttribute : Attribute
+        {
+            return Where(type => type.HasOrInherits<TAttribute>());
+        }
+
         public ClassFilter NameEndsWith(string suffix)
         {
             return Where(type => type.Name.EndsWith(suffix));

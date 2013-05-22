@@ -28,7 +28,8 @@ namespace Fixie.Tests.Conventions
         {
             new ClassFilter()
                 .Filter(candidateTypes)
-                .ShouldEqual(typeof(DefaultConstructor), typeof(NoDefaultConstructor), typeof(String));
+                .ShouldEqual(typeof(DefaultConstructor), typeof(NoDefaultConstructor), typeof(String),
+                             typeof(AttributeSampleBase), typeof(AttributeSample));
         }
 
         public void ShouldFilterByAllSpecifiedConditions()
@@ -45,15 +46,13 @@ namespace Fixie.Tests.Conventions
             new ClassFilter()
                     .Has<NonInheritedAttribute>()
                     .Filter(candidateTypes)
-                    .Select(type => type.Name)
-                    .ShouldEqual("AttributeSample");
+                    .ShouldEqual(typeof(AttributeSample));
 
             new ClassFilter()
                     .HasOrInherits<InheritedAttribute>()
                     .Filter(candidateTypes)
                     .OrderBy(type => type.Name)
-                    .Select(type => type.Name)
-                    .ShouldEqual("AttributeSample", "AttributeSampleBase");
+                    .ShouldEqual(typeof(AttributeSample), typeof(AttributeSampleBase));
         }
 
         public void CanFilterByTypeNameSuffix()

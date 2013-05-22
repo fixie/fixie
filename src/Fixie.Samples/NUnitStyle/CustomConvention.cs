@@ -7,10 +7,10 @@ namespace Fixie.Samples.NUnitStyle
         public CustomConvention()
         {
             Fixtures
-                .Where(type => type.HasOrInherits<TestFixtureAttribute>());
+                .HasOrInherits<TestFixtureAttribute>();
 
             Cases
-                .Where(method => method.HasOrInherits<TestAttribute>());
+                .HasOrInherits<TestAttribute>();
         }
     }
 }

@@ -13,6 +13,11 @@ namespace Fixie
             exceptions.Add(exception);
         }
 
+        public void Add(ExceptionList exceptionList)
+        {
+            exceptions.AddRange(exceptionList.exceptions);
+        }
+
         public int Count
         {
             get { return exceptions.Count; }

@@ -5,9 +5,10 @@ namespace Fixie.Samples.NUnitStyle
     [TestFixture]
     public class CalculatorTests
     {
-        readonly Calculator calculator;
+        Calculator calculator;
 
-        public CalculatorTests()
+        [SetUp]
+        public void SetUp()
         {
             calculator = new Calculator();
         }
@@ -22,6 +23,11 @@ namespace Fixie.Samples.NUnitStyle
         public void ShouldSubtract()
         {
             calculator.Subtract(5, 3).ShouldEqual(2);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
         }
     }
 }

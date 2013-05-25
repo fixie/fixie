@@ -30,13 +30,13 @@ namespace Fixie.Samples.xUnitStyle
 
     public class CreateInstancePerCaseWithFixtureData : TypeBehavior
     {
-        public void Execute(Type testClass, Convention convention, Listener listener)
+        public void Execute(Type fixtureClass, Convention convention, Listener listener)
         {
-            var caseMethods = convention.CaseMethods(testClass).ToArray();
+            var caseMethods = convention.CaseMethods(fixtureClass).ToArray();
             var exceptionsByCase = caseMethods.ToDictionary(x => x, x => new ExceptionList());
 
             var classSetUpExceptions = new ExceptionList();
-            var fixtures = SetUpFixtureInstances(testClass, classSetUpExceptions);
+            var fixtures = SetUpFixtureInstances(fixtureClass, classSetUpExceptions);
 
             if (classSetUpExceptions.Any())
             {
@@ -51,7 +51,7 @@ namespace Fixie.Samples.xUnitStyle
 
                     object instance;
 
-                    if (TryConstruct(testClass, exceptions, out instance))
+                    if (TryConstruct(fixtureClass, exceptions, out instance))
                     {
                         bool injectionFailed = false;
                         foreach (var injectionMethod in fixtures.Keys)
@@ -88,7 +88,7 @@ namespace Fixie.Samples.xUnitStyle
 
             foreach (var caseMethod in caseMethods)
             {
-                var @case = testClass.FullName + "." + caseMethod.Name;
+                var @case = fixtureClass.FullName + "." + caseMethod.Name;
                 var exceptions = exceptionsByCase[caseMethod];
 
                 if (exceptions.Any())

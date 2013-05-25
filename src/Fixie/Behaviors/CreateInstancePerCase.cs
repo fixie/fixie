@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Fixie.Conventions;
 
@@ -8,11 +9,12 @@ namespace Fixie.Behaviors
     {
         public void Execute(Type fixtureClass, Convention convention, Listener listener)
         {
-            foreach (var caseMethod in convention.CaseMethods(fixtureClass))
-            {
-                var @case = fixtureClass.FullName + "." + caseMethod.Name;
+            var caseMethods = convention.CaseMethods(fixtureClass).ToArray();
+            var exceptionsByCase = caseMethods.ToDictionary(x => x, x => new ExceptionList());
 
-                var exceptions = new ExceptionList();
+            foreach (var caseMethod in caseMethods)
+            {
+                var exceptions = exceptionsByCase[caseMethod];
 
                 object instance;
 
@@ -21,6 +23,12 @@ namespace Fixie.Behaviors
                     convention.CaseExecutionBehavior.Execute(caseMethod, instance, exceptions);
                     Dispose(instance, exceptions);
                 }
+            }
+
+            foreach (var caseMethod in caseMethods)
+            {
+                var @case = fixtureClass.FullName + "." + caseMethod.Name;
+                var exceptions = exceptionsByCase[caseMethod];
 
                 if (exceptions.Any())
                     listener.CaseFailed(@case, exceptions.ToArray());

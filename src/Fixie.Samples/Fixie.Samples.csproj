@@ -50,6 +50,7 @@
     <Compile Include="xUnitStyle\CalculatorTests.cs" />
     <Compile Include="xUnitStyle\CustomConvention.cs" />
     <Compile Include="xUnitStyle\FactAttribute.cs" />
+    <Compile Include="xUnitStyle\IUseFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

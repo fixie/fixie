@@ -14,10 +14,14 @@ namespace Fixie.Samples.NUnitStyle
             Cases
                 .HasOrInherits<TestAttribute>();
 
+            var fixtureSetUps = new MethodFilter().HasOrInherits<TestFixtureSetUpAttribute>();
+            var fixtureTearDowns = new MethodFilter().HasOrInherits<TestFixtureTearDownAttribute>();
+
             var setUps = new MethodFilter().HasOrInherits<SetUpAttribute>();
             var tearDowns = new MethodFilter().HasOrInherits<TearDownAttribute>();
 
-            CaseExecutionBehavior = new SetUpTearDown(setUps, CaseExecutionBehavior, tearDowns);
+            CaseExecutionBehavior =
+                new SetUpTearDown(fixtureSetUps, new SetUpTearDown(setUps, CaseExecutionBehavior, tearDowns), fixtureTearDowns);
         }
     }
 

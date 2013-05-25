@@ -9,7 +9,7 @@ namespace Fixie.Samples.NUnitStyle
     public class CalculatorTests : IDisposable
     {
         Calculator calculator;
-        StringBuilder log;
+        readonly StringBuilder log;
 
         public CalculatorTests()
         {
@@ -59,6 +59,19 @@ namespace Fixie.Samples.NUnitStyle
         public void Dispose()
         {
             WhereAmI();
+            log.ToString().ShouldEqual(
+                new StringBuilder()
+                .AppendLine(".ctor")
+                .AppendLine("TestFixtureSetUp")
+                .AppendLine("SetUp")
+                .AppendLine("ShouldAdd")
+                .AppendLine("TearDown")
+                .AppendLine("SetUp")
+                .AppendLine("ShouldSubtract")
+                .AppendLine("TearDown")
+                .AppendLine("TestFixtureTearDown")
+                .AppendLine("Dispose")
+                .ToString());
         }
 
         private void Fail([CallerMemberName] string method = null)

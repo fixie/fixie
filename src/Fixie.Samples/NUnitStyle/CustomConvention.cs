@@ -1,44 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fixie.Behaviors;
 using Fixie.Conventions;
 
-namespace Fixie.Samples.NUnitStyle
+namespace Fixie.Samples
 {
-    public class CustomConvention : Convention
+    public delegate ExceptionList ClassAction(Type testClass);
+    public delegate ExceptionList InstanceAction(Type testClass, object instance);
+
+    public interface InstanceBehavior
     {
-        readonly MethodFilter fixtureSetUps = new MethodFilter().HasOrInherits<TestFixtureSetUpAttribute>();
-        readonly MethodFilter fixtureTearDowns = new MethodFilter().HasOrInherits<TestFixtureTearDownAttribute>();
-
-        readonly MethodFilter setUps = new MethodFilter().HasOrInherits<SetUpAttribute>();
-        readonly MethodFilter tearDowns = new MethodFilter().HasOrInherits<TearDownAttribute>();
-
-        public CustomConvention()
-        {
-            Fixtures
-                .HasOrInherits<TestFixtureAttribute>();
-
-            Cases
-                .HasOrInherits<TestAttribute>();
-
-            CaseExecutionBehavior = new SetUpTearDown(setUps, CaseExecutionBehavior, tearDowns);
-
-            FixtureExecutionBehavior = new CreateInstancePerFixture(fixtureSetUps, fixtureTearDowns);
-        }
+        void Execute(Type testClass, object instance, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention);
     }
 
-    public class CreateInstancePerFixture : TypeBehavior
+    public interface LifecycleBehavior
     {
-        readonly Invoke invoke;
-        readonly MethodFilter fixtureSetUps;
-        readonly MethodFilter fixtureTearDowns;
+        void Execute(Type fixtureClass, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention);
+    }
 
-        public CreateInstancePerFixture(MethodFilter fixtureSetUps, MethodFilter fixtureTearDowns)
+    public class EmitPassFail : TypeBehavior
+    {
+        readonly LifecycleBehavior lifecycleBehavior;
+
+        public EmitPassFail(LifecycleBehavior lifecycleBehavior)
         {
-            invoke = new Invoke();
-            this.fixtureSetUps = fixtureSetUps;
-            this.fixtureTearDowns = fixtureTearDowns;
+            this.lifecycleBehavior = lifecycleBehavior;
         }
 
         public void Execute(Type fixtureClass, Convention convention, Listener listener)
@@ -46,40 +34,7 @@ namespace Fixie.Samples.NUnitStyle
             var caseMethods = convention.CaseMethods(fixtureClass).ToArray();
             var exceptionsByCase = caseMethods.ToDictionary(x => x, x => new ExceptionList());
 
-            object instance;
-            var constructionExceptions = new ExceptionList();
-            if (TryConstruct(fixtureClass, constructionExceptions, out instance))
-            {
-                var fixtureSetUpExceptions = new ExceptionList();
-                foreach (var fixtureSetUp in fixtureSetUps.Filter(fixtureClass))
-                    invoke.Execute(fixtureSetUp, instance, fixtureSetUpExceptions);
-                if (fixtureSetUpExceptions.Any())
-                {
-                    foreach (var caseMethod in caseMethods)
-                        exceptionsByCase[caseMethod].Add(fixtureSetUpExceptions);
-                }
-                else
-                {
-                    foreach (var caseMethod in caseMethods)
-                        convention.CaseExecutionBehavior.Execute(caseMethod, instance, exceptionsByCase[caseMethod]);
-                
-                    var fixtureTearDownExceptions = new ExceptionList();
-                    foreach (var fixtureTearDown in fixtureTearDowns.Filter(fixtureClass))
-                        invoke.Execute(fixtureTearDown, instance, fixtureTearDownExceptions);
-                    foreach (var caseMethod in caseMethods)
-                        exceptionsByCase[caseMethod].Add(fixtureTearDownExceptions);
-                }
-
-                var disposalExceptions = new ExceptionList();
-                Dispose(instance, disposalExceptions);
-                foreach (var caseMethod in caseMethods)
-                    exceptionsByCase[caseMethod].Add(disposalExceptions);
-            }
-            else
-            {
-                foreach (var caseMethod in caseMethods)
-                    exceptionsByCase[caseMethod].Add(constructionExceptions);
-            }
+            lifecycleBehavior.Execute(fixtureClass, caseMethods, exceptionsByCase, convention);
 
             foreach (var caseMethod in caseMethods)
             {
@@ -90,6 +45,66 @@ namespace Fixie.Samples.NUnitStyle
                     listener.CaseFailed(@case, exceptions.ToArray());
                 else
                     listener.CasePassed(@case);
+            }
+        }
+    }
+
+    public class ExecuteCases : InstanceBehavior
+    {
+        public void Execute(Type testClass, object instance, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention)
+        {
+            foreach (var caseMethod in caseMethods)
+            {
+                var exceptions = exceptionsByCase[caseMethod];
+                convention.CaseExecutionBehavior.Execute(caseMethod, instance, exceptions);
+            }
+        }
+    }
+
+    public class InstancePerCase : LifecycleBehavior
+    {
+        readonly LifecycleBehavior inner;
+
+        public InstancePerCase(LifecycleBehavior inner)
+        {
+            this.inner = inner;
+        }
+
+        public void Execute(Type fixtureClass, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention)
+        {
+            foreach (var caseMethod in caseMethods)
+                inner.Execute(fixtureClass, new[] { caseMethod }, exceptionsByCase, convention);
+        }
+    }
+
+    public class InstantiateAndExecuteCases : LifecycleBehavior
+    {
+        readonly InstanceBehavior inner;
+
+        public InstantiateAndExecuteCases(InstanceBehavior inner)
+        {
+            this.inner = inner;
+        }
+
+        public void Execute(Type fixtureClass, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention)
+        {
+            object instance;
+            var constructionExceptions = new ExceptionList();
+            if (!TryConstruct(fixtureClass, constructionExceptions, out instance))
+            {
+                foreach (var caseMethod in caseMethods)
+                    exceptionsByCase[caseMethod].Add(constructionExceptions);
+            }
+            else
+            {
+                inner.Execute(fixtureClass, instance, caseMethods, exceptionsByCase, convention);
+
+                var disposalExceptions = Dispose(instance);
+                if (disposalExceptions.Any())
+                {
+                    foreach (var caseMethod in caseMethods)
+                        exceptionsByCase[caseMethod].Add(disposalExceptions);
+                }
             }
         }
 
@@ -113,8 +128,10 @@ namespace Fixie.Samples.NUnitStyle
             return false;
         }
 
-        static void Dispose(object instance, ExceptionList exceptions)
+        static ExceptionList Dispose(object instance)
         {
+            var exceptions = new ExceptionList();
+
             try
             {
                 var disposable = instance as IDisposable;
@@ -125,17 +142,134 @@ namespace Fixie.Samples.NUnitStyle
             {
                 exceptions.Add(ex);
             }
+
+            return exceptions;
         }
     }
 
-    public class SetUpTearDown : MethodBehavior
+    public class InstanceSetUpTearDown : InstanceBehavior
+    {
+        readonly InstanceAction setUp;
+        readonly InstanceBehavior inner;
+        readonly InstanceAction tearDown;
+
+        public InstanceSetUpTearDown(InstanceAction setUp, InstanceBehavior inner, InstanceAction tearDown)
+        {
+            this.setUp = setUp;
+            this.inner = inner;
+            this.tearDown = tearDown;
+        }
+
+        public void Execute(Type testClass, object instance, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention)
+        {
+            var instanceSetUpExceptions = setUp(testClass, instance);
+            if (instanceSetUpExceptions.Any())
+            {
+                foreach (var caseMethod in caseMethods)
+                    exceptionsByCase[caseMethod].Add(instanceSetUpExceptions);
+            }
+            else
+            {
+                inner.Execute(testClass, instance, caseMethods, exceptionsByCase, convention);
+
+                var instanceTearDownExceptions = tearDown(testClass, instance);
+                if (instanceTearDownExceptions.Any())
+                {
+                    foreach (var caseMethod in caseMethods)
+                        exceptionsByCase[caseMethod].Add(instanceTearDownExceptions);
+                }
+            }
+        }
+    }
+
+    public class ClassSetUpTearDown : LifecycleBehavior
+    {
+        readonly ClassAction setUp;
+        readonly LifecycleBehavior inner;
+        readonly ClassAction tearDown;
+
+        public ClassSetUpTearDown(ClassAction setUp, LifecycleBehavior inner, ClassAction tearDown)
+        {
+            this.setUp = setUp;
+            this.inner = inner;
+            this.tearDown = tearDown;
+        }
+
+        public void Execute(Type fixtureClass, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention)
+        {
+            var classSetUpExceptions = setUp(fixtureClass);
+            if (classSetUpExceptions.Any())
+            {
+                foreach (var caseMethod in caseMethods)
+                    exceptionsByCase[caseMethod].Add(classSetUpExceptions);
+            }
+            else
+            {
+                inner.Execute(fixtureClass, caseMethods, exceptionsByCase, convention);
+
+                var classTearDownExceptions = tearDown(fixtureClass);
+                foreach (var caseMethod in caseMethods)
+                    exceptionsByCase[caseMethod].Add(classTearDownExceptions);
+            }
+        }
+    }
+}
+
+namespace Fixie.Samples.NUnitStyle
+{
+    public class CustomConvention : Convention
+    {
+        readonly MethodFilter fixtureSetUps = new MethodFilter().HasOrInherits<TestFixtureSetUpAttribute>();
+        readonly MethodFilter fixtureTearDowns = new MethodFilter().HasOrInherits<TestFixtureTearDownAttribute>();
+
+        readonly MethodFilter setUps = new MethodFilter().HasOrInherits<SetUpAttribute>();
+        readonly MethodFilter tearDowns = new MethodFilter().HasOrInherits<TearDownAttribute>();
+
+        public CustomConvention()
+        {
+            Fixtures
+                .HasOrInherits<TestFixtureAttribute>();
+
+            Cases
+                .HasOrInherits<TestAttribute>();
+
+            CaseExecutionBehavior = new NUnitSetUpTearDown(setUps, CaseExecutionBehavior, tearDowns);
+
+            FixtureExecutionBehavior =
+                new EmitPassFail(
+                    new InstantiateAndExecuteCases(
+                        new InstanceSetUpTearDown(
+                            InvokeAll(fixtureSetUps),
+                            new ExecuteCases(),
+                            InvokeAll(fixtureTearDowns)
+                            )
+                        )
+                    );
+        }
+
+        static InstanceAction InvokeAll(MethodFilter methodFilter)
+        {
+            return (testClass, instance) => InvokeAll(testClass, instance, methodFilter);
+        }
+
+        static ExceptionList InvokeAll(Type fixtureClass, object instance, MethodFilter methodFilter)
+        {
+            var invoke = new Invoke();
+            var exceptions = new ExceptionList();
+            foreach (var method in methodFilter.Filter(fixtureClass))
+                invoke.Execute(method, instance, exceptions);
+            return exceptions;
+        }
+    }
+
+    public class NUnitSetUpTearDown : MethodBehavior
     {
         readonly Invoke invoke;
         readonly MethodFilter setUps;
         readonly MethodBehavior inner;
         readonly MethodFilter tearDowns;
 
-        public SetUpTearDown(MethodFilter setUps, MethodBehavior inner, MethodFilter tearDowns)
+        public NUnitSetUpTearDown(MethodFilter setUps, MethodBehavior inner, MethodFilter tearDowns)
         {
             invoke = new Invoke();
             this.setUps = setUps;
@@ -155,7 +289,7 @@ namespace Fixie.Samples.NUnitStyle
                 exceptions.Add(setUpExceptions);
                 return;
             }
-            
+
             inner.Execute(method, instance, exceptions);
 
             foreach (var tearDown in tearDowns.Filter(method.ReflectedType))

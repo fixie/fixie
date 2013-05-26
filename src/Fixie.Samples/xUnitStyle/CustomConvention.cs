@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fixie.Behaviors;
 using Fixie.Conventions;
 
 namespace Fixie.Samples.xUnitStyle
@@ -19,88 +18,38 @@ namespace Fixie.Samples.xUnitStyle
             Cases
                 .HasOrInherits<FactAttribute>();
 
-            FixtureExecutionBehavior = new CreateInstancePerCaseWithFixtureData();
+
+            var fixtures = new Dictionary<MethodInfo, object>();
+            ClassAction ClassSetUp = testClass => PrepareFixtureData(testClass, fixtures);
+            ClassAction ClassTearDown = testClass => DisposeFixtureData(fixtures);
+            InstanceAction InstanceSetUp = (testClass, instance) => InjectFixtureData(instance, fixtures);
+            InstanceAction InstanceTearDown = (testClass, instance) => new ExceptionList();
+
+            FixtureExecutionBehavior =
+                new EmitPassFail(
+                    new ClassSetUpTearDown(
+                        ClassSetUp,
+                        new InstancePerCase(
+                            new InstantiateAndExecuteCases(
+                                new InstanceSetUpTearDown(
+                                    InstanceSetUp,
+                                    new ExecuteCases(),
+                                    InstanceTearDown)
+                                )
+                            ),
+                        ClassTearDown
+                        )
+                    );
         }
 
         bool HasAnyFactMethods(Type type)
         {
             return factMethods.Filter(type).Any();
         }
-    }
 
-    public class CreateInstancePerCaseWithFixtureData : TypeBehavior
-    {
-        public void Execute(Type fixtureClass, Convention convention, Listener listener)
+        static ExceptionList PrepareFixtureData(Type testClass, Dictionary<MethodInfo, object> fixtures)
         {
-            var caseMethods = convention.CaseMethods(fixtureClass).ToArray();
-            var exceptionsByCase = caseMethods.ToDictionary(x => x, x => new ExceptionList());
-
-            var classSetUpExceptions = new ExceptionList();
-            var fixtures = SetUpFixtureInstances(fixtureClass, classSetUpExceptions);
-
-            if (classSetUpExceptions.Any())
-            {
-                foreach (var caseMethod in caseMethods)
-                    exceptionsByCase[caseMethod].Add(classSetUpExceptions);
-            }
-            else
-            {
-                foreach (var caseMethod in caseMethods)
-                {
-                    var exceptions = exceptionsByCase[caseMethod];
-
-                    object instance;
-
-                    if (TryConstruct(fixtureClass, exceptions, out instance))
-                    {
-                        bool injectionFailed = false;
-                        foreach (var injectionMethod in fixtures.Keys)
-                        {
-                            try
-                            {
-                                injectionMethod.Invoke(instance, new[] { fixtures[injectionMethod] });
-                            }
-                            catch (TargetInvocationException ex)
-                            {
-                                exceptions.Add(ex.InnerException);
-                                injectionFailed = true;
-                            }
-                            catch (Exception ex)
-                            {
-                                exceptions.Add(ex);
-                                injectionFailed = true;
-                            }
-                        }
-
-                        if (!injectionFailed)
-                            convention.CaseExecutionBehavior.Execute(caseMethod, instance, exceptions);
-
-                        Dispose(instance, exceptions);
-                    }
-                }
-
-                var classTearDownExceptions = new ExceptionList();
-                foreach (var fixtureInstance in fixtures.Values)
-                    Dispose(fixtureInstance, classTearDownExceptions);
-                foreach (var caseMethod in caseMethods)
-                    exceptionsByCase[caseMethod].Add(classTearDownExceptions);
-            }
-
-            foreach (var caseMethod in caseMethods)
-            {
-                var @case = fixtureClass.FullName + "." + caseMethod.Name;
-                var exceptions = exceptionsByCase[caseMethod];
-
-                if (exceptions.Any())
-                    listener.CaseFailed(@case, exceptions.ToArray());
-                else
-                    listener.CasePassed(@case);
-            }
-        }
-
-        static Dictionary<MethodInfo, object> SetUpFixtureInstances(Type testClass, ExceptionList exceptions)
-        {
-            var fixtures = new Dictionary<MethodInfo, object>();
+            var exceptions = new ExceptionList();
 
             foreach (var @interface in FixtureInterfaces(testClass))
             {
@@ -115,7 +64,42 @@ namespace Fixie.Samples.xUnitStyle
                 }
             }
 
-            return fixtures;
+            return exceptions;
+        }
+
+        static ExceptionList DisposeFixtureData(Dictionary<MethodInfo, object> fixtures)
+        {
+            var classTearDownExceptions = new ExceptionList();
+            foreach (var fixtureInstance in fixtures.Values)
+            {
+                var disposalExceptions = Dispose(fixtureInstance);
+
+                classTearDownExceptions.Add(disposalExceptions);
+            }
+            return classTearDownExceptions;
+        }
+
+        static ExceptionList InjectFixtureData(object instance, Dictionary<MethodInfo, object> fixtures)
+        {
+            var exceptions = new ExceptionList();
+
+            foreach (var injectionMethod in fixtures.Keys)
+            {
+                try
+                {
+                    injectionMethod.Invoke(instance, new[] { fixtures[injectionMethod] });
+                }
+                catch (TargetInvocationException ex)
+                {
+                    exceptions.Add(ex.InnerException);
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
+
+            return exceptions;
         }
 
         static IEnumerable<Type> FixtureInterfaces(Type testClass)
@@ -145,8 +129,9 @@ namespace Fixie.Samples.xUnitStyle
             return false;
         }
 
-        static void Dispose(object instance, ExceptionList exceptions)
+        static ExceptionList Dispose(object instance)
         {
+            var exceptions = new ExceptionList();
             try
             {
                 var disposable = instance as IDisposable;
@@ -157,6 +142,7 @@ namespace Fixie.Samples.xUnitStyle
             {
                 exceptions.Add(ex);
             }
+            return exceptions;
         }
     }
 }

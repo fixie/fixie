@@ -9,31 +9,29 @@ namespace Fixie.Behaviors
     {
         public void Execute(Type fixtureClass, Convention convention, Listener listener)
         {
-            var caseMethods = convention.CaseMethods(fixtureClass).ToArray();
-            var exceptionsByCase = caseMethods.ToDictionary(x => x, x => new ExceptionList());
-
-            foreach (var caseMethod in caseMethods)
+            var cases = convention.CaseMethods(fixtureClass).Select(x => new Case(fixtureClass, x)).ToArray();
+            
+            foreach (var @case in cases)
             {
-                var exceptions = exceptionsByCase[caseMethod];
+                var exceptions = @case.Exceptions;
 
                 object instance;
 
                 if (TryConstruct(fixtureClass, exceptions, out instance))
                 {
-                    convention.CaseExecutionBehavior.Execute(caseMethod, instance, exceptions);
+                    convention.CaseExecutionBehavior.Execute(@case.Method, instance, exceptions);
                     Dispose(instance, exceptions);
                 }
             }
 
-            foreach (var caseMethod in caseMethods)
+            foreach (var @case in cases)
             {
-                var @case = fixtureClass.FullName + "." + caseMethod.Name;
-                var exceptions = exceptionsByCase[caseMethod];
+                var exceptions = @case.Exceptions;
 
                 if (exceptions.Any())
-                    listener.CaseFailed(@case, exceptions.ToArray());
+                    listener.CaseFailed(@case.Name, exceptions.ToArray());
                 else
-                    listener.CasePassed(@case);
+                    listener.CasePassed(@case.Name);
             }
         }
 

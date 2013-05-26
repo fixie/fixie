@@ -12,12 +12,12 @@ namespace Fixie.Samples
 
     public interface InstanceBehavior
     {
-        void Execute(Type testClass, object instance, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention);
+        void Execute(Type testClass, object instance, Case[] cases, Convention convention);
     }
 
     public interface LifecycleBehavior
     {
-        void Execute(Type fixtureClass, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention);
+        void Execute(Type fixtureClass, Case[] cases, Convention convention);
     }
 
     public class EmitPassFail : TypeBehavior
@@ -31,33 +31,28 @@ namespace Fixie.Samples
 
         public void Execute(Type fixtureClass, Convention convention, Listener listener)
         {
-            var caseMethods = convention.CaseMethods(fixtureClass).ToArray();
-            var exceptionsByCase = caseMethods.ToDictionary(x => x, x => new ExceptionList());
+            var cases = convention.CaseMethods(fixtureClass).Select(x => new Case(fixtureClass, x)).ToArray();
 
-            lifecycleBehavior.Execute(fixtureClass, caseMethods, exceptionsByCase, convention);
+            lifecycleBehavior.Execute(fixtureClass, cases, convention);
 
-            foreach (var caseMethod in caseMethods)
+            foreach (var @case in cases)
             {
-                var @case = fixtureClass.FullName + "." + caseMethod.Name;
-                var exceptions = exceptionsByCase[caseMethod];
+                var exceptions = @case.Exceptions;
 
                 if (exceptions.Any())
-                    listener.CaseFailed(@case, exceptions.ToArray());
+                    listener.CaseFailed(@case.Name, exceptions.ToArray());
                 else
-                    listener.CasePassed(@case);
+                    listener.CasePassed(@case.Name);
             }
         }
     }
 
     public class ExecuteCases : InstanceBehavior
     {
-        public void Execute(Type testClass, object instance, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention)
+        public void Execute(Type testClass, object instance, Case[] cases, Convention convention)
         {
-            foreach (var caseMethod in caseMethods)
-            {
-                var exceptions = exceptionsByCase[caseMethod];
-                convention.CaseExecutionBehavior.Execute(caseMethod, instance, exceptions);
-            }
+            foreach (var @case in cases)
+                convention.CaseExecutionBehavior.Execute(@case.Method, instance, @case.Exceptions);
         }
     }
 
@@ -70,10 +65,10 @@ namespace Fixie.Samples
             this.inner = inner;
         }
 
-        public void Execute(Type fixtureClass, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention)
+        public void Execute(Type fixtureClass, Case[] cases, Convention convention)
         {
-            foreach (var caseMethod in caseMethods)
-                inner.Execute(fixtureClass, new[] { caseMethod }, exceptionsByCase, convention);
+            foreach (var @case in cases)
+                inner.Execute(fixtureClass, new[] { @case }, convention);
         }
     }
 
@@ -86,24 +81,24 @@ namespace Fixie.Samples
             this.inner = inner;
         }
 
-        public void Execute(Type fixtureClass, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention)
+        public void Execute(Type fixtureClass, Case[] cases, Convention convention)
         {
             object instance;
             var constructionExceptions = new ExceptionList();
             if (!TryConstruct(fixtureClass, constructionExceptions, out instance))
             {
-                foreach (var caseMethod in caseMethods)
-                    exceptionsByCase[caseMethod].Add(constructionExceptions);
+                foreach (var @case in cases)
+                    @case.Exceptions.Add(constructionExceptions);
             }
             else
             {
-                inner.Execute(fixtureClass, instance, caseMethods, exceptionsByCase, convention);
+                inner.Execute(fixtureClass, instance, cases, convention);
 
                 var disposalExceptions = Dispose(instance);
                 if (disposalExceptions.Any())
                 {
-                    foreach (var caseMethod in caseMethods)
-                        exceptionsByCase[caseMethod].Add(disposalExceptions);
+                    foreach (var @case in cases)
+                        @case.Exceptions.Add(disposalExceptions);
                 }
             }
         }
@@ -160,23 +155,23 @@ namespace Fixie.Samples
             this.tearDown = tearDown;
         }
 
-        public void Execute(Type testClass, object instance, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention)
+        public void Execute(Type testClass, object instance, Case[] cases, Convention convention)
         {
             var instanceSetUpExceptions = setUp(testClass, instance);
             if (instanceSetUpExceptions.Any())
             {
-                foreach (var caseMethod in caseMethods)
-                    exceptionsByCase[caseMethod].Add(instanceSetUpExceptions);
+                foreach (var @case in cases)
+                    @case.Exceptions.Add(instanceSetUpExceptions);
             }
             else
             {
-                inner.Execute(testClass, instance, caseMethods, exceptionsByCase, convention);
+                inner.Execute(testClass, instance, cases, convention);
 
                 var instanceTearDownExceptions = tearDown(testClass, instance);
                 if (instanceTearDownExceptions.Any())
                 {
-                    foreach (var caseMethod in caseMethods)
-                        exceptionsByCase[caseMethod].Add(instanceTearDownExceptions);
+                    foreach (var @case in cases)
+                        @case.Exceptions.Add(instanceTearDownExceptions);
                 }
             }
         }
@@ -195,21 +190,21 @@ namespace Fixie.Samples
             this.tearDown = tearDown;
         }
 
-        public void Execute(Type fixtureClass, MethodInfo[] caseMethods, Dictionary<MethodInfo, ExceptionList> exceptionsByCase, Convention convention)
+        public void Execute(Type fixtureClass, Case[] cases, Convention convention)
         {
             var classSetUpExceptions = setUp(fixtureClass);
             if (classSetUpExceptions.Any())
             {
-                foreach (var caseMethod in caseMethods)
-                    exceptionsByCase[caseMethod].Add(classSetUpExceptions);
+                foreach (var @case in cases)
+                    @case.Exceptions.Add(classSetUpExceptions);
             }
             else
             {
-                inner.Execute(fixtureClass, caseMethods, exceptionsByCase, convention);
+                inner.Execute(fixtureClass, cases, convention);
 
                 var classTearDownExceptions = tearDown(fixtureClass);
-                foreach (var caseMethod in caseMethods)
-                    exceptionsByCase[caseMethod].Add(classTearDownExceptions);
+                foreach (var @case in cases)
+                    @case.Exceptions.Add(classTearDownExceptions);
             }
         }
     }

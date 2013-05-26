@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Fixie.Behaviors;
 
@@ -33,7 +34,21 @@ namespace Fixie.Conventions
         public void Execute(Listener listener, params Type[] candidateTypes)
         {
             foreach (var fixtureClass in FixtureClasses(candidateTypes))
-                FixtureExecutionBehavior.Execute(fixtureClass, this, listener);
+            {
+                var cases = CaseMethods(fixtureClass).Select(x => new Case(fixtureClass, x)).ToArray();
+
+                FixtureExecutionBehavior.Execute(fixtureClass, this, cases);
+
+                foreach (var @case in cases)
+                {
+                    var exceptions = @case.Exceptions;
+
+                    if (exceptions.Any())
+                        listener.CaseFailed(@case.Name, exceptions.ToArray());
+                    else
+                        listener.CasePassed(@case.Name);
+                }
+            }
         }
     }
 }

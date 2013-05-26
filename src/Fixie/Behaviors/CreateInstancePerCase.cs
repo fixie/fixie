@@ -7,10 +7,8 @@ namespace Fixie.Behaviors
 {
     public class CreateInstancePerCase : TypeBehavior
     {
-        public void Execute(Type fixtureClass, Convention convention, Listener listener)
+        public void Execute(Type fixtureClass, Convention convention, Case[] cases)
         {
-            var cases = convention.CaseMethods(fixtureClass).Select(x => new Case(fixtureClass, x)).ToArray();
-            
             foreach (var @case in cases)
             {
                 var exceptions = @case.Exceptions;
@@ -22,16 +20,6 @@ namespace Fixie.Behaviors
                     convention.CaseExecutionBehavior.Execute(@case.Method, instance, exceptions);
                     Dispose(instance, exceptions);
                 }
-            }
-
-            foreach (var @case in cases)
-            {
-                var exceptions = @case.Exceptions;
-
-                if (exceptions.Any())
-                    listener.CaseFailed(@case.Name, exceptions.ToArray());
-                else
-                    listener.CasePassed(@case.Name);
             }
         }
 

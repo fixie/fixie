@@ -5,6 +5,6 @@ namespace Fixie.Behaviors
 {
     public interface TypeBehavior
     {
-        void Execute(Type fixtureClass, Convention convention, Listener listener);
+        void Execute(Type fixtureClass, Convention convention, Case[] cases);
     }
 }

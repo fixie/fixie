@@ -226,7 +226,7 @@ namespace Fixie.Tests.ClassFixtures
 
         class SkipFixture : TypeBehavior
         {
-            public void Execute(Type fixtureClass, Convention convention, Listener listener)
+            public void Execute(Type fixtureClass, Convention convention, Case[] cases)
             {
                 WriteLine("Skipping " + fixtureClass.Name);
             }
@@ -268,11 +268,11 @@ namespace Fixie.Tests.ClassFixtures
                 this.after = after;
             }
 
-            public void Execute(Type fixtureClass, Convention convention, Listener listener)
+            public void Execute(Type fixtureClass, Convention convention, Case[] cases)
             {
                 WriteLine(before);
                 indent++;
-                inner.Execute(fixtureClass, convention, listener);
+                inner.Execute(fixtureClass, convention, cases);
                 indent--;
                 WriteLine(after);
             }

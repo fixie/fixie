@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Fixie.Behaviors;
 using Fixie.Conventions;
@@ -15,38 +13,6 @@ namespace Fixie.Samples
         void Execute(Type testClass, object instance, Case[] cases, Convention convention);
     }
 
-    public interface LifecycleBehavior
-    {
-        void Execute(Type fixtureClass, Case[] cases, Convention convention);
-    }
-
-    public class EmitPassFail : TypeBehavior
-    {
-        readonly LifecycleBehavior lifecycleBehavior;
-
-        public EmitPassFail(LifecycleBehavior lifecycleBehavior)
-        {
-            this.lifecycleBehavior = lifecycleBehavior;
-        }
-
-        public void Execute(Type fixtureClass, Convention convention, Listener listener)
-        {
-            var cases = convention.CaseMethods(fixtureClass).Select(x => new Case(fixtureClass, x)).ToArray();
-
-            lifecycleBehavior.Execute(fixtureClass, cases, convention);
-
-            foreach (var @case in cases)
-            {
-                var exceptions = @case.Exceptions;
-
-                if (exceptions.Any())
-                    listener.CaseFailed(@case.Name, exceptions.ToArray());
-                else
-                    listener.CasePassed(@case.Name);
-            }
-        }
-    }
-
     public class ExecuteCases : InstanceBehavior
     {
         public void Execute(Type testClass, object instance, Case[] cases, Convention convention)
@@ -56,23 +22,23 @@ namespace Fixie.Samples
         }
     }
 
-    public class InstancePerCase : LifecycleBehavior
+    public class InstancePerCase : TypeBehavior
     {
-        readonly LifecycleBehavior inner;
+        readonly TypeBehavior inner;
 
-        public InstancePerCase(LifecycleBehavior inner)
+        public InstancePerCase(TypeBehavior inner)
         {
             this.inner = inner;
         }
 
-        public void Execute(Type fixtureClass, Case[] cases, Convention convention)
+        public void Execute(Type fixtureClass, Convention convention, Case[] cases)
         {
             foreach (var @case in cases)
-                inner.Execute(fixtureClass, new[] { @case }, convention);
+                inner.Execute(fixtureClass, convention, new[] { @case });
         }
     }
 
-    public class InstantiateAndExecuteCases : LifecycleBehavior
+    public class InstantiateAndExecuteCases : TypeBehavior
     {
         readonly InstanceBehavior inner;
 
@@ -81,7 +47,7 @@ namespace Fixie.Samples
             this.inner = inner;
         }
 
-        public void Execute(Type fixtureClass, Case[] cases, Convention convention)
+        public void Execute(Type fixtureClass, Convention convention, Case[] cases)
         {
             object instance;
             var constructionExceptions = new ExceptionList();
@@ -177,20 +143,20 @@ namespace Fixie.Samples
         }
     }
 
-    public class ClassSetUpTearDown : LifecycleBehavior
+    public class ClassSetUpTearDown : TypeBehavior
     {
         readonly ClassAction setUp;
-        readonly LifecycleBehavior inner;
+        readonly TypeBehavior inner;
         readonly ClassAction tearDown;
 
-        public ClassSetUpTearDown(ClassAction setUp, LifecycleBehavior inner, ClassAction tearDown)
+        public ClassSetUpTearDown(ClassAction setUp, TypeBehavior inner, ClassAction tearDown)
         {
             this.setUp = setUp;
             this.inner = inner;
             this.tearDown = tearDown;
         }
 
-        public void Execute(Type fixtureClass, Case[] cases, Convention convention)
+        public void Execute(Type fixtureClass, Convention convention, Case[] cases)
         {
             var classSetUpExceptions = setUp(fixtureClass);
             if (classSetUpExceptions.Any())
@@ -200,7 +166,7 @@ namespace Fixie.Samples
             }
             else
             {
-                inner.Execute(fixtureClass, cases, convention);
+                inner.Execute(fixtureClass, convention, cases);
 
                 var classTearDownExceptions = tearDown(fixtureClass);
                 foreach (var @case in cases)
@@ -231,13 +197,11 @@ namespace Fixie.Samples.NUnitStyle
             CaseExecutionBehavior = new NUnitSetUpTearDown(setUps, CaseExecutionBehavior, tearDowns);
 
             FixtureExecutionBehavior =
-                new EmitPassFail(
-                    new InstantiateAndExecuteCases(
-                        new InstanceSetUpTearDown(
-                            InvokeAll(fixtureSetUps),
-                            new ExecuteCases(),
-                            InvokeAll(fixtureTearDowns)
-                            )
+                new InstantiateAndExecuteCases(
+                    new InstanceSetUpTearDown(
+                        InvokeAll(fixtureSetUps),
+                        new ExecuteCases(),
+                        InvokeAll(fixtureTearDowns)
                         )
                     );
         }

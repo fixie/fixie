@@ -26,19 +26,17 @@ namespace Fixie.Samples.xUnitStyle
             InstanceAction InstanceTearDown = (testClass, instance) => new ExceptionList();
 
             FixtureExecutionBehavior =
-                new EmitPassFail(
-                    new ClassSetUpTearDown(
-                        ClassSetUp,
-                        new InstancePerCase(
-                            new InstantiateAndExecuteCases(
-                                new InstanceSetUpTearDown(
-                                    InstanceSetUp,
-                                    new ExecuteCases(),
-                                    InstanceTearDown)
-                                )
-                            ),
-                        ClassTearDown
-                        )
+                new ClassSetUpTearDown(
+                    ClassSetUp,
+                    new InstancePerCase(
+                        new InstantiateAndExecuteCases(
+                            new InstanceSetUpTearDown(
+                                InstanceSetUp,
+                                new ExecuteCases(),
+                                InstanceTearDown)
+                            )
+                        ),
+                    ClassTearDown
                     );
         }
 

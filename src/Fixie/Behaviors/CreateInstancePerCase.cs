@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using Fixie.Conventions;
 
@@ -17,7 +16,8 @@ namespace Fixie.Behaviors
 
                 if (TryConstruct(fixtureClass, exceptions, out instance))
                 {
-                    convention.CaseExecutionBehavior.Execute(@case.Method, instance, exceptions);
+                    convention.InstanceExecutionBehavior.Execute(fixtureClass, instance, new[] { @case }, convention);
+
                     Dispose(instance, exceptions);
                 }
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Fixie.Behaviors;
 using Fixie.Conventions;
 
 namespace Fixie.Samples.xUnitStyle
@@ -18,25 +19,20 @@ namespace Fixie.Samples.xUnitStyle
             Cases
                 .HasOrInherits<FactAttribute>();
 
-
             var fixtures = new Dictionary<MethodInfo, object>();
-            ClassAction ClassSetUp = testClass => PrepareFixtureData(testClass, fixtures);
-            ClassAction ClassTearDown = testClass => DisposeFixtureData(fixtures);
-            InstanceAction InstanceSetUp = (testClass, instance) => InjectFixtureData(instance, fixtures);
-            InstanceAction InstanceTearDown = (testClass, instance) => new ExceptionList();
 
             FixtureExecutionBehavior =
                 new ClassSetUpTearDown(
-                    ClassSetUp,
-                    new InstancePerCase(
-                        new InstantiateAndExecuteCases(
-                            new InstanceSetUpTearDown(
-                                InstanceSetUp,
-                                new ExecuteCases(),
-                                InstanceTearDown)
-                            )
-                        ),
-                    ClassTearDown
+                    testClass => PrepareFixtureData(testClass, fixtures),
+                    new CreateInstancePerCase(),
+                    testClass => DisposeFixtureData(fixtures)
+                    );
+
+            InstanceExecutionBehavior =
+                new InstanceSetUpTearDown(
+                    (testClass, instance) => InjectFixtureData(instance, fixtures),
+                    new ExecuteCases(),
+                    (testClass, instance) => new ExceptionList()
                     );
         }
 

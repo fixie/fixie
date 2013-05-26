@@ -93,6 +93,60 @@ namespace Fixie.Tests.ClassFixtures
                     .ToString());
         }
 
+        public void ShouldSupportReplacingTheInstanceExecutionBehavior()
+        {
+            var convention = new SelfTestConvention
+            {
+                InstanceExecutionBehavior = new SkipCases()
+            };
+
+            OutputFromSampleFixture(convention).ShouldEqual(
+                new StringBuilder()
+                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("    Skipping 1 case(s) for an instance of FirstFixture")
+                    .AppendLine("Dispose FirstFixture")
+                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("    Skipping 1 case(s) for an instance of FirstFixture")
+                    .AppendLine("Dispose FirstFixture")
+                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("    Skipping 1 case(s) for an instance of SecondFixture")
+                    .AppendLine("Dispose SecondFixture")
+                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("    Skipping 1 case(s) for an instance of SecondFixture")
+                    .AppendLine("Dispose SecondFixture")
+                    .ToString());
+        }
+
+        public void ShouldSupportAugmentingTheInstanceExecutionBehavior()
+        {
+            var convention = new SelfTestConvention();
+            convention.InstanceExecutionBehavior = new BeforeAfterInstance("BeforeInstance", convention.InstanceExecutionBehavior, "AfterInstance");
+
+            OutputFromSampleFixture(convention).ShouldEqual(
+                new StringBuilder()
+                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("    BeforeInstance")
+                    .AppendLine("        PassingCase")
+                    .AppendLine("    AfterInstance")
+                    .AppendLine("Dispose FirstFixture")
+                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("    BeforeInstance")
+                    .AppendLine("        FailingCase Throws Exception")
+                    .AppendLine("    AfterInstance")
+                    .AppendLine("Dispose FirstFixture")
+                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("    BeforeInstance")
+                    .AppendLine("        PassingCase")
+                    .AppendLine("    AfterInstance")
+                    .AppendLine("Dispose SecondFixture")
+                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("    BeforeInstance")
+                    .AppendLine("        FailingCase Throws Exception")
+                    .AppendLine("    AfterInstance")
+                    .AppendLine("Dispose SecondFixture")
+                    .ToString());
+        }
+
         public void ShouldSupportReplacingTheFixtureExecutionBehavior()
         {
             var convention = new SelfTestConvention
@@ -133,36 +187,45 @@ namespace Fixie.Tests.ClassFixtures
                     .ToString());
         }
 
-        public void ShouldSupportAugmentingBothTheFixtureAndTheCaseExecutionBehaviors()
+        public void ShouldSupportAugmentingFixtureAndInstanceAndCaseBehaviors()
         {
             var convention = new SelfTestConvention();
             convention.FixtureExecutionBehavior = new BeforeAfterType("BeforeFixture", convention.FixtureExecutionBehavior, "AfterFixture");
+            convention.InstanceExecutionBehavior = new BeforeAfterInstance("BeforeInstance", convention.InstanceExecutionBehavior, "AfterInstance");
             convention.CaseExecutionBehavior = new BeforeAfterMethod("BeforeCase", convention.CaseExecutionBehavior, "AfterCase");
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
                     .AppendLine("BeforeFixture")
                     .AppendLine("    Construct FirstFixture")
-                    .AppendLine("        BeforeCase")
-                    .AppendLine("            PassingCase")
-                    .AppendLine("        AfterCase")
+                    .AppendLine("        BeforeInstance")
+                    .AppendLine("            BeforeCase")
+                    .AppendLine("                PassingCase")
+                    .AppendLine("            AfterCase")
+                    .AppendLine("        AfterInstance")
                     .AppendLine("    Dispose FirstFixture")
                     .AppendLine("    Construct FirstFixture")
-                    .AppendLine("        BeforeCase")
-                    .AppendLine("            FailingCase Throws Exception")
-                    .AppendLine("        AfterCase")
+                    .AppendLine("        BeforeInstance")
+                    .AppendLine("            BeforeCase")
+                    .AppendLine("                FailingCase Throws Exception")
+                    .AppendLine("            AfterCase")
+                    .AppendLine("        AfterInstance")
                     .AppendLine("    Dispose FirstFixture")
                     .AppendLine("AfterFixture")
                     .AppendLine("BeforeFixture")
                     .AppendLine("    Construct SecondFixture")
-                    .AppendLine("        BeforeCase")
-                    .AppendLine("            PassingCase")
-                    .AppendLine("        AfterCase")
+                    .AppendLine("        BeforeInstance")
+                    .AppendLine("            BeforeCase")
+                    .AppendLine("                PassingCase")
+                    .AppendLine("            AfterCase")
+                    .AppendLine("        AfterInstance")
                     .AppendLine("    Dispose SecondFixture")
                     .AppendLine("    Construct SecondFixture")
-                    .AppendLine("        BeforeCase")
-                    .AppendLine("            FailingCase Throws Exception")
-                    .AppendLine("        AfterCase")
+                    .AppendLine("        BeforeInstance")
+                    .AppendLine("            BeforeCase")
+                    .AppendLine("                FailingCase Throws Exception")
+                    .AppendLine("            AfterCase")
+                    .AppendLine("        AfterInstance")
                     .AppendLine("    Dispose SecondFixture")
                     .AppendLine("AfterFixture")
                     .ToString());
@@ -181,9 +244,9 @@ namespace Fixie.Tests.ClassFixtures
             }
         }
 
-        class SecondFixturease : IDisposable
+        class FixturBase : IDisposable
         {
-            protected SecondFixturease()
+            protected FixturBase()
             {
                 WriteLine("Construct {0}", GetType().Name);
                 indent++;
@@ -213,14 +276,22 @@ namespace Fixie.Tests.ClassFixtures
             Console.WriteLine(indentation + format, args);
         }
 
-        class FirstFixture : SecondFixturease { }
-        class SecondFixture : SecondFixturease { }
+        class FirstFixture : FixturBase { }
+        class SecondFixture : FixturBase { }
 
         class SkipCase : MethodBehavior
         {
             public void Execute(MethodInfo method, object instance, ExceptionList exceptions)
             {
                 WriteLine("Skipping " + method.Name);
+            }
+        }
+
+        class SkipCases : InstanceBehavior
+        {
+            public void Execute(Type fixtureClass, object instance, Case[] cases, Convention convention)
+            {
+                WriteLine("Skipping {0} case(s) for an instance of {1}", cases.Length, fixtureClass.Name);
             }
         }
 
@@ -250,6 +321,29 @@ namespace Fixie.Tests.ClassFixtures
                 WriteLine(before);
                 indent++;
                 inner.Execute(method, fixtureInstance, exceptions);
+                indent--;
+                WriteLine(after);
+            }
+        }
+
+        class BeforeAfterInstance : InstanceBehavior
+        {
+            readonly string before;
+            readonly InstanceBehavior inner;
+            readonly string after;
+
+            public BeforeAfterInstance(string before, InstanceBehavior inner, string after)
+            {
+                this.before = before;
+                this.inner = inner;
+                this.after = after;
+            }
+
+            public void Execute(Type fixtureClass, object instance, Case[] cases, Convention convention)
+            {
+                WriteLine(before);
+                indent++;
+                inner.Execute(fixtureClass, instance, cases, convention);
                 indent--;
                 WriteLine(after);
             }

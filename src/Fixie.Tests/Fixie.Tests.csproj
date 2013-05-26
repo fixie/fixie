@@ -43,6 +43,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Assertions.cs" />
+    <Compile Include="Behaviors\ExecuteCasesTests.cs" />
     <Compile Include="ClassFixtures\AsyncCaseTests.cs" />
     <Compile Include="ClassFixtures\CaseTests.cs" />
     <Compile Include="ClassFixtures\DisposalTests.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="ClassFixtures\LifecycleHookTests.cs" />
     <Compile Include="Behaviors\InvokeTests.cs" />
     <Compile Include="Conventions\MethodFilterTests.cs" />
+    <Compile Include="FailureException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensionsTests.cs" />
     <Compile Include="ShouldBeUnreachableException.cs" />

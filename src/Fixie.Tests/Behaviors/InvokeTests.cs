@@ -37,7 +37,7 @@ namespace Fixie.Tests.Behaviors
 
             invoked.ShouldBeTrue();
 
-            ExpectException("FailureException", "Exception of type 'Fixie.Tests.Behaviors.InvokeTests+FailureException' was thrown.");
+            ExpectException("FailureException", "Exception of type 'Fixie.Tests.FailureException' was thrown.");
         }
 
         public void ShouldInvokeAsyncMethods()
@@ -75,7 +75,7 @@ namespace Fixie.Tests.Behaviors
 
             invoked.ShouldBeTrue();
 
-            ExpectException("FailureException", "Exception of type 'Fixie.Tests.Behaviors.InvokeTests+FailureException' was thrown.");
+            ExpectException("FailureException", "Exception of type 'Fixie.Tests.FailureException' was thrown.");
         }
 
         public void ShouldLogExceptionWhenMethodIsUnsupportedAsyncVoid()
@@ -100,8 +100,6 @@ namespace Fixie.Tests.Behaviors
         {
             return typeof(InvokeTests).GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic);
         }
-
-        class FailureException : Exception { }
 
         void Returns()
         {

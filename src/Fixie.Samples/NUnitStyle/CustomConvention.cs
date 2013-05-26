@@ -8,41 +8,11 @@ namespace Fixie.Samples
     public delegate ExceptionList ClassAction(Type testClass);
     public delegate ExceptionList InstanceAction(Type testClass, object instance);
 
-    public interface InstanceBehavior
-    {
-        void Execute(Type testClass, object instance, Case[] cases, Convention convention);
-    }
-
-    public class ExecuteCases : InstanceBehavior
-    {
-        public void Execute(Type testClass, object instance, Case[] cases, Convention convention)
-        {
-            foreach (var @case in cases)
-                convention.CaseExecutionBehavior.Execute(@case.Method, instance, @case.Exceptions);
-        }
-    }
-
-    public class InstancePerCase : TypeBehavior
-    {
-        readonly TypeBehavior inner;
-
-        public InstancePerCase(TypeBehavior inner)
-        {
-            this.inner = inner;
-        }
-
-        public void Execute(Type fixtureClass, Convention convention, Case[] cases)
-        {
-            foreach (var @case in cases)
-                inner.Execute(fixtureClass, convention, new[] { @case });
-        }
-    }
-
-    public class InstantiateAndExecuteCases : TypeBehavior
+    public class CreateInstancePerFixture : TypeBehavior
     {
         readonly InstanceBehavior inner;
 
-        public InstantiateAndExecuteCases(InstanceBehavior inner)
+        public CreateInstancePerFixture(InstanceBehavior inner)
         {
             this.inner = inner;
         }
@@ -197,7 +167,7 @@ namespace Fixie.Samples.NUnitStyle
             CaseExecutionBehavior = new NUnitSetUpTearDown(setUps, CaseExecutionBehavior, tearDowns);
 
             FixtureExecutionBehavior =
-                new InstantiateAndExecuteCases(
+                new CreateInstancePerFixture(
                     new InstanceSetUpTearDown(
                         InvokeAll(fixtureSetUps),
                         new ExecuteCases(),

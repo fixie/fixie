@@ -24,14 +24,14 @@ namespace Fixie.Samples.xUnitStyle
             FixtureExecutionBehavior =
                 new ClassSetUpTearDown(
                     testClass => PrepareFixtureData(testClass, fixtures),
-                    new CreateInstancePerCase(),
+                    FixtureExecutionBehavior,
                     testClass => DisposeFixtureData(fixtures)
                     );
 
             InstanceExecutionBehavior =
                 new InstanceSetUpTearDown(
                     (testClass, instance) => InjectFixtureData(instance, fixtures),
-                    new ExecuteCases(),
+                    InstanceExecutionBehavior,
                     (testClass, instance) => new ExceptionList()
                     );
         }

@@ -8,75 +8,7 @@ namespace Fixie.Samples
     public delegate ExceptionList ClassAction(Type testClass);
     public delegate ExceptionList InstanceAction(Type testClass, object instance);
 
-    public class CreateInstancePerFixture : TypeBehavior
-    {
-        readonly InstanceBehavior inner;
 
-        public CreateInstancePerFixture(InstanceBehavior inner)
-        {
-            this.inner = inner;
-        }
-
-        public void Execute(Type fixtureClass, Convention convention, Case[] cases)
-        {
-            object instance;
-            var constructionExceptions = new ExceptionList();
-            if (!TryConstruct(fixtureClass, constructionExceptions, out instance))
-            {
-                foreach (var @case in cases)
-                    @case.Exceptions.Add(constructionExceptions);
-            }
-            else
-            {
-                inner.Execute(fixtureClass, instance, cases, convention);
-
-                var disposalExceptions = Dispose(instance);
-                if (disposalExceptions.Any())
-                {
-                    foreach (var @case in cases)
-                        @case.Exceptions.Add(disposalExceptions);
-                }
-            }
-        }
-
-        static bool TryConstruct(Type fixtureClass, ExceptionList exceptions, out object instance)
-        {
-            try
-            {
-                instance = Activator.CreateInstance(fixtureClass);
-                return true;
-            }
-            catch (TargetInvocationException ex)
-            {
-                exceptions.Add(ex.InnerException);
-            }
-            catch (Exception ex)
-            {
-                exceptions.Add(ex);
-            }
-
-            instance = null;
-            return false;
-        }
-
-        static ExceptionList Dispose(object instance)
-        {
-            var exceptions = new ExceptionList();
-
-            try
-            {
-                var disposable = instance as IDisposable;
-                if (disposable != null)
-                    disposable.Dispose();
-            }
-            catch (Exception ex)
-            {
-                exceptions.Add(ex);
-            }
-
-            return exceptions;
-        }
-    }
 
     public class InstanceSetUpTearDown : InstanceBehavior
     {
@@ -164,16 +96,11 @@ namespace Fixie.Samples.NUnitStyle
             Cases
                 .HasOrInherits<TestAttribute>();
 
-            CaseExecutionBehavior = new NUnitSetUpTearDown(setUps, CaseExecutionBehavior, tearDowns);
+            FixtureExecutionBehavior = new CreateInstancePerFixture();
 
-            FixtureExecutionBehavior =
-                new CreateInstancePerFixture(
-                    new InstanceSetUpTearDown(
-                        InvokeAll(fixtureSetUps),
-                        new ExecuteCases(),
-                        InvokeAll(fixtureTearDowns)
-                        )
-                    );
+            InstanceExecutionBehavior = new InstanceSetUpTearDown(InvokeAll(fixtureSetUps), InstanceExecutionBehavior, InvokeAll(fixtureTearDowns));
+
+            CaseExecutionBehavior = new NUnitSetUpTearDown(setUps, CaseExecutionBehavior, tearDowns);
         }
 
         static InstanceAction InvokeAll(MethodFilter methodFilter)

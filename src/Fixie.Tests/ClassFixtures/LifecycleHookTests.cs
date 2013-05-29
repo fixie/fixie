@@ -18,9 +18,11 @@ namespace Fixie.Tests.ClassFixtures
             indent = 0;
         }
 
-        public void ShouldPerformFullFixtureLifecyclePerCaseMethodByDefault()
+        public void ShouldPerformFullFixtureLifecyclePerCaseByDefault()
         {
             var convention = new SelfTestConvention();
+
+            convention.FixtureExecutionBehavior.ShouldBeType<CreateInstancePerCase>();
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -34,6 +36,23 @@ namespace Fixie.Tests.ClassFixtures
                     .AppendLine("    PassingCase")
                     .AppendLine("Dispose SecondFixture")
                     .AppendLine("Construct SecondFixture")
+                    .AppendLine("    FailingCase Throws Exception")
+                    .AppendLine("Dispose SecondFixture")
+                    .ToString());
+        }
+
+        public void ShouldSupportOptionToPerformSingleFixtureLifecycleAcrossAllContainedCases()
+        {
+            var convention = new SelfTestConvention { FixtureExecutionBehavior = new CreateInstancePerFixture() };
+
+            OutputFromSampleFixture(convention).ShouldEqual(
+                new StringBuilder()
+                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("    PassingCase")
+                    .AppendLine("    FailingCase Throws Exception")
+                    .AppendLine("Dispose FirstFixture")
+                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("    PassingCase")
                     .AppendLine("    FailingCase Throws Exception")
                     .AppendLine("Dispose SecondFixture")
                     .ToString());

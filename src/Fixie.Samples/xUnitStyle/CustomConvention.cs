@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Fixie.Behaviors;
 using Fixie.Conventions;
 
 namespace Fixie.Samples.xUnitStyle
@@ -21,18 +22,13 @@ namespace Fixie.Samples.xUnitStyle
             var fixtures = new Dictionary<MethodInfo, object>();
 
             FixtureExecutionBehavior =
-                new ClassSetUpTearDown(
-                    testClass => PrepareFixtureData(testClass, fixtures),
-                    FixtureExecutionBehavior,
-                    testClass => DisposeFixtureData(fixtures)
-                    );
+                new CreateInstancePerCase()
+                    .Wrap(testClass => PrepareFixtureData(testClass, fixtures),
+                          testClass => DisposeFixtureData(fixtures));
 
             InstanceExecutionBehavior =
-                new InstanceSetUpTearDown(
-                    (testClass, instance) => InjectFixtureData(instance, fixtures),
-                    InstanceExecutionBehavior,
-                    (testClass, instance) => new ExceptionList()
-                    );
+                InstanceExecutionBehavior
+                    .SetUp((testClass, instance) => InjectFixtureData(instance, fixtures));
         }
 
         bool HasAnyFactMethods(Type type)
@@ -60,18 +56,6 @@ namespace Fixie.Samples.xUnitStyle
             return exceptions;
         }
 
-        static ExceptionList DisposeFixtureData(Dictionary<MethodInfo, object> fixtures)
-        {
-            var classTearDownExceptions = new ExceptionList();
-            foreach (var fixtureInstance in fixtures.Values)
-            {
-                var disposalExceptions = Dispose(fixtureInstance);
-
-                classTearDownExceptions.Add(disposalExceptions);
-            }
-            return classTearDownExceptions;
-        }
-
         static ExceptionList InjectFixtureData(object instance, Dictionary<MethodInfo, object> fixtures)
         {
             var exceptions = new ExceptionList();
@@ -93,6 +77,18 @@ namespace Fixie.Samples.xUnitStyle
             }
 
             return exceptions;
+        }
+
+        static ExceptionList DisposeFixtureData(Dictionary<MethodInfo, object> fixtures)
+        {
+            var classTearDownExceptions = new ExceptionList();
+            foreach (var fixtureInstance in fixtures.Values)
+            {
+                var disposalExceptions = Dispose(fixtureInstance);
+
+                classTearDownExceptions.Add(disposalExceptions);
+            }
+            return classTearDownExceptions;
         }
 
         static IEnumerable<Type> FixtureInterfaces(Type testClass)

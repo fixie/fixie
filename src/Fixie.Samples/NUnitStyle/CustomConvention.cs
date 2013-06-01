@@ -22,10 +22,8 @@ namespace Fixie.Samples.NUnitStyle
                     .SetUpTearDown<TestFixtureSetUpAttribute, TestFixtureTearDownAttribute>()
                     .Behavior;
 
-            CaseExecutionBehavior =
-                new MethodBehaviorBuilder()
-                    .SetUpTearDown<SetUpAttribute, TearDownAttribute>()
-                    .Behavior;
+            CaseExecution
+                .SetUpTearDown<SetUpAttribute, TearDownAttribute>();
         }
     }
 }

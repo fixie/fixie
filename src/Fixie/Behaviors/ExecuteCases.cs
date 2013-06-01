@@ -8,7 +8,7 @@ namespace Fixie.Behaviors
         public void Execute(Type fixtureClass, object instance, Case[] cases, Convention convention)
         {
             foreach (var @case in cases)
-                convention.CaseExecutionBehavior.Execute(@case.Method, instance, @case.Exceptions);
+                convention.CaseExecution.Behavior.Execute(@case.Method, instance, @case.Exceptions);
         }
     }
 }

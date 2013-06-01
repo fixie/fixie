@@ -10,19 +10,21 @@ namespace Fixie.Tests.Behaviors
 {
     public class ExecuteCasesTests
     {
+        readonly List<string> log;
         readonly Type fixtureClass;
-        readonly SampleFixture instance;
-        readonly LogMethod logMethod;
         readonly Convention convention;
 
         public ExecuteCasesTests()
         {
+            log = new List<string>();
             fixtureClass = typeof(SampleFixture);
-            instance = new SampleFixture();
 
             convention = new SelfTestConvention();
-            logMethod = new LogMethod(convention.CaseExecutionBehavior);
-            convention.CaseExecutionBehavior = logMethod;
+            convention.CaseExecution.Wrap((method, instance, exceptions, inner) =>
+            {
+                log.Add(method.Name);
+                inner.Execute(method, instance, exceptions);
+            });
         }
 
         public void ShouldPerformCaseExecutionBehaviorForAllGivenCases()
@@ -34,30 +36,11 @@ namespace Fixie.Tests.Behaviors
             };
 
             var executeCases = new ExecuteCases();
-            executeCases.Execute(fixtureClass, instance, cases, convention);
+            executeCases.Execute(fixtureClass, new SampleFixture(), cases, convention);
 
             cases[0].Exceptions.Any().ShouldBeFalse();
             cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
-            logMethod.Log.ShouldEqual("PassingCase", "FailingCase");
-        }
-
-        private class LogMethod : MethodBehavior
-        {
-            readonly MethodBehavior inner;
-
-            public LogMethod(MethodBehavior inner)
-            {
-                this.inner = inner;
-                Log = new List<string>();
-            }
-
-            public List<string> Log { get; private set; }
-
-            public void Execute(MethodInfo method, object instance, ExceptionList exceptions)
-            {
-                Log.Add(method.Name);
-                inner.Execute(method, instance, exceptions);
-            }
+            log.ShouldEqual("PassingCase", "FailingCase");
         }
 
         private class SampleFixture

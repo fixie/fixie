@@ -12,14 +12,14 @@ namespace Fixie.Conventions
         {
             Fixtures = new ClassFilter();
             Cases = new MethodFilter().Where(m => !m.IsDispose());
-            CaseExecutionBehavior = new Invoke();
+            CaseExecution = new MethodBehaviorBuilder();
             InstanceExecutionBehavior = new ExecuteCases();
             FixtureExecutionBehavior = new CreateInstancePerCase();
         }
 
         public ClassFilter Fixtures { get; private set; }
         public MethodFilter Cases { get; private set; }
-        public MethodBehavior CaseExecutionBehavior { get; set; }
+        public MethodBehaviorBuilder CaseExecution { get; private set; }
         public InstanceBehavior InstanceExecutionBehavior { get; set; }
         public TypeBehavior FixtureExecutionBehavior { get; set; }
 

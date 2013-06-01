@@ -58,12 +58,10 @@ namespace Fixie.Tests.ClassFixtures
                     .ToString());
         }
 
-        public void ShouldSupportReplacingTheCaseExecutionBehavior()
+        public void ShouldSupportSuppressingTheCaseExecutionBehavior()
         {
-            var convention = new SelfTestConvention
-            {
-                CaseExecutionBehavior = new SkipCase()
-            };
+            var convention = new SelfTestConvention();
+            convention.CaseExecution.Wrap((method, instance, exceptions, inner) => WriteLine("Skipping " + method.Name));
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -85,7 +83,7 @@ namespace Fixie.Tests.ClassFixtures
         public void ShouldSupportAugmentingTheCaseExecutionBehavior()
         {
             var convention = new SelfTestConvention();
-            convention.CaseExecutionBehavior = new BeforeAfterMethod("BeforeCase", convention.CaseExecutionBehavior, "AfterCase");
+            convention.CaseExecution.Wrap(BeforeAfterCase);
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -211,7 +209,7 @@ namespace Fixie.Tests.ClassFixtures
             var convention = new SelfTestConvention();
             convention.FixtureExecutionBehavior = new BeforeAfterType("BeforeFixture", convention.FixtureExecutionBehavior, "AfterFixture");
             convention.InstanceExecutionBehavior = new BeforeAfterInstance("BeforeInstance", convention.InstanceExecutionBehavior, "AfterInstance");
-            convention.CaseExecutionBehavior = new BeforeAfterMethod("BeforeCase", convention.CaseExecutionBehavior, "AfterCase");
+            convention.CaseExecution.Wrap(BeforeAfterCase);
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -294,16 +292,17 @@ namespace Fixie.Tests.ClassFixtures
             Console.WriteLine(indentation + format, args);
         }
 
+        static void BeforeAfterCase(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner)
+        {
+            WriteLine("BeforeCase");
+            indent++;
+            inner.Execute(method, instance, exceptions);
+            indent--;
+            WriteLine("AfterCase");
+        }
+
         class FirstFixture : FixturBase { }
         class SecondFixture : FixturBase { }
-
-        class SkipCase : MethodBehavior
-        {
-            public void Execute(MethodInfo method, object instance, ExceptionList exceptions)
-            {
-                WriteLine("Skipping " + method.Name);
-            }
-        }
 
         class SkipCases : InstanceBehavior
         {
@@ -318,29 +317,6 @@ namespace Fixie.Tests.ClassFixtures
             public void Execute(Type fixtureClass, Convention convention, Case[] cases)
             {
                 WriteLine("Skipping " + fixtureClass.Name);
-            }
-        }
-
-        class BeforeAfterMethod : MethodBehavior
-        {
-            readonly string before;
-            readonly MethodBehavior inner;
-            readonly string after;
-
-            public BeforeAfterMethod(string before, MethodBehavior inner, string after)
-            {
-                this.before = before;
-                this.inner = inner;
-                this.after = after;
-            }
-
-            public void Execute(MethodInfo method, object fixtureInstance, ExceptionList exceptions)
-            {
-                WriteLine(before);
-                indent++;
-                inner.Execute(method, fixtureInstance, exceptions);
-                indent--;
-                WriteLine(after);
             }
         }
 

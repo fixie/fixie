@@ -20,12 +20,10 @@ namespace Fixie.Samples.xUnitStyle
 
             var fixtures = new Dictionary<MethodInfo, object>();
 
-            FixtureExecutionBehavior =
-                new TypeBehaviorBuilder()
-                    .CreateInstancePerCase()
-                    .SetUpTearDown(testClass => PrepareFixtureData(testClass, fixtures),
-                                   testClass => DisposeFixtureData(fixtures))
-                    .Behavior;
+            FixtureExecution
+                .CreateInstancePerCase()
+                .SetUpTearDown(testClass => PrepareFixtureData(testClass, fixtures),
+                               testClass => DisposeFixtureData(fixtures));
 
             InstanceExecution
                 .SetUpTearDown((testClass, instance) => InjectFixtureData(instance, fixtures),

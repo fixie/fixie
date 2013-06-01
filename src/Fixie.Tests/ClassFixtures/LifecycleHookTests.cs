@@ -21,7 +21,7 @@ namespace Fixie.Tests.ClassFixtures
         {
             var convention = new SelfTestConvention();
 
-            convention.FixtureExecutionBehavior.ShouldBeType<CreateInstancePerCase>();
+            convention.FixtureExecution.Behavior.ShouldBeType<CreateInstancePerCase>();
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -42,7 +42,8 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldSupportOptionToPerformSingleFixtureLifecycleAcrossAllContainedCases()
         {
-            var convention = new SelfTestConvention { FixtureExecutionBehavior = new CreateInstancePerFixture() };
+            var convention = new SelfTestConvention();
+            convention.FixtureExecution.CreateInstancePerFixture();
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -163,10 +164,8 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldSupportReplacingTheFixtureExecutionBehavior()
         {
-            var convention = new SelfTestConvention
-            {
-                FixtureExecutionBehavior = new SkipFixture()
-            };
+            var convention = new SelfTestConvention();
+            convention.FixtureExecution.Wrap(SkipType);
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -178,7 +177,7 @@ namespace Fixie.Tests.ClassFixtures
         public void ShouldSupportAugmentingTheFixtureExecutionBehavior()
         {
             var convention = new SelfTestConvention();
-            convention.FixtureExecutionBehavior = new BeforeAfterType("BeforeFixture", convention.FixtureExecutionBehavior, "AfterFixture");
+            convention.FixtureExecution.Wrap(BeforeAfterType);
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -204,7 +203,7 @@ namespace Fixie.Tests.ClassFixtures
         public void ShouldSupportAugmentingFixtureAndInstanceAndCaseBehaviors()
         {
             var convention = new SelfTestConvention();
-            convention.FixtureExecutionBehavior = new BeforeAfterType("BeforeFixture", convention.FixtureExecutionBehavior, "AfterFixture");
+            convention.FixtureExecution.Wrap(BeforeAfterType);
             convention.InstanceExecution.Wrap(BeforeAfterInstance);
             convention.CaseExecution.Wrap(BeforeAfterCase);
 
@@ -317,38 +316,21 @@ namespace Fixie.Tests.ClassFixtures
             WriteLine("AfterInstance");
         }
 
+        static void SkipType(Type fixtureClass, Convention convention, Case[] cases, TypeBehavior inner)
+        {
+            WriteLine("Skipping " + fixtureClass.Name);
+        }
+
+        static void BeforeAfterType(Type fixtureClass, Convention convention, Case[] cases, TypeBehavior inner)
+        {
+            WriteLine("BeforeFixture");
+            indent++;
+            inner.Execute(fixtureClass, convention, cases);
+            indent--;
+            WriteLine("AfterFixture");
+        }
+
         class FirstFixture : FixturBase { }
         class SecondFixture : FixturBase { }
-
-        class SkipFixture : TypeBehavior
-        {
-            public void Execute(Type fixtureClass, Convention convention, Case[] cases)
-            {
-                WriteLine("Skipping " + fixtureClass.Name);
-            }
-        }
-
-        class BeforeAfterType : TypeBehavior
-        {
-            readonly string before;
-            readonly TypeBehavior inner;
-            readonly string after;
-
-            public BeforeAfterType(string before, TypeBehavior inner, string after)
-            {
-                this.before = before;
-                this.inner = inner;
-                this.after = after;
-            }
-
-            public void Execute(Type fixtureClass, Convention convention, Case[] cases)
-            {
-                WriteLine(before);
-                indent++;
-                inner.Execute(fixtureClass, convention, cases);
-                indent--;
-                WriteLine(after);
-            }
-        }
     }
 }

@@ -12,10 +12,8 @@ namespace Fixie.Samples.NUnitStyle
             Cases
                 .HasOrInherits<TestAttribute>();
 
-            FixtureExecutionBehavior =
-                new TypeBehaviorBuilder()
-                    .CreateInstancePerFixture()
-                    .Behavior;
+            FixtureExecution
+                    .CreateInstancePerFixture();
 
             InstanceExecution
                 .SetUpTearDown<TestFixtureSetUpAttribute, TestFixtureTearDownAttribute>();

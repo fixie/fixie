@@ -16,7 +16,7 @@ namespace Fixie.Behaviors
 
                 if (TryConstruct(fixtureClass, exceptions, out instance))
                 {
-                    convention.InstanceExecutionBehavior.Execute(fixtureClass, instance, new[] { @case }, convention);
+                    convention.InstanceExecution.Behavior.Execute(fixtureClass, instance, new[] { @case }, convention);
 
                     Dispose(instance, exceptions);
                 }

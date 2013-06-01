@@ -27,10 +27,9 @@ namespace Fixie.Samples.xUnitStyle
                                    testClass => DisposeFixtureData(fixtures))
                     .Behavior;
 
-            InstanceExecutionBehavior =
-                new InstanceBehaviorBuilder_Prototype()
-                    .SetUp((testClass, instance) => InjectFixtureData(instance, fixtures))
-                    .Behavior;
+            InstanceExecution
+                .SetUpTearDown((testClass, instance) => InjectFixtureData(instance, fixtures),
+                               (testClass, instance) => new ExceptionList());
         }
 
         bool HasAnyFactMethods(Type type)

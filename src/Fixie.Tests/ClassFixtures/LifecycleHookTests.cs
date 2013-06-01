@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -61,7 +60,7 @@ namespace Fixie.Tests.ClassFixtures
         public void ShouldSupportSuppressingTheCaseExecutionBehavior()
         {
             var convention = new SelfTestConvention();
-            convention.CaseExecution.Wrap((method, instance, exceptions, inner) => WriteLine("Skipping " + method.Name));
+            convention.CaseExecution.Wrap(SkipCase);
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -112,10 +111,8 @@ namespace Fixie.Tests.ClassFixtures
 
         public void ShouldSupportReplacingTheInstanceExecutionBehavior()
         {
-            var convention = new SelfTestConvention
-            {
-                InstanceExecutionBehavior = new SkipCases()
-            };
+            var convention = new SelfTestConvention();
+            convention.InstanceExecution.Wrap(SkipInstance);
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -137,7 +134,7 @@ namespace Fixie.Tests.ClassFixtures
         public void ShouldSupportAugmentingTheInstanceExecutionBehavior()
         {
             var convention = new SelfTestConvention();
-            convention.InstanceExecutionBehavior = new BeforeAfterInstance("BeforeInstance", convention.InstanceExecutionBehavior, "AfterInstance");
+            convention.InstanceExecution.Wrap(BeforeAfterInstance);
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -208,7 +205,7 @@ namespace Fixie.Tests.ClassFixtures
         {
             var convention = new SelfTestConvention();
             convention.FixtureExecutionBehavior = new BeforeAfterType("BeforeFixture", convention.FixtureExecutionBehavior, "AfterFixture");
-            convention.InstanceExecutionBehavior = new BeforeAfterInstance("BeforeInstance", convention.InstanceExecutionBehavior, "AfterInstance");
+            convention.InstanceExecution.Wrap(BeforeAfterInstance);
             convention.CaseExecution.Wrap(BeforeAfterCase);
 
             OutputFromSampleFixture(convention).ShouldEqual(
@@ -286,10 +283,15 @@ namespace Fixie.Tests.ClassFixtures
             }
         }
 
-        private static void WriteLine(string format, params object[] args)
+        static void WriteLine(string format, params object[] args)
         {
             var indentation = string.Concat(Enumerable.Repeat("    ", indent));
             Console.WriteLine(indentation + format, args);
+        }
+
+        static void SkipCase(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner)
+        {
+            WriteLine("Skipping " + method.Name);
         }
 
         static void BeforeAfterCase(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner)
@@ -301,45 +303,28 @@ namespace Fixie.Tests.ClassFixtures
             WriteLine("AfterCase");
         }
 
+        static void SkipInstance(Type fixtureClass, object instance, Case[] cases, Convention convention, InstanceBehavior inner)
+        {
+            WriteLine("Skipping {0} case(s) for an instance of {1}", cases.Length, fixtureClass.Name);
+        }
+
+        static void BeforeAfterInstance(Type fixtureClass, object instance, Case[] cases, Convention convention, InstanceBehavior inner)
+        {
+            WriteLine("BeforeInstance");
+            indent++;
+            inner.Execute(fixtureClass, instance, cases, convention);
+            indent--;
+            WriteLine("AfterInstance");
+        }
+
         class FirstFixture : FixturBase { }
         class SecondFixture : FixturBase { }
-
-        class SkipCases : InstanceBehavior
-        {
-            public void Execute(Type fixtureClass, object instance, Case[] cases, Convention convention)
-            {
-                WriteLine("Skipping {0} case(s) for an instance of {1}", cases.Length, fixtureClass.Name);
-            }
-        }
 
         class SkipFixture : TypeBehavior
         {
             public void Execute(Type fixtureClass, Convention convention, Case[] cases)
             {
                 WriteLine("Skipping " + fixtureClass.Name);
-            }
-        }
-
-        class BeforeAfterInstance : InstanceBehavior
-        {
-            readonly string before;
-            readonly InstanceBehavior inner;
-            readonly string after;
-
-            public BeforeAfterInstance(string before, InstanceBehavior inner, string after)
-            {
-                this.before = before;
-                this.inner = inner;
-                this.after = after;
-            }
-
-            public void Execute(Type fixtureClass, object instance, Case[] cases, Convention convention)
-            {
-                WriteLine(before);
-                indent++;
-                inner.Execute(fixtureClass, instance, cases, convention);
-                indent--;
-                WriteLine(after);
             }
         }
 

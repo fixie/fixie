@@ -110,7 +110,7 @@ namespace Fixie.Tests.Conventions
                 builder.Behavior.Execute(Method("Pass"), this, exceptions);
 
                 exceptions.Count.ShouldEqual(1);
-                console.Lines.ShouldEqual();
+                console.Lines.ShouldBeEmpty();
             }
         }
 

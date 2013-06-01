@@ -53,6 +53,7 @@
     <Compile Include="Conventions\InstanceBehaviorBuilderTests.cs" />
     <Compile Include="Conventions\MethodBehaviorBuilderTests.cs" />
     <Compile Include="Conventions\MethodFilterTests.cs" />
+    <Compile Include="Conventions\TypeBehaviorBuilderTests.cs" />
     <Compile Include="FailureException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedirectedConsole.cs" />

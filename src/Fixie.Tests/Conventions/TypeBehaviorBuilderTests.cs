@@ -1,25 +1,22 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using Fixie.Behaviors;
 using Fixie.Conventions;
 using Should;
 
 namespace Fixie.Tests.Conventions
 {
-    public class InstanceBehaviorBuilderTests
+    public class TypeBehaviorBuilderTests
     {
-        readonly InstanceBehaviorBuilder builder;
+        readonly TypeBehaviorBuilder builder;
         readonly Type fixtureClass;
-        readonly object instance;
         readonly Case[] cases;
         readonly Convention convention;
 
-        public InstanceBehaviorBuilderTests()
+        public TypeBehaviorBuilderTests()
         {
-            builder = new InstanceBehaviorBuilder();
+            builder = new TypeBehaviorBuilder();
             fixtureClass = typeof(SampleFixture);
-            instance = new SampleFixture();
             cases = new[]
             {
                 new Case(fixtureClass, Method("Pass")),
@@ -28,78 +25,106 @@ namespace Fixie.Tests.Conventions
             convention = new SelfTestConvention();
         }
 
-        public void ShouldJustExecuteCasesByDefault()
+        public void ShouldHaveNoBehaviorByDefault()
         {
-            builder.Behavior.ShouldBeType<ExecuteCases>();
+            builder.Behavior.ShouldBeNull();
+        }
+
+        public void ShouldAllowCreatingInstancePerCase()
+        {
+            builder.CreateInstancePerCase();
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, instance, cases, convention);
+                builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
 
-                console.Lines.ShouldEqual("Pass", "Fail");
+                console.Lines.ShouldEqual("Construct", "Pass", "Dispose", "Construct", "Fail", "Dispose");
+            }
+        }
+
+        public void ShouldAllowCreatingInstancePerFixture()
+        {
+            builder.CreateInstancePerFixture();
+
+            using (var console = new RedirectedConsole())
+            {
+                builder.Behavior.Execute(fixtureClass, convention, cases);
+
+                cases[0].Exceptions.Any().ShouldBeFalse();
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
+
+                console.Lines.ShouldEqual("Construct", "Pass", "Fail", "Dispose");
             }
         }
 
         public void ShouldAllowWrappingTheBehaviorInAnother()
         {
-            builder.Wrap((fixtureClass, instance, cases, convention, inner) =>
-            {
-                Console.WriteLine("Before");
-                inner.Execute(fixtureClass, instance, cases, convention);
-                Console.WriteLine("After");
-            });
+            builder
+                .CreateInstancePerCase()
+                .Wrap((fixtureClass, convention, cases, inner) =>
+                {
+                    Console.WriteLine("Before");
+                    inner.Execute(fixtureClass, convention, cases);
+                    Console.WriteLine("After");
+                });
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, instance, cases, convention);
+                builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
 
-                console.Lines.ShouldEqual("Before", "Pass", "Fail", "After");
+                console.Lines.ShouldEqual("Before", "Construct", "Pass", "Dispose", "Construct", "Fail", "Dispose", "After");
             }
         }
 
         public void ShouldAllowWrappingTheBehaviorMultipleTimes()
         {
             builder
-                .Wrap((fixtureClass, instance, cases, convention, inner) =>
+                .CreateInstancePerCase()
+                .Wrap((fixtureClass, convention, cases, inner) =>
                 {
                     Console.WriteLine("Inner Before");
-                    inner.Execute(fixtureClass, instance, cases, convention);
+                    inner.Execute(fixtureClass, convention, cases);
                     Console.WriteLine("Inner After");
                 })
-                .Wrap((fixtureClass, instance, cases, convention, inner) =>
+                .Wrap((fixtureClass, convention, cases, inner) =>
                 {
                     Console.WriteLine("Outer Before");
-                    inner.Execute(fixtureClass, instance, cases, convention);
+                    inner.Execute(fixtureClass, convention, cases);
                     Console.WriteLine("Outer After");
                 });
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, instance, cases, convention);
+                builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
 
-                console.Lines.ShouldEqual("Outer Before", "Inner Before", "Pass", "Fail", "Inner After", "Outer After");
+                console.Lines.ShouldEqual("Outer Before", "Inner Before",
+                                          "Construct", "Pass", "Dispose",
+                                          "Construct", "Fail", "Dispose",
+                                          "Inner After", "Outer After");
             }
         }
 
         public void ShouldHandleCatastrophicExceptionsByFailingAllCasesWhenBehaviorsThrowRatherThanContributeExceptions()
         {
-            builder.Wrap((fixtureClass, instance, cases, convention, inner) =>
-            {
-                throw new Exception("Unsafe behavior threw!");
-            });
+            builder
+                .CreateInstancePerCase()
+                .Wrap((fixtureClass, convention, cases, inner) =>
+                {
+                    throw new Exception("Unsafe behavior threw!");
+                });
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, instance, cases, convention);
+                builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe behavior threw!");
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe behavior threw!");
@@ -110,26 +135,30 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldAllowWrappingTheBehaviorInSetUpTearDown()
         {
-            builder.SetUpTearDown(SetUp, TearDown);
-        
+            builder
+                .CreateInstancePerCase()
+                .SetUpTearDown(SetUp, TearDown);
+
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, instance, cases, convention);
+                builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
 
-                console.Lines.ShouldEqual("SetUp", "Pass", "Fail", "TearDown");
+                console.Lines.ShouldEqual("SetUp", "Construct", "Pass", "Dispose", "Construct", "Fail", "Dispose", "TearDown");
             }
         }
 
         public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenSetupContributesExceptions()
         {
-            builder.SetUpTearDown(FailingSetUp, TearDown);
+            builder
+                .CreateInstancePerCase()
+                .SetUpTearDown(FailingSetUp, TearDown);
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, instance, cases, convention);
+                builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingSetUp");
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingSetUp");
@@ -140,23 +169,30 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldFailAllCasesWhenTearDownContributesExceptions()
         {
-            builder.SetUpTearDown(SetUp, FailingTearDown);
+            builder
+                .CreateInstancePerCase()
+                .SetUpTearDown(SetUp, FailingTearDown);
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, instance, cases, convention);
+                builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingTearDown");
                 cases[1].Exceptions.ToArray().Select(x => x.Message).ShouldEqual(
                     "Exception of type 'Fixie.Tests.FailureException' was thrown.",
                     "Exception from FailingTearDown");
 
-                console.Lines.ShouldEqual("SetUp", "Pass", "Fail", "FailingTearDown Contributes an Exception!");
+                console.Lines.ShouldEqual("SetUp", "Construct", "Pass", "Dispose", "Construct", "Fail", "Dispose", "FailingTearDown Contributes an Exception!");
             }
         }
 
-        class SampleFixture
+        class SampleFixture : IDisposable
         {
+            public SampleFixture()
+            {
+                Console.WriteLine("Construct");
+            }
+
             public void Pass()
             {
                 Console.WriteLine("Pass");
@@ -172,15 +208,20 @@ namespace Fixie.Tests.Conventions
             {
                 throw new ShouldBeUnreachableException();
             }
+
+            public void Dispose()
+            {
+                Console.WriteLine("Dispose");
+            }
         }
 
-        static ExceptionList SetUp(Type fixtureClass, object instance)
+        static ExceptionList SetUp(Type fixtureClass)
         {
             Console.WriteLine("SetUp");
             return new ExceptionList();
         }
 
-        static ExceptionList FailingSetUp(Type fixtureClass, object instance)
+        static ExceptionList FailingSetUp(Type fixtureClass)
         {
             Console.WriteLine("FailingSetUp Contributes an Exception!");
             var exceptions = new ExceptionList();
@@ -188,13 +229,13 @@ namespace Fixie.Tests.Conventions
             return exceptions;
         }
 
-        static ExceptionList TearDown(Type fixtureClass, object instance)
+        static ExceptionList TearDown(Type fixtureClass)
         {
             Console.WriteLine("TearDown");
             return new ExceptionList();
         }
 
-        static ExceptionList FailingTearDown(Type fixtureClass, object instance)
+        static ExceptionList FailingTearDown(Type fixtureClass)
         {
             Console.WriteLine("FailingTearDown Contributes an Exception!");
             var exceptions = new ExceptionList();

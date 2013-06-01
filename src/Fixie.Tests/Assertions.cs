@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Should;
 using Should.Core.Assertions;
 
 namespace Fixie.Tests
@@ -18,6 +20,24 @@ namespace Fixie.Tests
 
             actual.Entries.OrderBy(x => x)
                 .ShouldEqual(expected.OrderBy(x => x).ToArray());
+        }
+
+        public static void ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception
+        {
+            bool threw = false;
+
+            try
+            {
+                shouldThrow();
+            }
+            catch (Exception actual)
+            {
+                threw = true;
+                actual.ShouldBeType<TException>();
+                actual.Message.ShouldEqual(expectedMessage);
+            }
+
+            threw.ShouldBeTrue();
         }
     }
 }

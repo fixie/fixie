@@ -28,7 +28,7 @@ namespace Fixie.Samples.xUnitStyle
                     .Behavior;
 
             InstanceExecutionBehavior =
-                new InstanceBehaviorBuilder()
+                new InstanceBehaviorBuilder_Prototype()
                     .SetUp((testClass, instance) => InjectFixtureData(instance, fixtures))
                     .Behavior;
         }

@@ -27,21 +27,21 @@ namespace Fixie.Samples
             where TTearDownAttribute : Attribute
         {
             return builder.SetUpTearDown(
-                (method, instance, exceptions, inner) => new MethodFilter().HasOrInherits<TSetUpAttribute>().InvokeAll(method.ReflectedType, instance),
-                (method, instance, exceptions, inner) => new MethodFilter().HasOrInherits<TTearDownAttribute>().InvokeAll(method.ReflectedType, instance));
+                (method, instance) => new MethodFilter().HasOrInherits<TSetUpAttribute>().InvokeAll(method.ReflectedType, instance),
+                (method, instance) => new MethodFilter().HasOrInherits<TTearDownAttribute>().InvokeAll(method.ReflectedType, instance));
         }
     }
 
-    public class InstanceBehaviorBuilder
+    public class InstanceBehaviorBuilder_Prototype
     {
-        public InstanceBehaviorBuilder()
+        public InstanceBehaviorBuilder_Prototype()
         {
             Behavior = new ExecuteCases();
         }
 
         public InstanceBehavior Behavior { get; private set; }
 
-        public InstanceBehaviorBuilder SetUpTearDown<TSetUpAttribute, TTearDownAttribute>()
+        public InstanceBehaviorBuilder_Prototype SetUpTearDown<TSetUpAttribute, TTearDownAttribute>()
             where TSetUpAttribute : Attribute
             where TTearDownAttribute : Attribute
         {
@@ -52,7 +52,7 @@ namespace Fixie.Samples
             return this;
         }
 
-        public InstanceBehaviorBuilder SetUp(InstanceAction setUp)
+        public InstanceBehaviorBuilder_Prototype SetUp(InstanceAction setUp)
         {
             Behavior = new InstanceSetUpTearDown(setUp, Behavior, (testClass, instance) => new ExceptionList());
             return this;

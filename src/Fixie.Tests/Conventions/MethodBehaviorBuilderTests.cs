@@ -127,16 +127,6 @@ namespace Fixie.Tests.Conventions
                 exceptions.Any().ShouldBeFalse();
                 console.Lines.ShouldEqual("SetUp", "Pass", "TearDown");
             }
-
-            using (var console = new RedirectedConsole())
-            {
-                var exceptions = new ExceptionList();
-
-                builder.Behavior.Execute(Method("Fail"), this, exceptions);
-
-                exceptions.Count.ShouldEqual(1);
-                console.Lines.ShouldEqual("SetUp", "Fail Threw!", "TearDown");
-            }
         }
 
         public void ShouldShortCircuitInnerBehaviorAndTearDownWhenSetupContributesExceptions()
@@ -156,7 +146,32 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldNotShortCircuitTearDownWhenInnerBehaviorContributesExceptions()
         {
+            builder.SetUpTearDown(SetUp, TearDown);
+
+            using (var console = new RedirectedConsole())
+            {
+                var exceptions = new ExceptionList();
+
+                builder.Behavior.Execute(Method("Fail"), this, exceptions);
+
+                exceptions.Count.ShouldEqual(1);
+                console.Lines.ShouldEqual("SetUp", "Fail Threw!", "TearDown");
+            }
+        }
+
+        public void ShouldFailWhenTearDownContributesExceptions()
+        {
             builder.SetUpTearDown(SetUp, FailingTearDown);
+
+            using (var console = new RedirectedConsole())
+            {
+                var exceptions = new ExceptionList();
+
+                builder.Behavior.Execute(Method("Pass"), this, exceptions);
+
+                exceptions.Count.ShouldEqual(1);
+                console.Lines.ShouldEqual("SetUp", "Pass", "FailingTearDown Contributes an Exception!");
+            }
 
             using (var console = new RedirectedConsole())
             {
@@ -180,26 +195,32 @@ namespace Fixie.Tests.Conventions
             throw new Exception();
         }
 
-        void SetUp(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner)
+        static ExceptionList SetUp(MethodInfo method, object instance)
         {
             Console.WriteLine("SetUp");
+            return new ExceptionList();
         }
 
-        void FailingSetUp(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner)
+        static ExceptionList FailingSetUp(MethodInfo method, object instance)
         {
             Console.WriteLine("FailingSetUp Contributes an Exception!");
+            var exceptions = new ExceptionList();
             exceptions.Add(new Exception());
+            return exceptions;
         }
 
-        void TearDown(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner)
+        static ExceptionList TearDown(MethodInfo method, object instance)
         {
             Console.WriteLine("TearDown");
+            return new ExceptionList();
         }
 
-        void FailingTearDown(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner)
+        static ExceptionList FailingTearDown(MethodInfo method, object instance)
         {
             Console.WriteLine("FailingTearDown Contributes an Exception!");
+            var exceptions = new ExceptionList();
             exceptions.Add(new Exception());
+            return exceptions;
         }
 
         static MethodInfo Method(string name)

@@ -18,7 +18,7 @@ namespace Fixie.Samples.NUnitStyle
                     .Behavior;
 
             InstanceExecutionBehavior =
-                new InstanceBehaviorBuilder()
+                new InstanceBehaviorBuilder_Prototype()
                     .SetUpTearDown<TestFixtureSetUpAttribute, TestFixtureTearDownAttribute>()
                     .Behavior;
 

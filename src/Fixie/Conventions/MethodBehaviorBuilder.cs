@@ -4,7 +4,8 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void MethodAction(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner);
+    public delegate void MethodBehaviorAction(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner);
+    public delegate ExceptionList MethodAction(MethodInfo method, object instance);
 
     public class MethodBehaviorBuilder
     {
@@ -15,7 +16,7 @@ namespace Fixie.Conventions
 
         public MethodBehavior Behavior { get; private set; }
 
-        public MethodBehaviorBuilder Wrap(MethodAction outer)
+        public MethodBehaviorBuilder Wrap(MethodBehaviorAction outer)
         {
             Behavior = new WrapBehavior(outer, Behavior);
             return this;
@@ -25,9 +26,7 @@ namespace Fixie.Conventions
         {
             return Wrap((method, instance, exceptions, inner) =>
             {
-                var setUpExceptions = new ExceptionList();
-                setUp(method, instance, setUpExceptions, inner);
-
+                var setUpExceptions = setUp(method, instance);
                 if (setUpExceptions.Any())
                 {
                     exceptions.Add(setUpExceptions);
@@ -35,16 +34,19 @@ namespace Fixie.Conventions
                 }
 
                 inner.Execute(method, instance, exceptions);
-                tearDown(method, instance, exceptions, inner);
+
+                var tearDownExceptions = tearDown(method, instance);
+                if (tearDownExceptions.Any())
+                    exceptions.Add(tearDownExceptions);
             });
         }
 
         class WrapBehavior : MethodBehavior
         {
-            readonly MethodAction outer;
+            readonly MethodBehaviorAction outer;
             readonly MethodBehavior inner;
 
-            public WrapBehavior(MethodAction outer, MethodBehavior inner)
+            public WrapBehavior(MethodBehaviorAction outer, MethodBehavior inner)
             {
                 this.outer = outer;
                 this.inner = inner;

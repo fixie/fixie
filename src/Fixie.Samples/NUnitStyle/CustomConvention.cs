@@ -1,5 +1,4 @@
-﻿using Fixie.Behaviors;
-using Fixie.Conventions;
+﻿using Fixie.Conventions;
 
 namespace Fixie.Samples.NUnitStyle
 {
@@ -13,15 +12,20 @@ namespace Fixie.Samples.NUnitStyle
             Cases
                 .HasOrInherits<TestAttribute>();
 
-            FixtureExecutionBehavior = new CreateInstancePerFixture();
+            FixtureExecutionBehavior =
+                new TypeBehaviorBuilder()
+                    .CreateInstancePerFixture()
+                    .Behavior;
 
             InstanceExecutionBehavior =
-                InstanceExecutionBehavior
-                    .Wrap<TestFixtureSetUpAttribute, TestFixtureTearDownAttribute>();
+                new InstanceBehaviorBuilder()
+                    .SetUpTearDown<TestFixtureSetUpAttribute, TestFixtureTearDownAttribute>()
+                    .Behavior;
 
             CaseExecutionBehavior =
-                CaseExecutionBehavior
-                    .Wrap<SetUpAttribute, TearDownAttribute>();
+                new MethodBehaviorBuilder()
+                    .SetUpTearDown<SetUpAttribute, TearDownAttribute>()
+                    .Behavior;
         }
     }
 }

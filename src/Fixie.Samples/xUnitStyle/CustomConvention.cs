@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fixie.Behaviors;
 using Fixie.Conventions;
 
 namespace Fixie.Samples.xUnitStyle
@@ -22,13 +21,16 @@ namespace Fixie.Samples.xUnitStyle
             var fixtures = new Dictionary<MethodInfo, object>();
 
             FixtureExecutionBehavior =
-                new CreateInstancePerCase()
-                    .Wrap(testClass => PrepareFixtureData(testClass, fixtures),
-                          testClass => DisposeFixtureData(fixtures));
+                new TypeBehaviorBuilder()
+                    .CreateInstancePerCase()
+                    .SetUpTearDown(testClass => PrepareFixtureData(testClass, fixtures),
+                                   testClass => DisposeFixtureData(fixtures))
+                    .Behavior;
 
             InstanceExecutionBehavior =
-                InstanceExecutionBehavior
-                    .SetUp((testClass, instance) => InjectFixtureData(instance, fixtures));
+                new InstanceBehaviorBuilder()
+                    .SetUp((testClass, instance) => InjectFixtureData(instance, fixtures))
+                    .Behavior;
         }
 
         bool HasAnyFactMethods(Type type)

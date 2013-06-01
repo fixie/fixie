@@ -24,149 +24,159 @@ namespace Fixie.Samples
         }
     }
 
-    public static class BehaviorExtensions
+    public class MethodBehaviorBuilder
     {
-        public static MethodBehavior Wrap<TSetUpAttribute, TTearDownAttribute>(this MethodBehavior inner)
+        public MethodBehaviorBuilder()
+        {
+            Behavior = new Invoke();
+        }
+
+        public MethodBehavior Behavior { get; private set; }
+
+        public MethodBehaviorBuilder SetUpTearDown<TSetUpAttribute, TTearDownAttribute>()
             where TSetUpAttribute : Attribute
             where TTearDownAttribute : Attribute
         {
-            return new MethodSetUpTearDown(
-                new MethodFilter().HasOrInherits<TSetUpAttribute>(),
-                inner,
-                new MethodFilter().HasOrInherits<TTearDownAttribute>());
+            Behavior = new MethodSetUpTearDown(
+                new MethodFilter().HasOrInherits<TSetUpAttribute>().InvokeAll,
+                Behavior,
+                new MethodFilter().HasOrInherits<TTearDownAttribute>().InvokeAll);
+            return this;
         }
 
-        public static InstanceBehavior Wrap<TSetUpAttribute, TTearDownAttribute>(this InstanceBehavior inner)
-            where TSetUpAttribute : Attribute
-            where TTearDownAttribute : Attribute
+        class MethodSetUpTearDown : MethodBehavior
         {
-            return new InstanceSetUpTearDown(
-                new MethodFilter().HasOrInherits<TSetUpAttribute>(),
-                inner,
-                new MethodFilter().HasOrInherits<TTearDownAttribute>());
-        }
+            readonly InstanceAction setUp;
+            readonly MethodBehavior inner;
+            readonly InstanceAction tearDown;
 
-        public static InstanceBehavior Wrap(this InstanceBehavior inner, InstanceAction setUp, InstanceAction tearDown)
-        {
-            return new InstanceSetUpTearDown(setUp, inner, tearDown);
-        }
-
-        public static TypeBehavior Wrap(this TypeBehavior inner, ClassAction setUp, ClassAction tearDown)
-        {
-            return new ClassSetUpTearDown(setUp, inner, tearDown);
-        }
-
-        public static InstanceBehavior SetUp(this InstanceBehavior inner, InstanceAction setUp)
-        {
-            return new InstanceSetUpTearDown(setUp, inner, (testClass, instance) => new ExceptionList());
-        }
-    }
-
-    public class MethodSetUpTearDown : MethodBehavior
-    {
-        readonly InstanceAction setUp;
-        readonly MethodBehavior inner;
-        readonly InstanceAction tearDown;
-
-        public MethodSetUpTearDown(MethodFilter setUps, MethodBehavior inner, MethodFilter tearDowns)
-        {
-            setUp = setUps.InvokeAll;
-            this.inner = inner;
-            tearDown = tearDowns.InvokeAll;
-        }
-
-        public MethodSetUpTearDown(InstanceAction setUp, MethodBehavior inner, InstanceAction tearDown)
-        {
-            this.setUp = setUp;
-            this.inner = inner;
-            this.tearDown = tearDown;
-        }
-
-        public void Execute(MethodInfo method, object instance, ExceptionList exceptions)
-        {
-            var setUpExceptions = setUp(method.ReflectedType, instance);
-            if (setUpExceptions.Any())
+            public MethodSetUpTearDown(InstanceAction setUp, MethodBehavior inner, InstanceAction tearDown)
             {
-                exceptions.Add(setUpExceptions);
+                this.setUp = setUp;
+                this.inner = inner;
+                this.tearDown = tearDown;
             }
-            else
+
+            public void Execute(MethodInfo method, object instance, ExceptionList exceptions)
             {
+                var setUpExceptions = setUp(method.ReflectedType, instance);
+                if (setUpExceptions.Any())
+                {
+                    exceptions.Add(setUpExceptions);
+                    return;
+                }
+
                 inner.Execute(method, instance, exceptions);
 
-                var tearDownExceptions = tearDown(method.ReflectedType, instance);
-                if (tearDownExceptions.Any())
-                {
-                    exceptions.Add(tearDownExceptions);
-                }
+                exceptions.Add(tearDown(method.ReflectedType, instance));
             }
         }
     }
 
-    public class InstanceSetUpTearDown : InstanceBehavior
+    public class InstanceBehaviorBuilder
     {
-        readonly InstanceAction setUp;
-        readonly InstanceBehavior inner;
-        readonly InstanceAction tearDown;
-
-        public InstanceSetUpTearDown(MethodFilter setUps, InstanceBehavior inner, MethodFilter tearDowns)
+        public InstanceBehaviorBuilder()
         {
-            setUp = setUps.InvokeAll;
-            this.inner = inner;
-            tearDown = tearDowns.InvokeAll;
+            Behavior = new ExecuteCases();
         }
 
-        public InstanceSetUpTearDown(InstanceAction setUp, InstanceBehavior inner, InstanceAction tearDown)
+        public InstanceBehavior Behavior { get; private set; }
+
+        public InstanceBehaviorBuilder SetUpTearDown<TSetUpAttribute, TTearDownAttribute>()
+            where TSetUpAttribute : Attribute
+            where TTearDownAttribute : Attribute
         {
-            this.setUp = setUp;
-            this.inner = inner;
-            this.tearDown = tearDown;
+            Behavior = new InstanceSetUpTearDown(
+                new MethodFilter().HasOrInherits<TSetUpAttribute>().InvokeAll,
+                Behavior,
+                new MethodFilter().HasOrInherits<TTearDownAttribute>().InvokeAll);
+            return this;
         }
 
-        public void Execute(Type testClass, object instance, Case[] cases, Convention convention)
+        public InstanceBehaviorBuilder SetUp(InstanceAction setUp)
         {
-            var instanceSetUpExceptions = setUp(testClass, instance);
-            if (instanceSetUpExceptions.Any())
+            Behavior = new InstanceSetUpTearDown(setUp, Behavior, (testClass, instance) => new ExceptionList());
+            return this;
+        }
+
+        class InstanceSetUpTearDown : InstanceBehavior
+        {
+            readonly InstanceAction setUp;
+            readonly InstanceBehavior inner;
+            readonly InstanceAction tearDown;
+
+            public InstanceSetUpTearDown(InstanceAction setUp, InstanceBehavior inner, InstanceAction tearDown)
             {
-                foreach (var @case in cases)
-                    @case.Exceptions.Add(instanceSetUpExceptions);
+                this.setUp = setUp;
+                this.inner = inner;
+                this.tearDown = tearDown;
             }
-            else
+
+            public void Execute(Type testClass, object instance, Case[] cases, Convention convention)
             {
+                var instanceSetUpExceptions = setUp(testClass, instance);
+                if (instanceSetUpExceptions.Any())
+                {
+                    foreach (var @case in cases)
+                        @case.Exceptions.Add(instanceSetUpExceptions);
+                    return;
+                }
+
                 inner.Execute(testClass, instance, cases, convention);
 
                 var instanceTearDownExceptions = tearDown(testClass, instance);
                 if (instanceTearDownExceptions.Any())
-                {
                     foreach (var @case in cases)
                         @case.Exceptions.Add(instanceTearDownExceptions);
-                }
             }
         }
     }
 
-    public class ClassSetUpTearDown : TypeBehavior
+    public class TypeBehaviorBuilder
     {
-        readonly ClassAction setUp;
-        readonly TypeBehavior inner;
-        readonly ClassAction tearDown;
+        public TypeBehavior Behavior { get; private set; }
 
-        public ClassSetUpTearDown(ClassAction setUp, TypeBehavior inner, ClassAction tearDown)
+        public TypeBehaviorBuilder CreateInstancePerCase()
         {
-            this.setUp = setUp;
-            this.inner = inner;
-            this.tearDown = tearDown;
+            Behavior = new CreateInstancePerCase();
+            return this;
         }
 
-        public void Execute(Type fixtureClass, Convention convention, Case[] cases)
+        public TypeBehaviorBuilder CreateInstancePerFixture()
         {
-            var classSetUpExceptions = setUp(fixtureClass);
-            if (classSetUpExceptions.Any())
+            Behavior = new CreateInstancePerFixture();
+            return this;
+        }
+
+        public TypeBehaviorBuilder SetUpTearDown(ClassAction setUp, ClassAction tearDown)
+        {
+            Behavior = new ClassSetUpTearDown(setUp, Behavior, tearDown);
+            return this;
+        }
+
+        class ClassSetUpTearDown : TypeBehavior
+        {
+            readonly ClassAction setUp;
+            readonly TypeBehavior inner;
+            readonly ClassAction tearDown;
+
+            public ClassSetUpTearDown(ClassAction setUp, TypeBehavior inner, ClassAction tearDown)
             {
-                foreach (var @case in cases)
-                    @case.Exceptions.Add(classSetUpExceptions);
+                this.setUp = setUp;
+                this.inner = inner;
+                this.tearDown = tearDown;
             }
-            else
+
+            public void Execute(Type fixtureClass, Convention convention, Case[] cases)
             {
+                var classSetUpExceptions = setUp(fixtureClass);
+                if (classSetUpExceptions.Any())
+                {
+                    foreach (var @case in cases)
+                        @case.Exceptions.Add(classSetUpExceptions);
+                    return;
+                }
+
                 inner.Execute(fixtureClass, convention, cases);
 
                 var classTearDownExceptions = tearDown(fixtureClass);

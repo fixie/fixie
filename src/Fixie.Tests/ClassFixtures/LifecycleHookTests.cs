@@ -252,14 +252,13 @@ namespace Fixie.Tests.ClassFixtures
 
         static string OutputFromSampleFixture(Convention convention)
         {
-            using (var log = new StringWriter())
-            using (new RedirectedConsole(log))
+            using (var console = new RedirectedConsole())
             {
                 var listener = new StubListener();
 
                 convention.Execute(listener, typeof(FirstFixture), typeof(SecondFixture));
 
-                return log.ToString();
+                return console.ToString();
             }
         }
 
@@ -388,22 +387,6 @@ namespace Fixie.Tests.ClassFixtures
                 inner.Execute(fixtureClass, convention, cases);
                 indent--;
                 WriteLine(after);
-            }
-        }
-
-        class RedirectedConsole : IDisposable
-        {
-            readonly TextWriter before;
-
-            public RedirectedConsole(TextWriter writer)
-            {
-                before = Console.Out;
-                Console.SetOut(writer);
-            }
-
-            public void Dispose()
-            {
-                Console.SetOut(before);
             }
         }
     }

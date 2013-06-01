@@ -47,6 +47,7 @@
     <Compile Include="ConsoleRunner.cs" />
     <Compile Include="Conventions\Convention.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
+    <Compile Include="Conventions\MethodBehaviorBuilder.cs" />
     <Compile Include="Conventions\SelfTestConvention.cs" />
     <Compile Include="ExceptionList.cs" />
     <Compile Include="Foreground.cs" />

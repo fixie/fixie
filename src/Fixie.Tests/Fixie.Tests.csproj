@@ -50,9 +50,11 @@
     <Compile Include="ClassFixtures\ConstructionTests.cs" />
     <Compile Include="ClassFixtures\LifecycleHookTests.cs" />
     <Compile Include="Behaviors\InvokeTests.cs" />
+    <Compile Include="Conventions\MethodBehaviorBuilderTests.cs" />
     <Compile Include="Conventions\MethodFilterTests.cs" />
     <Compile Include="FailureException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RedirectedConsole.cs" />
     <Compile Include="ReflectionExtensionsTests.cs" />
     <Compile Include="ShouldBeUnreachableException.cs" />
     <Compile Include="StubListener.cs" />

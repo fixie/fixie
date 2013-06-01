@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using Fixie.Behaviors;
 using Fixie.Conventions;
 
@@ -22,54 +21,14 @@ namespace Fixie.Samples
                 invoke.Execute(method, instance, exceptions);
             return exceptions;
         }
-    }
 
-    public class MethodBehaviorBuilder
-    {
-        public MethodBehaviorBuilder()
-        {
-            Behavior = new Invoke();
-        }
-
-        public MethodBehavior Behavior { get; private set; }
-
-        public MethodBehaviorBuilder SetUpTearDown<TSetUpAttribute, TTearDownAttribute>()
+        public static MethodBehaviorBuilder SetUpTearDown<TSetUpAttribute, TTearDownAttribute>(this MethodBehaviorBuilder builder)
             where TSetUpAttribute : Attribute
             where TTearDownAttribute : Attribute
         {
-            Behavior = new MethodSetUpTearDown(
-                new MethodFilter().HasOrInherits<TSetUpAttribute>().InvokeAll,
-                Behavior,
-                new MethodFilter().HasOrInherits<TTearDownAttribute>().InvokeAll);
-            return this;
-        }
-
-        class MethodSetUpTearDown : MethodBehavior
-        {
-            readonly InstanceAction setUp;
-            readonly MethodBehavior inner;
-            readonly InstanceAction tearDown;
-
-            public MethodSetUpTearDown(InstanceAction setUp, MethodBehavior inner, InstanceAction tearDown)
-            {
-                this.setUp = setUp;
-                this.inner = inner;
-                this.tearDown = tearDown;
-            }
-
-            public void Execute(MethodInfo method, object instance, ExceptionList exceptions)
-            {
-                var setUpExceptions = setUp(method.ReflectedType, instance);
-                if (setUpExceptions.Any())
-                {
-                    exceptions.Add(setUpExceptions);
-                    return;
-                }
-
-                inner.Execute(method, instance, exceptions);
-
-                exceptions.Add(tearDown(method.ReflectedType, instance));
-            }
+            return builder.SetUpTearDown(
+                (method, instance, exceptions, inner) => new MethodFilter().HasOrInherits<TSetUpAttribute>().InvokeAll(method.ReflectedType, instance),
+                (method, instance, exceptions, inner) => new MethodFilter().HasOrInherits<TTearDownAttribute>().InvokeAll(method.ReflectedType, instance));
         }
     }
 

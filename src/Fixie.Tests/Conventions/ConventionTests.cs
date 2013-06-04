@@ -11,7 +11,8 @@ namespace Fixie.Tests.Conventions
         {
             var emptyConvention = new Convention();
 
-            emptyConvention.FixtureClasses(CandidateTypes)
+            emptyConvention.Fixtures
+                           .Filter(CandidateTypes)
                            .Select(x => x.Name)
                            .ShouldEqual("PublicTests", "OtherPublicTests", "PublicMissingNamingConvention", "PublicWithNoDefaultConstructorTests",
                                         "PrivateTests", "OtherPrivateTests", "PrivateMissingNamingConvention", "PrivateWithNoDefaultConstructorTests");
@@ -21,7 +22,8 @@ namespace Fixie.Tests.Conventions
         {
             var defaultConvention = new DefaultConvention();
 
-            defaultConvention.FixtureClasses(CandidateTypes)
+            defaultConvention.Fixtures
+                             .Filter(CandidateTypes)
                              .Select(x => x.Name)
                              .ShouldEqual("PublicTests", "OtherPublicTests", "PublicWithNoDefaultConstructorTests",
                                           "PrivateTests", "OtherPrivateTests", "PrivateWithNoDefaultConstructorTests");
@@ -68,7 +70,8 @@ namespace Fixie.Tests.Conventions
             var emptyConvention = new Convention();
             var fixtureClass = typeof(DiscoveryFixture);
 
-            emptyConvention.CaseMethods(fixtureClass)
+            emptyConvention.Cases
+                           .Filter(fixtureClass)
                            .OrderBy(x => x.Name)
                            .Select(x => x.Name)
                            .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
@@ -80,7 +83,8 @@ namespace Fixie.Tests.Conventions
             var defaultConvention = new DefaultConvention();
             var fixtureClass = typeof(DiscoveryFixture);
 
-            defaultConvention.CaseMethods(fixtureClass)
+            defaultConvention.Cases
+                             .Filter(fixtureClass)
                              .Select(x => x.Name)
                              .ShouldEqual("PublicInstanceNoArgsVoid");
         }
@@ -90,7 +94,8 @@ namespace Fixie.Tests.Conventions
             var defaultConvention = new DefaultConvention();
             var fixtureClass = typeof(AsyncDiscoveryFixture);
 
-            defaultConvention.CaseMethods(fixtureClass)
+            defaultConvention.Cases
+                             .Filter(fixtureClass)
                              .OrderBy(x => x.Name)
                              .Select(x => x.Name)
                              .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn");

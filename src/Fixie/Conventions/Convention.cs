@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
@@ -23,21 +20,11 @@ namespace Fixie.Conventions
         public InstanceBehaviorBuilder InstanceExecution { get; private set; }
         public TypeBehaviorBuilder FixtureExecution { get; private set; }
 
-        public IEnumerable<Type> FixtureClasses(Type[] candidates)
-        {
-            return Fixtures.Filter(candidates);
-        }
-
-        public IEnumerable<MethodInfo> CaseMethods(Type fixtureClass)
-        {
-            return Cases.Filter(fixtureClass);
-        }
-
         public void Execute(Listener listener, params Type[] candidateTypes)
         {
-            foreach (var fixtureClass in FixtureClasses(candidateTypes))
+            foreach (var fixtureClass in Fixtures.Filter(candidateTypes))
             {
-                var cases = CaseMethods(fixtureClass).Select(x => new Case(fixtureClass, x)).ToArray();
+                var cases = Cases.Filter(fixtureClass).Select(x => new Case(fixtureClass, x)).ToArray();
 
                 FixtureExecution.Behavior.Execute(fixtureClass, this, cases);
 

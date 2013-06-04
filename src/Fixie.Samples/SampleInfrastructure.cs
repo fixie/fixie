@@ -8,15 +8,13 @@ namespace Fixie.Samples
     //Once refined, they'll be promoted to members of the Fixie
     //namespace.
 
-    public delegate ExceptionList ClassAction(Type testClass);
-
     public static class MethodFilterExtensions
     {
-        public static ExceptionList InvokeAll(this MethodFilter methodFilter, Type testClass, object instance)
+        public static ExceptionList InvokeAll(this MethodFilter methodFilter, Type fixtureClass, object instance)
         {
             var invoke = new Invoke();
             var exceptions = new ExceptionList();
-            foreach (var method in methodFilter.Filter(testClass))
+            foreach (var method in methodFilter.Filter(fixtureClass))
                 invoke.Execute(method, instance, exceptions);
             return exceptions;
         }

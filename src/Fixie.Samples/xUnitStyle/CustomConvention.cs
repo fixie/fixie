@@ -22,12 +22,12 @@ namespace Fixie.Samples.xUnitStyle
 
             FixtureExecution
                 .CreateInstancePerCase()
-                .SetUpTearDown(testClass => PrepareFixtureData(testClass, fixtures),
-                               testClass => DisposeFixtureData(fixtures));
+                .SetUpTearDown(fixtureClass => PrepareFixtureData(fixtureClass, fixtures),
+                               fixtureClass => DisposeFixtureData(fixtures));
 
             InstanceExecution
-                .SetUpTearDown((testClass, instance) => InjectFixtureData(instance, fixtures),
-                               (testClass, instance) => new ExceptionList());
+                .SetUpTearDown((fixtureClass, instance) => InjectFixtureData(instance, fixtures),
+                               (fixtureClass, instance) => new ExceptionList());
         }
 
         bool HasAnyFactMethods(Type type)
@@ -35,11 +35,11 @@ namespace Fixie.Samples.xUnitStyle
             return factMethods.Filter(type).Any();
         }
 
-        static ExceptionList PrepareFixtureData(Type testClass, Dictionary<MethodInfo, object> fixtures)
+        static ExceptionList PrepareFixtureData(Type fixtureClass, Dictionary<MethodInfo, object> fixtures)
         {
             var exceptions = new ExceptionList();
 
-            foreach (var @interface in FixtureInterfaces(testClass))
+            foreach (var @interface in FixtureInterfaces(fixtureClass))
             {
                 var fixtureDataType = @interface.GetGenericArguments()[0];
 
@@ -90,9 +90,9 @@ namespace Fixie.Samples.xUnitStyle
             return classTearDownExceptions;
         }
 
-        static IEnumerable<Type> FixtureInterfaces(Type testClass)
+        static IEnumerable<Type> FixtureInterfaces(Type fixtureClass)
         {
-            return testClass.GetInterfaces()
+            return fixtureClass.GetInterfaces()
                             .Where(@interface => @interface.IsGenericType &&
                                                  @interface.GetGenericTypeDefinition() == typeof(IUseFixture<>));
         }

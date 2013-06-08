@@ -63,25 +63,18 @@ namespace Fixie
 
         Result Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
-            var combinedResult = new Result(0, 0);
+            var resultListener = new ResultListener(listener);
+
+            resultListener.AssemblyStarted(assembly);
 
             foreach (var convention in conventions)
-            {
-                var resultListener = new ResultListener(listener);
-
-                resultListener.AssemblyStarted(assembly);
-
                 convention.Execute(resultListener, candidateTypes);
 
-                var result = resultListener.Result;
+            var result = resultListener.Result;
 
-                resultListener.AssemblyCompleted(assembly, result);
+            resultListener.AssemblyCompleted(assembly, result);
 
-                combinedResult = new Result(combinedResult.Passed + result.Passed,
-                                            combinedResult.Failed + result.Failed);
-            }
-
-            return combinedResult;
+            return result;
         }
 
         class ResultListener : Listener

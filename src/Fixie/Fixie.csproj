@@ -58,6 +58,7 @@
     <Compile Include="Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="Conventions\MethodFilter.cs" />
+    <Compile Include="TeamCityListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Result.cs" />

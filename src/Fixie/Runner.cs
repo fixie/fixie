@@ -69,13 +69,13 @@ namespace Fixie
             {
                 var resultListener = new ResultListener(listener);
 
-                resultListener.RunStarted(assembly);
+                resultListener.AssemblyStarted(assembly);
 
                 convention.Execute(resultListener, candidateTypes);
 
                 var result = resultListener.Result;
 
-                resultListener.RunComplete(result);
+                resultListener.AssemblyCompleted(assembly, result);
 
                 combinedResult = new Result(combinedResult.Passed + result.Passed,
                                             combinedResult.Failed + result.Failed);
@@ -95,11 +95,11 @@ namespace Fixie
                 this.inner = inner;
             }
 
-            public void RunStarted(Assembly context)
+            public void AssemblyStarted(Assembly assembly)
             {
                 passed = 0;
                 failed = 0;
-                inner.RunStarted(context);
+                inner.AssemblyStarted(assembly);
             }
 
             public void CasePassed(string @case)
@@ -114,9 +114,9 @@ namespace Fixie
                 inner.CaseFailed(@case, exceptions);
             }
 
-            public void RunComplete(Result result)
+            public void AssemblyCompleted(Assembly assembly, Result result)
             {
-                inner.RunComplete(result);
+                inner.AssemblyCompleted(assembly, result);
             }
 
             public Result Result

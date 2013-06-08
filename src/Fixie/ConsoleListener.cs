@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -7,9 +6,9 @@ namespace Fixie
 {
     public class ConsoleListener : Listener
     {
-        public void RunStarted(Assembly context)
+        public void AssemblyStarted(Assembly assembly)
         {
-            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(context.Location));
+            Console.WriteLine("------ Testing Assembly {0} ------", assembly.FileName());
             Console.WriteLine();
         }
 
@@ -26,7 +25,7 @@ namespace Fixie
             Console.WriteLine();
         }
 
-        public void RunComplete(Result result)
+        public void AssemblyCompleted(Assembly assembly, Result result)
         {
             var assemblyName = typeof(ConsoleListener).Assembly.GetName();
             var name = assemblyName.Name;

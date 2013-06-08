@@ -5,9 +5,9 @@ namespace Fixie
 {
     public interface Listener
     {
-        void RunStarted(Assembly context);
+        void AssemblyStarted(Assembly assembly);
         void CasePassed(string @case);
         void CaseFailed(string @case, Exception[] exceptions);
-        void RunComplete(Result result);
+        void AssemblyCompleted(Assembly assembly, Result result);
     }
 }

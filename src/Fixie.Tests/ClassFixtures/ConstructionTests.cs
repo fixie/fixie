@@ -14,6 +14,10 @@ namespace Fixie.Tests.ClassFixtures
 
              new SelfTestConvention().Execute(listener, typeof(ConstructibleFixture));
 
+            listener.ShouldHaveEntries(
+                "Fixie.Tests.ClassFixtures.ConstructionTests+ConstructibleFixture.Fail failed: 'Fail' failed!",
+                "Fixie.Tests.ClassFixtures.ConstructionTests+ConstructibleFixture.Pass passed.");
+
             ConstructibleFixture.ConstructionCount.ShouldEqual(2);
         }
 
@@ -35,8 +39,8 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(ConstructorThrowsFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.ConstructionTests+ConstructorThrowsFixture.UnreachableCaseA failed: Exception From Constructor",
-                "Fixie.Tests.ClassFixtures.ConstructionTests+ConstructorThrowsFixture.UnreachableCaseB failed: Exception From Constructor");
+                "Fixie.Tests.ClassFixtures.ConstructionTests+ConstructorThrowsFixture.UnreachableCaseA failed: '.ctor' failed!",
+                "Fixie.Tests.ClassFixtures.ConstructionTests+ConstructorThrowsFixture.UnreachableCaseB failed: '.ctor' failed!");
         }
 
         class ConstructibleFixture
@@ -48,12 +52,12 @@ namespace Fixie.Tests.ClassFixtures
                 ConstructionCount++;
             }
 
-            public void FailingCase()
+            public void Fail()
             {
-                throw new Exception("Failing Case");
+                throw new FailureException();
             }
 
-            public void PassingCase()
+            public void Pass()
             {
             }
         }
@@ -72,7 +76,7 @@ namespace Fixie.Tests.ClassFixtures
         {
             public ConstructorThrowsFixture()
             {
-                throw new Exception("Exception From Constructor");
+                throw new FailureException();
             }
 
             public void UnreachableCaseA() { }

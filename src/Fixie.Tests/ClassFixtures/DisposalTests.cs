@@ -16,8 +16,8 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(DisposableFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.DisposalTests+DisposableFixture.FailingCase failed: Failing Case",
-                "Fixie.Tests.ClassFixtures.DisposalTests+DisposableFixture.PassingCase passed.");
+                "Fixie.Tests.ClassFixtures.DisposalTests+DisposableFixture.Fail failed: 'Fail' failed!",
+                "Fixie.Tests.ClassFixtures.DisposalTests+DisposableFixture.Pass passed.");
 
             DisposableFixture.ConstructionCount.ShouldEqual(2);
             DisposableFixture.DisposalCount.ShouldEqual(2);
@@ -30,9 +30,9 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(DisposeThrowsFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.DisposalTests+DisposeThrowsFixture.FailingCase failed: Failing Case" + Environment.NewLine +
-                "    Secondary Failure: Exception From IDisposable.Dispose().",
-                "Fixie.Tests.ClassFixtures.DisposalTests+DisposeThrowsFixture.PassingCase failed: Exception From IDisposable.Dispose().");
+                "Fixie.Tests.ClassFixtures.DisposalTests+DisposeThrowsFixture.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'Dispose' failed!",
+                "Fixie.Tests.ClassFixtures.DisposalTests+DisposeThrowsFixture.Pass failed: 'Dispose' failed!");
         }
 
         class DisposableFixture : IDisposable
@@ -55,27 +55,27 @@ namespace Fixie.Tests.ClassFixtures
                 disposed = true;
             }
 
-            public void FailingCase()
+            public void Fail()
             {
-                throw new Exception("Failing Case");
+                throw new FailureException();
             }
 
-            public void PassingCase() { }
+            public void Pass() { }
         }
 
         class DisposeThrowsFixture : IDisposable
         {
             public void Dispose()
             {
-                throw new Exception("Exception From IDisposable.Dispose().");
+                throw new FailureException();
             }
 
-            public void FailingCase()
+            public void Fail()
             {
-                throw new Exception("Failing Case");
+                throw new FailureException();
             }
 
-            public void PassingCase() { }
+            public void Pass() { }
         }
     }
 }

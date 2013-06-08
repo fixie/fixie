@@ -162,7 +162,7 @@ namespace Fixie.Tests.Conventions
             convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassFixture), typeof(int), typeof(PassFailFixture));
 
             listener.ShouldHaveEntries("Fixie.Tests.Conventions.ConventionTests+PassFailFixture.Pass passed.",
-                                       "Fixie.Tests.Conventions.ConventionTests+PassFailFixture.Fail failed: Exception of type 'System.Exception' was thrown.",
+                                       "Fixie.Tests.Conventions.ConventionTests+PassFailFixture.Fail failed: 'Fail' failed!",
                                        "Fixie.Tests.Conventions.ConventionTests+PassFixture.PassA passed.",
                                        "Fixie.Tests.Conventions.ConventionTests+PassFixture.PassB passed.");
         }
@@ -182,7 +182,7 @@ namespace Fixie.Tests.Conventions
         class PassFailFixture
         {
             public void Pass() { }
-            public void Fail() { throw new Exception(); }
+            public void Fail() { throw new FailureException(); }
         }
     }
 }

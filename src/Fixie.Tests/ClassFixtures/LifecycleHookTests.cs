@@ -272,7 +272,7 @@ namespace Fixie.Tests.ClassFixtures
             public void FailingCase()
             {
                 WriteLine("FailingCase Throws Exception");
-                throw new Exception();
+                throw new FailureException();
             }
 
             public void Dispose()

@@ -192,7 +192,7 @@ namespace Fixie.Tests.Conventions
         void Fail()
         {
             Console.WriteLine("Fail Threw!");
-            throw new Exception();
+            throw new FailureException();
         }
 
         static ExceptionList SetUp(MethodInfo method, object instance)

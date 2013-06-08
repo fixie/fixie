@@ -10,7 +10,7 @@ namespace Fixie.Samples
 
     public static class MethodFilterExtensions
     {
-        public static ExceptionList InvokeAll(this MethodFilter methodFilter, Type fixtureClass, object instance)
+        private static ExceptionList InvokeAll(this MethodFilter methodFilter, Type fixtureClass, object instance)
         {
             var invoke = new Invoke();
             var exceptions = new ExceptionList();
@@ -23,18 +23,32 @@ namespace Fixie.Samples
             where TSetUpAttribute : Attribute
             where TTearDownAttribute : Attribute
         {
-            return builder.SetUpTearDown(
-                (method, instance) => new MethodFilter().HasOrInherits<TSetUpAttribute>().InvokeAll(method.ReflectedType, instance),
-                (method, instance) => new MethodFilter().HasOrInherits<TTearDownAttribute>().InvokeAll(method.ReflectedType, instance));
+            var hasSetUpAttribute = new MethodFilter().HasOrInherits<TSetUpAttribute>();
+            var hasTearDownAttribute = new MethodFilter().HasOrInherits<TTearDownAttribute>();
+
+            return builder.SetUpTearDown(hasSetUpAttribute, hasTearDownAttribute);
         }
 
         public static InstanceBehaviorBuilder SetUpTearDown<TSetUpAttribute, TTearDownAttribute>(this InstanceBehaviorBuilder builder)
             where TSetUpAttribute : Attribute
             where TTearDownAttribute : Attribute
         {
+            var hasSetUpAttribute = new MethodFilter().HasOrInherits<TSetUpAttribute>();
+            var hasTearDownAttribute = new MethodFilter().HasOrInherits<TTearDownAttribute>();
+
+            return builder.SetUpTearDown(hasSetUpAttribute, hasTearDownAttribute);
+        }
+
+        public static MethodBehaviorBuilder SetUpTearDown(this MethodBehaviorBuilder builder, MethodFilter hasSetUpAttribute, MethodFilter hasTearDownAttribute)
+        {
             return builder.SetUpTearDown(
-                (fixtureClass, instance) => new MethodFilter().HasOrInherits<TSetUpAttribute>().InvokeAll(fixtureClass, instance),
-                (fixtureClass, instance) => new MethodFilter().HasOrInherits<TTearDownAttribute>().InvokeAll(fixtureClass, instance));
+                (method, instance) => hasSetUpAttribute.InvokeAll(method.ReflectedType, instance),
+                (method, instance) => hasTearDownAttribute.InvokeAll(method.ReflectedType, instance));
+        }
+
+        public static InstanceBehaviorBuilder SetUpTearDown(this InstanceBehaviorBuilder builder, MethodFilter hasSetUpAttribute, MethodFilter hasTearDownAttribute)
+        {
+            return builder.SetUpTearDown(hasSetUpAttribute.InvokeAll, hasTearDownAttribute.InvokeAll);
         }
     }
 }

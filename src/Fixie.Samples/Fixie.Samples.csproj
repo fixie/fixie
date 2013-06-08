@@ -43,6 +43,8 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Calculator.cs" />
+    <Compile Include="LowCeremony\CalculatorTests.cs" />
+    <Compile Include="LowCeremony\CustomConvention.cs" />
     <Compile Include="NUnitStyle\CalculatorTests.cs" />
     <Compile Include="NUnitStyle\CustomConvention.cs" />
     <Compile Include="NUnitStyle\Attributes.cs" />

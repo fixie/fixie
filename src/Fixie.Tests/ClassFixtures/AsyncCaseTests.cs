@@ -7,6 +7,11 @@ namespace Fixie.Tests.ClassFixtures
 {
     public class AsyncCaseTests
     {
+        public void FailingTest()
+        {
+            1.ShouldEqual(2);
+        }
+
         public void ShouldPassUponSuccessfulAsyncExecution()
         {
             var listener = new StubListener();

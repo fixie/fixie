@@ -60,6 +60,96 @@ namespace Fixie.Tests.Conventions
             }
         }
 
+        public void ShouldAllowCreatingInstancePerCaseUsingFactory()
+        {
+            builder.CreateInstancePerCase(CreateInstance);
+
+            using (var console = new RedirectedConsole())
+            {
+                builder.Behavior.Execute(fixtureClass, convention, cases);
+
+                cases[0].Exceptions.Any().ShouldBeFalse();
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
+
+                console.Lines.ShouldEqual("Factory", "Construct", "Pass", "Dispose", "Factory", "Construct", "Fail", "Dispose");
+            }
+        }
+
+        public void ShouldAllowCreatingInstancePerFixtureUsingFactory()
+        {
+            builder.CreateInstancePerFixture(CreateInstance);
+
+            using (var console = new RedirectedConsole())
+            {
+                builder.Behavior.Execute(fixtureClass, convention, cases);
+
+                cases[0].Exceptions.Any().ShouldBeFalse();
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
+
+                console.Lines.ShouldEqual("Factory", "Construct", "Pass", "Fail", "Dispose");
+            }
+        }
+
+        public void ShouldFailAllCasesWhenCreatingInstancePerCaseAndFactoryContributesExceptions()
+        {
+            builder.CreateInstancePerCase(FailingCreateInstance);
+
+            using (var console = new RedirectedConsole())
+            {
+                builder.Behavior.Execute(fixtureClass, convention, cases);
+
+                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
+
+                console.Lines.ShouldEqual("Factory Contributes an Exception!", "Factory Contributes an Exception!");
+            }
+        }
+
+        public void ShouldFailAllCasesWhenCreatingInstancePerFixtureAndFactoryContributesExceptions()
+        {
+            builder.CreateInstancePerFixture(FailingCreateInstance);
+
+            using (var console = new RedirectedConsole())
+            {
+                builder.Behavior.Execute(fixtureClass, convention, cases);
+
+                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
+
+                console.Lines.ShouldEqual("Factory Contributes an Exception!");
+            }
+        }
+
+        public void ShouldHandleCatastrophicExceptionsByFailingAllCasesWhenCreatingInstancePerCaseAndFactoriesThrowRatherThanContributeExceptions()
+        {
+            builder.CreateInstancePerCase(UnsafeCreateInstance);
+
+            using (var console = new RedirectedConsole())
+            {
+                builder.Behavior.Execute(fixtureClass, convention, cases);
+
+                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
+
+                console.Lines.ShouldBeEmpty();
+            }
+        }
+
+        public void ShouldHandleCatastrophicExceptionsByFailingAllCasesWhenCreatingInstancePerFixtureAndFactoriesThrowRatherThanContributeExceptions()
+        {
+            builder.CreateInstancePerFixture(UnsafeCreateInstance);
+
+            using (var console = new RedirectedConsole())
+            {
+                builder.Behavior.Execute(fixtureClass, convention, cases);
+
+                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
+
+                console.Lines.ShouldBeEmpty();
+            }
+        }
+
         public void ShouldAllowWrappingTheBehaviorInAnother()
         {
             builder
@@ -213,6 +303,27 @@ namespace Fixie.Tests.Conventions
             {
                 Console.WriteLine("Dispose");
             }
+        }
+
+        static ExceptionList CreateInstance(Type fixtureclass, out object instance)
+        {
+            Console.WriteLine("Factory");
+            instance = new SampleFixture();
+            return new ExceptionList();
+        }
+
+        static ExceptionList FailingCreateInstance(Type fixtureclass, out object instance)
+        {
+            Console.WriteLine("Factory Contributes an Exception!");
+            var exceptions = new ExceptionList();
+            exceptions.Add(new Exception("Exception from FailingCreateInstance"));
+            instance = null;
+            return exceptions;
+        }
+
+        static ExceptionList UnsafeCreateInstance(Type fixtureclass, out object instance)
+        {
+            throw new Exception("Unsafe factory threw!");
         }
 
         static ExceptionList SetUp(Type fixtureClass)

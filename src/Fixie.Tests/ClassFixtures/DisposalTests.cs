@@ -23,11 +23,6 @@ namespace Fixie.Tests.ClassFixtures
             DisposableFixture.DisposalCount.ShouldEqual(2);
         }
 
-        public void FailingTest()
-        {
-            1.ShouldEqual(2);
-        }
-
         public void ShouldFailCasesWhenDisposeThrowsExceptionsWithoutSuppressingAnyExceptions()
         {
             var listener = new StubListener();

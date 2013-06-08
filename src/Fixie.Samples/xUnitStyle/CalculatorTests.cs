@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Should;
 
@@ -20,12 +19,12 @@ namespace Fixie.Samples.xUnitStyle
         {
             calculator = new Calculator();
             log = new StringBuilder();
-            WhereAmI();
+            log.WhereAmI();
         }
 
         public void SetFixture(FixtureData data)
         {
-            WhereAmI();
+            log.WhereAmI();
             fixtureData = data;
             log.AppendLine("   FixtureData " + fixtureData.Instance);
             data.Instance.ShouldEqual(1);
@@ -33,7 +32,7 @@ namespace Fixie.Samples.xUnitStyle
 
         public void SetFixture(DisposableFixtureData data)
         {
-            WhereAmI();
+            log.WhereAmI();
             disposableFixtureData = data;
             log.AppendLine("   DisposableFixtureData " + disposableFixtureData.Instance);
             data.Instance.ShouldEqual(1);
@@ -43,7 +42,7 @@ namespace Fixie.Samples.xUnitStyle
         public void ShouldAdd()
         {
             executedAddTest = true;
-            WhereAmI();
+            log.WhereAmI();
             calculator.Add(2, 3).ShouldEqual(5);
         }
 
@@ -51,37 +50,26 @@ namespace Fixie.Samples.xUnitStyle
         public void ShouldSubtract()
         {
             executedSubtractTest = true;
-            WhereAmI();
+            log.WhereAmI();
             calculator.Subtract(5, 3).ShouldEqual(2);
         }
 
         public void Dispose()
         {
-            WhereAmI();
+            log.WhereAmI();
             (executedAddTest && executedSubtractTest).ShouldBeFalse();
             (executedAddTest || executedSubtractTest).ShouldBeTrue();
 
-            log.ToString().ShouldEqual(
-                new StringBuilder()
-                    .AppendLine(".ctor")
-                    .AppendLine("SetFixture")
-                    .AppendLine("   FixtureData 1")
-                    .AppendLine("SetFixture")
-                    .AppendLine("   DisposableFixtureData 1")
-                    .AppendLine(executedAddTest ? "ShouldAdd": "ShouldSubtract")
-                    .AppendLine("Dispose")
-                    .ToString());
-        }
-
-        private void Fail([CallerMemberName] string method = null)
-        {
-            log.AppendLine(method + " is about to throw...");
-            throw new Exception(method + " Threw!");
-        }
-
-        private void WhereAmI([CallerMemberName] string method = null)
-        {
-            log.AppendLine(method);
+            log.ShouldHaveLines(
+                ".ctor",
+                "SetFixture",
+                "   FixtureData 1",
+                "SetFixture",
+                "   DisposableFixtureData 1",
+                executedAddTest
+                    ? "ShouldAdd"
+                    : "ShouldSubtract",
+                "Dispose");
         }
     }
 

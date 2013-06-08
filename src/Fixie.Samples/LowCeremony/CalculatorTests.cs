@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Should;
 
@@ -13,63 +12,56 @@ namespace Fixie.Samples.LowCeremony
         public CalculatorTests()
         {
             log = new StringBuilder();
-            WhereAmI();
+            log.WhereAmI();
         }
 
         public void FixtureSetUp()
         {
-            WhereAmI();
+            log.WhereAmI();
             calculator = new Calculator();
         }
 
         public void SetUp()
         {
-            WhereAmI();
+            log.WhereAmI();
         }
 
         public void ShouldAdd()
         {
-            WhereAmI();
+            log.WhereAmI();
             calculator.Add(2, 3).ShouldEqual(5);
         }
 
         public void ShouldSubtract()
         {
-            WhereAmI();
+            log.WhereAmI();
             calculator.Subtract(5, 3).ShouldEqual(2);
         }
 
         public void TearDown()
         {
-            WhereAmI();
+            log.WhereAmI();
         }
 
         public void FixtureTearDown()
         {
-            WhereAmI();
+            log.WhereAmI();
         }
 
         public void Dispose()
         {
-            WhereAmI();
-            log.ToString().ShouldEqual(
-                new StringBuilder()
-                .AppendLine(".ctor")
-                .AppendLine("FixtureSetUp")
-                .AppendLine("SetUp")
-                .AppendLine("ShouldAdd")
-                .AppendLine("TearDown")
-                .AppendLine("SetUp")
-                .AppendLine("ShouldSubtract")
-                .AppendLine("TearDown")
-                .AppendLine("FixtureTearDown")
-                .AppendLine("Dispose")
-                .ToString());
-        }
-
-        private void WhereAmI([CallerMemberName] string method = null)
-        {
-            log.AppendLine(method);
+            log.WhereAmI();
+            log.ShouldHaveLines(
+                ".ctor",
+                "FixtureSetUp",
+                "SetUp",
+                "ShouldAdd",
+                "TearDown",
+                "SetUp",
+                "ShouldSubtract",
+                "TearDown",
+                "FixtureTearDown",
+                "Dispose");
         }
     }
 }

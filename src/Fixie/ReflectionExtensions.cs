@@ -48,6 +48,26 @@ namespace Fixie
             return method.ReflectedType.GetInterfaces().Any(type => type == typeof(IDisposable));
         }
 
+        public static bool HasSignature(this MethodInfo method, Type returnType, string name, params Type[] parameterTypes)
+        {
+            if (method.Name != name)
+                return false;
+
+            if (method.ReturnType != returnType)
+                return false;
+
+            var parameters = method.GetParameters();
+
+            if (parameters.Length != parameterTypes.Length)
+                return false;
+
+            for (int i = 0; i < parameters.Length; i++)
+                if (parameters[i].ParameterType != parameterTypes[i])
+                    return false;
+
+            return true;
+        }
+
         public static bool IsInNamespace(this Type type, string ns)
         {
             var actual = type.Namespace;

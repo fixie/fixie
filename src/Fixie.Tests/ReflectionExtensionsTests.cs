@@ -51,8 +51,27 @@ namespace Fixie.Tests
             Method("ReturnsInt").IsDispose().ShouldBeFalse();
             Method("Async").IsDispose().ShouldBeFalse();
             Method<NonDisposableWithDisposeMethod>("Dispose").IsDispose().ShouldBeFalse();
-            MethodBySignature<Disposable>("Dispose", typeof(void), typeof(bool)).IsDispose().ShouldBeFalse();
-            MethodBySignature<Disposable>("Dispose", typeof(void)).IsDispose().ShouldBeTrue();
+            MethodBySignature<Disposable>(typeof(void), "Dispose", typeof(bool)).IsDispose().ShouldBeFalse();
+            MethodBySignature<Disposable>(typeof(void), "Dispose").IsDispose().ShouldBeTrue();
+        }
+
+        public void CanDetectWhetherMethodHasSignature()
+        {
+            var trivial = MethodBySignature<Signatures>(typeof(void), "Trivial");
+            trivial.HasSignature(typeof(int), "Trivial").ShouldBeFalse();
+            trivial.HasSignature(typeof(void), "!").ShouldBeFalse();
+            trivial.HasSignature(typeof(void), "Trivial", typeof(int)).ShouldBeFalse();
+            trivial.HasSignature(typeof(void), "Trivial").ShouldBeTrue();
+
+            var singleParam = MethodBySignature<Signatures>(typeof(int), "Params", typeof(string));
+            singleParam.HasSignature(typeof(int), "Params", typeof(int)).ShouldBeFalse();
+            singleParam.HasSignature(typeof(int), "Params", typeof(string), typeof(int)).ShouldBeFalse();
+            singleParam.HasSignature(typeof(int), "Params", typeof(string)).ShouldBeTrue();
+
+            var multipleParam = MethodBySignature<Signatures>(typeof(string), "Params", typeof(string), typeof(int));
+            multipleParam.HasSignature(typeof(string), "Params", typeof(string), typeof(string)).ShouldBeFalse();
+            multipleParam.HasSignature(typeof(string), "Params", typeof(string), typeof(int), typeof(int)).ShouldBeFalse();
+            multipleParam.HasSignature(typeof(string), "Params", typeof(string), typeof(int)).ShouldBeTrue();
         }
 
         public void CanDetectWhetherTypeIsWithinNamespace()
@@ -80,6 +99,13 @@ namespace Fixie.Tests
         void ReturnsVoid() { }
         int ReturnsInt() { return 0; }
         async Task Async() { await Task.Run(() => { }); }
+
+        class Signatures
+        {
+            void Trivial() { }
+            int Params(string s) { return 0; }
+            string Params(string s, int x) { return ""; }
+        }
 
         class SampleMethodAttribute : Attribute { }
         class InheritedAttribute : Attribute { }
@@ -123,24 +149,9 @@ namespace Fixie.Tests
             return typeof(T).GetMethod(name, InstanceMethods);
         }
 
-        private static MethodInfo MethodBySignature<T>(string name, Type returnType, params Type[] parameterTypes)
+        private static MethodInfo MethodBySignature<T>(Type returnType, string name, params Type[] parameterTypes)
         {
-            return typeof(T).GetMethods(InstanceMethods).Single(m =>
-            {
-                if (m.Name != name) return false;
-                if (m.ReturnType != returnType) return false;
-
-                var parameters = m.GetParameters();
-
-                if (parameters.Length != parameterTypes.Length)
-                    return false;
-
-                for (int i = 0; i < parameterTypes.Length; i++)
-                    if (parameters[i].ParameterType != parameterTypes[i])
-                        return false;
-
-                return true;
-            });
+            return typeof(T).GetMethods(InstanceMethods).Single(m => m.HasSignature(returnType, name, parameterTypes));
         }
     }
 }

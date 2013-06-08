@@ -5,6 +5,7 @@ namespace Fixie.Conventions
 {
     public delegate void TypeBehaviorAction(Type fixtureClass, Convention convention, Case[] cases, TypeBehavior inner);
     public delegate ExceptionList TypeAction(Type fixtureClass);
+    public delegate ExceptionList Factory(Type fixtureClass, out object instance);
 
     public class TypeBehaviorBuilder
     {
@@ -17,13 +18,13 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder CreateInstancePerCase()
         {
-            Behavior = new CreateInstancePerCase();
+            Behavior = new CreateInstancePerCase(Lifecycle.Construct);
             return this;
         }
 
         public TypeBehaviorBuilder CreateInstancePerFixture()
         {
-            Behavior = new CreateInstancePerFixture();
+            Behavior = new CreateInstancePerFixture(Lifecycle.Construct);
             return this;
         }
 

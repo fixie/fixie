@@ -5,6 +5,13 @@ namespace Fixie.Behaviors
 {
     public class CreateInstancePerCase : TypeBehavior
     {
+        readonly Factory construct;
+
+        public CreateInstancePerCase(Factory construct)
+        {
+            this.construct = construct;
+        }
+
         public void Execute(Type fixtureClass, Convention convention, Case[] cases)
         {
             foreach (var @case in cases)
@@ -13,7 +20,7 @@ namespace Fixie.Behaviors
 
                 object instance;
 
-                var constructionExceptions = Lifecycle.Construct(fixtureClass, out instance);
+                var constructionExceptions = construct(fixtureClass, out instance);
                 if (constructionExceptions.Any())
                 {
                     exceptions.Add(constructionExceptions);

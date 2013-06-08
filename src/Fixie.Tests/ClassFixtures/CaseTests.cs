@@ -1,5 +1,4 @@
-﻿using System;
-using Fixie.Conventions;
+﻿using Fixie.Conventions;
 
 namespace Fixie.Tests.ClassFixtures
 {
@@ -22,8 +21,7 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(FailFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.CaseTests+FailFixture.Fail failed: Exception of type " +
-                "'Fixie.Tests.ClassFixtures.CaseTests+MethodInvokedException' was thrown.");
+                "Fixie.Tests.ClassFixtures.CaseTests+FailFixture.Fail failed: 'Fail' failed!");
         }
 
         public void ShouldPassOrFailCasesIndividually()
@@ -33,11 +31,11 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(PassFailFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.FailingCaseA failed: Failing Case A",
-                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.PassingCaseA passed.",
-                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.FailingCaseB failed: Failing Case B",
-                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.PassingCaseB passed.",
-                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.PassingCaseC passed.");
+                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.FailA failed: 'FailA' failed!",
+                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.PassA passed.",
+                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.FailB failed: 'FailB' failed!",
+                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.PassB passed.",
+                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.PassC passed.");
         }
 
         class PassFixture
@@ -49,23 +47,21 @@ namespace Fixie.Tests.ClassFixtures
         {
             public void Fail()
             {
-                throw new MethodInvokedException();
+                throw new FailureException();
             }
         }
 
         class PassFailFixture
         {
-            public void FailingCaseA() { throw new Exception("Failing Case A"); }
+            public void FailA() { throw new FailureException(); }
 
-            public void PassingCaseA() { }
+            public void PassA() { }
 
-            public void FailingCaseB() { throw new Exception("Failing Case B"); }
+            public void FailB() { throw new FailureException(); }
 
-            public void PassingCaseB() { }
+            public void PassB() { }
 
-            public void PassingCaseC() { }
+            public void PassC() { }
         }
-
-        class MethodInvokedException : Exception { }
     }
 }

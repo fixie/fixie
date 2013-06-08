@@ -31,28 +31,28 @@ namespace Fixie.Tests.Behaviors
         {
             var cases = new[]
             {
-                new Case(fixtureClass, Method("PassingCase")), 
-                new Case(fixtureClass, Method("FailingCase"))
+                new Case(fixtureClass, Method("Pass")),
+                new Case(fixtureClass, Method("Fail"))
             };
 
             var executeCases = new ExecuteCases();
             executeCases.Execute(fixtureClass, new SampleFixture(), cases, convention);
 
             cases[0].Exceptions.Any().ShouldBeFalse();
-            cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
-            log.ShouldEqual("PassingCase", "FailingCase");
+            cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
+            log.ShouldEqual("Pass", "Fail");
         }
 
         private class SampleFixture
         {
-            public void PassingCase() { }
+            public void Pass() { }
             
-            public void FailingCase()
+            public void Fail()
             {
                 throw new FailureException();
             }
 
-            public void IgnoredCase()
+            public void Ignored()
             {
                 throw new ShouldBeUnreachableException();
             }

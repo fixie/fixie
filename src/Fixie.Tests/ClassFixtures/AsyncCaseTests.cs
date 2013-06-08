@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Fixie.Conventions;
 using Should;
@@ -46,8 +47,7 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(FailBeforeAwaitFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.AsyncCaseTests+FailBeforeAwaitFixture.Test failed: Exception of type " +
-                "'Fixie.Tests.ClassFixtures.AsyncCaseTests+MethodInvokedException' was thrown.");
+                "Fixie.Tests.ClassFixtures.AsyncCaseTests+FailBeforeAwaitFixture.Test failed: 'Test' failed!");
         }
 
         public void ShouldFailUnsupportedAsyncVoidCases()
@@ -64,9 +64,9 @@ namespace Fixie.Tests.ClassFixtures
 
         abstract class SampleFixtureBase
         {
-            protected static void ThrowException()
+            protected static void ThrowException([CallerMemberName] string member = null)
             {
-                throw new MethodInvokedException();
+                throw new FailureException(member);
             }
 
             protected static Task<int> Divide(int numerator, int denominator)
@@ -124,7 +124,5 @@ namespace Fixie.Tests.ClassFixtures
                 throw new ShouldBeUnreachableException();
             }
         }
-
-        class MethodInvokedException : Exception { }
     }
 }

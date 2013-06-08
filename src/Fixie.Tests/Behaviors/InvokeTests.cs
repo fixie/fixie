@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Fixie.Behaviors;
 using Should;
@@ -37,7 +38,7 @@ namespace Fixie.Tests.Behaviors
 
             invoked.ShouldBeTrue();
 
-            ExpectException("FailureException", "Exception of type 'Fixie.Tests.FailureException' was thrown.");
+            ExpectException("FailureException", "'Throws' failed!");
         }
 
         public void ShouldInvokeAsyncMethods()
@@ -75,7 +76,7 @@ namespace Fixie.Tests.Behaviors
 
             invoked.ShouldBeTrue();
 
-            ExpectException("FailureException", "Exception of type 'Fixie.Tests.FailureException' was thrown.");
+            ExpectException("FailureException", "'ThrowBeforeAwait' failed!");
         }
 
         public void ShouldLogExceptionWhenMethodIsUnsupportedAsyncVoid()
@@ -167,9 +168,9 @@ namespace Fixie.Tests.Behaviors
             throw new ShouldBeUnreachableException();
         }
 
-        static void ThrowException()
+        static void ThrowException([CallerMemberName] string member = null)
         {
-            throw new FailureException();
+            throw new FailureException(member);
         }
     }
 }

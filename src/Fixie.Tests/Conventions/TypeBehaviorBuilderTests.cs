@@ -39,7 +39,7 @@ namespace Fixie.Tests.Conventions
                 builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
-                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
 
                 console.Lines.ShouldEqual("Construct", "Pass", "Dispose", "Construct", "Fail", "Dispose");
             }
@@ -54,7 +54,7 @@ namespace Fixie.Tests.Conventions
                 builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
-                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
 
                 console.Lines.ShouldEqual("Construct", "Pass", "Fail", "Dispose");
             }
@@ -76,7 +76,7 @@ namespace Fixie.Tests.Conventions
                 builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
-                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
 
                 console.Lines.ShouldEqual("Before", "Construct", "Pass", "Dispose", "Construct", "Fail", "Dispose", "After");
             }
@@ -104,7 +104,7 @@ namespace Fixie.Tests.Conventions
                 builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
-                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
 
                 console.Lines.ShouldEqual("Outer Before", "Inner Before",
                                           "Construct", "Pass", "Dispose",
@@ -144,7 +144,7 @@ namespace Fixie.Tests.Conventions
                 builder.Behavior.Execute(fixtureClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
-                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception of type 'Fixie.Tests.FailureException' was thrown.");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
 
                 console.Lines.ShouldEqual("SetUp", "Construct", "Pass", "Dispose", "Construct", "Fail", "Dispose", "TearDown");
             }
@@ -179,7 +179,7 @@ namespace Fixie.Tests.Conventions
 
                 cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingTearDown");
                 cases[1].Exceptions.ToArray().Select(x => x.Message).ShouldEqual(
-                    "Exception of type 'Fixie.Tests.FailureException' was thrown.",
+                    "'Fail' failed!",
                     "Exception from FailingTearDown");
 
                 console.Lines.ShouldEqual("SetUp", "Construct", "Pass", "Dispose", "Construct", "Fail", "Dispose", "FailingTearDown Contributes an Exception!");

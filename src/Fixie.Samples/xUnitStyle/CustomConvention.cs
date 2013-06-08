@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Fixie.Behaviors;
 using Fixie.Conventions;
 
 namespace Fixie.Samples.xUnitStyle
@@ -42,7 +43,13 @@ namespace Fixie.Samples.xUnitStyle
 
                 object fixtureInstance;
 
-                if (TryConstruct(fixtureDataType, exceptions, out fixtureInstance))
+                var constructionExceptions = Lifecycle.Construct(fixtureDataType, out fixtureInstance);
+
+                if (constructionExceptions.Any())
+                {
+                    exceptions.Add(constructionExceptions);
+                }
+                else
                 {
                     var method = @interface.GetMethod("SetFixture", new[] { fixtureDataType });
                     fixtures[method] = fixtureInstance;
@@ -57,7 +64,7 @@ namespace Fixie.Samples.xUnitStyle
             var classTearDownExceptions = new ExceptionList();
             foreach (var fixtureInstance in fixtures.Values)
             {
-                var disposalExceptions = Dispose(fixtureInstance);
+                var disposalExceptions = Lifecycle.Dispose(fixtureInstance);
 
                 classTearDownExceptions.Add(disposalExceptions);
             }
@@ -92,42 +99,6 @@ namespace Fixie.Samples.xUnitStyle
             return fixtureClass.GetInterfaces()
                             .Where(@interface => @interface.IsGenericType &&
                                                  @interface.GetGenericTypeDefinition() == typeof(IUseFixture<>));
-        }
-
-        static bool TryConstruct(Type @class, ExceptionList exceptions, out object instance)
-        {
-            try
-            {
-                instance = Activator.CreateInstance(@class);
-                return true;
-            }
-            catch (TargetInvocationException ex)
-            {
-                exceptions.Add(ex.InnerException);
-            }
-            catch (Exception ex)
-            {
-                exceptions.Add(ex);
-            }
-
-            instance = null;
-            return false;
-        }
-
-        static ExceptionList Dispose(object instance)
-        {
-            var exceptions = new ExceptionList();
-            try
-            {
-                var disposable = instance as IDisposable;
-                if (disposable != null)
-                    disposable.Dispose();
-            }
-            catch (Exception ex)
-            {
-                exceptions.Add(ex);
-            }
-            return exceptions;
         }
     }
 }

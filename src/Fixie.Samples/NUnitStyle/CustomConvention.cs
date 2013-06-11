@@ -1,9 +1,15 @@
-﻿using Fixie.Conventions;
+﻿using System;
+using Fixie.Conventions;
 
 namespace Fixie.Samples.NUnitStyle
 {
     public class CustomConvention : Convention
     {
+        readonly MethodFilter fixtureSetUp = Has<TestFixtureSetUpAttribute>();
+        readonly MethodFilter fixtureTearDown = Has<TestFixtureTearDownAttribute>();
+        readonly MethodFilter setUp = Has<SetUpAttribute>();
+        readonly MethodFilter tearDown = Has<TearDownAttribute>();
+
         public CustomConvention()
         {
             Fixtures
@@ -16,10 +22,15 @@ namespace Fixie.Samples.NUnitStyle
                     .CreateInstancePerFixture();
 
             InstanceExecution
-                .SetUpTearDown<TestFixtureSetUpAttribute, TestFixtureTearDownAttribute>();
+                .SetUpTearDown(fixtureSetUp, fixtureTearDown);
 
             CaseExecution
-                .SetUpTearDown<SetUpAttribute, TearDownAttribute>();
+                .SetUpTearDown(setUp, tearDown);
+        }
+
+        static MethodFilter Has<TAttribute>() where TAttribute : Attribute
+        {
+            return new MethodFilter().HasOrInherits<TAttribute>();
         }
     }
 }

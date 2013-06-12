@@ -7,11 +7,6 @@ namespace Fixie.Samples.LowCeremony
     {
         static readonly string[] LifecycleMethods = new[] { "FixtureSetUp", "FixtureTearDown", "SetUp", "TearDown" };
 
-        readonly MethodFilter fixtureSetUp = LifecycleMethod("FixtureSetUp");
-        readonly MethodFilter fixtureTearDown = LifecycleMethod("FixtureTearDown");
-        readonly MethodFilter setUp = LifecycleMethod("SetUp");
-        readonly MethodFilter tearDown = LifecycleMethod("TearDown");
-
         public CustomConvention()
         {
             Fixtures
@@ -19,7 +14,7 @@ namespace Fixie.Samples.LowCeremony
                 .NameEndsWith("Tests");
 
             Cases
-                .Where(method => method.Void() || method.Async())
+                .Where(method => method.Void())
                 .Where(method => LifecycleMethods.All(x => x != method.Name))
                 .ZeroParameters();
 
@@ -27,13 +22,13 @@ namespace Fixie.Samples.LowCeremony
                 .CreateInstancePerFixture();
 
             InstanceExecution
-                .SetUpTearDown(fixtureSetUp, fixtureTearDown);
+                .SetUpTearDown(Method("FixtureSetUp"), Method("FixtureTearDown"));
 
             CaseExecution
-                .SetUpTearDown(setUp, tearDown);
+                .SetUpTearDown(Method("SetUp"), Method("TearDown"));
         }
 
-        static MethodFilter LifecycleMethod(string methodName)
+        static MethodFilter Method(string methodName)
         {
             return new MethodFilter().Where(x => x.HasSignature(typeof(void), methodName));
         }

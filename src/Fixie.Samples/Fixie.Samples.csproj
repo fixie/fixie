@@ -52,7 +52,6 @@
     <Compile Include="NUnitStyle\CustomConvention.cs" />
     <Compile Include="NUnitStyle\Attributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleInfrastructure.cs" />
     <Compile Include="StringBuilderExtensions.cs" />
     <Compile Include="xUnitStyle\CalculatorTests.cs" />
     <Compile Include="xUnitStyle\CustomConvention.cs" />

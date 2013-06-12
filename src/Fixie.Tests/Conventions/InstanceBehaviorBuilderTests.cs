@@ -155,6 +155,24 @@ namespace Fixie.Tests.Conventions
             }
         }
 
+        public void ShouldAllowSetUpTearDownByInvokingAllMethodsFoundByMethodFilters()
+        {
+            var setUp = new MethodFilter().Where(m => m.Name.StartsWith("SetUp"));
+            var tearDown = new MethodFilter().Where(m => m.Name.StartsWith("TearDown"));
+
+            builder.SetUpTearDown(setUp, tearDown);
+
+            using (var console = new RedirectedConsole())
+            {
+                builder.Behavior.Execute(fixtureClass, instance, cases, convention);
+
+                cases[0].Exceptions.Any().ShouldBeFalse();
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
+
+                console.Lines.ShouldEqual("SetUpA", "SetUpB", "Pass", "Fail", "TearDownA", "TearDownB");
+            }
+        }
+
         class SampleFixture
         {
             public void Pass()
@@ -171,6 +189,26 @@ namespace Fixie.Tests.Conventions
             public void Ignored()
             {
                 throw new ShouldBeUnreachableException();
+            }
+
+            public void SetUpA()
+            {
+                Console.WriteLine("SetUpA");
+            }
+
+            public void SetUpB()
+            {
+                Console.WriteLine("SetUpB");
+            }
+
+            public void TearDownA()
+            {
+                Console.WriteLine("TearDownA");
+            }
+
+            public void TearDownB()
+            {
+                Console.WriteLine("TearDownB");
             }
         }
 

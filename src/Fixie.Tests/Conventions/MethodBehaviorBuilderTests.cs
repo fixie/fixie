@@ -9,10 +9,12 @@ namespace Fixie.Tests.Conventions
     public class MethodBehaviorBuilderTests
     {
         readonly MethodBehaviorBuilder builder;
+        readonly object instance;
 
         public MethodBehaviorBuilderTests()
         {
             builder = new MethodBehaviorBuilder();
+            instance = new SampleFixture();
         }
 
         public void ShouldJustInvokeMethodByDefault()
@@ -23,7 +25,7 @@ namespace Fixie.Tests.Conventions
             {
                 var exceptions = new ExceptionList();
                 
-                builder.Behavior.Execute(Method("Pass"), this, exceptions);
+                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
                 
                 exceptions.Any().ShouldBeFalse();
                 console.Lines.ShouldEqual("Pass");
@@ -33,7 +35,7 @@ namespace Fixie.Tests.Conventions
             {
                 var exceptions = new ExceptionList();
 
-                builder.Behavior.Execute(Method("Fail"), this, exceptions);
+                builder.Behavior.Execute(Method("Fail"), instance, exceptions);
 
                 exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldEqual("Fail Threw!");
@@ -52,8 +54,8 @@ namespace Fixie.Tests.Conventions
             using (var console = new RedirectedConsole())
             {
                 var exceptions = new ExceptionList();
-                
-                builder.Behavior.Execute(Method("Pass"), this, exceptions);
+
+                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
 
                 exceptions.Any().ShouldBeFalse();
                 console.Lines.ShouldEqual("Before", "Pass", "After");
@@ -63,7 +65,7 @@ namespace Fixie.Tests.Conventions
             {
                 var exceptions = new ExceptionList();
 
-                builder.Behavior.Execute(Method("Fail"), this, exceptions);
+                builder.Behavior.Execute(Method("Fail"), instance, exceptions);
 
                 exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldEqual("Before", "Fail Threw!", "After");
@@ -89,7 +91,7 @@ namespace Fixie.Tests.Conventions
             {
                 var exceptions = new ExceptionList();
 
-                builder.Behavior.Execute(Method("Pass"), this, exceptions);
+                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
 
                 exceptions.Any().ShouldBeFalse();
                 console.Lines.ShouldEqual("Outer Before", "Inner Before", "Pass", "Inner After", "Outer After");
@@ -107,7 +109,7 @@ namespace Fixie.Tests.Conventions
             {
                 var exceptions = new ExceptionList();
 
-                builder.Behavior.Execute(Method("Pass"), this, exceptions);
+                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
 
                 exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldBeEmpty();
@@ -122,7 +124,7 @@ namespace Fixie.Tests.Conventions
             {
                 var exceptions = new ExceptionList();
 
-                builder.Behavior.Execute(Method("Pass"), this, exceptions);
+                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
 
                 exceptions.Any().ShouldBeFalse();
                 console.Lines.ShouldEqual("SetUp", "Pass", "TearDown");
@@ -137,7 +139,7 @@ namespace Fixie.Tests.Conventions
             {
                 var exceptions = new ExceptionList();
 
-                builder.Behavior.Execute(Method("Pass"), this, exceptions);
+                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
 
                 exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldEqual("FailingSetUp Contributes an Exception!");
@@ -152,7 +154,7 @@ namespace Fixie.Tests.Conventions
             {
                 var exceptions = new ExceptionList();
 
-                builder.Behavior.Execute(Method("Fail"), this, exceptions);
+                builder.Behavior.Execute(Method("Fail"), instance, exceptions);
 
                 exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldEqual("SetUp", "Fail Threw!", "TearDown");
@@ -167,7 +169,7 @@ namespace Fixie.Tests.Conventions
             {
                 var exceptions = new ExceptionList();
 
-                builder.Behavior.Execute(Method("Pass"), this, exceptions);
+                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
 
                 exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldEqual("SetUp", "Pass", "FailingTearDown Contributes an Exception!");
@@ -177,22 +179,63 @@ namespace Fixie.Tests.Conventions
             {
                 var exceptions = new ExceptionList();
 
-                builder.Behavior.Execute(Method("Fail"), this, exceptions);
+                builder.Behavior.Execute(Method("Fail"), instance, exceptions);
 
                 exceptions.Count.ShouldEqual(2);
                 console.Lines.ShouldEqual("SetUp", "Fail Threw!", "FailingTearDown Contributes an Exception!");
             }
         }
 
-        void Pass()
+        public void ShouldAllowSetUpTearDownByInvokingAllMethodsFoundByMethodFilter()
         {
-            Console.WriteLine("Pass");
+            var setUp = new MethodFilter().Where(m => m.Name.StartsWith("SetUp"));
+            var tearDown = new MethodFilter().Where(m => m.Name.StartsWith("TearDown"));
+
+            builder.SetUpTearDown(setUp, tearDown);
+
+            using (var console = new RedirectedConsole())
+            {
+                var exceptions = new ExceptionList();
+
+                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
+
+                exceptions.Any().ShouldBeFalse();
+                console.Lines.ShouldEqual("SetUpA", "SetUpB", "Pass", "TearDownA", "TearDownB");
+            }
         }
-        
-        void Fail()
+
+        class SampleFixture
         {
-            Console.WriteLine("Fail Threw!");
-            throw new FailureException();
+            public void SetUpA()
+            {
+                Console.WriteLine("SetUpA");
+            }
+
+            public void SetUpB()
+            {
+                Console.WriteLine("SetUpB");
+            }
+
+            public void Pass()
+            {
+                Console.WriteLine("Pass");
+            }
+
+            public void Fail()
+            {
+                Console.WriteLine("Fail Threw!");
+                throw new FailureException();
+            }
+
+            public void TearDownA()
+            {
+                Console.WriteLine("TearDownA");
+            }
+
+            public void TearDownB()
+            {
+                Console.WriteLine("TearDownB");
+            }
         }
 
         static ExceptionList SetUp(MethodInfo method, object instance)
@@ -225,7 +268,7 @@ namespace Fixie.Tests.Conventions
 
         static MethodInfo Method(string name)
         {
-            return typeof(MethodBehaviorBuilderTests).GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic);
+            return typeof(SampleFixture).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
         }
     }
 }

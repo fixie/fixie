@@ -41,6 +41,12 @@ namespace Fixie.Conventions
             });
         }
 
+        public MethodBehaviorBuilder SetUpTearDown(MethodFilter setUpMethods, MethodFilter tearDownMethods)
+        {
+            return SetUpTearDown((method, instance) => setUpMethods.InvokeAll(method.ReflectedType, instance),
+                                 (method, instance) => tearDownMethods.InvokeAll(method.ReflectedType, instance));
+        }
+
         class WrapBehavior : MethodBehavior
         {
             readonly MethodBehaviorAction outer;

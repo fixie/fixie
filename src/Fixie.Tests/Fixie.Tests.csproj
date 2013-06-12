@@ -44,6 +44,7 @@
     </Compile>
     <Compile Include="Assertions.cs" />
     <Compile Include="Behaviors\ExecuteCasesTests.cs" />
+    <Compile Include="Behaviors\MethodFilterExtensionsTests.cs" />
     <Compile Include="ClassFixtures\AsyncCaseTests.cs" />
     <Compile Include="ClassFixtures\CaseTests.cs" />
     <Compile Include="ClassFixtures\DisposalTests.cs" />

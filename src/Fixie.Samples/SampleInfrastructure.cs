@@ -1,5 +1,4 @@
-﻿using System;
-using Fixie.Behaviors;
+﻿using Fixie.Behaviors;
 using Fixie.Conventions;
 
 namespace Fixie.Samples
@@ -20,15 +19,6 @@ namespace Fixie.Samples
         public static InstanceBehaviorBuilder SetUpTearDown(this InstanceBehaviorBuilder builder, MethodFilter hasSetUpAttribute, MethodFilter hasTearDownAttribute)
         {
             return builder.SetUpTearDown(hasSetUpAttribute.InvokeAll, hasTearDownAttribute.InvokeAll);
-        }
-
-        private static ExceptionList InvokeAll(this MethodFilter methodFilter, Type fixtureClass, object instance)
-        {
-            var invoke = new Invoke();
-            var exceptions = new ExceptionList();
-            foreach (var method in methodFilter.Filter(fixtureClass))
-                invoke.Execute(method, instance, exceptions);
-            return exceptions;
         }
     }
 }

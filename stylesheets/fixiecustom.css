@@ -1,0 +1,24 @@
+﻿h1, h2, h3, h4, h5, h6
+{
+    letter-spacing: normal;
+}
+
+.callout
+{
+    border: 1px solid black;
+    float: right;
+    padding: 0px 5px;
+    font-size: 1.2em;
+    width: 30%;
+    text-align: center;
+    background-color: #ffc;
+    -moz-box-shadow: 3px 3px 5px 0px #999;
+    -webkit-box-shadow: 3px 3px 5px 0px #999;
+    box-shadow: 3px 3px 5px 0px #999;
+}
+
+.publish_date
+{
+    font-size: .7em;
+    margin: -1em 0 2em 0;
+}

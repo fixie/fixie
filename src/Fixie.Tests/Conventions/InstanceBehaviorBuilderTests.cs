@@ -11,15 +11,14 @@ namespace Fixie.Tests.Conventions
     {
         readonly InstanceBehaviorBuilder builder;
         readonly Fixture fixture;
-        readonly Convention convention;
 
         public InstanceBehaviorBuilderTests()
         {
             builder = new InstanceBehaviorBuilder();
             var fixtureClass = typeof(SampleFixture);
             var instance = new SampleFixture();
-            convention = new SelfTestConvention();
-            fixture = new Fixture(fixtureClass, instance, convention.CaseExecution.Behavior,  new[]
+            var caseExecutionBehavior = new Invoke();
+            fixture = new Fixture(fixtureClass, instance, caseExecutionBehavior,  new[]
             {
                 new Case(fixtureClass, Method("Pass")),
                 new Case(fixtureClass, Method("Fail"))
@@ -32,7 +31,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixture, convention);
+                builder.Behavior.Execute(fixture);
 
                 fixture.Cases[0].Exceptions.Any().ShouldBeFalse();
                 fixture.Cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
@@ -43,16 +42,16 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldAllowWrappingTheBehaviorInAnother()
         {
-            builder.Wrap((fixture, convention, inner) =>
+            builder.Wrap((fixture, inner) =>
             {
                 Console.WriteLine("Before");
-                inner.Execute(fixture, convention);
+                inner.Execute(fixture);
                 Console.WriteLine("After");
             });
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixture, convention);
+                builder.Behavior.Execute(fixture);
 
                 fixture.Cases[0].Exceptions.Any().ShouldBeFalse();
                 fixture.Cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
@@ -64,22 +63,22 @@ namespace Fixie.Tests.Conventions
         public void ShouldAllowWrappingTheBehaviorMultipleTimes()
         {
             builder
-                .Wrap((fixture, convention, inner) =>
+                .Wrap((fixture, inner) =>
                 {
                     Console.WriteLine("Inner Before");
-                    inner.Execute(fixture, convention);
+                    inner.Execute(fixture);
                     Console.WriteLine("Inner After");
                 })
-                .Wrap((fixture, convention, inner) =>
+                .Wrap((fixture, inner) =>
                 {
                     Console.WriteLine("Outer Before");
-                    inner.Execute(fixture, convention);
+                    inner.Execute(fixture);
                     Console.WriteLine("Outer After");
                 });
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixture, convention);
+                builder.Behavior.Execute(fixture);
 
                 fixture.Cases[0].Exceptions.Any().ShouldBeFalse();
                 fixture.Cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
@@ -90,14 +89,14 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldHandleCatastrophicExceptionsByFailingAllCasesWhenBehaviorsThrowRatherThanContributeExceptions()
         {
-            builder.Wrap((fixture, convention, inner) =>
+            builder.Wrap((fixture, inner) =>
             {
                 throw new Exception("Unsafe behavior threw!");
             });
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixture, convention);
+                builder.Behavior.Execute(fixture);
 
                 fixture.Cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe behavior threw!");
                 fixture.Cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe behavior threw!");
@@ -112,7 +111,7 @@ namespace Fixie.Tests.Conventions
         
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixture, convention);
+                builder.Behavior.Execute(fixture);
 
                 fixture.Cases[0].Exceptions.Any().ShouldBeFalse();
                 fixture.Cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
@@ -127,7 +126,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixture, convention);
+                builder.Behavior.Execute(fixture);
 
                 fixture.Cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingSetUp");
                 fixture.Cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingSetUp");
@@ -142,7 +141,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixture, convention);
+                builder.Behavior.Execute(fixture);
 
                 fixture.Cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingTearDown");
                 fixture.Cases[1].Exceptions.ToArray().Select(x => x.Message).ShouldEqual(
@@ -162,7 +161,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixture, convention);
+                builder.Behavior.Execute(fixture);
 
                 fixture.Cases[0].Exceptions.Any().ShouldBeFalse();
                 fixture.Cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");

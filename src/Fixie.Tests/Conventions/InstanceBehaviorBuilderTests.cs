@@ -18,12 +18,12 @@ namespace Fixie.Tests.Conventions
             builder = new InstanceBehaviorBuilder();
             var fixtureClass = typeof(SampleFixture);
             var instance = new SampleFixture();
-            fixture = new Fixture(fixtureClass, instance, new[]
+            convention = new SelfTestConvention();
+            fixture = new Fixture(fixtureClass, instance, convention.CaseExecution.Behavior,  new[]
             {
                 new Case(fixtureClass, Method("Pass")),
                 new Case(fixtureClass, Method("Fail"))
             });
-            convention = new SelfTestConvention();
         }
 
         public void ShouldJustExecuteCasesByDefault()

@@ -27,7 +27,7 @@ namespace Fixie.Behaviors
                 }
                 else
                 {
-                    var fixture = new Fixture(fixtureClass, instance, new[] { @case });
+                    var fixture = new Fixture(fixtureClass, instance, convention.CaseExecution.Behavior, new[] { @case });
                     convention.InstanceExecution.Behavior.Execute(fixture, convention);
 
                     var disposalExceptions = Lifecycle.Dispose(instance);

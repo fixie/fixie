@@ -4,6 +4,6 @@ namespace Fixie.Behaviors
 {
     public interface InstanceBehavior
     {
-        void Execute(Fixture fixture, Case[] cases, Convention convention);
+        void Execute(Fixture fixture, Convention convention);
     }
 }

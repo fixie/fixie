@@ -302,16 +302,16 @@ namespace Fixie.Tests.ClassFixtures
             WriteLine("AfterCase");
         }
 
-        static void SkipInstance(Fixture fixture, Case[] cases, Convention convention, InstanceBehavior inner)
+        static void SkipInstance(Fixture fixture, Convention convention, InstanceBehavior inner)
         {
-            WriteLine("Skipping {0} case(s) for an instance of {1}", cases.Length, fixture.Type.Name);
+            WriteLine("Skipping {0} case(s) for an instance of {1}", fixture.Cases.Length, fixture.Type.Name);
         }
 
-        static void BeforeAfterInstance(Fixture fixture, Case[] cases, Convention convention, InstanceBehavior inner)
+        static void BeforeAfterInstance(Fixture fixture, Convention convention, InstanceBehavior inner)
         {
             WriteLine("BeforeInstance");
             indent++;
-            inner.Execute(fixture, cases, convention);
+            inner.Execute(fixture, convention);
             indent--;
             WriteLine("AfterInstance");
         }

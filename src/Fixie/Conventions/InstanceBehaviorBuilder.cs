@@ -3,7 +3,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void InstanceBehaviorAction(Fixture fixture, Case[] cases, Convention convention, InstanceBehavior inner);
+    public delegate void InstanceBehaviorAction(Fixture fixture, Convention convention, InstanceBehavior inner);
     public delegate ExceptionList InstanceAction(Fixture fixture);
 
     public class InstanceBehaviorBuilder
@@ -23,21 +23,21 @@ namespace Fixie.Conventions
 
         public InstanceBehaviorBuilder SetUpTearDown(InstanceAction setUp, InstanceAction tearDown)
         {
-            return Wrap((fixture, cases, convention, inner) =>
+            return Wrap((fixture, convention, inner) =>
             {
                 var setUpExceptions = setUp(fixture);
                 if (setUpExceptions.Any())
                 {
-                    foreach (var @case in cases)
+                    foreach (var @case in fixture.Cases)
                         @case.Exceptions.Add(setUpExceptions);
                     return;
                 }
 
-                inner.Execute(fixture, cases, convention);
+                inner.Execute(fixture, convention);
 
                 var tearDownExceptions = tearDown(fixture);
                 if (tearDownExceptions.Any())
-                    foreach (var @case in cases)
+                    foreach (var @case in fixture.Cases)
                         @case.Exceptions.Add(tearDownExceptions);
             });
         }
@@ -59,15 +59,15 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(Fixture fixture, Case[] cases, Convention convention)
+            public void Execute(Fixture fixture, Convention convention)
             {
                 try
                 {
-                    outer(fixture, cases, convention, inner);
+                    outer(fixture, convention, inner);
                 }
                 catch (Exception exception)
                 {
-                    foreach (var @case in cases)
+                    foreach (var @case in fixture.Cases)
                     {
                         @case.Exceptions.Add(exception);
                     }

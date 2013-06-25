@@ -3,8 +3,8 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void InstanceBehaviorAction(Type fixtureClass, object instance, Case[] cases, Convention convention, InstanceBehavior inner);
-    public delegate ExceptionList InstanceAction(Type fixtureClass, object instance);
+    public delegate void InstanceBehaviorAction(Fixture fixture, Case[] cases, Convention convention, InstanceBehavior inner);
+    public delegate ExceptionList InstanceAction(Fixture fixture);
 
     public class InstanceBehaviorBuilder
     {
@@ -23,9 +23,9 @@ namespace Fixie.Conventions
 
         public InstanceBehaviorBuilder SetUpTearDown(InstanceAction setUp, InstanceAction tearDown)
         {
-            return Wrap((fixtureClass, instance, cases, convention, inner) =>
+            return Wrap((fixture, cases, convention, inner) =>
             {
-                var setUpExceptions = setUp(fixtureClass, instance);
+                var setUpExceptions = setUp(fixture);
                 if (setUpExceptions.Any())
                 {
                     foreach (var @case in cases)
@@ -33,9 +33,9 @@ namespace Fixie.Conventions
                     return;
                 }
 
-                inner.Execute(fixtureClass, instance, cases, convention);
+                inner.Execute(fixture, cases, convention);
 
-                var tearDownExceptions = tearDown(fixtureClass, instance);
+                var tearDownExceptions = tearDown(fixture);
                 if (tearDownExceptions.Any())
                     foreach (var @case in cases)
                         @case.Exceptions.Add(tearDownExceptions);
@@ -44,7 +44,8 @@ namespace Fixie.Conventions
 
         public InstanceBehaviorBuilder SetUpTearDown(MethodFilter setUpMethods, MethodFilter tearDownMethods)
         {
-            return SetUpTearDown(setUpMethods.InvokeAll, tearDownMethods.InvokeAll);
+            return SetUpTearDown(fixture => setUpMethods.InvokeAll(fixture.Type, fixture.Instance),
+                                 fixture => tearDownMethods.InvokeAll(fixture.Type, fixture.Instance));
         }
 
         class WrapBehavior : InstanceBehavior
@@ -58,11 +59,11 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(Type fixtureClass, object instance, Case[] cases, Convention convention)
+            public void Execute(Fixture fixture, Case[] cases, Convention convention)
             {
                 try
                 {
-                    outer(fixtureClass, instance, cases, convention, inner);
+                    outer(fixture, cases, convention, inner);
                 }
                 catch (Exception exception)
                 {

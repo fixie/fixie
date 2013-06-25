@@ -54,6 +54,7 @@
     <Compile Include="Conventions\SelfTestConvention.cs" />
     <Compile Include="Conventions\TypeBehaviorBuilder.cs" />
     <Compile Include="ExceptionList.cs" />
+    <Compile Include="Fixture.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Behaviors\Invoke.cs" />
     <Compile Include="Behaviors\MethodBehavior.cs" />

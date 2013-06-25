@@ -5,10 +5,10 @@ namespace Fixie.Behaviors
 {
     public class ExecuteCases : InstanceBehavior
     {
-        public void Execute(Type fixtureClass, object instance, Case[] cases, Convention convention)
+        public void Execute(Fixture fixture, Case[] cases, Convention convention)
         {
             foreach (var @case in cases)
-                convention.CaseExecution.Behavior.Execute(@case.Method, instance, @case.Exceptions);
+                convention.CaseExecution.Behavior.Execute(@case.Method, fixture.Instance, @case.Exceptions);
         }
     }
 }

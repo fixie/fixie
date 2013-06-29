@@ -5,15 +5,15 @@ namespace Fixie
 {
     public class Fixture
     {
-        public Fixture(Type type, object instance, MethodBehavior caseExecutionBehavior, Case[] cases)
+        public Fixture(Type testClass, object instance, MethodBehavior caseExecutionBehavior, Case[] cases)
         {
-            Type = type;
+            TestClass = testClass;
             Instance = instance;
             CaseExecutionBehavior = caseExecutionBehavior;
             Cases = cases;
         }
 
-        public Type Type { get; private set; }
+        public Type TestClass { get; private set; }
         public object Instance { get; private set; }
         public MethodBehavior CaseExecutionBehavior { get; private set; }
         public Case[] Cases { get; private set; }

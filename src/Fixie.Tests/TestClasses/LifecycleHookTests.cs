@@ -304,7 +304,7 @@ namespace Fixie.Tests.TestClasses
 
         static void SkipInstance(Fixture fixture, InstanceBehavior inner)
         {
-            WriteLine("Skipping {0} case(s) for an instance of {1}", fixture.Cases.Length, fixture.Type.Name);
+            WriteLine("Skipping {0} case(s) for an instance of {1}", fixture.Cases.Length, fixture.TestClass.Name);
         }
 
         static void BeforeAfterInstance(Fixture fixture, InstanceBehavior inner)

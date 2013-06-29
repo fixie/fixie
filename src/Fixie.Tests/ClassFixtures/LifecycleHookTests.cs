@@ -21,7 +21,7 @@ namespace Fixie.Tests.ClassFixtures
         {
             var convention = new SelfTestConvention();
 
-            convention.FixtureExecution.Behavior.ShouldBeType<CreateInstancePerCase>();
+            convention.ClassExecution.Behavior.ShouldBeType<CreateInstancePerCase>();
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -43,7 +43,7 @@ namespace Fixie.Tests.ClassFixtures
         public void ShouldSupportOptionToPerformSingleFixtureLifecycleAcrossAllContainedCases()
         {
             var convention = new SelfTestConvention();
-            convention.FixtureExecution.CreateInstancePerFixture();
+            convention.ClassExecution.CreateInstancePerFixture();
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -162,10 +162,10 @@ namespace Fixie.Tests.ClassFixtures
                     .ToString());
         }
 
-        public void ShouldSupportReplacingTheFixtureExecutionBehavior()
+        public void ShouldSupportReplacingTheClassExecutionBehavior()
         {
             var convention = new SelfTestConvention();
-            convention.FixtureExecution.Wrap(SkipType);
+            convention.ClassExecution.Wrap(SkipType);
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -174,10 +174,10 @@ namespace Fixie.Tests.ClassFixtures
                     .ToString());
         }
 
-        public void ShouldSupportAugmentingTheFixtureExecutionBehavior()
+        public void ShouldSupportAugmentingTheClassExecutionBehavior()
         {
             var convention = new SelfTestConvention();
-            convention.FixtureExecution.Wrap(BeforeAfterType);
+            convention.ClassExecution.Wrap(BeforeAfterType);
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()
@@ -203,7 +203,7 @@ namespace Fixie.Tests.ClassFixtures
         public void ShouldSupportAugmentingFixtureAndInstanceAndCaseBehaviors()
         {
             var convention = new SelfTestConvention();
-            convention.FixtureExecution.Wrap(BeforeAfterType);
+            convention.ClassExecution.Wrap(BeforeAfterType);
             convention.InstanceExecution.Wrap(BeforeAfterInstance);
             convention.CaseExecution.Wrap(BeforeAfterCase);
 

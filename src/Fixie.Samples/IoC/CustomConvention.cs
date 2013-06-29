@@ -19,7 +19,7 @@ namespace Fixie.Samples.IoC
                 .Where(method => method.Void())
                 .ZeroParameters();
 
-            FixtureExecution
+            ClassExecution
                 .CreateInstancePerFixture(UsingContainer);
         }
 

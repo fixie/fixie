@@ -20,7 +20,7 @@ namespace Fixie.Samples.xUnitStyle
             Cases
                 .HasOrInherits<FactAttribute>();
 
-            FixtureExecution
+            ClassExecution
                 .CreateInstancePerCase()
                 .SetUpTearDown(PrepareFixtureData, DisposeFixtureData);
 

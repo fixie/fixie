@@ -13,7 +13,7 @@ namespace Fixie.Samples.NUnitStyle
             Cases
                 .HasOrInherits<TestAttribute>();
 
-            FixtureExecution
+            ClassExecution
                     .CreateInstancePerFixture();
 
             InstanceExecution

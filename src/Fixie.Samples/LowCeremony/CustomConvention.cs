@@ -18,7 +18,7 @@ namespace Fixie.Samples.LowCeremony
                 .Where(method => LifecycleMethods.All(x => x != method.Name))
                 .ZeroParameters();
 
-            FixtureExecution
+            ClassExecution
                 .CreateInstancePerFixture();
 
             InstanceExecution

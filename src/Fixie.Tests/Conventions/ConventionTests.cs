@@ -68,7 +68,7 @@ namespace Fixie.Tests.Conventions
         public void EmptyConventionShouldTreatPublicInstanceMethodsAsCases()
         {
             var emptyConvention = new Convention();
-            var testClass = typeof(DiscoveryFixture);
+            var testClass = typeof(DiscoveryTestClass);
 
             emptyConvention.Cases
                            .Filter(testClass)
@@ -81,7 +81,7 @@ namespace Fixie.Tests.Conventions
         public void DefaultConventionShouldTreatSynchronousPublicInstanceNoArgVoidMethodsAsCases()
         {
             var defaultConvention = new DefaultConvention();
-            var testClass = typeof(DiscoveryFixture);
+            var testClass = typeof(DiscoveryTestClass);
 
             defaultConvention.Cases
                              .Filter(testClass)
@@ -92,7 +92,7 @@ namespace Fixie.Tests.Conventions
         public void DefaultConventionShouldTreatAsyncPublicInstanceNoArgMethodsAsCases()
         {
             var defaultConvention = new DefaultConvention();
-            var testClass = typeof(AsyncDiscoveryFixture);
+            var testClass = typeof(AsyncDiscoveryTestClass);
 
             defaultConvention.Cases
                              .Filter(testClass)
@@ -101,7 +101,7 @@ namespace Fixie.Tests.Conventions
                              .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn");
         }
 
-        class DiscoveryFixture : IDisposable
+        class DiscoveryTestClass : IDisposable
         {
             public static int PublicStaticWithArgsWithReturn(int x) { return 0; }
             public static int PublicStaticNoArgsWithReturn() { return 0; }
@@ -126,7 +126,7 @@ namespace Fixie.Tests.Conventions
             public void Dispose() { }
         }
 
-        class AsyncDiscoveryFixture
+        class AsyncDiscoveryTestClass
         {
             public async static Task<int> PublicStaticWithArgsWithReturn(int x) { return await Zero(); }
             public async static Task<int> PublicStaticNoArgsWithReturn() { return await Zero(); }
@@ -159,12 +159,12 @@ namespace Fixie.Tests.Conventions
             var listener = new StubListener();
             var convention = new SelfTestConvention();
 
-            convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassFixture), typeof(int), typeof(PassFailFixture));
+            convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass));
 
-            listener.ShouldHaveEntries("Fixie.Tests.Conventions.ConventionTests+PassFailFixture.Pass passed.",
-                                       "Fixie.Tests.Conventions.ConventionTests+PassFailFixture.Fail failed: 'Fail' failed!",
-                                       "Fixie.Tests.Conventions.ConventionTests+PassFixture.PassA passed.",
-                                       "Fixie.Tests.Conventions.ConventionTests+PassFixture.PassB passed.");
+            listener.ShouldHaveEntries("Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Pass passed.",
+                                       "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Fail failed: 'Fail' failed!",
+                                       "Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassA passed.",
+                                       "Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassB passed.");
         }
 
         class SampleIrrelevantClass
@@ -173,13 +173,13 @@ namespace Fixie.Tests.Conventions
             public void PassB() { }
         }
 
-        class PassFixture
+        class PassTestClass
         {
             public void PassA() { }
             public void PassB() { }
         }
 
-        class PassFailFixture
+        class PassFailTestClass
         {
             public void Pass() { }
             public void Fail() { throw new FailureException(); }

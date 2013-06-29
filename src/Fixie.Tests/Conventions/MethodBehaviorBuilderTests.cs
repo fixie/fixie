@@ -14,7 +14,7 @@ namespace Fixie.Tests.Conventions
         public MethodBehaviorBuilderTests()
         {
             builder = new MethodBehaviorBuilder();
-            instance = new SampleFixture();
+            instance = new SampleTestClass();
         }
 
         public void ShouldJustInvokeMethodByDefault()
@@ -204,7 +204,7 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        class SampleFixture
+        class SampleTestClass
         {
             public void SetUpA()
             {
@@ -268,7 +268,7 @@ namespace Fixie.Tests.Conventions
 
         static MethodInfo Method(string name)
         {
-            return typeof(SampleFixture).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
+            return typeof(SampleTestClass).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
         }
     }
 }

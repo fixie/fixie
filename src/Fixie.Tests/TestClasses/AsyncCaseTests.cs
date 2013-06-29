@@ -12,20 +12,20 @@ namespace Fixie.Tests.TestClasses
         {
             var listener = new StubListener();
 
-            new SelfTestConvention().Execute(listener, typeof(AwaitThenPassFixture));
+            new SelfTestConvention().Execute(listener, typeof(AwaitThenPassTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitThenPassFixture.Test passed.");
+                "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitThenPassTestClass.Test passed.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
             var listener = new StubListener();
 
-            new SelfTestConvention().Execute(listener, typeof(AwaitThenFailFixture));
+            new SelfTestConvention().Execute(listener, typeof(AwaitThenFailTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitThenFailFixture.Test failed: Assert.Equal() Failure" + Environment.NewLine +
+                "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitThenFailTestClass.Test failed: Assert.Equal() Failure" + Environment.NewLine +
                 "Expected: 0" + Environment.NewLine +
                 "Actual:   3");
         }
@@ -34,35 +34,35 @@ namespace Fixie.Tests.TestClasses
         {
             var listener = new StubListener();
 
-            new SelfTestConvention().Execute(listener, typeof(AwaitOnTaskThatThrowsFixture));
+            new SelfTestConvention().Execute(listener, typeof(AwaitOnTaskThatThrowsTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitOnTaskThatThrowsFixture.Test failed: Attempted to divide by zero.");
+                "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitOnTaskThatThrowsTestClass.Test failed: Attempted to divide by zero.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
         {
             var listener = new StubListener();
 
-            new SelfTestConvention().Execute(listener, typeof(FailBeforeAwaitFixture));
+            new SelfTestConvention().Execute(listener, typeof(FailBeforeAwaitTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.AsyncCaseTests+FailBeforeAwaitFixture.Test failed: 'Test' failed!");
+                "Fixie.Tests.TestClasses.AsyncCaseTests+FailBeforeAwaitTestClass.Test failed: 'Test' failed!");
         }
 
         public void ShouldFailUnsupportedAsyncVoidCases()
         {
             var listener = new StubListener();
 
-            new SelfTestConvention().Execute(listener, typeof(UnsupportedAsyncVoidFixture));
+            new SelfTestConvention().Execute(listener, typeof(UnsupportedAsyncVoidTestTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.AsyncCaseTests+UnsupportedAsyncVoidFixture.Test failed: " +
+                "Fixie.Tests.TestClasses.AsyncCaseTests+UnsupportedAsyncVoidTestTestClass.Test failed: " +
                 "Async void methods are not supported. Declare async methods with a return type of " +
                 "Task to ensure the task actually runs to completion.");
         }
 
-        abstract class SampleFixtureBase
+        abstract class SampleTestClassBase
         {
             protected static void ThrowException([CallerMemberName] string member = null)
             {
@@ -75,7 +75,7 @@ namespace Fixie.Tests.TestClasses
             }
         }
 
-        class AwaitThenPassFixture : SampleFixtureBase
+        class AwaitThenPassTestClass : SampleTestClassBase
         {
             public async Task Test()
             {
@@ -85,7 +85,7 @@ namespace Fixie.Tests.TestClasses
             }
         }
 
-        class AwaitThenFailFixture : SampleFixtureBase
+        class AwaitThenFailTestClass : SampleTestClassBase
         {
             public async Task Test()
             {
@@ -95,7 +95,7 @@ namespace Fixie.Tests.TestClasses
             }
         }
 
-        class AwaitOnTaskThatThrowsFixture : SampleFixtureBase
+        class AwaitOnTaskThatThrowsTestClass : SampleTestClassBase
         {
             public async Task Test()
             {
@@ -105,7 +105,7 @@ namespace Fixie.Tests.TestClasses
             }
         }
 
-        class FailBeforeAwaitFixture : SampleFixtureBase
+        class FailBeforeAwaitTestClass : SampleTestClassBase
         {
             public async Task Test()
             {
@@ -115,7 +115,7 @@ namespace Fixie.Tests.TestClasses
             }
         }
 
-        class UnsupportedAsyncVoidFixture : SampleFixtureBase
+        class UnsupportedAsyncVoidTestTestClass : SampleTestClassBase
         {
             public async void Test()
             {

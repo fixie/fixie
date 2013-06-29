@@ -15,8 +15,8 @@ namespace Fixie.Tests.Conventions
         public InstanceBehaviorBuilderTests()
         {
             builder = new InstanceBehaviorBuilder();
-            var testClass = typeof(SampleFixture);
-            var instance = new SampleFixture();
+            var testClass = typeof(SampleTestClass);
+            var instance = new SampleTestClass();
             var caseExecutionBehavior = new Invoke();
             fixture = new Fixture(testClass, instance, caseExecutionBehavior,  new[]
             {
@@ -170,7 +170,7 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        class SampleFixture
+        class SampleTestClass
         {
             public void Pass()
             {
@@ -239,7 +239,7 @@ namespace Fixie.Tests.Conventions
 
         static MethodInfo Method(string name)
         {
-            return typeof(SampleFixture).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
+            return typeof(SampleTestClass).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
         }
     }
 }

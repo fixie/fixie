@@ -23,20 +23,20 @@ namespace Fixie.Tests.TestClasses
 
             convention.ClassExecution.Behavior.ShouldBeType<CreateInstancePerCase>();
 
-            OutputFromSampleFixture(convention).ShouldEqual(
+            OutputFromSampleTestClasses(convention).ShouldEqual(
                 new StringBuilder()
-                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("Construct FirstTestClass")
                     .AppendLine("    PassingCase")
-                    .AppendLine("Dispose FirstFixture")
-                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("Dispose FirstTestClass")
+                    .AppendLine("Construct FirstTestClass")
                     .AppendLine("    FailingCase Throws Exception")
-                    .AppendLine("Dispose FirstFixture")
-                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("Dispose FirstTestClass")
+                    .AppendLine("Construct SecondTestClass")
                     .AppendLine("    PassingCase")
-                    .AppendLine("Dispose SecondFixture")
-                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("Dispose SecondTestClass")
+                    .AppendLine("Construct SecondTestClass")
                     .AppendLine("    FailingCase Throws Exception")
-                    .AppendLine("Dispose SecondFixture")
+                    .AppendLine("Dispose SecondTestClass")
                     .ToString());
         }
 
@@ -45,16 +45,16 @@ namespace Fixie.Tests.TestClasses
             var convention = new SelfTestConvention();
             convention.ClassExecution.CreateInstancePerTestClass();
 
-            OutputFromSampleFixture(convention).ShouldEqual(
+            OutputFromSampleTestClasses(convention).ShouldEqual(
                 new StringBuilder()
-                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("Construct FirstTestClass")
                     .AppendLine("    PassingCase")
                     .AppendLine("    FailingCase Throws Exception")
-                    .AppendLine("Dispose FirstFixture")
-                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("Dispose FirstTestClass")
+                    .AppendLine("Construct SecondTestClass")
                     .AppendLine("    PassingCase")
                     .AppendLine("    FailingCase Throws Exception")
-                    .AppendLine("Dispose SecondFixture")
+                    .AppendLine("Dispose SecondTestClass")
                     .ToString());
         }
 
@@ -63,20 +63,20 @@ namespace Fixie.Tests.TestClasses
             var convention = new SelfTestConvention();
             convention.CaseExecution.Wrap(SkipCase);
 
-            OutputFromSampleFixture(convention).ShouldEqual(
+            OutputFromSampleTestClasses(convention).ShouldEqual(
                 new StringBuilder()
-                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("Construct FirstTestClass")
                     .AppendLine("    Skipping PassingCase")
-                    .AppendLine("Dispose FirstFixture")
-                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("Dispose FirstTestClass")
+                    .AppendLine("Construct FirstTestClass")
                     .AppendLine("    Skipping FailingCase")
-                    .AppendLine("Dispose FirstFixture")
-                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("Dispose FirstTestClass")
+                    .AppendLine("Construct SecondTestClass")
                     .AppendLine("    Skipping PassingCase")
-                    .AppendLine("Dispose SecondFixture")
-                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("Dispose SecondTestClass")
+                    .AppendLine("Construct SecondTestClass")
                     .AppendLine("    Skipping FailingCase")
-                    .AppendLine("Dispose SecondFixture")
+                    .AppendLine("Dispose SecondTestClass")
                     .ToString());
         }
 
@@ -85,28 +85,28 @@ namespace Fixie.Tests.TestClasses
             var convention = new SelfTestConvention();
             convention.CaseExecution.Wrap(BeforeAfterCase);
 
-            OutputFromSampleFixture(convention).ShouldEqual(
+            OutputFromSampleTestClasses(convention).ShouldEqual(
                 new StringBuilder()
-                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("Construct FirstTestClass")
                     .AppendLine("    BeforeCase")
                     .AppendLine("        PassingCase")
                     .AppendLine("    AfterCase")
-                    .AppendLine("Dispose FirstFixture")
-                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("Dispose FirstTestClass")
+                    .AppendLine("Construct FirstTestClass")
                     .AppendLine("    BeforeCase")
                     .AppendLine("        FailingCase Throws Exception")
                     .AppendLine("    AfterCase")
-                    .AppendLine("Dispose FirstFixture")
-                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("Dispose FirstTestClass")
+                    .AppendLine("Construct SecondTestClass")
                     .AppendLine("    BeforeCase")
                     .AppendLine("        PassingCase")
                     .AppendLine("    AfterCase")
-                    .AppendLine("Dispose SecondFixture")
-                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("Dispose SecondTestClass")
+                    .AppendLine("Construct SecondTestClass")
                     .AppendLine("    BeforeCase")
                     .AppendLine("        FailingCase Throws Exception")
                     .AppendLine("    AfterCase")
-                    .AppendLine("Dispose SecondFixture")
+                    .AppendLine("Dispose SecondTestClass")
                     .ToString());
         }
 
@@ -115,20 +115,20 @@ namespace Fixie.Tests.TestClasses
             var convention = new SelfTestConvention();
             convention.InstanceExecution.Wrap(SkipInstance);
 
-            OutputFromSampleFixture(convention).ShouldEqual(
+            OutputFromSampleTestClasses(convention).ShouldEqual(
                 new StringBuilder()
-                    .AppendLine("Construct FirstFixture")
-                    .AppendLine("    Skipping 1 case(s) for an instance of FirstFixture")
-                    .AppendLine("Dispose FirstFixture")
-                    .AppendLine("Construct FirstFixture")
-                    .AppendLine("    Skipping 1 case(s) for an instance of FirstFixture")
-                    .AppendLine("Dispose FirstFixture")
-                    .AppendLine("Construct SecondFixture")
-                    .AppendLine("    Skipping 1 case(s) for an instance of SecondFixture")
-                    .AppendLine("Dispose SecondFixture")
-                    .AppendLine("Construct SecondFixture")
-                    .AppendLine("    Skipping 1 case(s) for an instance of SecondFixture")
-                    .AppendLine("Dispose SecondFixture")
+                    .AppendLine("Construct FirstTestClass")
+                    .AppendLine("    Skipping 1 case(s) for an instance of FirstTestClass")
+                    .AppendLine("Dispose FirstTestClass")
+                    .AppendLine("Construct FirstTestClass")
+                    .AppendLine("    Skipping 1 case(s) for an instance of FirstTestClass")
+                    .AppendLine("Dispose FirstTestClass")
+                    .AppendLine("Construct SecondTestClass")
+                    .AppendLine("    Skipping 1 case(s) for an instance of SecondTestClass")
+                    .AppendLine("Dispose SecondTestClass")
+                    .AppendLine("Construct SecondTestClass")
+                    .AppendLine("    Skipping 1 case(s) for an instance of SecondTestClass")
+                    .AppendLine("Dispose SecondTestClass")
                     .ToString());
         }
 
@@ -137,28 +137,28 @@ namespace Fixie.Tests.TestClasses
             var convention = new SelfTestConvention();
             convention.InstanceExecution.Wrap(BeforeAfterInstance);
 
-            OutputFromSampleFixture(convention).ShouldEqual(
+            OutputFromSampleTestClasses(convention).ShouldEqual(
                 new StringBuilder()
-                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("Construct FirstTestClass")
                     .AppendLine("    BeforeInstance")
                     .AppendLine("        PassingCase")
                     .AppendLine("    AfterInstance")
-                    .AppendLine("Dispose FirstFixture")
-                    .AppendLine("Construct FirstFixture")
+                    .AppendLine("Dispose FirstTestClass")
+                    .AppendLine("Construct FirstTestClass")
                     .AppendLine("    BeforeInstance")
                     .AppendLine("        FailingCase Throws Exception")
                     .AppendLine("    AfterInstance")
-                    .AppendLine("Dispose FirstFixture")
-                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("Dispose FirstTestClass")
+                    .AppendLine("Construct SecondTestClass")
                     .AppendLine("    BeforeInstance")
                     .AppendLine("        PassingCase")
                     .AppendLine("    AfterInstance")
-                    .AppendLine("Dispose SecondFixture")
-                    .AppendLine("Construct SecondFixture")
+                    .AppendLine("Dispose SecondTestClass")
+                    .AppendLine("Construct SecondTestClass")
                     .AppendLine("    BeforeInstance")
                     .AppendLine("        FailingCase Throws Exception")
                     .AppendLine("    AfterInstance")
-                    .AppendLine("Dispose SecondFixture")
+                    .AppendLine("Dispose SecondTestClass")
                     .ToString());
         }
 
@@ -167,10 +167,10 @@ namespace Fixie.Tests.TestClasses
             var convention = new SelfTestConvention();
             convention.ClassExecution.Wrap(SkipType);
 
-            OutputFromSampleFixture(convention).ShouldEqual(
+            OutputFromSampleTestClasses(convention).ShouldEqual(
                 new StringBuilder()
-                    .AppendLine("Skipping FirstFixture")
-                    .AppendLine("Skipping SecondFixture")
+                    .AppendLine("Skipping FirstTestClass")
+                    .AppendLine("Skipping SecondTestClass")
                     .ToString());
         }
 
@@ -179,23 +179,23 @@ namespace Fixie.Tests.TestClasses
             var convention = new SelfTestConvention();
             convention.ClassExecution.Wrap(BeforeAfterType);
 
-            OutputFromSampleFixture(convention).ShouldEqual(
+            OutputFromSampleTestClasses(convention).ShouldEqual(
                 new StringBuilder()
                     .AppendLine("BeforeFixture")
-                    .AppendLine("    Construct FirstFixture")
+                    .AppendLine("    Construct FirstTestClass")
                     .AppendLine("        PassingCase")
-                    .AppendLine("    Dispose FirstFixture")
-                    .AppendLine("    Construct FirstFixture")
+                    .AppendLine("    Dispose FirstTestClass")
+                    .AppendLine("    Construct FirstTestClass")
                     .AppendLine("        FailingCase Throws Exception")
-                    .AppendLine("    Dispose FirstFixture")
+                    .AppendLine("    Dispose FirstTestClass")
                     .AppendLine("AfterFixture")
                     .AppendLine("BeforeFixture")
-                    .AppendLine("    Construct SecondFixture")
+                    .AppendLine("    Construct SecondTestClass")
                     .AppendLine("        PassingCase")
-                    .AppendLine("    Dispose SecondFixture")
-                    .AppendLine("    Construct SecondFixture")
+                    .AppendLine("    Dispose SecondTestClass")
+                    .AppendLine("    Construct SecondTestClass")
                     .AppendLine("        FailingCase Throws Exception")
-                    .AppendLine("    Dispose SecondFixture")
+                    .AppendLine("    Dispose SecondTestClass")
                     .AppendLine("AfterFixture")
                     .ToString());
         }
@@ -207,58 +207,58 @@ namespace Fixie.Tests.TestClasses
             convention.InstanceExecution.Wrap(BeforeAfterInstance);
             convention.CaseExecution.Wrap(BeforeAfterCase);
 
-            OutputFromSampleFixture(convention).ShouldEqual(
+            OutputFromSampleTestClasses(convention).ShouldEqual(
                 new StringBuilder()
                     .AppendLine("BeforeFixture")
-                    .AppendLine("    Construct FirstFixture")
+                    .AppendLine("    Construct FirstTestClass")
                     .AppendLine("        BeforeInstance")
                     .AppendLine("            BeforeCase")
                     .AppendLine("                PassingCase")
                     .AppendLine("            AfterCase")
                     .AppendLine("        AfterInstance")
-                    .AppendLine("    Dispose FirstFixture")
-                    .AppendLine("    Construct FirstFixture")
+                    .AppendLine("    Dispose FirstTestClass")
+                    .AppendLine("    Construct FirstTestClass")
                     .AppendLine("        BeforeInstance")
                     .AppendLine("            BeforeCase")
                     .AppendLine("                FailingCase Throws Exception")
                     .AppendLine("            AfterCase")
                     .AppendLine("        AfterInstance")
-                    .AppendLine("    Dispose FirstFixture")
+                    .AppendLine("    Dispose FirstTestClass")
                     .AppendLine("AfterFixture")
                     .AppendLine("BeforeFixture")
-                    .AppendLine("    Construct SecondFixture")
+                    .AppendLine("    Construct SecondTestClass")
                     .AppendLine("        BeforeInstance")
                     .AppendLine("            BeforeCase")
                     .AppendLine("                PassingCase")
                     .AppendLine("            AfterCase")
                     .AppendLine("        AfterInstance")
-                    .AppendLine("    Dispose SecondFixture")
-                    .AppendLine("    Construct SecondFixture")
+                    .AppendLine("    Dispose SecondTestClass")
+                    .AppendLine("    Construct SecondTestClass")
                     .AppendLine("        BeforeInstance")
                     .AppendLine("            BeforeCase")
                     .AppendLine("                FailingCase Throws Exception")
                     .AppendLine("            AfterCase")
                     .AppendLine("        AfterInstance")
-                    .AppendLine("    Dispose SecondFixture")
+                    .AppendLine("    Dispose SecondTestClass")
                     .AppendLine("AfterFixture")
                     .ToString());
         }
 
-        static string OutputFromSampleFixture(Convention convention)
+        static string OutputFromSampleTestClasses(Convention convention)
         {
             using (var console = new RedirectedConsole())
             {
                 var listener = new StubListener();
 
-                convention.Execute(listener, typeof(FirstFixture), typeof(SecondFixture));
+                convention.Execute(listener, typeof(FirstTestClass), typeof(SecondTestClass));
 
                 return console.ToString();
             }
         }
 
-        class FixturBase : IDisposable
+        class SampleTestClassBase : IDisposable
         {
-            protected FixturBase()
+            protected SampleTestClassBase()
             {
                 WriteLine("Construct {0}", GetType().Name);
                 indent++;
@@ -330,7 +330,7 @@ namespace Fixie.Tests.TestClasses
             WriteLine("AfterFixture");
         }
 
-        class FirstFixture : FixturBase { }
-        class SecondFixture : FixturBase { }
+        class FirstTestClass : SampleTestClassBase { }
+        class SecondTestClass : SampleTestClassBase { }
     }
 }

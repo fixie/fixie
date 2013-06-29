@@ -6,7 +6,7 @@
         {
             Classes
                 .Where(testClass => testClass.IsNestedPrivate)
-                .NameEndsWith("Fixture");
+                .NameEndsWith("TestClass");
 
             Cases
                 .Where(method => method.Void() || method.Async())

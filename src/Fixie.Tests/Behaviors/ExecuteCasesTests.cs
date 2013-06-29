@@ -17,7 +17,7 @@ namespace Fixie.Tests.Behaviors
         public ExecuteCasesTests()
         {
             log = new List<string>();
-            testClass = typeof(SampleFixture);
+            testClass = typeof(SampleTestClass);
 
             convention = new SelfTestConvention();
             convention.CaseExecution.Wrap((method, instance, exceptions, inner) =>
@@ -36,7 +36,7 @@ namespace Fixie.Tests.Behaviors
             };
 
             var executeCases = new ExecuteCases();
-            var fixture = new Fixture(testClass, new SampleFixture(), convention.CaseExecution.Behavior, cases);
+            var fixture = new Fixture(testClass, new SampleTestClass(), convention.CaseExecution.Behavior, cases);
             executeCases.Execute(fixture);
 
             cases[0].Exceptions.Any().ShouldBeFalse();
@@ -44,7 +44,7 @@ namespace Fixie.Tests.Behaviors
             log.ShouldEqual("Pass", "Fail");
         }
 
-        private class SampleFixture
+        private class SampleTestClass
         {
             public void Pass() { }
             
@@ -61,7 +61,7 @@ namespace Fixie.Tests.Behaviors
 
         static MethodInfo Method(string name)
         {
-            return typeof(SampleFixture).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
+            return typeof(SampleTestClass).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
         }
     }
 }

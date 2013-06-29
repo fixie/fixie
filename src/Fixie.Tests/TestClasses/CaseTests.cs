@@ -8,42 +8,42 @@ namespace Fixie.Tests.TestClasses
         {
             var listener = new StubListener();
 
-            new SelfTestConvention().Execute(listener , typeof(PassFixture));
+            new SelfTestConvention().Execute(listener , typeof(PassTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.CaseTests+PassFixture.Pass passed.");
+                "Fixie.Tests.TestClasses.CaseTests+PassTestClass.Pass passed.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
         {
             var listener = new StubListener();
 
-            new SelfTestConvention().Execute(listener, typeof(FailFixture));
+            new SelfTestConvention().Execute(listener, typeof(FailTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.CaseTests+FailFixture.Fail failed: 'Fail' failed!");
+                "Fixie.Tests.TestClasses.CaseTests+FailTestClass.Fail failed: 'Fail' failed!");
         }
 
         public void ShouldPassOrFailCasesIndividually()
         {
             var listener = new StubListener();
 
-            new SelfTestConvention().Execute(listener, typeof(PassFailFixture));
+            new SelfTestConvention().Execute(listener, typeof(PassFailTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.CaseTests+PassFailFixture.FailA failed: 'FailA' failed!",
-                "Fixie.Tests.TestClasses.CaseTests+PassFailFixture.PassA passed.",
-                "Fixie.Tests.TestClasses.CaseTests+PassFailFixture.FailB failed: 'FailB' failed!",
-                "Fixie.Tests.TestClasses.CaseTests+PassFailFixture.PassB passed.",
-                "Fixie.Tests.TestClasses.CaseTests+PassFailFixture.PassC passed.");
+                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.FailA failed: 'FailA' failed!",
+                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.PassA passed.",
+                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.FailB failed: 'FailB' failed!",
+                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.PassB passed.",
+                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.PassC passed.");
         }
 
-        class PassFixture
+        class PassTestClass
         {
             public void Pass() { }
         }
 
-        class FailFixture
+        class FailTestClass
         {
             public void Fail()
             {
@@ -51,7 +51,7 @@ namespace Fixie.Tests.TestClasses
             }
         }
 
-        class PassFailFixture
+        class PassFailTestClass
         {
             public void FailA() { throw new FailureException(); }
 

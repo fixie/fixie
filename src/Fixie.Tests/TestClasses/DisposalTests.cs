@@ -10,38 +10,38 @@ namespace Fixie.Tests.TestClasses
         {
             var listener = new StubListener();
 
-            DisposableFixture.ConstructionCount = 0;
-            DisposableFixture.DisposalCount = 0;
+            DisposableTestClass.ConstructionCount = 0;
+            DisposableTestClass.DisposalCount = 0;
 
-            new SelfTestConvention().Execute(listener, typeof(DisposableFixture));
+            new SelfTestConvention().Execute(listener, typeof(DisposableTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.DisposalTests+DisposableFixture.Fail failed: 'Fail' failed!",
-                "Fixie.Tests.TestClasses.DisposalTests+DisposableFixture.Pass passed.");
+                "Fixie.Tests.TestClasses.DisposalTests+DisposableTestClass.Fail failed: 'Fail' failed!",
+                "Fixie.Tests.TestClasses.DisposalTests+DisposableTestClass.Pass passed.");
 
-            DisposableFixture.ConstructionCount.ShouldEqual(2);
-            DisposableFixture.DisposalCount.ShouldEqual(2);
+            DisposableTestClass.ConstructionCount.ShouldEqual(2);
+            DisposableTestClass.DisposalCount.ShouldEqual(2);
         }
 
         public void ShouldFailCasesWhenDisposeThrowsExceptionsWithoutSuppressingAnyExceptions()
         {
             var listener = new StubListener();
 
-            new SelfTestConvention().Execute(listener, typeof(DisposeThrowsFixture));
+            new SelfTestConvention().Execute(listener, typeof(DisposeThrowsTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.DisposalTests+DisposeThrowsFixture.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "Fixie.Tests.TestClasses.DisposalTests+DisposeThrowsTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'Dispose' failed!",
-                "Fixie.Tests.TestClasses.DisposalTests+DisposeThrowsFixture.Pass failed: 'Dispose' failed!");
+                "Fixie.Tests.TestClasses.DisposalTests+DisposeThrowsTestClass.Pass failed: 'Dispose' failed!");
         }
 
-        class DisposableFixture : IDisposable
+        class DisposableTestClass : IDisposable
         {
             public static int ConstructionCount { get; set; }
             public static int DisposalCount { get; set; }
             bool disposed;
 
-            public DisposableFixture()
+            public DisposableTestClass()
             {
                 ConstructionCount++;
             }
@@ -63,7 +63,7 @@ namespace Fixie.Tests.TestClasses
             public void Pass() { }
         }
 
-        class DisposeThrowsFixture : IDisposable
+        class DisposeThrowsTestClass : IDisposable
         {
             public void Dispose()
             {

@@ -16,7 +16,7 @@ namespace Fixie.Tests.Conventions
         public TypeBehaviorBuilderTests()
         {
             builder = new TypeBehaviorBuilder();
-            testClass = typeof(SampleFixture);
+            testClass = typeof(SampleTestClass);
             cases = new[]
             {
                 new Case(testClass, Method("Pass")),
@@ -276,9 +276,9 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        class SampleFixture : IDisposable
+        class SampleTestClass : IDisposable
         {
-            public SampleFixture()
+            public SampleTestClass()
             {
                 Console.WriteLine("Construct");
             }
@@ -308,7 +308,7 @@ namespace Fixie.Tests.Conventions
         static ExceptionList CreateInstance(Type testClass, out object instance)
         {
             Console.WriteLine("Factory");
-            instance = new SampleFixture();
+            instance = new SampleTestClass();
             return new ExceptionList();
         }
 
@@ -356,7 +356,7 @@ namespace Fixie.Tests.Conventions
 
         static MethodInfo Method(string name)
         {
-            return typeof(SampleFixture).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
+            return typeof(SampleTestClass).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
         }
     }
 }

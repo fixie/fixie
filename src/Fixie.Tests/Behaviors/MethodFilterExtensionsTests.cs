@@ -15,7 +15,7 @@ namespace Fixie.Tests.Behaviors
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = passingMethods.InvokeAll(typeof(SampleFixture), new SampleFixture());
+                var exceptions = passingMethods.InvokeAll(typeof(SampleTestClass), new SampleTestClass());
 
                 exceptions.ToArray().ShouldBeEmpty();
 
@@ -29,7 +29,7 @@ namespace Fixie.Tests.Behaviors
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = passingMethods.InvokeAll(typeof(SampleFixture), new SampleFixture());
+                var exceptions = passingMethods.InvokeAll(typeof(SampleTestClass), new SampleTestClass());
 
                 exceptions.ToArray().Select(x => x.Message).ShouldEqual("'FailA' failed!", "'FailB' failed!", "'FailC' failed!");
 
@@ -37,7 +37,7 @@ namespace Fixie.Tests.Behaviors
             }
         }
 
-        class SampleFixture
+        class SampleTestClass
         {
             public void PassA() { WhereAmI(); }
             public void PassB() { WhereAmI(); }

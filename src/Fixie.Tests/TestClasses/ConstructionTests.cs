@@ -9,44 +9,44 @@ namespace Fixie.Tests.TestClasses
         {
             var listener = new StubListener();
 
-            ConstructibleFixture.ConstructionCount = 0;
+            ConstructibleTestClass.ConstructionCount = 0;
 
-             new SelfTestConvention().Execute(listener, typeof(ConstructibleFixture));
+             new SelfTestConvention().Execute(listener, typeof(ConstructibleTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.ConstructionTests+ConstructibleFixture.Fail failed: 'Fail' failed!",
-                "Fixie.Tests.TestClasses.ConstructionTests+ConstructibleFixture.Pass passed.");
+                "Fixie.Tests.TestClasses.ConstructionTests+ConstructibleTestClass.Fail failed: 'Fail' failed!",
+                "Fixie.Tests.TestClasses.ConstructionTests+ConstructibleTestClass.Pass passed.");
 
-            ConstructibleFixture.ConstructionCount.ShouldEqual(2);
+            ConstructibleTestClass.ConstructionCount.ShouldEqual(2);
         }
 
         public void ShouldFailAllCasesWhenFixtureConstructorCannotBeInvoked()
         {
             var listener = new StubListener();
 
-            new SelfTestConvention().Execute(listener, typeof(CannotInvokeConstructorFixture));
+            new SelfTestConvention().Execute(listener, typeof(CannotInvokeConstructorTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.ConstructionTests+CannotInvokeConstructorFixture.UnreachableCaseA failed: No parameterless constructor defined for this object.",
-                "Fixie.Tests.TestClasses.ConstructionTests+CannotInvokeConstructorFixture.UnreachableCaseB failed: No parameterless constructor defined for this object.");
+                "Fixie.Tests.TestClasses.ConstructionTests+CannotInvokeConstructorTestClass.UnreachableCaseA failed: No parameterless constructor defined for this object.",
+                "Fixie.Tests.TestClasses.ConstructionTests+CannotInvokeConstructorTestClass.UnreachableCaseB failed: No parameterless constructor defined for this object.");
         }
 
         public void ShouldFailAllCasesWithOriginalExceptionWhenFixtureConstructorThrowsException()
         {
             var listener = new StubListener();
 
-            new SelfTestConvention().Execute(listener, typeof(ConstructorThrowsFixture));
+            new SelfTestConvention().Execute(listener, typeof(ConstructorThrowsTestClass));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.TestClasses.ConstructionTests+ConstructorThrowsFixture.UnreachableCaseA failed: '.ctor' failed!",
-                "Fixie.Tests.TestClasses.ConstructionTests+ConstructorThrowsFixture.UnreachableCaseB failed: '.ctor' failed!");
+                "Fixie.Tests.TestClasses.ConstructionTests+ConstructorThrowsTestClass.UnreachableCaseA failed: '.ctor' failed!",
+                "Fixie.Tests.TestClasses.ConstructionTests+ConstructorThrowsTestClass.UnreachableCaseB failed: '.ctor' failed!");
         }
 
-        class ConstructibleFixture
+        class ConstructibleTestClass
         {
             public static int ConstructionCount { get; set; }
 
-            public ConstructibleFixture()
+            public ConstructibleTestClass()
             {
                 ConstructionCount++;
             }
@@ -61,9 +61,9 @@ namespace Fixie.Tests.TestClasses
             }
         }
 
-        class CannotInvokeConstructorFixture
+        class CannotInvokeConstructorTestClass
         {
-            public CannotInvokeConstructorFixture(int argument)
+            public CannotInvokeConstructorTestClass(int argument)
             {
             }
 
@@ -71,9 +71,9 @@ namespace Fixie.Tests.TestClasses
             public void UnreachableCaseB() { }
         }
 
-        class ConstructorThrowsFixture
+        class ConstructorThrowsTestClass
         {
-            public ConstructorThrowsFixture()
+            public ConstructorThrowsTestClass()
             {
                 throw new FailureException();
             }

@@ -14,7 +14,7 @@ namespace Fixie.Samples.NUnitStyle
                 .HasOrInherits<TestAttribute>();
 
             ClassExecution
-                    .CreateInstancePerFixture();
+                    .CreateInstancePerTestClass();
 
             InstanceExecution
                 .SetUpTearDown(Has<TestFixtureSetUpAttribute>(), Has<TestFixtureTearDownAttribute>());

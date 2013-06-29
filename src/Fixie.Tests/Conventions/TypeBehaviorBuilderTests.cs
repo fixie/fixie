@@ -45,9 +45,9 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        public void ShouldAllowCreatingInstancePerFixture()
+        public void ShouldAllowCreatingInstancePerTestClass()
         {
-            builder.CreateInstancePerFixture();
+            builder.CreateInstancePerTestClass();
 
             using (var console = new RedirectedConsole())
             {
@@ -75,9 +75,9 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        public void ShouldAllowCreatingInstancePerFixtureUsingFactory()
+        public void ShouldAllowCreatingInstancePerTestClassUsingFactory()
         {
-            builder.CreateInstancePerFixture(CreateInstance);
+            builder.CreateInstancePerTestClass(CreateInstance);
 
             using (var console = new RedirectedConsole())
             {
@@ -105,9 +105,9 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        public void ShouldFailAllCasesWhenCreatingInstancePerFixtureAndFactoryContributesExceptions()
+        public void ShouldFailAllCasesWhenCreatingInstancePerTestClassAndFactoryContributesExceptions()
         {
-            builder.CreateInstancePerFixture(FailingCreateInstance);
+            builder.CreateInstancePerTestClass(FailingCreateInstance);
 
             using (var console = new RedirectedConsole())
             {
@@ -135,9 +135,9 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        public void ShouldHandleCatastrophicExceptionsByFailingAllCasesWhenCreatingInstancePerFixtureAndFactoriesThrowRatherThanContributeExceptions()
+        public void ShouldHandleCatastrophicExceptionsByFailingAllCasesWhenCreatingInstancePerTestClassAndFactoriesThrowRatherThanContributeExceptions()
         {
-            builder.CreateInstancePerFixture(UnsafeCreateInstance);
+            builder.CreateInstancePerTestClass(UnsafeCreateInstance);
 
             using (var console = new RedirectedConsole())
             {

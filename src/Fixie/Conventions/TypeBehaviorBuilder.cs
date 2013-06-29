@@ -27,15 +27,15 @@ namespace Fixie.Conventions
             return this;
         }
 
-        public TypeBehaviorBuilder CreateInstancePerFixture()
+        public TypeBehaviorBuilder CreateInstancePerTestClass()
         {
-            Behavior = new CreateInstancePerFixture(Lifecycle.Construct);
+            Behavior = new CreateInstancePerTestClass(Lifecycle.Construct);
             return this;
         }
 
-        public TypeBehaviorBuilder CreateInstancePerFixture(Factory construct)
+        public TypeBehaviorBuilder CreateInstancePerTestClass(Factory construct)
         {
-            Behavior = new CreateInstancePerFixture(new SafeFactory(construct).Construct);
+            Behavior = new CreateInstancePerTestClass(new SafeFactory(construct).Construct);
             return this;
         }
 

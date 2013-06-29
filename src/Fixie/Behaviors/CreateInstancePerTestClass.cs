@@ -3,11 +3,11 @@ using Fixie.Conventions;
 
 namespace Fixie.Behaviors
 {
-    public class CreateInstancePerFixture : TypeBehavior
+    public class CreateInstancePerTestClass : TypeBehavior
     {
         readonly Factory construct;
 
-        public CreateInstancePerFixture(Factory construct)
+        public CreateInstancePerTestClass(Factory construct)
         {
             this.construct = construct;
         }

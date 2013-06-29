@@ -19,7 +19,7 @@ namespace Fixie.Samples.LowCeremony
                 .ZeroParameters();
 
             ClassExecution
-                .CreateInstancePerFixture();
+                .CreateInstancePerTestClass();
 
             InstanceExecution
                 .SetUpTearDown(Method("FixtureSetUp"), Method("FixtureTearDown"));

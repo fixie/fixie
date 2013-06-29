@@ -20,7 +20,7 @@ namespace Fixie.Samples.IoC
                 .ZeroParameters();
 
             ClassExecution
-                .CreateInstancePerFixture(UsingContainer);
+                .CreateInstancePerTestClass(UsingContainer);
         }
 
         static IoCContainer InitContainerForIntegrationTests()

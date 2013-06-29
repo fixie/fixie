@@ -43,7 +43,7 @@ namespace Fixie.Tests.TestClasses
         public void ShouldSupportOptionToPerformSingleFixtureLifecycleAcrossAllContainedCases()
         {
             var convention = new SelfTestConvention();
-            convention.ClassExecution.CreateInstancePerFixture();
+            convention.ClassExecution.CreateInstancePerTestClass();
 
             OutputFromSampleFixture(convention).ShouldEqual(
                 new StringBuilder()

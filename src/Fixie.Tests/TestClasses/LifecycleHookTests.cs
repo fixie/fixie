@@ -17,7 +17,7 @@ namespace Fixie.Tests.TestClasses
             indent = 0;
         }
 
-        public void ShouldPerformFullFixtureLifecyclePerCaseByDefault()
+        public void ShouldPerformFullTestClassLifecyclePerCaseByDefault()
         {
             var convention = new SelfTestConvention();
 
@@ -40,7 +40,7 @@ namespace Fixie.Tests.TestClasses
                     .ToString());
         }
 
-        public void ShouldSupportOptionToPerformSingleFixtureLifecycleAcrossAllContainedCases()
+        public void ShouldSupportOptionToPerformSingleTestClassLifecycleAcrossAllContainedCases()
         {
             var convention = new SelfTestConvention();
             convention.ClassExecution.CreateInstancePerTestClass();
@@ -181,26 +181,26 @@ namespace Fixie.Tests.TestClasses
 
             OutputFromSampleTestClasses(convention).ShouldEqual(
                 new StringBuilder()
-                    .AppendLine("BeforeFixture")
+                    .AppendLine("BeforeTestClass")
                     .AppendLine("    Construct FirstTestClass")
                     .AppendLine("        PassingCase")
                     .AppendLine("    Dispose FirstTestClass")
                     .AppendLine("    Construct FirstTestClass")
                     .AppendLine("        FailingCase Throws Exception")
                     .AppendLine("    Dispose FirstTestClass")
-                    .AppendLine("AfterFixture")
-                    .AppendLine("BeforeFixture")
+                    .AppendLine("AfterTestClass")
+                    .AppendLine("BeforeTestClass")
                     .AppendLine("    Construct SecondTestClass")
                     .AppendLine("        PassingCase")
                     .AppendLine("    Dispose SecondTestClass")
                     .AppendLine("    Construct SecondTestClass")
                     .AppendLine("        FailingCase Throws Exception")
                     .AppendLine("    Dispose SecondTestClass")
-                    .AppendLine("AfterFixture")
+                    .AppendLine("AfterTestClass")
                     .ToString());
         }
 
-        public void ShouldSupportAugmentingFixtureAndInstanceAndCaseBehaviors()
+        public void ShouldSupportAugmentingTestClassAndInstanceAndCaseBehaviors()
         {
             var convention = new SelfTestConvention();
             convention.ClassExecution.Wrap(BeforeAfterType);
@@ -209,7 +209,7 @@ namespace Fixie.Tests.TestClasses
 
             OutputFromSampleTestClasses(convention).ShouldEqual(
                 new StringBuilder()
-                    .AppendLine("BeforeFixture")
+                    .AppendLine("BeforeTestClass")
                     .AppendLine("    Construct FirstTestClass")
                     .AppendLine("        BeforeInstance")
                     .AppendLine("            BeforeCase")
@@ -224,8 +224,8 @@ namespace Fixie.Tests.TestClasses
                     .AppendLine("            AfterCase")
                     .AppendLine("        AfterInstance")
                     .AppendLine("    Dispose FirstTestClass")
-                    .AppendLine("AfterFixture")
-                    .AppendLine("BeforeFixture")
+                    .AppendLine("AfterTestClass")
+                    .AppendLine("BeforeTestClass")
                     .AppendLine("    Construct SecondTestClass")
                     .AppendLine("        BeforeInstance")
                     .AppendLine("            BeforeCase")
@@ -240,7 +240,7 @@ namespace Fixie.Tests.TestClasses
                     .AppendLine("            AfterCase")
                     .AppendLine("        AfterInstance")
                     .AppendLine("    Dispose SecondTestClass")
-                    .AppendLine("AfterFixture")
+                    .AppendLine("AfterTestClass")
                     .ToString());
         }
 
@@ -323,11 +323,11 @@ namespace Fixie.Tests.TestClasses
 
         static void BeforeAfterType(Type testClass, Convention convention, Case[] cases, TypeBehavior inner)
         {
-            WriteLine("BeforeFixture");
+            WriteLine("BeforeTestClass");
             indent++;
             inner.Execute(testClass, convention, cases);
             indent--;
-            WriteLine("AfterFixture");
+            WriteLine("AfterTestClass");
         }
 
         class FirstTestClass : SampleTestClassBase { }

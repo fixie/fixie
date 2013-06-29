@@ -6,7 +6,7 @@ namespace Fixie.Tests.TestClasses
 {
     public class DisposalTests
     {
-        public void ShouldDisposeFixtureInstancesWhenDisposable()
+        public void ShouldDisposeTestClassInstancesWhenDisposable()
         {
             var listener = new StubListener();
 

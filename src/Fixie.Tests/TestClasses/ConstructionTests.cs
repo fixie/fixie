@@ -20,7 +20,7 @@ namespace Fixie.Tests.TestClasses
             ConstructibleTestClass.ConstructionCount.ShouldEqual(2);
         }
 
-        public void ShouldFailAllCasesWhenFixtureConstructorCannotBeInvoked()
+        public void ShouldFailAllCasesWhenTestClassConstructorCannotBeInvoked()
         {
             var listener = new StubListener();
 
@@ -31,7 +31,7 @@ namespace Fixie.Tests.TestClasses
                 "Fixie.Tests.TestClasses.ConstructionTests+CannotInvokeConstructorTestClass.UnreachableCaseB failed: No parameterless constructor defined for this object.");
         }
 
-        public void ShouldFailAllCasesWithOriginalExceptionWhenFixtureConstructorThrowsException()
+        public void ShouldFailAllCasesWithOriginalExceptionWhenTestClassConstructorThrowsException()
         {
             var listener = new StubListener();
 

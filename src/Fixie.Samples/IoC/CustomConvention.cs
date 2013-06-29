@@ -11,7 +11,7 @@ namespace Fixie.Samples.IoC
         {
             container = InitContainerForIntegrationTests();
 
-            Fixtures
+            Classes
                 .Where(type => type.IsInNamespace(GetType().Namespace))
                 .NameEndsWith("Tests");
 

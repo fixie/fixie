@@ -14,7 +14,7 @@ namespace Fixie.Samples.xUnitStyle
 
         public CustomConvention()
         {
-            Fixtures
+            Classes
                 .Where(HasAnyFactMethods);
 
             Cases

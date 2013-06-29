@@ -9,7 +9,7 @@ namespace Fixie.Samples.LowCeremony
 
         public CustomConvention()
         {
-            Fixtures
+            Classes
                 .Where(type => type.IsInNamespace(GetType().Namespace))
                 .NameEndsWith("Tests");
 

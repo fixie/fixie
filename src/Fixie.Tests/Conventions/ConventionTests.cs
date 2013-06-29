@@ -7,22 +7,22 @@ namespace Fixie.Tests.Conventions
 {
     public class ConventionTests
     {
-        public void EmptyConventionShouldTreatConcreteClassesAsFixtures()
+        public void EmptyConventionShouldTreatConcreteClassesAsTestClasses()
         {
             var emptyConvention = new Convention();
 
-            emptyConvention.Fixtures
+            emptyConvention.Classes
                            .Filter(CandidateTypes)
                            .Select(x => x.Name)
                            .ShouldEqual("PublicTests", "OtherPublicTests", "PublicMissingNamingConvention", "PublicWithNoDefaultConstructorTests",
                                         "PrivateTests", "OtherPrivateTests", "PrivateMissingNamingConvention", "PrivateWithNoDefaultConstructorTests");
         }
 
-        public void DefaultConventionShouldTreatConcreteClassesFollowingNamingConventionAsFixtures()
+        public void DefaultConventionShouldTreatConcreteClassesFollowingNamingConventionAsTestClasses()
         {
             var defaultConvention = new DefaultConvention();
 
-            defaultConvention.Fixtures
+            defaultConvention.Classes
                              .Filter(CandidateTypes)
                              .Select(x => x.Name)
                              .ShouldEqual("PublicTests", "OtherPublicTests", "PublicWithNoDefaultConstructorTests",
@@ -154,7 +154,7 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        public void ShouldExecuteAllCasesInAllDiscoveredFixtures()
+        public void ShouldExecuteAllCasesInAllDiscoveredTestClasses()
         {
             var listener = new StubListener();
             var convention = new SelfTestConvention();

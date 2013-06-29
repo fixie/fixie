@@ -7,7 +7,7 @@ namespace Fixie.Samples.NUnitStyle
     {
         public CustomConvention()
         {
-            Fixtures
+            Classes
                 .HasOrInherits<TestFixtureAttribute>();
 
             Cases

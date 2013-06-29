@@ -7,14 +7,14 @@ namespace Fixie.Conventions
     {
         public Convention()
         {
-            Fixtures = new ClassFilter();
+            Classes = new ClassFilter();
             Cases = new MethodFilter().Where(m => !m.IsDispose());
             CaseExecution = new MethodBehaviorBuilder();
             InstanceExecution = new InstanceBehaviorBuilder();
             FixtureExecution = new TypeBehaviorBuilder().CreateInstancePerCase();
         }
 
-        public ClassFilter Fixtures { get; private set; }
+        public ClassFilter Classes { get; private set; }
         public MethodFilter Cases { get; private set; }
         public MethodBehaviorBuilder CaseExecution { get; private set; }
         public InstanceBehaviorBuilder InstanceExecution { get; private set; }
@@ -22,7 +22,7 @@ namespace Fixie.Conventions
 
         public void Execute(Listener listener, params Type[] candidateTypes)
         {
-            foreach (var fixtureClass in Fixtures.Filter(candidateTypes))
+            foreach (var fixtureClass in Classes.Filter(candidateTypes))
             {
                 var cases = Cases.Filter(fixtureClass).Select(x => new Case(fixtureClass, x)).ToArray();
 

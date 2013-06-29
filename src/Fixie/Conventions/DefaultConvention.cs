@@ -4,7 +4,7 @@
     {
         public DefaultConvention()
         {
-            Fixtures
+            Classes
                 .NameEndsWith("Tests");
 
             Cases

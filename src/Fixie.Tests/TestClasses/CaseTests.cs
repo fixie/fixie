@@ -1,6 +1,6 @@
 ﻿using Fixie.Conventions;
 
-namespace Fixie.Tests.ClassFixtures
+namespace Fixie.Tests.TestClasses
 {
     public class CaseTests
     {
@@ -11,7 +11,7 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener , typeof(PassFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.CaseTests+PassFixture.Pass passed.");
+                "Fixie.Tests.TestClasses.CaseTests+PassFixture.Pass passed.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
@@ -21,7 +21,7 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(FailFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.CaseTests+FailFixture.Fail failed: 'Fail' failed!");
+                "Fixie.Tests.TestClasses.CaseTests+FailFixture.Fail failed: 'Fail' failed!");
         }
 
         public void ShouldPassOrFailCasesIndividually()
@@ -31,11 +31,11 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(PassFailFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.FailA failed: 'FailA' failed!",
-                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.PassA passed.",
-                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.FailB failed: 'FailB' failed!",
-                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.PassB passed.",
-                "Fixie.Tests.ClassFixtures.CaseTests+PassFailFixture.PassC passed.");
+                "Fixie.Tests.TestClasses.CaseTests+PassFailFixture.FailA failed: 'FailA' failed!",
+                "Fixie.Tests.TestClasses.CaseTests+PassFailFixture.PassA passed.",
+                "Fixie.Tests.TestClasses.CaseTests+PassFailFixture.FailB failed: 'FailB' failed!",
+                "Fixie.Tests.TestClasses.CaseTests+PassFailFixture.PassB passed.",
+                "Fixie.Tests.TestClasses.CaseTests+PassFailFixture.PassC passed.");
         }
 
         class PassFixture

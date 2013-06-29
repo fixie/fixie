@@ -2,7 +2,7 @@
 using Fixie.Conventions;
 using Should;
 
-namespace Fixie.Tests.ClassFixtures
+namespace Fixie.Tests.TestClasses
 {
     public class DisposalTests
     {
@@ -16,8 +16,8 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(DisposableFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.DisposalTests+DisposableFixture.Fail failed: 'Fail' failed!",
-                "Fixie.Tests.ClassFixtures.DisposalTests+DisposableFixture.Pass passed.");
+                "Fixie.Tests.TestClasses.DisposalTests+DisposableFixture.Fail failed: 'Fail' failed!",
+                "Fixie.Tests.TestClasses.DisposalTests+DisposableFixture.Pass passed.");
 
             DisposableFixture.ConstructionCount.ShouldEqual(2);
             DisposableFixture.DisposalCount.ShouldEqual(2);
@@ -30,9 +30,9 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(DisposeThrowsFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.DisposalTests+DisposeThrowsFixture.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "Fixie.Tests.TestClasses.DisposalTests+DisposeThrowsFixture.Fail failed: 'Fail' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'Dispose' failed!",
-                "Fixie.Tests.ClassFixtures.DisposalTests+DisposeThrowsFixture.Pass failed: 'Dispose' failed!");
+                "Fixie.Tests.TestClasses.DisposalTests+DisposeThrowsFixture.Pass failed: 'Dispose' failed!");
         }
 
         class DisposableFixture : IDisposable

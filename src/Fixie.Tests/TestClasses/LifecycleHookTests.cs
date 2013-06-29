@@ -6,7 +6,7 @@ using Fixie.Behaviors;
 using Fixie.Conventions;
 using Should;
 
-namespace Fixie.Tests.ClassFixtures
+namespace Fixie.Tests.TestClasses
 {
     public class LifecycleHookTests
     {

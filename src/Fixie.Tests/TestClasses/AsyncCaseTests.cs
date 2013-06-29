@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Fixie.Conventions;
 using Should;
 
-namespace Fixie.Tests.ClassFixtures
+namespace Fixie.Tests.TestClasses
 {
     public class AsyncCaseTests
     {
@@ -15,7 +15,7 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(AwaitThenPassFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.AsyncCaseTests+AwaitThenPassFixture.Test passed.");
+                "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitThenPassFixture.Test passed.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
@@ -25,7 +25,7 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(AwaitThenFailFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.AsyncCaseTests+AwaitThenFailFixture.Test failed: Assert.Equal() Failure" + Environment.NewLine +
+                "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitThenFailFixture.Test failed: Assert.Equal() Failure" + Environment.NewLine +
                 "Expected: 0" + Environment.NewLine +
                 "Actual:   3");
         }
@@ -37,7 +37,7 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(AwaitOnTaskThatThrowsFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.AsyncCaseTests+AwaitOnTaskThatThrowsFixture.Test failed: Attempted to divide by zero.");
+                "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitOnTaskThatThrowsFixture.Test failed: Attempted to divide by zero.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
@@ -47,7 +47,7 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(FailBeforeAwaitFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.AsyncCaseTests+FailBeforeAwaitFixture.Test failed: 'Test' failed!");
+                "Fixie.Tests.TestClasses.AsyncCaseTests+FailBeforeAwaitFixture.Test failed: 'Test' failed!");
         }
 
         public void ShouldFailUnsupportedAsyncVoidCases()
@@ -57,7 +57,7 @@ namespace Fixie.Tests.ClassFixtures
             new SelfTestConvention().Execute(listener, typeof(UnsupportedAsyncVoidFixture));
 
             listener.ShouldHaveEntries(
-                "Fixie.Tests.ClassFixtures.AsyncCaseTests+UnsupportedAsyncVoidFixture.Test failed: " +
+                "Fixie.Tests.TestClasses.AsyncCaseTests+UnsupportedAsyncVoidFixture.Test failed: " +
                 "Async void methods are not supported. Declare async methods with a return type of " +
                 "Task to ensure the task actually runs to completion.");
         }

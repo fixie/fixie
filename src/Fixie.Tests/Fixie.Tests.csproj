@@ -45,11 +45,11 @@
     <Compile Include="Assertions.cs" />
     <Compile Include="Behaviors\ExecuteCasesTests.cs" />
     <Compile Include="Behaviors\MethodFilterExtensionsTests.cs" />
-    <Compile Include="ClassFixtures\AsyncCaseTests.cs" />
-    <Compile Include="ClassFixtures\CaseTests.cs" />
-    <Compile Include="ClassFixtures\DisposalTests.cs" />
-    <Compile Include="ClassFixtures\ConstructionTests.cs" />
-    <Compile Include="ClassFixtures\LifecycleHookTests.cs" />
+    <Compile Include="TestClasses\AsyncCaseTests.cs" />
+    <Compile Include="TestClasses\CaseTests.cs" />
+    <Compile Include="TestClasses\DisposalTests.cs" />
+    <Compile Include="TestClasses\ConstructionTests.cs" />
+    <Compile Include="TestClasses\LifecycleHookTests.cs" />
     <Compile Include="Behaviors\InvokeTests.cs" />
     <Compile Include="Conventions\InstanceBehaviorBuilderTests.cs" />
     <Compile Include="Conventions\MethodBehaviorBuilderTests.cs" />

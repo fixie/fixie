@@ -9,18 +9,18 @@ namespace Fixie.Tests.Conventions
     public class TypeBehaviorBuilderTests
     {
         readonly TypeBehaviorBuilder builder;
-        readonly Type fixtureClass;
+        readonly Type testClass;
         readonly Case[] cases;
         readonly Convention convention;
 
         public TypeBehaviorBuilderTests()
         {
             builder = new TypeBehaviorBuilder();
-            fixtureClass = typeof(SampleFixture);
+            testClass = typeof(SampleFixture);
             cases = new[]
             {
-                new Case(fixtureClass, Method("Pass")),
-                new Case(fixtureClass, Method("Fail"))
+                new Case(testClass, Method("Pass")),
+                new Case(testClass, Method("Fail"))
             };
             convention = new SelfTestConvention();
         }
@@ -36,7 +36,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
@@ -51,7 +51,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
@@ -66,7 +66,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
@@ -81,7 +81,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
@@ -96,7 +96,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
@@ -111,7 +111,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
@@ -126,7 +126,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
@@ -141,7 +141,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
@@ -154,16 +154,16 @@ namespace Fixie.Tests.Conventions
         {
             builder
                 .CreateInstancePerCase()
-                .Wrap((fixtureClass, convention, cases, inner) =>
+                .Wrap((testClass, convention, cases, inner) =>
                 {
                     Console.WriteLine("Before");
-                    inner.Execute(fixtureClass, convention, cases);
+                    inner.Execute(testClass, convention, cases);
                     Console.WriteLine("After");
                 });
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
@@ -176,22 +176,22 @@ namespace Fixie.Tests.Conventions
         {
             builder
                 .CreateInstancePerCase()
-                .Wrap((fixtureClass, convention, cases, inner) =>
+                .Wrap((testClass, convention, cases, inner) =>
                 {
                     Console.WriteLine("Inner Before");
-                    inner.Execute(fixtureClass, convention, cases);
+                    inner.Execute(testClass, convention, cases);
                     Console.WriteLine("Inner After");
                 })
-                .Wrap((fixtureClass, convention, cases, inner) =>
+                .Wrap((testClass, convention, cases, inner) =>
                 {
                     Console.WriteLine("Outer Before");
-                    inner.Execute(fixtureClass, convention, cases);
+                    inner.Execute(testClass, convention, cases);
                     Console.WriteLine("Outer After");
                 });
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
@@ -207,14 +207,14 @@ namespace Fixie.Tests.Conventions
         {
             builder
                 .CreateInstancePerCase()
-                .Wrap((fixtureClass, convention, cases, inner) =>
+                .Wrap((testClass, convention, cases, inner) =>
                 {
                     throw new Exception("Unsafe behavior threw!");
                 });
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe behavior threw!");
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe behavior threw!");
@@ -231,7 +231,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.Any().ShouldBeFalse();
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
@@ -248,7 +248,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingSetUp");
                 cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingSetUp");
@@ -265,7 +265,7 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                builder.Behavior.Execute(fixtureClass, convention, cases);
+                builder.Behavior.Execute(testClass, convention, cases);
 
                 cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingTearDown");
                 cases[1].Exceptions.ToArray().Select(x => x.Message).ShouldEqual(
@@ -305,14 +305,14 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        static ExceptionList CreateInstance(Type fixtureclass, out object instance)
+        static ExceptionList CreateInstance(Type testClass, out object instance)
         {
             Console.WriteLine("Factory");
             instance = new SampleFixture();
             return new ExceptionList();
         }
 
-        static ExceptionList FailingCreateInstance(Type fixtureclass, out object instance)
+        static ExceptionList FailingCreateInstance(Type testClass, out object instance)
         {
             Console.WriteLine("Factory Contributes an Exception!");
             var exceptions = new ExceptionList();
@@ -321,18 +321,18 @@ namespace Fixie.Tests.Conventions
             return exceptions;
         }
 
-        static ExceptionList UnsafeCreateInstance(Type fixtureclass, out object instance)
+        static ExceptionList UnsafeCreateInstance(Type testClass, out object instance)
         {
             throw new Exception("Unsafe factory threw!");
         }
 
-        static ExceptionList SetUp(Type fixtureClass)
+        static ExceptionList SetUp(Type testClass)
         {
             Console.WriteLine("SetUp");
             return new ExceptionList();
         }
 
-        static ExceptionList FailingSetUp(Type fixtureClass)
+        static ExceptionList FailingSetUp(Type testClass)
         {
             Console.WriteLine("FailingSetUp Contributes an Exception!");
             var exceptions = new ExceptionList();
@@ -340,13 +340,13 @@ namespace Fixie.Tests.Conventions
             return exceptions;
         }
 
-        static ExceptionList TearDown(Type fixtureClass)
+        static ExceptionList TearDown(Type testClass)
         {
             Console.WriteLine("TearDown");
             return new ExceptionList();
         }
 
-        static ExceptionList FailingTearDown(Type fixtureClass)
+        static ExceptionList FailingTearDown(Type testClass)
         {
             Console.WriteLine("FailingTearDown Contributes an Exception!");
             var exceptions = new ExceptionList();

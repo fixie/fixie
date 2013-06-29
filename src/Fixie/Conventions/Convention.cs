@@ -22,11 +22,11 @@ namespace Fixie.Conventions
 
         public void Execute(Listener listener, params Type[] candidateTypes)
         {
-            foreach (var fixtureClass in Classes.Filter(candidateTypes))
+            foreach (var testClass in Classes.Filter(candidateTypes))
             {
-                var cases = Cases.Filter(fixtureClass).Select(x => new Case(fixtureClass, x)).ToArray();
+                var cases = Cases.Filter(testClass).Select(x => new Case(testClass, x)).ToArray();
 
-                FixtureExecution.Behavior.Execute(fixtureClass, this, cases);
+                FixtureExecution.Behavior.Execute(testClass, this, cases);
 
                 foreach (var @case in cases)
                 {

@@ -68,10 +68,10 @@ namespace Fixie.Tests.Conventions
         public void EmptyConventionShouldTreatPublicInstanceMethodsAsCases()
         {
             var emptyConvention = new Convention();
-            var fixtureClass = typeof(DiscoveryFixture);
+            var testClass = typeof(DiscoveryFixture);
 
             emptyConvention.Cases
-                           .Filter(fixtureClass)
+                           .Filter(testClass)
                            .OrderBy(x => x.Name)
                            .Select(x => x.Name)
                            .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
@@ -81,10 +81,10 @@ namespace Fixie.Tests.Conventions
         public void DefaultConventionShouldTreatSynchronousPublicInstanceNoArgVoidMethodsAsCases()
         {
             var defaultConvention = new DefaultConvention();
-            var fixtureClass = typeof(DiscoveryFixture);
+            var testClass = typeof(DiscoveryFixture);
 
             defaultConvention.Cases
-                             .Filter(fixtureClass)
+                             .Filter(testClass)
                              .Select(x => x.Name)
                              .ShouldEqual("PublicInstanceNoArgsVoid");
         }
@@ -92,10 +92,10 @@ namespace Fixie.Tests.Conventions
         public void DefaultConventionShouldTreatAsyncPublicInstanceNoArgMethodsAsCases()
         {
             var defaultConvention = new DefaultConvention();
-            var fixtureClass = typeof(AsyncDiscoveryFixture);
+            var testClass = typeof(AsyncDiscoveryFixture);
 
             defaultConvention.Cases
-                             .Filter(fixtureClass)
+                             .Filter(testClass)
                              .OrderBy(x => x.Name)
                              .Select(x => x.Name)
                              .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn");

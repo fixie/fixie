@@ -316,16 +316,16 @@ namespace Fixie.Tests.ClassFixtures
             WriteLine("AfterInstance");
         }
 
-        static void SkipType(Type fixtureClass, Convention convention, Case[] cases, TypeBehavior inner)
+        static void SkipType(Type testClass, Convention convention, Case[] cases, TypeBehavior inner)
         {
-            WriteLine("Skipping " + fixtureClass.Name);
+            WriteLine("Skipping " + testClass.Name);
         }
 
-        static void BeforeAfterType(Type fixtureClass, Convention convention, Case[] cases, TypeBehavior inner)
+        static void BeforeAfterType(Type testClass, Convention convention, Case[] cases, TypeBehavior inner)
         {
             WriteLine("BeforeFixture");
             indent++;
-            inner.Execute(fixtureClass, convention, cases);
+            inner.Execute(testClass, convention, cases);
             indent--;
             WriteLine("AfterFixture");
         }

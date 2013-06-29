@@ -5,18 +5,18 @@ namespace Fixie
 {
     public class Case
     {
-        readonly Type fixtureClass;
+        readonly Type testClass;
 
-        public Case(Type fixtureClass, MethodInfo caseMethod)
+        public Case(Type testClass, MethodInfo caseMethod)
         {
-            this.fixtureClass = fixtureClass;
+            this.testClass = testClass;
             Method = caseMethod;
             Exceptions = new ExceptionList();
         }
 
         public string Name
         {
-            get { return fixtureClass.FullName + "." + Method.Name; }
+            get { return testClass.FullName + "." + Method.Name; }
         }
 
         public MethodInfo Method { get; private set; }

@@ -15,13 +15,13 @@ namespace Fixie.Tests.Conventions
         public InstanceBehaviorBuilderTests()
         {
             builder = new InstanceBehaviorBuilder();
-            var fixtureClass = typeof(SampleFixture);
+            var testClass = typeof(SampleFixture);
             var instance = new SampleFixture();
             var caseExecutionBehavior = new Invoke();
-            fixture = new Fixture(fixtureClass, instance, caseExecutionBehavior,  new[]
+            fixture = new Fixture(testClass, instance, caseExecutionBehavior,  new[]
             {
-                new Case(fixtureClass, Method("Pass")),
-                new Case(fixtureClass, Method("Fail"))
+                new Case(testClass, Method("Pass")),
+                new Case(testClass, Method("Fail"))
             });
         }
 

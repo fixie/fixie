@@ -5,7 +5,7 @@
         public SelfTestConvention()
         {
             Classes
-                .Where(fixtureClass => fixtureClass.IsNestedPrivate)
+                .Where(testClass => testClass.IsNestedPrivate)
                 .NameEndsWith("Fixture");
 
             Cases

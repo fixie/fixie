@@ -3,9 +3,9 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void TypeBehaviorAction(Type fixtureClass, Convention convention, Case[] cases, TypeBehavior inner);
-    public delegate ExceptionList TypeAction(Type fixtureClass);
-    public delegate ExceptionList Factory(Type fixtureClass, out object instance);
+    public delegate void TypeBehaviorAction(Type testClass, Convention convention, Case[] cases, TypeBehavior inner);
+    public delegate ExceptionList TypeAction(Type testClass);
+    public delegate ExceptionList Factory(Type testClass, out object instance);
 
     public class TypeBehaviorBuilder
     {
@@ -47,9 +47,9 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder SetUpTearDown(TypeAction setUp, TypeAction tearDown)
         {
-            return Wrap((fixtureClass, convention, cases, inner) =>
+            return Wrap((testClass, convention, cases, inner) =>
             {
-                var setUpExceptions = setUp(fixtureClass);
+                var setUpExceptions = setUp(testClass);
                 if (setUpExceptions.Any())
                 {
                     foreach (var @case in cases)
@@ -57,9 +57,9 @@ namespace Fixie.Conventions
                     return;
                 }
 
-                inner.Execute(fixtureClass, convention, cases);
+                inner.Execute(testClass, convention, cases);
 
-                var tearDownExceptions = tearDown(fixtureClass);
+                var tearDownExceptions = tearDown(testClass);
                 if (tearDownExceptions.Any())
                     foreach (var @case in cases)
                         @case.Exceptions.Add(tearDownExceptions);
@@ -77,11 +77,11 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(Type fixtureClass, Convention convention, Case[] cases)
+            public void Execute(Type testClass, Convention convention, Case[] cases)
             {
                 try
                 {
-                    outer(fixtureClass, convention, cases, inner);
+                    outer(testClass, convention, cases, inner);
                 }
                 catch (Exception exception)
                 {

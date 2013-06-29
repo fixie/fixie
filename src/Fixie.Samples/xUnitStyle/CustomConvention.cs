@@ -33,11 +33,11 @@ namespace Fixie.Samples.xUnitStyle
             return factMethods.Filter(type).Any();
         }
 
-        ExceptionList PrepareFixtureData(Type fixtureClass)
+        ExceptionList PrepareFixtureData(Type testClass)
         {
             var exceptions = new ExceptionList();
 
-            foreach (var @interface in FixtureInterfaces(fixtureClass))
+            foreach (var @interface in FixtureInterfaces(testClass))
             {
                 var fixtureDataType = @interface.GetGenericArguments()[0];
 
@@ -59,7 +59,7 @@ namespace Fixie.Samples.xUnitStyle
             return exceptions;
         }
 
-        ExceptionList DisposeFixtureData(Type fixtureClass)
+        ExceptionList DisposeFixtureData(Type testClass)
         {
             var classTearDownExceptions = new ExceptionList();
             foreach (var fixtureInstance in fixtures.Values)
@@ -94,9 +94,9 @@ namespace Fixie.Samples.xUnitStyle
             return exceptions;
         }
 
-        static IEnumerable<Type> FixtureInterfaces(Type fixtureClass)
+        static IEnumerable<Type> FixtureInterfaces(Type testClass)
         {
-            return fixtureClass.GetInterfaces()
+            return testClass.GetInterfaces()
                             .Where(@interface => @interface.IsGenericType &&
                                                  @interface.GetGenericTypeDefinition() == typeof(IUseFixture<>));
         }

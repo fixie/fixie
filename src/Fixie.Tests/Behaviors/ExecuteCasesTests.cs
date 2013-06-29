@@ -11,13 +11,13 @@ namespace Fixie.Tests.Behaviors
     public class ExecuteCasesTests
     {
         readonly List<string> log;
-        readonly Type fixtureClass;
+        readonly Type testClass;
         readonly Convention convention;
 
         public ExecuteCasesTests()
         {
             log = new List<string>();
-            fixtureClass = typeof(SampleFixture);
+            testClass = typeof(SampleFixture);
 
             convention = new SelfTestConvention();
             convention.CaseExecution.Wrap((method, instance, exceptions, inner) =>
@@ -31,12 +31,12 @@ namespace Fixie.Tests.Behaviors
         {
             var cases = new[]
             {
-                new Case(fixtureClass, Method("Pass")),
-                new Case(fixtureClass, Method("Fail"))
+                new Case(testClass, Method("Pass")),
+                new Case(testClass, Method("Fail"))
             };
 
             var executeCases = new ExecuteCases();
-            var fixture = new Fixture(fixtureClass, new SampleFixture(), convention.CaseExecution.Behavior, cases);
+            var fixture = new Fixture(testClass, new SampleFixture(), convention.CaseExecution.Behavior, cases);
             executeCases.Execute(fixture);
 
             cases[0].Exceptions.Any().ShouldBeFalse();

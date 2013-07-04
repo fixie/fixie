@@ -17,42 +17,50 @@ namespace Fixie
 
         public Result RunAssembly(Assembly assembly)
         {
-            return RunTypes(assembly, assembly.GetTypes());
+            var runContext = new RunContext(assembly);
+
+            return RunTypes(runContext, assembly.GetTypes());
         }
 
         public Result RunNamespace(Assembly assembly, string ns)
         {
-            return RunTypes(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
+            var runContext = new RunContext(assembly);
+
+            return RunTypes(runContext, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
         public Result RunType(Assembly assembly, Type type)
         {
-            return RunTypes(type.Assembly, type);
+            var runContext = new RunContext(assembly, type);
+
+            return RunTypes(runContext, type);
         }
 
         public Result RunMethod(Assembly assembly, MethodInfo method)
         {
-            var conventions = GetConventions(assembly);
+            var runContext = new RunContext(assembly, method);
+
+            var conventions = GetConventions(runContext);
 
             foreach (var convention in conventions)
                 convention.Cases.Where(m => m == method);
 
             var type = method.DeclaringType;
 
-            return Run(assembly, conventions, type);
+            return Run(runContext, conventions, type);
         }
 
-        private Result RunTypes(Assembly assembly, params Type[] types)
+        private Result RunTypes(RunContext runContext, params Type[] types)
         {
-            return Run(assembly, GetConventions(assembly), types);
+            return Run(runContext, GetConventions(runContext), types);
         }
 
-        static Convention[] GetConventions(Assembly assembly)
+        static Convention[] GetConventions(RunContext runContext)
         {
-            var customConventions = assembly
+            var customConventions = runContext.Assembly
                 .GetTypes()
                 .Where(t => t.IsSubclassOf(typeof(Convention)))
-                .Select(t => (Convention)Activator.CreateInstance(t))
+                .Select(t => ConstructConvention(t, runContext))
                 .ToArray();
 
             if (customConventions.Any())
@@ -61,18 +69,33 @@ namespace Fixie
             return new[] { (Convention) new DefaultConvention() };
         }
 
-        Result Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
+        static Convention ConstructConvention(Type conventionType, RunContext runContext)
+        {
+            var constructors = conventionType.GetConstructors();
+
+            if (constructors.Length == 1)
+            {
+                var parameters = constructors.Single().GetParameters();
+
+                if (parameters.Length == 1 && parameters.Single().ParameterType == typeof(RunContext))
+                    return (Convention)Activator.CreateInstance(conventionType, runContext);
+            }
+
+            return (Convention)Activator.CreateInstance(conventionType);
+        }
+
+        Result Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
             var resultListener = new ResultListener(listener);
 
-            resultListener.AssemblyStarted(assembly);
+            resultListener.AssemblyStarted(runContext.Assembly);
 
             foreach (var convention in conventions)
                 convention.Execute(resultListener, candidateTypes);
 
             var result = resultListener.Result;
 
-            resultListener.AssemblyCompleted(assembly, result);
+            resultListener.AssemblyCompleted(runContext.Assembly, result);
 
             return result;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Should;
 
 namespace Fixie.Tests
@@ -9,22 +10,22 @@ namespace Fixie.Tests
         {
             var parser = new CommandLineParser();
             parser.AssemblyPaths.ShouldBeEmpty();
-            parser.CustomOptions.ShouldBeEmpty();
+            parser.Keys.ShouldBeEmpty();
         }
 
         public void ParsesAssemblyPathsList()
         {
             var parser = new CommandLineParser("foo.dll", "bar.dll");
             parser.AssemblyPaths.ShouldEqual("foo.dll", "bar.dll");
-            parser.CustomOptions.ShouldBeEmpty();
+            parser.Keys.ShouldBeEmpty();
         }
 
         public void ParsesCustomOptions()
         {
             var parser = new CommandLineParser("--key", "value");
             parser.AssemblyPaths.ShouldBeEmpty();
-            parser.CustomOptions.Count.ShouldEqual(1);
-            parser.CustomOptions["key"].ShouldEqual("value");
+            parser.Keys.ShouldEqual("key");
+            parser["key"].ShouldEqual("value");
         }
 
         public void DemandsThatCustomOptionsHaveExplicitValues()
@@ -41,22 +42,39 @@ namespace Fixie.Tests
             keyFollowedByAnotherKey.ShouldThrow<Exception>("Option --key is missing its required value.");
         }
 
-        public void DemandsThatCustomOptionKeysMustBeUnique()
+        public void ParsesAllValuesProvidedForEachKey()
         {
-            Action duplicatedKey = () => new CommandLineParser("--a", "1", "--b", "2", "--a", "2");
+            var parser = new CommandLineParser("--a", "1", "--b", "2", "--a", "3");
 
-            duplicatedKey.ShouldThrow<Exception>("Option --a was specified twice.");
+            parser.AssemblyPaths.ShouldBeEmpty();
+            parser.Keys.OrderBy(x => x).ShouldEqual("a", "b");
+            parser["b"].ShouldEqual("2");
+            parser.GetAll("a").ShouldEqual("1", "3");
+            parser.GetAll("b").ShouldEqual("2");
+        }
+
+        public void DemandsSingleValueForKeyWhenUsingIndexerForLookups()
+        {
+            var parser = new CommandLineParser("--a", "1", "--b", "2", "--a", "3");
+
+            string a;
+            Action invalidIndexerAttempt = () => a = parser["a"];
+
+            invalidIndexerAttempt.ShouldThrow<ArgumentException>(
+                "Option --a has multiple values. Instead of using the indexer " +
+                "property, call GetAll(string) to retrieve all the values.");
         }
 
         public void ParsesAssemblyPathsMixedWithCustomOptions()
         {
-            var parser = new CommandLineParser("a.dll", "b.dll", "--oops", "c.dll", "d.dll", "--mode", "integration", "e.dll");
+            var parser = new CommandLineParser("a.dll", "--include", "CategoryA", "b.dll", "--oops", "c.dll", "d.dll", "--include", "CategoryB", "--mode", "integration", "e.dll");
 
             parser.AssemblyPaths.ShouldEqual("a.dll", "b.dll", "d.dll", "e.dll");
 
-            parser.CustomOptions.Count.ShouldEqual(2);
-            parser.CustomOptions["oops"].ShouldEqual("c.dll");
-            parser.CustomOptions["mode"].ShouldEqual("integration");
+            parser.Keys.OrderBy(x => x).ShouldEqual("include", "mode", "oops");
+            parser["oops"].ShouldEqual("c.dll");
+            parser["mode"].ShouldEqual("integration");
+            parser.GetAll("include").ShouldEqual("CategoryA", "CategoryB");
         }
     }
 }

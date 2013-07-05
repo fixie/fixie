@@ -48,8 +48,8 @@ namespace Fixie.Tests
 
             parser.AssemblyPaths.ShouldBeEmpty();
             parser.Keys.OrderBy(x => x).ShouldEqual("a", "b");
-            parser["b"].ShouldEqual("2");
             parser.GetAll("a").ShouldEqual("1", "3");
+            parser["b"].ShouldEqual("2");
             parser.GetAll("b").ShouldEqual("2");
         }
 
@@ -58,11 +58,19 @@ namespace Fixie.Tests
             var parser = new CommandLineParser("--a", "1", "--b", "2", "--a", "3");
 
             string a;
-            Action invalidIndexerAttempt = () => a = parser["a"];
+            string c;
 
-            invalidIndexerAttempt.ShouldThrow<ArgumentException>(
+            Action attemptIndexerForKeyWithMultipleValues = () => a = parser["a"];
+            Action attemptIndexerForKeyWithZeroValues = () => c = parser["c"];
+
+            attemptIndexerForKeyWithMultipleValues.ShouldThrow<ArgumentException>(
                 "Option --a has multiple values. Instead of using the indexer " +
                 "property, call GetAll(string) to retrieve all the values.");
+
+            attemptIndexerForKeyWithZeroValues.ShouldThrow<ArgumentException>(
+                "Option --c has no value. Instead of using the indexer " +
+                "property for optional values, call GetAll(string) to retrieve " +
+                "a possibly-empty collection of all the values.");
         }
 
         public void ParsesAssemblyPathsMixedWithCustomOptions()

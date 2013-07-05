@@ -52,14 +52,21 @@ namespace Fixie
         {
             get
             {
-                var values = options[key];
+                List<string> values;
+                if (options.TryGetValue(key, out values))
+                {
+                    if (values.Count > 1)
+                        throw new ArgumentException(string.Format(
+                            "Option --{0} has multiple values. Instead of using the indexer " +
+                            "property, call GetAll(string) to retrieve all the values.", key));
 
-                if (values.Count > 1)
-                    throw new ArgumentException(string.Format(
-                        "Option --{0} has multiple values. Instead of using the indexer " +
-                        "property, call GetAll(string) to retrieve all the values.", key));
+                    return values[0];
+                }
 
-                return values.Single();
+                throw new ArgumentException(string.Format(
+                    "Option --{0} has no value. Instead of using the indexer " +
+                    "property for optional values, call GetAll(string) to retrieve " +
+                    "a possibly-empty collection of all the values.", key));
             }
         }
 

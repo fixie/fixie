@@ -6,14 +6,12 @@ namespace Fixie
 {
     public class CommandLineParser
     {
-        readonly IDictionary<string, List<string>> options;
-
         public CommandLineParser(params string[] args)
         {
             var queue = new Queue<string>(args);
 
             var assemblyPaths = new List<string>();
-            options = new Dictionary<string, List<string>>();
+            var optionList = new List<KeyValuePair<string, string>>();
 
             while (queue.Any())
             {
@@ -21,16 +19,14 @@ namespace Fixie
 
                 if (IsKey(item))
                 {
-                    if (!queue.Any() || IsKey(queue.Peek()))
-                        throw new Exception(string.Format("Option {0} is missing its required value.", item));
-
                     var key = KeyName(item);
+
+                    if (!queue.Any() || IsKey(queue.Peek()))
+                        throw new Exception(string.Format("Option '{0}' is missing its required value.", key));
+
                     var value = queue.Dequeue();
 
-                    if (!options.ContainsKey(key))
-                        options.Add(key, new List<string>());
-
-                    options[key].Add(value);
+                    optionList.Add(new KeyValuePair<string, string>(key, value));
                 }
                 else
                 {
@@ -39,41 +35,11 @@ namespace Fixie
             }
 
             AssemblyPaths = assemblyPaths.ToArray();
+            Options = optionList.ToLookup(x => x.Key, x => x.Value);
         }
 
         public IEnumerable<string> AssemblyPaths { get; private set; }
-
-        public IEnumerable<string> Keys
-        {
-            get { return options.Keys; }
-        }
-
-        public string this[string key]
-        {
-            get
-            {
-                List<string> values;
-                if (options.TryGetValue(key, out values))
-                {
-                    if (values.Count > 1)
-                        throw new ArgumentException(string.Format(
-                            "Option --{0} has multiple values. Instead of using the indexer " +
-                            "property, call GetAll(string) to retrieve all the values.", key));
-
-                    return values[0];
-                }
-
-                throw new ArgumentException(string.Format(
-                    "Option --{0} has no value. Instead of using the indexer " +
-                    "property for optional values, call GetAll(string) to retrieve " +
-                    "a possibly-empty collection of all the values.", key));
-            }
-        }
-
-        public IEnumerable<string> GetAll(string key)
-        {
-            return options[key].ToArray();
-        }
+        public ILookup<string, string> Options { get; private set; }
 
         static bool IsKey(string item)
         {

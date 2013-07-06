@@ -19,11 +19,10 @@ namespace Fixie
 
                 if (IsKey(item))
                 {
-                    var key = KeyName(item);
-
                     if (!queue.Any() || IsKey(queue.Peek()))
-                        throw new Exception(string.Format("Option '{0}' is missing its required value.", key));
+                        throw new Exception(string.Format("Option {0} is missing its required value.", item));
 
+                    var key = KeyName(item);
                     var value = queue.Dequeue();
 
                     optionList.Add(new KeyValuePair<string, string>(key, value));

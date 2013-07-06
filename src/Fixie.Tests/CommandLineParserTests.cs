@@ -32,14 +32,14 @@ namespace Fixie.Tests
         {
             Action keyWithoutValue = () => new CommandLineParser("--key", "value", "--invalid");
 
-            keyWithoutValue.ShouldThrow<Exception>("Option 'invalid' is missing its required value.");
+            keyWithoutValue.ShouldThrow<Exception>("Option --invalid is missing its required value.");
         }
 
         public void DemandsThatCustomOptionValuesCannotLookLikeKeys()
         {
             Action keyFollowedByAnotherKey = () => new CommandLineParser("--key", "--anotherKey");
 
-            keyFollowedByAnotherKey.ShouldThrow<Exception>("Option 'key' is missing its required value.");
+            keyFollowedByAnotherKey.ShouldThrow<Exception>("Option --key is missing its required value.");
         }
 
         public void ParsesAllValuesProvidedForEachKey()

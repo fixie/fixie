@@ -43,6 +43,9 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Calculator.cs" />
+    <Compile Include="Categories\CalculatorTests.cs" />
+    <Compile Include="Categories\CustomConvention.cs" />
+    <Compile Include="Categories\Attributes.cs" />
     <Compile Include="Explicit\CalculatorTests.cs" />
     <Compile Include="Explicit\CustomConvention.cs" />
     <Compile Include="Explicit\ExplicitAttribute.cs" />

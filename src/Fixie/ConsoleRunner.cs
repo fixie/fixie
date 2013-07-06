@@ -6,12 +6,14 @@ namespace Fixie
 {
     public class ConsoleRunner : MarshalByRefObject
     {
-        public Result RunAssembly(string assemblyPath)
+        public Result RunAssembly(string assemblyPath, string[] args)
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
             var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
 
-            var runner = new Runner(CreateListener());
+            var options = new CommandLineParser(args).Options;
+
+            var runner = new Runner(CreateListener(), options);
             return runner.RunAssembly(assembly);
         }
 

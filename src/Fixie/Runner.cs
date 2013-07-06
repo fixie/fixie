@@ -9,36 +9,41 @@ namespace Fixie
     public class Runner
     {
         readonly Listener listener;
+        readonly ILookup<string, string> options;
 
         public Runner(Listener listener)
+            : this(listener, Enumerable.Empty<string>().ToLookup(x => x, x => x)) { }
+
+        public Runner(Listener listener, ILookup<string, string> options)
         {
             this.listener = listener;
+            this.options = options;
         }
 
         public Result RunAssembly(Assembly assembly)
         {
-            var runContext = new RunContext(assembly);
+            var runContext = new RunContext(assembly, options);
 
             return RunTypes(runContext, assembly.GetTypes());
         }
 
         public Result RunNamespace(Assembly assembly, string ns)
         {
-            var runContext = new RunContext(assembly);
+            var runContext = new RunContext(assembly, options);
 
             return RunTypes(runContext, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
         public Result RunType(Assembly assembly, Type type)
         {
-            var runContext = new RunContext(assembly, type);
+            var runContext = new RunContext(assembly, options, type);
 
             return RunTypes(runContext, type);
         }
 
         public Result RunMethod(Assembly assembly, MethodInfo method)
         {
-            var runContext = new RunContext(assembly, method);
+            var runContext = new RunContext(assembly, options, method);
 
             var conventions = GetConventions(runContext);
 

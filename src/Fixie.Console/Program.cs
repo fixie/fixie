@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Fixie.Console
 {
@@ -13,17 +14,19 @@ namespace Fixie.Console
         {
             try
             {
-                if (args.Length == 0)
+                var assemblyPaths = new CommandLineParser(args).AssemblyPaths.ToArray();
+
+                if (assemblyPaths.Length == 0)
                 {
-                    Console.WriteLine("Usage: Fixie.Console assembly_file...");
+                    Console.WriteLine("Usage: Fixie.Console [custom-options] assembly_file...");
                     return FatalError;
                 }
 
                 int failed = 0;
 
-                foreach (var assemblyPath in args)
+                foreach (var assemblyPath in assemblyPaths)
                 {
-                    var result = Execute(assemblyPath);
+                    var result = Execute(assemblyPath, args);
 
                     failed += result.Failed;
                 }
@@ -38,12 +41,12 @@ namespace Fixie.Console
             }
         }
 
-        static Result Execute(string assemblyPath)
+        static Result Execute(string assemblyPath, string[] args)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
                 var runner = environment.Create<ConsoleRunner>();
-                return runner.RunAssembly(assemblyPath);
+                return runner.RunAssembly(assemblyPath, args);
             }
         }
     }

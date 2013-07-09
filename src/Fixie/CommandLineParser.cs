@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Fixie
@@ -12,6 +11,7 @@ namespace Fixie
 
             var assemblyPaths = new List<string>();
             var optionList = new List<KeyValuePair<string, string>>();
+            var errors = new List<string>();
 
             while (queue.Any())
             {
@@ -20,7 +20,10 @@ namespace Fixie
                 if (IsKey(item))
                 {
                     if (!queue.Any() || IsKey(queue.Peek()))
-                        throw new Exception(string.Format("Option {0} is missing its required value.", item));
+                    {
+                        errors.Add(string.Format("Option {0} is missing its required value.", item));
+                        break;
+                    }
 
                     var key = KeyName(item);
                     var value = queue.Dequeue();
@@ -33,12 +36,28 @@ namespace Fixie
                 }
             }
 
+            Errors = errors.ToArray();
+
+            if (HasErrors)
+            {
+                assemblyPaths.Clear();
+                optionList.Clear();
+            }
+
             AssemblyPaths = assemblyPaths.ToArray();
             Options = optionList.ToLookup(x => x.Key, x => x.Value);
         }
 
         public IEnumerable<string> AssemblyPaths { get; private set; }
+
         public ILookup<string, string> Options { get; private set; }
+
+        public IEnumerable<string> Errors { get; private set; }
+
+        public bool HasErrors
+        {
+            get { return Errors.Any(); }
+        }
 
         static bool IsKey(string item)
         {

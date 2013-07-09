@@ -11,6 +11,8 @@ namespace Fixie.Tests
             var parser = new CommandLineParser();
             parser.AssemblyPaths.ShouldBeEmpty();
             parser.Options.ShouldBeEmpty();
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
         }
 
         public void ParsesAssemblyPathsList()
@@ -18,6 +20,8 @@ namespace Fixie.Tests
             var parser = new CommandLineParser("foo.dll", "bar.dll");
             parser.AssemblyPaths.ShouldEqual("foo.dll", "bar.dll");
             parser.Options.ShouldBeEmpty();
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
         }
 
         public void ParsesCustomOptions()
@@ -26,20 +30,26 @@ namespace Fixie.Tests
             parser.AssemblyPaths.ShouldBeEmpty();
             parser.Options.Select(x => x.Key).ShouldEqual("key");
             parser.Options["key"].ShouldEqual("value");
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
         }
 
         public void DemandsThatCustomOptionsHaveExplicitValues()
         {
-            Action keyWithoutValue = () => new CommandLineParser("--key", "value", "--invalid");
-
-            keyWithoutValue.ShouldThrow<Exception>("Option --invalid is missing its required value.");
+            var parser = new CommandLineParser("assembly.dll", "--key", "value", "--invalid");
+            parser.AssemblyPaths.ShouldBeEmpty();
+            parser.Options.ShouldBeEmpty();
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual("Option --invalid is missing its required value.");
         }
 
         public void DemandsThatCustomOptionValuesCannotLookLikeKeys()
         {
-            Action keyFollowedByAnotherKey = () => new CommandLineParser("--key", "--anotherKey");
-
-            keyFollowedByAnotherKey.ShouldThrow<Exception>("Option --key is missing its required value.");
+            var parser = new CommandLineParser("--key", "--anotherKey");
+            parser.AssemblyPaths.ShouldBeEmpty();
+            parser.Options.ShouldBeEmpty();
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual("Option --key is missing its required value.");
         }
 
         public void ParsesAllValuesProvidedForEachKey()
@@ -50,6 +60,8 @@ namespace Fixie.Tests
             parser.Options.Select(x => x.Key).OrderBy(x => x).ShouldEqual("a", "b");
             parser.Options["a"].ShouldEqual("1", "3");
             parser.Options["b"].ShouldEqual("2");
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
         }
 
         public void ParsesAssemblyPathsMixedWithCustomOptions()
@@ -63,6 +75,8 @@ namespace Fixie.Tests
             parser.Options["oops"].ShouldEqual("c.dll");
             parser.Options["mode"].ShouldEqual("integration");
             parser.Options["nonexistent"].ShouldBeEmpty();
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
         }
     }
 }

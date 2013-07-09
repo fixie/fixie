@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Fixie.Console
 {
@@ -14,17 +13,21 @@ namespace Fixie.Console
         {
             try
             {
-                var assemblyPaths = new CommandLineParser(args).AssemblyPaths.ToArray();
+                var commandLineParser = new CommandLineParser(args);
 
-                if (assemblyPaths.Length == 0)
+                if (commandLineParser.HasErrors)
                 {
-                    Console.WriteLine("Usage: Fixie.Console [custom-options] assembly_file...");
+                    using (Foreground.Red)
+                        foreach (var error in commandLineParser.Errors)
+                            Console.WriteLine(error);
+
+                    Console.WriteLine("Usage: Fixie.Console [custom-options] assembly-path...");
                     return FatalError;
                 }
 
                 int failed = 0;
 
-                foreach (var assemblyPath in assemblyPaths)
+                foreach (var assemblyPath in commandLineParser.AssemblyPaths)
                 {
                     var result = Execute(assemblyPath, args);
 

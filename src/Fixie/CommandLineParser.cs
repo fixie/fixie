@@ -36,16 +36,12 @@ namespace Fixie
                 }
             }
 
-            Errors = errors.ToArray();
-
-            if (HasErrors)
-            {
-                assemblyPaths.Clear();
-                optionList.Clear();
-            }
+            if (!errors.Any() && !assemblyPaths.Any())
+                errors.Add("Missing required test assembly path(s).");
 
             AssemblyPaths = assemblyPaths.ToArray();
             Options = optionList.ToLookup(x => x.Key, x => x.Value);
+            Errors = errors.ToArray();
         }
 
         public IEnumerable<string> AssemblyPaths { get; private set; }

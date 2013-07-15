@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace Fixie.Console
 {
@@ -46,10 +47,12 @@ namespace Fixie.Console
 
         static Result Execute(string assemblyPath, string[] args)
         {
-            using (var environment = new ExecutionEnvironment(assemblyPath))
+            var assemblyFullPath = Path.GetFullPath(assemblyPath);
+
+            using (var environment = new ExecutionEnvironment(assemblyFullPath))
             {
                 var runner = environment.Create<ConsoleRunner>();
-                return runner.RunAssembly(assemblyPath, args);
+                return runner.RunAssembly(assemblyFullPath, args);
             }
         }
     }

@@ -1,14 +1,12 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
 
 namespace Fixie
 {
     public class ConsoleRunner : MarshalByRefObject
     {
-        public Result RunAssembly(string assemblyPath, string[] args)
+        public Result RunAssembly(string assemblyFullPath, string[] args)
         {
-            var assemblyFullPath = Path.GetFullPath(assemblyPath);
             var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
 
             var options = new CommandLineParser(args).Options;

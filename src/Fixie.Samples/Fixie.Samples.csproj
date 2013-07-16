@@ -49,6 +49,7 @@
     <Compile Include="Explicit\CalculatorTests.cs" />
     <Compile Include="Explicit\CustomConvention.cs" />
     <Compile Include="Explicit\ExplicitAttribute.cs" />
+    <Compile Include="Invalid\CustomConvention.cs" />
     <Compile Include="IoC\CustomConvention.cs" />
     <Compile Include="IoC\Infrastructure.cs" />
     <Compile Include="IoC\IoCTests.cs" />

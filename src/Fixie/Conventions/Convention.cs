@@ -7,7 +7,7 @@ namespace Fixie.Conventions
     {
         public Convention()
         {
-            Classes = new ClassFilter();
+            Classes = new ClassFilter().Where(type => !type.IsSubclassOf(typeof(Convention)));
             Cases = new MethodFilter().Where(m => !m.IsDispose());
             CaseExecution = new MethodBehaviorBuilder();
             InstanceExecution = new InstanceBehaviorBuilder();

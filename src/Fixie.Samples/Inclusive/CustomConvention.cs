@@ -1,7 +1,7 @@
 ﻿using System;
 using Fixie.Conventions;
 
-namespace Fixie.Samples.Invalid
+namespace Fixie.Samples.Inclusive
 {
     public class CustomConvention : Convention
     {

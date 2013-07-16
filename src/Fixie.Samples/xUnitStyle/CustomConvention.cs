@@ -68,6 +68,7 @@ namespace Fixie.Samples.xUnitStyle
 
                 classTearDownExceptions.Add(disposalExceptions);
             }
+            fixtures.Clear();
             return classTearDownExceptions;
         }
 

@@ -36,6 +36,14 @@ namespace Fixie
 
         public Result RunType(Assembly assembly, Type type)
         {
+            if (type.IsSubclassOf(typeof(Convention)))
+            {
+                var singleConventionRunContext = new RunContext(assembly, options);
+                var singleConvention = ConstructConvention(type, singleConventionRunContext);
+
+                return RunTypes(singleConventionRunContext, singleConvention, assembly.GetTypes());
+            }
+
             var runContext = new RunContext(assembly, options, type);
 
             return RunTypes(runContext, type);
@@ -58,6 +66,11 @@ namespace Fixie
         private Result RunTypes(RunContext runContext, params Type[] types)
         {
             return Run(runContext, GetConventions(runContext), types);
+        }
+
+        private Result RunTypes(RunContext runContext, Convention convention, params Type[] types)
+        {
+            return Run(runContext, new[] { convention }, types);
         }
 
         static Convention[] GetConventions(RunContext runContext)

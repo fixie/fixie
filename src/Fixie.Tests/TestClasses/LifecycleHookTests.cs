@@ -288,12 +288,12 @@ namespace Fixie.Tests.TestClasses
             Console.WriteLine(indentation + format, args);
         }
 
-        static void SkipCase(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner)
+        static void SkipCase(MethodInfo method, object instance, ExceptionList exceptions, CaseBehavior inner)
         {
             WriteLine("Skipping " + method.Name);
         }
 
-        static void BeforeAfterCase(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner)
+        static void BeforeAfterCase(MethodInfo method, object instance, ExceptionList exceptions, CaseBehavior inner)
         {
             WriteLine("BeforeCase");
             indent++;

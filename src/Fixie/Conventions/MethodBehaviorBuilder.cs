@@ -4,7 +4,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void MethodBehaviorAction(MethodInfo method, object instance, ExceptionList exceptions, MethodBehavior inner);
+    public delegate void MethodBehaviorAction(MethodInfo method, object instance, ExceptionList exceptions, CaseBehavior inner);
     public delegate ExceptionList MethodAction(MethodInfo method, object instance);
 
     public class MethodBehaviorBuilder
@@ -14,7 +14,7 @@ namespace Fixie.Conventions
             Behavior = new Invoke();
         }
 
-        public MethodBehavior Behavior { get; private set; }
+        public CaseBehavior Behavior { get; private set; }
 
         public MethodBehaviorBuilder Wrap(MethodBehaviorAction outer)
         {
@@ -47,12 +47,12 @@ namespace Fixie.Conventions
                                  (method, instance) => tearDownMethods.InvokeAll(method.ReflectedType, instance));
         }
 
-        class WrapBehavior : MethodBehavior
+        class WrapBehavior : CaseBehavior
         {
             readonly MethodBehaviorAction outer;
-            readonly MethodBehavior inner;
+            readonly CaseBehavior inner;
 
-            public WrapBehavior(MethodBehaviorAction outer, MethodBehavior inner)
+            public WrapBehavior(MethodBehaviorAction outer, CaseBehavior inner)
             {
                 this.outer = outer;
                 this.inner = inner;

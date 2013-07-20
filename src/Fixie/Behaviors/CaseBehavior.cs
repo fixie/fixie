@@ -2,7 +2,7 @@
 
 namespace Fixie.Behaviors
 {
-    public interface MethodBehavior
+    public interface CaseBehavior
     {
         void Execute(MethodInfo method, object instance, ExceptionList exceptions);
     }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Fixie.Behaviors
 {
-    public class Invoke : MethodBehavior
+    public class Invoke : CaseBehavior
     {
         public void Execute(MethodInfo method, object instance, ExceptionList exceptions)
         {

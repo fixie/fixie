@@ -58,7 +58,7 @@
     <Compile Include="Fixture.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Behaviors\Invoke.cs" />
-    <Compile Include="Behaviors\MethodBehavior.cs" />
+    <Compile Include="Behaviors\CaseBehavior.cs" />
     <Compile Include="Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="Conventions\MethodFilter.cs" />

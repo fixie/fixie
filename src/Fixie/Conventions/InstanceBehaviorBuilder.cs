@@ -44,8 +44,17 @@ namespace Fixie.Conventions
 
         public InstanceBehaviorBuilder SetUpTearDown(MethodFilter setUpMethods, MethodFilter tearDownMethods)
         {
-            return SetUpTearDown(fixture => setUpMethods.InvokeAll(fixture.TestClass, fixture.Instance),
-                                 fixture => tearDownMethods.InvokeAll(fixture.TestClass, fixture.Instance));
+            return SetUpTearDown(fixture => InvokeAll(setUpMethods, fixture.TestClass, fixture.Instance),
+                                 fixture => InvokeAll(tearDownMethods, fixture.TestClass, fixture.Instance));
+        }
+
+        static ExceptionList InvokeAll(MethodFilter methodFilter, Type type, object instance)
+        {
+            var exceptions = new ExceptionList();
+            var invoke = new Invoke();
+            foreach (var method in methodFilter.Filter(type))
+                invoke.Execute(method, instance, exceptions);
+            return exceptions;
         }
 
         class WrapBehavior : InstanceBehavior

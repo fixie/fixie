@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Fixie.Behaviors;
 using Fixie.Conventions;
@@ -131,6 +132,23 @@ namespace Fixie.Tests.Conventions
             }
         }
 
+        public void ShouldShortCircuitSetupAndInnerBehaviorAndTearDownWhenCaseAlreadyHasExceptionsPriorToSetup()
+        {
+            builder.SetUpTearDown(SetUp, TearDown);
+
+            using (var console = new RedirectedConsole())
+            {
+                var @case = Case("Pass");
+                var exception = new Exception("Exception from earlier in the behavior chain.");
+                @case.Exceptions.Add(exception);
+
+                builder.Behavior.Execute(@case, instance);
+
+                @case.Exceptions.ToArray().Single().ShouldEqual(exception);
+                console.Lines.ShouldEqual();
+            }
+        }
+
         public void ShouldShortCircuitInnerBehaviorAndTearDownWhenSetupContributesExceptions()
         {
             builder.SetUpTearDown(FailingSetUp, TearDown);
@@ -238,32 +256,26 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        static ExceptionList SetUp(MethodInfo method, object instance)
+        static void SetUp(Case @case, object instance)
         {
             Console.WriteLine("SetUp");
-            return new ExceptionList();
         }
 
-        static ExceptionList FailingSetUp(MethodInfo method, object instance)
+        static void FailingSetUp(Case @case, object instance)
         {
             Console.WriteLine("FailingSetUp Contributes an Exception!");
-            var exceptions = new ExceptionList();
-            exceptions.Add(new Exception());
-            return exceptions;
+            @case.Exceptions.Add(new Exception());
         }
 
-        static ExceptionList TearDown(MethodInfo method, object instance)
+        static void TearDown(Case @case, object instance)
         {
             Console.WriteLine("TearDown");
-            return new ExceptionList();
         }
 
-        static ExceptionList FailingTearDown(MethodInfo method, object instance)
+        static void FailingTearDown(Case @case, object instance)
         {
             Console.WriteLine("FailingTearDown Contributes an Exception!");
-            var exceptions = new ExceptionList();
-            exceptions.Add(new Exception());
-            return exceptions;
+            @case.Exceptions.Add(new Exception());
         }
 
         static Case Case(string methodName)

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Reflection;
 using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
     public delegate void CaseBehaviorAction(Case @case, object instance, CaseBehavior inner);
-    public delegate ExceptionList MethodAction(MethodInfo method, object instance);
+    public delegate void CaseAction(Case @case, object instance);
 
     public class CaseBehaviorBuilder
     {
@@ -22,29 +21,34 @@ namespace Fixie.Conventions
             return this;
         }
 
-        public CaseBehaviorBuilder SetUpTearDown(MethodAction setUp, MethodAction tearDown)
+        public CaseBehaviorBuilder SetUpTearDown(CaseAction setUp, CaseAction tearDown)
         {
             return Wrap((@case, instance, inner) =>
             {
-                var setUpExceptions = setUp(@case.Method, instance);
-                if (setUpExceptions.Any())
-                {
-                    @case.Exceptions.Add(setUpExceptions);
+                if (@case.Exceptions.Any())
                     return;
-                }
+
+                setUp(@case, instance);
+
+                if (@case.Exceptions.Any())
+                    return;
 
                 inner.Execute(@case, instance);
-
-                var tearDownExceptions = tearDown(@case.Method, instance);
-                if (tearDownExceptions.Any())
-                    @case.Exceptions.Add(tearDownExceptions);
+                tearDown(@case, instance);
             });
         }
 
         public CaseBehaviorBuilder SetUpTearDown(MethodFilter setUpMethods, MethodFilter tearDownMethods)
         {
-            return SetUpTearDown((method, instance) => setUpMethods.InvokeAll(method.ReflectedType, instance),
-                                 (method, instance) => tearDownMethods.InvokeAll(method.ReflectedType, instance));
+            return SetUpTearDown((@case, instance) => InvokeAll(setUpMethods, @case, instance),
+                                 (@case, instance) => InvokeAll(tearDownMethods, @case, instance));
+        }
+
+        static void InvokeAll(MethodFilter methodFilter, Case @case, object instance)
+        {
+            var invoke = new Invoke();
+            foreach (var method in methodFilter.Filter(@case.Class))
+                invoke.Execute(method, instance, @case.Exceptions);
         }
 
         class WrapBehavior : CaseBehavior

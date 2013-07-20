@@ -3,7 +3,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void InstanceBehaviorAction(Fixture fixture, InstanceBehavior inner);
+    public delegate void InstanceBehaviorAction(Fixture fixture, Action innerBehavior);
     public delegate ExceptionList InstanceAction(Fixture fixture);
 
     public class InstanceBehaviorBuilder
@@ -23,7 +23,7 @@ namespace Fixie.Conventions
 
         public InstanceBehaviorBuilder SetUpTearDown(InstanceAction setUp, InstanceAction tearDown)
         {
-            return Wrap((fixture, inner) =>
+            return Wrap((fixture, innerBehavior) =>
             {
                 var setUpExceptions = setUp(fixture);
                 if (setUpExceptions.Any())
@@ -33,7 +33,7 @@ namespace Fixie.Conventions
                     return;
                 }
 
-                inner.Execute(fixture);
+                innerBehavior();
 
                 var tearDownExceptions = tearDown(fixture);
                 if (tearDownExceptions.Any())
@@ -72,7 +72,7 @@ namespace Fixie.Conventions
             {
                 try
                 {
-                    outer(fixture, inner);
+                    outer(fixture, () => inner.Execute(fixture));
                 }
                 catch (Exception exception)
                 {

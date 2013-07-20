@@ -1,6 +1,4 @@
-﻿using Fixie.Conventions;
-
-namespace Fixie.Behaviors
+﻿namespace Fixie.Behaviors
 {
     public interface InstanceBehavior
     {

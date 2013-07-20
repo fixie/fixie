@@ -301,16 +301,16 @@ namespace Fixie.Tests.TestClasses
             WriteLine("AfterCase");
         }
 
-        static void SkipInstance(Fixture fixture, InstanceBehavior inner)
+        static void SkipInstance(Fixture fixture, Action innerBehavior)
         {
             WriteLine("Skipping {0} case(s) for an instance of {1}", fixture.Cases.Length, fixture.TestClass.Name);
         }
 
-        static void BeforeAfterInstance(Fixture fixture, InstanceBehavior inner)
+        static void BeforeAfterInstance(Fixture fixture, Action innerBehavior)
         {
             WriteLine("BeforeInstance");
             indent++;
-            inner.Execute(fixture);
+            innerBehavior();
             indent--;
             WriteLine("AfterInstance");
         }

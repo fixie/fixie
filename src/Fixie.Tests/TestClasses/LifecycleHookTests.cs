@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using Fixie.Behaviors;
 using Fixie.Conventions;
@@ -288,16 +287,16 @@ namespace Fixie.Tests.TestClasses
             Console.WriteLine(indentation + format, args);
         }
 
-        static void SkipCase(Case @case, object instance, CaseBehavior inner)
+        static void SkipCase(Case @case, object instance, Action innerBehavior)
         {
             WriteLine("Skipping " + @case.Method.Name);
         }
 
-        static void BeforeAfterCase(Case @case, object instance, CaseBehavior inner)
+        static void BeforeAfterCase(Case @case, object instance, Action innerBehavior)
         {
             WriteLine("BeforeCase");
             indent++;
-            inner.Execute(@case, instance);
+            innerBehavior();
             indent--;
             WriteLine("AfterCase");
         }

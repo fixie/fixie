@@ -45,10 +45,10 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldAllowWrappingTheBehaviorInAnother()
         {
-            builder.Wrap((@case, instance, inner) =>
+            builder.Wrap((@case, instance, innerBehavior) =>
             {
                 Console.WriteLine("Before");
-                inner.Execute(@case, instance);
+                innerBehavior();
                 Console.WriteLine("After");
             });
 
@@ -75,16 +75,16 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldAllowWrappingTheBehaviorMultipleTimes()
         {
-            builder.Wrap((@case, instance, inner) =>
+            builder.Wrap((@case, instance, innerBehavior) =>
             {
                 Console.WriteLine("Inner Before");
-                inner.Execute(@case, instance);
+                innerBehavior();
                 Console.WriteLine("Inner After");
             })
-            .Wrap((@case, instance, inner) =>
+            .Wrap((@case, instance, innerBehavior) =>
             {
                 Console.WriteLine("Outer Before");
-                inner.Execute(@case, instance);
+                innerBehavior();
                 Console.WriteLine("Outer After");
             });
 
@@ -101,7 +101,7 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldHandleCatastrophicExceptionsWhenBehaviorsThrowRatherThanContributeExceptions()
         {
-            builder.Wrap((@case, instance, inner) =>
+            builder.Wrap((@case, instance, innerBehavior) =>
             {
                 throw new Exception("Unsafe behavior threw!");
             });

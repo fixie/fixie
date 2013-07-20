@@ -53,7 +53,7 @@
     <Compile Include="TestClasses\LifecycleHookTests.cs" />
     <Compile Include="Behaviors\InvokeTests.cs" />
     <Compile Include="Conventions\InstanceBehaviorBuilderTests.cs" />
-    <Compile Include="Conventions\MethodBehaviorBuilderTests.cs" />
+    <Compile Include="Conventions\CaseBehaviorBuilderTests.cs" />
     <Compile Include="Conventions\MethodFilterTests.cs" />
     <Compile Include="Conventions\TypeBehaviorBuilderTests.cs" />
     <Compile Include="FailureException.cs" />

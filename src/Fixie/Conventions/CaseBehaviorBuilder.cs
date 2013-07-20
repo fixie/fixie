@@ -4,25 +4,25 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void MethodBehaviorAction(MethodInfo method, object instance, ExceptionList exceptions, CaseBehavior inner);
+    public delegate void CaseBehaviorAction(MethodInfo method, object instance, ExceptionList exceptions, CaseBehavior inner);
     public delegate ExceptionList MethodAction(MethodInfo method, object instance);
 
-    public class MethodBehaviorBuilder
+    public class CaseBehaviorBuilder
     {
-        public MethodBehaviorBuilder()
+        public CaseBehaviorBuilder()
         {
             Behavior = new Invoke();
         }
 
         public CaseBehavior Behavior { get; private set; }
 
-        public MethodBehaviorBuilder Wrap(MethodBehaviorAction outer)
+        public CaseBehaviorBuilder Wrap(CaseBehaviorAction outer)
         {
             Behavior = new WrapBehavior(outer, Behavior);
             return this;
         }
 
-        public MethodBehaviorBuilder SetUpTearDown(MethodAction setUp, MethodAction tearDown)
+        public CaseBehaviorBuilder SetUpTearDown(MethodAction setUp, MethodAction tearDown)
         {
             return Wrap((method, instance, exceptions, inner) =>
             {
@@ -41,7 +41,7 @@ namespace Fixie.Conventions
             });
         }
 
-        public MethodBehaviorBuilder SetUpTearDown(MethodFilter setUpMethods, MethodFilter tearDownMethods)
+        public CaseBehaviorBuilder SetUpTearDown(MethodFilter setUpMethods, MethodFilter tearDownMethods)
         {
             return SetUpTearDown((method, instance) => setUpMethods.InvokeAll(method.ReflectedType, instance),
                                  (method, instance) => tearDownMethods.InvokeAll(method.ReflectedType, instance));
@@ -49,10 +49,10 @@ namespace Fixie.Conventions
 
         class WrapBehavior : CaseBehavior
         {
-            readonly MethodBehaviorAction outer;
+            readonly CaseBehaviorAction outer;
             readonly CaseBehavior inner;
 
-            public WrapBehavior(MethodBehaviorAction outer, CaseBehavior inner)
+            public WrapBehavior(CaseBehaviorAction outer, CaseBehavior inner)
             {
                 this.outer = outer;
                 this.inner = inner;

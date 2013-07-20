@@ -51,7 +51,7 @@
     <Compile Include="Conventions\Convention.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
     <Compile Include="Conventions\InstanceBehaviorBuilder.cs" />
-    <Compile Include="Conventions\MethodBehaviorBuilder.cs" />
+    <Compile Include="Conventions\CaseBehaviorBuilder.cs" />
     <Compile Include="Conventions\SelfTestConvention.cs" />
     <Compile Include="Conventions\TypeBehaviorBuilder.cs" />
     <Compile Include="ExceptionList.cs" />

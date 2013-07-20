@@ -9,14 +9,14 @@ namespace Fixie.Conventions
         {
             Classes = new ClassFilter().Where(type => !type.IsSubclassOf(typeof(Convention)));
             Cases = new MethodFilter().Where(m => !m.IsDispose());
-            CaseExecution = new MethodBehaviorBuilder();
+            CaseExecution = new CaseBehaviorBuilder();
             InstanceExecution = new InstanceBehaviorBuilder();
             ClassExecution = new TypeBehaviorBuilder().CreateInstancePerCase();
         }
 
         public ClassFilter Classes { get; private set; }
         public MethodFilter Cases { get; private set; }
-        public MethodBehaviorBuilder CaseExecution { get; private set; }
+        public CaseBehaviorBuilder CaseExecution { get; private set; }
         public InstanceBehaviorBuilder InstanceExecution { get; private set; }
         public TypeBehaviorBuilder ClassExecution { get; private set; }
 

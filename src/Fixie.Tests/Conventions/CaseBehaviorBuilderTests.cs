@@ -6,14 +6,14 @@ using Should;
 
 namespace Fixie.Tests.Conventions
 {
-    public class MethodBehaviorBuilderTests
+    public class CaseBehaviorBuilderTests
     {
-        readonly MethodBehaviorBuilder builder;
+        readonly CaseBehaviorBuilder builder;
         readonly object instance;
 
-        public MethodBehaviorBuilderTests()
+        public CaseBehaviorBuilderTests()
         {
-            builder = new MethodBehaviorBuilder();
+            builder = new CaseBehaviorBuilder();
             instance = new SampleTestClass();
         }
 

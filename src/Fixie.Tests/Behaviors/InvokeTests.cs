@@ -11,95 +11,111 @@ namespace Fixie.Tests.Behaviors
     public class InvokeTests
     {
         bool invoked;
-        readonly ExceptionList exceptions = new ExceptionList();
         readonly Invoke invoke = new Invoke();
 
         public void ShouldInvokeMethods()
         {
-            invoke.Execute(Method("Returns"), this, exceptions);
+            var @case = Case("Returns");
+
+            invoke.Execute(@case, this);
 
             invoked.ShouldBeTrue();
 
-            exceptions.Count.ShouldEqual(0);
+            @case.Exceptions.Count.ShouldEqual(0);
         }
 
         public void ShouldLogExceptionWhenMethodCannotBeInvoked()
         {
-            invoke.Execute(Method("CannotInvoke"), this, exceptions);
+            var @case = Case("CannotInvoke");
+
+            invoke.Execute(@case, this);
 
             invoked.ShouldBeFalse();
 
-            ExpectException("TargetParameterCountException", "Parameter count mismatch.");
+            ExpectException(@case, "TargetParameterCountException", "Parameter count mismatch.");
         }
 
         public void ShouldLogOriginalExceptionWhenMethodThrows()
         {
-            invoke.Execute(Method("Throws"), this, exceptions);
+            var @case = Case("Throws");
+
+            invoke.Execute(@case, this);
 
             invoked.ShouldBeTrue();
 
-            ExpectException("FailureException", "'Throws' failed!");
+            ExpectException(@case, "FailureException", "'Throws' failed!");
         }
 
         public void ShouldInvokeAsyncMethods()
         {
-            invoke.Execute(Method("Await"), this, exceptions);
+            var @case = Case("Await");
+
+            invoke.Execute(@case, this);
 
             invoked.ShouldBeTrue();
 
-            exceptions.Count.ShouldEqual(0);
+            @case.Exceptions.Count.ShouldEqual(0);
         }
 
         public void ShouldLogOriginalExceptionWhenAsyncMethodThrowsAfterAwaiting()
         {
-            invoke.Execute(Method("AwaitThenThrow"), this, exceptions);
+            var @case = Case("AwaitThenThrow");
+
+            invoke.Execute(@case, this);
 
             invoked.ShouldBeTrue();
 
-            ExpectException("EqualException", "Assert.Equal() Failure" + Environment.NewLine +
-                                              "Expected: 0" + Environment.NewLine +
-                                              "Actual:   3");
+            ExpectException(@case, "EqualException", "Assert.Equal() Failure" + Environment.NewLine +
+                                                     "Expected: 0" + Environment.NewLine +
+                                                     "Actual:   3");
         }
 
         public void ShouldLogOriginalExceptionWhenAsyncMethodThrowsWithinTheAwaitedTask()
         {
-            invoke.Execute(Method("AwaitOnTaskThatThrows"), this, exceptions);
+            var @case = Case("AwaitOnTaskThatThrows");
+
+            invoke.Execute(@case, this);
 
             invoked.ShouldBeTrue();
 
-            ExpectException("DivideByZeroException", "Attempted to divide by zero.");
+            ExpectException(@case, "DivideByZeroException", "Attempted to divide by zero.");
         }
 
         public void ShouldLogOriginalExceptionWhenAsyncMethodThrowsBeforeAwaitingOnAnyTask()
         {
-            invoke.Execute(Method("ThrowBeforeAwait"), this, exceptions);
+            var @case = Case("ThrowBeforeAwait");
+
+            invoke.Execute(@case, this);
 
             invoked.ShouldBeTrue();
 
-            ExpectException("FailureException", "'ThrowBeforeAwait' failed!");
+            ExpectException(@case, "FailureException", "'ThrowBeforeAwait' failed!");
         }
 
         public void ShouldLogExceptionWhenMethodIsUnsupportedAsyncVoid()
         {
-            invoke.Execute(Method("UnsupportedAsyncVoid"), this, exceptions);
+            var @case = Case("UnsupportedAsyncVoid");
+
+            invoke.Execute(@case, this);
 
             invoked.ShouldBeFalse();
 
-            ExpectException("NotSupportedException",
+            ExpectException(@case, "NotSupportedException",
                             "Async void methods are not supported. Declare async methods with a " +
                             "return type of Task to ensure the task actually runs to completion.");
         }
 
-        void ExpectException(string expectedName, string expectedMessage)
+        static void ExpectException(Case @case, string expectedName, string expectedMessage)
         {
-            var exception = exceptions.ToArray().Single();
+            var exception = @case.Exceptions.ToArray().Single();
             exception.GetType().Name.ShouldEqual(expectedName);
             exception.Message.ShouldEqual(expectedMessage);
         }
 
-        static MethodInfo Method(string name)
+        static Case Case(string methodName)
         {
-            return typeof(InvokeTests).GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic);
+            var testClass = typeof(InvokeTests);
+            return new Case(testClass, testClass.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic));
         }
 
         void Returns()

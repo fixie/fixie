@@ -4,7 +4,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void CaseBehaviorAction(MethodInfo method, object instance, ExceptionList exceptions, CaseBehavior inner);
+    public delegate void CaseBehaviorAction(Case @case, object instance, CaseBehavior inner);
     public delegate ExceptionList MethodAction(MethodInfo method, object instance);
 
     public class CaseBehaviorBuilder
@@ -24,20 +24,20 @@ namespace Fixie.Conventions
 
         public CaseBehaviorBuilder SetUpTearDown(MethodAction setUp, MethodAction tearDown)
         {
-            return Wrap((method, instance, exceptions, inner) =>
+            return Wrap((@case, instance, inner) =>
             {
-                var setUpExceptions = setUp(method, instance);
+                var setUpExceptions = setUp(@case.Method, instance);
                 if (setUpExceptions.Any())
                 {
-                    exceptions.Add(setUpExceptions);
+                    @case.Exceptions.Add(setUpExceptions);
                     return;
                 }
 
-                inner.Execute(method, instance, exceptions);
+                inner.Execute(@case, instance);
 
-                var tearDownExceptions = tearDown(method, instance);
+                var tearDownExceptions = tearDown(@case.Method, instance);
                 if (tearDownExceptions.Any())
-                    exceptions.Add(tearDownExceptions);
+                    @case.Exceptions.Add(tearDownExceptions);
             });
         }
 
@@ -58,15 +58,15 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(MethodInfo method, object instance, ExceptionList exceptions)
+            public void Execute(Case @case, object instance)
             {
                 try
                 {
-                    outer(method, instance, exceptions, inner);
+                    outer(@case, instance, inner);
                 }
                 catch (Exception exception)
                 {
-                    exceptions.Add(exception);
+                    @case.Exceptions.Add(exception);
                 }
             }
         }

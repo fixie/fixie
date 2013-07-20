@@ -1,9 +1,7 @@
-﻿using System.Reflection;
-
-namespace Fixie.Behaviors
+﻿namespace Fixie.Behaviors
 {
     public interface CaseBehavior
     {
-        void Execute(MethodInfo method, object instance, ExceptionList exceptions);
+        void Execute(Case @case, object instance);
     }
 }

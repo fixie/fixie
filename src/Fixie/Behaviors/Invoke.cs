@@ -7,6 +7,11 @@ namespace Fixie.Behaviors
 {
     public class Invoke : CaseBehavior
     {
+        public void Execute(Case @case, object instance)
+        {
+            Execute(@case.Method, instance, @case.Exceptions);
+        }
+
         public void Execute(MethodInfo method, object instance, ExceptionList exceptions)
         {
             try

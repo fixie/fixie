@@ -23,95 +23,95 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Pass");
+
+                builder.Behavior.Execute(@case, instance);
                 
-                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
-                
-                exceptions.Any().ShouldBeFalse();
+                @case.Exceptions.Any().ShouldBeFalse();
                 console.Lines.ShouldEqual("Pass");
             }
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Fail");
 
-                builder.Behavior.Execute(Method("Fail"), instance, exceptions);
+                builder.Behavior.Execute(@case, instance);
 
-                exceptions.Count.ShouldEqual(1);
+                @case.Exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldEqual("Fail Threw!");
             }
         }
 
         public void ShouldAllowWrappingTheBehaviorInAnother()
         {
-            builder.Wrap((method, instance, exceptions, inner) =>
+            builder.Wrap((@case, instance, inner) =>
             {
                 Console.WriteLine("Before");
-                inner.Execute(method, instance, exceptions);
+                inner.Execute(@case, instance);
                 Console.WriteLine("After");
             });
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Pass");
 
-                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
+                builder.Behavior.Execute(@case, instance);
 
-                exceptions.Any().ShouldBeFalse();
+                @case.Exceptions.Any().ShouldBeFalse();
                 console.Lines.ShouldEqual("Before", "Pass", "After");
             }
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Fail");
 
-                builder.Behavior.Execute(Method("Fail"), instance, exceptions);
+                builder.Behavior.Execute(@case, instance);
 
-                exceptions.Count.ShouldEqual(1);
+                @case.Exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldEqual("Before", "Fail Threw!", "After");
             }
         }
 
         public void ShouldAllowWrappingTheBehaviorMultipleTimes()
         {
-            builder.Wrap((method, instance, exceptions, inner) =>
+            builder.Wrap((@case, instance, inner) =>
             {
                 Console.WriteLine("Inner Before");
-                inner.Execute(method, instance, exceptions);
+                inner.Execute(@case, instance);
                 Console.WriteLine("Inner After");
             })
-            .Wrap((method, instance, exceptions, inner) =>
+            .Wrap((@case, instance, inner) =>
             {
                 Console.WriteLine("Outer Before");
-                inner.Execute(method, instance, exceptions);
+                inner.Execute(@case, instance);
                 Console.WriteLine("Outer After");
             });
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Pass");
 
-                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
+                builder.Behavior.Execute(@case, instance);
 
-                exceptions.Any().ShouldBeFalse();
+                @case.Exceptions.Any().ShouldBeFalse();
                 console.Lines.ShouldEqual("Outer Before", "Inner Before", "Pass", "Inner After", "Outer After");
             }
         }
 
         public void ShouldHandleCatastrophicExceptionsWhenBehaviorsThrowRatherThanContributeExceptions()
         {
-            builder.Wrap((method, instance, exceptions, inner) =>
+            builder.Wrap((@case, instance, inner) =>
             {
                 throw new Exception("Unsafe behavior threw!");
             });
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Pass");
 
-                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
+                builder.Behavior.Execute(@case, instance);
 
-                exceptions.Count.ShouldEqual(1);
+                @case.Exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldBeEmpty();
             }
         }
@@ -122,11 +122,11 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Pass");
 
-                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
+                builder.Behavior.Execute(@case, instance);
 
-                exceptions.Any().ShouldBeFalse();
+                @case.Exceptions.Any().ShouldBeFalse();
                 console.Lines.ShouldEqual("SetUp", "Pass", "TearDown");
             }
         }
@@ -137,11 +137,11 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Pass");
 
-                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
+                builder.Behavior.Execute(@case, instance);
 
-                exceptions.Count.ShouldEqual(1);
+                @case.Exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldEqual("FailingSetUp Contributes an Exception!");
             }
         }
@@ -152,11 +152,11 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Fail");
 
-                builder.Behavior.Execute(Method("Fail"), instance, exceptions);
+                builder.Behavior.Execute(@case, instance);
 
-                exceptions.Count.ShouldEqual(1);
+                @case.Exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldEqual("SetUp", "Fail Threw!", "TearDown");
             }
         }
@@ -167,21 +167,21 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Pass");
 
-                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
+                builder.Behavior.Execute(@case, instance);
 
-                exceptions.Count.ShouldEqual(1);
+                @case.Exceptions.Count.ShouldEqual(1);
                 console.Lines.ShouldEqual("SetUp", "Pass", "FailingTearDown Contributes an Exception!");
             }
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Fail");
 
-                builder.Behavior.Execute(Method("Fail"), instance, exceptions);
+                builder.Behavior.Execute(@case, instance);
 
-                exceptions.Count.ShouldEqual(2);
+                @case.Exceptions.Count.ShouldEqual(2);
                 console.Lines.ShouldEqual("SetUp", "Fail Threw!", "FailingTearDown Contributes an Exception!");
             }
         }
@@ -195,11 +195,11 @@ namespace Fixie.Tests.Conventions
 
             using (var console = new RedirectedConsole())
             {
-                var exceptions = new ExceptionList();
+                var @case = Case("Pass");
 
-                builder.Behavior.Execute(Method("Pass"), instance, exceptions);
+                builder.Behavior.Execute(@case, instance);
 
-                exceptions.Any().ShouldBeFalse();
+                @case.Exceptions.Any().ShouldBeFalse();
                 console.Lines.ShouldEqual("SetUpA", "SetUpB", "Pass", "TearDownA", "TearDownB");
             }
         }
@@ -266,9 +266,10 @@ namespace Fixie.Tests.Conventions
             return exceptions;
         }
 
-        static MethodInfo Method(string name)
+        static Case Case(string methodName)
         {
-            return typeof(SampleTestClass).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
+            var testClass = typeof(SampleTestClass);
+            return new Case(testClass, testClass.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public));
         }
     }
 }

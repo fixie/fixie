@@ -154,10 +154,10 @@ namespace Fixie.Tests.Conventions
         {
             builder
                 .CreateInstancePerCase()
-                .Wrap((testClass, convention, cases, inner) =>
+                .Wrap((testClass, convention, cases, innerBehavior) =>
                 {
                     Console.WriteLine("Before");
-                    inner.Execute(testClass, convention, cases);
+                    innerBehavior();
                     Console.WriteLine("After");
                 });
 
@@ -176,16 +176,16 @@ namespace Fixie.Tests.Conventions
         {
             builder
                 .CreateInstancePerCase()
-                .Wrap((testClass, convention, cases, inner) =>
+                .Wrap((testClass, convention, cases, innerBehavior) =>
                 {
                     Console.WriteLine("Inner Before");
-                    inner.Execute(testClass, convention, cases);
+                    innerBehavior();
                     Console.WriteLine("Inner After");
                 })
-                .Wrap((testClass, convention, cases, inner) =>
+                .Wrap((testClass, convention, cases, innerBehavior) =>
                 {
                     Console.WriteLine("Outer Before");
-                    inner.Execute(testClass, convention, cases);
+                    innerBehavior();
                     Console.WriteLine("Outer After");
                 });
 
@@ -207,7 +207,7 @@ namespace Fixie.Tests.Conventions
         {
             builder
                 .CreateInstancePerCase()
-                .Wrap((testClass, convention, cases, inner) =>
+                .Wrap((testClass, convention, cases, innerBehavior) =>
                 {
                     throw new Exception("Unsafe behavior threw!");
                 });

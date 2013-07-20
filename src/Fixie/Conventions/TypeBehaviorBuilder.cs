@@ -3,7 +3,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void TypeBehaviorAction(Type testClass, Convention convention, Case[] cases, TypeBehavior inner);
+    public delegate void TypeBehaviorAction(Type testClass, Convention convention, Case[] cases, Action innerBehavior);
     public delegate ExceptionList TypeAction(Type testClass);
     public delegate ExceptionList Factory(Type testClass, out object instance);
 
@@ -47,7 +47,7 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder SetUpTearDown(TypeAction setUp, TypeAction tearDown)
         {
-            return Wrap((testClass, convention, cases, inner) =>
+            return Wrap((testClass, convention, cases, innerBehavior) =>
             {
                 var setUpExceptions = setUp(testClass);
                 if (setUpExceptions.Any())
@@ -57,7 +57,7 @@ namespace Fixie.Conventions
                     return;
                 }
 
-                inner.Execute(testClass, convention, cases);
+                innerBehavior();
 
                 var tearDownExceptions = tearDown(testClass);
                 if (tearDownExceptions.Any())
@@ -81,7 +81,7 @@ namespace Fixie.Conventions
             {
                 try
                 {
-                    outer(testClass, convention, cases, inner);
+                    outer(testClass, convention, cases, () => inner.Execute(testClass, convention, cases));
                 }
                 catch (Exception exception)
                 {

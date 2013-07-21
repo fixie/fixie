@@ -23,6 +23,7 @@ namespace Fixie.Tests.Conventions
                 new Case(testClass, Method("Fail"))
             };
             convention = new SelfTestConvention();
+            SampleTestClass.ForceConstructorFailure = false;
         }
 
         public void ShouldHaveNoBehaviorByDefault()
@@ -92,31 +93,33 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldFailAllCasesWhenCreatingInstancePerCaseAndFactoryContributesExceptions()
         {
-            builder.CreateInstancePerCase(FailingCreateInstance);
+            SampleTestClass.ForceConstructorFailure = true;
+            builder.CreateInstancePerCase();
 
             using (var console = new RedirectedConsole())
             {
                 builder.Behavior.Execute(testClass, convention, cases);
 
-                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
-                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
+                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("'.ctor' failed!");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'.ctor' failed!");
 
-                console.Lines.ShouldEqual("Factory Contributes an Exception!", "Factory Contributes an Exception!");
+                console.Lines.ShouldEqual("Construct", "Construct");
             }
         }
 
         public void ShouldFailAllCasesWhenCreatingInstancePerTestClassAndFactoryContributesExceptions()
         {
-            builder.CreateInstancePerTestClass(FailingCreateInstance);
+            SampleTestClass.ForceConstructorFailure = true;
+            builder.CreateInstancePerTestClass();
 
             using (var console = new RedirectedConsole())
             {
                 builder.Behavior.Execute(testClass, convention, cases);
 
-                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
-                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingCreateInstance");
+                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("'.ctor' failed!");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'.ctor' failed!");
 
-                console.Lines.ShouldEqual("Factory Contributes an Exception!");
+                console.Lines.ShouldEqual("Construct");
             }
         }
 
@@ -278,9 +281,14 @@ namespace Fixie.Tests.Conventions
 
         class SampleTestClass : IDisposable
         {
+            public static bool ForceConstructorFailure = false;
+
             public SampleTestClass()
             {
                 Console.WriteLine("Construct");
+
+                if (ForceConstructorFailure)
+                    throw new FailureException();
             }
 
             public void Pass()
@@ -305,23 +313,13 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        static ExceptionList CreateInstance(Type testClass, out object instance)
+        static object CreateInstance(Type testClass)
         {
             Console.WriteLine("Factory");
-            instance = new SampleTestClass();
-            return new ExceptionList();
+            return new SampleTestClass();
         }
 
-        static ExceptionList FailingCreateInstance(Type testClass, out object instance)
-        {
-            Console.WriteLine("Factory Contributes an Exception!");
-            var exceptions = new ExceptionList();
-            exceptions.Add(new Exception("Exception from FailingCreateInstance"));
-            instance = null;
-            return exceptions;
-        }
-
-        static ExceptionList UnsafeCreateInstance(Type testClass, out object instance)
+        static object UnsafeCreateInstance(Type testClass)
         {
             throw new Exception("Unsafe factory threw!");
         }

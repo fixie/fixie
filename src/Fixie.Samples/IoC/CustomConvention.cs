@@ -31,10 +31,9 @@ namespace Fixie.Samples.IoC
             return container;
         }
 
-        ExceptionList UsingContainer(Type testClass, out object instance)
+        object UsingContainer(Type testClass)
         {
-            instance = container.Get(testClass);
-            return new ExceptionList();
+            return container.Get(testClass);
         }
     }
 }

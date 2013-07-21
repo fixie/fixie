@@ -21,7 +21,7 @@ namespace Fixie.Conventions
             Behavior = new CreateInstancePerCase(Lifecycle.Construct);
             return this;
         }
-        public TypeBehaviorBuilder CreateInstancePerCase(Factory construct)
+        public TypeBehaviorBuilder CreateInstancePerCase(Func<Type, object> construct)
         {
             Behavior = new CreateInstancePerCase(new SafeFactory(construct).Construct);
             return this;
@@ -33,7 +33,7 @@ namespace Fixie.Conventions
             return this;
         }
 
-        public TypeBehaviorBuilder CreateInstancePerTestClass(Factory construct)
+        public TypeBehaviorBuilder CreateInstancePerTestClass(Func<Type, object> construct)
         {
             Behavior = new CreateInstancePerTestClass(new SafeFactory(construct).Construct);
             return this;
@@ -95,9 +95,9 @@ namespace Fixie.Conventions
 
         class SafeFactory
         {
-            readonly Factory construct;
+            readonly Func<Type, object> construct;
 
-            public SafeFactory(Factory construct)
+            public SafeFactory(Func<Type, object> construct)
             {
                 this.construct = construct;
             }
@@ -110,9 +110,7 @@ namespace Fixie.Conventions
 
                 try
                 {
-                    var factoryExceptions = construct(type, out instance);
-                    if (factoryExceptions.Any())
-                        exceptions.Add(factoryExceptions);
+                    instance = construct(type);
                 }
                 catch (Exception ex)
                 {

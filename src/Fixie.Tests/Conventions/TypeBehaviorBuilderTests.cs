@@ -131,8 +131,8 @@ namespace Fixie.Tests.Conventions
             {
                 builder.Behavior.Execute(testClass, convention, cases);
 
-                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
-                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
+                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("'UnsafeCreateInstance' failed!");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'UnsafeCreateInstance' failed!");
 
                 console.Lines.ShouldBeEmpty();
             }
@@ -146,8 +146,8 @@ namespace Fixie.Tests.Conventions
             {
                 builder.Behavior.Execute(testClass, convention, cases);
 
-                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
-                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Unsafe factory threw!");
+                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("'UnsafeCreateInstance' failed!");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'UnsafeCreateInstance' failed!");
 
                 console.Lines.ShouldBeEmpty();
             }
@@ -253,8 +253,8 @@ namespace Fixie.Tests.Conventions
             {
                 builder.Behavior.Execute(testClass, convention, cases);
 
-                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingSetUp");
-                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingSetUp");
+                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("'FailingSetUp' failed!");
+                cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'FailingSetUp' failed!");
 
                 console.Lines.ShouldEqual("FailingSetUp Contributes an Exception!");
             }
@@ -270,10 +270,10 @@ namespace Fixie.Tests.Conventions
             {
                 builder.Behavior.Execute(testClass, convention, cases);
 
-                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingTearDown");
+                cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("'FailingTearDown' failed!");
                 cases[1].Exceptions.ToArray().Select(x => x.Message).ShouldEqual(
                     "'Fail' failed!",
-                    "Exception from FailingTearDown");
+                    "'FailingTearDown' failed!");
 
                 console.Lines.ShouldEqual("SetUp", "Construct", "Pass", "Dispose", "Construct", "Fail", "Dispose", "FailingTearDown Contributes an Exception!");
             }
@@ -321,35 +321,29 @@ namespace Fixie.Tests.Conventions
 
         static object UnsafeCreateInstance(Type testClass)
         {
-            throw new Exception("Unsafe factory threw!");
+            throw new FailureException();
         }
 
-        static ExceptionList SetUp(Type testClass)
+        static void SetUp(Type testClass)
         {
             Console.WriteLine("SetUp");
-            return new ExceptionList();
         }
 
-        static ExceptionList FailingSetUp(Type testClass)
+        static void FailingSetUp(Type testClass)
         {
             Console.WriteLine("FailingSetUp Contributes an Exception!");
-            var exceptions = new ExceptionList();
-            exceptions.Add(new Exception("Exception from FailingSetUp"));
-            return exceptions;
+            throw new FailureException();
         }
 
-        static ExceptionList TearDown(Type testClass)
+        static void TearDown(Type testClass)
         {
             Console.WriteLine("TearDown");
-            return new ExceptionList();
         }
 
-        static ExceptionList FailingTearDown(Type testClass)
+        static void FailingTearDown(Type testClass)
         {
             Console.WriteLine("FailingTearDown Contributes an Exception!");
-            var exceptions = new ExceptionList();
-            exceptions.Add(new Exception("Exception from FailingTearDown"));
-            return exceptions;
+            throw new FailureException();
         }
 
         static MethodInfo Method(string name)

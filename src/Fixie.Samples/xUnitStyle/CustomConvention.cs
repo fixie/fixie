@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fixie.Behaviors;
 using Fixie.Conventions;
 
 namespace Fixie.Samples.xUnitStyle
@@ -33,43 +32,29 @@ namespace Fixie.Samples.xUnitStyle
             return factMethods.Filter(type).Any();
         }
 
-        ExceptionList PrepareFixtureData(Type testClass)
+        void PrepareFixtureData(Type testClass)
         {
-            var exceptions = new ExceptionList();
-
             foreach (var @interface in FixtureInterfaces(testClass))
             {
                 var fixtureDataType = @interface.GetGenericArguments()[0];
 
-                object fixtureInstance;
+                var fixtureInstance = Activator.CreateInstance(fixtureDataType);
 
-                var constructionExceptions = Lifecycle.Construct(fixtureDataType, out fixtureInstance);
-
-                if (constructionExceptions.Any())
-                {
-                    exceptions.Add(constructionExceptions);
-                }
-                else
-                {
-                    var method = @interface.GetMethod("SetFixture", new[] { fixtureDataType });
-                    fixtures[method] = fixtureInstance;
-                }
+                var method = @interface.GetMethod("SetFixture", new[] { fixtureDataType });
+                fixtures[method] = fixtureInstance;
             }
-
-            return exceptions;
         }
 
-        ExceptionList DisposeFixtureData(Type testClass)
+        void DisposeFixtureData(Type testClass)
         {
-            var classTearDownExceptions = new ExceptionList();
             foreach (var fixtureInstance in fixtures.Values)
             {
-                var disposalExceptions = Lifecycle.Dispose(fixtureInstance);
-
-                classTearDownExceptions.Add(disposalExceptions);
+                var disposable = fixtureInstance as IDisposable;
+                if (disposable != null)
+                    disposable.Dispose();
             }
+
             fixtures.Clear();
-            return classTearDownExceptions;
         }
 
         ExceptionList InjectFixtureData(Fixture fixture)

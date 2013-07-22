@@ -4,7 +4,7 @@ using Fixie.Behaviors;
 namespace Fixie.Conventions
 {
     public delegate void TypeBehaviorAction(Type testClass, Convention convention, Case[] cases, Action innerBehavior);
-    public delegate ExceptionList TypeAction(Type testClass);
+    public delegate void TypeAction(Type testClass);
     public delegate ExceptionList Factory(Type testClass, out object instance);
 
     public class TypeBehaviorBuilder
@@ -49,20 +49,9 @@ namespace Fixie.Conventions
         {
             return Wrap((testClass, convention, cases, innerBehavior) =>
             {
-                var setUpExceptions = setUp(testClass);
-                if (setUpExceptions.Any())
-                {
-                    foreach (var @case in cases)
-                        @case.Exceptions.Add(setUpExceptions);
-                    return;
-                }
-
+                setUp(testClass);
                 innerBehavior();
-
-                var tearDownExceptions = tearDown(testClass);
-                if (tearDownExceptions.Any())
-                    foreach (var @case in cases)
-                        @case.Exceptions.Add(tearDownExceptions);
+                tearDown(testClass);
             });
         }
 

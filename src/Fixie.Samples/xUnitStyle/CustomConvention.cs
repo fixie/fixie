@@ -24,7 +24,7 @@ namespace Fixie.Samples.xUnitStyle
                 .SetUpTearDown(PrepareFixtureData, DisposeFixtureData);
 
             InstanceExecution
-                .SetUpTearDown(InjectFixtureData, fixture => new ExceptionList());
+                .SetUpTearDown(InjectFixtureData, fixture => { });
         }
 
         bool HasAnyFactMethods(Type type)
@@ -57,27 +57,10 @@ namespace Fixie.Samples.xUnitStyle
             fixtures.Clear();
         }
 
-        ExceptionList InjectFixtureData(Fixture fixture)
+        void InjectFixtureData(Fixture fixture)
         {
-            var exceptions = new ExceptionList();
-
             foreach (var injectionMethod in fixtures.Keys)
-            {
-                try
-                {
-                    injectionMethod.Invoke(fixture.Instance, new[] { fixtures[injectionMethod] });
-                }
-                catch (TargetInvocationException ex)
-                {
-                    exceptions.Add(ex.InnerException);
-                }
-                catch (Exception ex)
-                {
-                    exceptions.Add(ex);
-                }
-            }
-
-            return exceptions;
+                injectionMethod.Invoke(fixture.Instance, new[] { fixtures[injectionMethod] });
         }
 
         static IEnumerable<Type> FixtureInterfaces(Type testClass)

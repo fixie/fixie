@@ -128,8 +128,8 @@ namespace Fixie.Tests.Conventions
             {
                 builder.Behavior.Execute(fixture);
 
-                fixture.Cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingSetUp");
-                fixture.Cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingSetUp");
+                fixture.Cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("'FailingSetUp' failed!");
+                fixture.Cases[1].Exceptions.ToArray().Single().Message.ShouldEqual("'FailingSetUp' failed!");
 
                 console.Lines.ShouldEqual("FailingSetUp Contributes an Exception!");
             }
@@ -143,10 +143,10 @@ namespace Fixie.Tests.Conventions
             {
                 builder.Behavior.Execute(fixture);
 
-                fixture.Cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("Exception from FailingTearDown");
+                fixture.Cases[0].Exceptions.ToArray().Single().Message.ShouldEqual("'FailingTearDown' failed!");
                 fixture.Cases[1].Exceptions.ToArray().Select(x => x.Message).ShouldEqual(
                     "'Fail' failed!",
-                    "Exception from FailingTearDown");
+                    "'FailingTearDown' failed!");
 
                 console.Lines.ShouldEqual("SetUp", "Pass", "Fail", "FailingTearDown Contributes an Exception!");
             }
@@ -209,32 +209,26 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        static ExceptionList SetUp(Fixture fixture)
+        static void SetUp(Fixture fixture)
         {
             Console.WriteLine("SetUp");
-            return new ExceptionList();
         }
 
-        static ExceptionList FailingSetUp(Fixture fixture)
+        static void FailingSetUp(Fixture fixture)
         {
             Console.WriteLine("FailingSetUp Contributes an Exception!");
-            var exceptions = new ExceptionList();
-            exceptions.Add(new Exception("Exception from FailingSetUp"));
-            return exceptions;
+            throw new FailureException();
         }
 
-        static ExceptionList TearDown(Fixture fixture)
+        static void TearDown(Fixture fixture)
         {
             Console.WriteLine("TearDown");
-            return new ExceptionList();
         }
 
-        static ExceptionList FailingTearDown(Fixture fixture)
+        static void FailingTearDown(Fixture fixture)
         {
             Console.WriteLine("FailingTearDown Contributes an Exception!");
-            var exceptions = new ExceptionList();
-            exceptions.Add(new Exception("Exception from FailingTearDown"));
-            return exceptions;
+            throw new FailureException();
         }
 
         static MethodInfo Method(string name)

@@ -4,7 +4,7 @@ Fixie is a .NET convention-based test framework similar to NUnit and xUnit, but 
 
 ## How do I install Fixie?
 
-First, [install NuGet](http://docs.nuget.org/docs/start-here/installing-nuget). Then, install Fixie from the package manager console:
+First, [install NuGet](http://docs.nuget.org/docs/start-here/installing-nuget). Then, install the [Fixie NuGet package](https://www.nuget.org/packages/Fixie) from the package manager console:
 
     PM> Install-Package Fixie
 

@@ -6,12 +6,12 @@ using Should;
 
 namespace Fixie.Tests.TestClasses
 {
-    public class ClassExecutionLifecycleTests
+    public class LifecycleTests
     {
         static string[] FailingMembers;
         readonly Convention convention;
 
-        public ClassExecutionLifecycleTests()
+        public LifecycleTests()
         {
             FailingMembers = null;
             
@@ -25,8 +25,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass passed.",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass passed.",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor", "Pass", "Dispose",
@@ -41,8 +41,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass passed.",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass passed.",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor", "Pass", "Dispose",
@@ -57,8 +57,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass passed.",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass passed.",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor", "Pass", "Fail", "Dispose");
@@ -72,8 +72,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass passed.",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass passed.",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
                 "Factory", ".ctor", "Pass", "Dispose",
@@ -88,8 +88,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass passed.",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass passed.",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
                 "Factory", ".ctor", "Pass", "Fail", "Dispose");
@@ -105,8 +105,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass failed: '.ctor' failed!",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: '.ctor' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass failed: '.ctor' failed!",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: '.ctor' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
@@ -123,8 +123,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass failed: '.ctor' failed!",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: '.ctor' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass failed: '.ctor' failed!",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: '.ctor' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor");
@@ -140,8 +140,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass failed: 'Factory' failed!",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: 'Factory' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass failed: 'Factory' failed!",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Factory' failed!");
 
             output.ShouldHaveLifecycle(
                 "Factory",
@@ -158,8 +158,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass failed: 'Factory' failed!",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: 'Factory' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass failed: 'Factory' failed!",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Factory' failed!");
 
             output.ShouldHaveLifecycle(
                 "Factory");
@@ -185,8 +185,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass passed.",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass passed.",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
                 "Outer Before", "Inner Before",
@@ -208,8 +208,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass failed: Unsafe class execution behavior threw!",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: Unsafe class execution behavior threw!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass failed: Unsafe class execution behavior threw!",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: Unsafe class execution behavior threw!");
 
             output.ShouldHaveLifecycle("Unsafe class execution behavior");
         }
@@ -223,8 +223,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass passed.",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass passed.",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
                 "SetUp",
@@ -244,8 +244,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass failed: 'SetUp' failed!",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: 'SetUp' failed!");
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass failed: 'SetUp' failed!",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'SetUp' failed!");
 
             output.ShouldHaveLifecycle(
                 "SetUp");
@@ -262,8 +262,8 @@ namespace Fixie.Tests.TestClasses
             var output = Run(convention);
 
             output.ShouldHaveResults(
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Pass failed: 'TearDown' failed!",
-                "Fixie.Tests.TestClasses.ClassExecutionLifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass failed: 'TearDown' failed!",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'TearDown' failed!");
 
             output.ShouldHaveLifecycle(
@@ -271,6 +271,132 @@ namespace Fixie.Tests.TestClasses
                 ".ctor", "Pass", "Dispose",
                 ".ctor", "Fail", "Dispose",
                 "TearDown");
+        }
+
+        public void ShouldAllowWrappingInstanceExecutionWithCustomBehaviors()
+        {
+            convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            convention.InstanceExecution
+                      .Wrap((fixture, innerBehavior) =>
+                      {
+                          Console.WriteLine("Inner Before");
+                          innerBehavior();
+                          Console.WriteLine("Inner After");
+                      })
+                      .Wrap((fixture, innerBehavior) =>
+                      {
+                          Console.WriteLine("Outer Before");
+                          innerBehavior();
+                          Console.WriteLine("Outer After");
+                      });
+
+            var output = Run(convention);
+
+            output.ShouldHaveResults(
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass passed.",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "Outer Before", "Inner Before",
+                "Pass", "Fail",
+                "Inner After", "Outer After",
+                "Dispose");
+        }
+
+        public void ShouldFailAllCasesWhenInstanceExecutionCustomBehaviorThrows()
+        {
+            convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            convention.InstanceExecution
+                      .Wrap((fixture, innerBehavior) =>
+                      {
+                          Console.WriteLine("Unsafe instance execution behavior");
+                          throw new Exception("Unsafe instance execution behavior threw!");
+                      });
+
+            var output = Run(convention);
+
+            output.ShouldHaveResults(
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass failed: Unsafe instance execution behavior threw!",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: Unsafe instance execution behavior threw!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "Unsafe instance execution behavior",
+                "Dispose");
+        }
+
+        public void ShouldAllowWrappingInstanceExecutionWithSetUpTearDownBehaviors()
+        {
+            convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            convention.InstanceExecution
+                      .SetUpTearDown(SetUp, TearDown);
+
+            var output = Run(convention);
+
+            output.ShouldHaveResults(
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass passed.",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "SetUp",
+                "Pass", "Fail",
+                "TearDown",
+                "Dispose");
+        }
+
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenInstanceExecutionSetUpThrows()
+        {
+            FailingMembers = new[] { "SetUp" };
+
+            convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            convention.InstanceExecution
+                      .SetUpTearDown(SetUp, TearDown);
+
+            var output = Run(convention);
+
+            output.ShouldHaveResults(
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass failed: 'SetUp' failed!",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'SetUp' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "SetUp",
+                "Dispose");
+        }
+
+        public void ShouldFailAllCasesWhenInstanceExecutionTearDownThrows()
+        {
+            FailingMembers = new[] { "TearDown" };
+
+            convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            convention.InstanceExecution
+                      .SetUpTearDown(SetUp, TearDown);
+
+            var output = Run(convention);
+
+            output.ShouldHaveResults(
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Pass failed: 'TearDown' failed!",
+                "Fixie.Tests.TestClasses.LifecycleTests+SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'TearDown' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "SetUp",
+                "Pass", "Fail",
+                "TearDown",
+                "Dispose");
         }
 
         static Output Run(Convention convention)
@@ -331,6 +457,20 @@ namespace Fixie.Tests.TestClasses
         static void TearDown(Type testClass)
         {
             testClass.ShouldEqual(typeof(SampleTestClass));
+            WhereAmI();
+        }
+
+        static void SetUp(Fixture fixture)
+        {
+            fixture.Cases.Length.ShouldEqual(2);
+            fixture.TestClass.ShouldEqual(typeof(SampleTestClass));
+            WhereAmI();
+        }
+
+        static void TearDown(Fixture fixture)
+        {
+            fixture.Cases.Length.ShouldEqual(2);
+            fixture.TestClass.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
         }
 

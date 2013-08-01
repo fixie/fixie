@@ -47,7 +47,7 @@
     <Compile Include="CommandLineParserTests.cs" />
     <Compile Include="TestClasses\AsyncCaseTests.cs" />
     <Compile Include="TestClasses\CaseTests.cs" />
-    <Compile Include="TestClasses\ClassExecutionLifecycleTests.cs" />
+    <Compile Include="TestClasses\LifecycleTests.cs" />
     <Compile Include="TestClasses\DisposalTests.cs" />
     <Compile Include="TestClasses\ConstructionTests.cs" />
     <Compile Include="TestClasses\LifecycleHookTests.cs" />

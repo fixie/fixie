@@ -16,47 +16,6 @@ namespace Fixie.Tests.TestClasses
             indent = 0;
         }
 
-        public void ShouldPerformFullTestClassLifecyclePerCaseByDefault()
-        {
-            var convention = new SelfTestConvention();
-
-            convention.ClassExecution.Behavior.ShouldBeType<CreateInstancePerCase>();
-
-            OutputFromSampleTestClasses(convention).ShouldEqual(
-                new StringBuilder()
-                    .AppendLine("Construct FirstTestClass")
-                    .AppendLine("    PassingCase")
-                    .AppendLine("Dispose FirstTestClass")
-                    .AppendLine("Construct FirstTestClass")
-                    .AppendLine("    FailingCase Throws Exception")
-                    .AppendLine("Dispose FirstTestClass")
-                    .AppendLine("Construct SecondTestClass")
-                    .AppendLine("    PassingCase")
-                    .AppendLine("Dispose SecondTestClass")
-                    .AppendLine("Construct SecondTestClass")
-                    .AppendLine("    FailingCase Throws Exception")
-                    .AppendLine("Dispose SecondTestClass")
-                    .ToString());
-        }
-
-        public void ShouldSupportOptionToPerformSingleTestClassLifecycleAcrossAllContainedCases()
-        {
-            var convention = new SelfTestConvention();
-            convention.ClassExecution.CreateInstancePerTestClass();
-
-            OutputFromSampleTestClasses(convention).ShouldEqual(
-                new StringBuilder()
-                    .AppendLine("Construct FirstTestClass")
-                    .AppendLine("    PassingCase")
-                    .AppendLine("    FailingCase Throws Exception")
-                    .AppendLine("Dispose FirstTestClass")
-                    .AppendLine("Construct SecondTestClass")
-                    .AppendLine("    PassingCase")
-                    .AppendLine("    FailingCase Throws Exception")
-                    .AppendLine("Dispose SecondTestClass")
-                    .ToString());
-        }
-
         public void ShouldSupportSuppressingTheCaseExecutionBehavior()
         {
             var convention = new SelfTestConvention();
@@ -75,36 +34,6 @@ namespace Fixie.Tests.TestClasses
                     .AppendLine("Dispose SecondTestClass")
                     .AppendLine("Construct SecondTestClass")
                     .AppendLine("    Skipping FailingCase")
-                    .AppendLine("Dispose SecondTestClass")
-                    .ToString());
-        }
-
-        public void ShouldSupportAugmentingTheCaseExecutionBehavior()
-        {
-            var convention = new SelfTestConvention();
-            convention.CaseExecution.Wrap(BeforeAfterCase);
-
-            OutputFromSampleTestClasses(convention).ShouldEqual(
-                new StringBuilder()
-                    .AppendLine("Construct FirstTestClass")
-                    .AppendLine("    BeforeCase")
-                    .AppendLine("        PassingCase")
-                    .AppendLine("    AfterCase")
-                    .AppendLine("Dispose FirstTestClass")
-                    .AppendLine("Construct FirstTestClass")
-                    .AppendLine("    BeforeCase")
-                    .AppendLine("        FailingCase Throws Exception")
-                    .AppendLine("    AfterCase")
-                    .AppendLine("Dispose FirstTestClass")
-                    .AppendLine("Construct SecondTestClass")
-                    .AppendLine("    BeforeCase")
-                    .AppendLine("        PassingCase")
-                    .AppendLine("    AfterCase")
-                    .AppendLine("Dispose SecondTestClass")
-                    .AppendLine("Construct SecondTestClass")
-                    .AppendLine("    BeforeCase")
-                    .AppendLine("        FailingCase Throws Exception")
-                    .AppendLine("    AfterCase")
                     .AppendLine("Dispose SecondTestClass")
                     .ToString());
         }
@@ -131,36 +60,6 @@ namespace Fixie.Tests.TestClasses
                     .ToString());
         }
 
-        public void ShouldSupportAugmentingTheInstanceExecutionBehavior()
-        {
-            var convention = new SelfTestConvention();
-            convention.InstanceExecution.Wrap(BeforeAfterInstance);
-
-            OutputFromSampleTestClasses(convention).ShouldEqual(
-                new StringBuilder()
-                    .AppendLine("Construct FirstTestClass")
-                    .AppendLine("    BeforeInstance")
-                    .AppendLine("        PassingCase")
-                    .AppendLine("    AfterInstance")
-                    .AppendLine("Dispose FirstTestClass")
-                    .AppendLine("Construct FirstTestClass")
-                    .AppendLine("    BeforeInstance")
-                    .AppendLine("        FailingCase Throws Exception")
-                    .AppendLine("    AfterInstance")
-                    .AppendLine("Dispose FirstTestClass")
-                    .AppendLine("Construct SecondTestClass")
-                    .AppendLine("    BeforeInstance")
-                    .AppendLine("        PassingCase")
-                    .AppendLine("    AfterInstance")
-                    .AppendLine("Dispose SecondTestClass")
-                    .AppendLine("Construct SecondTestClass")
-                    .AppendLine("    BeforeInstance")
-                    .AppendLine("        FailingCase Throws Exception")
-                    .AppendLine("    AfterInstance")
-                    .AppendLine("Dispose SecondTestClass")
-                    .ToString());
-        }
-
         public void ShouldSupportReplacingTheClassExecutionBehavior()
         {
             var convention = new SelfTestConvention();
@@ -170,32 +69,6 @@ namespace Fixie.Tests.TestClasses
                 new StringBuilder()
                     .AppendLine("Skipping FirstTestClass")
                     .AppendLine("Skipping SecondTestClass")
-                    .ToString());
-        }
-
-        public void ShouldSupportAugmentingTheClassExecutionBehavior()
-        {
-            var convention = new SelfTestConvention();
-            convention.ClassExecution.Wrap(BeforeAfterType);
-
-            OutputFromSampleTestClasses(convention).ShouldEqual(
-                new StringBuilder()
-                    .AppendLine("BeforeTestClass")
-                    .AppendLine("    Construct FirstTestClass")
-                    .AppendLine("        PassingCase")
-                    .AppendLine("    Dispose FirstTestClass")
-                    .AppendLine("    Construct FirstTestClass")
-                    .AppendLine("        FailingCase Throws Exception")
-                    .AppendLine("    Dispose FirstTestClass")
-                    .AppendLine("AfterTestClass")
-                    .AppendLine("BeforeTestClass")
-                    .AppendLine("    Construct SecondTestClass")
-                    .AppendLine("        PassingCase")
-                    .AppendLine("    Dispose SecondTestClass")
-                    .AppendLine("    Construct SecondTestClass")
-                    .AppendLine("        FailingCase Throws Exception")
-                    .AppendLine("    Dispose SecondTestClass")
-                    .AppendLine("AfterTestClass")
                     .ToString());
         }
 

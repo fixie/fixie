@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Fixie.Conventions;
+using Should;
 
 namespace Fixie.Tests.Lifecycle
 {
@@ -88,6 +89,44 @@ namespace Fixie.Tests.Lifecycle
 
                 WhereAmI();
             }
+        }
+
+        protected static void TypeSetUp(Type testClass)
+        {
+            testClass.ShouldEqual(typeof(SampleTestClass));
+            WhereAmI();
+        }
+
+        protected static void TypeTearDown(Type testClass)
+        {
+            testClass.ShouldEqual(typeof(SampleTestClass));
+            WhereAmI();
+        }
+
+        protected static void InstanceSetUp(Fixture fixture)
+        {
+            fixture.TestClass.ShouldEqual(typeof(SampleTestClass));
+            WhereAmI();
+        }
+
+        protected static void InstanceTearDown(Fixture fixture)
+        {
+            fixture.TestClass.ShouldEqual(typeof(SampleTestClass));
+            WhereAmI();
+        }
+
+        protected static void CaseSetUp(Case @case, object instance)
+        {
+            @case.Class.ShouldEqual(typeof(SampleTestClass));
+            instance.ShouldBeType<SampleTestClass>();
+            WhereAmI();
+        }
+
+        protected static void CaseTearDown(Case @case, object instance)
+        {
+            @case.Class.ShouldEqual(typeof(SampleTestClass));
+            instance.ShouldBeType<SampleTestClass>();
+            WhereAmI();
         }
 
         protected static void WhereAmI([CallerMemberName] string member = null)

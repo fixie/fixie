@@ -45,9 +45,13 @@
     <Compile Include="Assertions.cs" />
     <Compile Include="Behaviors\ExecuteCasesTests.cs" />
     <Compile Include="CommandLineParserTests.cs" />
+    <Compile Include="Lifecycle\CaseLifecycleTests.cs" />
+    <Compile Include="Lifecycle\ClassLifecycleTests.cs" />
+    <Compile Include="Lifecycle\ConstructDisposeLifecycleTests.cs" />
+    <Compile Include="Lifecycle\InstanceLifecycleTests.cs" />
     <Compile Include="TestClasses\AsyncCaseTests.cs" />
     <Compile Include="TestClasses\CaseTests.cs" />
-    <Compile Include="TestClasses\LifecycleTests.cs" />
+    <Compile Include="Lifecycle\LifecycleTests.cs" />
     <Compile Include="TestClasses\DisposalTests.cs" />
     <Compile Include="TestClasses\ConstructionTests.cs" />
     <Compile Include="TestClasses\LifecycleHookTests.cs" />

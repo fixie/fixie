@@ -1,6 +1,6 @@
 # Fixie
 
-Fixie is a .NET convention-based test framework similar to NUnit and xUnit, but with an emphasis on low-ceremony defaults and flexible customization. Fixie's development is documented at [plioi.github.io/fixie](plioi.github.io/fixie).
+Fixie is a .NET convention-based test framework similar to NUnit and xUnit, but with an emphasis on low-ceremony defaults and flexible customization. Fixie's development is documented at [https://plioi.github.io/fixie](https://plioi.github.io/fixie).
 
 ## How do I install Fixie?
 

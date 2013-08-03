@@ -3,9 +3,9 @@ using Should;
 
 namespace Fixie.Tests.Lifecycle
 {
-    public class ClassLifecycleTests : LifecycleTests
+    public class ClassExecutionTests : LifecycleTests
     {
-        public void ShouldAllowWrappingClassExecutionWithCustomBehaviors()
+        public void ShouldAllowWrappingClassWithCustomBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -35,7 +35,36 @@ namespace Fixie.Tests.Lifecycle
                 "Inner After", "Outer After");
         }
 
-        public void ShouldAllowCustomBehaviorsToShortCircuitInnerBehavior()
+        public void ShouldAllowWrappingClassWithCustomBehaviorsWhenConstructingPerTestClass()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass()
+                      .Wrap((testClass, conv, cases, innerBehavior) =>
+                      {
+                          Console.WriteLine("Inner Before");
+                          innerBehavior();
+                          Console.WriteLine("Inner After");
+                      })
+                      .Wrap((testClass, conv, cases, innerBehavior) =>
+                      {
+                          Console.WriteLine("Outer Before");
+                          innerBehavior();
+                          Console.WriteLine("Outer After");
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                "Outer Before", "Inner Before",
+                ".ctor", "Pass", "Fail", "Dispose",
+                "Inner After", "Outer After");
+        }
+
+        public void ShouldAllowCustomBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -56,7 +85,28 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldFailAllCasesWhenClassExecutionCustomBehaviorThrows()
+        public void ShouldAllowCustomBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerTestClass()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass()
+                      .Wrap((testClass, conv, cases, innerBehavior) =>
+                      {
+                          //Behavior chooses not to invoke innerBehavior().
+                          //Since the test classes are never intantiated,
+                          //their cases don't have the chance to throw exceptions,
+                          //resulting in all 'passing'.
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail passed.");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldFailCaseWhenConstructingPerCaseAndCustomBehaviorThrows()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -75,7 +125,26 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle("Unsafe class execution behavior");
         }
 
-        public void ShouldAllowWrappingClassExecutionWithSetUpTearDownBehaviors()
+        public void ShouldFailAllCasesWhenConstructingPerTestClassAndCustomBehaviorThrows()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass()
+                      .Wrap((testClass, conv, cases, innerBehavior) =>
+                      {
+                          Console.WriteLine("Unsafe class execution behavior");
+                          throw new Exception("Unsafe class execution behavior threw!");
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: Unsafe class execution behavior threw!",
+                "SampleTestClass.Fail failed: Unsafe class execution behavior threw!");
+
+            output.ShouldHaveLifecycle("Unsafe class execution behavior");
+        }
+
+        public void ShouldAllowWrappingClassWithSetUpTearDownBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -94,7 +163,25 @@ namespace Fixie.Tests.Lifecycle
                 "TearDown");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenClassExecutionSetUpThrows()
+        public void ShouldAllowWrappingClassWithSetUpTearDownBehaviorsWhenConstructingPerTestClass()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass()
+                      .SetUpTearDown(SetUp, TearDown);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                "SetUp",
+                ".ctor", "Pass", "Fail", "Dispose",
+                "TearDown");
+        }
+
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndSetUpThrows()
         {
             FailDuring("SetUp");
 
@@ -112,7 +199,25 @@ namespace Fixie.Tests.Lifecycle
                 "SetUp");
         }
 
-        public void ShouldFailAllCasesWhenClassExecutionTearDownThrows()
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerTestClassAndSetUpThrows()
+        {
+            FailDuring("SetUp");
+
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass()
+                      .SetUpTearDown(SetUp, TearDown);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'SetUp' failed!",
+                "SampleTestClass.Fail failed: 'SetUp' failed!");
+
+            output.ShouldHaveLifecycle(
+                "SetUp");
+        }
+
+        public void ShouldFailCaseWhenConstructingPerCaseAndTearDownThrows()
         {
             FailDuring("TearDown");
 
@@ -131,6 +236,27 @@ namespace Fixie.Tests.Lifecycle
                 "SetUp",
                 ".ctor", "Pass", "Dispose",
                 ".ctor", "Fail", "Dispose",
+                "TearDown");
+        }
+
+        public void ShouldFailAllCasesWhenConstructingPerTestClassAndTearDownThrows()
+        {
+            FailDuring("TearDown");
+
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass()
+                      .SetUpTearDown(SetUp, TearDown);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'TearDown' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'TearDown' failed!");
+
+            output.ShouldHaveLifecycle(
+                "SetUp",
+                ".ctor", "Pass", "Fail", "Dispose",
                 "TearDown");
         }
 

@@ -5,7 +5,7 @@ namespace Fixie.Tests.Lifecycle
 {
     public class ConstructionTests : LifecycleTests
     {
-        public void ShouldCreateInstancePerCaseByDefault()
+        public void ShouldConstructPerCaseByDefault()
         {
             var output = Run();
 
@@ -18,7 +18,7 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldAllowCreatingInstancePerCaseExplicitly()
+        public void ShouldAllowConstructingPerCaseExplicitly()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
@@ -34,7 +34,7 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldAllowCreatingInstancePerTestClass()
+        public void ShouldAllowConstructingPerTestClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass();
@@ -49,7 +49,7 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor", "Pass", "Fail", "Dispose");
         }
 
-        public void ShouldAllowCreatingInstancePerCaseUsingCustomFactory()
+        public void ShouldAllowConstructingPerCaseUsingCustomFactory()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase(Factory);
@@ -65,7 +65,7 @@ namespace Fixie.Tests.Lifecycle
                 "Factory", ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldAllowCreatingInstancePerTestClassUsingCustomFactory()
+        public void ShouldAllowConstructingPerTestClassUsingCustomFactory()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass(Factory);
@@ -80,7 +80,7 @@ namespace Fixie.Tests.Lifecycle
                 "Factory", ".ctor", "Pass", "Fail", "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenCreatingInstancePerCaseAndConstructorThrows()
+        public void ShouldFailCaseWhenConstructingPerCaseAndConstructorThrows()
         {
             FailDuring(".ctor");
 
@@ -98,7 +98,7 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor");
         }
 
-        public void ShouldFailAllCasesWhenCreatingInstancePerTestClassAndConstructorThrows()
+        public void ShouldFailAllCasesWhenConstructingPerTestClassAndConstructorThrows()
         {
             FailDuring(".ctor");
 
@@ -115,7 +115,7 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor");
         }
 
-        public void ShouldFailAllCasesWhenCreatingInstancePerCaseAndCustomFactoryThrows()
+        public void ShouldFailCaseWhenConstructingPerCaseAndCustomFactoryThrows()
         {
             FailDuring("Factory");
 
@@ -133,7 +133,7 @@ namespace Fixie.Tests.Lifecycle
                 "Factory");
         }
 
-        public void ShouldFailAllCasesWhenCreatingInstancePerTestClassAndCustomFactoryThrows()
+        public void ShouldFailAllCasesWhenConstructingPerTestClassAndCustomFactoryThrows()
         {
             FailDuring("Factory");
 

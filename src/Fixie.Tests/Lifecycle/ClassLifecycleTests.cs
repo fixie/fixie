@@ -5,7 +5,7 @@ namespace Fixie.Tests.Lifecycle
 {
     public class ClassExecutionTests : LifecycleTests
     {
-        public void ShouldAllowWrappingClassWithBehaviorsWhenConstructingPerCase()
+        public void ShouldAllowWrappingTypeWithBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -35,7 +35,7 @@ namespace Fixie.Tests.Lifecycle
                 "Inner After", "Outer After");
         }
 
-        public void ShouldAllowWrappingClassWithBehaviorsWhenConstructingPerTestClass()
+        public void ShouldAllowWrappingTypeWithBehaviorsWhenConstructingPerTestClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass()
@@ -64,7 +64,7 @@ namespace Fixie.Tests.Lifecycle
                 "Inner After", "Outer After");
         }
 
-        public void ShouldAllowClassBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerCase()
+        public void ShouldAllowTypeBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -85,7 +85,7 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldAllowClassBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerTestClass()
+        public void ShouldAllowTypeBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerTestClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass()
@@ -106,7 +106,7 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldFailCaseWhenConstructingPerCaseAndClassBehaviorThrows()
+        public void ShouldFailCaseWhenConstructingPerCaseAndTypeBehaviorThrows()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -125,7 +125,7 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle("Unsafe class execution behavior");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndClassBehaviorThrows()
+        public void ShouldFailAllCasesWhenConstructingPerTestClassAndTypeBehaviorThrows()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass()
@@ -144,7 +144,7 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle("Unsafe class execution behavior");
         }
 
-        public void ShouldAllowWrappingClassWithSetUpTearDownBehaviorsWhenConstructingPerCase()
+        public void ShouldAllowWrappingTypeWithSetUpTearDownBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -163,7 +163,7 @@ namespace Fixie.Tests.Lifecycle
                 "TearDown");
         }
 
-        public void ShouldAllowWrappingClassWithSetUpTearDownBehaviorsWhenConstructingPerTestClass()
+        public void ShouldAllowWrappingTypeWithSetUpTearDownBehaviorsWhenConstructingPerTestClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass()
@@ -181,7 +181,7 @@ namespace Fixie.Tests.Lifecycle
                 "TearDown");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndClassSetUpThrows()
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndTypeSetUpThrows()
         {
             FailDuring("SetUp");
 
@@ -199,7 +199,7 @@ namespace Fixie.Tests.Lifecycle
                 "SetUp");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerTestClassAndClassSetUpThrows()
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerTestClassAndTypeSetUpThrows()
         {
             FailDuring("SetUp");
 
@@ -217,7 +217,7 @@ namespace Fixie.Tests.Lifecycle
                 "SetUp");
         }
 
-        public void ShouldFailCaseWhenConstructingPerCaseAndClassTearDownThrows()
+        public void ShouldFailCaseWhenConstructingPerCaseAndTypeTearDownThrows()
         {
             FailDuring("TearDown");
 
@@ -239,7 +239,7 @@ namespace Fixie.Tests.Lifecycle
                 "TearDown");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndClassTearDownThrows()
+        public void ShouldFailAllCasesWhenConstructingPerTestClassAndTypeTearDownThrows()
         {
             FailDuring("TearDown");
 

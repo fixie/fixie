@@ -38,6 +38,16 @@ namespace Fixie.Tests.TestClasses
                 "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.PassC passed.");
         }
 
+        public void ShouldFailWhenTestClassConstructorCannotBeInvoked()
+        {
+            var listener = new StubListener();
+
+            new SelfTestConvention().Execute(listener, typeof(CannotInvokeConstructorTestClass));
+
+            listener.ShouldHaveEntries(
+                "Fixie.Tests.TestClasses.CaseTests+CannotInvokeConstructorTestClass.UnreachableCase failed: No parameterless constructor defined for this object.");
+        }
+
         class PassTestClass
         {
             public void Pass() { }
@@ -62,6 +72,15 @@ namespace Fixie.Tests.TestClasses
             public void PassB() { }
 
             public void PassC() { }
+        }
+
+        class CannotInvokeConstructorTestClass
+        {
+            public CannotInvokeConstructorTestClass(int argument)
+            {
+            }
+
+            public void UnreachableCase() { }
         }
     }
 }

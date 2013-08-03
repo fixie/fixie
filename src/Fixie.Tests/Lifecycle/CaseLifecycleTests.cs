@@ -5,7 +5,7 @@ namespace Fixie.Tests.Lifecycle
 {
     public class CaseLifecycleTests : LifecycleTests
     {
-        public void ShouldAllowWrappingCaseWithCustomBehaviorsWhenConstructingPerCase()
+        public void ShouldAllowWrappingCaseWithBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
@@ -43,7 +43,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingCaseWithCustomBehaviorsWhenConstructingPerTestClass()
+        public void ShouldAllowWrappingCaseWithBehaviorsWhenConstructingPerTestClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass();
@@ -79,7 +79,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowCustomBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerCase()
+        public void ShouldAllowCaseBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
@@ -106,7 +106,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
         
-        public void ShouldAllowCustomBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerTestClass()
+        public void ShouldAllowCaseBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerTestClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass();
@@ -131,7 +131,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailCaseWhenConstructingPerCaseAndCustomBehaviorThrows()
+        public void ShouldFailCaseWhenConstructingPerCaseAndCaseBehaviorThrows()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
@@ -158,7 +158,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndCustomBehaviorThrows()
+        public void ShouldFailAllCasesWhenConstructingPerTestClassAndCaseBehaviorThrows()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass();
@@ -227,7 +227,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndSetUpThrows()
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndCaseSetUpThrows()
         {
             FailDuring("SetUp");
 
@@ -252,7 +252,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerTestClassAndSetUpThrows()
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerTestClassAndCaseSetUpThrows()
         {
             FailDuring("SetUp");
 
@@ -275,7 +275,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailCaseWhenConstructingPerCaseAndTearDownThrows()
+        public void ShouldFailCaseWhenConstructingPerCaseAndCaseTearDownThrows()
         {
             FailDuring("TearDown");
 
@@ -301,7 +301,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndTearDownThrows()
+        public void ShouldFailAllCasesWhenConstructingPerTestClassAndCaseTearDownThrows()
         {
             FailDuring("TearDown");
 

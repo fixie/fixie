@@ -3,7 +3,7 @@ using Should;
 
 namespace Fixie.Tests.Lifecycle
 {
-    public class ConstructDisposeLifecycleTests : LifecycleTests
+    public class ConstructionTests : LifecycleTests
     {
         public void ShouldCreateInstancePerCaseByDefault()
         {

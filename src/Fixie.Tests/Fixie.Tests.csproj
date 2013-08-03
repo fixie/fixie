@@ -52,7 +52,7 @@
     <Compile Include="TestClasses\AsyncCaseTests.cs" />
     <Compile Include="TestClasses\CaseTests.cs" />
     <Compile Include="Lifecycle\LifecycleTests.cs" />
-    <Compile Include="TestClasses\DisposalTests.cs" />
+    <Compile Include="Lifecycle\DisposalTests.cs" />
     <Compile Include="TestClasses\ConstructionTests.cs" />
     <Compile Include="TestClasses\LifecycleHookTests.cs" />
     <Compile Include="Behaviors\InvokeTests.cs" />

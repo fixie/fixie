@@ -62,10 +62,32 @@ namespace Fixie.Tests.Lifecycle
 
         protected class SampleTestClass : IDisposable
         {
-            public SampleTestClass() { WhereAmI(); }
-            public void Pass() { WhereAmI(); }
-            public void Fail() { WhereAmI(); throw new FailureException(); }
-            public void Dispose() { WhereAmI(); }
+            bool disposed;
+
+            public SampleTestClass()
+            {
+                WhereAmI();
+            }
+
+            public void Pass()
+            {
+                WhereAmI();
+            }
+
+            public void Fail()
+            {
+                WhereAmI();
+                throw new FailureException();
+            }
+
+            public void Dispose()
+            {
+                if (disposed)
+                    throw new ShouldBeUnreachableException();
+                disposed = true;
+
+                WhereAmI();
+            }
         }
 
         protected static void WhereAmI([CallerMemberName] string member = null)

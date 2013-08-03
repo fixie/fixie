@@ -34,18 +34,20 @@ namespace Fixie.Conventions
         {
             return SetUpTearDown(fixture =>
             {
-                //TODO: We want to just throw if InvokeAll ever experiences an exception,
+                //NOTE: We want to just throw like normal if InvokeAll ever experiences an exception,
                 //      allowing WrapBehavior's own try/catch to handle it correctly.
                 //      As is, if the inner behavior doesn't happen to short-cicuit case-running
                 //      for cases that have already failed, we could run the case even after
                 //      failed setup.
+                //
+                //      The use of WrappedExceptions is a workaround which only fixes the
+                //      immediate issue, but suggests that all exception handling should
+                //      be done by throwing a wrapper exception instead of explicitly
+                //      passing around ExceptionLists as return values.
 
                 var setUpExceptions = InvokeAll(setUpMethods, fixture.TestClass, fixture.Instance);
                 if (setUpExceptions.Any())
-                {
-                    foreach (var @case in fixture.Cases)
-                        @case.Exceptions.Add(setUpExceptions);
-                }
+                    throw new WrappedExceptions(setUpExceptions);
             },
             fixture =>
             {
@@ -56,6 +58,17 @@ namespace Fixie.Conventions
                         @case.Exceptions.Add(tearDownExceptions);
                 }
             });
+        }
+
+        class WrappedExceptions : Exception
+        {
+            public WrappedExceptions(ExceptionList innerExceptions)
+                : base("See InnerExceptions.")
+            {
+                InnerExceptions = innerExceptions;
+            }
+
+            public ExceptionList InnerExceptions { get; private set; }
         }
 
         static ExceptionList InvokeAll(MethodFilter methodFilter, Type type, object instance)
@@ -83,6 +96,13 @@ namespace Fixie.Conventions
                 try
                 {
                     outer(fixture, () => inner.Execute(fixture));
+                }
+                catch (WrappedExceptions exceptions)
+                {
+                    foreach (var @case in fixture.Cases)
+                    {
+                        @case.Exceptions.Add(exceptions.InnerExceptions);
+                    }
                 }
                 catch (Exception exception)
                 {

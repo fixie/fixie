@@ -1,5 +1,4 @@
 using System;
-using Fixie.Conventions;
 
 namespace Fixie.Tests.Lifecycle
 {
@@ -477,11 +476,6 @@ namespace Fixie.Tests.Lifecycle
                 "SetUpA", "SetUpB", "Pass", "TearDownA", "TearDownB",
                 "SetUpA", "SetUpB", "Fail", "TearDownA", "TearDownB",
                 "Dispose");
-        }
-
-        static MethodFilter StartsWith(string methodNamePrefix)
-        {
-            return new MethodFilter().Where(x => x.Name.StartsWith(methodNamePrefix));
         }
     }
 }

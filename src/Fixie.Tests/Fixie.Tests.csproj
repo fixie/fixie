@@ -55,7 +55,6 @@
     <Compile Include="Lifecycle\LifecycleTests.cs" />
     <Compile Include="Lifecycle\DisposalTests.cs" />
     <Compile Include="Behaviors\InvokeTests.cs" />
-    <Compile Include="Conventions\InstanceBehaviorBuilderTests.cs" />
     <Compile Include="Conventions\CaseBehaviorBuilderTests.cs" />
     <Compile Include="Conventions\MethodFilterTests.cs" />
     <Compile Include="FailureException.cs" />

@@ -34,24 +34,6 @@ namespace Fixie.Tests.Conventions
             }
         }
 
-        public void ShouldAllowSetUpTearDownByInvokingAllMethodsFoundByMethodFilter()
-        {
-            var setUp = new MethodFilter().Where(m => m.Name.StartsWith("SetUp"));
-            var tearDown = new MethodFilter().Where(m => m.Name.StartsWith("TearDown"));
-
-            builder.SetUpTearDown(setUp, tearDown);
-
-            using (var console = new RedirectedConsole())
-            {
-                var @case = Case("Pass");
-
-                builder.Behavior.Execute(@case, instance);
-
-                @case.Exceptions.Any().ShouldBeFalse();
-                console.Lines.ShouldEqual("SetUpA", "SetUpB", "Pass", "TearDownA", "TearDownB");
-            }
-        }
-
         class SampleTestClass
         {
             public void SetUpA()

@@ -16,62 +16,6 @@ namespace Fixie.Tests.TestClasses
             indent = 0;
         }
 
-        public void ShouldSupportSuppressingTheCaseExecutionBehavior()
-        {
-            var convention = new SelfTestConvention();
-            convention.CaseExecution.Wrap(SkipCase);
-
-            OutputFromSampleTestClasses(convention).ShouldEqual(
-                new StringBuilder()
-                    .AppendLine("Construct FirstTestClass")
-                    .AppendLine("    Skipping PassingCase")
-                    .AppendLine("Dispose FirstTestClass")
-                    .AppendLine("Construct FirstTestClass")
-                    .AppendLine("    Skipping FailingCase")
-                    .AppendLine("Dispose FirstTestClass")
-                    .AppendLine("Construct SecondTestClass")
-                    .AppendLine("    Skipping PassingCase")
-                    .AppendLine("Dispose SecondTestClass")
-                    .AppendLine("Construct SecondTestClass")
-                    .AppendLine("    Skipping FailingCase")
-                    .AppendLine("Dispose SecondTestClass")
-                    .ToString());
-        }
-
-        public void ShouldSupportReplacingTheInstanceExecutionBehavior()
-        {
-            var convention = new SelfTestConvention();
-            convention.InstanceExecution.Wrap(SkipInstance);
-
-            OutputFromSampleTestClasses(convention).ShouldEqual(
-                new StringBuilder()
-                    .AppendLine("Construct FirstTestClass")
-                    .AppendLine("    Skipping 1 case(s) for an instance of FirstTestClass")
-                    .AppendLine("Dispose FirstTestClass")
-                    .AppendLine("Construct FirstTestClass")
-                    .AppendLine("    Skipping 1 case(s) for an instance of FirstTestClass")
-                    .AppendLine("Dispose FirstTestClass")
-                    .AppendLine("Construct SecondTestClass")
-                    .AppendLine("    Skipping 1 case(s) for an instance of SecondTestClass")
-                    .AppendLine("Dispose SecondTestClass")
-                    .AppendLine("Construct SecondTestClass")
-                    .AppendLine("    Skipping 1 case(s) for an instance of SecondTestClass")
-                    .AppendLine("Dispose SecondTestClass")
-                    .ToString());
-        }
-
-        public void ShouldSupportReplacingTheClassExecutionBehavior()
-        {
-            var convention = new SelfTestConvention();
-            convention.ClassExecution.Wrap(SkipType);
-
-            OutputFromSampleTestClasses(convention).ShouldEqual(
-                new StringBuilder()
-                    .AppendLine("Skipping FirstTestClass")
-                    .AppendLine("Skipping SecondTestClass")
-                    .ToString());
-        }
-
         public void ShouldSupportAugmentingTestClassAndInstanceAndCaseBehaviors()
         {
             var convention = new SelfTestConvention();
@@ -160,11 +104,6 @@ namespace Fixie.Tests.TestClasses
             Console.WriteLine(indentation + format, args);
         }
 
-        static void SkipCase(Case @case, object instance, Action innerBehavior)
-        {
-            WriteLine("Skipping " + @case.Method.Name);
-        }
-
         static void BeforeAfterCase(Case @case, object instance, Action innerBehavior)
         {
             WriteLine("BeforeCase");
@@ -174,11 +113,6 @@ namespace Fixie.Tests.TestClasses
             WriteLine("AfterCase");
         }
 
-        static void SkipInstance(Fixture fixture, Action innerBehavior)
-        {
-            WriteLine("Skipping {0} case(s) for an instance of {1}", fixture.Cases.Length, fixture.TestClass.Name);
-        }
-
         static void BeforeAfterInstance(Fixture fixture, Action innerBehavior)
         {
             WriteLine("BeforeInstance");
@@ -186,11 +120,6 @@ namespace Fixie.Tests.TestClasses
             innerBehavior();
             indent--;
             WriteLine("AfterInstance");
-        }
-
-        static void SkipType(Type testClass, Convention convention, Case[] cases, Action innerBehavior)
-        {
-            WriteLine("Skipping " + testClass.Name);
         }
 
         static void BeforeAfterType(Type testClass, Convention convention, Case[] cases, Action innerBehavior)

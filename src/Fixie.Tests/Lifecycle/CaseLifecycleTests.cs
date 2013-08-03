@@ -41,6 +41,31 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
+        public void ShouldAllowCustomBehaviorsToShortCircuitInnerBehavior()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            Convention.CaseExecution
+                      .Wrap((@case, instance, innerBehavior) =>
+                      {
+                          //Behavior chooses not to invoke innerBehavior().
+                          //Since the cases are never invoked, they don't
+                          //have the chance to throw exceptions, resulting
+                          //in all 'passing'.
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail passed.");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "Dispose");
+        }
+
         public void ShouldFailAllCasesWhenCaseExecutionCustomBehaviorThrows()
         {
             Convention.ClassExecution

@@ -70,6 +70,16 @@ namespace Fixie.Tests.Lifecycle
                 WhereAmI();
             }
 
+            public void SetUpA()
+            {
+                WhereAmI();
+            }
+
+            public void SetUpB()
+            {
+                WhereAmI();
+            }
+
             public void Pass()
             {
                 WhereAmI();
@@ -79,6 +89,16 @@ namespace Fixie.Tests.Lifecycle
             {
                 WhereAmI();
                 throw new FailureException();
+            }
+
+            public void TearDownA()
+            {
+                WhereAmI();
+            }
+
+            public void TearDownB()
+            {
+                WhereAmI();
             }
 
             public void Dispose()

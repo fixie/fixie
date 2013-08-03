@@ -1,4 +1,5 @@
 using System;
+using Fixie.Conventions;
 
 namespace Fixie.Tests.Lifecycle
 {
@@ -322,6 +323,165 @@ namespace Fixie.Tests.Lifecycle
                 "CaseSetUp", "Pass", "CaseTearDown",
                 "CaseSetUp", "Fail", "CaseTearDown",
                 "Dispose");
+        }
+
+        public void ShouldAllowWrappingCaseWithSetUpTearDownMethodsWhenConstructingPerCase()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.CaseExecution
+                      .SetUpTearDown(StartsWith("SetUp"), StartsWith("TearDown"));
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "SetUpA", "SetUpB", "Pass", "TearDownA", "TearDownB",
+                "Dispose",
+                ".ctor",
+                "SetUpA", "SetUpB", "Fail", "TearDownA", "TearDownB",
+                "Dispose");
+        }
+
+        public void ShouldAllowWrappingCaseWithSetUpTearDownMethodsWhenConstructingPerTestClass()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            Convention.CaseExecution
+                      .SetUpTearDown(StartsWith("SetUp"), StartsWith("TearDown"));
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "SetUpA", "SetUpB", "Pass", "TearDownA", "TearDownB",
+                "SetUpA", "SetUpB", "Fail", "TearDownA", "TearDownB",
+                "Dispose");
+        }
+
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndCaseSetUpMethodThrows()
+        {
+            FailDuring("SetUpA", "SetUpB");
+
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.CaseExecution
+                      .SetUpTearDown(StartsWith("SetUp"), StartsWith("TearDown"));
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'SetUpA' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'SetUpB' failed!",
+                "SampleTestClass.Fail failed: 'SetUpA' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'SetUpB' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "SetUpA",
+                "SetUpB",
+                "Dispose",
+                ".ctor",
+                "SetUpA",
+                "SetUpB",
+                "Dispose");
+        }
+
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerTestClassAndCaseSetUpMethodThrows()
+        {
+            FailDuring("SetUpA", "SetUpB");
+
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            Convention.CaseExecution
+                      .SetUpTearDown(StartsWith("SetUp"), StartsWith("TearDown"));
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'SetUpA' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'SetUpB' failed!",
+                "SampleTestClass.Fail failed: 'SetUpA' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'SetUpB' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "SetUpA",
+                "SetUpB",
+                "SetUpA",
+                "SetUpB",
+                "Dispose");
+        }
+
+        public void ShouldFailCaseWhenConstructingPerCaseAndCaseTearDownMethodThrows()
+        {
+            FailDuring("TearDownA", "TearDownB");
+
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.CaseExecution
+                      .SetUpTearDown(StartsWith("SetUp"), StartsWith("TearDown"));
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'TearDownA' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'TearDownB' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'TearDownA' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'TearDownB' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "SetUpA", "SetUpB", "Pass", "TearDownA", "TearDownB",
+                "Dispose",
+                ".ctor",
+                "SetUpA", "SetUpB", "Fail", "TearDownA", "TearDownB",
+                "Dispose");
+        }
+
+        public void ShouldFailAllCasesWhenConstructingPerTestClassAndCaseTearDownMethodThrows()
+        {
+            FailDuring("TearDownA", "TearDownB");
+
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            Convention.CaseExecution
+                      .SetUpTearDown(StartsWith("SetUp"), StartsWith("TearDown"));
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'TearDownA' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'TearDownB' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'TearDownA' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'TearDownB' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "SetUpA", "SetUpB", "Pass", "TearDownA", "TearDownB",
+                "SetUpA", "SetUpB", "Fail", "TearDownA", "TearDownB",
+                "Dispose");
+        }
+
+        static MethodFilter StartsWith(string methodNamePrefix)
+        {
+            return new MethodFilter().Where(x => x.Name.StartsWith(methodNamePrefix));
         }
     }
 }

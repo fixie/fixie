@@ -1,5 +1,4 @@
 using System;
-using Should;
 
 namespace Fixie.Tests.Lifecycle
 {
@@ -189,7 +188,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .SetUpTearDown(SetUp, TearDown);
+                      .SetUpTearDown(CaseSetUp, CaseTearDown);
 
             var output = Run();
 
@@ -199,10 +198,10 @@ namespace Fixie.Tests.Lifecycle
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "SetUp", "Pass", "TearDown",
+                "CaseSetUp", "Pass", "CaseTearDown",
                 "Dispose",
                 ".ctor",
-                "SetUp", "Fail", "TearDown",
+                "CaseSetUp", "Fail", "CaseTearDown",
                 "Dispose");
         }
 
@@ -212,7 +211,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerTestClass();
 
             Convention.CaseExecution
-                      .SetUpTearDown(SetUp, TearDown);
+                      .SetUpTearDown(CaseSetUp, CaseTearDown);
 
             var output = Run();
 
@@ -222,121 +221,107 @@ namespace Fixie.Tests.Lifecycle
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "SetUp", "Pass", "TearDown",
-                "SetUp", "Fail", "TearDown",
+                "CaseSetUp", "Pass", "CaseTearDown",
+                "CaseSetUp", "Fail", "CaseTearDown",
                 "Dispose");
         }
 
         public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndCaseSetUpThrows()
         {
-            FailDuring("SetUp");
+            FailDuring("CaseSetUp");
 
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .SetUpTearDown(SetUp, TearDown);
+                      .SetUpTearDown(CaseSetUp, CaseTearDown);
 
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'SetUp' failed!",
-                "SampleTestClass.Fail failed: 'SetUp' failed!");
+                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Fail failed: 'CaseSetUp' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "SetUp",
+                "CaseSetUp",
                 "Dispose",
                 ".ctor",
-                "SetUp",
+                "CaseSetUp",
                 "Dispose");
         }
 
         public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerTestClassAndCaseSetUpThrows()
         {
-            FailDuring("SetUp");
+            FailDuring("CaseSetUp");
 
             Convention.ClassExecution
                       .CreateInstancePerTestClass();
 
             Convention.CaseExecution
-                      .SetUpTearDown(SetUp, TearDown);
+                      .SetUpTearDown(CaseSetUp, CaseTearDown);
 
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'SetUp' failed!",
-                "SampleTestClass.Fail failed: 'SetUp' failed!");
+                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Fail failed: 'CaseSetUp' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "SetUp",
-                "SetUp",
+                "CaseSetUp",
+                "CaseSetUp",
                 "Dispose");
         }
 
         public void ShouldFailCaseWhenConstructingPerCaseAndCaseTearDownThrows()
         {
-            FailDuring("TearDown");
+            FailDuring("CaseTearDown");
 
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .SetUpTearDown(SetUp, TearDown);
+                      .SetUpTearDown(CaseSetUp, CaseTearDown);
 
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'TearDown' failed!",
+                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TearDown' failed!");
+                "    Secondary Failure: 'CaseTearDown' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "SetUp", "Pass", "TearDown",
+                "CaseSetUp", "Pass", "CaseTearDown",
                 "Dispose",
                 ".ctor",
-                "SetUp", "Fail", "TearDown",
+                "CaseSetUp", "Fail", "CaseTearDown",
                 "Dispose");
         }
 
         public void ShouldFailAllCasesWhenConstructingPerTestClassAndCaseTearDownThrows()
         {
-            FailDuring("TearDown");
+            FailDuring("CaseTearDown");
 
             Convention.ClassExecution
                       .CreateInstancePerTestClass();
 
             Convention.CaseExecution
-                      .SetUpTearDown(SetUp, TearDown);
+                      .SetUpTearDown(CaseSetUp, CaseTearDown);
 
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'TearDown' failed!",
+                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TearDown' failed!");
+                "    Secondary Failure: 'CaseTearDown' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "SetUp", "Pass", "TearDown",
-                "SetUp", "Fail", "TearDown",
+                "CaseSetUp", "Pass", "CaseTearDown",
+                "CaseSetUp", "Fail", "CaseTearDown",
                 "Dispose");
-        }
-
-        static void SetUp(Case @case, object instance)
-        {
-            @case.Class.ShouldEqual(typeof(SampleTestClass));
-            instance.ShouldBeType<SampleTestClass>();
-            WhereAmI();
-        }
-
-        static void TearDown(Case @case, object instance)
-        {
-            @case.Class.ShouldEqual(typeof(SampleTestClass));
-            instance.ShouldBeType<SampleTestClass>();
-            WhereAmI();
         }
     }
 }

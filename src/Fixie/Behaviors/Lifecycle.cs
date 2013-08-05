@@ -5,26 +5,16 @@ namespace Fixie.Behaviors
 {
     public class Lifecycle
     {
-        public static ExceptionList Construct(Type type, out object instance)
+        public static object Construct(Type type)
         {
-            var exceptions = new ExceptionList();
-            
-            instance = null;
-
             try
             {
-                instance = Activator.CreateInstance(type);
+                return Activator.CreateInstance(type);
             }
             catch (TargetInvocationException ex)
             {
-                exceptions.Add(ex.InnerException);
+                throw new PreservedException(ex.InnerException);
             }
-            catch (Exception ex)
-            {
-                exceptions.Add(ex);
-            }
-
-            return exceptions;
         }
 
         public static void Dispose(object instance)

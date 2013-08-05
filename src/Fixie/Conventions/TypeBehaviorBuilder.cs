@@ -4,7 +4,6 @@ using Fixie.Behaviors;
 namespace Fixie.Conventions
 {
     public delegate void TypeBehaviorAction(Type testClass, Convention convention, Case[] cases, Action innerBehavior);
-    public delegate ExceptionList Factory(Type testClass, out object instance);
 
     public class TypeBehaviorBuilder
     {
@@ -22,7 +21,7 @@ namespace Fixie.Conventions
         }
         public TypeBehaviorBuilder CreateInstancePerCase(Func<Type, object> construct)
         {
-            Behavior = new CreateInstancePerCase(new SafeFactory(construct).Construct);
+            Behavior = new CreateInstancePerCase(construct);
             return this;
         }
 
@@ -34,7 +33,7 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder CreateInstancePerTestClass(Func<Type, object> construct)
         {
-            Behavior = new CreateInstancePerTestClass(new SafeFactory(construct).Construct);
+            Behavior = new CreateInstancePerTestClass(construct);
             return this;
         }
 
@@ -78,34 +77,6 @@ namespace Fixie.Conventions
                         @case.Exceptions.Add(exception);
                     }
                 }                
-            }
-        }
-
-        class SafeFactory
-        {
-            readonly Func<Type, object> construct;
-
-            public SafeFactory(Func<Type, object> construct)
-            {
-                this.construct = construct;
-            }
-
-            public ExceptionList Construct(Type type, out object instance)
-            {
-                var exceptions = new ExceptionList();
-
-                instance = null;
-
-                try
-                {
-                    instance = construct(type);
-                }
-                catch (Exception ex)
-                {
-                    exceptions.Add(ex);
-                }
-
-                return exceptions;
             }
         }
     }

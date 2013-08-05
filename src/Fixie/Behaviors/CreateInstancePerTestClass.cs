@@ -5,28 +5,23 @@ namespace Fixie.Behaviors
 {
     public class CreateInstancePerTestClass : TypeBehavior
     {
-        readonly Factory construct;
+        readonly Func<Type, object> construct;
 
-        public CreateInstancePerTestClass(Factory construct)
+        public CreateInstancePerTestClass(Func<Type, object> construct)
         {
             this.construct = construct;
         }
 
         public void Execute(Type testClass, Convention convention, Case[] cases)
         {
-            object instance;
+            try
+            {
+                var instance = construct(testClass);
 
-            var constructionExceptions = construct(testClass, out instance);
-            if (constructionExceptions.Any())
-            {
-                foreach (var @case in cases)
-                    @case.Exceptions.Add(constructionExceptions);
-            }
-            else
-            {
                 var fixture = new Fixture(testClass, instance, convention.CaseExecution.Behavior, cases);
                 convention.InstanceExecution.Behavior.Execute(fixture);
 
+                //TODO: Further opportunity for simplification: consider not bothering with this try/catch.
                 try
                 {
                     Lifecycle.Dispose(instance);
@@ -36,6 +31,18 @@ namespace Fixie.Behaviors
                     foreach (var @case in cases)
                         @case.Exceptions.Add(disposalException);
                 }
+            }
+            catch (PreservedException preservedException)
+            {
+                var constructionException = preservedException.OriginalException;
+
+                foreach (var @case in cases)
+                    @case.Exceptions.Add(constructionException);
+            }
+            catch (Exception constructionException)
+            {
+                foreach (var @case in cases)
+                    @case.Exceptions.Add(constructionException);
             }
         }
     }

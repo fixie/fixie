@@ -27,11 +27,14 @@ namespace Fixie.Behaviors
                 var fixture = new Fixture(testClass, instance, convention.CaseExecution.Behavior, cases);
                 convention.InstanceExecution.Behavior.Execute(fixture);
 
-                var disposalExceptions = Lifecycle.Dispose(instance);
-                if (disposalExceptions.Any())
+                try
+                {
+                    Lifecycle.Dispose(instance);
+                }
+                catch (Exception disposalException)
                 {
                     foreach (var @case in cases)
-                        @case.Exceptions.Add(disposalExceptions);
+                        @case.Exceptions.Add(disposalException);
                 }
             }
         }

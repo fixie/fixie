@@ -27,22 +27,11 @@ namespace Fixie.Behaviors
             return exceptions;
         }
 
-        public static ExceptionList Dispose(object instance)
+        public static void Dispose(object instance)
         {
-            var exceptions = new ExceptionList();
-
-            try
-            {
-                var disposable = instance as IDisposable;
-                if (disposable != null)
-                    disposable.Dispose();
-            }
-            catch (Exception ex)
-            {
-                exceptions.Add(ex);
-            }
-
-            return exceptions;
+            var disposable = instance as IDisposable;
+            if (disposable != null)
+                disposable.Dispose();
         }
     }
 }

@@ -47,8 +47,14 @@ namespace Fixie.Conventions
         static void InvokeAll(MethodFilter methodFilter, Case @case, object instance)
         {
             var invoke = new Invoke();
+            int countBefore = @case.Exceptions.Count;
             foreach (var method in methodFilter.Filter(@case.Class))
+            {
                 invoke.Execute(method, instance, @case.Exceptions);
+
+                if (@case.Exceptions.Count > countBefore)
+                    break;
+            }
         }
 
         class WrapBehavior : CaseBehavior

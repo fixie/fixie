@@ -76,7 +76,11 @@ namespace Fixie.Conventions
             var exceptions = new ExceptionList();
             var invoke = new Invoke();
             foreach (var method in methodFilter.Filter(type))
+            {
                 invoke.Execute(method, instance, exceptions);
+                if (exceptions.Count > 0)
+                    break;
+            }
             return exceptions;
         }
 

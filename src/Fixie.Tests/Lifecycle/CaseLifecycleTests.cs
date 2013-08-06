@@ -381,19 +381,15 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'SetUpA' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'SetUpB' failed!",
-                "SampleTestClass.Fail failed: 'SetUpA' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'SetUpB' failed!");
+                "SampleTestClass.Pass failed: 'SetUpA' failed!",
+                "SampleTestClass.Fail failed: 'SetUpA' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
                 "SetUpA",
-                "SetUpB",
                 "Dispose",
                 ".ctor",
                 "SetUpA",
-                "SetUpB",
                 "Dispose");
         }
 
@@ -410,17 +406,13 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'SetUpA' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'SetUpB' failed!",
-                "SampleTestClass.Fail failed: 'SetUpA' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'SetUpB' failed!");
+                "SampleTestClass.Pass failed: 'SetUpA' failed!",
+                "SampleTestClass.Fail failed: 'SetUpA' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
                 "SetUpA",
-                "SetUpB",
                 "SetUpA",
-                "SetUpB",
                 "Dispose");
         }
 
@@ -437,18 +429,16 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'TearDownA' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TearDownB' failed!",
+                "SampleTestClass.Pass failed: 'TearDownA' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TearDownA' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TearDownB' failed!");
+                "    Secondary Failure: 'TearDownA' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "SetUpA", "SetUpB", "Pass", "TearDownA", "TearDownB",
+                "SetUpA", "SetUpB", "Pass", "TearDownA",
                 "Dispose",
                 ".ctor",
-                "SetUpA", "SetUpB", "Fail", "TearDownA", "TearDownB",
+                "SetUpA", "SetUpB", "Fail", "TearDownA",
                 "Dispose");
         }
 
@@ -465,16 +455,14 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'TearDownA' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TearDownB' failed!",
+                "SampleTestClass.Pass failed: 'TearDownA' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TearDownA' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TearDownB' failed!");
+                "    Secondary Failure: 'TearDownA' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "SetUpA", "SetUpB", "Pass", "TearDownA", "TearDownB",
-                "SetUpA", "SetUpB", "Fail", "TearDownA", "TearDownB",
+                "SetUpA", "SetUpB", "Pass", "TearDownA",
+                "SetUpA", "SetUpB", "Fail", "TearDownA",
                 "Dispose");
         }
     }

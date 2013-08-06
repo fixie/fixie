@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Fixie.Behaviors;
 
 namespace Fixie.Conventions
@@ -46,14 +47,16 @@ namespace Fixie.Conventions
 
         static void InvokeAll(MethodFilter methodFilter, Case @case, object instance)
         {
-            var invoke = new Invoke();
-            int countBefore = @case.Exceptions.Count;
             foreach (var method in methodFilter.Filter(@case.Class))
             {
-                invoke.Execute(method, instance, @case.Exceptions);
-
-                if (@case.Exceptions.Count > countBefore)
-                    break;
+                try
+                {
+                    method.Invoke(instance, null);
+                }
+                catch (TargetInvocationException ex)
+                {
+                    throw new PreservedException(ex.InnerException);
+                }
             }
         }
 
@@ -73,6 +76,10 @@ namespace Fixie.Conventions
                 try
                 {
                     outer(@case, instance, () => inner.Execute(@case, instance));
+                }
+                catch (PreservedException preservedException)
+                {
+                    @case.Exceptions.Add(preservedException.OriginalException);
                 }
                 catch (Exception exception)
                 {

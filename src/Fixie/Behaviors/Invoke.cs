@@ -9,31 +9,26 @@ namespace Fixie.Behaviors
     {
         public void Execute(Case @case, object instance)
         {
-            Execute(@case.Method, instance, @case.Exceptions);
-        }
-
-        public void Execute(MethodInfo method, object instance, ExceptionList exceptions)
-        {
             try
             {
+                var method = @case.Method;
+
                 bool isDeclaredAsync = method.Async();
 
                 if (isDeclaredAsync && method.Void())
                     ThrowForUnsupportedAsyncVoid();
 
-                bool invokeReturned = false;
-                object result = null;
+                object result;
                 try
                 {
                     result = method.Invoke(instance, null);
-                    invokeReturned = true;
                 }
                 catch (TargetInvocationException ex)
                 {
                     throw new PreservedException(ex.InnerException);
                 }
 
-                if (invokeReturned && isDeclaredAsync)
+                if (isDeclaredAsync)
                 {
                     var task = (Task)result;
                     try
@@ -48,11 +43,11 @@ namespace Fixie.Behaviors
             }
             catch (PreservedException preservedException)
             {
-                exceptions.Add(preservedException.OriginalException);
+                @case.Exceptions.Add(preservedException.OriginalException);
             }
             catch (Exception ex)
             {
-                exceptions.Add(ex);
+                @case.Exceptions.Add(ex);
             }
         }
 

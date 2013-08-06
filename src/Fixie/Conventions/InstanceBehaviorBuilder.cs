@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Fixie.Behaviors;
 
 namespace Fixie.Conventions
@@ -32,56 +33,23 @@ namespace Fixie.Conventions
 
         public InstanceBehaviorBuilder SetUpTearDown(MethodFilter setUpMethods, MethodFilter tearDownMethods)
         {
-            return SetUpTearDown(fixture =>
-            {
-                //NOTE: We want to just throw like normal if InvokeAll ever experiences an exception,
-                //      allowing WrapBehavior's own try/catch to handle it correctly.
-                //      As is, if the inner behavior doesn't happen to short-cicuit case-running
-                //      for cases that have already failed, we could run the case even after
-                //      failed setup.
-                //
-                //      The use of WrappedExceptions is a workaround which only fixes the
-                //      immediate issue, but suggests that all exception handling should
-                //      be done by throwing a wrapper exception instead of explicitly
-                //      passing around ExceptionLists as return values.
-
-                var setUpExceptions = InvokeAll(setUpMethods, fixture.TestClass, fixture.Instance);
-                if (setUpExceptions.Any())
-                    throw new WrappedExceptions(setUpExceptions);
-            },
-            fixture =>
-            {
-                var tearDownExceptions = InvokeAll(tearDownMethods, fixture.TestClass, fixture.Instance);
-                if (tearDownExceptions.Any())
-                {
-                    foreach (var @case in fixture.Cases)
-                        @case.Exceptions.Add(tearDownExceptions);
-                }
-            });
+            return SetUpTearDown(fixture => InvokeAll(setUpMethods, fixture.TestClass, fixture.Instance),
+                                 fixture => InvokeAll(tearDownMethods, fixture.TestClass, fixture.Instance));
         }
 
-        class WrappedExceptions : Exception
+        static void InvokeAll(MethodFilter methodFilter, Type type, object instance)
         {
-            public WrappedExceptions(ExceptionList innerExceptions)
-                : base("See InnerExceptions.")
-            {
-                InnerExceptions = innerExceptions;
-            }
-
-            public ExceptionList InnerExceptions { get; private set; }
-        }
-
-        static ExceptionList InvokeAll(MethodFilter methodFilter, Type type, object instance)
-        {
-            var exceptions = new ExceptionList();
-            var invoke = new Invoke();
             foreach (var method in methodFilter.Filter(type))
             {
-                invoke.Execute(method, instance, exceptions);
-                if (exceptions.Count > 0)
-                    break;
+                try
+                {
+                    method.Invoke(instance, null);
+                }
+                catch (TargetInvocationException ex)
+                {
+                    throw new PreservedException(ex.InnerException);
+                }
             }
-            return exceptions;
         }
 
         class WrapBehavior : InstanceBehavior
@@ -101,19 +69,15 @@ namespace Fixie.Conventions
                 {
                     outer(fixture, () => inner.Execute(fixture));
                 }
-                catch (WrappedExceptions exceptions)
+                catch (PreservedException preservedException)
                 {
                     foreach (var @case in fixture.Cases)
-                    {
-                        @case.Exceptions.Add(exceptions.InnerExceptions);
-                    }
+                        @case.Exceptions.Add(preservedException.OriginalException);
                 }
                 catch (Exception exception)
                 {
                     foreach (var @case in fixture.Cases)
-                    {
                         @case.Exceptions.Add(exception);
-                    }
                 }
             }
         }

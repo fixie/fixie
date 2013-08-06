@@ -30,7 +30,7 @@ namespace Fixie.Behaviors
                 }
                 catch (TargetInvocationException ex)
                 {
-                    exceptions.Add(ex.InnerException);
+                    throw new PreservedException(ex.InnerException);
                 }
 
                 if (invokeReturned && isDeclaredAsync)
@@ -42,9 +42,13 @@ namespace Fixie.Behaviors
                     }
                     catch (AggregateException ex)
                     {
-                        exceptions.Add(ex.InnerExceptions.First());
+                        throw new PreservedException(ex.InnerExceptions.First());
                     }
                 }
+            }
+            catch (PreservedException preservedException)
+            {
+                exceptions.Add(preservedException.OriginalException);
             }
             catch (Exception ex)
             {

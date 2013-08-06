@@ -25,15 +25,7 @@ namespace Fixie.Behaviors
                     var fixture = new Fixture(testClass, instance, convention.CaseExecution.Behavior, new[] { @case });
                     convention.InstanceExecution.Behavior.Execute(fixture);
 
-                    //TODO: Further opportunity for simplification: consider not bothering with this try/catch.
-                    try
-                    {
-                        Lifecycle.Dispose(instance);
-                    }
-                    catch (Exception disposalException)
-                    {
-                        exceptions.Add(disposalException);
-                    }
+                    Lifecycle.Dispose(instance);
                 }
                 catch (PreservedException preservedException)
                 {

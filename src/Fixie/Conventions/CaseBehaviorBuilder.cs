@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using Fixie.Behaviors;
 
 namespace Fixie.Conventions
@@ -37,27 +36,6 @@ namespace Fixie.Conventions
                 innerBehavior();
                 tearDown(@case, instance);
             });
-        }
-
-        public CaseBehaviorBuilder SetUpTearDown(MethodFilter setUpMethods, MethodFilter tearDownMethods)
-        {
-            return SetUpTearDown((@case, instance) => InvokeAll(setUpMethods, @case, instance),
-                                 (@case, instance) => InvokeAll(tearDownMethods, @case, instance));
-        }
-
-        static void InvokeAll(MethodFilter methodFilter, Case @case, object instance)
-        {
-            foreach (var method in methodFilter.Filter(@case.Class))
-            {
-                try
-                {
-                    method.Invoke(instance, null);
-                }
-                catch (TargetInvocationException ex)
-                {
-                    throw new PreservedException(ex.InnerException);
-                }
-            }
         }
 
         class WrapBehavior : CaseBehavior

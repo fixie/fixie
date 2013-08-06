@@ -149,11 +149,6 @@ namespace Fixie.Tests.Lifecycle
             WhereAmI();
         }
 
-        protected static MethodFilter StartsWith(string methodNamePrefix)
-        {
-            return new MethodFilter().Where(x => x.Name.StartsWith(methodNamePrefix));
-        }
-
         protected static void WhereAmI([CallerMemberName] string member = null)
         {
             Console.WriteLine(member);

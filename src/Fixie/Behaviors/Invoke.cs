@@ -11,33 +11,48 @@ namespace Fixie.Behaviors
         {
             try
             {
-                var method = @case.Method;
+                var member = @case.Member;
 
-                bool isDeclaredAsync = method.Async();
-
-                if (isDeclaredAsync && method.Void())
-                    ThrowForUnsupportedAsyncVoid();
-
+                var method = member as MethodInfo;
+                var field = member as FieldInfo;
                 object result;
-                try
-                {
-                    result = method.Invoke(instance, null);
-                }
-                catch (TargetInvocationException ex)
-                {
-                    throw new PreservedException(ex.InnerException);
-                }
 
-                if (isDeclaredAsync)
+                if (method != null)
                 {
-                    var task = (Task)result;
+                    bool isDeclaredAsync = method.Async();
+
+                    if (isDeclaredAsync && method.Void())
+                        ThrowForUnsupportedAsyncVoid();
+
                     try
                     {
-                        task.Wait();
+                        result = method.Invoke(instance, null);
                     }
-                    catch (AggregateException ex)
+                    catch (TargetInvocationException ex)
                     {
-                        throw new PreservedException(ex.InnerExceptions.First());
+                        throw new PreservedException(ex.InnerException);
+                    }
+
+                    if (isDeclaredAsync)
+                    {
+                        var task = (Task)result;
+                        HandleAsyncCase(task);
+                    }
+                }
+                else if (field != null)
+                {
+                    try
+                    {
+                        result = ((Delegate)field.GetValue(instance)).DynamicInvoke();
+                        var task = (Task)result;
+                        if (task != null)
+                        {
+                            HandleAsyncCase(task);
+                        }
+                    }
+                    catch (TargetInvocationException ex)
+                    {
+                        throw new PreservedException(ex.InnerException);
                     }
                 }
             }
@@ -48,6 +63,18 @@ namespace Fixie.Behaviors
             catch (Exception ex)
             {
                 @case.Exceptions.Add(ex);
+            }
+        }
+
+        static void HandleAsyncCase(Task task)
+        {
+            try
+            {
+                task.Wait();
+            }
+            catch (AggregateException ex)
+            {
+                throw new PreservedException(ex.InnerExceptions.First());
             }
         }
 

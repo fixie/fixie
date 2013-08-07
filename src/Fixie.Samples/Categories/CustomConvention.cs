@@ -16,7 +16,7 @@ namespace Fixie.Samples.Categories
                 .Where(type => type.IsInNamespace(GetType().Namespace))
                 .NameEndsWith("Tests");
 
-            Cases
+            Cases = new MethodFilter()
                 .Where(method => method.Void())
                 .ZeroParameters()
                 .Where(method => shouldRunAll || MethodHasAnyDesiredCategory(method, desiredCategories));

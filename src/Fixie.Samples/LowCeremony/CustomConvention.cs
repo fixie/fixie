@@ -15,7 +15,7 @@ namespace Fixie.Samples.LowCeremony
                 .Where(type => type.IsInNamespace(GetType().Namespace))
                 .NameEndsWith("Tests");
 
-            Cases
+            Cases = new MethodFilter()
                 .Where(method => method.Void())
                 .Where(method => LifecycleMethods.All(x => x != method.Name))
                 .ZeroParameters();
@@ -48,7 +48,7 @@ namespace Fixie.Samples.LowCeremony
         static void TryInvoke(string method, Type type, object instance)
         {
             var lifecycleMethod =
-                new MethodFilter()
+                (MethodInfo) new MethodFilter()
                     .Where(x => x.HasSignature(typeof(void), method))
                     .Filter(type)
                     .SingleOrDefault();

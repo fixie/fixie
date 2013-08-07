@@ -8,7 +8,7 @@
                 .Where(testClass => testClass.IsNestedPrivate)
                 .NameEndsWith("TestClass");
 
-            Cases
+            Cases = new MethodFilter()
                 .Where(method => method.Void() || method.Async())
                 .ZeroParameters();
         }

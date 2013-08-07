@@ -2,30 +2,46 @@
 using System.Linq;
 using System.Reflection;
 using Fixie.Conventions;
+using Fixie.Samples.NUnitStyle;
 
-namespace Fixie.Samples.NUnitStyle
+namespace Fixie.Samples.Bdd
 {
     public class CustomConvention : Convention
     {
+        const BindingFlags fieldFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+
         public CustomConvention()
         {
-            Classes
-                .HasOrInherits<TestFixtureAttribute>();
+            Classes.Where(x => x.GetFields(fieldFlags).Any(fieldInfo => fieldInfo.FieldType == typeof(given)));
 
-            Cases = new MethodFilter()
-                .HasOrInherits<TestAttribute>();
+            Cases = new CustomCaseFilter().SetFilterMethod(x => x.GetFields(fieldFlags).Where(fieldInfo => fieldInfo.FieldType == typeof(then)));
 
             ClassExecution
                     .CreateInstancePerTestClass();
 
             InstanceExecution
-                .SetUpTearDown<TestFixtureSetUpAttribute, TestFixtureTearDownAttribute>();
+                .SetUpTearDown(fixture =>
+                               {
+                                   InvokeFieldsOfType(typeof(given), fixture.TestClass, fixture.Instance);
+                                   InvokeFieldsOfType(typeof(when), fixture.TestClass, fixture.Instance);
+                               },
+                               fixture => InvokeFieldsOfType(typeof(after), fixture.TestClass, fixture.Instance));
+        }
 
-            CaseExecution
-                .SetUpTearDown<SetUpAttribute, TearDownAttribute>();
+        void InvokeFieldsOfType(Type fieldType, Type testType, object instance)
+        {
+            testType.GetFields(fieldFlags)
+                           .Where(x => x.FieldType == fieldType)
+                           .ToList()
+                           .ForEach(fieldInfo => ((Delegate)fieldInfo.GetValue(instance)).DynamicInvoke());
         }
     }
 
+    public delegate void given();
+    public delegate void when();
+    public delegate void then();
+    public delegate void after();
+    
     public static class BehaviorBuilderExtensions
     {
         public static InstanceBehaviorBuilder SetUpTearDown<TSetUpAttribute, TTearDownAttribute>(this InstanceBehaviorBuilder builder)

@@ -15,7 +15,7 @@ namespace Fixie.Samples.IoC
                 .Where(type => type.IsInNamespace(GetType().Namespace))
                 .NameEndsWith("Tests");
 
-            Cases
+            Cases = new MethodFilter()
                 .Where(method => method.Void())
                 .ZeroParameters();
 

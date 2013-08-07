@@ -17,7 +17,7 @@ namespace Fixie.Tests.Lifecycle
 
             Convention = new Convention();
             Convention.Classes.Where(testClass => testClass == typeof(SampleTestClass));
-            Convention.Cases.Where(method => method.Name == "Pass" || method.Name == "Fail");
+            Convention.Cases = new MethodFilter().Where(method => method.Name == "Pass" || method.Name == "Fail");
         }
 
         protected static void FailDuring(params string[] failingMemberNames)

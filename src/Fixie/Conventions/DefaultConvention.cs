@@ -7,7 +7,7 @@
             Classes
                 .NameEndsWith("Tests");
 
-            Cases
+            Cases = new MethodFilter()
                 .Where(method => method.Void() || method.Async())
                 .ZeroParameters();
         }

@@ -56,7 +56,7 @@ namespace Fixie
             var conventions = GetConventions(runContext);
 
             foreach (var convention in conventions)
-                convention.Cases.Where(m => m == method);
+                convention.Cases = new CustomCaseFilter().SetFilterMethod(t => new List<MemberInfo>{t.GetMethod(method.Name)});
 
             var type = method.DeclaringType;
 

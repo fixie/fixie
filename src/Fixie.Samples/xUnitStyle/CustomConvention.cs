@@ -14,9 +14,9 @@ namespace Fixie.Samples.xUnitStyle
         public CustomConvention()
         {
             Classes
-                .Where(HasAnyFactMethods);
+                .Where(x => factMethods.Filter(x).Any());
 
-            Cases
+            Cases = new MethodFilter()
                 .HasOrInherits<FactAttribute>();
 
             ClassExecution
@@ -25,11 +25,6 @@ namespace Fixie.Samples.xUnitStyle
 
             InstanceExecution
                 .SetUpTearDown(InjectFixtureData, fixture => { });
-        }
-
-        bool HasAnyFactMethods(Type type)
-        {
-            return factMethods.Filter(type).Any();
         }
 
         void PrepareFixtureData(Type testClass)

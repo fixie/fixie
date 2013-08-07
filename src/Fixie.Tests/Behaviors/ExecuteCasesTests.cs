@@ -22,7 +22,7 @@ namespace Fixie.Tests.Behaviors
             convention = new SelfTestConvention();
             convention.CaseExecution.Wrap((@case, instance, innerBehavior) =>
             {
-                log.Add(@case.Method.Name);
+                log.Add(@case.Member.Name);
                 innerBehavior();
             });
         }

@@ -5,13 +5,34 @@ using System.Reflection;
 
 namespace Fixie.Conventions
 {
-    public class MethodFilter
+    public interface ICaseFilter
+    {
+        IEnumerable<MemberInfo> Filter(Type type);
+    }
+
+    public class CustomCaseFilter : ICaseFilter
+    {
+        Func<Type, IEnumerable<MemberInfo>> filter;
+
+        public IEnumerable<MemberInfo> Filter(Type type)
+        {
+            return filter.Invoke(type);
+        }
+
+        public ICaseFilter SetFilterMethod(Func<Type, IEnumerable<MemberInfo>> filter)
+        {
+            this.filter = filter;
+            return this;
+        }
+    }
+
+    public class MethodFilter : ICaseFilter
     {
         readonly List<Func<MethodInfo, bool>> conditions;
 
         public MethodFilter()
         {
-            conditions = new List<Func<MethodInfo, bool>>();
+            conditions = new List<Func<MethodInfo, bool>>{m => !m.IsDispose()};
 
             ExcludeMethodsDefinedOnObject();
         }
@@ -37,7 +58,7 @@ namespace Fixie.Conventions
             return Where(method => method.GetParameters().Length == 0);
         }
 
-        public IEnumerable<MethodInfo> Filter(Type type)
+        public IEnumerable<MemberInfo> Filter(Type type)
         {
             return type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(IsMatch).ToArray();
         }

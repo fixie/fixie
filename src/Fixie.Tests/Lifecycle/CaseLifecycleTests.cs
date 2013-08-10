@@ -182,6 +182,72 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
+        public void ShouldFailCaseWithOriginalExceptionWhenConstructingPerCaseAndCaseBehaviorThrowsPreservedException()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.CaseExecution
+                      .Wrap((@case, instance, innerBehavior) =>
+                      {
+                          Console.WriteLine("Unsafe case execution behavior");
+                          try
+                          {
+                              throw new Exception("Unsafe case execution behavior threw!");
+                          }
+                          catch (Exception originalException)
+                          {
+                              throw new PreservedException(originalException);
+                          }
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: Unsafe case execution behavior threw!",
+                "SampleTestClass.Fail failed: Unsafe case execution behavior threw!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "Unsafe case execution behavior",
+                "Dispose",
+                ".ctor",
+                "Unsafe case execution behavior",
+                "Dispose");
+        }
+
+        public void ShouldFailAllCasesWithOriginalExceptionWhenConstructingPerTestClassAndCaseBehaviorThrowsPreservedException()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            Convention.CaseExecution
+                      .Wrap((@case, instance, innerBehavior) =>
+                      {
+                          Console.WriteLine("Unsafe case execution behavior");
+                          try
+                          {
+                              throw new Exception("Unsafe case execution behavior threw!");
+                          }
+                          catch (Exception originalException)
+                          {
+                              throw new PreservedException(originalException);
+                          }
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: Unsafe case execution behavior threw!",
+                "SampleTestClass.Fail failed: Unsafe case execution behavior threw!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "Unsafe case execution behavior",
+                "Unsafe case execution behavior",
+                "Dispose");
+        }
+
         public void ShouldAllowWrappingCaseWithSetUpTearDownBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution

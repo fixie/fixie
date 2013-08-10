@@ -178,6 +178,71 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
+        public void ShouldFailCaseWithOriginalExceptionWhenConstructingPerCaseAndInstanceBehaviorThrowsPreservedException()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.InstanceExecution
+                      .Wrap((fixture, innerBehavior) =>
+                      {
+                          Console.WriteLine("Unsafe instance execution behavior");
+                          try
+                          {
+                              throw new Exception("Unsafe instance execution behavior threw!");
+                          }
+                          catch (Exception originalException)
+                          {
+                              throw new PreservedException(originalException);
+                          }
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: Unsafe instance execution behavior threw!",
+                "SampleTestClass.Fail failed: Unsafe instance execution behavior threw!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "Unsafe instance execution behavior",
+                "Dispose",
+                ".ctor",
+                "Unsafe instance execution behavior",
+                "Dispose");
+        }
+
+        public void ShouldFailAllCasesWithOriginalExceptionWhenConstructingPerTestClassAndInstanceBehaviorThrowsPreservedException()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            Convention.InstanceExecution
+                      .Wrap((fixture, innerBehavior) =>
+                      {
+                          Console.WriteLine("Unsafe instance execution behavior");
+                          try
+                          {
+                              throw new Exception("Unsafe instance execution behavior threw!");
+                          }
+                          catch (Exception originalException)
+                          {
+                              throw new PreservedException(originalException);
+                          }
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: Unsafe instance execution behavior threw!",
+                "SampleTestClass.Fail failed: Unsafe instance execution behavior threw!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "Unsafe instance execution behavior",
+                "Dispose");
+        }
+
         public void ShouldAllowWrappingInstanceWithSetUpTearDownBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution

@@ -26,7 +26,12 @@ namespace Fixie
 
         internal void Fail(Exception reason)
         {
-            exceptions.Add(reason);
+            var wrapped = reason as PreservedException;
+
+            if (wrapped != null)
+                exceptions.Add(wrapped.OriginalException);
+            else
+                exceptions.Add(reason);
         }
     }
 }

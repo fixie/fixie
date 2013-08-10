@@ -12,10 +12,6 @@ namespace Fixie.Behaviors
                 {
                     fixture.CaseExecutionBehavior.Execute(@case, fixture.Instance);
                 }
-                catch (PreservedException preservedException)
-                {
-                    @case.Fail(preservedException.OriginalException);
-                }
                 catch (Exception ex)
                 {
                     @case.Fail(ex);

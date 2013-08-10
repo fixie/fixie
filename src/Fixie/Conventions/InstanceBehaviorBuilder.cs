@@ -47,11 +47,6 @@ namespace Fixie.Conventions
                 {
                     outer(fixture, () => inner.Execute(fixture));
                 }
-                catch (PreservedException preservedException)
-                {
-                    foreach (var @case in fixture.Cases)
-                        @case.Fail(preservedException.OriginalException);
-                }
                 catch (Exception exception)
                 {
                     foreach (var @case in fixture.Cases)

@@ -48,10 +48,6 @@ namespace Fixie.Conventions
                 {
                     outer(@case, instance, () => inner.Execute(@case, instance));
                 }
-                catch (PreservedException preservedException)
-                {
-                    @case.Fail(preservedException.OriginalException);
-                }
                 catch (Exception exception)
                 {
                     @case.Fail(exception);

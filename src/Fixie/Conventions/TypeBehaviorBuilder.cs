@@ -70,11 +70,6 @@ namespace Fixie.Conventions
                 {
                     outer(testClass, convention, cases, () => inner.Execute(testClass, convention, cases));
                 }
-                catch (PreservedException preservedException)
-                {
-                    foreach (var @case in cases)
-                        @case.Fail(preservedException.OriginalException);
-                }
                 catch (Exception exception)
                 {
                     foreach (var @case in cases)

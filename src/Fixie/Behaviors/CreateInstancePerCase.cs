@@ -26,11 +26,6 @@ namespace Fixie.Behaviors
 
                     Lifecycle.Dispose(instance);
                 }
-                catch (PreservedException preservedException)
-                {
-                    var constructionException = preservedException.OriginalException;
-                    @case.Fail(constructionException);
-                }
                 catch (Exception constructionException)
                 {
                     @case.Fail(constructionException);

@@ -41,10 +41,6 @@ namespace Fixie.Behaviors
                     }
                 }
             }
-            catch (PreservedException preservedException)
-            {
-                @case.Fail(preservedException.OriginalException);
-            }
             catch (Exception ex)
             {
                 @case.Fail(ex);

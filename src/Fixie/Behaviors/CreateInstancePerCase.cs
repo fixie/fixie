@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Fixie.Conventions;
 
 namespace Fixie.Behaviors
@@ -16,8 +17,6 @@ namespace Fixie.Behaviors
         {
             foreach (var @case in cases)
             {
-                var exceptions = @case.Exceptions;
-
                 try
                 {
                     var instance = construct(testClass);
@@ -30,11 +29,11 @@ namespace Fixie.Behaviors
                 catch (PreservedException preservedException)
                 {
                     var constructionException = preservedException.OriginalException;
-                    exceptions.Add(constructionException);
+                    @case.Fail(constructionException);
                 }
                 catch (Exception constructionException)
                 {
-                    exceptions.Add(constructionException);
+                    @case.Fail(constructionException);
                 }
             }
         }

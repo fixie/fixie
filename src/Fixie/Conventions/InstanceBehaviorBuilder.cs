@@ -50,12 +50,12 @@ namespace Fixie.Conventions
                 catch (PreservedException preservedException)
                 {
                     foreach (var @case in fixture.Cases)
-                        @case.Exceptions.Add(preservedException.OriginalException);
+                        @case.Fail(preservedException.OriginalException);
                 }
                 catch (Exception exception)
                 {
                     foreach (var @case in fixture.Cases)
-                        @case.Exceptions.Add(exception);
+                        @case.Fail(exception);
                 }
             }
         }

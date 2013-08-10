@@ -28,12 +28,12 @@ namespace Fixie.Behaviors
                 var constructionException = preservedException.OriginalException;
 
                 foreach (var @case in cases)
-                    @case.Exceptions.Add(constructionException);
+                    @case.Fail(constructionException);
             }
             catch (Exception constructionException)
             {
                 foreach (var @case in cases)
-                    @case.Exceptions.Add(constructionException);
+                    @case.Fail(constructionException);
             }
         }
     }

@@ -50,11 +50,11 @@ namespace Fixie.Conventions
                 }
                 catch (PreservedException preservedException)
                 {
-                    @case.Exceptions.Add(preservedException.OriginalException);
+                    @case.Fail(preservedException.OriginalException);
                 }
                 catch (Exception exception)
                 {
-                    @case.Exceptions.Add(exception);
+                    @case.Fail(exception);
                 }
             }
         }

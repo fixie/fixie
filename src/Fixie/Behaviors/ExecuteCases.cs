@@ -14,11 +14,11 @@ namespace Fixie.Behaviors
                 }
                 catch (PreservedException preservedException)
                 {
-                    @case.Exceptions.Add(preservedException.OriginalException);
+                    @case.Fail(preservedException.OriginalException);
                 }
                 catch (Exception ex)
                 {
-                    @case.Exceptions.Add(ex);
+                    @case.Fail(ex);
                 }
             }
         }

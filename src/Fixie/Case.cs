@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Fixie
 {
     public class Case
     {
+        readonly List<Exception> exceptions;
+
         public Case(Type testClass, MethodInfo caseMethod)
         {
             Class = testClass;
             Method = caseMethod;
-            Exceptions = new ExceptionList();
+            exceptions = new List<Exception>();
         }
 
         public string Name
@@ -19,6 +22,11 @@ namespace Fixie
 
         public Type Class { get; private set; }
         public MethodInfo Method { get; private set; }
-        public ExceptionList Exceptions { get; private set; }
+        public IReadOnlyList<Exception> Exceptions { get { return exceptions; } }
+
+        internal void Fail(Exception reason)
+        {
+            exceptions.Add(reason);
+        }
     }
 }

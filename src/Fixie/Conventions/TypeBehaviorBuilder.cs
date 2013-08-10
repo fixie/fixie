@@ -73,12 +73,12 @@ namespace Fixie.Conventions
                 catch (PreservedException preservedException)
                 {
                     foreach (var @case in cases)
-                        @case.Exceptions.Add(preservedException.OriginalException);
+                        @case.Fail(preservedException.OriginalException);
                 }
                 catch (Exception exception)
                 {
                     foreach (var @case in cases)
-                        @case.Exceptions.Add(exception);
+                        @case.Fail(exception);
                 }                
             }
         }

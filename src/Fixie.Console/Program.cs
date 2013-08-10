@@ -37,10 +37,10 @@ namespace Fixie.Console
 
                 return failed;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
                 using (Foreground.Red)
-                    Console.WriteLine("Fatal Error: {0}", ex);
+                    Console.WriteLine("Fatal Error: {0}", exception);
                 return FatalError;
             }
         }

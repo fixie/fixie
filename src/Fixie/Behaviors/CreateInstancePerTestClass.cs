@@ -23,10 +23,10 @@ namespace Fixie.Behaviors
 
                 Dispose(instance);
             }
-            catch (Exception constructionException)
+            catch (Exception exception)
             {
                 foreach (var @case in cases)
-                    @case.Fail(constructionException);
+                    @case.Fail(exception);
             }
         }
 

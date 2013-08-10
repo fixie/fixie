@@ -23,9 +23,9 @@ namespace Fixie.Behaviors
                 {
                     result = method.Invoke(instance, null);
                 }
-                catch (TargetInvocationException ex)
+                catch (TargetInvocationException exception)
                 {
-                    throw new PreservedException(ex.InnerException);
+                    throw new PreservedException(exception.InnerException);
                 }
 
                 if (isDeclaredAsync)
@@ -35,15 +35,15 @@ namespace Fixie.Behaviors
                     {
                         task.Wait();
                     }
-                    catch (AggregateException ex)
+                    catch (AggregateException exception)
                     {
-                        throw new PreservedException(ex.InnerExceptions.First());
+                        throw new PreservedException(exception.InnerExceptions.First());
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                @case.Fail(ex);
+                @case.Fail(exception);
             }
         }
 

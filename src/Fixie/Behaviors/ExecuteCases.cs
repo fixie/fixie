@@ -12,9 +12,9 @@ namespace Fixie.Behaviors
                 {
                     fixture.CaseExecutionBehavior.Execute(@case, fixture.Instance);
                 }
-                catch (Exception ex)
+                catch (Exception exception)
                 {
-                    @case.Fail(ex);
+                    @case.Fail(exception);
                 }
             }
         }

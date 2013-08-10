@@ -52,9 +52,9 @@ namespace Fixie.Samples.NUnitStyle
                 {
                     method.Invoke(instance, null);
                 }
-                catch (TargetInvocationException ex)
+                catch (TargetInvocationException exception)
                 {
-                    throw new PreservedException(ex.InnerException);
+                    throw new PreservedException(exception.InnerException);
                 }
             }
         }

@@ -60,9 +60,9 @@ namespace Fixie.Conventions
             {
                 return Activator.CreateInstance(type);
             }
-            catch (TargetInvocationException ex)
+            catch (TargetInvocationException exception)
             {
-                throw new PreservedException(ex.InnerException);
+                throw new PreservedException(exception.InnerException);
             }
         }
 

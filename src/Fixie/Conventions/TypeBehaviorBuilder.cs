@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Fixie.Behaviors;
 
 namespace Fixie.Conventions
@@ -16,7 +17,7 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder CreateInstancePerCase()
         {
-            Behavior = new CreateInstancePerCase(Lifecycle.Construct);
+            Behavior = new CreateInstancePerCase(Construct);
             return this;
         }
         public TypeBehaviorBuilder CreateInstancePerCase(Func<Type, object> construct)
@@ -27,7 +28,7 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder CreateInstancePerTestClass()
         {
-            Behavior = new CreateInstancePerTestClass(Lifecycle.Construct);
+            Behavior = new CreateInstancePerTestClass(Construct);
             return this;
         }
 
@@ -51,6 +52,18 @@ namespace Fixie.Conventions
                 innerBehavior();
                 tearDown(testClass);
             });
+        }
+
+        static object Construct(Type type)
+        {
+            try
+            {
+                return Activator.CreateInstance(type);
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw new PreservedException(ex.InnerException);
+            }
         }
 
         class WrapBehavior : TypeBehavior

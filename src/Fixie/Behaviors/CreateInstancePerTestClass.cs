@@ -21,13 +21,20 @@ namespace Fixie.Behaviors
                 var fixture = new Fixture(testClass, instance, convention.CaseExecution.Behavior, cases);
                 convention.InstanceExecution.Behavior.Execute(fixture);
 
-                Lifecycle.Dispose(instance);
+                Dispose(instance);
             }
             catch (Exception constructionException)
             {
                 foreach (var @case in cases)
                     @case.Fail(constructionException);
             }
+        }
+
+        static void Dispose(object instance)
+        {
+            var disposable = instance as IDisposable;
+            if (disposable != null)
+                disposable.Dispose();
         }
     }
 }

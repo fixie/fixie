@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Fixie.Conventions;
 
 namespace Fixie.Behaviors
@@ -24,13 +23,20 @@ namespace Fixie.Behaviors
                     var fixture = new Fixture(testClass, instance, convention.CaseExecution.Behavior, new[] { @case });
                     convention.InstanceExecution.Behavior.Execute(fixture);
 
-                    Lifecycle.Dispose(instance);
+                    Dispose(instance);
                 }
                 catch (Exception constructionException)
                 {
                     @case.Fail(constructionException);
                 }
             }
+        }
+
+        static void Dispose(object instance)
+        {
+            var disposable = instance as IDisposable;
+            if (disposable != null)
+                disposable.Dispose();
         }
     }
 }

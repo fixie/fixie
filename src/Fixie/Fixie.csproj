@@ -40,7 +40,6 @@
     <Compile Include="Behaviors\CreateInstancePerTestClass.cs" />
     <Compile Include="Behaviors\ExecuteCases.cs" />
     <Compile Include="Behaviors\InstanceBehavior.cs" />
-    <Compile Include="Behaviors\Lifecycle.cs" />
     <Compile Include="Behaviors\TypeBehavior.cs" />
     <Compile Include="Case.cs" />
     <Compile Include="CommandLineParser.cs" />

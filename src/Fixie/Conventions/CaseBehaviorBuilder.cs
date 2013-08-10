@@ -25,14 +25,7 @@ namespace Fixie.Conventions
         {
             return Wrap((@case, instance, innerBehavior) =>
             {
-                if (@case.Exceptions.Any())
-                    return;
-
                 setUp(@case, instance);
-
-                if (@case.Exceptions.Any())
-                    return;
-
                 innerBehavior();
                 tearDown(@case, instance);
             });

@@ -8,7 +8,7 @@ namespace Fixie
     {
         readonly List<Exception> exceptions = new List<Exception>();
 
-        public void Add(Exception exception)
+        internal void Add(Exception exception)
         {
             exceptions.Add(exception);
         }

@@ -17,8 +17,7 @@ namespace Fixie.Samples.LowCeremony
 
             Cases
                 .Where(method => method.Void())
-                .Where(method => LifecycleMethods.All(x => x != method.Name))
-                .ZeroParameters();
+                .Where(method => LifecycleMethods.All(x => x != method.Name));
 
             ClassExecution
                 .CreateInstancePerTestClass();

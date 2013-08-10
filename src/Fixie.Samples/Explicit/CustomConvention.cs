@@ -13,7 +13,6 @@ namespace Fixie.Samples.Explicit
 
             Cases
                 .Where(method => method.Void())
-                .ZeroParameters()
                 .Where(method =>
                 {
                     var isMarkedExplicit = method.Has<ExplicitAttribute>();

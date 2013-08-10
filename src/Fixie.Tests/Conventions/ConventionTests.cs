@@ -78,7 +78,7 @@ namespace Fixie.Tests.Conventions
                                         "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
         }
 
-        public void DefaultConventionShouldTreatSynchronousPublicInstanceNoArgVoidMethodsAsCases()
+        public void DefaultConventionShouldTreatSynchronousPublicInstanceVoidMethodsAsCases()
         {
             var defaultConvention = new DefaultConvention();
             var testClass = typeof(DiscoveryTestClass);
@@ -86,10 +86,10 @@ namespace Fixie.Tests.Conventions
             defaultConvention.Cases
                              .Filter(testClass)
                              .Select(x => x.Name)
-                             .ShouldEqual("PublicInstanceNoArgsVoid");
+                             .ShouldEqual("PublicInstanceWithArgsVoid", "PublicInstanceNoArgsVoid");
         }
 
-        public void DefaultConventionShouldTreatAsyncPublicInstanceNoArgMethodsAsCases()
+        public void DefaultConventionShouldTreatAsyncPublicInstanceMethodsAsCases()
         {
             var defaultConvention = new DefaultConvention();
             var testClass = typeof(AsyncDiscoveryTestClass);
@@ -98,7 +98,8 @@ namespace Fixie.Tests.Conventions
                              .Filter(testClass)
                              .OrderBy(x => x.Name)
                              .Select(x => x.Name)
-                             .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn");
+                             .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
+                                          "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
         }
 
         class DiscoveryTestClass : IDisposable

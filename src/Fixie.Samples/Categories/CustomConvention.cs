@@ -18,7 +18,6 @@ namespace Fixie.Samples.Categories
 
             Cases
                 .Where(method => method.Void())
-                .ZeroParameters()
                 .Where(method => shouldRunAll || MethodHasAnyDesiredCategory(method, desiredCategories));
 
             if (!shouldRunAll)

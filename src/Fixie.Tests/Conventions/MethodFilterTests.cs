@@ -26,16 +26,6 @@ namespace Fixie.Tests.Conventions
                 .ShouldEqual("PublicInstanceNoArgsVoid");
         }
 
-        public void CanFilterToMethodsWithZeroParameters()
-        {
-            new MethodFilter()
-                .ZeroParameters()
-                .Filter(typeof(Sample))
-                .OrderBy(method => method.Name)
-                .Select(method => method.Name)
-                .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn");
-        }
-
         public void CanFilterToMethodsWithAttributes()
         {
             new MethodFilter()

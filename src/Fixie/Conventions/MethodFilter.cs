@@ -32,11 +32,6 @@ namespace Fixie.Conventions
             return Where(method => method.HasOrInherits<TAttribute>());
         }
 
-        public MethodFilter ZeroParameters()
-        {
-            return Where(method => method.GetParameters().Length == 0);
-        }
-
         public IEnumerable<MethodInfo> Filter(Type type)
         {
             return type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(IsMatch).ToArray();

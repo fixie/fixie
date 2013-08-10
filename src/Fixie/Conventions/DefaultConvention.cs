@@ -8,8 +8,7 @@
                 .NameEndsWith("Tests");
 
             Cases
-                .Where(method => method.Void() || method.Async())
-                .ZeroParameters();
+                .Where(method => method.Void() || method.Async());
         }
     }
 }

@@ -15,8 +15,7 @@ namespace Fixie.Samples.Inclusive
                 .Where(type => type.IsInNamespace(GetType().Namespace));
 
             Cases
-                .Where(method => method.Void())
-                .ZeroParameters();
+                .Where(method => method.Void());
         }
 
         public void ShouldNotBeCalled()

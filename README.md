@@ -20,9 +20,9 @@ First, [install NuGet](http://docs.nuget.org/docs/start-here/installing-nuget). 
 
 ## Default Convention
 
-When using the default convention, a test fixture is any concrete class that has a default constructor and a name ending in "Tests".  Within such a fixture class, a test case is any public instance void method with zero arguments.  Additionally, test cases include public instance async methods returning `Task` or `Task<T>`.
+When using the default convention, a test class is any concrete class in your test assembly whose name ending in "Tests".  Within such a test class, a test case is any public instance void method.  Additionally, test cases include public instance async methods returning `Task` or `Task<T>`.
 
-One instance of your fixture class is constructed for *each* test case. To perform setup steps before each test case executes, use the fixture's default constructor. To perform cleanup steps after each test cases executes, implement `IDisposable` and place cleanup code within the `Dispose()` method.
+One instance of your test class is constructed for *each* test case. To perform setup steps before each test case executes, use the test class's default constructor. To perform cleanup steps after each test cases executes, implement `IDisposable` and place cleanup code within the `Dispose()` method.
 
 No [Attributes], no "using Fixie;" statement, no muss, no fuss.
 
@@ -63,6 +63,8 @@ public class CalculatorTests
 ```
 
 ## Custom Conventions
+
+Although useful for simple scenarios, the default convention may inadequate. Fortunately, you can replace it with your own.
 
 If you don't want to go with the behaviors defined in the default convention, simply place a subclass of Convention beside your tests.  A custom subclass of Convention will reach out into the containing test assembly, looking for tests to execute.  Each convention can customize test discovery and test execution.  For test discovery, you describe what your test classes and test methods look like.  For test execution, you can take control over how frequently your test classes are constructed and how they are constructed.  Additionally, you can wrap custom behavior around each test method, around each test class instance, and around each test class.
 

@@ -20,7 +20,7 @@ First, [install NuGet](http://docs.nuget.org/docs/start-here/installing-nuget). 
 
 ## Default Convention
 
-When using the default convention, a test class is any concrete class in your test assembly whose name ending in "Tests".  Within such a test class, a test case is any public instance void method.  Additionally, test cases include public instance async methods returning `Task` or `Task<T>`.
+When using the default convention, a test class is any concrete class in your test assembly whose name ends with "Tests".  Within such a test class, a test case is any public instance void method.  Additionally, test cases include public instance async methods returning `Task` or `Task<T>`.
 
 One instance of your test class is constructed for *each* test case. To perform setup steps before each test case executes, use the test class's default constructor. To perform cleanup steps after each test cases executes, implement `IDisposable` and place cleanup code within the `Dispose()` method.
 

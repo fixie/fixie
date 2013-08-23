@@ -26,22 +26,6 @@ One instance of your fixture class is constructed for *each* test case. To perfo
 
 No [Attributes], no "using Fixie;" statement, no muss, no fuss.
 
-## How do I make assertions?
-
-Most test frameworks such as NUnit or xUnit include their own assertion libraries so that you can make statements like this:
-
-```cs
-Assert.AreEqual(expected, actual);
-```
-
-Assertion libraries are orthogonal to test frameworks.  Your choice of assertion library should be independent of your choice of test framework.  Therefore, Fixie will *never* include an assertion library.
-
-Here are some useful third-party assertion libraries:
-
-* [Should](http://nuget.org/packages/Should/)
-* [Shouldly](http://nuget.org/packages/Shouldly/)
-
-## Example
 ```cs
 using Should;
 
@@ -77,3 +61,60 @@ public class CalculatorTests
     }
 }
 ```
+
+## Custom Conventions
+
+If you don't want to go with the behaviors defined in the default convention, simply place a subclass of Convention beside your tests.  A custom subclass of Convention will reach out into the containing test assembly, looking for tests to execute.  Each convention can customize test discovery and test execution.  For test discovery, you describe what your test classes and test methods look like.  For test execution, you can take control over how frequently your test classes are constructed and how they are constructed.  Additionally, you can wrap custom behavior around each test method, around each test class instance, and around each test class.
+
+For instance, let's say we want all of our integration tests to be automatically wrapped in a database transaction.  Beside our tests, we place a custom convention class:
+
+```cs
+using Fixie;
+using Fixie.Conventions;
+
+namespace IntegrationTests
+{
+    public class IntegrationTestConvention : Convention
+    {
+        public IntegrationTestConvention()
+        {
+            Classes
+                .NameEndsWith("Tests");
+
+            Cases
+                .Where(method => method.Void());
+
+            InstanceExecution
+                .Wrap((fixture, innerBehavior) =>
+                {
+                    using (new TransactionScope())
+                        innerBehavior();
+                });
+        }
+    }
+}
+```
+
+Several sample conventions are available under the [Fixie.Samples](https://github.com/plioi/fixie/tree/master/src/Fixie.Samples) project:
+
+* [Imitate NUnit](https://github.com/plioi/fixie/blob/master/src/Fixie.Samples/NUnitStyle/CustomConvention.cs)
+* [Imitate xUnit](https://github.com/plioi/fixie/blob/master/src/Fixie.Samples/xUnitStyle/CustomConvention.cs)
+* [Simplified NUnit for simpler test inheritance](https://github.com/plioi/fixie/blob/master/src/Fixie.Samples/LowCeremony/CustomConvention.cs)
+* [Construct integration test classes with your IoC container](https://github.com/plioi/fixie/blob/master/src/Fixie.Samples/IoC/CustomConvention.cs)
+* [Support arbitrary command line flags such as NUnit-style categories](https://github.com/plioi/fixie/blob/master/src/Fixie.Samples/Categories/CustomConvention.cs)
+
+## How do I make assertions?
+
+Most test frameworks such as NUnit or xUnit include their own assertion libraries so that you can make statements like this:
+
+```cs
+Assert.AreEqual(expected, actual);
+```
+
+Assertion libraries are orthogonal to test frameworks.  Your choice of assertion library should be independent of your choice of test framework.  Therefore, Fixie will *never* include an assertion library.
+
+Here are some useful third-party assertion libraries:
+
+* [Should](http://nuget.org/packages/Should/)
+* [Shouldly](http://nuget.org/packages/Shouldly/)
+

@@ -21,7 +21,8 @@ namespace Fixie.Samples.xUnitStyle
 
             ClassExecution
                 .CreateInstancePerCase()
-                .SetUpTearDown(PrepareFixtureData, DisposeFixtureData);
+                .SetUpTearDown(PrepareFixtureData, DisposeFixtureData)
+                .ShuffleCases();
 
             InstanceExecution
                 .SetUpTearDown(InjectFixtureData, fixture => { });

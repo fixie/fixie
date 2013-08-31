@@ -169,6 +169,23 @@ namespace Fixie.Tests.Conventions
                                          "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Pass passed.");
         }
 
+        public void ShouldAllowRandomShufflingOfCaseExecutionOrder()
+        {
+            var listener = new StubListener();
+            var convention = new SelfTestConvention();
+
+            convention.ClassExecution
+                      .CreateInstancePerTestClass()
+                      .ShuffleCases(new Random(1));
+
+            convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass));
+
+            listener.Entries.ShouldEqual("Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassB passed.",
+                                         "Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassA passed.",
+                                         "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Fail failed: 'Fail' failed!",
+                                         "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Pass passed.");
+        }
+
         class SampleIrrelevantClass
         {
             public void PassA() { }

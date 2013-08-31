@@ -42,6 +42,23 @@ namespace Fixie.Tests.Conventions
                 .ShouldEqual("PublicInstanceNoArgsWithReturn", "PublicInstanceWithArgsWithReturn");
         }
 
+        public void CanBeShuffled()
+        {
+            new MethodFilter()
+                .Shuffle(new Random(0))
+                .Filter(typeof(Sample))
+                .Select(method => method.Name)
+                .ShouldEqual("PublicInstanceWithArgsWithReturn", "PublicInstanceNoArgsWithReturn",
+                             "PublicInstanceNoArgsVoid", "PublicInstanceWithArgsVoid");
+
+            new MethodFilter()
+                .Shuffle(new Random(1))
+                .Filter(typeof(Sample))
+                .Select(method => method.Name)
+                .ShouldEqual("PublicInstanceNoArgsWithReturn", "PublicInstanceWithArgsVoid",
+                             "PublicInstanceNoArgsVoid", "PublicInstanceWithArgsWithReturn");
+        }
+
         class SampleAttribute : Attribute { }
 
         class SampleBase

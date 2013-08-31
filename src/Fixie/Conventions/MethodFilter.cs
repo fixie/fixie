@@ -8,6 +8,7 @@ namespace Fixie.Conventions
     public class MethodFilter
     {
         readonly List<Func<MethodInfo, bool>> conditions;
+        Random shuffler;
 
         public MethodFilter()
         {
@@ -32,9 +33,25 @@ namespace Fixie.Conventions
             return Where(method => method.HasOrInherits<TAttribute>());
         }
 
+        public MethodFilter Shuffle(Random random)
+        {
+            shuffler = random;
+            return this;
+        }
+
+        public MethodFilter Shuffle()
+        {
+            return Shuffle(new Random());
+        }
+
         public IEnumerable<MethodInfo> Filter(Type type)
         {
-            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(IsMatch).ToArray();
+            var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(IsMatch).ToArray();
+
+            if (shuffler != null)
+                methods.Shuffle(shuffler);
+
+            return methods;
         }
 
         bool IsMatch(MethodInfo candidate)

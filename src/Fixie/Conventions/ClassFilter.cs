@@ -7,6 +7,7 @@ namespace Fixie.Conventions
     public class ClassFilter
     {
         readonly List<Func<Type, bool>> conditions;
+        Random shuffler;
 
         public ClassFilter()
         {
@@ -36,9 +37,25 @@ namespace Fixie.Conventions
             return Where(type => type.Name.EndsWith(suffix));
         }
 
+        public ClassFilter Shuffle(Random random)
+        {
+            shuffler = random;
+            return this;
+        }
+
+        public ClassFilter Shuffle()
+        {
+            return Shuffle(new Random());
+        }
+
         public IEnumerable<Type> Filter(IEnumerable<Type> candidates)
         {
-            return candidates.Where(IsMatch);
+            var classes = candidates.Where(IsMatch).ToArray();
+
+            if (shuffler != null)
+                classes.Shuffle(shuffler);
+
+            return classes;
         }
 
         bool IsMatch(Type candidate)

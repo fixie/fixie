@@ -63,6 +63,21 @@ namespace Fixie.Tests.Conventions
                 .ShouldEqual(typeof(DefaultConstructor), typeof(NoDefaultConstructor));
         }
 
+        public void CanBeShuffled()
+        {
+            new ClassFilter()
+                .Shuffle(new Random(0))
+                .Filter(candidateTypes)
+                .ShouldEqual(typeof(DefaultConstructor), typeof(NoDefaultConstructor), typeof(String),
+                             typeof(AttributeSample), typeof(AttributeSampleBase));
+
+            new ClassFilter()
+                .Shuffle(new Random(1))
+                .Filter(candidateTypes)
+                .ShouldEqual(typeof(AttributeSampleBase), typeof(String), typeof(AttributeSample),
+                             typeof(DefaultConstructor), typeof(NoDefaultConstructor));
+        }
+
         abstract class AbstractClass { }
         class DefaultConstructor { }
         class NoDefaultConstructor { public NoDefaultConstructor(int arg) { } }

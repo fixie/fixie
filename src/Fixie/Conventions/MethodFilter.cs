@@ -9,6 +9,7 @@ namespace Fixie.Conventions
     {
         readonly List<Func<MethodInfo, bool>> conditions;
         Random shuffler;
+        Comparison<MethodInfo> sorter;
 
         public MethodFilter()
         {
@@ -36,6 +37,7 @@ namespace Fixie.Conventions
         public MethodFilter Shuffle(Random random)
         {
             shuffler = random;
+            sorter = null;
             return this;
         }
 
@@ -44,12 +46,22 @@ namespace Fixie.Conventions
             return Shuffle(new Random());
         }
 
+        public MethodFilter Sort(Comparison<MethodInfo> comparison)
+        {
+            sorter = comparison;
+            shuffler = null;
+            return this;
+        }
+
         public IEnumerable<MethodInfo> Filter(Type type)
         {
             var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(IsMatch).ToArray();
 
             if (shuffler != null)
                 methods.Shuffle(shuffler);
+
+            if (sorter != null)
+                Array.Sort(methods, sorter);
 
             return methods;
         }

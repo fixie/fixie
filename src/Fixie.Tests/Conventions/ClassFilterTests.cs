@@ -78,6 +78,24 @@ namespace Fixie.Tests.Conventions
                              typeof(DefaultConstructor), typeof(NoDefaultConstructor));
         }
 
+        public void CanBeSorted()
+        {
+            new ClassFilter()
+                .Sort((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal))
+                .Filter(candidateTypes)
+                .ShouldEqual(typeof(AttributeSample), typeof(AttributeSampleBase), typeof(DefaultConstructor),
+                             typeof(NoDefaultConstructor), typeof(String));
+
+            new ClassFilter()
+                .Sort((x, y) => x.Name.Length.CompareTo(y.Name.Length))
+                .Filter(candidateTypes)
+                .ShouldEqual(typeof(String),
+                             typeof(AttributeSample),
+                             typeof(DefaultConstructor),
+                             typeof(AttributeSampleBase),
+                             typeof(NoDefaultConstructor));
+        }
+
         abstract class AbstractClass { }
         class DefaultConstructor { }
         class NoDefaultConstructor { public NoDefaultConstructor(int arg) { } }

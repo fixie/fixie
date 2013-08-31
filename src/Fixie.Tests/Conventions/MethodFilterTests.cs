@@ -59,6 +59,25 @@ namespace Fixie.Tests.Conventions
                              "PublicInstanceNoArgsVoid", "PublicInstanceWithArgsWithReturn");
         }
 
+        public void CanBeSorted()
+        {
+            new MethodFilter()
+                .Sort((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal))
+                .Filter(typeof(Sample))
+                .Select(method => method.Name)
+                .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
+                             "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
+
+            new MethodFilter()
+                .Sort((x, y) => x.Name.Length.CompareTo(y.Name.Length))
+                .Filter(typeof(Sample))
+                .Select(method => method.Name)
+                .ShouldEqual("PublicInstanceNoArgsVoid",
+                             "PublicInstanceWithArgsVoid",
+                             "PublicInstanceNoArgsWithReturn",
+                             "PublicInstanceWithArgsWithReturn");
+        }
+
         class SampleAttribute : Attribute { }
 
         class SampleBase

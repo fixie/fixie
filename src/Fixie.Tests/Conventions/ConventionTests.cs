@@ -85,8 +85,9 @@ namespace Fixie.Tests.Conventions
 
             defaultConvention.Cases
                              .Filter(testClass)
+                             .OrderBy(x => x.Name)
                              .Select(x => x.Name)
-                             .ShouldEqual("PublicInstanceWithArgsVoid", "PublicInstanceNoArgsVoid");
+                             .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceWithArgsVoid");
         }
 
         public void DefaultConventionShouldTreatAsyncPublicInstanceMethodsAsCases()
@@ -162,10 +163,10 @@ namespace Fixie.Tests.Conventions
 
             convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass));
 
-            listener.ShouldHaveEntries("Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Pass passed.",
-                                       "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Fail failed: 'Fail' failed!",
-                                       "Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassA passed.",
-                                       "Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassB passed.");
+            listener.Entries.ShouldEqual("Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassA passed.",
+                                         "Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassB passed.",
+                                         "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Fail failed: 'Fail' failed!",
+                                         "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Pass passed.");
         }
 
         class SampleIrrelevantClass

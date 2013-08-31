@@ -20,7 +20,8 @@ namespace Fixie.Samples.LowCeremony
                 .Where(method => LifecycleMethods.All(x => x != method.Name));
 
             ClassExecution
-                .CreateInstancePerTestClass();
+                .CreateInstancePerTestClass()
+                .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
 
             InstanceExecution
                 .SetUpTearDown("FixtureSetUp", "FixtureTearDown");

@@ -14,7 +14,7 @@ namespace Fixie.Tests.TestClasses
 
             new SelfTestConvention().Execute(listener, typeof(AwaitThenPassTestClass));
 
-            listener.ShouldHaveEntries(
+            listener.Entries.ShouldEqual(
                 "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitThenPassTestClass.Test passed.");
         }
 
@@ -24,7 +24,7 @@ namespace Fixie.Tests.TestClasses
 
             new SelfTestConvention().Execute(listener, typeof(AwaitThenFailTestClass));
 
-            listener.ShouldHaveEntries(
+            listener.Entries.ShouldEqual(
                 "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitThenFailTestClass.Test failed: Assert.Equal() Failure" + Environment.NewLine +
                 "Expected: 0" + Environment.NewLine +
                 "Actual:   3");
@@ -36,7 +36,7 @@ namespace Fixie.Tests.TestClasses
 
             new SelfTestConvention().Execute(listener, typeof(AwaitOnTaskThatThrowsTestClass));
 
-            listener.ShouldHaveEntries(
+            listener.Entries.ShouldEqual(
                 "Fixie.Tests.TestClasses.AsyncCaseTests+AwaitOnTaskThatThrowsTestClass.Test failed: Attempted to divide by zero.");
         }
 
@@ -46,7 +46,7 @@ namespace Fixie.Tests.TestClasses
 
             new SelfTestConvention().Execute(listener, typeof(FailBeforeAwaitTestClass));
 
-            listener.ShouldHaveEntries(
+            listener.Entries.ShouldEqual(
                 "Fixie.Tests.TestClasses.AsyncCaseTests+FailBeforeAwaitTestClass.Test failed: 'Test' failed!");
         }
 
@@ -56,7 +56,7 @@ namespace Fixie.Tests.TestClasses
 
             new SelfTestConvention().Execute(listener, typeof(UnsupportedAsyncVoidTestTestClass));
 
-            listener.ShouldHaveEntries(
+            listener.Entries.ShouldEqual(
                 "Fixie.Tests.TestClasses.AsyncCaseTests+UnsupportedAsyncVoidTestTestClass.Test failed: " +
                 "Async void methods are not supported. Declare async methods with a return type of " +
                 "Task to ensure the task actually runs to completion.");

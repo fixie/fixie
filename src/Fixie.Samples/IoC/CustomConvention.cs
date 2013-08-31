@@ -19,7 +19,8 @@ namespace Fixie.Samples.IoC
                 .Where(method => method.Void());
 
             ClassExecution
-                .CreateInstancePerTestClass(UsingContainer);
+                .CreateInstancePerTestClass(UsingContainer)
+                .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
         }
 
         static IoCContainer InitContainerForIntegrationTests()

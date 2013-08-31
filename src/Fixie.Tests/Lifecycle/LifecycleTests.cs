@@ -31,6 +31,8 @@ namespace Fixie.Tests.Lifecycle
             {
                 var listener = new StubListener();
 
+                Convention.ClassExecution.SortCases((x, y) => String.Compare(y.Name, x.Name, StringComparison.Ordinal));
+
                 Convention.Execute(listener, typeof(SampleTestClass));
 
                 return new Output(console.Lines.ToArray(), listener.Entries.ToArray());

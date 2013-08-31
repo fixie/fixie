@@ -42,42 +42,6 @@ namespace Fixie.Tests.Conventions
                 .ShouldEqual("PublicInstanceNoArgsWithReturn", "PublicInstanceWithArgsWithReturn");
         }
 
-        public void CanBeShuffled()
-        {
-            new MethodFilter()
-                .Shuffle(new Random(0))
-                .Filter(typeof(Sample))
-                .Select(method => method.Name)
-                .ShouldEqual("PublicInstanceWithArgsWithReturn", "PublicInstanceNoArgsWithReturn",
-                             "PublicInstanceNoArgsVoid", "PublicInstanceWithArgsVoid");
-
-            new MethodFilter()
-                .Shuffle(new Random(1))
-                .Filter(typeof(Sample))
-                .Select(method => method.Name)
-                .ShouldEqual("PublicInstanceNoArgsWithReturn", "PublicInstanceWithArgsVoid",
-                             "PublicInstanceNoArgsVoid", "PublicInstanceWithArgsWithReturn");
-        }
-
-        public void CanBeSorted()
-        {
-            new MethodFilter()
-                .Sort((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal))
-                .Filter(typeof(Sample))
-                .Select(method => method.Name)
-                .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
-                             "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
-
-            new MethodFilter()
-                .Sort((x, y) => x.Name.Length.CompareTo(y.Name.Length))
-                .Filter(typeof(Sample))
-                .Select(method => method.Name)
-                .ShouldEqual("PublicInstanceNoArgsVoid",
-                             "PublicInstanceWithArgsVoid",
-                             "PublicInstanceNoArgsWithReturn",
-                             "PublicInstanceWithArgsWithReturn");
-        }
-
         class SampleAttribute : Attribute { }
 
         class SampleBase

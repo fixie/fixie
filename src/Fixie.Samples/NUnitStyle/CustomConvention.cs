@@ -15,7 +15,8 @@ namespace Fixie.Samples.NUnitStyle
                 .HasOrInherits<TestAttribute>();
 
             ClassExecution
-                    .CreateInstancePerTestClass();
+                    .CreateInstancePerTestClass()
+                    .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
 
             InstanceExecution
                 .SetUpTearDown<TestFixtureSetUpAttribute, TestFixtureTearDownAttribute>();

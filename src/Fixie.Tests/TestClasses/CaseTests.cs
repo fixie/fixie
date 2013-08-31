@@ -10,7 +10,7 @@ namespace Fixie.Tests.TestClasses
 
             new SelfTestConvention().Execute(listener , typeof(PassTestClass));
 
-            listener.ShouldHaveEntries(
+            listener.Entries.ShouldEqual(
                 "Fixie.Tests.TestClasses.CaseTests+PassTestClass.Pass passed.");
         }
 
@@ -20,7 +20,7 @@ namespace Fixie.Tests.TestClasses
 
             new SelfTestConvention().Execute(listener, typeof(FailTestClass));
 
-            listener.ShouldHaveEntries(
+            listener.Entries.ShouldEqual(
                 "Fixie.Tests.TestClasses.CaseTests+FailTestClass.Fail failed: 'Fail' failed!");
         }
 
@@ -30,10 +30,10 @@ namespace Fixie.Tests.TestClasses
 
             new SelfTestConvention().Execute(listener, typeof(PassFailTestClass));
 
-            listener.ShouldHaveEntries(
+            listener.Entries.ShouldEqual(
                 "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.FailA failed: 'FailA' failed!",
-                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.PassA passed.",
                 "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.FailB failed: 'FailB' failed!",
+                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.PassA passed.",
                 "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.PassB passed.",
                 "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.PassC passed.");
         }
@@ -44,7 +44,7 @@ namespace Fixie.Tests.TestClasses
 
             new SelfTestConvention().Execute(listener, typeof(CannotInvokeConstructorTestClass));
 
-            listener.ShouldHaveEntries(
+            listener.Entries.ShouldEqual(
                 "Fixie.Tests.TestClasses.CaseTests+CannotInvokeConstructorTestClass.UnreachableCase failed: No parameterless constructor defined for this object.");
         }
 

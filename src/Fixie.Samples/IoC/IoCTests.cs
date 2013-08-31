@@ -35,8 +35,8 @@ namespace Fixie.Samples.IoC
             log.WhereAmI();
             log.ShouldHaveLines(
                 ".ctor",
-                "ShouldReceiveRealDatabase",
                 "ShouldReceiveFakeThirdPartyService",
+                "ShouldReceiveRealDatabase",
                 "Dispose");
         }
     }

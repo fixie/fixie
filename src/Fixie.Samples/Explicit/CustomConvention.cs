@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Fixie.Conventions;
+﻿using Fixie.Conventions;
 
 namespace Fixie.Samples.Explicit
 {

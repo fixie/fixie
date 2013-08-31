@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Fixie.Conventions;
 
 namespace Fixie.Tests.Conventions
@@ -51,8 +50,7 @@ namespace Fixie.Tests.Conventions
             new ClassFilter()
                     .HasOrInherits<InheritedAttribute>()
                     .Filter(candidateTypes)
-                    .OrderBy(type => type.Name)
-                    .ShouldEqual(typeof(AttributeSample), typeof(AttributeSampleBase));
+                    .ShouldEqual(typeof(AttributeSampleBase), typeof(AttributeSample));
         }
 
         public void CanFilterByTypeNameSuffix()
@@ -61,39 +59,6 @@ namespace Fixie.Tests.Conventions
                 .NameEndsWith("Constructor")
                 .Filter(candidateTypes)
                 .ShouldEqual(typeof(DefaultConstructor), typeof(NoDefaultConstructor));
-        }
-
-        public void CanBeShuffled()
-        {
-            new ClassFilter()
-                .Shuffle(new Random(0))
-                .Filter(candidateTypes)
-                .ShouldEqual(typeof(DefaultConstructor), typeof(NoDefaultConstructor), typeof(String),
-                             typeof(AttributeSample), typeof(AttributeSampleBase));
-
-            new ClassFilter()
-                .Shuffle(new Random(1))
-                .Filter(candidateTypes)
-                .ShouldEqual(typeof(AttributeSampleBase), typeof(String), typeof(AttributeSample),
-                             typeof(DefaultConstructor), typeof(NoDefaultConstructor));
-        }
-
-        public void CanBeSorted()
-        {
-            new ClassFilter()
-                .Sort((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal))
-                .Filter(candidateTypes)
-                .ShouldEqual(typeof(AttributeSample), typeof(AttributeSampleBase), typeof(DefaultConstructor),
-                             typeof(NoDefaultConstructor), typeof(String));
-
-            new ClassFilter()
-                .Sort((x, y) => x.Name.Length.CompareTo(y.Name.Length))
-                .Filter(candidateTypes)
-                .ShouldEqual(typeof(String),
-                             typeof(AttributeSample),
-                             typeof(DefaultConstructor),
-                             typeof(AttributeSampleBase),
-                             typeof(NoDefaultConstructor));
         }
 
         abstract class AbstractClass { }

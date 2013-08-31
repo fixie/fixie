@@ -54,6 +54,29 @@ namespace Fixie.Conventions
             });
         }
 
+        public TypeBehaviorBuilder ShuffleCases(Random random)
+        {
+            return Wrap((testClass, convention, cases, innerBehavior) =>
+            {
+                cases.Shuffle(random);
+                innerBehavior();
+            });
+        }
+
+        public TypeBehaviorBuilder ShuffleCases()
+        {
+            return ShuffleCases(new Random());
+        }
+
+        public TypeBehaviorBuilder SortCases(Comparison<Case> comparison)
+        {
+            return Wrap((testClass, convention, cases, innerBehavior) =>
+            {
+                Array.Sort(cases, comparison);
+                innerBehavior();
+            });
+        }
+
         static object Construct(Type type)
         {
             try

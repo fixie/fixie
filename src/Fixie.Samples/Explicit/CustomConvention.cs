@@ -11,7 +11,7 @@ namespace Fixie.Samples.Explicit
                 .NameEndsWith("Tests");
 
             Cases
-                .Where(method => method.Void())
+                .Where(method => method.IsVoid())
                 .Where(method =>
                 {
                     var isMarkedExplicit = method.Has<ExplicitAttribute>();

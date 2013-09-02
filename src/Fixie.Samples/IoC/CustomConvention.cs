@@ -16,7 +16,7 @@ namespace Fixie.Samples.IoC
                 .NameEndsWith("Tests");
 
             Cases
-                .Where(method => method.Void());
+                .Where(method => method.IsVoid());
 
             ClassExecution
                 .CreateInstancePerTestClass(UsingContainer)

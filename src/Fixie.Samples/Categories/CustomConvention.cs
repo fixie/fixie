@@ -17,7 +17,7 @@ namespace Fixie.Samples.Categories
                 .NameEndsWith("Tests");
 
             Cases
-                .Where(method => method.Void())
+                .Where(method => method.IsVoid())
                 .Where(method => shouldRunAll || MethodHasAnyDesiredCategory(method, desiredCategories));
 
             if (!shouldRunAll)

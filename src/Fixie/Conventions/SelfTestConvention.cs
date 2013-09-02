@@ -11,7 +11,7 @@ namespace Fixie.Conventions
                 .NameEndsWith("TestClass");
 
             Cases
-                .Where(method => method.Void() || method.Async());
+                .Where(method => method.IsVoid() || method.IsAsync());
 
             ClassExecution
                 .SortCases((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));

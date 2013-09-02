@@ -8,7 +8,7 @@
                 .NameEndsWith("Tests");
 
             Cases
-                .Where(method => method.Void() || method.Async());
+                .Where(method => method.IsVoid() || method.IsAsync());
         }
     }
 }

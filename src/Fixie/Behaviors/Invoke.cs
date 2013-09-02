@@ -13,9 +13,9 @@ namespace Fixie.Behaviors
             {
                 var method = @case.Method;
 
-                bool isDeclaredAsync = method.Async();
+                bool isDeclaredAsync = method.IsAsync();
 
-                if (isDeclaredAsync && method.Void())
+                if (isDeclaredAsync && method.IsVoid())
                     ThrowForUnsupportedAsyncVoid();
 
                 object result;

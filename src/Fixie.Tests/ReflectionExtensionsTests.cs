@@ -12,8 +12,8 @@ namespace Fixie.Tests
 
         public void CanDetectVoidReturnType()
         {
-            Method("ReturnsVoid").Void().ShouldBeTrue();
-            Method("ReturnsInt").Void().ShouldBeFalse();
+            Method("ReturnsVoid").IsVoid().ShouldBeTrue();
+            Method("ReturnsInt").IsVoid().ShouldBeFalse();
         }
 
         public void CanDetectClassAttributes()
@@ -40,9 +40,9 @@ namespace Fixie.Tests
 
         public void CanDetectAsyncDeclarations()
         {
-            Method("ReturnsVoid").Async().ShouldBeFalse();
-            Method("ReturnsInt").Async().ShouldBeFalse();
-            Method("Async").Async().ShouldBeTrue();
+            Method("ReturnsVoid").IsAsync().ShouldBeFalse();
+            Method("ReturnsInt").IsAsync().ShouldBeFalse();
+            Method("Async").IsAsync().ShouldBeTrue();
         }
 
         public void CanDetectWhetherMethodIsDispose()

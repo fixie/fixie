@@ -8,7 +8,7 @@ namespace Fixie
 {
     public static class ReflectionExtensions
     {
-        public static bool Void(this MethodInfo method)
+        public static bool IsVoid(this MethodInfo method)
         {
             return method.ReturnType == typeof(void);
         }
@@ -33,14 +33,14 @@ namespace Fixie
             return method.GetCustomAttributes<TAttribute>(true).Any();
         }
 
-        public static bool Async(this MethodInfo method)
+        public static bool IsAsync(this MethodInfo method)
         {
             return method.Has<AsyncStateMachineAttribute>();
         }
 
         public static bool IsDispose(this MethodInfo method)
         {
-            var hasDisposeSignature = method.Name == "Dispose" && method.Void() && method.GetParameters().Length == 0;
+            var hasDisposeSignature = method.Name == "Dispose" && method.IsVoid() && method.GetParameters().Length == 0;
 
             if (!hasDisposeSignature)
                 return false;

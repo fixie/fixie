@@ -16,7 +16,7 @@ namespace Fixie.Samples.LowCeremony
                 .NameEndsWith("Tests");
 
             Cases
-                .Where(method => method.Void())
+                .Where(method => method.IsVoid())
                 .Where(method => LifecycleMethods.All(x => x != method.Name));
 
             ClassExecution

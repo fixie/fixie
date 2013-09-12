@@ -20,20 +20,20 @@ namespace Fixie.TestDriven
         {
         }
 
-        public void CasePassed(string @case)
+        public void CasePassed(Case @case)
         {
             tdnet.TestFinished(new TestResult
             {
-                Name = @case,
+                Name = @case.Name,
                 State = TestState.Passed
             });
         }
 
-        public void CaseFailed(string @case, Exception[] exceptions)
+        public void CaseFailed(Case @case, Exception[] exceptions)
         {
             tdnet.TestFinished(new TestResult
             {
-                Name = @case,
+                Name = @case.Name,
                 State = TestState.Failed,
                 Message = exceptions.First().GetType().FullName,
                 StackTrace = CompoundStackTrace(exceptions),

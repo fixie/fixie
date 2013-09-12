@@ -14,17 +14,17 @@ namespace Fixie
             Message("testSuiteStarted name='{0}'", assembly.FileName());
         }
 
-        public void CasePassed(string @case)
+        public void CasePassed(Case @case)
         {
-            Message("testStarted name='{0}'", @case);
-            Message("testFinished name='{0}'", @case);
+            Message("testStarted name='{0}'", @case.Name);
+            Message("testFinished name='{0}'", @case.Name);
         }
 
-        public void CaseFailed(string @case, Exception[] exceptions)
+        public void CaseFailed(Case @case, Exception[] exceptions)
         {
-            Message("testStarted name='{0}'", @case);
-            Message("testFailed name='{0}' details='{1}'", @case, CompoundStackTrace(exceptions));
-            Message("testFinished name='{0}'", @case);
+            Message("testStarted name='{0}'", @case.Name);
+            Message("testFailed name='{0}' details='{1}'", @case.Name, CompoundStackTrace(exceptions));
+            Message("testFinished name='{0}'", @case.Name);
         }
 
         public void AssemblyCompleted(Assembly assembly, Result result)

@@ -136,13 +136,13 @@ namespace Fixie
                 inner.AssemblyStarted(assembly);
             }
 
-            public void CasePassed(string @case)
+            public void CasePassed(Case @case)
             {
                 passed++;
                 inner.CasePassed(@case);
             }
 
-            public void CaseFailed(string @case, Exception[] exceptions)
+            public void CaseFailed(Case @case, Exception[] exceptions)
             {
                 failed++;
                 inner.CaseFailed(@case, exceptions);

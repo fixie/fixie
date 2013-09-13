@@ -16,8 +16,9 @@ namespace Fixie
 
         public void CasePassed(Case @case)
         {
+            var durationInMilliseconds = ((int)Math.Ceiling(@case.Duration.TotalMilliseconds)).ToString();
             Message("testStarted name='{0}'", @case.Name);
-            Message("testFinished name='{0}'", @case.Name);
+            Message("testFinished name='{0}' duration='{1}'", @case.Name, durationInMilliseconds);
         }
 
         public void CaseFailed(Case @case, Exception[] exceptions)

@@ -8,6 +8,8 @@ namespace Fixie.Behaviors
         {
             foreach (var @case in fixture.Cases)
             {
+                @case.StartTimer();
+
                 try
                 {
                     fixture.CaseExecutionBehavior.Execute(@case, fixture.Instance);
@@ -16,6 +18,8 @@ namespace Fixie.Behaviors
                 {
                     @case.Fail(exception);
                 }
+
+                @case.StopTimer();
             }
         }
     }

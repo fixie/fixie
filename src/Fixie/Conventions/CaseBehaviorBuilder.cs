@@ -42,11 +42,11 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(Case @case, object instance)
+            public void Execute(InvokeBehavior invokeBehavior, Case @case, object instance)
             {
                 try
                 {
-                    outer(@case, instance, () => inner.Execute(@case, instance));
+                    outer(@case, instance, () => inner.Execute(invokeBehavior, @case, instance));
                 }
                 catch (Exception exception)
                 {

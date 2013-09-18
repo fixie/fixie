@@ -17,7 +17,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("Returns");
 
-            invoke.Execute(@case, this);
+            invoke.Execute(new InvokeMethod(), @case, this);
 
             invoked.ShouldBeTrue();
 
@@ -28,7 +28,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("CannotInvoke");
 
-            invoke.Execute(@case, this);
+            invoke.Execute(new InvokeMethod(), @case, this);
 
             invoked.ShouldBeFalse();
 
@@ -39,7 +39,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("Throws");
 
-            invoke.Execute(@case, this);
+            invoke.Execute(new InvokeMethod(), @case, this);
 
             invoked.ShouldBeTrue();
 
@@ -50,7 +50,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("Await");
 
-            invoke.Execute(@case, this);
+            invoke.Execute(new InvokeMethod(), @case, this);
 
             invoked.ShouldBeTrue();
 
@@ -61,7 +61,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("AwaitThenThrow");
 
-            invoke.Execute(@case, this);
+            invoke.Execute(new InvokeMethod(), @case, this);
 
             invoked.ShouldBeTrue();
 
@@ -74,7 +74,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("AwaitOnTaskThatThrows");
 
-            invoke.Execute(@case, this);
+            invoke.Execute(new InvokeMethod(), @case, this);
 
             invoked.ShouldBeTrue();
 
@@ -85,7 +85,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("ThrowBeforeAwait");
 
-            invoke.Execute(@case, this);
+            invoke.Execute(new InvokeMethod(), @case, this);
 
             invoked.ShouldBeTrue();
 
@@ -96,7 +96,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("UnsupportedAsyncVoid");
 
-            invoke.Execute(@case, this);
+            invoke.Execute(new InvokeMethod(), @case, this);
 
             invoked.ShouldBeFalse();
 

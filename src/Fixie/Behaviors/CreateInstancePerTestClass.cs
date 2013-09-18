@@ -18,7 +18,7 @@ namespace Fixie.Behaviors
             {
                 var instance = construct(testClass);
 
-                var fixture = new Fixture(testClass, instance, convention.CaseExecution.Behavior, cases);
+                var fixture = new Fixture(testClass, instance, convention.CaseExecution.Behavior, new InvokeMethod(), cases);
                 convention.InstanceExecution.Behavior.Execute(fixture);
 
                 Dispose(instance);

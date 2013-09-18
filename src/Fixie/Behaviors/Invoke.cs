@@ -7,7 +7,7 @@ namespace Fixie.Behaviors
 {
     public class Invoke : CaseBehavior
     {
-        public void Execute(Case @case, object instance)
+        public void Execute(InvokeBehavior invokeBehavior, Case @case, object instance)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace Fixie.Behaviors
                 object result;
                 try
                 {
-                    result = method.Invoke(instance, null);
+                    result = invokeBehavior.Execute(method, instance);
                 }
                 catch (TargetInvocationException exception)
                 {

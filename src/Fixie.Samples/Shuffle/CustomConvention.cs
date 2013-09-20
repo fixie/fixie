@@ -19,7 +19,7 @@ namespace Fixie.Samples.Shuffle
             Classes
                 .Where(type => type.IsInNamespace(GetType().Namespace));
 
-            Cases
+            Methods
                 .Where(method => method.IsVoid());
 
             ClassExecution.ShuffleCases(new Random(seed));

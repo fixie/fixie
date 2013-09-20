@@ -15,7 +15,7 @@ namespace Fixie.Samples.IoC
                 .Where(type => type.IsInNamespace(GetType().Namespace))
                 .NameEndsWith("Tests");
 
-            Cases
+            Methods
                 .Where(method => method.IsVoid());
 
             ClassExecution

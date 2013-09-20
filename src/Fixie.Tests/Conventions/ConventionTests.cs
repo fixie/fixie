@@ -7,7 +7,7 @@ namespace Fixie.Tests.Conventions
 {
     public class ConventionTests
     {
-        public void EmptyConventionShouldTreatConcreteClassesAsTestClasses()
+        public void EmptyConventionShouldDiscoverConcreteClassesAsTestClasses()
         {
             var emptyConvention = new Convention();
 
@@ -18,7 +18,7 @@ namespace Fixie.Tests.Conventions
                                         "PrivateTests", "OtherPrivateTests", "PrivateMissingNamingConvention", "PrivateWithNoDefaultConstructorTests");
         }
 
-        public void DefaultConventionShouldTreatConcreteClassesFollowingNamingConventionAsTestClasses()
+        public void DefaultConventionShouldDiscoverConcreteClassesFollowingNamingConventionAsTestClasses()
         {
             var defaultConvention = new DefaultConvention();
 
@@ -65,12 +65,12 @@ namespace Fixie.Tests.Conventions
         class PrivateMissingNamingConvention { }
         class PrivateWithNoDefaultConstructorTests { public PrivateWithNoDefaultConstructorTests(int x) { } }
 
-        public void EmptyConventionShouldTreatPublicInstanceMethodsAsCases()
+        public void EmptyConventionShouldDiscoverPublicInstanceMethodsForTestCases()
         {
             var emptyConvention = new Convention();
             var testClass = typeof(DiscoveryTestClass);
 
-            emptyConvention.Cases
+            emptyConvention.Methods
                            .Filter(testClass)
                            .OrderBy(x => x.Name)
                            .Select(x => x.Name)
@@ -78,24 +78,24 @@ namespace Fixie.Tests.Conventions
                                         "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
         }
 
-        public void DefaultConventionShouldTreatSynchronousPublicInstanceVoidMethodsAsCases()
+        public void DefaultConventionShouldDiscoverSynchronousPublicInstanceVoidMethodsForTestCases()
         {
             var defaultConvention = new DefaultConvention();
             var testClass = typeof(DiscoveryTestClass);
 
-            defaultConvention.Cases
+            defaultConvention.Methods
                              .Filter(testClass)
                              .OrderBy(x => x.Name)
                              .Select(x => x.Name)
                              .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceWithArgsVoid");
         }
 
-        public void DefaultConventionShouldTreatAsyncPublicInstanceMethodsAsCases()
+        public void DefaultConventionShouldDiscoverAsyncPublicInstanceMethodsForTestCases()
         {
             var defaultConvention = new DefaultConvention();
             var testClass = typeof(AsyncDiscoveryTestClass);
 
-            defaultConvention.Cases
+            defaultConvention.Methods
                              .Filter(testClass)
                              .OrderBy(x => x.Name)
                              .Select(x => x.Name)

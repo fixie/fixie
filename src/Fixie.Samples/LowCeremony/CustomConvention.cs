@@ -15,7 +15,7 @@ namespace Fixie.Samples.LowCeremony
                 .Where(type => type.IsInNamespace(GetType().Namespace))
                 .NameEndsWith("Tests");
 
-            Cases
+            Methods
                 .Where(method => method.IsVoid())
                 .Where(method => LifecycleMethods.All(x => x != method.Name));
 

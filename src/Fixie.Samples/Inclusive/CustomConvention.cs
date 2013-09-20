@@ -14,7 +14,7 @@ namespace Fixie.Samples.Inclusive
             Classes
                 .Where(type => type.IsInNamespace(GetType().Namespace));
 
-            Cases
+            Methods
                 .Where(method => method.IsVoid());
         }
 

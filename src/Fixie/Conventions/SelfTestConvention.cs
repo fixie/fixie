@@ -10,7 +10,7 @@ namespace Fixie.Conventions
                 .Where(testClass => testClass.IsNestedPrivate)
                 .NameEndsWith("TestClass");
 
-            Cases
+            Methods
                 .Where(method => method.IsVoid() || method.IsAsync());
 
             ClassExecution

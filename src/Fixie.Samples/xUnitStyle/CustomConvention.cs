@@ -16,7 +16,7 @@ namespace Fixie.Samples.xUnitStyle
             Classes
                 .Where(HasAnyFactMethods);
 
-            Cases
+            Methods
                 .HasOrInherits<FactAttribute>();
 
             ClassExecution

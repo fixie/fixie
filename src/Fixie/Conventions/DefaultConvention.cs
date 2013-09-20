@@ -7,7 +7,7 @@
             Classes
                 .NameEndsWith("Tests");
 
-            Cases
+            Methods
                 .Where(method => method.IsVoid() || method.IsAsync());
         }
     }

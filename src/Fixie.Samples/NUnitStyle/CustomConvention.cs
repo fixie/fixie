@@ -11,7 +11,7 @@ namespace Fixie.Samples.NUnitStyle
             Classes
                 .HasOrInherits<TestFixtureAttribute>();
 
-            Cases
+            Methods
                 .HasOrInherits<TestAttribute>();
 
             ClassExecution

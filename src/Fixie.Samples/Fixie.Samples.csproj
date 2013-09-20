@@ -59,8 +59,8 @@
     <Compile Include="NUnitStyle\CustomConvention.cs" />
     <Compile Include="NUnitStyle\Attributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Samples\CustomConvention.cs" />
-    <Compile Include="Samples\OrderTests.cs" />
+    <Compile Include="Shuffle\CustomConvention.cs" />
+    <Compile Include="Shuffle\OrderTests.cs" />
     <Compile Include="StringBuilderExtensions.cs" />
     <Compile Include="xUnitStyle\CalculatorTests.cs" />
     <Compile Include="xUnitStyle\CustomConvention.cs" />

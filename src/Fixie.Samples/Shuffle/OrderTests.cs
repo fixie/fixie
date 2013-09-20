@@ -1,4 +1,4 @@
-﻿namespace Fixie.Samples.Samples
+﻿namespace Fixie.Samples.Shuffle
 {
     public class OrderTests
     {

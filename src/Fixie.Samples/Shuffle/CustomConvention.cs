@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace Fixie.Samples.Samples
+namespace Fixie.Samples.Shuffle
 {
     public class CustomConvention : Convention
     {

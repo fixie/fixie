@@ -54,7 +54,7 @@
     <Compile Include="TestClasses\CaseTests.cs" />
     <Compile Include="Lifecycle\LifecycleTests.cs" />
     <Compile Include="Lifecycle\DisposalTests.cs" />
-    <Compile Include="Behaviors\InvokeTests.cs" />
+    <Compile Include="CaseTests.cs" />
     <Compile Include="Conventions\MethodFilterTests.cs" />
     <Compile Include="FailureException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

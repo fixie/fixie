@@ -3,21 +3,19 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Fixie.Behaviors;
 using Should;
 
-namespace Fixie.Tests.Behaviors
+namespace Fixie.Tests
 {
-    public class InvokeTests
+    public class CaseTests
     {
         bool invoked;
-        readonly Invoke invoke = new Invoke();
 
         public void ShouldInvokeMethods()
         {
             var @case = Case("Returns");
 
-            invoke.Execute(@case, this);
+            @case.Execute(this);
 
             invoked.ShouldBeTrue();
 
@@ -28,7 +26,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("CannotInvoke");
 
-            invoke.Execute(@case, this);
+            @case.Execute(this);
 
             invoked.ShouldBeFalse();
 
@@ -39,7 +37,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("Throws");
 
-            invoke.Execute(@case, this);
+            @case.Execute(this);
 
             invoked.ShouldBeTrue();
 
@@ -50,7 +48,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("Await");
 
-            invoke.Execute(@case, this);
+            @case.Execute(this);
 
             invoked.ShouldBeTrue();
 
@@ -61,7 +59,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("AwaitThenThrow");
 
-            invoke.Execute(@case, this);
+            @case.Execute(this);
 
             invoked.ShouldBeTrue();
 
@@ -74,7 +72,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("AwaitOnTaskThatThrows");
 
-            invoke.Execute(@case, this);
+            @case.Execute(this);
 
             invoked.ShouldBeTrue();
 
@@ -85,7 +83,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("ThrowBeforeAwait");
 
-            invoke.Execute(@case, this);
+            @case.Execute(this);
 
             invoked.ShouldBeTrue();
 
@@ -96,7 +94,7 @@ namespace Fixie.Tests.Behaviors
         {
             var @case = Case("UnsupportedAsyncVoid");
 
-            invoke.Execute(@case, this);
+            @case.Execute(this);
 
             invoked.ShouldBeFalse();
 
@@ -114,7 +112,7 @@ namespace Fixie.Tests.Behaviors
 
         static Case Case(string methodName)
         {
-            var testClass = typeof(InvokeTests);
+            var testClass = typeof(CaseTests);
             return new Case(testClass, testClass.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic));
         }
 

@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Fixie.Conventions
 {
     public class Convention
     {
+        Func<MethodInfo, IEnumerable<object[]>> methodCallParameterBuilder;
+
         public Convention()
         {
             Classes = new ClassFilter().Where(type => !type.IsSubclassOf(typeof(Convention)));
@@ -12,6 +16,8 @@ namespace Fixie.Conventions
             CaseExecution = new CaseBehaviorBuilder();
             InstanceExecution = new InstanceBehaviorBuilder();
             ClassExecution = new TypeBehaviorBuilder().CreateInstancePerCase();
+
+            methodCallParameterBuilder = method => new[] { (object[])null };
         }
 
         public ClassFilter Classes { get; private set; }
@@ -20,11 +26,20 @@ namespace Fixie.Conventions
         public InstanceBehaviorBuilder InstanceExecution { get; private set; }
         public TypeBehaviorBuilder ClassExecution { get; private set; }
 
+        public void Parameters(Func<MethodInfo, IEnumerable<object[]>> getCaseParameters)
+        {
+            methodCallParameterBuilder = getCaseParameters;
+        }
+
         public void Execute(Listener listener, params Type[] candidateTypes)
         {
             foreach (var testClass in Classes.Filter(candidateTypes))
             {
-                var cases = Methods.Filter(testClass).Select(x => new Case(testClass, x)).ToArray();
+                var methods = Methods.Filter(testClass);
+
+                var cases = methods.SelectMany(method =>
+                    methodCallParameterBuilder(method).Select(parameters =>
+                        new Case(testClass, method, parameters))).ToArray();
 
                 ClassExecution.Behavior.Execute(testClass, this, cases);
 

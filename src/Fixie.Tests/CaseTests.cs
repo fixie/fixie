@@ -18,7 +18,7 @@ namespace Fixie.Tests
             @case.Name.ShouldEqual("Fixie.Tests.CaseTests.Returns");
         }
 
-        public void ShouldIncludeParmeterValuesWhenTheUnderlyingMethodHasParameters()
+        public void ShouldIncludeParmeterValuesInNameWhenTheUnderlyingMethodHasParameters()
         {
             var @case = Case("Parameterized", 123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this);
 

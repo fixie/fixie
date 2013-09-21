@@ -17,7 +17,8 @@ namespace Fixie.Samples.Shuffle
             Console.WriteLine("Running shuffled tests using seed: {0}", seed);
 
             Classes
-                .Where(type => type.IsInNamespace(GetType().Namespace));
+                .Where(type => type.IsInNamespace(GetType().Namespace))
+                .NameEndsWith("Tests");
 
             Methods
                 .Where(method => method.IsVoid());

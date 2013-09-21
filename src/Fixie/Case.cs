@@ -9,22 +9,31 @@ namespace Fixie
 {
     public class Case
     {
+        readonly object[] parameters;
         readonly List<Exception> exceptions;
         readonly Stopwatch stopwatch;
 
-        public Case(Type testClass, MethodInfo caseMethod)
+        public Case(Type testClass, MethodInfo caseMethod, params object[] parameters)
         {
+            this.parameters = parameters != null && parameters.Length == 0 ? null : parameters;
             Class = testClass;
             Method = caseMethod;
             exceptions = new List<Exception>();
             stopwatch = new Stopwatch();
+            Name = GetName();
         }
 
-        public string Name
+        string GetName()
         {
-            get { return Class.FullName + "." + Method.Name; }
+            var name = Class.FullName + "." + Method.Name;
+
+            if (parameters != null && parameters.Length > 0)
+                name = string.Format("{0}({1})", name, string.Join(", ", parameters.Select(x => x.ToDisplayString())));
+
+            return name;
         }
 
+        public string Name { get; private set; }
         public Type Class { get; private set; }
         public MethodInfo Method { get; private set; }
         public IReadOnlyList<Exception> Exceptions { get { return exceptions; } }
@@ -41,7 +50,7 @@ namespace Fixie
                 object result;
                 try
                 {
-                    result = Method.Invoke(instance, null);
+                    result = Method.Invoke(instance, parameters);
                 }
                 catch (TargetInvocationException exception)
                 {

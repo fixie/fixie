@@ -60,6 +60,7 @@
     <Compile Include="Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="Conventions\MethodFilter.cs" />
+    <Compile Include="ObjectExtensions.cs" />
     <Compile Include="PreservedException.cs" />
     <Compile Include="RunContext.cs" />
     <Compile Include="TeamCityListener.cs" />

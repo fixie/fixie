@@ -11,9 +11,34 @@ namespace Fixie.Tests
     {
         bool invoked;
 
+        public void ShouldBeNamedAfterTheUnderlyingMethod()
+        {
+            var @case = Case("Returns");
+
+            @case.Name.ShouldEqual("Fixie.Tests.CaseTests.Returns");
+        }
+
+        public void ShouldIncludeParmeterValuesWhenTheUnderlyingMethodHasParameters()
+        {
+            var @case = Case("Parameterized", 123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this);
+
+            @case.Name.ShouldEqual("Fixie.Tests.CaseTests.Parameterized(123, True, 'a', \"with \\\"quotes\\\"\", \"long \\\"string\\\" g\"..., null, Fixie.Tests.CaseTests)");
+        }
+
         public void ShouldInvokeMethods()
         {
             var @case = Case("Returns");
+
+            @case.Execute(this);
+
+            invoked.ShouldBeTrue();
+
+            @case.Exceptions.Count.ShouldEqual(0);
+        }
+
+        public void ShouldInvokeMethodsWithParameters()
+        {
+            var @case = Case("Parameterized", 123, true, 'a', "s1", "s2", null, this);
 
             @case.Execute(this);
 
@@ -110,10 +135,10 @@ namespace Fixie.Tests
             exception.Message.ShouldEqual(expectedMessage);
         }
 
-        static Case Case(string methodName)
+        static Case Case(string methodName, params object[] parameters)
         {
             var testClass = typeof(CaseTests);
-            return new Case(testClass, testClass.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic));
+            return new Case(testClass, testClass.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic), parameters);
         }
 
         void Returns()
@@ -130,6 +155,11 @@ namespace Fixie.Tests
         {
             invoked = true;
             throw new FailureException();
+        }
+
+        void Parameterized(int i, bool b, char ch, string s1, string s2, object obj, CaseTests complex)
+        {
+            invoked = true;
         }
 
         static Task<int> Divide(int numerator, int denominator)

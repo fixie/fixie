@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fixie.Conventions;
@@ -36,11 +35,6 @@ namespace Fixie.Samples.Parameterized
                 foreach (var input in inputAttributes)
                     yield return input.Parameters;
             }
-        }
-        
-        object Default(Type type)
-        {
-            return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
     }
 }

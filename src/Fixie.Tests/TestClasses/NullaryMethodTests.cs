@@ -2,7 +2,7 @@
 
 namespace Fixie.Tests.TestClasses
 {
-    public class CaseTests
+    public class NullaryMethodTests
     {
         public void ShouldPassUponSuccessfulExecution()
         {
@@ -11,7 +11,7 @@ namespace Fixie.Tests.TestClasses
             new SelfTestConvention().Execute(listener , typeof(PassTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestClasses.CaseTests+PassTestClass.Pass passed.");
+                "Fixie.Tests.TestClasses.NullaryMethodTests+PassTestClass.Pass passed.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
@@ -21,7 +21,7 @@ namespace Fixie.Tests.TestClasses
             new SelfTestConvention().Execute(listener, typeof(FailTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestClasses.CaseTests+FailTestClass.Fail failed: 'Fail' failed!");
+                "Fixie.Tests.TestClasses.NullaryMethodTests+FailTestClass.Fail failed: 'Fail' failed!");
         }
 
         public void ShouldPassOrFailCasesIndividually()
@@ -31,11 +31,11 @@ namespace Fixie.Tests.TestClasses
             new SelfTestConvention().Execute(listener, typeof(PassFailTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.FailA failed: 'FailA' failed!",
-                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.FailB failed: 'FailB' failed!",
-                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.PassA passed.",
-                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.PassB passed.",
-                "Fixie.Tests.TestClasses.CaseTests+PassFailTestClass.PassC passed.");
+                "Fixie.Tests.TestClasses.NullaryMethodTests+PassFailTestClass.FailA failed: 'FailA' failed!",
+                "Fixie.Tests.TestClasses.NullaryMethodTests+PassFailTestClass.FailB failed: 'FailB' failed!",
+                "Fixie.Tests.TestClasses.NullaryMethodTests+PassFailTestClass.PassA passed.",
+                "Fixie.Tests.TestClasses.NullaryMethodTests+PassFailTestClass.PassB passed.",
+                "Fixie.Tests.TestClasses.NullaryMethodTests+PassFailTestClass.PassC passed.");
         }
 
         public void ShouldFailWhenTestClassConstructorCannotBeInvoked()
@@ -45,7 +45,7 @@ namespace Fixie.Tests.TestClasses
             new SelfTestConvention().Execute(listener, typeof(CannotInvokeConstructorTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestClasses.CaseTests+CannotInvokeConstructorTestClass.UnreachableCase failed: No parameterless constructor defined for this object.");
+                "Fixie.Tests.TestClasses.NullaryMethodTests+CannotInvokeConstructorTestClass.UnreachableCase failed: No parameterless constructor defined for this object.");
         }
 
         class PassTestClass

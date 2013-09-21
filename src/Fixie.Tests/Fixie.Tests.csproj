@@ -50,8 +50,8 @@
     <Compile Include="Lifecycle\ComplexLifecycleTests.cs" />
     <Compile Include="Lifecycle\ConstructionTests.cs" />
     <Compile Include="Lifecycle\InstanceLifecycleTests.cs" />
-    <Compile Include="TestClasses\AsyncCaseTests.cs" />
-    <Compile Include="TestClasses\CaseTests.cs" />
+    <Compile Include="TestClasses\AsyncMethodTests.cs" />
+    <Compile Include="TestClasses\NullaryMethodTests.cs" />
     <Compile Include="Lifecycle\LifecycleTests.cs" />
     <Compile Include="Lifecycle\DisposalTests.cs" />
     <Compile Include="CaseTests.cs" />

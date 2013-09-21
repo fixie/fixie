@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Fixie.Conventions;
 
-namespace Fixie.Tests.TestClasses
+namespace Fixie.Tests.TestMethods
 {
     public class ParameterizedMethodTests
     {
@@ -13,19 +13,19 @@ namespace Fixie.Tests.TestClasses
             var listener = new StubListener();
 
             var convention = new SelfTestConvention();
-            convention.Parameters(YieldCases);
+            convention.Parameters(ParametersFromAttributesWithTypeDefaultFallback);
 
             convention.Execute(listener, typeof(ParameterizedTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestClasses.ParameterizedMethodTests+ParameterizedTestClass.IntArg(0) passed.",
-                "Fixie.Tests.TestClasses.ParameterizedMethodTests+ParameterizedTestClass.MultipleCasesFromAttributes(1, 1, 2) passed.",
-                "Fixie.Tests.TestClasses.ParameterizedMethodTests+ParameterizedTestClass.MultipleCasesFromAttributes(1, 2, 3) passed.",
-                "Fixie.Tests.TestClasses.ParameterizedMethodTests+ParameterizedTestClass.MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
-                "Fixie.Tests.TestClasses.ParameterizedMethodTests+ParameterizedTestClass.ZeroArgs passed.");
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.IntArg(0) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.MultipleCasesFromAttributes(1, 1, 2) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.MultipleCasesFromAttributes(1, 2, 3) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.ZeroArgs passed.");
         }
 
-        IEnumerable<object[]> YieldCases(MethodInfo method)
+        IEnumerable<object[]> ParametersFromAttributesWithTypeDefaultFallback(MethodInfo method)
         {
             var parameters = method.GetParameters();
 

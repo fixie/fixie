@@ -50,8 +50,8 @@
     <Compile Include="Lifecycle\ComplexLifecycleTests.cs" />
     <Compile Include="Lifecycle\ConstructionTests.cs" />
     <Compile Include="Lifecycle\InstanceLifecycleTests.cs" />
-    <Compile Include="TestClasses\AsyncMethodTests.cs" />
-    <Compile Include="TestClasses\NullaryMethodTests.cs" />
+    <Compile Include="TestMethods\AsyncMethodTests.cs" />
+    <Compile Include="TestMethods\NullaryMethodTests.cs" />
     <Compile Include="Lifecycle\LifecycleTests.cs" />
     <Compile Include="Lifecycle\DisposalTests.cs" />
     <Compile Include="CaseTests.cs" />
@@ -64,7 +64,7 @@
     <Compile Include="StubListener.cs" />
     <Compile Include="Conventions\ConventionTests.cs" />
     <Compile Include="Conventions\ClassFilterTests.cs" />
-    <Compile Include="TestClasses\ParameterizedMethodTests.cs" />
+    <Compile Include="TestMethods\ParameterizedMethodTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie\Fixie.csproj">

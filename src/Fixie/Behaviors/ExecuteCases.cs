@@ -12,7 +12,7 @@ namespace Fixie.Behaviors
 
                 try
                 {
-                    fixture.CaseExecutionBehavior.Execute(@case, fixture.Instance);
+                    fixture.CaseExecutionBehavior.Execute(fixture.InvokeBehavior, @case, fixture.Instance);
                 }
                 catch (Exception exception)
                 {

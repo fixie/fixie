@@ -36,7 +36,7 @@ namespace Fixie.Tests.Behaviors
             };
 
             var executeCases = new ExecuteCases();
-            var fixture = new Fixture(testClass, new SampleTestClass(), convention.CaseExecution.Behavior, cases);
+            var fixture = new Fixture(testClass, new SampleTestClass(), convention.CaseExecution.Behavior, new InvokeMethod(), cases);
             executeCases.Execute(fixture);
 
             cases[0].Exceptions.Any().ShouldBeFalse();

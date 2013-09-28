@@ -83,7 +83,7 @@ namespace IntegrationTests
             Classes
                 .NameEndsWith("Tests");
 
-            Cases
+            Methods
                 .Where(method => method.Void());
 
             InstanceExecution

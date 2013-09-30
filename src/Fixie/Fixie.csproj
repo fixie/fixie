@@ -48,7 +48,9 @@
     <Compile Include="ConsoleListener.cs" />
     <Compile Include="ConsoleRunner.cs" />
     <Compile Include="Conventions\Convention.cs" />
+    <Compile Include="Conventions\DefaultCaseBuilder.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
+    <Compile Include="Conventions\ICaseBuilder.cs" />
     <Compile Include="Conventions\InstanceBehaviorBuilder.cs" />
     <Compile Include="Conventions\CaseBehaviorBuilder.cs" />
     <Compile Include="Conventions\SelfTestConvention.cs" />

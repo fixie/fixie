@@ -23,7 +23,7 @@ namespace Fixie
             Name = GetName();
         }
 
-        string GetName()
+        protected virtual string GetName()
         {
             var name = Class.FullName + "." + Method.Name;
 

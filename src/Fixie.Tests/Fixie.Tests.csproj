@@ -65,6 +65,7 @@
     <Compile Include="Conventions\ConventionTests.cs" />
     <Compile Include="Conventions\ClassFilterTests.cs" />
     <Compile Include="TestMethods\ParameterizedMethodTests.cs" />
+    <Compile Include="UncallableParameterizedCaseTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie\Fixie.csproj">

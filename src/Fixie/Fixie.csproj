@@ -69,6 +69,7 @@
     <Compile Include="Result.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="Conventions\ClassFilter.cs" />
+    <Compile Include="UncallableParameterizedCase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixie.nuspec" />

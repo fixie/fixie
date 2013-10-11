@@ -38,7 +38,7 @@ namespace Fixie
         public MethodInfo Method { get; private set; }
         public IReadOnlyList<Exception> Exceptions { get { return exceptions; } }
 
-        public void Execute(object instance)
+        public virtual void Execute(object instance)
         {
             try
             {

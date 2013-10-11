@@ -17,7 +17,7 @@ namespace Fixie.Conventions
             InstanceExecution = new InstanceBehaviorBuilder();
             ClassExecution = new TypeBehaviorBuilder().CreateInstancePerCase();
 
-            methodCallParameterBuilder = method => new[] { (object[])null };
+            methodCallParameterBuilder = method => new object[][] { };
         }
 
         public ClassFilter Classes { get; private set; }
@@ -37,9 +37,7 @@ namespace Fixie.Conventions
             {
                 var methods = Methods.Filter(testClass);
 
-                var cases = methods.SelectMany(method =>
-                    methodCallParameterBuilder(method).Select(parameters =>
-                        new Case(testClass, method, parameters))).ToArray();
+                var cases = methods.SelectMany(method => CasesForMethod(testClass, method)).ToArray();
 
                 ClassExecution.Behavior.Execute(testClass, this, cases);
 
@@ -52,6 +50,28 @@ namespace Fixie.Conventions
                     else
                         listener.CasePassed(@case);
                 }
+            }
+        }
+
+        IEnumerable<Case> CasesForMethod(Type testClass, MethodInfo method)
+        {
+            var casesForKnownInputParameters = methodCallParameterBuilder(method)
+                .Select(parameters => new Case(testClass, method, parameters));
+
+            bool any = false;
+
+            foreach (var actualCase in casesForKnownInputParameters)
+            {
+                any = true;
+                yield return actualCase;
+            }
+
+            if (!any)
+            {
+                if (method.GetParameters().Any())
+                    yield return new UncallableParameterizedCase(testClass, method);
+                else
+                    yield return new Case(testClass, method);
             }
         }
     }

@@ -25,6 +25,35 @@ namespace Fixie.Tests.TestMethods
                 "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.ZeroArgs passed.");
         }
 
+        public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
+        {
+            var listener = new StubListener();
+
+            var convention = new SelfTestConvention();
+
+            convention.Execute(listener, typeof(ParameterizedTestClass));
+
+            listener.Entries.ShouldEqual(
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.IntArg failed: This parameterized test could not be executed, because no input values were available.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.MultipleCasesFromAttributes failed: This parameterized test could not be executed, because no input values were available.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.ZeroArgs passed.");
+        }
+
+        public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
+        {
+            var listener = new StubListener();
+
+            var convention = new SelfTestConvention();
+            convention.Parameters(ZeroSetsOfInputParameters);
+
+            convention.Execute(listener, typeof(ParameterizedTestClass));
+
+            listener.Entries.ShouldEqual(
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.IntArg failed: This parameterized test could not be executed, because no input values were available.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.MultipleCasesFromAttributes failed: This parameterized test could not be executed, because no input values were available.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+ParameterizedTestClass.ZeroArgs passed.");
+        }
+
         IEnumerable<object[]> ParametersFromAttributesWithTypeDefaultFallback(MethodInfo method)
         {
             var parameters = method.GetParameters();
@@ -40,6 +69,11 @@ namespace Fixie.Tests.TestMethods
             {
                 yield return parameters.Select(p => Default(p.ParameterType)).ToArray();
             }
+        }
+
+        IEnumerable<object[]> ZeroSetsOfInputParameters(MethodInfo method)
+        {
+            yield break;
         }
 
         object Default(Type type)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fixie.Conventions;
@@ -17,24 +18,15 @@ namespace Fixie.Samples.Parameterized
                 .Where(method => method.IsVoid());
 
             ClassExecution
-                .CreateInstancePerTestClass();
+                .CreateInstancePerTestClass()
+                .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
 
             Parameters(FromInputAttributes);
         }
-        
-        IEnumerable<object[]> FromInputAttributes(MethodInfo method)
-        {
-            var inputAttributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
 
-            if (!inputAttributes.Any())
-            {
-                yield return null;
-            }
-            else
-            {
-                foreach (var input in inputAttributes)
-                    yield return input.Parameters;
-            }
+        static IEnumerable<object[]> FromInputAttributes(MethodInfo method)
+        {
+            return method.GetCustomAttributes<InputAttribute>(true).Select(input => input.Parameters);
         }
     }
 }

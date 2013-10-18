@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Fixie.Behaviors
 {
@@ -8,7 +9,8 @@ namespace Fixie.Behaviors
         {
             foreach (var @case in fixture.Cases)
             {
-                @case.StartTimer();
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
 
                 try
                 {
@@ -19,7 +21,8 @@ namespace Fixie.Behaviors
                     @case.Fail(exception);
                 }
 
-                @case.StopTimer();
+                stopwatch.Stop();
+                @case.Duration = stopwatch.Elapsed;
             }
         }
     }

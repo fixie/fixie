@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ namespace Fixie
     {
         readonly object[] parameters;
         readonly List<Exception> exceptions;
-        readonly Stopwatch stopwatch;
 
         public Case(Type testClass, MethodInfo caseMethod, params object[] parameters)
         {
@@ -19,7 +17,6 @@ namespace Fixie
             Class = testClass;
             Method = caseMethod;
             exceptions = new List<Exception>();
-            stopwatch = new Stopwatch();
             Name = GetName();
         }
 
@@ -83,20 +80,7 @@ namespace Fixie
                 "return type of Task to ensure the task actually runs to completion.");
         }
 
-        public void StartTimer()
-        {
-            stopwatch.Start();
-        }
-
-        public void StopTimer()
-        {
-            stopwatch.Stop();
-        }
-
-        public TimeSpan Duration
-        {
-            get { return stopwatch.Elapsed; }
-        }
+        public TimeSpan Duration { get; internal set; }
 
         internal void Fail(Exception reason)
         {

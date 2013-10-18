@@ -20,8 +20,9 @@ namespace Fixie.TestDriven
         {
         }
 
-        public void CasePassed(Case @case)
+        public void CasePassed(PassResult result)
         {
+            var @case = result.Case;
             tdnet.TestFinished(new TestResult
             {
                 Name = @case.Name,
@@ -29,8 +30,11 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void CaseFailed(Case @case, Exception[] exceptions)
+        public void CaseFailed(FailResult result)
         {
+            var @case = result.Case;
+            var exceptions = result.Exceptions;
+
             tdnet.TestFinished(new TestResult
             {
                 Name = @case.Name,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -12,12 +13,15 @@ namespace Fixie
             Console.WriteLine();
         }
 
-        public void CasePassed(Case @case)
+        public void CasePassed(PassResult result)
         {
         }
 
-        public void CaseFailed(Case @case, Exception[] exceptions)
+        public void CaseFailed(FailResult result)
         {
+            var @case = result.Case;
+            var exceptions = result.Exceptions;
+
             using (Foreground.Red)
                 Console.WriteLine("Test '{0}' failed: {1}", @case.Name, exceptions.First().GetType().FullName);
             Console.Out.WriteCompoundStackTrace(exceptions);

@@ -46,9 +46,9 @@ namespace Fixie.Conventions
                     var exceptions = @case.Exceptions;
 
                     if (exceptions.Any())
-                        listener.CaseFailed(@case, exceptions.ToArray());
+                        listener.CaseFailed(new FailResult(@case, exceptions));
                     else
-                        listener.CasePassed(@case);
+                        listener.CasePassed(new PassResult(@case));
                 }
             }
         }

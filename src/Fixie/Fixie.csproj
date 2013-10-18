@@ -53,6 +53,7 @@
     <Compile Include="Conventions\CaseBehaviorBuilder.cs" />
     <Compile Include="Conventions\SelfTestConvention.cs" />
     <Compile Include="Conventions\TypeBehaviorBuilder.cs" />
+    <Compile Include="FailResult.cs" />
     <Compile Include="Fixture.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Behaviors\Invoke.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="Listener.cs" />
     <Compile Include="Conventions\MethodFilter.cs" />
     <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="PassResult.cs" />
     <Compile Include="PreservedException.cs" />
     <Compile Include="RunContext.cs" />
     <Compile Include="TeamCityListener.cs" />

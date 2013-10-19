@@ -8,5 +8,6 @@
         }
 
         public Case Case { get; private set; }
+        public string Output { get { return Case.Output; } }
     }
 }

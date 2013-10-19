@@ -51,6 +51,7 @@
     <Compile Include="Lifecycle\ConstructionTests.cs" />
     <Compile Include="Lifecycle\InstanceLifecycleTests.cs" />
     <Compile Include="TestMethods\AsyncMethodTests.cs" />
+    <Compile Include="Listeners\ConsoleListenerTests.cs" />
     <Compile Include="TestMethods\NullaryMethodTests.cs" />
     <Compile Include="Lifecycle\LifecycleTests.cs" />
     <Compile Include="Lifecycle\DisposalTests.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Conventions\ConventionTests.cs" />
     <Compile Include="Conventions\ClassFilterTests.cs" />
     <Compile Include="TestMethods\ParameterizedMethodTests.cs" />
+    <Compile Include="Listeners\TeamCityListenerTests.cs" />
     <Compile Include="UncallableParameterizedCaseTests.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,7 @@ namespace Fixie
             var @case = result.Case;
 
             Message("testStarted name='{0}'", @case.Name);
+            Output(@case, result.Output);
             Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(@case.Duration));
         }
 
@@ -27,6 +28,7 @@ namespace Fixie
             var @case = result.Case;
 
             Message("testStarted name='{0}'", @case.Name);
+            Output(@case, result.Output);
             Message("testFailed name='{0}' details='{1}'", @case.Name, CompoundStackTrace(result.Exceptions));
             Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(@case.Duration));
         }
@@ -40,6 +42,12 @@ namespace Fixie
         {
             var encodedArgs = args.Select(Encode).Cast<object>().ToArray();
             Console.WriteLine("##teamcity["+format+"]", encodedArgs);
+        }
+
+        static void Output(Case @case, string output)
+        {
+            if (!String.IsNullOrEmpty(output))
+                Message("testStdOut name='{0}' out='{1}'", @case.Name, output);
         }
 
         static string Encode(string value)

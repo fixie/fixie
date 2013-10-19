@@ -9,20 +9,27 @@ namespace Fixie.Behaviors
         {
             foreach (var @case in fixture.Cases)
             {
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-
-                try
+                using (var console = new RedirectedConsole())
                 {
-                    fixture.CaseExecutionBehavior.Execute(@case, fixture.Instance);
-                }
-                catch (Exception exception)
-                {
-                    @case.Fail(exception);
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
+
+                    try
+                    {
+                        fixture.CaseExecutionBehavior.Execute(@case, fixture.Instance);
+                    }
+                    catch (Exception exception)
+                    {
+                        @case.Fail(exception);
+                    }
+
+                    stopwatch.Stop();
+
+                    @case.Duration = stopwatch.Elapsed;
+                    @case.Output = console.Output;
                 }
 
-                stopwatch.Stop();
-                @case.Duration = stopwatch.Elapsed;
+                Console.Write(@case.Output);
             }
         }
     }

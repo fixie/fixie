@@ -80,7 +80,9 @@ namespace Fixie
                 "return type of Task to ensure the task actually runs to completion.");
         }
 
-        public TimeSpan Duration { get; internal set; }
+        internal TimeSpan Duration { get; set; }
+
+        internal string Output { get; set; }
 
         internal void Fail(Exception reason)
         {

@@ -3,12 +3,12 @@
 namespace Fixie
 {
     [Serializable]
-    public class Result
+    public class AssemblyResult
     {
         readonly int passed;
         readonly int failed;
 
-        public Result(int passed, int failed)
+        public AssemblyResult(int passed, int failed)
         {
             this.passed = passed;
             this.failed = failed;

@@ -69,7 +69,7 @@
     <Compile Include="Listeners\TeamCityListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
-    <Compile Include="Result.cs" />
+    <Compile Include="AssemblyResult.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="Conventions\ClassFilter.cs" />
     <Compile Include="UncallableParameterizedCase.cs" />

@@ -33,7 +33,7 @@ namespace Fixie.Listeners
             Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(@case.Duration));
         }
 
-        public void AssemblyCompleted(Assembly assembly, Result result)
+        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {
             Message("testSuiteFinished name='{0}'", assembly.FileName());
         }

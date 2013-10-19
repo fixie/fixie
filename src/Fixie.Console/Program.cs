@@ -45,7 +45,7 @@ namespace Fixie.Console
             }
         }
 
-        static Result Execute(string assemblyPath, string[] args)
+        static AssemblyResult Execute(string assemblyPath, string[] args)
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
 

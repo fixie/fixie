@@ -29,7 +29,7 @@ namespace Fixie.TestDriven
             return TestRunState.Error;
         }
 
-        public TestRunState Run(ITestListener testListener, Func<Runner, Result> run)
+        public TestRunState Run(ITestListener testListener, Func<Runner, AssemblyResult> run)
         {
             var listener = new TestDrivenListener(testListener);
             var runner = new Runner(listener);

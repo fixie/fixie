@@ -7,6 +7,6 @@ namespace Fixie
         void AssemblyStarted(Assembly assembly);
         void CasePassed(PassResult result);
         void CaseFailed(FailResult result);
-        void AssemblyCompleted(Assembly assembly, Result result);
+        void AssemblyCompleted(Assembly assembly, AssemblyResult result);
     }
 }

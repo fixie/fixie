@@ -20,21 +20,21 @@ namespace Fixie
             this.options = options;
         }
 
-        public Result RunAssembly(Assembly assembly)
+        public AssemblyResult RunAssembly(Assembly assembly)
         {
             var runContext = new RunContext(assembly, options);
 
             return RunTypes(runContext, assembly.GetTypes());
         }
 
-        public Result RunNamespace(Assembly assembly, string ns)
+        public AssemblyResult RunNamespace(Assembly assembly, string ns)
         {
             var runContext = new RunContext(assembly, options);
 
             return RunTypes(runContext, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
-        public Result RunType(Assembly assembly, Type type)
+        public AssemblyResult RunType(Assembly assembly, Type type)
         {
             if (type.IsSubclassOf(typeof(Convention)))
             {
@@ -49,7 +49,7 @@ namespace Fixie
             return RunTypes(runContext, type);
         }
 
-        public Result RunMethod(Assembly assembly, MethodInfo method)
+        public AssemblyResult RunMethod(Assembly assembly, MethodInfo method)
         {
             var runContext = new RunContext(assembly, options, method);
 
@@ -63,12 +63,12 @@ namespace Fixie
             return Run(runContext, conventions, type);
         }
 
-        private Result RunTypes(RunContext runContext, params Type[] types)
+        private AssemblyResult RunTypes(RunContext runContext, params Type[] types)
         {
             return Run(runContext, GetConventions(runContext), types);
         }
 
-        private Result RunTypes(RunContext runContext, Convention convention, params Type[] types)
+        private AssemblyResult RunTypes(RunContext runContext, Convention convention, params Type[] types)
         {
             return Run(runContext, new[] { convention }, types);
         }
@@ -102,29 +102,29 @@ namespace Fixie
             return (Convention)Activator.CreateInstance(conventionType);
         }
 
-        Result Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)
+        AssemblyResult Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
-            var resultListener = new ResultListener(listener);
+            var resultListener = new AssemblyResultListener(listener);
 
             resultListener.AssemblyStarted(runContext.Assembly);
 
             foreach (var convention in conventions)
                 convention.Execute(resultListener, candidateTypes);
 
-            var result = resultListener.Result;
+            var result = resultListener.AssemblyResult;
 
             resultListener.AssemblyCompleted(runContext.Assembly, result);
 
             return result;
         }
 
-        class ResultListener : Listener
+        class AssemblyResultListener : Listener
         {
             int passed;
             int failed;
             readonly Listener inner;
 
-            public ResultListener(Listener inner)
+            public AssemblyResultListener(Listener inner)
             {
                 this.inner = inner;
             }
@@ -148,14 +148,14 @@ namespace Fixie
                 inner.CaseFailed(result);
             }
 
-            public void AssemblyCompleted(Assembly assembly, Result result)
+            public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
             {
                 inner.AssemblyCompleted(assembly, result);
             }
 
-            public Result Result
+            public AssemblyResult AssemblyResult
             {
-                get { return new Result(passed, failed); }
+                get { return new AssemblyResult(passed, failed); }
             }
         }
     }

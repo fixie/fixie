@@ -28,7 +28,7 @@ namespace Fixie.Listeners
             Console.WriteLine();
         }
 
-        public void AssemblyCompleted(Assembly assembly, Result result)
+        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {
             var assemblyName = typeof(ConsoleListener).Assembly.GetName();
             var name = assemblyName.Name;

@@ -53,7 +53,7 @@ namespace Fixie.TestDriven
             }
         }
 
-        public void AssemblyCompleted(Assembly assembly, Result result)
+        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {
         }
     }

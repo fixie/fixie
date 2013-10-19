@@ -39,7 +39,7 @@ namespace Fixie.Tests
             log.Add(entry.ToString());
         }
 
-        public void AssemblyCompleted(Assembly assembly, Result result)
+        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {
         }
 

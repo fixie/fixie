@@ -6,7 +6,7 @@ namespace Fixie
 {
     public class ConsoleRunner : MarshalByRefObject
     {
-        public Result RunAssembly(string assemblyFullPath, string[] args)
+        public AssemblyResult RunAssembly(string assemblyFullPath, string[] args)
         {
             var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
 

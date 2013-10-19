@@ -59,7 +59,7 @@
     <Compile Include="Conventions\MethodFilterTests.cs" />
     <Compile Include="FailureException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RedirectedConsole.cs" />
+    <Compile Include="RedirectedConsoleExtensions.cs" />
     <Compile Include="ReflectionExtensionsTests.cs" />
     <Compile Include="ShouldBeUnreachableException.cs" />
     <Compile Include="StubListener.cs" />

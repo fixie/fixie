@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Fixie.Behaviors
+namespace Fixie
 {
     public class RedirectedConsole : IDisposable
     {

@@ -35,7 +35,7 @@ namespace Fixie.Tests.Lifecycle
 
                 Convention.Execute(listener, typeof(SampleTestClass));
 
-                return new Output(console.Lines.ToArray(), listener.Entries.ToArray());
+                return new Output(console.Lines().ToArray(), listener.Entries.ToArray());
             }
         }
 

@@ -20,7 +20,8 @@ namespace Fixie.Tests.Listeners
                 var testClass = typeof(PassFailTestClass).FullName;
 
                 console.Lines()
-                       .Select(x => Regex.Replace(x, @"\d+", "#")) //Avoid brittle assertion introduced by durations and stack trace line numbers.
+                       .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
+                       .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'")) //Avoid brittle assertion introduced by durations.
                        .ShouldEqual(
                            "Console.Out: FailA",
                            "Console.Error: FailA",

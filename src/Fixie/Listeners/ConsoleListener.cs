@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Fixie
+namespace Fixie.Listeners
 {
     public class ConsoleListener : Listener
     {

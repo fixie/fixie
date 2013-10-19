@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Fixie.Conventions;
+using Fixie.Listeners;
 
 namespace Fixie.Tests.Listeners
 {

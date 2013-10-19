@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Fixie
+namespace Fixie.Listeners
 {
     public class TeamCityListener : Listener
     {

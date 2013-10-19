@@ -17,17 +17,18 @@ namespace Fixie
         public void CasePassed(PassResult result)
         {
             var @case = result.Case;
-            var durationInMilliseconds = ((int)Math.Ceiling(@case.Duration.TotalMilliseconds)).ToString();
+
             Message("testStarted name='{0}'", @case.Name);
-            Message("testFinished name='{0}' duration='{1}'", @case.Name, durationInMilliseconds);
+            Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(@case.Duration));
         }
 
         public void CaseFailed(FailResult result)
         {
             var @case = result.Case;
+
             Message("testStarted name='{0}'", @case.Name);
             Message("testFailed name='{0}' details='{1}'", @case.Name, CompoundStackTrace(result.Exceptions));
-            Message("testFinished name='{0}'", @case.Name);
+            Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(@case.Duration));
         }
 
         public void AssemblyCompleted(Assembly assembly, Result result)
@@ -63,6 +64,11 @@ namespace Fixie
             }
 
             return builder.ToString();
+        }
+
+        static string DurationInMilliseconds(TimeSpan duration)
+        {
+            return ((int)Math.Ceiling(duration.TotalMilliseconds)).ToString();
         }
 
         static string CompoundStackTrace(IEnumerable<Exception> exceptions)

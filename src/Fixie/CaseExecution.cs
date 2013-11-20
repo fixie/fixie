@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace Fixie
 {
-    public class CaseResult
+    public class CaseExecution
     {
         readonly List<Exception> exceptions;
 
-        public CaseResult(Case @case)
+        public CaseExecution(Case @case)
         {
             Case = @case;
             exceptions = new List<Exception>();

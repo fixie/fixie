@@ -5,12 +5,12 @@ namespace Fixie
 {
     public class FailResult
     {
-        public FailResult(CaseResult result)
+        public FailResult(CaseExecution execution)
         {
-            Case = result.Case;
-            Output = result.Output;
-            Duration = result.Duration;
-            Exceptions = result.Exceptions;
+            Case = execution.Case;
+            Output = execution.Output;
+            Duration = execution.Duration;
+            Exceptions = execution.Exceptions;
         }
 
         public Case Case { get; private set; }

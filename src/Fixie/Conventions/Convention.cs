@@ -43,10 +43,10 @@ namespace Fixie.Conventions
 
                 foreach (var @case in cases)
                 {
-                    if (@case.Result.Status == CaseStatus.Failed)
-                        listener.CaseFailed(new FailResult(@case.Result));
+                    if (@case.Execution.Status == CaseStatus.Failed)
+                        listener.CaseFailed(new FailResult(@case.Execution));
                     else
-                        listener.CasePassed(new PassResult(@case.Result));
+                        listener.CasePassed(new PassResult(@case.Execution));
                 }
             }
         }

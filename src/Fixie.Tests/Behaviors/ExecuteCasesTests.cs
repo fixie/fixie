@@ -39,8 +39,8 @@ namespace Fixie.Tests.Behaviors
             var fixture = new Fixture(testClass, new SampleTestClass(), convention.CaseExecution.Behavior, cases);
             executeCases.Execute(fixture);
 
-            cases[0].Result.Exceptions.Any().ShouldBeFalse();
-            cases[1].Result.Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
+            cases[0].Execution.Exceptions.Any().ShouldBeFalse();
+            cases[1].Execution.Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
             log.ShouldEqual("Pass", "Fail");
         }
 

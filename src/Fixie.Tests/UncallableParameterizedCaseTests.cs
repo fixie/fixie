@@ -16,7 +16,7 @@ namespace Fixie.Tests
 
             invoked.ShouldBeFalse();
 
-            var exception = @case.Result.Exceptions.ToArray().Single();
+            var exception = @case.Execution.Exceptions.ToArray().Single();
             exception.GetType().Name.ShouldEqual("ArgumentException");
             exception.Message.ShouldEqual("This parameterized test could not be executed, because no input values were available.");
         }

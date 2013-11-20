@@ -33,7 +33,7 @@ namespace Fixie.Tests
 
             invoked.ShouldBeTrue();
 
-            @case.Result.Exceptions.Count.ShouldEqual(0);
+            @case.Execution.Exceptions.Count.ShouldEqual(0);
         }
 
         public void ShouldInvokeMethodsWithParameters()
@@ -44,7 +44,7 @@ namespace Fixie.Tests
 
             invoked.ShouldBeTrue();
 
-            @case.Result.Exceptions.Count.ShouldEqual(0);
+            @case.Execution.Exceptions.Count.ShouldEqual(0);
         }
 
         public void ShouldLogExceptionWhenMethodCannotBeInvoked()
@@ -77,7 +77,7 @@ namespace Fixie.Tests
 
             invoked.ShouldBeTrue();
 
-            @case.Result.Exceptions.Count.ShouldEqual(0);
+            @case.Execution.Exceptions.Count.ShouldEqual(0);
         }
 
         public void ShouldLogOriginalExceptionWhenAsyncMethodThrowsAfterAwaiting()
@@ -130,7 +130,7 @@ namespace Fixie.Tests
 
         static void ExpectException(Case @case, string expectedName, string expectedMessage)
         {
-            var exception = @case.Result.Exceptions.ToArray().Single();
+            var exception = @case.Execution.Exceptions.ToArray().Single();
             exception.GetType().Name.ShouldEqual(expectedName);
             exception.Message.ShouldEqual(expectedMessage);
         }

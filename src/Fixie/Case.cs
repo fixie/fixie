@@ -17,7 +17,7 @@ namespace Fixie
             Method = caseMethod;
             Name = GetName();
 
-            Result = new CaseResult(this);
+            Execution = new CaseExecution(this);
         }
 
         string GetName()
@@ -79,11 +79,11 @@ namespace Fixie
                 "return type of Task to ensure the task actually runs to completion.");
         }
 
-        public CaseResult Result { get; private set; }
+        public CaseExecution Execution { get; private set; }
 
         public void Fail(Exception reason)
         {
-            Result.Fail(reason);
+            Execution.Fail(reason);
         }
     }
 }

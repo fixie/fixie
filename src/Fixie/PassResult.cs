@@ -4,11 +4,11 @@ namespace Fixie
 {
     public class PassResult
     {
-        public PassResult(CaseResult result)
+        public PassResult(CaseExecution execution)
         {
-            Case = result.Case;
-            Output = result.Output;
-            Duration = result.Duration;
+            Case = execution.Case;
+            Output = execution.Output;
+            Duration = execution.Duration;
         }
 
         public Case Case { get; private set; }

@@ -9,7 +9,7 @@ namespace Fixie.Behaviors
         {
             foreach (var @case in fixture.Cases)
             {
-                var result = @case.Result;
+                var result = @case.Execution;
 
                 using (var console = new RedirectedConsole())
                 {

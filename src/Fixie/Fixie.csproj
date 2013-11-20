@@ -41,7 +41,7 @@
     <Compile Include="Behaviors\CreateInstancePerTestClass.cs" />
     <Compile Include="Behaviors\ExecuteCases.cs" />
     <Compile Include="Behaviors\InstanceBehavior.cs" />
-    <Compile Include="CaseResult.cs" />
+    <Compile Include="CaseExecution.cs" />
     <Compile Include="CaseStatus.cs" />
     <Compile Include="RedirectedConsole.cs" />
     <Compile Include="Behaviors\TypeBehavior.cs" />

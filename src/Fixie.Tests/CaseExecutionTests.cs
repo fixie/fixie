@@ -4,20 +4,20 @@ using Should;
 
 namespace Fixie.Tests
 {
-    public class CaseResultTests
+    public class CaseExecutionTests
     {
         readonly Case @case;
-        readonly CaseResult result;
+        readonly CaseExecution execution;
 
-        public CaseResultTests()
+        public CaseExecutionTests()
         {
             @case = Case<SampleTestClass>("Test");
-            result = new CaseResult(@case);
+            execution = new CaseExecution(@case);
         }
 
         public void ShouldBeAssociatedWithCase()
         {
-            result.Case.ShouldEqual(@case);
+            execution.Case.ShouldEqual(@case);
         }
 
         public void ShouldTrackExceptionsAsFailureReasons()
@@ -25,19 +25,19 @@ namespace Fixie.Tests
             var exceptionA = new InvalidOperationException();
             var exceptionB = new DivideByZeroException();
 
-            result.Exceptions.ShouldBeEmpty();
-            result.Fail(exceptionA);
-            result.Fail(exceptionB);
-            result.Exceptions.ShouldEqual(exceptionA, exceptionB);
+            execution.Exceptions.ShouldBeEmpty();
+            execution.Fail(exceptionA);
+            execution.Fail(exceptionB);
+            execution.Exceptions.ShouldEqual(exceptionA, exceptionB);
         }
 
         public void ShouldDetermineCaseStatus()
         {
-            result.Status.ShouldEqual(CaseStatus.Passed);
+            execution.Status.ShouldEqual(CaseStatus.Passed);
 
-            result.Fail(new Exception());
+            execution.Fail(new Exception());
 
-            result.Status.ShouldEqual(CaseStatus.Failed);
+            execution.Status.ShouldEqual(CaseStatus.Failed);
         }
 
         private class SampleTestClass

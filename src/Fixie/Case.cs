@@ -9,15 +9,15 @@ namespace Fixie
     public class Case
     {
         readonly object[] parameters;
-        readonly List<Exception> exceptions;
 
         public Case(Type testClass, MethodInfo caseMethod, params object[] parameters)
         {
             this.parameters = parameters != null && parameters.Length == 0 ? null : parameters;
             Class = testClass;
             Method = caseMethod;
-            exceptions = new List<Exception>();
             Name = GetName();
+
+            Result = new CaseResult(this);
         }
 
         string GetName()
@@ -33,7 +33,7 @@ namespace Fixie
         public string Name { get; private set; }
         public Type Class { get; private set; }
         public MethodInfo Method { get; private set; }
-        public IReadOnlyList<Exception> Exceptions { get { return exceptions; } }
+        public IReadOnlyList<Exception> Exceptions { get { return Result.Exceptions; } }
 
         public virtual void Execute(object instance)
         {
@@ -80,18 +80,15 @@ namespace Fixie
                 "return type of Task to ensure the task actually runs to completion.");
         }
 
-        internal TimeSpan Duration { get; set; }
+        public CaseResult Result { get; private set; }
 
-        internal string Output { get; set; }
+        public TimeSpan Duration { get { return Result.Duration; } set { Result.Duration = value; } }
 
-        internal void Fail(Exception reason)
+        public string Output { get { return Result.Output; } set { Result.Output = value; } }
+
+        public void Fail(Exception reason)
         {
-            var wrapped = reason as PreservedException;
-
-            if (wrapped != null)
-                exceptions.Add(wrapped.OriginalException);
-            else
-                exceptions.Add(reason);
+            Result.Fail(reason);
         }
     }
 }

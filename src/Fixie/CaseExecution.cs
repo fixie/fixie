@@ -32,9 +32,9 @@ namespace Fixie
                 exceptions.Add(reason);
         }
 
-        public CaseStatus Status
+        public CaseResult Result
         {
-            get { return exceptions.Any() ? CaseStatus.Failed : CaseStatus.Passed; }
+            get { return exceptions.Any() ? CaseResult.Failed : CaseResult.Passed; }
         }
     }
 }

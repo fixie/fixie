@@ -43,7 +43,7 @@ namespace Fixie.Conventions
 
                 foreach (var @case in cases)
                 {
-                    if (@case.Execution.Status == CaseStatus.Failed)
+                    if (@case.Execution.Result == CaseResult.Failed)
                         listener.CaseFailed(new FailResult(@case.Execution));
                     else
                         listener.CasePassed(new PassResult(@case.Execution));

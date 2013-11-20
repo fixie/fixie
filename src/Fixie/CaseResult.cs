@@ -1,6 +1,6 @@
 ﻿namespace Fixie
 {
-    public enum CaseStatus
+    public enum CaseResult
     {
         Passed,
         Failed

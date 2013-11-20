@@ -42,7 +42,7 @@
     <Compile Include="Behaviors\ExecuteCases.cs" />
     <Compile Include="Behaviors\InstanceBehavior.cs" />
     <Compile Include="CaseExecution.cs" />
-    <Compile Include="CaseStatus.cs" />
+    <Compile Include="CaseResult.cs" />
     <Compile Include="RedirectedConsole.cs" />
     <Compile Include="Behaviors\TypeBehavior.cs" />
     <Compile Include="Case.cs" />

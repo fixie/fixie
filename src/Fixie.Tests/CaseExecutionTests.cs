@@ -31,13 +31,13 @@ namespace Fixie.Tests
             execution.Exceptions.ShouldEqual(exceptionA, exceptionB);
         }
 
-        public void ShouldDetermineCaseStatus()
+        public void ShouldDetermineCaseResult()
         {
-            execution.Status.ShouldEqual(CaseStatus.Passed);
+            execution.Result.ShouldEqual(CaseResult.Passed);
 
             execution.Fail(new Exception());
 
-            execution.Status.ShouldEqual(CaseStatus.Failed);
+            execution.Result.ShouldEqual(CaseResult.Failed);
         }
 
         private class SampleTestClass

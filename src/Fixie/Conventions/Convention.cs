@@ -43,12 +43,10 @@ namespace Fixie.Conventions
 
                 foreach (var @case in cases)
                 {
-                    var exceptions = @case.Exceptions;
-
-                    if (exceptions.Any())
-                        listener.CaseFailed(new FailResult(@case, exceptions));
+                    if (@case.Result.Status == CaseStatus.Failed)
+                        listener.CaseFailed(new FailResult(@case.Result));
                     else
-                        listener.CasePassed(new PassResult(@case));
+                        listener.CasePassed(new PassResult(@case.Result));
                 }
             }
         }

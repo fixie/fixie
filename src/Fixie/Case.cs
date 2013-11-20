@@ -33,7 +33,6 @@ namespace Fixie
         public string Name { get; private set; }
         public Type Class { get; private set; }
         public MethodInfo Method { get; private set; }
-        public IReadOnlyList<Exception> Exceptions { get { return Result.Exceptions; } }
 
         public virtual void Execute(object instance)
         {

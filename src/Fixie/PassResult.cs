@@ -2,12 +2,13 @@
 {
     public class PassResult
     {
-        public PassResult(Case @case)
+        public PassResult(CaseResult result)
         {
-            Case = @case;
+            Case = result.Case;
+            Output = result.Output;
         }
 
         public Case Case { get; private set; }
-        public string Output { get { return Case.Output; } }
+        public string Output { get; private set; }
     }
 }

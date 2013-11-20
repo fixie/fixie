@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Fixie
 {
@@ -29,6 +30,11 @@ namespace Fixie
                 exceptions.Add(wrapped.OriginalException);
             else
                 exceptions.Add(reason);
+        }
+
+        public CaseStatus Status
+        {
+            get { return exceptions.Any() ? CaseStatus.Failed : CaseStatus.Passed; }
         }
     }
 }

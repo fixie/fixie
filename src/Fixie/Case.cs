@@ -81,10 +81,6 @@ namespace Fixie
 
         public CaseResult Result { get; private set; }
 
-        public TimeSpan Duration { get { return Result.Duration; } set { Result.Duration = value; } }
-
-        public string Output { get { return Result.Output; } set { Result.Output = value; } }
-
         public void Fail(Exception reason)
         {
             Result.Fail(reason);

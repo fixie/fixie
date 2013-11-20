@@ -9,6 +9,8 @@ namespace Fixie.Behaviors
         {
             foreach (var @case in fixture.Cases)
             {
+                var result = @case.Result;
+
                 using (var console = new RedirectedConsole())
                 {
                     var stopwatch = new Stopwatch();
@@ -25,11 +27,11 @@ namespace Fixie.Behaviors
 
                     stopwatch.Stop();
 
-                    @case.Duration = stopwatch.Elapsed;
-                    @case.Output = console.Output;
+                    result.Duration = stopwatch.Elapsed;
+                    result.Output = console.Output;
                 }
 
-                Console.Write(@case.Output);
+                Console.Write(result.Output);
             }
         }
     }

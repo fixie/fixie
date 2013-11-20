@@ -20,7 +20,7 @@ namespace Fixie.Listeners
 
             Message("testStarted name='{0}'", @case.Name);
             Output(@case, result.Output);
-            Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(@case.Duration));
+            Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(result.Duration));
         }
 
         public void CaseFailed(FailResult result)
@@ -30,7 +30,7 @@ namespace Fixie.Listeners
             Message("testStarted name='{0}'", @case.Name);
             Output(@case, result.Output);
             Message("testFailed name='{0}' details='{1}'", @case.Name, CompoundStackTrace(result.Exceptions));
-            Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(@case.Duration));
+            Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(result.Duration));
         }
 
         public void AssemblyCompleted(Assembly assembly, AssemblyResult result)

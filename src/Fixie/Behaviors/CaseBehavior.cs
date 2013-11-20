@@ -2,6 +2,6 @@
 {
     public interface CaseBehavior
     {
-        void Execute(Case @case, object instance); //comment to demo teamcity
+        void Execute(Case @case, object instance);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Should;
@@ -138,7 +137,7 @@ namespace Fixie.Tests
         static Case Case(string methodName, params object[] parameters)
         {
             var testClass = typeof(CaseTests);
-            return new Case(testClass, testClass.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic), parameters);
+            return new Case(testClass, testClass.GetInstanceMethod(methodName), parameters);
         }
 
         void Returns()

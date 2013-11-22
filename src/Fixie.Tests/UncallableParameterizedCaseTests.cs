@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using Should;
 
@@ -29,7 +30,7 @@ namespace Fixie.Tests
         static Case UncallableParameterizedCase(string methodName)
         {
             var testClass = typeof(UncallableParameterizedCaseTests);
-            return new UncallableParameterizedCase(testClass, testClass.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic));
+            return new UncallableParameterizedCase(testClass, testClass.GetInstanceMethod(methodName));
         }
     }
 }

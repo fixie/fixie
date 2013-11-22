@@ -146,12 +146,12 @@ namespace Fixie.Tests
 
         static MethodInfo Method<T>(string name)
         {
-            return typeof(T).GetMethod(name, InstanceMethods);
+            return typeof(T).GetInstanceMethod(name);
         }
 
         private static MethodInfo MethodBySignature<T>(Type returnType, string name, params Type[] parameterTypes)
         {
-            return typeof(T).GetMethods(InstanceMethods).Single(m => m.HasSignature(returnType, name, parameterTypes));
+            return typeof(T).GetInstanceMethods().Single(m => m.HasSignature(returnType, name, parameterTypes));
         }
     }
 }

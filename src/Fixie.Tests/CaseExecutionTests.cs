@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using Should;
 
 namespace Fixie.Tests
@@ -47,7 +46,7 @@ namespace Fixie.Tests
 
         static Case Case<TTestClass>(string method)
         {
-            return new Case(typeof(TTestClass), typeof(TTestClass).GetMethod(method, BindingFlags.Instance | BindingFlags.Public));
+            return new Case(typeof(TTestClass), typeof(TTestClass).GetInstanceMethod(method));
         }
     }
 }

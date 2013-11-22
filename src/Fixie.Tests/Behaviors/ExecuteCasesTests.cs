@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Fixie.Behaviors;
 using Fixie.Conventions;
 using Should;
@@ -31,8 +30,8 @@ namespace Fixie.Tests.Behaviors
         {
             var cases = new[]
             {
-                new Case(testClass, Method("Pass")),
-                new Case(testClass, Method("Fail"))
+                new Case(testClass, testClass.GetInstanceMethod("Pass")),
+                new Case(testClass, testClass.GetInstanceMethod("Fail"))
             };
 
             var executeCases = new ExecuteCases();
@@ -57,11 +56,6 @@ namespace Fixie.Tests.Behaviors
             {
                 throw new ShouldBeUnreachableException();
             }
-        }
-
-        static MethodInfo Method(string name)
-        {
-            return typeof(SampleTestClass).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
         }
     }
 }

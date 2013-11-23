@@ -18,7 +18,7 @@ namespace Fixie
             }
             catch (Exception exception)
             {
-                Fail(exception);
+                Execution.Fail(exception);
             }
         }
     }

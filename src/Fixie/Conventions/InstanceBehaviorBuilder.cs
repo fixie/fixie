@@ -49,8 +49,8 @@ namespace Fixie.Conventions
                 }
                 catch (Exception exception)
                 {
-                    foreach (var @case in fixture.Cases)
-                        @case.Fail(exception);
+                    foreach (var caseExecution in fixture.CaseExecutions)
+                        caseExecution.Fail(exception);
                 }
             }
         }

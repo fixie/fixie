@@ -34,12 +34,18 @@ namespace Fixie.Tests.Behaviors
                 new Case(testClass, testClass.GetInstanceMethod("Fail"))
             };
 
+            var caseExecutions = new[]
+            {
+                cases[0].Execution,
+                cases[1].Execution
+            };
+
             var executeCases = new ExecuteCases();
-            var fixture = new Fixture(testClass, new SampleTestClass(), convention.CaseExecution.Behavior, cases);
+            var fixture = new Fixture(testClass, new SampleTestClass(), convention.CaseExecution.Behavior, caseExecutions);
             executeCases.Execute(fixture);
 
-            cases[0].Execution.Exceptions.Any().ShouldBeFalse();
-            cases[1].Execution.Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
+            caseExecutions[0].Exceptions.Any().ShouldBeFalse();
+            caseExecutions[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
             log.ShouldEqual("Pass", "Fail");
         }
 

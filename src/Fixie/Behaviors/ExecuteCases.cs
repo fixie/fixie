@@ -7,9 +7,8 @@ namespace Fixie.Behaviors
     {
         public void Execute(Fixture fixture)
         {
-            foreach (var @case in fixture.Cases)
+            foreach (var caseExecution in fixture.CaseExecutions)
             {
-                var execution = @case.Execution;
 
                 using (var console = new RedirectedConsole())
                 {
@@ -18,20 +17,20 @@ namespace Fixie.Behaviors
 
                     try
                     {
-                        fixture.CaseExecutionBehavior.Execute(@case.Execution, fixture.Instance);
+                        fixture.CaseExecutionBehavior.Execute(caseExecution, fixture.Instance);
                     }
                     catch (Exception exception)
                     {
-                        @case.Fail(exception);
+                        caseExecution.Fail(exception);
                     }
 
                     stopwatch.Stop();
 
-                    execution.Duration = stopwatch.Elapsed;
-                    execution.Output = console.Output;
+                    caseExecution.Duration = stopwatch.Elapsed;
+                    caseExecution.Output = console.Output;
                 }
 
-                Console.Write(execution.Output);
+                Console.Write(caseExecution.Output);
             }
         }
     }

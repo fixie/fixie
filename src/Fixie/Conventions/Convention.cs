@@ -39,14 +39,16 @@ namespace Fixie.Conventions
 
                 var cases = methods.SelectMany(method => CasesForMethod(testClass, method)).ToArray();
 
-                ClassExecution.Behavior.Execute(testClass, this, cases);
+                var caseExecutions = cases.Select(@case => @case.Execution).ToArray();
 
-                foreach (var @case in cases)
+                ClassExecution.Behavior.Execute(testClass, this, caseExecutions);
+
+                foreach (var caseExecution in caseExecutions)
                 {
-                    if (@case.Execution.Result == CaseResult.Failed)
-                        listener.CaseFailed(new FailResult(@case.Execution));
+                    if (caseExecution.Result == CaseResult.Failed)
+                        listener.CaseFailed(new FailResult(caseExecution));
                     else
-                        listener.CasePassed(new PassResult(@case.Execution));
+                        listener.CasePassed(new PassResult(caseExecution));
                 }
             }
         }

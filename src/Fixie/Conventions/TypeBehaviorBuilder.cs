@@ -4,7 +4,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void TypeBehaviorAction(Type testClass, Convention convention, Case[] cases, Action innerBehavior);
+    public delegate void TypeBehaviorAction(Type testClass, Convention convention, CaseExecution[] caseExecutions, Action innerBehavior);
 
     public class TypeBehaviorBuilder
     {
@@ -70,9 +70,10 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder SortCases(Comparison<Case> comparison)
         {
-            return Wrap((testClass, convention, cases, innerBehavior) =>
+            return Wrap((testClass, convention, caseExecutions, innerBehavior) =>
             {
-                Array.Sort(cases, comparison);
+                Array.Sort(caseExecutions, (caseExecutionA, caseExecutionB) => comparison(caseExecutionA.Case, caseExecutionB.Case));
+
                 innerBehavior();
             });
         }
@@ -100,16 +101,16 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(Type testClass, Convention convention, Case[] cases)
+            public void Execute(Type testClass, Convention convention, CaseExecution[] caseExecutions)
             {
                 try
                 {
-                    outer(testClass, convention, cases, () => inner.Execute(testClass, convention, cases));
+                    outer(testClass, convention, caseExecutions, () => inner.Execute(testClass, convention, caseExecutions));
                 }
                 catch (Exception exception)
                 {
-                    foreach (var @case in cases)
-                        @case.Fail(exception);
+                    foreach (var caseExecution in caseExecutions)
+                        caseExecution.Fail(exception);
                 }                
             }
         }

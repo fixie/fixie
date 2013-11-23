@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -75,7 +74,7 @@ namespace Fixie
             }
             catch (Exception exception)
             {
-                Fail(exception);
+                Execution.Fail(exception);
             }
         }
         
@@ -87,10 +86,5 @@ namespace Fixie
         }
 
         public CaseExecution Execution { get; private set; }
-
-        public void Fail(Exception reason)
-        {
-            Execution.Fail(reason);
-        }
     }
 }

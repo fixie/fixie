@@ -12,21 +12,21 @@ namespace Fixie.Behaviors
             this.construct = construct;
         }
 
-        public void Execute(Type testClass, Convention convention, Case[] cases)
+        public void Execute(Type testClass, Convention convention, CaseExecution[] caseExecutions)
         {
             try
             {
                 var instance = construct(testClass);
 
-                var fixture = new Fixture(testClass, instance, convention.CaseExecution.Behavior, cases);
+                var fixture = new Fixture(testClass, instance, convention.CaseExecution.Behavior, caseExecutions);
                 convention.InstanceExecution.Behavior.Execute(fixture);
 
                 Dispose(instance);
             }
             catch (Exception exception)
             {
-                foreach (var @case in cases)
-                    @case.Fail(exception);
+                foreach (var caseExecution in caseExecutions)
+                    caseExecution.Fail(exception);
             }
         }
 

@@ -41,8 +41,8 @@ namespace Fixie.Samples.LowCeremony
 
         public static CaseBehaviorBuilder SetUpTearDown(this CaseBehaviorBuilder builder, string setUpMethod, string tearDownMethod)
         {
-            return builder.SetUpTearDown((@case, instance) => TryInvoke(setUpMethod, @case.Class, instance),
-                                         (@case, instance) => TryInvoke(tearDownMethod, @case.Class, instance));
+            return builder.SetUpTearDown((caseExecution, instance) => TryInvoke(setUpMethod, caseExecution.Case.Class, instance),
+                                         (caseExecution, instance) => TryInvoke(tearDownMethod, caseExecution.Case.Class, instance));
         }
 
         static void TryInvoke(string method, Type type, object instance)

@@ -3,8 +3,8 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void CaseBehaviorAction(Case @case, object instance, Action innerBehavior);
-    public delegate void CaseAction(Case @case, object instance);
+    public delegate void CaseBehaviorAction(CaseExecution caseExecution, object instance, Action innerBehavior);
+    public delegate void CaseAction(CaseExecution caseExecution, object instance);
 
     public class CaseBehaviorBuilder
     {
@@ -23,11 +23,11 @@ namespace Fixie.Conventions
 
         public CaseBehaviorBuilder SetUpTearDown(CaseAction setUp, CaseAction tearDown)
         {
-            return Wrap((@case, instance, innerBehavior) =>
+            return Wrap((caseExecution, instance, innerBehavior) =>
             {
-                setUp(@case, instance);
+                setUp(caseExecution, instance);
                 innerBehavior();
-                tearDown(@case, instance);
+                tearDown(caseExecution, instance);
             });
         }
 
@@ -42,15 +42,15 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(Case @case, object instance)
+            public void Execute(CaseExecution caseExecution, object instance)
             {
                 try
                 {
-                    outer(@case, instance, () => inner.Execute(@case, instance));
+                    outer(caseExecution, instance, () => inner.Execute(caseExecution, instance));
                 }
                 catch (Exception exception)
                 {
-                    @case.Fail(exception);
+                    caseExecution.Fail(exception);
                 }
             }
         }

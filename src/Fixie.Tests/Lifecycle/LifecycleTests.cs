@@ -137,16 +137,16 @@ namespace Fixie.Tests.Lifecycle
             WhereAmI();
         }
 
-        protected static void CaseSetUp(Case @case, object instance)
+        protected static void CaseSetUp(CaseExecution caseExecution, object instance)
         {
-            @case.Class.ShouldEqual(typeof(SampleTestClass));
+            caseExecution.Case.Class.ShouldEqual(typeof(SampleTestClass));
             instance.ShouldBeType<SampleTestClass>();
             WhereAmI();
         }
 
-        protected static void CaseTearDown(Case @case, object instance)
+        protected static void CaseTearDown(CaseExecution caseExecution, object instance)
         {
-            @case.Class.ShouldEqual(typeof(SampleTestClass));
+            caseExecution.Case.Class.ShouldEqual(typeof(SampleTestClass));
             instance.ShouldBeType<SampleTestClass>();
             WhereAmI();
         }

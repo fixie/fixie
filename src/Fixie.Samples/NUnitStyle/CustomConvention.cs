@@ -40,8 +40,8 @@ namespace Fixie.Samples.NUnitStyle
             where TSetUpAttribute : Attribute
             where TTearDownAttribute : Attribute
         {
-            return builder.SetUpTearDown((@case, instance) => InvokeAll<TSetUpAttribute>(@case.Class, instance),
-                                         (@case, instance) => InvokeAll<TTearDownAttribute>(@case.Class, instance));
+            return builder.SetUpTearDown((caseExecution, instance) => InvokeAll<TSetUpAttribute>(caseExecution.Case.Class, instance),
+                                         (caseExecution, instance) => InvokeAll<TTearDownAttribute>(caseExecution.Case.Class, instance));
         }
 
         static void InvokeAll<TAttribute>(Type type, object instance)

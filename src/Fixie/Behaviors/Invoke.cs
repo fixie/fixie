@@ -2,9 +2,9 @@
 {
     public class Invoke : CaseBehavior
     {
-        public void Execute(Case @case, object instance)
+        public void Execute(CaseExecution caseExecution, object instance)
         {
-            @case.Execute(instance);
+            caseExecution.Case.Execute(instance);
         }
     }
 }

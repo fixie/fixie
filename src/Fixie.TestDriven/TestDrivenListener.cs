@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using TestDriven.Framework;
 
 namespace Fixie.TestDriven
@@ -30,13 +29,12 @@ namespace Fixie.TestDriven
         public void CaseFailed(FailResult result)
         {
             var @case = result.Case;
-            var exceptions = result.Exceptions;
 
             tdnet.TestFinished(new TestResult
             {
                 Name = @case.Name,
                 State = TestState.Failed,
-                Message = exceptions.First().GetType().FullName,
+                Message = result.PrimaryTypeName(),
                 StackTrace = result.CompoundStackTrace(),
             });
         }

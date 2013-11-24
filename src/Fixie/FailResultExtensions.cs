@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 
 namespace Fixie
 {
@@ -16,6 +17,16 @@ namespace Fixie
         public static void WriteCompoundStackTraceTo(this FailResult failResult, TextWriter writer)
         {
             writer.WriteCompoundStackTrace(failResult.Exceptions);
+        }
+
+        public static string PrimaryMessage(this FailResult failResult)
+        {
+            return failResult.Exceptions.First().Message;
+        }
+
+        public static string PrimaryTypeName(this FailResult failResult)
+        {
+            return failResult.Exceptions.First().GetType().FullName;
         }
     }
 }

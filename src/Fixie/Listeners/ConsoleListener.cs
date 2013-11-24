@@ -23,7 +23,7 @@ namespace Fixie.Listeners
 
             using (Foreground.Red)
                 Console.WriteLine("Test '{0}' failed: {1}", @case.Name, exceptions.First().GetType().FullName);
-            Console.Out.WriteCompoundStackTrace(exceptions);
+            result.WriteCompoundStackTraceTo(Console.Out);
             Console.WriteLine();
             Console.WriteLine();
         }

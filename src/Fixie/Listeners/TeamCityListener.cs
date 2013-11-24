@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -26,11 +25,10 @@ namespace Fixie.Listeners
         public void CaseFailed(FailResult result)
         {
             var @case = result.Case;
-            var exceptions = result.Exceptions;
 
             Message("testStarted name='{0}'", @case.Name);
             Output(@case, result.Output);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", @case.Name, PrimaryMessage(exceptions), CompoundStackTrace(exceptions));
+            Message("testFailed name='{0}' message='{1}' details='{2}'", @case.Name, PrimaryMessage(result.Exceptions), result.CompoundStackTrace());
             Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(result.Duration));
         }
 
@@ -78,15 +76,6 @@ namespace Fixie.Listeners
         static string DurationInMilliseconds(TimeSpan duration)
         {
             return ((int)Math.Ceiling(duration.TotalMilliseconds)).ToString();
-        }
-
-        static string CompoundStackTrace(IEnumerable<Exception> exceptions)
-        {
-            using (var writer = new StringWriter())
-            {
-                writer.WriteCompoundStackTrace(exceptions);
-                return writer.ToString();
-            }
         }
 
         static string PrimaryMessage(IEnumerable<Exception> exceptions)

@@ -26,10 +26,11 @@ namespace Fixie.Listeners
         public void CaseFailed(FailResult result)
         {
             var @case = result.Case;
+            var exceptions = result.Exceptions;
 
             Message("testStarted name='{0}'", @case.Name);
             Output(@case, result.Output);
-            Message("testFailed name='{0}' details='{1}'", @case.Name, CompoundStackTrace(result.Exceptions));
+            Message("testFailed name='{0}' message='{1}' details='{2}'", @case.Name, PrimaryMessage(exceptions), CompoundStackTrace(exceptions));
             Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(result.Duration));
         }
 
@@ -86,6 +87,11 @@ namespace Fixie.Listeners
                 writer.WriteCompoundStackTrace(exceptions);
                 return writer.ToString();
             }
+        }
+
+        static string PrimaryMessage(IEnumerable<Exception> exceptions)
+        {
+            return exceptions.First().Message;
         }
     }
 }

@@ -19,12 +19,12 @@ namespace Fixie
             writer.WriteCompoundStackTrace(failResult.Exceptions);
         }
 
-        public static string PrimaryMessage(this FailResult failResult)
+        public static string PrimaryExceptionMessage(this FailResult failResult)
         {
             return failResult.Exceptions.First().Message;
         }
 
-        public static string PrimaryTypeName(this FailResult failResult)
+        public static string PrimaryExceptionTypeName(this FailResult failResult)
         {
             return failResult.Exceptions.First().GetType().FullName;
         }

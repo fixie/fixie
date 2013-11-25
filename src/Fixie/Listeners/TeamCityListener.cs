@@ -27,7 +27,7 @@ namespace Fixie.Listeners
 
             Message("testStarted name='{0}'", @case.Name);
             Output(@case, result.Output);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", @case.Name, result.PrimaryMessage(), result.CompoundStackTrace());
+            Message("testFailed name='{0}' message='{1}' details='{2}'", @case.Name, result.PrimaryExceptionMessage(), result.CompoundStackTrace());
             Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(result.Duration));
         }
 

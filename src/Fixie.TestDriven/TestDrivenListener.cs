@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using TestDriven.Framework;
 
 namespace Fixie.TestDriven
@@ -33,24 +29,14 @@ namespace Fixie.TestDriven
         public void CaseFailed(FailResult result)
         {
             var @case = result.Case;
-            var exceptions = result.Exceptions;
 
             tdnet.TestFinished(new TestResult
             {
                 Name = @case.Name,
                 State = TestState.Failed,
-                Message = exceptions.First().GetType().FullName,
-                StackTrace = CompoundStackTrace(exceptions),
+                Message = result.PrimaryTypeName(),
+                StackTrace = result.CompoundStackTrace(),
             });
-        }
-
-        static string CompoundStackTrace(IEnumerable<Exception> exceptions)
-        {
-            using (var writer = new StringWriter())
-            {
-                writer.WriteCompoundStackTrace(exceptions);
-                return writer.ToString();
-            }
         }
 
         public void AssemblyCompleted(Assembly assembly, AssemblyResult result)

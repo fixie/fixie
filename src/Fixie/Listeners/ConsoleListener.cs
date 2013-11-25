@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 
 namespace Fixie.Listeners
@@ -19,11 +18,10 @@ namespace Fixie.Listeners
         public void CaseFailed(FailResult result)
         {
             var @case = result.Case;
-            var exceptions = result.Exceptions;
 
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", @case.Name, exceptions.First().GetType().FullName);
-            Console.Out.WriteCompoundStackTrace(exceptions);
+                Console.WriteLine("Test '{0}' failed: {1}", @case.Name, result.PrimaryTypeName());
+            result.WriteCompoundStackTraceTo(Console.Out);
             Console.WriteLine();
             Console.WriteLine();
         }

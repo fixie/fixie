@@ -10,15 +10,11 @@ namespace Fixie
         public static Type[] ResolveTypeArguments(MethodInfo method, object[] parameters)
         {
             var genericArguments = method.GetGenericArguments();
-            var typeMapping = new Dictionary<Type, Type>();
             var parameterTypes = method.GetParameters().Select(p => p.ParameterType).ToList();
-
-            foreach (var genericArgument in genericArguments)
-                typeMapping.Add(genericArgument, GetArgumentType(genericArgument, parameterTypes, parameters));
 
             var typeParameters = new Type[genericArguments.Length];
             for (int i = 0; i < typeParameters.Length; i++)
-                typeParameters[i] = typeMapping[genericArguments[i]];
+                typeParameters[i] = GetArgumentType(genericArguments[i], parameterTypes, parameters);
             return typeParameters;
         }
 

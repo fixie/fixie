@@ -12,37 +12,33 @@ namespace Fixie
             var genericArguments = method.GetGenericArguments();
             var parameterTypes = method.GetParameters().Select(p => p.ParameterType).ToArray();
 
-            return genericArguments.Select(genericArgument => GetArgumentType(genericArgument, parameterTypes, parameters)).ToArray();
+            return genericArguments.Select(genericArgument => ResolveTypeArgument(genericArgument, parameterTypes, parameters)).ToArray();
         }
 
-        static Type GetArgumentType(Type genericArgument, IList<Type> parameterTypes, object[] parameters)
+        static Type ResolveTypeArgument(Type genericArgument, Type[] parameterTypes, object[] parameters)
         {
-            var matchingArguments = new List<int>();
-            for (int i = 0; i < parameterTypes.Count; i++)
-                if (parameterTypes[i] == genericArgument)
-                    matchingArguments.Add(i);
+            bool hasNullValue = false;
+            Type resolvedTypeOfNonNullValues = null;
 
-            if (matchingArguments.Count == 0)
+            for (int i = 0; i < parameterTypes.Length; i++)
+            {
+                if (parameterTypes[i] == genericArgument)
+                {
+                    object parameterValue = parameters[i];
+
+                    if (parameterValue == null)
+                        hasNullValue = true;
+                    else if (resolvedTypeOfNonNullValues == null)
+                        resolvedTypeOfNonNullValues = parameterValue.GetType();
+                    else if (resolvedTypeOfNonNullValues != parameterValue.GetType())
+                        return typeof(object);
+                }
+            }
+
+            if (resolvedTypeOfNonNullValues == null)
                 return typeof(object);
 
-            if (matchingArguments.Count == 1)
-                return parameters[matchingArguments[0]] == null ? typeof(object) : parameters[matchingArguments[0]].GetType();
-
-            object result = Combine(parameters[matchingArguments[0]], parameters[matchingArguments[1]]);
-
-            result = matchingArguments.Skip(2).Select(a => parameters[a]).Aggregate(result, Combine);
-            return result == null ? typeof(object) : result.GetType();
-        }
-
-        static object Combine(object a, object b)
-        {
-            if (a == null)
-                return b == null ? null : b.GetType().IsValueType ? null : b;
-            if (b == null)
-                return a.GetType().IsValueType ? null : a;
-            if (a.GetType() == b.GetType())
-                return a;
-            return null;
+            return hasNullValue && resolvedTypeOfNonNullValues.IsValueType ? typeof(object) : resolvedTypeOfNonNullValues;
         }
     }
 }

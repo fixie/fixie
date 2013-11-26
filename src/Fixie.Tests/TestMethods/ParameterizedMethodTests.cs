@@ -58,28 +58,30 @@ namespace Fixie.Tests.TestMethods
         public void ShouldResolveGenericTypeParameters()
         {
             var listener = new StubListener();
-            
+
             var convention = new SelfTestConvention();
             convention.Parameters(ParametersFromAttributesWithTypeDefaultFallback);
-            
+
             convention.Execute(listener, typeof(GenericTestClass));
-            const string cln = "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.";
-            listener.Entries.ShouldContain(cln+"MultipleGenericArgumentsMultipleParameters<System.Int32, System.Object>(123, null, 456, System.Int32, System.Object) passed.");
-            listener.Entries.ShouldContain(cln+"MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed.");
-            listener.Entries.ShouldContain(cln+"MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg\", null, null, System.String, System.Object) passed.");                                
-            listener.Entries.ShouldContain(cln+"MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) passed.");                
-            listener.Entries.ShouldContain(cln+"MultipleGenericArgumentsMultipleParameters<System.String, System.String>(null, \"stringArg1\", \"stringArg2\", System.String, System.String) passed.");                
-            listener.Entries.ShouldContain(cln+"SingleGenericArgument<System.String>(\"stringArg\", System.String) passed.");
-            listener.Entries.ShouldContain(cln+"SingleGenericArgument<System.Int32>(123, System.Int32) passed.");
-            listener.Entries.ShouldContain(cln+"SingleGenericArgument<System.Object>(null, System.Object) passed.");
-            listener.Entries.ShouldContain(cln+"SingleGenericArgumentMultipleParameters<System.Object>(\"stringArg\", 123, System.Object) passed.");
-            listener.Entries.ShouldContain(cln+"SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed.");
-            listener.Entries.ShouldContain(cln+"SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed.");
-            listener.Entries.ShouldContain(cln+"SingleGenericArgumentMultipleParameters<System.Object>(123, \"stringArg\", System.Object) passed.");
-            listener.Entries.ShouldContain(cln+"SingleGenericArgumentMultipleParameters<System.Int32>(123, 456, System.Int32) passed.");
-            listener.Entries.ShouldContain(cln+"SingleGenericArgumentMultipleParameters<System.Object>(123, null, System.Object) passed.");
-            listener.Entries.ShouldContain(cln+"SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed.");
-            listener.Entries.ShouldContain(cln+"SingleGenericArgumentMultipleParameters<System.Object>(null, null, System.Object) passed.");
+            listener.Entries.ShouldEqual(
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.Int32, System.Object>(123, null, 456, System.Int32, System.Object) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg\", null, null, System.String, System.Object) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.String, System.String>(null, \"stringArg1\", \"stringArg2\", System.String, System.String) passed.",
+
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.SingleGenericArgument<System.Int32>(123, System.Int32) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.SingleGenericArgument<System.Object>(null, System.Object) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.SingleGenericArgument<System.String>(\"stringArg\", System.String) passed.",
+
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.Int32>(123, 456, System.Int32) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.Object>(\"stringArg\", 123, System.Object) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.Object>(123, \"stringArg\", System.Object) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.Object>(123, null, System.Object) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.Object>(null, null, System.Object) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed.",
+                "Fixie.Tests.TestMethods.ParameterizedMethodTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed.");
         }
 
         IEnumerable<object[]> ParametersFromAttributesWithTypeDefaultFallback(MethodInfo method)

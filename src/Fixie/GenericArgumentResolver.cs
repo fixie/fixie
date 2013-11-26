@@ -10,12 +10,9 @@ namespace Fixie
         public static Type[] ResolveTypeArguments(MethodInfo method, object[] parameters)
         {
             var genericArguments = method.GetGenericArguments();
-            var parameterTypes = method.GetParameters().Select(p => p.ParameterType).ToList();
+            var parameterTypes = method.GetParameters().Select(p => p.ParameterType).ToArray();
 
-            var typeParameters = new Type[genericArguments.Length];
-            for (int i = 0; i < typeParameters.Length; i++)
-                typeParameters[i] = GetArgumentType(genericArguments[i], parameterTypes, parameters);
-            return typeParameters;
+            return genericArguments.Select(genericArgument => GetArgumentType(genericArgument, parameterTypes, parameters)).ToArray();
         }
 
         static Type GetArgumentType(Type genericArgumentType, IList<Type> parameterTypes, object[] parameterValues)

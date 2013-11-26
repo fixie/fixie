@@ -141,10 +141,10 @@ namespace Fixie.Tests.TestMethods
            [Input(123, null, 456, typeof(int), typeof(object))]
            [Input("stringArg1", null, "stringArg2", typeof(string), typeof(object))]
            [Input(123, "stringArg1", 456, typeof(int), typeof(string))]           
-           public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genArg1a, T2 genArg2, T1 genArg1b, Type t1, Type t2)
+           public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genericArgument1A, T2 genericArgument2, T1 genericArgument1B, Type expectedT1, Type expectedT2)
            {
-               typeof(T1).ShouldEqual(t1, string.Format("Expected {0}+{1} to resolve to type {2} but found type {3}", Fmt(genArg1a), Fmt(genArg1b), t1, typeof(T1)));
-               typeof(T2).ShouldEqual(t2, string.Format("Expected {0} to resolve to type {1} but found type {2}", Fmt(genArg2), t2, typeof(T2)));
+               typeof(T1).ShouldEqual(expectedT1, string.Format("Expected {0}+{1} to resolve to type {2} but found type {3}", Format(genericArgument1A), Format(genericArgument1B), expectedT1, typeof(T1)));
+               typeof(T2).ShouldEqual(expectedT2, string.Format("Expected {0} to resolve to type {1} but found type {2}", Format(genericArgument2), expectedT2, typeof(T2)));
            }
 
            [Input(123, 456, typeof(int))]
@@ -155,26 +155,23 @@ namespace Fixie.Tests.TestMethods
            [Input("stringArg", 123, typeof(object))]
            [Input(null, "stringArg", typeof(string))]
            [Input("stringArg", null, typeof(string))]
-           public void SingleGenericArgumentMultipleParameters<T>(T genArg1, T genArg2, Type t)
+           public void SingleGenericArgumentMultipleParameters<T>(T genericArgument1, T genericArgument2, Type expectedT)
            {
-              typeof(T).ShouldEqual(t, string.Format("Expected {0}+{1} to resolve to type {2} but found type {3}", Fmt(genArg1), Fmt(genArg2), t, typeof(T)));
+              typeof(T).ShouldEqual(expectedT, string.Format("Expected {0}+{1} to resolve to type {2} but found type {3}", Format(genericArgument1), Format(genericArgument2), expectedT, typeof(T)));
            }
          
            [Input(123, typeof(int))]
            [Input("stringArg", typeof(string))]
            [Input(null, typeof(object))]
-           public void SingleGenericArgument<T>(T genArg, Type t)
+           public void SingleGenericArgument<T>(T genericArgument, Type expectedT)
            {
-              typeof(T).ShouldEqual(t, string.Format("Expected {0} to resolve to type {1} but found type {2}", Fmt(genArg), t, typeof(T)));
+              typeof(T).ShouldEqual(expectedT, string.Format("Expected {0} to resolve to type {1} but found type {2}", Format(genericArgument), expectedT, typeof(T)));
            }
 
-           private static string Fmt(object obj)
+           private static string Format(object obj)
            {
-              if (obj == null)
-                 return "[null]";
-              return obj.ToString();
+               return obj == null ? "[null]" : obj.ToString();
            }
-
         }
 
         [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]

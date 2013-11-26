@@ -15,22 +15,22 @@ namespace Fixie
             return genericArguments.Select(genericArgument => GetArgumentType(genericArgument, parameterTypes, parameters)).ToArray();
         }
 
-        static Type GetArgumentType(Type genericArgumentType, IList<Type> parameterTypes, object[] parameterValues)
+        static Type GetArgumentType(Type genericArgument, IList<Type> parameterTypes, object[] parameters)
         {
             var matchingArguments = new List<int>();
             for (int i = 0; i < parameterTypes.Count; i++)
-                if (parameterTypes[i] == genericArgumentType)
+                if (parameterTypes[i] == genericArgument)
                     matchingArguments.Add(i);
 
             if (matchingArguments.Count == 0)
                 return typeof(object);
 
             if (matchingArguments.Count == 1)
-                return parameterValues[matchingArguments[0]] == null ? typeof(object) : parameterValues[matchingArguments[0]].GetType();
+                return parameters[matchingArguments[0]] == null ? typeof(object) : parameters[matchingArguments[0]].GetType();
 
-            object result = Combine(parameterValues[matchingArguments[0]], parameterValues[matchingArguments[1]]);
+            object result = Combine(parameters[matchingArguments[0]], parameters[matchingArguments[1]]);
 
-            result = matchingArguments.Skip(2).Select(a => parameterValues[a]).Aggregate(result, Combine);
+            result = matchingArguments.Skip(2).Select(a => parameters[a]).Aggregate(result, Combine);
             return result == null ? typeof(object) : result.GetType();
         }
 

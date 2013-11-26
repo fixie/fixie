@@ -24,6 +24,18 @@ namespace Fixie.Tests
             @case.Name.ShouldEqual("Fixie.Tests.CaseTests.Parameterized(123, True, 'a', \"with \\\"quotes\\\"\", \"long \\\"string\\\" g\"..., null, Fixie.Tests.CaseTests)");
         }
 
+        public void ShouldIncludeResolvedGenericArgumentsInNameWhenTheUnderlyingMethodIsGeneric()
+        {
+            Case("Generic", 123, true, "a", "b")
+                .Name.ShouldEqual("Fixie.Tests.CaseTests.Generic<System.Boolean, System.String>(123, True, \"a\", \"b\")");
+
+            Case("Generic", 123, true, 1, null)
+                .Name.ShouldEqual("Fixie.Tests.CaseTests.Generic<System.Boolean, System.Object>(123, True, 1, null)");
+
+            Case("Generic", 123, 1.23m, "a", null)
+                .Name.ShouldEqual("Fixie.Tests.CaseTests.Generic<System.Decimal, System.String>(123, 1.23, \"a\", null)");
+        }
+
         public void ShouldInvokeMethods()
         {
             var @case = Case("Returns");
@@ -38,6 +50,17 @@ namespace Fixie.Tests
         public void ShouldInvokeMethodsWithParameters()
         {
             var @case = Case("Parameterized", 123, true, 'a', "s1", "s2", null, this);
+
+            @case.Execute(this);
+
+            invoked.ShouldBeTrue();
+
+            @case.Execution.Exceptions.Count.ShouldEqual(0);
+        }
+
+        public void ShouldInvokeGenericMethodsWithParameters()
+        {
+            var @case = Case("Generic", 123, true, "a", "b");
 
             @case.Execute(this);
 
@@ -157,6 +180,11 @@ namespace Fixie.Tests
         }
 
         void Parameterized(int i, bool b, char ch, string s1, string s2, object obj, CaseTests complex)
+        {
+            invoked = true;
+        }
+
+        void Generic<T1, T2>(int i, T1 t1, T2 t2a, T2 t2b)
         {
             invoked = true;
         }

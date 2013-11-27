@@ -39,7 +39,7 @@ namespace Fixie.Conventions
 
                 var cases = methods.SelectMany(method => CasesForMethod(testClass, method)).ToArray();
 
-                var caseExecutions = cases.Select(@case => @case.Execution).ToArray();
+                var caseExecutions = cases.Select(@case => new CaseExecution(@case)).ToArray();
 
                 ClassExecution.Behavior.Execute(testClass, this, caseExecutions);
 

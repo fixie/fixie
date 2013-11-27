@@ -19,8 +19,6 @@ namespace Fixie
                          : caseMethod;
             
             Name = GetName();
-
-            Execution = new CaseExecution(this);
         }
 
         string GetName()
@@ -84,7 +82,5 @@ namespace Fixie
                 "Async void methods are not supported. Declare async methods with a " +
                 "return type of Task to ensure the task actually runs to completion.");
         }
-
-        public CaseExecution Execution { get; private set; }
     }
 }

@@ -28,16 +28,13 @@ namespace Fixie.Tests.Behaviors
 
         public void ShouldPerformCaseExecutionBehaviorForAllGivenCases()
         {
-            var cases = new[]
-            {
-                new Case(testClass, testClass.GetInstanceMethod("Pass")),
-                new Case(testClass, testClass.GetInstanceMethod("Fail"))
-            };
+            var caseA = new Case(testClass, testClass.GetInstanceMethod("Pass"));
+            var caseB = new Case(testClass, testClass.GetInstanceMethod("Fail"));
 
             var caseExecutions = new[]
             {
-                cases[0].Execution,
-                cases[1].Execution
+                new CaseExecution(caseA),
+                new CaseExecution(caseB)
             };
 
             var executeCases = new ExecuteCases();
@@ -45,7 +42,7 @@ namespace Fixie.Tests.Behaviors
             executeCases.Execute(fixture);
 
             caseExecutions[0].Exceptions.Any().ShouldBeFalse();
-            caseExecutions[1].Exceptions.ToArray().Single().Message.ShouldEqual("'Fail' failed!");
+            caseExecutions[1].Exceptions.Single().Message.ShouldEqual("'Fail' failed!");
             log.ShouldEqual("Pass", "Fail");
         }
 

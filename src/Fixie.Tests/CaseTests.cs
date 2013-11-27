@@ -39,78 +39,85 @@ namespace Fixie.Tests
         public void ShouldInvokeMethods()
         {
             var @case = Case("Returns");
+            var caseExecution = new CaseExecution(@case);
 
-            @case.Execute(this, @case.Execution);
+            @case.Execute(this, caseExecution);
 
             invoked.ShouldBeTrue();
 
-            @case.Execution.Exceptions.Count.ShouldEqual(0);
+            caseExecution.Exceptions.Count.ShouldEqual(0);
         }
 
         public void ShouldInvokeMethodsWithParameters()
         {
             var @case = Case("Parameterized", 123, true, 'a', "s1", "s2", null, this);
+            var caseExecution = new CaseExecution(@case);
 
-            @case.Execute(this, @case.Execution);
+            @case.Execute(this, caseExecution);
 
             invoked.ShouldBeTrue();
 
-            @case.Execution.Exceptions.Count.ShouldEqual(0);
+            caseExecution.Exceptions.Count.ShouldEqual(0);
         }
 
         public void ShouldInvokeGenericMethodsWithParameters()
         {
             var @case = Case("Generic", 123, true, "a", "b");
+            var caseExecution = new CaseExecution(@case);
 
-            @case.Execute(this, @case.Execution);
+            @case.Execute(this, caseExecution);
 
             invoked.ShouldBeTrue();
 
-            @case.Execution.Exceptions.Count.ShouldEqual(0);
+            caseExecution.Exceptions.Count.ShouldEqual(0);
         }
 
         public void ShouldLogExceptionWhenMethodCannotBeInvoked()
         {
             var @case = Case("CannotInvoke");
+            var caseExecution = new CaseExecution(@case);
 
-            @case.Execute(this, @case.Execution);
+            @case.Execute(this, caseExecution);
 
             invoked.ShouldBeFalse();
 
-            ExpectException(@case, "TargetParameterCountException", "Parameter count mismatch.");
+            ExpectException(caseExecution, "TargetParameterCountException", "Parameter count mismatch.");
         }
 
         public void ShouldLogOriginalExceptionWhenMethodThrows()
         {
             var @case = Case("Throws");
+            var caseExecution = new CaseExecution(@case);
 
-            @case.Execute(this, @case.Execution);
+            @case.Execute(this, caseExecution);
 
             invoked.ShouldBeTrue();
 
-            ExpectException(@case, "FailureException", "'Throws' failed!");
+            ExpectException(caseExecution, "FailureException", "'Throws' failed!");
         }
 
         public void ShouldInvokeAsyncMethods()
         {
             var @case = Case("Await");
+            var caseExecution = new CaseExecution(@case);
 
-            @case.Execute(this, @case.Execution);
+            @case.Execute(this, caseExecution);
 
             invoked.ShouldBeTrue();
 
-            @case.Execution.Exceptions.Count.ShouldEqual(0);
+            caseExecution.Exceptions.Count.ShouldEqual(0);
         }
 
         public void ShouldLogOriginalExceptionWhenAsyncMethodThrowsAfterAwaiting()
         {
             var @case = Case("AwaitThenThrow");
+            var caseExecution = new CaseExecution(@case);
 
-            @case.Execute(this, @case.Execution);
+            @case.Execute(this, caseExecution);
 
             invoked.ShouldBeTrue();
 
-            ExpectException(@case, "EqualException", "Assert.Equal() Failure" + Environment.NewLine +
+            ExpectException(caseExecution, "EqualException", "Assert.Equal() Failure" + Environment.NewLine +
                                                      "Expected: 0" + Environment.NewLine +
                                                      "Actual:   3");
         }
@@ -118,41 +125,44 @@ namespace Fixie.Tests
         public void ShouldLogOriginalExceptionWhenAsyncMethodThrowsWithinTheAwaitedTask()
         {
             var @case = Case("AwaitOnTaskThatThrows");
+            var caseExecution = new CaseExecution(@case);
 
-            @case.Execute(this, @case.Execution);
+            @case.Execute(this, caseExecution);
 
             invoked.ShouldBeTrue();
 
-            ExpectException(@case, "DivideByZeroException", "Attempted to divide by zero.");
+            ExpectException(caseExecution, "DivideByZeroException", "Attempted to divide by zero.");
         }
 
         public void ShouldLogOriginalExceptionWhenAsyncMethodThrowsBeforeAwaitingOnAnyTask()
         {
             var @case = Case("ThrowBeforeAwait");
+            var caseExecution = new CaseExecution(@case);
 
-            @case.Execute(this, @case.Execution);
+            @case.Execute(this, caseExecution);
 
             invoked.ShouldBeTrue();
 
-            ExpectException(@case, "FailureException", "'ThrowBeforeAwait' failed!");
+            ExpectException(caseExecution, "FailureException", "'ThrowBeforeAwait' failed!");
         }
 
         public void ShouldLogExceptionWhenMethodIsUnsupportedAsyncVoid()
         {
             var @case = Case("UnsupportedAsyncVoid");
+            var caseExecution = new CaseExecution(@case);
 
-            @case.Execute(this, @case.Execution);
+            @case.Execute(this, caseExecution);
 
             invoked.ShouldBeFalse();
 
-            ExpectException(@case, "NotSupportedException",
+            ExpectException(caseExecution, "NotSupportedException",
                             "Async void methods are not supported. Declare async methods with a " +
                             "return type of Task to ensure the task actually runs to completion.");
         }
 
-        static void ExpectException(Case @case, string expectedName, string expectedMessage)
+        static void ExpectException(CaseExecution caseExecution, string expectedName, string expectedMessage)
         {
-            var exception = @case.Execution.Exceptions.ToArray().Single();
+            var exception = caseExecution.Exceptions.Single();
             exception.GetType().Name.ShouldEqual(expectedName);
             exception.Message.ShouldEqual(expectedMessage);
         }

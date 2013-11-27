@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Linq;
 using Should;
 
 namespace Fixie.Tests
@@ -12,12 +10,13 @@ namespace Fixie.Tests
         public void ShouldAlwaysFailWithoutInvokingTheUnderlyingMethod()
         {
             var @case = UncallableParameterizedCase("Parameterized");
+            var caseExecution = new CaseExecution(@case);
 
-            @case.Execute(this, @case.Execution);
+            @case.Execute(this, caseExecution);
 
             invoked.ShouldBeFalse();
 
-            var exception = @case.Execution.Exceptions.ToArray().Single();
+            var exception = caseExecution.Exceptions.Single();
             exception.GetType().Name.ShouldEqual("ArgumentException");
             exception.Message.ShouldEqual("This parameterized test could not be executed, because no input values were available.");
         }

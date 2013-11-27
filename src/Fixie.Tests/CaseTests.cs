@@ -40,7 +40,7 @@ namespace Fixie.Tests
         {
             var @case = Case("Returns");
 
-            @case.Execute(this);
+            @case.Execute(this, @case.Execution);
 
             invoked.ShouldBeTrue();
 
@@ -51,7 +51,7 @@ namespace Fixie.Tests
         {
             var @case = Case("Parameterized", 123, true, 'a', "s1", "s2", null, this);
 
-            @case.Execute(this);
+            @case.Execute(this, @case.Execution);
 
             invoked.ShouldBeTrue();
 
@@ -62,7 +62,7 @@ namespace Fixie.Tests
         {
             var @case = Case("Generic", 123, true, "a", "b");
 
-            @case.Execute(this);
+            @case.Execute(this, @case.Execution);
 
             invoked.ShouldBeTrue();
 
@@ -73,7 +73,7 @@ namespace Fixie.Tests
         {
             var @case = Case("CannotInvoke");
 
-            @case.Execute(this);
+            @case.Execute(this, @case.Execution);
 
             invoked.ShouldBeFalse();
 
@@ -84,7 +84,7 @@ namespace Fixie.Tests
         {
             var @case = Case("Throws");
 
-            @case.Execute(this);
+            @case.Execute(this, @case.Execution);
 
             invoked.ShouldBeTrue();
 
@@ -95,7 +95,7 @@ namespace Fixie.Tests
         {
             var @case = Case("Await");
 
-            @case.Execute(this);
+            @case.Execute(this, @case.Execution);
 
             invoked.ShouldBeTrue();
 
@@ -106,7 +106,7 @@ namespace Fixie.Tests
         {
             var @case = Case("AwaitThenThrow");
 
-            @case.Execute(this);
+            @case.Execute(this, @case.Execution);
 
             invoked.ShouldBeTrue();
 
@@ -119,7 +119,7 @@ namespace Fixie.Tests
         {
             var @case = Case("AwaitOnTaskThatThrows");
 
-            @case.Execute(this);
+            @case.Execute(this, @case.Execution);
 
             invoked.ShouldBeTrue();
 
@@ -130,7 +130,7 @@ namespace Fixie.Tests
         {
             var @case = Case("ThrowBeforeAwait");
 
-            @case.Execute(this);
+            @case.Execute(this, @case.Execution);
 
             invoked.ShouldBeTrue();
 
@@ -141,7 +141,7 @@ namespace Fixie.Tests
         {
             var @case = Case("UnsupportedAsyncVoid");
 
-            @case.Execute(this);
+            @case.Execute(this, @case.Execution);
 
             invoked.ShouldBeFalse();
 

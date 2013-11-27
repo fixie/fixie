@@ -4,7 +4,7 @@
     {
         public void Execute(CaseExecution caseExecution, object instance)
         {
-            caseExecution.Case.Execute(instance);
+            caseExecution.Case.Execute(instance, caseExecution);
         }
     }
 }

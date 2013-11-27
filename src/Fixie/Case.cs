@@ -40,7 +40,7 @@ namespace Fixie
         public Type Class { get; private set; }
         public MethodInfo Method { get; private set; }        
 
-        public virtual void Execute(object instance)
+        public virtual void Execute(object instance, CaseExecution caseExecution)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace Fixie
             }
             catch (Exception exception)
             {
-                Execution.Fail(exception);
+                caseExecution.Fail(exception);
             }
         }
         

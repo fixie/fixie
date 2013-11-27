@@ -10,7 +10,7 @@ namespace Fixie
         {
         }
 
-        public override void Execute(object instance)
+        public override void Execute(object instance, CaseExecution caseExecution)
         {
             try
             {
@@ -18,7 +18,7 @@ namespace Fixie
             }
             catch (Exception exception)
             {
-                Execution.Fail(exception);
+                caseExecution.Fail(exception);
             }
         }
     }

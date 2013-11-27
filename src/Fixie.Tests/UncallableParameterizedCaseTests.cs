@@ -13,7 +13,7 @@ namespace Fixie.Tests
         {
             var @case = UncallableParameterizedCase("Parameterized");
 
-            @case.Execute(this);
+            @case.Execute(this, @case.Execution);
 
             invoked.ShouldBeFalse();
 

@@ -449,7 +449,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.InstanceExecution
-                      .SetUpTearDown(InstanceSetUp, InstanceTearDown);
+                      .SetUp(InstanceSetUp);
 
             var output = Run();
 
@@ -474,7 +474,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerTestClass();
 
             Convention.InstanceExecution
-                      .SetUpTearDown(InstanceSetUp, InstanceTearDown);
+                      .SetUp(InstanceSetUp);
 
             var output = Run();
 

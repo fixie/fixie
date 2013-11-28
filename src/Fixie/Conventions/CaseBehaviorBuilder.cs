@@ -11,9 +11,12 @@ namespace Fixie.Conventions
         public CaseBehaviorBuilder()
         {
             Behavior = new Invoke();
+            SkipPredicate = @case => false;
         }
 
         public CaseBehavior Behavior { get; private set; }
+
+        public Func<Case, bool> SkipPredicate { get; private set; }
 
         public CaseBehaviorBuilder Wrap(CaseBehaviorAction outer)
         {
@@ -29,6 +32,12 @@ namespace Fixie.Conventions
                 innerBehavior();
                 tearDown(caseExecution, instance);
             });
+        }
+
+        public CaseBehaviorBuilder Skip(Func<Case, bool> skipPredicate)
+        {
+            SkipPredicate = skipPredicate;
+            return this;
         }
 
         class WrapBehavior : CaseBehavior

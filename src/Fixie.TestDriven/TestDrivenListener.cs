@@ -16,6 +16,15 @@ namespace Fixie.TestDriven
         {
         }
 
+        public void CaseSkipped(Case @case)
+        {
+            tdnet.TestFinished(new TestResult
+            {
+                Name = @case.Name,
+                State = TestState.Ignored
+            });
+        }
+
         public void CasePassed(PassResult result)
         {
             var @case = result.Case;

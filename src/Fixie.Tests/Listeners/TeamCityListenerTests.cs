@@ -23,6 +23,8 @@ namespace Fixie.Tests.Listeners
                        .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                        .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'")) //Avoid brittle assertion introduced by durations.
                        .ShouldEqual(
+                           "##teamcity[testIgnored name='" + testClass + ".SkipA']",
+
                            "Console.Out: FailA",
                            "Console.Error: FailA",
                            "Console.Out: FailB",
@@ -82,6 +84,8 @@ namespace Fixie.Tests.Listeners
             public void PassB() { WhereAmI(); }
 
             public void PassC() { WhereAmI(); }
+
+            public void SkipA() { throw new ShouldBeUnreachableException(); }
 
             static void WhereAmI([CallerMemberName] string member = null)
             {

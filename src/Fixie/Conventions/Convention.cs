@@ -43,10 +43,12 @@ namespace Fixie.Conventions
                 var casesToExecute = casesBySkipState[false];
                 foreach (var @case in casesToSkip)
                 {
-                    //listener.CaseSkipped(new SkipResult(@case));
+                    listener.CaseSkipped(@case);
                 }
 
                 var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
+                if (!caseExecutions.Any())
+                    continue;
 
                 ClassExecution.Behavior.Execute(testClass, this, caseExecutions);
 

@@ -14,6 +14,11 @@ namespace Fixie.Tests
         {
         }
 
+        public void CaseSkipped(Case @case)
+        {
+            log.Add(string.Format("{0} skipped.", @case.Name));
+        }
+
         public void CasePassed(PassResult result)
         {
             var @case = result.Case;

@@ -150,6 +150,74 @@ namespace Fixie.Tests.Lifecycle
                 "Factory");
         }
 
+        public void ShouldSkipConstructingPerCaseWhenAllCasesSkipped()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.CaseExecution
+                      .Skip(x => true);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass skipped.",
+                "SampleTestClass.Fail skipped.");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldSkipConstructingPerTestClassWhenAllCasesSkipped()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            Convention.CaseExecution
+                      .Skip(x => true);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass skipped.",
+                "SampleTestClass.Fail skipped.");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldSkipConstructingPerCaseUsingCustomFactoryWhenAllCasesSkipped()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase(Factory);
+
+            Convention.CaseExecution
+                      .Skip(x => true);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass skipped.",
+                "SampleTestClass.Fail skipped.");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldSkipConstructingPerTestClassUsingCustomFactoryWhenAllCasesSkipped()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass(Factory);
+
+            Convention.CaseExecution
+                      .Skip(x => true);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass skipped.",
+                "SampleTestClass.Fail skipped.");
+
+            output.ShouldHaveLifecycle();
+        }
+
         static object Factory(Type testClass)
         {
             WhereAmI();

@@ -11,6 +11,12 @@ namespace Fixie.Listeners
             Console.WriteLine();
         }
 
+        public void CaseSkipped(Case @case)
+        {
+            using (Foreground.Yellow)
+                Console.WriteLine("Test '{0}' skipped", @case.Name);
+        }
+
         public void CasePassed(PassResult result)
         {
         }

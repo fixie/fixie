@@ -393,5 +393,99 @@ namespace Fixie.Tests.Lifecycle
                 "InstanceTearDown",
                 "Dispose");
         }
+
+        public void ShouldAllowWrappingInstanceWithSetUpBehaviorWhenConstructingPerCase()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.InstanceExecution
+                      .SetUp(InstanceSetUp);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "InstanceSetUp",
+                "Pass",
+                "Dispose",
+                ".ctor",
+                "InstanceSetUp",
+                "Fail",
+                "Dispose");
+        }
+
+        public void ShouldAllowWrappingInstanceWithSetUpBehaviorWhenConstructingPerTestClass()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            Convention.InstanceExecution
+                      .SetUp(InstanceSetUp);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "InstanceSetUp",
+                "Pass",
+                "Fail",
+                "Dispose");
+        }
+
+        public void ShouldShortCircuitInnerBehaviorByFailingCaseWhenConstructingPerCaseAndInstanceSetUpThrows()
+        {
+            FailDuring("InstanceSetUp");
+
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.InstanceExecution
+                      .SetUpTearDown(InstanceSetUp, InstanceTearDown);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'InstanceSetUp' failed!",
+                "SampleTestClass.Fail failed: 'InstanceSetUp' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "InstanceSetUp",
+                "Dispose",
+                ".ctor",
+                "InstanceSetUp",
+                "Dispose");
+        }
+
+        public void ShouldShortCircuitInnerBehaviorByFailingAllCasesWhenConstructingPerTestClassAndInstanceSetUpThrows()
+        {
+            FailDuring("InstanceSetUp");
+
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            Convention.InstanceExecution
+                      .SetUpTearDown(InstanceSetUp, InstanceTearDown);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'InstanceSetUp' failed!",
+                "SampleTestClass.Fail failed: 'InstanceSetUp' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "InstanceSetUp",
+                "Dispose");
+        }
     }
 }

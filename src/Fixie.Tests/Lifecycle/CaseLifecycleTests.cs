@@ -389,5 +389,97 @@ namespace Fixie.Tests.Lifecycle
                 "CaseSetUp", "Fail", "CaseTearDown",
                 "Dispose");
         }
+
+        public void ShouldAllowWrappingCaseWithSetUpBehaviorWhenConstructingPerCase()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.CaseExecution
+                      .SetUp(CaseSetUp);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "CaseSetUp", "Pass",
+                "Dispose",
+                ".ctor",
+                "CaseSetUp", "Fail",
+                "Dispose");
+        }
+
+        public void ShouldAllowWrappingCaseWithSetUpBehaviorWhenConstructingPerTestClass()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            Convention.CaseExecution
+                      .SetUp(CaseSetUp);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "CaseSetUp", "Pass",
+                "CaseSetUp", "Fail",
+                "Dispose");
+        }
+
+        public void ShouldShortCircuitInnerBehaviorByFailingCaseWhenConstructingPerCaseAndCaseSetUpThrows()
+        {
+            FailDuring("CaseSetUp");
+
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.CaseExecution
+                      .SetUp(CaseSetUp);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Fail failed: 'CaseSetUp' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "CaseSetUp",
+                "Dispose",
+                ".ctor",
+                "CaseSetUp",
+                "Dispose");
+        }
+
+        public void ShouldShortCircuitInnerBehaviorByFailingAllCasesWhenConstructingPerTestClassAndCaseSetUpThrows()
+        {
+            FailDuring("CaseSetUp");
+
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass();
+
+            Convention.CaseExecution
+                      .SetUp(CaseSetUp);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Fail failed: 'CaseSetUp' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "CaseSetUp",
+                "CaseSetUp",
+                "Dispose");
+        }
     }
 }

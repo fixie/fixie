@@ -11,6 +11,12 @@ namespace Fixie.Listeners
             Console.WriteLine();
         }
 
+        public void CaseSkipped(Case @case)
+        {
+            using (Foreground.Yellow)
+                Console.WriteLine("Test '{0}' skipped", @case.Name);
+        }
+
         public void CasePassed(PassResult result)
         {
         }
@@ -32,7 +38,7 @@ namespace Fixie.Listeners
             var name = assemblyName.Name;
             var version = assemblyName.Version;
 
-            Console.WriteLine("{0} passed, {1} failed ({2} {3}).", result.Passed, result.Failed, name, version);
+            Console.WriteLine("{0} passed, {1} skipped, {2} failed ({3} {4}).", result.Passed, result.Skipped, result.Failed, name, version);
             Console.WriteLine();
         }
     }

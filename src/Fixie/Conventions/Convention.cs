@@ -38,8 +38,17 @@ namespace Fixie.Conventions
                 var methods = Methods.Filter(testClass);
 
                 var cases = methods.SelectMany(method => CasesForMethod(testClass, method)).ToArray();
+                var casesBySkipState = cases.ToLookup(CaseExecution.SkipPredicate);
+                var casesToSkip = casesBySkipState[true];
+                var casesToExecute = casesBySkipState[false];
+                foreach (var @case in casesToSkip)
+                {
+                    listener.CaseSkipped(@case);
+                }
 
-                var caseExecutions = cases.Select(@case => new CaseExecution(@case)).ToArray();
+                var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
+                if (!caseExecutions.Any())
+                    continue;
 
                 ClassExecution.Behavior.Execute(testClass, this, caseExecutions);
 

@@ -22,6 +22,7 @@ namespace Fixie.Tests.Listeners
                 console.Lines()
                        .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                        .ShouldEqual(
+                           "Test '" + testClass + ".SkipA' skipped",
                            "Console.Out: FailA",
                            "Console.Error: FailA",
                            "Console.Out: FailB",
@@ -69,6 +70,8 @@ namespace Fixie.Tests.Listeners
             public void PassB() { WhereAmI(); }
 
             public void PassC() { WhereAmI(); }
+
+            public void SkipA() { throw new ShouldBeUnreachableException(); }
 
             static void WhereAmI([CallerMemberName] string member = null)
             {

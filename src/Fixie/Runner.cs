@@ -122,6 +122,7 @@ namespace Fixie
         {
             int passed;
             int failed;
+            int skipped;
             readonly Listener inner;
 
             public AssemblyResultListener(Listener inner)
@@ -133,7 +134,14 @@ namespace Fixie
             {
                 passed = 0;
                 failed = 0;
+                skipped = 0;
                 inner.AssemblyStarted(assembly);
+            }
+
+            public void CaseSkipped(Case @case)
+            {
+                skipped++;
+                inner.CaseSkipped(@case);
             }
 
             public void CasePassed(PassResult result)
@@ -155,7 +163,7 @@ namespace Fixie
 
             public AssemblyResult AssemblyResult
             {
-                get { return new AssemblyResult(passed, failed); }
+                get { return new AssemblyResult(passed, skipped, failed); }
             }
         }
     }

@@ -12,6 +12,11 @@ namespace Fixie.Listeners
             Message("testSuiteStarted name='{0}'", assembly.FileName());
         }
 
+        public void CaseSkipped(Case @case)
+        {
+            Message("testIgnored name='{0}'", @case.Name);
+        }
+
         public void CasePassed(PassResult result)
         {
             var @case = result.Case;

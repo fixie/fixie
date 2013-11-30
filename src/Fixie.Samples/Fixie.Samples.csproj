@@ -64,6 +64,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shuffle\CustomConvention.cs" />
     <Compile Include="Shuffle\OrderTests.cs" />
+    <Compile Include="Skipped\SkipAttribute.cs" />
+    <Compile Include="Skipped\SkipClassTests.cs" />
+    <Compile Include="Skipped\CustomConvention.cs" />
+    <Compile Include="Skipped\SkipMethodTests.cs" />
     <Compile Include="StringBuilderExtensions.cs" />
     <Compile Include="xUnitStyle\CalculatorTests.cs" />
     <Compile Include="xUnitStyle\CustomConvention.cs" />

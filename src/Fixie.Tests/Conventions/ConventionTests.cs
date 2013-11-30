@@ -161,12 +161,13 @@ namespace Fixie.Tests.Conventions
             var listener = new StubListener();
             var convention = new SelfTestConvention();
 
-            convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass));
+            convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass), typeof(SkipTestClass));
 
             listener.Entries.ShouldEqual("Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassA passed.",
                                          "Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassB passed.",
                                          "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Fail failed: 'Fail' failed!",
-                                         "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Pass passed.");
+                                         "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Pass passed.",
+                                         "Fixie.Tests.Conventions.ConventionTests+SkipTestClass.Skip skipped.");
         }
 
         public void ShouldAllowRandomShufflingOfCaseExecutionOrder()
@@ -178,12 +179,13 @@ namespace Fixie.Tests.Conventions
                       .CreateInstancePerTestClass()
                       .ShuffleCases(new Random(1));
 
-            convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass));
+            convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass), typeof(SkipTestClass));
 
             listener.Entries.ShouldEqual("Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassB passed.",
                                          "Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassA passed.",
                                          "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Fail failed: 'Fail' failed!",
-                                         "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Pass passed.");
+                                         "Fixie.Tests.Conventions.ConventionTests+PassFailTestClass.Pass passed.",
+                                         "Fixie.Tests.Conventions.ConventionTests+SkipTestClass.Skip skipped.");
         }
 
         class SampleIrrelevantClass
@@ -202,6 +204,11 @@ namespace Fixie.Tests.Conventions
         {
             public void Pass() { }
             public void Fail() { throw new FailureException(); }
+        }
+
+        class SkipTestClass
+        {
+            public void Skip() { throw new ShouldBeUnreachableException(); }
         }
     }
 }

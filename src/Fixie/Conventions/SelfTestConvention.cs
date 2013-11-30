@@ -15,6 +15,9 @@ namespace Fixie.Conventions
 
             ClassExecution
                 .SortCases((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
+
+            CaseExecution
+                .Skip(@case => @case.Method.Name.StartsWith("Skip"));
         }
     }
 }

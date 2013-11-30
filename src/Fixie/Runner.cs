@@ -163,7 +163,7 @@ namespace Fixie
 
             public AssemblyResult AssemblyResult
             {
-                get { return new AssemblyResult(passed, skipped, failed); }
+                get { return new AssemblyResult(passed, failed, skipped); }
             }
         }
     }

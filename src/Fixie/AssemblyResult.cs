@@ -9,7 +9,7 @@ namespace Fixie
         readonly int failed;
         readonly int skipped;
 
-        public AssemblyResult(int passed, int skipped, int failed)
+        public AssemblyResult(int passed, int failed, int skipped)
         {
             this.passed = passed;
             this.failed = failed;
@@ -18,13 +18,13 @@ namespace Fixie
 
         public int Passed { get { return passed; } }
 
-        public int Skipped { get { return skipped; } }
-
         public int Failed { get { return failed; } }
+
+        public int Skipped { get { return skipped; } }
 
         public int Total
         {
-            get { return Passed + Skipped + Failed; }
+            get { return Passed + Failed + Skipped; }
         }
     }
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace Fixie.Tests.Lifecycle
 {
-    public class ClassExecutionTests : LifecycleTests
+    public class ClassLifecycleTests : LifecycleTests
     {
         public void ShouldAllowWrappingTypeWithBehaviorsWhenConstructingPerCase()
         {
@@ -268,6 +268,49 @@ namespace Fixie.Tests.Lifecycle
                 "TypeSetUp");
         }
 
+        public void ShouldFailCaseWhenConstructingPerCaseAndTypeTearDownThrows()
+        {
+            FailDuring("TypeTearDown");
+
+            Convention.ClassExecution
+                      .CreateInstancePerCase()
+                      .SetUpTearDown(TypeSetUp, TypeTearDown);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'TypeTearDown' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'TypeTearDown' failed!");
+
+            output.ShouldHaveLifecycle(
+                "TypeSetUp",
+                ".ctor", "Pass", "Dispose",
+                ".ctor", "Fail", "Dispose",
+                "TypeTearDown");
+        }
+
+        public void ShouldFailAllCasesWhenConstructingPerTestClassAndTypeTearDownThrows()
+        {
+            FailDuring("TypeTearDown");
+
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass()
+                      .SetUpTearDown(TypeSetUp, TypeTearDown);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'TypeTearDown' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'TypeTearDown' failed!");
+
+            output.ShouldHaveLifecycle(
+                "TypeSetUp",
+                ".ctor", "Pass", "Fail", "Dispose",
+                "TypeTearDown");
+        }
+
         public void ShouldAllowWrappingTypeWithSetUpBehaviorWhenConstructingPerCase()
         {
             Convention.ClassExecution
@@ -337,49 +380,6 @@ namespace Fixie.Tests.Lifecycle
 
             output.ShouldHaveLifecycle(
                 "TypeSetUp");
-        }
-
-        public void ShouldFailCaseWhenConstructingPerCaseAndTypeTearDownThrows()
-        {
-            FailDuring("TypeTearDown");
-
-            Convention.ClassExecution
-                      .CreateInstancePerCase()
-                      .SetUpTearDown(TypeSetUp, TypeTearDown);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'TypeTearDown' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TypeTearDown' failed!");
-
-            output.ShouldHaveLifecycle(
-                "TypeSetUp",
-                ".ctor", "Pass", "Dispose",
-                ".ctor", "Fail", "Dispose",
-                "TypeTearDown");
-        }
-
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndTypeTearDownThrows()
-        {
-            FailDuring("TypeTearDown");
-
-            Convention.ClassExecution
-                      .CreateInstancePerTestClass()
-                      .SetUpTearDown(TypeSetUp, TypeTearDown);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'TypeTearDown' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TypeTearDown' failed!");
-
-            output.ShouldHaveLifecycle(
-                "TypeSetUp",
-                ".ctor", "Pass", "Fail", "Dispose",
-                "TypeTearDown");
         }
     }
 }

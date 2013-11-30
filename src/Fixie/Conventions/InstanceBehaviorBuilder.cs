@@ -20,6 +20,15 @@ namespace Fixie.Conventions
             return this;
         }
 
+        public InstanceBehaviorBuilder SetUp(Action<Fixture> setUp)
+        {
+            return Wrap((fixture, innerBehavior) =>
+            {
+                setUp(fixture);
+                innerBehavior();
+            });
+        }
+
         public InstanceBehaviorBuilder SetUpTearDown(Action<Fixture> setUp, Action<Fixture> tearDown)
         {
             return Wrap((fixture, innerBehavior) =>

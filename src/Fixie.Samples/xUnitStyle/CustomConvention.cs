@@ -25,7 +25,7 @@ namespace Fixie.Samples.xUnitStyle
                 .ShuffleCases();
 
             InstanceExecution
-                .SetUpTearDown(InjectFixtureData, fixture => { });
+                .SetUp(InjectFixtureData);
         }
 
         bool HasAnyFactMethods(Type type)

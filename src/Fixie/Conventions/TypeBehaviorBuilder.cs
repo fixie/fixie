@@ -44,6 +44,15 @@ namespace Fixie.Conventions
             return this;
         }
 
+        public TypeBehaviorBuilder SetUp(Action<Type> setUp)
+        {
+            return Wrap((testClass, convention, cases, innerBehavior) =>
+            {
+                setUp(testClass);
+                innerBehavior();
+            });
+        }
+
         public TypeBehaviorBuilder SetUpTearDown(Action<Type> setUp, Action<Type> tearDown)
         {
             return Wrap((testClass, convention, cases, innerBehavior) =>

@@ -268,6 +268,77 @@ namespace Fixie.Tests.Lifecycle
                 "TypeSetUp");
         }
 
+        public void ShouldAllowWrappingTypeWithSetUpBehaviorWhenConstructingPerCase()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase()
+                      .SetUp(TypeSetUp);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                "TypeSetUp",
+                ".ctor", "Pass", "Dispose",
+                ".ctor", "Fail", "Dispose");
+        }
+
+        public void ShouldAllowWrappingTypeWithSetUpBehaviorWhenConstructingPerTestClass()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass()
+                      .SetUp(TypeSetUp);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                "TypeSetUp",
+                ".ctor", "Pass", "Fail", "Dispose");
+        }
+
+        public void ShouldShortCircuitInnerBehaviorByFailingCaseWhenConstructingPerCaseAndTypeSetUpThrows()
+        {
+            FailDuring("TypeSetUp");
+
+            Convention.ClassExecution
+                      .CreateInstancePerCase()
+                      .SetUp(TypeSetUp);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'TypeSetUp' failed!",
+                "SampleTestClass.Fail failed: 'TypeSetUp' failed!");
+
+            output.ShouldHaveLifecycle(
+                "TypeSetUp");
+        }
+
+        public void ShouldShortCircuitInnerBehaviorByFailingAllCasesWhenConstructingPerTestClassAndTypeSetUpThrows()
+        {
+            FailDuring("TypeSetUp");
+
+            Convention.ClassExecution
+                      .CreateInstancePerTestClass()
+                      .SetUp(TypeSetUp);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'TypeSetUp' failed!",
+                "SampleTestClass.Fail failed: 'TypeSetUp' failed!");
+
+            output.ShouldHaveLifecycle(
+                "TypeSetUp");
+        }
+
         public void ShouldFailCaseWhenConstructingPerCaseAndTypeTearDownThrows()
         {
             FailDuring("TypeTearDown");

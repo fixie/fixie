@@ -21,6 +21,15 @@ namespace Fixie.Conventions
             return this;
         }
 
+        public CaseBehaviorBuilder SetUp(CaseAction setUp)
+        {
+            return Wrap((caseExecution, instance, innerBehavior) =>
+            {
+                setUp(caseExecution, instance);
+                innerBehavior();
+            });
+        }
+
         public CaseBehaviorBuilder SetUpTearDown(CaseAction setUp, CaseAction tearDown)
         {
             return Wrap((caseExecution, instance, innerBehavior) =>

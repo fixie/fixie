@@ -38,7 +38,7 @@ namespace Fixie.Listeners
             var name = assemblyName.Name;
             var version = assemblyName.Version;
 
-            Console.WriteLine("{0} passed, {1} failed , {2} skipped ({3} {4}).", result.Passed, result.Failed, result.Skipped, name, version);
+            Console.WriteLine("{0} passed, {1} failed, {2} skipped ({3} {4}).", result.Passed, result.Failed, result.Skipped, name, version);
             Console.WriteLine();
         }
     }

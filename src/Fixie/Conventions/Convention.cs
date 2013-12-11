@@ -42,9 +42,7 @@ namespace Fixie.Conventions
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false];
                 foreach (var @case in casesToSkip)
-                {
                     listener.CaseSkipped(@case);
-                }
 
                 var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
                 if (!caseExecutions.Any())
@@ -54,7 +52,7 @@ namespace Fixie.Conventions
 
                 foreach (var caseExecution in caseExecutions)
                 {
-                    if (caseExecution.Result == CaseResult.Failed)
+                    if (caseExecution.Exceptions.Any())
                         listener.CaseFailed(new FailResult(caseExecution));
                     else
                         listener.CasePassed(new PassResult(caseExecution));

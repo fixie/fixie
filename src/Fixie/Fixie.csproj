@@ -42,7 +42,6 @@
     <Compile Include="Behaviors\ExecuteCases.cs" />
     <Compile Include="Behaviors\InstanceBehavior.cs" />
     <Compile Include="CaseExecution.cs" />
-    <Compile Include="CaseResult.cs" />
     <Compile Include="FailResultExtensions.cs" />
     <Compile Include="GenericArgumentResolver.cs" />
     <Compile Include="RedirectedConsole.cs" />

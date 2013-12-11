@@ -19,6 +19,9 @@ namespace Fixie
             bool hasNullValue = false;
             Type resolvedTypeOfNonNullValues = null;
 
+            if (parameterTypes.Length != parameters.Length)
+                return typeof(object);
+
             for (int i = 0; i < parameterTypes.Length; i++)
             {
                 if (parameterTypes[i] == genericArgument)

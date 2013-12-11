@@ -7,7 +7,7 @@ namespace Fixie
 {
     public class Case
     {
-        readonly object[] parameters;        
+        readonly object[] parameters;
 
         public Case(Type testClass, MethodInfo caseMethod, params object[] parameters)
         {
@@ -17,7 +17,7 @@ namespace Fixie
             Method = caseMethod.IsGenericMethodDefinition
                          ? caseMethod.MakeGenericMethod(GenericArgumentResolver.ResolveTypeArguments(caseMethod, parameters))
                          : caseMethod;
-            
+
             Name = GetName();
         }
 

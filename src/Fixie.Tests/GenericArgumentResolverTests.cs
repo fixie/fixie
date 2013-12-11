@@ -101,6 +101,12 @@ namespace Fixie.Tests
                 .ShouldEqual(typeof(object), typeof(bool), typeof(object));
         }
 
+        public void ShouldResolveToObjectWhenInputParameterCountDoesNotMatchDeclaredParameterCount()
+        {
+            Resolve("MultipleGenericArguments", new object[] { 1 }).ShouldEqual(typeof(object), typeof(object), typeof(object));
+            Resolve("MultipleGenericArguments", new object[] { 1, true, false, true, false }).ShouldEqual(typeof(object), typeof(object), typeof(object));
+        }
+
         static IEnumerable<Type> Resolve(string methodName, object[] parameters)
         {
             return GenericArgumentResolver.ResolveTypeArguments(typeof(Generic).GetInstanceMethod(methodName), parameters);

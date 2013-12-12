@@ -182,6 +182,29 @@ public class CustomConvention : Convention
 }
 ```
 
+### Generic Parameterized Tests
+
+When the system under test uses generics, you may want your parameterized test method to be generic as well. If a parameterized method happens to be a generic method, Fixie compares the runtime type of each incoming parameter value against the generic method declaration in order to pick the best concrete type for each generic type parameter.  This step is necessary because reflection does not allow you to simply pass an `object[]` of parameter values when invoking a generic method thorugh its `MethodInfo`.  Fixie must first convert the generic method definition's `MethodInfo` into a more specific `MethodInfo` with the type arguments resolved.  For instance, consider what happens when we have a generic test method using the `[Input]` attribute as defined above:
+
+```cs
+[Input(true)]
+[Input(1)]
+[Input("A")]
+public void GenericTestMethod<T>(T input)
+{
+    Console.WriteLine(typeof(T).Name);
+}
+```
+
+The output of running this test method is:
+```
+Boolean
+Int32
+String
+```
+
+Instead of receiving the input as an `object` each time, the correct concrete type is substituted for the `T`. If there is any ambiguity over what concrete type should be selected, though, `object` will be assumed.
+
 ## How do I make assertions?
 
 Most test frameworks such as NUnit or xUnit include their own assertion libraries so that you can make statements like this:

@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Fixie.Conventions;
 using Fixie.Listeners;
+using Should;
 
 namespace Fixie.Tests.Listeners
 {
@@ -40,6 +41,34 @@ namespace Fixie.Tests.Listeners
                            "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
                            "'FailB' failed!",
                            "   at Fixie.Tests.Listeners.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #");
+            }
+        }
+
+        public void ShouldReportPassFailSkipCounts()
+        {
+            using (var console = new RedirectedConsole())
+            {
+                var listener = new ConsoleListener();
+                var assembly = typeof(ConsoleListener).Assembly;
+                var version = assembly.GetName().Version;
+
+                listener.AssemblyCompleted(assembly, new AssemblyResult(1, 2, 3));
+
+                console.Lines().ShouldEqual("1 passed, 2 failed, 3 skipped (Fixie " + version + ").");
+            }
+        }
+
+        public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
+        {
+            using (var console = new RedirectedConsole())
+            {
+                var listener = new ConsoleListener();
+                var assembly = typeof(ConsoleListener).Assembly;
+                var version = assembly.GetName().Version;
+
+                listener.AssemblyCompleted(assembly, new AssemblyResult(1, 2, 0));
+
+                console.Lines().ShouldEqual("1 passed, 2 failed (Fixie " + version + ").");
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Text;
 
 namespace Fixie.Listeners
 {
@@ -38,7 +39,16 @@ namespace Fixie.Listeners
             var name = assemblyName.Name;
             var version = assemblyName.Version;
 
-            Console.WriteLine("{0} passed, {1} failed, {2} skipped ({3} {4}).", result.Passed, result.Failed, result.Skipped, name, version);
+            var line = new StringBuilder();
+
+            line.AppendFormat("{0} passed", result.Passed);
+            line.AppendFormat(", {0} failed", result.Failed);
+
+            if (result.Skipped > 0)
+                line.AppendFormat(", {0} skipped", result.Skipped);
+
+            line.AppendFormat(" ({0} {1}).", name, version);
+            Console.WriteLine(line);
             Console.WriteLine();
         }
     }

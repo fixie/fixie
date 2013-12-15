@@ -85,7 +85,7 @@ namespace IntegrationTests
                 .NameEndsWith("Tests");
 
             Methods
-                .Where(method => method.Void());
+                .Where(method => method.IsVoid());
 
             InstanceExecution
                 .Wrap((fixture, innerBehavior) =>

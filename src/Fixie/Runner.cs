@@ -49,6 +49,13 @@ namespace Fixie
             return RunTypes(runContext, type);
         }
 
+        public AssemblyResult RunType (Assembly assembly, Convention convention, Type type)
+        {
+            var runContext = new RunContext (assembly, options);
+
+            return RunTypes (runContext, convention, type);
+        }
+
         public AssemblyResult RunMethod(Assembly assembly, MethodInfo method)
         {
             var runContext = new RunContext(assembly, options, method);

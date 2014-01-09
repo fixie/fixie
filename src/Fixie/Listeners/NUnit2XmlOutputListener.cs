@@ -39,14 +39,14 @@ namespace Fixie.Listeners
         {
             GetClassTestSuite (@case.Class)
                 .Element ("results")
-                .Add (new XElement ("test-case", new XAttribute ("name", @case.Class.FullName + "." + @case.Method.Name), new XAttribute ("executed", "False"), new XAttribute ("success", "True")));
+                .Add (new XElement ("test-case", new XAttribute ("name", @case.Name), new XAttribute ("executed", "False"), new XAttribute ("success", "True")));
         }
 
         public void CasePassed (PassResult result)
         {
             GetClassTestSuite (result.Case.Class)
                 .Element ("results")
-                .Add (new XElement ("test-case", new XAttribute ("name", result.Case.Class.FullName + "." + result.Case.Method.Name),
+                .Add (new XElement ("test-case", new XAttribute ("name", result.Case.Name),
                     new XAttribute ("executed", "True"),
                     new XAttribute ("success", "True"),
                     new XAttribute ("time", result.Duration.TotalSeconds.ToString ("0.000"))));
@@ -61,7 +61,7 @@ namespace Fixie.Listeners
             suite
                 .Element ("results")
                 .Add (new XElement ("test-case",
-                    new XAttribute ("name", result.Case.Class.FullName + "." + result.Case.Method.Name),
+                    new XAttribute ("name", result.Case.Name),
                     new XElement("failure", new XElement("message", new XCData (result.PrimaryExceptionMessage ())), new XElement("stack-trace", new XCData (result.CompoundStackTrace ()))),
                     new XAttribute ("executed", "True"),
                     new XAttribute ("success", "False"),

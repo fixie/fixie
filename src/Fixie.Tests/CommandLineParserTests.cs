@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Fixie.Listeners;
 using Should;
 
 namespace Fixie.Tests
@@ -29,6 +30,18 @@ namespace Fixie.Tests
             parser.AssemblyPaths.ShouldEqual("assembly.dll");
             parser.Options.Select(x => x.Key).ShouldEqual("key");
             parser.Options["key"].ShouldEqual("value");
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
+        }
+
+        public void ParsesCustomOptionsWithQualifierPrefix()
+        {
+            string teamCityListener = typeof(TeamCityListener).FullName;
+
+            var parser = new CommandLineParser("assembly.dll", "--fixie:listener", teamCityListener);
+            parser.AssemblyPaths.ShouldEqual("assembly.dll");
+            parser.Options.Select(x => x.Key).ShouldEqual("fixie:listener");
+            parser.Options["fixie:listener"].ShouldEqual(teamCityListener);
             parser.HasErrors.ShouldBeFalse();
             parser.Errors.ShouldBeEmpty();
         }

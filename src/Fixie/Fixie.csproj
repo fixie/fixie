@@ -42,6 +42,7 @@
     <Compile Include="Behaviors\ExecuteCases.cs" />
     <Compile Include="Behaviors\InstanceBehavior.cs" />
     <Compile Include="CaseExecution.cs" />
+    <Compile Include="CommandLineOption.cs" />
     <Compile Include="Listeners\CompoundListener.cs" />
     <Compile Include="FailResultExtensions.cs" />
     <Compile Include="GenericArgumentResolver.cs" />

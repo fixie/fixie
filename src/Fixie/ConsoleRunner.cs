@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fixie.Listeners;
@@ -20,12 +20,33 @@ namespace Fixie
 
         static Listener CreateListener(ILookup<string, string> options)
         {
+            var listenerNames = options[CommandLineOption.Listener].ToArray();
+
+            return listenerNames.Any()
+                ? CreateCompoundListener(listenerNames)
+                : CreateDefaultListener();
+        }
+
+        static Listener CreateCompoundListener(IEnumerable<string> listenerNames)
+        {
+            var compoundListener = new CompoundListener();
+
+            foreach (var listenerName in listenerNames)
+            {
+                var listenerType = Assembly.GetExecutingAssembly().GetType(listenerName);
+                var listener = (Listener)Activator.CreateInstance(listenerType);
+                compoundListener.Add(listener);
+            }
+
+            return compoundListener;
+        }
+
+        static Listener CreateDefaultListener()
+        {
             var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
 
             if (runningUnderTeamCity)
                 return new TeamCityListener();
-            else if (options.Contains ("nunit2"))
-                return new NUnit2XmlOutputListener (new StreamWriter(options["nunit2"].FirstOrDefault()));
 
             return new ConsoleListener();
         }

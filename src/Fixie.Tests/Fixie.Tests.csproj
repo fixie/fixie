@@ -55,6 +55,7 @@
     <Compile Include="Lifecycle\ConstructionTests.cs" />
     <Compile Include="Lifecycle\InstanceLifecycleTests.cs" />
     <Compile Include="Listeners\NUnit2XmlOutputListenerTests.cs" />
+    <Compile Include="Listeners\CompoundListenerTests.cs" />
     <Compile Include="TestMethods\AsyncMethodTests.cs" />
     <Compile Include="Listeners\ConsoleListenerTests.cs" />
     <Compile Include="TestMethods\NullaryMethodTests.cs" />

@@ -26,6 +26,10 @@ namespace Fixie.Listeners
                               new XElement("test-suite", new XAttribute("success", "True"), new XElement("results")));
         }
 
+        public NUnit2XmlOutputListener () : this(new StreamWriter("TestResults.xml"))
+        {
+        }
+
         public void AssemblyStarted (Assembly assembly)
         {
             startTime = DateTime.UtcNow;

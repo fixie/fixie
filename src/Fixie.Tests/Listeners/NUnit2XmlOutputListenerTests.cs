@@ -26,7 +26,7 @@ namespace Fixie.Tests.Listeners
                 var actual = XDocument.Load(stream);
 
                 XsdValidate(actual);
-                CleanBrittleValues(actual.ToString()).ShouldEqual(ExpectedReport);
+                CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
             }
         }
 
@@ -64,8 +64,7 @@ namespace Fixie.Tests.Listeners
             {
                 var assemblyLocation = GetType().Assembly.Location;
 
-                return @"<test-results date=""YYYY-MM-DD"" time=""HH:MM:SS"" name=""" + assemblyLocation +
-                       @""" total=""6"" failures=""2"" not-run=""1"">
+                var expectedReport = @"<test-results date=""YYYY-MM-DD"" time=""HH:MM:SS"" name=""" + assemblyLocation + @""" total=""6"" failures=""2"" not-run=""1"">
   <test-suite success=""False"" name=""" + assemblyLocation + @""" time=""1.234"">
     <results>
       <test-suite name=""Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass"" success=""False"" time=""1.234"">
@@ -93,6 +92,8 @@ namespace Fixie.Tests.Listeners
     </results>
   </test-suite>
 </test-results>";
+
+                return XDocument.Parse(expectedReport).ToString(SaveOptions.DisableFormatting);
             }
         }
 

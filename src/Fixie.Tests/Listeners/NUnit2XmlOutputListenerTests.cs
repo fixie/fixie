@@ -1,10 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using System.Xml.XPath;
 using Fixie.Conventions;
 using Fixie.Listeners;
 using Should;
@@ -15,58 +14,91 @@ namespace Fixie.Tests.Listeners
     {
         public void ShouldProduceAValidXmlOutput()
         {
-            var stream = new MemoryStream();
-            var listener = new NUnit2XmlOutputListener(new StreamWriter(stream));
-            var runner = new Runner(listener);
+            using (var stream = new MemoryStream())
+            using (var streamWriter = new StreamWriter(stream))
+            {
+                var listener = new NUnit2XmlOutputListener(streamWriter);
+                var runner = new Runner(listener);
 
-            runner.RunType(GetType().Assembly, new SelfTestConvention(), typeof(PassFailTestClass));
-            stream.Position = 0;
+                runner.RunType(GetType().Assembly, new SelfTestConvention(), typeof(PassFailTestClass));
 
-            var doc = XDocument.Load(stream);
-            //Console.WriteLine(doc);
+                stream.Position = 0;
+                var actual = XDocument.Load(stream);
 
+                XsdValidate(actual);
+                CleanBrittleValues(actual.ToString()).ShouldEqual(ExpectedReport);
+            }
+        }
+
+        static string CleanBrittleValues(string actualRawContent)
+        {
+            //Avoid brittle assertion introduced by system date.
+            var cleaned = Regex.Replace(actualRawContent, @"date=""\d\d\d\d-\d\d-\d\d""", @"date=""YYYY-MM-DD""");
+
+            //Avoid brittle assertion introduced by system time.
+            cleaned = Regex.Replace(cleaned, @"time=""\d\d:\d\d:\d\d""", @"time=""HH:MM:SS""");
+
+            //Avoid brittle assertion introduced by test duration.
+            cleaned = Regex.Replace(cleaned, @"time=""[\d\.]+""", @"time=""1.234""");
+
+            //Avoid brittle assertion introduced by stack trace line numbers.
+            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
+
+            return cleaned;
+        }
+
+        static void XsdValidate(XDocument doc)
+        {
             var schemaSet = new XmlSchemaSet();
-            schemaSet.Add(null, XmlReader.Create(Path.Combine("Listeners", "NUnit2Results.xsd")));
+            using (var xmlReader = XmlReader.Create(Path.Combine("Listeners", "NUnit2Results.xsd")))
+            {
+                schemaSet.Add(null, xmlReader);
+            }
+
             doc.Validate(schemaSet, null);
+        }
 
-            var root = doc.Root;
-            root.Attribute("failures").Value.ShouldEqual("2");
-            root.Attribute("total").Value.ShouldEqual("6");
-            root.Attribute("not-run").Value.ShouldEqual("1");
+        string ExpectedReport
+        {
+            get
+            {
+                var assemblyLocation = GetType().Assembly.Location;
 
-            var testSuite = root.Elements().FirstOrDefault();
-            testSuite.ShouldNotBeNull();
-            testSuite.Attribute("name").Value.ShouldContain("Fixie.Tests.dll");
-            testSuite.Attribute("success").Value.ShouldEqual("False");
+                return @"<test-results date=""YYYY-MM-DD"" time=""HH:MM:SS"" name=""" + assemblyLocation +
+                       @""" total=""6"" failures=""2"" not-run=""1"">
+  <test-suite success=""False"" name=""" + assemblyLocation + @""" time=""1.234"">
+    <results>
+      <test-suite name=""Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass"" success=""False"" time=""1.234"">
+        <results>
+          <test-case name=""Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.SkipA"" executed=""False"" success=""True"" />
+          <test-case name=""Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.FailA"" executed=""True"" success=""False"" time=""1.234"">
+            <failure>
+              <message><![CDATA['FailA' failed!]]></message>
+              <stack-trace><![CDATA['FailA' failed!
+   at Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + @":line #]]></stack-trace>
+            </failure>
+          </test-case>
+          <test-case name=""Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.FailB"" executed=""True"" success=""False"" time=""1.234"">
+            <failure>
+              <message><![CDATA['FailB' failed!]]></message>
+              <stack-trace><![CDATA['FailB' failed!
+   at Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + @":line #]]></stack-trace>
+            </failure>
+          </test-case>
+          <test-case name=""Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.PassA"" executed=""True"" success=""True"" time=""1.234"" />
+          <test-case name=""Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.PassB"" executed=""True"" success=""True"" time=""1.234"" />
+          <test-case name=""Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.PassC"" executed=""True"" success=""True"" time=""1.234"" />
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>";
+            }
+        }
 
-            var actualResults = testSuite.XPathSelectElement("results/test-suite/results");
-
-            // Times vary by test run, so clear them out before comparing.
-            foreach (var c in actualResults.XPathSelectElements("test-case[@time != '']"))
-                c.SetAttributeValue("time", String.Empty);
-
-            // We can't easily test the stack trace or failure message, so clear them here.
-            foreach (var msg in actualResults.XPathSelectElements("test-case/failure/message | test-case/failure/stack-trace"))
-                msg.RemoveAll();
-
-            //Console.WriteLine(doc);
-            XElement.DeepEquals(actualResults,
-                new XElement("results",
-                    new XElement("test-case", new XAttribute("name", "Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.SkipA"),
-                        new XAttribute("executed", "False"), new XAttribute("success", "True")),
-                    new XElement("test-case", new XAttribute("name", "Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.FailA"),
-                        new XAttribute("executed", "True"), new XAttribute("success", "False"), new XAttribute("time", ""),
-                        new XElement("failure", new XElement("message"), new XElement("stack-trace"))),
-                    new XElement("test-case", new XAttribute("name", "Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.FailB"),
-                        new XAttribute("executed", "True"), new XAttribute("success", "False"), new XAttribute("time", ""),
-                        new XElement("failure", new XElement("message"), new XElement("stack-trace"))),
-                    new XElement("test-case", new XAttribute("name", "Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.PassA"),
-                        new XAttribute("executed", "True"), new XAttribute("success", "True"), new XAttribute("time", "")),
-                    new XElement("test-case", new XAttribute("name", "Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.PassB"),
-                        new XAttribute("executed", "True"), new XAttribute("success", "True"), new XAttribute("time", "")),
-                    new XElement("test-case", new XAttribute("name", "Fixie.Tests.Listeners.NUnit2XmlOutputListenerTests+PassFailTestClass.PassC"),
-                        new XAttribute("executed", "True"), new XAttribute("success", "True"), new XAttribute("time", ""))
-                    )).ShouldBeTrue();
+        static string PathToThisFile([CallerFilePath] string path = null)
+        {
+            return path;
         }
 
         class PassFailTestClass

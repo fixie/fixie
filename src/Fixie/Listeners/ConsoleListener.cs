@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Text;
+using Fixie.Results;
 
 namespace Fixie.Listeners
 {

@@ -73,11 +73,16 @@
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="PassResult.cs" />
     <Compile Include="PreservedException.cs" />
+    <Compile Include="Results\CaseResult.cs" />
+    <Compile Include="Results\CaseStatus.cs" />
+    <Compile Include="Results\ClassResult.cs" />
+    <Compile Include="Results\ConventionResult.cs" />
+    <Compile Include="Results\ExecutionResult.cs" />
     <Compile Include="RunContext.cs" />
     <Compile Include="Listeners\TeamCityListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
-    <Compile Include="AssemblyResult.cs" />
+    <Compile Include="Results\AssemblyResult.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="Conventions\ClassFilter.cs" />
     <Compile Include="UncallableParameterizedCase.cs" />

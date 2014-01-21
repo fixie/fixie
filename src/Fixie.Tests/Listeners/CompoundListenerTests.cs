@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Fixie.Listeners;
+using Fixie.Results;
 
 namespace Fixie.Tests.Listeners
 {

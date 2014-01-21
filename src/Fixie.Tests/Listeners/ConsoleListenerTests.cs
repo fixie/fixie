@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Fixie.Conventions;
 using Fixie.Listeners;
+using Fixie.Results;
 using Should;
 
 namespace Fixie.Tests.Listeners

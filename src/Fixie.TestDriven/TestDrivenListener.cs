@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Fixie.Results;
 using TestDriven.Framework;
 
 namespace Fixie.TestDriven

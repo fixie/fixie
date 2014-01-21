@@ -32,11 +32,24 @@ namespace Fixie.Tests.Listeners
                 listener.Add(new SampleListenerA());
                 listener.Add(new SampleListenerB());
 
+                var assemblyResult = new AssemblyResult(assembly.Location);
+                var conventionResult = new ConventionResult("Fake Convention");
+                var classResult = new ClassResult("Fake Class");
+                assemblyResult.Add(conventionResult);
+                conventionResult.Add(classResult);
+                classResult.Add(new CaseResult("A", CaseStatus.Passed, TimeSpan.Zero));
+                classResult.Add(new CaseResult("B", CaseStatus.Passed, TimeSpan.Zero));
+                classResult.Add(new CaseResult("C", CaseStatus.Passed, TimeSpan.Zero));
+                classResult.Add(new CaseResult("D", CaseStatus.Failed, TimeSpan.Zero));
+                classResult.Add(new CaseResult("E", CaseStatus.Failed, TimeSpan.Zero));
+                classResult.Add(new CaseResult("F", CaseStatus.Skipped, TimeSpan.Zero));
+
+
                 listener.AssemblyStarted(assembly);
                 listener.CaseSkipped(@case);
                 listener.CasePassed(pass);
                 listener.CaseFailed(fail);
-                listener.AssemblyCompleted(assembly, new AssemblyResult(3, 2, 1));
+                listener.AssemblyCompleted(assembly, assemblyResult);
 
                 console.Lines()
                     .ShouldEqual(

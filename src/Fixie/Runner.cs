@@ -111,67 +111,20 @@ namespace Fixie
 
         AssemblyResult Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
-            var resultListener = new AssemblyResultListener(listener);
-
-            resultListener.AssemblyStarted(runContext.Assembly);
+            var assemblyResult = new AssemblyResult(runContext.Assembly.Location);
+            
+            listener.AssemblyStarted(runContext.Assembly);
 
             foreach (var convention in conventions)
-                convention.Execute(resultListener, candidateTypes);
-
-            var result = resultListener.AssemblyResult;
-
-            resultListener.AssemblyCompleted(runContext.Assembly, result);
-
-            return result;
-        }
-
-        class AssemblyResultListener : Listener
-        {
-            int passed;
-            int failed;
-            int skipped;
-            readonly Listener inner;
-
-            public AssemblyResultListener(Listener inner)
             {
-                this.inner = inner;
+                var conventionResult = convention.Execute(listener, candidateTypes);
+
+                assemblyResult.Add(conventionResult);
             }
 
-            public void AssemblyStarted(Assembly assembly)
-            {
-                passed = 0;
-                failed = 0;
-                skipped = 0;
-                inner.AssemblyStarted(assembly);
-            }
+            listener.AssemblyCompleted(runContext.Assembly, assemblyResult);
 
-            public void CaseSkipped(Case @case)
-            {
-                skipped++;
-                inner.CaseSkipped(@case);
-            }
-
-            public void CasePassed(PassResult result)
-            {
-                passed++;
-                inner.CasePassed(result);
-            }
-
-            public void CaseFailed(FailResult result)
-            {
-                failed++;
-                inner.CaseFailed(result);
-            }
-
-            public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
-            {
-                inner.AssemblyCompleted(assembly, result);
-            }
-
-            public AssemblyResult AssemblyResult
-            {
-                get { return new AssemblyResult(passed, failed, skipped); }
-            }
+            return assemblyResult;
         }
     }
 }

@@ -52,7 +52,19 @@ namespace Fixie.Tests.Listeners
                 var assembly = typeof(ConsoleListener).Assembly;
                 var version = assembly.GetName().Version;
 
-                listener.AssemblyCompleted(assembly, new AssemblyResult(1, 2, 3));
+                var assemblyResult = new AssemblyResult(assembly.Location);
+                var conventionResult = new ConventionResult("Fake Convention");
+                var classResult = new ClassResult("Fake Class");
+                assemblyResult.Add(conventionResult);
+                conventionResult.Add(classResult);
+                classResult.Add(new CaseResult("A", CaseStatus.Passed, TimeSpan.Zero));
+                classResult.Add(new CaseResult("B", CaseStatus.Failed, TimeSpan.Zero));
+                classResult.Add(new CaseResult("C", CaseStatus.Failed, TimeSpan.Zero));
+                classResult.Add(new CaseResult("D", CaseStatus.Skipped, TimeSpan.Zero));
+                classResult.Add(new CaseResult("E", CaseStatus.Skipped, TimeSpan.Zero));
+                classResult.Add(new CaseResult("F", CaseStatus.Skipped, TimeSpan.Zero));
+
+                listener.AssemblyCompleted(assembly, assemblyResult);
 
                 console.Lines().ShouldEqual("1 passed, 2 failed, 3 skipped (Fixie " + version + ").");
             }
@@ -66,7 +78,16 @@ namespace Fixie.Tests.Listeners
                 var assembly = typeof(ConsoleListener).Assembly;
                 var version = assembly.GetName().Version;
 
-                listener.AssemblyCompleted(assembly, new AssemblyResult(1, 2, 0));
+                var assemblyResult = new AssemblyResult(assembly.Location);
+                var conventionResult = new ConventionResult("Fake Convention");
+                var classResult = new ClassResult("Fake Class");
+                assemblyResult.Add(conventionResult);
+                conventionResult.Add(classResult);
+                classResult.Add(new CaseResult("A", CaseStatus.Passed, TimeSpan.Zero));
+                classResult.Add(new CaseResult("B", CaseStatus.Failed, TimeSpan.Zero));
+                classResult.Add(new CaseResult("C", CaseStatus.Failed, TimeSpan.Zero));
+
+                listener.AssemblyCompleted(assembly, assemblyResult);
 
                 console.Lines().ShouldEqual("1 passed, 2 failed (Fixie " + version + ").");
             }

@@ -31,10 +31,14 @@ namespace Fixie.Conventions
             methodCallParameterBuilder = getCaseParameters;
         }
 
-        public void Execute(Listener listener, params Type[] candidateTypes)
+        public ConventionResult Execute(Listener listener, params Type[] candidateTypes)
         {
+            var conventionResult = new ConventionResult(GetType().FullName);
+
             foreach (var testClass in Classes.Filter(candidateTypes))
             {
+                var classResult = new ClassResult(testClass.FullName);
+
                 var methods = Methods.Filter(testClass);
 
                 var cases = methods.SelectMany(method => CasesForMethod(testClass, method)).ToArray();
@@ -42,7 +46,10 @@ namespace Fixie.Conventions
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false];
                 foreach (var @case in casesToSkip)
+                {
                     listener.CaseSkipped(@case);
+                    classResult.Add(new CaseResult(@case.Name, CaseStatus.Skipped, TimeSpan.Zero));
+                }
 
                 var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
                 if (!caseExecutions.Any())
@@ -53,11 +60,21 @@ namespace Fixie.Conventions
                 foreach (var caseExecution in caseExecutions)
                 {
                     if (caseExecution.Exceptions.Any())
+                    {
                         listener.CaseFailed(new FailResult(caseExecution));
+                        classResult.Add(new CaseResult(caseExecution.Case.Name, CaseStatus.Failed, caseExecution.Duration));
+                    }
                     else
+                    {
                         listener.CasePassed(new PassResult(caseExecution));
+                        classResult.Add(new CaseResult(caseExecution.Case.Name, CaseStatus.Passed, caseExecution.Duration));
+                    }
                 }
+
+                conventionResult.Add(classResult);
             }
+
+            return conventionResult;
         }
 
         IEnumerable<Case> CasesForMethod(Type testClass, MethodInfo method)

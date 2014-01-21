@@ -26,16 +26,16 @@ namespace Fixie.Console
                     return FatalError;
                 }
 
-                int failed = 0;
+                var executionResult = new ExecutionResult();
 
                 foreach (var assemblyPath in commandLineParser.AssemblyPaths)
                 {
                     var result = Execute(assemblyPath, args);
 
-                    failed += result.Failed;
+                    executionResult.Add(result);
                 }
 
-                return failed;
+                return executionResult.Failed;
             }
             catch (Exception exception)
             {

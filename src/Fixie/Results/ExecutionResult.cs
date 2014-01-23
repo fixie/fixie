@@ -19,6 +19,11 @@ namespace Fixie.Results
             assemblyResults.Add(assemblyResult);
         }
 
+        public IReadOnlyList<AssemblyResult> AssemblyResults
+        {
+            get { return assemblyResults; }
+        }
+
         public int Passed { get { return assemblyResults.Sum(result => result.Passed); } }
 
         public int Failed { get { return assemblyResults.Sum(result => result.Failed); } }

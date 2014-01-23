@@ -54,7 +54,7 @@
     <Compile Include="Lifecycle\ComplexLifecycleTests.cs" />
     <Compile Include="Lifecycle\ConstructionTests.cs" />
     <Compile Include="Lifecycle\InstanceLifecycleTests.cs" />
-    <Compile Include="Listeners\NUnit2XmlOutputListenerTests.cs" />
+    <Compile Include="Reports\NUnitXmlReportTests.cs" />
     <Compile Include="Listeners\CompoundListenerTests.cs" />
     <Compile Include="TestMethods\AsyncMethodTests.cs" />
     <Compile Include="Listeners\ConsoleListenerTests.cs" />
@@ -82,7 +82,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Listeners\NUnit2Results.xsd">
+    <Content Include="Reports\NUnit2Results.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using Fixie.Conventions;
 using Fixie.Listeners;
 using Fixie.Results;
-using Should;
 
 namespace Fixie.Tests.Listeners
 {
@@ -58,12 +57,12 @@ namespace Fixie.Tests.Listeners
                 var classResult = new ClassResult("Fake Class");
                 assemblyResult.Add(conventionResult);
                 conventionResult.Add(classResult);
-                classResult.Add(new CaseResult("A", CaseStatus.Passed, TimeSpan.Zero));
-                classResult.Add(new CaseResult("B", CaseStatus.Failed, TimeSpan.Zero));
-                classResult.Add(new CaseResult("C", CaseStatus.Failed, TimeSpan.Zero));
-                classResult.Add(new CaseResult("D", CaseStatus.Skipped, TimeSpan.Zero));
-                classResult.Add(new CaseResult("E", CaseStatus.Skipped, TimeSpan.Zero));
-                classResult.Add(new CaseResult("F", CaseStatus.Skipped, TimeSpan.Zero));
+                classResult.Add(CaseResult.Passed("A", TimeSpan.Zero));
+                classResult.Add(CaseResult.Failed("B", TimeSpan.Zero, "Message", "Stack Trace"));
+                classResult.Add(CaseResult.Failed("C", TimeSpan.Zero, "Message", "Stack Trace"));
+                classResult.Add(CaseResult.Skipped("D"));
+                classResult.Add(CaseResult.Skipped("E"));
+                classResult.Add(CaseResult.Skipped("F"));
 
                 listener.AssemblyCompleted(assembly, assemblyResult);
 
@@ -84,9 +83,9 @@ namespace Fixie.Tests.Listeners
                 var classResult = new ClassResult("Fake Class");
                 assemblyResult.Add(conventionResult);
                 conventionResult.Add(classResult);
-                classResult.Add(new CaseResult("A", CaseStatus.Passed, TimeSpan.Zero));
-                classResult.Add(new CaseResult("B", CaseStatus.Failed, TimeSpan.Zero));
-                classResult.Add(new CaseResult("C", CaseStatus.Failed, TimeSpan.Zero));
+                classResult.Add(CaseResult.Passed("A", TimeSpan.Zero));
+                classResult.Add(CaseResult.Failed("B", TimeSpan.Zero, "Message", "Stack Trace"));
+                classResult.Add(CaseResult.Failed("C", TimeSpan.Zero, "Message", "Stack Trace"));
 
                 listener.AssemblyCompleted(assembly, assemblyResult);
 

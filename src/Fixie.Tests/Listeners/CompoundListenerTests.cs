@@ -38,12 +38,12 @@ namespace Fixie.Tests.Listeners
                 var classResult = new ClassResult("Fake Class");
                 assemblyResult.Add(conventionResult);
                 conventionResult.Add(classResult);
-                classResult.Add(new CaseResult("A", CaseStatus.Passed, TimeSpan.Zero));
-                classResult.Add(new CaseResult("B", CaseStatus.Passed, TimeSpan.Zero));
-                classResult.Add(new CaseResult("C", CaseStatus.Passed, TimeSpan.Zero));
-                classResult.Add(new CaseResult("D", CaseStatus.Failed, TimeSpan.Zero));
-                classResult.Add(new CaseResult("E", CaseStatus.Failed, TimeSpan.Zero));
-                classResult.Add(new CaseResult("F", CaseStatus.Skipped, TimeSpan.Zero));
+                classResult.Add(CaseResult.Passed("A", TimeSpan.Zero));
+                classResult.Add(CaseResult.Passed("B", TimeSpan.Zero));
+                classResult.Add(CaseResult.Passed("C", TimeSpan.Zero));
+                classResult.Add(CaseResult.Failed("D", TimeSpan.Zero, "Message", "Stack Trace"));
+                classResult.Add(CaseResult.Failed("E", TimeSpan.Zero, "Message", "Stack Trace"));
+                classResult.Add(CaseResult.Skipped("F"));
 
 
                 listener.AssemblyStarted(assembly);

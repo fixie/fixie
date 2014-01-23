@@ -48,7 +48,7 @@
     <Compile Include="Listeners\CompoundListener.cs" />
     <Compile Include="FailResultExtensions.cs" />
     <Compile Include="GenericArgumentResolver.cs" />
-    <Compile Include="Listeners\NUnit2XmlOutputListener.cs" />
+    <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="RedirectedConsole.cs" />
     <Compile Include="Behaviors\TypeBehavior.cs" />
     <Compile Include="Case.cs" />

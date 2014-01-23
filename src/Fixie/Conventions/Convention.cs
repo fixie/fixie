@@ -49,7 +49,7 @@ namespace Fixie.Conventions
                 foreach (var @case in casesToSkip)
                 {
                     listener.CaseSkipped(@case);
-                    classResult.Add(new CaseResult(@case.Name, CaseStatus.Skipped, TimeSpan.Zero));
+                    classResult.Add(CaseResult.Skipped(@case.Name));
                 }
 
                 var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
@@ -62,13 +62,15 @@ namespace Fixie.Conventions
                 {
                     if (caseExecution.Exceptions.Any())
                     {
-                        listener.CaseFailed(new FailResult(caseExecution));
-                        classResult.Add(new CaseResult(caseExecution.Case.Name, CaseStatus.Failed, caseExecution.Duration));
+                        var failResult = new FailResult(caseExecution);
+                        listener.CaseFailed(failResult);
+                        classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.PrimaryExceptionMessage(), failResult.CompoundStackTrace()));
                     }
                     else
                     {
-                        listener.CasePassed(new PassResult(caseExecution));
-                        classResult.Add(new CaseResult(caseExecution.Case.Name, CaseStatus.Passed, caseExecution.Duration));
+                        var passResult = new PassResult(caseExecution);
+                        listener.CasePassed(passResult);
+                        classResult.Add(CaseResult.Passed(passResult.Case.Name, passResult.Duration));
                     }
                 }
 

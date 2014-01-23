@@ -53,25 +53,26 @@ namespace Fixie.Conventions
                 }
 
                 var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
-                if (!caseExecutions.Any())
-                    continue;
-
-                ClassExecution.Behavior.Execute(testClass, this, caseExecutions);
-
-                foreach (var caseExecution in caseExecutions)
+                if (caseExecutions.Any())
                 {
-                    if (caseExecution.Exceptions.Any())
+                    ClassExecution.Behavior.Execute(testClass, this, caseExecutions);
+
+                    foreach (var caseExecution in caseExecutions)
                     {
-                        var failResult = new FailResult(caseExecution);
-                        listener.CaseFailed(failResult);
-                        classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.PrimaryExceptionMessage(), failResult.CompoundStackTrace()));
+                        if (caseExecution.Exceptions.Any())
+                        {
+                            var failResult = new FailResult(caseExecution);
+                            listener.CaseFailed(failResult);
+                            classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.PrimaryExceptionMessage(), failResult.CompoundStackTrace()));
+                        }
+                        else
+                        {
+                            var passResult = new PassResult(caseExecution);
+                            listener.CasePassed(passResult);
+                            classResult.Add(CaseResult.Passed(passResult.Case.Name, passResult.Duration));
+                        }
                     }
-                    else
-                    {
-                        var passResult = new PassResult(caseExecution);
-                        listener.CasePassed(passResult);
-                        classResult.Add(CaseResult.Passed(passResult.Case.Name, passResult.Duration));
-                    }
+
                 }
 
                 conventionResult.Add(classResult);

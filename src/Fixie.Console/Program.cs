@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
+using Fixie.Reports;
 using Fixie.Results;
 
 namespace Fixie.Console
@@ -36,6 +39,8 @@ namespace Fixie.Console
                     executionResult.Add(result);
                 }
 
+                ProduceReports(commandLineParser.Options, executionResult);
+
                 return executionResult.Failed;
             }
             catch (Exception exception)
@@ -43,6 +48,19 @@ namespace Fixie.Console
                 using (Foreground.Red)
                     Console.WriteLine("Fatal Error: {0}", exception);
                 return FatalError;
+            }
+        }
+
+        static void ProduceReports(ILookup<string, string> options, ExecutionResult executionResult)
+        {
+            if (options.Contains(CommandLineOption.NUnitXml))
+            {
+                var report = new NUnitXmlReport();
+
+                var xDocument = report.Transform(executionResult);
+
+                foreach (var fileName in options[CommandLineOption.NUnitXml])
+                    xDocument.Save(fileName, SaveOptions.None);
             }
         }
 

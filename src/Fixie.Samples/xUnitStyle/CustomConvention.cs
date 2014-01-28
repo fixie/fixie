@@ -1,23 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Fixie.Conventions;
-
 namespace Fixie.Samples.xUnitStyle
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Fixie;
+    using Fixie.Conventions;
+    using Xunit;
+    using Xunit.Extensions;
+
     public class CustomConvention : Convention
     {
-        readonly MethodFilter factMethods = new MethodFilter().HasOrInherits<FactAttribute>();
-        readonly Dictionary<MethodInfo, object> fixtures = new Dictionary<MethodInfo, object>();
+        private readonly Dictionary<MethodInfo, object> _fixtures = new Dictionary<MethodInfo, object>();
 
-        public CustomConvention()
+        public XUnitTestConvention()
         {
             Classes
-                .Where(HasAnyFactMethods);
+                .Where(HasAnyFactOrTheoryMethods);
 
             Methods
-                .HasOrInherits<FactAttribute>();
+                .Where(MethodHasAnyFactOrTheoryAttributes);
 
             ClassExecution
                 .CreateInstancePerCase()
@@ -25,17 +27,40 @@ namespace Fixie.Samples.xUnitStyle
                 .ShuffleCases();
 
             InstanceExecution
-                .SetUp(InjectFixtureData);
+                .SetUp(FactOrTheoryMarkedAsSkip);
+
+            CaseExecution
+                .Skip(FactMarkedAsSkip);
+
+            Parameters(FillFromDataAttributes);
         }
 
-        bool HasAnyFactMethods(Type type)
+        private static bool MethodHasAnyFactOrTheoryAttributes(MethodInfo mi)
         {
-            return factMethods.Filter(type).Any();
+            return mi.HasOrInherits<FactAttribute>() || mi.HasOrInherits<TheoryAttribute>();
         }
 
-        void PrepareFixtureData(Type testClass)
+        private static IEnumerable<object[]> FillFromDataAttributes(MethodInfo arg)
         {
-            fixtures.Clear();
+            var parameterTypes = arg.GetParameters().Select(p => p.ParameterType).ToArray();
+
+            return arg.GetCustomAttributes<DataAttribute>().SelectMany(dataAttribute => dataAttribute.GetData(arg, parameterTypes));
+        }
+
+        private static bool FactOrTheoryMarkedAsSkip(Case arg)
+        {
+            return arg.Method.GetCustomAttributes<FactAttribute>().Any(attr => !string.IsNullOrEmpty(attr.Skip)) ||
+                arg.Method.GetCustomAttributes<TheoryAttribute>().Any(attr => !string.IsNullOrEmpty(attr.Skip));
+        }
+
+        private static bool HasAnyFactOrTheoryMethods(Type type)
+        {
+            return new MethodFilter().Where(MethodHasAnyFactOrTheoryAttributes).Filter(type).Any();
+        }
+
+        private void PrepareFixtureData(Type testClass)
+        {
+            _fixtures.Clear();
 
             foreach (var @interface in FixtureInterfaces(testClass))
             {
@@ -44,29 +69,29 @@ namespace Fixie.Samples.xUnitStyle
                 var fixtureInstance = Activator.CreateInstance(fixtureDataType);
 
                 var method = @interface.GetMethod("SetFixture", new[] { fixtureDataType });
-                fixtures[method] = fixtureInstance;
+                _fixtures[method] = fixtureInstance;
             }
         }
 
-        void DisposeFixtureData(Type testClass)
+        private void DisposeFixtureData(Type testClass)
         {
-            foreach (var fixtureInstance in fixtures.Values)
+            foreach (var fixtureInstance in _fixtures.Values)
             {
                 var disposable = fixtureInstance as IDisposable;
                 if (disposable != null)
                     disposable.Dispose();
             }
 
-            fixtures.Clear();
+            _fixtures.Clear();
         }
 
-        void InjectFixtureData(Fixture fixture)
+        private void InjectFixtureData(Fixture fixture)
         {
-            foreach (var injectionMethod in fixtures.Keys)
-                injectionMethod.Invoke(fixture.Instance, new[] { fixtures[injectionMethod] });
+            foreach (var injectionMethod in _fixtures.Keys)
+                injectionMethod.Invoke(fixture.Instance, new[] { _fixtures[injectionMethod] });
         }
 
-        static IEnumerable<Type> FixtureInterfaces(Type testClass)
+        private static IEnumerable<Type> FixtureInterfaces(Type testClass)
         {
             return testClass.GetInterfaces()
                             .Where(@interface => @interface.IsGenericType &&

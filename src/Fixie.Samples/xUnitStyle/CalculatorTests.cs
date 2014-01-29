@@ -4,6 +4,8 @@ using Should;
 
 namespace Fixie.Samples.xUnitStyle
 {
+    using Xunit;
+
     public class CalculatorTests : IUseFixture<FixtureData>, IUseFixture<DisposableFixtureData>, IDisposable
     {
         readonly Calculator calculator;

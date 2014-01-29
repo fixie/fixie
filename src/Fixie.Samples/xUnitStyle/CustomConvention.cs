@@ -1,23 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Fixie.Conventions;
-
 namespace Fixie.Samples.xUnitStyle
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Conventions;
+    using Fixie;
+    using Xunit;
+    using Xunit.Extensions;
+
     public class CustomConvention : Convention
     {
-        readonly MethodFilter factMethods = new MethodFilter().HasOrInherits<FactAttribute>();
-        readonly Dictionary<MethodInfo, object> fixtures = new Dictionary<MethodInfo, object>();
+        private readonly Dictionary<MethodInfo, object> fixtures = new Dictionary<MethodInfo, object>();
 
         public CustomConvention()
         {
             Classes
-                .Where(HasAnyFactMethods);
+                .Where(HasAnyFactOrTheoryMethods);
 
             Methods
-                .HasOrInherits<FactAttribute>();
+                .Where(MethodHasAnyFactOrTheoryAttributes);
 
             ClassExecution
                 .CreateInstancePerCase()
@@ -26,14 +28,37 @@ namespace Fixie.Samples.xUnitStyle
 
             InstanceExecution
                 .SetUp(InjectFixtureData);
+
+            CaseExecution
+                .Skip(FactOrTheoryMarkedAsSkip);
+
+            Parameters(FillFromDataAttributes);
         }
 
-        bool HasAnyFactMethods(Type type)
+        private static bool MethodHasAnyFactOrTheoryAttributes(MethodInfo mi)
         {
-            return factMethods.Filter(type).Any();
+            return mi.HasOrInherits<FactAttribute>() || mi.HasOrInherits<TheoryAttribute>();
         }
 
-        void PrepareFixtureData(Type testClass)
+        private static IEnumerable<object[]> FillFromDataAttributes(MethodInfo arg)
+        {
+            var parameterTypes = arg.GetParameters().Select(p => p.ParameterType).ToArray();
+
+            return arg.GetCustomAttributes<DataAttribute>().SelectMany(dataAttribute => dataAttribute.GetData(arg, parameterTypes));
+        }
+
+        private static bool FactOrTheoryMarkedAsSkip(Case arg)
+        {
+            return arg.Method.GetCustomAttributes<FactAttribute>().Any(attr => !string.IsNullOrEmpty(attr.Skip)) ||
+                arg.Method.GetCustomAttributes<TheoryAttribute>().Any(attr => !string.IsNullOrEmpty(attr.Skip));
+        }
+
+        private static bool HasAnyFactOrTheoryMethods(Type type)
+        {
+            return new MethodFilter().Where(MethodHasAnyFactOrTheoryAttributes).Filter(type).Any();
+        }
+
+        private void PrepareFixtureData(Type testClass)
         {
             fixtures.Clear();
 
@@ -48,7 +73,7 @@ namespace Fixie.Samples.xUnitStyle
             }
         }
 
-        void DisposeFixtureData(Type testClass)
+        private void DisposeFixtureData(Type testClass)
         {
             foreach (var fixtureInstance in fixtures.Values)
             {
@@ -60,13 +85,13 @@ namespace Fixie.Samples.xUnitStyle
             fixtures.Clear();
         }
 
-        void InjectFixtureData(Fixture fixture)
+        private void InjectFixtureData(Fixture fixture)
         {
             foreach (var injectionMethod in fixtures.Keys)
                 injectionMethod.Invoke(fixture.Instance, new[] { fixtures[injectionMethod] });
         }
 
-        static IEnumerable<Type> FixtureInterfaces(Type testClass)
+        private static IEnumerable<Type> FixtureInterfaces(Type testClass)
         {
             return testClass.GetInterfaces()
                             .Where(@interface => @interface.IsGenericType &&

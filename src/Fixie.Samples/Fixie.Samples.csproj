@@ -37,6 +37,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="xunit">
+      <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.extensions">
+      <HintPath>..\packages\xunit.extensions.1.9.2\lib\net20\xunit.extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
@@ -69,10 +75,9 @@
     <Compile Include="Skipped\CustomConvention.cs" />
     <Compile Include="Skipped\SkipMethodTests.cs" />
     <Compile Include="StringBuilderExtensions.cs" />
+    <Compile Include="xUnitStyle\CalculatorTheoryTests.cs" />
     <Compile Include="xUnitStyle\CalculatorTests.cs" />
     <Compile Include="xUnitStyle\CustomConvention.cs" />
-    <Compile Include="xUnitStyle\FactAttribute.cs" />
-    <Compile Include="xUnitStyle\IUseFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

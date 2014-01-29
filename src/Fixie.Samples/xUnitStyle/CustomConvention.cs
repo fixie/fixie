@@ -4,16 +4,16 @@ namespace Fixie.Samples.xUnitStyle
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using Conventions;
     using Fixie;
-    using Fixie.Conventions;
     using Xunit;
     using Xunit.Extensions;
 
     public class CustomConvention : Convention
     {
-        private readonly Dictionary<MethodInfo, object> _fixtures = new Dictionary<MethodInfo, object>();
+        private readonly Dictionary<MethodInfo, object> fixtures = new Dictionary<MethodInfo, object>();
 
-        public XUnitTestConvention()
+        public CustomConvention()
         {
             Classes
                 .Where(HasAnyFactOrTheoryMethods);
@@ -27,10 +27,10 @@ namespace Fixie.Samples.xUnitStyle
                 .ShuffleCases();
 
             InstanceExecution
-                .SetUp(FactOrTheoryMarkedAsSkip);
+                .SetUp(InjectFixtureData);
 
             CaseExecution
-                .Skip(FactMarkedAsSkip);
+                .Skip(FactOrTheoryMarkedAsSkip);
 
             Parameters(FillFromDataAttributes);
         }
@@ -60,7 +60,7 @@ namespace Fixie.Samples.xUnitStyle
 
         private void PrepareFixtureData(Type testClass)
         {
-            _fixtures.Clear();
+            fixtures.Clear();
 
             foreach (var @interface in FixtureInterfaces(testClass))
             {
@@ -69,26 +69,26 @@ namespace Fixie.Samples.xUnitStyle
                 var fixtureInstance = Activator.CreateInstance(fixtureDataType);
 
                 var method = @interface.GetMethod("SetFixture", new[] { fixtureDataType });
-                _fixtures[method] = fixtureInstance;
+                fixtures[method] = fixtureInstance;
             }
         }
 
         private void DisposeFixtureData(Type testClass)
         {
-            foreach (var fixtureInstance in _fixtures.Values)
+            foreach (var fixtureInstance in fixtures.Values)
             {
                 var disposable = fixtureInstance as IDisposable;
                 if (disposable != null)
                     disposable.Dispose();
             }
 
-            _fixtures.Clear();
+            fixtures.Clear();
         }
 
         private void InjectFixtureData(Fixture fixture)
         {
-            foreach (var injectionMethod in _fixtures.Keys)
-                injectionMethod.Invoke(fixture.Instance, new[] { _fixtures[injectionMethod] });
+            foreach (var injectionMethod in fixtures.Keys)
+                injectionMethod.Invoke(fixture.Instance, new[] { fixtures[injectionMethod] });
         }
 
         private static IEnumerable<Type> FixtureInterfaces(Type testClass)

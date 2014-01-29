@@ -20,9 +20,12 @@ namespace Fixie.Results
                    };
         }
 
-        public static CaseResult Skipped(string name)
+        public static CaseResult Skipped(string name, string skipReason)
         {
-            return new CaseResult(name, CaseStatus.Skipped, TimeSpan.Zero);
+            return new CaseResult(name, CaseStatus.Skipped, TimeSpan.Zero)
+                   {
+                       SkipReason = skipReason
+                   };
         }
 
         CaseResult(string name, CaseStatus status, TimeSpan duration)
@@ -38,5 +41,6 @@ namespace Fixie.Results
         public string Message { get; private set; }
         public string StackTrace { get; private set; }
         public string ExceptionType { get; private set; }
+        public string SkipReason { get; private set; }
     }
 }

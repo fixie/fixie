@@ -49,7 +49,7 @@ namespace Fixie.Conventions
                 foreach (var @case in casesToSkip)
                 {
                     listener.CaseSkipped(@case);
-                    classResult.Add(CaseResult.Skipped(@case.Name));
+                    classResult.Add(CaseResult.Skipped(@case.Name, CaseExecution.SkipReasonProvider(@case)));
                 }
 
                 var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();

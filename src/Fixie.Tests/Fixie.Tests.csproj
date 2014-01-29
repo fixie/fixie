@@ -83,7 +83,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Reports\NUnit2Results.xsd">
+    <Content Include="Reports\NUnitXmlReport.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\NUnitXmlReport.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -93,7 +96,6 @@
     </None>
     <Content Include="Reports\XUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </Content>
     <None Include="packages.config" />
   </ItemGroup>

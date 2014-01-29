@@ -77,7 +77,7 @@ namespace Fixie.Reports
                         : "skip"));
 
             if (caseResult.Status == CaseStatus.Skipped)
-                test.Add(new XElement("reason", new XElement("message", string.Empty)));
+                test.Add(new XElement("reason", new XElement("message", caseResult.SkipReason ?? string.Empty)));
 
             if (caseResult.Status != CaseStatus.Skipped)
                 test.Add(new XAttribute("time", GetTime(caseResult.Duration)));

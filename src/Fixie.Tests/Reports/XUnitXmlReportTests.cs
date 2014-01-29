@@ -24,6 +24,7 @@ namespace Fixie.Tests.Reports
 
             var executionResult = new ExecutionResult();
             var convention = new SelfTestConvention();
+            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters(FromParametersAttribute);
             var assemblyResult = runner.RunType(GetType().Assembly, convention, typeof(PassFailTestClass));
             executionResult.Add(assemblyResult);
@@ -80,11 +81,12 @@ namespace Fixie.Tests.Reports
             {
                 var assemblyLocation = GetType().Assembly.Location;
                 var configLocation = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+                var fileLocation = PathToThisFile();
                 return XDocument.Parse(File.ReadAllText(Path.Combine("Reports", "XUnitXmlReport.xml")))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
                                 .Replace("[configLocation]", configLocation)
-                                .Replace("[fileLocation]", PathToThisFile());
+                                .Replace("[fileLocation]", fileLocation);
             }
         }
 
@@ -109,6 +111,7 @@ namespace Fixie.Tests.Reports
                 if (!pass) throw new FailureException();
             }
 
+            [Skip("reason")]
             public void Skip()
             {
                 throw new ShouldBeUnreachableException();
@@ -124,6 +127,17 @@ namespace Fixie.Tests.Reports
             }
 
             public object[] Parameters { get; private set; }
+        }
+
+        [AttributeUsage(AttributeTargets.Method)]
+        class SkipAttribute : Attribute
+        {
+            public SkipAttribute(string reason)
+            {
+                Reason = reason;
+            }
+
+            public string Reason { get; private set; }
         }
     }
 }

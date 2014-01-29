@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<test-results date="YYYY-MM-DD" time="HH:MM:SS" name="Results" total="6" failures="2" not-run="1">
+    <test-suite success="false" name="[assemblyLocation]" time="1.234">
+        <results>
+            <test-suite success="false" name="Fixie.Conventions.SelfTestConvention" time="1.234">
+                <results>
+                    <test-suite name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass" success="false" time="1.234">
+                        <results>
+                            <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipA" executed="false" success="true">
+                                <reason>
+                                    <message><![CDATA[reason]]></message>
+                                </reason>
+                            </test-case>
+                            <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.FailA" executed="true" success="false" time="1.234">
+                                <failure>
+                                    <message><![CDATA['FailA' failed!]]></message>
+                                    <stack-trace><![CDATA['FailA' failed!
+   at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.FailA() in [fileLocation]:line #]]></stack-trace>
+                                </failure>
+                            </test-case>
+                            <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.FailB" executed="true" success="false" time="1.234">
+                                <failure>
+                                    <message><![CDATA['FailB' failed!]]></message>
+                                    <stack-trace><![CDATA['FailB' failed!
+   at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.FailB() in [fileLocation]:line #]]></stack-trace>
+                                </failure>
+                            </test-case>
+                            <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassA" executed="true" success="true" time="1.234" />
+                            <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassB" executed="true" success="true" time="1.234" />
+                            <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassC" executed="true" success="true" time="1.234" />
+                        </results>
+                    </test-suite>
+                </results>
+            </test-suite>
+        </results>
+    </test-suite>
+</test-results>

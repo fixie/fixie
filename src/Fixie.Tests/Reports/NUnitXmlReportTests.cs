@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -19,7 +21,9 @@ namespace Fixie.Tests.Reports
             var runner = new Runner(listener);
 
             var executionResult = new ExecutionResult();
-            var assemblyResult = runner.RunType(GetType().Assembly, new SelfTestConvention(), typeof(PassFailTestClass));
+            var convention = new SelfTestConvention();
+            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+            var assemblyResult = runner.RunType(GetType().Assembly, convention, typeof(PassFailTestClass));
             executionResult.Add(assemblyResult);
 
             var report = new NUnitXmlReport();
@@ -49,7 +53,7 @@ namespace Fixie.Tests.Reports
         static void XsdValidate(XDocument doc)
         {
             var schemaSet = new XmlSchemaSet();
-            using (var xmlReader = XmlReader.Create(Path.Combine("Reports", "NUnit2Results.xsd")))
+            using (var xmlReader = XmlReader.Create(Path.Combine("Reports", "NUnitXmlReport.xsd")))
             {
                 schemaSet.Add(null, xmlReader);
             }
@@ -62,41 +66,11 @@ namespace Fixie.Tests.Reports
             get
             {
                 var assemblyLocation = GetType().Assembly.Location;
-
-                var expectedReport = @"<test-results date=""YYYY-MM-DD"" time=""HH:MM:SS"" name=""Results"" total=""6"" failures=""2"" not-run=""1"">
-  <test-suite success=""false"" name=""" + assemblyLocation + @""" time=""1.234"">
-    <results>
-      <test-suite success=""false"" name=""Fixie.Conventions.SelfTestConvention"" time=""1.234"">
-        <results>
-          <test-suite name=""Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass"" success=""false"" time=""1.234"">
-            <results>
-              <test-case name=""Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipA"" executed=""false"" success=""true"" />
-              <test-case name=""Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.FailA"" executed=""true"" success=""false"" time=""1.234"">
-                <failure>
-                  <message><![CDATA['FailA' failed!]]></message>
-                  <stack-trace><![CDATA['FailA' failed!
-   at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.FailA() in " + PathToThisFile() + @":line #]]></stack-trace>
-                </failure>
-              </test-case>
-              <test-case name=""Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.FailB"" executed=""true"" success=""false"" time=""1.234"">
-                <failure>
-                  <message><![CDATA['FailB' failed!]]></message>
-                  <stack-trace><![CDATA['FailB' failed!
-   at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.FailB() in " + PathToThisFile() + @":line #]]></stack-trace>
-                </failure>
-              </test-case>
-              <test-case name=""Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassA"" executed=""true"" success=""true"" time=""1.234"" />
-              <test-case name=""Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassB"" executed=""true"" success=""true"" time=""1.234"" />
-              <test-case name=""Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassC"" executed=""true"" success=""true"" time=""1.234"" />
-            </results>
-          </test-suite>
-        </results>
-      </test-suite>
-    </results>
-  </test-suite>
-</test-results>";
-
-                return XDocument.Parse(expectedReport).ToString(SaveOptions.DisableFormatting);
+                var fileLocation = PathToThisFile();
+                return XDocument.Parse(File.ReadAllText(Path.Combine("Reports", "NUnitXmlReport.xml")))
+                                .ToString(SaveOptions.DisableFormatting)
+                                .Replace("[assemblyLocation]", assemblyLocation)
+                                .Replace("[fileLocation]", fileLocation);
             }
         }
 
@@ -123,10 +97,22 @@ namespace Fixie.Tests.Reports
 
             public void PassC() { }
 
+            [Skip("reason")]
             public void SkipA()
             {
                 throw new ShouldBeUnreachableException();
             }
+        }
+
+        [AttributeUsage(AttributeTargets.Method)]
+        class SkipAttribute : Attribute
+        {
+            public SkipAttribute(string reason)
+            {
+                Reason = reason;
+            }
+
+            public string Reason { get; private set; }
         }
     }
 }

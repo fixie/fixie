@@ -43,7 +43,7 @@ namespace Fixie.Tests.Listeners
                 classResult.Add(CaseResult.Passed("C", TimeSpan.Zero));
                 classResult.Add(CaseResult.Failed("D", TimeSpan.Zero, "Message", "Stack Trace", "Exception Type"));
                 classResult.Add(CaseResult.Failed("E", TimeSpan.Zero, "Message", "Stack Trace", "Exception Type"));
-                classResult.Add(CaseResult.Skipped("F"));
+                classResult.Add(CaseResult.Skipped("F", "Reason"));
 
 
                 listener.AssemblyStarted(assembly);

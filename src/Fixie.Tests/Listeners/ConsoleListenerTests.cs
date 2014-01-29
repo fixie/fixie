@@ -58,8 +58,8 @@ namespace Fixie.Tests.Listeners
                 assemblyResult.Add(conventionResult);
                 conventionResult.Add(classResult);
                 classResult.Add(CaseResult.Passed("A", TimeSpan.Zero));
-                classResult.Add(CaseResult.Failed("B", TimeSpan.Zero, "Message", "Stack Trace"));
-                classResult.Add(CaseResult.Failed("C", TimeSpan.Zero, "Message", "Stack Trace"));
+                classResult.Add(CaseResult.Failed("B", TimeSpan.Zero, "Message", "Stack Trace", "Exception Type"));
+                classResult.Add(CaseResult.Failed("C", TimeSpan.Zero, "Message", "Stack Trace", "Exception Type"));
                 classResult.Add(CaseResult.Skipped("D"));
                 classResult.Add(CaseResult.Skipped("E"));
                 classResult.Add(CaseResult.Skipped("F"));
@@ -84,8 +84,8 @@ namespace Fixie.Tests.Listeners
                 assemblyResult.Add(conventionResult);
                 conventionResult.Add(classResult);
                 classResult.Add(CaseResult.Passed("A", TimeSpan.Zero));
-                classResult.Add(CaseResult.Failed("B", TimeSpan.Zero, "Message", "Stack Trace"));
-                classResult.Add(CaseResult.Failed("C", TimeSpan.Zero, "Message", "Stack Trace"));
+                classResult.Add(CaseResult.Failed("B", TimeSpan.Zero, "Message", "Stack Trace", "Exception Type"));
+                classResult.Add(CaseResult.Failed("C", TimeSpan.Zero, "Message", "Stack Trace", "Exception Type"));
 
                 listener.AssemblyCompleted(assembly, assemblyResult);
 

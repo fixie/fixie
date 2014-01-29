@@ -73,6 +73,7 @@
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="PassResult.cs" />
     <Compile Include="PreservedException.cs" />
+    <Compile Include="Reports\XUnitXmlReport.cs" />
     <Compile Include="Results\CaseResult.cs" />
     <Compile Include="Results\CaseStatus.cs" />
     <Compile Include="Results\ClassResult.cs" />

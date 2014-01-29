@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<assembly name="[assemblyLocation]" run-date="YYYY-MM-DD" run-time="HH:MM:SS" configFile="[configLocation]" time="1.234" total="5" passed="2" failed="2" skipped="1" environment="0-bit .NET v1.2.345" test-framework="fixie 1.2.3.4">
+    <class time="1.234" name="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass" total="5" passed="2" failed="2" skipped="1">
+        <test name="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass.Skip" type="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass" method="Skip" result="skip">
+            <reason>
+                <message></message>
+            </reason>
+        </test>
+        <test name="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass.Fail" type="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass" method="Fail" result="fail" time="1.234">
+            <failure exception-type="Fixie.Tests.FailureException">
+                <message>'Fail' failed!</message>
+                <stack-trace>'Fail' failed!
+   at Fixie.Tests.Reports.XUnitXmlReportTests.PassFailTestClass.Fail() in [fileLocation]:line #</stack-trace>
+            </failure>
+        </test>
+        <test name="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass.Pass" type="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass" method="Pass" result="pass" time="1.234" />
+        <test name="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass.PassIfTrue(False)" type="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass" method="PassIfTrue" result="fail" time="1.234">
+            <failure exception-type="Fixie.Tests.FailureException">
+                <message>'PassIfTrue' failed!</message>
+                <stack-trace>'PassIfTrue' failed!
+   at Fixie.Tests.Reports.XUnitXmlReportTests.PassFailTestClass.PassIfTrue(Boolean pass) in [fileLocation]:line #</stack-trace>
+            </failure>
+        </test>
+        <test name="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass.PassIfTrue(True)" type="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass" method="PassIfTrue" result="pass" time="1.234" />
+    </class>
+</assembly>

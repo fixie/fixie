@@ -97,6 +97,13 @@ namespace Fixie.Reports
                         new XElement("stack-trace", new XCData(caseResult.StackTrace))));
             }
 
+            if (caseResult.Status == CaseStatus.Skipped)
+            {
+                @case.Add(
+                    new XElement("reason",
+                        new XElement("message", new XCData(caseResult.SkipReason ?? string.Empty))));
+            }
+
             return @case;
         }
     }

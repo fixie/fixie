@@ -56,6 +56,7 @@
     <Compile Include="Lifecycle\InstanceLifecycleTests.cs" />
     <Compile Include="Reports\NUnitXmlReportTests.cs" />
     <Compile Include="Listeners\CompoundListenerTests.cs" />
+    <Compile Include="Reports\XUnitXmlReportTests.cs" />
     <Compile Include="TestMethods\AsyncMethodTests.cs" />
     <Compile Include="Listeners\ConsoleListenerTests.cs" />
     <Compile Include="TestMethods\NullaryMethodTests.cs" />
@@ -82,8 +83,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Reports\NUnit2Results.xsd">
+    <Content Include="Reports\NUnitXmlReport.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\NUnitXmlReport.xsd">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Reports\XUnitXmlReport.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Reports\XUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
@@ -13,7 +15,7 @@ using Should;
 
 namespace Fixie.Tests.Reports
 {
-    public class NUnitXmlReportTests
+    public class XUnitXmlReportTests
     {
         public void ShouldProduceValidXmlDocument()
         {
@@ -23,23 +25,46 @@ namespace Fixie.Tests.Reports
             var executionResult = new ExecutionResult();
             var convention = new SelfTestConvention();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+            convention.Parameters(FromParametersAttribute);
             var assemblyResult = runner.RunType(GetType().Assembly, convention, typeof(PassFailTestClass));
             executionResult.Add(assemblyResult);
 
-            var report = new NUnitXmlReport();
+            var report = new XUnitXmlReport();
             var actual = report.Transform(executionResult);
 
             XsdValidate(actual);
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
         }
 
+        static IEnumerable<object[]> FromParametersAttribute(MethodInfo method)
+        {
+            return method.GetCustomAttributes<ParametersAttribute>().Select(x => x.Parameters);
+        }
+
+        static void XsdValidate(XDocument doc)
+        {
+            var schemaSet = new XmlSchemaSet();
+            using (var xmlReader = XmlReader.Create(Path.Combine("Reports", "XUnitXmlReport.xsd")))
+            {
+                schemaSet.Add(null, xmlReader);
+            }
+
+            doc.Validate(schemaSet, null);
+        }
+
         static string CleanBrittleValues(string actualRawContent)
         {
             //Avoid brittle assertion introduced by system date.
-            var cleaned = Regex.Replace(actualRawContent, @"date=""\d\d\d\d-\d\d-\d\d""", @"date=""YYYY-MM-DD""");
+            var cleaned = Regex.Replace(actualRawContent, @"run-date=""\d\d\d\d-\d\d-\d\d""", @"run-date=""YYYY-MM-DD""");
 
             //Avoid brittle assertion introduced by system time.
-            cleaned = Regex.Replace(cleaned, @"time=""\d\d:\d\d:\d\d""", @"time=""HH:MM:SS""");
+            cleaned = Regex.Replace(cleaned, @"run-time=""\d\d:\d\d:\d\d""", @"run-time=""HH:MM:SS""");
+
+            //Avoid brittle assertion introduced by .NET version.
+            cleaned = Regex.Replace(cleaned, @"environment=""\d\d-bit \.NET v\d\.\d\.\d+""", @"environment=""0-bit .NET v1.2.345""");
+
+            //Avoid brittle assertion introduced by fixie version.
+            cleaned = Regex.Replace(cleaned, @"test-framework=""fixie \d\.\d\.\d\.\d""", @"test-framework=""fixie 1.2.3.4""");
 
             //Avoid brittle assertion introduced by test duration.
             cleaned = Regex.Replace(cleaned, @"time=""[\d\.]+""", @"time=""1.234""");
@@ -50,26 +75,17 @@ namespace Fixie.Tests.Reports
             return cleaned;
         }
 
-        static void XsdValidate(XDocument doc)
-        {
-            var schemaSet = new XmlSchemaSet();
-            using (var xmlReader = XmlReader.Create(Path.Combine("Reports", "NUnitXmlReport.xsd")))
-            {
-                schemaSet.Add(null, xmlReader);
-            }
-
-            doc.Validate(schemaSet, null);
-        }
-
         string ExpectedReport
         {
             get
             {
                 var assemblyLocation = GetType().Assembly.Location;
+                var configLocation = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
                 var fileLocation = PathToThisFile();
-                return XDocument.Parse(File.ReadAllText(Path.Combine("Reports", "NUnitXmlReport.xml")))
+                return XDocument.Parse(File.ReadAllText(Path.Combine("Reports", "XUnitXmlReport.xml")))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
+                                .Replace("[configLocation]", configLocation)
                                 .Replace("[fileLocation]", fileLocation);
             }
         }
@@ -81,27 +97,36 @@ namespace Fixie.Tests.Reports
 
         class PassFailTestClass
         {
-            public void FailA()
+            public void Fail()
             {
                 throw new FailureException();
             }
 
-            public void PassA() { }
+            public void Pass() { }
 
-            public void FailB()
+            [Parameters(false)]
+            [Parameters(true)]
+            public void PassIfTrue(bool pass)
             {
-                throw new FailureException();
+                if (!pass) throw new FailureException();
             }
-
-            public void PassB() { }
-
-            public void PassC() { }
 
             [Skip("reason")]
-            public void SkipA()
+            public void Skip()
             {
                 throw new ShouldBeUnreachableException();
             }
+        }
+
+        [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+        class ParametersAttribute : Attribute
+        {
+            public ParametersAttribute(params object[] parameters)
+            {
+                Parameters = parameters;
+            }
+
+            public object[] Parameters { get; private set; }
         }
 
         [AttributeUsage(AttributeTargets.Method)]

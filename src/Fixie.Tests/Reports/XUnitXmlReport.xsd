@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="assembly">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" name="class">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" name="test">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element minOccurs="0" name="reason">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="message" type="xs:string" />
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element minOccurs="0" name="traits">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="trait">
+														<xs:complexType>
+															<xs:attribute name="name" type="xs:string" use="required" />
+															<xs:attribute name="value" type="xs:boolean" use="required" />
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element minOccurs="0" name="failure">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="message" type="xs:string" />
+													<xs:element name="stack-trace" type="xs:string" />
+												</xs:sequence>
+												<xs:attribute name="exception-type" type="xs:string" use="required" />
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="name" type="xs:string" use="required" />
+									<xs:attribute name="type" type="xs:string" use="required" />
+									<xs:attribute name="method" type="xs:string" use="required" />
+									<xs:attribute name="result" type="xs:string" use="required" />
+									<xs:attribute name="time" type="xs:decimal" use="optional" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="time" type="xs:decimal" use="required" />
+						<xs:attribute name="name" type="xs:string" use="required" />
+						<xs:attribute name="total" type="xs:int" use="required" />
+						<xs:attribute name="passed" type="xs:int" use="required" />
+						<xs:attribute name="failed" type="xs:int" use="required" />
+						<xs:attribute name="skipped" type="xs:int" use="required" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required" />
+			<xs:attribute name="run-date" type="xs:date" use="required" />
+			<xs:attribute name="run-time" type="xs:time" use="required" />
+			<xs:attribute name="configFile" type="xs:string" use="required" />
+			<xs:attribute name="time" type="xs:decimal" use="required" />
+			<xs:attribute name="total" type="xs:int" use="required" />
+			<xs:attribute name="passed" type="xs:int" use="required" />
+			<xs:attribute name="failed" type="xs:int" use="required" />
+			<xs:attribute name="skipped" type="xs:int" use="required" />
+			<xs:attribute name="environment" type="xs:string" use="required" />
+			<xs:attribute name="test-framework" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

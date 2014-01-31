@@ -62,6 +62,16 @@ namespace Fixie.Console
                 foreach (var fileName in options[CommandLineOption.NUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);
             }
+
+            if (options.Contains(CommandLineOption.XUnitXml))
+            {
+                var report = new XUnitXmlReport();
+
+                var xDocument = report.Transform(executionResult);
+
+                foreach (var fileName in options[CommandLineOption.XUnitXml])
+                    xDocument.Save(fileName, SaveOptions.None);
+            }
         }
 
         static AssemblyResult Execute(string assemblyPath, string[] args)

@@ -252,4 +252,4 @@ Here are some useful third-party assertion libraries:
 
 * [Should](http://nuget.org/packages/Should/)
 * [Shouldly](http://nuget.org/packages/Shouldly/)
-
+* [Fluent Assertions](https://www.nuget.org/packages/FluentAssertions)

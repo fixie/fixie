@@ -64,7 +64,7 @@ namespace Fixie.Tests.Reports
             cleaned = Regex.Replace(cleaned, @"environment=""\d\d-bit \.NET v\d\.\d\.\d+""", @"environment=""0-bit .NET v1.2.345""");
 
             //Avoid brittle assertion introduced by fixie version.
-            cleaned = Regex.Replace(cleaned, @"test-framework=""fixie \d\.\d\.\d\.\d""", @"test-framework=""fixie 1.2.3.4""");
+            cleaned = Regex.Replace(cleaned, @"test-framework=""fixie \d+\.\d+\.\d+\.\d+""", @"test-framework=""fixie 1.2.3.4""");
 
             //Avoid brittle assertion introduced by test duration.
             cleaned = Regex.Replace(cleaned, @"time=""[\d\.]+""", @"time=""1.234""");

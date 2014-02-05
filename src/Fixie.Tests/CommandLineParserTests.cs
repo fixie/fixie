@@ -36,12 +36,10 @@ namespace Fixie.Tests
 
         public void ParsesCustomOptionsWithQualifierPrefix()
         {
-            string teamCityListener = typeof(TeamCityListener).FullName;
-
-            var parser = new CommandLineParser("assembly.dll", "--fixie:listener", teamCityListener);
+            var parser = new CommandLineParser("assembly.dll", "--fixie:NUnitXml", "TestResult.xml");
             parser.AssemblyPaths.ShouldEqual("assembly.dll");
-            parser.Options.Select(x => x.Key).ShouldEqual("fixie:listener");
-            parser.Options["fixie:listener"].ShouldEqual(teamCityListener);
+            parser.Options.Select(x => x.Key).ShouldEqual("fixie:NUnitXml");
+            parser.Options["fixie:NUnitXml"].ShouldEqual("TestResult.xml");
             parser.HasErrors.ShouldBeFalse();
             parser.Errors.ShouldBeEmpty();
         }

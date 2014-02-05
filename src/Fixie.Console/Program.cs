@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 using Fixie.Reports;
 using Fixie.Results;
@@ -32,12 +34,19 @@ namespace Fixie.Console
 
                 var executionResult = new ExecutionResult();
 
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+
                 foreach (var assemblyPath in commandLineParser.AssemblyPaths)
                 {
                     var result = Execute(assemblyPath, args);
 
                     executionResult.Add(result);
                 }
+
+                stopwatch.Stop();
+
+                Summarize(executionResult, stopwatch.Elapsed);
 
                 ProduceReports(commandLineParser.Options, executionResult);
 
@@ -49,6 +58,21 @@ namespace Fixie.Console
                     Console.WriteLine("Fatal Error: {0}", exception);
                 return FatalError;
             }
+        }
+
+        static void Summarize(ExecutionResult executionResult, TimeSpan elapsed)
+        {
+            var line = new StringBuilder();
+
+            line.AppendFormat("{0} passed", executionResult.Passed);
+            line.AppendFormat(", {0} failed", executionResult.Failed);
+
+            if (executionResult.Skipped > 0)
+                line.AppendFormat(", {0} skipped", executionResult.Skipped);
+
+            line.AppendFormat(", took {0:N2} seconds", elapsed.TotalSeconds);
+
+            Console.WriteLine("========== Total Tests: " + line + " ==========");
         }
 
         static void ProduceReports(ILookup<string, string> options, ExecutionResult executionResult)

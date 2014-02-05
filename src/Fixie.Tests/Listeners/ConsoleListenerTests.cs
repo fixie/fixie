@@ -66,7 +66,7 @@ namespace Fixie.Tests.Listeners
 
                 listener.AssemblyCompleted(assembly, assemblyResult);
 
-                console.Lines().ShouldEqual("1 passed, 2 failed, 3 skipped (Fixie " + version + ").");
+                console.Lines().ShouldEqual("1 passed, 2 failed, 3 skipped, took 0.00 seconds (Fixie " + version + ").");
             }
         }
 
@@ -89,7 +89,7 @@ namespace Fixie.Tests.Listeners
 
                 listener.AssemblyCompleted(assembly, assemblyResult);
 
-                console.Lines().ShouldEqual("1 passed, 2 failed (Fixie " + version + ").");
+                console.Lines().ShouldEqual("1 passed, 2 failed, took 0.00 seconds (Fixie " + version + ").");
             }
         }
 

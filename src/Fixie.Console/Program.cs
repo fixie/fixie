@@ -46,7 +46,8 @@ namespace Fixie.Console
 
                 stopwatch.Stop();
 
-                Summarize(executionResult, stopwatch.Elapsed);
+                if (executionResult.AssemblyResults.Count > 1)
+                    Summarize(executionResult, stopwatch.Elapsed);
 
                 ProduceReports(commandLineParser.Options, executionResult);
 
@@ -72,7 +73,7 @@ namespace Fixie.Console
 
             line.AppendFormat(", took {0:N2} seconds", elapsed.TotalSeconds);
 
-            Console.WriteLine("========== Total Tests: " + line + " ==========");
+            Console.WriteLine("====== Total Tests: " + line + " ======");
         }
 
         static void ProduceReports(ILookup<string, string> options, ExecutionResult executionResult)

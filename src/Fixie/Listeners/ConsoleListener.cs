@@ -48,6 +48,8 @@ namespace Fixie.Listeners
             if (result.Skipped > 0)
                 line.AppendFormat(", {0} skipped", result.Skipped);
 
+            line.AppendFormat(", took {0:N2} seconds", result.Duration.TotalSeconds);
+
             line.AppendFormat(" ({0} {1}).", name, version);
             Console.WriteLine(line);
             Console.WriteLine();

@@ -73,7 +73,7 @@ namespace Fixie.Console
 
             line.AppendFormat(", took {0:N2} seconds", elapsed.TotalSeconds);
 
-            Console.WriteLine("====== Total Tests: " + line + " ======");
+            Console.WriteLine("====== " + line + " ======");
         }
 
         static void ProduceReports(ILookup<string, string> options, ExecutionResult executionResult)

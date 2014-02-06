@@ -11,28 +11,33 @@ namespace Fixie.Reports
         public XDocument Transform(ExecutionResult executionResult)
         {
             var now = DateTime.UtcNow;
-            var assemblyResult = executionResult.AssemblyResults.Single();
+            var assemblies = new XElement("assemblies");
 
-            var @assembly =
-                new XElement("assembly",
-                    new XAttribute("name", assemblyResult.Name),
-                    new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
-                    new XAttribute("run-time", now.ToString("HH:mm:ss")),
-                    new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
-                    new XAttribute("time", GetTime(assemblyResult.Duration)),
-                    new XAttribute("total", assemblyResult.Total),
-                    new XAttribute("passed", assemblyResult.Passed),
-                    new XAttribute("failed", assemblyResult.Failed),
-                    new XAttribute("skipped", assemblyResult.Skipped),
-                    new XAttribute("environment", string.Format("{0}-bit .NET {1}",
-                        Environment.Is64BitProcess ? "64" : "32",
-                        Assembly.ReflectionOnlyLoadFrom(assemblyResult.Name).ImageRuntimeVersion)),
-                    new XAttribute("test-framework", string.Format("fixie {0}", Assembly.GetExecutingAssembly().GetName().Version)));
+            foreach (var assemblyResult in executionResult.AssemblyResults)
+            {
+                var assembly =
+                    new XElement("assembly",
+                        new XAttribute("name", assemblyResult.Name),
+                        new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
+                        new XAttribute("run-time", now.ToString("HH:mm:ss")),
+                        new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
+                        new XAttribute("time", GetTime(assemblyResult.Duration)),
+                        new XAttribute("total", assemblyResult.Total),
+                        new XAttribute("passed", assemblyResult.Passed),
+                        new XAttribute("failed", assemblyResult.Failed),
+                        new XAttribute("skipped", assemblyResult.Skipped),
+                        new XAttribute("environment", string.Format("{0}-bit .NET {1}",
+                            Environment.Is64BitProcess ? "64" : "32",
+                            Assembly.ReflectionOnlyLoadFrom(assemblyResult.Name).ImageRuntimeVersion)),
+                        new XAttribute("test-framework", string.Format("fixie {0}", Assembly.GetExecutingAssembly().GetName().Version)));
 
-            foreach (var classResult in assemblyResult.ConventionResults.SelectMany(x => x.ClassResults))
-                @assembly.Add(ClassElement(classResult));
+                foreach (var classResult in assemblyResult.ConventionResults.SelectMany(x => x.ClassResults))
+                    assembly.Add(ClassElement(classResult));
 
-            return new XDocument(@assembly);
+                assemblies.Add(assembly);
+            }
+
+            return new XDocument(assemblies);
         }
 
         private static XElement ClassElement(ClassResult classResult)

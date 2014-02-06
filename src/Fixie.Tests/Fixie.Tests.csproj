@@ -82,20 +82,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Reports\NUnitXmlReport.xml">
+    <None Include="Reports\NUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Reports\NUnitXmlReport.xsd">
+    </None>
+    <None Include="Reports\NUnitXmlReport.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
     <None Include="Reports\XUnitXmlReport.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="Reports\XUnitXmlReport.xml">
+    <None Include="Reports\XUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

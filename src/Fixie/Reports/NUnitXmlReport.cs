@@ -59,8 +59,8 @@ namespace Fixie.Reports
             if (caseResult.Status != CaseStatus.Skipped)
                 @case.Add(new XAttribute("time", Seconds(caseResult.Duration)));
 
-            if (caseResult.Status == CaseStatus.Skipped)
-                @case.Add(new XElement("reason", new XElement("message", new XCData(caseResult.SkipReason ?? string.Empty))));
+            if (caseResult.Status == CaseStatus.Skipped && caseResult.SkipReason != null)
+                @case.Add(new XElement("reason", new XElement("message", new XCData(caseResult.SkipReason))));
 
             if (caseResult.Status == CaseStatus.Failed)
             {

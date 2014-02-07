@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
@@ -23,6 +25,7 @@ namespace Fixie.Tests.Reports
             var executionResult = new ExecutionResult();
             var convention = new SelfTestConvention();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+            convention.Parameters(FromParametersAttribute);
             var assemblyResult = runner.RunType(GetType().Assembly, convention, typeof(PassFailTestClass));
             executionResult.Add(assemblyResult);
 
@@ -31,6 +34,22 @@ namespace Fixie.Tests.Reports
 
             XsdValidate(actual);
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
+        }
+
+        static IEnumerable<object[]> FromParametersAttribute(MethodInfo method)
+        {
+            return method.GetCustomAttributes<ParametersAttribute>().Select(x => x.Parameters);
+        }
+
+        static void XsdValidate(XDocument doc)
+        {
+            var schemaSet = new XmlSchemaSet();
+            using (var xmlReader = XmlReader.Create(Path.Combine("Reports", "NUnitXmlReport.xsd")))
+            {
+                schemaSet.Add(null, xmlReader);
+            }
+
+            doc.Validate(schemaSet, null);
         }
 
         static string CleanBrittleValues(string actualRawContent)
@@ -48,17 +67,6 @@ namespace Fixie.Tests.Reports
             cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
 
             return cleaned;
-        }
-
-        static void XsdValidate(XDocument doc)
-        {
-            var schemaSet = new XmlSchemaSet();
-            using (var xmlReader = XmlReader.Create(Path.Combine("Reports", "NUnitXmlReport.xsd")))
-            {
-                schemaSet.Add(null, xmlReader);
-            }
-
-            doc.Validate(schemaSet, null);
         }
 
         string ExpectedReport
@@ -81,32 +89,51 @@ namespace Fixie.Tests.Reports
 
         class PassFailTestClass
         {
-            public void FailA()
+            public void Fail()
             {
                 throw new FailureException();
             }
 
-            public void PassA() { }
+            public void Pass() { }
 
-            public void FailB()
+            [Parameters(false)]
+            [Parameters(true)]
+            public void PassIfTrue(bool pass)
             {
-                throw new FailureException();
+                if (!pass) throw new FailureException();
             }
 
-            public void PassB() { }
-
-            public void PassC() { }
+            [Skip]
+            public void SkipWithoutReason()
+            {
+                throw new ShouldBeUnreachableException();
+            }
 
             [Skip("reason")]
-            public void SkipA()
+            public void SkipWithReason()
             {
                 throw new ShouldBeUnreachableException();
             }
         }
 
+        [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+        class ParametersAttribute : Attribute
+        {
+            public ParametersAttribute(params object[] parameters)
+            {
+                Parameters = parameters;
+            }
+
+            public object[] Parameters { get; private set; }
+        }
+
         [AttributeUsage(AttributeTargets.Method)]
         class SkipAttribute : Attribute
         {
+            public SkipAttribute()
+            {
+            }
+
             public SkipAttribute(string reason)
             {
                 Reason = reason;

@@ -111,8 +111,14 @@ namespace Fixie.Tests.Reports
                 if (!pass) throw new FailureException();
             }
 
+            [Skip]
+            public void SkipWithoutReason()
+            {
+                throw new ShouldBeUnreachableException();
+            }
+            
             [Skip("reason")]
-            public void Skip()
+            public void SkipWithReason()
             {
                 throw new ShouldBeUnreachableException();
             }
@@ -132,6 +138,10 @@ namespace Fixie.Tests.Reports
         [AttributeUsage(AttributeTargets.Method)]
         class SkipAttribute : Attribute
         {
+            public SkipAttribute()
+            {
+            }
+
             public SkipAttribute(string reason)
             {
                 Reason = reason;

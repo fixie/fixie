@@ -253,3 +253,15 @@ Here are some useful third-party assertion libraries:
 * [Should](http://nuget.org/packages/Should/)
 * [Shouldly](http://nuget.org/packages/Shouldly/)
 * [Fluent Assertions](https://www.nuget.org/packages/FluentAssertions)
+
+## How do I report results to my continuous integration server?
+
+When the console runner is invoked by TeamCity, the console output is formatted so that TeamCity can detect individual test results for display.
+
+When running under other CI tools, you can generate familiar NUnit- or xUnit-style XML reports by including an extra command line argument:
+
+    Fixie.Console.exe path/to/your/test/project.dll --fixie:NUnitXml TestResult.xml
+    
+or
+
+    Fixie.Console.exe path/to/your/test/project.dll --fixie:XUnitXml TestResult.xml

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 using Fixie.Results;
 
@@ -11,83 +11,56 @@ namespace Fixie.Reports
         {
             var now = DateTime.UtcNow;
 
-            var root =
+            return new XDocument(
                 new XElement("test-results",
                     new XAttribute("date", now.ToString("yyyy-MM-dd")),
                     new XAttribute("time", now.ToString("HH:mm:ss")),
                     new XAttribute("name", "Results"),
                     new XAttribute("total", executionResult.Total),
                     new XAttribute("failures", executionResult.Failed),
-                    new XAttribute("not-run", executionResult.Skipped));
-
-            foreach (var assemblyResult in executionResult.AssemblyResults)
-                root.Add(TestSuiteElement(assemblyResult));
-
-            return new XDocument(root);
+                    new XAttribute("not-run", executionResult.Skipped),
+                    executionResult.AssemblyResults.Select(Assembly)));
         }
 
-        static XElement TestSuiteElement(AssemblyResult assemblyResult)
+        static XElement Assembly(AssemblyResult assemblyResult)
         {
-            var suite = new XElement("test-suite",
+            return new XElement("test-suite",
                 new XAttribute("success", assemblyResult.Failed == 0),
                 new XAttribute("name", assemblyResult.Name),
-                new XAttribute("time", assemblyResult.Duration.TotalSeconds.ToString("0.000")));
-
-            var results = new XElement("results");
-
-            suite.Add(results);
-
-            foreach (var conventionResult in assemblyResult.ConventionResults)
-                results.Add(TestSuiteElement(conventionResult));
-
-            return suite;
+                new XAttribute("time", Seconds(assemblyResult.Duration)),
+                new XElement("results", assemblyResult.ConventionResults.Select(Convention)));
         }
 
-        static XElement TestSuiteElement(ConventionResult conventionResult)
+        static XElement Convention(ConventionResult conventionResult)
         {
-            var suite = new XElement("test-suite",
+            return new XElement("test-suite",
                 new XAttribute("success", conventionResult.Failed == 0),
                 new XAttribute("name", conventionResult.Name),
-                new XAttribute("time", conventionResult.Duration.TotalSeconds.ToString("0.000")));
-
-            var results = new XElement("results");
-
-            suite.Add(results);
-
-            foreach (var classResult in conventionResult.ClassResults)
-                results.Add(TestSuiteElement(classResult));
-
-            return suite;
+                new XAttribute("time", Seconds(conventionResult.Duration)),
+                new XElement("results", conventionResult.ClassResults.Select(Class)));
         }
 
-        static XElement TestSuiteElement(ClassResult classResult)
+        static XElement Class(ClassResult classResult)
         {
-            var suite = new XElement("test-suite",
+            return new XElement("test-suite",
                 new XAttribute("name", classResult.Name),
                 new XAttribute("success", classResult.Failed == 0),
-                new XAttribute("time", classResult.Duration.TotalSeconds.ToString("0.000")));
-
-            var results = new XElement("results");
-
-            suite.Add(results);
-
-            foreach (var caseResult in classResult.CaseResults)
-                results.Add(TestSuiteElement(caseResult));
-
-            return suite;
+                new XAttribute("time", Seconds(classResult.Duration)),
+                new XElement("results", classResult.CaseResults.Select(Case)));
         }
 
-        static XElement TestSuiteElement(CaseResult caseResult)
+        static XElement Case(CaseResult caseResult)
         {
-            var @case = new XElement("test-case");
-
-            @case.Add(new XAttribute("name", caseResult.Name));
-
-            @case.Add(new XAttribute("executed", caseResult.Status != CaseStatus.Skipped));
-            @case.Add(new XAttribute("success", caseResult.Status != CaseStatus.Failed));
+            var @case = new XElement("test-case",
+                new XAttribute("name", caseResult.Name),
+                new XAttribute("executed", caseResult.Status != CaseStatus.Skipped),
+                new XAttribute("success", caseResult.Status != CaseStatus.Failed));
 
             if (caseResult.Status != CaseStatus.Skipped)
-                @case.Add(new XAttribute("time", caseResult.Duration.TotalSeconds.ToString("0.000")));
+                @case.Add(new XAttribute("time", Seconds(caseResult.Duration)));
+
+            if (caseResult.Status == CaseStatus.Skipped)
+                @case.Add(new XElement("reason", new XElement("message", new XCData(caseResult.SkipReason ?? string.Empty))));
 
             if (caseResult.Status == CaseStatus.Failed)
             {
@@ -96,15 +69,13 @@ namespace Fixie.Reports
                         new XElement("message", new XCData(caseResult.Message)),
                         new XElement("stack-trace", new XCData(caseResult.StackTrace))));
             }
-
-            if (caseResult.Status == CaseStatus.Skipped)
-            {
-                @case.Add(
-                    new XElement("reason",
-                        new XElement("message", new XCData(caseResult.SkipReason ?? string.Empty))));
-            }
-
+            
             return @case;
+        }
+
+        static string Seconds(TimeSpan duration)
+        {
+            return duration.TotalSeconds.ToString("0.000");
         }
     }
 }

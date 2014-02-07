@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
 using Fixie.Results;
 
@@ -10,95 +9,85 @@ namespace Fixie.Reports
     {
         public XDocument Transform(ExecutionResult executionResult)
         {
-            var now = DateTime.UtcNow;
-            var assemblies = new XElement("assemblies");
-
-            foreach (var assemblyResult in executionResult.AssemblyResults)
-            {
-                var assembly =
-                    new XElement("assembly",
-                        new XAttribute("name", assemblyResult.Name),
-                        new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
-                        new XAttribute("run-time", now.ToString("HH:mm:ss")),
-                        new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
-                        new XAttribute("time", GetTime(assemblyResult.Duration)),
-                        new XAttribute("total", assemblyResult.Total),
-                        new XAttribute("passed", assemblyResult.Passed),
-                        new XAttribute("failed", assemblyResult.Failed),
-                        new XAttribute("skipped", assemblyResult.Skipped),
-                        new XAttribute("environment", string.Format("{0}-bit .NET {1}",
-                            Environment.Is64BitProcess ? "64" : "32",
-                            Assembly.ReflectionOnlyLoadFrom(assemblyResult.Name).ImageRuntimeVersion)),
-                        new XAttribute("test-framework", string.Format("fixie {0}", Assembly.GetExecutingAssembly().GetName().Version)));
-
-                foreach (var classResult in assemblyResult.ConventionResults.SelectMany(x => x.ClassResults))
-                    assembly.Add(ClassElement(classResult));
-
-                assemblies.Add(assembly);
-            }
-
-            return new XDocument(assemblies);
+            return new XDocument(
+                new XElement("assemblies",
+                    executionResult.AssemblyResults.Select(Assembly)));
         }
 
-        private static XElement ClassElement(ClassResult classResult)
+        static XElement Assembly(AssemblyResult assemblyResult)
         {
-            var @class = new XElement("class",
-                new XAttribute("time", GetTime(classResult.Duration)),
+            var now = DateTime.UtcNow;
+
+            var classResults = assemblyResult.ConventionResults.SelectMany(x => x.ClassResults);
+
+            return new XElement("assembly",
+                new XAttribute("name", assemblyResult.Name),
+                new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
+                new XAttribute("run-time", now.ToString("HH:mm:ss")),
+                new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
+                new XAttribute("time", Seconds(assemblyResult.Duration)),
+                new XAttribute("total", assemblyResult.Total),
+                new XAttribute("passed", assemblyResult.Passed),
+                new XAttribute("failed", assemblyResult.Failed),
+                new XAttribute("skipped", assemblyResult.Skipped),
+                new XAttribute("environment", String.Format("{0}-bit .NET {1}", IntPtr.Size * 8, Environment.Version)),
+                new XAttribute("test-framework", string.Format("Fixie {0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version)),
+                classResults.Select(Class));
+        }
+
+        private static XElement Class(ClassResult classResult)
+        {
+            return new XElement("class",
+                new XAttribute("time", Seconds(classResult.Duration)),
                 new XAttribute("name", classResult.Name),
                 new XAttribute("total", classResult.Failed + classResult.Passed + classResult.Skipped),
                 new XAttribute("passed", classResult.Passed),
                 new XAttribute("failed", classResult.Failed),
-                new XAttribute("skipped", classResult.Skipped));
-
-            foreach (var caseResult in classResult.CaseResults)
-                @class.Add(TestElement(caseResult));
-
-            return @class;
+                new XAttribute("skipped", classResult.Skipped),
+                classResult.CaseResults.Select(Case));
         }
 
-        static string GetTime(TimeSpan duration)
+        private static XElement Case(CaseResult caseResult)
         {
-            return Math.Round(duration.TotalSeconds, 3).ToString("0.000");
-        }
+            var nameWithoutParameters = caseResult.Name;
+            var indexOfOpenParen = nameWithoutParameters.IndexOf("(");
+            if (indexOfOpenParen != -1)
+                nameWithoutParameters = nameWithoutParameters.Substring(0, indexOfOpenParen);
 
-        private static XElement TestElement(CaseResult caseResult)
-        {
-            var name = caseResult.Name;
-            var index = name.IndexOf("(");
-            if (index != -1)
-                name = name.Substring(0, index);
-            index = name.LastIndexOf(".");
-            var type = name.Substring(0, index);
-            var method = name.Substring(index + 1);
+            var indexOfLastDot = nameWithoutParameters.LastIndexOf(".");
+            var type = nameWithoutParameters.Substring(0, indexOfLastDot);
+            var method = nameWithoutParameters.Substring(indexOfLastDot + 1);
 
-            var test = new XElement("test",
+            var @case = new XElement("test",
                 new XAttribute("name", caseResult.Name),
                 new XAttribute("type", type),
                 new XAttribute("method", method),
-                new XAttribute("result", caseResult.Status == CaseStatus.Failed
-                    ? "fail"
-                    : caseResult.Status == CaseStatus.Passed
-                        ? "pass"
-                        : "skip"));
-
-            if (caseResult.Status == CaseStatus.Skipped)
-                test.Add(new XElement("reason", new XElement("message", caseResult.SkipReason ?? string.Empty)));
+                new XAttribute("result",
+                    caseResult.Status == CaseStatus.Failed
+                        ? "Fail"
+                        : caseResult.Status == CaseStatus.Passed
+                            ? "Pass"
+                            : "Skip"));
 
             if (caseResult.Status != CaseStatus.Skipped)
-                test.Add(new XAttribute("time", GetTime(caseResult.Duration)));
+                @case.Add(new XAttribute("time", Seconds(caseResult.Duration)));
+
+            if (caseResult.Status == CaseStatus.Skipped)
+                @case.Add(new XElement("reason", new XElement("message", new XCData(caseResult.SkipReason ?? string.Empty))));
 
             if (caseResult.Status == CaseStatus.Failed)
-                test.Add(FailureElement(caseResult));
+                @case.Add(
+                    new XElement("failure",
+                        new XAttribute("exception-type", caseResult.ExceptionType),
+                        new XElement("message", new XCData(caseResult.Message)),
+                        new XElement("stack-trace", new XCData(caseResult.StackTrace))));
 
-            return test;
+            return @case;
         }
 
-        private static XElement FailureElement(CaseResult caseResult)
+        static string Seconds(TimeSpan duration)
         {
-            return new XElement("failure",
-                new XAttribute("exception-type", caseResult.ExceptionType),
-                new XElement("message", caseResult.Message),
-                new XElement("stack-trace", caseResult.StackTrace));
+            return duration.TotalSeconds.ToString("0.000");
         }
     }
 }

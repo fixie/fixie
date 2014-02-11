@@ -73,6 +73,7 @@
     <Compile Include="Conventions\ClassFilterTests.cs" />
     <Compile Include="TestMethods\ParameterizedMethodTests.cs" />
     <Compile Include="Listeners\TeamCityListenerTests.cs" />
+    <Compile Include="TestMethods\SkippedCaseTests.cs" />
     <Compile Include="UncallableParameterizedCaseTests.cs" />
   </ItemGroup>
   <ItemGroup>

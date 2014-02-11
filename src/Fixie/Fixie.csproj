@@ -52,7 +52,6 @@
     <Compile Include="Behaviors\TypeBehavior.cs" />
     <Compile Include="Case.cs" />
     <Compile Include="CommandLineParser.cs" />
-    <Compile Include="ConsoleExtensions.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />
     <Compile Include="ConsoleRunner.cs" />
     <Compile Include="Conventions\Convention.cs" />

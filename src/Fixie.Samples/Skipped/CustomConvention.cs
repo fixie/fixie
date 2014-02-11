@@ -15,7 +15,8 @@ namespace Fixie.Samples.Skipped
                 .Where(method => method.IsVoid());
 
             CaseExecution
-                .Skip(@case => @case.Method.HasOrInherits<SkipAttribute>() || @case.Method.DeclaringType.HasOrInherits<SkipAttribute>());
+                .Skip(@case => @case.Method.HasOrInherits<SkipAttribute>() || @case.Method.DeclaringType.HasOrInherits<SkipAttribute>(),
+                    @case => @case.Method.DeclaringType.HasOrInherits<SkipAttribute>() ? "whole class skipped" : null);
 
             ClassExecution
                 .CreateInstancePerTestClass()

@@ -12,7 +12,7 @@ namespace Fixie.Conventions
         {
             Behavior = new Invoke();
             SkipPredicate = @case => false;
-            SkipReasonProvider = @case => null;
+            SkipReasonProvider = SkipReasonUnknown;
         }
 
         public CaseBehavior Behavior { get; private set; }
@@ -45,11 +45,21 @@ namespace Fixie.Conventions
             });
         }
 
-        public CaseBehaviorBuilder Skip(Func<Case, bool> skipPredicate, Func<Case, string> skipReasonProvider = null)
+        public CaseBehaviorBuilder Skip(Func<Case, bool> skipPredicate)
+        {
+            return Skip(skipPredicate, SkipReasonUnknown);
+        }
+
+        public CaseBehaviorBuilder Skip(Func<Case, bool> skipPredicate, Func<Case, string> skipReasonProvider)
         {
             SkipPredicate = skipPredicate;
-            SkipReasonProvider = skipReasonProvider ?? (@case => null);
+            SkipReasonProvider = skipReasonProvider;
             return this;
+        }
+
+        static string SkipReasonUnknown(Case @case)
+        {
+            return null;
         }
 
         class WrapBehavior : CaseBehavior

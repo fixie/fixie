@@ -14,13 +14,13 @@ namespace Fixie.Tests.TestMethods
             listener = new StubListener();
 
             convention = new SelfTestConvention();
-
-            convention.CaseExecution
-                .Skip(HasSkipAttribute, SkipAttributeReason);
         }
 
-        public void ShouldSkipMethods()
+        public void ShouldSkipCases()
         {
+            convention.CaseExecution
+                .Skip(HasSkipAttribute);
+
             convention.Execute(listener, typeof(SkippedTestClass));
 
             listener.Entries.ShouldEqual(
@@ -28,13 +28,16 @@ namespace Fixie.Tests.TestMethods
                 "Fixie.Tests.TestMethods.SkippedCaseTests+SkippedTestClass.Pass passed.");
         }
 
-        public void ShouldSkipMethodsWithOptionalReason()
+        public void ShouldSkipCasesWithOptionalReason()
         {
-            convention.Execute(listener, typeof(SkippedWithReasonTestClass));
+            convention.CaseExecution
+                .Skip(HasSkipAttribute, SkipAttributeReason);
+
+            convention.Execute(listener, typeof(SkippedTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestMethods.SkippedCaseTests+SkippedWithReasonTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.TestMethods.SkippedCaseTests+SkippedWithReasonTestClass.Pass passed.");
+                "Fixie.Tests.TestMethods.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
+                "Fixie.Tests.TestMethods.SkippedCaseTests+SkippedTestClass.Pass passed.");
         }
 
         static string SkipAttributeReason(Case @case)
@@ -52,14 +55,6 @@ namespace Fixie.Tests.TestMethods
         }
 
         class SkippedTestClass
-        {
-            [Skip]
-            public void Fail() { throw new FailureException(); }
-
-            public void Pass() { }
-        }
-
-        class SkippedWithReasonTestClass
         {
             [Skip(Reason = "Troublesome test skipped.")]
             public void Fail() { throw new FailureException(); }

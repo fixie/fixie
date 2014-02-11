@@ -56,9 +56,9 @@
     <Compile Include="Lifecycle\InstanceLifecycleTests.cs" />
     <Compile Include="Reports\NUnitXmlReportTests.cs" />
     <Compile Include="Reports\XUnitXmlReportTests.cs" />
-    <Compile Include="TestMethods\AsyncMethodTests.cs" />
+    <Compile Include="Cases\AsyncCaseTests.cs" />
     <Compile Include="Listeners\ConsoleListenerTests.cs" />
-    <Compile Include="TestMethods\NullaryMethodTests.cs" />
+    <Compile Include="Cases\BasicCaseTests.cs" />
     <Compile Include="Lifecycle\LifecycleTests.cs" />
     <Compile Include="Lifecycle\DisposalTests.cs" />
     <Compile Include="CaseTests.cs" />
@@ -71,9 +71,9 @@
     <Compile Include="StubListener.cs" />
     <Compile Include="Conventions\ConventionTests.cs" />
     <Compile Include="Conventions\ClassFilterTests.cs" />
-    <Compile Include="TestMethods\ParameterizedMethodTests.cs" />
+    <Compile Include="Cases\ParameterizedCaseTests.cs" />
     <Compile Include="Listeners\TeamCityListenerTests.cs" />
-    <Compile Include="TestMethods\SkippedCaseTests.cs" />
+    <Compile Include="Cases\SkippedCaseTests.cs" />
     <Compile Include="UncallableParameterizedCaseTests.cs" />
   </ItemGroup>
   <ItemGroup>

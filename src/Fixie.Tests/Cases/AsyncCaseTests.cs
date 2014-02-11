@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Fixie.Conventions;
 using Should;
 
-namespace Fixie.Tests.TestMethods
+namespace Fixie.Tests.Cases
 {
-    public class AsyncMethodTests
+    public class AsyncCaseTests
     {
         public void ShouldPassUponSuccessfulAsyncExecution()
         {
@@ -15,7 +15,7 @@ namespace Fixie.Tests.TestMethods
             new SelfTestConvention().Execute(listener, typeof(AwaitThenPassTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestMethods.AsyncMethodTests+AwaitThenPassTestClass.Test passed.");
+                "Fixie.Tests.Cases.AsyncCaseTests+AwaitThenPassTestClass.Test passed.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
@@ -25,7 +25,7 @@ namespace Fixie.Tests.TestMethods
             new SelfTestConvention().Execute(listener, typeof(AwaitThenFailTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestMethods.AsyncMethodTests+AwaitThenFailTestClass.Test failed: Assert.Equal() Failure" + Environment.NewLine +
+                "Fixie.Tests.Cases.AsyncCaseTests+AwaitThenFailTestClass.Test failed: Assert.Equal() Failure" + Environment.NewLine +
                 "Expected: 0" + Environment.NewLine +
                 "Actual:   3");
         }
@@ -37,7 +37,7 @@ namespace Fixie.Tests.TestMethods
             new SelfTestConvention().Execute(listener, typeof(AwaitOnTaskThatThrowsTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestMethods.AsyncMethodTests+AwaitOnTaskThatThrowsTestClass.Test failed: Attempted to divide by zero.");
+                "Fixie.Tests.Cases.AsyncCaseTests+AwaitOnTaskThatThrowsTestClass.Test failed: Attempted to divide by zero.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
@@ -47,7 +47,7 @@ namespace Fixie.Tests.TestMethods
             new SelfTestConvention().Execute(listener, typeof(FailBeforeAwaitTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestMethods.AsyncMethodTests+FailBeforeAwaitTestClass.Test failed: 'Test' failed!");
+                "Fixie.Tests.Cases.AsyncCaseTests+FailBeforeAwaitTestClass.Test failed: 'Test' failed!");
         }
 
         public void ShouldFailUnsupportedAsyncVoidCases()
@@ -57,7 +57,7 @@ namespace Fixie.Tests.TestMethods
             new SelfTestConvention().Execute(listener, typeof(UnsupportedAsyncVoidTestTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestMethods.AsyncMethodTests+UnsupportedAsyncVoidTestTestClass.Test failed: " +
+                "Fixie.Tests.Cases.AsyncCaseTests+UnsupportedAsyncVoidTestTestClass.Test failed: " +
                 "Async void methods are not supported. Declare async methods with a return type of " +
                 "Task to ensure the task actually runs to completion.");
         }

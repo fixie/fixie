@@ -2,7 +2,7 @@
 using System.Reflection;
 using Fixie.Conventions;
 
-namespace Fixie.Tests.TestMethods
+namespace Fixie.Tests.Cases
 {
     public class SkippedCaseTests
     {
@@ -24,8 +24,8 @@ namespace Fixie.Tests.TestMethods
             convention.Execute(listener, typeof(SkippedTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestMethods.SkippedCaseTests+SkippedTestClass.Fail skipped.",
-                "Fixie.Tests.TestMethods.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
         }
 
         public void ShouldSkipCasesWithOptionalReason()
@@ -36,8 +36,8 @@ namespace Fixie.Tests.TestMethods
             convention.Execute(listener, typeof(SkippedTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.TestMethods.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.TestMethods.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
         }
 
         static string SkipAttributeReason(Case @case)

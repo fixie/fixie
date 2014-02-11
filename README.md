@@ -238,6 +238,32 @@ public class CustomConvention : Convention
 
 Now, any test method marked with `[Skip]` will be skipped by the test runner.
 
+The `Skip(...)` method has an overload which accepts a skip reason provider, a delegate of type `Func<Case, string>`.  When provided, this delegate is called in order to generate a skip reason string to include in the output. For instance, we could modify the above example by including a `Reason` property on the `SkipAttribute` class, and then declare that this property is the source of skip reasons:
+
+```cs
+[AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+public class SkipAttribute : Attribute
+{
+    public string Reasons { get; set; }
+}
+
+public class CustomConvention : Convention
+{
+    public CustomConvention()
+    {
+        Classes
+            .NameEndsWith("Tests");
+     
+        Methods
+            .Where(method => method.IsVoid());
+     
+        CaseExecution
+            .Skip(@case => @case.Method.HasOrInherits<SkipAttribute>(),
+                  @case => @case.Method.GetCustomAttribute<SkipAttribute>(true).Reason);
+    }
+}
+```
+
 ## How do I make assertions?
 
 Most test frameworks such as NUnit or xUnit include their own assertion libraries so that you can make statements like this:

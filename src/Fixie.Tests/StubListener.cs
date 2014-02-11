@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,9 +14,9 @@ namespace Fixie.Tests
         {
         }
 
-        public void CaseSkipped(Case @case)
+        public void CaseSkipped(SkipResult result)
         {
-            log.Add(string.Format("{0} skipped.", @case.Name));
+            log.Add(string.Format("{0} skipped{1}", result.Case.Name, result.Reason == null ? "." : ": " + result.Reason));
         }
 
         public void CasePassed(PassResult result)

@@ -13,10 +13,10 @@ namespace Fixie.Listeners
             Console.WriteLine();
         }
 
-        public void CaseSkipped(Case @case)
+        public void CaseSkipped(SkipResult result)
         {
             using (Foreground.Yellow)
-                Console.WriteLine("Test '{0}' skipped", @case.Name);
+                Console.WriteLine("Test '{0}' skipped{1}", result.Case.Name, result.Reason == null ? null : ": " + result.Reason);
         }
 
         public void CasePassed(PassResult result)

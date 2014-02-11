@@ -84,6 +84,7 @@
     <Compile Include="Results\AssemblyResult.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="Conventions\ClassFilter.cs" />
+    <Compile Include="SkipResult.cs" />
     <Compile Include="UncallableParameterizedCase.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Threading;
 
 namespace Fixie.Conventions
 {
@@ -14,6 +16,7 @@ namespace Fixie.Conventions
                 .Where(method => method.IsVoid() || method.IsAsync());
 
             ClassExecution
+                .SetUp(_ => Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US"))
                 .SortCases((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
 
             CaseExecution

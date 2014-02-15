@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using Fixie.Results;
@@ -87,7 +88,7 @@ namespace Fixie.Reports
 
         static string Seconds(TimeSpan duration)
         {
-            return duration.TotalSeconds.ToString("0.000");
+            return duration.TotalSeconds.ToString("F3", NumberFormatInfo.InvariantInfo);
         }
     }
 }

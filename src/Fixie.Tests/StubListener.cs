@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -28,14 +29,12 @@ namespace Fixie.Tests
         public void CaseFailed(FailResult result)
         {
             var @case = result.Case;
-            var exceptions = result.Exceptions;
 
             var entry = new StringBuilder();
 
-            var primary = exceptions.First();
-            entry.Append(string.Format("{0} failed: {1}", @case.Name, primary.Message));
+            entry.Append(string.Format("{0} failed: {1}", @case.Name, result.PrimaryExceptionMessage()));
 
-            foreach (var exception in exceptions.Skip(1))
+            foreach (var exception in result.Exceptions.Skip(1))
             {
                 entry.AppendLine();
                 entry.Append(string.Format("    Secondary Failure: {0}", exception.Message));

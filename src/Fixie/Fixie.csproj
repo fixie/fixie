@@ -76,6 +76,7 @@
     <Compile Include="Results\CaseStatus.cs" />
     <Compile Include="Results\ClassResult.cs" />
     <Compile Include="Results\ConventionResult.cs" />
+    <Compile Include="Results\ExceptionInfo.cs" />
     <Compile Include="Results\ExecutionResult.cs" />
     <Compile Include="RunContext.cs" />
     <Compile Include="Listeners\TeamCityListener.cs" />

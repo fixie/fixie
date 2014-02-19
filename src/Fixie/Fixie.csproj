@@ -45,7 +45,6 @@
     <Compile Include="Behaviors\InstanceBehavior.cs" />
     <Compile Include="CaseExecution.cs" />
     <Compile Include="CommandLineOption.cs" />
-    <Compile Include="FailResultExtensions.cs" />
     <Compile Include="GenericArgumentResolver.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="RedirectedConsole.cs" />

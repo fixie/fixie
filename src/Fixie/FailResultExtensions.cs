@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Fixie.Results;
 
 namespace Fixie
 {
@@ -28,10 +28,10 @@ namespace Fixie
 
         public static string PrimaryExceptionTypeName(this FailResult failResult)
         {
-            return failResult.Exceptions.First().GetType().FullName;
+            return failResult.Exceptions.First().Type;
         }
 
-        static void WriteCompoundStackTrace(TextWriter console, IEnumerable<Exception> exceptions)
+        static void WriteCompoundStackTrace(TextWriter console, IEnumerable<ExceptionInfo> exceptions)
         {
             bool isPrimaryException = true;
 
@@ -47,7 +47,7 @@ namespace Fixie
                     console.WriteLine();
                     console.WriteLine();
                     using (Foreground.DarkGray)
-                        console.WriteLine("===== Secondary Exception: {0} =====", ex.GetType().FullName);
+                        console.WriteLine("===== Secondary Exception: {0} =====", ex.Type);
                     console.WriteLine(ex.Message);
                     console.Write(ex.StackTrace);
                 }
@@ -59,7 +59,7 @@ namespace Fixie
                     console.WriteLine();
                     console.WriteLine();
                     using (Foreground.DarkGray)
-                        console.WriteLine("------- Inner Exception: {0} -------", walk.GetType().FullName);
+                        console.WriteLine("------- Inner Exception: {0} -------", walk.Type);
                     console.WriteLine(walk.Message);
                     console.Write(walk.StackTrace);
                 }

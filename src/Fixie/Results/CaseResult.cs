@@ -10,14 +10,12 @@ namespace Fixie.Results
             return new CaseResult(name, CaseStatus.Passed, duration);
         }
 
-        public static CaseResult Failed(string name, TimeSpan duration, string message, string stackTrace, string exceptionType)
+        public static CaseResult Failed(string name, TimeSpan duration, ExceptionInfo exceptionSummary)
         {
             return new CaseResult(name, CaseStatus.Failed, duration)
-                   {
-                       Message = message,
-                       StackTrace = stackTrace,
-                       ExceptionType = exceptionType
-                   };
+            {
+                ExceptionSummary = exceptionSummary
+            };
         }
 
         public static CaseResult Skipped(string name, string skipReason)
@@ -38,9 +36,9 @@ namespace Fixie.Results
         public string Name { get; private set; }
         public CaseStatus Status { get; private set; }
         public TimeSpan Duration { get; private set; }
-        public string Message { get; private set; }
-        public string StackTrace { get; private set; }
-        public string ExceptionType { get; private set; }
+
+        public ExceptionInfo ExceptionSummary { get; private set; }
+
         public string SkipReason { get; private set; }
     }
 }

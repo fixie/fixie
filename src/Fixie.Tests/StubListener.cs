@@ -32,7 +32,7 @@ namespace Fixie.Tests
 
             var entry = new StringBuilder();
 
-            entry.Append(string.Format("{0} failed: {1}", @case.Name, result.PrimaryException.Message));
+            entry.Append(string.Format("{0} failed: {1}", @case.Name, result.ExceptionSummary.Message));
 
             foreach (var exception in result.Exceptions.Skip(1))
             {

@@ -64,7 +64,7 @@ namespace Fixie.Conventions
                         {
                             var failResult = new FailResult(caseExecution);
                             listener.CaseFailed(failResult);
-                            classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.PrimaryException.Message, failResult.CompoundStackTrace(), failResult.PrimaryException.Type));
+                            classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.ExceptionSummary));
                         }
                         else
                         {

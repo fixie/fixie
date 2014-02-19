@@ -28,8 +28,8 @@ namespace Fixie.Listeners
             var @case = result.Case;
 
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", @case.Name, result.PrimaryException.Type);
-            Console.WriteLine(result.CompoundStackTrace());
+                Console.WriteLine("Test '{0}' failed: {1}", @case.Name, result.ExceptionSummary.Type);
+            Console.WriteLine(result.ExceptionSummary.StackTrace);
             Console.WriteLine();
         }
 

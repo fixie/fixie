@@ -78,9 +78,9 @@ namespace Fixie.Reports
             if (caseResult.Status == CaseStatus.Failed)
                 @case.Add(
                     new XElement("failure",
-                        new XAttribute("exception-type", caseResult.ExceptionType),
-                        new XElement("message", new XCData(caseResult.Message)),
-                        new XElement("stack-trace", new XCData(caseResult.StackTrace))));
+                        new XAttribute("exception-type", caseResult.ExceptionSummary.Type),
+                        new XElement("message", new XCData(caseResult.ExceptionSummary.Message)),
+                        new XElement("stack-trace", new XCData(caseResult.ExceptionSummary.StackTrace))));
 
             return @case;
         }

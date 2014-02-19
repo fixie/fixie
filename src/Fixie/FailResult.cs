@@ -19,5 +19,10 @@ namespace Fixie
         public string Output { get; private set; }
         public TimeSpan Duration { get; private set; }
         public IReadOnlyList<ExceptionInfo> Exceptions { get; private set; }
+
+        public ExceptionInfo PrimaryException
+        {
+            get { return Exceptions.First(); }
+        }
     }
 }

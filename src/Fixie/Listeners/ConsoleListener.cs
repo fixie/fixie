@@ -28,7 +28,7 @@ namespace Fixie.Listeners
             var @case = result.Case;
 
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", @case.Name, result.PrimaryExceptionTypeName());
+                Console.WriteLine("Test '{0}' failed: {1}", @case.Name, result.PrimaryException.Type);
             result.WriteCompoundStackTraceTo(Console.Out);
             Console.WriteLine();
             Console.WriteLine();

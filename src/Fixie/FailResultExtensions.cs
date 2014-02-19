@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Fixie.Results;
 
 namespace Fixie
@@ -19,16 +18,6 @@ namespace Fixie
         public static void WriteCompoundStackTraceTo(this FailResult failResult, TextWriter writer)
         {
             WriteCompoundStackTrace(writer, failResult.Exceptions);
-        }
-
-        public static string PrimaryExceptionMessage(this FailResult failResult)
-        {
-            return failResult.Exceptions.First().Message;
-        }
-
-        public static string PrimaryExceptionTypeName(this FailResult failResult)
-        {
-            return failResult.Exceptions.First().Type;
         }
 
         static void WriteCompoundStackTrace(TextWriter console, IEnumerable<ExceptionInfo> exceptions)

@@ -8,11 +8,14 @@ namespace Fixie.Results
     [Serializable]
     public class ExceptionInfo
     {
-        public ExceptionInfo(IReadOnlyList<ExceptionInfo> exceptions)
+        public ExceptionInfo(IEnumerable<Exception> exceptions)
         {
-            Type = exceptions.First().Type;
-            Message = exceptions.First().Message;
-            StackTrace = CompoundStackTrace(exceptions);
+            var all = exceptions.Select(x => new ExceptionInfo(x)).ToArray();
+            var primary = all.First();
+
+            Type = primary.Type;
+            Message = primary.Message;
+            StackTrace = CompoundStackTrace(all);
             InnerException = null;
         }
 

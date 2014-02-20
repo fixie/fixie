@@ -45,6 +45,7 @@
     <Compile Include="Behaviors\InstanceBehavior.cs" />
     <Compile Include="CaseExecution.cs" />
     <Compile Include="CommandLineOption.cs" />
+    <Compile Include="Conventions\AssertionLibraryFilter.cs" />
     <Compile Include="GenericArgumentResolver.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="RedirectedConsole.cs" />

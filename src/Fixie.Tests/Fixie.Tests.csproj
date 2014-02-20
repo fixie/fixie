@@ -48,6 +48,7 @@
     <Compile Include="Behaviors\ExecuteCasesTests.cs" />
     <Compile Include="CaseExecutionTests.cs" />
     <Compile Include="CommandLineParserTests.cs" />
+    <Compile Include="Conventions\AssertionLibraryFilterTests.cs" />
     <Compile Include="GenericArgumentResolverTests.cs" />
     <Compile Include="Lifecycle\CaseLifecycleTests.cs" />
     <Compile Include="Lifecycle\ClassLifecycleTests.cs" />

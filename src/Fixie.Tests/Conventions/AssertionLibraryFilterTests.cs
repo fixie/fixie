@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Fixie.Conventions;
 using Should;
 
@@ -19,15 +20,23 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldFilterAssertionLibraryImplementationDetailsFromStackTraces()
         {
-            const string originalStackTrace = @"   at Some.Assertion.Library.Namespace.Assert.AreEqual(object x, object y) in c:\path\to\assertion\library\AssertHelpers.cs:line 10
-   at Some.Other.Assertion.Library.Namespace.Assert.AreEqual(Int32 x, Int32 y) in c:\path\to\assertion\library\Assert.cs:line 14
-   at Your.Test.Project.TestClass.HelperMethodB() in c:\path\to\your\test\project\TestClass.cs:line 55
-   at Your.Test.Project.TestClass.HelperMethodA() in c:\path\to\your\test\project\TestClass.cs:line 50
-   at Your.Test.Project.TestClass.TestMethod() in c:\path\to\your\test\project\TestClass.cs:line 30";
+            var originalStackTrace =
+                new StringBuilder()
+                    .AppendLine(@"   at Some.Assertion.Library.Namespace.Assert.AreEqual(object x, object y) in c:\path\to\assertion\library\AssertHelpers.cs:line 10")
+                    .AppendLine(@"   at Some.Other.Assertion.Library.Namespace.Assert.AreEqual(Int32 x, Int32 y) in c:\path\to\assertion\library\Assert.cs:line 14")
+                    .AppendLine(@"   at Your.Test.Project.TestClass.HelperMethodB() in c:\path\to\your\test\project\TestClass.cs:line 55")
+                    .AppendLine(@"   at Your.Test.Project.TestClass.HelperMethodA() in c:\path\to\your\test\project\TestClass.cs:line 50")
+                    .AppendLine(@"   at Your.Test.Project.TestClass.TestMethod() in c:\path\to\your\test\project\TestClass.cs:line 30")
+                    .ToString()
+                    .TrimEnd();
 
-            const string filteredStackTrace = @"   at Your.Test.Project.TestClass.HelperMethodB() in c:\path\to\your\test\project\TestClass.cs:line 55
-   at Your.Test.Project.TestClass.HelperMethodA() in c:\path\to\your\test\project\TestClass.cs:line 50
-   at Your.Test.Project.TestClass.TestMethod() in c:\path\to\your\test\project\TestClass.cs:line 30";
+            var filteredStackTrace =
+                new StringBuilder()
+                    .AppendLine(@"   at Your.Test.Project.TestClass.HelperMethodB() in c:\path\to\your\test\project\TestClass.cs:line 55")
+                    .AppendLine(@"   at Your.Test.Project.TestClass.HelperMethodA() in c:\path\to\your\test\project\TestClass.cs:line 50")
+                    .AppendLine(@"   at Your.Test.Project.TestClass.TestMethod() in c:\path\to\your\test\project\TestClass.cs:line 30")
+                    .ToString()
+                    .TrimEnd();
 
             new AssertionLibraryFilter()
                 .Namespace("Some.Assertion.Library.Namespace")

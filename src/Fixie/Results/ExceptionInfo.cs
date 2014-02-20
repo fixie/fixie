@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Fixie.Conventions;
 
 namespace Fixie.Results
 {
     [Serializable]
     public class ExceptionInfo
     {
-        public ExceptionInfo(IEnumerable<Exception> exceptions)
+        public ExceptionInfo(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)
         {
-            var all = exceptions.Select(x => new ExceptionInfo(x)).ToArray();
+            var all = exceptions.Select(x => new ExceptionInfo(x, filter)).ToArray();
             var primary = all.First();
 
             Type = primary.Type;
@@ -19,12 +20,12 @@ namespace Fixie.Results
             InnerException = null;
         }
 
-        public ExceptionInfo(Exception exception)
+        public ExceptionInfo(Exception exception, AssertionLibraryFilter filter)
         {
             Type = exception.GetType().FullName;
             Message = exception.Message;
-            StackTrace = exception.StackTrace;
-            InnerException = exception.InnerException == null ? null : new ExceptionInfo(exception.InnerException);
+            StackTrace = filter.FilterStackTrace(exception);
+            InnerException = exception.InnerException == null ? null : new ExceptionInfo(exception.InnerException, filter);
         }
 
         public string Type { get; private set; }

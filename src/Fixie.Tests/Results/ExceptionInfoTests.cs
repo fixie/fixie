@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Fixie.Conventions;
 using Fixie.Results;
 using Should;
 
@@ -9,11 +10,13 @@ namespace Fixie.Tests.Results
 {
     public class ExceptionInfoTests
     {
+        readonly AssertionLibraryFilter assertionLibrary = new AssertionLibraryFilter();
+
         public void ShouldSummarizeTheGivenException()
         {
             var exception = GetNestedException();
 
-            var exceptionInfo = new ExceptionInfo(exception);
+            var exceptionInfo = new ExceptionInfo(exception, assertionLibrary);
 
             exceptionInfo.Type.ShouldEqual("System.NullReferenceException");
             exceptionInfo.Message.ShouldEqual("Null reference!");
@@ -32,7 +35,7 @@ namespace Fixie.Tests.Results
             var secondaryExceptionA = new NotImplementedException();
             var secondaryExceptionB = GetSecondaryNestedException();
 
-            var exceptionInfo = new ExceptionInfo(new[] { primaryException, secondaryExceptionA, secondaryExceptionB });
+            var exceptionInfo = new ExceptionInfo(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
             exceptionInfo.Type.ShouldEqual("System.NullReferenceException");
             exceptionInfo.Message.ShouldEqual("Null reference!");
@@ -62,6 +65,49 @@ namespace Fixie.Tests.Results
                     "------- Inner Exception: System.NotImplementedException -------",
                     "Not implemented!",
                     "   at Fixie.Tests.Results.ExceptionInfoTests.GetSecondaryNestedException() in " + PathToThisFile() + ":line #");
+
+            exceptionInfo.InnerException.ShouldBeNull();
+        }
+
+        public void ShouldFilterStackTraceLinesFromSpecifiedNamespaces()
+        {
+            var primaryException = GetNestedException();
+            var secondaryExceptionA = new NotImplementedException();
+            var secondaryExceptionB = GetSecondaryNestedException();
+
+            assertionLibrary
+                .Namespace("Fixie.Tests.Results");
+
+            var exceptionInfo = new ExceptionInfo(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
+
+            exceptionInfo.Type.ShouldEqual("System.NullReferenceException");
+            exceptionInfo.Message.ShouldEqual("Null reference!");
+            exceptionInfo.StackTrace
+                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
+                .ShouldEqual(
+                    "Null reference!",
+                    "",
+                    "",
+                    "------- Inner Exception: System.DivideByZeroException -------",
+                    "Divide by zero!",
+                    "",
+                    "",
+                    "===== Secondary Exception: System.NotImplementedException =====",
+                    "The method or operation is not implemented.",
+                    "",
+                    "",
+                    "===== Secondary Exception: System.ArgumentException =====",
+                    "Argument!",
+                    "",
+                    "",
+                    "------- Inner Exception: System.ApplicationException -------",
+                    "Application!",
+                    "",
+                    "",
+                    "------- Inner Exception: System.NotImplementedException -------",
+                    "Not implemented!",
+                    "");
 
             exceptionInfo.InnerException.ShouldBeNull();
         }

@@ -17,6 +17,7 @@ namespace Fixie.Conventions
             CaseExecution = new CaseBehaviorBuilder();
             InstanceExecution = new InstanceBehaviorBuilder();
             ClassExecution = new TypeBehaviorBuilder().CreateInstancePerCase();
+            AssertionLibrary = new AssertionLibraryFilter();
 
             methodCallParameterBuilder = method => new object[][] { };
         }
@@ -26,6 +27,7 @@ namespace Fixie.Conventions
         public CaseBehaviorBuilder CaseExecution { get; private set; }
         public InstanceBehaviorBuilder InstanceExecution { get; private set; }
         public TypeBehaviorBuilder ClassExecution { get; private set; }
+        public AssertionLibraryFilter AssertionLibrary { get; private set; }
 
         public void Parameters(Func<MethodInfo, IEnumerable<object[]>> getCaseParameters)
         {
@@ -62,7 +64,7 @@ namespace Fixie.Conventions
                     {
                         if (caseExecution.Exceptions.Any())
                         {
-                            var failResult = new FailResult(caseExecution);
+                            var failResult = new FailResult(caseExecution, AssertionLibrary);
                             listener.CaseFailed(failResult);
                             classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.ExceptionSummary));
                         }

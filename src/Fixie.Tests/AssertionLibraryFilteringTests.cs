@@ -10,7 +10,7 @@ namespace Fixie.Tests
 {
     public class AssertionLibraryFilteringTests
     {
-        public void ShouldNotAffectStackTracesByDefault()
+        public void ShouldNotAffectOutputByDefault()
         {
             using (var console = new RedirectedConsole())
             {
@@ -30,7 +30,6 @@ namespace Fixie.Tests
                         "",
                         "Test 'Fixie.Tests.AssertionLibraryFilteringTests+SampleTestClass.FailedAssertion' failed: Fixie.Tests.SampleAssertionLibrary.AssertionException",
                         "Expected 1, but was 0.",
-                        "   at Fixie.Tests.SampleAssertionLibrary.SampleAssert.AreEqualImpl(Int32 expected, Int32 actual) in " + PathToThisFile() + ":line #",
                         "   at Fixie.Tests.SampleAssertionLibrary.SampleAssert.AreEqual(Int32 expected, Int32 actual) in " + PathToThisFile() + ":line #",
                         "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.FailedAssertion() in " + PathToThisFile() + ":line #",
                         "",
@@ -38,7 +37,7 @@ namespace Fixie.Tests
             }
         }
 
-        public void ShouldFilterStackTracesForKnownAssertionLibraryNamespaces()
+        public void ShouldFilterAssertionLibraryImplementationDetailsWhenLibraryNamespacesAreSpecified()
         {
             using (var console = new RedirectedConsole())
             {
@@ -60,7 +59,7 @@ namespace Fixie.Tests
                         "Attempted to divide by zero.",
                         "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.DivideByZero() in " + PathToThisFile() + ":line #",
                         "",
-                        "Test 'Fixie.Tests.AssertionLibraryFilteringTests+SampleTestClass.FailedAssertion' failed: Fixie.Tests.SampleAssertionLibrary.AssertionException",
+                        "Test 'Fixie.Tests.AssertionLibraryFilteringTests+SampleTestClass.FailedAssertion' failed: ",
                         "Expected 1, but was 0.",
                         "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.FailedAssertion() in " + PathToThisFile() + ":line #",
                         "",
@@ -93,11 +92,6 @@ namespace Fixie.Tests
         public static class SampleAssert
         {
             public static void AreEqual(int expected, int actual)
-            {
-                AreEqualImpl(expected, actual);
-            }
-
-            static void AreEqualImpl(int expected, int actual)
             {
                 if (expected != actual)
                     throw new AssertionException(string.Format("Expected {0}, but was {1}.", expected, actual));

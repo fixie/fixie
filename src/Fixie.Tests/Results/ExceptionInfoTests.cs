@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
@@ -18,10 +19,12 @@ namespace Fixie.Tests.Results
 
             var exceptionInfo = new ExceptionInfo(exception, assertionLibrary);
 
+            exceptionInfo.DisplayName.ShouldEqual("System.NullReferenceException");
             exceptionInfo.Type.ShouldEqual("System.NullReferenceException");
             exceptionInfo.Message.ShouldEqual("Null reference!");
             exceptionInfo.StackTrace.ShouldEqual(exception.StackTrace);
 
+            exceptionInfo.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
             exceptionInfo.InnerException.Type.ShouldEqual("System.DivideByZeroException");
             exceptionInfo.InnerException.Message.ShouldEqual("Divide by zero!");
             exceptionInfo.InnerException.StackTrace.ShouldEqual(exception.InnerException.StackTrace);
@@ -37,6 +40,7 @@ namespace Fixie.Tests.Results
 
             var exceptionInfo = new ExceptionInfo(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
+            exceptionInfo.DisplayName.ShouldEqual("System.NullReferenceException");
             exceptionInfo.Type.ShouldEqual("System.NullReferenceException");
             exceptionInfo.Message.ShouldEqual("Null reference!");
             exceptionInfo.StackTrace
@@ -69,17 +73,19 @@ namespace Fixie.Tests.Results
             exceptionInfo.InnerException.ShouldBeNull();
         }
 
-        public void ShouldFilterStackTraceLinesFromSpecifiedNamespaces()
+        public void ShouldFilterAssertionLibraryImplementationDetails()
         {
             var primaryException = GetNestedException();
             var secondaryExceptionA = new NotImplementedException();
             var secondaryExceptionB = GetSecondaryNestedException();
 
             assertionLibrary
-                .Namespace("Fixie.Tests.Results");
+                .Namespace("Fixie.Tests.Results")
+                .Namespace("System");
 
             var exceptionInfo = new ExceptionInfo(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
+            exceptionInfo.DisplayName.ShouldEqual("");
             exceptionInfo.Type.ShouldEqual("System.NullReferenceException");
             exceptionInfo.Message.ShouldEqual("Null reference!");
             exceptionInfo.StackTrace

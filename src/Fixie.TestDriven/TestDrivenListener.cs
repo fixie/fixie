@@ -44,7 +44,7 @@ namespace Fixie.TestDriven
             {
                 Name = @case.Name,
                 State = TestState.Failed,
-                Message = result.ExceptionSummary.Type,
+                Message = result.ExceptionSummary.DisplayName,
                 StackTrace = result.ExceptionSummary.StackTrace,
             });
         }

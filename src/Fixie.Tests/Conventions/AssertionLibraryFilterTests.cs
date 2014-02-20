@@ -36,6 +36,21 @@ namespace Fixie.Tests.Conventions
                 .ShouldEqual(filteredStackTrace);
         }
 
+        public void ShouldGetExceptionTypeAsDisplayNameByDefault()
+        {
+            new AssertionLibraryFilter()
+                .DisplayName(new FakeException(null))
+                .ShouldEqual(typeof(FakeException).FullName);
+        }
+
+        public void ShouldGetBlankDisplayNameWhenExceptionTypeIsAnAssertionLibraryImplementationDetail()
+        {
+            new AssertionLibraryFilter()
+                .Namespace(typeof(FakeException).Namespace)
+                .DisplayName(new FakeException(null))
+                .ShouldEqual("");
+        }
+
         class FakeException : Exception
         {
             readonly string stackTrace;

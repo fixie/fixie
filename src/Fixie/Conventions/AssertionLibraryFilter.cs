@@ -29,9 +29,16 @@ namespace Fixie.Conventions
                         .SkipWhile(ContainsNamespaceToFilter));
         }
 
-        bool ContainsNamespaceToFilter(string line)
+        public string DisplayName(Exception exception)
         {
-            return namespaces.Any(line.Contains);
+            var exceptionType = exception.GetType();
+
+            return namespaces.Contains(exceptionType.Namespace) ? "" : exceptionType.FullName;
+        }
+
+        bool ContainsNamespaceToFilter(string s)
+        {
+            return namespaces.Any(s.Contains);
         }
 
         private static IEnumerable<string> Lines(string stackTrace)

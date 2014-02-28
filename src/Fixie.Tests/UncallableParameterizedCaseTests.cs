@@ -29,7 +29,7 @@ namespace Fixie.Tests
         static Case UncallableParameterizedCase(string methodName)
         {
             var testClass = typeof(UncallableParameterizedCaseTests);
-            return new UncallableParameterizedCase(testClass, testClass.GetInstanceMethod(methodName));
+            return new UncallableParameterizedCase(testClass.GetInstanceMethod(methodName));
         }
     }
 }

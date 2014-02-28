@@ -44,7 +44,7 @@ namespace Fixie.Conventions
 
                 var methods = Methods.Filter(testClass);
 
-                var cases = methods.SelectMany(method => CasesForMethod(testClass, method)).ToArray();
+                var cases = methods.SelectMany(CasesForMethod).ToArray();
                 var casesBySkipState = cases.ToLookup(CaseExecution.SkipPredicate);
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false];
@@ -84,10 +84,10 @@ namespace Fixie.Conventions
             return conventionResult;
         }
 
-        IEnumerable<Case> CasesForMethod(Type testClass, MethodInfo method)
+        IEnumerable<Case> CasesForMethod(MethodInfo method)
         {
             var casesForKnownInputParameters = methodCallParameterBuilder(method)
-                .Select(parameters => new Case(testClass, method, parameters));
+                .Select(parameters => new Case(method, parameters));
 
             bool any = false;
 
@@ -100,9 +100,9 @@ namespace Fixie.Conventions
             if (!any)
             {
                 if (method.GetParameters().Any())
-                    yield return new UncallableParameterizedCase(testClass, method);
+                    yield return new UncallableParameterizedCase(method);
                 else
-                    yield return new Case(testClass, method);
+                    yield return new Case(method);
             }
         }
     }

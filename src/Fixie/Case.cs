@@ -9,10 +9,10 @@ namespace Fixie
     {
         readonly object[] parameters;
 
-        public Case(Type testClass, MethodInfo caseMethod, params object[] parameters)
+        public Case(MethodInfo caseMethod, params object[] parameters)
         {
             this.parameters = parameters != null && parameters.Length == 0 ? null : parameters;
-            Class = testClass;
+            Class = caseMethod.ReflectedType;
 
             Method = caseMethod.IsGenericMethodDefinition
                          ? caseMethod.MakeGenericMethod(GenericArgumentResolver.ResolveTypeArguments(caseMethod, parameters))

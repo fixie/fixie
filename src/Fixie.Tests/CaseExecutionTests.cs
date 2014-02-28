@@ -10,7 +10,7 @@ namespace Fixie.Tests
 
         public CaseExecutionTests()
         {
-            @case = Case<SampleTestClass>("Test");
+            @case = new Case(typeof(SampleTestClass).GetInstanceMethod("Test"));
             execution = new CaseExecution(@case);
         }
 
@@ -33,11 +33,6 @@ namespace Fixie.Tests
         private class SampleTestClass
         {
             public void Test() { }
-        }
-
-        static Case Case<TTestClass>(string method)
-        {
-            return new Case(typeof(TTestClass), typeof(TTestClass).GetInstanceMethod(method));
         }
     }
 }

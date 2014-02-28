@@ -5,8 +5,8 @@ namespace Fixie
 {
     public class UncallableParameterizedCase : Case
     {
-        public UncallableParameterizedCase(Type testClass, MethodInfo caseMethod)
-            : base(testClass, caseMethod)
+        public UncallableParameterizedCase(MethodInfo caseMethod)
+            : base(caseMethod)
         {
         }
 

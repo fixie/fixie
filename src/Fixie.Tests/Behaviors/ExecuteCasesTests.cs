@@ -28,8 +28,8 @@ namespace Fixie.Tests.Behaviors
 
         public void ShouldPerformCaseExecutionBehaviorForAllGivenCases()
         {
-            var caseA = new Case(testClass, testClass.GetInstanceMethod("Pass"));
-            var caseB = new Case(testClass, testClass.GetInstanceMethod("Fail"));
+            var caseA = new Case(testClass.GetInstanceMethod("Pass"));
+            var caseB = new Case(testClass.GetInstanceMethod("Fail"));
 
             var caseExecutions = new[]
             {

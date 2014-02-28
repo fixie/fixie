@@ -160,6 +160,32 @@ namespace Fixie.Tests
                             "return type of Task to ensure the task actually runs to completion.");
         }
 
+        public void ShouldInferAppropriateClassGivenCaseMethod()
+        {
+            var methodDeclaredInChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinChildClass"));
+            methodDeclaredInChildClass.Class.ShouldEqual(typeof(SampleChildTestClass));
+
+            var methodDeclaredInParentClass = new Case(typeof(SampleParentTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"));
+            methodDeclaredInParentClass.Class.ShouldEqual(typeof(SampleParentTestClass));
+
+            var parentMethodInheritedByChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"));
+            parentMethodInheritedByChildClass.Class.ShouldEqual(typeof(SampleChildTestClass));
+        }
+
+        class SampleParentTestClass
+        {
+            public void TestMethodDefinedWithinParentClass()
+            {
+            }
+        }
+
+        class SampleChildTestClass : SampleParentTestClass
+        {
+            public void TestMethodDefinedWithinChildClass()
+            {
+            }
+        }
+
         static void ExpectException(CaseExecution caseExecution, string expectedName, string expectedMessage)
         {
             var exception = caseExecution.Exceptions.Single();
@@ -169,8 +195,7 @@ namespace Fixie.Tests
 
         static Case Case(string methodName, params object[] parameters)
         {
-            var testClass = typeof(CaseTests);
-            return new Case(testClass, testClass.GetInstanceMethod(methodName), parameters);
+            return new Case(typeof(CaseTests).GetInstanceMethod(methodName), parameters);
         }
 
         void Returns()

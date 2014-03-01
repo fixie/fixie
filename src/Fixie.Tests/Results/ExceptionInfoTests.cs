@@ -79,7 +79,9 @@ namespace Fixie.Tests.Results
             var secondaryExceptionB = GetSecondaryException();
 
             assertionLibrary
-                .Namespace("Fixie.Tests.Results");
+                .For<PrimaryException>()
+                .For<SecondaryException>()
+                .For<ExceptionInfoTests>();
 
             var exceptionInfo = new ExceptionInfo(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 

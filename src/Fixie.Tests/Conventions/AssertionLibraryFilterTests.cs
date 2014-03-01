@@ -12,8 +12,7 @@ namespace Fixie.Tests.Conventions
             const string nullStackTrace = null;
 
             new AssertionLibraryFilter()
-                .Namespace("Some.Assertion.Library.Namespace")
-                .Namespace("Some.Other.Assertion.Library.Namespace")
+                .For(typeof(SampleAssertionLibrary.SampleAssert))
                 .FilterStackTrace(new FakeException(nullStackTrace))
                 .ShouldEqual(nullStackTrace);
         }
@@ -22,8 +21,8 @@ namespace Fixie.Tests.Conventions
         {
             var originalStackTrace =
                 new StringBuilder()
-                    .AppendLine(@"   at Some.Assertion.Library.Namespace.Assert.AreEqual(object x, object y) in c:\path\to\assertion\library\AssertHelpers.cs:line 10")
-                    .AppendLine(@"   at Some.Other.Assertion.Library.Namespace.Assert.AreEqual(Int32 x, Int32 y) in c:\path\to\assertion\library\Assert.cs:line 14")
+                    .AppendLine(@"   at Fixie.Tests.SampleAssertionLibrary.SampleAssert.AreEqual(object x, object y) in c:\path\to\assertion\library\AssertHelpers.cs:line 10")
+                    .AppendLine(@"   at Fixie.Tests.SampleAssertionLibrary.SampleAssert.AreEqual(Int32 x, Int32 y) in c:\path\to\assertion\library\Assert.cs:line 14")
                     .AppendLine(@"   at Your.Test.Project.TestClass.HelperMethodB() in c:\path\to\your\test\project\TestClass.cs:line 55")
                     .AppendLine(@"   at Your.Test.Project.TestClass.HelperMethodA() in c:\path\to\your\test\project\TestClass.cs:line 50")
                     .AppendLine(@"   at Your.Test.Project.TestClass.TestMethod() in c:\path\to\your\test\project\TestClass.cs:line 30")
@@ -39,8 +38,7 @@ namespace Fixie.Tests.Conventions
                     .TrimEnd();
 
             new AssertionLibraryFilter()
-                .Namespace("Some.Assertion.Library.Namespace")
-                .Namespace("Some.Other.Assertion.Library.Namespace")
+                .For(typeof(SampleAssertionLibrary.SampleAssert))
                 .FilterStackTrace(new FakeException(originalStackTrace))
                 .ShouldEqual(filteredStackTrace);
         }
@@ -55,7 +53,7 @@ namespace Fixie.Tests.Conventions
         public void ShouldGetBlankDisplayNameWhenExceptionTypeIsAnAssertionLibraryImplementationDetail()
         {
             new AssertionLibraryFilter()
-                .Namespace(typeof(FakeException).Namespace)
+                .For<FakeException>()
                 .DisplayName(new FakeException(null))
                 .ShouldEqual("");
         }

@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Fixie.Conventions;
 using Fixie.Listeners;
-using Fixie.Tests.SampleAssertionLibrary;
 
 namespace Fixie.Tests
 {
@@ -37,7 +36,7 @@ namespace Fixie.Tests
             }
         }
 
-        public void ShouldFilterAssertionLibraryImplementationDetailsWhenLibraryNamespacesAreSpecified()
+        public void ShouldFilterAssertionLibraryImplementationDetailsWhenLibraryTypesAreSpecified()
         {
             using (var console = new RedirectedConsole())
             {
@@ -47,7 +46,8 @@ namespace Fixie.Tests
 
                 convention
                     .AssertionLibrary
-                    .Namespace(typeof(SampleAssert).Namespace);
+                    .For<SampleAssertionLibrary.AssertionException>()
+                    .For(typeof(SampleAssertionLibrary.SampleAssert));
 
                 convention.Execute(listener, typeof(SampleTestClass));
 
@@ -82,7 +82,7 @@ namespace Fixie.Tests
 
             public void FailedAssertion()
             {
-                SampleAssert.AreEqual(1, 0);
+                SampleAssertionLibrary.SampleAssert.AreEqual(1, 0);
             }
         }
     }

@@ -7,17 +7,27 @@ namespace Fixie.Conventions
 {
     public class AssertionLibraryFilter
     {
-        readonly List<string> namespaces;
+        readonly List<Type> exceptionTypes;
+        readonly List<Type> stackTraceTypes;
 
         public AssertionLibraryFilter()
         {
-            namespaces = new List<string>();
+            exceptionTypes = new List<Type>();
+            stackTraceTypes = new List<Type>();
         }
 
-        public AssertionLibraryFilter Namespace(string @namespace)
+        public AssertionLibraryFilter For(Type libraryInfrastructureType)
         {
-            namespaces.Add(@namespace);
+            bool isExceptionType = libraryInfrastructureType.IsSubclassOf(typeof(Exception));
+
+            (isExceptionType ? exceptionTypes : stackTraceTypes).Add(libraryInfrastructureType);
+
             return this;
+        }
+
+        public AssertionLibraryFilter For<TLibraryInfrastructure>()
+        {
+            return For(typeof(TLibraryInfrastructure));
         }
 
         public string FilterStackTrace(Exception exception)
@@ -26,22 +36,22 @@ namespace Fixie.Conventions
                 ? null
                 : String.Join(Environment.NewLine,
                     Lines(exception.StackTrace)
-                        .SkipWhile(ContainsNamespaceToFilter));
+                        .SkipWhile(ContainsTypeToFilter));
         }
 
         public string DisplayName(Exception exception)
         {
             var exceptionType = exception.GetType();
 
-            return namespaces.Contains(exceptionType.Namespace) ? "" : exceptionType.FullName;
+            return exceptionTypes.Contains(exceptionType) ? "" : exceptionType.FullName;
         }
 
-        bool ContainsNamespaceToFilter(string s)
+        bool ContainsTypeToFilter(string line)
         {
-            return namespaces.Any(s.Contains);
+            return stackTraceTypes.Any(type => line.Contains(type.FullName));
         }
 
-        private static IEnumerable<string> Lines(string stackTrace)
+        static IEnumerable<string> Lines(string stackTrace)
         {
             using (var reader = new StringReader(stackTrace))
             {

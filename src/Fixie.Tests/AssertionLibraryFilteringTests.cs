@@ -45,7 +45,7 @@ namespace Fixie.Tests
                 var convention = new SelfTestConvention();
 
                 convention
-                    .AssertionLibrary
+                    .HideExceptionDetails
                     .For<SampleAssertionLibrary.AssertionException>()
                     .For(typeof(SampleAssertionLibrary.SampleAssert));
 

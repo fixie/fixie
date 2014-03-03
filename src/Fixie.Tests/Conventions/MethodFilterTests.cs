@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Fixie.Conventions;
+using System;
 using System.Linq;
-using Fixie.Conventions;
 
 namespace Fixie.Tests.Conventions
 {
@@ -10,7 +10,7 @@ namespace Fixie.Tests.Conventions
         {
             new MethodFilter()
                 .Filter(typeof(Sample))
-                .OrderBy(method => method.Name)
+                .OrderBy(method => method.Name, StringComparer.Ordinal)
                 .Select(method => method.Name)
                 .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
                              "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
@@ -37,7 +37,7 @@ namespace Fixie.Tests.Conventions
             new MethodFilter()
                 .HasOrInherits<SampleAttribute>()
                 .Filter(typeof(Sample))
-                .OrderBy(method => method.Name)
+                .OrderBy(method => method.Name, StringComparer.Ordinal)
                 .Select(method => method.Name)
                 .ShouldEqual("PublicInstanceNoArgsWithReturn", "PublicInstanceWithArgsWithReturn");
         }

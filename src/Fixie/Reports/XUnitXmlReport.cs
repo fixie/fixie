@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Fixie.Results;
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
-using Fixie.Results;
 
 namespace Fixie.Reports
 {
@@ -87,7 +88,7 @@ namespace Fixie.Reports
 
         static string Seconds(TimeSpan duration)
         {
-            return duration.TotalSeconds.ToString("0.000");
+            return duration.TotalSeconds.ToString("0.000", CultureInfo.GetCultureInfo("en-US"));
         }
     }
 }

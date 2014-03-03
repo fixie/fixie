@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Fixie.Conventions;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Fixie.Conventions;
 
 namespace Fixie.Tests.Conventions
 {
@@ -72,7 +72,7 @@ namespace Fixie.Tests.Conventions
 
             emptyConvention.Methods
                            .Filter(testClass)
-                           .OrderBy(x => x.Name)
+                           .OrderBy(x => x.Name, StringComparer.Ordinal)
                            .Select(x => x.Name)
                            .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
                                         "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
@@ -85,7 +85,7 @@ namespace Fixie.Tests.Conventions
 
             defaultConvention.Methods
                              .Filter(testClass)
-                             .OrderBy(x => x.Name)
+                             .OrderBy(x => x.Name, StringComparer.Ordinal)
                              .Select(x => x.Name)
                              .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceWithArgsVoid");
         }
@@ -97,7 +97,7 @@ namespace Fixie.Tests.Conventions
 
             defaultConvention.Methods
                              .Filter(testClass)
-                             .OrderBy(x => x.Name)
+                             .OrderBy(x => x.Name, StringComparer.Ordinal)
                              .Select(x => x.Name)
                              .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
                                           "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");

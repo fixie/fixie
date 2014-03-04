@@ -349,9 +349,9 @@ Test 'CalculatorTests.ShouldSubtract' failed: Hypothetical.Assertion.Library.Ass
 The implementation details of assertion libraries are rarely interesting to the developer.  A custom convention can be instructed to simplify failure output by listing the types that make up the assertion library:
 
 ```cs
-public class DefaultConvention : Convention
+public class CustomConvention : Convention
 {
-    public DefaultConvention()
+    public CustomConvention()
     {
         Classes
             .NameEndsWith("Tests");
@@ -378,7 +378,7 @@ Test 'CalculatorTests.ShouldSubtract' failed:
 	CalculatorTests.cs(19,0): at CalculatorTests.ShouldSubtract()
 ```
 
-In addition to identifying the types of your assertion library of choice, your custom convention may also list assertion extension classes defined in your own projects, further simplifying your output during failures.
+In addition to identifying the types which up your assertion library of choice, your custom convention may also list assertion extension classes defined in your own projects, further simplifying your output during failures.
 
 ## How do I report results to my continuous integration server?
 

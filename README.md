@@ -378,7 +378,7 @@ Test 'CalculatorTests.ShouldSubtract' failed:
 	CalculatorTests.cs(19,0): at CalculatorTests.ShouldSubtract()
 ```
 
-In addition to identifying the types which up your assertion library of choice, your custom convention may also list assertion extension classes defined in your own projects, further simplifying your output during failures.
+In addition to identifying the types which make up your assertion library of choice, your custom convention may also list assertion extension classes defined in your own projects, further simplifying your output during failures.
 
 ## How do I report results to my continuous integration server?
 

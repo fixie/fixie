@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Fixie.Conventions;
+using Fixie.Listeners;
+using Fixie.Results;
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Fixie.Conventions;
-using Fixie.Listeners;
-using Fixie.Results;
 
 namespace Fixie.Tests.Listeners
 {
@@ -67,7 +68,9 @@ namespace Fixie.Tests.Listeners
 
                 listener.AssemblyCompleted(assembly, assemblyResult);
 
-                console.Lines().ShouldEqual("1 passed, 2 failed, 3 skipped, took 0.00 seconds (Fixie " + version + ").");
+                console.Lines().ShouldEqual(string.Format("1 passed, 2 failed, 3 skipped, took {0} seconds (Fixie {1}).",
+                                                          0.ToString("N2", CultureInfo.CurrentCulture),
+                                                          version));
             }
         }
 
@@ -90,7 +93,9 @@ namespace Fixie.Tests.Listeners
 
                 listener.AssemblyCompleted(assembly, assemblyResult);
 
-                console.Lines().ShouldEqual("1 passed, 2 failed, took 0.00 seconds (Fixie " + version + ").");
+                console.Lines().ShouldEqual(string.Format("1 passed, 2 failed, took {0} seconds (Fixie {1}).",
+                                                          0.ToString("N2", CultureInfo.CurrentCulture),
+                                                          version));
             }
         }
 

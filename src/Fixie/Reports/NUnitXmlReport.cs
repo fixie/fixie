@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Fixie.Results;
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
-using Fixie.Results;
 
 namespace Fixie.Reports
 {
@@ -69,13 +70,13 @@ namespace Fixie.Reports
                         new XElement("message", new XCData(caseResult.ExceptionSummary.Message)),
                         new XElement("stack-trace", new XCData(caseResult.ExceptionSummary.StackTrace))));
             }
-            
+
             return @case;
         }
 
         static string Seconds(TimeSpan duration)
         {
-            return duration.TotalSeconds.ToString("0.000");
+            return duration.TotalSeconds.ToString("0.000", CultureInfo.GetCultureInfo("en-US"));
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Fixie.Results
             assemblyResults.Add(assemblyResult);
         }
 
-        public IReadOnlyList<AssemblyResult> AssemblyResults
+        public IEnumerable<AssemblyResult> AssemblyResults
         {
             get { return assemblyResults; }
         }

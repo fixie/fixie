@@ -19,7 +19,7 @@ namespace Fixie
 
         public string Output { get; set; }
 
-        public IReadOnlyList<Exception> Exceptions { get { return exceptions; } }
+        public IEnumerable<Exception> Exceptions { get { return exceptions; } }
 
         public void Fail(Exception reason)
         {

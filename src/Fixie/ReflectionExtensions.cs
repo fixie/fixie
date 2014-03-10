@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,29 +14,24 @@ namespace Fixie
             return method.ReturnType == typeof(void);
         }
 
-        public static bool Has<TAttribute>(this Type type) where TAttribute : Attribute
+        public static bool Has<TAttribute>(this MemberInfo member) where TAttribute : Attribute
         {
-            return type.GetCustomAttributes<TAttribute>(false).Any();
+            return member.GetCustomAttributes<TAttribute>(false).Any();
         }
 
-        public static bool HasOrInherits<TAttribute>(this Type type) where TAttribute : Attribute
+        public static bool HasOrInherits<TAttribute>(this MemberInfo member) where TAttribute : Attribute
         {
-            return type.GetCustomAttributes<TAttribute>(true).Any();
+            return member.GetCustomAttributes<TAttribute>(true).Any();
         }
 
-        public static bool Has<TAttribute>(this MethodInfo method) where TAttribute : Attribute
+        public static IEnumerable<TAttribute> GetCustomAttributes<TAttribute>(this MemberInfo member, bool inherit = false)
         {
-            return method.GetCustomAttributes<TAttribute>(false).Any();
-        }
-
-        public static bool HasOrInherits<TAttribute>(this MethodInfo method) where TAttribute : Attribute
-        {
-            return method.GetCustomAttributes<TAttribute>(true).Any();
+            return member.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>();
         }
 
         public static bool IsAsync(this MethodInfo method)
         {
-            return method.Has<AsyncStateMachineAttribute>();
+            return method.GetCustomAttributes(false).Any(x => x.GetType().FullName == "System.Runtime.CompilerServices.AsyncStateMachineAttribute");
         }
 
         public static bool IsDispose(this MethodInfo method)

@@ -1,36 +1,28 @@
-﻿using Fixie.Conventions;
-
-namespace Fixie.Tests.Cases
+﻿namespace Fixie.Tests.Cases
 {
-    public class BasicCaseTests
+    public class BasicCaseTests : CaseTests
     {
         public void ShouldPassUponSuccessfulExecution()
         {
-            var listener = new StubListener();
+            Run<PassTestClass>();
 
-            new SelfTestConvention().Execute(listener , typeof(PassTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.BasicCaseTests+PassTestClass.Pass passed.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
         {
-            var listener = new StubListener();
+            Run<FailTestClass>();
 
-            new SelfTestConvention().Execute(listener, typeof(FailTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.BasicCaseTests+FailTestClass.Fail failed: 'Fail' failed!");
         }
 
         public void ShouldPassOrFailCasesIndividually()
         {
-            var listener = new StubListener();
+            Run<PassFailTestClass>();
 
-            new SelfTestConvention().Execute(listener, typeof(PassFailTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.FailA failed: 'FailA' failed!",
                 "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.FailB failed: 'FailB' failed!",
                 "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.PassA passed.",
@@ -40,11 +32,9 @@ namespace Fixie.Tests.Cases
 
         public void ShouldFailWhenTestClassConstructorCannotBeInvoked()
         {
-            var listener = new StubListener();
+            Run<CannotInvokeConstructorTestClass>();
 
-            new SelfTestConvention().Execute(listener, typeof(CannotInvokeConstructorTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.BasicCaseTests+CannotInvokeConstructorTestClass.UnreachableCase failed: No parameterless constructor defined for this object.");
         }
 

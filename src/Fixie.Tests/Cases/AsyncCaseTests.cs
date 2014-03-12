@@ -1,30 +1,25 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Fixie.Conventions;
 using Should;
 
 namespace Fixie.Tests.Cases
 {
-    public class AsyncCaseTests
+    public class AsyncCaseTests : CaseTests
     {
         public void ShouldPassUponSuccessfulAsyncExecution()
         {
-            var listener = new StubListener();
+            Run<AwaitThenPassTestClass>();
 
-            new SelfTestConvention().Execute(listener, typeof(AwaitThenPassTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.AsyncCaseTests+AwaitThenPassTestClass.Test passed.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
-            var listener = new StubListener();
+            Run<AwaitThenFailTestClass>();
 
-            new SelfTestConvention().Execute(listener, typeof(AwaitThenFailTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.AsyncCaseTests+AwaitThenFailTestClass.Test failed: Assert.Equal() Failure" + Environment.NewLine +
                 "Expected: 0" + Environment.NewLine +
                 "Actual:   3");
@@ -32,31 +27,25 @@ namespace Fixie.Tests.Cases
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
         {
-            var listener = new StubListener();
+            Run<AwaitOnTaskThatThrowsTestClass>();
 
-            new SelfTestConvention().Execute(listener, typeof(AwaitOnTaskThatThrowsTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.AsyncCaseTests+AwaitOnTaskThatThrowsTestClass.Test failed: Attempted to divide by zero.");
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
         {
-            var listener = new StubListener();
+            Run<FailBeforeAwaitTestClass>();
 
-            new SelfTestConvention().Execute(listener, typeof(FailBeforeAwaitTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.AsyncCaseTests+FailBeforeAwaitTestClass.Test failed: 'Test' failed!");
         }
 
         public void ShouldFailUnsupportedAsyncVoidCases()
         {
-            var listener = new StubListener();
+            Run<UnsupportedAsyncVoidTestTestClass>();
 
-            new SelfTestConvention().Execute(listener, typeof(UnsupportedAsyncVoidTestTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.AsyncCaseTests+UnsupportedAsyncVoidTestTestClass.Test failed: " +
                 "Async void methods are not supported. Declare async methods with a return type of " +
                 "Task to ensure the task actually runs to completion.");

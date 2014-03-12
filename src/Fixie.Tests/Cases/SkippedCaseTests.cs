@@ -1,41 +1,30 @@
 ﻿using System;
 using System.Reflection;
-using Fixie.Conventions;
 
 namespace Fixie.Tests.Cases
 {
-    public class SkippedCaseTests
+    public class SkippedCaseTests : CaseTests
     {
-        readonly StubListener listener;
-        readonly Convention convention;
-
-        public SkippedCaseTests()
-        {
-            listener = new StubListener();
-
-            convention = new SelfTestConvention();
-        }
-
         public void ShouldSkipCases()
         {
-            convention.CaseExecution
+            Convention.CaseExecution
                 .Skip(HasSkipAttribute);
 
-            convention.Execute(listener, typeof(SkippedTestClass));
+            Run<SkippedTestClass>();
 
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
         }
 
         public void ShouldSkipCasesWithOptionalReason()
         {
-            convention.CaseExecution
+            Convention.CaseExecution
                 .Skip(HasSkipAttribute, SkipAttributeReason);
 
-            convention.Execute(listener, typeof(SkippedTestClass));
+            Run<SkippedTestClass>();
 
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
         }

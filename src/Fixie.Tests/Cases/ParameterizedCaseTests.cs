@@ -2,23 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fixie.Conventions;
 using Should;
 
 namespace Fixie.Tests.Cases
 {
-    public class ParameterizedCaseTests
+    public class ParameterizedCaseTests : CaseTests
     {
         public void ShouldAllowConventionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
-            var listener = new StubListener();
+            Convention.Parameters(ParametersFromAttributesWithTypeDefaultFallback);
 
-            var convention = new SelfTestConvention();
-            convention.Parameters(ParametersFromAttributesWithTypeDefaultFallback);
+            Run<ParameterizedTestClass>();
 
-            convention.Execute(listener, typeof(ParameterizedTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(0) passed.",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(1, 1, 2) passed.",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(1, 2, 3) passed.",
@@ -28,13 +24,9 @@ namespace Fixie.Tests.Cases
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
         {
-            var listener = new StubListener();
+            Run<ParameterizedTestClass>();
 
-            var convention = new SelfTestConvention();
-
-            convention.Execute(listener, typeof(ParameterizedTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg failed: This parameterized test could not be executed, because no input values were available.",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes failed: This parameterized test could not be executed, because no input values were available.",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs passed.");
@@ -42,14 +34,11 @@ namespace Fixie.Tests.Cases
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
         {
-            var listener = new StubListener();
+            Convention.Parameters(ZeroSetsOfInputParameters);
 
-            var convention = new SelfTestConvention();
-            convention.Parameters(ZeroSetsOfInputParameters);
+            Run<ParameterizedTestClass>();
 
-            convention.Execute(listener, typeof(ParameterizedTestClass));
-
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg failed: This parameterized test could not be executed, because no input values were available.",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes failed: This parameterized test could not be executed, because no input values were available.",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs passed.");
@@ -57,19 +46,16 @@ namespace Fixie.Tests.Cases
 
         public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
         {
-            var listener = new StubListener();
-
-            var convention = new SelfTestConvention();
-            convention.Parameters(Inputs(
+            Convention.Parameters(Inputs(
                 new object[] { },
                 new object[] { 0 },
                 new object[] { 0, 1 },
                 new object[] { 0, 1, 2 },
                 new object[] { 0, 1, 2, 3 }));
 
-            convention.Execute(listener, typeof(ParameterizedTestClass));
+            Run<ParameterizedTestClass>();
 
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg failed: Parameter count mismatch.",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(0) passed.",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(0, 1) failed: Parameter count mismatch.",
@@ -91,13 +77,11 @@ namespace Fixie.Tests.Cases
 
         public void ShouldResolveGenericTypeParameters()
         {
-            var listener = new StubListener();
+            Convention.Parameters(ParametersFromAttributes);
 
-            var convention = new SelfTestConvention();
-            convention.Parameters(ParametersFromAttributes);
+            Run<GenericTestClass>();
 
-            convention.Execute(listener, typeof(GenericTestClass));
-            listener.Entries.ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.GenericMethodWithIncorrectParameterCountProvided<System.Object>(123, 123) failed: Parameter count mismatch.",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.GenericMethodWithNoInputsProvided<System.Object> failed: This parameterized test could not be executed, because no input values were available.",
 

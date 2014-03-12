@@ -33,7 +33,7 @@ namespace Fixie.Tests.Lifecycle
 
                 Convention.ClassExecution.SortCases((x, y) => String.Compare(y.Name, x.Name, StringComparison.Ordinal));
 
-                Convention.Execute(listener, typeof(SampleTestClass));
+                typeof(SampleTestClass).Run(listener, Convention);
 
                 return new Output(console.Lines().ToArray(), listener.Entries.ToArray());
             }

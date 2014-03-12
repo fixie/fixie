@@ -48,6 +48,7 @@
     <Compile Include="Assertions.cs" />
     <Compile Include="Behaviors\ExecuteCasesTests.cs" />
     <Compile Include="CaseExecutionTests.cs" />
+    <Compile Include="Cases\CaseTests.cs" />
     <Compile Include="CommandLineParserTests.cs" />
     <Compile Include="Conventions\AssertionLibraryFilterTests.cs" />
     <Compile Include="GenericArgumentResolverTests.cs" />

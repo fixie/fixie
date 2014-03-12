@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Fixie.Conventions;
 
 namespace Fixie.Tests
 {
@@ -21,6 +22,11 @@ namespace Fixie.Tests
         public static IEnumerable<string> Lines(this RedirectedConsole console)
         {
             return console.Output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static void Run(this Type sampleTestClass, Listener listener, Convention convention)
+        {
+            new Runner(listener).RunType(sampleTestClass.Assembly, convention, sampleTestClass);
         }
     }
 }

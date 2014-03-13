@@ -37,19 +37,21 @@ namespace Fixie.Conventions
         {
             var conventionResult = new ConventionResult(GetType().FullName);
 
-            foreach (var testClass in Classes.Filter(candidateTypes))
+            var convention = this;
+
+            foreach (var testClass in convention.Classes.Filter(candidateTypes))
             {
                 var classResult = new ClassResult(testClass.FullName);
 
-                var methods = Methods.Filter(testClass);
+                var methods = convention.Methods.Filter(testClass);
 
-                var cases = methods.SelectMany(CasesForMethod).ToArray();
-                var casesBySkipState = cases.ToLookup(CaseExecution.SkipPredicate);
+                var cases = methods.SelectMany(method => CasesForMethod(convention, method)).ToArray();
+                var casesBySkipState = cases.ToLookup(convention.CaseExecution.SkipPredicate);
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false];
                 foreach (var @case in casesToSkip)
                 {
-                    var skipResult = new SkipResult(@case, CaseExecution.SkipReasonProvider(@case));
+                    var skipResult = new SkipResult(@case, convention.CaseExecution.SkipReasonProvider(@case));
                     listener.CaseSkipped(skipResult);
                     classResult.Add(CaseResult.Skipped(skipResult.Case.Name, skipResult.Reason));
                 }
@@ -57,13 +59,13 @@ namespace Fixie.Conventions
                 var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
                 if (caseExecutions.Any())
                 {
-                    ClassExecution.Behavior.Execute(testClass, this, caseExecutions);
+                    convention.ClassExecution.Behavior.Execute(testClass, convention, caseExecutions);
 
                     foreach (var caseExecution in caseExecutions)
                     {
                         if (caseExecution.Exceptions.Any())
                         {
-                            var failResult = new FailResult(caseExecution, HideExceptionDetails);
+                            var failResult = new FailResult(caseExecution, convention.HideExceptionDetails);
                             listener.CaseFailed(failResult);
                             classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.ExceptionSummary));
                         }
@@ -83,9 +85,9 @@ namespace Fixie.Conventions
             return conventionResult;
         }
 
-        IEnumerable<Case> CasesForMethod(MethodInfo method)
+        static IEnumerable<Case> CasesForMethod(Convention convention, MethodInfo method)
         {
-            var casesForKnownInputParameters = MethodCallParameterBuilder(method)
+            var casesForKnownInputParameters = convention.MethodCallParameterBuilder(method)
                 .Select(parameters => new Case(method, parameters));
 
             bool any = false;

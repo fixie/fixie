@@ -18,7 +18,8 @@ namespace Fixie.Tests.Listeners
             {
                 var listener = new ConsoleListener();
 
-                new SelfTestConvention().Execute(listener, typeof(PassFailTestClass));
+                var conventionRunner = new ConventionRunner();
+                conventionRunner.Run(new SelfTestConvention(), listener, typeof(PassFailTestClass));
 
                 var testClass = typeof(PassFailTestClass).FullName;
 

@@ -112,13 +112,15 @@ namespace Fixie
 
         AssemblyResult Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
+            var conventionRunner = new ConventionRunner();
+
             var assemblyResult = new AssemblyResult(runContext.Assembly.Location);
             
             listener.AssemblyStarted(runContext.Assembly);
 
             foreach (var convention in conventions)
             {
-                var conventionResult = convention.Execute(listener, candidateTypes);
+                var conventionResult = conventionRunner.Run(convention, listener, candidateTypes);
 
                 assemblyResult.Add(conventionResult);
             }

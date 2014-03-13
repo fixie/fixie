@@ -161,7 +161,8 @@ namespace Fixie.Tests.Conventions
             var listener = new StubListener();
             var convention = new SelfTestConvention();
 
-            convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass), typeof(SkipTestClass));
+            var conventionRunner = new ConventionRunner();
+            conventionRunner.Run(convention, listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass), typeof(SkipTestClass));
 
             listener.Entries.ShouldEqual("Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassA passed.",
                                          "Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassB passed.",
@@ -179,7 +180,8 @@ namespace Fixie.Tests.Conventions
                       .CreateInstancePerTestClass()
                       .ShuffleCases(new Random(1));
 
-            convention.Execute(listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass), typeof(SkipTestClass));
+            var conventionRunner = new ConventionRunner();
+            conventionRunner.Run(convention, listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass), typeof(SkipTestClass));
 
             listener.Entries.ShouldEqual("Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassB passed.",
                                          "Fixie.Tests.Conventions.ConventionTests+PassTestClass.PassA passed.",

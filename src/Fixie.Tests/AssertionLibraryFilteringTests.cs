@@ -17,7 +17,8 @@ namespace Fixie.Tests
 
                 var convention = new SelfTestConvention();
 
-                convention.Execute(listener, typeof(SampleTestClass));
+                var conventionRunner = new ConventionRunner();
+                conventionRunner.Run(convention, listener, typeof(SampleTestClass));
 
                 console
                     .Output.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
@@ -49,7 +50,8 @@ namespace Fixie.Tests
                     .For<SampleAssertionLibrary.AssertionException>()
                     .For(typeof(SampleAssertionLibrary.SampleAssert));
 
-                convention.Execute(listener, typeof(SampleTestClass));
+                var conventionRunner = new ConventionRunner();
+                conventionRunner.Run(convention, listener, typeof(SampleTestClass));
 
                 console
                     .Output.Split(new[] { Environment.NewLine }, StringSplitOptions.None)

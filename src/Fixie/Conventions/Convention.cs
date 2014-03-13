@@ -8,8 +8,6 @@ namespace Fixie.Conventions
 {
     public class Convention
     {
-        Func<MethodInfo, IEnumerable<object[]>> methodCallParameterBuilder;
-
         public Convention()
         {
             Classes = new ClassFilter().Where(type => !type.IsSubclassOf(typeof(Convention)));
@@ -19,7 +17,7 @@ namespace Fixie.Conventions
             ClassExecution = new TypeBehaviorBuilder().CreateInstancePerCase();
             HideExceptionDetails = new AssertionLibraryFilter();
 
-            methodCallParameterBuilder = method => new object[][] { };
+            MethodCallParameterBuilder = method => new object[][] { };
         }
 
         public ClassFilter Classes { get; private set; }
@@ -28,10 +26,11 @@ namespace Fixie.Conventions
         public InstanceBehaviorBuilder InstanceExecution { get; private set; }
         public TypeBehaviorBuilder ClassExecution { get; private set; }
         public AssertionLibraryFilter HideExceptionDetails { get; private set; }
+        public Func<MethodInfo, IEnumerable<object[]>> MethodCallParameterBuilder { get; private set; }
 
         public void Parameters(Func<MethodInfo, IEnumerable<object[]>> getCaseParameters)
         {
-            methodCallParameterBuilder = getCaseParameters;
+            MethodCallParameterBuilder = getCaseParameters;
         }
 
         public ConventionResult Execute(Listener listener, params Type[] candidateTypes)
@@ -86,7 +85,7 @@ namespace Fixie.Conventions
 
         IEnumerable<Case> CasesForMethod(MethodInfo method)
         {
-            var casesForKnownInputParameters = methodCallParameterBuilder(method)
+            var casesForKnownInputParameters = MethodCallParameterBuilder(method)
                 .Select(parameters => new Case(method, parameters));
 
             bool any = false;

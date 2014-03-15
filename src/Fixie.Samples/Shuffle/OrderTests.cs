@@ -1,23 +1,39 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Fixie.Samples.Shuffle
 {
-    public class OrderTests
+    public class OrderTests : IDisposable
     {
-        public void TestA() { WhereAmI(); }
-        public void TestB() { WhereAmI(); }
-        public void TestC() { WhereAmI(); }
-        public void TestD() { WhereAmI(); }
-        public void TestE() { WhereAmI(); }
-        public void TestF() { WhereAmI(); }
-        public void TestG() { WhereAmI(); }
-        public void TestH() { WhereAmI(); }
-        public void TestI() { WhereAmI(); }
+        readonly StringBuilder log;
 
-        void WhereAmI([CallerMemberName] string method = null)
+        public OrderTests()
         {
-            Console.WriteLine(method);
+            log = new StringBuilder();
+        }
+
+        public void TestA() { log.WhereAmI(); }
+        public void TestB() { log.WhereAmI(); }
+        public void TestC() { log.WhereAmI(); }
+        public void TestD() { log.WhereAmI(); }
+        public void TestE() { log.WhereAmI(); }
+        public void TestF() { log.WhereAmI(); }
+        public void TestG() { log.WhereAmI(); }
+        public void TestH() { log.WhereAmI(); }
+        public void TestI() { log.WhereAmI(); }
+
+        public void Dispose()
+        {
+            log.ShouldHaveLines(
+                "TestI",
+                "TestB",
+                "TestD",
+                "TestA",
+                "TestC",
+                "TestF",
+                "TestE",
+                "TestH",
+                "TestG");
         }
     }
 }

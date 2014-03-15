@@ -1,21 +1,14 @@
 ﻿using Fixie.Conventions;
 using System;
-using System.Linq;
 
 namespace Fixie.Samples.Shuffle
 {
     public class CustomConvention : Convention
     {
-        public CustomConvention(RunContext runContext)
-        {
-            var customSeed = runContext.Options["seed"].LastOrDefault();
-            int seed = Environment.TickCount;
-            if (customSeed != null)
-            {
-                seed = Int32.Parse(customSeed);
-            }
-            Console.WriteLine("Running shuffled tests using seed: {0}", seed);
+        const int Seed = 8675309;
 
+        public CustomConvention()
+        {
             Classes
                 .Where(type => type.IsInNamespace(GetType().Namespace))
                 .NameEndsWith("Tests");
@@ -23,7 +16,9 @@ namespace Fixie.Samples.Shuffle
             Methods
                 .Where(method => method.IsVoid());
 
-            ClassExecution.ShuffleCases(new Random(seed));
+            ClassExecution
+                .CreateInstancePerTestClass()
+                .ShuffleCases(new Random(Seed));
         }
     }
 }

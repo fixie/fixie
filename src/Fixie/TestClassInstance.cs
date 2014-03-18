@@ -3,9 +3,9 @@ using Fixie.Behaviors;
 
 namespace Fixie
 {
-    public class Fixture
+    public class TestClassInstance
     {
-        public Fixture(Type testClass, object instance, CaseBehavior caseExecutionBehavior, CaseExecution[] caseExecutions)
+        public TestClassInstance(Type testClass, object instance, CaseBehavior caseExecutionBehavior, CaseExecution[] caseExecutions)
         {
             TestClass = testClass;
             Instance = instance;

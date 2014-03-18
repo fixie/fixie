@@ -18,8 +18,8 @@ namespace Fixie.Behaviors
             {
                 var instance = construct(testClass);
 
-                var fixture = new Fixture(testClass, instance, convention.CaseExecution.Behavior, caseExecutions);
-                convention.InstanceExecution.Behavior.Execute(fixture);
+                var testClassInstance = new TestClassInstance(testClass, instance, convention.CaseExecution.Behavior, caseExecutions);
+                convention.InstanceExecution.Behavior.Execute(testClassInstance);
 
                 Dispose(instance);
             }

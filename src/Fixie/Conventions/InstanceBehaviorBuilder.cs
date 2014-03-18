@@ -3,7 +3,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void InstanceBehaviorAction(Fixture fixture, Action innerBehavior);
+    public delegate void InstanceBehaviorAction(TestClassInstance testClassInstance, Action innerBehavior);
 
     public class InstanceBehaviorBuilder
     {
@@ -20,22 +20,22 @@ namespace Fixie.Conventions
             return this;
         }
 
-        public InstanceBehaviorBuilder SetUp(Action<Fixture> setUp)
+        public InstanceBehaviorBuilder SetUp(Action<TestClassInstance> setUp)
         {
-            return Wrap((fixture, innerBehavior) =>
+            return Wrap((testClassInstance, innerBehavior) =>
             {
-                setUp(fixture);
+                setUp(testClassInstance);
                 innerBehavior();
             });
         }
 
-        public InstanceBehaviorBuilder SetUpTearDown(Action<Fixture> setUp, Action<Fixture> tearDown)
+        public InstanceBehaviorBuilder SetUpTearDown(Action<TestClassInstance> setUp, Action<TestClassInstance> tearDown)
         {
-            return Wrap((fixture, innerBehavior) =>
+            return Wrap((testClassInstance, innerBehavior) =>
             {
-                setUp(fixture);
+                setUp(testClassInstance);
                 innerBehavior();
-                tearDown(fixture);
+                tearDown(testClassInstance);
             });
         }
 
@@ -50,15 +50,15 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(Fixture fixture)
+            public void Execute(TestClassInstance testClassInstance)
             {
                 try
                 {
-                    outer(fixture, () => inner.Execute(fixture));
+                    outer(testClassInstance, () => inner.Execute(testClassInstance));
                 }
                 catch (Exception exception)
                 {
-                    foreach (var caseExecution in fixture.CaseExecutions)
+                    foreach (var caseExecution in testClassInstance.CaseExecutions)
                         caseExecution.Fail(exception);
                 }
             }

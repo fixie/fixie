@@ -125,15 +125,15 @@ namespace Fixie.Tests.Lifecycle
             WhereAmI();
         }
 
-        protected static void InstanceSetUp(Fixture fixture)
+        protected static void InstanceSetUp(TestClassInstance testClassInstance)
         {
-            fixture.TestClass.ShouldEqual(typeof(SampleTestClass));
+            testClassInstance.TestClass.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
         }
 
-        protected static void InstanceTearDown(Fixture fixture)
+        protected static void InstanceTearDown(TestClassInstance testClassInstance)
         {
-            fixture.TestClass.ShouldEqual(typeof(SampleTestClass));
+            testClassInstance.TestClass.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
         }
 

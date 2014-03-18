@@ -2,6 +2,6 @@
 {
     public interface InstanceBehavior
     {
-        void Execute(Fixture fixture);
+        void Execute(TestClassInstance testClassInstance);
     }
 }

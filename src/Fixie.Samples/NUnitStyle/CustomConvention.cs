@@ -32,8 +32,8 @@ namespace Fixie.Samples.NUnitStyle
             where TSetUpAttribute : Attribute
             where TTearDownAttribute : Attribute
         {
-            return builder.SetUpTearDown(fixture => InvokeAll<TSetUpAttribute>(fixture.TestClass, fixture.Instance),
-                                         fixture => InvokeAll<TTearDownAttribute>(fixture.TestClass, fixture.Instance));
+            return builder.SetUpTearDown(testClassInstance => InvokeAll<TSetUpAttribute>(testClassInstance.TestClass, testClassInstance.Instance),
+                                         testClassInstance => InvokeAll<TTearDownAttribute>(testClassInstance.TestClass, testClassInstance.Instance));
         }
 
         public static CaseBehaviorBuilder SetUpTearDown<TSetUpAttribute, TTearDownAttribute>(this CaseBehaviorBuilder builder)

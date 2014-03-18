@@ -62,7 +62,7 @@
     <Compile Include="Conventions\SelfTestConvention.cs" />
     <Compile Include="Conventions\TypeBehaviorBuilder.cs" />
     <Compile Include="FailResult.cs" />
-    <Compile Include="Fixture.cs" />
+    <Compile Include="TestClassInstance.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Behaviors\Invoke.cs" />
     <Compile Include="Behaviors\CaseBehavior.cs" />

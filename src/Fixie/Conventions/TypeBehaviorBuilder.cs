@@ -110,11 +110,11 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(Type testClass, Convention convention, CaseExecution[] caseExecutions)
+            public void Execute(TestClass testClass, Convention convention, CaseExecution[] caseExecutions)
             {
                 try
                 {
-                    outer(testClass, convention, caseExecutions, () => inner.Execute(testClass, convention, caseExecutions));
+                    outer(testClass.Type, convention, caseExecutions, () => inner.Execute(testClass, convention, caseExecutions));
                 }
                 catch (Exception exception)
                 {

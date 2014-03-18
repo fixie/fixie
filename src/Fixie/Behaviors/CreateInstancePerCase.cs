@@ -12,15 +12,15 @@ namespace Fixie.Behaviors
             this.construct = construct;
         }
 
-        public void Execute(Type testClass, Convention convention, CaseExecution[] caseExecutions)
+        public void Execute(TestClass testClass, Convention convention, CaseExecution[] caseExecutions)
         {
             foreach (var caseExecution in caseExecutions)
             {
                 try
                 {
-                    var instance = construct(testClass);
+                    var instance = construct(testClass.Type);
 
-                    var testClassInstance = new TestClassInstance(testClass, instance, convention.CaseExecution.Behavior, new[] { caseExecution });
+                    var testClassInstance = new TestClassInstance(testClass.Type, instance, convention.CaseExecution.Behavior, new[] { caseExecution });
                     convention.InstanceExecution.Behavior.Execute(testClassInstance);
 
                     Dispose(instance);

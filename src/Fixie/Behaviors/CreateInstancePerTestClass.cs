@@ -11,20 +11,20 @@ namespace Fixie.Behaviors
             this.construct = construct;
         }
 
-        public void Execute(TestClass testClass)
+        public void Execute(ClassExecution classExecution)
         {
             try
             {
-                var instance = construct(testClass.Type);
+                var instance = construct(classExecution.TestClass);
 
-                var testClassInstance = new TestClassInstance(testClass.Convention, testClass.Type, instance, testClass.CaseExecutions);
-                testClass.Convention.InstanceExecution.Behavior.Execute(testClassInstance);
+                var instanceExecution = new InstanceExecution(classExecution.Convention, classExecution.TestClass, instance, classExecution.CaseExecutions);
+                classExecution.Convention.InstanceExecution.Behavior.Execute(instanceExecution);
 
                 Dispose(instance);
             }
             catch (Exception exception)
             {
-                testClass.FailCases(exception);
+                classExecution.FailCases(exception);
             }
         }
 

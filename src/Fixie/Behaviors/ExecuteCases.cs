@@ -5,9 +5,9 @@ namespace Fixie.Behaviors
 {
     public class ExecuteCases : InstanceBehavior
     {
-        public void Execute(TestClassInstance testClassInstance)
+        public void Execute(InstanceExecution instanceExecution)
         {
-            foreach (var caseExecution in testClassInstance.CaseExecutions)
+            foreach (var caseExecution in instanceExecution.CaseExecutions)
             {
 
                 using (var console = new RedirectedConsole())
@@ -17,7 +17,7 @@ namespace Fixie.Behaviors
 
                     try
                     {
-                        testClassInstance.Convention.CaseExecution.Behavior.Execute(caseExecution, testClassInstance.Instance);
+                        instanceExecution.Convention.CaseExecution.Behavior.Execute(caseExecution, instanceExecution.Instance);
                     }
                     catch (Exception exception)
                     {

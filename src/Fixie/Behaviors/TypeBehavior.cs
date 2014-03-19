@@ -2,6 +2,6 @@
 {
     public interface TypeBehavior
     {
-        void Execute(TestClass testClass);
+        void Execute(ClassExecution classExecution);
     }
 }

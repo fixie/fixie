@@ -38,8 +38,8 @@ namespace Fixie.Tests.Behaviors
             };
 
             var executeCases = new ExecuteCases();
-            var testClassInstance = new TestClassInstance(convention, testClass, new SampleTestClass(), caseExecutions);
-            executeCases.Execute(testClassInstance);
+            var instanceExecution = new InstanceExecution(convention, testClass, new SampleTestClass(), caseExecutions);
+            executeCases.Execute(instanceExecution);
 
             caseExecutions[0].Exceptions.Any().ShouldBeFalse();
             caseExecutions[1].Exceptions.Single().Message.ShouldEqual("'Fail' failed!");

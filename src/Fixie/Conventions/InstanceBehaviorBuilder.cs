@@ -3,7 +3,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void InstanceBehaviorAction(TestClassInstance testClassInstance, Action innerBehavior);
+    public delegate void InstanceBehaviorAction(InstanceExecution instanceExecution, Action innerBehavior);
 
     public class InstanceBehaviorBuilder
     {
@@ -20,22 +20,22 @@ namespace Fixie.Conventions
             return this;
         }
 
-        public InstanceBehaviorBuilder SetUp(Action<TestClassInstance> setUp)
+        public InstanceBehaviorBuilder SetUp(Action<InstanceExecution> setUp)
         {
-            return Wrap((testClassInstance, innerBehavior) =>
+            return Wrap((instanceExecution, innerBehavior) =>
             {
-                setUp(testClassInstance);
+                setUp(instanceExecution);
                 innerBehavior();
             });
         }
 
-        public InstanceBehaviorBuilder SetUpTearDown(Action<TestClassInstance> setUp, Action<TestClassInstance> tearDown)
+        public InstanceBehaviorBuilder SetUpTearDown(Action<InstanceExecution> setUp, Action<InstanceExecution> tearDown)
         {
-            return Wrap((testClassInstance, innerBehavior) =>
+            return Wrap((instanceExecution, innerBehavior) =>
             {
-                setUp(testClassInstance);
+                setUp(instanceExecution);
                 innerBehavior();
-                tearDown(testClassInstance);
+                tearDown(instanceExecution);
             });
         }
 
@@ -50,15 +50,15 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(TestClassInstance testClassInstance)
+            public void Execute(InstanceExecution instanceExecution)
             {
                 try
                 {
-                    outer(testClassInstance, () => inner.Execute(testClassInstance));
+                    outer(instanceExecution, () => inner.Execute(instanceExecution));
                 }
                 catch (Exception exception)
                 {
-                    testClassInstance.FailCases(exception);
+                    instanceExecution.FailCases(exception);
                 }
             }
         }

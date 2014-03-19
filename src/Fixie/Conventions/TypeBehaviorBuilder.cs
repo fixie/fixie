@@ -4,7 +4,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void TypeBehaviorAction(TestClass testClass, Action innerBehavior);
+    public delegate void TypeBehaviorAction(ClassExecution classExecution, Action innerBehavior);
 
     public class TypeBehaviorBuilder
     {
@@ -46,28 +46,28 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder SetUp(Action<Type> setUp)
         {
-            return Wrap((testClass, innerBehavior) =>
+            return Wrap((classExecution, innerBehavior) =>
             {
-                setUp(testClass.Type);
+                setUp(classExecution.TestClass);
                 innerBehavior();
             });
         }
 
         public TypeBehaviorBuilder SetUpTearDown(Action<Type> setUp, Action<Type> tearDown)
         {
-            return Wrap((testClass, innerBehavior) =>
+            return Wrap((classExecution, innerBehavior) =>
             {
-                setUp(testClass.Type);
+                setUp(classExecution.TestClass);
                 innerBehavior();
-                tearDown(testClass.Type);
+                tearDown(classExecution.TestClass);
             });
         }
 
         public TypeBehaviorBuilder ShuffleCases(Random random)
         {
-            return Wrap((testClass, innerBehavior) =>
+            return Wrap((classExecution, innerBehavior) =>
             {
-                testClass.ShuffleCases(random);
+                classExecution.ShuffleCases(random);
                 innerBehavior();
             });
         }
@@ -79,9 +79,9 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder SortCases(Comparison<Case> comparison)
         {
-            return Wrap((testClass, innerBehavior) =>
+            return Wrap((classExecution, innerBehavior) =>
             {
-                testClass.SortCases(comparison);
+                classExecution.SortCases(comparison);
                 innerBehavior();
             });
         }
@@ -109,15 +109,15 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(TestClass testClass)
+            public void Execute(ClassExecution classExecution)
             {
                 try
                 {
-                    outer(testClass, () => inner.Execute(testClass));
+                    outer(classExecution, () => inner.Execute(classExecution));
                 }
                 catch (Exception exception)
                 {
-                    testClass.FailCases(exception);
+                    classExecution.FailCases(exception);
                 }                
             }
         }

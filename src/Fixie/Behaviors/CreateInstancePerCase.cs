@@ -11,16 +11,16 @@ namespace Fixie.Behaviors
             this.construct = construct;
         }
 
-        public void Execute(TestClass testClass)
+        public void Execute(ClassExecution classExecution)
         {
-            foreach (var caseExecution in testClass.CaseExecutions)
+            foreach (var caseExecution in classExecution.CaseExecutions)
             {
                 try
                 {
-                    var instance = construct(testClass.Type);
+                    var instance = construct(classExecution.TestClass);
 
-                    var testClassInstance = new TestClassInstance(testClass.Convention, testClass.Type, instance, new[] { caseExecution });
-                    testClass.Convention.InstanceExecution.Behavior.Execute(testClassInstance);
+                    var instanceExecution = new InstanceExecution(classExecution.Convention, classExecution.TestClass, instance, new[] { caseExecution });
+                    classExecution.Convention.InstanceExecution.Behavior.Execute(instanceExecution);
 
                     Dispose(instance);
                 }

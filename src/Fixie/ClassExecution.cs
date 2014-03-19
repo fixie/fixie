@@ -4,19 +4,19 @@ using Fixie.Conventions;
 
 namespace Fixie
 {
-    public class TestClass
+    public class ClassExecution
     {
         readonly CaseExecution[] caseExecutions;
 
-        public TestClass(Convention convention, Type type, CaseExecution[] caseExecutions)
+        public ClassExecution(Convention convention, Type testClass, CaseExecution[] caseExecutions)
         {
             Convention = convention;
-            Type = type;
+            TestClass = testClass;
             this.caseExecutions = caseExecutions;
         }
 
         public Convention Convention { get; private set; }
-        public Type Type { get; private set; }
+        public Type TestClass { get; private set; }
         public IReadOnlyList<CaseExecution> CaseExecutions { get { return caseExecutions; } }
 
         public void ShuffleCases(Random random)

@@ -4,9 +4,9 @@ using Fixie.Conventions;
 
 namespace Fixie
 {
-    public class TestClassInstance
+    public class InstanceExecution
     {
-        public TestClassInstance(Convention convention, Type testClass, object instance, IReadOnlyList<CaseExecution> caseExecutions)
+        public InstanceExecution(Convention convention, Type testClass, object instance, IReadOnlyList<CaseExecution> caseExecutions)
         {
             Convention = convention;
             TestClass = testClass;

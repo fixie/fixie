@@ -60,10 +60,10 @@ namespace Fixie.Samples.xUnitStyle
             fixtures.Clear();
         }
 
-        void InjectFixtureData(TestClassInstance testClassInstance)
+        void InjectFixtureData(InstanceExecution instanceExecution)
         {
             foreach (var injectionMethod in fixtures.Keys)
-                injectionMethod.Invoke(testClassInstance.Instance, new[] { fixtures[injectionMethod] });
+                injectionMethod.Invoke(instanceExecution.Instance, new[] { fixtures[injectionMethod] });
         }
 
         static IEnumerable<Type> FixtureInterfaces(Type testClass)

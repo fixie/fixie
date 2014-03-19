@@ -2,6 +2,6 @@
 {
     public interface InstanceBehavior
     {
-        void Execute(TestClassInstance testClassInstance);
+        void Execute(InstanceExecution instanceExecution);
     }
 }

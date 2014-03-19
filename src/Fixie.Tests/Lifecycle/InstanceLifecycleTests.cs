@@ -10,13 +10,13 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.InstanceExecution
-                      .Wrap((testClassInstance, innerBehavior) =>
+                      .Wrap((instanceExecution, innerBehavior) =>
                       {
                           Console.WriteLine("Inner Before");
                           innerBehavior();
                           Console.WriteLine("Inner After");
                       })
-                      .Wrap((testClassInstance, innerBehavior) =>
+                      .Wrap((instanceExecution, innerBehavior) =>
                       {
                           Console.WriteLine("Outer Before");
                           innerBehavior();
@@ -48,13 +48,13 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerTestClass();
 
             Convention.InstanceExecution
-                      .Wrap((testClassInstance, innerBehavior) =>
+                      .Wrap((instanceExecution, innerBehavior) =>
                       {
                           Console.WriteLine("Inner Before");
                           innerBehavior();
                           Console.WriteLine("Inner After");
                       })
-                      .Wrap((testClassInstance, innerBehavior) =>
+                      .Wrap((instanceExecution, innerBehavior) =>
                       {
                           Console.WriteLine("Outer Before");
                           innerBehavior();
@@ -81,7 +81,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.InstanceExecution
-                      .Wrap((testClassInstance, innerBehavior) =>
+                      .Wrap((instanceExecution, innerBehavior) =>
                       {
                           //Behavior chooses not to invoke innerBehavior().
                           //Since the cases are never invoked, they don't
@@ -108,7 +108,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerTestClass();
 
             Convention.InstanceExecution
-                      .Wrap((testClassInstance, innerBehavior) =>
+                      .Wrap((instanceExecution, innerBehavior) =>
                       {
                           //Behavior chooses not to invoke innerBehavior().
                           //Since the cases are never invoked, they don't
@@ -133,7 +133,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.InstanceExecution
-                      .Wrap((testClassInstance, innerBehavior) =>
+                      .Wrap((instanceExecution, innerBehavior) =>
                       {
                           Console.WriteLine("Unsafe instance execution behavior");
                           throw new Exception("Unsafe instance execution behavior threw!");
@@ -160,7 +160,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerTestClass();
 
             Convention.InstanceExecution
-                      .Wrap((testClassInstance, innerBehavior) =>
+                      .Wrap((instanceExecution, innerBehavior) =>
                       {
                           Console.WriteLine("Unsafe instance execution behavior");
                           throw new Exception("Unsafe instance execution behavior threw!");
@@ -184,7 +184,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.InstanceExecution
-                      .Wrap((testClassInstance, innerBehavior) =>
+                      .Wrap((instanceExecution, innerBehavior) =>
                       {
                           Console.WriteLine("Unsafe instance execution behavior");
                           try
@@ -218,7 +218,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerTestClass();
 
             Convention.InstanceExecution
-                      .Wrap((testClassInstance, innerBehavior) =>
+                      .Wrap((instanceExecution, innerBehavior) =>
                       {
                           Console.WriteLine("Unsafe instance execution behavior");
                           try

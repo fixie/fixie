@@ -58,8 +58,7 @@ namespace Fixie.Conventions
                 }
                 catch (Exception exception)
                 {
-                    foreach (var caseExecution in testClassInstance.CaseExecutions)
-                        caseExecution.Fail(exception);
+                    testClassInstance.FailCases(exception);
                 }
             }
         }

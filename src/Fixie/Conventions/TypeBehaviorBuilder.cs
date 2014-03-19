@@ -67,7 +67,7 @@ namespace Fixie.Conventions
         {
             return Wrap((testClass, innerBehavior) =>
             {
-                testClass.CaseExecutions.Shuffle(random);
+                testClass.ShuffleCases(random);
                 innerBehavior();
             });
         }
@@ -81,8 +81,7 @@ namespace Fixie.Conventions
         {
             return Wrap((testClass, innerBehavior) =>
             {
-                Array.Sort(testClass.CaseExecutions, (caseExecutionA, caseExecutionB) => comparison(caseExecutionA.Case, caseExecutionB.Case));
-
+                testClass.SortCases(comparison);
                 innerBehavior();
             });
         }
@@ -118,8 +117,7 @@ namespace Fixie.Conventions
                 }
                 catch (Exception exception)
                 {
-                    foreach (var caseExecution in testClass.CaseExecutions)
-                        caseExecution.Fail(exception);
+                    testClass.FailCases(exception);
                 }                
             }
         }

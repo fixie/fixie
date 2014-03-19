@@ -1,5 +1,4 @@
 ﻿using System;
-using Fixie.Conventions;
 
 namespace Fixie.Behaviors
 {
@@ -25,8 +24,7 @@ namespace Fixie.Behaviors
             }
             catch (Exception exception)
             {
-                foreach (var caseExecution in testClass.CaseExecutions)
-                    caseExecution.Fail(exception);
+                testClass.FailCases(exception);
             }
         }
 

@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using Fixie.Behaviors;
+using Fixie.Conventions;
 
 namespace Fixie
 {
     public class TestClassInstance
     {
-        public TestClassInstance(Type testClass, object instance, CaseBehavior caseExecutionBehavior, IReadOnlyList<CaseExecution> caseExecutions)
+        readonly Convention convention;
+
+        public TestClassInstance(Convention convention, Type testClass, object instance, IReadOnlyList<CaseExecution> caseExecutions)
         {
             TestClass = testClass;
             Instance = instance;
-            CaseExecutionBehavior = caseExecutionBehavior;
+            this.convention = convention;
             CaseExecutions = caseExecutions;
         }
 
         public Type TestClass { get; private set; }
         public object Instance { get; private set; }
-        public CaseBehavior CaseExecutionBehavior { get; private set; }
         public IReadOnlyList<CaseExecution> CaseExecutions { get; private set; }
+
+        public void ExecuteCaseBehavior(CaseExecution caseExecution)
+        {
+            convention.CaseExecution.Behavior.Execute(caseExecution, Instance);
+        }
 
         public void FailCases(Exception exception)
         {

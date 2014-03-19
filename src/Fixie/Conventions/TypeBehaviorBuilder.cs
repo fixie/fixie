@@ -4,7 +4,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void TypeBehaviorAction(TestClass testClass, CaseExecution[] caseExecutions, Action innerBehavior);
+    public delegate void TypeBehaviorAction(TestClass testClass, Action innerBehavior);
 
     public class TypeBehaviorBuilder
     {
@@ -46,7 +46,7 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder SetUp(Action<Type> setUp)
         {
-            return Wrap((testClass, cases, innerBehavior) =>
+            return Wrap((testClass, innerBehavior) =>
             {
                 setUp(testClass.Type);
                 innerBehavior();
@@ -55,7 +55,7 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder SetUpTearDown(Action<Type> setUp, Action<Type> tearDown)
         {
-            return Wrap((testClass, cases, innerBehavior) =>
+            return Wrap((testClass, innerBehavior) =>
             {
                 setUp(testClass.Type);
                 innerBehavior();
@@ -65,9 +65,9 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder ShuffleCases(Random random)
         {
-            return Wrap((testClass, cases, innerBehavior) =>
+            return Wrap((testClass, innerBehavior) =>
             {
-                cases.Shuffle(random);
+                testClass.CaseExecutions.Shuffle(random);
                 innerBehavior();
             });
         }
@@ -79,9 +79,9 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder SortCases(Comparison<Case> comparison)
         {
-            return Wrap((testClass, caseExecutions, innerBehavior) =>
+            return Wrap((testClass, innerBehavior) =>
             {
-                Array.Sort(caseExecutions, (caseExecutionA, caseExecutionB) => comparison(caseExecutionA.Case, caseExecutionB.Case));
+                Array.Sort(testClass.CaseExecutions, (caseExecutionA, caseExecutionB) => comparison(caseExecutionA.Case, caseExecutionB.Case));
 
                 innerBehavior();
             });
@@ -110,15 +110,15 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(TestClass testClass, CaseExecution[] caseExecutions)
+            public void Execute(TestClass testClass)
             {
                 try
                 {
-                    outer(testClass, caseExecutions, () => inner.Execute(testClass, caseExecutions));
+                    outer(testClass, () => inner.Execute(testClass));
                 }
                 catch (Exception exception)
                 {
-                    foreach (var caseExecution in caseExecutions)
+                    foreach (var caseExecution in testClass.CaseExecutions)
                         caseExecution.Fail(exception);
                 }                
             }

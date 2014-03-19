@@ -12,9 +12,9 @@ namespace Fixie.Behaviors
             this.construct = construct;
         }
 
-        public void Execute(TestClass testClass, CaseExecution[] caseExecutions)
+        public void Execute(TestClass testClass)
         {
-            foreach (var caseExecution in caseExecutions)
+            foreach (var caseExecution in testClass.CaseExecutions)
             {
                 try
                 {

@@ -12,7 +12,7 @@ namespace Fixie.Behaviors
             this.construct = construct;
         }
 
-        public void Execute(TestClass testClass, Convention convention, CaseExecution[] caseExecutions)
+        public void Execute(TestClass testClass, CaseExecution[] caseExecutions)
         {
             foreach (var caseExecution in caseExecutions)
             {
@@ -20,8 +20,8 @@ namespace Fixie.Behaviors
                 {
                     var instance = construct(testClass.Type);
 
-                    var testClassInstance = new TestClassInstance(testClass.Type, instance, convention.CaseExecution.Behavior, new[] { caseExecution });
-                    convention.InstanceExecution.Behavior.Execute(testClassInstance);
+                    var testClassInstance = new TestClassInstance(testClass.Type, instance, testClass.Convention.CaseExecution.Behavior, new[] { caseExecution });
+                    testClass.Convention.InstanceExecution.Behavior.Execute(testClassInstance);
 
                     Dispose(instance);
                 }

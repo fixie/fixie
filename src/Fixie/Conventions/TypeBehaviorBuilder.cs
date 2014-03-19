@@ -4,7 +4,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void TypeBehaviorAction(TestClass testClass, Convention convention, CaseExecution[] caseExecutions, Action innerBehavior);
+    public delegate void TypeBehaviorAction(TestClass testClass, CaseExecution[] caseExecutions, Action innerBehavior);
 
     public class TypeBehaviorBuilder
     {
@@ -46,7 +46,7 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder SetUp(Action<Type> setUp)
         {
-            return Wrap((testClass, convention, cases, innerBehavior) =>
+            return Wrap((testClass, cases, innerBehavior) =>
             {
                 setUp(testClass.Type);
                 innerBehavior();
@@ -55,7 +55,7 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder SetUpTearDown(Action<Type> setUp, Action<Type> tearDown)
         {
-            return Wrap((testClass, convention, cases, innerBehavior) =>
+            return Wrap((testClass, cases, innerBehavior) =>
             {
                 setUp(testClass.Type);
                 innerBehavior();
@@ -65,7 +65,7 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder ShuffleCases(Random random)
         {
-            return Wrap((testClass, convention, cases, innerBehavior) =>
+            return Wrap((testClass, cases, innerBehavior) =>
             {
                 cases.Shuffle(random);
                 innerBehavior();
@@ -79,7 +79,7 @@ namespace Fixie.Conventions
 
         public TypeBehaviorBuilder SortCases(Comparison<Case> comparison)
         {
-            return Wrap((testClass, convention, caseExecutions, innerBehavior) =>
+            return Wrap((testClass, caseExecutions, innerBehavior) =>
             {
                 Array.Sort(caseExecutions, (caseExecutionA, caseExecutionB) => comparison(caseExecutionA.Case, caseExecutionB.Case));
 
@@ -110,11 +110,11 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(TestClass testClass, Convention convention, CaseExecution[] caseExecutions)
+            public void Execute(TestClass testClass, CaseExecution[] caseExecutions)
             {
                 try
                 {
-                    outer(testClass, convention, caseExecutions, () => inner.Execute(testClass, convention, caseExecutions));
+                    outer(testClass, caseExecutions, () => inner.Execute(testClass, caseExecutions));
                 }
                 catch (Exception exception)
                 {

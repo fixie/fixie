@@ -32,7 +32,7 @@ namespace Fixie.Conventions
                 var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
                 if (caseExecutions.Any())
                 {
-                    convention.ClassExecution.Behavior.Execute(new TestClass(testClass), convention, caseExecutions);
+                    convention.ClassExecution.Behavior.Execute(new TestClass(convention, testClass), caseExecutions);
 
                     foreach (var caseExecution in caseExecutions)
                     {

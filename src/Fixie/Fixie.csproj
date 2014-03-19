@@ -50,7 +50,7 @@
     <Compile Include="GenericArgumentResolver.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="RedirectedConsole.cs" />
-    <Compile Include="Behaviors\TypeBehavior.cs" />
+    <Compile Include="Behaviors\ClassBehavior.cs" />
     <Compile Include="Case.cs" />
     <Compile Include="CommandLineParser.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />
@@ -60,7 +60,7 @@
     <Compile Include="Conventions\InstanceBehaviorBuilder.cs" />
     <Compile Include="Conventions\CaseBehaviorBuilder.cs" />
     <Compile Include="Conventions\SelfTestConvention.cs" />
-    <Compile Include="Conventions\TypeBehaviorBuilder.cs" />
+    <Compile Include="Conventions\ClassBehaviorBuilder.cs" />
     <Compile Include="FailResult.cs" />
     <Compile Include="ClassExecution.cs" />
     <Compile Include="InstanceExecution.cs" />

@@ -4,47 +4,47 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void TypeBehaviorAction(ClassExecution classExecution, Action innerBehavior);
+    public delegate void ClassBehaviorAction(ClassExecution classExecution, Action innerBehavior);
 
-    public class TypeBehaviorBuilder
+    public class ClassBehaviorBuilder
     {
-        public TypeBehaviorBuilder()
+        public ClassBehaviorBuilder()
         {
             Behavior = null;
         }
 
-        public TypeBehavior Behavior { get; private set; }
+        public ClassBehavior Behavior { get; private set; }
 
-        public TypeBehaviorBuilder CreateInstancePerCase()
+        public ClassBehaviorBuilder CreateInstancePerCase()
         {
             Behavior = new CreateInstancePerCase(Construct);
             return this;
         }
-        public TypeBehaviorBuilder CreateInstancePerCase(Func<Type, object> construct)
+        public ClassBehaviorBuilder CreateInstancePerCase(Func<Type, object> construct)
         {
             Behavior = new CreateInstancePerCase(construct);
             return this;
         }
 
-        public TypeBehaviorBuilder CreateInstancePerTestClass()
+        public ClassBehaviorBuilder CreateInstancePerTestClass()
         {
             Behavior = new CreateInstancePerTestClass(Construct);
             return this;
         }
 
-        public TypeBehaviorBuilder CreateInstancePerTestClass(Func<Type, object> construct)
+        public ClassBehaviorBuilder CreateInstancePerTestClass(Func<Type, object> construct)
         {
             Behavior = new CreateInstancePerTestClass(construct);
             return this;
         }
 
-        public TypeBehaviorBuilder Wrap(TypeBehaviorAction outer)
+        public ClassBehaviorBuilder Wrap(ClassBehaviorAction outer)
         {
             Behavior = new WrapBehavior(outer, Behavior);
             return this;
         }
 
-        public TypeBehaviorBuilder SetUp(Action<Type> setUp)
+        public ClassBehaviorBuilder SetUp(Action<Type> setUp)
         {
             return Wrap((classExecution, innerBehavior) =>
             {
@@ -53,7 +53,7 @@ namespace Fixie.Conventions
             });
         }
 
-        public TypeBehaviorBuilder SetUpTearDown(Action<Type> setUp, Action<Type> tearDown)
+        public ClassBehaviorBuilder SetUpTearDown(Action<Type> setUp, Action<Type> tearDown)
         {
             return Wrap((classExecution, innerBehavior) =>
             {
@@ -63,7 +63,7 @@ namespace Fixie.Conventions
             });
         }
 
-        public TypeBehaviorBuilder ShuffleCases(Random random)
+        public ClassBehaviorBuilder ShuffleCases(Random random)
         {
             return Wrap((classExecution, innerBehavior) =>
             {
@@ -72,12 +72,12 @@ namespace Fixie.Conventions
             });
         }
 
-        public TypeBehaviorBuilder ShuffleCases()
+        public ClassBehaviorBuilder ShuffleCases()
         {
             return ShuffleCases(new Random());
         }
 
-        public TypeBehaviorBuilder SortCases(Comparison<Case> comparison)
+        public ClassBehaviorBuilder SortCases(Comparison<Case> comparison)
         {
             return Wrap((classExecution, innerBehavior) =>
             {
@@ -98,12 +98,12 @@ namespace Fixie.Conventions
             }
         }
 
-        class WrapBehavior : TypeBehavior
+        class WrapBehavior : ClassBehavior
         {
-            readonly TypeBehaviorAction outer;
-            readonly TypeBehavior inner;
+            readonly ClassBehaviorAction outer;
+            readonly ClassBehavior inner;
 
-            public WrapBehavior(TypeBehaviorAction outer, TypeBehavior inner)
+            public WrapBehavior(ClassBehaviorAction outer, ClassBehavior inner)
             {
                 this.outer = outer;
                 this.inner = inner;

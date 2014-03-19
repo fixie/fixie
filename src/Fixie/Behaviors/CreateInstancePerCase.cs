@@ -2,7 +2,7 @@
 
 namespace Fixie.Behaviors
 {
-    public class CreateInstancePerCase : TypeBehavior
+    public class CreateInstancePerCase : ClassBehavior
     {
         readonly Func<Type, object> construct;
 

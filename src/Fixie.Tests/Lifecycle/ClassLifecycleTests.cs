@@ -63,7 +63,7 @@ namespace Fixie.Tests.Lifecycle
                 "Inner After", "Outer After");
         }
 
-        public void ShouldAllowTypeBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerCase()
+        public void ShouldAllowClassBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -84,7 +84,7 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldAllowTypeBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerTestClass()
+        public void ShouldAllowClassBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerTestClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass()
@@ -105,7 +105,7 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldFailCaseWhenConstructingPerCaseAndTypeBehaviorThrows()
+        public void ShouldFailCaseWhenConstructingPerCaseAndClassBehaviorThrows()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -124,7 +124,7 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle("Unsafe class execution behavior");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndTypeBehaviorThrows()
+        public void ShouldFailAllCasesWhenConstructingPerTestClassAndClassBehaviorThrows()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass()
@@ -143,7 +143,7 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle("Unsafe class execution behavior");
         }
 
-        public void ShouldFailCaseWithOriginalExceptionWhenConstructingPerCaseAndTypeBehaviorThrowsPreservedException()
+        public void ShouldFailCaseWithOriginalExceptionWhenConstructingPerCaseAndClassBehaviorThrowsPreservedException()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -169,7 +169,7 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle("Unsafe class execution behavior");
         }
 
-        public void ShouldFailAllCasesWithOriginalExceptionWhenConstructingPerTestClassAndTypeBehaviorThrowsPreservedException()
+        public void ShouldFailAllCasesWithOriginalExceptionWhenConstructingPerTestClassAndClassBehaviorThrowsPreservedException()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass()

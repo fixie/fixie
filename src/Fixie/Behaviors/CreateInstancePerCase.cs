@@ -19,7 +19,7 @@ namespace Fixie.Behaviors
                 {
                     var instance = construct(testClass.Type);
 
-                    var testClassInstance = new TestClassInstance(testClass.Type, instance, testClass.Convention.CaseExecution.Behavior, new[] { caseExecution });
+                    var testClassInstance = new TestClassInstance(testClass.Convention, testClass.Type, instance, new[] { caseExecution });
                     testClass.Convention.InstanceExecution.Behavior.Execute(testClassInstance);
 
                     Dispose(instance);

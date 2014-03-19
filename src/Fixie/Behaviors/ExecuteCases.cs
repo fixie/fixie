@@ -17,7 +17,7 @@ namespace Fixie.Behaviors
 
                     try
                     {
-                        testClassInstance.ExecuteCaseBehavior(caseExecution);
+                        testClassInstance.CaseExecutionBehavior.Execute(caseExecution, testClassInstance.Instance);
                     }
                     catch (Exception exception)
                     {

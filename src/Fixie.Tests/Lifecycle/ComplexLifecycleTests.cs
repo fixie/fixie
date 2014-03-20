@@ -8,7 +8,7 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
-                      .SetUpTearDown(TypeSetUp, TypeTearDown);
+                      .SetUpTearDown(ClassSetUp, ClassTearDown);
 
             Convention.InstanceExecution
                       .SetUpTearDown(InstanceSetUp, InstanceTearDown);
@@ -23,7 +23,7 @@ namespace Fixie.Tests.Lifecycle
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
-                "TypeSetUp",
+                "ClassSetUp",
 
                 ".ctor",
                 "InstanceSetUp",
@@ -41,14 +41,14 @@ namespace Fixie.Tests.Lifecycle
                 "InstanceTearDown",
                 "Dispose",
 
-                "TypeTearDown");
+                "ClassTearDown");
         }
 
         public void ShouldPerformCompleteLifecyclePerTestClassWhenConstructingPerTestClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerTestClass()
-                      .SetUpTearDown(TypeSetUp, TypeTearDown);
+                      .SetUpTearDown(ClassSetUp, ClassTearDown);
 
             Convention.InstanceExecution
                       .SetUpTearDown(InstanceSetUp, InstanceTearDown);
@@ -63,7 +63,7 @@ namespace Fixie.Tests.Lifecycle
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
-                "TypeSetUp",
+                "ClassSetUp",
                 ".ctor",
 
                 "InstanceSetUp",
@@ -77,16 +77,16 @@ namespace Fixie.Tests.Lifecycle
                 "InstanceTearDown",
 
                 "Dispose",
-                "TypeTearDown");
+                "ClassTearDown");
         }
 
         public void ShouldIncludeAllTearDownAndDisposalExceptionsInResultWhenConstructingPerCase()
         {
-            FailDuring("TypeTearDown", "InstanceTearDown", "CaseTearDown", "Dispose");
+            FailDuring("ClassTearDown", "InstanceTearDown", "CaseTearDown", "Dispose");
 
             Convention.ClassExecution
                       .CreateInstancePerCase()
-                      .SetUpTearDown(TypeSetUp, TypeTearDown);
+                      .SetUpTearDown(ClassSetUp, ClassTearDown);
 
             Convention.InstanceExecution
                       .SetUpTearDown(InstanceSetUp, InstanceTearDown);
@@ -100,15 +100,15 @@ namespace Fixie.Tests.Lifecycle
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!" + Environment.NewLine +
 	            "    Secondary Failure: 'InstanceTearDown' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
-	            "    Secondary Failure: 'TypeTearDown' failed!",
+                "    Secondary Failure: 'ClassTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
 	            "    Secondary Failure: 'CaseTearDown' failed!" + Environment.NewLine +
 	            "    Secondary Failure: 'InstanceTearDown' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
-	            "    Secondary Failure: 'TypeTearDown' failed!");
+                "    Secondary Failure: 'ClassTearDown' failed!");
 
             output.ShouldHaveLifecycle(
-                "TypeSetUp",
+                "ClassSetUp",
 
                 ".ctor",
                 "InstanceSetUp",
@@ -126,16 +126,16 @@ namespace Fixie.Tests.Lifecycle
                 "InstanceTearDown",
                 "Dispose",
 
-                "TypeTearDown");
+                "ClassTearDown");
         }
 
         public void ShouldIncludeAllTearDownAndDisposalExceptionsInResultWhenConstructingPerTestClass()
         {
-            FailDuring("TypeTearDown", "InstanceTearDown", "CaseTearDown", "Dispose");
+            FailDuring("ClassTearDown", "InstanceTearDown", "CaseTearDown", "Dispose");
 
             Convention.ClassExecution
                       .CreateInstancePerTestClass()
-                      .SetUpTearDown(TypeSetUp, TypeTearDown);
+                      .SetUpTearDown(ClassSetUp, ClassTearDown);
 
             Convention.InstanceExecution
                       .SetUpTearDown(InstanceSetUp, InstanceTearDown);
@@ -149,15 +149,15 @@ namespace Fixie.Tests.Lifecycle
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'InstanceTearDown' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TypeTearDown' failed!",
+                "    Secondary Failure: 'ClassTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'CaseTearDown' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'InstanceTearDown' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'TypeTearDown' failed!");
+                "    Secondary Failure: 'ClassTearDown' failed!");
 
             output.ShouldHaveLifecycle(
-                "TypeSetUp",
+                "ClassSetUp",
                 ".ctor",
 
                 "InstanceSetUp",
@@ -171,7 +171,7 @@ namespace Fixie.Tests.Lifecycle
                 "InstanceTearDown",
 
                 "Dispose",
-                "TypeTearDown");
+                "ClassTearDown");
         }
     }
 }

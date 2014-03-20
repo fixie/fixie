@@ -33,11 +33,11 @@ namespace Fixie.Samples.xUnitStyle
             return factMethods.Filter(type).Any();
         }
 
-        void PrepareFixtureData(Type testClass)
+        void PrepareFixtureData(ClassExecution classExecution)
         {
             fixtures.Clear();
 
-            foreach (var @interface in FixtureInterfaces(testClass))
+            foreach (var @interface in FixtureInterfaces(classExecution.TestClass))
             {
                 var fixtureDataType = @interface.GetGenericArguments()[0];
 
@@ -48,7 +48,7 @@ namespace Fixie.Samples.xUnitStyle
             }
         }
 
-        void DisposeFixtureData(Type testClass)
+        void DisposeFixtureData(ClassExecution classExecution)
         {
             foreach (var fixtureInstance in fixtures.Values)
             {

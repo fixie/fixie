@@ -44,22 +44,22 @@ namespace Fixie.Conventions
             return this;
         }
 
-        public ClassBehaviorBuilder SetUp(Action<Type> setUp)
+        public ClassBehaviorBuilder SetUp(Action<ClassExecution> setUp)
         {
             return Wrap((classExecution, innerBehavior) =>
             {
-                setUp(classExecution.TestClass);
+                setUp(classExecution);
                 innerBehavior();
             });
         }
 
-        public ClassBehaviorBuilder SetUpTearDown(Action<Type> setUp, Action<Type> tearDown)
+        public ClassBehaviorBuilder SetUpTearDown(Action<ClassExecution> setUp, Action<ClassExecution> tearDown)
         {
             return Wrap((classExecution, innerBehavior) =>
             {
-                setUp(classExecution.TestClass);
+                setUp(classExecution);
                 innerBehavior();
-                tearDown(classExecution.TestClass);
+                tearDown(classExecution);
             });
         }
 

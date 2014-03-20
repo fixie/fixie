@@ -11,9 +11,11 @@ namespace Fixie.Conventions
         public ClassBehaviorBuilder()
         {
             Behavior = null;
+            OrderCases = executions => { };
         }
 
         public ClassBehavior Behavior { get; private set; }
+        public Action<CaseExecution[]> OrderCases { get; private set; }
 
         public ClassBehaviorBuilder CreateInstancePerCase()
         {
@@ -65,11 +67,8 @@ namespace Fixie.Conventions
 
         public ClassBehaviorBuilder ShuffleCases(Random random)
         {
-            return Wrap((classExecution, innerBehavior) =>
-            {
-                classExecution.ShuffleCases(random);
-                innerBehavior();
-            });
+            OrderCases = caseExecutions => caseExecutions.Shuffle(random);
+            return this;
         }
 
         public ClassBehaviorBuilder ShuffleCases()
@@ -79,11 +78,10 @@ namespace Fixie.Conventions
 
         public ClassBehaviorBuilder SortCases(Comparison<Case> comparison)
         {
-            return Wrap((classExecution, innerBehavior) =>
-            {
-                classExecution.SortCases(comparison);
-                innerBehavior();
-            });
+            OrderCases = caseExecutions =>
+                Array.Sort(caseExecutions, (caseExecutionA, caseExecutionB) => comparison(caseExecutionA.Case, caseExecutionB.Case));
+
+            return this;
         }
 
         static object Construct(Type type)

@@ -32,6 +32,8 @@ namespace Fixie.Conventions
                 var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
                 if (caseExecutions.Any())
                 {
+                    convention.ClassExecution.OrderCases(caseExecutions);
+
                     convention.ClassExecution.Behavior.Execute(new ClassExecution(convention, testClass, caseExecutions));
 
                     foreach (var caseExecution in caseExecutions)

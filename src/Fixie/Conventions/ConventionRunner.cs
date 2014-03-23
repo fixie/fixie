@@ -10,6 +10,7 @@ namespace Fixie.Conventions
     {
         public ConventionResult Run(Convention convention, Listener listener, params Type[] candidateTypes)
         {
+            var executionPlan = new ExecutionPlan(convention);
             var conventionResult = new ConventionResult(convention.GetType().FullName);
 
             foreach (var testClass in convention.Classes.Filter(candidateTypes))
@@ -34,7 +35,8 @@ namespace Fixie.Conventions
                 {
                     convention.ClassExecution.OrderCases(caseExecutions);
 
-                    convention.ClassExecution.Behavior.Execute(new ClassExecution(convention, testClass, caseExecutions));
+                    var classExecution = new ClassExecution(executionPlan, testClass, caseExecutions);
+                    executionPlan.Execute(classExecution);
 
                     foreach (var caseExecution in caseExecutions)
                     {

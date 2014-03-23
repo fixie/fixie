@@ -17,7 +17,9 @@ namespace Fixie.Behaviors
 
                     try
                     {
-                        instanceExecution.Convention.CaseExecution.Behavior.Execute(caseExecution, instanceExecution.Instance);
+                        var executionPlan = instanceExecution.ExecutionPlan;
+                        var instance = instanceExecution.Instance;
+                        executionPlan.Execute(caseExecution, instance);
                     }
                     catch (Exception exception)
                     {

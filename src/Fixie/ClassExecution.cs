@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using Fixie.Conventions;
 
 namespace Fixie
 {
     public class ClassExecution
     {
-
-        public ClassExecution(Convention convention, Type testClass, CaseExecution[] caseExecutions)
+        public ClassExecution(ExecutionPlan executionPlan, Type testClass, CaseExecution[] caseExecutions)
         {
-            Convention = convention;
+            ExecutionPlan = executionPlan;
             TestClass = testClass;
             CaseExecutions = caseExecutions;
         }
 
-        public Convention Convention { get; private set; }
+        public ExecutionPlan ExecutionPlan { get; private set; }
         public Type TestClass { get; private set; }
         public IReadOnlyList<CaseExecution> CaseExecutions { get; private set; }
 

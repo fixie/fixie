@@ -38,7 +38,8 @@ namespace Fixie.Tests.Behaviors
             };
 
             var executeCases = new ExecuteCases();
-            var instanceExecution = new InstanceExecution(convention, testClass, new SampleTestClass(), caseExecutions);
+            var executionPlan = new ExecutionPlan(convention);
+            var instanceExecution = new InstanceExecution(executionPlan, testClass, new SampleTestClass(), caseExecutions);
             executeCases.Execute(instanceExecution);
 
             caseExecutions[0].Exceptions.Any().ShouldBeFalse();

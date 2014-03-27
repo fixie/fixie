@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Fixie.Listeners;
 using Should;
 
 namespace Fixie.Tests
@@ -13,6 +12,15 @@ namespace Fixie.Tests
             parser.Options.ShouldBeEmpty();
             parser.HasErrors.ShouldBeTrue();
             parser.Errors.ShouldEqual("Missing required test assembly path(s).");
+        }
+
+        public void ParsesAssemblyFolder()
+        {
+            var parser = new CommandLineParser("foo");
+            parser.AssemblyPaths.ShouldEqual("foo");
+            parser.Options.ShouldBeEmpty();
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
         }
 
         public void ParsesAssemblyPathsList()

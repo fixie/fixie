@@ -39,9 +39,21 @@ namespace Fixie.Console
 
                 foreach (var assemblyPath in commandLineParser.AssemblyPaths)
                 {
-                    var result = Execute(assemblyPath, args);
+                    if (assemblyPath.ToLowerInvariant().EndsWith(".dll"))
+                    {
+                        executionResult.Add(Execute(assemblyPath, args));
+                    }
+                    else
+                    {
+                        var fullPath = Path.GetFullPath(assemblyPath);
+                        var dir = new DirectoryInfo(fullPath);
+                        var assemblies = dir.EnumerateFiles("*.dll").Select(x => x.FullName);
+                        foreach (var assembly in assemblies)
+                        {
+                            executionResult.Add(Execute(assembly, args));
+                        }
+                    }
 
-                    executionResult.Add(result);
                 }
 
                 stopwatch.Stop();

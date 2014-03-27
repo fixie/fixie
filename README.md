@@ -17,6 +17,10 @@ First, [install NuGet](http://docs.nuget.org/docs/start-here/installing-nuget). 
 
     `Fixie.Console.exe path/to/your/test/project.dll`
     
+    Or for a folder with multiple test projects:
+
+     `Fixie.Console.exe path/to/your/test/folder/`
+    
 5. Use the TestDriven.NET runner from within Visual Studio, using the same keyboard shortcuts you would use for NUnit tests.
 
 ## Default Convention

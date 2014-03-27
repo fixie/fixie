@@ -3,7 +3,7 @@ using System.IO;
 using System.Security;
 using System.Security.Permissions;
 
-namespace Fixie.Console
+namespace Fixie
 {
     public class ExecutionEnvironment : IDisposable
     {

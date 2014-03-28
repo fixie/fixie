@@ -27,7 +27,7 @@ namespace Fixie.Results
             get { return new TimeSpan(conventionResults.Sum(result => result.Duration.Ticks)); }
         }
 
-        public IReadOnlyList<ConventionResult> ConventionResults
+        public IEnumerable<ConventionResult> ConventionResults
         {
             get { return conventionResults; }
         }

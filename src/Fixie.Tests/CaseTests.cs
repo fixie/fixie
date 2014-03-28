@@ -45,7 +45,7 @@ namespace Fixie.Tests
 
             invoked.ShouldBeTrue();
 
-            caseExecution.Exceptions.Count.ShouldEqual(0);
+            caseExecution.Exceptions.Count().ShouldEqual(0);
         }
 
         public void ShouldInvokeMethodsWithParameters()
@@ -57,7 +57,7 @@ namespace Fixie.Tests
 
             invoked.ShouldBeTrue();
 
-            caseExecution.Exceptions.Count.ShouldEqual(0);
+            caseExecution.Exceptions.Count().ShouldEqual(0);
         }
 
         public void ShouldInvokeGenericMethodsWithParameters()
@@ -69,7 +69,7 @@ namespace Fixie.Tests
 
             invoked.ShouldBeTrue();
 
-            caseExecution.Exceptions.Count.ShouldEqual(0);
+            caseExecution.Exceptions.Count().ShouldEqual(0);
         }
 
         public void ShouldLogExceptionWhenMethodCannotBeInvoked()
@@ -105,7 +105,7 @@ namespace Fixie.Tests
 
             invoked.ShouldBeTrue();
 
-            caseExecution.Exceptions.Count.ShouldEqual(0);
+            caseExecution.Exceptions.Count().ShouldEqual(0);
         }
 
         public void ShouldLogOriginalExceptionWhenAsyncMethodThrowsAfterAwaiting()

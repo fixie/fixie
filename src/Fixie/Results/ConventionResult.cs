@@ -27,7 +27,7 @@ namespace Fixie.Results
             get { return new TimeSpan(classResults.Sum(result => result.Duration.Ticks)); }
         }
 
-        public IReadOnlyList<ClassResult> ClassResults
+        public IEnumerable<ClassResult> ClassResults
         {
             get { return classResults; }
         }

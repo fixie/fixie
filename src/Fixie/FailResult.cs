@@ -20,7 +20,7 @@ namespace Fixie
         public Case Case { get; private set; }
         public string Output { get; private set; }
         public TimeSpan Duration { get; private set; }
-        public IReadOnlyList<Exception> Exceptions { get; private set; }
+        public IEnumerable<Exception> Exceptions { get; private set; }
         public ExceptionInfo ExceptionSummary { get; private set; }
     }
 }

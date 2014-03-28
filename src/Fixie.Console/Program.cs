@@ -46,7 +46,7 @@ namespace Fixie.Console
 
                 stopwatch.Stop();
 
-                if (executionResult.AssemblyResults.Count > 1)
+                if (executionResult.AssemblyResults.Count() > 1)
                     Summarize(executionResult, stopwatch.Elapsed);
 
                 ProduceReports(commandLineParser.Options, executionResult);

@@ -1,4 +1,5 @@
 using System;
+using Fixie.Conventions;
 using Should;
 
 namespace Fixie.Tests.Lifecycle
@@ -7,6 +8,8 @@ namespace Fixie.Tests.Lifecycle
     {
         public void ShouldConstructPerCaseByDefault()
         {
+            Expect(ConstructionFrequency.CreateInstancePerCase);
+
             var output = Run();
 
             output.ShouldHaveResults(
@@ -22,6 +25,8 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
+
+            Expect(ConstructionFrequency.CreateInstancePerCase);
 
             var output = Run();
 
@@ -39,6 +44,8 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerTestClass();
 
+            Expect(ConstructionFrequency.CreateInstancePerClass);
+
             var output = Run();
 
             output.ShouldHaveResults(
@@ -53,6 +60,8 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerCase(Factory);
+
+            Expect(ConstructionFrequency.CreateInstancePerCase);
 
             var output = Run();
 
@@ -70,6 +79,8 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerTestClass(Factory);
 
+            Expect(ConstructionFrequency.CreateInstancePerClass);
+
             var output = Run();
 
             output.ShouldHaveResults(
@@ -86,6 +97,8 @@ namespace Fixie.Tests.Lifecycle
 
             Convention.ClassExecution
                       .CreateInstancePerCase();
+
+            Expect(ConstructionFrequency.CreateInstancePerCase);
 
             var output = Run();
 
@@ -105,6 +118,8 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerTestClass();
 
+            Expect(ConstructionFrequency.CreateInstancePerClass);
+
             var output = Run();
 
             output.ShouldHaveResults(
@@ -121,6 +136,8 @@ namespace Fixie.Tests.Lifecycle
 
             Convention.ClassExecution
                       .CreateInstancePerCase(Factory);
+
+            Expect(ConstructionFrequency.CreateInstancePerCase);
 
             var output = Run();
 
@@ -140,6 +157,8 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerTestClass(Factory);
 
+            Expect(ConstructionFrequency.CreateInstancePerClass);
+
             var output = Run();
 
             output.ShouldHaveResults(
@@ -154,6 +173,8 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
+
+            Expect(ConstructionFrequency.CreateInstancePerCase);
 
             Convention.CaseExecution
                       .Skip(x => true);
@@ -172,6 +193,8 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerTestClass();
 
+            Expect(ConstructionFrequency.CreateInstancePerClass);
+
             Convention.CaseExecution
                       .Skip(x => true);
 
@@ -188,6 +211,8 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerCase(Factory);
+
+            Expect(ConstructionFrequency.CreateInstancePerCase);
 
             Convention.CaseExecution
                       .Skip(x => true);
@@ -206,6 +231,8 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerTestClass(Factory);
 
+            Expect(ConstructionFrequency.CreateInstancePerClass);
+
             Convention.CaseExecution
                       .Skip(x => true);
 
@@ -223,6 +250,11 @@ namespace Fixie.Tests.Lifecycle
             WhereAmI();
             testClass.ShouldEqual(typeof(SampleTestClass));
             return new SampleTestClass();
+        }
+
+        void Expect(ConstructionFrequency expected)
+        {
+            Convention.ClassExecution.ConstructionFrequency.ShouldEqual(expected);
         }
     }
 }

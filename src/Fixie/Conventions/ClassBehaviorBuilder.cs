@@ -10,32 +10,39 @@ namespace Fixie.Conventions
     {
         public ClassBehaviorBuilder()
         {
+            ConstructionFrequency = ConstructionFrequency.CreateInstancePerCase;
             Behavior = null;
             OrderCases = executions => { };
         }
 
         public ClassBehavior Behavior { get; private set; }
         public Action<CaseExecution[]> OrderCases { get; private set; }
+        public ConstructionFrequency ConstructionFrequency { get; private set; }
 
         public ClassBehaviorBuilder CreateInstancePerCase()
         {
+            ConstructionFrequency = ConstructionFrequency.CreateInstancePerCase;
             Behavior = new CreateInstancePerCase(Construct);
             return this;
         }
+
         public ClassBehaviorBuilder CreateInstancePerCase(Func<Type, object> construct)
         {
+            ConstructionFrequency = ConstructionFrequency.CreateInstancePerCase;
             Behavior = new CreateInstancePerCase(construct);
             return this;
         }
 
         public ClassBehaviorBuilder CreateInstancePerTestClass()
         {
+            ConstructionFrequency = ConstructionFrequency.CreateInstancePerClass;
             Behavior = new CreateInstancePerTestClass(Construct);
             return this;
         }
 
         public ClassBehaviorBuilder CreateInstancePerTestClass(Func<Type, object> construct)
         {
+            ConstructionFrequency = ConstructionFrequency.CreateInstancePerClass;
             Behavior = new CreateInstancePerTestClass(construct);
             return this;
         }

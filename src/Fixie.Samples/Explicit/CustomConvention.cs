@@ -20,7 +20,7 @@ namespace Fixie.Samples.Explicit
                 });
 
             ClassExecution
-                .CreateInstancePerTestClass();
+                .CreateInstancePerClass();
         }
     }
 }

@@ -44,10 +44,10 @@ namespace Fixie.Tests.Lifecycle
                 "ClassTearDown");
         }
 
-        public void ShouldPerformCompleteLifecyclePerTestClassWhenConstructingPerTestClass()
+        public void ShouldPerformCompleteLifecyclePerClassWhenConstructingPerClass()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass()
+                      .CreateInstancePerClass()
                       .SetUpTearDown(ClassSetUp, ClassTearDown);
 
             Convention.InstanceExecution
@@ -129,12 +129,12 @@ namespace Fixie.Tests.Lifecycle
                 "ClassTearDown");
         }
 
-        public void ShouldIncludeAllTearDownAndDisposalExceptionsInResultWhenConstructingPerTestClass()
+        public void ShouldIncludeAllTearDownAndDisposalExceptionsInResultWhenConstructingPerClass()
         {
             FailDuring("ClassTearDown", "InstanceTearDown", "CaseTearDown", "Dispose");
 
             Convention.ClassExecution
-                      .CreateInstancePerTestClass()
+                      .CreateInstancePerClass()
                       .SetUpTearDown(ClassSetUp, ClassTearDown);
 
             Convention.InstanceExecution

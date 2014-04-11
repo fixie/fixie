@@ -19,7 +19,7 @@ namespace Fixie.Samples.Skipped
                     @case => @case.Method.DeclaringType.HasOrInherits<SkipAttribute>() ? "whole class skipped" : null);
 
             ClassExecution
-                .CreateInstancePerTestClass()
+                .CreateInstancePerClass()
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
         }
     }

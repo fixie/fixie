@@ -15,7 +15,7 @@ namespace Fixie.Samples.NUnitStyle
                 .HasOrInherits<TestAttribute>();
 
             ClassExecution
-                    .CreateInstancePerTestClass()
+                    .CreateInstancePerClass()
                     .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
 
             InstanceExecution

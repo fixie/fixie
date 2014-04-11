@@ -33,17 +33,17 @@ namespace Fixie.Conventions
             return this;
         }
 
-        public ClassBehaviorBuilder CreateInstancePerTestClass()
+        public ClassBehaviorBuilder CreateInstancePerClass()
         {
             ConstructionFrequency = ConstructionFrequency.CreateInstancePerClass;
-            Behavior = new CreateInstancePerTestClass(Construct);
+            Behavior = new CreateInstancePerClass(Construct);
             return this;
         }
 
-        public ClassBehaviorBuilder CreateInstancePerTestClass(Func<Type, object> construct)
+        public ClassBehaviorBuilder CreateInstancePerClass(Func<Type, object> construct)
         {
             ConstructionFrequency = ConstructionFrequency.CreateInstancePerClass;
-            Behavior = new CreateInstancePerTestClass(construct);
+            Behavior = new CreateInstancePerClass(construct);
             return this;
         }
 

@@ -42,10 +42,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingCaseWithBehaviorsWhenConstructingPerTestClass()
+        public void ShouldAllowWrappingCaseWithBehaviorsWhenConstructingPerClass()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.CaseExecution
                       .Wrap((@case, instance, innerBehavior) =>
@@ -105,10 +105,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
         
-        public void ShouldAllowCaseBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerTestClass()
+        public void ShouldAllowCaseBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerClass()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.CaseExecution
                       .Wrap((@case, instance, innerBehavior) =>
@@ -157,10 +157,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndCaseBehaviorThrows()
+        public void ShouldFailAllCasesWhenConstructingPerClassAndCaseBehaviorThrows()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.CaseExecution
                       .Wrap((@case, instance, innerBehavior) =>
@@ -216,10 +216,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWithOriginalExceptionWhenConstructingPerTestClassAndCaseBehaviorThrowsPreservedException()
+        public void ShouldFailAllCasesWithOriginalExceptionWhenConstructingPerClassAndCaseBehaviorThrowsPreservedException()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.CaseExecution
                       .Wrap((@case, instance, innerBehavior) =>
@@ -271,10 +271,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingCaseWithSetUpTearDownBehaviorsWhenConstructingPerTestClass()
+        public void ShouldAllowWrappingCaseWithSetUpTearDownBehaviorsWhenConstructingPerClass()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.CaseExecution
                       .SetUpTearDown(CaseSetUp, CaseTearDown);
@@ -317,12 +317,12 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerTestClassAndCaseSetUpThrows()
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerClassAndCaseSetUpThrows()
         {
             FailDuring("CaseSetUp");
 
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.CaseExecution
                       .SetUpTearDown(CaseSetUp, CaseTearDown);
@@ -366,12 +366,12 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndCaseTearDownThrows()
+        public void ShouldFailAllCasesWhenConstructingPerClassAndCaseTearDownThrows()
         {
             FailDuring("CaseTearDown");
 
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.CaseExecution
                       .SetUpTearDown(CaseSetUp, CaseTearDown);
@@ -413,10 +413,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingCaseWithSetUpBehaviorWhenConstructingPerTestClass()
+        public void ShouldAllowWrappingCaseWithSetUpBehaviorWhenConstructingPerClass()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.CaseExecution
                       .SetUp(CaseSetUp);
@@ -459,12 +459,12 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldShortCircuitInnerBehaviorByFailingAllCasesWhenConstructingPerTestClassAndCaseSetUpThrows()
+        public void ShouldShortCircuitInnerBehaviorByFailingAllCasesWhenConstructingPerClassAndCaseSetUpThrows()
         {
             FailDuring("CaseSetUp");
 
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.CaseExecution
                       .SetUp(CaseSetUp);

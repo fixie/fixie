@@ -18,7 +18,7 @@ namespace Fixie.Samples.Parameterized
                 .Where(method => method.IsVoid());
 
             ClassExecution
-                .CreateInstancePerTestClass()
+                .CreateInstancePerClass()
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
 
             Parameters(FromInputAttributes);

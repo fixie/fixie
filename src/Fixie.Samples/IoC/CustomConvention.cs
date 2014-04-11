@@ -19,7 +19,7 @@ namespace Fixie.Samples.IoC
                 .Where(method => method.IsVoid());
 
             ClassExecution
-                .CreateInstancePerTestClass(UsingContainer)
+                .CreateInstancePerClass(UsingContainer)
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
         }
 

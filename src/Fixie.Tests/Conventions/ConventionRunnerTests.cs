@@ -26,7 +26,7 @@ namespace Fixie.Tests.Conventions
             var convention = new SelfTestConvention();
 
             convention.ClassExecution
-                .CreateInstancePerTestClass()
+                .CreateInstancePerClass()
                 .ShuffleCases(new Random(1));
 
             var conventionRunner = new ConventionRunner();

@@ -39,10 +39,10 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldAllowConstructingPerTestClass()
+        public void ShouldAllowConstructingPerClass()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Expect(ConstructionFrequency.CreateInstancePerClass);
 
@@ -74,10 +74,10 @@ namespace Fixie.Tests.Lifecycle
                 "Factory", ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldAllowConstructingPerTestClassUsingCustomFactory()
+        public void ShouldAllowConstructingPerClassUsingCustomFactory()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass(Factory);
+                      .CreateInstancePerClass(Factory);
 
             Expect(ConstructionFrequency.CreateInstancePerClass);
 
@@ -111,12 +111,12 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndConstructorThrows()
+        public void ShouldFailAllCasesWhenConstructingPerClassAndConstructorThrows()
         {
             FailDuring(".ctor");
 
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Expect(ConstructionFrequency.CreateInstancePerClass);
 
@@ -150,12 +150,12 @@ namespace Fixie.Tests.Lifecycle
                 "Factory");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndCustomFactoryThrows()
+        public void ShouldFailAllCasesWhenConstructingPerClassAndCustomFactoryThrows()
         {
             FailDuring("Factory");
 
             Convention.ClassExecution
-                      .CreateInstancePerTestClass(Factory);
+                      .CreateInstancePerClass(Factory);
 
             Expect(ConstructionFrequency.CreateInstancePerClass);
 
@@ -188,10 +188,10 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldSkipConstructingPerTestClassWhenAllCasesSkipped()
+        public void ShouldSkipConstructingPerClassWhenAllCasesSkipped()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Expect(ConstructionFrequency.CreateInstancePerClass);
 
@@ -226,10 +226,10 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldSkipConstructingPerTestClassUsingCustomFactoryWhenAllCasesSkipped()
+        public void ShouldSkipConstructingPerClassUsingCustomFactoryWhenAllCasesSkipped()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass(Factory);
+                      .CreateInstancePerClass(Factory);
 
             Expect(ConstructionFrequency.CreateInstancePerClass);
 

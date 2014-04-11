@@ -17,7 +17,7 @@ namespace Fixie.Samples.Shuffle
                 .Where(method => method.IsVoid());
 
             ClassExecution
-                .CreateInstancePerTestClass()
+                .CreateInstancePerClass()
                 .ShuffleCases(new Random(Seed));
         }
     }

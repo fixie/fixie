@@ -20,10 +20,10 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldDisposePerTestClassWhenConstructingPerTestClassAndDisposable()
+        public void ShouldDisposePerClassWhenConstructingPerClassAndDisposable()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             var output = Run();
 
@@ -54,12 +54,12 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndDisposeThrows()
+        public void ShouldFailAllCasesWhenConstructingPerClassAndDisposeThrows()
         {
             FailDuring("Dispose");
 
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             var output = Run();
 

@@ -42,10 +42,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingInstanceWithBehaviorsWhenConstructingPerTestClass()
+        public void ShouldAllowWrappingInstanceWithBehaviorsWhenConstructingPerClass()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.InstanceExecution
                       .Wrap((instanceExecution, innerBehavior) =>
@@ -102,10 +102,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowInstanceBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerTestClass()
+        public void ShouldAllowInstanceBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerClass()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.InstanceExecution
                       .Wrap((instanceExecution, innerBehavior) =>
@@ -154,10 +154,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndInstanceBehaviorThrows()
+        public void ShouldFailAllCasesWhenConstructingPerClassAndInstanceBehaviorThrows()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.InstanceExecution
                       .Wrap((instanceExecution, innerBehavior) =>
@@ -212,10 +212,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWithOriginalExceptionWhenConstructingPerTestClassAndInstanceBehaviorThrowsPreservedException()
+        public void ShouldFailAllCasesWithOriginalExceptionWhenConstructingPerClassAndInstanceBehaviorThrowsPreservedException()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.InstanceExecution
                       .Wrap((instanceExecution, innerBehavior) =>
@@ -270,10 +270,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingInstanceWithSetUpTearDownBehaviorsWhenConstructingPerTestClass()
+        public void ShouldAllowWrappingInstanceWithSetUpTearDownBehaviorsWhenConstructingPerClass()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.InstanceExecution
                       .SetUpTearDown(InstanceSetUp, InstanceTearDown);
@@ -317,12 +317,12 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerTestClassAndInstanceSetUpThrows()
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerClassAndInstanceSetUpThrows()
         {
             FailDuring("InstanceSetUp");
 
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.InstanceExecution
                       .SetUpTearDown(InstanceSetUp, InstanceTearDown);
@@ -369,12 +369,12 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerTestClassAndInstanceTearDownThrows()
+        public void ShouldFailAllCasesWhenConstructingPerClassAndInstanceTearDownThrows()
         {
             FailDuring("InstanceTearDown");
 
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.InstanceExecution
                       .SetUpTearDown(InstanceSetUp, InstanceTearDown);
@@ -419,10 +419,10 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingInstanceWithSetUpBehaviorWhenConstructingPerTestClass()
+        public void ShouldAllowWrappingInstanceWithSetUpBehaviorWhenConstructingPerClass()
         {
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.InstanceExecution
                       .SetUp(InstanceSetUp);
@@ -466,12 +466,12 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldShortCircuitInnerBehaviorByFailingAllCasesWhenConstructingPerTestClassAndInstanceSetUpThrows()
+        public void ShouldShortCircuitInnerBehaviorByFailingAllCasesWhenConstructingPerClassAndInstanceSetUpThrows()
         {
             FailDuring("InstanceSetUp");
 
             Convention.ClassExecution
-                      .CreateInstancePerTestClass();
+                      .CreateInstancePerClass();
 
             Convention.InstanceExecution
                       .SetUp(InstanceSetUp);

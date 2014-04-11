@@ -2,11 +2,11 @@
 
 namespace Fixie.Behaviors
 {
-    public class CreateInstancePerTestClass : ClassBehavior
+    public class CreateInstancePerClass : ClassBehavior
     {
         readonly Func<Type, object> construct;
 
-        public CreateInstancePerTestClass(Func<Type, object> construct)
+        public CreateInstancePerClass(Func<Type, object> construct)
         {
             this.construct = construct;
         }

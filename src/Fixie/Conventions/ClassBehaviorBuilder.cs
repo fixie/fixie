@@ -9,19 +9,27 @@ namespace Fixie.Conventions
 
     public class ClassBehaviorBuilder
     {
-        ClassBehavior innermostBehavior;
+        enum ConstructionFrequency
+        {
+            PerCase,
+            PerClass
+        }
+
+        ConstructionFrequency constructionFrequency;
+        Func<Type, object> factory;
         readonly List<ClassBehaviorAction> customBehaviors;
 
         public ClassBehaviorBuilder()
         {
+            constructionFrequency = ConstructionFrequency.PerCase;
+            factory = UseDefaultConstructor;
             customBehaviors = new List<ClassBehaviorAction>();
             OrderCases = executions => { };
-            CreateInstancePerCase();
         }
 
         public ClassBehavior BuildBehavior()
         {
-            var behavior = innermostBehavior;
+            var behavior = GetInnermostBehavior();
 
             foreach (var customBehavior in customBehaviors)
                 behavior = new WrapBehavior(customBehavior, behavior);
@@ -29,29 +37,31 @@ namespace Fixie.Conventions
             return behavior;
         }
 
+        ClassBehavior GetInnermostBehavior()
+        {
+            if (constructionFrequency == ConstructionFrequency.PerCase)
+                return new CreateInstancePerCase(factory);
+
+            return new CreateInstancePerClass(factory);
+        }
+
         public Action<CaseExecution[]> OrderCases { get; private set; }
 
         public ClassBehaviorBuilder CreateInstancePerCase()
         {
-            innermostBehavior = new CreateInstancePerCase(UseDefaultConstructor);
-            return this;
-        }
-
-        public ClassBehaviorBuilder CreateInstancePerCase(Func<Type, object> customFactory)
-        {
-            innermostBehavior = new CreateInstancePerCase(customFactory);
+            constructionFrequency = ConstructionFrequency.PerCase;
             return this;
         }
 
         public ClassBehaviorBuilder CreateInstancePerClass()
         {
-            innermostBehavior = new CreateInstancePerClass(UseDefaultConstructor);
+            constructionFrequency = ConstructionFrequency.PerClass;
             return this;
         }
 
-        public ClassBehaviorBuilder CreateInstancePerClass(Func<Type, object> customFactory)
+        public ClassBehaviorBuilder UsingFactory(Func<Type, object> customFactory)
         {
-            innermostBehavior = new CreateInstancePerClass(customFactory);
+            factory = customFactory;
             return this;
         }
 

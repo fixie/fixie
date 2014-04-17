@@ -52,7 +52,8 @@ namespace Fixie.Tests.Lifecycle
         public void ShouldAllowConstructingPerCaseUsingCustomFactory()
         {
             Convention.ClassExecution
-                      .CreateInstancePerCase(Factory);
+                      .CreateInstancePerCase()
+                      .UsingFactory(Factory);
 
             var output = Run();
 
@@ -68,7 +69,8 @@ namespace Fixie.Tests.Lifecycle
         public void ShouldAllowConstructingPerClassUsingCustomFactory()
         {
             Convention.ClassExecution
-                      .CreateInstancePerClass(Factory);
+                      .CreateInstancePerClass()
+                      .UsingFactory(Factory);
 
             var output = Run();
 
@@ -120,7 +122,8 @@ namespace Fixie.Tests.Lifecycle
             FailDuring("Factory");
 
             Convention.ClassExecution
-                      .CreateInstancePerCase(Factory);
+                      .CreateInstancePerCase()
+                      .UsingFactory(Factory);
 
             var output = Run();
 
@@ -138,7 +141,8 @@ namespace Fixie.Tests.Lifecycle
             FailDuring("Factory");
 
             Convention.ClassExecution
-                      .CreateInstancePerClass(Factory);
+                      .CreateInstancePerClass()
+                      .UsingFactory(Factory);
 
             var output = Run();
 
@@ -187,7 +191,8 @@ namespace Fixie.Tests.Lifecycle
         public void ShouldSkipConstructingPerCaseUsingCustomFactoryWhenAllCasesSkipped()
         {
             Convention.ClassExecution
-                      .CreateInstancePerCase(Factory);
+                      .CreateInstancePerCase()
+                      .UsingFactory(Factory);
 
             Convention.CaseExecution
                       .Skip(x => true);
@@ -204,7 +209,8 @@ namespace Fixie.Tests.Lifecycle
         public void ShouldSkipConstructingPerClassUsingCustomFactoryWhenAllCasesSkipped()
         {
             Convention.ClassExecution
-                      .CreateInstancePerClass(Factory);
+                      .CreateInstancePerClass()
+                      .UsingFactory(Factory);
 
             Convention.CaseExecution
                       .Skip(x => true);

@@ -19,7 +19,8 @@ namespace Fixie.Samples.IoC
                 .Where(method => method.IsVoid());
 
             ClassExecution
-                .CreateInstancePerClass(UsingContainer)
+                .CreateInstancePerClass()
+                .UsingFactory(GetFromContainer)
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
         }
 
@@ -31,7 +32,7 @@ namespace Fixie.Samples.IoC
             return container;
         }
 
-        object UsingContainer(Type testClass)
+        object GetFromContainer(Type testClass)
         {
             return container.Get(testClass);
         }

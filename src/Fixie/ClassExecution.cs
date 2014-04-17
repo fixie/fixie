@@ -5,7 +5,7 @@ namespace Fixie
 {
     public class ClassExecution
     {
-        public ClassExecution(ExecutionPlan executionPlan, Type testClass, CaseExecution[] caseExecutions)
+        public ClassExecution(ExecutionPlan executionPlan, Type testClass, IReadOnlyList<CaseExecution> caseExecutions)
         {
             ExecutionPlan = executionPlan;
             TestClass = testClass;

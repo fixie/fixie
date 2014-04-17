@@ -12,7 +12,7 @@ namespace Fixie.Conventions
             Methods = new MethodFilter().Where(m => !m.IsDispose());
             CaseExecution = new CaseBehaviorBuilder();
             InstanceExecution = new InstanceBehaviorBuilder();
-            ClassExecution = new ClassBehaviorBuilder().CreateInstancePerCase();
+            ClassExecution = new ClassBehaviorBuilder();
             HideExceptionDetails = new AssertionLibraryFilter();
 
             MethodCallParameterBuilder = method => new object[][] { };

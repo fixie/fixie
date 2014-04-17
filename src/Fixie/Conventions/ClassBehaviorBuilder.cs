@@ -33,25 +33,25 @@ namespace Fixie.Conventions
 
         public ClassBehaviorBuilder CreateInstancePerCase()
         {
-            innermostBehavior = new CreateInstancePerCase(Construct);
+            innermostBehavior = new CreateInstancePerCase(UseDefaultConstructor);
             return this;
         }
 
-        public ClassBehaviorBuilder CreateInstancePerCase(Func<Type, object> construct)
+        public ClassBehaviorBuilder CreateInstancePerCase(Func<Type, object> customFactory)
         {
-            innermostBehavior = new CreateInstancePerCase(construct);
+            innermostBehavior = new CreateInstancePerCase(customFactory);
             return this;
         }
 
         public ClassBehaviorBuilder CreateInstancePerClass()
         {
-            innermostBehavior = new CreateInstancePerClass(Construct);
+            innermostBehavior = new CreateInstancePerClass(UseDefaultConstructor);
             return this;
         }
 
-        public ClassBehaviorBuilder CreateInstancePerClass(Func<Type, object> construct)
+        public ClassBehaviorBuilder CreateInstancePerClass(Func<Type, object> customFactory)
         {
-            innermostBehavior = new CreateInstancePerClass(construct);
+            innermostBehavior = new CreateInstancePerClass(customFactory);
             return this;
         }
 
@@ -99,7 +99,7 @@ namespace Fixie.Conventions
             return this;
         }
 
-        static object Construct(Type type)
+        static object UseDefaultConstructor(Type type)
         {
             try
             {

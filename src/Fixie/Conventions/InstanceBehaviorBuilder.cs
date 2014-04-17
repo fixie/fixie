@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Fixie.Behaviors;
 
 namespace Fixie.Conventions
@@ -7,16 +8,21 @@ namespace Fixie.Conventions
 
     public class InstanceBehaviorBuilder
     {
-        public InstanceBehaviorBuilder()
-        {
-            Behavior = new ExecuteCases();
-        }
+        readonly List<InstanceBehaviorAction> customBehaviors = new List<InstanceBehaviorAction>();
 
-        public InstanceBehavior Behavior { get; private set; }
+        public InstanceBehavior BuildBehavior()
+        {
+            InstanceBehavior behavior = new ExecuteCases();
+
+            foreach (var customBehavior in customBehaviors)
+                behavior = new WrapBehavior(customBehavior, behavior);
+
+            return behavior;
+        }
 
         public InstanceBehaviorBuilder Wrap(InstanceBehaviorAction outer)
         {
-            Behavior = new WrapBehavior(outer, Behavior);
+            customBehaviors.Add(outer);
             return this;
         }
 

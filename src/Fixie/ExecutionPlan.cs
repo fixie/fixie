@@ -11,9 +11,9 @@ namespace Fixie
 
         public ExecutionPlan(Convention convention)
         {
-            classBehavior = convention.ClassExecution.Behavior;
-            instanceBehavior = convention.InstanceExecution.Behavior;
-            caseBehavior = convention.CaseExecution.Behavior;
+            classBehavior = convention.ClassExecution.BuildBehavior();
+            instanceBehavior = convention.InstanceExecution.BuildBehavior();
+            caseBehavior = convention.CaseExecution.BuildBehavior();
         }
 
         public void Execute(ClassExecution classExecution)

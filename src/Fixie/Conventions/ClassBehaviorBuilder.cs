@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Fixie.Behaviors;
 
@@ -8,48 +9,69 @@ namespace Fixie.Conventions
 
     public class ClassBehaviorBuilder
     {
+        Func<Type, object> constructor;
+        readonly List<ClassBehaviorAction> customBehaviors;
+
         public ClassBehaviorBuilder()
         {
+            constructor = Construct;
+            customBehaviors = new List<ClassBehaviorAction>();
             ConstructionFrequency = ConstructionFrequency.CreateInstancePerCase;
-            Behavior = null;
             OrderCases = executions => { };
         }
 
-        public ClassBehavior Behavior { get; private set; }
+        public ClassBehavior BuildBehavior()
+        {
+            var behavior = GetInnermostBehavior();
+
+            foreach (var customBehavior in customBehaviors)
+                behavior = new WrapBehavior(customBehavior, behavior);
+
+            return behavior;
+        }
+
+        ClassBehavior GetInnermostBehavior()
+        {
+            if (ConstructionFrequency == ConstructionFrequency.CreateInstancePerCase)
+                return new CreateInstancePerCase(constructor);
+
+            return new CreateInstancePerClass(constructor);
+        }
+
         public Action<CaseExecution[]> OrderCases { get; private set; }
         public ConstructionFrequency ConstructionFrequency { get; private set; }
 
         public ClassBehaviorBuilder CreateInstancePerCase()
         {
             ConstructionFrequency = ConstructionFrequency.CreateInstancePerCase;
-            Behavior = new CreateInstancePerCase(Construct);
+            constructor = Construct;
             return this;
         }
 
         public ClassBehaviorBuilder CreateInstancePerCase(Func<Type, object> construct)
         {
             ConstructionFrequency = ConstructionFrequency.CreateInstancePerCase;
-            Behavior = new CreateInstancePerCase(construct);
+            constructor = construct;
             return this;
         }
 
         public ClassBehaviorBuilder CreateInstancePerClass()
         {
             ConstructionFrequency = ConstructionFrequency.CreateInstancePerClass;
-            Behavior = new CreateInstancePerClass(Construct);
+            constructor = Construct;
             return this;
         }
 
         public ClassBehaviorBuilder CreateInstancePerClass(Func<Type, object> construct)
         {
             ConstructionFrequency = ConstructionFrequency.CreateInstancePerClass;
-            Behavior = new CreateInstancePerClass(construct);
+            constructor = construct;
             return this;
         }
 
         public ClassBehaviorBuilder Wrap(ClassBehaviorAction outer)
         {
-            Behavior = new WrapBehavior(outer, Behavior);
+            customBehaviors.Add(outer);
             return this;
         }
 

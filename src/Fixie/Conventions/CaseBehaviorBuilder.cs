@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Fixie.Behaviors;
 
 namespace Fixie.Conventions
@@ -8,21 +9,30 @@ namespace Fixie.Conventions
 
     public class CaseBehaviorBuilder
     {
+        readonly List<CaseBehaviorAction> customBehaviors = new List<CaseBehaviorAction>();
+
         public CaseBehaviorBuilder()
         {
-            Behavior = new Invoke();
             SkipPredicate = @case => false;
             SkipReasonProvider = SkipReasonUnknown;
         }
 
-        public CaseBehavior Behavior { get; private set; }
+        public CaseBehavior BuildBehavior()
+        {
+            CaseBehavior behavior = new Invoke();
+
+            foreach (var customBehavior in customBehaviors)
+                behavior = new WrapBehavior(customBehavior, behavior);
+
+            return behavior;
+        }
 
         public Func<Case, bool> SkipPredicate { get; private set; }
         public Func<Case, string> SkipReasonProvider { get; private set; }
 
         public CaseBehaviorBuilder Wrap(CaseBehaviorAction outer)
         {
-            Behavior = new WrapBehavior(outer, Behavior);
+            customBehaviors.Add(outer);
             return this;
         }
 

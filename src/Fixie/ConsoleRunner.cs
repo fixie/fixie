@@ -12,16 +12,16 @@ namespace Fixie
             var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
 
             var options = new CommandLineParser(args).Options;
-
-            var runner = new Runner(CreateListener(), options);
+            var optOutTeamcity = options.Contains(CommandLineOption.OptOutTeamCity);
+            var runner = new Runner(CreateListener(optOutTeamcity), options);
             return runner.RunAssembly(assembly);
         }
 
-        static Listener CreateListener()
+        static Listener CreateListener(bool optOutTeamcity)
         {
             var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
 
-            if (runningUnderTeamCity)
+            if (!optOutTeamcity && runningUnderTeamCity)
                 return new TeamCityListener();
 
             return new ConsoleListener();

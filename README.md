@@ -384,7 +384,11 @@ In addition to identifying the types which make up your assertion library of cho
 
 When the console runner is invoked by TeamCity, the console output is formatted so that TeamCity can detect individual test results for display.
 
-When running under other CI tools, you can generate familiar NUnit- or xUnit-style XML reports by including an extra command line argument:
+To opt-out from TeamCity output and use an xml result file instead, first use the extra command line argument:
+
+    Fixie.Console.exe path/to/your/test/project.dll --fixie:OptOutTeamcity true
+
+When running under other CI tools, or when you opted out of the Teamcity output,  you can generate familiar NUnit- or xUnit-style XML reports by including an extra command line argument:
 
     Fixie.Console.exe path/to/your/test/project.dll --fixie:NUnitXml TestResult.xml
     

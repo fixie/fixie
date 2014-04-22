@@ -382,16 +382,16 @@ In addition to identifying the types which make up your assertion library of cho
 
 ## How do I report results to my continuous integration server?
 
-When the console runner is invoked by TeamCity, the console output is formatted so that TeamCity can detect individual test results for display.
+By default, when the console runner is invoked by TeamCity, the console output is formatted so that TeamCity can detect individual test results for display.
 
-To opt-out from TeamCity output and use an xml result file instead, first use the extra command line argument:
-
-    Fixie.Console.exe path/to/your/test/project.dll --fixie:OptOutTeamcity true
-
-When running under other CI tools, or when you opted out of the Teamcity output,  you can generate familiar NUnit- or xUnit-style XML reports by including an extra command line argument:
+You can generate familiar NUnit- or xUnit-style XML reports by including an extra command line argument. These file formats are often supported by other CI tools:
 
     Fixie.Console.exe path/to/your/test/project.dll --fixie:NUnitXml TestResult.xml
     
 or
 
     Fixie.Console.exe path/to/your/test/project.dll --fixie:XUnitXml TestResult.xml
+
+If you opt into an XML report format under TeamCity, you may experience your tests being doubly-reported: once from the XML file, and once from the TeamCity-specific console output formatting.  In this case, you can explicitly suppress the TeamCity console output:
+
+    Fixie.Console.exe path/to/your/test/project.dll  --fixie:NUnitXml TestResult.xml --fixie:TeamCity off

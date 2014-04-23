@@ -26,6 +26,15 @@ namespace Fixie.Conventions
             return this;
         }
 
+        public InstanceBehaviorBuilder Wrap<TDisposable>() where TDisposable : IDisposable, new()
+        {
+            return Wrap((instanceExecution, innerBehavior) =>
+            {
+                using (new TDisposable())
+                    innerBehavior();
+            });
+        }
+
         public InstanceBehaviorBuilder SetUp(Action<InstanceExecution> setUp)
         {
             return Wrap((instanceExecution, innerBehavior) =>

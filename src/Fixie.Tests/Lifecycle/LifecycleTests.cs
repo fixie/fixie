@@ -158,5 +158,18 @@ namespace Fixie.Tests.Lifecycle
             if (FailingMembers != null && FailingMembers.Contains(member))
                 throw new FailureException(member);
         }
+
+        protected class TransactionScope : IDisposable
+        {
+            public TransactionScope()
+            {
+                Console.WriteLine("Start Transaction");
+            }
+
+            public void Dispose()
+            {
+                Console.WriteLine("Rollback Transaction");
+            }
+        }
     }
 }

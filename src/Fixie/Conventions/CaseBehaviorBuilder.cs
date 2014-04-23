@@ -36,6 +36,15 @@ namespace Fixie.Conventions
             return this;
         }
 
+        public CaseBehaviorBuilder Wrap<TDisposable>() where TDisposable : IDisposable, new()
+        {
+            return Wrap((caseExecution, instance, innerBehavior) =>
+            {
+                using (new TDisposable())
+                    innerBehavior();
+            });
+        }
+
         public CaseBehaviorBuilder SetUp(CaseAction setUp)
         {
             return Wrap((caseExecution, instance, innerBehavior) =>

@@ -4,7 +4,7 @@ namespace Fixie.Tests.Lifecycle
 {
     public class ClassLifecycleTests : LifecycleTests
     {
-        public void ShouldAllowWrappingTypeWithBehaviorsWhenConstructingPerCase()
+        public void ShouldAllowWrappingClassWithBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -34,7 +34,7 @@ namespace Fixie.Tests.Lifecycle
                 "Inner After", "Outer After");
         }
 
-        public void ShouldAllowWrappingTypeWithBehaviorsWhenConstructingPerClass()
+        public void ShouldAllowWrappingClassWithBehaviorsWhenConstructingPerClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass()
@@ -195,7 +195,7 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle("Unsafe class execution behavior");
         }
 
-        public void ShouldAllowWrappingTypeWithDisposableWhenConstructingPerCase()
+        public void ShouldAllowWrappingClassWithDisposableWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -214,7 +214,7 @@ namespace Fixie.Tests.Lifecycle
                 "Rollback Transaction");
         }
 
-        public void ShouldAllowWrappingTypeWithDisposableWhenConstructingPerClass()
+        public void ShouldAllowWrappingClassWithDisposableWhenConstructingPerClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass()
@@ -232,7 +232,7 @@ namespace Fixie.Tests.Lifecycle
                 "Rollback Transaction");
         }
 
-        public void ShouldAllowWrappingTypeWithSetUpTearDownBehaviorsWhenConstructingPerCase()
+        public void ShouldAllowWrappingClassWithSetUpTearDownBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -251,7 +251,7 @@ namespace Fixie.Tests.Lifecycle
                 "ClassTearDown");
         }
 
-        public void ShouldAllowWrappingTypeWithSetUpTearDownBehaviorsWhenConstructingPerClass()
+        public void ShouldAllowWrappingClassWithSetUpTearDownBehaviorsWhenConstructingPerClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass()
@@ -348,7 +348,7 @@ namespace Fixie.Tests.Lifecycle
                 "ClassTearDown");
         }
 
-        public void ShouldAllowWrappingTypeWithSetUpBehaviorWhenConstructingPerCase()
+        public void ShouldAllowWrappingClassWithSetUpBehaviorWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -366,7 +366,7 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldAllowWrappingTypeWithSetUpBehaviorWhenConstructingPerClass()
+        public void ShouldAllowWrappingClassWithSetUpBehaviorWhenConstructingPerClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass()

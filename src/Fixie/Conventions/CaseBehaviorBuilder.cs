@@ -4,7 +4,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void CaseBehaviorAction(CaseExecution caseExecution, object instance, Action innerBehavior);
+    public delegate void CaseBehaviorAction(CaseExecution caseExecution, Action innerBehavior);
     public delegate void CaseAction(CaseExecution caseExecution, object instance);
 
     public class CaseBehaviorBuilder
@@ -38,7 +38,7 @@ namespace Fixie.Conventions
 
         public CaseBehaviorBuilder Wrap<TDisposable>() where TDisposable : IDisposable, new()
         {
-            return Wrap((caseExecution, instance, innerBehavior) =>
+            return Wrap((caseExecution, innerBehavior) =>
             {
                 using (new TDisposable())
                     innerBehavior();
@@ -47,20 +47,20 @@ namespace Fixie.Conventions
 
         public CaseBehaviorBuilder SetUp(CaseAction setUp)
         {
-            return Wrap((caseExecution, instance, innerBehavior) =>
+            return Wrap((caseExecution, innerBehavior) =>
             {
-                setUp(caseExecution, instance);
+                setUp(caseExecution, caseExecution.Instance);
                 innerBehavior();
             });
         }
 
         public CaseBehaviorBuilder SetUpTearDown(CaseAction setUp, CaseAction tearDown)
         {
-            return Wrap((caseExecution, instance, innerBehavior) =>
+            return Wrap((caseExecution, innerBehavior) =>
             {
-                setUp(caseExecution, instance);
+                setUp(caseExecution, caseExecution.Instance);
                 innerBehavior();
-                tearDown(caseExecution, instance);
+                tearDown(caseExecution, caseExecution.Instance);
             });
         }
 
@@ -92,11 +92,11 @@ namespace Fixie.Conventions
                 this.inner = inner;
             }
 
-            public void Execute(CaseExecution caseExecution, object instance)
+            public void Execute(CaseExecution caseExecution)
             {
                 try
                 {
-                    outer(caseExecution, instance, () => inner.Execute(caseExecution, instance));
+                    outer(caseExecution, () => inner.Execute(caseExecution));
                 }
                 catch (Exception exception)
                 {

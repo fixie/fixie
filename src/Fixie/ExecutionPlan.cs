@@ -26,9 +26,9 @@ namespace Fixie
             instanceBehavior.Execute(instanceExecution);
         }
 
-        public void Execute(CaseExecution caseExecution, object instance)
+        public void Execute(CaseExecution caseExecution)
         {
-            caseBehavior.Execute(caseExecution, instance);
+            caseBehavior.Execute(caseExecution);
         }
     }
 }

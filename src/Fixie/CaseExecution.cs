@@ -14,6 +14,8 @@ namespace Fixie
         }
 
         public Case Case { get; private set; }
+
+        public object Instance { get; set; }
         
         public TimeSpan Duration { get; set; }
 

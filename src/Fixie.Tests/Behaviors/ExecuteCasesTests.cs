@@ -19,7 +19,7 @@ namespace Fixie.Tests.Behaviors
             testClass = typeof(SampleTestClass);
 
             convention = new SelfTestConvention();
-            convention.CaseExecution.Wrap((caseExecution, instance, innerBehavior) =>
+            convention.CaseExecution.Wrap((caseExecution, innerBehavior) =>
             {
                 log.Add(caseExecution.Case.Method.Name);
                 innerBehavior();

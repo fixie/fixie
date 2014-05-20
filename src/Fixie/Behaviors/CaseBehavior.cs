@@ -2,6 +2,6 @@
 {
     public interface CaseBehavior
     {
-        void Execute(CaseExecution caseExecution, object instance);
+        void Execute(CaseExecution caseExecution);
     }
 }

@@ -10,13 +10,13 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
+                      .Wrap((@case, innerBehavior) =>
                       {
                           Console.WriteLine("Inner Before");
                           innerBehavior();
                           Console.WriteLine("Inner After");
                       })
-                      .Wrap((@case, instance, innerBehavior) =>
+                      .Wrap((@case, innerBehavior) =>
                       {
                           Console.WriteLine("Outer Before");
                           innerBehavior();
@@ -48,13 +48,13 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
+                      .Wrap((@case, innerBehavior) =>
                       {
                           Console.WriteLine("Inner Before");
                           innerBehavior();
                           Console.WriteLine("Inner After");
                       })
-                      .Wrap((@case, instance, innerBehavior) =>
+                      .Wrap((@case, innerBehavior) =>
                       {
                           Console.WriteLine("Outer Before");
                           innerBehavior();
@@ -84,7 +84,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
+                      .Wrap((@case, innerBehavior) =>
                       {
                           //Behavior chooses not to invoke innerBehavior().
                           //Since the cases are never invoked, they don't
@@ -111,7 +111,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
+                      .Wrap((@case, innerBehavior) =>
                       {
                           //Behavior chooses not to invoke innerBehavior().
                           //Since the cases are never invoked, they don't
@@ -136,7 +136,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
+                      .Wrap((@case, innerBehavior) =>
                       {
                           Console.WriteLine("Unsafe case execution behavior");
                           throw new Exception("Unsafe case execution behavior threw!");
@@ -163,7 +163,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
+                      .Wrap((@case, innerBehavior) =>
                       {
                           Console.WriteLine("Unsafe case execution behavior");
                           throw new Exception("Unsafe case execution behavior threw!");
@@ -188,7 +188,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
+                      .Wrap((@case, innerBehavior) =>
                       {
                           Console.WriteLine("Unsafe case execution behavior");
                           try
@@ -222,7 +222,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
+                      .Wrap((@case, innerBehavior) =>
                       {
                           Console.WriteLine("Unsafe case execution behavior");
                           try

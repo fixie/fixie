@@ -18,12 +18,16 @@ namespace Fixie.Behaviors
                     try
                     {
                         var executionPlan = instanceExecution.ExecutionPlan;
-                        var instance = instanceExecution.Instance;
-                        executionPlan.Execute(caseExecution, instance);
+                        caseExecution.Instance = instanceExecution.Instance;
+                        executionPlan.Execute(caseExecution);
                     }
                     catch (Exception exception)
                     {
                         caseExecution.Fail(exception);
+                    }
+                    finally
+                    {
+                        caseExecution.Instance = null;
                     }
 
                     stopwatch.Stop();

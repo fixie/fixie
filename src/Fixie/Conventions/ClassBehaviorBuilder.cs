@@ -45,7 +45,7 @@ namespace Fixie.Conventions
             return new CreateInstancePerClass(factory);
         }
 
-        public Action<CaseExecution[]> OrderCases { get; private set; }
+        public Action<Case[]> OrderCases { get; private set; }
 
         public ClassBehaviorBuilder CreateInstancePerCase()
         {
@@ -112,9 +112,7 @@ namespace Fixie.Conventions
 
         public ClassBehaviorBuilder SortCases(Comparison<Case> comparison)
         {
-            OrderCases = caseExecutions =>
-                Array.Sort(caseExecutions, (caseExecutionA, caseExecutionB) => comparison(caseExecutionA.Case, caseExecutionB.Case));
-
+            OrderCases = cases => Array.Sort(cases, comparison);
             return this;
         }
 

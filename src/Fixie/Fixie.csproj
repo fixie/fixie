@@ -40,6 +40,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ArrayExtensions.cs" />
+    <Compile Include="Behaviors\BehaviorContext.cs" />
     <Compile Include="Behaviors\CreateInstancePerClass.cs" />
     <Compile Include="Behaviors\ExecuteCases.cs" />
     <Compile Include="Behaviors\InstanceBehavior.cs" />

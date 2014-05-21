@@ -73,7 +73,7 @@ namespace Fixie.Conventions
                 }
                 catch (Exception exception)
                 {
-                    instanceExecution.FailCases(exception);
+                    instanceExecution.Fail(exception);
                 }
             }
         }

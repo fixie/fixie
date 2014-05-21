@@ -25,7 +25,7 @@ namespace Fixie.Behaviors
             }
             catch (Exception exception)
             {
-                classExecution.FailCases(exception);
+                classExecution.Fail(exception);
             }
         }
 

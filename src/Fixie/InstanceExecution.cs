@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Fixie.Behaviors;
 
 namespace Fixie
 {
-    public class InstanceExecution
+    public class InstanceExecution : BehaviorContext
     {
         public InstanceExecution(ExecutionPlan executionPlan, Type testClass, object instance, IReadOnlyList<CaseExecution> caseExecutions)
         {
@@ -18,10 +19,10 @@ namespace Fixie
         public object Instance { get; private set; }
         public IReadOnlyList<CaseExecution> CaseExecutions { get; private set; }
 
-        public void FailCases(Exception exception)
+        public void Fail(Exception reason)
         {
             foreach (var caseExecution in CaseExecutions)
-                caseExecution.Fail(exception);
+                caseExecution.Fail(reason);
         }
     }
 }

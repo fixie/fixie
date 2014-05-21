@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Fixie.Behaviors;
 
 namespace Fixie
 {
-    public class CaseExecution
+    public class CaseExecution : BehaviorContext
     {
         readonly List<Exception> exceptions;
 

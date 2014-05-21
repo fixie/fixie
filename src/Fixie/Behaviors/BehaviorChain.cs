@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Fixie.Behaviors
+{
+    public class BehaviorChain<TContext> where TContext : BehaviorContext
+    {
+        readonly List<Behavior<TContext>> behaviors = new List<Behavior<TContext>>();
+
+        public void Add(Behavior<TContext> behavior)
+        {
+            behaviors.Add(behavior);
+        }
+
+        public void Execute(TContext context)
+        {
+            if (behaviors.Count > 0)
+                ExecuteNext(context, 0);
+        }
+
+        void ExecuteNext(TContext context, int index)
+        {
+            if (index > behaviors.Count - 1)
+                return;
+
+            try
+            {
+                behaviors[index].Execute(context, () => ExecuteNext(context, index + 1));
+            }
+            catch (Exception exception)
+            {
+                context.Fail(exception);
+            }
+        }
+    }
+}

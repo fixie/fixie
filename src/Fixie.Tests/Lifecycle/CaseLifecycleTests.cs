@@ -248,50 +248,6 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingCaseWithDisposableWhenConstructingPerCase()
-        {
-            Convention.ClassExecution
-                      .CreateInstancePerCase();
-
-            Convention.CaseExecution
-                      .Wrap<TransactionScope>();
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "Start Transaction", "Pass", "Rollback Transaction",
-                "Dispose",
-                ".ctor",
-                "Start Transaction", "Fail", "Rollback Transaction",
-                "Dispose");
-        }
-
-        public void ShouldAllowWrappingCaseWithDisposableWhenConstructingPerClass()
-        {
-            Convention.ClassExecution
-                      .CreateInstancePerClass();
-
-            Convention.CaseExecution
-                      .Wrap<TransactionScope>();
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "Start Transaction", "Pass", "Rollback Transaction",
-                "Start Transaction", "Fail", "Rollback Transaction",
-                "Dispose");
-        }
-
         public void ShouldAllowWrappingCaseWithSetUpTearDownBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution

@@ -195,43 +195,6 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle("Unsafe class execution behavior");
         }
 
-        public void ShouldAllowWrappingClassWithDisposableWhenConstructingPerCase()
-        {
-            Convention.ClassExecution
-                      .CreateInstancePerCase()
-                      .Wrap<TransactionScope>();
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                "Start Transaction",
-                ".ctor", "Pass", "Dispose",
-                ".ctor", "Fail", "Dispose",
-                "Rollback Transaction");
-        }
-
-        public void ShouldAllowWrappingClassWithDisposableWhenConstructingPerClass()
-        {
-            Convention.ClassExecution
-                      .CreateInstancePerClass()
-                      .Wrap<TransactionScope>();
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                "Start Transaction",
-                ".ctor", "Pass", "Fail", "Dispose",
-                "Rollback Transaction");
-        }
-
         public void ShouldAllowWrappingClassWithSetUpTearDownBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution

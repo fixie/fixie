@@ -5,30 +5,30 @@ namespace Fixie
 {
     public class ExecutionPlan
     {
-        readonly ClassBehavior classBehavior;
-        readonly InstanceBehavior instanceBehavior;
-        readonly CaseBehavior caseBehavior;
+        readonly BehaviorChain<ClassExecution> classBehaviorChain;
+        readonly BehaviorChain<InstanceExecution> instanceBehaviorChain;
+        readonly BehaviorChain<CaseExecution> caseBehaviorChain;
 
         public ExecutionPlan(Convention convention)
         {
-            classBehavior = convention.ClassExecution.BuildBehavior();
-            instanceBehavior = convention.InstanceExecution.BuildBehavior();
-            caseBehavior = convention.CaseExecution.BuildBehavior();
+            classBehaviorChain = convention.ClassExecution.BuildBehaviorChain();
+            instanceBehaviorChain = convention.InstanceExecution.BuildBehaviorChain();
+            caseBehaviorChain = convention.CaseExecution.BuildBehaviorChain();
         }
 
         public void Execute(ClassExecution classExecution)
         {
-            classBehavior.Execute(classExecution);
+            classBehaviorChain.Execute(classExecution);
         }
 
         public void Execute(InstanceExecution instanceExecution)
         {
-            instanceBehavior.Execute(instanceExecution);
+            instanceBehaviorChain.Execute(instanceExecution);
         }
 
         public void Execute(CaseExecution caseExecution)
         {
-            caseBehavior.Execute(caseExecution);
+            caseBehaviorChain.Execute(caseExecution);
         }
     }
 }

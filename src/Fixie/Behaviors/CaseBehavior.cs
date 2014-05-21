@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Behaviors
 {
-    public interface CaseBehavior
+    public interface CaseBehavior : Behavior<CaseExecution>
     {
-        void Execute(CaseExecution caseExecution);
     }
 }

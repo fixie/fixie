@@ -4,12 +4,9 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void CaseBehaviorAction(CaseExecution caseExecution, Action innerBehavior);
-    public delegate void CaseAction(CaseExecution caseExecution, object instance);
-
     public class CaseBehaviorBuilder
     {
-        readonly List<CaseBehaviorAction> customBehaviors = new List<CaseBehaviorAction>();
+        readonly List<Type> customBehaviors = new List<Type>();
 
         public CaseBehaviorBuilder()
         {
@@ -17,42 +14,25 @@ namespace Fixie.Conventions
             SkipReasonProvider = SkipReasonUnknown;
         }
 
-        public CaseBehavior BuildBehavior()
+        public BehaviorChain<CaseExecution> BuildBehaviorChain()
         {
-            CaseBehavior behavior = new Invoke();
+            var chain = new BehaviorChain<CaseExecution>();
 
             foreach (var customBehavior in customBehaviors)
-                behavior = new WrapBehavior(customBehavior, behavior);
+                chain.Add((CaseBehavior)Activator.CreateInstance(customBehavior));
 
-            return behavior;
+            chain.Add(new Invoke());
+
+            return chain;
         }
 
         public Func<Case, bool> SkipPredicate { get; private set; }
         public Func<Case, string> SkipReasonProvider { get; private set; }
 
-        public CaseBehaviorBuilder Wrap(CaseBehaviorAction outer)
+        public CaseBehaviorBuilder Wrap<TCaseBehavior>() where TCaseBehavior : CaseBehavior
         {
-            customBehaviors.Add(outer);
+            customBehaviors.Insert(0, typeof(TCaseBehavior));
             return this;
-        }
-
-        public CaseBehaviorBuilder SetUp(CaseAction setUp)
-        {
-            return Wrap((caseExecution, innerBehavior) =>
-            {
-                setUp(caseExecution, caseExecution.Instance);
-                innerBehavior();
-            });
-        }
-
-        public CaseBehaviorBuilder SetUpTearDown(CaseAction setUp, CaseAction tearDown)
-        {
-            return Wrap((caseExecution, innerBehavior) =>
-            {
-                setUp(caseExecution, caseExecution.Instance);
-                innerBehavior();
-                tearDown(caseExecution, caseExecution.Instance);
-            });
         }
 
         public CaseBehaviorBuilder Skip(Func<Case, bool> skipPredicate)
@@ -70,30 +50,6 @@ namespace Fixie.Conventions
         static string SkipReasonUnknown(Case @case)
         {
             return null;
-        }
-
-        class WrapBehavior : CaseBehavior
-        {
-            readonly CaseBehaviorAction outer;
-            readonly CaseBehavior inner;
-
-            public WrapBehavior(CaseBehaviorAction outer, CaseBehavior inner)
-            {
-                this.outer = outer;
-                this.inner = inner;
-            }
-
-            public void Execute(CaseExecution caseExecution)
-            {
-                try
-                {
-                    outer(caseExecution, () => inner.Execute(caseExecution));
-                }
-                catch (Exception exception)
-                {
-                    caseExecution.Fail(exception);
-                }
-            }
         }
     }
 }

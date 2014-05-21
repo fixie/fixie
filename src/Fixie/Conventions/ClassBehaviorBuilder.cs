@@ -5,8 +5,6 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void ClassBehaviorAction(ClassExecution classExecution, Action innerBehavior);
-
     public class ClassBehaviorBuilder
     {
         enum ConstructionFrequency
@@ -17,24 +15,26 @@ namespace Fixie.Conventions
 
         ConstructionFrequency constructionFrequency;
         Func<Type, object> factory;
-        readonly List<ClassBehaviorAction> customBehaviors;
+        readonly List<Type> customBehaviors;
 
         public ClassBehaviorBuilder()
         {
             constructionFrequency = ConstructionFrequency.PerCase;
             factory = UseDefaultConstructor;
-            customBehaviors = new List<ClassBehaviorAction>();
+            customBehaviors = new List<Type>();
             OrderCases = executions => { };
         }
 
-        public ClassBehavior BuildBehavior()
+        public BehaviorChain<ClassExecution> BuildBehaviorChain()
         {
-            var behavior = GetInnermostBehavior();
+            var chain = new BehaviorChain<ClassExecution>();
 
             foreach (var customBehavior in customBehaviors)
-                behavior = new WrapBehavior(customBehavior, behavior);
+                chain.Add((ClassBehavior)Activator.CreateInstance(customBehavior));
 
-            return behavior;
+            chain.Add(GetInnermostBehavior());
+
+            return chain;
         }
 
         ClassBehavior GetInnermostBehavior()
@@ -65,29 +65,10 @@ namespace Fixie.Conventions
             return this;
         }
 
-        public ClassBehaviorBuilder Wrap(ClassBehaviorAction outer)
+        public ClassBehaviorBuilder Wrap<TClassBehavior>() where TClassBehavior : ClassBehavior
         {
-            customBehaviors.Add(outer);
+            customBehaviors.Insert(0, typeof(TClassBehavior));
             return this;
-        }
-
-        public ClassBehaviorBuilder SetUp(Action<ClassExecution> setUp)
-        {
-            return Wrap((classExecution, innerBehavior) =>
-            {
-                setUp(classExecution);
-                innerBehavior();
-            });
-        }
-
-        public ClassBehaviorBuilder SetUpTearDown(Action<ClassExecution> setUp, Action<ClassExecution> tearDown)
-        {
-            return Wrap((classExecution, innerBehavior) =>
-            {
-                setUp(classExecution);
-                innerBehavior();
-                tearDown(classExecution);
-            });
         }
 
         public ClassBehaviorBuilder ShuffleCases(Random random)
@@ -116,30 +97,6 @@ namespace Fixie.Conventions
             catch (TargetInvocationException exception)
             {
                 throw new PreservedException(exception.InnerException);
-            }
-        }
-
-        class WrapBehavior : ClassBehavior
-        {
-            readonly ClassBehaviorAction outer;
-            readonly ClassBehavior inner;
-
-            public WrapBehavior(ClassBehaviorAction outer, ClassBehavior inner)
-            {
-                this.outer = outer;
-                this.inner = inner;
-            }
-
-            public void Execute(ClassExecution classExecution)
-            {
-                try
-                {
-                    outer(classExecution, () => inner.Execute(classExecution));
-                }
-                catch (Exception exception)
-                {
-                    classExecution.Fail(exception);
-                }                
             }
         }
     }

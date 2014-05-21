@@ -5,7 +5,7 @@ namespace Fixie.Behaviors
 {
     public class ExecuteCases : InstanceBehavior
     {
-        public void Execute(InstanceExecution instanceExecution)
+        public void Execute(InstanceExecution instanceExecution, Action next)
         {
             foreach (var caseExecution in instanceExecution.CaseExecutions)
             {

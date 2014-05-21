@@ -8,13 +8,13 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
-                      .SetUpTearDown(ClassSetUp, ClassTearDown);
+                      .Wrap<ClassSetUpTearDown>();
 
             Convention.InstanceExecution
-                      .SetUpTearDown(InstanceSetUp, InstanceTearDown);
+                      .Wrap<InstanceSetUpTearDown>();
 
             Convention.CaseExecution
-                      .SetUpTearDown(CaseSetUp, CaseTearDown);
+                      .Wrap<CaseSetUpTearDown>();
 
             var output = Run();
 
@@ -48,13 +48,13 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerClass()
-                      .SetUpTearDown(ClassSetUp, ClassTearDown);
+                      .Wrap<ClassSetUpTearDown>();
 
             Convention.InstanceExecution
-                      .SetUpTearDown(InstanceSetUp, InstanceTearDown);
+                      .Wrap<InstanceSetUpTearDown>();
 
             Convention.CaseExecution
-                      .SetUpTearDown(CaseSetUp, CaseTearDown);
+                      .Wrap<CaseSetUpTearDown>();
 
             var output = Run();
 
@@ -86,13 +86,13 @@ namespace Fixie.Tests.Lifecycle
 
             Convention.ClassExecution
                       .CreateInstancePerCase()
-                      .SetUpTearDown(ClassSetUp, ClassTearDown);
+                      .Wrap<ClassSetUpTearDown>();
 
             Convention.InstanceExecution
-                      .SetUpTearDown(InstanceSetUp, InstanceTearDown);
+                      .Wrap<InstanceSetUpTearDown>();
 
             Convention.CaseExecution
-                      .SetUpTearDown(CaseSetUp, CaseTearDown);
+                      .Wrap<CaseSetUpTearDown>();
 
             var output = Run();
 
@@ -135,13 +135,13 @@ namespace Fixie.Tests.Lifecycle
 
             Convention.ClassExecution
                       .CreateInstancePerClass()
-                      .SetUpTearDown(ClassSetUp, ClassTearDown);
+                      .Wrap<ClassSetUpTearDown>();
 
             Convention.InstanceExecution
-                      .SetUpTearDown(InstanceSetUp, InstanceTearDown);
+                      .Wrap<InstanceSetUpTearDown>();
 
             Convention.CaseExecution
-                      .SetUpTearDown(CaseSetUp, CaseTearDown);
+                      .Wrap<CaseSetUpTearDown>();
 
             var output = Run();
 

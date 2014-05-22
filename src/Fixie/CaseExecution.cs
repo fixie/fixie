@@ -33,5 +33,10 @@ namespace Fixie
             else
                 exceptions.Add(reason);
         }
+
+        public void Pass()
+        {
+            exceptions.Clear();
+        }
     }
 }

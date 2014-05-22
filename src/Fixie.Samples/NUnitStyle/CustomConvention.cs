@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Fixie.Behaviors;
 using Fixie.Conventions;
@@ -23,7 +24,45 @@ namespace Fixie.Samples.NUnitStyle
                 .Wrap<FixtureSetUpTearDown>();
 
             CaseExecution
+                .Wrap<SupportExpectedExceptions>()
                 .Wrap<SetUpTearDown>();
+        }
+    }
+
+    class SupportExpectedExceptions : CaseBehavior
+    {
+        public void Execute(CaseExecution caseExecution, Action next)
+        {
+            next();
+
+            var attribute = caseExecution.Case.Method.GetCustomAttributes<ExpectedExceptionAttribute>(false).SingleOrDefault();
+
+            if (attribute == null)
+                return;
+
+            if (caseExecution.Exceptions.Count > 1)
+                return;
+
+            var exception = caseExecution.Exceptions.SingleOrDefault();
+
+            if (exception == null)
+                throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
+
+            if (exception.GetType() != attribute.ExpectedException)
+            {
+                caseExecution.Pass();
+
+                throw new Exception("Expected exception of type " + attribute.ExpectedException + " but an exception of type " + exception.GetType() + " was thrown.", exception);
+            }
+
+            if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
+            {
+                caseExecution.Pass();
+
+                throw new Exception("Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.", exception);
+            }
+
+            caseExecution.Pass();
         }
     }
 

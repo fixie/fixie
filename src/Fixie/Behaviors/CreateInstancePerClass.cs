@@ -11,7 +11,7 @@ namespace Fixie.Behaviors
             this.construct = construct;
         }
 
-        public void Execute(ClassExecution classExecution)
+        public void Execute(ClassExecution classExecution, Action next)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace Fixie.Behaviors
             }
             catch (Exception exception)
             {
-                classExecution.FailCases(exception);
+                classExecution.Fail(exception);
             }
         }
 

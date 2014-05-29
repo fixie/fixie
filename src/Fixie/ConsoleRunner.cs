@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Fixie.Listeners;
 using Fixie.Results;
@@ -13,15 +14,21 @@ namespace Fixie
 
             var options = new CommandLineParser(args).Options;
 
-            var runner = new Runner(CreateListener(), options);
+            var runner = new Runner(CreateListener(options), options);
             return runner.RunAssembly(assembly);
         }
 
-        static Listener CreateListener()
+        static Listener CreateListener(ILookup<string, string> options)
         {
+            var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
+
             var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
 
-            if (runningUnderTeamCity)
+            var useTeamCityListener =
+                (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
+                (!teamCityExplicitlySpecified && runningUnderTeamCity);
+
+            if (useTeamCityListener)
                 return new TeamCityListener();
 
             return new ConsoleListener();

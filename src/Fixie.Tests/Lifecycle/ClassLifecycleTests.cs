@@ -1,25 +1,72 @@
 using System;
+using Fixie.Behaviors;
 
 namespace Fixie.Tests.Lifecycle
 {
     public class ClassLifecycleTests : LifecycleTests
     {
-        public void ShouldAllowWrappingTypeWithBehaviorsWhenConstructingPerCase()
+        class Inner : ClassBehavior
+        {
+            public void Execute(ClassExecution classExecution, Action next)
+            {
+                Console.WriteLine("Inner Before");
+                next();
+                Console.WriteLine("Inner After");
+            }
+        }
+
+        class Outer : ClassBehavior
+        {
+            public void Execute(ClassExecution classExecution, Action next)
+            {
+                Console.WriteLine("Outer Before");
+                next();
+                Console.WriteLine("Outer After");
+            }
+        }
+
+        class DoNothing : ClassBehavior
+        {
+            public void Execute(ClassExecution classExecution, Action next)
+            {
+                //Behavior chooses not to invoke next().
+                //Since the test classes are never intantiated,
+                //their cases don't have the chance to throw exceptions,
+                //resulting in all 'passing'.
+            }
+        }
+
+        class ThrowException : ClassBehavior
+        {
+            public void Execute(ClassExecution classExecution, Action next)
+            {
+                Console.WriteLine("Unsafe class execution behavior");
+                throw new Exception("Unsafe class execution behavior threw!");
+            }
+        }
+
+        class ThrowPreservedException : ClassBehavior
+        {
+            public void Execute(ClassExecution classExecution, Action next)
+            {
+                Console.WriteLine("Unsafe class execution behavior");
+                try
+                {
+                    throw new Exception("Unsafe class execution behavior threw!");
+                }
+                catch (Exception originalException)
+                {
+                    throw new PreservedException(originalException);
+                }
+            }
+        }
+
+        public void ShouldAllowWrappingClassWithBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
-                      .Wrap((classExecution, innerBehavior) =>
-                      {
-                          Console.WriteLine("Inner Before");
-                          innerBehavior();
-                          Console.WriteLine("Inner After");
-                      })
-                      .Wrap((classExecution, innerBehavior) =>
-                      {
-                          Console.WriteLine("Outer Before");
-                          innerBehavior();
-                          Console.WriteLine("Outer After");
-                      });
+                      .Wrap<Inner>()
+                      .Wrap<Outer>();
 
             var output = Run();
 
@@ -34,22 +81,12 @@ namespace Fixie.Tests.Lifecycle
                 "Inner After", "Outer After");
         }
 
-        public void ShouldAllowWrappingTypeWithBehaviorsWhenConstructingPerClass()
+        public void ShouldAllowWrappingClassWithBehaviorsWhenConstructingPerClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass()
-                      .Wrap((classExecution, innerBehavior) =>
-                      {
-                          Console.WriteLine("Inner Before");
-                          innerBehavior();
-                          Console.WriteLine("Inner After");
-                      })
-                      .Wrap((classExecution, innerBehavior) =>
-                      {
-                          Console.WriteLine("Outer Before");
-                          innerBehavior();
-                          Console.WriteLine("Outer After");
-                      });
+                      .Wrap<Inner>()
+                      .Wrap<Outer>();
 
             var output = Run();
 
@@ -67,13 +104,7 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
-                      .Wrap((classExecution, innerBehavior) =>
-                      {
-                          //Behavior chooses not to invoke innerBehavior().
-                          //Since the test classes are never intantiated,
-                          //their cases don't have the chance to throw exceptions,
-                          //resulting in all 'passing'.
-                      });
+                      .Wrap<DoNothing>();
 
             var output = Run();
 
@@ -88,13 +119,7 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerClass()
-                      .Wrap((classExecution, innerBehavior) =>
-                      {
-                          //Behavior chooses not to invoke innerBehavior().
-                          //Since the test classes are never intantiated,
-                          //their cases don't have the chance to throw exceptions,
-                          //resulting in all 'passing'.
-                      });
+                      .Wrap<DoNothing>();
 
             var output = Run();
 
@@ -109,11 +134,7 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
-                      .Wrap((classExecution, innerBehavior) =>
-                      {
-                          Console.WriteLine("Unsafe class execution behavior");
-                          throw new Exception("Unsafe class execution behavior threw!");
-                      });
+                      .Wrap<ThrowException>();
 
             var output = Run();
 
@@ -128,11 +149,7 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerClass()
-                      .Wrap((classExecution, innerBehavior) =>
-                      {
-                          Console.WriteLine("Unsafe class execution behavior");
-                          throw new Exception("Unsafe class execution behavior threw!");
-                      });
+                      .Wrap<ThrowException>();
 
             var output = Run();
 
@@ -147,18 +164,7 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
-                      .Wrap((classExecution, innerBehavior) =>
-                      {
-                          Console.WriteLine("Unsafe class execution behavior");
-                          try
-                          {
-                              throw new Exception("Unsafe class execution behavior threw!");
-                          }
-                          catch (Exception originalException)
-                          {
-                              throw new PreservedException(originalException);
-                          }
-                      });
+                      .Wrap<ThrowPreservedException>();
 
             var output = Run();
 
@@ -173,18 +179,7 @@ namespace Fixie.Tests.Lifecycle
         {
             Convention.ClassExecution
                       .CreateInstancePerClass()
-                      .Wrap((classExecution, innerBehavior) =>
-                      {
-                          Console.WriteLine("Unsafe class execution behavior");
-                          try
-                          {
-                              throw new Exception("Unsafe class execution behavior threw!");
-                          }
-                          catch (Exception originalException)
-                          {
-                              throw new PreservedException(originalException);
-                          }
-                      });
+                      .Wrap<ThrowPreservedException>();
 
             var output = Run();
 
@@ -195,11 +190,11 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle("Unsafe class execution behavior");
         }
 
-        public void ShouldAllowWrappingTypeWithSetUpTearDownBehaviorsWhenConstructingPerCase()
+        public void ShouldAllowWrappingClassWithSetUpTearDownBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
-                      .SetUpTearDown(ClassSetUp, ClassTearDown);
+                      .Wrap<ClassSetUpTearDown>();
 
             var output = Run();
 
@@ -214,11 +209,11 @@ namespace Fixie.Tests.Lifecycle
                 "ClassTearDown");
         }
 
-        public void ShouldAllowWrappingTypeWithSetUpTearDownBehaviorsWhenConstructingPerClass()
+        public void ShouldAllowWrappingClassWithSetUpTearDownBehaviorsWhenConstructingPerClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass()
-                      .SetUpTearDown(ClassSetUp, ClassTearDown);
+                      .Wrap<ClassSetUpTearDown>();
 
             var output = Run();
 
@@ -238,7 +233,7 @@ namespace Fixie.Tests.Lifecycle
 
             Convention.ClassExecution
                       .CreateInstancePerCase()
-                      .SetUpTearDown(ClassSetUp, ClassTearDown);
+                      .Wrap<ClassSetUpTearDown>();
 
             var output = Run();
 
@@ -256,7 +251,7 @@ namespace Fixie.Tests.Lifecycle
 
             Convention.ClassExecution
                       .CreateInstancePerClass()
-                      .SetUpTearDown(ClassSetUp, ClassTearDown);
+                      .Wrap<ClassSetUpTearDown>();
 
             var output = Run();
 
@@ -274,7 +269,7 @@ namespace Fixie.Tests.Lifecycle
 
             Convention.ClassExecution
                       .CreateInstancePerCase()
-                      .SetUpTearDown(ClassSetUp, ClassTearDown);
+                      .Wrap<ClassSetUpTearDown>();
 
             var output = Run();
 
@@ -296,7 +291,7 @@ namespace Fixie.Tests.Lifecycle
 
             Convention.ClassExecution
                       .CreateInstancePerClass()
-                      .SetUpTearDown(ClassSetUp, ClassTearDown);
+                      .Wrap<ClassSetUpTearDown>();
 
             var output = Run();
 
@@ -309,77 +304,6 @@ namespace Fixie.Tests.Lifecycle
                 "ClassSetUp",
                 ".ctor", "Pass", "Fail", "Dispose",
                 "ClassTearDown");
-        }
-
-        public void ShouldAllowWrappingTypeWithSetUpBehaviorWhenConstructingPerCase()
-        {
-            Convention.ClassExecution
-                      .CreateInstancePerCase()
-                      .SetUp(ClassSetUp);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                "ClassSetUp",
-                ".ctor", "Pass", "Dispose",
-                ".ctor", "Fail", "Dispose");
-        }
-
-        public void ShouldAllowWrappingTypeWithSetUpBehaviorWhenConstructingPerClass()
-        {
-            Convention.ClassExecution
-                      .CreateInstancePerClass()
-                      .SetUp(ClassSetUp);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                "ClassSetUp",
-                ".ctor", "Pass", "Fail", "Dispose");
-        }
-
-        public void ShouldShortCircuitInnerBehaviorByFailingCaseWhenConstructingPerCaseAndClassSetUpThrows()
-        {
-            FailDuring("ClassSetUp");
-
-            Convention.ClassExecution
-                      .CreateInstancePerCase()
-                      .SetUp(ClassSetUp);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'ClassSetUp' failed!",
-                "SampleTestClass.Fail failed: 'ClassSetUp' failed!");
-
-            output.ShouldHaveLifecycle(
-                "ClassSetUp");
-        }
-
-        public void ShouldShortCircuitInnerBehaviorByFailingAllCasesWhenConstructingPerClassAndClassSetUpThrows()
-        {
-            FailDuring("ClassSetUp");
-
-            Convention.ClassExecution
-                      .CreateInstancePerClass()
-                      .SetUp(ClassSetUp);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'ClassSetUp' failed!",
-                "SampleTestClass.Fail failed: 'ClassSetUp' failed!");
-
-            output.ShouldHaveLifecycle(
-                "ClassSetUp");
         }
     }
 }

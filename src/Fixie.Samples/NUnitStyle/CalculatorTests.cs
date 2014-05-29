@@ -43,6 +43,21 @@ namespace Fixie.Samples.NUnitStyle
             calculator.Subtract(5, 3).ShouldEqual(2);
         }
 
+        [Test]
+        public void ShouldDivide()
+        {
+            log.WhereAmI();
+            calculator.Divide(6, 3).ShouldEqual(2);
+        }
+
+        [Test]
+        [ExpectedException(typeof(DivideByZeroException))]
+        public void ShouldThrowWhenDividingByZero()
+        {
+            log.WhereAmI();
+            calculator.Divide(1, 0);
+        }
+
         [TearDown]
         public void TearDown()
         {
@@ -65,7 +80,13 @@ namespace Fixie.Samples.NUnitStyle
                 "ShouldAdd",
                 "TearDown",
                 "SetUp",
+                "ShouldDivide",
+                "TearDown",
+                "SetUp",
                 "ShouldSubtract",
+                "TearDown",
+                "SetUp",
+                "ShouldThrowWhenDividingByZero",
                 "TearDown",
                 "TestFixtureTearDown",
                 "Dispose");

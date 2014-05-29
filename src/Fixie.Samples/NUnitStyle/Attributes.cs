@@ -19,4 +19,17 @@ namespace Fixie.Samples.NUnitStyle
 
     [AttributeUsage(AttributeTargets.Method)]
     public class TestFixtureTearDownAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public class ExpectedExceptionAttribute : Attribute
+    {
+        public ExpectedExceptionAttribute(Type exceptionType)
+        {
+            ExpectedException = exceptionType;
+        }
+
+        public Type ExpectedException { get; set; }
+
+        public string ExpectedMessage { get; set; }
+    }
 }

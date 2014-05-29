@@ -11,7 +11,7 @@ namespace Fixie.Behaviors
             this.construct = construct;
         }
 
-        public void Execute(ClassExecution classExecution)
+        public void Execute(ClassExecution classExecution, Action next)
         {
             foreach (var caseExecution in classExecution.CaseExecutions)
             {

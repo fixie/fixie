@@ -30,6 +30,18 @@ namespace Fixie.Tests
             execution.Exceptions.ShouldEqual(exceptionA, exceptionB);
         }
 
+        public void CanSuppressFailuresByClearingExceptionLog()
+        {
+            var exceptionA = new InvalidOperationException();
+            var exceptionB = new DivideByZeroException();
+
+            execution.Exceptions.ShouldBeEmpty();
+            execution.Fail(exceptionA);
+            execution.Fail(exceptionB);
+            execution.Pass();
+            execution.Exceptions.ShouldBeEmpty();
+        }
+
         private class SampleTestClass
         {
             public void Test() { }

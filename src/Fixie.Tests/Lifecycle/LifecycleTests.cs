@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Fixie.Behaviors;
 using Fixie.Conventions;
 using Should;
 
@@ -137,17 +138,17 @@ namespace Fixie.Tests.Lifecycle
             WhereAmI();
         }
 
-        protected static void CaseSetUp(CaseExecution caseExecution, object instance)
+        protected static void CaseSetUp(CaseExecution caseExecution)
         {
             caseExecution.Case.Class.ShouldEqual(typeof(SampleTestClass));
-            instance.ShouldBeType<SampleTestClass>();
+            caseExecution.Instance.ShouldBeType<SampleTestClass>();
             WhereAmI();
         }
 
-        protected static void CaseTearDown(CaseExecution caseExecution, object instance)
+        protected static void CaseTearDown(CaseExecution caseExecution)
         {
             caseExecution.Case.Class.ShouldEqual(typeof(SampleTestClass));
-            instance.ShouldBeType<SampleTestClass>();
+            caseExecution.Instance.ShouldBeType<SampleTestClass>();
             WhereAmI();
         }
 
@@ -157,6 +158,36 @@ namespace Fixie.Tests.Lifecycle
 
             if (FailingMembers != null && FailingMembers.Contains(member))
                 throw new FailureException(member);
+        }
+
+        protected class CaseSetUpTearDown : CaseBehavior
+        {
+            public void Execute(CaseExecution caseExecution, Action next)
+            {
+                CaseSetUp(caseExecution);
+                next();
+                CaseTearDown(caseExecution);
+            }
+        }
+
+        protected class InstanceSetUpTearDown : InstanceBehavior
+        {
+            public void Execute(InstanceExecution instanceExecution, Action next)
+            {
+                InstanceSetUp(instanceExecution);
+                next();
+                InstanceTearDown(instanceExecution);
+            }
+        }
+
+        protected class ClassSetUpTearDown : ClassBehavior
+        {
+            public void Execute(ClassExecution classExecution, Action next)
+            {
+                ClassSetUp(classExecution);
+                next();
+                ClassTearDown(classExecution);
+            }
         }
     }
 }

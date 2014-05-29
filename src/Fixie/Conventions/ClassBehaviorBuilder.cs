@@ -1,75 +1,74 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public delegate void ClassBehaviorAction(ClassExecution classExecution, Action innerBehavior);
-
     public class ClassBehaviorBuilder
     {
+        enum ConstructionFrequency
+        {
+            PerCase,
+            PerClass
+        }
+
+        ConstructionFrequency constructionFrequency;
+        Func<Type, object> factory;
+        readonly List<Type> customBehaviors;
+
         public ClassBehaviorBuilder()
         {
-            ConstructionFrequency = ConstructionFrequency.CreateInstancePerCase;
-            Behavior = null;
+            constructionFrequency = ConstructionFrequency.PerCase;
+            factory = UseDefaultConstructor;
+            customBehaviors = new List<Type>();
             OrderCases = executions => { };
         }
 
-        public ClassBehavior Behavior { get; private set; }
-        public Action<CaseExecution[]> OrderCases { get; private set; }
-        public ConstructionFrequency ConstructionFrequency { get; private set; }
+        public BehaviorChain<ClassExecution> BuildBehaviorChain()
+        {
+            var chain = new BehaviorChain<ClassExecution>();
+
+            foreach (var customBehavior in customBehaviors)
+                chain.Add((ClassBehavior)Activator.CreateInstance(customBehavior));
+
+            chain.Add(GetInnermostBehavior());
+
+            return chain;
+        }
+
+        ClassBehavior GetInnermostBehavior()
+        {
+            if (constructionFrequency == ConstructionFrequency.PerCase)
+                return new CreateInstancePerCase(factory);
+
+            return new CreateInstancePerClass(factory);
+        }
+
+        public Action<Case[]> OrderCases { get; private set; }
 
         public ClassBehaviorBuilder CreateInstancePerCase()
         {
-            ConstructionFrequency = ConstructionFrequency.CreateInstancePerCase;
-            Behavior = new CreateInstancePerCase(Construct);
-            return this;
-        }
-
-        public ClassBehaviorBuilder CreateInstancePerCase(Func<Type, object> construct)
-        {
-            ConstructionFrequency = ConstructionFrequency.CreateInstancePerCase;
-            Behavior = new CreateInstancePerCase(construct);
+            constructionFrequency = ConstructionFrequency.PerCase;
             return this;
         }
 
         public ClassBehaviorBuilder CreateInstancePerClass()
         {
-            ConstructionFrequency = ConstructionFrequency.CreateInstancePerClass;
-            Behavior = new CreateInstancePerClass(Construct);
+            constructionFrequency = ConstructionFrequency.PerClass;
             return this;
         }
 
-        public ClassBehaviorBuilder CreateInstancePerClass(Func<Type, object> construct)
+        public ClassBehaviorBuilder UsingFactory(Func<Type, object> customFactory)
         {
-            ConstructionFrequency = ConstructionFrequency.CreateInstancePerClass;
-            Behavior = new CreateInstancePerClass(construct);
+            factory = customFactory;
             return this;
         }
 
-        public ClassBehaviorBuilder Wrap(ClassBehaviorAction outer)
+        public ClassBehaviorBuilder Wrap<TClassBehavior>() where TClassBehavior : ClassBehavior
         {
-            Behavior = new WrapBehavior(outer, Behavior);
+            customBehaviors.Insert(0, typeof(TClassBehavior));
             return this;
-        }
-
-        public ClassBehaviorBuilder SetUp(Action<ClassExecution> setUp)
-        {
-            return Wrap((classExecution, innerBehavior) =>
-            {
-                setUp(classExecution);
-                innerBehavior();
-            });
-        }
-
-        public ClassBehaviorBuilder SetUpTearDown(Action<ClassExecution> setUp, Action<ClassExecution> tearDown)
-        {
-            return Wrap((classExecution, innerBehavior) =>
-            {
-                setUp(classExecution);
-                innerBehavior();
-                tearDown(classExecution);
-            });
         }
 
         public ClassBehaviorBuilder ShuffleCases(Random random)
@@ -85,13 +84,11 @@ namespace Fixie.Conventions
 
         public ClassBehaviorBuilder SortCases(Comparison<Case> comparison)
         {
-            OrderCases = caseExecutions =>
-                Array.Sort(caseExecutions, (caseExecutionA, caseExecutionB) => comparison(caseExecutionA.Case, caseExecutionB.Case));
-
+            OrderCases = cases => Array.Sort(cases, comparison);
             return this;
         }
 
-        static object Construct(Type type)
+        static object UseDefaultConstructor(Type type)
         {
             try
             {
@@ -100,30 +97,6 @@ namespace Fixie.Conventions
             catch (TargetInvocationException exception)
             {
                 throw new PreservedException(exception.InnerException);
-            }
-        }
-
-        class WrapBehavior : ClassBehavior
-        {
-            readonly ClassBehaviorAction outer;
-            readonly ClassBehavior inner;
-
-            public WrapBehavior(ClassBehaviorAction outer, ClassBehavior inner)
-            {
-                this.outer = outer;
-                this.inner = inner;
-            }
-
-            public void Execute(ClassExecution classExecution)
-            {
-                try
-                {
-                    outer(classExecution, () => inner.Execute(classExecution));
-                }
-                catch (Exception exception)
-                {
-                    classExecution.FailCases(exception);
-                }                
             }
         }
     }

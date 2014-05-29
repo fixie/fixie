@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Fixie.Behaviors;
 using Fixie.Conventions;
 
 namespace Fixie.Samples.xUnitStyle
@@ -9,7 +10,7 @@ namespace Fixie.Samples.xUnitStyle
     public class CustomConvention : Convention
     {
         readonly MethodFilter factMethods = new MethodFilter().HasOrInherits<FactAttribute>();
-        readonly Dictionary<MethodInfo, object> fixtures = new Dictionary<MethodInfo, object>();
+        static readonly Dictionary<MethodInfo, object> fixtures = new Dictionary<MethodInfo, object>();
 
         public CustomConvention()
         {
@@ -21,11 +22,11 @@ namespace Fixie.Samples.xUnitStyle
 
             ClassExecution
                 .CreateInstancePerCase()
-                .SetUpTearDown(PrepareFixtureData, DisposeFixtureData)
+                .Wrap<PrepareAndDisposeFixtureData>()
                 .ShuffleCases();
 
             InstanceExecution
-                .SetUp(InjectFixtureData);
+                .Wrap<InjectFixtureData>();
         }
 
         bool HasAnyFactMethods(Type type)
@@ -33,37 +34,52 @@ namespace Fixie.Samples.xUnitStyle
             return factMethods.Filter(type).Any();
         }
 
-        void PrepareFixtureData(ClassExecution classExecution)
+        class PrepareAndDisposeFixtureData : ClassBehavior
         {
-            fixtures.Clear();
-
-            foreach (var @interface in FixtureInterfaces(classExecution.TestClass))
+            public void Execute(ClassExecution classExecution, Action next)
             {
-                var fixtureDataType = @interface.GetGenericArguments()[0];
+                SetUp(classExecution);
+                next();
+                TearDown();
+            }
 
-                var fixtureInstance = Activator.CreateInstance(fixtureDataType);
+            void SetUp(ClassExecution classExecution)
+            {
+                fixtures.Clear();
 
-                var method = @interface.GetMethod("SetFixture", new[] { fixtureDataType });
-                fixtures[method] = fixtureInstance;
+                foreach (var @interface in FixtureInterfaces(classExecution.TestClass))
+                {
+                    var fixtureDataType = @interface.GetGenericArguments()[0];
+
+                    var fixtureInstance = Activator.CreateInstance(fixtureDataType);
+
+                    var method = @interface.GetMethod("SetFixture", new[] { fixtureDataType });
+                    fixtures[method] = fixtureInstance;
+                }
+            }
+
+            void TearDown()
+            {
+                foreach (var fixtureInstance in fixtures.Values)
+                {
+                    var disposable = fixtureInstance as IDisposable;
+                    if (disposable != null)
+                        disposable.Dispose();
+                }
+
+                fixtures.Clear();
             }
         }
 
-        void DisposeFixtureData(ClassExecution classExecution)
+        class InjectFixtureData : InstanceBehavior
         {
-            foreach (var fixtureInstance in fixtures.Values)
+            public void Execute(InstanceExecution instanceExecution, Action next)
             {
-                var disposable = fixtureInstance as IDisposable;
-                if (disposable != null)
-                    disposable.Dispose();
+                foreach (var injectionMethod in fixtures.Keys)
+                    injectionMethod.Invoke(instanceExecution.Instance, new[] { fixtures[injectionMethod] });
+
+                next();
             }
-
-            fixtures.Clear();
-        }
-
-        void InjectFixtureData(InstanceExecution instanceExecution)
-        {
-            foreach (var injectionMethod in fixtures.Keys)
-                injectionMethod.Invoke(instanceExecution.Instance, new[] { fixtures[injectionMethod] });
         }
 
         static IEnumerable<Type> FixtureInterfaces(Type testClass)

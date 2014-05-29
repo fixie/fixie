@@ -1,27 +1,74 @@
 using System;
+using Fixie.Behaviors;
 
 namespace Fixie.Tests.Lifecycle
 {
     public class CaseLifecycleTests : LifecycleTests
     {
+        class Inner : CaseBehavior
+        {
+            public void Execute(CaseExecution caseExecution, Action next)
+            {
+                Console.WriteLine("Inner Before");
+                next();
+                Console.WriteLine("Inner After");
+            }
+        }
+
+        class Outer : CaseBehavior
+        {
+            public void Execute(CaseExecution caseExecution, Action next)
+            {
+                Console.WriteLine("Outer Before");
+                next();
+                Console.WriteLine("Outer After");
+            }
+        }
+
+        class DoNothing : CaseBehavior
+        {
+            public void Execute(CaseExecution caseExecution, Action next)
+            {
+                //Behavior chooses not to invoke next().
+                //Since the cases are never invoked, they don't
+                //have the chance to throw exceptions, resulting
+                //in all 'passing'.
+            }
+        }
+
+        class ThrowException : CaseBehavior
+        {
+            public void Execute(CaseExecution caseExecution, Action next)
+            {
+                Console.WriteLine("Unsafe case execution behavior");
+                throw new Exception("Unsafe case execution behavior threw!");
+            }
+        }
+
+        class ThrowPreservedException : CaseBehavior
+        {
+            public void Execute(CaseExecution caseExecution, Action next)
+            {
+                Console.WriteLine("Unsafe case execution behavior");
+                try
+                {
+                    throw new Exception("Unsafe case execution behavior threw!");
+                }
+                catch (Exception originalException)
+                {
+                    throw new PreservedException(originalException);
+                }
+            }
+        }
+
         public void ShouldAllowWrappingCaseWithBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
-                      {
-                          Console.WriteLine("Inner Before");
-                          innerBehavior();
-                          Console.WriteLine("Inner After");
-                      })
-                      .Wrap((@case, instance, innerBehavior) =>
-                      {
-                          Console.WriteLine("Outer Before");
-                          innerBehavior();
-                          Console.WriteLine("Outer After");
-                      });
+                      .Wrap<Inner>()
+                      .Wrap<Outer>();
 
             var output = Run();
 
@@ -48,18 +95,8 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
-                      {
-                          Console.WriteLine("Inner Before");
-                          innerBehavior();
-                          Console.WriteLine("Inner After");
-                      })
-                      .Wrap((@case, instance, innerBehavior) =>
-                      {
-                          Console.WriteLine("Outer Before");
-                          innerBehavior();
-                          Console.WriteLine("Outer After");
-                      });
+                      .Wrap<Inner>()
+                      .Wrap<Outer>();
 
             var output = Run();
 
@@ -84,13 +121,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
-                      {
-                          //Behavior chooses not to invoke innerBehavior().
-                          //Since the cases are never invoked, they don't
-                          //have the chance to throw exceptions, resulting
-                          //in all 'passing'.
-                      });
+                      .Wrap<DoNothing>();
 
             var output = Run();
 
@@ -111,13 +142,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
-                      {
-                          //Behavior chooses not to invoke innerBehavior().
-                          //Since the cases are never invoked, they don't
-                          //have the chance to throw exceptions, resulting
-                          //in all 'passing'.
-                      });
+                      .Wrap<DoNothing>();
 
             var output = Run();
 
@@ -136,11 +161,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
-                      {
-                          Console.WriteLine("Unsafe case execution behavior");
-                          throw new Exception("Unsafe case execution behavior threw!");
-                      });
+                      .Wrap<ThrowException>();
 
             var output = Run();
 
@@ -163,11 +184,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
-                      {
-                          Console.WriteLine("Unsafe case execution behavior");
-                          throw new Exception("Unsafe case execution behavior threw!");
-                      });
+                      .Wrap<ThrowException>();
 
             var output = Run();
 
@@ -188,18 +205,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
-                      {
-                          Console.WriteLine("Unsafe case execution behavior");
-                          try
-                          {
-                              throw new Exception("Unsafe case execution behavior threw!");
-                          }
-                          catch (Exception originalException)
-                          {
-                              throw new PreservedException(originalException);
-                          }
-                      });
+                      .Wrap<ThrowPreservedException>();
 
             var output = Run();
 
@@ -222,18 +228,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.CaseExecution
-                      .Wrap((@case, instance, innerBehavior) =>
-                      {
-                          Console.WriteLine("Unsafe case execution behavior");
-                          try
-                          {
-                              throw new Exception("Unsafe case execution behavior threw!");
-                          }
-                          catch (Exception originalException)
-                          {
-                              throw new PreservedException(originalException);
-                          }
-                      });
+                      .Wrap<ThrowPreservedException>();
 
             var output = Run();
 
@@ -254,7 +249,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .SetUpTearDown(CaseSetUp, CaseTearDown);
+                      .Wrap<CaseSetUpTearDown>();
 
             var output = Run();
 
@@ -277,7 +272,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.CaseExecution
-                      .SetUpTearDown(CaseSetUp, CaseTearDown);
+                      .Wrap<CaseSetUpTearDown>();
 
             var output = Run();
 
@@ -300,7 +295,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .SetUpTearDown(CaseSetUp, CaseTearDown);
+                      .Wrap<CaseSetUpTearDown>();
 
             var output = Run();
 
@@ -325,7 +320,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.CaseExecution
-                      .SetUpTearDown(CaseSetUp, CaseTearDown);
+                      .Wrap<CaseSetUpTearDown>();
 
             var output = Run();
 
@@ -348,7 +343,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.CaseExecution
-                      .SetUpTearDown(CaseSetUp, CaseTearDown);
+                      .Wrap<CaseSetUpTearDown>();
 
             var output = Run();
 
@@ -374,7 +369,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.CaseExecution
-                      .SetUpTearDown(CaseSetUp, CaseTearDown);
+                      .Wrap<CaseSetUpTearDown>();
 
             var output = Run();
 
@@ -387,98 +382,6 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor",
                 "CaseSetUp", "Pass", "CaseTearDown",
                 "CaseSetUp", "Fail", "CaseTearDown",
-                "Dispose");
-        }
-
-        public void ShouldAllowWrappingCaseWithSetUpBehaviorWhenConstructingPerCase()
-        {
-            Convention.ClassExecution
-                      .CreateInstancePerCase();
-
-            Convention.CaseExecution
-                      .SetUp(CaseSetUp);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "CaseSetUp", "Pass",
-                "Dispose",
-                ".ctor",
-                "CaseSetUp", "Fail",
-                "Dispose");
-        }
-
-        public void ShouldAllowWrappingCaseWithSetUpBehaviorWhenConstructingPerClass()
-        {
-            Convention.ClassExecution
-                      .CreateInstancePerClass();
-
-            Convention.CaseExecution
-                      .SetUp(CaseSetUp);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "CaseSetUp", "Pass",
-                "CaseSetUp", "Fail",
-                "Dispose");
-        }
-
-        public void ShouldShortCircuitInnerBehaviorByFailingCaseWhenConstructingPerCaseAndCaseSetUpThrows()
-        {
-            FailDuring("CaseSetUp");
-
-            Convention.ClassExecution
-                      .CreateInstancePerCase();
-
-            Convention.CaseExecution
-                      .SetUp(CaseSetUp);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Fail failed: 'CaseSetUp' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "CaseSetUp",
-                "Dispose",
-                ".ctor",
-                "CaseSetUp",
-                "Dispose");
-        }
-
-        public void ShouldShortCircuitInnerBehaviorByFailingAllCasesWhenConstructingPerClassAndCaseSetUpThrows()
-        {
-            FailDuring("CaseSetUp");
-
-            Convention.ClassExecution
-                      .CreateInstancePerClass();
-
-            Convention.CaseExecution
-                      .SetUp(CaseSetUp);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Fail failed: 'CaseSetUp' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "CaseSetUp",
-                "CaseSetUp",
                 "Dispose");
         }
     }

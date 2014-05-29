@@ -22,7 +22,7 @@ namespace Fixie.Conventions
                 var cases = methods.SelectMany(method => CasesForMethod(convention, method)).ToArray();
                 var casesBySkipState = cases.ToLookup(convention.CaseExecution.SkipPredicate);
                 var casesToSkip = casesBySkipState[true];
-                var casesToExecute = casesBySkipState[false];
+                var casesToExecute = casesBySkipState[false].ToArray();
                 foreach (var @case in casesToSkip)
                 {
                     var skipResult = new SkipResult(@case, convention.CaseExecution.SkipReasonProvider(@case));
@@ -30,11 +30,11 @@ namespace Fixie.Conventions
                     classResult.Add(CaseResult.Skipped(skipResult.Case.Name, skipResult.Reason));
                 }
 
-                var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
-                if (caseExecutions.Any())
+                if (casesToExecute.Any())
                 {
-                    convention.ClassExecution.OrderCases(caseExecutions);
+                    convention.ClassExecution.OrderCases(casesToExecute);
 
+                    var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
                     var classExecution = new ClassExecution(executionPlan, testClass, caseExecutions);
                     executionPlan.Execute(classExecution);
 

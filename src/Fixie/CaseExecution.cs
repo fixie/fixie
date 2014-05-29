@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Fixie.Behaviors;
 
 namespace Fixie
 {
-    public class CaseExecution
+    public class CaseExecution : BehaviorContext
     {
         readonly List<Exception> exceptions;
 
@@ -14,6 +15,8 @@ namespace Fixie
         }
 
         public Case Case { get; private set; }
+
+        public object Instance { get; internal set; }
         
         public TimeSpan Duration { get; set; }
 
@@ -29,6 +32,11 @@ namespace Fixie
                 exceptions.Add(wrapped.OriginalException);
             else
                 exceptions.Add(reason);
+        }
+
+        public void Pass()
+        {
+            exceptions.Clear();
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Behaviors
 {
-    public interface ClassBehavior
+    public interface ClassBehavior : Behavior<ClassExecution>
     {
-        void Execute(ClassExecution classExecution);
     }
 }

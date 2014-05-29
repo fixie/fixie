@@ -1,10 +1,12 @@
-﻿namespace Fixie.Behaviors
+﻿using System;
+
+namespace Fixie.Behaviors
 {
     public class Invoke : CaseBehavior
     {
-        public void Execute(CaseExecution caseExecution, object instance)
+        public void Execute(CaseExecution caseExecution, Action next)
         {
-            caseExecution.Case.Execute(instance, caseExecution);
+            caseExecution.Case.Execute(caseExecution.Instance, caseExecution);
         }
     }
 }

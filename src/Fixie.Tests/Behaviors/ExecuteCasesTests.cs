@@ -9,21 +9,26 @@ namespace Fixie.Tests.Behaviors
 {
     public class ExecuteCasesTests
     {
-        readonly List<string> log;
+        static readonly List<string> log = new List<string>();
         readonly Type testClass;
         readonly Convention convention;
 
+        class LogMethodName : CaseBehavior
+        {
+            public void Execute(CaseExecution caseExecution, Action next)
+            {
+                log.Add(caseExecution.Case.Method.Name);
+                next();
+            }
+        }
+
         public ExecuteCasesTests()
         {
-            log = new List<string>();
+            log.Clear();
             testClass = typeof(SampleTestClass);
 
             convention = new SelfTestConvention();
-            convention.CaseExecution.Wrap((caseExecution, instance, innerBehavior) =>
-            {
-                log.Add(caseExecution.Case.Method.Name);
-                innerBehavior();
-            });
+            convention.CaseExecution.Wrap<LogMethodName>();
         }
 
         public void ShouldPerformCaseExecutionBehaviorForAllGivenCases()
@@ -40,11 +45,14 @@ namespace Fixie.Tests.Behaviors
             var executeCases = new ExecuteCases();
             var executionPlan = new ExecutionPlan(convention);
             var instanceExecution = new InstanceExecution(executionPlan, testClass, new SampleTestClass(), caseExecutions);
-            executeCases.Execute(instanceExecution);
+
+            bool invokedNext = false;
+            executeCases.Execute(instanceExecution, () => invokedNext = true);
 
             caseExecutions[0].Exceptions.Any().ShouldBeFalse();
             caseExecutions[1].Exceptions.Single().Message.ShouldEqual("'Fail' failed!");
             log.ShouldEqual("Pass", "Fail");
+            invokedNext.ShouldBeFalse();
         }
 
         private class SampleTestClass

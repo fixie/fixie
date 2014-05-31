@@ -68,7 +68,20 @@ namespace Fixie
                     {
                         throw new PreservedException(exception.InnerExceptions.First());
                     }
+
+                    if (Method.ReturnType.IsGenericType)
+                    {
+                        var property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public);
+
+                        result = property.GetValue(task, null);
+                    }
+                    else
+                    {
+                        result = null;
+                    }
                 }
+
+                caseExecution.Result = result;
             }
             catch (Exception exception)
             {

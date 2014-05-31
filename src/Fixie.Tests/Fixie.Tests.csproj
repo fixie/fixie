@@ -50,6 +50,7 @@
     <Compile Include="Behaviors\ExecuteCasesTests.cs" />
     <Compile Include="CaseExecutionTests.cs" />
     <Compile Include="Cases\CaseTests.cs" />
+    <Compile Include="Cases\NonVoidCaseTests.cs" />
     <Compile Include="CommandLineParserTests.cs" />
     <Compile Include="Conventions\AssertionLibraryFilterTests.cs" />
     <Compile Include="Conventions\ConventionRunnerTests.cs" />

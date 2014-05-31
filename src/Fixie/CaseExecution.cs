@@ -22,6 +22,8 @@ namespace Fixie
 
         public string Output { get; set; }
 
+        public object Result { get; internal set; }
+
         public IReadOnlyList<Exception> Exceptions { get { return exceptions; } }
 
         public void Fail(Exception reason)

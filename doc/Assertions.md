@@ -10,8 +10,8 @@ Assertion libraries are orthogonal to test frameworks.  Your choice of assertion
 
 Here are some useful third-party assertion libraries:
 
-* [Should](http://nuget.org/packages/Should/)
-* [Shouldly](http://nuget.org/packages/Shouldly/)
+* [Should](https://nuget.org/packages/Should/)
+* [Shouldly](https://nuget.org/packages/Shouldly/)
 * [Fluent Assertions](https://www.nuget.org/packages/FluentAssertions)
 
 ## How do I hide assertion library implementation details?

@@ -97,17 +97,24 @@ namespace Fixie
 
         static Convention ConstructConvention(Type conventionType, RunContext runContext)
         {
-            var constructors = conventionType.GetConstructors();
-
-            if (constructors.Length == 1)
+            try
             {
-                var parameters = constructors.Single().GetParameters();
+                var constructors = conventionType.GetConstructors();
 
-                if (parameters.Length == 1 && parameters.Single().ParameterType == typeof(RunContext))
-                    return (Convention)Activator.CreateInstance(conventionType, runContext);
+                if (constructors.Length == 1)
+                {
+                    var parameters = constructors.Single().GetParameters();
+
+                    if (parameters.Length == 1 && parameters.Single().ParameterType == typeof(RunContext))
+                        return (Convention)Activator.CreateInstance(conventionType, runContext);
+                }
+
+                return (Convention)Activator.CreateInstance(conventionType);
             }
-
-            return (Convention)Activator.CreateInstance(conventionType);
+            catch (Exception ex)
+            {
+                throw new Exception("Could not construct an instance of convention type '"+conventionType.FullName+"'.", ex);
+            }
         }
 
         AssemblyResult Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)

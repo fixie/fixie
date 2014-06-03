@@ -19,9 +19,9 @@ First, [install NuGet](http://docs.nuget.org/docs/start-here/installing-nuget). 
     
 5. Use the TestDriven.NET runner from within Visual Studio, using the same keyboard shortcuts you would use for NUnit tests.
 
-[doc/DefaultConvention.md](Default Convention)
-[doc/CustomConventions.md](Custom Conventions)
-[doc/ParameterizedTestMethods.md](Parameterized Test Methods)
-[doc/SkippingTests.md](Skipping Tests)
-[doc/Assertions.md](Assertions)
-[doc/ContinuousIntegration.md](Continuous Integration)
+[Default Convention](doc/DefaultConvention.md)
+[Custom Conventions](doc/CustomConventions.md)
+[Parameterized Test Methods](doc/ParameterizedTestMethods.md)
+[Skipping Tests](doc/SkippingTests.md)
+[Assertions](doc/Assertions.md)
+[Continuous Integration](doc/ContinuousIntegration.md)

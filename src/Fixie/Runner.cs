@@ -97,24 +97,9 @@ namespace Fixie
 
         static Convention ConstructConvention(Type conventionType, RunContext runContext)
         {
-            try
-            {
-                var constructors = conventionType.GetConstructors();
+            var container = new Container(runContext);
 
-                if (constructors.Length == 1)
-                {
-                    var parameters = constructors.Single().GetParameters();
-
-                    if (parameters.Length == 1 && parameters.Single().ParameterType == typeof(RunContext))
-                        return (Convention)Activator.CreateInstance(conventionType, runContext);
-                }
-
-                return (Convention)Activator.CreateInstance(conventionType);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Could not construct an instance of convention type '"+conventionType.FullName+"'.", ex);
-            }
+            return (Convention)container.GetInstance(conventionType);
         }
 
         AssemblyResult Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)
@@ -135,6 +120,45 @@ namespace Fixie
             listener.AssemblyCompleted(runContext.Assembly, assemblyResult);
 
             return assemblyResult;
+        }
+
+        class Container
+        {
+            readonly RunContext runContext;
+
+            public Container(RunContext runContext)
+            {
+                this.runContext = runContext;
+            }
+
+            public object GetInstance(Type type)
+            {
+                if (type == typeof(RunContext))
+                    return runContext;
+
+                var constructor = GetConstructor(type);
+
+                try
+                {
+                    return constructor.Invoke(constructor.GetParameters().Select(parameter => GetInstance(parameter.ParameterType)).ToArray());
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(String.Format("Could not construct an instance of type '{0}'.", type.FullName), ex);
+                }
+            }
+
+            static ConstructorInfo GetConstructor(Type type)
+            {
+                var constructors = type.GetConstructors();
+
+                if (constructors.Length == 1)
+                    return constructors.Single();
+
+                throw new Exception(
+                    String.Format("Could not construct an instance of type '{0}'.  Expected to find exactly 1 public constructor, but found {1}.",
+                        type.FullName, constructors.Length));
+            }
         }
     }
 }

@@ -40,3 +40,29 @@ Several sample conventions are available under the [Fixie.Samples](https://githu
 * [Simplified NUnit for cleaner test inheritance](https://github.com/plioi/fixie/blob/master/src/Fixie.Samples/LowCeremony/CustomConvention.cs)
 * [Construct integration test classes with your IoC container](https://github.com/plioi/fixie/blob/master/src/Fixie.Samples/IoC/CustomConvention.cs)
 * [Support arbitrary command line flags such as NUnit-style categories](https://github.com/plioi/fixie/blob/master/src/Fixie.Samples/Categories/CustomConvention.cs)
+
+## Sharing Conventions
+
+As described above, a custom subclass of Convention will reach out into the containing test assembly, looking for tests to execute.  This default behavior is useful in simple projects, but is insufficient in two scenarios:
+
+1. You may want to define a convention once in your Solution, and have it applied to multiple test assemblies in that Solution.
+2. Someone may create a useful NUnit-mimicking convention and share it in the form of a DLL.
+
+By default, conventions only reach out into their containing assembly when looking for tests.  In order to take advantage of a convention defined in another assembly, you can add a subclass of TestAssembly and explicitly list which conventions apply here:
+
+```cs
+using Fixie.Conventions;
+using SomeThirdPartyConventionsLibrary;
+
+namespace IntegrationTests
+{
+    public class IntegrationTestAssembly : TestAssembly
+    {
+        public IntegrationTestAssembly ()
+        {
+            Apply<NUnitConvention>();
+            Apply<xUnitCustomConvention>();
+        }
+    }
+}
+```

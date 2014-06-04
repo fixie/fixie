@@ -61,7 +61,7 @@ namespace IntegrationTests
         public IntegrationTestAssembly ()
         {
             Apply<NUnitConvention>();
-            Apply<xUnitCustomConvention>();
+            Apply<xUnitConvention>();
         }
     }
 }

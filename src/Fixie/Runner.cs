@@ -40,7 +40,7 @@ namespace Fixie
             if (type.IsSubclassOf(typeof(Convention)))
             {
                 var singleConventionRunContext = new RunContext(assembly, options);
-                var singleConvention = ConstructConvention(type, singleConventionRunContext);
+                var singleConvention = Construct<Convention>(type, singleConventionRunContext);
 
                 return RunTypes(singleConventionRunContext, singleConvention, assembly.GetTypes());
             }
@@ -83,11 +83,24 @@ namespace Fixie
 
         static Convention[] GetConventions(RunContext runContext)
         {
-            var customConventions = runContext.Assembly
-                .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(Convention)))
-                .Select(t => ConstructConvention(t, runContext))
-                .ToArray();
+            var explicitlyAppliedConventionTypes =
+                runContext.Assembly
+                    .GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(TestAssembly)))
+                    .Select(t => Construct<TestAssembly>(t, runContext))
+                    .ToArray().SelectMany(x => x.ConventionTypes);
+
+            var localConventionTypes =
+                runContext.Assembly
+                    .GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(Convention)));
+
+            var customConventions =
+                localConventionTypes
+                    .Concat(explicitlyAppliedConventionTypes)
+                    .Distinct()
+                    .Select(t => Construct<Convention>(t, runContext))
+                    .ToArray();
 
             if (customConventions.Any())
                 return customConventions;
@@ -95,11 +108,11 @@ namespace Fixie
             return new[] { (Convention) new DefaultConvention() };
         }
 
-        static Convention ConstructConvention(Type conventionType, RunContext runContext)
+        static T Construct<T>(Type type, RunContext runContext)
         {
             var container = new Container(runContext);
 
-            return (Convention)container.GetInstance(conventionType);
+            return (T)container.GetInstance(type);
         }
 
         AssemblyResult Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)

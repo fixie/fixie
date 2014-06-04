@@ -50,6 +50,7 @@
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="Conventions\AssertionLibraryFilter.cs" />
     <Compile Include="Conventions\ConventionRunner.cs" />
+    <Compile Include="Conventions\TestAssembly.cs" />
     <Compile Include="ExecutionEnvironment.cs" />
     <Compile Include="ExecutionPlan.cs" />
     <Compile Include="GenericArgumentResolver.cs" />

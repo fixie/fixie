@@ -37,7 +37,7 @@ namespace Fixie
 
         public AssemblyResult RunType(Assembly assembly, Type type)
         {
-            if (type.IsSubclassOf(typeof(Convention)))
+            if (type.IsSubclassOf(typeof(Convention)) && !type.IsAbstract)
             {
                 var singleConventionRunContext = new RunContext(assembly, options);
                 var singleConvention = Construct<Convention>(type, singleConventionRunContext);
@@ -86,14 +86,14 @@ namespace Fixie
             var explicitlyAppliedConventionTypes =
                 runContext.Assembly
                     .GetTypes()
-                    .Where(t => t.IsSubclassOf(typeof(TestAssembly)))
+                    .Where(t => t.IsSubclassOf(typeof(TestAssembly)) && !t.IsAbstract)
                     .Select(t => Construct<TestAssembly>(t, runContext))
                     .ToArray().SelectMany(x => x.ConventionTypes);
 
             var localConventionTypes =
                 runContext.Assembly
                     .GetTypes()
-                    .Where(t => t.IsSubclassOf(typeof(Convention)));
+                    .Where(t => t.IsSubclassOf(typeof(Convention)) && !t.IsAbstract);
 
             var customConventions =
                 localConventionTypes

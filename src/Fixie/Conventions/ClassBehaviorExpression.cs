@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Fixie.Behaviors;
 
 namespace Fixie.Conventions
@@ -8,13 +7,11 @@ namespace Fixie.Conventions
     public class ClassBehaviorExpression
     {
         readonly ConfigModel config;
-        Func<Type, object> factory;
         readonly List<Type> customBehaviors;
 
         public ClassBehaviorExpression(ConfigModel config)
         {
             this.config = config;
-            factory = UseDefaultConstructor;
             customBehaviors = new List<Type>();
             OrderCases = executions => { };
         }
@@ -34,9 +31,9 @@ namespace Fixie.Conventions
         ClassBehavior GetInnermostBehavior()
         {
             if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
-                return new CreateInstancePerCase(factory);
+                return new CreateInstancePerCase(config.Factory);
 
-            return new CreateInstancePerClass(factory);
+            return new CreateInstancePerClass(config.Factory);
         }
 
         public Action<Case[]> OrderCases { get; private set; }
@@ -55,7 +52,7 @@ namespace Fixie.Conventions
 
         public ClassBehaviorExpression UsingFactory(Func<Type, object> customFactory)
         {
-            factory = customFactory;
+            config.Factory = customFactory;
             return this;
         }
 
@@ -80,18 +77,6 @@ namespace Fixie.Conventions
         {
             OrderCases = cases => Array.Sort(cases, comparison);
             return this;
-        }
-
-        static object UseDefaultConstructor(Type type)
-        {
-            try
-            {
-                return Activator.CreateInstance(type);
-            }
-            catch (TargetInvocationException exception)
-            {
-                throw new PreservedException(exception.InnerException);
-            }
         }
     }
 }

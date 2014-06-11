@@ -5,7 +5,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public class ClassBehaviorBuilder
+    public class ClassBehaviorExpression
     {
         enum ConstructionFrequency
         {
@@ -17,7 +17,7 @@ namespace Fixie.Conventions
         Func<Type, object> factory;
         readonly List<Type> customBehaviors;
 
-        public ClassBehaviorBuilder()
+        public ClassBehaviorExpression()
         {
             constructionFrequency = ConstructionFrequency.PerCase;
             factory = UseDefaultConstructor;
@@ -47,42 +47,42 @@ namespace Fixie.Conventions
 
         public Action<Case[]> OrderCases { get; private set; }
 
-        public ClassBehaviorBuilder CreateInstancePerCase()
+        public ClassBehaviorExpression CreateInstancePerCase()
         {
             constructionFrequency = ConstructionFrequency.PerCase;
             return this;
         }
 
-        public ClassBehaviorBuilder CreateInstancePerClass()
+        public ClassBehaviorExpression CreateInstancePerClass()
         {
             constructionFrequency = ConstructionFrequency.PerClass;
             return this;
         }
 
-        public ClassBehaviorBuilder UsingFactory(Func<Type, object> customFactory)
+        public ClassBehaviorExpression UsingFactory(Func<Type, object> customFactory)
         {
             factory = customFactory;
             return this;
         }
 
-        public ClassBehaviorBuilder Wrap<TClassBehavior>() where TClassBehavior : ClassBehavior
+        public ClassBehaviorExpression Wrap<TClassBehavior>() where TClassBehavior : ClassBehavior
         {
             customBehaviors.Insert(0, typeof(TClassBehavior));
             return this;
         }
 
-        public ClassBehaviorBuilder ShuffleCases(Random random)
+        public ClassBehaviorExpression ShuffleCases(Random random)
         {
             OrderCases = caseExecutions => caseExecutions.Shuffle(random);
             return this;
         }
 
-        public ClassBehaviorBuilder ShuffleCases()
+        public ClassBehaviorExpression ShuffleCases()
         {
             return ShuffleCases(new Random());
         }
 
-        public ClassBehaviorBuilder SortCases(Comparison<Case> comparison)
+        public ClassBehaviorExpression SortCases(Comparison<Case> comparison)
         {
             OrderCases = cases => Array.Sort(cases, comparison);
             return this;

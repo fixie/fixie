@@ -4,11 +4,11 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public class CaseBehaviorBuilder
+    public class CaseBehaviorExpression
     {
         readonly List<Type> customBehaviors = new List<Type>();
 
-        public CaseBehaviorBuilder()
+        public CaseBehaviorExpression()
         {
             SkipPredicate = @case => false;
             SkipReasonProvider = SkipReasonUnknown;
@@ -29,18 +29,18 @@ namespace Fixie.Conventions
         public Func<Case, bool> SkipPredicate { get; private set; }
         public Func<Case, string> SkipReasonProvider { get; private set; }
 
-        public CaseBehaviorBuilder Wrap<TCaseBehavior>() where TCaseBehavior : CaseBehavior
+        public CaseBehaviorExpression Wrap<TCaseBehavior>() where TCaseBehavior : CaseBehavior
         {
             customBehaviors.Insert(0, typeof(TCaseBehavior));
             return this;
         }
 
-        public CaseBehaviorBuilder Skip(Func<Case, bool> skipPredicate)
+        public CaseBehaviorExpression Skip(Func<Case, bool> skipPredicate)
         {
             return Skip(skipPredicate, SkipReasonUnknown);
         }
 
-        public CaseBehaviorBuilder Skip(Func<Case, bool> skipPredicate, Func<Case, string> skipReasonProvider)
+        public CaseBehaviorExpression Skip(Func<Case, bool> skipPredicate, Func<Case, string> skipReasonProvider)
         {
             SkipPredicate = skipPredicate;
             SkipReasonProvider = skipReasonProvider;

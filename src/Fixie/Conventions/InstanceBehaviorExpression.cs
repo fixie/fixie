@@ -4,7 +4,7 @@ using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
-    public class InstanceBehaviorBuilder
+    public class InstanceBehaviorExpression
     {
         readonly List<Type> customBehaviors = new List<Type>();
 
@@ -20,7 +20,7 @@ namespace Fixie.Conventions
             return chain;
         }
 
-        public InstanceBehaviorBuilder Wrap<TInstanceBehavior>() where TInstanceBehavior : InstanceBehavior
+        public InstanceBehaviorExpression Wrap<TInstanceBehavior>() where TInstanceBehavior : InstanceBehavior
         {
             customBehaviors.Insert(0, typeof(TInstanceBehavior));
             return this;

@@ -63,10 +63,10 @@
     <Compile Include="ConsoleRunner.cs" />
     <Compile Include="Conventions\Convention.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
-    <Compile Include="Conventions\InstanceBehaviorBuilder.cs" />
-    <Compile Include="Conventions\CaseBehaviorBuilder.cs" />
+    <Compile Include="Conventions\InstanceBehaviorExpression.cs" />
+    <Compile Include="Conventions\CaseBehaviorExpression.cs" />
     <Compile Include="Conventions\SelfTestConvention.cs" />
-    <Compile Include="Conventions\ClassBehaviorBuilder.cs" />
+    <Compile Include="Conventions\ClassBehaviorExpression.cs" />
     <Compile Include="FailResult.cs" />
     <Compile Include="ClassExecution.cs" />
     <Compile Include="InstanceExecution.cs" />

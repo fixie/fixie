@@ -32,7 +32,7 @@ namespace Fixie.Conventions
 
                 if (casesToExecute.Any())
                 {
-                    convention.ClassExecution.OrderCases(casesToExecute);
+                    convention.Config.OrderCases(casesToExecute);
 
                     var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
                     var classExecution = new ClassExecution(executionPlan, testClass, caseExecutions);

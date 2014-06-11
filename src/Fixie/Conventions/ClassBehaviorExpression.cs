@@ -13,7 +13,6 @@ namespace Fixie.Conventions
         {
             this.config = config;
             customBehaviors = new List<Type>();
-            OrderCases = executions => { };
         }
 
         public BehaviorChain<ClassExecution> BuildBehaviorChain()
@@ -35,8 +34,6 @@ namespace Fixie.Conventions
 
             return new CreateInstancePerClass(config.Factory);
         }
-
-        public Action<Case[]> OrderCases { get; private set; }
 
         public ClassBehaviorExpression CreateInstancePerCase()
         {
@@ -64,7 +61,7 @@ namespace Fixie.Conventions
 
         public ClassBehaviorExpression ShuffleCases(Random random)
         {
-            OrderCases = caseExecutions => caseExecutions.Shuffle(random);
+            config.OrderCases = caseExecutions => caseExecutions.Shuffle(random);
             return this;
         }
 
@@ -75,7 +72,7 @@ namespace Fixie.Conventions
 
         public ClassBehaviorExpression SortCases(Comparison<Case> comparison)
         {
-            OrderCases = cases => Array.Sort(cases, comparison);
+            config.OrderCases = cases => Array.Sort(cases, comparison);
             return this;
         }
     }

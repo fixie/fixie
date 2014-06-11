@@ -6,11 +6,9 @@ namespace Fixie.Conventions
 {
     public class Convention
     {
-        readonly ConfigModel config;
-
         public Convention()
         {
-            config = new ConfigModel();
+            Config = new ConfigModel();
 
             Classes = new ClassFilter()
                 .Where(type => !type.IsSubclassOf(typeof(Convention)) &&
@@ -18,11 +16,13 @@ namespace Fixie.Conventions
             Methods = new MethodFilter().Where(m => !m.IsDispose());
             CaseExecution = new CaseBehaviorExpression();
             InstanceExecution = new InstanceBehaviorExpression();
-            ClassExecution = new ClassBehaviorExpression(config);
+            ClassExecution = new ClassBehaviorExpression(Config);
             HideExceptionDetails = new AssertionLibraryFilter();
 
             MethodCallParameterBuilder = method => new object[][] { };
         }
+
+        public ConfigModel Config { get; private set; }
 
         public ClassFilter Classes { get; private set; }
         public MethodFilter Methods { get; private set; }

@@ -7,13 +7,16 @@ namespace Fixie.Conventions
     {
         public ConfigModel()
         {
+            OrderCases = executions => { };
             ConstructionFrequency = ConstructionFrequency.PerCase;
             Factory = UseDefaultConstructor;
         }
 
-        public Func<Type, object> Factory { get; set; }
+        public Action<Case[]> OrderCases { get; set; }
 
         public ConstructionFrequency ConstructionFrequency { get; set; }
+
+        public Func<Type, object> Factory { get; set; }
 
         static object UseDefaultConstructor(Type type)
         {

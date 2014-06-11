@@ -49,6 +49,7 @@
     <Compile Include="CaseExecution.cs" />
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="Conventions\AssertionLibraryFilter.cs" />
+    <Compile Include="Conventions\ConstructionFrequency.cs" />
     <Compile Include="Conventions\ConventionRunner.cs" />
     <Compile Include="Conventions\TestAssembly.cs" />
     <Compile Include="ExecutionEnvironment.cs" />

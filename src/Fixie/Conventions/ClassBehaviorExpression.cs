@@ -7,12 +7,6 @@ namespace Fixie.Conventions
 {
     public class ClassBehaviorExpression
     {
-        enum ConstructionFrequency
-        {
-            PerCase,
-            PerClass
-        }
-
         ConstructionFrequency constructionFrequency;
         Func<Type, object> factory;
         readonly List<Type> customBehaviors;

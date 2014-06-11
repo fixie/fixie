@@ -10,12 +10,7 @@ namespace Fixie.Conventions
         public CaseBehaviorExpression(ConfigModel config)
         {
             this.config = config;
-            SkipPredicate = @case => false;
-            SkipReasonProvider = SkipReasonUnknown;
         }
-
-        public Func<Case, bool> SkipPredicate { get; private set; }
-        public Func<Case, string> SkipReasonProvider { get; private set; }
 
         public CaseBehaviorExpression Wrap<TCaseBehavior>() where TCaseBehavior : CaseBehavior
         {
@@ -23,21 +18,16 @@ namespace Fixie.Conventions
             return this;
         }
 
-        public CaseBehaviorExpression Skip(Func<Case, bool> skipPredicate)
+        public CaseBehaviorExpression Skip(Func<Case, bool> skipCase)
         {
-            return Skip(skipPredicate, SkipReasonUnknown);
+            return Skip(skipCase, @case => null);
         }
 
-        public CaseBehaviorExpression Skip(Func<Case, bool> skipPredicate, Func<Case, string> skipReasonProvider)
+        public CaseBehaviorExpression Skip(Func<Case, bool> skipCase, Func<Case, string> getSkipReason)
         {
-            SkipPredicate = skipPredicate;
-            SkipReasonProvider = skipReasonProvider;
+            config.SkipCase = skipCase;
+            config.GetSkipReason = getSkipReason;
             return this;
-        }
-
-        static string SkipReasonUnknown(Case @case)
-        {
-            return null;
         }
     }
 }

@@ -16,6 +16,8 @@ namespace Fixie.Conventions
             OrderCases = executions => { };
             ConstructionFrequency = ConstructionFrequency.PerCase;
             Factory = UseDefaultConstructor;
+            SkipCase = @case => false;
+            GetSkipReason = @case => null;
 
             customClassBehaviors = new List<Type>();
             customInstanceBehaviors = new List<Type>();
@@ -23,10 +25,10 @@ namespace Fixie.Conventions
         }
 
         public Action<Case[]> OrderCases { get; set; }
-
         public ConstructionFrequency ConstructionFrequency { get; set; }
-
         public Func<Type, object> Factory { get; set; }
+        public Func<Case, bool> SkipCase { get; set; }
+        public Func<Case, string> GetSkipReason { get; set; }
 
         static object UseDefaultConstructor(Type type)
         {

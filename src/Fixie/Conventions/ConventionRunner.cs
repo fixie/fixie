@@ -20,12 +20,12 @@ namespace Fixie.Conventions
                 var methods = convention.Methods.Filter(testClass);
 
                 var cases = methods.SelectMany(method => CasesForMethod(convention, method)).ToArray();
-                var casesBySkipState = cases.ToLookup(convention.CaseExecution.SkipPredicate);
+                var casesBySkipState = cases.ToLookup(convention.Config.SkipCase);
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false].ToArray();
                 foreach (var @case in casesToSkip)
                 {
-                    var skipResult = new SkipResult(@case, convention.CaseExecution.SkipReasonProvider(@case));
+                    var skipResult = new SkipResult(@case, convention.Config.GetSkipReason(@case));
                     listener.CaseSkipped(skipResult);
                     classResult.Add(CaseResult.Skipped(skipResult.Case.Name, skipResult.Reason));
                 }

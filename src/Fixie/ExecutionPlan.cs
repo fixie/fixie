@@ -12,7 +12,7 @@ namespace Fixie
         public ExecutionPlan(Convention convention)
         {
             classBehaviorChain = convention.Config.BuildClassBehaviorChain();
-            instanceBehaviorChain = convention.InstanceExecution.BuildBehaviorChain();
+            instanceBehaviorChain = convention.Config.BuildInstanceBehaviorChain();
             caseBehaviorChain = convention.CaseExecution.BuildBehaviorChain();
         }
 

@@ -1,28 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using Fixie.Behaviors;
+﻿using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
     public class InstanceBehaviorExpression
     {
-        readonly List<Type> customInstanceBehaviors = new List<Type>();
+        readonly ConfigModel config;
 
-        public BehaviorChain<InstanceExecution> BuildBehaviorChain()
+        public InstanceBehaviorExpression(ConfigModel config)
         {
-            var chain = new BehaviorChain<InstanceExecution>();
-
-            foreach (var customBehavior in customInstanceBehaviors)
-                chain.Add((InstanceBehavior)Activator.CreateInstance(customBehavior));
-
-            chain.Add(new ExecuteCases());
-
-            return chain;
+            this.config = config;
         }
 
         public InstanceBehaviorExpression Wrap<TInstanceBehavior>() where TInstanceBehavior : InstanceBehavior
         {
-            customInstanceBehaviors.Insert(0, typeof(TInstanceBehavior));
+            config.WrapInstances<TInstanceBehavior>();
             return this;
         }
     }

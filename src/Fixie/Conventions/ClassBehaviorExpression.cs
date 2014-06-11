@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Fixie.Behaviors;
 
 namespace Fixie.Conventions
@@ -7,32 +6,10 @@ namespace Fixie.Conventions
     public class ClassBehaviorExpression
     {
         readonly ConfigModel config;
-        readonly List<Type> customClassBehaviors;
 
         public ClassBehaviorExpression(ConfigModel config)
         {
             this.config = config;
-            customClassBehaviors = new List<Type>();
-        }
-
-        public BehaviorChain<ClassExecution> BuildBehaviorChain()
-        {
-            var chain = new BehaviorChain<ClassExecution>();
-
-            foreach (var customBehavior in customClassBehaviors)
-                chain.Add((ClassBehavior)Activator.CreateInstance(customBehavior));
-
-            chain.Add(GetInnermostBehavior());
-
-            return chain;
-        }
-
-        ClassBehavior GetInnermostBehavior()
-        {
-            if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
-                return new CreateInstancePerCase(config.Factory);
-
-            return new CreateInstancePerClass(config.Factory);
         }
 
         public ClassBehaviorExpression CreateInstancePerCase()
@@ -55,7 +32,7 @@ namespace Fixie.Conventions
 
         public ClassBehaviorExpression Wrap<TClassBehavior>() where TClassBehavior : ClassBehavior
         {
-            customClassBehaviors.Insert(0, typeof(TClassBehavior));
+            config.WrapClasses<TClassBehavior>();
             return this;
         }
 

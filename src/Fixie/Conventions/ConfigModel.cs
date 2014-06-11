@@ -1,15 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
+using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
     public class ConfigModel
     {
+        readonly List<Type> customClassBehaviors;
+
         public ConfigModel()
         {
             OrderCases = executions => { };
             ConstructionFrequency = ConstructionFrequency.PerCase;
             Factory = UseDefaultConstructor;
+
+            customClassBehaviors = new List<Type>();
         }
 
         public Action<Case[]> OrderCases { get; set; }
@@ -28,6 +34,31 @@ namespace Fixie.Conventions
             {
                 throw new PreservedException(exception.InnerException);
             }
+        }
+
+        public void WrapClasses<TClassBehavior>() where TClassBehavior : ClassBehavior
+        {
+            customClassBehaviors.Insert(0, typeof(TClassBehavior));
+        }
+
+        public BehaviorChain<ClassExecution> BuildClassBehaviorChain()
+        {
+            var chain = new BehaviorChain<ClassExecution>();
+
+            foreach (var customBehavior in customClassBehaviors)
+                chain.Add((ClassBehavior)Activator.CreateInstance(customBehavior));
+
+            chain.Add(GetInnermostBehavior());
+
+            return chain;
+        }
+
+        ClassBehavior GetInnermostBehavior()
+        {
+            if (ConstructionFrequency == ConstructionFrequency.PerCase)
+                return new CreateInstancePerCase(Factory);
+
+            return new CreateInstancePerClass(Factory);
         }
     }
 }

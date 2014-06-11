@@ -57,48 +57,8 @@ namespace Fixie.Conventions
             customCaseBehaviors.Insert(0, typeof(TCaseBehavior));
         }
 
-        public BehaviorChain<ClassExecution> BuildClassBehaviorChain()
-        {
-            var chain = new BehaviorChain<ClassExecution>();
-
-            foreach (var customBehavior in customClassBehaviors)
-                chain.Add((ClassBehavior)Activator.CreateInstance(customBehavior));
-
-            chain.Add(GetInnermostBehavior());
-
-            return chain;
-        }
-
-        public BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain()
-        {
-            var chain = new BehaviorChain<InstanceExecution>();
-
-            foreach (var customBehavior in customInstanceBehaviors)
-                chain.Add((InstanceBehavior)Activator.CreateInstance(customBehavior));
-
-            chain.Add(new ExecuteCases());
-
-            return chain;
-        }
-
-        public BehaviorChain<CaseExecution> BuildCaseBehaviorChain()
-        {
-            var chain = new BehaviorChain<CaseExecution>();
-
-            foreach (var customBehavior in customCaseBehaviors)
-                chain.Add((CaseBehavior)Activator.CreateInstance(customBehavior));
-
-            chain.Add(new Invoke());
-
-            return chain;
-        }
-
-        ClassBehavior GetInnermostBehavior()
-        {
-            if (ConstructionFrequency == ConstructionFrequency.PerCase)
-                return new CreateInstancePerCase(Factory);
-
-            return new CreateInstancePerClass(Factory);
-        }
+        public IReadOnlyList<Type> CustomClassBehaviors { get { return customClassBehaviors; } }
+        public IReadOnlyList<Type> CustomInstanceBehaviors { get { return customInstanceBehaviors; } }
+        public IReadOnlyList<Type> CustomCaseBehaviors { get { return customCaseBehaviors; } }
     }
 }

@@ -10,7 +10,9 @@ namespace Fixie.Conventions
     {
         public ConventionResult Run(Convention convention, Listener listener, params Type[] candidateTypes)
         {
-            var executionPlan = new ExecutionPlan(convention);
+            var config = convention.Config;
+
+            var executionPlan = new ExecutionPlan(config);
             var conventionResult = new ConventionResult(convention.GetType().FullName);
 
             foreach (var testClass in convention.Classes.Filter(candidateTypes))
@@ -20,19 +22,19 @@ namespace Fixie.Conventions
                 var methods = convention.Methods.Filter(testClass);
 
                 var cases = methods.SelectMany(method => CasesForMethod(convention, method)).ToArray();
-                var casesBySkipState = cases.ToLookup(convention.Config.SkipCase);
+                var casesBySkipState = cases.ToLookup(config.SkipCase);
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false].ToArray();
                 foreach (var @case in casesToSkip)
                 {
-                    var skipResult = new SkipResult(@case, convention.Config.GetSkipReason(@case));
+                    var skipResult = new SkipResult(@case, config.GetSkipReason(@case));
                     listener.CaseSkipped(skipResult);
                     classResult.Add(CaseResult.Skipped(skipResult.Case.Name, skipResult.Reason));
                 }
 
                 if (casesToExecute.Any())
                 {
-                    convention.Config.OrderCases(casesToExecute);
+                    config.OrderCases(casesToExecute);
 
                     var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
                     var classExecution = new ClassExecution(executionPlan, testClass, caseExecutions);

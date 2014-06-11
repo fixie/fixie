@@ -43,7 +43,7 @@ namespace Fixie.Tests.Behaviors
             };
 
             var executeCases = new ExecuteCases();
-            var executionPlan = new ExecutionPlan(convention);
+            var executionPlan = new ExecutionPlan(convention.Config);
             var instanceExecution = new InstanceExecution(executionPlan, testClass, new SampleTestClass(), caseExecutions);
 
             bool invokedNext = false;

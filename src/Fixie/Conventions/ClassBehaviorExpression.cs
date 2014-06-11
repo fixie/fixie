@@ -7,13 +7,13 @@ namespace Fixie.Conventions
 {
     public class ClassBehaviorExpression
     {
-        ConstructionFrequency constructionFrequency;
+        readonly ConfigModel config;
         Func<Type, object> factory;
         readonly List<Type> customBehaviors;
 
-        public ClassBehaviorExpression()
+        public ClassBehaviorExpression(ConfigModel config)
         {
-            constructionFrequency = ConstructionFrequency.PerCase;
+            this.config = config;
             factory = UseDefaultConstructor;
             customBehaviors = new List<Type>();
             OrderCases = executions => { };
@@ -33,7 +33,7 @@ namespace Fixie.Conventions
 
         ClassBehavior GetInnermostBehavior()
         {
-            if (constructionFrequency == ConstructionFrequency.PerCase)
+            if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
                 return new CreateInstancePerCase(factory);
 
             return new CreateInstancePerClass(factory);
@@ -43,13 +43,13 @@ namespace Fixie.Conventions
 
         public ClassBehaviorExpression CreateInstancePerCase()
         {
-            constructionFrequency = ConstructionFrequency.PerCase;
+            config.ConstructionFrequency = ConstructionFrequency.PerCase;
             return this;
         }
 
         public ClassBehaviorExpression CreateInstancePerClass()
         {
-            constructionFrequency = ConstructionFrequency.PerClass;
+            config.ConstructionFrequency = ConstructionFrequency.PerClass;
             return this;
         }
 

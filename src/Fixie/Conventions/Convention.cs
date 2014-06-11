@@ -6,15 +6,19 @@ namespace Fixie.Conventions
 {
     public class Convention
     {
+        readonly ConfigModel config;
+
         public Convention()
         {
+            config = new ConfigModel();
+
             Classes = new ClassFilter()
                 .Where(type => !type.IsSubclassOf(typeof(Convention)) &&
                                !type.IsSubclassOf(typeof(TestAssembly)));
             Methods = new MethodFilter().Where(m => !m.IsDispose());
             CaseExecution = new CaseBehaviorExpression();
             InstanceExecution = new InstanceBehaviorExpression();
-            ClassExecution = new ClassBehaviorExpression();
+            ClassExecution = new ClassBehaviorExpression(config);
             HideExceptionDetails = new AssertionLibraryFilter();
 
             MethodCallParameterBuilder = method => new object[][] { };

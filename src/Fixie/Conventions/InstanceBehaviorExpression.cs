@@ -6,13 +6,13 @@ namespace Fixie.Conventions
 {
     public class InstanceBehaviorExpression
     {
-        readonly List<Type> customBehaviors = new List<Type>();
+        readonly List<Type> customInstanceBehaviors = new List<Type>();
 
         public BehaviorChain<InstanceExecution> BuildBehaviorChain()
         {
             var chain = new BehaviorChain<InstanceExecution>();
 
-            foreach (var customBehavior in customBehaviors)
+            foreach (var customBehavior in customInstanceBehaviors)
                 chain.Add((InstanceBehavior)Activator.CreateInstance(customBehavior));
 
             chain.Add(new ExecuteCases());
@@ -22,7 +22,7 @@ namespace Fixie.Conventions
 
         public InstanceBehaviorExpression Wrap<TInstanceBehavior>() where TInstanceBehavior : InstanceBehavior
         {
-            customBehaviors.Insert(0, typeof(TInstanceBehavior));
+            customInstanceBehaviors.Insert(0, typeof(TInstanceBehavior));
             return this;
         }
     }

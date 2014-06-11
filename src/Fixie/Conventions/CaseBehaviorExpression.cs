@@ -6,7 +6,7 @@ namespace Fixie.Conventions
 {
     public class CaseBehaviorExpression
     {
-        readonly List<Type> customBehaviors = new List<Type>();
+        readonly List<Type> customCaseBehaviors = new List<Type>();
 
         public CaseBehaviorExpression()
         {
@@ -18,7 +18,7 @@ namespace Fixie.Conventions
         {
             var chain = new BehaviorChain<CaseExecution>();
 
-            foreach (var customBehavior in customBehaviors)
+            foreach (var customBehavior in customCaseBehaviors)
                 chain.Add((CaseBehavior)Activator.CreateInstance(customBehavior));
 
             chain.Add(new Invoke());
@@ -31,7 +31,7 @@ namespace Fixie.Conventions
 
         public CaseBehaviorExpression Wrap<TCaseBehavior>() where TCaseBehavior : CaseBehavior
         {
-            customBehaviors.Insert(0, typeof(TCaseBehavior));
+            customCaseBehaviors.Insert(0, typeof(TCaseBehavior));
             return this;
         }
 

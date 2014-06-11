@@ -7,19 +7,19 @@ namespace Fixie.Conventions
     public class ClassBehaviorExpression
     {
         readonly ConfigModel config;
-        readonly List<Type> customBehaviors;
+        readonly List<Type> customClassBehaviors;
 
         public ClassBehaviorExpression(ConfigModel config)
         {
             this.config = config;
-            customBehaviors = new List<Type>();
+            customClassBehaviors = new List<Type>();
         }
 
         public BehaviorChain<ClassExecution> BuildBehaviorChain()
         {
             var chain = new BehaviorChain<ClassExecution>();
 
-            foreach (var customBehavior in customBehaviors)
+            foreach (var customBehavior in customClassBehaviors)
                 chain.Add((ClassBehavior)Activator.CreateInstance(customBehavior));
 
             chain.Add(GetInnermostBehavior());
@@ -55,7 +55,7 @@ namespace Fixie.Conventions
 
         public ClassBehaviorExpression Wrap<TClassBehavior>() where TClassBehavior : ClassBehavior
         {
-            customBehaviors.Insert(0, typeof(TClassBehavior));
+            customClassBehaviors.Insert(0, typeof(TClassBehavior));
             return this;
         }
 

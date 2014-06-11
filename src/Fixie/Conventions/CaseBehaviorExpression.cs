@@ -1,29 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using Fixie.Behaviors;
 
 namespace Fixie.Conventions
 {
     public class CaseBehaviorExpression
     {
-        readonly List<Type> customCaseBehaviors = new List<Type>();
+        readonly ConfigModel config;
 
-        public CaseBehaviorExpression()
+        public CaseBehaviorExpression(ConfigModel config)
         {
+            this.config = config;
             SkipPredicate = @case => false;
             SkipReasonProvider = SkipReasonUnknown;
-        }
-
-        public BehaviorChain<CaseExecution> BuildBehaviorChain()
-        {
-            var chain = new BehaviorChain<CaseExecution>();
-
-            foreach (var customBehavior in customCaseBehaviors)
-                chain.Add((CaseBehavior)Activator.CreateInstance(customBehavior));
-
-            chain.Add(new Invoke());
-
-            return chain;
         }
 
         public Func<Case, bool> SkipPredicate { get; private set; }
@@ -31,7 +19,7 @@ namespace Fixie.Conventions
 
         public CaseBehaviorExpression Wrap<TCaseBehavior>() where TCaseBehavior : CaseBehavior
         {
-            customCaseBehaviors.Insert(0, typeof(TCaseBehavior));
+            config.WrapCases<TCaseBehavior>();
             return this;
         }
 

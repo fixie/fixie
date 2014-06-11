@@ -14,7 +14,7 @@ namespace Fixie.Conventions
                 .Where(type => !type.IsSubclassOf(typeof(Convention)) &&
                                !type.IsSubclassOf(typeof(TestAssembly)));
             Methods = new MethodFilter().Where(m => !m.IsDispose());
-            CaseExecution = new CaseBehaviorExpression();
+            CaseExecution = new CaseBehaviorExpression(Config);
             InstanceExecution = new InstanceBehaviorExpression(Config);
             ClassExecution = new ClassBehaviorExpression(Config);
             HideExceptionDetails = new AssertionLibraryFilter();

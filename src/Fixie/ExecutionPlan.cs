@@ -13,7 +13,7 @@ namespace Fixie
         {
             classBehaviorChain = convention.Config.BuildClassBehaviorChain();
             instanceBehaviorChain = convention.Config.BuildInstanceBehaviorChain();
-            caseBehaviorChain = convention.CaseExecution.BuildBehaviorChain();
+            caseBehaviorChain = convention.Config.BuildCaseBehaviorChain();
         }
 
         public void Execute(ClassExecution classExecution)

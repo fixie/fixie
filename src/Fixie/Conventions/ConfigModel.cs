@@ -9,6 +9,7 @@ namespace Fixie.Conventions
     {
         readonly List<Type> customClassBehaviors;
         readonly List<Type> customInstanceBehaviors;
+        readonly List<Type> customCaseBehaviors;
 
         public ConfigModel()
         {
@@ -18,6 +19,7 @@ namespace Fixie.Conventions
 
             customClassBehaviors = new List<Type>();
             customInstanceBehaviors = new List<Type>();
+            customCaseBehaviors = new List<Type>();
         }
 
         public Action<Case[]> OrderCases { get; set; }
@@ -48,6 +50,11 @@ namespace Fixie.Conventions
             customInstanceBehaviors.Insert(0, typeof(TInstanceBehavior));
         }
 
+        public void WrapCases<TCaseBehavior>() where TCaseBehavior : CaseBehavior
+        {
+            customCaseBehaviors.Insert(0, typeof(TCaseBehavior));
+        }
+
         public BehaviorChain<ClassExecution> BuildClassBehaviorChain()
         {
             var chain = new BehaviorChain<ClassExecution>();
@@ -68,6 +75,18 @@ namespace Fixie.Conventions
                 chain.Add((InstanceBehavior)Activator.CreateInstance(customBehavior));
 
             chain.Add(new ExecuteCases());
+
+            return chain;
+        }
+
+        public BehaviorChain<CaseExecution> BuildCaseBehaviorChain()
+        {
+            var chain = new BehaviorChain<CaseExecution>();
+
+            foreach (var customBehavior in customCaseBehaviors)
+                chain.Add((CaseBehavior)Activator.CreateInstance(customBehavior));
+
+            chain.Add(new Invoke());
 
             return chain;
         }

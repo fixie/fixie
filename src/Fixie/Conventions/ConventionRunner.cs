@@ -21,7 +21,7 @@ namespace Fixie.Conventions
 
                 var methods = convention.Methods.Filter(testClass);
 
-                var cases = methods.SelectMany(method => CasesForMethod(convention, method)).ToArray();
+                var cases = methods.SelectMany(method => CasesForMethod(config, method)).ToArray();
                 var casesBySkipState = cases.ToLookup(config.SkipCase);
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false].ToArray();
@@ -64,9 +64,9 @@ namespace Fixie.Conventions
             return conventionResult;
         }
 
-        static IEnumerable<Case> CasesForMethod(Convention convention, MethodInfo method)
+        static IEnumerable<Case> CasesForMethod(ConfigModel config, MethodInfo method)
         {
-            var casesForKnownInputParameters = convention.MethodCallParameterBuilder(method)
+            var casesForKnownInputParameters = config.GetCaseParameters(method)
                 .Select(parameters => new Case(method, parameters));
 
             bool any = false;

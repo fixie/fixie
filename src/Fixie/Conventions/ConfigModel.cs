@@ -18,6 +18,7 @@ namespace Fixie.Conventions
             Factory = UseDefaultConstructor;
             SkipCase = @case => false;
             GetSkipReason = @case => null;
+            GetCaseParameters = method => new object[][] { };
 
             customClassBehaviors = new List<Type>();
             customInstanceBehaviors = new List<Type>();
@@ -29,6 +30,7 @@ namespace Fixie.Conventions
         public Func<Type, object> Factory { get; set; }
         public Func<Case, bool> SkipCase { get; set; }
         public Func<Case, string> GetSkipReason { get; set; }
+        public Func<MethodInfo, IEnumerable<object[]>> GetCaseParameters { get; set; }
 
         static object UseDefaultConstructor(Type type)
         {

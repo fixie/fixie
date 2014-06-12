@@ -19,8 +19,6 @@ namespace Fixie.Conventions
             InstanceExecution = new InstanceBehaviorExpression(Config);
             ClassExecution = new ClassBehaviorExpression(Config);
             HideExceptionDetails = new AssertionLibraryFilter();
-
-            MethodCallParameterBuilder = method => new object[][] { };
         }
 
         public ConfigModel Config { get; private set; }
@@ -31,11 +29,10 @@ namespace Fixie.Conventions
         public InstanceBehaviorExpression InstanceExecution { get; private set; }
         public ClassBehaviorExpression ClassExecution { get; private set; }
         public AssertionLibraryFilter HideExceptionDetails { get; private set; }
-        public Func<MethodInfo, IEnumerable<object[]>> MethodCallParameterBuilder { get; private set; }
 
         public void Parameters(Func<MethodInfo, IEnumerable<object[]>> getCaseParameters)
         {
-            MethodCallParameterBuilder = getCaseParameters;
+            Config.GetCaseParameters = getCaseParameters;
         }
     }
 }

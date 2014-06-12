@@ -12,10 +12,11 @@ namespace Fixie.Conventions
         {
             var config = convention.Config;
 
+            var discoveryModel = new DiscoveryModel(config);
             var executionModel = new ExecutionModel(config);
             var conventionResult = new ConventionResult(convention.GetType().FullName);
 
-            foreach (var testClass in convention.Classes.Filter(candidateTypes))
+            foreach (var testClass in discoveryModel.TestClasses(candidateTypes))
             {
                 var classResult = new ClassResult(testClass.FullName);
 

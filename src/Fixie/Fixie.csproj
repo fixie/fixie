@@ -53,6 +53,8 @@
     <Compile Include="Conventions\ConstructionFrequency.cs" />
     <Compile Include="Conventions\ConventionRunner.cs" />
     <Compile Include="Conventions\TestAssembly.cs" />
+    <Compile Include="DSL\TestClassExpression.cs" />
+    <Compile Include="DiscoveryModel.cs" />
     <Compile Include="DSL\AssertionLibraryExpression.cs" />
     <Compile Include="ExecutionEnvironment.cs" />
     <Compile Include="ExecutionModel.cs" />
@@ -95,7 +97,6 @@
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Results\AssemblyResult.cs" />
     <Compile Include="Runner.cs" />
-    <Compile Include="Conventions\ClassFilter.cs" />
     <Compile Include="SkipResult.cs" />
     <Compile Include="UncallableParameterizedCase.cs" />
   </ItemGroup>

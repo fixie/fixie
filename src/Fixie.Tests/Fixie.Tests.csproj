@@ -77,7 +77,7 @@
     <Compile Include="ShouldBeUnreachableException.cs" />
     <Compile Include="StubListener.cs" />
     <Compile Include="Conventions\ConventionTests.cs" />
-    <Compile Include="Conventions\ClassFilterTests.cs" />
+    <Compile Include="Conventions\TestClassExpressionTests.cs" />
     <Compile Include="Cases\ParameterizedCaseTests.cs" />
     <Compile Include="Listeners\TeamCityListenerTests.cs" />
     <Compile Include="Cases\SkippedCaseTests.cs" />

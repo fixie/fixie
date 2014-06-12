@@ -10,9 +10,9 @@ namespace Fixie.Tests.Conventions
         public void EmptyConventionShouldDiscoverConcreteClassesAsTestClasses()
         {
             var emptyConvention = new Convention();
+            var discoveryModel = new DiscoveryModel(emptyConvention.Config);
 
-            emptyConvention.Classes
-                           .Filter(CandidateTypes)
+            discoveryModel.TestClasses(CandidateTypes)
                            .Select(x => x.Name)
                            .ShouldEqual("PublicTests", "OtherPublicTests", "PublicMissingNamingConvention", "PublicWithNoDefaultConstructorTests",
                                         "PrivateTests", "OtherPrivateTests", "PrivateMissingNamingConvention", "PrivateWithNoDefaultConstructorTests");
@@ -21,9 +21,9 @@ namespace Fixie.Tests.Conventions
         public void DefaultConventionShouldDiscoverConcreteClassesFollowingNamingConventionAsTestClasses()
         {
             var defaultConvention = new DefaultConvention();
+            var discoveryModel = new DiscoveryModel(defaultConvention.Config);
 
-            defaultConvention.Classes
-                             .Filter(CandidateTypes)
+            discoveryModel.TestClasses(CandidateTypes)
                              .Select(x => x.Name)
                              .ShouldEqual("PublicTests", "OtherPublicTests", "PublicWithNoDefaultConstructorTests",
                                           "PrivateTests", "OtherPrivateTests", "PrivateWithNoDefaultConstructorTests");

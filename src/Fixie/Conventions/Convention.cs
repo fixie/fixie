@@ -11,9 +11,7 @@ namespace Fixie.Conventions
         {
             Config = new ConfigModel();
 
-            Classes = new ClassFilter()
-                .Where(type => !type.IsSubclassOf(typeof(Convention)) &&
-                               !type.IsSubclassOf(typeof(TestAssembly)));
+            Classes = new TestClassExpression(Config);
             Methods = new MethodFilter().Where(m => !m.IsDispose());
             CaseExecution = new CaseBehaviorExpression(Config);
             InstanceExecution = new InstanceBehaviorExpression(Config);
@@ -23,7 +21,7 @@ namespace Fixie.Conventions
 
         public ConfigModel Config { get; private set; }
 
-        public ClassFilter Classes { get; private set; }
+        public TestClassExpression Classes { get; private set; }
         public MethodFilter Methods { get; private set; }
         public CaseBehaviorExpression CaseExecution { get; private set; }
         public InstanceBehaviorExpression InstanceExecution { get; private set; }

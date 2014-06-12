@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fixie.Behaviors;
@@ -91,7 +92,7 @@ namespace Fixie.Samples.NUnitStyle
         public static void InvokeAll<TAttribute>(this Type type, object instance)
             where TAttribute : Attribute
         {
-            foreach (var method in Has<TAttribute>().Filter(type))
+            foreach (var method in Has<TAttribute>(type))
             {
                 try
                 {
@@ -104,9 +105,10 @@ namespace Fixie.Samples.NUnitStyle
             }
         }
 
-        static MethodFilter Has<TAttribute>() where TAttribute : Attribute
+        static IEnumerable<MethodInfo> Has<TAttribute>(Type type) where TAttribute : Attribute
         {
-            return new MethodFilter().HasOrInherits<TAttribute>();
+            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => x.HasOrInherits<TAttribute>());
         }
     }
 }

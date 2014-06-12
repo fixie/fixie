@@ -57,10 +57,8 @@ namespace Fixie.Samples.LowCeremony
         public static void TryInvoke(this Type type, string method, object instance)
         {
             var lifecycleMethod =
-                new MethodFilter()
-                    .Where(x => x.HasSignature(typeof(void), method))
-                    .Filter(type)
-                    .SingleOrDefault();
+                type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                    .SingleOrDefault(x => x.HasSignature(typeof(void), method));
 
             if (lifecycleMethod == null)
                 return;

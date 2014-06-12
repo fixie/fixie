@@ -9,7 +9,6 @@ namespace Fixie.Samples.xUnitStyle
 {
     public class CustomConvention : Convention
     {
-        readonly MethodFilter factMethods = new MethodFilter().HasOrInherits<FactAttribute>();
         static readonly Dictionary<MethodInfo, object> fixtures = new Dictionary<MethodInfo, object>();
 
         public CustomConvention()
@@ -31,7 +30,7 @@ namespace Fixie.Samples.xUnitStyle
 
         bool HasAnyFactMethods(Type type)
         {
-            return factMethods.Filter(type).Any();
+            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Any(x => x.HasOrInherits<FactAttribute>());
         }
 
         class PrepareAndDisposeFixtureData : ClassBehavior

@@ -80,7 +80,7 @@
     <Compile Include="Behaviors\CaseBehavior.cs" />
     <Compile Include="Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Listener.cs" />
-    <Compile Include="Conventions\MethodFilter.cs" />
+    <Compile Include="DSL\TestMethodExpression.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="PassResult.cs" />
     <Compile Include="PreservedException.cs" />

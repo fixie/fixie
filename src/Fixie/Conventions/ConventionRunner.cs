@@ -20,7 +20,7 @@ namespace Fixie.Conventions
             {
                 var classResult = new ClassResult(testClass.FullName);
 
-                var methods = convention.Methods.Filter(testClass);
+                var methods = discoveryModel.TestMethods(testClass);
 
                 var cases = methods.SelectMany(method => CasesForMethod(config, method)).ToArray();
                 var casesBySkipState = cases.ToLookup(config.SkipCase);

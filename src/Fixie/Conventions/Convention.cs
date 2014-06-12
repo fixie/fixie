@@ -12,7 +12,7 @@ namespace Fixie.Conventions
             Config = new ConfigModel();
 
             Classes = new TestClassExpression(Config);
-            Methods = new MethodFilter().Where(m => !m.IsDispose());
+            Methods = new TestMethodExpression(Config);;
             CaseExecution = new CaseBehaviorExpression(Config);
             InstanceExecution = new InstanceBehaviorExpression(Config);
             ClassExecution = new ClassBehaviorExpression(Config);
@@ -22,7 +22,7 @@ namespace Fixie.Conventions
         public ConfigModel Config { get; private set; }
 
         public TestClassExpression Classes { get; private set; }
-        public MethodFilter Methods { get; private set; }
+        public TestMethodExpression Methods { get; private set; }
         public CaseBehaviorExpression CaseExecution { get; private set; }
         public InstanceBehaviorExpression InstanceExecution { get; private set; }
         public ClassBehaviorExpression ClassExecution { get; private set; }

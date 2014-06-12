@@ -69,38 +69,38 @@ namespace Fixie.Tests.Conventions
         {
             var emptyConvention = new Convention();
             var testClass = typeof(DiscoveryTestClass);
+            var discoveryModel = new DiscoveryModel(emptyConvention.Config);
 
-            emptyConvention.Methods
-                           .Filter(testClass)
-                           .OrderBy(x => x.Name, StringComparer.Ordinal)
-                           .Select(x => x.Name)
-                           .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
-                                        "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
+            discoveryModel.TestMethods(testClass)
+                .OrderBy(x => x.Name, StringComparer.Ordinal)
+                .Select(x => x.Name)
+                .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
+                    "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
         }
 
         public void DefaultConventionShouldDiscoverSynchronousPublicInstanceVoidMethodsForTestCases()
         {
             var defaultConvention = new DefaultConvention();
             var testClass = typeof(DiscoveryTestClass);
+            var discoveryModel = new DiscoveryModel(defaultConvention.Config);
 
-            defaultConvention.Methods
-                             .Filter(testClass)
-                             .OrderBy(x => x.Name, StringComparer.Ordinal)
-                             .Select(x => x.Name)
-                             .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceWithArgsVoid");
+            discoveryModel.TestMethods(testClass)
+                .OrderBy(x => x.Name, StringComparer.Ordinal)
+                .Select(x => x.Name)
+                .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceWithArgsVoid");
         }
 
         public void DefaultConventionShouldDiscoverAsyncPublicInstanceMethodsForTestCases()
         {
             var defaultConvention = new DefaultConvention();
             var testClass = typeof(AsyncDiscoveryTestClass);
+            var discoveryModel = new DiscoveryModel(defaultConvention.Config);
 
-            defaultConvention.Methods
-                             .Filter(testClass)
-                             .OrderBy(x => x.Name, StringComparer.Ordinal)
-                             .Select(x => x.Name)
-                             .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
-                                          "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
+            discoveryModel.TestMethods(testClass)
+                .OrderBy(x => x.Name, StringComparer.Ordinal)
+                .Select(x => x.Name)
+                .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
+                    "PublicInstanceWithArgsVoid", "PublicInstanceWithArgsWithReturn");
         }
 
         class DiscoveryTestClass : IDisposable

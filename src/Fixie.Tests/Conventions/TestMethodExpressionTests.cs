@@ -1,15 +1,23 @@
-﻿using Fixie.Conventions;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using Fixie.Conventions;
 using System;
 using System.Linq;
 
 namespace Fixie.Tests.Conventions
 {
-    public class MethodFilterTests
+    public class TestMethodExpressionTests
     {
+        readonly Convention convention;
+
+        public TestMethodExpressionTests()
+        {
+            convention = new Convention();
+        }
+
         public void ConsidersOnlyPublicInstanceMethods()
         {
-            new MethodFilter()
-                .Filter(typeof(Sample))
+            DiscoveredTestMethods(typeof(Sample))
                 .OrderBy(method => method.Name, StringComparer.Ordinal)
                 .Select(method => method.Name)
                 .ShouldEqual("PublicInstanceNoArgsVoid", "PublicInstanceNoArgsWithReturn",
@@ -18,28 +26,43 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldFilterByAllSpecifiedConditions()
         {
-            new MethodFilter()
+            convention
+                .Methods
                 .Where(method => method.Name.Contains("Void"))
-                .Where(method => method.Name.Contains("No"))
-                .Filter(typeof(Sample))
+                .Where(method => method.Name.Contains("No"));
+
+            DiscoveredTestMethods(typeof(Sample))
                 .Select(method => method.Name)
                 .ShouldEqual("PublicInstanceNoArgsVoid");
         }
 
-        public void CanFilterToMethodsWithAttributes()
+        public void CanFilterToMethodsWithNonInheritedAttributes()
         {
-            new MethodFilter()
-                .Has<SampleAttribute>()
-                .Filter(typeof(Sample))
+            convention
+                .Methods
+                .Has<SampleAttribute>();
+
+            DiscoveredTestMethods(typeof(Sample))
                 .Select(method => method.Name)
                 .ShouldEqual("PublicInstanceWithArgsWithReturn");
+        }
 
-            new MethodFilter()
-                .HasOrInherits<SampleAttribute>()
-                .Filter(typeof(Sample))
+        public void CanFilterToMethodsWithInheritedAttributes()
+        {
+            convention
+                .Methods
+                .HasOrInherits<SampleAttribute>();
+
+            DiscoveredTestMethods(typeof(Sample))
                 .OrderBy(method => method.Name, StringComparer.Ordinal)
                 .Select(method => method.Name)
                 .ShouldEqual("PublicInstanceNoArgsWithReturn", "PublicInstanceWithArgsWithReturn");
+        }
+
+        IEnumerable<MethodInfo> DiscoveredTestMethods(Type testClass)
+        {
+            return new DiscoveryModel(convention.Config)
+                .TestMethods(testClass);
         }
 
         class SampleAttribute : Attribute { }

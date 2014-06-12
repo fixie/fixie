@@ -8,6 +8,7 @@ namespace Fixie.Conventions
     public class ConfigModel
     {
         readonly List<Func<Type, bool>> testClassConditions;
+        readonly List<Func<MethodInfo, bool>> testMethodConditions;
 
         readonly List<Type> customClassBehaviors;
         readonly List<Type> customInstanceBehaviors;
@@ -27,6 +28,12 @@ namespace Fixie.Conventions
             {
                 ConcreteClasses,
                 NonDiscoveryClasses
+            };
+
+            testMethodConditions = new List<Func<MethodInfo, bool>>
+            {
+                ExcludeMethodsDefinedOnObject,
+                ExcludeDispose
             };
 
             customClassBehaviors = new List<Type>();
@@ -64,9 +71,24 @@ namespace Fixie.Conventions
             return !type.IsSubclassOf(typeof(Convention)) && !type.IsSubclassOf(typeof(TestAssembly));
         }
 
+        static bool ExcludeMethodsDefinedOnObject(MethodInfo method)
+        {
+            return method.DeclaringType != typeof(object);
+        }
+
+        static bool ExcludeDispose(MethodInfo method)
+        {
+            return !method.IsDispose();
+        }
+
         public void AddTestClassCondition(Func<Type, bool> testClassCondition)
         {
             testClassConditions.Add(testClassCondition);
+        }
+
+        public void AddTestMethodCondition(Func<MethodInfo, bool> testMethodCondition)
+        {
+            testMethodConditions.Add(testMethodCondition);
         }
 
         public void WrapClasses<TClassBehavior>() where TClassBehavior : ClassBehavior
@@ -90,6 +112,7 @@ namespace Fixie.Conventions
         }
 
         public IReadOnlyList<Func<Type, bool>> TestClassConditions { get { return testClassConditions; } }
+        public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions { get { return testMethodConditions; } }
         public IReadOnlyList<Type> CustomClassBehaviors { get { return customClassBehaviors; } }
         public IReadOnlyList<Type> CustomInstanceBehaviors { get { return customInstanceBehaviors; } }
         public IReadOnlyList<Type> CustomCaseBehaviors { get { return customCaseBehaviors; } }

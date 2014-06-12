@@ -6,15 +6,15 @@ namespace Fixie
 {
     public class InstanceExecution : BehaviorContext
     {
-        public InstanceExecution(ExecutionPlan executionPlan, Type testClass, object instance, IReadOnlyList<CaseExecution> caseExecutions)
+        public InstanceExecution(ExecutionModel executionModel, Type testClass, object instance, IReadOnlyList<CaseExecution> caseExecutions)
         {
-            ExecutionPlan = executionPlan;
+            ExecutionModel = executionModel;
             TestClass = testClass;
             Instance = instance;
             CaseExecutions = caseExecutions;
         }
 
-        public ExecutionPlan ExecutionPlan { get; private set; }
+        public ExecutionModel ExecutionModel { get; private set; }
         public Type TestClass { get; private set; }
         public object Instance { get; private set; }
         public IReadOnlyList<CaseExecution> CaseExecutions { get; private set; }

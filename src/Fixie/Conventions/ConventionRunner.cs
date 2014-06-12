@@ -12,7 +12,7 @@ namespace Fixie.Conventions
         {
             var config = convention.Config;
 
-            var executionPlan = new ExecutionPlan(config);
+            var executionModel = new ExecutionModel(config);
             var conventionResult = new ConventionResult(convention.GetType().FullName);
 
             foreach (var testClass in convention.Classes.Filter(candidateTypes))
@@ -37,14 +37,14 @@ namespace Fixie.Conventions
                     config.OrderCases(casesToExecute);
 
                     var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
-                    var classExecution = new ClassExecution(executionPlan, testClass, caseExecutions);
-                    executionPlan.Execute(classExecution);
+                    var classExecution = new ClassExecution(executionModel, testClass, caseExecutions);
+                    executionModel.Execute(classExecution);
 
                     foreach (var caseExecution in caseExecutions)
                     {
                         if (caseExecution.Exceptions.Any())
                         {
-                            var failResult = new FailResult(caseExecution, executionPlan.AssertionLibraryFilter);
+                            var failResult = new FailResult(caseExecution, executionModel.AssertionLibraryFilter);
                             listener.CaseFailed(failResult);
                             classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.ExceptionSummary));
                         }

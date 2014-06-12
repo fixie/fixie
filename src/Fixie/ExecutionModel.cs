@@ -4,14 +4,14 @@ using Fixie.Conventions;
 
 namespace Fixie
 {
-    public class ExecutionPlan
+    public class ExecutionModel
     {
         readonly BehaviorChain<ClassExecution> classBehaviorChain;
         readonly BehaviorChain<InstanceExecution> instanceBehaviorChain;
         readonly BehaviorChain<CaseExecution> caseBehaviorChain;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
-        public ExecutionPlan(ConfigModel config)
+        public ExecutionModel(ConfigModel config)
         {
             classBehaviorChain = BuildClassBehaviorChain(config);
             instanceBehaviorChain = BuildInstanceBehaviorChain(config);

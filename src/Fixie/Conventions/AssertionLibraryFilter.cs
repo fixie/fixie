@@ -10,24 +10,23 @@ namespace Fixie.Conventions
         readonly List<Type> exceptionTypes;
         readonly List<Type> stackTraceTypes;
 
-        public AssertionLibraryFilter()
+        public AssertionLibraryFilter(params Type[] assertionLibraryTypes)
+            : this((IEnumerable<Type>)assertionLibraryTypes) { }
+
+        public AssertionLibraryFilter(IEnumerable<Type> assertionLibraryTypes)
         {
             exceptionTypes = new List<Type>();
             stackTraceTypes = new List<Type>();
-        }
 
-        public AssertionLibraryFilter For(Type libraryInfrastructureType)
-        {
-            bool isExceptionType = libraryInfrastructureType.IsSubclassOf(typeof(Exception));
+            foreach (var type in assertionLibraryTypes)
+            {
+                bool isExceptionType = type.IsSubclassOf(typeof(Exception));
 
-            (isExceptionType ? exceptionTypes : stackTraceTypes).Add(libraryInfrastructureType);
-
-            return this;
-        }
-
-        public AssertionLibraryFilter For<TLibraryInfrastructure>()
-        {
-            return For(typeof(TLibraryInfrastructure));
+                if (isExceptionType)
+                    exceptionTypes.Add(type);
+                else
+                    stackTraceTypes.Add(type);
+            }
         }
 
         public string FilterStackTrace(Exception exception)

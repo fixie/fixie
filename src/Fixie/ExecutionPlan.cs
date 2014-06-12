@@ -9,12 +9,14 @@ namespace Fixie
         readonly BehaviorChain<ClassExecution> classBehaviorChain;
         readonly BehaviorChain<InstanceExecution> instanceBehaviorChain;
         readonly BehaviorChain<CaseExecution> caseBehaviorChain;
+        readonly AssertionLibraryFilter assertionLibraryFilter;
 
         public ExecutionPlan(ConfigModel config)
         {
             classBehaviorChain = BuildClassBehaviorChain(config);
             instanceBehaviorChain = BuildInstanceBehaviorChain(config);
             caseBehaviorChain = BuildCaseBehaviorChain(config);
+            assertionLibraryFilter = new AssertionLibraryFilter(config.AssertionLibraryTypes);
         }
 
         public void Execute(ClassExecution classExecution)
@@ -30,6 +32,11 @@ namespace Fixie
         public void Execute(CaseExecution caseExecution)
         {
             caseBehaviorChain.Execute(caseExecution);
+        }
+
+        public AssertionLibraryFilter AssertionLibraryFilter
+        {
+            get { return assertionLibraryFilter; }
         }
 
         BehaviorChain<ClassExecution> BuildClassBehaviorChain(ConfigModel config)

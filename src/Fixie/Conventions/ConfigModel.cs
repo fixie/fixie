@@ -10,6 +10,7 @@ namespace Fixie.Conventions
         readonly List<Type> customClassBehaviors;
         readonly List<Type> customInstanceBehaviors;
         readonly List<Type> customCaseBehaviors;
+        readonly List<Type> assertionLibraryTypes;
 
         public ConfigModel()
         {
@@ -23,6 +24,7 @@ namespace Fixie.Conventions
             customClassBehaviors = new List<Type>();
             customInstanceBehaviors = new List<Type>();
             customCaseBehaviors = new List<Type>();
+            assertionLibraryTypes = new List<Type>();
         }
 
         public Action<Case[]> OrderCases { get; set; }
@@ -59,8 +61,14 @@ namespace Fixie.Conventions
             customCaseBehaviors.Insert(0, typeof(TCaseBehavior));
         }
 
+        public void AddAssertionLibraryType(Type libraryInfrastructureType)
+        {
+            assertionLibraryTypes.Add(libraryInfrastructureType);
+        }
+
         public IReadOnlyList<Type> CustomClassBehaviors { get { return customClassBehaviors; } }
         public IReadOnlyList<Type> CustomInstanceBehaviors { get { return customInstanceBehaviors; } }
         public IReadOnlyList<Type> CustomCaseBehaviors { get { return customCaseBehaviors; } }
+        public IReadOnlyList<Type> AssertionLibraryTypes { get { return assertionLibraryTypes; } }
     }
 }

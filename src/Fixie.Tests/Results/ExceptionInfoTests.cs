@@ -10,10 +10,9 @@ namespace Fixie.Tests.Results
 {
     public class ExceptionInfoTests
     {
-        readonly AssertionLibraryFilter assertionLibrary = new AssertionLibraryFilter();
-
         public void ShouldSummarizeTheGivenException()
         {
+            var assertionLibrary = new AssertionLibraryFilter();
             var exception = GetPrimaryException();
 
             var exceptionInfo = new ExceptionInfo(exception, assertionLibrary);
@@ -33,6 +32,7 @@ namespace Fixie.Tests.Results
 
         public void ShouldSummarizeCollectionsOfExceptionsComprisedOfPrimaryAndSecondaryExceptions()
         {
+            var assertionLibrary = new AssertionLibraryFilter();
             var primaryException = GetPrimaryException();
             var secondaryExceptionA = new NotImplementedException();
             var secondaryExceptionB = GetSecondaryException();
@@ -74,14 +74,10 @@ namespace Fixie.Tests.Results
 
         public void ShouldFilterAssertionLibraryImplementationDetails()
         {
+            var assertionLibrary = new AssertionLibraryFilter(typeof(PrimaryException), typeof(SecondaryException), typeof(ExceptionInfoTests));
             var primaryException = GetPrimaryException();
             var secondaryExceptionA = new NotImplementedException();
             var secondaryExceptionB = GetSecondaryException();
-
-            assertionLibrary
-                .For<PrimaryException>()
-                .For<SecondaryException>()
-                .For<ExceptionInfoTests>();
 
             var exceptionInfo = new ExceptionInfo(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 

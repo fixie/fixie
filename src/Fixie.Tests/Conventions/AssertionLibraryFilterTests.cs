@@ -11,8 +11,7 @@ namespace Fixie.Tests.Conventions
         {
             const string nullStackTrace = null;
 
-            new AssertionLibraryFilter()
-                .For(typeof(SampleAssertionLibrary.SampleAssert))
+            new AssertionLibraryFilter(typeof(SampleAssertionLibrary.SampleAssert))
                 .FilterStackTrace(new FakeException(nullStackTrace))
                 .ShouldEqual(nullStackTrace);
         }
@@ -37,8 +36,7 @@ namespace Fixie.Tests.Conventions
                     .ToString()
                     .TrimEnd();
 
-            new AssertionLibraryFilter()
-                .For(typeof(SampleAssertionLibrary.SampleAssert))
+            new AssertionLibraryFilter(typeof(SampleAssertionLibrary.SampleAssert))
                 .FilterStackTrace(new FakeException(originalStackTrace))
                 .ShouldEqual(filteredStackTrace);
         }
@@ -52,8 +50,7 @@ namespace Fixie.Tests.Conventions
 
         public void ShouldGetBlankDisplayNameWhenExceptionTypeIsAnAssertionLibraryImplementationDetail()
         {
-            new AssertionLibraryFilter()
-                .For<FakeException>()
+            new AssertionLibraryFilter(typeof(FakeException))
                 .DisplayName(new FakeException(null))
                 .ShouldEqual("");
         }

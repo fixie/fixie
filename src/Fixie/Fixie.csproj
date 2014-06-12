@@ -53,6 +53,7 @@
     <Compile Include="Conventions\ConstructionFrequency.cs" />
     <Compile Include="Conventions\ConventionRunner.cs" />
     <Compile Include="Conventions\TestAssembly.cs" />
+    <Compile Include="DSL\AssertionLibraryExpression.cs" />
     <Compile Include="ExecutionEnvironment.cs" />
     <Compile Include="ExecutionPlan.cs" />
     <Compile Include="GenericArgumentResolver.cs" />

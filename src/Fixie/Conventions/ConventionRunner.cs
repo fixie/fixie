@@ -44,7 +44,7 @@ namespace Fixie.Conventions
                     {
                         if (caseExecution.Exceptions.Any())
                         {
-                            var failResult = new FailResult(caseExecution, convention.HideExceptionDetails);
+                            var failResult = new FailResult(caseExecution, executionPlan.AssertionLibraryFilter);
                             listener.CaseFailed(failResult);
                             classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.ExceptionSummary));
                         }

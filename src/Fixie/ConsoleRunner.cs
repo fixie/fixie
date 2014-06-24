@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using Fixie.Execution;
+﻿using Fixie.Execution;
 using Fixie.Listeners;
 using Fixie.Results;
+using System;
+using System.Linq;
+using System.Reflection;
 
 namespace Fixie
 {
@@ -31,6 +31,13 @@ namespace Fixie
 
             if (useTeamCityListener)
                 return new TeamCityListener();
+
+            var appVeyorUrl = Environment.GetEnvironmentVariable("APPVEYOR_API_URL")
+                              ?? (options.Contains(CommandLineOption.AppVeyor)
+                                      ? options[CommandLineOption.AppVeyor].SingleOrDefault()
+                                      : null);
+            if (appVeyorUrl != null)
+                return new AppVeyorListener(appVeyorUrl);
 
             return new ConsoleListener();
         }

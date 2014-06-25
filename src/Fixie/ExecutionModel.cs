@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Fixie.Behaviors;
 using Fixie.Conventions;
 
@@ -39,43 +40,40 @@ namespace Fixie
             get { return assertionLibraryFilter; }
         }
 
-        BehaviorChain<ClassExecution> BuildClassBehaviorChain(ConfigModel config)
+        static BehaviorChain<ClassExecution> BuildClassBehaviorChain(ConfigModel config)
         {
-            var chain = new BehaviorChain<ClassExecution>();
-
-            foreach (var customBehavior in config.CustomClassBehaviors)
-                chain.Add((ClassBehavior)Activator.CreateInstance(customBehavior));
+            var chain = config.CustomClassBehaviors
+                .Select(customBehavior => (ClassBehavior)Activator.CreateInstance(customBehavior))
+                .ToList();
 
             chain.Add(GetInnermostBehavior(config));
 
-            return chain;
+            return new BehaviorChain<ClassExecution>(chain);
         }
 
-        BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(ConfigModel config)
+        static BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(ConfigModel config)
         {
-            var chain = new BehaviorChain<InstanceExecution>();
-
-            foreach (var customBehavior in config.CustomInstanceBehaviors)
-                chain.Add((InstanceBehavior)Activator.CreateInstance(customBehavior));
+            var chain = config.CustomInstanceBehaviors
+                .Select(customBehavior => (InstanceBehavior)Activator.CreateInstance(customBehavior))
+                .ToList();
 
             chain.Add(new ExecuteCases());
 
-            return chain;
+            return new BehaviorChain<InstanceExecution>(chain);
         }
 
-        BehaviorChain<CaseExecution> BuildCaseBehaviorChain(ConfigModel config)
+        static BehaviorChain<CaseExecution> BuildCaseBehaviorChain(ConfigModel config)
         {
-            var chain = new BehaviorChain<CaseExecution>();
-
-            foreach (var customBehavior in config.CustomCaseBehaviors)
-                chain.Add((CaseBehavior)Activator.CreateInstance(customBehavior));
+            var chain = config.CustomCaseBehaviors
+                .Select(customBehavior => (CaseBehavior)Activator.CreateInstance(customBehavior))
+                .ToList();
 
             chain.Add(new Invoke());
 
-            return chain;
+            return new BehaviorChain<CaseExecution>(chain);
         }
 
-        ClassBehavior GetInnermostBehavior(ConfigModel config)
+        static ClassBehavior GetInnermostBehavior(ConfigModel config)
         {
             if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
                 return new CreateInstancePerCase(config.Factory);

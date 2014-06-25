@@ -5,11 +5,14 @@ namespace Fixie.Behaviors
 {
     public class BehaviorChain<TContext> where TContext : BehaviorContext
     {
-        readonly List<Behavior<TContext>> behaviors = new List<Behavior<TContext>>();
+        readonly List<Behavior<TContext>> behaviors;
 
-        public void Add(Behavior<TContext> behavior)
+        public BehaviorChain(params Behavior<TContext>[] behaviors)
+            : this((IEnumerable<Behavior<TContext>>)behaviors) { }
+
+        public BehaviorChain(IEnumerable<Behavior<TContext>> behaviors)
         {
-            behaviors.Add(behavior);
+            this.behaviors = new List<Behavior<TContext>>(behaviors);
         }
 
         public void Execute(TContext context)

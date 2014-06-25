@@ -22,10 +22,10 @@ namespace Fixie.Tests.Behaviors
         public void ShouldExecuteBehaviorsInOrder()
         {
             var context = new BreadCrumbs();
-            var chain = new BehaviorChain<BreadCrumbs>();
-
-            chain.Add(new OuterBehavior());
-            chain.Add(new InnerBehavior());
+            var chain = new BehaviorChain<BreadCrumbs>(
+                new OuterBehavior(),
+                new InnerBehavior()
+            );
 
             chain.Execute(context);
 
@@ -39,11 +39,11 @@ namespace Fixie.Tests.Behaviors
         public void ShouldHandleUncaughtExceptionsAtEachStepInTheChainByLoggingThemToTheContextObject()
         {
             var context = new BreadCrumbs();
-            var chain = new BehaviorChain<BreadCrumbs>();
-
-            chain.Add(new OuterBehavior());
-            chain.Add(new InnerBehavior());
-            chain.Add(new BuggyBehavior());
+            var chain = new BehaviorChain<BreadCrumbs>(
+                new OuterBehavior(),
+                new InnerBehavior(),
+                new BuggyBehavior()
+            );
 
             chain.Execute(context);
 

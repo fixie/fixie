@@ -33,8 +33,7 @@ namespace Fixie.Conventions
                 {
                     executionModel.OrderCases(casesToExecute);
 
-                    var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
-                    executionModel.Execute(testClass, caseExecutions);
+                    var caseExecutions = executionModel.Execute(testClass, casesToExecute);
 
                     foreach (var caseExecution in caseExecutions)
                     {

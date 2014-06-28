@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Fixie.Behaviors;
 using Fixie.Conventions;
@@ -28,10 +29,14 @@ namespace Fixie
             orderCases = config.OrderCases;
         }
 
-        public void Execute(Type testClass, CaseExecution[] caseExecutions)
+        public IReadOnlyList<CaseExecution> Execute(Type testClass, Case[] casesToExecute)
         {
+            var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
             var classExecution = new ClassExecution(this, testClass, caseExecutions);
+
             classBehaviorChain.Execute(classExecution);
+
+            return caseExecutions;
         }
 
         public void Execute(InstanceExecution instanceExecution)

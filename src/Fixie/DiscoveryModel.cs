@@ -36,5 +36,32 @@ namespace Fixie
         {
             return testMethodConditions.All(condition => condition(candidate));
         }
+
+        public IEnumerable<Case> TestCases(Type testClass, ConfigModel config)
+        {
+            return TestMethods(testClass).SelectMany(method => CasesForMethod(config, method)).ToArray();
+        }
+
+        static IEnumerable<Case> CasesForMethod(ConfigModel config, MethodInfo method)
+        {
+            var casesForKnownInputParameters = config.GetCaseParameters(method)
+                .Select(parameters => new Case(method, parameters));
+
+            bool any = false;
+
+            foreach (var actualCase in casesForKnownInputParameters)
+            {
+                any = true;
+                yield return actualCase;
+            }
+
+            if (!any)
+            {
+                if (method.GetParameters().Any())
+                    yield return new UncallableParameterizedCase(method);
+                else
+                    yield return new Case(method);
+            }
+        }
     }
 }

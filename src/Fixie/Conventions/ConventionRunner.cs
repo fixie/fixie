@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Fixie.Results;
 
 namespace Fixie.Conventions
@@ -20,9 +18,7 @@ namespace Fixie.Conventions
             {
                 var classResult = new ClassResult(testClass.FullName);
 
-                var methods = discoveryModel.TestMethods(testClass);
-
-                var cases = methods.SelectMany(method => CasesForMethod(config, method)).ToArray();
+                var cases = discoveryModel.TestCases(testClass, config);
                 var casesBySkipState = cases.ToLookup(config.SkipCase);
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false].ToArray();
@@ -63,28 +59,6 @@ namespace Fixie.Conventions
             }
 
             return conventionResult;
-        }
-
-        static IEnumerable<Case> CasesForMethod(ConfigModel config, MethodInfo method)
-        {
-            var casesForKnownInputParameters = config.GetCaseParameters(method)
-                .Select(parameters => new Case(method, parameters));
-
-            bool any = false;
-
-            foreach (var actualCase in casesForKnownInputParameters)
-            {
-                any = true;
-                yield return actualCase;
-            }
-
-            if (!any)
-            {
-                if (method.GetParameters().Any())
-                    yield return new UncallableParameterizedCase(method);
-                else
-                    yield return new Case(method);
-            }
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Fixie
         readonly Func<Case, bool> skipCase;
         readonly Func<Case, string> getSkipReason;
         readonly Action<Case[]> orderCases;
+        readonly Func<Type, object> constructTestClass;
 
         public ExecutionModel(ConfigModel config)
         {
@@ -27,6 +28,7 @@ namespace Fixie
             skipCase = config.SkipCase;
             getSkipReason = config.GetSkipReason;
             orderCases = config.OrderCases;
+            constructTestClass = config.Factory;
         }
 
         public IReadOnlyList<CaseExecution> Execute(Type testClass, Case[] casesToExecute)
@@ -39,10 +41,16 @@ namespace Fixie
             return caseExecutions;
         }
 
-        public void Execute(ClassExecution classExecution, object instance, IReadOnlyList<CaseExecution> caseExecutions)
+        public void PerformClassLifecycle(ClassExecution classExecution, IReadOnlyList<CaseExecution> caseExecutionsForThisInstance)
         {
-            var instanceExecution = new InstanceExecution(this, classExecution.TestClass, instance, caseExecutions);
+            var instance = constructTestClass(classExecution.TestClass);
+
+            var instanceExecution = new InstanceExecution(this, classExecution.TestClass, instance, caseExecutionsForThisInstance);
             instanceBehaviorChain.Execute(instanceExecution);
+
+            var disposable = instance as IDisposable;
+            if (disposable != null)
+                disposable.Dispose();
         }
 
         public void Execute(CaseExecution caseExecution)
@@ -106,9 +114,9 @@ namespace Fixie
         static ClassBehavior GetInnermostBehavior(ConfigModel config)
         {
             if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
-                return new CreateInstancePerCase(config.Factory);
+                return new CreateInstancePerCase();
 
-            return new CreateInstancePerClass(config.Factory);
+            return new CreateInstancePerClass();
         }
     }
 }

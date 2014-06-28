@@ -31,7 +31,7 @@ namespace Fixie.Conventions
 
                 if (casesToExecute.Any())
                 {
-                    config.OrderCases(casesToExecute);
+                    executionModel.OrderCases(casesToExecute);
 
                     var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
                     var classExecution = new ClassExecution(executionModel, testClass, caseExecutions);

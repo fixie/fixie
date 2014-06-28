@@ -14,6 +14,7 @@ namespace Fixie
 
         readonly Func<Case, bool> skipCase;
         readonly Func<Case, string> getSkipReason;
+        readonly Action<Case[]> orderCases;
 
         public ExecutionModel(ConfigModel config)
         {
@@ -24,6 +25,7 @@ namespace Fixie
 
             skipCase = config.SkipCase;
             getSkipReason = config.GetSkipReason;
+            orderCases = config.OrderCases;
         }
 
         public void Execute(ClassExecution classExecution)
@@ -54,6 +56,11 @@ namespace Fixie
         public string GetSkipReason(Case @case)
         {
             return getSkipReason(@case);
+        }
+
+        public void OrderCases(Case[] cases)
+        {
+            orderCases(cases);
         }
 
         static BehaviorChain<ClassExecution> BuildClassBehaviorChain(ConfigModel config)

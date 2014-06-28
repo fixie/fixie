@@ -39,8 +39,9 @@ namespace Fixie
             return caseExecutions;
         }
 
-        public void Execute(InstanceExecution instanceExecution)
+        public void Execute(ClassExecution classExecution, object instance, IReadOnlyList<CaseExecution> caseExecutions)
         {
+            var instanceExecution = new InstanceExecution(this, classExecution.TestClass, instance, caseExecutions);
             instanceBehaviorChain.Execute(instanceExecution);
         }
 

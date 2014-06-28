@@ -19,9 +19,7 @@ namespace Fixie.Behaviors
                 {
                     var instance = construct(classExecution.TestClass);
 
-                    var executionModel = classExecution.ExecutionModel;
-                    var instanceExecution = new InstanceExecution(executionModel, classExecution.TestClass, instance, new[] { caseExecution });
-                    executionModel.Execute(instanceExecution);
+                    classExecution.ExecutionModel.Execute(classExecution, instance, new[] { caseExecution });
 
                     Dispose(instance);
                 }

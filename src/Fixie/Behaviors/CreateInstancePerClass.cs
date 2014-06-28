@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Fixie.Behaviors
 {
@@ -15,16 +16,21 @@ namespace Fixie.Behaviors
         {
             try
             {
-                var instance = construct(classExecution.TestClass);
-
-                classExecution.ExecutionModel.Execute(classExecution, instance, classExecution.CaseExecutions);
-
-                Dispose(instance);
+                PerformClassLifecycle(classExecution, classExecution.CaseExecutions);
             }
             catch (Exception exception)
             {
                 classExecution.Fail(exception);
             }
+        }
+
+        void PerformClassLifecycle(ClassExecution classExecution, IReadOnlyList<CaseExecution> caseExecutionsForThisInstance)
+        {
+            var instance = construct(classExecution.TestClass);
+
+            classExecution.ExecutionModel.Execute(classExecution, instance, caseExecutionsForThisInstance);
+
+            Dispose(instance);
         }
 
         static void Dispose(object instance)

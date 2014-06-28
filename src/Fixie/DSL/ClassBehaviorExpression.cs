@@ -27,7 +27,7 @@ namespace Fixie.DSL
 
         public ClassBehaviorExpression UsingFactory(Func<Type, object> customFactory)
         {
-            config.Factory = customFactory;
+            config.TestClassFactory = customFactory;
             return this;
         }
 

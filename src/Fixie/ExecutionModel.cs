@@ -28,7 +28,7 @@ namespace Fixie
             skipCase = config.SkipCase;
             getSkipReason = config.GetSkipReason;
             orderCases = config.OrderCases;
-            constructTestClass = config.Factory;
+            constructTestClass = config.TestClassFactory;
         }
 
         public IReadOnlyList<CaseExecution> Execute(Type testClass, Case[] casesToExecute)

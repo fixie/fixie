@@ -70,7 +70,6 @@
     <Compile Include="Conventions\DefaultConvention.cs" />
     <Compile Include="DSL\InstanceBehaviorExpression.cs" />
     <Compile Include="DSL\CaseBehaviorExpression.cs" />
-    <Compile Include="Conventions\SelfTestConvention.cs" />
     <Compile Include="DSL\ClassBehaviorExpression.cs" />
     <Compile Include="FailResult.cs" />
     <Compile Include="ClassExecution.cs" />

@@ -83,22 +83,14 @@ namespace Fixie
 
         static Convention[] GetConventions(RunContext runContext)
         {
-            var explicitlyAppliedConventionTypes =
-                runContext.Assembly
-                    .GetTypes()
-                    .Where(t => t.IsSubclassOf(typeof(TestAssembly)) && !t.IsAbstract)
-                    .Select(t => Construct<TestAssembly>(t, runContext))
-                    .ToArray().SelectMany(x => x.ConventionTypes);
+            var testAssemblyTypes = ConcreteTestAssemblyTypes(runContext);
 
-            var localConventionTypes =
-                runContext.Assembly
-                    .GetTypes()
-                    .Where(t => t.IsSubclassOf(typeof(Convention)) && !t.IsAbstract);
+            var conventionTypes = testAssemblyTypes.Any()
+                ? ExplicitlyAppliedConventionTypes(runContext, testAssemblyTypes)
+                : LocallyDeclaredConventionTypes(runContext);
 
             var customConventions =
-                localConventionTypes
-                    .Concat(explicitlyAppliedConventionTypes)
-                    .Distinct()
+                conventionTypes
                     .Select(t => Construct<Convention>(t, runContext))
                     .ToArray();
 
@@ -106,6 +98,30 @@ namespace Fixie
                 return customConventions;
 
             return new[] { (Convention) new DefaultConvention() };
+        }
+
+        static Type[] ConcreteTestAssemblyTypes(RunContext runContext)
+        {
+            return runContext.Assembly
+                .GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(TestAssembly)) && !t.IsAbstract)
+                .ToArray();
+        }
+
+        static Type[] ExplicitlyAppliedConventionTypes(RunContext runContext, Type[] testAssemblyTypes)
+        {
+            return testAssemblyTypes
+                .Select(t => Construct<TestAssembly>(t, runContext))
+                .SelectMany(x => x.ConventionTypes)
+                .ToArray();
+        }
+
+        static Type[] LocallyDeclaredConventionTypes(RunContext runContext)
+        {
+            return runContext.Assembly
+                .GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(Convention)) && !t.IsAbstract)
+                .ToArray();
         }
 
         AssemblyResult Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)

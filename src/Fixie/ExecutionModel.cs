@@ -12,12 +12,18 @@ namespace Fixie
         readonly BehaviorChain<CaseExecution> caseBehaviorChain;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
+        readonly Func<Case, bool> skipCase;
+        readonly Func<Case, string> getSkipReason;
+
         public ExecutionModel(ConfigModel config)
         {
             classBehaviorChain = BuildClassBehaviorChain(config);
             instanceBehaviorChain = BuildInstanceBehaviorChain(config);
             caseBehaviorChain = BuildCaseBehaviorChain(config);
             assertionLibraryFilter = new AssertionLibraryFilter(config.AssertionLibraryTypes);
+
+            skipCase = config.SkipCase;
+            getSkipReason = config.GetSkipReason;
         }
 
         public void Execute(ClassExecution classExecution)
@@ -38,6 +44,16 @@ namespace Fixie
         public AssertionLibraryFilter AssertionLibraryFilter
         {
             get { return assertionLibraryFilter; }
+        }
+
+        public bool SkipCase(Case @case)
+        {
+            return skipCase(@case);
+        }
+
+        public string GetSkipReason(Case @case)
+        {
+            return getSkipReason(@case);
         }
 
         static BehaviorChain<ClassExecution> BuildClassBehaviorChain(ConfigModel config)

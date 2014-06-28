@@ -19,12 +19,12 @@ namespace Fixie.Conventions
                 var classResult = new ClassResult(testClass.FullName);
 
                 var cases = discoveryModel.TestCases(testClass, config);
-                var casesBySkipState = cases.ToLookup(config.SkipCase);
+                var casesBySkipState = cases.ToLookup(executionModel.SkipCase);
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false].ToArray();
                 foreach (var @case in casesToSkip)
                 {
-                    var skipResult = new SkipResult(@case, config.GetSkipReason(@case));
+                    var skipResult = new SkipResult(@case, executionModel.GetSkipReason(@case));
                     listener.CaseSkipped(skipResult);
                     classResult.Add(CaseResult.Skipped(skipResult.Case.Name, skipResult.Reason));
                 }

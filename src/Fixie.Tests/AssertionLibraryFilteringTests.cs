@@ -15,7 +15,7 @@ namespace Fixie.Tests
             {
                 var listener = new ConsoleListener();
 
-                var convention = new SelfTestConvention();
+                var convention = SelfTestConvention.Build();
 
                 var conventionRunner = new ConventionRunner();
                 conventionRunner.Run(convention, listener, typeof(SampleTestClass));
@@ -43,7 +43,7 @@ namespace Fixie.Tests
             {
                 var listener = new ConsoleListener();
 
-                var convention = new SelfTestConvention();
+                var convention = SelfTestConvention.Build();
 
                 convention
                     .HideExceptionDetails

@@ -8,7 +8,7 @@ namespace Fixie.Tests.Conventions
         public void ShouldExecuteAllCasesInAllDiscoveredTestClasses()
         {
             var listener = new StubListener();
-            var convention = new SelfTestConvention();
+            var convention = SelfTestConvention.Build();
 
             var conventionRunner = new ConventionRunner();
             conventionRunner.Run(convention, listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass), typeof(SkipTestClass));
@@ -23,7 +23,7 @@ namespace Fixie.Tests.Conventions
         public void ShouldAllowRandomShufflingOfCaseExecutionOrder()
         {
             var listener = new StubListener();
-            var convention = new SelfTestConvention();
+            var convention = SelfTestConvention.Build();
 
             convention.ClassExecution
                 .CreateInstancePerClass()

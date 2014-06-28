@@ -2,19 +2,26 @@
 
 namespace Fixie.Conventions
 {
-    public class SelfTestConvention : Convention
+    public static class SelfTestConvention
     {
-        public SelfTestConvention()
+        public static Convention Build()
         {
-            Classes
-                .Where(testClass => testClass.IsNestedPrivate)
-                .NameEndsWith("TestClass");
+            var selfTestConvention = new Convention();
 
-            ClassExecution
-                .SortCases((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
+            selfTestConvention
+                .Classes
+                    .Where(testClass => testClass.IsNestedPrivate)
+                    .NameEndsWith("TestClass");
 
-            CaseExecution
-                .Skip(@case => @case.Method.Name.StartsWith("Skip"));
+            selfTestConvention
+                .ClassExecution
+                    .SortCases((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
+
+            selfTestConvention
+                .CaseExecution
+                    .Skip(@case => @case.Method.Name.StartsWith("Skip"));
+
+            return selfTestConvention;
         }
     }
 }

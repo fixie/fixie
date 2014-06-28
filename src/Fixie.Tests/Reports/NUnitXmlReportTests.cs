@@ -23,7 +23,7 @@ namespace Fixie.Tests.Reports
             var runner = new Runner(listener);
 
             var executionResult = new ExecutionResult();
-            var convention = new SelfTestConvention();
+            var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters(FromParametersAttribute);
             var assemblyResult = runner.RunType(GetType().Assembly, convention, typeof(PassFailTestClass));

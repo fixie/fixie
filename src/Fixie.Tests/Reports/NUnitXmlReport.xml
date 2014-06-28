@@ -2,7 +2,7 @@
 <test-results date="YYYY-MM-DD" time="HH:MM:SS" name="Results" total="6" failures="2" not-run="2">
     <test-suite success="false" name="[assemblyLocation]" time="1.234">
         <results>
-            <test-suite success="false" name="Fixie.Conventions.SelfTestConvention" time="1.234">
+            <test-suite success="false" name="Fixie.Conventions.Convention" time="1.234">
                 <results>
                     <test-suite name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass" success="false" time="1.234">
                         <results>

@@ -7,10 +7,10 @@ namespace Fixie.Tests.Cases
         protected CaseTests()
         {
             Listener = new StubListener();
-            Convention = new SelfTestConvention();
+            Convention = SelfTestConvention.Build();
         }
 
-        protected SelfTestConvention Convention { get; private set; }
+        protected Convention Convention { get; private set; }
         protected StubListener Listener { get; private set; }
 
         protected void Run<TSampleTestClass>()

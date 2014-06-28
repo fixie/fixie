@@ -16,7 +16,7 @@ namespace Fixie.Tests.Listeners
                 var listener = new TeamCityListener();
 
                 var conventionRunner = new ConventionRunner();
-                conventionRunner.Run(new SelfTestConvention(), listener, typeof(PassFailTestClass));
+                conventionRunner.Run(SelfTestConvention.Build(), listener, typeof(PassFailTestClass));
 
                 var testClass = typeof(PassFailTestClass).FullName;
 

@@ -27,7 +27,7 @@ namespace Fixie.Tests.Behaviors
             log.Clear();
             testClass = typeof(SampleTestClass);
 
-            convention = new SelfTestConvention();
+            convention = SelfTestConvention.Build();
             convention.CaseExecution.Wrap<LogMethodName>();
         }
 

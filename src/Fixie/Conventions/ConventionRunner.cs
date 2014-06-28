@@ -34,8 +34,7 @@ namespace Fixie.Conventions
                     executionModel.OrderCases(casesToExecute);
 
                     var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
-                    var classExecution = new ClassExecution(executionModel, testClass, caseExecutions);
-                    executionModel.Execute(classExecution);
+                    executionModel.Execute(testClass, caseExecutions);
 
                     foreach (var caseExecution in caseExecutions)
                     {

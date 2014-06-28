@@ -28,8 +28,9 @@ namespace Fixie
             orderCases = config.OrderCases;
         }
 
-        public void Execute(ClassExecution classExecution)
+        public void Execute(Type testClass, CaseExecution[] caseExecutions)
         {
+            var classExecution = new ClassExecution(this, testClass, caseExecutions);
             classBehaviorChain.Execute(classExecution);
         }
 

@@ -17,7 +17,7 @@ namespace Fixie
             testMethodConditions = config.TestMethodConditions.ToArray();
         }
 
-        public IEnumerable<Type> TestClasses(IEnumerable<Type> candidates)
+        public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
         {
             return candidates.Where(IsMatch).ToArray();
         }
@@ -27,7 +27,7 @@ namespace Fixie
             return testClassConditions.All(condition => condition(candidate));
         }
 
-        public IEnumerable<MethodInfo> TestMethods(Type testClass)
+        public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
         {
             return testClass.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(IsMatch).ToArray();
         }
@@ -37,7 +37,7 @@ namespace Fixie
             return testMethodConditions.All(condition => condition(candidate));
         }
 
-        public IEnumerable<Case> TestCases(Type testClass, ConfigModel config)
+        public IReadOnlyList<Case> TestCases(Type testClass, ConfigModel config)
         {
             return TestMethods(testClass).SelectMany(method => CasesForMethod(config, method)).ToArray();
         }

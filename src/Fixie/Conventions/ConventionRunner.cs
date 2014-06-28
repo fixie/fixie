@@ -18,7 +18,7 @@ namespace Fixie.Conventions
             {
                 var classResult = new ClassResult(testClass.FullName);
 
-                var cases = discoveryModel.TestCases(testClass, config);
+                var cases = discoveryModel.TestCases(testClass);
                 var casesBySkipState = cases.ToLookup(executionModel.SkipCase);
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false].ToArray();

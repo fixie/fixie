@@ -10,11 +10,13 @@ namespace Fixie
     {
         readonly Func<Type, bool>[] testClassConditions;
         readonly Func<MethodInfo, bool>[] testMethodConditions;
+        readonly Func<MethodInfo, IEnumerable<object[]>> getCaseParameters;
 
         public DiscoveryModel(ConfigModel config)
         {
             testClassConditions = config.TestClassConditions.ToArray();
             testMethodConditions = config.TestMethodConditions.ToArray();
+            getCaseParameters = config.GetCaseParameters;
         }
 
         public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
@@ -37,14 +39,14 @@ namespace Fixie
             return testMethodConditions.All(condition => condition(candidate));
         }
 
-        public IReadOnlyList<Case> TestCases(Type testClass, ConfigModel config)
+        public IReadOnlyList<Case> TestCases(Type testClass)
         {
-            return TestMethods(testClass).SelectMany(method => CasesForMethod(config, method)).ToArray();
+            return TestMethods(testClass).SelectMany(CasesForMethod).ToArray();
         }
 
-        static IEnumerable<Case> CasesForMethod(ConfigModel config, MethodInfo method)
+        IEnumerable<Case> CasesForMethod(MethodInfo method)
         {
-            var casesForKnownInputParameters = config.GetCaseParameters(method)
+            var casesForKnownInputParameters = getCaseParameters(method)
                 .Select(parameters => new Case(method, parameters));
 
             bool any = false;

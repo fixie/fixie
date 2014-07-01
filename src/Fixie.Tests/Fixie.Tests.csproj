@@ -53,7 +53,7 @@
     <Compile Include="Cases\NonVoidCaseTests.cs" />
     <Compile Include="CommandLineParserTests.cs" />
     <Compile Include="Conventions\AssertionLibraryFilterTests.cs" />
-    <Compile Include="Conventions\ConventionRunnerTests.cs" />
+    <Compile Include="Conventions\RunnerTests.cs" />
     <Compile Include="GenericArgumentResolverTests.cs" />
     <Compile Include="Lifecycle\CaseLifecycleTests.cs" />
     <Compile Include="Lifecycle\ClassLifecycleTests.cs" />

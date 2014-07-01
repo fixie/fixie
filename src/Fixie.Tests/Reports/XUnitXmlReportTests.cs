@@ -25,7 +25,7 @@ namespace Fixie.Tests.Reports
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters(FromParametersAttribute);
-            var assemblyResult = runner.RunType(GetType().Assembly, convention, typeof(PassFailTestClass));
+            var assemblyResult = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
             executionResult.Add(assemblyResult);
 
             var report = new XUnitXmlReport();

@@ -1,5 +1,4 @@
 using System;
-using Fixie.Conventions;
 
 namespace Fixie.Tests.Conventions
 {
@@ -8,10 +7,12 @@ namespace Fixie.Tests.Conventions
         public void ShouldExecuteAllCasesInAllDiscoveredTestClasses()
         {
             var listener = new StubListener();
+            var runner = new Runner(listener);
             var convention = SelfTestConvention.Build();
 
-            var conventionRunner = new ConventionRunner();
-            conventionRunner.Run(convention, listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass), typeof(SkipTestClass));
+            runner.RunTypes(GetType().Assembly, convention,
+                typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
+                typeof(PassFailTestClass), typeof(SkipTestClass));
 
             listener.Entries.ShouldEqual("Fixie.Tests.Conventions.ConventionRunnerTests+PassTestClass.PassA passed.",
                 "Fixie.Tests.Conventions.ConventionRunnerTests+PassTestClass.PassB passed.",
@@ -23,14 +24,16 @@ namespace Fixie.Tests.Conventions
         public void ShouldAllowRandomShufflingOfCaseExecutionOrder()
         {
             var listener = new StubListener();
+            var runner = new Runner(listener);
             var convention = SelfTestConvention.Build();
 
             convention.ClassExecution
                 .CreateInstancePerClass()
                 .ShuffleCases(new Random(1));
 
-            var conventionRunner = new ConventionRunner();
-            conventionRunner.Run(convention, listener, typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int), typeof(PassFailTestClass), typeof(SkipTestClass));
+            runner.RunTypes(GetType().Assembly, convention,
+                typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
+                typeof(PassFailTestClass), typeof(SkipTestClass));
 
             listener.Entries.ShouldEqual("Fixie.Tests.Conventions.ConventionRunnerTests+PassTestClass.PassB passed.",
                 "Fixie.Tests.Conventions.ConventionRunnerTests+PassTestClass.PassA passed.",

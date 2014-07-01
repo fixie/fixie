@@ -51,7 +51,6 @@
     <Compile Include="Conventions\AssertionLibraryFilter.cs" />
     <Compile Include="Conventions\ConfigModel.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />
-    <Compile Include="Conventions\ConventionRunner.cs" />
     <Compile Include="Conventions\TestAssembly.cs" />
     <Compile Include="DSL\TestClassExpression.cs" />
     <Compile Include="DiscoveryModel.cs" />

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Fixie.Conventions;
 using Fixie.Listeners;
 
 namespace Fixie.Tests.Listeners
@@ -15,8 +14,7 @@ namespace Fixie.Tests.Listeners
             {
                 var listener = new TeamCityListener();
 
-                var conventionRunner = new ConventionRunner();
-                conventionRunner.Run(SelfTestConvention.Build(), listener, typeof(PassFailTestClass));
+                typeof(PassFailTestClass).Run(listener, SelfTestConvention.Build());
 
                 var testClass = typeof(PassFailTestClass).FullName;
 
@@ -24,6 +22,7 @@ namespace Fixie.Tests.Listeners
                        .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                        .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'")) //Avoid brittle assertion introduced by durations.
                        .ShouldEqual(
+                           "##teamcity[testSuiteStarted name='Fixie.Tests.dll']",
                            "##teamcity[testIgnored name='" + testClass + ".SkipA']",
 
                            "Console.Out: FailA",
@@ -53,8 +52,8 @@ namespace Fixie.Tests.Listeners
                            "##teamcity[testFinished name='" + testClass + ".PassB' duration='#']",
                            "##teamcity[testStarted name='" + testClass + ".PassC']",
                            "##teamcity[testStdOut name='" + testClass + ".PassC' out='Console.Out: PassC|r|nConsole.Error: PassC|r|n']",
-                           "##teamcity[testFinished name='" + testClass + ".PassC' duration='#']");
-
+                           "##teamcity[testFinished name='" + testClass + ".PassC' duration='#']",
+                           "##teamcity[testSuiteFinished name='Fixie.Tests.dll']");
             }
         }
 

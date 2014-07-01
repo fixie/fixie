@@ -1,15 +1,11 @@
-﻿using Fixie.Conventions;
-using Fixie.Listeners;
-using Fixie.Results;
+﻿using Fixie.Listeners;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace Fixie.Tests.Listeners
 {
-
     public class ConsoleListenerTests
     {
         public void ShouldReportResultsToTheConsole()
@@ -18,14 +14,14 @@ namespace Fixie.Tests.Listeners
             {
                 var listener = new ConsoleListener();
 
-                var conventionRunner = new ConventionRunner();
-                conventionRunner.Run(SelfTestConvention.Build(), listener, typeof(PassFailTestClass));
+                typeof(PassFailTestClass).Run(listener, SelfTestConvention.Build());
 
                 var testClass = typeof(PassFailTestClass).FullName;
 
                 console.Lines()
-                       .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
+                       .Select(CleanBrittleValues)
                        .ShouldEqual(
+                           "------ Testing Assembly Fixie.Tests.dll ------",
                            "Test '" + testClass + ".SkipA' skipped",
                            "Console.Out: FailA",
                            "Console.Error: FailA",
@@ -43,35 +39,8 @@ namespace Fixie.Tests.Listeners
                            "   at Fixie.Tests.Listeners.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
                            "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
                            "'FailB' failed!",
-                           "   at Fixie.Tests.Listeners.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #");
-            }
-        }
-
-        public void ShouldReportPassFailSkipCounts()
-        {
-            using (var console = new RedirectedConsole())
-            {
-                var listener = new ConsoleListener();
-                var assembly = typeof(ConsoleListener).Assembly;
-                var version = assembly.GetName().Version;
-
-                var assemblyResult = new AssemblyResult(assembly.Location);
-                var conventionResult = new ConventionResult("Fake Convention");
-                var classResult = new ClassResult("Fake Class");
-                assemblyResult.Add(conventionResult);
-                conventionResult.Add(classResult);
-                classResult.Add(CaseResult.Passed("A", TimeSpan.Zero));
-                classResult.Add(CaseResult.Failed("B", TimeSpan.Zero, new ExceptionInfo(new Exception(), new AssertionLibraryFilter())));
-                classResult.Add(CaseResult.Failed("C", TimeSpan.Zero, new ExceptionInfo(new Exception(), new AssertionLibraryFilter())));
-                classResult.Add(CaseResult.Skipped("D", "Reason"));
-                classResult.Add(CaseResult.Skipped("E", "Reason"));
-                classResult.Add(CaseResult.Skipped("F", "Reason"));
-
-                listener.AssemblyCompleted(assembly, assemblyResult);
-
-                console.Lines().ShouldEqual(string.Format("1 passed, 2 failed, 3 skipped, took {0} seconds (Fixie {1}).",
-                                                          0.ToString("N2", CultureInfo.CurrentCulture),
-                                                          version));
+                           "   at Fixie.Tests.Listeners.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
+                           "3 passed, 2 failed, 1 skipped, took 1.23 seconds (Fixie 1.2.3.4).");
             }
         }
 
@@ -80,24 +49,54 @@ namespace Fixie.Tests.Listeners
             using (var console = new RedirectedConsole())
             {
                 var listener = new ConsoleListener();
-                var assembly = typeof(ConsoleListener).Assembly;
-                var version = assembly.GetName().Version;
 
-                var assemblyResult = new AssemblyResult(assembly.Location);
-                var conventionResult = new ConventionResult("Fake Convention");
-                var classResult = new ClassResult("Fake Class");
-                assemblyResult.Add(conventionResult);
-                conventionResult.Add(classResult);
-                classResult.Add(CaseResult.Passed("A", TimeSpan.Zero));
-                classResult.Add(CaseResult.Failed("B", TimeSpan.Zero, new ExceptionInfo(new Exception(), new AssertionLibraryFilter())));
-                classResult.Add(CaseResult.Failed("C", TimeSpan.Zero, new ExceptionInfo(new Exception(), new AssertionLibraryFilter())));
+                var convention = SelfTestConvention.Build();
 
-                listener.AssemblyCompleted(assembly, assemblyResult);
+                convention
+                    .Methods
+                    .Where(method => method.Name != "SkipA");
 
-                console.Lines().ShouldEqual(string.Format("1 passed, 2 failed, took {0} seconds (Fixie {1}).",
-                                                          0.ToString("N2", CultureInfo.CurrentCulture),
-                                                          version));
+                typeof(PassFailTestClass).Run(listener, convention);
+
+                var testClass = typeof(PassFailTestClass).FullName;
+
+                console.Lines()
+                       .Select(CleanBrittleValues)
+                       .ShouldEqual(
+                           "------ Testing Assembly Fixie.Tests.dll ------",
+                           "Console.Out: FailA",
+                           "Console.Error: FailA",
+                           "Console.Out: FailB",
+                           "Console.Error: FailB",
+                           "Console.Out: PassA",
+                           "Console.Error: PassA",
+                           "Console.Out: PassB",
+                           "Console.Error: PassB",
+                           "Console.Out: PassC",
+                           "Console.Error: PassC",
+
+                           "Test '" + testClass + ".FailA' failed: Fixie.Tests.FailureException",
+                           "'FailA' failed!",
+                           "   at Fixie.Tests.Listeners.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
+                           "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
+                           "'FailB' failed!",
+                           "   at Fixie.Tests.Listeners.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
+                           "3 passed, 2 failed, took 1.23 seconds (Fixie 1.2.3.4).");
             }
+        }
+
+        static string CleanBrittleValues(string actualRawContent)
+        {
+            //Avoid brittle assertion introduced by fixie version.
+            var cleaned = Regex.Replace(actualRawContent, @"\(Fixie \d+\.\d+\.\d+\.\d+\)", @"(Fixie 1.2.3.4)");
+
+            //Avoid brittle assertion introduced by test duration.
+            cleaned = Regex.Replace(cleaned, @"took [\d\.]+ seconds", @"took 1.23 seconds");
+
+            //Avoid brittle assertion introduced by stack trace line numbers.
+            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
+
+            return cleaned;
         }
 
         static string PathToThisFile([CallerFilePath] string path = null)

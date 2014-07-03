@@ -4,13 +4,20 @@ namespace Fixie.Behaviors
 {
     public class CreateInstancePerCase : ClassBehavior
     {
+        readonly ExecutionModel executionModel;
+
+        public CreateInstancePerCase(ExecutionModel executionModel)
+        {
+            this.executionModel = executionModel;
+        }
+
         public void Execute(ClassExecution classExecution, Action next)
         {
             foreach (var caseExecution in classExecution.CaseExecutions)
             {
                 try
                 {
-                    classExecution.ExecutionModel.PerformClassLifecycle(classExecution, new[] { caseExecution });
+                    executionModel.PerformClassLifecycle(classExecution, new[] { caseExecution });
                 }
                 catch (Exception exception)
                 {

@@ -34,7 +34,7 @@ namespace Fixie
         public IReadOnlyList<CaseExecution> Execute(Type testClass, Case[] casesToExecute)
         {
             var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
-            var classExecution = new ClassExecution(this, testClass, caseExecutions);
+            var classExecution = new ClassExecution(testClass, caseExecutions);
 
             classBehaviorChain.Execute(classExecution);
 
@@ -78,7 +78,7 @@ namespace Fixie
             orderCases(cases);
         }
 
-        static BehaviorChain<ClassExecution> BuildClassBehaviorChain(ConfigModel config)
+        BehaviorChain<ClassExecution> BuildClassBehaviorChain(ConfigModel config)
         {
             var chain = config.CustomClassBehaviors
                 .Select(customBehavior => (ClassBehavior)Activator.CreateInstance(customBehavior))
@@ -111,12 +111,12 @@ namespace Fixie
             return new BehaviorChain<CaseExecution>(chain);
         }
 
-        static ClassBehavior GetInnermostBehavior(ConfigModel config)
+        ClassBehavior GetInnermostBehavior(ConfigModel config)
         {
             if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
-                return new CreateInstancePerCase();
+                return new CreateInstancePerCase(this);
 
-            return new CreateInstancePerClass();
+            return new CreateInstancePerClass(this);
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Fixie
         {
             var instance = constructTestClass(classExecution.TestClass);
 
-            var instanceExecution = new InstanceExecution(this, classExecution.TestClass, instance, caseExecutionsForThisInstance);
+            var instanceExecution = new InstanceExecution(classExecution.TestClass, instance, caseExecutionsForThisInstance);
             instanceBehaviorChain.Execute(instanceExecution);
 
             var disposable = instance as IDisposable;
@@ -89,13 +89,13 @@ namespace Fixie
             return new BehaviorChain<ClassExecution>(chain);
         }
 
-        static BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(ConfigModel config)
+        BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(ConfigModel config)
         {
             var chain = config.CustomInstanceBehaviors
                 .Select(customBehavior => (InstanceBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
-            chain.Add(new ExecuteCases());
+            chain.Add(new ExecuteCases(this));
 
             return new BehaviorChain<InstanceExecution>(chain);
         }

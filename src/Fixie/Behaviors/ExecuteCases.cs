@@ -16,7 +16,6 @@ namespace Fixie.Behaviors
         {
             foreach (var caseExecution in instanceExecution.CaseExecutions)
             {
-
                 using (var console = new RedirectedConsole())
                 {
                     var stopwatch = new Stopwatch();
@@ -31,13 +30,10 @@ namespace Fixie.Behaviors
                     {
                         caseExecution.Fail(exception);
                     }
-                    finally
-                    {
-                        caseExecution.Instance = null;
-                    }
 
                     stopwatch.Stop();
 
+                    caseExecution.Instance = null;
                     caseExecution.Duration = stopwatch.Elapsed;
                     caseExecution.Output = console.Output;
                 }

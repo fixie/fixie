@@ -41,11 +41,11 @@ namespace Fixie
             return caseExecutions;
         }
 
-        public void PerformClassLifecycle(ClassExecution classExecution, IReadOnlyList<CaseExecution> caseExecutionsForThisInstance)
+        public void PerformClassLifecycle(Type testClass, IReadOnlyList<CaseExecution> caseExecutionsForThisInstance)
         {
-            var instance = constructTestClass(classExecution.TestClass);
+            var instance = constructTestClass(testClass);
 
-            var instanceExecution = new InstanceExecution(classExecution.TestClass, instance, caseExecutionsForThisInstance);
+            var instanceExecution = new InstanceExecution(testClass, instance, caseExecutionsForThisInstance);
             instanceBehaviorChain.Execute(instanceExecution);
 
             var disposable = instance as IDisposable;

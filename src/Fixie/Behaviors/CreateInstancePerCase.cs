@@ -17,7 +17,7 @@ namespace Fixie.Behaviors
             {
                 try
                 {
-                    executionModel.PerformClassLifecycle(classExecution, new[] { caseExecution });
+                    executionModel.PerformClassLifecycle(classExecution.TestClass, new[] { caseExecution });
                 }
                 catch (Exception exception)
                 {

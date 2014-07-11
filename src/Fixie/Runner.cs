@@ -99,15 +99,15 @@ namespace Fixie
         ConventionResult RunConvention(Convention convention, params Type[] candidateTypes)
         {
             var config = convention.Config;
-            var discoveryModel = new DiscoveryModel(config);
+            var caseDiscoverer = new CaseDiscoverer(config);
             var executionModel = new ExecutionModel(config);
             var conventionResult = new ConventionResult(convention.GetType().FullName);
 
-            foreach (var testClass in discoveryModel.TestClasses(candidateTypes))
+            foreach (var testClass in caseDiscoverer.TestClasses(candidateTypes))
             {
                 var classResult = new ClassResult(testClass.FullName);
 
-                var cases = discoveryModel.TestCases(testClass);
+                var cases = caseDiscoverer.TestCases(testClass);
                 var casesBySkipState = cases.ToLookup(executionModel.SkipCase);
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false].ToArray();

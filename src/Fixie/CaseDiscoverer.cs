@@ -6,13 +6,13 @@ using Fixie.Conventions;
 
 namespace Fixie
 {
-    public class DiscoveryModel
+    public class CaseDiscoverer
     {
         readonly Func<Type, bool>[] testClassConditions;
         readonly Func<MethodInfo, bool>[] testMethodConditions;
         readonly Func<MethodInfo, IEnumerable<object[]>> getCaseParameters;
 
-        public DiscoveryModel(ConfigModel config)
+        public CaseDiscoverer(ConfigModel config)
         {
             testClassConditions = config.TestClassConditions.ToArray();
             testMethodConditions = config.TestMethodConditions.ToArray();

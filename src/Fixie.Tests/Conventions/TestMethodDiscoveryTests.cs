@@ -83,7 +83,7 @@ namespace Fixie.Tests.Conventions
 
         static IEnumerable<string> DiscoveredTestMethods<TTestClass>(Convention convention)
         {
-            return new DiscoveryModel(convention.Config)
+            return new CaseDiscoverer(convention.Config)
                 .TestMethods(typeof(TTestClass))
                 .OrderBy(method => method.Name, StringComparer.Ordinal)
                 .Select(method => method.Name);

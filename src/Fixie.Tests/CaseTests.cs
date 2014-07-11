@@ -45,42 +45,6 @@ namespace Fixie.Tests
             caseExecution.Exceptions.Count.ShouldEqual(0);
         }
 
-        public void ShouldInvokeMethodsWithParameters()
-        {
-            var @case = Case("Parameterized", 123, true, 'a', "s1", "s2", null, this);
-            var caseExecution = new CaseExecution(@case);
-
-            @case.Execute(this, caseExecution);
-
-            invoked.ShouldBeTrue();
-
-            caseExecution.Exceptions.Count.ShouldEqual(0);
-        }
-
-        public void ShouldInvokeGenericMethodsWithParameters()
-        {
-            var @case = Case("Generic", 123, true, "a", "b");
-            var caseExecution = new CaseExecution(@case);
-
-            @case.Execute(this, caseExecution);
-
-            invoked.ShouldBeTrue();
-
-            caseExecution.Exceptions.Count.ShouldEqual(0);
-        }
-
-        public void ShouldLogExceptionWhenMethodCannotBeInvoked()
-        {
-            var @case = Case("CannotInvoke");
-            var caseExecution = new CaseExecution(@case);
-
-            @case.Execute(this, caseExecution);
-
-            invoked.ShouldBeFalse();
-
-            ExpectException(caseExecution, "TargetParameterCountException", "Parameter count mismatch.");
-        }
-
         public void ShouldLogOriginalExceptionWhenMethodThrows()
         {
             var @case = Case("Throws");
@@ -132,11 +96,6 @@ namespace Fixie.Tests
         }
 
         void Returns()
-        {
-            invoked = true;
-        }
-
-        void CannotInvoke(int argument)
         {
             invoked = true;
         }

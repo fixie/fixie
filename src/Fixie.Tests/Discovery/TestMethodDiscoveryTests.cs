@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Fixie.Conventions;
-using System;
-using System.Linq;
+using Fixie.Discovery;
 
-namespace Fixie.Tests.Conventions
+namespace Fixie.Tests.Discovery
 {
     public class TestMethodDiscoveryTests
     {

@@ -48,13 +48,13 @@
     <Compile Include="Behaviors\InstanceBehavior.cs" />
     <Compile Include="CaseExecution.cs" />
     <Compile Include="CommandLineOption.cs" />
-    <Compile Include="ConventionDiscoverer.cs" />
+    <Compile Include="Discovery\ConventionDiscoverer.cs" />
     <Compile Include="Conventions\AssertionLibraryFilter.cs" />
     <Compile Include="Conventions\ConfigModel.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />
     <Compile Include="Conventions\TestAssembly.cs" />
     <Compile Include="DSL\TestClassExpression.cs" />
-    <Compile Include="CaseDiscoverer.cs" />
+    <Compile Include="Discovery\CaseDiscoverer.cs" />
     <Compile Include="DSL\AssertionLibraryExpression.cs" />
     <Compile Include="ExecutionEnvironment.cs" />
     <Compile Include="ExecutionModel.cs" />

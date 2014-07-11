@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Fixie.Conventions;
 
-namespace Fixie
+namespace Fixie.Discovery
 {
     public class ConventionDiscoverer
     {

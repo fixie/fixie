@@ -37,14 +37,6 @@ namespace Fixie
 
         public AssemblyResult RunType(Assembly assembly, Type type)
         {
-            if (type.IsSubclassOf(typeof(Convention)) && !type.IsAbstract)
-            {
-                var singleConventionRunContext = new RunContext(assembly, options);
-                var singleConvention = Construct<Convention>(type, singleConventionRunContext);
-
-                return RunTypes(singleConventionRunContext, singleConvention, assembly.GetTypes());
-            }
-
             var runContext = new RunContext(assembly, options, type);
 
             return RunTypes(runContext, type);
@@ -81,49 +73,95 @@ namespace Fixie
             return Run(runContext, new[] { convention }, types);
         }
 
-        static Convention[] GetConventions(RunContext runContext)
+        private static Convention[] GetConventions(RunContext runContext)
         {
-            var testAssemblyTypes = ConcreteTestAssemblyTypes(runContext);
+            return new ConventionDiscoverer(runContext).GetConventions();
+        }
 
-            var conventionTypes = testAssemblyTypes.Any()
-                ? ExplicitlyAppliedConventionTypes(runContext, testAssemblyTypes)
-                : LocallyDeclaredConventionTypes(runContext);
+        class ConventionDiscoverer
+        {
+            readonly RunContext runContext;
 
-            var customConventions =
-                conventionTypes
-                    .Select(t => Construct<Convention>(t, runContext))
+            public ConventionDiscoverer(RunContext runContext)
+            {
+                this.runContext = runContext;
+            }
+
+            public Convention[] GetConventions()
+            {
+                var testAssemblyTypes = ConcreteTestAssemblyTypes();
+
+                var conventionTypes = testAssemblyTypes.Any()
+                    ? ExplicitlyAppliedConventionTypes(testAssemblyTypes)
+                    : LocallyDeclaredConventionTypes();
+
+                var customConventions =
+                    conventionTypes
+                        .Select(t => Construct<Convention>(t, runContext))
+                        .ToArray();
+
+                if (customConventions.Any())
+                    return customConventions;
+
+                return new[] { (Convention)new DefaultConvention() };
+            }
+
+            Type[] ConcreteTestAssemblyTypes()
+            {
+                return runContext.Assembly
+                    .GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(TestAssembly)) && !t.IsAbstract)
                     .ToArray();
+            }
 
-            if (customConventions.Any())
-                return customConventions;
+            Type[] ExplicitlyAppliedConventionTypes(Type[] testAssemblyTypes)
+            {
+                return testAssemblyTypes
+                    .Select(t => Construct<TestAssembly>(t, runContext))
+                    .SelectMany(x => x.ConventionTypes)
+                    .ToArray();
+            }
 
-            return new[] { (Convention) new DefaultConvention() };
+            Type[] LocallyDeclaredConventionTypes()
+            {
+                return runContext.Assembly
+                    .GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(Convention)) && !t.IsAbstract)
+                    .ToArray();
+            }
+
+            static T Construct<T>(Type type, RunContext runContext)
+            {
+                var constructor = GetConstructor(type);
+
+                try
+                {
+                    var parameters = constructor.GetParameters();
+
+                    if (parameters.Length == 1 && parameters.Single().ParameterType == typeof(RunContext))
+                        return (T)constructor.Invoke(new object[] { runContext });
+
+                    return (T)constructor.Invoke(null);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(String.Format("Could not construct an instance of type '{0}'.", type.FullName), ex);
+                }
+            }
+
+            static ConstructorInfo GetConstructor(Type type)
+            {
+                var constructors = type.GetConstructors();
+
+                if (constructors.Length == 1)
+                    return constructors.Single();
+
+                throw new Exception(
+                    String.Format("Could not construct an instance of type '{0}'.  Expected to find exactly 1 public constructor, but found {1}.",
+                        type.FullName, constructors.Length));
+            }
         }
-
-        static Type[] ConcreteTestAssemblyTypes(RunContext runContext)
-        {
-            return runContext.Assembly
-                .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(TestAssembly)) && !t.IsAbstract)
-                .ToArray();
-        }
-
-        static Type[] ExplicitlyAppliedConventionTypes(RunContext runContext, Type[] testAssemblyTypes)
-        {
-            return testAssemblyTypes
-                .Select(t => Construct<TestAssembly>(t, runContext))
-                .SelectMany(x => x.ConventionTypes)
-                .ToArray();
-        }
-
-        static Type[] LocallyDeclaredConventionTypes(RunContext runContext)
-        {
-            return runContext.Assembly
-                .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(Convention)) && !t.IsAbstract)
-                .ToArray();
-        }
-
+        
         AssemblyResult Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
             var assemblyResult = new AssemblyResult(runContext.Assembly.Location);
@@ -140,37 +178,6 @@ namespace Fixie
             listener.AssemblyCompleted(runContext.Assembly, assemblyResult);
 
             return assemblyResult;
-        }
-
-        static T Construct<T>(Type type, RunContext runContext)
-        {
-            var constructor = GetConstructor(type);
-
-            try
-            {
-                var parameters = constructor.GetParameters();
-
-                if (parameters.Length == 1 && parameters.Single().ParameterType == typeof(RunContext))
-                    return (T)constructor.Invoke(new object[] { runContext });
-
-                return (T)constructor.Invoke(null);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(String.Format("Could not construct an instance of type '{0}'.", type.FullName), ex);
-            }
-        }
-
-        static ConstructorInfo GetConstructor(Type type)
-        {
-            var constructors = type.GetConstructors();
-
-            if (constructors.Length == 1)
-                return constructors.Single();
-
-            throw new Exception(
-                String.Format("Could not construct an instance of type '{0}'.  Expected to find exactly 1 public constructor, but found {1}.",
-                    type.FullName, constructors.Length));
         }
 
         ConventionResult RunConvention(Convention convention, params Type[] candidateTypes)

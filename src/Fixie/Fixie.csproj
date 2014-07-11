@@ -48,6 +48,7 @@
     <Compile Include="Behaviors\InstanceBehavior.cs" />
     <Compile Include="CaseExecution.cs" />
     <Compile Include="CommandLineOption.cs" />
+    <Compile Include="ConventionDiscoverer.cs" />
     <Compile Include="Conventions\AssertionLibraryFilter.cs" />
     <Compile Include="Conventions\ConfigModel.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />

@@ -58,12 +58,7 @@ namespace Fixie
             }
 
             if (!any)
-            {
-                if (method.GetParameters().Any())
-                    yield return new UncallableParameterizedCase(method);
-                else
-                    yield return new Case(method);
-            }
+                yield return new Case(method);
         }
     }
 }

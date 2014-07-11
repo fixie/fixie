@@ -81,7 +81,6 @@
     <Compile Include="Cases\ParameterizedCaseTests.cs" />
     <Compile Include="Listeners\TeamCityListenerTests.cs" />
     <Compile Include="Cases\SkippedCaseTests.cs" />
-    <Compile Include="UncallableParameterizedCaseTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie\Fixie.csproj">

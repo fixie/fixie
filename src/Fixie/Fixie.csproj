@@ -96,7 +96,6 @@
     <Compile Include="Results\AssemblyResult.cs" />
     <Compile Include="Runner.cs" />
     <Compile Include="SkipResult.cs" />
-    <Compile Include="UncallableParameterizedCase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixie.nuspec" />

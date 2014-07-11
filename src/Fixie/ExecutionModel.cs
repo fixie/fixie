@@ -130,7 +130,7 @@ namespace Fixie
                 .Select(customBehavior => (CaseBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
-            chain.Add(new Invoke());
+            chain.Add(new InvokeMethod());
 
             return new BehaviorChain<CaseExecution>(chain);
         }

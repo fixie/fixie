@@ -75,7 +75,7 @@
     <Compile Include="ClassExecution.cs" />
     <Compile Include="InstanceExecution.cs" />
     <Compile Include="Foreground.cs" />
-    <Compile Include="Behaviors\Invoke.cs" />
+    <Compile Include="Behaviors\InvokeMethod.cs" />
     <Compile Include="Behaviors\CaseBehavior.cs" />
     <Compile Include="Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Listener.cs" />

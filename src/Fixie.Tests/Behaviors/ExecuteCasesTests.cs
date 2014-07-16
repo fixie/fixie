@@ -42,8 +42,8 @@ namespace Fixie.Tests.Behaviors
                 new CaseExecution(caseB)
             };
 
-            var executionModel = new ExecutionModel(new StubListener(), convention);
-            var executeCases = new ExecuteCases(executionModel);
+            var executionPlan = new ExecutionPlan(convention.Config);
+            var executeCases = new ExecuteCases(executionPlan);
             var instanceExecution = new InstanceExecution(testClass, new SampleTestClass(), caseExecutions);
 
             bool invokedNext = false;

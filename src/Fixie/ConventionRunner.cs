@@ -6,7 +6,7 @@ using Fixie.Results;
 
 namespace Fixie
 {
-    public class ExecutionModel
+    public class ConventionRunner
     {
         readonly Listener listener;
         readonly ConfigModel config;
@@ -18,7 +18,7 @@ namespace Fixie
         readonly Func<Case, string> getSkipReason;
         readonly Action<Case[]> orderCases;
         
-        public ExecutionModel(Listener listener, Convention convention)
+        public ConventionRunner(Listener listener, Convention convention)
         {
             this.listener = listener;
             config = convention.Config;

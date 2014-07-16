@@ -87,9 +87,9 @@ namespace Fixie
 
             foreach (var convention in conventions)
             {
-                var executionModel = new ExecutionModel(listener, convention);
+                var conventionRunner = new ConventionRunner(listener, convention);
 
-                var conventionResult = executionModel.Run(candidateTypes);
+                var conventionResult = conventionRunner.Run(candidateTypes);
 
                 assemblyResult.Add(conventionResult);
             }

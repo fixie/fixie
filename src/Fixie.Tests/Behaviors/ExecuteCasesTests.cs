@@ -42,7 +42,7 @@ namespace Fixie.Tests.Behaviors
                 new CaseExecution(caseB)
             };
 
-            var executionModel = new ExecutionModel(convention.Config);
+            var executionModel = new ExecutionModel(new StubListener(), convention);
             var executeCases = new ExecuteCases(executionModel);
             var instanceExecution = new InstanceExecution(testClass, new SampleTestClass(), caseExecutions);
 

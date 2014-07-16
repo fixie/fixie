@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Fixie.Behaviors;
 using Fixie.Conventions;
+using Fixie.Discovery;
+using Fixie.Results;
 
 namespace Fixie
 {
     public class ExecutionModel
     {
+        readonly Listener listener;
+        readonly ConfigModel config;
+        readonly string conventionName;
+
         readonly BehaviorChain<ClassExecution> classBehaviorChain;
         readonly BehaviorChain<InstanceExecution> instanceBehaviorChain;
         readonly BehaviorChain<CaseExecution> caseBehaviorChain;
@@ -18,11 +23,15 @@ namespace Fixie
         readonly Func<Case, string> getSkipReason;
         readonly Action<Case[]> orderCases;
         readonly Func<Type, object> constructTestClass;
-
-        public ExecutionModel(ConfigModel config)
+        
+        public ExecutionModel(Listener listener, Convention convention)
         {
-            classBehaviorChain = BuildClassBehaviorChain(config);
-            instanceBehaviorChain = BuildInstanceBehaviorChain(config);
+            this.listener = listener;
+            config = convention.Config;
+            conventionName = convention.GetType().FullName;
+
+            classBehaviorChain = BuildClassBehaviorChain(this, config);
+            instanceBehaviorChain = BuildInstanceBehaviorChain(this, config);
             caseBehaviorChain = BuildCaseBehaviorChain(config);
             assertionLibraryFilter = new AssertionLibraryFilter(config.AssertionLibraryTypes);
 
@@ -32,7 +41,56 @@ namespace Fixie
             constructTestClass = config.TestClassFactory;
         }
 
-        public IReadOnlyList<CaseExecution> Execute(Type testClass, Case[] casesToExecute)
+        public ConventionResult Run(Type[] candidateTypes)
+        {
+            var caseDiscoverer = new CaseDiscoverer(config);
+            var conventionResult = new ConventionResult(conventionName);
+
+            foreach (var testClass in caseDiscoverer.TestClasses(candidateTypes))
+            {
+                var classResult = new ClassResult(testClass.FullName);
+
+                var cases = caseDiscoverer.TestCases(testClass);
+                var casesBySkipState = cases.ToLookup(skipCase);
+                var casesToSkip = casesBySkipState[true];
+                var casesToExecute = casesBySkipState[false].ToArray();
+                foreach (var @case in casesToSkip)
+                {
+                    var skipResult = new SkipResult(@case, getSkipReason(@case));
+                    listener.CaseSkipped(skipResult);
+                    classResult.Add(CaseResult.Skipped(skipResult.Case.Name, skipResult.Reason));
+                }
+
+                if (casesToExecute.Any())
+                {
+                    orderCases(casesToExecute);
+
+                    var caseExecutions = Execute(testClass, casesToExecute);
+
+                    foreach (var caseExecution in caseExecutions)
+                    {
+                        if (caseExecution.Exceptions.Any())
+                        {
+                            var failResult = new FailResult(caseExecution, assertionLibraryFilter);
+                            listener.CaseFailed(failResult);
+                            classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.ExceptionSummary));
+                        }
+                        else
+                        {
+                            var passResult = new PassResult(caseExecution);
+                            listener.CasePassed(passResult);
+                            classResult.Add(CaseResult.Passed(passResult.Case.Name, passResult.Duration));
+                        }
+                    }
+                }
+
+                conventionResult.Add(classResult);
+            }
+
+            return conventionResult;
+        }
+
+        IReadOnlyList<CaseExecution> Execute(Type testClass, Case[] casesToExecute)
         {
             var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
             var classExecution = new ClassExecution(testClass, caseExecutions);
@@ -59,44 +117,24 @@ namespace Fixie
             caseBehaviorChain.Execute(caseExecution);
         }
 
-        public AssertionLibraryFilter AssertionLibraryFilter
-        {
-            get { return assertionLibraryFilter; }
-        }
-
-        public bool SkipCase(Case @case)
-        {
-            return skipCase(@case);
-        }
-
-        public string GetSkipReason(Case @case)
-        {
-            return getSkipReason(@case);
-        }
-
-        public void OrderCases(Case[] cases)
-        {
-            orderCases(cases);
-        }
-
-        BehaviorChain<ClassExecution> BuildClassBehaviorChain(ConfigModel config)
+        static BehaviorChain<ClassExecution> BuildClassBehaviorChain(ExecutionModel executionModel, ConfigModel config)
         {
             var chain = config.CustomClassBehaviors
                 .Select(customBehavior => (ClassBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
-            chain.Add(GetInnermostBehavior(config));
+            chain.Add(GetInnermostBehavior(executionModel, config));
 
             return new BehaviorChain<ClassExecution>(chain);
         }
 
-        BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(ConfigModel config)
+        static BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(ExecutionModel executionModel, ConfigModel config)
         {
             var chain = config.CustomInstanceBehaviors
                 .Select(customBehavior => (InstanceBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
-            chain.Add(new ExecuteCases(this));
+            chain.Add(new ExecuteCases(executionModel));
 
             return new BehaviorChain<InstanceExecution>(chain);
         }
@@ -112,12 +150,12 @@ namespace Fixie
             return new BehaviorChain<CaseExecution>(chain);
         }
 
-        ClassBehavior GetInnermostBehavior(ConfigModel config)
+        static ClassBehavior GetInnermostBehavior(ExecutionModel executionModel, ConfigModel config)
         {
             if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
-                return new CreateInstancePerCase(this);
+                return new CreateInstancePerCase(executionModel);
 
-            return new CreateInstancePerClass(this);
+            return new CreateInstancePerClass(executionModel);
         }
     }
 }

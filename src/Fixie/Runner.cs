@@ -87,7 +87,9 @@ namespace Fixie
 
             foreach (var convention in conventions)
             {
-                var conventionResult = RunConvention(convention, candidateTypes);
+                var executionModel = new ExecutionModel(listener, convention);
+
+                var conventionResult = executionModel.Run(candidateTypes);
 
                 assemblyResult.Add(conventionResult);
             }
@@ -95,57 +97,6 @@ namespace Fixie
             listener.AssemblyCompleted(runContext.Assembly, assemblyResult);
 
             return assemblyResult;
-        }
-
-        ConventionResult RunConvention(Convention convention, params Type[] candidateTypes)
-        {
-            var config = convention.Config;
-            var caseDiscoverer = new CaseDiscoverer(config);
-            var executionModel = new ExecutionModel(config);
-            var conventionResult = new ConventionResult(convention.GetType().FullName);
-
-            foreach (var testClass in caseDiscoverer.TestClasses(candidateTypes))
-            {
-                var classResult = new ClassResult(testClass.FullName);
-
-                var cases = caseDiscoverer.TestCases(testClass);
-                var casesBySkipState = cases.ToLookup(executionModel.SkipCase);
-                var casesToSkip = casesBySkipState[true];
-                var casesToExecute = casesBySkipState[false].ToArray();
-                foreach (var @case in casesToSkip)
-                {
-                    var skipResult = new SkipResult(@case, executionModel.GetSkipReason(@case));
-                    listener.CaseSkipped(skipResult);
-                    classResult.Add(CaseResult.Skipped(skipResult.Case.Name, skipResult.Reason));
-                }
-
-                if (casesToExecute.Any())
-                {
-                    executionModel.OrderCases(casesToExecute);
-
-                    var caseExecutions = executionModel.Execute(testClass, casesToExecute);
-
-                    foreach (var caseExecution in caseExecutions)
-                    {
-                        if (caseExecution.Exceptions.Any())
-                        {
-                            var failResult = new FailResult(caseExecution, executionModel.AssertionLibraryFilter);
-                            listener.CaseFailed(failResult);
-                            classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.ExceptionSummary));
-                        }
-                        else
-                        {
-                            var passResult = new PassResult(caseExecution);
-                            listener.CasePassed(passResult);
-                            classResult.Add(CaseResult.Passed(passResult.Case.Name, passResult.Duration));
-                        }
-                    }
-                }
-
-                conventionResult.Add(classResult);
-            }
-
-            return conventionResult;
         }
     }
 }

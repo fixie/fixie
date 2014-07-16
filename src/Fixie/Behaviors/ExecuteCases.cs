@@ -5,11 +5,11 @@ namespace Fixie.Behaviors
 {
     public class ExecuteCases : InstanceBehavior
     {
-        readonly ExecutionModel executionModel;
+        readonly ExecutionPlan executionPlan;
 
-        public ExecuteCases(ExecutionModel executionModel)
+        public ExecuteCases(ExecutionPlan executionPlan)
         {
-            this.executionModel = executionModel;
+            this.executionPlan = executionPlan;
         }
 
         public void Execute(InstanceExecution instanceExecution, Action next)
@@ -25,7 +25,7 @@ namespace Fixie.Behaviors
 
                     try
                     {
-                        executionModel.ExecuteCaseBehaviors(caseExecution);
+                        executionPlan.ExecuteCaseBehaviors(caseExecution);
                     }
                     catch (Exception exception)
                     {

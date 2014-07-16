@@ -14,35 +14,28 @@ namespace Fixie
         readonly ConfigModel config;
         readonly string conventionName;
 
-        readonly BehaviorChain<ClassExecution> classBehaviorChain;
-        readonly BehaviorChain<InstanceExecution> instanceBehaviorChain;
-        readonly BehaviorChain<CaseExecution> caseBehaviorChain;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
         readonly Func<Case, bool> skipCase;
         readonly Func<Case, string> getSkipReason;
         readonly Action<Case[]> orderCases;
-        readonly Func<Type, object> constructTestClass;
         
         public ExecutionModel(Listener listener, Convention convention)
         {
             this.listener = listener;
             config = convention.Config;
             conventionName = convention.GetType().FullName;
-
-            classBehaviorChain = BuildClassBehaviorChain(this, config);
-            instanceBehaviorChain = BuildInstanceBehaviorChain(this, config);
-            caseBehaviorChain = BuildCaseBehaviorChain(config);
+            
             assertionLibraryFilter = new AssertionLibraryFilter(config.AssertionLibraryTypes);
 
             skipCase = config.SkipCase;
             getSkipReason = config.GetSkipReason;
             orderCases = config.OrderCases;
-            constructTestClass = config.TestClassFactory;
         }
 
         public ConventionResult Run(Type[] candidateTypes)
         {
+            var executionPlan = new ExecutionPlan(config);
             var caseDiscoverer = new CaseDiscoverer(config);
             var conventionResult = new ConventionResult(conventionName);
 
@@ -61,7 +54,7 @@ namespace Fixie
                 {
                     orderCases(casesToExecute);
 
-                    var caseExecutions = Execute(testClass, casesToExecute);
+                    var caseExecutions = executionPlan.Execute(testClass, casesToExecute);
 
                     foreach (var caseExecution in caseExecutions)
                         classResult.Add(caseExecution.Exceptions.Any() ? Fail(caseExecution) : Pass(caseExecution));
@@ -93,8 +86,26 @@ namespace Fixie
             listener.CaseFailed(result);
             return CaseResult.Failed(result.Case.Name, result.Duration, result.ExceptionSummary);
         }
+    }
 
-        IReadOnlyList<CaseExecution> Execute(Type testClass, Case[] casesToExecute)
+    public class ExecutionPlan
+    {
+        readonly ConfigModel config;
+
+        readonly BehaviorChain<ClassExecution> classBehaviorChain;
+        readonly BehaviorChain<InstanceExecution> instanceBehaviorChain;
+        readonly BehaviorChain<CaseExecution> caseBehaviorChain;
+
+        public ExecutionPlan(ConfigModel config)
+        {
+            this.config = config;
+
+            classBehaviorChain = BuildClassBehaviorChain();
+            instanceBehaviorChain = BuildInstanceBehaviorChain();
+            caseBehaviorChain = BuildCaseBehaviorChain();
+        }
+
+        public IReadOnlyList<CaseExecution> Execute(Type testClass, Case[] casesToExecute)
         {
             var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
             var classExecution = new ClassExecution(testClass, caseExecutions);
@@ -106,7 +117,7 @@ namespace Fixie
 
         public void PerformClassLifecycle(Type testClass, IReadOnlyList<CaseExecution> caseExecutionsForThisInstance)
         {
-            var instance = constructTestClass(testClass);
+            var instance = config.TestClassFactory(testClass);
 
             var instanceExecution = new InstanceExecution(testClass, instance, caseExecutionsForThisInstance);
             instanceBehaviorChain.Execute(instanceExecution);
@@ -121,29 +132,29 @@ namespace Fixie
             caseBehaviorChain.Execute(caseExecution);
         }
 
-        static BehaviorChain<ClassExecution> BuildClassBehaviorChain(ExecutionModel executionModel, ConfigModel config)
+        BehaviorChain<ClassExecution> BuildClassBehaviorChain()
         {
             var chain = config.CustomClassBehaviors
                 .Select(customBehavior => (ClassBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
-            chain.Add(GetInnermostBehavior(executionModel, config));
+            chain.Add(GetInnermostBehavior());
 
             return new BehaviorChain<ClassExecution>(chain);
         }
 
-        static BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(ExecutionModel executionModel, ConfigModel config)
+        BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain()
         {
             var chain = config.CustomInstanceBehaviors
                 .Select(customBehavior => (InstanceBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
-            chain.Add(new ExecuteCases(executionModel));
+            chain.Add(new ExecuteCases(this));
 
             return new BehaviorChain<InstanceExecution>(chain);
         }
 
-        static BehaviorChain<CaseExecution> BuildCaseBehaviorChain(ConfigModel config)
+        BehaviorChain<CaseExecution> BuildCaseBehaviorChain()
         {
             var chain = config.CustomCaseBehaviors
                 .Select(customBehavior => (CaseBehavior)Activator.CreateInstance(customBehavior))
@@ -154,12 +165,12 @@ namespace Fixie
             return new BehaviorChain<CaseExecution>(chain);
         }
 
-        static ClassBehavior GetInnermostBehavior(ExecutionModel executionModel, ConfigModel config)
+        ClassBehavior GetInnermostBehavior()
         {
             if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
-                return new CreateInstancePerCase(executionModel);
+                return new CreateInstancePerCase(this);
 
-            return new CreateInstancePerClass(executionModel);
+            return new CreateInstancePerClass(this);
         }
     }
 }

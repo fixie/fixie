@@ -54,32 +54,9 @@ namespace Fixie
                 disposable.Dispose();
         }
 
-        public void ExecuteCase(object instance, CaseExecution caseExecution)
+        public void ExecuteCaseBehaviors(CaseExecution caseExecution)
         {
-            using (var console = new RedirectedConsole())
-            {
-                caseExecution.Instance = instance;
-
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-
-                try
-                {
-                    caseBehaviorChain.Execute(caseExecution);
-                }
-                catch (Exception exception)
-                {
-                    caseExecution.Fail(exception);
-                }
-
-                stopwatch.Stop();
-
-                caseExecution.Instance = null;
-                caseExecution.Duration = stopwatch.Elapsed;
-                caseExecution.Output = console.Output;
-            }
-
-            Console.Write(caseExecution.Output);
+            caseBehaviorChain.Execute(caseExecution);
         }
 
         public AssertionLibraryFilter AssertionLibraryFilter

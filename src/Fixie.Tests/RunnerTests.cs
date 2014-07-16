@@ -1,6 +1,6 @@
 using System;
 
-namespace Fixie.Tests.Conventions
+namespace Fixie.Tests
 {
     public class RunnerTests
     {
@@ -13,11 +13,11 @@ namespace Fixie.Tests.Conventions
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
-            listener.Entries.ShouldEqual("Fixie.Tests.Conventions.RunnerTests+PassTestClass.PassA passed.",
-                "Fixie.Tests.Conventions.RunnerTests+PassTestClass.PassB passed.",
-                "Fixie.Tests.Conventions.RunnerTests+PassFailTestClass.Fail failed: 'Fail' failed!",
-                "Fixie.Tests.Conventions.RunnerTests+PassFailTestClass.Pass passed.",
-                "Fixie.Tests.Conventions.RunnerTests+SkipTestClass.Skip skipped.");
+            listener.Entries.ShouldEqual("Fixie.Tests.RunnerTests+PassTestClass.PassA passed.",
+                "Fixie.Tests.RunnerTests+PassTestClass.PassB passed.",
+                "Fixie.Tests.RunnerTests+PassFailTestClass.Fail failed: 'Fail' failed!",
+                "Fixie.Tests.RunnerTests+PassFailTestClass.Pass passed.",
+                "Fixie.Tests.RunnerTests+SkipTestClass.Skip skipped.");
         }
 
         public void ShouldAllowRandomShufflingOfCaseExecutionOrder()
@@ -33,11 +33,11 @@ namespace Fixie.Tests.Conventions
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
-            listener.Entries.ShouldEqual("Fixie.Tests.Conventions.RunnerTests+PassTestClass.PassB passed.",
-                "Fixie.Tests.Conventions.RunnerTests+PassTestClass.PassA passed.",
-                "Fixie.Tests.Conventions.RunnerTests+PassFailTestClass.Fail failed: 'Fail' failed!",
-                "Fixie.Tests.Conventions.RunnerTests+PassFailTestClass.Pass passed.",
-                "Fixie.Tests.Conventions.RunnerTests+SkipTestClass.Skip skipped.");
+            listener.Entries.ShouldEqual("Fixie.Tests.RunnerTests+PassTestClass.PassB passed.",
+                "Fixie.Tests.RunnerTests+PassTestClass.PassA passed.",
+                "Fixie.Tests.RunnerTests+PassFailTestClass.Fail failed: 'Fail' failed!",
+                "Fixie.Tests.RunnerTests+PassFailTestClass.Pass passed.",
+                "Fixie.Tests.RunnerTests+SkipTestClass.Skip skipped.");
         }
 
         class SampleIrrelevantClass

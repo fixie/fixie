@@ -58,6 +58,7 @@
     <Compile Include="DSL\AssertionLibraryExpression.cs" />
     <Compile Include="ExecutionEnvironment.cs" />
     <Compile Include="ExecutionModel.cs" />
+    <Compile Include="ExecutionPlan.cs" />
     <Compile Include="GenericArgumentResolver.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="RedirectedConsole.cs" />

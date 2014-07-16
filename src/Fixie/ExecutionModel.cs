@@ -55,11 +55,7 @@ namespace Fixie
                 var casesToSkip = casesBySkipState[true];
                 var casesToExecute = casesBySkipState[false].ToArray();
                 foreach (var @case in casesToSkip)
-                {
-                    var skipResult = new SkipResult(@case, getSkipReason(@case));
-                    listener.CaseSkipped(skipResult);
-                    classResult.Add(CaseResult.Skipped(skipResult.Case.Name, skipResult.Reason));
-                }
+                    classResult.Add(Skip(@case));
 
                 if (casesToExecute.Any())
                 {
@@ -68,26 +64,34 @@ namespace Fixie
                     var caseExecutions = Execute(testClass, casesToExecute);
 
                     foreach (var caseExecution in caseExecutions)
-                    {
-                        if (caseExecution.Exceptions.Any())
-                        {
-                            var failResult = new FailResult(caseExecution, assertionLibraryFilter);
-                            listener.CaseFailed(failResult);
-                            classResult.Add(CaseResult.Failed(failResult.Case.Name, failResult.Duration, failResult.ExceptionSummary));
-                        }
-                        else
-                        {
-                            var passResult = new PassResult(caseExecution);
-                            listener.CasePassed(passResult);
-                            classResult.Add(CaseResult.Passed(passResult.Case.Name, passResult.Duration));
-                        }
-                    }
+                        classResult.Add(caseExecution.Exceptions.Any() ? Fail(caseExecution) : Pass(caseExecution));
                 }
 
                 conventionResult.Add(classResult);
             }
 
             return conventionResult;
+        }
+
+        CaseResult Skip(Case @case)
+        {
+            var result = new SkipResult(@case, getSkipReason(@case));
+            listener.CaseSkipped(result);
+            return CaseResult.Skipped(result.Case.Name, result.Reason);
+        }
+
+        CaseResult Pass(CaseExecution caseExecution)
+        {
+            var result = new PassResult(caseExecution);
+            listener.CasePassed(result);
+            return CaseResult.Passed(result.Case.Name, result.Duration);
+        }
+
+        CaseResult Fail(CaseExecution caseExecution)
+        {
+            var result = new FailResult(caseExecution, assertionLibraryFilter);
+            listener.CaseFailed(result);
+            return CaseResult.Failed(result.Case.Name, result.Duration, result.ExceptionSummary);
         }
 
         IReadOnlyList<CaseExecution> Execute(Type testClass, Case[] casesToExecute)

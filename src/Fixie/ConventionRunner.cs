@@ -10,6 +10,8 @@ namespace Fixie
     {
         readonly Listener listener;
         readonly ConfigModel config;
+        readonly ExecutionPlan executionPlan;
+        readonly CaseDiscoverer caseDiscoverer;
         readonly string conventionName;
 
         readonly AssertionLibraryFilter assertionLibraryFilter;
@@ -22,6 +24,8 @@ namespace Fixie
         {
             this.listener = listener;
             config = convention.Config;
+            executionPlan = new ExecutionPlan(config);
+            caseDiscoverer = new CaseDiscoverer(config);
             conventionName = convention.GetType().FullName;
             
             assertionLibraryFilter = new AssertionLibraryFilter(config.AssertionLibraryTypes);
@@ -33,35 +37,40 @@ namespace Fixie
 
         public ConventionResult Run(Type[] candidateTypes)
         {
-            var executionPlan = new ExecutionPlan(config);
-            var caseDiscoverer = new CaseDiscoverer(config);
             var conventionResult = new ConventionResult(conventionName);
 
             foreach (var testClass in caseDiscoverer.TestClasses(candidateTypes))
             {
-                var classResult = new ClassResult(testClass.FullName);
-
-                var cases = caseDiscoverer.TestCases(testClass);
-                var casesBySkipState = cases.ToLookup(skipCase);
-                var casesToSkip = casesBySkipState[true];
-                var casesToExecute = casesBySkipState[false].ToArray();
-                foreach (var @case in casesToSkip)
-                    classResult.Add(Skip(@case));
-
-                if (casesToExecute.Any())
-                {
-                    orderCases(casesToExecute);
-
-                    var caseExecutions = executionPlan.Execute(testClass, casesToExecute);
-
-                    foreach (var caseExecution in caseExecutions)
-                        classResult.Add(caseExecution.Exceptions.Any() ? Fail(caseExecution) : Pass(caseExecution));
-                }
+                var classResult = Run(testClass);
 
                 conventionResult.Add(classResult);
             }
 
             return conventionResult;
+        }
+
+        ClassResult Run(Type testClass)
+        {
+            var classResult = new ClassResult(testClass.FullName);
+
+            var cases = caseDiscoverer.TestCases(testClass);
+            var casesBySkipState = cases.ToLookup(skipCase);
+            var casesToSkip = casesBySkipState[true];
+            var casesToExecute = casesBySkipState[false].ToArray();
+            foreach (var @case in casesToSkip)
+                classResult.Add(Skip(@case));
+
+            if (casesToExecute.Any())
+            {
+                orderCases(casesToExecute);
+
+                var caseExecutions = executionPlan.Execute(testClass, casesToExecute);
+
+                foreach (var caseExecution in caseExecutions)
+                    classResult.Add(caseExecution.Exceptions.Any() ? Fail(caseExecution) : Pass(caseExecution));
+            }
+
+            return classResult;
         }
 
         CaseResult Skip(Case @case)

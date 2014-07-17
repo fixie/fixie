@@ -5,11 +5,11 @@ namespace Fixie.Behaviors
 {
     public class ExecuteCases : InstanceBehavior
     {
-        readonly BehaviorChain<CaseExecution> caseBehaviorChain;
+        readonly BehaviorChain<CaseExecution> caseBehaviors;
 
-        public ExecuteCases(BehaviorChain<CaseExecution> caseBehaviorChain)
+        public ExecuteCases(BehaviorChain<CaseExecution> caseBehaviors)
         {
-            this.caseBehaviorChain = caseBehaviorChain;
+            this.caseBehaviors = caseBehaviors;
         }
 
         public void Execute(InstanceExecution instanceExecution, Action next)
@@ -25,7 +25,7 @@ namespace Fixie.Behaviors
 
                     try
                     {
-                        caseBehaviorChain.Execute(caseExecution);
+                        caseBehaviors.Execute(caseExecution);
                     }
                     catch (Exception exception)
                     {

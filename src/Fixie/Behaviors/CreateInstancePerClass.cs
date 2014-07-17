@@ -6,12 +6,12 @@ namespace Fixie.Behaviors
     public class CreateInstancePerClass : ClassBehavior
     {
         readonly Func<Type, object> testClassFactory;
-        readonly BehaviorChain<InstanceExecution> instanceBehaviorChain;
+        readonly BehaviorChain<InstanceExecution> instanceBehaviors;
 
-        public CreateInstancePerClass(Func<Type, object> testClassFactory, BehaviorChain<InstanceExecution> instanceBehaviorChain)
+        public CreateInstancePerClass(Func<Type, object> testClassFactory, BehaviorChain<InstanceExecution> instanceBehaviors)
         {
             this.testClassFactory = testClassFactory;
-            this.instanceBehaviorChain = instanceBehaviorChain;
+            this.instanceBehaviors = instanceBehaviors;
         }
 
         public void Execute(ClassExecution classExecution, Action next)
@@ -31,7 +31,7 @@ namespace Fixie.Behaviors
             var instance = testClassFactory(testClass);
 
             var instanceExecution = new InstanceExecution(testClass, instance, caseExecutionsForThisInstance);
-            instanceBehaviorChain.Execute(instanceExecution);
+            instanceBehaviors.Execute(instanceExecution);
 
             var disposable = instance as IDisposable;
             if (disposable != null)

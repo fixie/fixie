@@ -37,9 +37,11 @@ namespace Fixie
 
         public ConventionResult Run(Type[] candidateTypes)
         {
+            var classDiscoverer = new ClassDiscoverer(config);
+
             var conventionResult = new ConventionResult(conventionName);
 
-            foreach (var testClass in caseDiscoverer.TestClasses(candidateTypes))
+            foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
             {
                 var classResult = Run(testClass);
 

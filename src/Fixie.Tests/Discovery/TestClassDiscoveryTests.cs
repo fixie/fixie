@@ -99,7 +99,7 @@ namespace Fixie.Tests.Discovery
 
         static IEnumerable<Type> DiscoveredTestClasses(Convention convention)
         {
-            return new CaseDiscoverer(convention.Config)
+            return new ClassDiscoverer(convention.Config)
                 .TestClasses(CandidateTypes);
         }
 

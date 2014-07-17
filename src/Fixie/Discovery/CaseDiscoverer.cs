@@ -6,17 +6,13 @@ using Fixie.Conventions;
 
 namespace Fixie.Discovery
 {
-    public class CaseDiscoverer
+    public class ClassDiscoverer
     {
         readonly Func<Type, bool>[] testClassConditions;
-        readonly Func<MethodInfo, bool>[] testMethodConditions;
-        readonly Func<MethodInfo, IEnumerable<object[]>> getCaseParameters;
 
-        public CaseDiscoverer(ConfigModel config)
+        public ClassDiscoverer(ConfigModel config)
         {
             testClassConditions = config.TestClassConditions.ToArray();
-            testMethodConditions = config.TestMethodConditions.ToArray();
-            getCaseParameters = config.GetCaseParameters;
         }
 
         public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
@@ -27,6 +23,18 @@ namespace Fixie.Discovery
         bool IsMatch(Type candidate)
         {
             return testClassConditions.All(condition => condition(candidate));
+        }
+    }
+
+    public class CaseDiscoverer
+    {
+        readonly Func<MethodInfo, bool>[] testMethodConditions;
+        readonly Func<MethodInfo, IEnumerable<object[]>> getCaseParameters;
+
+        public CaseDiscoverer(ConfigModel config)
+        {
+            testMethodConditions = config.TestMethodConditions.ToArray();
+            getCaseParameters = config.GetCaseParameters;
         }
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)

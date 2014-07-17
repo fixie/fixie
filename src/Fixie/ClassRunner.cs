@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Fixie.Conventions;
 using Fixie.Discovery;
@@ -44,13 +45,23 @@ namespace Fixie
             {
                 orderCases(casesToExecute);
 
-                var caseExecutions = executionPlan.Execute(testClass, casesToExecute);
+                var caseExecutions = Run(testClass, casesToExecute);
 
                 foreach (var caseExecution in caseExecutions)
                     classResult.Add(caseExecution.Exceptions.Any() ? Fail(caseExecution) : Pass(caseExecution));
             }
 
             return classResult;
+        }
+
+        IReadOnlyList<CaseExecution> Run(Type testClass, Case[] casesToExecute)
+        {
+            var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
+            var classExecution = new ClassExecution(testClass, caseExecutions);
+
+            executionPlan.ExecuteClassBehaviors(classExecution);
+
+            return caseExecutions;
         }
 
         CaseResult Skip(Case @case)

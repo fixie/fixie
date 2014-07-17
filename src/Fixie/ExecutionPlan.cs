@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Fixie.Behaviors;
 using Fixie.Conventions;
@@ -8,66 +7,44 @@ namespace Fixie
 {
     public class ExecutionPlan
     {
-        readonly ConfigModel config;
-
-        readonly BehaviorChain<ClassExecution> classBehaviorChain;
-        readonly BehaviorChain<InstanceExecution> instanceBehaviorChain;
-        readonly BehaviorChain<CaseExecution> caseBehaviorChain;
+        readonly BehaviorChain<ClassExecution> classBehaviors;
 
         public ExecutionPlan(ConfigModel config)
         {
-            this.config = config;
-
-            caseBehaviorChain = BuildCaseBehaviorChain();
-            instanceBehaviorChain = BuildInstanceBehaviorChain();
-            classBehaviorChain = BuildClassBehaviorChain();
+            classBehaviors =
+                BuildClassBehaviorChain(config,
+                    BuildInstanceBehaviorChain(config,
+                        BuildCaseBehaviorChain(config)));
         }
 
-        public IReadOnlyList<CaseExecution> Execute(Type testClass, Case[] casesToExecute)
+        public void ExecuteClassBehaviors(ClassExecution classExecution)
         {
-            var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
-            var classExecution = new ClassExecution(testClass, caseExecutions);
-
-            classBehaviorChain.Execute(classExecution);
-
-            return caseExecutions;
+            classBehaviors.Execute(classExecution);
         }
 
-        public void PerformClassLifecycle(Type testClass, IReadOnlyList<CaseExecution> caseExecutionsForThisInstance)
-        {
-            var instance = config.TestClassFactory(testClass);
-
-            var instanceExecution = new InstanceExecution(testClass, instance, caseExecutionsForThisInstance);
-            instanceBehaviorChain.Execute(instanceExecution);
-
-            var disposable = instance as IDisposable;
-            if (disposable != null)
-                disposable.Dispose();
-        }
-
-        BehaviorChain<ClassExecution> BuildClassBehaviorChain()
+        static BehaviorChain<ClassExecution> BuildClassBehaviorChain(ConfigModel config, BehaviorChain<InstanceExecution> instanceBehaviors)
         {
             var chain = config.CustomClassBehaviors
                 .Select(customBehavior => (ClassBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
-            chain.Add(GetInnermostBehavior());
+            chain.Add(GetInnermostBehavior(config, instanceBehaviors));
 
             return new BehaviorChain<ClassExecution>(chain);
         }
 
-        BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain()
+        static BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(ConfigModel config, BehaviorChain<CaseExecution> caseBehaviors)
         {
             var chain = config.CustomInstanceBehaviors
                 .Select(customBehavior => (InstanceBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
-            chain.Add(new ExecuteCases(caseBehaviorChain));
+            chain.Add(new ExecuteCases(caseBehaviors));
 
             return new BehaviorChain<InstanceExecution>(chain);
         }
 
-        BehaviorChain<CaseExecution> BuildCaseBehaviorChain()
+        static BehaviorChain<CaseExecution> BuildCaseBehaviorChain(ConfigModel config)
         {
             var chain = config.CustomCaseBehaviors
                 .Select(customBehavior => (CaseBehavior)Activator.CreateInstance(customBehavior))
@@ -78,12 +55,12 @@ namespace Fixie
             return new BehaviorChain<CaseExecution>(chain);
         }
 
-        ClassBehavior GetInnermostBehavior()
+        static ClassBehavior GetInnermostBehavior(ConfigModel config, BehaviorChain<InstanceExecution> instanceBehaviors)
         {
             if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
-                return new CreateInstancePerCase(this);
+                return new CreateInstancePerCase(config.TestClassFactory, instanceBehaviors);
 
-            return new CreateInstancePerClass(this);
+            return new CreateInstancePerClass(config.TestClassFactory, instanceBehaviors);
         }
     }
 }

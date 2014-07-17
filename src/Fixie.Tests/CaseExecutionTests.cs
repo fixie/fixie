@@ -38,7 +38,7 @@ namespace Fixie.Tests
             execution.Exceptions.ShouldBeEmpty();
             execution.Fail(exceptionA);
             execution.Fail(exceptionB);
-            execution.Pass();
+            execution.ClearExceptions();
             execution.Exceptions.ShouldBeEmpty();
         }
 

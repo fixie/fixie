@@ -51,19 +51,19 @@ namespace Fixie.Samples.NUnitStyle
 
             if (exception.GetType() != attribute.ExpectedException)
             {
-                caseExecution.Pass();
+                caseExecution.ClearExceptions();
 
                 throw new Exception("Expected exception of type " + attribute.ExpectedException + " but an exception of type " + exception.GetType() + " was thrown.", exception);
             }
 
             if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
             {
-                caseExecution.Pass();
+                caseExecution.ClearExceptions();
 
                 throw new Exception("Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.", exception);
             }
 
-            caseExecution.Pass();
+            caseExecution.ClearExceptions();
         }
     }
 

@@ -36,7 +36,7 @@ namespace Fixie
                 exceptions.Add(reason);
         }
 
-        public void Pass()
+        public void ClearExceptions()
         {
             exceptions.Clear();
         }

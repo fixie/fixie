@@ -6,28 +6,22 @@ using Fixie.Results;
 
 namespace Fixie
 {
-    public class ConventionRunner
+    public class ClassRunner
     {
         readonly Listener listener;
-        readonly ConfigModel config;
         readonly ExecutionPlan executionPlan;
         readonly CaseDiscoverer caseDiscoverer;
-        readonly string conventionName;
-
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
         readonly Func<Case, bool> skipCase;
         readonly Func<Case, string> getSkipReason;
         readonly Action<Case[]> orderCases;
-        
-        public ConventionRunner(Listener listener, Convention convention)
+
+        public ClassRunner(Listener listener, ConfigModel config)
         {
             this.listener = listener;
-            config = convention.Config;
             executionPlan = new ExecutionPlan(config);
             caseDiscoverer = new CaseDiscoverer(config);
-            conventionName = convention.GetType().FullName;
-            
             assertionLibraryFilter = new AssertionLibraryFilter(config.AssertionLibraryTypes);
 
             skipCase = config.SkipCase;
@@ -35,23 +29,7 @@ namespace Fixie
             orderCases = config.OrderCases;
         }
 
-        public ConventionResult Run(Type[] candidateTypes)
-        {
-            var classDiscoverer = new ClassDiscoverer(config);
-
-            var conventionResult = new ConventionResult(conventionName);
-
-            foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
-            {
-                var classResult = Run(testClass);
-
-                conventionResult.Add(classResult);
-            }
-
-            return conventionResult;
-        }
-
-        ClassResult Run(Type testClass)
+        public ClassResult Run(Type testClass)
         {
             var classResult = new ClassResult(testClass.FullName);
 

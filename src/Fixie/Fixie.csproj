@@ -58,7 +58,7 @@
     <Compile Include="Discovery\CaseDiscoverer.cs" />
     <Compile Include="DSL\AssertionLibraryExpression.cs" />
     <Compile Include="ExecutionEnvironment.cs" />
-    <Compile Include="ConventionRunner.cs" />
+    <Compile Include="ClassRunner.cs" />
     <Compile Include="ExecutionPlan.cs" />
     <Compile Include="GenericArgumentResolver.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />

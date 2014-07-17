@@ -87,9 +87,7 @@ namespace Fixie
 
             foreach (var convention in conventions)
             {
-                var conventionRunner = new ConventionRunner(listener, convention);
-
-                var conventionResult = conventionRunner.Run(candidateTypes);
+                var conventionResult = Run(convention, candidateTypes);
 
                 assemblyResult.Add(conventionResult);
             }
@@ -97,6 +95,22 @@ namespace Fixie
             listener.AssemblyCompleted(runContext.Assembly, assemblyResult);
 
             return assemblyResult;
+        }
+
+        ConventionResult Run(Convention convention, Type[] candidateTypes)
+        {
+            var classDiscoverer = new ClassDiscoverer(convention.Config);
+            var conventionResult = new ConventionResult(convention.GetType().FullName);
+            var classRunner = new ClassRunner(listener, convention.Config);
+
+            foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
+            {
+                var classResult = classRunner.Run(testClass);
+
+                conventionResult.Add(classResult);
+            }
+
+            return conventionResult;
         }
     }
 }

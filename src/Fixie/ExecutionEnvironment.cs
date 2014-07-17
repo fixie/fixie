@@ -10,9 +10,10 @@ namespace Fixie
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
 
-        public ExecutionEnvironment(string assemblyFullPath)
+        public ExecutionEnvironment(string assemblyFullPath, string applicationBaseDirectory = null)
         {
-            appDomain = CreateAppDomain(assemblyFullPath);
+            applicationBaseDirectory = applicationBaseDirectory ?? Path.GetDirectoryName(assemblyFullPath);
+            appDomain = CreateAppDomain(assemblyFullPath, applicationBaseDirectory);
 
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
@@ -30,11 +31,11 @@ namespace Fixie
             Directory.SetCurrentDirectory(previousWorkingDirectory);
         }
 
-        static AppDomain CreateAppDomain(string assemblyFullPath)
+        static AppDomain CreateAppDomain(string assemblyFullPath, string applicationBaseDirectory)
         {
             var setup = new AppDomainSetup
             {
-                ApplicationBase = Path.GetDirectoryName(assemblyFullPath),
+                ApplicationBase = applicationBaseDirectory,
                 ApplicationName = Guid.NewGuid().ToString(),
                 ConfigurationFile = GetOptionalConfigFullPath(assemblyFullPath)
             };

@@ -18,9 +18,9 @@ namespace Fixie
         {
             this.config = config;
 
-            classBehaviorChain = BuildClassBehaviorChain();
-            instanceBehaviorChain = BuildInstanceBehaviorChain();
             caseBehaviorChain = BuildCaseBehaviorChain();
+            instanceBehaviorChain = BuildInstanceBehaviorChain();
+            classBehaviorChain = BuildClassBehaviorChain();
         }
 
         public IReadOnlyList<CaseExecution> Execute(Type testClass, Case[] casesToExecute)
@@ -45,11 +45,6 @@ namespace Fixie
                 disposable.Dispose();
         }
 
-        public void ExecuteCaseBehaviors(CaseExecution caseExecution)
-        {
-            caseBehaviorChain.Execute(caseExecution);
-        }
-
         BehaviorChain<ClassExecution> BuildClassBehaviorChain()
         {
             var chain = config.CustomClassBehaviors
@@ -67,7 +62,7 @@ namespace Fixie
                 .Select(customBehavior => (InstanceBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
-            chain.Add(new ExecuteCases(this));
+            chain.Add(new ExecuteCases(caseBehaviorChain));
 
             return new BehaviorChain<InstanceExecution>(chain);
         }

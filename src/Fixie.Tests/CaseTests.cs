@@ -33,13 +33,13 @@ namespace Fixie.Tests
 
         public void ShouldInferAppropriateClassGivenCaseMethod()
         {
-            var methodDeclaredInChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinChildClass"));
+            var methodDeclaredInChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinChildClass"), new Trait[] { });
             methodDeclaredInChildClass.Class.ShouldEqual(typeof(SampleChildTestClass));
 
-            var methodDeclaredInParentClass = new Case(typeof(SampleParentTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"));
+            var methodDeclaredInParentClass = new Case(typeof(SampleParentTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"), new Trait[] { });
             methodDeclaredInParentClass.Class.ShouldEqual(typeof(SampleParentTestClass));
 
-            var parentMethodInheritedByChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"));
+            var parentMethodInheritedByChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"), new Trait[] { });
             parentMethodInheritedByChildClass.Class.ShouldEqual(typeof(SampleChildTestClass));
         }
 
@@ -86,7 +86,7 @@ namespace Fixie.Tests
 
         static Case Case(string methodName, params object[] parameters)
         {
-            return new Case(typeof(CaseTests).GetInstanceMethod(methodName), parameters);
+            return new Case(typeof(CaseTests).GetInstanceMethod(methodName), new Trait[] { }, parameters);
         }
 
         void Returns()

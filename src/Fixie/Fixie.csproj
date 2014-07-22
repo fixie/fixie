@@ -40,7 +40,9 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
+    <Compile Include="Conventions\TraitSourceExpression.cs" />
     <Compile Include="Discovery\ParameterDiscoverer.cs" />
+    <Compile Include="Discovery\TraitDiscoverer.cs" />
     <Compile Include="Execution\Behavior.cs" />
     <Compile Include="Execution\BehaviorChain.cs" />
     <Compile Include="Execution\BehaviorContext.cs" />
@@ -101,6 +103,8 @@
     <Compile Include="Results\AssemblyResult.cs" />
     <Compile Include="Execution\Runner.cs" />
     <Compile Include="Execution\SkipResult.cs" />
+    <Compile Include="Trait.cs" />
+    <Compile Include="TraitSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixie.nuspec" />

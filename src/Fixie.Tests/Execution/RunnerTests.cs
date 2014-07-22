@@ -1,8 +1,8 @@
+using Fixie.Execution;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fixie.Execution;
 
 namespace Fixie.Tests.Execution
 {
@@ -60,9 +60,13 @@ namespace Fixie.Tests.Execution
             convention.Parameters
                 .Add<BuggyParameterSource>();
 
+            convention.Traits
+                      .Add<BuggyTraitSource>();
+
             new Runner(listener).RunTypes(GetType().Assembly, convention,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
-                typeof(PassFailTestClass), typeof(SkipTestClass), typeof(BuggyParameterGenerationTestClass));
+                typeof(PassFailTestClass), typeof(SkipTestClass), typeof(BuggyParameterGenerationTestClass),
+                typeof(BuggyTraitGenerationTestClass));
 
             //NOTE: Since the ordering of cases is deliberately failing, and since member order via reflection
             //      is undefined, we explicitly sort the listener Entries here to avoid making a brittle assertion.
@@ -71,12 +75,20 @@ namespace Fixie.Tests.Execution
             strings.ShouldEqual(
 
                 "Fixie.Tests.Execution.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedA failed: Exception thrown while attempting to yield input parameters for method: ParameterizedA" + Environment.NewLine +
-	            "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
-	            "        Inner Exception: SortCases lambda expression threw!",
+                "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
+                "        Inner Exception: SortCases lambda expression threw!",
 
                 "Fixie.Tests.Execution.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedB failed: Exception thrown while attempting to yield input parameters for method: ParameterizedB" + Environment.NewLine +
-	            "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
-	            "        Inner Exception: SortCases lambda expression threw!",
+                "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
+                "        Inner Exception: SortCases lambda expression threw!",
+
+                "Fixie.Tests.Execution.RunnerTests+BuggyTraitGenerationTestClass.TraitsA failed: Exception thrown while attempting to yield traits for method: TraitsA" + Environment.NewLine +
+                "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
+                "        Inner Exception: SortCases lambda expression threw!",
+
+                "Fixie.Tests.Execution.RunnerTests+BuggyTraitGenerationTestClass.TraitsB failed: Exception thrown while attempting to yield traits for method: TraitsB" + Environment.NewLine +
+                "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
+                "        Inner Exception: SortCases lambda expression threw!",
 
                 "Fixie.Tests.Execution.RunnerTests+PassFailTestClass.Fail failed: Failed to compare two elements in the array." + Environment.NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",
@@ -133,6 +145,26 @@ namespace Fixie.Tests.Execution
                     yield break;
 
                 throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
+            }
+        }
+
+        class BuggyTraitGenerationTestClass
+        {
+            [Trait("", "")]
+            public void TraitsA() { }
+
+            [Trait("", "")]
+            public void TraitsB() { }
+        }
+
+        class BuggyTraitSource : TraitSource
+        {
+            public IEnumerable<Trait> GetTraits(MethodInfo method)
+            {
+                if (!method.GetCustomAttributes<TraitAttribute>().Any())
+                    yield break;
+
+                throw new Exception("Exception thrown while attempting to yield traits for method: " + method.Name);
             }
         }
     }

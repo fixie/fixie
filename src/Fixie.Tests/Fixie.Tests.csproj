@@ -80,6 +80,8 @@
     <Compile Include="Cases\ParameterizedCaseTests.cs" />
     <Compile Include="Listeners\TeamCityListenerTests.cs" />
     <Compile Include="Cases\SkippedCaseTests.cs" />
+    <Compile Include="Discovery\TraitDiscoveryTests.cs" />
+    <Compile Include="TraitAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie\Fixie.csproj">

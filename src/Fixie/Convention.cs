@@ -7,9 +7,9 @@ namespace Fixie
         public Convention()
         {
             Config = new Configuration();
-
             Classes = new ClassExpression(Config);
-            Methods = new MethodExpression(Config);;
+            Methods = new MethodExpression(Config);
+            Traits = new TraitSourceExpression(Config);
             Parameters = new ParameterSourceExpression(Config);
             CaseExecution = new CaseBehaviorExpression(Config);
             FixtureExecution = new FixtureBehaviorExpression(Config);
@@ -21,6 +21,7 @@ namespace Fixie
 
         public ClassExpression Classes { get; private set; }
         public MethodExpression Methods { get; private set; }
+        public TraitSourceExpression Traits { get; private set; }
         public ParameterSourceExpression Parameters { get; private set; }
 
         public CaseBehaviorExpression CaseExecution { get; private set; }

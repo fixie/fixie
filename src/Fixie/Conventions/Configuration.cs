@@ -8,6 +8,7 @@ namespace Fixie.Conventions
     {
         readonly List<Func<Type, bool>> testClassConditions;
         readonly List<Func<MethodInfo, bool>> testMethodConditions;
+        readonly List<Type> traitSourceTypes;
         readonly List<Type> parameterSourceTypes;
         readonly List<Type> customClassBehaviors;
         readonly List<Type> customFixtureBehaviors;
@@ -34,6 +35,7 @@ namespace Fixie.Conventions
                 ExcludeDispose
             };
 
+            traitSourceTypes = new List<Type>();
             parameterSourceTypes = new List<Type>();
             customClassBehaviors = new List<Type>();
             customFixtureBehaviors = new List<Type>();
@@ -89,6 +91,11 @@ namespace Fixie.Conventions
             testMethodConditions.Add(testMethodCondition);
         }
 
+        public void AddTraitSource<TTraitSource>() where TTraitSource : TraitSource
+        {
+            traitSourceTypes.Add(typeof(TTraitSource));
+        }
+
         public void AddParameterSource<TParameterSource>() where TParameterSource : ParameterSource
         {
             parameterSourceTypes.Add(typeof(TParameterSource));
@@ -116,6 +123,7 @@ namespace Fixie.Conventions
 
         public IReadOnlyList<Func<Type, bool>> TestClassConditions { get { return testClassConditions; } }
         public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions { get { return testMethodConditions; } }
+        public IReadOnlyList<Type> TraitSourceTypes { get { return traitSourceTypes; } }
         public IReadOnlyList<Type> ParameterSourceTypes { get { return parameterSourceTypes; } }
         public IReadOnlyList<Type> CustomClassBehaviors { get { return customClassBehaviors; } }
         public IReadOnlyList<Type> CustomFixtureBehaviors { get { return customFixtureBehaviors; } }

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Fixie.Conventions;
+using Fixie.Discovery;
+using Fixie.Results;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fixie.Conventions;
-using Fixie.Discovery;
-using Fixie.Results;
 
 namespace Fixie.Execution
 {
@@ -14,6 +14,7 @@ namespace Fixie.Execution
         readonly ExecutionPlan executionPlan;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
+        readonly TraitDiscoverer traitDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
         readonly Func<Case, bool> skipCase;
@@ -27,6 +28,7 @@ namespace Fixie.Execution
             methodDiscoverer = new MethodDiscoverer(config);
             parameterDiscoverer = new ParameterDiscoverer(config);
             assertionLibraryFilter = new AssertionLibraryFilter(config);
+            traitDiscoverer = new TraitDiscoverer(config);
 
             skipCase = config.SkipCase;
             getSkipReason = config.GetSkipReason;
@@ -38,28 +40,40 @@ namespace Fixie.Execution
             var methods = methodDiscoverer.TestMethods(testClass);
 
             var cases = new List<Case>();
+            var traitDiscoveryFailures = new List<Case>();
             var parameterGenerationFailures = new List<Case>();
 
             foreach (var method in methods)
             {
                 try
                 {
-                    bool methodHasParameterizedCase = false;
+                    var traits = Traits(method).ToArray();
 
-                    foreach (var parameters in Parameters(method))
+                    try
                     {
-                        methodHasParameterizedCase = true;
-                        cases.Add(new Case(method, parameters));
-                    }
+                        bool methodHasParameterizedCase = false;
 
-                    if (!methodHasParameterizedCase)
-                        cases.Add(new Case(method));
+                        foreach (var parameters in Parameters(method))
+                        {
+                            methodHasParameterizedCase = true;
+                            cases.Add(new Case(method, traits, parameters));
+                        }
+
+                        if (!methodHasParameterizedCase)
+                            cases.Add(new Case(method, traits));
+                    }
+                    catch (Exception parameterGenerationException)
+                    {
+                        var @case = new Case(method, traits);
+                        @case.Fail(parameterGenerationException);
+                        parameterGenerationFailures.Add(@case);
+                    }
                 }
-                catch (Exception parameterGenerationException)
+                catch (Exception traitDiscoveryException)
                 {
-                    var @case = new Case(method);
-                    @case.Fail(parameterGenerationException);
-                    parameterGenerationFailures.Add(@case);
+                    var @case = new Case(method, new Trait[] { });
+                    @case.Fail(traitDiscoveryException);
+                    traitDiscoveryFailures.Add(@case);
                 }
             }
 
@@ -86,14 +100,17 @@ namespace Fixie.Execution
                     classResult.Add(@case.Exceptions.Any() ? Fail(@case) : Pass(@case));
             }
 
-            if (parameterGenerationFailures.Any())
+            foreach (var failures in new[] { traitDiscoveryFailures, parameterGenerationFailures })
             {
-                var casesToFailWithoutRunning = parameterGenerationFailures.ToArray();
+                if (failures.Any())
+                {
+                    var casesToFailWithoutRunning = failures.ToArray();
 
-                TryOrderCases(casesToFailWithoutRunning);
+                    TryOrderCases(casesToFailWithoutRunning);
 
-                foreach (var caseToFailWithoutRunning in casesToFailWithoutRunning)
-                    classResult.Add(Fail(caseToFailWithoutRunning));
+                    foreach (var caseToFailWithoutRunning in casesToFailWithoutRunning)
+                        classResult.Add(Fail(caseToFailWithoutRunning));
+                }
             }
 
             return classResult;
@@ -144,6 +161,11 @@ namespace Fixie.Execution
             return true;
         }
 
+        IEnumerable<Trait> Traits(MethodInfo method)
+        {
+            return traitDiscoverer.GetTraits(method);
+        }
+
         IEnumerable<object[]> Parameters(MethodInfo method)
         {
             return parameterDiscoverer.GetParameters(method);
@@ -158,21 +180,21 @@ namespace Fixie.Execution
         {
             var result = new SkipResult(@case, GetSkipReason(@case));
             listener.CaseSkipped(result);
-            return CaseResult.Skipped(result.Name, result.Reason);
+            return CaseResult.Skipped(result.Name, result.Traits, result.Reason);
         }
 
         CaseResult Pass(Case @case)
         {
             var result = new PassResult(@case);
             listener.CasePassed(result);
-            return CaseResult.Passed(result.Name, result.Duration);
+            return CaseResult.Passed(result.Name, result.Traits, result.Duration);
         }
 
         CaseResult Fail(Case @case)
         {
             var result = new FailResult(@case, assertionLibraryFilter);
             listener.CaseFailed(result);
-            return CaseResult.Failed(result.Name, result.Duration, result.Exceptions);
+            return CaseResult.Failed(result.Name, result.Traits, result.Duration, result.Exceptions);
         }
     }
 }

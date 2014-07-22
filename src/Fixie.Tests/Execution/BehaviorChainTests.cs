@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Fixie.Behaviors;
+using Fixie.Execution;
 using Should;
 
-namespace Fixie.Tests.Behaviors
+namespace Fixie.Tests.Execution
 {
     public class BehaviorChainTests
     {

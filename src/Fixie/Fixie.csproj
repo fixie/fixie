@@ -39,11 +39,11 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Behaviors\Behavior.cs" />
-    <Compile Include="Behaviors\BehaviorChain.cs" />
-    <Compile Include="Behaviors\BehaviorContext.cs" />
-    <Compile Include="Behaviors\CreateInstancePerClass.cs" />
-    <Compile Include="Behaviors\ExecuteCases.cs" />
+    <Compile Include="Execution\Behavior.cs" />
+    <Compile Include="Execution\BehaviorChain.cs" />
+    <Compile Include="Execution\BehaviorContext.cs" />
+    <Compile Include="Execution\Behaviors\CreateInstancePerClass.cs" />
+    <Compile Include="Execution\Behaviors\ExecuteCases.cs" />
     <Compile Include="InstanceBehavior.cs" />
     <Compile Include="CaseExecution.cs" />
     <Compile Include="CommandLineOption.cs" />
@@ -76,9 +76,9 @@
     <Compile Include="ClassExecution.cs" />
     <Compile Include="InstanceExecution.cs" />
     <Compile Include="Foreground.cs" />
-    <Compile Include="Behaviors\InvokeMethod.cs" />
+    <Compile Include="Execution\Behaviors\InvokeMethod.cs" />
     <Compile Include="CaseBehavior.cs" />
-    <Compile Include="Behaviors\CreateInstancePerCase.cs" />
+    <Compile Include="Execution\Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Execution\Listener.cs" />
     <Compile Include="Conventions\TestMethodExpression.cs" />
     <Compile Include="Discovery\ObjectExtensions.cs" />

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fixie.Behaviors
+namespace Fixie.Execution
 {
     public interface Behavior<in TContext> where TContext : BehaviorContext
     {

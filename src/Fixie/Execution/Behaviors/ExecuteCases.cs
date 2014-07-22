@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Fixie.Behaviors
+namespace Fixie.Execution.Behaviors
 {
     public class ExecuteCases : InstanceBehavior
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Fixie.Behaviors;
+using Fixie.Execution;
 
 namespace Fixie
 {

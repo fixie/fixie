@@ -53,7 +53,7 @@
     <Compile Include="Conventions\AssertionLibraryFilter.cs" />
     <Compile Include="Conventions\ConfigModel.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />
-    <Compile Include="Conventions\TestAssembly.cs" />
+    <Compile Include="TestAssembly.cs" />
     <Compile Include="DSL\TestClassExpression.cs" />
     <Compile Include="Discovery\CaseDiscoverer.cs" />
     <Compile Include="DSL\AssertionLibraryExpression.cs" />
@@ -68,7 +68,7 @@
     <Compile Include="CommandLineParser.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />
     <Compile Include="ConsoleRunner.cs" />
-    <Compile Include="Conventions\Convention.cs" />
+    <Compile Include="Convention.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
     <Compile Include="DSL\InstanceBehaviorExpression.cs" />
     <Compile Include="DSL\CaseBehaviorExpression.cs" />

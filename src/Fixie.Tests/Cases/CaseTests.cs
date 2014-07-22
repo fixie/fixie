@@ -1,6 +1,4 @@
-﻿using Fixie.Conventions;
-
-namespace Fixie.Tests.Cases
+﻿namespace Fixie.Tests.Cases
 {
     public abstract class CaseTests
     {

@@ -1,6 +1,4 @@
-﻿using Fixie.Conventions;
-
-namespace Fixie.Samples.Explicit
+﻿namespace Fixie.Samples.Explicit
 {
     public class CustomConvention : Convention
     {

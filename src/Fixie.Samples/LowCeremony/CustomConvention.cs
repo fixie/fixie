@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using Fixie.Behaviors;
-using Fixie.Conventions;
 
 namespace Fixie.Samples.LowCeremony
 {

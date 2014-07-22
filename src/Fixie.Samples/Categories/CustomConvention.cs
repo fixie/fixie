@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using Fixie.Conventions;
 
 namespace Fixie.Samples.Categories
 {

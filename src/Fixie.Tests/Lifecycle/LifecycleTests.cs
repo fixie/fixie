@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Fixie.Behaviors;
-using Fixie.Conventions;
 using Should;
 
 namespace Fixie.Tests.Lifecycle

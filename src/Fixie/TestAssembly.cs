@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Fixie.Conventions
+namespace Fixie
 {
     public class TestAssembly
     {

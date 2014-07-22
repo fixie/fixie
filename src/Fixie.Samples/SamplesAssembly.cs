@@ -1,6 +1,4 @@
-﻿using Fixie.Conventions;
-
-namespace Fixie.Samples
+﻿namespace Fixie.Samples
 {
     public class SamplesAssembly : TestAssembly
     {

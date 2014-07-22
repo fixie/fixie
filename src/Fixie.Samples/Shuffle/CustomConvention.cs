@@ -1,5 +1,4 @@
-﻿using Fixie.Conventions;
-using System;
+﻿using System;
 
 namespace Fixie.Samples.Shuffle
 {

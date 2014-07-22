@@ -1,5 +1,4 @@
 ﻿using System;
-using Fixie.Conventions;
 
 namespace Fixie.Tests
 {

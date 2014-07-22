@@ -2,9 +2,9 @@
 {
     public class InstanceBehaviorExpression
     {
-        readonly ConfigModel config;
+        readonly Configuration config;
 
-        public InstanceBehaviorExpression(ConfigModel config)
+        public InstanceBehaviorExpression(Configuration config)
         {
             this.config = config;
         }

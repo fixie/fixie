@@ -4,9 +4,9 @@ namespace Fixie.Conventions
 {
     public class AssertionLibraryExpression
     {
-        readonly ConfigModel config;
+        readonly Configuration config;
 
-        public AssertionLibraryExpression(ConfigModel config)
+        public AssertionLibraryExpression(Configuration config)
         {
             this.config = config;
         }

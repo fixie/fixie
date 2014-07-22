@@ -5,9 +5,9 @@ namespace Fixie.Conventions
 {
     public class TestMethodExpression
     {
-        readonly ConfigModel config;
+        readonly Configuration config;
 
-        public TestMethodExpression(ConfigModel config)
+        public TestMethodExpression(Configuration config)
         {
             this.config = config;
         }

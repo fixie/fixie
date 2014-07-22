@@ -9,7 +9,7 @@ namespace Fixie
     {
         public Convention()
         {
-            Config = new ConfigModel();
+            Config = new Configuration();
 
             Classes = new TestClassExpression(Config);
             Methods = new TestMethodExpression(Config);;
@@ -19,7 +19,7 @@ namespace Fixie
             HideExceptionDetails = new AssertionLibraryExpression(Config);
         }
 
-        public ConfigModel Config { get; private set; }
+        public Configuration Config { get; private set; }
 
         public TestClassExpression Classes { get; private set; }
         public TestMethodExpression Methods { get; private set; }

@@ -4,9 +4,9 @@ namespace Fixie.Conventions
 {
     public class ClassBehaviorExpression
     {
-        readonly ConfigModel config;
+        readonly Configuration config;
 
-        public ClassBehaviorExpression(ConfigModel config)
+        public ClassBehaviorExpression(Configuration config)
         {
             this.config = config;
         }

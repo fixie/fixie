@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Fixie.Conventions
 {
-    public class ConfigModel
+    public class Configuration
     {
         readonly List<Func<Type, bool>> testClassConditions;
         readonly List<Func<MethodInfo, bool>> testMethodConditions;
@@ -14,7 +14,7 @@ namespace Fixie.Conventions
         readonly List<Type> customCaseBehaviors;
         readonly List<Type> assertionLibraryTypes;
 
-        public ConfigModel()
+        public Configuration()
         {
             OrderCases = executions => { };
             ConstructionFrequency = ConstructionFrequency.PerCase;

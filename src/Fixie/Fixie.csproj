@@ -51,7 +51,7 @@
     <Compile Include="Discovery\ClassDiscoverer.cs" />
     <Compile Include="Discovery\ConventionDiscoverer.cs" />
     <Compile Include="Execution\AssertionLibraryFilter.cs" />
-    <Compile Include="Conventions\ConfigModel.cs" />
+    <Compile Include="Conventions\Configuration.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />
     <Compile Include="TestAssembly.cs" />
     <Compile Include="Conventions\TestClassExpression.cs" />
@@ -102,9 +102,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixie.nuspec" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DSL\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

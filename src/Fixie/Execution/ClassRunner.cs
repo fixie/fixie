@@ -18,7 +18,7 @@ namespace Fixie.Execution
         readonly Func<Case, string> getSkipReason;
         readonly Action<Case[]> orderCases;
 
-        public ClassRunner(Listener listener, ConfigModel config)
+        public ClassRunner(Listener listener, Configuration config)
         {
             this.listener = listener;
             executionPlan = new ExecutionPlan(config);

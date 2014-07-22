@@ -9,7 +9,7 @@ namespace Fixie.Execution
     {
         readonly BehaviorChain<ClassExecution> classBehaviors;
 
-        public ExecutionPlan(ConfigModel config)
+        public ExecutionPlan(Configuration config)
         {
             classBehaviors =
                 BuildClassBehaviorChain(config,
@@ -22,7 +22,7 @@ namespace Fixie.Execution
             classBehaviors.Execute(classExecution);
         }
 
-        static BehaviorChain<ClassExecution> BuildClassBehaviorChain(ConfigModel config, BehaviorChain<InstanceExecution> instanceBehaviors)
+        static BehaviorChain<ClassExecution> BuildClassBehaviorChain(Configuration config, BehaviorChain<InstanceExecution> instanceBehaviors)
         {
             var chain = config.CustomClassBehaviors
                 .Select(customBehavior => (ClassBehavior)Activator.CreateInstance(customBehavior))
@@ -33,7 +33,7 @@ namespace Fixie.Execution
             return new BehaviorChain<ClassExecution>(chain);
         }
 
-        static BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(ConfigModel config, BehaviorChain<CaseExecution> caseBehaviors)
+        static BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(Configuration config, BehaviorChain<CaseExecution> caseBehaviors)
         {
             var chain = config.CustomInstanceBehaviors
                 .Select(customBehavior => (InstanceBehavior)Activator.CreateInstance(customBehavior))
@@ -44,7 +44,7 @@ namespace Fixie.Execution
             return new BehaviorChain<InstanceExecution>(chain);
         }
 
-        static BehaviorChain<CaseExecution> BuildCaseBehaviorChain(ConfigModel config)
+        static BehaviorChain<CaseExecution> BuildCaseBehaviorChain(Configuration config)
         {
             var chain = config.CustomCaseBehaviors
                 .Select(customBehavior => (CaseBehavior)Activator.CreateInstance(customBehavior))
@@ -55,7 +55,7 @@ namespace Fixie.Execution
             return new BehaviorChain<CaseExecution>(chain);
         }
 
-        static ClassBehavior GetInnermostBehavior(ConfigModel config, BehaviorChain<InstanceExecution> instanceBehaviors)
+        static ClassBehavior GetInnermostBehavior(Configuration config, BehaviorChain<InstanceExecution> instanceBehaviors)
         {
             if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
                 return new CreateInstancePerCase(config.TestClassFactory, instanceBehaviors);

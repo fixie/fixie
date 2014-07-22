@@ -9,7 +9,7 @@ namespace Fixie.Discovery
     {
         readonly Func<Type, bool>[] testClassConditions;
 
-        public ClassDiscoverer(ConfigModel config)
+        public ClassDiscoverer(Configuration config)
         {
             testClassConditions = config.TestClassConditions.ToArray();
         }

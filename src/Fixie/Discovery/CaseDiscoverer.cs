@@ -11,7 +11,7 @@ namespace Fixie.Discovery
         readonly Func<MethodInfo, bool>[] testMethodConditions;
         readonly Func<MethodInfo, IEnumerable<object[]>> getCaseParameters;
 
-        public CaseDiscoverer(ConfigModel config)
+        public CaseDiscoverer(Configuration config)
         {
             testMethodConditions = config.TestMethodConditions.ToArray();
             getCaseParameters = config.GetCaseParameters;

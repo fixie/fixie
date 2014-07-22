@@ -37,7 +37,7 @@ namespace Fixie.Conventions
 
         public ClassBehaviorExpression ShuffleCases(Random random)
         {
-            config.OrderCases = caseExecutions => caseExecutions.Shuffle(random);
+            config.OrderCases = caseExecutions => Shuffle(caseExecutions, random);
             return this;
         }
 
@@ -50,6 +50,20 @@ namespace Fixie.Conventions
         {
             config.OrderCases = cases => Array.Sort(cases, comparison);
             return this;
+        }
+
+        //Fisher-Yates Shuffle
+        //  C# implementation from http://stackoverflow.com/a/110570
+        static void Shuffle<T>(T[] array, Random random)
+        {
+            int n = array.Length;
+            while (n > 1)
+            {
+                int k = random.Next(n--);
+                T temp = array[n];
+                array[n] = array[k];
+                array[k] = temp;
+            }
         }
     }
 }

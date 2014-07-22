@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Fixie.Discovery;
 
-namespace Fixie.Tests
+namespace Fixie.Tests.Discovery
 {
     public class GenericArgumentResolverTests
     {

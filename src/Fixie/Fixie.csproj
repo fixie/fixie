@@ -60,7 +60,7 @@
     <Compile Include="Execution\ExecutionEnvironment.cs" />
     <Compile Include="Execution\ClassRunner.cs" />
     <Compile Include="Execution\ExecutionPlan.cs" />
-    <Compile Include="GenericArgumentResolver.cs" />
+    <Compile Include="Discovery\GenericArgumentResolver.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="RedirectedConsole.cs" />
     <Compile Include="ClassBehavior.cs" />

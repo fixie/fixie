@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Fixie
+namespace Fixie.Discovery
 {
     public static class ObjectExtensions
     {

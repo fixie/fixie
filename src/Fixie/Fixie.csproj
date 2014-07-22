@@ -82,7 +82,7 @@
     <Compile Include="Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Execution\Listener.cs" />
     <Compile Include="Conventions\TestMethodExpression.cs" />
-    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="Discovery\ObjectExtensions.cs" />
     <Compile Include="Execution\PassResult.cs" />
     <Compile Include="PreservedException.cs" />
     <Compile Include="Reports\XUnitXmlReport.cs" />

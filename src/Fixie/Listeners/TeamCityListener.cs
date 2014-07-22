@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Fixie.Execution;
 using Fixie.Results;
 
 namespace Fixie.Listeners

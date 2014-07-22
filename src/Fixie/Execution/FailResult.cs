@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Fixie.Execution;
 using Fixie.Results;
 
-namespace Fixie
+namespace Fixie.Execution
 {
     public class FailResult
     {

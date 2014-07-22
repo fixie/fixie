@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Fixie.Results;
 
-namespace Fixie
+namespace Fixie.Execution
 {
     public interface Listener
     {

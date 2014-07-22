@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fixie
+namespace Fixie.Execution
 {
     public class PassResult
     {

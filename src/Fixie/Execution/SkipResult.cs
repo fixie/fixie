@@ -1,4 +1,4 @@
-﻿namespace Fixie
+﻿namespace Fixie.Execution
 {
     public class SkipResult
     {

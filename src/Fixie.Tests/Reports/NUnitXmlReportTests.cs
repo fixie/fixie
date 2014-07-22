@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using Fixie.Execution;
 using Fixie.Reports;
 using Fixie.Results;
 using Should;

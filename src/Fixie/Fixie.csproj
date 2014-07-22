@@ -58,7 +58,7 @@
     <Compile Include="Discovery\CaseDiscoverer.cs" />
     <Compile Include="DSL\AssertionLibraryExpression.cs" />
     <Compile Include="ExecutionEnvironment.cs" />
-    <Compile Include="ClassRunner.cs" />
+    <Compile Include="Execution\ClassRunner.cs" />
     <Compile Include="ExecutionPlan.cs" />
     <Compile Include="GenericArgumentResolver.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />
@@ -97,12 +97,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Results\AssemblyResult.cs" />
-    <Compile Include="Runner.cs" />
+    <Compile Include="Execution\Runner.cs" />
     <Compile Include="SkipResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixie.nuspec" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

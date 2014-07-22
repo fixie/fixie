@@ -5,7 +5,7 @@ using System.Reflection;
 using Fixie.Discovery;
 using Fixie.Results;
 
-namespace Fixie
+namespace Fixie.Execution
 {
     public class Runner
     {

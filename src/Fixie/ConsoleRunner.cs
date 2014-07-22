@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Fixie.Execution;
 using Fixie.Listeners;
 using Fixie.Results;
 

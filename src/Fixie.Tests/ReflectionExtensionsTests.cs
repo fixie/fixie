@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Fixie.Execution;
 using Should;
 
 namespace Fixie.Tests

@@ -3,7 +3,7 @@ using System.Linq;
 using Fixie.Behaviors;
 using Fixie.Conventions;
 
-namespace Fixie
+namespace Fixie.Execution
 {
     public class ExecutionPlan
     {

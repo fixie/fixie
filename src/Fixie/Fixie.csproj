@@ -50,7 +50,7 @@
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="Discovery\ClassDiscoverer.cs" />
     <Compile Include="Discovery\ConventionDiscoverer.cs" />
-    <Compile Include="Conventions\AssertionLibraryFilter.cs" />
+    <Compile Include="Execution\AssertionLibraryFilter.cs" />
     <Compile Include="Conventions\ConfigModel.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />
     <Compile Include="TestAssembly.cs" />

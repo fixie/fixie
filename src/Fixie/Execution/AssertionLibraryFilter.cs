@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Fixie.Conventions
+namespace Fixie.Execution
 {
     public class AssertionLibraryFilter
     {

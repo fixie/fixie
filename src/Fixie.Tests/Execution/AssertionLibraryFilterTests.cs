@@ -1,9 +1,9 @@
 using System;
 using System.Text;
-using Fixie.Conventions;
+using Fixie.Execution;
 using Should;
 
-namespace Fixie.Tests.Conventions
+namespace Fixie.Tests.Execution
 {
     public class AssertionLibraryFilterTests
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Fixie.Conventions;
+using Fixie.Execution;
 
 namespace Fixie.Results
 {

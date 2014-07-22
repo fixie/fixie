@@ -54,9 +54,9 @@
     <Compile Include="Conventions\ConfigModel.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />
     <Compile Include="TestAssembly.cs" />
-    <Compile Include="DSL\TestClassExpression.cs" />
+    <Compile Include="Conventions\TestClassExpression.cs" />
     <Compile Include="Discovery\CaseDiscoverer.cs" />
-    <Compile Include="DSL\AssertionLibraryExpression.cs" />
+    <Compile Include="Conventions\AssertionLibraryExpression.cs" />
     <Compile Include="Execution\ExecutionEnvironment.cs" />
     <Compile Include="Execution\ClassRunner.cs" />
     <Compile Include="Execution\ExecutionPlan.cs" />
@@ -70,9 +70,9 @@
     <Compile Include="ConsoleRunner.cs" />
     <Compile Include="Convention.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
-    <Compile Include="DSL\InstanceBehaviorExpression.cs" />
-    <Compile Include="DSL\CaseBehaviorExpression.cs" />
-    <Compile Include="DSL\ClassBehaviorExpression.cs" />
+    <Compile Include="Conventions\InstanceBehaviorExpression.cs" />
+    <Compile Include="Conventions\CaseBehaviorExpression.cs" />
+    <Compile Include="Conventions\ClassBehaviorExpression.cs" />
     <Compile Include="FailResult.cs" />
     <Compile Include="ClassExecution.cs" />
     <Compile Include="InstanceExecution.cs" />
@@ -81,7 +81,7 @@
     <Compile Include="CaseBehavior.cs" />
     <Compile Include="Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Listener.cs" />
-    <Compile Include="DSL\TestMethodExpression.cs" />
+    <Compile Include="Conventions\TestMethodExpression.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="PassResult.cs" />
     <Compile Include="PreservedException.cs" />
@@ -103,7 +103,9 @@
   <ItemGroup>
     <None Include="Fixie.nuspec" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DSL\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Fixie.Conventions;
-using Fixie.DSL;
 
 namespace Fixie
 {

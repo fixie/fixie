@@ -1,6 +1,4 @@
-﻿using Fixie.Conventions;
-
-namespace Fixie.DSL
+﻿namespace Fixie.Conventions
 {
     public class InstanceBehaviorExpression
     {

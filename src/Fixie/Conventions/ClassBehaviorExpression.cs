@@ -1,7 +1,6 @@
 ﻿using System;
-using Fixie.Conventions;
 
-namespace Fixie.DSL
+namespace Fixie.Conventions
 {
     public class ClassBehaviorExpression
     {

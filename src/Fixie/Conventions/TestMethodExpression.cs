@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using Fixie.Conventions;
 
-namespace Fixie.DSL
+namespace Fixie.Conventions
 {
     public class TestMethodExpression
     {

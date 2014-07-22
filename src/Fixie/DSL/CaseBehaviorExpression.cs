@@ -1,5 +1,4 @@
 ﻿using System;
-using Fixie.Behaviors;
 using Fixie.Conventions;
 
 namespace Fixie.DSL

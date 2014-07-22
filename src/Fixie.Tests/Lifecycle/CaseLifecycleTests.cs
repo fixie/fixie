@@ -1,5 +1,4 @@
 using System;
-using Fixie.Behaviors;
 
 namespace Fixie.Tests.Lifecycle
 {

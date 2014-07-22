@@ -45,7 +45,7 @@
     <Compile Include="Behaviors\BehaviorContext.cs" />
     <Compile Include="Behaviors\CreateInstancePerClass.cs" />
     <Compile Include="Behaviors\ExecuteCases.cs" />
-    <Compile Include="Behaviors\InstanceBehavior.cs" />
+    <Compile Include="InstanceBehavior.cs" />
     <Compile Include="CaseExecution.cs" />
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="Discovery\ClassDiscoverer.cs" />
@@ -63,7 +63,7 @@
     <Compile Include="GenericArgumentResolver.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="RedirectedConsole.cs" />
-    <Compile Include="Behaviors\ClassBehavior.cs" />
+    <Compile Include="ClassBehavior.cs" />
     <Compile Include="Case.cs" />
     <Compile Include="CommandLineParser.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />
@@ -78,7 +78,7 @@
     <Compile Include="InstanceExecution.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Behaviors\InvokeMethod.cs" />
-    <Compile Include="Behaviors\CaseBehavior.cs" />
+    <Compile Include="CaseBehavior.cs" />
     <Compile Include="Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="DSL\TestMethodExpression.cs" />

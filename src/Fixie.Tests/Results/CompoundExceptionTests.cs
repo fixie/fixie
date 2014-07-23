@@ -15,23 +15,23 @@ namespace Fixie.Tests.Results
             var assertionLibrary = new AssertionLibraryFilter();
             var exception = GetPrimaryException();
 
-            var exceptionInfo = new CompoundException(new[] { exception }, assertionLibrary);
+            var compoundException = new CompoundException(new[] { exception }, assertionLibrary);
 
-            exceptionInfo.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
-            exceptionInfo.PrimaryException.Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
-            exceptionInfo.PrimaryException.Message.ShouldEqual("Primary Exception!");
-            exceptionInfo.PrimaryException.StackTrace.ShouldEqual(exception.StackTrace);
+            compoundException.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
+            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
+            compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
+            compoundException.PrimaryException.StackTrace.ShouldEqual(exception.StackTrace);
 
-            exceptionInfo.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
-            exceptionInfo.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
-            exceptionInfo.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
-            exceptionInfo.PrimaryException.InnerException.StackTrace.ShouldEqual(exception.InnerException.StackTrace);
+            compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
+            compoundException.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
+            compoundException.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
+            compoundException.PrimaryException.InnerException.StackTrace.ShouldEqual(exception.InnerException.StackTrace);
 
-            exceptionInfo.PrimaryException.InnerException.InnerException.ShouldBeNull();
+            compoundException.PrimaryException.InnerException.InnerException.ShouldBeNull();
 
-            exceptionInfo.SecondaryExceptions.Count.ShouldEqual(0);
+            compoundException.SecondaryExceptions.Count.ShouldEqual(0);
 
-            exceptionInfo.CompoundStackTrace
+            compoundException.CompoundStackTrace
                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                .ShouldEqual(
@@ -50,41 +50,41 @@ namespace Fixie.Tests.Results
             var secondaryExceptionA = new NotImplementedException();
             var secondaryExceptionB = GetSecondaryException();
 
-            var exceptionInfo = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
+            var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
-            exceptionInfo.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
-            exceptionInfo.PrimaryException.Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
-            exceptionInfo.PrimaryException.Message.ShouldEqual("Primary Exception!");
-            exceptionInfo.PrimaryException.StackTrace.ShouldEqual(primaryException.StackTrace);
-            exceptionInfo.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
-            exceptionInfo.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
-            exceptionInfo.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
-            exceptionInfo.PrimaryException.InnerException.StackTrace.ShouldEqual(primaryException.InnerException.StackTrace);
-            exceptionInfo.PrimaryException.InnerException.InnerException.ShouldBeNull();
+            compoundException.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
+            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
+            compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
+            compoundException.PrimaryException.StackTrace.ShouldEqual(primaryException.StackTrace);
+            compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
+            compoundException.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
+            compoundException.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
+            compoundException.PrimaryException.InnerException.StackTrace.ShouldEqual(primaryException.InnerException.StackTrace);
+            compoundException.PrimaryException.InnerException.InnerException.ShouldBeNull();
 
-            exceptionInfo.SecondaryExceptions.Count.ShouldEqual(2);
+            compoundException.SecondaryExceptions.Count.ShouldEqual(2);
 
-            exceptionInfo.SecondaryExceptions[0].DisplayName.ShouldEqual("System.NotImplementedException");
-            exceptionInfo.SecondaryExceptions[0].Type.ShouldEqual("System.NotImplementedException");
-            exceptionInfo.SecondaryExceptions[0].Message.ShouldEqual("The method or operation is not implemented.");
-            exceptionInfo.SecondaryExceptions[0].StackTrace.ShouldBeNull();
-            exceptionInfo.SecondaryExceptions[0].InnerException.ShouldBeNull();
+            compoundException.SecondaryExceptions[0].DisplayName.ShouldEqual("System.NotImplementedException");
+            compoundException.SecondaryExceptions[0].Type.ShouldEqual("System.NotImplementedException");
+            compoundException.SecondaryExceptions[0].Message.ShouldEqual("The method or operation is not implemented.");
+            compoundException.SecondaryExceptions[0].StackTrace.ShouldBeNull();
+            compoundException.SecondaryExceptions[0].InnerException.ShouldBeNull();
 
-            exceptionInfo.SecondaryExceptions[1].DisplayName.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+SecondaryException");
-            exceptionInfo.SecondaryExceptions[1].Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+SecondaryException");
-            exceptionInfo.SecondaryExceptions[1].Message.ShouldEqual("Secondary Exception!");
-            exceptionInfo.SecondaryExceptions[1].StackTrace.ShouldEqual(secondaryExceptionB.StackTrace);
-            exceptionInfo.SecondaryExceptions[1].InnerException.DisplayName.ShouldEqual("System.ApplicationException");
-            exceptionInfo.SecondaryExceptions[1].InnerException.Type.ShouldEqual("System.ApplicationException");
-            exceptionInfo.SecondaryExceptions[1].InnerException.Message.ShouldEqual("Application Exception!");
-            exceptionInfo.SecondaryExceptions[1].InnerException.StackTrace.ShouldEqual(secondaryExceptionB.InnerException.StackTrace);
-            exceptionInfo.SecondaryExceptions[1].InnerException.InnerException.DisplayName.ShouldEqual("System.NotImplementedException");
-            exceptionInfo.SecondaryExceptions[1].InnerException.InnerException.Type.ShouldEqual("System.NotImplementedException");
-            exceptionInfo.SecondaryExceptions[1].InnerException.InnerException.Message.ShouldEqual("Not Implemented Exception!");
-            exceptionInfo.SecondaryExceptions[1].InnerException.InnerException.StackTrace.ShouldEqual(secondaryExceptionB.InnerException.InnerException.StackTrace);
-            exceptionInfo.SecondaryExceptions[1].InnerException.InnerException.InnerException.ShouldBeNull();
+            compoundException.SecondaryExceptions[1].DisplayName.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+SecondaryException");
+            compoundException.SecondaryExceptions[1].Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+SecondaryException");
+            compoundException.SecondaryExceptions[1].Message.ShouldEqual("Secondary Exception!");
+            compoundException.SecondaryExceptions[1].StackTrace.ShouldEqual(secondaryExceptionB.StackTrace);
+            compoundException.SecondaryExceptions[1].InnerException.DisplayName.ShouldEqual("System.ApplicationException");
+            compoundException.SecondaryExceptions[1].InnerException.Type.ShouldEqual("System.ApplicationException");
+            compoundException.SecondaryExceptions[1].InnerException.Message.ShouldEqual("Application Exception!");
+            compoundException.SecondaryExceptions[1].InnerException.StackTrace.ShouldEqual(secondaryExceptionB.InnerException.StackTrace);
+            compoundException.SecondaryExceptions[1].InnerException.InnerException.DisplayName.ShouldEqual("System.NotImplementedException");
+            compoundException.SecondaryExceptions[1].InnerException.InnerException.Type.ShouldEqual("System.NotImplementedException");
+            compoundException.SecondaryExceptions[1].InnerException.InnerException.Message.ShouldEqual("Not Implemented Exception!");
+            compoundException.SecondaryExceptions[1].InnerException.InnerException.StackTrace.ShouldEqual(secondaryExceptionB.InnerException.InnerException.StackTrace);
+            compoundException.SecondaryExceptions[1].InnerException.InnerException.InnerException.ShouldBeNull();
 
-            exceptionInfo.CompoundStackTrace
+            compoundException.CompoundStackTrace
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                 .ShouldEqual(
@@ -119,41 +119,41 @@ namespace Fixie.Tests.Results
             var secondaryExceptionA = new NotImplementedException();
             var secondaryExceptionB = GetSecondaryException();
 
-            var exceptionInfo = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
+            var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
-            exceptionInfo.PrimaryException.DisplayName.ShouldEqual("");
-            exceptionInfo.PrimaryException.Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
-            exceptionInfo.PrimaryException.Message.ShouldEqual("Primary Exception!");
-            exceptionInfo.PrimaryException.StackTrace.ShouldEqual("");
-            exceptionInfo.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
-            exceptionInfo.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
-            exceptionInfo.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
-            exceptionInfo.PrimaryException.InnerException.StackTrace.ShouldEqual("");
-            exceptionInfo.PrimaryException.InnerException.InnerException.ShouldBeNull();
+            compoundException.PrimaryException.DisplayName.ShouldEqual("");
+            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
+            compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
+            compoundException.PrimaryException.StackTrace.ShouldEqual("");
+            compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
+            compoundException.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
+            compoundException.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
+            compoundException.PrimaryException.InnerException.StackTrace.ShouldEqual("");
+            compoundException.PrimaryException.InnerException.InnerException.ShouldBeNull();
 
-            exceptionInfo.SecondaryExceptions.Count.ShouldEqual(2);
+            compoundException.SecondaryExceptions.Count.ShouldEqual(2);
 
-            exceptionInfo.SecondaryExceptions[0].DisplayName.ShouldEqual("System.NotImplementedException");
-            exceptionInfo.SecondaryExceptions[0].Type.ShouldEqual("System.NotImplementedException");
-            exceptionInfo.SecondaryExceptions[0].Message.ShouldEqual("The method or operation is not implemented.");
-            exceptionInfo.SecondaryExceptions[0].StackTrace.ShouldBeNull();
-            exceptionInfo.SecondaryExceptions[0].InnerException.ShouldBeNull();
+            compoundException.SecondaryExceptions[0].DisplayName.ShouldEqual("System.NotImplementedException");
+            compoundException.SecondaryExceptions[0].Type.ShouldEqual("System.NotImplementedException");
+            compoundException.SecondaryExceptions[0].Message.ShouldEqual("The method or operation is not implemented.");
+            compoundException.SecondaryExceptions[0].StackTrace.ShouldBeNull();
+            compoundException.SecondaryExceptions[0].InnerException.ShouldBeNull();
 
-            exceptionInfo.SecondaryExceptions[1].DisplayName.ShouldEqual("");
-            exceptionInfo.SecondaryExceptions[1].Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+SecondaryException");
-            exceptionInfo.SecondaryExceptions[1].Message.ShouldEqual("Secondary Exception!");
-            exceptionInfo.SecondaryExceptions[1].StackTrace.ShouldEqual("");
-            exceptionInfo.SecondaryExceptions[1].InnerException.DisplayName.ShouldEqual("System.ApplicationException");
-            exceptionInfo.SecondaryExceptions[1].InnerException.Type.ShouldEqual("System.ApplicationException");
-            exceptionInfo.SecondaryExceptions[1].InnerException.Message.ShouldEqual("Application Exception!");
-            exceptionInfo.SecondaryExceptions[1].InnerException.StackTrace.ShouldEqual("");
-            exceptionInfo.SecondaryExceptions[1].InnerException.InnerException.DisplayName.ShouldEqual("System.NotImplementedException");
-            exceptionInfo.SecondaryExceptions[1].InnerException.InnerException.Type.ShouldEqual("System.NotImplementedException");
-            exceptionInfo.SecondaryExceptions[1].InnerException.InnerException.Message.ShouldEqual("Not Implemented Exception!");
-            exceptionInfo.SecondaryExceptions[1].InnerException.InnerException.StackTrace.ShouldEqual("");
-            exceptionInfo.SecondaryExceptions[1].InnerException.InnerException.InnerException.ShouldBeNull();
+            compoundException.SecondaryExceptions[1].DisplayName.ShouldEqual("");
+            compoundException.SecondaryExceptions[1].Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+SecondaryException");
+            compoundException.SecondaryExceptions[1].Message.ShouldEqual("Secondary Exception!");
+            compoundException.SecondaryExceptions[1].StackTrace.ShouldEqual("");
+            compoundException.SecondaryExceptions[1].InnerException.DisplayName.ShouldEqual("System.ApplicationException");
+            compoundException.SecondaryExceptions[1].InnerException.Type.ShouldEqual("System.ApplicationException");
+            compoundException.SecondaryExceptions[1].InnerException.Message.ShouldEqual("Application Exception!");
+            compoundException.SecondaryExceptions[1].InnerException.StackTrace.ShouldEqual("");
+            compoundException.SecondaryExceptions[1].InnerException.InnerException.DisplayName.ShouldEqual("System.NotImplementedException");
+            compoundException.SecondaryExceptions[1].InnerException.InnerException.Type.ShouldEqual("System.NotImplementedException");
+            compoundException.SecondaryExceptions[1].InnerException.InnerException.Message.ShouldEqual("Not Implemented Exception!");
+            compoundException.SecondaryExceptions[1].InnerException.InnerException.StackTrace.ShouldEqual("");
+            compoundException.SecondaryExceptions[1].InnerException.InnerException.InnerException.ShouldBeNull();
 
-            exceptionInfo.CompoundStackTrace
+            compoundException.CompoundStackTrace
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                 .ShouldEqual(

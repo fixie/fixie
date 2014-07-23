@@ -9,10 +9,6 @@ namespace Fixie.Results
     [Serializable]
     public class CompoundException
     {
-        public ExceptionInfo PrimaryException { get; private set; }
-        public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; private set; }
-        public string CompoundStackTrace { get; private set; }
-
         public CompoundException(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)
         {
             var all = exceptions.Select(x => new ExceptionInfo(x, filter)).ToArray();
@@ -20,6 +16,12 @@ namespace Fixie.Results
             SecondaryExceptions = all.Skip(1).ToArray();
             CompoundStackTrace = GetCompoundStackTrace(all);
         }
+
+        public ExceptionInfo PrimaryException { get; private set; }
+
+        public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; private set; }
+
+        public string CompoundStackTrace { get; private set; }
 
         static string GetCompoundStackTrace(IEnumerable<ExceptionInfo> exceptions)
         {

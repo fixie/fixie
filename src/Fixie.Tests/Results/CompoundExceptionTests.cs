@@ -10,24 +10,37 @@ namespace Fixie.Tests.Results
 {
     public class CompoundExceptionTests
     {
-        public void ShouldSummarizeTheGivenException()
+        public void ShouldSummarizeAnyGivenException()
         {
             var assertionLibrary = new AssertionLibraryFilter();
             var exception = GetPrimaryException();
 
-            var exceptionInfo = new ExceptionInfo(exception, assertionLibrary);
+            var exceptionInfo = new CompoundException(new[] { exception }, assertionLibrary);
 
-            exceptionInfo.DisplayName.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
-            exceptionInfo.Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
-            exceptionInfo.Message.ShouldEqual("Primary Exception!");
-            exceptionInfo.StackTrace.ShouldEqual(exception.StackTrace);
+            exceptionInfo.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
+            exceptionInfo.PrimaryException.Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
+            exceptionInfo.PrimaryException.Message.ShouldEqual("Primary Exception!");
+            exceptionInfo.PrimaryException.StackTrace.ShouldEqual(exception.StackTrace);
 
-            exceptionInfo.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
-            exceptionInfo.InnerException.Type.ShouldEqual("System.DivideByZeroException");
-            exceptionInfo.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
-            exceptionInfo.InnerException.StackTrace.ShouldEqual(exception.InnerException.StackTrace);
+            exceptionInfo.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
+            exceptionInfo.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
+            exceptionInfo.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
+            exceptionInfo.PrimaryException.InnerException.StackTrace.ShouldEqual(exception.InnerException.StackTrace);
 
-            exceptionInfo.InnerException.InnerException.ShouldBeNull();
+            exceptionInfo.PrimaryException.InnerException.InnerException.ShouldBeNull();
+
+            exceptionInfo.SecondaryExceptions.Count.ShouldEqual(0);
+
+            exceptionInfo.CompoundStackTrace
+               .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+               .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
+               .ShouldEqual(
+                   "Primary Exception!",
+                   "   at Fixie.Tests.Results.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #",
+                   "",
+                   "------- Inner Exception: System.DivideByZeroException -------",
+                   "Divide by Zero Exception!",
+                   "   at Fixie.Tests.Results.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #");
         }
 
         public void ShouldSummarizeCollectionsOfExceptionsComprisedOfPrimaryAndSecondaryExceptions()

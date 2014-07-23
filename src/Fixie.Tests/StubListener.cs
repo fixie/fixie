@@ -33,9 +33,9 @@ namespace Fixie.Tests
 
             var entry = new StringBuilder();
 
-            entry.Append(string.Format("{0} failed: {1}", @case.Name, result.ExceptionSummary.Message));
+            entry.Append(string.Format("{0} failed: {1}", @case.Name, result.Exceptions.PrimaryException.Message));
 
-            foreach (var exception in result.Exceptions.Skip(1))
+            foreach (var exception in result.Exceptions.SecondaryExceptions)
             {
                 entry.AppendLine();
                 entry.Append(string.Format("    Secondary Failure: {0}", exception.Message));

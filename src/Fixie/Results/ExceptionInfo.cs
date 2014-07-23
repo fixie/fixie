@@ -7,36 +7,21 @@ using Fixie.Execution;
 namespace Fixie.Results
 {
     [Serializable]
-    public class ExceptionInfo
+    public class CompoundException
     {
-        public ExceptionInfo(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)
+        public ExceptionInfo PrimaryException { get; private set; }
+        public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; private set; }
+        public string CompoundStackTrace { get; private set; }
+
+        public CompoundException(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)
         {
             var all = exceptions.Select(x => new ExceptionInfo(x, filter)).ToArray();
-            var primary = all.First();
-
-            Type = primary.Type;
-            DisplayName = primary.DisplayName;
-            Message = primary.Message;
-            StackTrace = CompoundStackTrace(all);
-            InnerException = null;
+            PrimaryException = all.First();
+            SecondaryExceptions = all.Skip(1).ToArray();
+            CompoundStackTrace = GetCompoundStackTrace(all);
         }
 
-        public ExceptionInfo(Exception exception, AssertionLibraryFilter filter)
-        {
-            Type = exception.GetType().FullName;
-            DisplayName = filter.DisplayName(exception);
-            Message = exception.Message;
-            StackTrace = filter.FilterStackTrace(exception);
-            InnerException = exception.InnerException == null ? null : new ExceptionInfo(exception.InnerException, filter);
-        }
-
-        public string Type { get; private set; }
-        public string DisplayName { get; private set; }
-        public string Message { get; private set; }
-        public string StackTrace { get; private set; }
-        public ExceptionInfo InnerException { get; private set; }
-
-        static string CompoundStackTrace(IEnumerable<ExceptionInfo> exceptions)
+        static string GetCompoundStackTrace(IEnumerable<ExceptionInfo> exceptions)
         {
             using (var console = new StringWriter())
             {
@@ -76,5 +61,24 @@ namespace Fixie.Results
                 return console.ToString();
             }
         }
+    }
+
+    [Serializable]
+    public class ExceptionInfo
+    {
+        public ExceptionInfo(Exception exception, AssertionLibraryFilter filter)
+        {
+            Type = exception.GetType().FullName;
+            DisplayName = filter.DisplayName(exception);
+            Message = exception.Message;
+            StackTrace = filter.FilterStackTrace(exception);
+            InnerException = exception.InnerException == null ? null : new ExceptionInfo(exception.InnerException, filter);
+        }
+
+        public string Type { get; private set; }
+        public string DisplayName { get; private set; }
+        public string Message { get; private set; }
+        public string StackTrace { get; private set; }
+        public ExceptionInfo InnerException { get; private set; }
     }
 }

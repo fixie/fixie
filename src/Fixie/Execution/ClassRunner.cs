@@ -82,7 +82,7 @@ namespace Fixie.Execution
         {
             var result = new FailResult(caseExecution, assertionLibraryFilter);
             listener.CaseFailed(result);
-            return CaseResult.Failed(result.Case.Name, result.Duration, result.ExceptionSummary);
+            return CaseResult.Failed(result.Case.Name, result.Duration, result.Exceptions);
         }
     }
 }

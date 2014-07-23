@@ -10,11 +10,11 @@ namespace Fixie.Results
             return new CaseResult(name, CaseStatus.Passed, duration);
         }
 
-        public static CaseResult Failed(string name, TimeSpan duration, ExceptionInfo exceptionSummary)
+        public static CaseResult Failed(string name, TimeSpan duration, CompoundException exceptions)
         {
             return new CaseResult(name, CaseStatus.Failed, duration)
             {
-                ExceptionSummary = exceptionSummary
+                Exceptions = exceptions
             };
         }
 
@@ -37,7 +37,7 @@ namespace Fixie.Results
         public CaseStatus Status { get; private set; }
         public TimeSpan Duration { get; private set; }
 
-        public ExceptionInfo ExceptionSummary { get; private set; }
+        public CompoundException Exceptions { get; private set; }
 
         public string SkipReason { get; private set; }
     }

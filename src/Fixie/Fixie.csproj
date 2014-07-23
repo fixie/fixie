@@ -52,6 +52,7 @@
     <Compile Include="Execution\AssertionLibraryFilter.cs" />
     <Compile Include="Conventions\Configuration.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />
+    <Compile Include="Results\CompoundException.cs" />
     <Compile Include="TestAssembly.cs" />
     <Compile Include="Conventions\TestClassExpression.cs" />
     <Compile Include="Discovery\CaseDiscoverer.cs" />

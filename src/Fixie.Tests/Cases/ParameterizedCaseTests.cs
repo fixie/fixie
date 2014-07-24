@@ -75,6 +75,27 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(0, 1, 2, 3) failed: Parameter count mismatch.");
         }
 
+        public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
+        {
+            Convention.Parameters(ParametersFromBuggySource);
+
+            Run<ParameterizedTestClass>();
+
+            Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(0) passed.",
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(1) failed: Expected 0, but was 1",
+
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
+
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(0) failed: Parameter count mismatch.",
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(1) failed: Parameter count mismatch.",
+
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs");
+        }
+
         public void ShouldResolveGenericTypeParameters()
         {
             Convention.Parameters(ParametersFromAttributes);
@@ -134,6 +155,13 @@ namespace Fixie.Tests.Cases
         IEnumerable<object[]> ZeroSetsOfInputParameters(MethodInfo method)
         {
             yield break;
+        }
+
+        IEnumerable<object[]> ParametersFromBuggySource(MethodInfo method)
+        {
+            yield return new object[] { 0 };
+            yield return new object[] { 1 };
+            throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
         }
 
         Func<MethodInfo, IEnumerable<object[]>> Inputs(params object[][] inputs)

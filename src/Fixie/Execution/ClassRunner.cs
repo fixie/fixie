@@ -64,6 +64,8 @@ namespace Fixie.Execution
 
         IEnumerable<Case> CasesForMethod(MethodInfo method)
         {
+            var cases = new List<Case>();
+
             var casesForKnownInputParameters = getCaseParameters(method)
                 .Select(parameters => new Case(method, parameters));
 
@@ -72,11 +74,13 @@ namespace Fixie.Execution
             foreach (var actualCase in casesForKnownInputParameters)
             {
                 any = true;
-                yield return actualCase;
+                cases.Add(actualCase);
             }
 
             if (!any)
-                yield return new Case(method);
+                cases.Add(new Case(method));
+
+            return cases;
         }
 
         IReadOnlyList<CaseExecution> Run(Type testClass, Case[] casesToExecute)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Fixie.Conventions;
 using Fixie.Discovery;
 using Fixie.Results;
@@ -14,6 +15,7 @@ namespace Fixie.Execution
         readonly CaseDiscoverer caseDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
+        readonly Func<MethodInfo, IEnumerable<object[]>> getCaseParameters;
         readonly Func<Case, bool> skipCase;
         readonly Func<Case, string> getSkipReason;
         readonly Action<Case[]> orderCases;
@@ -25,6 +27,7 @@ namespace Fixie.Execution
             caseDiscoverer = new CaseDiscoverer(config);
             assertionLibraryFilter = new AssertionLibraryFilter(config.AssertionLibraryTypes);
 
+            getCaseParameters = config.GetCaseParameters;
             skipCase = config.SkipCase;
             getSkipReason = config.GetSkipReason;
             orderCases = config.OrderCases;
@@ -34,7 +37,7 @@ namespace Fixie.Execution
         {
             var classResult = new ClassResult(testClass.FullName);
 
-            var cases = caseDiscoverer.TestCases(testClass);
+            var cases = TestCases(testClass);
             var casesBySkipState = cases.ToLookup(skipCase);
             var casesToSkip = casesBySkipState[true];
             var casesToExecute = casesBySkipState[false].ToArray();
@@ -52,6 +55,28 @@ namespace Fixie.Execution
             }
 
             return classResult;
+        }
+
+        IReadOnlyList<Case> TestCases(Type testClass)
+        {
+            return caseDiscoverer.TestMethods(testClass).SelectMany(CasesForMethod).ToArray();
+        }
+
+        IEnumerable<Case> CasesForMethod(MethodInfo method)
+        {
+            var casesForKnownInputParameters = getCaseParameters(method)
+                .Select(parameters => new Case(method, parameters));
+
+            bool any = false;
+
+            foreach (var actualCase in casesForKnownInputParameters)
+            {
+                any = true;
+                yield return actualCase;
+            }
+
+            if (!any)
+                yield return new Case(method);
         }
 
         IReadOnlyList<CaseExecution> Run(Type testClass, Case[] casesToExecute)

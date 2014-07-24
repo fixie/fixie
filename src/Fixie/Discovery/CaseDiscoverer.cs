@@ -26,27 +26,5 @@ namespace Fixie.Discovery
         {
             return testMethodConditions.All(condition => condition(candidate));
         }
-
-        public IReadOnlyList<Case> TestCases(Type testClass)
-        {
-            return TestMethods(testClass).SelectMany(CasesForMethod).ToArray();
-        }
-
-        IEnumerable<Case> CasesForMethod(MethodInfo method)
-        {
-            var casesForKnownInputParameters = getCaseParameters(method)
-                .Select(parameters => new Case(method, parameters));
-
-            bool any = false;
-
-            foreach (var actualCase in casesForKnownInputParameters)
-            {
-                any = true;
-                yield return actualCase;
-            }
-
-            if (!any)
-                yield return new Case(method);
-        }
     }
 }

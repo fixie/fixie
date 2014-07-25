@@ -60,6 +60,10 @@ namespace Fixie.Reports
             if (caseResult.Status != CaseStatus.Skipped)
                 @case.Add(new XAttribute("time", Seconds(caseResult.Duration)));
 
+            var categoryTraits = caseResult.Traits.Where(trait => trait.Key == "Category").ToList();
+            if (categoryTraits.Any())
+                @case.Add(new XElement("categories", categoryTraits.Select(Category)));
+
             if (caseResult.Status == CaseStatus.Skipped && caseResult.SkipReason != null)
                 @case.Add(new XElement("reason", new XElement("message", new XCData(caseResult.SkipReason))));
 
@@ -72,6 +76,11 @@ namespace Fixie.Reports
             }
 
             return @case;
+        }
+
+        static XElement Category(Trait trait)
+        {
+            return new XElement("category", new XAttribute("name", trait.Value));
         }
 
         static string Seconds(TimeSpan duration)

@@ -22,10 +22,10 @@
                           <xs:element minOccurs="0" name="traits">
                             <xs:complexType>
                               <xs:sequence>
-                                <xs:element name="trait">
+                                <xs:element name="trait" maxOccurs="unbounded">
                                   <xs:complexType>
                                     <xs:attribute name="name" type="xs:string" use="required" />
-                                    <xs:attribute name="value" type="xs:boolean" use="required" />
+                                    <xs:attribute name="value" type="xs:string" use="required" />
                                   </xs:complexType>
                                 </xs:element>
                               </xs:sequence>

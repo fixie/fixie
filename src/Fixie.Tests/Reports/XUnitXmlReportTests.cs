@@ -26,6 +26,8 @@ namespace Fixie.Tests.Reports
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters.Add<InputAttributeParameterSource>();
+            convention.Traits.Add<TraitAttributeTraitSource>();
+
             var assemblyResult = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
             executionResult.Add(assemblyResult);
 
@@ -41,6 +43,15 @@ namespace Fixie.Tests.Reports
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
                 return method.GetCustomAttributes<InputAttribute>().Select(x => x.Parameters);
+            }
+        }
+
+        class TraitAttributeTraitSource : TraitSource
+        {
+            public IEnumerable<Trait> GetTraits(MethodInfo method)
+            {
+                return method.GetCustomAttributes<TraitAttribute>()
+                             .Select(x => new Trait(x.Key, x.Value));
             }
         }
 
@@ -100,11 +111,14 @@ namespace Fixie.Tests.Reports
 
         class PassFailTestClass
         {
+            [Trait("Category", "Fail")]
             public void Fail()
             {
                 throw new FailureException();
             }
 
+            [Trait("Category", "Pass")]
+            [Trait("Key", "Value")]
             public void Pass() { }
 
             [Input(false)]
@@ -115,12 +129,14 @@ namespace Fixie.Tests.Reports
             }
 
             [Skip]
+            [Trait("Category", "Skip")]
             public void SkipWithoutReason()
             {
                 throw new ShouldBeUnreachableException();
             }
-            
+
             [Skip("reason")]
+            [Trait("Category", "Skip")]
             public void SkipWithReason()
             {
                 throw new ShouldBeUnreachableException();

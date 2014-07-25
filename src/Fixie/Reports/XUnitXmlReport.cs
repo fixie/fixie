@@ -1,4 +1,5 @@
-﻿using Fixie.Results;
+﻿using System.Collections.Generic;
+using Fixie.Results;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -76,6 +77,9 @@ namespace Fixie.Reports
             if (caseResult.Status == CaseStatus.Skipped && caseResult.SkipReason != null)
                 @case.Add(new XElement("reason", new XElement("message", new XCData(caseResult.SkipReason))));
 
+            if (caseResult.Traits.Any())
+                @case.Add(new XElement("traits", Traits(caseResult.Traits)));
+
             if (caseResult.Status == CaseStatus.Failed)
                 @case.Add(
                     new XElement("failure",
@@ -84,6 +88,13 @@ namespace Fixie.Reports
                         new XElement("stack-trace", new XCData(caseResult.Exceptions.CompoundStackTrace))));
 
             return @case;
+        }
+
+        static IEnumerable<XElement> Traits(IEnumerable<Trait> traits)
+        {
+            return traits.Select(trait => new XElement("trait",
+                                                       new XAttribute("name", trait.Key),
+                                                       new XAttribute("value", trait.Value)));
         }
 
         static string Seconds(TimeSpan duration)

@@ -6,12 +6,12 @@
                 <results>
                     <test-suite name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass" success="false" time="1.234">
                         <results>
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipWithoutReason" executed="false" success="true" />
                           <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipWithReason" executed="false" success="true">
                             <reason>
                               <message><![CDATA[reason]]></message>
                             </reason>
                           </test-case>
+                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipWithoutReason" executed="false" success="true" />
                           <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.Fail" executed="true" success="false" time="1.234">
                             <failure>
                               <message><![CDATA['Fail' failed!]]></message>

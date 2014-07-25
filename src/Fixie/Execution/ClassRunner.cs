@@ -36,28 +36,44 @@ namespace Fixie.Execution
         public ClassResult Run(Type testClass)
         {
             var methods = caseDiscoverer.TestMethods(testClass);
+
             var cases = new List<Case>();
+            var parameterGenerationFailures = new List<ParameterGenerationFailure>();
+
             foreach (var method in methods)
             {
-                var casesForKnownInputParameters = getCaseParameters(method)
-                    .Select(parameters => new Case(method, parameters)).ToArray();
+                try
+                {
+                    bool methodHasCase = false;
 
-                if (casesForKnownInputParameters.Any())
-                    cases.AddRange(casesForKnownInputParameters);
-                else
-                    cases.Add(new Case(method));
+                    foreach (var parameters in getCaseParameters(method))
+                    {
+                        methodHasCase = true;
+                        cases.Add(new Case(method, parameters));
+                    }
+
+                    if (!methodHasCase)
+                        cases.Add(new Case(method));
+                }
+                catch (Exception parameterGenerationException)
+                {
+                    parameterGenerationFailures.Add(new ParameterGenerationFailure(new Case(method), parameterGenerationException));
+                }
             }
 
             var casesBySkipState = cases.ToLookup(skipCase);
-            var casesToSkip = casesBySkipState[true];
+            var casesToSkip = casesBySkipState[true].ToArray();
             var casesToExecute = casesBySkipState[false].ToArray();
-
-
 
             var classResult = new ClassResult(testClass.FullName);
 
-            foreach (var @case in casesToSkip)
-                classResult.Add(Skip(@case));
+            if (casesToSkip.Any())
+            {
+                orderCases(casesToSkip);
+
+                foreach (var @case in casesToSkip)
+                    classResult.Add(Skip(@case));
+            }
 
             if (casesToExecute.Any())
             {
@@ -67,6 +83,22 @@ namespace Fixie.Execution
 
                 foreach (var caseExecution in caseExecutions)
                     classResult.Add(caseExecution.Exceptions.Any() ? Fail(caseExecution) : Pass(caseExecution));
+            }
+
+            if (parameterGenerationFailures.Any())
+            {
+                var casesToFailWithoutRunning = parameterGenerationFailures.Select(x => x.Case).ToArray();
+
+                orderCases(casesToFailWithoutRunning);
+
+                foreach (var caseToFailWithoutRunning in casesToFailWithoutRunning)
+                {
+                    var caseExecution = new CaseExecution(caseToFailWithoutRunning);
+
+                    caseExecution.Fail(parameterGenerationFailures.Single(x => x.Case == caseToFailWithoutRunning).Exception);
+
+                    classResult.Add(Fail(caseExecution));
+                }
             }
 
             return classResult;
@@ -101,6 +133,18 @@ namespace Fixie.Execution
             var result = new FailResult(caseExecution, assertionLibraryFilter);
             listener.CaseFailed(result);
             return CaseResult.Failed(result.Case.Name, result.Duration, result.Exceptions);
+        }
+
+        class ParameterGenerationFailure
+        {
+            public ParameterGenerationFailure(Case @case, Exception exception)
+            {
+                Case = @case;
+                Exception = exception;
+            }
+
+            public Case Case { get; private set; }
+            public Exception Exception { get; private set; }
         }
     }
 }

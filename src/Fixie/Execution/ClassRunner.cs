@@ -12,7 +12,7 @@ namespace Fixie.Execution
     {
         readonly Listener listener;
         readonly ExecutionPlan executionPlan;
-        readonly CaseDiscoverer caseDiscoverer;
+        readonly MethodDiscoverer methodDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
         readonly Func<MethodInfo, IEnumerable<object[]>> getCaseParameters;
@@ -24,7 +24,7 @@ namespace Fixie.Execution
         {
             this.listener = listener;
             executionPlan = new ExecutionPlan(config);
-            caseDiscoverer = new CaseDiscoverer(config);
+            methodDiscoverer = new MethodDiscoverer(config);
             assertionLibraryFilter = new AssertionLibraryFilter(config.AssertionLibraryTypes);
 
             getCaseParameters = config.GetCaseParameters;
@@ -35,7 +35,7 @@ namespace Fixie.Execution
 
         public ClassResult Run(Type testClass)
         {
-            var methods = caseDiscoverer.TestMethods(testClass);
+            var methods = methodDiscoverer.TestMethods(testClass);
 
             var cases = new List<Case>();
             var parameterGenerationFailures = new List<ParameterGenerationFailure>();

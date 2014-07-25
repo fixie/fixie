@@ -55,7 +55,7 @@
     <Compile Include="Results\CompoundException.cs" />
     <Compile Include="TestAssembly.cs" />
     <Compile Include="Conventions\TestClassExpression.cs" />
-    <Compile Include="Discovery\CaseDiscoverer.cs" />
+    <Compile Include="Discovery\MethodDiscoverer.cs" />
     <Compile Include="Conventions\AssertionLibraryExpression.cs" />
     <Compile Include="Execution\ExecutionEnvironment.cs" />
     <Compile Include="Execution\ClassRunner.cs" />

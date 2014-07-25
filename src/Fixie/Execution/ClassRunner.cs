@@ -35,12 +35,27 @@ namespace Fixie.Execution
 
         public ClassResult Run(Type testClass)
         {
-            var classResult = new ClassResult(testClass.FullName);
+            var methods = caseDiscoverer.TestMethods(testClass);
+            var cases = new List<Case>();
+            foreach (var method in methods)
+            {
+                var casesForKnownInputParameters = getCaseParameters(method)
+                    .Select(parameters => new Case(method, parameters)).ToArray();
 
-            var cases = TestCases(testClass);
+                if (casesForKnownInputParameters.Any())
+                    cases.AddRange(casesForKnownInputParameters);
+                else
+                    cases.Add(new Case(method));
+            }
+
             var casesBySkipState = cases.ToLookup(skipCase);
             var casesToSkip = casesBySkipState[true];
             var casesToExecute = casesBySkipState[false].ToArray();
+
+
+
+            var classResult = new ClassResult(testClass.FullName);
+
             foreach (var @case in casesToSkip)
                 classResult.Add(Skip(@case));
 
@@ -55,32 +70,6 @@ namespace Fixie.Execution
             }
 
             return classResult;
-        }
-
-        IReadOnlyList<Case> TestCases(Type testClass)
-        {
-            return caseDiscoverer.TestMethods(testClass).SelectMany(CasesForMethod).ToArray();
-        }
-
-        IEnumerable<Case> CasesForMethod(MethodInfo method)
-        {
-            var cases = new List<Case>();
-
-            var casesForKnownInputParameters = getCaseParameters(method)
-                .Select(parameters => new Case(method, parameters));
-
-            bool any = false;
-
-            foreach (var actualCase in casesForKnownInputParameters)
-            {
-                any = true;
-                cases.Add(actualCase);
-            }
-
-            if (!any)
-                cases.Add(new Case(method));
-
-            return cases;
         }
 
         IReadOnlyList<CaseExecution> Run(Type testClass, Case[] casesToExecute)

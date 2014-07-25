@@ -44,15 +44,15 @@ namespace Fixie.Execution
             {
                 try
                 {
-                    bool methodHasCase = false;
+                    bool methodHasParameterizedCase = false;
 
                     foreach (var parameters in getCaseParameters(method))
                     {
-                        methodHasCase = true;
+                        methodHasParameterizedCase = true;
                         cases.Add(new Case(method, parameters));
                     }
 
-                    if (!methodHasCase)
+                    if (!methodHasParameterizedCase)
                         cases.Add(new Case(method));
                 }
                 catch (Exception parameterGenerationException)

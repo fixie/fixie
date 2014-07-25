@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Fixie.Conventions;
+using Fixie.Discovery;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Should;
-using Fixie.Conventions;
-using Fixie.Discovery;
 
 namespace Fixie.Tests.Discovery
 {

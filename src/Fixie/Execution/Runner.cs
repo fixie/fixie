@@ -100,7 +100,7 @@ namespace Fixie.Execution
         {
             var classDiscoverer = new ClassDiscoverer(convention.Config);
             var conventionResult = new ConventionResult(convention.GetType().FullName);
-            var classRunner = new ClassRunner(listener, convention.Config);
+            var classRunner = new ClassRunner(listener, convention.Config, options);
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
             {

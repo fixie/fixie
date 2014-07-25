@@ -54,6 +54,8 @@
     <Compile Include="Execution\AssertionLibraryFilterTests.cs" />
     <Compile Include="Execution\RunnerTests.cs" />
     <Compile Include="Discovery\GenericArgumentResolverTests.cs" />
+    <Compile Include="Execution\TraitFilterParserTests.cs" />
+    <Compile Include="Execution\TraitFilterTests.cs" />
     <Compile Include="Lifecycle\CaseLifecycleTests.cs" />
     <Compile Include="Lifecycle\ClassLifecycleTests.cs" />
     <Compile Include="Lifecycle\ComplexLifecycleTests.cs" />

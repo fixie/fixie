@@ -48,6 +48,7 @@
     <Compile Include="Execution\BehaviorContext.cs" />
     <Compile Include="Execution\Behaviors\CreateInstancePerClass.cs" />
     <Compile Include="Execution\Behaviors\ExecuteCases.cs" />
+    <Compile Include="Execution\TraitFilterParser.cs" />
     <Compile Include="FixtureBehavior.cs" />
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="Discovery\ClassDiscoverer.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Execution\ClassRunner.cs" />
     <Compile Include="Execution\ExecutionPlan.cs" />
     <Compile Include="Discovery\GenericArgumentResolver.cs" />
+    <Compile Include="Execution\TraitFilter.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="RedirectedConsole.cs" />
     <Compile Include="ClassBehavior.cs" />

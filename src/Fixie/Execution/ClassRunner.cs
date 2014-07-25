@@ -15,13 +15,14 @@ namespace Fixie.Execution
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
         readonly TraitDiscoverer traitDiscoverer;
+        readonly TraitFilter traitFilter;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
         readonly Func<Case, bool> skipCase;
         readonly Func<Case, string> getSkipReason;
         readonly Action<Case[]> orderCases;
 
-        public ClassRunner(Listener listener, Configuration config)
+        public ClassRunner(Listener listener, Configuration config, ILookup<string, string> options)
         {
             this.listener = listener;
             executionPlan = new ExecutionPlan(config);
@@ -29,7 +30,7 @@ namespace Fixie.Execution
             parameterDiscoverer = new ParameterDiscoverer(config);
             assertionLibraryFilter = new AssertionLibraryFilter(config);
             traitDiscoverer = new TraitDiscoverer(config);
-
+            traitFilter = new TraitFilterParser().GetTraitFilter(options);
             skipCase = config.SkipCase;
             getSkipReason = config.GetSkipReason;
             orderCases = config.OrderCases;
@@ -48,6 +49,7 @@ namespace Fixie.Execution
                 try
                 {
                     var traits = Traits(method).ToArray();
+                    if (!traitFilter.IsMatch(traits)) continue;
 
                     try
                     {

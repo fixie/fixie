@@ -38,7 +38,7 @@ namespace Fixie.Execution
             var methods = methodDiscoverer.TestMethods(testClass);
 
             var cases = new List<Case>();
-            var parameterGenerationFailures = new List<ParameterGenerationFailure>();
+            var parameterGenerationFailures = new List<Case>();
 
             foreach (var method in methods)
             {
@@ -57,7 +57,9 @@ namespace Fixie.Execution
                 }
                 catch (Exception parameterGenerationException)
                 {
-                    parameterGenerationFailures.Add(new ParameterGenerationFailure(new Case(method), parameterGenerationException));
+                    var @case = new Case(method);
+                    @case.Fail(parameterGenerationException);
+                    parameterGenerationFailures.Add(@case);
                 }
             }
 
@@ -87,16 +89,12 @@ namespace Fixie.Execution
 
             if (parameterGenerationFailures.Any())
             {
-                var casesToFailWithoutRunning = parameterGenerationFailures.Select(x => x.Case).ToArray();
+                var casesToFailWithoutRunning = parameterGenerationFailures.ToArray();
 
                 orderCases(casesToFailWithoutRunning);
 
                 foreach (var caseToFailWithoutRunning in casesToFailWithoutRunning)
-                {
-                    caseToFailWithoutRunning.Fail(parameterGenerationFailures.Single(x => x.Case == caseToFailWithoutRunning).Exception);
-
                     classResult.Add(Fail(caseToFailWithoutRunning));
-                }
             }
 
             return classResult;
@@ -128,18 +126,6 @@ namespace Fixie.Execution
             var result = new FailResult(@case, assertionLibraryFilter);
             listener.CaseFailed(result);
             return CaseResult.Failed(result.Case.Name, result.Duration, result.Exceptions);
-        }
-
-        class ParameterGenerationFailure
-        {
-            public ParameterGenerationFailure(Case @case, Exception exception)
-            {
-                Case = @case;
-                Exception = exception;
-            }
-
-            public Case Case { get; private set; }
-            public Exception Exception { get; private set; }
         }
     }
 }

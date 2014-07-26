@@ -127,17 +127,17 @@ namespace Fixie.Tests.Cases
 
         class TreatBoolReturnValuesAsAssertions : CaseBehavior
         {
-            public void Execute(CaseExecution caseExecution, Action next)
+            public void Execute(Case @case, Action next)
             {
                 next();
 
-                Console.WriteLine(caseExecution.Case.Method.Name + " " + (caseExecution.Result ?? "null"));
+                Console.WriteLine(@case.Method.Name + " " + (@case.Execution.Result ?? "null"));
 
-                if (caseExecution.Exceptions.Any())
+                if (@case.Execution.Exceptions.Any())
                     return;
 
-                if (caseExecution.Result is bool)
-                    if (!(bool)caseExecution.Result)
+                if (@case.Execution.Result is bool)
+                    if (!(bool)@case.Execution.Result)
                         throw new Exception("Boolean test case returned false!");
             }
         }

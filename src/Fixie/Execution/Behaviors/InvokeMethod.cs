@@ -7,11 +7,12 @@ namespace Fixie.Execution.Behaviors
 {
     public class InvokeMethod : CaseBehavior
     {
-        public void Execute(CaseExecution caseExecution, Action next)
+        public void Execute(Case @case, Action next)
         {
             try
             {
-                var @case = caseExecution.Case;
+                var caseExecution = @case.Execution;
+
                 var method = @case.Method;
 
                 bool isDeclaredAsync = method.IsAsync();
@@ -57,7 +58,7 @@ namespace Fixie.Execution.Behaviors
             }
             catch (Exception exception)
             {
-                caseExecution.Fail(exception);
+                @case.Fail(exception);
             }
         }
 

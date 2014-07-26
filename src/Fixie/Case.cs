@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Reflection;
 using Fixie.Discovery;
+using Fixie.Execution;
 
 namespace Fixie
 {
-    public class Case
+    public class Case : BehaviorContext
     {
         public Case(MethodInfo caseMethod, params object[] parameters)
         {
@@ -40,5 +41,9 @@ namespace Fixie
         public object[] Parameters { get; private set; }
 
         public CaseExecution Execution { get; private set; }
+        public void Fail(Exception reason)
+        {
+            Execution.Fail(reason);
+        }
     }
 }

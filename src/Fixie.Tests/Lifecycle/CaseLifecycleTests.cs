@@ -6,7 +6,7 @@ namespace Fixie.Tests.Lifecycle
     {
         class Inner : CaseBehavior
         {
-            public void Execute(CaseExecution caseExecution, Action next)
+            public void Execute(Case @case, Action next)
             {
                 Console.WriteLine("Inner Before");
                 next();
@@ -16,7 +16,7 @@ namespace Fixie.Tests.Lifecycle
 
         class Outer : CaseBehavior
         {
-            public void Execute(CaseExecution caseExecution, Action next)
+            public void Execute(Case @case, Action next)
             {
                 Console.WriteLine("Outer Before");
                 next();
@@ -26,7 +26,7 @@ namespace Fixie.Tests.Lifecycle
 
         class DoNothing : CaseBehavior
         {
-            public void Execute(CaseExecution caseExecution, Action next)
+            public void Execute(Case @case, Action next)
             {
                 //Behavior chooses not to invoke next().
                 //Since the cases are never invoked, they don't
@@ -37,7 +37,7 @@ namespace Fixie.Tests.Lifecycle
 
         class ThrowException : CaseBehavior
         {
-            public void Execute(CaseExecution caseExecution, Action next)
+            public void Execute(Case @case, Action next)
             {
                 Console.WriteLine("Unsafe case execution behavior");
                 throw new Exception("Unsafe case execution behavior threw!");
@@ -46,7 +46,7 @@ namespace Fixie.Tests.Lifecycle
 
         class ThrowPreservedException : CaseBehavior
         {
-            public void Execute(CaseExecution caseExecution, Action next)
+            public void Execute(Case @case, Action next)
             {
                 Console.WriteLine("Unsafe case execution behavior");
                 try

@@ -4,7 +4,7 @@ using Fixie.Execution;
 
 namespace Fixie
 {
-    public class CaseExecution : BehaviorContext
+    public class CaseExecution
     {
         readonly List<Exception> exceptions;
 

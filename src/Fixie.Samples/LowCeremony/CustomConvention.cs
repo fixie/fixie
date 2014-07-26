@@ -31,11 +31,11 @@ namespace Fixie.Samples.LowCeremony
 
         class CallSetUpTearDownMethodsByName : CaseBehavior
         {
-            public void Execute(CaseExecution caseExecution, Action next)
+            public void Execute(Case @case, Action next)
             {
-                caseExecution.Case.Class.TryInvoke("SetUp", caseExecution.Instance);
+                @case.Class.TryInvoke("SetUp", @case.Execution.Instance);
                 next();
-                caseExecution.Case.Class.TryInvoke("TearDown", caseExecution.Instance);
+                @case.Class.TryInvoke("TearDown", @case.Execution.Instance);
             }
         }
 

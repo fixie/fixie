@@ -33,7 +33,7 @@ namespace Fixie.Execution
             return new BehaviorChain<ClassExecution>(chain);
         }
 
-        static BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(Configuration config, BehaviorChain<CaseExecution> caseBehaviors)
+        static BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(Configuration config, BehaviorChain<Case> caseBehaviors)
         {
             var chain = config.CustomInstanceBehaviors
                 .Select(customBehavior => (InstanceBehavior)Activator.CreateInstance(customBehavior))
@@ -44,7 +44,7 @@ namespace Fixie.Execution
             return new BehaviorChain<InstanceExecution>(chain);
         }
 
-        static BehaviorChain<CaseExecution> BuildCaseBehaviorChain(Configuration config)
+        static BehaviorChain<Case> BuildCaseBehaviorChain(Configuration config)
         {
             var chain = config.CustomCaseBehaviors
                 .Select(customBehavior => (CaseBehavior)Activator.CreateInstance(customBehavior))
@@ -52,7 +52,7 @@ namespace Fixie.Execution
 
             chain.Add(new InvokeMethod());
 
-            return new BehaviorChain<CaseExecution>(chain);
+            return new BehaviorChain<Case>(chain);
         }
 
         static ClassBehavior GetInnermostBehavior(Configuration config, BehaviorChain<InstanceExecution> instanceBehaviors)

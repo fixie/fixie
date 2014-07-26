@@ -2,7 +2,7 @@
 
 namespace Fixie
 {
-    public interface CaseBehavior : Behavior<CaseExecution>
+    public interface CaseBehavior : Behavior<Case>
     {
     }
 }

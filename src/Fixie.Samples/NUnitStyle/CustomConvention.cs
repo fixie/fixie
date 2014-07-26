@@ -30,45 +30,46 @@ namespace Fixie.Samples.NUnitStyle
 
     class SupportExpectedExceptions : CaseBehavior
     {
-        public void Execute(CaseExecution caseExecution, Action next)
+        public void Execute(Case @case, Action next)
         {
             next();
 
-            var attribute = caseExecution.Case.Method.GetCustomAttributes<ExpectedExceptionAttribute>(false).SingleOrDefault();
+            var attribute = @case.Method.GetCustomAttributes<ExpectedExceptionAttribute>(false).SingleOrDefault();
 
             if (attribute == null)
                 return;
 
-            if (caseExecution.Exceptions.Count > 1)
+            if (@case.Execution.Exceptions.Count > 1)
                 return;
 
-            var exception = caseExecution.Exceptions.SingleOrDefault();
+            var exception = @case.Execution.Exceptions.SingleOrDefault();
 
             if (exception == null)
                 throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
 
             if (exception.GetType() != attribute.ExpectedException)
             {
-                caseExecution.ClearExceptions();
+                @case.Execution.ClearExceptions();
 
                 throw new Exception("Expected exception of type " + attribute.ExpectedException + " but an exception of type " + exception.GetType() + " was thrown.", exception);
             }
 
             if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
             {
-                caseExecution.ClearExceptions();
+                @case.Execution.ClearExceptions();
 
                 throw new Exception("Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.", exception);
             }
 
-            caseExecution.ClearExceptions();
+            @case.Execution.ClearExceptions();
         }
     }
 
     class SetUpTearDown : CaseBehavior
     {
-        public void Execute(CaseExecution caseExecution, Action next)
+        public void Execute(Case @case, Action next)
         {
+            var caseExecution = @case.Execution;
             caseExecution.Case.Class.InvokeAll<SetUpAttribute>(caseExecution.Instance);
             next();
             caseExecution.Case.Class.InvokeAll<TearDownAttribute>(caseExecution.Instance);

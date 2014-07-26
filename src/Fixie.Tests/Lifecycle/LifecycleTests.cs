@@ -160,11 +160,11 @@ namespace Fixie.Tests.Lifecycle
 
         protected class CaseSetUpTearDown : CaseBehavior
         {
-            public void Execute(CaseExecution caseExecution, Action next)
+            public void Execute(Case @case, Action next)
             {
-                CaseSetUp(caseExecution);
+                CaseSetUp(@case.Execution);
                 next();
-                CaseTearDown(caseExecution);
+                CaseTearDown(@case.Execution);
             }
         }
 

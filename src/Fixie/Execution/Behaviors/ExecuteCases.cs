@@ -14,8 +14,9 @@ namespace Fixie.Execution.Behaviors
 
         public void Execute(InstanceExecution instanceExecution, Action next)
         {
-            foreach (var caseExecution in instanceExecution.CaseExecutions)
+            foreach (var @case in instanceExecution.Cases)
             {
+                var caseExecution = @case.Execution;
                 using (var console = new RedirectedConsole())
                 {
                     caseExecution.Instance = instanceExecution.Instance;

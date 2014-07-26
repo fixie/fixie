@@ -20,7 +20,7 @@ namespace Fixie.Execution.Behaviors
             {
                 try
                 {
-                    PerformClassLifecycle(classExecution.TestClass, new[] { @case.Execution });
+                    PerformClassLifecycle(classExecution.TestClass, new[] { @case });
                 }
                 catch (Exception exception)
                 {
@@ -29,11 +29,11 @@ namespace Fixie.Execution.Behaviors
             }
         }
 
-        void PerformClassLifecycle(Type testClass, IReadOnlyList<CaseExecution> caseExecutionsForThisInstance)
+        void PerformClassLifecycle(Type testClass, IReadOnlyList<Case> casesForThisInstance)
         {
             var instance = testClassFactory(testClass);
 
-            var instanceExecution = new InstanceExecution(testClass, instance, caseExecutionsForThisInstance);
+            var instanceExecution = new InstanceExecution(testClass, instance, casesForThisInstance);
             instanceBehaviors.Execute(instanceExecution);
 
             var disposable = instance as IDisposable;

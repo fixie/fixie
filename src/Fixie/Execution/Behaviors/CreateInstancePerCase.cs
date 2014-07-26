@@ -16,15 +16,15 @@ namespace Fixie.Execution.Behaviors
 
         public void Execute(ClassExecution classExecution, Action next)
         {
-            foreach (var caseExecution in classExecution.CaseExecutions)
+            foreach (var @case in classExecution.Cases)
             {
                 try
                 {
-                    PerformClassLifecycle(classExecution.TestClass, new[] { caseExecution });
+                    PerformClassLifecycle(classExecution.TestClass, new[] { @case.Execution });
                 }
                 catch (Exception exception)
                 {
-                    caseExecution.Fail(exception);
+                    @case.Fail(exception);
                 }
             }
         }

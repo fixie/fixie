@@ -79,10 +79,10 @@ namespace Fixie.Execution
             {
                 orderCases(casesToExecute);
 
-                var caseExecutions = Run(testClass, casesToExecute);
+                Run(testClass, casesToExecute);
 
-                foreach (var caseExecution in caseExecutions)
-                    classResult.Add(caseExecution.Exceptions.Any() ? Fail(caseExecution) : Pass(caseExecution));
+                foreach (var @case in casesToExecute)
+                    classResult.Add(@case.Execution.Exceptions.Any() ? Fail(@case.Execution) : Pass(@case.Execution));
             }
 
             if (parameterGenerationFailures.Any())
@@ -104,14 +104,11 @@ namespace Fixie.Execution
             return classResult;
         }
 
-        IReadOnlyList<CaseExecution> Run(Type testClass, Case[] casesToExecute)
+        void Run(Type testClass, Case[] casesToExecute)
         {
-            var caseExecutions = casesToExecute.Select(@case => @case.Execution).ToArray();
-            var classExecution = new ClassExecution(testClass, caseExecutions);
+            var classExecution = new ClassExecution(testClass, casesToExecute);
 
             executionPlan.ExecuteClassBehaviors(classExecution);
-
-            return caseExecutions;
         }
 
         CaseResult Skip(Case @case)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Fixie.Execution.Behaviors
 {
@@ -18,7 +19,7 @@ namespace Fixie.Execution.Behaviors
         {
             try
             {
-                PerformClassLifecycle(classExecution.TestClass, classExecution.CaseExecutions);
+                PerformClassLifecycle(classExecution.TestClass, classExecution.Cases.Select(x => x.Execution).ToArray());
             }
             catch (Exception exception)
             {

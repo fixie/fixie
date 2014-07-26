@@ -6,19 +6,19 @@ namespace Fixie
 {
     public class ClassExecution : BehaviorContext
     {
-        public ClassExecution(Type testClass, IReadOnlyList<CaseExecution> caseExecutions)
+        public ClassExecution(Type testClass, IReadOnlyList<Case> cases)
         {
             TestClass = testClass;
-            CaseExecutions = caseExecutions;
+            Cases = cases;
         }
 
         public Type TestClass { get; private set; }
-        public IReadOnlyList<CaseExecution> CaseExecutions { get; private set; }
+        public IReadOnlyList<Case> Cases { get; private set; }
 
         public void Fail(Exception reason)
         {
-            foreach (var caseExecution in CaseExecutions)
-                caseExecution.Fail(reason);
+            foreach (var @case in Cases)
+                @case.Fail(reason);
         }
     }
 }

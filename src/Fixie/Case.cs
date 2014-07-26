@@ -17,6 +17,8 @@ namespace Fixie
                          : caseMethod;
 
             Name = GetName();
+
+            Execution = new CaseExecution(this);
         }
 
         string GetName()
@@ -36,5 +38,7 @@ namespace Fixie
         public Type Class { get; private set; }
         public MethodInfo Method { get; private set; }
         public object[] Parameters { get; private set; }
+
+        public CaseExecution Execution { get; private set; }
     }
 }

@@ -93,7 +93,7 @@ namespace Fixie.Execution
 
                 foreach (var caseToFailWithoutRunning in casesToFailWithoutRunning)
                 {
-                    var caseExecution = new CaseExecution(caseToFailWithoutRunning);
+                    var caseExecution = caseToFailWithoutRunning.Execution;
 
                     caseExecution.Fail(parameterGenerationFailures.Single(x => x.Case == caseToFailWithoutRunning).Exception);
 
@@ -106,7 +106,7 @@ namespace Fixie.Execution
 
         IReadOnlyList<CaseExecution> Run(Type testClass, Case[] casesToExecute)
         {
-            var caseExecutions = casesToExecute.Select(@case => new CaseExecution(@case)).ToArray();
+            var caseExecutions = casesToExecute.Select(@case => @case.Execution).ToArray();
             var classExecution = new ClassExecution(testClass, caseExecutions);
 
             executionPlan.ExecuteClassBehaviors(classExecution);

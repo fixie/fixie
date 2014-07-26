@@ -11,7 +11,7 @@ namespace Fixie.Tests
         public CaseExecutionTests()
         {
             @case = new Case(typeof(SampleTestClass).GetInstanceMethod("Test"));
-            execution = new CaseExecution(@case);
+            execution = @case.Execution;
         }
 
         public void ShouldBeAssociatedWithCase()

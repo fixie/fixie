@@ -136,17 +136,17 @@ namespace Fixie.Tests.Lifecycle
             WhereAmI();
         }
 
-        protected static void CaseSetUp(CaseExecution caseExecution)
+        protected static void CaseSetUp(Case @case)
         {
-            caseExecution.Case.Class.ShouldEqual(typeof(SampleTestClass));
-            caseExecution.Instance.ShouldBeType<SampleTestClass>();
+            @case.Class.ShouldEqual(typeof(SampleTestClass));
+            @case.Execution.Instance.ShouldBeType<SampleTestClass>();
             WhereAmI();
         }
 
-        protected static void CaseTearDown(CaseExecution caseExecution)
+        protected static void CaseTearDown(Case @case)
         {
-            caseExecution.Case.Class.ShouldEqual(typeof(SampleTestClass));
-            caseExecution.Instance.ShouldBeType<SampleTestClass>();
+            @case.Class.ShouldEqual(typeof(SampleTestClass));
+            @case.Execution.Instance.ShouldBeType<SampleTestClass>();
             WhereAmI();
         }
 
@@ -162,9 +162,9 @@ namespace Fixie.Tests.Lifecycle
         {
             public void Execute(Case @case, Action next)
             {
-                CaseSetUp(@case.Execution);
+                CaseSetUp(@case);
                 next();
-                CaseTearDown(@case.Execution);
+                CaseTearDown(@case);
             }
         }
 

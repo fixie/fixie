@@ -16,31 +16,30 @@ namespace Fixie.Execution.Behaviors
         {
             foreach (var @case in instanceExecution.Cases)
             {
-                var caseExecution = @case.Execution;
                 using (var console = new RedirectedConsole())
                 {
-                    caseExecution.Instance = instanceExecution.Instance;
+                    @case.Execution.Instance = instanceExecution.Instance;
 
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();
 
                     try
                     {
-                        caseBehaviors.Execute(caseExecution.Case);
+                        caseBehaviors.Execute(@case);
                     }
                     catch (Exception exception)
                     {
-                        caseExecution.Fail(exception);
+                        @case.Fail(exception);
                     }
 
                     stopwatch.Stop();
 
-                    caseExecution.Instance = null;
-                    caseExecution.Duration = stopwatch.Elapsed;
-                    caseExecution.Output = console.Output;
+                    @case.Execution.Instance = null;
+                    @case.Execution.Duration = stopwatch.Elapsed;
+                    @case.Execution.Output = console.Output;
                 }
 
-                Console.Write(caseExecution.Output);
+                Console.Write(@case.Execution.Output);
             }
         }
     }

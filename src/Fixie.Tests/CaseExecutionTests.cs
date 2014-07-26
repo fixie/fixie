@@ -5,18 +5,11 @@ namespace Fixie.Tests
 {
     public class CaseExecutionTests
     {
-        readonly Case @case;
         readonly CaseExecution execution;
 
         public CaseExecutionTests()
         {
-            @case = new Case(typeof(SampleTestClass).GetInstanceMethod("Test"));
-            execution = @case.Execution;
-        }
-
-        public void ShouldBeAssociatedWithCase()
-        {
-            execution.Case.ShouldEqual(@case);
+            execution = new CaseExecution();
         }
 
         public void ShouldTrackExceptionsAsFailureReasons()
@@ -40,11 +33,6 @@ namespace Fixie.Tests
             execution.Fail(exceptionB);
             execution.ClearExceptions();
             execution.Exceptions.ShouldBeEmpty();
-        }
-
-        private class SampleTestClass
-        {
-            public void Test() { }
         }
     }
 }

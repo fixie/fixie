@@ -93,11 +93,9 @@ namespace Fixie.Execution
 
                 foreach (var caseToFailWithoutRunning in casesToFailWithoutRunning)
                 {
-                    var caseExecution = caseToFailWithoutRunning.Execution;
+                    caseToFailWithoutRunning.Fail(parameterGenerationFailures.Single(x => x.Case == caseToFailWithoutRunning).Exception);
 
-                    caseExecution.Fail(parameterGenerationFailures.Single(x => x.Case == caseToFailWithoutRunning).Exception);
-
-                    classResult.Add(Fail(caseExecution.Case));
+                    classResult.Add(Fail(caseToFailWithoutRunning));
                 }
             }
 

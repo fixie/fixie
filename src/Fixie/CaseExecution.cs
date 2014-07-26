@@ -7,13 +7,10 @@ namespace Fixie
     {
         readonly List<Exception> exceptions;
 
-        public CaseExecution(Case @case)
+        public CaseExecution()
         {
-            Case = @case;
             exceptions = new List<Exception>();
         }
-
-        public Case Case { get; private set; }
 
         public object Instance { get; internal set; }
         

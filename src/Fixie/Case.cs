@@ -19,7 +19,7 @@ namespace Fixie
 
             Name = GetName();
 
-            Execution = new CaseExecution(this);
+            Execution = new CaseExecution();
         }
 
         string GetName()

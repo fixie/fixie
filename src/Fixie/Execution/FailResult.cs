@@ -5,12 +5,12 @@ namespace Fixie.Execution
 {
     public class FailResult
     {
-        public FailResult(CaseExecution execution, AssertionLibraryFilter filter)
+        public FailResult(Case @case, AssertionLibraryFilter filter)
         {
-            Case = execution.Case;
-            Output = execution.Output;
-            Duration = execution.Duration;
-            Exceptions = new CompoundException(execution.Exceptions, filter);
+            Case = @case;
+            Output = @case.Execution.Output;
+            Duration = @case.Execution.Duration;
+            Exceptions = new CompoundException(@case.Execution.Exceptions, filter);
         }
 
         public Case Case { get; private set; }

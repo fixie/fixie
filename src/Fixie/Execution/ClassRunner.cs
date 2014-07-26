@@ -82,7 +82,7 @@ namespace Fixie.Execution
                 Run(testClass, casesToExecute);
 
                 foreach (var @case in casesToExecute)
-                    classResult.Add(@case.Execution.Exceptions.Any() ? Fail(@case.Execution) : Pass(@case.Execution));
+                    classResult.Add(@case.Execution.Exceptions.Any() ? Fail(@case) : Pass(@case));
             }
 
             if (parameterGenerationFailures.Any())
@@ -97,7 +97,7 @@ namespace Fixie.Execution
 
                     caseExecution.Fail(parameterGenerationFailures.Single(x => x.Case == caseToFailWithoutRunning).Exception);
 
-                    classResult.Add(Fail(caseExecution));
+                    classResult.Add(Fail(caseExecution.Case));
                 }
             }
 
@@ -118,16 +118,16 @@ namespace Fixie.Execution
             return CaseResult.Skipped(result.Case.Name, result.Reason);
         }
 
-        CaseResult Pass(CaseExecution caseExecution)
+        CaseResult Pass(Case @case)
         {
-            var result = new PassResult(caseExecution);
+            var result = new PassResult(@case);
             listener.CasePassed(result);
             return CaseResult.Passed(result.Case.Name, result.Duration);
         }
 
-        CaseResult Fail(CaseExecution caseExecution)
+        CaseResult Fail(Case @case)
         {
-            var result = new FailResult(caseExecution, assertionLibraryFilter);
+            var result = new FailResult(@case, assertionLibraryFilter);
             listener.CaseFailed(result);
             return CaseResult.Failed(result.Case.Name, result.Duration, result.Exceptions);
         }

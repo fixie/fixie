@@ -18,22 +18,19 @@ namespace Fixie.Tests
 
         public void CaseSkipped(SkipResult result)
         {
-            log.Add(string.Format("{0} skipped{1}", result.Case.Name, result.Reason == null ? "." : ": " + result.Reason));
+            log.Add(string.Format("{0} skipped{1}", result.Name, result.Reason == null ? "." : ": " + result.Reason));
         }
 
         public void CasePassed(PassResult result)
         {
-            var @case = result.Case;
-            log.Add(string.Format("{0} passed.", @case.Name));
+            log.Add(string.Format("{0} passed.", result.Name));
         }
 
         public void CaseFailed(FailResult result)
         {
-            var @case = result.Case;
-
             var entry = new StringBuilder();
 
-            entry.Append(string.Format("{0} failed: {1}", @case.Name, result.Exceptions.PrimaryException.Message));
+            entry.Append(string.Format("{0} failed: {1}", result.Name, result.Exceptions.PrimaryException.Message));
 
             foreach (var exception in result.Exceptions.SecondaryExceptions)
             {

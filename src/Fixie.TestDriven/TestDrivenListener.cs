@@ -22,28 +22,25 @@ namespace Fixie.TestDriven
         {
             tdnet.TestFinished(new TestResult
             {
-                Name = result.Case.Name,
+                Name = result.Name,
                 State = TestState.Ignored
             });
         }
 
         public void CasePassed(PassResult result)
         {
-            var @case = result.Case;
             tdnet.TestFinished(new TestResult
             {
-                Name = @case.Name,
+                Name = result.Name,
                 State = TestState.Passed
             });
         }
 
         public void CaseFailed(FailResult result)
         {
-            var @case = result.Case;
-
             tdnet.TestFinished(new TestResult
             {
-                Name = @case.Name,
+                Name = result.Name,
                 State = TestState.Failed,
                 Message = result.Exceptions.PrimaryException.DisplayName,
                 StackTrace = result.Exceptions.CompoundStackTrace,

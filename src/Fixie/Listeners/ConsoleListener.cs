@@ -17,7 +17,7 @@ namespace Fixie.Listeners
         public void CaseSkipped(SkipResult result)
         {
             using (Foreground.Yellow)
-                Console.WriteLine("Test '{0}' skipped{1}", result.Case.Name, result.Reason == null ? null : ": " + result.Reason);
+                Console.WriteLine("Test '{0}' skipped{1}", result.Name, result.Reason == null ? null : ": " + result.Reason);
         }
 
         public void CasePassed(PassResult result)
@@ -26,10 +26,8 @@ namespace Fixie.Listeners
 
         public void CaseFailed(FailResult result)
         {
-            var @case = result.Case;
-
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", @case.Name, result.Exceptions.PrimaryException.DisplayName);
+                Console.WriteLine("Test '{0}' failed: {1}", result.Name, result.Exceptions.PrimaryException.DisplayName);
             Console.WriteLine(result.Exceptions.CompoundStackTrace);
             Console.WriteLine();
         }

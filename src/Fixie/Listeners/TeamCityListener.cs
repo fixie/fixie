@@ -16,26 +16,22 @@ namespace Fixie.Listeners
 
         public void CaseSkipped(SkipResult result)
         {
-            Message("testIgnored name='{0}'", result.Case.Name);
+            Message("testIgnored name='{0}'", result.Name);
         }
 
         public void CasePassed(PassResult result)
         {
-            var @case = result.Case;
-
-            Message("testStarted name='{0}'", @case.Name);
-            Output(@case, result.Output);
-            Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(result.Duration));
+            Message("testStarted name='{0}'", result.Name);
+            Output(result.Name, result.Output);
+            Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
         }
 
         public void CaseFailed(FailResult result)
         {
-            var @case = result.Case;
-
-            Message("testStarted name='{0}'", @case.Name);
-            Output(@case, result.Output);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", @case.Name, result.Exceptions.PrimaryException.Message, result.Exceptions.CompoundStackTrace);
-            Message("testFinished name='{0}' duration='{1}'", @case.Name, DurationInMilliseconds(result.Duration));
+            Message("testStarted name='{0}'", result.Name);
+            Output(result.Name, result.Output);
+            Message("testFailed name='{0}' message='{1}' details='{2}'", result.Name, result.Exceptions.PrimaryException.Message, result.Exceptions.CompoundStackTrace);
+            Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
         }
 
         public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
@@ -49,10 +45,10 @@ namespace Fixie.Listeners
             Console.WriteLine("##teamcity["+format+"]", encodedArgs);
         }
 
-        static void Output(Case @case, string output)
+        static void Output(string name, string output)
         {
             if (!String.IsNullOrEmpty(output))
-                Message("testStdOut name='{0}' out='{1}'", @case.Name, output);
+                Message("testStdOut name='{0}' out='{1}'", name, output);
         }
 
         static string Encode(string value)

@@ -22,7 +22,7 @@ namespace Fixie.Samples.xUnitStyle
                 .Wrap<PrepareAndDisposeFixtureData>()
                 .ShuffleCases();
 
-            InstanceExecution
+            FixtureExecution
                 .Wrap<InjectFixtureData>();
         }
 

@@ -19,7 +19,7 @@ namespace Fixie.Samples.NUnitStyle
                     .CreateInstancePerClass()
                     .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
 
-            InstanceExecution
+            FixtureExecution
                 .Wrap<FixtureSetUpTearDown>();
 
             CaseExecution

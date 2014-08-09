@@ -22,7 +22,7 @@ namespace Fixie.Samples.LowCeremony
                 .CreateInstancePerClass()
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
 
-            InstanceExecution
+            FixtureExecution
                 .Wrap<CallFixtureSetUpTearDownMethodsByName>();
 
             CaseExecution

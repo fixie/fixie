@@ -10,7 +10,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase()
                       .Wrap<ClassSetUpTearDown>();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<FixtureSetUpTearDown>();
 
             Convention.CaseExecution
@@ -50,7 +50,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass()
                       .Wrap<ClassSetUpTearDown>();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<FixtureSetUpTearDown>();
 
             Convention.CaseExecution
@@ -88,7 +88,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase()
                       .Wrap<ClassSetUpTearDown>();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<FixtureSetUpTearDown>();
 
             Convention.CaseExecution
@@ -137,7 +137,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass()
                       .Wrap<ClassSetUpTearDown>();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<FixtureSetUpTearDown>();
 
             Convention.CaseExecution

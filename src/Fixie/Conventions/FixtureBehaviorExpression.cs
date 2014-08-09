@@ -1,15 +1,15 @@
 ﻿namespace Fixie.Conventions
 {
-    public class InstanceBehaviorExpression
+    public class FixtureBehaviorExpression
     {
         readonly Configuration config;
 
-        public InstanceBehaviorExpression(Configuration config)
+        public FixtureBehaviorExpression(Configuration config)
         {
             this.config = config;
         }
 
-        public InstanceBehaviorExpression Wrap<TInstanceBehavior>() where TInstanceBehavior : FixtureBehavior
+        public FixtureBehaviorExpression Wrap<TInstanceBehavior>() where TInstanceBehavior : FixtureBehavior
         {
             config.WrapInstances<TInstanceBehavior>();
             return this;

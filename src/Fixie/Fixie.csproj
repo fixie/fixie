@@ -69,7 +69,7 @@
     <Compile Include="ConsoleRunner.cs" />
     <Compile Include="Convention.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
-    <Compile Include="Conventions\InstanceBehaviorExpression.cs" />
+    <Compile Include="Conventions\FixtureBehaviorExpression.cs" />
     <Compile Include="Conventions\CaseBehaviorExpression.cs" />
     <Compile Include="Conventions\ClassBehaviorExpression.cs" />
     <Compile Include="Execution\FailResult.cs" />

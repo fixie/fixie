@@ -65,7 +65,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<Inner>()
                       .Wrap<Outer>();
 
@@ -93,7 +93,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerClass();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<Inner>()
                       .Wrap<Outer>();
 
@@ -116,7 +116,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<DoNothing>();
 
             var output = Run();
@@ -137,7 +137,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerClass();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<DoNothing>();
 
             var output = Run();
@@ -156,7 +156,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<ThrowException>();
 
             var output = Run();
@@ -179,7 +179,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerClass();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<ThrowException>();
 
             var output = Run();
@@ -199,7 +199,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<ThrowPreservedException>();
 
             var output = Run();
@@ -222,7 +222,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerClass();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<ThrowPreservedException>();
 
             var output = Run();
@@ -242,7 +242,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();
@@ -269,7 +269,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerClass();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();
@@ -293,7 +293,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();
@@ -318,7 +318,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerClass();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();
@@ -340,7 +340,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();
@@ -370,7 +370,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerClass();
 
-            Convention.InstanceExecution
+            Convention.FixtureExecution
                       .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();

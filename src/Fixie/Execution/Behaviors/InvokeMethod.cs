@@ -11,8 +11,6 @@ namespace Fixie.Execution.Behaviors
         {
             try
             {
-                var caseExecution = @case.Execution;
-
                 var method = @case.Method;
 
                 bool isDeclaredAsync = method.IsAsync();
@@ -54,7 +52,7 @@ namespace Fixie.Execution.Behaviors
                     }
                 }
 
-                caseExecution.Result = result;
+                @case.Result = result;
             }
             catch (Exception exception)
             {

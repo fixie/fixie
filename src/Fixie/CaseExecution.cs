@@ -12,8 +12,6 @@ namespace Fixie
             exceptions = new List<Exception>();
         }
         
-        public object Result { get; internal set; }
-
         public IReadOnlyList<Exception> Exceptions { get { return exceptions; } }
 
         public void Fail(Exception reason)

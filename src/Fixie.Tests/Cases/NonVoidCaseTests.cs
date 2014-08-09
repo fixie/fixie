@@ -131,13 +131,13 @@ namespace Fixie.Tests.Cases
             {
                 next();
 
-                Console.WriteLine(@case.Method.Name + " " + (@case.Execution.Result ?? "null"));
+                Console.WriteLine(@case.Method.Name + " " + (@case.Result ?? "null"));
 
                 if (@case.Execution.Exceptions.Any())
                     return;
 
-                if (@case.Execution.Result is bool)
-                    if (!(bool)@case.Execution.Result)
+                if (@case.Result is bool)
+                    if (!(bool)@case.Result)
                         throw new Exception("Boolean test case returned false!");
             }
         }

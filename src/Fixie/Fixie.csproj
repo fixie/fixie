@@ -45,7 +45,6 @@
     <Compile Include="Execution\Behaviors\CreateInstancePerClass.cs" />
     <Compile Include="Execution\Behaviors\ExecuteCases.cs" />
     <Compile Include="InstanceBehavior.cs" />
-    <Compile Include="CaseExecution.cs" />
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="Discovery\ClassDiscoverer.cs" />
     <Compile Include="Discovery\ConventionDiscoverer.cs" />

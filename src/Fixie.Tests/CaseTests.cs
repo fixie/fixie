@@ -1,4 +1,5 @@
-﻿using Should;
+﻿using System;
+using Should;
 
 namespace Fixie.Tests
 {
@@ -40,6 +41,33 @@ namespace Fixie.Tests
 
             var parentMethodInheritedByChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"));
             parentMethodInheritedByChildClass.Class.ShouldEqual(typeof(SampleChildTestClass));
+        }
+
+        public void ShouldTrackExceptionsAsFailureReasons()
+        {
+            var exceptionA = new InvalidOperationException();
+            var exceptionB = new DivideByZeroException();
+
+            var @case = Case("Returns");
+
+            @case.Exceptions.ShouldBeEmpty();
+            @case.Fail(exceptionA);
+            @case.Fail(exceptionB);
+            @case.Exceptions.ShouldEqual(exceptionA, exceptionB);
+        }
+
+        public void CanSuppressFailuresByClearingExceptionLog()
+        {
+            var exceptionA = new InvalidOperationException();
+            var exceptionB = new DivideByZeroException();
+
+            var @case = Case("Returns");
+
+            @case.Exceptions.ShouldBeEmpty();
+            @case.Fail(exceptionA);
+            @case.Fail(exceptionB);
+            @case.ClearExceptions();
+            @case.Exceptions.ShouldBeEmpty();
         }
 
         class SampleParentTestClass

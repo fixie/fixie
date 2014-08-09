@@ -9,6 +9,8 @@ namespace Fixie
 {
     public class Case : BehaviorContext
     {
+        readonly List<Exception> exceptions;
+
         public Case(MethodInfo caseMethod, params object[] parameters)
         {
             Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
@@ -20,7 +22,7 @@ namespace Fixie
 
             Name = GetName();
 
-            Execution = new CaseExecution();
+            exceptions = new List<Exception>();
         }
 
         string GetName()
@@ -41,15 +43,21 @@ namespace Fixie
         public MethodInfo Method { get; private set; }
         public object[] Parameters { get; private set; }
 
-        private CaseExecution Execution { get; set; }
-        public IReadOnlyList<Exception> Exceptions { get { return Execution.Exceptions; } }
+        public IReadOnlyList<Exception> Exceptions { get { return exceptions; } }
+
         public void Fail(Exception reason)
         {
-            Execution.Fail(reason);
+            var wrapped = reason as PreservedException;
+
+            if (wrapped != null)
+                exceptions.Add(wrapped.OriginalException);
+            else
+                exceptions.Add(reason);
         }
+
         public void ClearExceptions()
         {
-            Execution.ClearExceptions();
+            exceptions.Clear();
         }
 
         public object Instance { get; internal set; }

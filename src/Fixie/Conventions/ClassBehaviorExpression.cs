@@ -37,7 +37,7 @@ namespace Fixie.Conventions
 
         public ClassBehaviorExpression ShuffleCases(Random random)
         {
-            config.OrderCases = caseExecutions => Shuffle(caseExecutions, random);
+            config.OrderCases = cases => Shuffle(cases, random);
             return this;
         }
 

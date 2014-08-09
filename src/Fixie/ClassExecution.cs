@@ -6,13 +6,13 @@ namespace Fixie
 {
     public class ClassExecution : BehaviorContext
     {
-        public ClassExecution(Type testClass, IReadOnlyList<Case> cases)
+        public ClassExecution(Type type, IReadOnlyList<Case> cases)
         {
-            TestClass = testClass;
+            Type = type;
             Cases = cases;
         }
 
-        public Type TestClass { get; private set; }
+        public Type Type { get; private set; }
         public IReadOnlyList<Case> Cases { get; private set; }
 
         public void Fail(Exception reason)

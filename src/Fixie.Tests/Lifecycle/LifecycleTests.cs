@@ -114,13 +114,13 @@ namespace Fixie.Tests.Lifecycle
 
         protected static void ClassSetUp(ClassExecution classExecution)
         {
-            classExecution.TestClass.ShouldEqual(typeof(SampleTestClass));
+            classExecution.Type.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
         }
 
         protected static void ClassTearDown(ClassExecution classExecution)
         {
-            classExecution.TestClass.ShouldEqual(typeof(SampleTestClass));
+            classExecution.Type.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
         }
 

@@ -19,7 +19,7 @@ namespace Fixie.Execution.Behaviors
         {
             try
             {
-                PerformClassLifecycle(classExecution.TestClass, classExecution.Cases);
+                PerformClassLifecycle(classExecution.Type, classExecution.Cases);
             }
             catch (Exception exception)
             {

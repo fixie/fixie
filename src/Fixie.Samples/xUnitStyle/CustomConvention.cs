@@ -44,7 +44,7 @@ namespace Fixie.Samples.xUnitStyle
             {
                 fixtures.Clear();
 
-                foreach (var @interface in FixtureInterfaces(classExecution.TestClass))
+                foreach (var @interface in FixtureInterfaces(classExecution.Type))
                 {
                     var fixtureDataType = @interface.GetGenericArguments()[0];
 

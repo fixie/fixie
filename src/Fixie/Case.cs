@@ -41,7 +41,7 @@ namespace Fixie
         public MethodInfo Method { get; private set; }
         public object[] Parameters { get; private set; }
 
-        public CaseExecution Execution { get; private set; }
+        private CaseExecution Execution { get; set; }
         public IReadOnlyList<Exception> Exceptions { get { return Execution.Exceptions; } }
         public void Fail(Exception reason)
         {

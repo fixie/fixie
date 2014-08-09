@@ -39,29 +39,29 @@ namespace Fixie.Samples.NUnitStyle
             if (attribute == null)
                 return;
 
-            if (@case.Execution.Exceptions.Count > 1)
+            if (@case.Exceptions.Count > 1)
                 return;
 
-            var exception = @case.Execution.Exceptions.SingleOrDefault();
+            var exception = @case.Exceptions.SingleOrDefault();
 
             if (exception == null)
                 throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
 
             if (exception.GetType() != attribute.ExpectedException)
             {
-                @case.Execution.ClearExceptions();
+                @case.ClearExceptions();
 
                 throw new Exception("Expected exception of type " + attribute.ExpectedException + " but an exception of type " + exception.GetType() + " was thrown.", exception);
             }
 
             if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
             {
-                @case.Execution.ClearExceptions();
+                @case.ClearExceptions();
 
                 throw new Exception("Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.", exception);
             }
 
-            @case.Execution.ClearExceptions();
+            @case.ClearExceptions();
         }
     }
 

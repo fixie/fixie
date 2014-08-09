@@ -84,7 +84,7 @@ namespace Fixie.Execution
                 Run(testClass, casesToExecute);
 
                 foreach (var @case in casesToExecute)
-                    classResult.Add(@case.Execution.Exceptions.Any() ? Fail(@case) : Pass(@case));
+                    classResult.Add(@case.Exceptions.Any() ? Fail(@case) : Pass(@case));
             }
 
             if (parameterGenerationFailures.Any())

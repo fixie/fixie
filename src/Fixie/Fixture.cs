@@ -4,9 +4,9 @@ using Fixie.Execution;
 
 namespace Fixie
 {
-    public class InstanceExecution : BehaviorContext
+    public class Fixture : BehaviorContext
     {
-        public InstanceExecution(Type testClass, object instance, IReadOnlyList<Case> cases)
+        public Fixture(Type testClass, object instance, IReadOnlyList<Case> cases)
         {
             TestClass = testClass;
             Instance = instance;

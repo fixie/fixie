@@ -77,11 +77,11 @@ namespace Fixie.Samples.NUnitStyle
 
     class FixtureSetUpTearDown : InstanceBehavior
     {
-        public void Execute(InstanceExecution instanceExecution, Action next)
+        public void Execute(Fixture fixture, Action next)
         {
-            instanceExecution.TestClass.InvokeAll<TestFixtureSetUpAttribute>(instanceExecution.Instance);
+            fixture.TestClass.InvokeAll<TestFixtureSetUpAttribute>(fixture.Instance);
             next();
-            instanceExecution.TestClass.InvokeAll<TestFixtureTearDownAttribute>(instanceExecution.Instance);
+            fixture.TestClass.InvokeAll<TestFixtureTearDownAttribute>(fixture.Instance);
         }
     }
 

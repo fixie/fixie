@@ -12,13 +12,13 @@ namespace Fixie.Execution.Behaviors
             this.caseBehaviors = caseBehaviors;
         }
 
-        public void Execute(InstanceExecution instanceExecution, Action next)
+        public void Execute(Fixture fixture, Action next)
         {
-            foreach (var @case in instanceExecution.Cases)
+            foreach (var @case in fixture.Cases)
             {
                 using (var console = new RedirectedConsole())
                 {
-                    @case.Fixture = instanceExecution;
+                    @case.Fixture = fixture;
 
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();

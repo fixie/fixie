@@ -41,11 +41,11 @@ namespace Fixie.Samples.LowCeremony
 
         class CallFixtureSetUpTearDownMethodsByName : InstanceBehavior
         {
-            public void Execute(InstanceExecution instanceExecution, Action next)
+            public void Execute(Fixture fixture, Action next)
             {
-                instanceExecution.TestClass.TryInvoke("FixtureSetUp", instanceExecution.Instance);
+                fixture.TestClass.TryInvoke("FixtureSetUp", fixture.Instance);
                 next();
-                instanceExecution.TestClass.TryInvoke("FixtureTearDown", instanceExecution.Instance);
+                fixture.TestClass.TryInvoke("FixtureTearDown", fixture.Instance);
             }
         }
     }

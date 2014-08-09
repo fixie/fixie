@@ -70,10 +70,10 @@ namespace Fixie.Samples.xUnitStyle
 
         class InjectFixtureData : InstanceBehavior
         {
-            public void Execute(InstanceExecution instanceExecution, Action next)
+            public void Execute(Fixture fixture, Action next)
             {
                 foreach (var injectionMethod in fixtures.Keys)
-                    injectionMethod.Invoke(instanceExecution.Instance, new[] { fixtures[injectionMethod] });
+                    injectionMethod.Invoke(fixture.Instance, new[] { fixtures[injectionMethod] });
 
                 next();
             }

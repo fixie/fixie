@@ -74,7 +74,7 @@
     <Compile Include="Conventions\ClassBehaviorExpression.cs" />
     <Compile Include="Execution\FailResult.cs" />
     <Compile Include="Class.cs" />
-    <Compile Include="InstanceExecution.cs" />
+    <Compile Include="Fixture.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Execution\Behaviors\InvokeMethod.cs" />
     <Compile Include="CaseBehavior.cs" />

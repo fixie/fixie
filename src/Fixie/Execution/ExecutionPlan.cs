@@ -22,7 +22,7 @@ namespace Fixie.Execution
             classBehaviors.Execute(@class);
         }
 
-        static BehaviorChain<Class> BuildClassBehaviorChain(Configuration config, BehaviorChain<InstanceExecution> instanceBehaviors)
+        static BehaviorChain<Class> BuildClassBehaviorChain(Configuration config, BehaviorChain<Fixture> instanceBehaviors)
         {
             var chain = config.CustomClassBehaviors
                 .Select(customBehavior => (ClassBehavior)Activator.CreateInstance(customBehavior))
@@ -33,7 +33,7 @@ namespace Fixie.Execution
             return new BehaviorChain<Class>(chain);
         }
 
-        static BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(Configuration config, BehaviorChain<Case> caseBehaviors)
+        static BehaviorChain<Fixture> BuildInstanceBehaviorChain(Configuration config, BehaviorChain<Case> caseBehaviors)
         {
             var chain = config.CustomInstanceBehaviors
                 .Select(customBehavior => (InstanceBehavior)Activator.CreateInstance(customBehavior))
@@ -41,7 +41,7 @@ namespace Fixie.Execution
 
             chain.Add(new ExecuteCases(caseBehaviors));
 
-            return new BehaviorChain<InstanceExecution>(chain);
+            return new BehaviorChain<Fixture>(chain);
         }
 
         static BehaviorChain<Case> BuildCaseBehaviorChain(Configuration config)
@@ -55,7 +55,7 @@ namespace Fixie.Execution
             return new BehaviorChain<Case>(chain);
         }
 
-        static ClassBehavior GetInnermostBehavior(Configuration config, BehaviorChain<InstanceExecution> instanceBehaviors)
+        static ClassBehavior GetInnermostBehavior(Configuration config, BehaviorChain<Fixture> instanceBehaviors)
         {
             if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
                 return new CreateInstancePerCase(config.TestClassFactory, instanceBehaviors);

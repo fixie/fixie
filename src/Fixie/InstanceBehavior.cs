@@ -2,7 +2,7 @@
 
 namespace Fixie
 {
-    public interface InstanceBehavior : Behavior<InstanceExecution>
+    public interface InstanceBehavior : Behavior<Fixture>
     {
     }
 }

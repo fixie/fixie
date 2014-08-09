@@ -43,9 +43,9 @@ namespace Fixie.Samples.LowCeremony
         {
             public void Execute(Fixture fixture, Action next)
             {
-                fixture.TestClass.TryInvoke("FixtureSetUp", fixture.Instance);
+                fixture.Class.Type.TryInvoke("FixtureSetUp", fixture.Instance);
                 next();
-                fixture.TestClass.TryInvoke("FixtureTearDown", fixture.Instance);
+                fixture.Class.Type.TryInvoke("FixtureTearDown", fixture.Instance);
             }
         }
     }

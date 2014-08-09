@@ -126,13 +126,13 @@ namespace Fixie.Tests.Lifecycle
 
         protected static void FixtureSetUp(Fixture fixture)
         {
-            fixture.TestClass.ShouldEqual(typeof(SampleTestClass));
+            fixture.Class.Type.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
         }
 
         protected static void FixtureTearDown(Fixture fixture)
         {
-            fixture.TestClass.ShouldEqual(typeof(SampleTestClass));
+            fixture.Class.Type.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
         }
 

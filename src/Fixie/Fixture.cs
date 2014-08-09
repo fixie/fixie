@@ -6,14 +6,14 @@ namespace Fixie
 {
     public class Fixture : BehaviorContext
     {
-        public Fixture(Type testClass, object instance, IReadOnlyList<Case> cases)
+        public Fixture(Class @class, object instance, IReadOnlyList<Case> cases)
         {
-            TestClass = testClass;
+            Class = @class;
             Instance = instance;
             Cases = cases;
         }
 
-        public Type TestClass { get; private set; }
+        public Class Class { get; private set; }
         public object Instance { get; private set; }
         public IReadOnlyList<Case> Cases { get; private set; }
 

@@ -79,9 +79,9 @@ namespace Fixie.Samples.NUnitStyle
     {
         public void Execute(Fixture fixture, Action next)
         {
-            fixture.TestClass.InvokeAll<TestFixtureSetUpAttribute>(fixture.Instance);
+            fixture.Class.Type.InvokeAll<TestFixtureSetUpAttribute>(fixture.Instance);
             next();
-            fixture.TestClass.InvokeAll<TestFixtureTearDownAttribute>(fixture.Instance);
+            fixture.Class.Type.InvokeAll<TestFixtureTearDownAttribute>(fixture.Instance);
         }
     }
 

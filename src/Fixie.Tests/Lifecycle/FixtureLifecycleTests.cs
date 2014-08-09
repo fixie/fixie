@@ -39,8 +39,8 @@ namespace Fixie.Tests.Lifecycle
         {
             public void Execute(Fixture fixture, Action next)
             {
-                Console.WriteLine("Unsafe instance execution behavior");
-                throw new Exception("Unsafe instance execution behavior threw!");
+                Console.WriteLine("Unsafe fixture execution behavior");
+                throw new Exception("Unsafe fixture execution behavior threw!");
             }
         }
 
@@ -48,10 +48,10 @@ namespace Fixie.Tests.Lifecycle
         {
             public void Execute(Fixture fixture, Action next)
             {
-                Console.WriteLine("Unsafe instance execution behavior");
+                Console.WriteLine("Unsafe fixture execution behavior");
                 try
                 {
-                    throw new Exception("Unsafe instance execution behavior threw!");
+                    throw new Exception("Unsafe fixture execution behavior threw!");
                 }
                 catch (Exception originalException)
                 {
@@ -60,7 +60,7 @@ namespace Fixie.Tests.Lifecycle
             }
         }
 
-        public void ShouldAllowWrappingInstanceWithBehaviorsWhenConstructingPerCase()
+        public void ShouldAllowWrappingFixtureWithBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
@@ -88,7 +88,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingInstanceWithBehaviorsWhenConstructingPerClass()
+        public void ShouldAllowWrappingFixtureWithBehaviorsWhenConstructingPerClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass();
@@ -111,7 +111,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowInstanceBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerCase()
+        public void ShouldAllowFixtureBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
@@ -132,7 +132,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowInstanceBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerClass()
+        public void ShouldAllowFixtureBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass();
@@ -151,7 +151,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailCaseWhenConstructingPerCaseAndInstanceBehaviorThrows()
+        public void ShouldFailCaseWhenConstructingPerCaseAndFixtureBehaviorThrows()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
@@ -162,19 +162,19 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Unsafe instance execution behavior threw!",
-                "SampleTestClass.Fail failed: Unsafe instance execution behavior threw!");
+                "SampleTestClass.Pass failed: Unsafe fixture execution behavior threw!",
+                "SampleTestClass.Fail failed: Unsafe fixture execution behavior threw!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "Unsafe instance execution behavior",
+                "Unsafe fixture execution behavior",
                 "Dispose",
                 ".ctor",
-                "Unsafe instance execution behavior",
+                "Unsafe fixture execution behavior",
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerClassAndInstanceBehaviorThrows()
+        public void ShouldFailAllCasesWhenConstructingPerClassAndFixtureBehaviorThrows()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass();
@@ -185,16 +185,16 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Unsafe instance execution behavior threw!",
-                "SampleTestClass.Fail failed: Unsafe instance execution behavior threw!");
+                "SampleTestClass.Pass failed: Unsafe fixture execution behavior threw!",
+                "SampleTestClass.Fail failed: Unsafe fixture execution behavior threw!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "Unsafe instance execution behavior",
+                "Unsafe fixture execution behavior",
                 "Dispose");
         }
 
-        public void ShouldFailCaseWithOriginalExceptionWhenConstructingPerCaseAndInstanceBehaviorThrowsPreservedException()
+        public void ShouldFailCaseWithOriginalExceptionWhenConstructingPerCaseAndFixtureBehaviorThrowsPreservedException()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
@@ -205,19 +205,19 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Unsafe instance execution behavior threw!",
-                "SampleTestClass.Fail failed: Unsafe instance execution behavior threw!");
+                "SampleTestClass.Pass failed: Unsafe fixture execution behavior threw!",
+                "SampleTestClass.Fail failed: Unsafe fixture execution behavior threw!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "Unsafe instance execution behavior",
+                "Unsafe fixture execution behavior",
                 "Dispose",
                 ".ctor",
-                "Unsafe instance execution behavior",
+                "Unsafe fixture execution behavior",
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWithOriginalExceptionWhenConstructingPerClassAndInstanceBehaviorThrowsPreservedException()
+        public void ShouldFailAllCasesWithOriginalExceptionWhenConstructingPerClassAndFixtureBehaviorThrowsPreservedException()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass();
@@ -228,16 +228,16 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Unsafe instance execution behavior threw!",
-                "SampleTestClass.Fail failed: Unsafe instance execution behavior threw!");
+                "SampleTestClass.Pass failed: Unsafe fixture execution behavior threw!",
+                "SampleTestClass.Fail failed: Unsafe fixture execution behavior threw!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "Unsafe instance execution behavior",
+                "Unsafe fixture execution behavior",
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingInstanceWithSetUpTearDownBehaviorsWhenConstructingPerCase()
+        public void ShouldAllowWrappingFixtureWithSetUpTearDownBehaviorsWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
@@ -264,7 +264,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingInstanceWithSetUpTearDownBehaviorsWhenConstructingPerClass()
+        public void ShouldAllowWrappingFixtureWithSetUpTearDownBehaviorsWhenConstructingPerClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass();
@@ -286,7 +286,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndInstanceSetUpThrows()
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndFixtureSetUpThrows()
         {
             FailDuring("FixtureSetUp");
 
@@ -311,7 +311,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerClassAndInstanceSetUpThrows()
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerClassAndFixtureSetUpThrows()
         {
             FailDuring("FixtureSetUp");
 
@@ -333,7 +333,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailCaseWhenConstructingPerCaseAndInstanceTearDownThrows()
+        public void ShouldFailCaseWhenConstructingPerCaseAndFixtureTearDownThrows()
         {
             FailDuring("FixtureTearDown");
 
@@ -363,7 +363,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerClassAndInstanceTearDownThrows()
+        public void ShouldFailAllCasesWhenConstructingPerClassAndFixtureTearDownThrows()
         {
             FailDuring("FixtureTearDown");
 

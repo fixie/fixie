@@ -10,7 +10,7 @@ namespace Fixie.Conventions
         readonly List<Func<MethodInfo, bool>> testMethodConditions;
 
         readonly List<Type> customClassBehaviors;
-        readonly List<Type> customInstanceBehaviors;
+        readonly List<Type> customFixtureBehaviors;
         readonly List<Type> customCaseBehaviors;
         readonly List<Type> assertionLibraryTypes;
 
@@ -36,7 +36,7 @@ namespace Fixie.Conventions
             };
 
             customClassBehaviors = new List<Type>();
-            customInstanceBehaviors = new List<Type>();
+            customFixtureBehaviors = new List<Type>();
             customCaseBehaviors = new List<Type>();
             assertionLibraryTypes = new List<Type>();
         }
@@ -95,9 +95,9 @@ namespace Fixie.Conventions
             customClassBehaviors.Insert(0, typeof(TClassBehavior));
         }
 
-        public void WrapInstances<TInstanceBehavior>() where TInstanceBehavior : FixtureBehavior
+        public void WrapFixtures<TFixtureBehavior>() where TFixtureBehavior : FixtureBehavior
         {
-            customInstanceBehaviors.Insert(0, typeof(TInstanceBehavior));
+            customFixtureBehaviors.Insert(0, typeof(TFixtureBehavior));
         }
 
         public void WrapCases<TCaseBehavior>() where TCaseBehavior : CaseBehavior
@@ -113,7 +113,7 @@ namespace Fixie.Conventions
         public IReadOnlyList<Func<Type, bool>> TestClassConditions { get { return testClassConditions; } }
         public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions { get { return testMethodConditions; } }
         public IReadOnlyList<Type> CustomClassBehaviors { get { return customClassBehaviors; } }
-        public IReadOnlyList<Type> CustomInstanceBehaviors { get { return customInstanceBehaviors; } }
+        public IReadOnlyList<Type> CustomFixtureBehaviors { get { return customFixtureBehaviors; } }
         public IReadOnlyList<Type> CustomCaseBehaviors { get { return customCaseBehaviors; } }
         public IReadOnlyList<Type> AssertionLibraryTypes { get { return assertionLibraryTypes; } }
     }

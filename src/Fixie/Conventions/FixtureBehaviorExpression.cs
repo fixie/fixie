@@ -9,9 +9,9 @@
             this.config = config;
         }
 
-        public FixtureBehaviorExpression Wrap<TInstanceBehavior>() where TInstanceBehavior : FixtureBehavior
+        public FixtureBehaviorExpression Wrap<TFixtureBehavior>() where TFixtureBehavior : FixtureBehavior
         {
-            config.WrapInstances<TInstanceBehavior>();
+            config.WrapFixtures<TFixtureBehavior>();
             return this;
         }
     }

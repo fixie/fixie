@@ -13,7 +13,7 @@ namespace Fixie.Execution
         {
             classBehaviors =
                 BuildClassBehaviorChain(config,
-                    BuildInstanceBehaviorChain(config,
+                    BuildFixtureBehaviorChain(config,
                         BuildCaseBehaviorChain(config)));
         }
 
@@ -22,20 +22,20 @@ namespace Fixie.Execution
             classBehaviors.Execute(@class);
         }
 
-        static BehaviorChain<Class> BuildClassBehaviorChain(Configuration config, BehaviorChain<Fixture> instanceBehaviors)
+        static BehaviorChain<Class> BuildClassBehaviorChain(Configuration config, BehaviorChain<Fixture> fixtureBehaviors)
         {
             var chain = config.CustomClassBehaviors
                 .Select(customBehavior => (ClassBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
-            chain.Add(GetInnermostBehavior(config, instanceBehaviors));
+            chain.Add(GetInnermostBehavior(config, fixtureBehaviors));
 
             return new BehaviorChain<Class>(chain);
         }
 
-        static BehaviorChain<Fixture> BuildInstanceBehaviorChain(Configuration config, BehaviorChain<Case> caseBehaviors)
+        static BehaviorChain<Fixture> BuildFixtureBehaviorChain(Configuration config, BehaviorChain<Case> caseBehaviors)
         {
-            var chain = config.CustomInstanceBehaviors
+            var chain = config.CustomFixtureBehaviors
                 .Select(customBehavior => (FixtureBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
@@ -55,12 +55,12 @@ namespace Fixie.Execution
             return new BehaviorChain<Case>(chain);
         }
 
-        static ClassBehavior GetInnermostBehavior(Configuration config, BehaviorChain<Fixture> instanceBehaviors)
+        static ClassBehavior GetInnermostBehavior(Configuration config, BehaviorChain<Fixture> fixtureBehaviors)
         {
             if (config.ConstructionFrequency == ConstructionFrequency.PerCase)
-                return new CreateInstancePerCase(config.TestClassFactory, instanceBehaviors);
+                return new CreateInstancePerCase(config.TestClassFactory, fixtureBehaviors);
 
-            return new CreateInstancePerClass(config.TestClassFactory, instanceBehaviors);
+            return new CreateInstancePerClass(config.TestClassFactory, fixtureBehaviors);
         }
     }
 }

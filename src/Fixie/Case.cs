@@ -45,5 +45,7 @@ namespace Fixie
         {
             Execution.Fail(reason);
         }
+
+        public object Instance { get; internal set; }
     }
 }

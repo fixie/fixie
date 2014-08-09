@@ -33,9 +33,9 @@ namespace Fixie.Samples.LowCeremony
         {
             public void Execute(Case @case, Action next)
             {
-                @case.Class.TryInvoke("SetUp", @case.Execution.Instance);
+                @case.Class.TryInvoke("SetUp", @case.Instance);
                 next();
-                @case.Class.TryInvoke("TearDown", @case.Execution.Instance);
+                @case.Class.TryInvoke("TearDown", @case.Instance);
             }
         }
 

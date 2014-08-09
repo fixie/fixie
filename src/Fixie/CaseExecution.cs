@@ -11,8 +11,6 @@ namespace Fixie
         {
             exceptions = new List<Exception>();
         }
-
-        public object Instance { get; internal set; }
         
         public TimeSpan Duration { get; internal set; }
 

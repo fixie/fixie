@@ -15,7 +15,7 @@ namespace Fixie.Execution
             Parameters = @case.Parameters;
 
             Output = @case.Execution.Output;
-            Duration = @case.Execution.Duration;
+            Duration = @case.Duration;
             Exceptions = new CompoundException(@case.Execution.Exceptions, filter);
         }
 

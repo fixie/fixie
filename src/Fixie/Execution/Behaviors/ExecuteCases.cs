@@ -35,7 +35,7 @@ namespace Fixie.Execution.Behaviors
                     stopwatch.Stop();
 
                     @case.Instance = null;
-                    @case.Execution.Duration = stopwatch.Elapsed;
+                    @case.Duration = stopwatch.Elapsed;
                     @case.Execution.Output = console.Output;
                 }
 

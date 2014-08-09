@@ -14,7 +14,7 @@ namespace Fixie.Execution
             Parameters = @case.Parameters;
 
             Output = @case.Execution.Output;
-            Duration = @case.Execution.Duration;
+            Duration = @case.Duration;
         }
 
         public string Name { get; private set; }

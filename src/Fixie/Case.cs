@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fixie.Discovery;
@@ -41,9 +42,14 @@ namespace Fixie
         public object[] Parameters { get; private set; }
 
         public CaseExecution Execution { get; private set; }
+        public IReadOnlyList<Exception> Exceptions { get { return Execution.Exceptions; } }
         public void Fail(Exception reason)
         {
             Execution.Fail(reason);
+        }
+        public void ClearExceptions()
+        {
+            Execution.ClearExceptions();
         }
 
         public object Instance { get; internal set; }

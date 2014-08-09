@@ -5,11 +5,11 @@ namespace Fixie.Tests
 {
     public class CaseExecutionTests
     {
-        readonly CaseExecution execution;
+        readonly Case @case;
 
         public CaseExecutionTests()
         {
-            execution = new CaseExecution();
+            @case = new Case(typeof(SampleTestClass).GetInstanceMethod("TestMethod"));
         }
 
         public void ShouldTrackExceptionsAsFailureReasons()
@@ -17,10 +17,10 @@ namespace Fixie.Tests
             var exceptionA = new InvalidOperationException();
             var exceptionB = new DivideByZeroException();
 
-            execution.Exceptions.ShouldBeEmpty();
-            execution.Fail(exceptionA);
-            execution.Fail(exceptionB);
-            execution.Exceptions.ShouldEqual(exceptionA, exceptionB);
+            @case.Exceptions.ShouldBeEmpty();
+            @case.Fail(exceptionA);
+            @case.Fail(exceptionB);
+            @case.Exceptions.ShouldEqual(exceptionA, exceptionB);
         }
 
         public void CanSuppressFailuresByClearingExceptionLog()
@@ -28,11 +28,18 @@ namespace Fixie.Tests
             var exceptionA = new InvalidOperationException();
             var exceptionB = new DivideByZeroException();
 
-            execution.Exceptions.ShouldBeEmpty();
-            execution.Fail(exceptionA);
-            execution.Fail(exceptionB);
-            execution.ClearExceptions();
-            execution.Exceptions.ShouldBeEmpty();
+            @case.Exceptions.ShouldBeEmpty();
+            @case.Fail(exceptionA);
+            @case.Fail(exceptionB);
+            @case.ClearExceptions();
+            @case.Exceptions.ShouldBeEmpty();
+        }
+
+        class SampleTestClass
+        {
+            public void TestMethod()
+            {
+            }
         }
     }
 }

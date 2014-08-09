@@ -48,5 +48,6 @@ namespace Fixie
 
         public object Instance { get; internal set; }
         public TimeSpan Duration { get; internal set; }
+        public string Output { get; internal set; }
     }
 }

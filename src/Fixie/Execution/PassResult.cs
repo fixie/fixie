@@ -13,7 +13,7 @@ namespace Fixie.Execution
             Method = @case.Method;
             Parameters = @case.Parameters;
 
-            Output = @case.Execution.Output;
+            Output = @case.Output;
             Duration = @case.Duration;
         }
 

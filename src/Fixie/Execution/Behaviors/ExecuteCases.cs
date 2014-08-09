@@ -36,10 +36,10 @@ namespace Fixie.Execution.Behaviors
 
                     @case.Instance = null;
                     @case.Duration = stopwatch.Elapsed;
-                    @case.Execution.Output = console.Output;
+                    @case.Output = console.Output;
                 }
 
-                Console.Write(@case.Execution.Output);
+                Console.Write(@case.Output);
             }
         }
     }

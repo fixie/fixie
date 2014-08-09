@@ -2,7 +2,7 @@ using System;
 
 namespace Fixie.Tests.Lifecycle
 {
-    public class InstanceLifecycleTests : LifecycleTests
+    public class FixtureLifecycleTests : LifecycleTests
     {
         class Inner : FixtureBehavior
         {

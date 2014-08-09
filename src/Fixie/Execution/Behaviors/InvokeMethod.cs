@@ -18,10 +18,10 @@ namespace Fixie.Execution.Behaviors
                 if (isDeclaredAsync && method.IsVoid())
                     ThrowForUnsupportedAsyncVoid();
 
-                object result;
+                object returnValue;
                 try
                 {
-                    result = method.Invoke(@case.Fixture.Instance, @case.Parameters);
+                    returnValue = method.Invoke(@case.Fixture.Instance, @case.Parameters);
                 }
                 catch (TargetInvocationException exception)
                 {
@@ -30,7 +30,7 @@ namespace Fixie.Execution.Behaviors
 
                 if (isDeclaredAsync)
                 {
-                    var task = (Task)result;
+                    var task = (Task)returnValue;
                     try
                     {
                         task.Wait();
@@ -44,15 +44,15 @@ namespace Fixie.Execution.Behaviors
                     {
                         var property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public);
 
-                        result = property.GetValue(task, null);
+                        returnValue = property.GetValue(task, null);
                     }
                     else
                     {
-                        result = null;
+                        returnValue = null;
                     }
                 }
 
-                @case.Result = result;
+                @case.ReturnValue = returnValue;
             }
             catch (Exception exception)
             {

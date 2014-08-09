@@ -73,7 +73,7 @@
     <Compile Include="Conventions\CaseBehaviorExpression.cs" />
     <Compile Include="Conventions\ClassBehaviorExpression.cs" />
     <Compile Include="Execution\FailResult.cs" />
-    <Compile Include="TestClass.cs" />
+    <Compile Include="Class.cs" />
     <Compile Include="InstanceExecution.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Execution\Behaviors\InvokeMethod.cs" />

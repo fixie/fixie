@@ -15,15 +15,15 @@ namespace Fixie.Execution.Behaviors
             this.instanceBehaviors = instanceBehaviors;
         }
 
-        public void Execute(TestClass testClass, Action next)
+        public void Execute(Class @class, Action next)
         {
             try
             {
-                PerformClassLifecycle(testClass.Type, testClass.Cases);
+                PerformClassLifecycle(@class.Type, @class.Cases);
             }
             catch (Exception exception)
             {
-                testClass.Fail(exception);
+                @class.Fail(exception);
             }
         }
 

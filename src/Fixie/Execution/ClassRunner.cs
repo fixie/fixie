@@ -102,7 +102,7 @@ namespace Fixie.Execution
 
         void Run(Type testClass, Case[] casesToExecute)
         {
-            executionPlan.ExecuteClassBehaviors(new TestClass(testClass, casesToExecute));
+            executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
         }
 
         CaseResult Skip(Case @case)

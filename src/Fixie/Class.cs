@@ -4,9 +4,9 @@ using Fixie.Execution;
 
 namespace Fixie
 {
-    public class TestClass : BehaviorContext
+    public class Class : BehaviorContext
     {
-        public TestClass(Type type, IReadOnlyList<Case> cases)
+        public Class(Type type, IReadOnlyList<Case> cases)
         {
             Type = type;
             Cases = cases;

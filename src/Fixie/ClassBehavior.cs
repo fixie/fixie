@@ -2,7 +2,7 @@
 
 namespace Fixie
 {
-    public interface ClassBehavior : Behavior<TestClass>
+    public interface ClassBehavior : Behavior<Class>
     {
     }
 }

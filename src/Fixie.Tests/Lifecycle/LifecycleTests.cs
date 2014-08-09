@@ -124,13 +124,13 @@ namespace Fixie.Tests.Lifecycle
             WhereAmI();
         }
 
-        protected static void InstanceSetUp(Fixture fixture)
+        protected static void FixtureSetUp(Fixture fixture)
         {
             fixture.TestClass.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
         }
 
-        protected static void InstanceTearDown(Fixture fixture)
+        protected static void FixtureTearDown(Fixture fixture)
         {
             fixture.TestClass.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
@@ -168,13 +168,13 @@ namespace Fixie.Tests.Lifecycle
             }
         }
 
-        protected class InstanceSetUpTearDown : InstanceBehavior
+        protected class FixtureSetUpTearDown : FixtureBehavior
         {
             public void Execute(Fixture fixture, Action next)
             {
-                InstanceSetUp(fixture);
+                FixtureSetUp(fixture);
                 next();
-                InstanceTearDown(fixture);
+                FixtureTearDown(fixture);
             }
         }
 

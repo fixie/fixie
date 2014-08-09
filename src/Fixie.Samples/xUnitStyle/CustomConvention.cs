@@ -68,7 +68,7 @@ namespace Fixie.Samples.xUnitStyle
             }
         }
 
-        class InjectFixtureData : InstanceBehavior
+        class InjectFixtureData : FixtureBehavior
         {
             public void Execute(Fixture fixture, Action next)
             {

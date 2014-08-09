@@ -11,7 +11,7 @@ namespace Fixie.Tests.Lifecycle
                       .Wrap<ClassSetUpTearDown>();
 
             Convention.InstanceExecution
-                      .Wrap<InstanceSetUpTearDown>();
+                      .Wrap<FixtureSetUpTearDown>();
 
             Convention.CaseExecution
                       .Wrap<CaseSetUpTearDown>();
@@ -26,19 +26,19 @@ namespace Fixie.Tests.Lifecycle
                 "ClassSetUp",
 
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "CaseSetUp",
                 "Pass",
                 "CaseTearDown",
-                "InstanceTearDown",
+                "FixtureTearDown",
                 "Dispose",
 
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "CaseSetUp",
                 "Fail",
                 "CaseTearDown",
-                "InstanceTearDown",
+                "FixtureTearDown",
                 "Dispose",
 
                 "ClassTearDown");
@@ -51,7 +51,7 @@ namespace Fixie.Tests.Lifecycle
                       .Wrap<ClassSetUpTearDown>();
 
             Convention.InstanceExecution
-                      .Wrap<InstanceSetUpTearDown>();
+                      .Wrap<FixtureSetUpTearDown>();
 
             Convention.CaseExecution
                       .Wrap<CaseSetUpTearDown>();
@@ -66,7 +66,7 @@ namespace Fixie.Tests.Lifecycle
                 "ClassSetUp",
                 ".ctor",
 
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "CaseSetUp",
                 "Pass",
                 "CaseTearDown",
@@ -74,7 +74,7 @@ namespace Fixie.Tests.Lifecycle
                 "CaseSetUp",
                 "Fail",
                 "CaseTearDown",
-                "InstanceTearDown",
+                "FixtureTearDown",
 
                 "Dispose",
                 "ClassTearDown");
@@ -82,14 +82,14 @@ namespace Fixie.Tests.Lifecycle
 
         public void ShouldIncludeAllTearDownAndDisposalExceptionsInResultWhenConstructingPerCase()
         {
-            FailDuring("ClassTearDown", "InstanceTearDown", "CaseTearDown", "Dispose");
+            FailDuring("ClassTearDown", "FixtureTearDown", "CaseTearDown", "Dispose");
 
             Convention.ClassExecution
                       .CreateInstancePerCase()
                       .Wrap<ClassSetUpTearDown>();
 
             Convention.InstanceExecution
-                      .Wrap<InstanceSetUpTearDown>();
+                      .Wrap<FixtureSetUpTearDown>();
 
             Convention.CaseExecution
                       .Wrap<CaseSetUpTearDown>();
@@ -98,12 +98,12 @@ namespace Fixie.Tests.Lifecycle
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!" + Environment.NewLine +
-	            "    Secondary Failure: 'InstanceTearDown' failed!" + Environment.NewLine +
+	            "    Secondary Failure: 'FixtureTearDown' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'ClassTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
 	            "    Secondary Failure: 'CaseTearDown' failed!" + Environment.NewLine +
-	            "    Secondary Failure: 'InstanceTearDown' failed!" + Environment.NewLine +
+	            "    Secondary Failure: 'FixtureTearDown' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'ClassTearDown' failed!");
 
@@ -111,19 +111,19 @@ namespace Fixie.Tests.Lifecycle
                 "ClassSetUp",
 
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "CaseSetUp",
                 "Pass",
                 "CaseTearDown",
-                "InstanceTearDown",
+                "FixtureTearDown",
                 "Dispose",
 
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "CaseSetUp",
                 "Fail",
                 "CaseTearDown",
-                "InstanceTearDown",
+                "FixtureTearDown",
                 "Dispose",
 
                 "ClassTearDown");
@@ -131,14 +131,14 @@ namespace Fixie.Tests.Lifecycle
 
         public void ShouldIncludeAllTearDownAndDisposalExceptionsInResultWhenConstructingPerClass()
         {
-            FailDuring("ClassTearDown", "InstanceTearDown", "CaseTearDown", "Dispose");
+            FailDuring("ClassTearDown", "FixtureTearDown", "CaseTearDown", "Dispose");
 
             Convention.ClassExecution
                       .CreateInstancePerClass()
                       .Wrap<ClassSetUpTearDown>();
 
             Convention.InstanceExecution
-                      .Wrap<InstanceSetUpTearDown>();
+                      .Wrap<FixtureSetUpTearDown>();
 
             Convention.CaseExecution
                       .Wrap<CaseSetUpTearDown>();
@@ -147,12 +147,12 @@ namespace Fixie.Tests.Lifecycle
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'InstanceTearDown' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'FixtureTearDown' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'ClassTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'CaseTearDown' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'InstanceTearDown' failed!" + Environment.NewLine +
+                "    Secondary Failure: 'FixtureTearDown' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
                 "    Secondary Failure: 'ClassTearDown' failed!");
 
@@ -160,7 +160,7 @@ namespace Fixie.Tests.Lifecycle
                 "ClassSetUp",
                 ".ctor",
 
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "CaseSetUp",
                 "Pass",
                 "CaseTearDown",
@@ -168,7 +168,7 @@ namespace Fixie.Tests.Lifecycle
                 "CaseSetUp",
                 "Fail",
                 "CaseTearDown",
-                "InstanceTearDown",
+                "FixtureTearDown",
 
                 "Dispose",
                 "ClassTearDown");

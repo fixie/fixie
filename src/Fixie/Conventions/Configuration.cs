@@ -95,7 +95,7 @@ namespace Fixie.Conventions
             customClassBehaviors.Insert(0, typeof(TClassBehavior));
         }
 
-        public void WrapInstances<TInstanceBehavior>() where TInstanceBehavior : InstanceBehavior
+        public void WrapInstances<TInstanceBehavior>() where TInstanceBehavior : FixtureBehavior
         {
             customInstanceBehaviors.Insert(0, typeof(TInstanceBehavior));
         }

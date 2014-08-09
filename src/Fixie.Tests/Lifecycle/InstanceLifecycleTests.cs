@@ -4,7 +4,7 @@ namespace Fixie.Tests.Lifecycle
 {
     public class InstanceLifecycleTests : LifecycleTests
     {
-        class Inner : InstanceBehavior
+        class Inner : FixtureBehavior
         {
             public void Execute(Fixture fixture, Action next)
             {
@@ -14,7 +14,7 @@ namespace Fixie.Tests.Lifecycle
             }
         }
 
-        class Outer : InstanceBehavior
+        class Outer : FixtureBehavior
         {
             public void Execute(Fixture fixture, Action next)
             {
@@ -24,7 +24,7 @@ namespace Fixie.Tests.Lifecycle
             }
         }
 
-        class DoNothing : InstanceBehavior
+        class DoNothing : FixtureBehavior
         {
             public void Execute(Fixture fixture, Action next)
             {
@@ -35,7 +35,7 @@ namespace Fixie.Tests.Lifecycle
             }
         }
 
-        class ThrowException : InstanceBehavior
+        class ThrowException : FixtureBehavior
         {
             public void Execute(Fixture fixture, Action next)
             {
@@ -44,7 +44,7 @@ namespace Fixie.Tests.Lifecycle
             }
         }
 
-        class ThrowPreservedException : InstanceBehavior
+        class ThrowPreservedException : FixtureBehavior
         {
             public void Execute(Fixture fixture, Action next)
             {
@@ -243,7 +243,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase();
 
             Convention.InstanceExecution
-                      .Wrap<InstanceSetUpTearDown>();
+                      .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();
 
@@ -253,14 +253,14 @@ namespace Fixie.Tests.Lifecycle
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "Pass",
-                "InstanceTearDown",
+                "FixtureTearDown",
                 "Dispose",
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "Fail",
-                "InstanceTearDown",
+                "FixtureTearDown",
                 "Dispose");
         }
 
@@ -270,7 +270,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass();
 
             Convention.InstanceExecution
-                      .Wrap<InstanceSetUpTearDown>();
+                      .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();
 
@@ -280,111 +280,111 @@ namespace Fixie.Tests.Lifecycle
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "Pass", "Fail",
-                "InstanceTearDown",
+                "FixtureTearDown",
                 "Dispose");
         }
 
         public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndInstanceSetUpThrows()
         {
-            FailDuring("InstanceSetUp");
+            FailDuring("FixtureSetUp");
 
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
             Convention.InstanceExecution
-                      .Wrap<InstanceSetUpTearDown>();
+                      .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'InstanceSetUp' failed!",
-                "SampleTestClass.Fail failed: 'InstanceSetUp' failed!");
+                "SampleTestClass.Pass failed: 'FixtureSetUp' failed!",
+                "SampleTestClass.Fail failed: 'FixtureSetUp' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "Dispose",
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "Dispose");
         }
 
         public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerClassAndInstanceSetUpThrows()
         {
-            FailDuring("InstanceSetUp");
+            FailDuring("FixtureSetUp");
 
             Convention.ClassExecution
                       .CreateInstancePerClass();
 
             Convention.InstanceExecution
-                      .Wrap<InstanceSetUpTearDown>();
+                      .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'InstanceSetUp' failed!",
-                "SampleTestClass.Fail failed: 'InstanceSetUp' failed!");
+                "SampleTestClass.Pass failed: 'FixtureSetUp' failed!",
+                "SampleTestClass.Fail failed: 'FixtureSetUp' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "Dispose");
         }
 
         public void ShouldFailCaseWhenConstructingPerCaseAndInstanceTearDownThrows()
         {
-            FailDuring("InstanceTearDown");
+            FailDuring("FixtureTearDown");
 
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
             Convention.InstanceExecution
-                      .Wrap<InstanceSetUpTearDown>();
+                      .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'InstanceTearDown' failed!",
+                "SampleTestClass.Pass failed: 'FixtureTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'InstanceTearDown' failed!");
+                "    Secondary Failure: 'FixtureTearDown' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "Pass",
-                "InstanceTearDown",
+                "FixtureTearDown",
                 "Dispose",
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "Fail",
-                "InstanceTearDown",
+                "FixtureTearDown",
                 "Dispose");
         }
 
         public void ShouldFailAllCasesWhenConstructingPerClassAndInstanceTearDownThrows()
         {
-            FailDuring("InstanceTearDown");
+            FailDuring("FixtureTearDown");
 
             Convention.ClassExecution
                       .CreateInstancePerClass();
 
             Convention.InstanceExecution
-                      .Wrap<InstanceSetUpTearDown>();
+                      .Wrap<FixtureSetUpTearDown>();
 
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'InstanceTearDown' failed!",
+                "SampleTestClass.Pass failed: 'FixtureTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'InstanceTearDown' failed!");
+                "    Secondary Failure: 'FixtureTearDown' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "InstanceSetUp",
+                "FixtureSetUp",
                 "Pass", "Fail",
-                "InstanceTearDown",
+                "FixtureTearDown",
                 "Dispose");
         }
     }

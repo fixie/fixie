@@ -75,7 +75,7 @@ namespace Fixie.Samples.NUnitStyle
         }
     }
 
-    class FixtureSetUpTearDown : InstanceBehavior
+    class FixtureSetUpTearDown : FixtureBehavior
     {
         public void Execute(Fixture fixture, Action next)
         {

@@ -36,7 +36,7 @@ namespace Fixie.Execution
         static BehaviorChain<Fixture> BuildInstanceBehaviorChain(Configuration config, BehaviorChain<Case> caseBehaviors)
         {
             var chain = config.CustomInstanceBehaviors
-                .Select(customBehavior => (InstanceBehavior)Activator.CreateInstance(customBehavior))
+                .Select(customBehavior => (FixtureBehavior)Activator.CreateInstance(customBehavior))
                 .ToList();
 
             chain.Add(new ExecuteCases(caseBehaviors));

@@ -39,7 +39,7 @@ namespace Fixie.Samples.LowCeremony
             }
         }
 
-        class CallFixtureSetUpTearDownMethodsByName : InstanceBehavior
+        class CallFixtureSetUpTearDownMethodsByName : FixtureBehavior
         {
             public void Execute(Fixture fixture, Action next)
             {

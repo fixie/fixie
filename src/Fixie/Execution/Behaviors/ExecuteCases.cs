@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Fixie.Execution.Behaviors
 {
-    public class ExecuteCases : InstanceBehavior
+    public class ExecuteCases : FixtureBehavior
     {
         readonly BehaviorChain<Case> caseBehaviors;
 

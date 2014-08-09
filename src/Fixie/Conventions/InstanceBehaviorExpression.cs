@@ -9,7 +9,7 @@
             this.config = config;
         }
 
-        public InstanceBehaviorExpression Wrap<TInstanceBehavior>() where TInstanceBehavior : InstanceBehavior
+        public InstanceBehaviorExpression Wrap<TInstanceBehavior>() where TInstanceBehavior : FixtureBehavior
         {
             config.WrapInstances<TInstanceBehavior>();
             return this;

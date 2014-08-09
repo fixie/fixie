@@ -69,9 +69,9 @@ namespace Fixie.Samples.NUnitStyle
     {
         public void Execute(Case @case, Action next)
         {
-            @case.Class.InvokeAll<SetUpAttribute>(@case.Instance);
+            @case.Class.InvokeAll<SetUpAttribute>(@case.Fixture.Instance);
             next();
-            @case.Class.InvokeAll<TearDownAttribute>(@case.Instance);
+            @case.Class.InvokeAll<TearDownAttribute>(@case.Fixture.Instance);
         }
     }
 

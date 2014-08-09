@@ -21,7 +21,7 @@ namespace Fixie.Execution.Behaviors
                 object result;
                 try
                 {
-                    result = method.Invoke(@case.Instance, @case.Parameters);
+                    result = method.Invoke(@case.Fixture.Instance, @case.Parameters);
                 }
                 catch (TargetInvocationException exception)
                 {

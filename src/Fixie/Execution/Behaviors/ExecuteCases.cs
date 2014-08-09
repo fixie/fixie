@@ -18,7 +18,7 @@ namespace Fixie.Execution.Behaviors
             {
                 using (var console = new RedirectedConsole())
                 {
-                    @case.Instance = instanceExecution.Instance;
+                    @case.Fixture = instanceExecution;
 
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();
@@ -34,7 +34,7 @@ namespace Fixie.Execution.Behaviors
 
                     stopwatch.Stop();
 
-                    @case.Instance = null;
+                    @case.Fixture = null;
                     @case.Duration = stopwatch.Elapsed;
                     @case.Output = console.Output;
                 }

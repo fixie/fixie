@@ -7,7 +7,7 @@ namespace Fixie.Execution
 {
     public class ExecutionPlan
     {
-        readonly BehaviorChain<ClassExecution> classBehaviors;
+        readonly BehaviorChain<TestClass> classBehaviors;
 
         public ExecutionPlan(Configuration config)
         {
@@ -17,12 +17,12 @@ namespace Fixie.Execution
                         BuildCaseBehaviorChain(config)));
         }
 
-        public void ExecuteClassBehaviors(ClassExecution classExecution)
+        public void ExecuteClassBehaviors(TestClass testClass)
         {
-            classBehaviors.Execute(classExecution);
+            classBehaviors.Execute(testClass);
         }
 
-        static BehaviorChain<ClassExecution> BuildClassBehaviorChain(Configuration config, BehaviorChain<InstanceExecution> instanceBehaviors)
+        static BehaviorChain<TestClass> BuildClassBehaviorChain(Configuration config, BehaviorChain<InstanceExecution> instanceBehaviors)
         {
             var chain = config.CustomClassBehaviors
                 .Select(customBehavior => (ClassBehavior)Activator.CreateInstance(customBehavior))
@@ -30,7 +30,7 @@ namespace Fixie.Execution
 
             chain.Add(GetInnermostBehavior(config, instanceBehaviors));
 
-            return new BehaviorChain<ClassExecution>(chain);
+            return new BehaviorChain<TestClass>(chain);
         }
 
         static BehaviorChain<InstanceExecution> BuildInstanceBehaviorChain(Configuration config, BehaviorChain<Case> caseBehaviors)

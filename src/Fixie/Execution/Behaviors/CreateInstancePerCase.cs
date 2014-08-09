@@ -14,13 +14,13 @@ namespace Fixie.Execution.Behaviors
             this.instanceBehaviors = instanceBehaviors;
         }
 
-        public void Execute(ClassExecution classExecution, Action next)
+        public void Execute(TestClass testClass, Action next)
         {
-            foreach (var @case in classExecution.Cases)
+            foreach (var @case in testClass.Cases)
             {
                 try
                 {
-                    PerformClassLifecycle(classExecution.Type, new[] { @case });
+                    PerformClassLifecycle(testClass.Type, new[] { @case });
                 }
                 catch (Exception exception)
                 {

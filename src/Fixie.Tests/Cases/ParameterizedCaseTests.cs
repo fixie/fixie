@@ -10,7 +10,7 @@ namespace Fixie.Tests.Cases
     {
         public void ShouldAllowConventionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
-            Convention.Parameters(ParametersFromAttributesWithTypeDefaultFallback);
+            Convention.Parameters.Add<ParametersFromAttributesWithTypeDefaultFallback>();
 
             Run<ParameterizedTestClass>();
 
@@ -34,7 +34,7 @@ namespace Fixie.Tests.Cases
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
         {
-            Convention.Parameters(ZeroSetsOfInputParameters);
+            Convention.Parameters.Add<ZeroSetsOfInputParameters>();
 
             Run<ParameterizedTestClass>();
 
@@ -46,12 +46,16 @@ namespace Fixie.Tests.Cases
 
         public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
         {
-            Convention.Parameters(Inputs(
+            Inputs.Parameters = new[]
+            {
                 new object[] { },
                 new object[] { 0 },
                 new object[] { 0, 1 },
                 new object[] { 0, 1, 2 },
-                new object[] { 0, 1, 2, 3 }));
+                new object[] { 0, 1, 2, 3 }
+            };
+
+            Convention.Parameters.Add<Inputs>();
 
             Run<ParameterizedTestClass>();
 
@@ -77,7 +81,7 @@ namespace Fixie.Tests.Cases
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
-            Convention.Parameters(ParametersFromBuggySource);
+            Convention.Parameters.Add<ParametersFromBuggySource>();
 
             Run<ParameterizedTestClass>();
 
@@ -98,7 +102,7 @@ namespace Fixie.Tests.Cases
 
         public void ShouldResolveGenericTypeParameters()
         {
-            Convention.Parameters(ParametersFromAttributes);
+            Convention.Parameters.Add<ParametersFromAttributes>();
 
             Run<GenericTestClass>();
 
@@ -126,50 +130,67 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed.");
         }
 
-        IEnumerable<object[]> ParametersFromAttributes(MethodInfo method)
+        class ParametersFromAttributes : ParameterSource
         {
-            var inputAttributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
-
-            if (inputAttributes.Any())
-                foreach (var input in inputAttributes)
-                    yield return input.Parameters;
-        }
-
-        IEnumerable<object[]> ParametersFromAttributesWithTypeDefaultFallback(MethodInfo method)
-        {
-            var parameters = method.GetParameters();
-
-            var inputAttributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
-
-            if (inputAttributes.Any())
+            public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
-                foreach (var input in inputAttributes)
-                    yield return input.Parameters;
-            }
-            else
-            {
-                yield return parameters.Select(p => Default(p.ParameterType)).ToArray();
+                var inputAttributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
+
+                if (inputAttributes.Any())
+                    foreach (var input in inputAttributes)
+                        yield return input.Parameters;
             }
         }
 
-        IEnumerable<object[]> ZeroSetsOfInputParameters(MethodInfo method)
+        class ParametersFromAttributesWithTypeDefaultFallback : ParameterSource
         {
-            yield break;
+            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            {
+                var parameters = method.GetParameters();
+
+                var inputAttributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
+
+                if (inputAttributes.Any())
+                {
+                    foreach (var input in inputAttributes)
+                        yield return input.Parameters;
+                }
+                else
+                {
+                    yield return parameters.Select(p => Default(p.ParameterType)).ToArray();
+                }
+            }
         }
 
-        IEnumerable<object[]> ParametersFromBuggySource(MethodInfo method)
+        class ZeroSetsOfInputParameters : ParameterSource
         {
-            yield return new object[] { 0 };
-            yield return new object[] { 1 };
-            throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
+            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            {
+                yield break;
+            }
         }
 
-        Func<MethodInfo, IEnumerable<object[]>> Inputs(params object[][] inputs)
+        class ParametersFromBuggySource : ParameterSource
         {
-            return method => inputs;
+            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            {
+                yield return new object[] { 0 };
+                yield return new object[] { 1 };
+                throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
+            }
         }
 
-        object Default(Type type)
+        class Inputs : ParameterSource
+        {
+            public static object[][] Parameters { get; set; }
+
+            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            {
+                return Parameters;
+            }
+        }
+
+        static object Default(Type type)
         {
             return type.IsValueType ? Activator.CreateInstance(type) : null;
         }

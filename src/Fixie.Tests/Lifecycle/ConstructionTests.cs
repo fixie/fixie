@@ -231,7 +231,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
-            Convention.Parameters(ParametersFromBuggySource);
+            Convention.Parameters.Add<ParametersFromBuggySource>();
 
             var output = Run();
 
@@ -247,7 +247,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerClass();
 
-            Convention.Parameters(ParametersFromBuggySource);
+            Convention.Parameters.Add<ParametersFromBuggySource>();
 
             var output = Run();
 
@@ -264,7 +264,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase()
                       .UsingFactory(Factory);
 
-            Convention.Parameters(ParametersFromBuggySource);
+            Convention.Parameters.Add<ParametersFromBuggySource>();
 
             var output = Run();
 
@@ -281,7 +281,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass()
                       .UsingFactory(Factory);
 
-            Convention.Parameters(ParametersFromBuggySource);
+            Convention.Parameters.Add<ParametersFromBuggySource>();
 
             var output = Run();
 
@@ -299,9 +299,12 @@ namespace Fixie.Tests.Lifecycle
             return new SampleTestClass();
         }
 
-        static IEnumerable<object[]> ParametersFromBuggySource(MethodInfo method)
+        class ParametersFromBuggySource : ParameterSource
         {
-            throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
+            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            {
+                throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
+            }
         }
     }
 }

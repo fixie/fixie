@@ -25,7 +25,7 @@ namespace Fixie.Tests.Reports
             var executionResult = new ExecutionResult();
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
-            convention.Parameters(FromParametersAttribute);
+            convention.Parameters.Add<FromParametersAttribute>();
             var assemblyResult = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
             executionResult.Add(assemblyResult);
 
@@ -36,9 +36,12 @@ namespace Fixie.Tests.Reports
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
         }
 
-        static IEnumerable<object[]> FromParametersAttribute(MethodInfo method)
+        class FromParametersAttribute : ParameterSource
         {
-            return method.GetCustomAttributes<ParametersAttribute>().Select(x => x.Parameters);
+            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            {
+                return method.GetCustomAttributes<ParametersAttribute>().Select(x => x.Parameters);
+            }
         }
 
         static void XsdValidate(XDocument doc)

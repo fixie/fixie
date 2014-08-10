@@ -13,9 +13,9 @@ namespace Fixie.Execution
         readonly Listener listener;
         readonly ExecutionPlan executionPlan;
         readonly MethodDiscoverer methodDiscoverer;
+        readonly ParameterDiscoverer parameterDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
-        readonly Func<MethodInfo, IEnumerable<object[]>> getCaseParameters;
         readonly Func<Case, bool> skipCase;
         readonly Func<Case, string> getSkipReason;
         readonly Action<Case[]> orderCases;
@@ -25,9 +25,9 @@ namespace Fixie.Execution
             this.listener = listener;
             executionPlan = new ExecutionPlan(config);
             methodDiscoverer = new MethodDiscoverer(config);
+            parameterDiscoverer = new ParameterDiscoverer(config);
             assertionLibraryFilter = new AssertionLibraryFilter(config.AssertionLibraryTypes);
 
-            getCaseParameters = config.GetCaseParameters;
             skipCase = config.SkipCase;
             getSkipReason = config.GetSkipReason;
             orderCases = config.OrderCases;
@@ -46,7 +46,7 @@ namespace Fixie.Execution
                 {
                     bool methodHasParameterizedCase = false;
 
-                    foreach (var parameters in getCaseParameters(method))
+                    foreach (var parameters in Parameters(method))
                     {
                         methodHasParameterizedCase = true;
                         cases.Add(new Case(method, parameters));
@@ -98,6 +98,11 @@ namespace Fixie.Execution
             }
 
             return classResult;
+        }
+
+        IEnumerable<object[]> Parameters(MethodInfo method)
+        {
+            return parameterDiscoverer.GetParameters(method);
         }
 
         void Run(Type testClass, Case[] casesToExecute)

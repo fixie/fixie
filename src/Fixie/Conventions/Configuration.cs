@@ -21,7 +21,6 @@ namespace Fixie.Conventions
             TestClassFactory = UseDefaultConstructor;
             SkipCase = @case => false;
             GetSkipReason = @case => null;
-            GetCaseParameters = method => new object[][] { };
 
             testClassConditions = new List<Func<Type, bool>>
             {
@@ -47,7 +46,6 @@ namespace Fixie.Conventions
         public Func<Type, object> TestClassFactory { get; set; }
         public Func<Case, bool> SkipCase { get; set; }
         public Func<Case, string> GetSkipReason { get; set; }
-        public Func<MethodInfo, IEnumerable<object[]>> GetCaseParameters { get; set; }
 
         static object UseDefaultConstructor(Type type)
         {

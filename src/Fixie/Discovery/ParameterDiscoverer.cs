@@ -13,13 +13,12 @@ namespace Fixie.Discovery
         public ParameterDiscoverer(Configuration config)
         {
             parameterSources = config.ParameterSourceTypes
-                .Select(customBehavior => (ParameterSource)Activator.CreateInstance((Type)customBehavior))
+                .Select(sourceType => (ParameterSource)Activator.CreateInstance(sourceType))
                 .ToArray();
         }
 
         public IEnumerable<object[]> GetParameters(MethodInfo method)
         {
-            //TODO: Shortcut when the method has no parameters anyway?
             return parameterSources.SelectMany(source => source.GetParameters(method));
         }
     }

@@ -39,6 +39,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="Execution\Behavior.cs" />
     <Compile Include="Execution\BehaviorChain.cs" />
     <Compile Include="Execution\BehaviorContext.cs" />

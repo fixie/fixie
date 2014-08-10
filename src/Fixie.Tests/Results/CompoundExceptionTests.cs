@@ -10,9 +10,16 @@ namespace Fixie.Tests.Results
 {
     public class CompoundExceptionTests
     {
+        readonly Convention convention;
+
+        public CompoundExceptionTests()
+        {
+            convention = new Convention();
+        }
+
         public void ShouldSummarizeAnyGivenException()
         {
-            var assertionLibrary = new AssertionLibraryFilter();
+            var assertionLibrary = AssertionLibraryFilter();
             var exception = GetPrimaryException();
 
             var compoundException = new CompoundException(new[] { exception }, assertionLibrary);
@@ -45,7 +52,7 @@ namespace Fixie.Tests.Results
 
         public void ShouldSummarizeCollectionsOfExceptionsComprisedOfPrimaryAndSecondaryExceptions()
         {
-            var assertionLibrary = new AssertionLibraryFilter();
+            var assertionLibrary = AssertionLibraryFilter();
             var primaryException = GetPrimaryException();
             var secondaryExceptionA = new NotImplementedException();
             var secondaryExceptionB = GetSecondaryException();
@@ -114,7 +121,13 @@ namespace Fixie.Tests.Results
 
         public void ShouldFilterAssertionLibraryImplementationDetails()
         {
-            var assertionLibrary = new AssertionLibraryFilter(typeof(PrimaryException), typeof(SecondaryException), typeof(CompoundExceptionTests));
+            convention
+                .HideExceptionDetails
+                .For<PrimaryException>()
+                .For<SecondaryException>()
+                .For<CompoundExceptionTests>();
+
+            var assertionLibrary = AssertionLibraryFilter();
             var primaryException = GetPrimaryException();
             var secondaryExceptionA = new NotImplementedException();
             var secondaryExceptionB = GetSecondaryException();
@@ -179,6 +192,11 @@ namespace Fixie.Tests.Results
                     "------- Inner Exception: System.NotImplementedException -------",
                     "Not Implemented Exception!",
                     "");
+        }
+
+        AssertionLibraryFilter AssertionLibraryFilter()
+        {
+            return new AssertionLibraryFilter(convention.Config);
         }
 
         static Exception GetPrimaryException()

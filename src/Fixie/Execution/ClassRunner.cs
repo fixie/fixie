@@ -26,7 +26,7 @@ namespace Fixie.Execution
             executionPlan = new ExecutionPlan(config);
             methodDiscoverer = new MethodDiscoverer(config);
             parameterDiscoverer = new ParameterDiscoverer(config);
-            assertionLibraryFilter = new AssertionLibraryFilter(config.AssertionLibraryTypes);
+            assertionLibraryFilter = new AssertionLibraryFilter(config);
 
             skipCase = config.SkipCase;
             getSkipReason = config.GetSkipReason;

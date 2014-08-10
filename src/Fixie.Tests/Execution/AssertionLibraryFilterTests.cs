@@ -7,11 +7,22 @@ namespace Fixie.Tests.Execution
 {
     public class AssertionLibraryFilterTests
     {
+        readonly Convention convention;
+
+        public AssertionLibraryFilterTests()
+        {
+            convention = new Convention();
+        }
+
         public void ShouldDoNothingWhenFilteringNullStackTrace()
         {
             const string nullStackTrace = null;
 
-            new AssertionLibraryFilter(typeof(SampleAssertionLibrary.SampleAssert))
+            convention
+                .HideExceptionDetails
+                .For(typeof(SampleAssertionLibrary.SampleAssert));
+
+            AssertionLibraryFilter()
                 .FilterStackTrace(new FakeException(nullStackTrace))
                 .ShouldEqual(nullStackTrace);
         }
@@ -36,23 +47,36 @@ namespace Fixie.Tests.Execution
                     .ToString()
                     .TrimEnd();
 
-            new AssertionLibraryFilter(typeof(SampleAssertionLibrary.SampleAssert))
+            convention
+                .HideExceptionDetails
+                .For(typeof(SampleAssertionLibrary.SampleAssert));
+
+            AssertionLibraryFilter()
                 .FilterStackTrace(new FakeException(originalStackTrace))
                 .ShouldEqual(filteredStackTrace);
         }
 
         public void ShouldGetExceptionTypeAsDisplayNameByDefault()
         {
-            new AssertionLibraryFilter()
+            AssertionLibraryFilter()
                 .DisplayName(new FakeException(null))
                 .ShouldEqual(typeof(FakeException).FullName);
         }
 
         public void ShouldGetBlankDisplayNameWhenExceptionTypeIsAnAssertionLibraryImplementationDetail()
         {
-            new AssertionLibraryFilter(typeof(FakeException))
+            convention
+                .HideExceptionDetails
+                .For<FakeException>();
+
+            AssertionLibraryFilter()
                 .DisplayName(new FakeException(null))
                 .ShouldEqual("");
+        }
+
+        AssertionLibraryFilter AssertionLibraryFilter()
+        {
+            return new AssertionLibraryFilter(convention.Config);
         }
 
         class FakeException : Exception

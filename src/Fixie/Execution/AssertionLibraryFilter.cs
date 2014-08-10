@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Fixie.Conventions;
 
 namespace Fixie.Execution
 {
@@ -10,15 +11,12 @@ namespace Fixie.Execution
         readonly List<Type> exceptionTypes;
         readonly List<Type> stackTraceTypes;
 
-        public AssertionLibraryFilter(params Type[] assertionLibraryTypes)
-            : this((IEnumerable<Type>)assertionLibraryTypes) { }
-
-        public AssertionLibraryFilter(IEnumerable<Type> assertionLibraryTypes)
+        public AssertionLibraryFilter(Configuration config)
         {
             exceptionTypes = new List<Type>();
             stackTraceTypes = new List<Type>();
 
-            foreach (var type in assertionLibraryTypes)
+            foreach (var type in config.AssertionLibraryTypes)
             {
                 bool isExceptionType = type.IsSubclassOf(typeof(Exception));
 

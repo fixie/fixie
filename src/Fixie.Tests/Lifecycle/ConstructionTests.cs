@@ -231,7 +231,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerCase();
 
-            Convention.Parameters.Add<ParametersFromBuggySource>();
+            Convention.Parameters.Add<BuggyParameterSource>();
 
             var output = Run();
 
@@ -247,7 +247,7 @@ namespace Fixie.Tests.Lifecycle
             Convention.ClassExecution
                       .CreateInstancePerClass();
 
-            Convention.Parameters.Add<ParametersFromBuggySource>();
+            Convention.Parameters.Add<BuggyParameterSource>();
 
             var output = Run();
 
@@ -264,7 +264,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerCase()
                       .UsingFactory(Factory);
 
-            Convention.Parameters.Add<ParametersFromBuggySource>();
+            Convention.Parameters.Add<BuggyParameterSource>();
 
             var output = Run();
 
@@ -281,7 +281,7 @@ namespace Fixie.Tests.Lifecycle
                       .CreateInstancePerClass()
                       .UsingFactory(Factory);
 
-            Convention.Parameters.Add<ParametersFromBuggySource>();
+            Convention.Parameters.Add<BuggyParameterSource>();
 
             var output = Run();
 
@@ -299,7 +299,7 @@ namespace Fixie.Tests.Lifecycle
             return new SampleTestClass();
         }
 
-        class ParametersFromBuggySource : ParameterSource
+        class BuggyParameterSource : ParameterSource
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {

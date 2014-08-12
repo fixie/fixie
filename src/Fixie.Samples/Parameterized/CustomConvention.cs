@@ -21,10 +21,10 @@ namespace Fixie.Samples.Parameterized
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
 
             Parameters
-                .Add<FromInputAttributes>();
+                .Add<InputAttributeParameterSource>();
         }
 
-        class FromInputAttributes : ParameterSource
+        class InputAttributeParameterSource : ParameterSource
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {

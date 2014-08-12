@@ -25,7 +25,7 @@ namespace Fixie.Tests.Reports
             var executionResult = new ExecutionResult();
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
-            convention.Parameters.Add<FromParametersAttribute>();
+            convention.Parameters.Add<InputAttributeParameterSource>();
             var assemblyResult = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
             executionResult.Add(assemblyResult);
 
@@ -36,11 +36,11 @@ namespace Fixie.Tests.Reports
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
         }
 
-        class FromParametersAttribute : ParameterSource
+        class InputAttributeParameterSource : ParameterSource
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
-                return method.GetCustomAttributes<ParametersAttribute>().Select(x => x.Parameters);
+                return method.GetCustomAttributes<InputAttribute>().Select(x => x.Parameters);
             }
         }
 
@@ -99,8 +99,8 @@ namespace Fixie.Tests.Reports
 
             public void Pass() { }
 
-            [Parameters(false)]
-            [Parameters(true)]
+            [Input(false)]
+            [Input(true)]
             public void PassIfTrue(bool pass)
             {
                 if (!pass) throw new FailureException();
@@ -120,9 +120,9 @@ namespace Fixie.Tests.Reports
         }
 
         [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-        class ParametersAttribute : Attribute
+        class InputAttribute : Attribute
         {
-            public ParametersAttribute(params object[] parameters)
+            public InputAttribute(params object[] parameters)
             {
                 Parameters = parameters;
             }

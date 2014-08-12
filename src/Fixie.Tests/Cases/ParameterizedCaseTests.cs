@@ -10,7 +10,7 @@ namespace Fixie.Tests.Cases
     {
         public void ShouldAllowConventionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
-            Convention.Parameters.Add<ParametersFromAttributesWithTypeDefaultFallback>();
+            Convention.Parameters.Add<InputAttributeOrDefaultParameterSource>();
 
             Run<ParameterizedTestClass>();
 
@@ -34,7 +34,7 @@ namespace Fixie.Tests.Cases
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
         {
-            Convention.Parameters.Add<ZeroSetsOfInputParameters>();
+            Convention.Parameters.Add<EmptyParameterSource>();
 
             Run<ParameterizedTestClass>();
 
@@ -46,7 +46,7 @@ namespace Fixie.Tests.Cases
 
         public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
         {
-            Inputs.Parameters = new[]
+            FixedParameterSource.Parameters = new[]
             {
                 new object[] { },
                 new object[] { 0 },
@@ -55,7 +55,7 @@ namespace Fixie.Tests.Cases
                 new object[] { 0, 1, 2, 3 }
             };
 
-            Convention.Parameters.Add<Inputs>();
+            Convention.Parameters.Add<FixedParameterSource>();
 
             Run<ParameterizedTestClass>();
 
@@ -81,7 +81,7 @@ namespace Fixie.Tests.Cases
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
-            Convention.Parameters.Add<ParametersFromBuggySource>();
+            Convention.Parameters.Add<BuggyParameterSource>();
 
             Run<ParameterizedTestClass>();
 
@@ -102,7 +102,7 @@ namespace Fixie.Tests.Cases
 
         public void ShouldResolveGenericTypeParameters()
         {
-            Convention.Parameters.Add<ParametersFromAttributes>();
+            Convention.Parameters.Add<InputAttributeParameterSource>();
 
             Run<GenericTestClass>();
 
@@ -130,7 +130,7 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed.");
         }
 
-        class ParametersFromAttributes : ParameterSource
+        class InputAttributeParameterSource : ParameterSource
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
@@ -142,7 +142,7 @@ namespace Fixie.Tests.Cases
             }
         }
 
-        class ParametersFromAttributesWithTypeDefaultFallback : ParameterSource
+        class InputAttributeOrDefaultParameterSource : ParameterSource
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
@@ -162,7 +162,7 @@ namespace Fixie.Tests.Cases
             }
         }
 
-        class ZeroSetsOfInputParameters : ParameterSource
+        class EmptyParameterSource : ParameterSource
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
@@ -170,7 +170,7 @@ namespace Fixie.Tests.Cases
             }
         }
 
-        class ParametersFromBuggySource : ParameterSource
+        class BuggyParameterSource : ParameterSource
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
@@ -180,7 +180,7 @@ namespace Fixie.Tests.Cases
             }
         }
 
-        class Inputs : ParameterSource
+        class FixedParameterSource : ParameterSource
         {
             public static object[][] Parameters { get; set; }
 

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using Fixie.Execution;
 using Fixie.Results;
@@ -30,12 +29,30 @@ namespace Fixie.Tests
         {
             var entry = new StringBuilder();
 
-            entry.Append(string.Format("{0} failed: {1}", result.Name, result.Exceptions.PrimaryException.Message));
+            var primaryException = result.Exceptions.PrimaryException;
 
-            foreach (var exception in result.Exceptions.SecondaryExceptions)
+            entry.AppendFormat("{0} failed: {1}", result.Name, primaryException.Message);
+
+            var walk = primaryException;
+            while (walk.InnerException != null)
+            {
+                walk = walk.InnerException;
+                entry.AppendLine();
+                entry.AppendFormat("    Inner Exception: {0}", walk.Message);
+            }
+
+            foreach (var secondaryException in result.Exceptions.SecondaryExceptions)
             {
                 entry.AppendLine();
-                entry.Append(string.Format("    Secondary Failure: {0}", exception.Message));
+                entry.AppendFormat("    Secondary Failure: {0}", secondaryException.Message);
+
+                walk = secondaryException;
+                while (walk.InnerException != null)
+                {
+                    walk = walk.InnerException;
+                    entry.AppendLine();
+                    entry.AppendFormat("        Inner Exception: {0}", walk.Message);
+                }
             }
 
             log.Add(entry.ToString());

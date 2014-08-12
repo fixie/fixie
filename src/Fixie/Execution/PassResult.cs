@@ -15,6 +15,7 @@ namespace Fixie.Execution
 
             Output = @case.Output;
             Duration = @case.Duration;
+            ReturnValue = @case.ReturnValue;
         }
 
         public string Name { get; private set; }
@@ -24,5 +25,6 @@ namespace Fixie.Execution
         
         public string Output { get; private set; }
         public TimeSpan Duration { get; private set; }
+        public object ReturnValue { get; set; }
     }
 }

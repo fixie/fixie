@@ -17,7 +17,16 @@ namespace Fixie.Discovery
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
         {
-            return testClass.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(IsMatch).ToArray();
+            try
+            {
+                return testClass.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(IsMatch).ToArray();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                    "Exception thrown while attempting to run a custom method-discovery predicate. " +
+                    "Check the inner exception for more details.", exception);
+            }
         }
 
         bool IsMatch(MethodInfo candidate)

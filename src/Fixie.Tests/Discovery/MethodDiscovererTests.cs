@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Should;
 using Fixie.Conventions;
 using Fixie.Discovery;
 
@@ -80,6 +81,23 @@ namespace Fixie.Tests.Discovery
                     "PublicInstanceNoArgsWithReturn",
                     "PublicInstanceWithArgsVoid",
                     "PublicInstanceWithArgsWithReturn");
+        }
+
+        public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
+        {
+            var customConvention = new Convention();
+
+            customConvention
+                .Methods
+                .Where(method => { throw new Exception("Unsafe method-discovery predicate threw!"); });
+
+            Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(customConvention);
+
+            var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
+                "Exception thrown while attempting to run a custom method-discovery predicate. " +
+                "Check the inner exception for more details.");
+
+            exception.InnerException.Message.ShouldEqual("Unsafe method-discovery predicate threw!");
         }
 
         static IEnumerable<string> DiscoveredTestMethods<TTestClass>(Convention convention)

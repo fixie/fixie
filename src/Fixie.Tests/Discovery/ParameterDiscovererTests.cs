@@ -5,11 +5,11 @@ using Should;
 
 namespace Fixie.Tests.Discovery
 {
-    public class ParameterDiscoveryTests
+    public class ParameterDiscovererTests
     {
         readonly MethodInfo method;
 
-        public ParameterDiscoveryTests()
+        public ParameterDiscovererTests()
         {
             method = typeof(SampleTestClass).GetInstanceMethod("ParameterizedMethod");
         }

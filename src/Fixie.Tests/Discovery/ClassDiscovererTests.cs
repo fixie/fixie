@@ -5,7 +5,7 @@ using Fixie.Discovery;
 
 namespace Fixie.Tests.Discovery
 {
-    public class TestClassDiscoveryTests
+    public class ClassDiscovererTests
     {
         static readonly Type[] CandidateTypes =
         {

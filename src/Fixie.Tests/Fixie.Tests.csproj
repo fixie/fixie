@@ -46,7 +46,7 @@
     </Compile>
     <Compile Include="AssertionLibraryFilteringTests.cs" />
     <Compile Include="Assertions.cs" />
-    <Compile Include="Discovery\ParameterDiscoveryTests.cs" />
+    <Compile Include="Discovery\ParameterDiscovererTests.cs" />
     <Compile Include="Execution\BehaviorChainTests.cs" />
     <Compile Include="Cases\CaseTests.cs" />
     <Compile Include="Cases\NonVoidCaseTests.cs" />
@@ -67,7 +67,7 @@
     <Compile Include="Lifecycle\LifecycleTests.cs" />
     <Compile Include="Lifecycle\DisposalTests.cs" />
     <Compile Include="CaseTests.cs" />
-    <Compile Include="Discovery\TestMethodDiscoveryTests.cs" />
+    <Compile Include="Discovery\MethodDiscovererTests.cs" />
     <Compile Include="FailureException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Results\CompoundExceptionTests.cs" />
@@ -76,7 +76,7 @@
     <Compile Include="ReflectionExtensionsTests.cs" />
     <Compile Include="ShouldBeUnreachableException.cs" />
     <Compile Include="StubListener.cs" />
-    <Compile Include="Discovery\TestClassDiscoveryTests.cs" />
+    <Compile Include="Discovery\ClassDiscovererTests.cs" />
     <Compile Include="Cases\ParameterizedCaseTests.cs" />
     <Compile Include="Listeners\TeamCityListenerTests.cs" />
     <Compile Include="Cases\SkippedCaseTests.cs" />

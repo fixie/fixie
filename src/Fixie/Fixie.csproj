@@ -56,7 +56,7 @@
     <Compile Include="ParameterSource.cs" />
     <Compile Include="Results\CompoundException.cs" />
     <Compile Include="TestAssembly.cs" />
-    <Compile Include="Conventions\TestClassExpression.cs" />
+    <Compile Include="Conventions\ClassExpression.cs" />
     <Compile Include="Discovery\MethodDiscoverer.cs" />
     <Compile Include="Conventions\AssertionLibraryExpression.cs" />
     <Compile Include="Execution\ExecutionEnvironment.cs" />
@@ -83,7 +83,7 @@
     <Compile Include="CaseBehavior.cs" />
     <Compile Include="Execution\Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Execution\Listener.cs" />
-    <Compile Include="Conventions\TestMethodExpression.cs" />
+    <Compile Include="Conventions\MethodExpression.cs" />
     <Compile Include="Discovery\ObjectExtensions.cs" />
     <Compile Include="Execution\PassResult.cs" />
     <Compile Include="PreservedException.cs" />

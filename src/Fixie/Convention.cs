@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Reflection;
-using Fixie.Conventions;
+﻿using Fixie.Conventions;
 
 namespace Fixie
 {
@@ -12,8 +8,8 @@ namespace Fixie
         {
             Config = new Configuration();
 
-            Classes = new TestClassExpression(Config);
-            Methods = new TestMethodExpression(Config);;
+            Classes = new ClassExpression(Config);
+            Methods = new MethodExpression(Config);;
             Parameters = new ParameterSourceExpression(Config);
             CaseExecution = new CaseBehaviorExpression(Config);
             FixtureExecution = new FixtureBehaviorExpression(Config);
@@ -23,8 +19,8 @@ namespace Fixie
 
         public Configuration Config { get; private set; }
 
-        public TestClassExpression Classes { get; private set; }
-        public TestMethodExpression Methods { get; private set; }
+        public ClassExpression Classes { get; private set; }
+        public MethodExpression Methods { get; private set; }
         public ParameterSourceExpression Parameters { get; private set; }
 
         public CaseBehaviorExpression CaseExecution { get; private set; }

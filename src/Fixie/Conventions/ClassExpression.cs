@@ -2,32 +2,32 @@ using System;
 
 namespace Fixie.Conventions
 {
-    public class TestClassExpression
+    public class ClassExpression
     {
         readonly Configuration config;
 
-        public TestClassExpression(Configuration config)
+        public ClassExpression(Configuration config)
         {
             this.config = config;
         }
 
-        public TestClassExpression Where(Func<Type, bool> condition)
+        public ClassExpression Where(Func<Type, bool> condition)
         {
             config.AddTestClassCondition(condition);
             return this;
         }
 
-        public TestClassExpression Has<TAttribute>() where TAttribute : Attribute
+        public ClassExpression Has<TAttribute>() where TAttribute : Attribute
         {
             return Where(type => type.Has<TAttribute>());
         }
 
-        public TestClassExpression HasOrInherits<TAttribute>() where TAttribute : Attribute
+        public ClassExpression HasOrInherits<TAttribute>() where TAttribute : Attribute
         {
             return Where(type => type.HasOrInherits<TAttribute>());
         }
 
-        public TestClassExpression NameEndsWith(string suffix)
+        public ClassExpression NameEndsWith(string suffix)
         {
             return Where(type => type.Name.EndsWith(suffix));
         }

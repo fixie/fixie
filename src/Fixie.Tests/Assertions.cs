@@ -13,9 +13,10 @@ namespace Fixie.Tests
             Assert.Equal(expected, actual.ToArray());
         }
 
-        public static void ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception
+        public static Exception ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception
         {
             bool threw = false;
+            Exception exception = null;
 
             try
             {
@@ -26,9 +27,11 @@ namespace Fixie.Tests
                 threw = true;
                 actual.ShouldBeType<TException>();
                 actual.Message.ShouldEqual(expectedMessage);
+                exception = actual;
             }
 
             threw.ShouldBeTrue();
+            return exception;
         }
     }
 }

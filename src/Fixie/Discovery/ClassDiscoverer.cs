@@ -16,7 +16,16 @@ namespace Fixie.Discovery
 
         public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
         {
-            return candidates.Where(IsMatch).ToArray();
+            try
+            {
+                return candidates.Where(IsMatch).ToArray();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                    "Exception thrown while attempting to run a custom class-discovery predicate. " +
+                    "Check the inner exception for more details.", exception);
+            }
         }
 
         bool IsMatch(Type candidate)

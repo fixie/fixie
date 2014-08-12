@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Should;
 using Fixie.Conventions;
 using Fixie.Discovery;
 
@@ -95,6 +96,23 @@ namespace Fixie.Tests.Discovery
             DiscoveredTestClasses(defaultConvention)
                 .ShouldEqual(
                     typeof(NameEndsWithTests));
+        }
+
+        public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
+        {
+            var customConvention = new Convention();
+
+            customConvention
+                .Classes
+                .Where(type => { throw new Exception("Unsafe class-discovery predicate threw!"); });
+
+            Action attemptFaultyDiscovery = () => DiscoveredTestClasses(customConvention);
+
+            var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
+                "Exception thrown while attempting to run a custom class-discovery predicate. " +
+                "Check the inner exception for more details.");
+
+            exception.InnerException.Message.ShouldEqual("Unsafe class-discovery predicate threw!");
         }
 
         static IEnumerable<Type> DiscoveredTestClasses(Convention convention)

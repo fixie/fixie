@@ -17,9 +17,9 @@ namespace Fixie.Execution
                         BuildCaseBehaviorChain(config)));
         }
 
-        public void ExecuteClassBehaviors(Class @class)
+        public void ExecuteClassBehaviors(Class testClass)
         {
-            classBehaviors.Execute(@class);
+            classBehaviors.Execute(testClass);
         }
 
         static BehaviorChain<Class> BuildClassBehaviorChain(Configuration config, BehaviorChain<Fixture> fixtureBehaviors)

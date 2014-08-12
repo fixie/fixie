@@ -6,7 +6,7 @@ namespace Fixie.Tests.Lifecycle
     {
         class Inner : ClassBehavior
         {
-            public void Execute(Class @class, Action next)
+            public void Execute(Class testClass, Action next)
             {
                 Console.WriteLine("Inner Before");
                 next();
@@ -16,7 +16,7 @@ namespace Fixie.Tests.Lifecycle
 
         class Outer : ClassBehavior
         {
-            public void Execute(Class @class, Action next)
+            public void Execute(Class testClass, Action next)
             {
                 Console.WriteLine("Outer Before");
                 next();
@@ -26,7 +26,7 @@ namespace Fixie.Tests.Lifecycle
 
         class DoNothing : ClassBehavior
         {
-            public void Execute(Class @class, Action next)
+            public void Execute(Class testClass, Action next)
             {
                 //Behavior chooses not to invoke next().
                 //Since the test classes are never intantiated,
@@ -37,7 +37,7 @@ namespace Fixie.Tests.Lifecycle
 
         class ThrowException : ClassBehavior
         {
-            public void Execute(Class @class, Action next)
+            public void Execute(Class testClass, Action next)
             {
                 Console.WriteLine("Unsafe class execution behavior");
                 throw new Exception("Unsafe class execution behavior threw!");
@@ -46,7 +46,7 @@ namespace Fixie.Tests.Lifecycle
 
         class ThrowPreservedException : ClassBehavior
         {
-            public void Execute(Class @class, Action next)
+            public void Execute(Class testClass, Action next)
             {
                 Console.WriteLine("Unsafe class execution behavior");
                 try

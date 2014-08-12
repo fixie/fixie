@@ -14,23 +14,23 @@ namespace Fixie.Execution.Behaviors
             this.fixtureBehaviors = fixtureBehaviors;
         }
 
-        public void Execute(Class @class, Action next)
+        public void Execute(Class testClass, Action next)
         {
             try
             {
-                PerformClassLifecycle(@class, @class.Cases);
+                PerformClassLifecycle(testClass, testClass.Cases);
             }
             catch (Exception exception)
             {
-                @class.Fail(exception);
+                testClass.Fail(exception);
             }
         }
 
-        void PerformClassLifecycle(Class @class, IReadOnlyList<Case> casesForThisInstance)
+        void PerformClassLifecycle(Class testClass, IReadOnlyList<Case> casesForThisInstance)
         {
-            var instance = testClassFactory(@class.Type);
+            var instance = testClassFactory(testClass.Type);
 
-            var fixture = new Fixture(@class, instance, casesForThisInstance);
+            var fixture = new Fixture(testClass, instance, casesForThisInstance);
             fixtureBehaviors.Execute(fixture);
 
             var disposable = instance as IDisposable;

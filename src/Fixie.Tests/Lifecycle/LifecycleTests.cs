@@ -112,15 +112,15 @@ namespace Fixie.Tests.Lifecycle
             }
         }
 
-        protected static void ClassSetUp(Class @class)
+        protected static void ClassSetUp(Class testClass)
         {
-            @class.Type.ShouldEqual(typeof(SampleTestClass));
+            testClass.Type.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
         }
 
-        protected static void ClassTearDown(Class @class)
+        protected static void ClassTearDown(Class testClass)
         {
-            @class.Type.ShouldEqual(typeof(SampleTestClass));
+            testClass.Type.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
         }
 
@@ -180,11 +180,11 @@ namespace Fixie.Tests.Lifecycle
 
         protected class ClassSetUpTearDown : ClassBehavior
         {
-            public void Execute(Class @class, Action next)
+            public void Execute(Class testClass, Action next)
             {
-                ClassSetUp(@class);
+                ClassSetUp(testClass);
                 next();
-                ClassTearDown(@class);
+                ClassTearDown(testClass);
             }
         }
     }

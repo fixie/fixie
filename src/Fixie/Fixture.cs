@@ -6,9 +6,9 @@ namespace Fixie
 {
     public class Fixture : BehaviorContext
     {
-        public Fixture(Class @class, object instance, IReadOnlyList<Case> cases)
+        public Fixture(Class testClass, object instance, IReadOnlyList<Case> cases)
         {
-            Class = @class;
+            Class = testClass;
             Instance = instance;
             Cases = cases;
         }

@@ -14,13 +14,13 @@ namespace Fixie.Execution.Behaviors
             this.fixtureBehaviors = fixtureBehaviors;
         }
 
-        public void Execute(Class @class, Action next)
+        public void Execute(Class testClass, Action next)
         {
-            foreach (var @case in @class.Cases)
+            foreach (var @case in testClass.Cases)
             {
                 try
                 {
-                    PerformClassLifecycle(@class, new[] { @case });
+                    PerformClassLifecycle(testClass, new[] { @case });
                 }
                 catch (Exception exception)
                 {
@@ -29,11 +29,11 @@ namespace Fixie.Execution.Behaviors
             }
         }
 
-        void PerformClassLifecycle(Class @class, IReadOnlyList<Case> casesForThisInstance)
+        void PerformClassLifecycle(Class testClass, IReadOnlyList<Case> casesForThisInstance)
         {
-            var instance = testClassFactory(@class.Type);
+            var instance = testClassFactory(testClass.Type);
 
-            var fixture = new Fixture(@class, instance, casesForThisInstance);
+            var fixture = new Fixture(testClass, instance, casesForThisInstance);
             fixtureBehaviors.Execute(fixture);
 
             var disposable = instance as IDisposable;

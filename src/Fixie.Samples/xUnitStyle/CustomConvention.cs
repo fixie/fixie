@@ -33,18 +33,18 @@ namespace Fixie.Samples.xUnitStyle
 
         class PrepareAndDisposeFixtureData : ClassBehavior
         {
-            public void Execute(Class @class, Action next)
+            public void Execute(Class testClass, Action next)
             {
-                SetUp(@class);
+                SetUp(testClass);
                 next();
                 TearDown();
             }
 
-            void SetUp(Class @class)
+            void SetUp(Class testClass)
             {
                 fixtures.Clear();
 
-                foreach (var @interface in FixtureInterfaces(@class.Type))
+                foreach (var @interface in FixtureInterfaces(testClass.Type))
                 {
                     var fixtureDataType = @interface.GetGenericArguments()[0];
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Should;
 
 namespace Fixie.Tests.Cases
 {
@@ -27,6 +28,34 @@ namespace Fixie.Tests.Cases
             Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+        }
+
+        public void ShouldFailWithClearExplanationWhenSkipConditionThrows()
+        {
+            Convention.CaseExecution
+                .Skip(@case => { throw new Exception("Unsafe case-skipping predicate threw!"); });
+
+            Action attemptFaultySkip = Run<SkippedTestClass>;
+
+            var exception = attemptFaultySkip.ShouldThrow<Exception>(
+                "Exception thrown while attempting to run a custom case-skipping predicate. " +
+                "Check the inner exception for more details.");
+
+            exception.InnerException.Message.ShouldEqual("Unsafe case-skipping predicate threw!");
+        }
+
+        public void ShouldFailWithClearExplanationWhenSkipReasonThrows()
+        {
+            Convention.CaseExecution
+                .Skip(HasSkipAttribute, @case => { throw new Exception("Unsafe case-skipped reason generator threw!"); });
+
+            Action attemptFaultySkip = Run<SkippedTestClass>;
+
+            var exception = attemptFaultySkip.ShouldThrow<Exception>(
+                "Exception thrown while attempting to get a custom case-skipped reason. " +
+                "Check the inner exception for more details.");
+
+            exception.InnerException.Message.ShouldEqual("Unsafe case-skipped reason generator threw!");
         }
 
         static string SkipAttributeReason(Case @case)

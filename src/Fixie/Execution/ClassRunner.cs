@@ -63,7 +63,7 @@ namespace Fixie.Execution
                 }
             }
 
-            var casesBySkipState = cases.ToLookup(skipCase);
+            var casesBySkipState = cases.ToLookup(SkipCase);
             var casesToSkip = casesBySkipState[true].ToArray();
             var casesToExecute = casesBySkipState[false].ToArray();
 
@@ -99,6 +99,34 @@ namespace Fixie.Execution
             return classResult;
         }
 
+        bool SkipCase(Case @case)
+        {
+            try
+            {
+                return skipCase(@case);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                    "Exception thrown while attempting to run a custom case-skipping predicate. " +
+                    "Check the inner exception for more details.", exception);
+            }
+        }
+
+        string GetSkipReason(Case @case)
+        {
+            try
+            {
+                return getSkipReason(@case);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                    "Exception thrown while attempting to get a custom case-skipped reason. " +
+                    "Check the inner exception for more details.", exception);
+            }
+        }
+
         bool TryOrderCases(Case[] cases)
         {
             try
@@ -128,7 +156,7 @@ namespace Fixie.Execution
 
         CaseResult Skip(Case @case)
         {
-            var result = new SkipResult(@case, getSkipReason(@case));
+            var result = new SkipResult(@case, GetSkipReason(@case));
             listener.CaseSkipped(result);
             return CaseResult.Skipped(result.Name, result.Reason);
         }

@@ -71,7 +71,7 @@ namespace Fixie.Execution
 
             if (casesToSkip.Any())
             {
-                orderCases(casesToSkip);
+                TryOrderCases(casesToSkip);
 
                 foreach (var @case in casesToSkip)
                     classResult.Add(Skip(@case));
@@ -79,9 +79,8 @@ namespace Fixie.Execution
 
             if (casesToExecute.Any())
             {
-                orderCases(casesToExecute);
-
-                Run(testClass, casesToExecute);
+                if (TryOrderCases(casesToExecute))
+                    Run(testClass, casesToExecute);
 
                 foreach (var @case in casesToExecute)
                     classResult.Add(@case.Exceptions.Any() ? Fail(@case) : Pass(@case));
@@ -91,13 +90,30 @@ namespace Fixie.Execution
             {
                 var casesToFailWithoutRunning = parameterGenerationFailures.ToArray();
 
-                orderCases(casesToFailWithoutRunning);
+                TryOrderCases(casesToFailWithoutRunning);
 
                 foreach (var caseToFailWithoutRunning in casesToFailWithoutRunning)
                     classResult.Add(Fail(caseToFailWithoutRunning));
             }
 
             return classResult;
+        }
+
+        bool TryOrderCases(Case[] cases)
+        {
+            try
+            {
+                orderCases(cases);
+            }
+            catch (Exception exception)
+            {
+                foreach (var @case in cases)
+                    @case.Fail(exception);
+
+                return false;
+            }
+
+            return true;
         }
 
         IEnumerable<object[]> Parameters(MethodInfo method)

@@ -53,9 +53,9 @@ namespace Fixie.Tests
             parser.Errors.ShouldBeEmpty();
         }
 
-        public void ParsesCustomOptions()
+        public void ParsesCustomParameters()
         {
-            var parser = new CommandLineParser("assembly.dll", "--key", "value");
+            var parser = new CommandLineParser("assembly.dll", "--parameter", "key=value");
             parser.AssemblyPaths.ShouldEqual("assembly.dll");
             parser.Options.Select(x => x.Key).ShouldEqual("key");
             parser.Options["key"].ShouldEqual("value");
@@ -63,28 +63,47 @@ namespace Fixie.Tests
             parser.Errors.ShouldBeEmpty();
         }
 
-        public void DemandsThatCustomOptionsHaveExplicitValues()
+        public void CustomParametersBehaveLikeSwitchesWhenNoEqualSignIsSpecified()
         {
-            var parser = new CommandLineParser("--key", "value", "--invalid");
-            parser.AssemblyPaths.ShouldBeEmpty();
-            parser.Options.Select(x => x.Key).ShouldEqual("key");
-            parser.Options["key"].ShouldEqual("value");
-            parser.HasErrors.ShouldBeTrue();
-            parser.Errors.ShouldEqual("Option --invalid is missing its required value.");
+            var parser = new CommandLineParser("assembly.dll", "--parameter", "switch");
+            parser.AssemblyPaths.ShouldEqual("assembly.dll");
+            parser.Options.Select(x => x.Key).ShouldEqual("switch");
+            parser.Options["switch"].ShouldEqual("on");
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
         }
 
-        public void DemandsThatCustomOptionValuesCannotLookLikeKeys()
+        public void DemandsThatAllOptionsBeRecognized()
         {
-            var parser = new CommandLineParser("--key", "--anotherKey");
+            var parser = new CommandLineParser("assembly.dll", "--typo", "value");
+            parser.AssemblyPaths.ShouldEqual("assembly.dll");
+            parser.Options.ShouldBeEmpty();
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual("Option --typo is not recognized.");
+        }
+
+        public void DemandsThatOptionsHaveExplicitValues()
+        {
+            var parser = new CommandLineParser("--NUnitXml", "TestResult.xml", "--XUnitXml");
+            parser.AssemblyPaths.ShouldBeEmpty();
+            parser.Options.Select(x => x.Key).ShouldEqual("NUnitXml");
+            parser.Options["NUnitXml"].ShouldEqual("TestResult.xml");
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual("Option --XUnitXml is missing its required value.");
+        }
+
+        public void DemandsThatOptionValuesCannotLookLikeKeys()
+        {
+            var parser = new CommandLineParser("--NUnitXml", "--anotherKey");
             parser.AssemblyPaths.ShouldBeEmpty();
             parser.Options.ShouldBeEmpty();
             parser.HasErrors.ShouldBeTrue();
-            parser.Errors.ShouldEqual("Option --key is missing its required value.");
+            parser.Errors.ShouldEqual("Option --NUnitXml is missing its required value.");
         }
 
-        public void ParsesAllValuesProvidedForEachKey()
+        public void ParsesAllCustomParameterValuesProvidedForEachCustomKeyKey()
         {
-            var parser = new CommandLineParser("assembly.dll", "--a", "1", "--b", "2", "--a", "3");
+            var parser = new CommandLineParser("assembly.dll", "--parameter", "a=1", "--parameter", "b=2", "--parameter", "a=3");
 
             parser.AssemblyPaths.ShouldEqual("assembly.dll");
             parser.Options.Select(x => x.Key).OrderBy(x => x).ShouldEqual("a", "b");
@@ -94,16 +113,17 @@ namespace Fixie.Tests
             parser.Errors.ShouldBeEmpty();
         }
 
-        public void ParsesAssemblyPathsMixedWithCustomOptions()
+        public void ParsesAssemblyPathsMixedWithOptionsAndCustomParamters()
         {
-            var parser = new CommandLineParser("a.dll", "--include", "CategoryA", "b.dll", "--oops", "c.dll", "d.dll", "--include", "CategoryB", "--mode", "integration", "e.dll");
+            var parser = new CommandLineParser("a.dll", "--parameter", "include=CategoryA", "b.dll", "--NUnitXml", "TestResult.xml", "--parameter", "c.dll", "d.dll", "--parameter", "include=CategoryB", "--parameter", "mode=integration", "e.dll");
 
             parser.AssemblyPaths.ShouldEqual("a.dll", "b.dll", "d.dll", "e.dll");
 
-            parser.Options.Select(x => x.Key).OrderBy(x => x).ShouldEqual("include", "mode", "oops");
+            parser.Options.Select(x => x.Key).OrderBy(x => x).ShouldEqual("c.dll", "include", "mode", "NUnitXml");
+            parser.Options["c.dll"].ShouldEqual("on");
             parser.Options["include"].ShouldEqual("CategoryA", "CategoryB");
-            parser.Options["oops"].ShouldEqual("c.dll");
             parser.Options["mode"].ShouldEqual("integration");
+            parser.Options["NUnitXml"].ShouldEqual("TestResult.xml");
             parser.Options["nonexistent"].ShouldBeEmpty();
             parser.HasErrors.ShouldBeFalse();
             parser.Errors.ShouldBeEmpty();

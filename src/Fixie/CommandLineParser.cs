@@ -28,6 +28,27 @@ namespace Fixie
                     var key = KeyName(item);
                     var value = queue.Dequeue();
 
+                    if (!IsKeyRecognized(key))
+                    {
+                        errors.Add(string.Format("Option {0} is not recognized.", item));
+                        break;
+                    }
+
+                    if (key == CommandLineOption.Parameter)
+                    {
+                        if (value.Contains("="))
+                        {
+                            var equalSignIndex = value.IndexOf('=');
+                            key = value.Substring(0, equalSignIndex);
+                            value = value.Substring(equalSignIndex + 1);
+                        }
+                        else
+                        {
+                            key = value;
+                            value = "on";
+                        }
+                    }
+
                     optionList.Add(new KeyValuePair<string, string>(key, value));
                 }
                 else
@@ -63,6 +84,14 @@ namespace Fixie
         static string KeyName(string item)
         {
             return item.Substring("--".Length);
+        }
+
+        static bool IsKeyRecognized(string key)
+        {
+            return key == CommandLineOption.NUnitXml ||
+                   key == CommandLineOption.XUnitXml ||
+                   key == CommandLineOption.TeamCity ||
+                   key == CommandLineOption.Parameter;
         }
     }
 }

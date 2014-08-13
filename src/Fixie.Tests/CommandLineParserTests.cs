@@ -123,6 +123,20 @@ namespace Fixie.Tests
             parser.Errors.ShouldBeEmpty();
         }
 
+        public void ParsesOptionNamesCaseInsensitive()
+        {
+            var parser = new CommandLineParser("assembly.dll", "--nUnItXmL", "NUnit.xml", "--XuNiTxMl", "XUnit.xml", "--tEaMcItY", "off", "--pArAmEtEr", "key=value");
+
+            parser.AssemblyPaths.ShouldEqual("assembly.dll");
+            parser.Options.Select(x => x.Key).OrderBy(x => x).ShouldEqual("key", "NUnitXml", "TeamCity", "XUnitXml");
+            parser.Options["key"].ShouldEqual("value");
+            parser.Options["NUnitXml"].ShouldEqual("NUnit.xml");
+            parser.Options["TeamCity"].ShouldEqual("off");
+            parser.Options["XUnitXml"].ShouldEqual("XUnit.xml");
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
+        }
+
         public void ParsesAssemblyPathsMixedWithOptionsAndCustomParamters()
         {
             var parser = new CommandLineParser("a.dll", "--parameter", "include=CategoryA", "b.dll", "--NUnitXml", "TestResult.xml", "--parameter", "c.dll", "d.dll", "--parameter", "include=CategoryB", "--parameter", "mode=integration", "e.dll");

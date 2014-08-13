@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Fixie
@@ -28,7 +29,9 @@ namespace Fixie
                     var key = KeyName(item);
                     var value = queue.Dequeue();
 
-                    if (!IsKeyRecognized(key))
+                    key = CorrectlyCasedKey(key);
+
+                    if (key == null)
                     {
                         errors.Add(string.Format("Option {0} is not recognized.", item));
                         break;
@@ -93,12 +96,14 @@ namespace Fixie
             return item.Substring("--".Length);
         }
 
-        static bool IsKeyRecognized(string key)
+        static string CorrectlyCasedKey(string key)
         {
-            return key == CommandLineOption.NUnitXml ||
-                   key == CommandLineOption.XUnitXml ||
-                   key == CommandLineOption.TeamCity ||
-                   key == CommandLineOption.Parameter;
+            foreach (var option in CommandLineOption.GetAll())
+
+            if (String.Equals(key, option, StringComparison.OrdinalIgnoreCase))
+                return option;
+
+            return null;
         }
     }
 }

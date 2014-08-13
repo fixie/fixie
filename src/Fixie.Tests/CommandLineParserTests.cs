@@ -55,10 +55,11 @@ namespace Fixie.Tests
 
         public void ParsesCustomParameters()
         {
-            var parser = new CommandLineParser("assembly.dll", "--parameter", "key=value");
+            var parser = new CommandLineParser("assembly.dll", "--parameter", "key=value", "--parameter", "otherKey=valueContaining=EqualSign");
             parser.AssemblyPaths.ShouldEqual("assembly.dll");
-            parser.Options.Select(x => x.Key).ShouldEqual("key");
+            parser.Options.Select(x => x.Key).ShouldEqual("key", "otherKey");
             parser.Options["key"].ShouldEqual("value");
+            parser.Options["otherKey"].ShouldEqual("valueContaining=EqualSign");
             parser.HasErrors.ShouldBeFalse();
             parser.Errors.ShouldBeEmpty();
         }

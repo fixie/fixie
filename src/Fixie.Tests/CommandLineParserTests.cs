@@ -73,6 +73,15 @@ namespace Fixie.Tests
             parser.Errors.ShouldBeEmpty();
         }
 
+        public void DemandsThatCustomParameterKeysCannotBeEmpty()
+        {
+            var parser = new CommandLineParser("assembly.dll", "--parameter", "=value");
+            parser.AssemblyPaths.ShouldEqual("assembly.dll");
+            parser.Options.ShouldBeEmpty();
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual("Custom parameter =value is missing its required key.");
+        }
+
         public void DemandsThatAllOptionsBeRecognized()
         {
             var parser = new CommandLineParser("assembly.dll", "--typo", "value");

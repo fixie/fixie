@@ -39,6 +39,13 @@ namespace Fixie
                         if (value.Contains("="))
                         {
                             var equalSignIndex = value.IndexOf('=');
+
+                            if (equalSignIndex == 0)
+                            {
+                                errors.Add(string.Format("Custom parameter {0} is missing its required key.", value));
+                                break;
+                            }
+
                             key = value.Substring(0, equalSignIndex);
                             value = value.Substring(equalSignIndex + 1);
                         }

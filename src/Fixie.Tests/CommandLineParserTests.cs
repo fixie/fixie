@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Fixie.Listeners;
 using Should;
 
 namespace Fixie.Tests
@@ -20,6 +19,36 @@ namespace Fixie.Tests
             var parser = new CommandLineParser("foo.dll", "bar.dll");
             parser.AssemblyPaths.ShouldEqual("foo.dll", "bar.dll");
             parser.Options.ShouldBeEmpty();
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
+        }
+
+        public void ParsesNUnitXmlOutputFile()
+        {
+            var parser = new CommandLineParser("assembly.dll", "--NUnitXml", "TestResult.xml");
+            parser.AssemblyPaths.ShouldEqual("assembly.dll");
+            parser.Options.Select(x => x.Key).ShouldEqual("NUnitXml");
+            parser.Options["NUnitXml"].ShouldEqual("TestResult.xml");
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
+        }
+
+        public void ParsesXUnitXmlOutputFile()
+        {
+            var parser = new CommandLineParser("assembly.dll", "--XUnitXml", "TestResult.xml");
+            parser.AssemblyPaths.ShouldEqual("assembly.dll");
+            parser.Options.Select(x => x.Key).ShouldEqual("XUnitXml");
+            parser.Options["XUnitXml"].ShouldEqual("TestResult.xml");
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
+        }
+
+        public void ParsesTeamCityOutputFlag()
+        {
+            var parser = new CommandLineParser("assembly.dll", "--TeamCity", "off");
+            parser.AssemblyPaths.ShouldEqual("assembly.dll");
+            parser.Options.Select(x => x.Key).ShouldEqual("TeamCity");
+            parser.Options["TeamCity"].ShouldEqual("off");
             parser.HasErrors.ShouldBeFalse();
             parser.Errors.ShouldBeEmpty();
         }

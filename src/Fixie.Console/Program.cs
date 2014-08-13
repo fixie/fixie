@@ -29,8 +29,22 @@ namespace Fixie.Console
                         foreach (var error in commandLineParser.Errors)
                             Console.WriteLine(error);
 
+                    Console.WriteLine();
                     Console.WriteLine(CommandLineParser.Usage());
                     return FatalError;
+                }
+
+                foreach (var assemblyPath in commandLineParser.AssemblyPaths)
+                {
+                    if (!File.Exists(assemblyPath))
+                    {
+                        using (Foreground.Red)
+                            Console.WriteLine("Specified test assembly does not exist: " + assemblyPath);
+
+                        Console.WriteLine();
+                        Console.WriteLine(CommandLineParser.Usage());
+                        return FatalError;
+                    }
                 }
 
                 var executionResult = new ExecutionResult();

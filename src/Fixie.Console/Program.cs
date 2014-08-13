@@ -29,7 +29,7 @@ namespace Fixie.Console
                         foreach (var error in commandLineParser.Errors)
                             Console.WriteLine(error);
 
-                    Console.WriteLine("Usage: Fixie.Console [custom-options] assembly-path...");
+                    Console.WriteLine(CommandLineParser.Usage());
                     return FatalError;
                 }
 

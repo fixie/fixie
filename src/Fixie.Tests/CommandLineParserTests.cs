@@ -137,7 +137,7 @@ namespace Fixie.Tests
             parser.Errors.ShouldBeEmpty();
         }
 
-        public void ParsesAssemblyPathsMixedWithOptionsAndCustomParamters()
+        public void ParsesAssemblyPathsMixedWithOptionsAndCustomParameters()
         {
             var parser = new CommandLineParser("a.dll", "--parameter", "include=CategoryA", "b.dll", "--NUnitXml", "TestResult.xml", "--parameter", "c.dll", "d.dll", "--parameter", "include=CategoryB", "--parameter", "mode=integration", "e.dll");
 

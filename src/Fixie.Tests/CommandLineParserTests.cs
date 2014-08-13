@@ -34,16 +34,6 @@ namespace Fixie.Tests
             parser.Errors.ShouldBeEmpty();
         }
 
-        public void ParsesCustomOptionsWithQualifierPrefix()
-        {
-            var parser = new CommandLineParser("assembly.dll", "--fixie:NUnitXml", "TestResult.xml");
-            parser.AssemblyPaths.ShouldEqual("assembly.dll");
-            parser.Options.Select(x => x.Key).ShouldEqual("fixie:NUnitXml");
-            parser.Options["fixie:NUnitXml"].ShouldEqual("TestResult.xml");
-            parser.HasErrors.ShouldBeFalse();
-            parser.Errors.ShouldBeEmpty();
-        }
-
         public void DemandsThatCustomOptionsHaveExplicitValues()
         {
             var parser = new CommandLineParser("--key", "value", "--invalid");

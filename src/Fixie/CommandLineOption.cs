@@ -2,8 +2,8 @@
 {
     public class CommandLineOption
     {
-        public const string NUnitXml = "fixie:NUnitXml";
-        public const string XUnitXml = "fixie:XUnitXml";
-        public const string TeamCity = "fixie:TeamCity";
+        public const string NUnitXml = "NUnitXml";
+        public const string XUnitXml = "XUnitXml";
+        public const string TeamCity = "TeamCity";
     }
 }

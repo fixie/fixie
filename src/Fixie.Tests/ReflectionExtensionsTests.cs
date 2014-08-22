@@ -9,8 +9,6 @@ namespace Fixie.Tests
 {
     public class ReflectionExtensionsTests
     {
-        const BindingFlags InstanceMethods = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
-
         public void CanDetectVoidReturnType()
         {
             Method("ReturnsVoid").IsVoid().ShouldBeTrue();

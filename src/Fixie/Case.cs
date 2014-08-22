@@ -61,8 +61,8 @@ namespace Fixie
         }
 
         public Fixture Fixture { get; internal set; }
-        public TimeSpan Duration { get; internal set; }
-        public string Output { get; internal set; }
+        internal TimeSpan Duration { get; set; }
+        internal string Output { get; set; }
         public object ReturnValue { get; internal set; }
     }
 }

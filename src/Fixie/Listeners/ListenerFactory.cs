@@ -24,10 +24,10 @@ namespace Fixie.Listeners
             var listeners = new List<Listener>();
             foreach (var option in options[CommandLineOption.CustomListener])
             {
-                var parts = option.Split(new[] { ';' }, StringSplitOptions.None);
+                var parts = option.Split(new[] { '|' }, StringSplitOptions.None);
                 if (parts.Length != 2)
                 {
-                    var message = string.Format("Valid {0} format is 'assembly-path;type'.", CommandLineOption.CustomListener);
+                    var message = string.Format("Valid {0} format is 'assembly-path|type'.", CommandLineOption.CustomListener);
                     throw new FormatException(message);
                 }
 

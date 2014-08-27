@@ -44,7 +44,7 @@ namespace Fixie.Tests.Listeners
                 new
                 {
                     key = CommandLineOption.CustomListener,
-                    value = path + ";" + type
+                    value = path + "|" + type
                 }
             }.ToLookup(x => x.key, x => x.value);
 
@@ -63,12 +63,12 @@ namespace Fixie.Tests.Listeners
                 new
                 {
                     key = CommandLineOption.CustomListener,
-                    value = path + ";" + type1
+                    value = path + "|" + type1
                 },
                 new
                 {
                     key = CommandLineOption.CustomListener,
-                    value = path + ";" + type2
+                    value = path + "|" + type2
                 }
             }.ToLookup(x => x.key, x => x.value);
 
@@ -88,7 +88,7 @@ namespace Fixie.Tests.Listeners
             }.ToLookup(x => x.key, x => x.value);
 
             Assert.Throws<FormatException>(() => new ListenerFactory().CreateListener(options))
-                  .Message.ShouldEqual("Valid CustomListener format is 'assembly-path;type'.");
+                  .Message.ShouldEqual("Valid CustomListener format is 'assembly-path|type'.");
         }
 
         class TestListener : Listener

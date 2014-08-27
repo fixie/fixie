@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Fixie.Tests.Listeners
 {
-    public class CompoundListnerTests
+    public class CompoundListenerTests
     {
         public void ShouldCallAssemblyStartedOnUnderlyingListerners()
         {

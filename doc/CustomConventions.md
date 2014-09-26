@@ -39,7 +39,7 @@ namespace IntegrationTests
 
 Here, we're declaring that for each *Fixture* (in other words, each test class instance), wrap it in its own `TransactionScope` instance.  When the test class is constructed, you get a new `TransactionScope`.  After the tests are run for that instance, the `TransactionScope` is disposed.  You could alternatively wrap per-test-case (using the `CaseExecution` property) or per-test-class (using the `ClassExecution` property).
 
-Contrasting with NUnit, `CaseExecution` wrapping corresponds with NUnit's `[SetUp]` and `[TearDown]`, and 'FixtureExecution' wrapping corresponds with NUnit's `[FixtureSetUp]` and `[FixtureTearDown]`.
+Contrasting with NUnit, `CaseExecution` wrapping corresponds with NUnit's `[SetUp]` and `[TearDown]`, and `FixtureExecution` wrapping corresponds with NUnit's `[FixtureSetUp]` and `[FixtureTearDown]`.
 
 Several sample conventions are available under the [Fixie.Samples](https://github.com/plioi/fixie/tree/master/src/Fixie.Samples) project:
 

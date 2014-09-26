@@ -2,13 +2,12 @@
 
 Although useful for simple scenarios, the default convention may not meet your needs. Fortunately, you can replace it with your own.
 
-If you don't want to go with the behaviors defined in the default convention, simply place a subclass of Convention beside your tests.  A custom subclass of Convention will reach out into the containing test assembly, looking for tests to execute.  Each convention can customize test discovery and test execution.  For test discovery, you describe what your test classes and test methods look like.  For test execution, you can take control over how frequently your test classes are constructed and how they are constructed.  Additionally, you can wrap custom behavior around each test method, around each test class instance, and around each test class.
+If you don't want to go with the behaviors defined in the default convention, simply place a subclass of `Convention` beside your tests.  A custom subclass of `Convention` will reach out into the containing test assembly, looking for tests to execute.  Each convention can customize test discovery and test execution.  For test discovery, you describe what your test classes and test methods look like.  For test execution, you can take control over how frequently your test classes are constructed and how they are constructed.  Additionally, you can wrap custom behavior around each test case, around each test class instance, and around each test class.
 
 For instance, let's say we want all of our integration tests to be automatically wrapped in a database transaction.  Beside our tests, we place a custom convention class:
 
 ```cs
 using Fixie;
-using Fixie.Conventions;
 
 namespace IntegrationTests
 {
@@ -22,16 +21,25 @@ namespace IntegrationTests
             Methods
                 .Where(method => method.IsVoid());
 
-            InstanceExecution
-                .Wrap((fixture, innerBehavior) =>
-                {
-                    using (new TransactionScope())
-                        innerBehavior();
-                });
+            FixtureExecution
+                .Wrap<Transaction>();
+        }
+
+        class Transaction : FixtureBehavior
+        {
+            public void Execute(Fixture context, Action next)
+            {
+                using (new TransactionScope())
+                    next();
+            }
         }
     }
 }
 ```
+
+Here, we're declaring that for each *Fixture* (in other words, each test class instance), wrap it in its own `TransactionScope` instance.  When the test class is constructed, you get a new `TransactionScope`.  After the tests are run for that instance, the `TransactionScope` is disposed.  You could alternatively wrap per-test-case (using the `CaseExecution` property) or per-test-class (using the `ClassExecution` property).
+
+Contrasting with NUnit, `CaseExecution` wrapping corresponds with NUnit's `[SetUp]` and `[TearDown]`, and 'FixtureExecution' wrapping corresponds with NUnit's `[FixtureSetUp]` and `[FixtureTearDown]`.
 
 Several sample conventions are available under the [Fixie.Samples](https://github.com/plioi/fixie/tree/master/src/Fixie.Samples) project:
 
@@ -43,15 +51,15 @@ Several sample conventions are available under the [Fixie.Samples](https://githu
 
 ## Sharing Conventions
 
-As described above, a custom subclass of Convention will reach out into the containing test assembly, looking for tests to execute.  This default behavior is useful in simple projects, but is insufficient in two scenarios:
+As described above, a custom subclass of `Convention` will reach out into the containing test assembly, looking for tests to execute.  This default behavior is useful in simple projects, but is insufficient in two scenarios:
 
 1. You may want to define a convention once in your Solution, and have it applied to multiple test assemblies in that Solution.
-2. Someone may create a useful NUnit-mimicking convention and share it in the form of a DLL.
+2. Someone may create a useful convention and share it in the form of a DLL.
 
-By default, conventions only reach out into their containing assembly when looking for tests.  In order to take advantage of a convention defined in another assembly, you can add a subclass of TestAssembly and explicitly list which conventions apply here:
+By default, conventions only reach out into their containing assembly when looking for tests.  In order to take advantage of a convention defined in another assembly, you can add a subclass of `TestAssembly` and explicitly list which conventions apply here:
 
 ```cs
-using Fixie.Conventions;
+using Fixie;
 using SomeThirdPartyConventionsLibrary;
 
 namespace IntegrationTests

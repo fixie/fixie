@@ -2,7 +2,7 @@
 
 With the default convention, Fixie is unable to run parameterized test methods, because it doesn't know where those input parameters should come from.  In a custom convention, though, you can define the meaning of parameterized test methods.
 
-In a custom convention, use the `Parameters(...)` method to define the origin of test method parameters.  `Parameters(...)` accepts a delegate of type `Func<MethodInfo, IEnumerable<object[]>>`.  In other words, for any given method, your delegate must produce a series of object arrays.  Each object array corresponds with a single call to the test method.
+In a custom convention, use the `Parameters` property to add a `ParameterSource` as the origin of test method parameters.  Your parameter source provides `IEnumerable<object[]> GetParameters(MethodInfo method)`.  In other words, for any given method, your parameter source must produce a series of object arrays.  Each object array corresponds with a single call to the test method.
 
 You may want parameters to come from attributes, your IoC container, AutoFixture, metadata from the filesystem... anything that yields object arrays.
 
@@ -23,7 +23,7 @@ public class InputAttribute : Attribute
 }
 ```
 
-Next, place `InputAttribute`s on parameterized tests.
+Next, place `InputAttribute`s on parameterized tests:
 
 ```cs
 public class CalculatorTests
@@ -52,7 +52,7 @@ public class CalculatorTests
 }
 ```
 
-Lastly, define a custom convention which passes a `Func<MethodInfo, IEnumerable<object[]>>` to `Parameters(...)`:
+Lastly, define a custom convention which tells Fixie how to look up the parameters for each call to these test methods:
 
 ```cs
 public class CustomConvention : Convention
@@ -65,19 +65,23 @@ public class CustomConvention : Convention
         Methods
             .Where(method => method.IsVoid());
 
-        Parameters(FromInputAttributes);
+        Parameters
+            .Add<FromInputAttributes>();
     }
 
-    static IEnumerable<object[]> FromInputAttributes(MethodInfo method)
+    class FromInputAttributes : ParameterSource
     {
-        return method.GetCustomAttributes<InputAttribute>(true).Select(input => input.Parameters);
+        public IEnumerable<object[]> GetParameters(MethodInfo method)
+        {
+            return method.GetCustomAttributes<InputAttribute>(true).Select(input => input.Parameters);
+        }
     }
 }
 ```
 
 ### Generic Parameterized Tests
 
-When the system under test uses generics, you may want your parameterized test method to be generic as well. If a parameterized method happens to be a generic method, Fixie compares the runtime type of each incoming parameter value against the generic method declaration in order to pick the best concrete type for each generic type parameter.  This step is necessary because reflection does not allow you to simply pass an `object[]` of parameter values when invoking a generic method thorugh its `MethodInfo`.  Fixie must first convert the generic method definition's `MethodInfo` into a more specific `MethodInfo` with the type arguments resolved.  For instance, consider what happens when we have a generic test method using the `[Input]` attribute as defined above:
+When the system under test uses generics, you may want your parameterized test method to be generic as well. If a parameterized method happens to be a generic method, Fixie compares the runtime type of each incoming parameter value against the generic method declaration in order to pick the best concrete type for each generic type parameter.  This step is necessary because reflection does not allow you to simply pass an `object[]` of parameter values when invoking a generic method through its `MethodInfo`.  Fixie must first convert the generic method definition's `MethodInfo` into a more specific `MethodInfo` with the type arguments resolved.  For instance, consider what happens when we have a generic test method using the `[Input]` attribute as defined above:
 
 ```cs
 [Input(true)]

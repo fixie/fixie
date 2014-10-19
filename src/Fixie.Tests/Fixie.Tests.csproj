@@ -59,6 +59,8 @@
     <Compile Include="Lifecycle\ComplexLifecycleTests.cs" />
     <Compile Include="Lifecycle\ConstructionTests.cs" />
     <Compile Include="Lifecycle\FixtureLifecycleTests.cs" />
+    <Compile Include="Listeners\CompoundListenerTests.cs" />
+    <Compile Include="Listeners\ListenerFactoryTests.cs" />
     <Compile Include="Reports\NUnitXmlReportTests.cs" />
     <Compile Include="Reports\XUnitXmlReportTests.cs" />
     <Compile Include="Cases\AsyncCaseTests.cs" />

@@ -14,6 +14,8 @@ namespace Fixie.VisualStudio.TestAdapter
     {
         public void DiscoverTests(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger logger, ITestCaseDiscoverySink discoverySink)
         {
+            RemotingUtility.CleanUpRegisteredChannels();
+
             foreach (var source in sources)
             {
                 var assemblyFullPath = Path.GetFullPath(source);

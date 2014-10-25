@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
@@ -13,44 +15,35 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void RunTests(IEnumerable<TestCase> tests, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
+            frameworkHandle.SendMessage(TestMessageLevel.Informational, "RunTests invoked with TestCase objects:");
+
             foreach (var test in tests)
             {
-                frameworkHandle.RecordResult(ToVsTestResult(test));
+                var message = new StringBuilder()
+                    .AppendLine("\tSource: " + test.Source)
+                    .AppendLine("\tId: " + test.Id)
+                    .AppendLine("\tDisplayName: " + test.DisplayName)
+                    .AppendLine("\tCodeFilePath: " + test.CodeFilePath)
+                    .AppendLine("\tLineNumber: " + test.LineNumber)
+                    .AppendLine("\tFullyQualifiedName: " + test.FullyQualifiedName)
+                    .AppendLine("\tExecutorUri: " + test.ExecutorUri.OriginalString)
+                    .AppendLine()
+                    .ToString();
+
+                frameworkHandle.SendMessage(TestMessageLevel.Informational, message);
             }
         }
 
         public void RunTests(IEnumerable<string> sources, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
-            foreach (var assemblyPath in sources)
-            {
-                var test = new TestCase("From source " + assemblyPath, Uri, assemblyPath);
-                frameworkHandle.RecordResult(new TestResult(test)
-                {
-                    Duration = TimeSpan.FromSeconds(2),
-                    DisplayName = test.DisplayName,
-                    Outcome = TestOutcome.Passed
-                });
-                frameworkHandle.RecordResult(new TestResult(test)
-                {
-                    Duration = TimeSpan.FromSeconds(2),
-                    DisplayName = test.DisplayName,
-                    Outcome = TestOutcome.Failed
-                });
-            }
+            frameworkHandle.SendMessage(TestMessageLevel.Informational, "RunTests invoked with string 'sources' list:");
+
+            foreach (var source in sources)
+                frameworkHandle.SendMessage(TestMessageLevel.Informational, "\tSource: " + source);
         }
 
         public void Cancel()
         {
-        }
-
-        static TestResult ToVsTestResult(TestCase test)
-        {
-            return new TestResult(test)
-            {
-                Duration = TimeSpan.FromSeconds(2),
-                DisplayName = test.DisplayName,
-                Outcome = (TestOutcome)Enum.Parse(typeof(TestOutcome), test.DisplayName)
-            };
         }
     }
 }

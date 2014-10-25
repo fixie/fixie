@@ -7,6 +7,7 @@ using Fixie.Results;
 
 namespace Fixie
 {
+    [Obsolete("Refactor to use ExecutionProxy instead.")]
     public class ConsoleRunner : MarshalByRefObject
     {
         public AssemblyResult RunAssembly(string assemblyFullPath, string[] args)

@@ -42,6 +42,7 @@
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="DiscoveryProxy.cs" />
     <Compile Include="Discovery\ParameterDiscoverer.cs" />
+    <Compile Include="ExecutionProxy.cs" />
     <Compile Include="Execution\Behavior.cs" />
     <Compile Include="Execution\BehaviorChain.cs" />
     <Compile Include="Execution\BehaviorContext.cs" />

@@ -9,9 +9,9 @@ namespace Fixie.Listeners
 {
     public class TeamCityListener : Listener
     {
-        public void AssemblyStarted(Assembly assembly)
+        public void AssemblyStarted(string assemblyFileName)
         {
-            Message("testSuiteStarted name='{0}'", assembly.FileName());
+            Message("testSuiteStarted name='{0}'", assemblyFileName);
         }
 
         public void CaseSkipped(SkipResult result)
@@ -34,9 +34,9 @@ namespace Fixie.Listeners
             Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public void AssemblyCompleted(string assemblyFileName, AssemblyResult result)
         {
-            Message("testSuiteFinished name='{0}'", assembly.FileName());
+            Message("testSuiteFinished name='{0}'", assemblyFileName);
         }
 
         static void Message(string format, params string[] args)

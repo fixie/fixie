@@ -82,7 +82,7 @@ namespace Fixie.Execution
         {
             var assemblyResult = new AssemblyResult(runContext.Assembly.Location);
             
-            listener.AssemblyStarted(runContext.Assembly);
+            listener.AssemblyStarted(runContext.Assembly.FileName());
 
             foreach (var convention in conventions)
             {
@@ -91,7 +91,7 @@ namespace Fixie.Execution
                 assemblyResult.Add(conventionResult);
             }
 
-            listener.AssemblyCompleted(runContext.Assembly, assemblyResult);
+            listener.AssemblyCompleted(runContext.Assembly.FileName(), assemblyResult);
 
             return assemblyResult;
         }

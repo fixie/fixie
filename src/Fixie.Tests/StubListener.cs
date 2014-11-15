@@ -11,7 +11,7 @@ namespace Fixie.Tests
     {
         readonly List<string> log = new List<string>();
 
-        public void AssemblyStarted(Assembly assembly)
+        public void AssemblyStarted(string assemblyFileName)
         {
         }
 
@@ -58,7 +58,7 @@ namespace Fixie.Tests
             log.Add(entry.ToString());
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public void AssemblyCompleted(string assemblyFileName, AssemblyResult result)
         {
         }
 

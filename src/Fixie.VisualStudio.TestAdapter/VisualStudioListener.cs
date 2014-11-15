@@ -18,7 +18,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.source = source;
         }
 
-        public void AssemblyStarted(Assembly assembly) { }
+        public void AssemblyStarted(string assemblyFileName) { }
 
         public void CaseSkipped(SkipResult result)
         {
@@ -57,7 +57,7 @@ namespace Fixie.VisualStudio.TestAdapter
             });
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result) { }
+        public void AssemblyCompleted(string assemblyFileName, AssemblyResult result) { }
 
         static TestOutcome Map(CaseStatus caseStatus)
         {

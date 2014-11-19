@@ -81,8 +81,9 @@ namespace Fixie.Execution
         AssemblyResult Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
             var assemblyResult = new AssemblyResult(runContext.Assembly.Location);
-            
-            listener.AssemblyStarted(runContext.Assembly);
+            var assemblyInfo = new AssemblyInfo(runContext.Assembly);
+
+            listener.AssemblyStarted(assemblyInfo);
 
             foreach (var convention in conventions)
             {
@@ -91,7 +92,7 @@ namespace Fixie.Execution
                 assemblyResult.Add(conventionResult);
             }
 
-            listener.AssemblyCompleted(runContext.Assembly, assemblyResult);
+            listener.AssemblyCompleted(assemblyInfo, assemblyResult);
 
             return assemblyResult;
         }

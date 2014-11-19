@@ -89,12 +89,6 @@ namespace Fixie.Tests
             opCode.IsInNamespace("System.Reflection.Typo").ShouldBeFalse();
         }
 
-        public void CanGetAssemblyFileName()
-        {
-            typeof(ReflectionExtensionsTests).Assembly.FileName().ShouldEqual("Fixie.Tests.dll");
-            typeof(Runner).Assembly.FileName().ShouldEqual("Fixie.dll");
-        }
-
         void ReturnsVoid() { }
         int ReturnsInt() { return 0; }
         async Task Async() { await Task.Run(() => { }); }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using Fixie.Execution;
 using Fixie.Results;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -18,7 +17,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.source = source;
         }
 
-        public void AssemblyStarted(Assembly assembly) { }
+        public void AssemblyStarted(AssemblyInfo assembly) { }
 
         public void CaseSkipped(SkipResult result)
         {
@@ -57,7 +56,7 @@ namespace Fixie.VisualStudio.TestAdapter
             });
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result) { }
+        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result) { }
 
         static TestOutcome Map(CaseStatus caseStatus)
         {

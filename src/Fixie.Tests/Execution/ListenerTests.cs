@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Fixie.Execution;
 using Should;
 
@@ -20,7 +20,7 @@ namespace Fixie.Tests.Execution
             }
         }
 
-        void ShouldBeSafeForAppDomainCommunication(Type type)
+        static void ShouldBeSafeForAppDomainCommunication(Type type)
         {
             IsSafeForAppDomainCommunication(type)
                 .ShouldBeTrue(string.Format(
@@ -28,15 +28,31 @@ namespace Fixie.Tests.Execution
                     "because it will not successfully cross AppDomain boundaries.", type, typeof(Listener).Name));
         }
 
-        bool IsSafeForAppDomainCommunication(Type type)
+        static bool IsSafeForAppDomainCommunication(Type type)
+        {
+            if (type.IsInNamespace("Fixie"))
+                foreach (var property in type.GetProperties())
+                    if (!PassesShallowCheck(property.PropertyType))
+                        return false;
+
+            return PassesShallowCheck(type);
+        }
+
+        static bool PassesShallowCheck(Type type)
         {
             //Checking for [Serializable] is not strictly sufficient to guarantee a type is truly serializable,
-            //but this test is meant to catch typical mistakes early.
+            //and not every IReadOnlyList<T> will necessarily serialize, but this test is meant to catch *typical*
+            //mistakes early without being excessively strict.
 
-            //Although Assembly is serializable, it is also not an acceptable input/output type due
-            //to the fact that it causes assembly load failures at runtime.
+            //Although reflection types like Assembly and Type are serializable, they are also not acceptable
+            //input/output types due to the fact that they causes assembly load failures at runtime.
 
-            return type != typeof(Assembly) && type.HasOrInherits<SerializableAttribute>();
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IReadOnlyList<>))
+                return true;
+
+            return type != typeof(Type) &&
+                   !type.IsInNamespace("System.Reflection") &&
+                   type.HasOrInherits<SerializableAttribute>();
         }
     }
 }

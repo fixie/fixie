@@ -18,60 +18,74 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void RunTests(IEnumerable<string> sources, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
-            frameworkHandle.SendMessage(TestMessageLevel.Informational, "RunTests invoked with string 'sources' list:");
-
             HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
+
+            IMessageLogger log = frameworkHandle;
 
             foreach (var source in sources)
             {
-                frameworkHandle.SendMessage(TestMessageLevel.Informational, "\tSource: " + source);
+                log.Info("Processing " + source);
 
-                var assemblyFullPath = Path.GetFullPath(source);
-
-                using (var environment = new ExecutionEnvironment(assemblyFullPath))
+                try
                 {
-                    var runner = environment.Create<ExecutionProxy>();
-                    runner.RunAssembly(assemblyFullPath, new string[] { }, new VisualStudioListener(frameworkHandle, source));
+                    var assemblyFullPath = Path.GetFullPath(source);
+
+                    using (var environment = new ExecutionEnvironment(assemblyFullPath))
+                    {
+                        var runner = environment.Create<ExecutionProxy>();
+                        runner.RunAssembly(assemblyFullPath, new string[] { }, new VisualStudioListener(frameworkHandle, source));
+                    }
+                }
+                catch (Exception exception)
+                {
+                    log.Error(exception);
                 }
             }
         }
 
         public void RunTests(IEnumerable<TestCase> tests, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
-            var assemblyGroups = tests.GroupBy(tc => tc.Source);
-
-            frameworkHandle.SendMessage(TestMessageLevel.Informational, "RunTests invoked with TestCase objects:");
-
             HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
+
+            IMessageLogger log = frameworkHandle;
+
+            var assemblyGroups = tests.GroupBy(tc => tc.Source);
 
             foreach (var assemblyGroup in assemblyGroups)
             {
                 foreach (var test in assemblyGroup)
                 {
                     var message = new StringBuilder()
-                        .AppendLine("\tSource: " + test.Source)
-                        .AppendLine("\tId: " + test.Id)
-                        .AppendLine("\tDisplayName: " + test.DisplayName)
-                        .AppendLine("\tCodeFilePath: " + test.CodeFilePath)
-                        .AppendLine("\tLineNumber: " + test.LineNumber)
-                        .AppendLine("\tFullyQualifiedName: " + test.FullyQualifiedName)
-                        .AppendLine("\tExecutorUri: " + test.ExecutorUri.OriginalString)
+                        .AppendLine("Source: " + test.Source)
+                        .AppendLine("Id: " + test.Id)
+                        .AppendLine("DisplayName: " + test.DisplayName)
+                        .AppendLine("CodeFilePath: " + test.CodeFilePath)
+                        .AppendLine("LineNumber: " + test.LineNumber)
+                        .AppendLine("FullyQualifiedName: " + test.FullyQualifiedName)
+                        .AppendLine("ExecutorUri: " + test.ExecutorUri.OriginalString)
                         .AppendLine()
                         .ToString();
 
-                    frameworkHandle.SendMessage(TestMessageLevel.Informational, message);
+                    log.Info(message);
                 }
 
                 var source = assemblyGroup.Key;
 
-                frameworkHandle.SendMessage(TestMessageLevel.Informational, "\tSource: " + source);
+                log.Info("Processing " + source);
 
-                var assemblyFullPath = Path.GetFullPath(source);
-
-                using (var environment = new ExecutionEnvironment(assemblyFullPath))
+                try
                 {
-                    var runner = environment.Create<ExecutionProxy>();
-                    runner.RunAssembly(assemblyFullPath, new string[] { }, new VisualStudioListener(frameworkHandle, source));
+                    var assemblyFullPath = Path.GetFullPath(source);
+
+                    using (var environment = new ExecutionEnvironment(assemblyFullPath))
+                    {
+                        var runner = environment.Create<ExecutionProxy>();
+                        runner.RunAssembly(assemblyFullPath, new string[] { }, new VisualStudioListener(frameworkHandle, source));
+                    }
+                }
+                catch (Exception exception)
+                {
+                    log.Error(exception);
                 }
             }
         }

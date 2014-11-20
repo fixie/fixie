@@ -42,6 +42,7 @@
     </Compile>
     <Compile Include="Discoverer.cs" />
     <Compile Include="Executor.cs" />
+    <Compile Include="LoggingExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemotingUtility.cs" />
     <Compile Include="VisualStudioListener.cs" />

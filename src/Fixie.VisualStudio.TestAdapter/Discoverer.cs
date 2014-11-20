@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -12,25 +13,34 @@ namespace Fixie.VisualStudio.TestAdapter
     [FileExtension(".dll")]
     public class Discoverer : ITestDiscoverer
     {
-        public void DiscoverTests(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger logger, ITestCaseDiscoverySink discoverySink)
+        public void DiscoverTests(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger log, ITestCaseDiscoverySink discoverySink)
         {
             RemotingUtility.CleanUpRegisteredChannels();
 
             foreach (var source in sources)
             {
-                var assemblyFullPath = Path.GetFullPath(source);
+                log.Info("Processing " + source);
 
-                using (var environment = new ExecutionEnvironment(assemblyFullPath))
+                try
                 {
-                    var discovery = environment.Create<DiscoveryProxy>();
+                    var assemblyFullPath = Path.GetFullPath(source);
 
-                    foreach (var testMethod in discovery.TestMethods(assemblyFullPath))
+                    using (var environment = new ExecutionEnvironment(assemblyFullPath))
                     {
-                        discoverySink.SendTestCase(new TestCase(testMethod.FullName, Executor.Uri, source)
+                        var discovery = environment.Create<DiscoveryProxy>();
+
+                        foreach (var testMethod in discovery.TestMethods(assemblyFullPath))
                         {
-                            DisplayName = testMethod.FullName
-                        });
+                            discoverySink.SendTestCase(new TestCase(testMethod.FullName, Executor.Uri, source)
+                            {
+                                DisplayName = testMethod.FullName
+                            });
+                        }
                     }
+                }
+                catch (Exception exception)
+                {
+                    log.Error(exception);
                 }
             }
         }

@@ -8,13 +8,13 @@ namespace Fixie
 {
     public class DiscoveryProxy : MarshalByRefObject
     {
-        public IReadOnlyList<string> TestMethods(string assemblyFullPath)
+        public IReadOnlyList<TestMethod> TestMethods(string assemblyFullPath)
         {
             var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
             var runContext = new RunContext(assembly, Enumerable.Empty<string>().ToLookup(x => x, x => x));
             var conventions = new ConventionDiscoverer(runContext).GetConventions();
 
-            var discoveredTestMethods = new List<string>();
+            var discoveredTestMethods = new List<TestMethod>();
 
             foreach (var convention in conventions)
             {
@@ -29,7 +29,7 @@ namespace Fixie
 
                     foreach (var testMethod in testMethods)
                     {
-                        discoveredTestMethods.Add(new Case(testMethod).Name);
+                        discoveredTestMethods.Add(new TestMethod(testMethod));
                     }
                 }
             }

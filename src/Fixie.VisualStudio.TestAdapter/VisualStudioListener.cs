@@ -21,7 +21,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void CaseSkipped(SkipResult result)
         {
-            var testCase = new TestCase(result.Name, Executor.Uri, source);
+            var testCase = new TestCase(TestMethodName(result.Name), Executor.Uri, source);
             log.RecordResult(new TestResult(testCase)
             {
                 DisplayName = result.Name,
@@ -32,7 +32,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void CasePassed(PassResult result)
         {
-            var testCase = new TestCase(result.Name, Executor.Uri, source);
+            var testCase = new TestCase(TestMethodName(result.Name), Executor.Uri, source);
             log.RecordResult(new TestResult(testCase)
             {
                 DisplayName = result.Name,
@@ -44,7 +44,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void CaseFailed(FailResult result)
         {
-            var testCase = new TestCase(result.Name, Executor.Uri, source);
+            var testCase = new TestCase(TestMethodName(result.Name), Executor.Uri, source);
             log.RecordResult(new TestResult(testCase)
             {
                 DisplayName = result.Name,
@@ -71,6 +71,24 @@ namespace Fixie.VisualStudio.TestAdapter
                 default:
                     return TestOutcome.None;
             }
+        }
+
+        static string TestMethodName(string caseName)
+        {
+            //The Visual Studio test runner has poor support for parameterized test methods,
+            //when the arguments are not known ahead of time. It assumes that the TestCase
+            //FullyQualifyName strings will pefectly match between the discovery phase and
+            //the execution phase. The best thing that can be done for parameterized tests
+            //is to include the full name of the class/method (without parameter information)
+            //as the TestCase's FullyQualifiedName while providing the full Case name
+            //(including parameter information) as the TestResult's DisplayName.  This
+            //combination allows the Visual Studio test runner to display each individual
+            //test case's success or failure, grouped under the method name.
+
+            if (caseName.Contains("("))
+                return caseName.Substring(0, caseName.IndexOf("("));
+
+            return caseName;
         }
     }
 }

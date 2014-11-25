@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Fixie.Results;
+﻿using Fixie.Results;
 
 namespace Fixie.Execution
 {

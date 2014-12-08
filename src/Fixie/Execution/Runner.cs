@@ -75,7 +75,7 @@ namespace Fixie.Execution
             foreach (var convention in conventions)
                 convention.Methods.Where(methods.Contains);
 
-            return Run(runContext, conventions, methods.Select(m => m.ReflectedType).ToArray());
+            return Run(runContext, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
         }
 
         private AssemblyResult RunTypes(RunContext runContext, params Type[] types)

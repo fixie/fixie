@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Fixie.Execution;
 using Fixie.Results;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -56,7 +57,25 @@ namespace Fixie.VisualStudio.TestAdapter
             });
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result) { }
+        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        {
+            var assemblyName = typeof(Listener).Assembly.GetName();
+            var name = assemblyName.Name;
+            var version = assemblyName.Version;
+
+            var line = new StringBuilder();
+
+            line.AppendFormat("{0} passed", result.Passed);
+            line.AppendFormat(", {0} failed", result.Failed);
+
+            if (result.Skipped > 0)
+                line.AppendFormat(", {0} skipped", result.Skipped);
+
+            line.AppendFormat(", took {0:N2} seconds", result.Duration.TotalSeconds);
+
+            line.AppendFormat(" ({0} {1}).", name, version);
+            log.Info(line.ToString());
+        }
 
         static TestOutcome Map(CaseStatus caseStatus)
         {

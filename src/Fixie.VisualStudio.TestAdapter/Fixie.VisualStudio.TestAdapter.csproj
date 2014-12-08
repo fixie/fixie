@@ -37,9 +37,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="Discoverer.cs" />
     <Compile Include="Executor.cs" />
     <Compile Include="LoggingExtensions.cs" />

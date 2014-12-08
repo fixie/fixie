@@ -39,9 +39,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="Calculator.cs" />
     <Compile Include="Categories\CalculatorTests.cs" />
     <Compile Include="Categories\CustomConvention.cs" />

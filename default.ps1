@@ -9,6 +9,7 @@ properties {
     $src = resolve-path '.\src'
     $build = if ($env:build_number -ne $NULL) { $env:build_number } else { '0' }
     $version = [IO.File]::ReadAllText('.\VERSION.txt') + '.' + $build
+    $projects = @(gci $src -rec -filter *.csproj)
 }
 
 task default -depends Test
@@ -28,27 +29,35 @@ task Test -depends Compile {
     exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
 }
 
-task Compile -depends CommonAssemblyInfo {
+task Compile -depends AssemblyInfo {
   rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
   exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
   exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
 }
 
-task CommonAssemblyInfo {
+task AssemblyInfo {
     $date = Get-Date
     $year = $date.Year
     $copyrightSpan = if ($year -eq $birthYear) { $year } else { "$birthYear-$year" }
     $copyright = "Copyright (c) $copyrightSpan $maintainers"
+
+    foreach ($project in $projects) {
+        $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
+        $assemblyInfoPath = "$($project.DirectoryName)\Properties\AssemblyInfo.cs"
+
+        write-host "Generating $assemblyInfoPath"
 
 "using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 [assembly: AssemblyProduct(""Fixie"")]
+[assembly: AssemblyTitle(""$projectName"")]
 [assembly: AssemblyVersion(""$version"")]
 [assembly: AssemblyFileVersion(""$version"")]
 [assembly: AssemblyCopyright(""$copyright"")]
 [assembly: AssemblyCompany(""$maintainers"")]
 [assembly: AssemblyDescription(""$description"")]
-[assembly: AssemblyConfiguration(""$configuration"")]" | out-file "$src\CommonAssemblyInfo.cs" -encoding "ASCII"
+[assembly: AssemblyConfiguration(""$configuration"")]" | out-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" -encoding "ASCII"
+    }
 }

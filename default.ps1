@@ -3,7 +3,6 @@ Framework '4.0'
 properties {
     $birthYear = 2013
     $maintainers = "Patrick Lioi"
-    $description = "A convention-based test framework."
 
     $configuration = 'Release'
     $src = resolve-path '.\src'
@@ -51,8 +50,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("$version")]
 [assembly: AssemblyFileVersion("$version")]
 [assembly: AssemblyCopyright("$copyright")]
-[assembly: AssemblyCompany("$maintainers")]
-[assembly: AssemblyDescription("$description")]
 [assembly: AssemblyConfiguration("$configuration")]
 "@
     }

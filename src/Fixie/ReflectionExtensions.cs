@@ -7,6 +7,11 @@ namespace Fixie
 {
     public static class ReflectionExtensions
     {
+        public static string MethodGroup(this MethodInfo method)
+        {
+            return method.ReflectedType.FullName + "." + method.Name;
+        }
+
         public static bool IsVoid(this MethodInfo method)
         {
             return method.ReturnType == typeof(void);

@@ -2,13 +2,24 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Fixie.Execution;
 using Should;
 
 namespace Fixie.Tests
 {
     public class ReflectionExtensionsTests
     {
+        public void CanDetermineMethodGroupFromMethodInfoWithRespectToTheReflectedType()
+        {
+            var methodDeclaredInChildClass = typeof(ChildClass).GetInstanceMethod("MethodDefinedWithinChildClass");
+            methodDeclaredInChildClass.MethodGroup().ShouldEqual("Fixie.Tests.ReflectionExtensionsTests+ChildClass.MethodDefinedWithinChildClass");
+
+            var methodDeclaredInParentClass = typeof(ParentClass).GetInstanceMethod("MethodDefinedWithinParentClass");
+            methodDeclaredInParentClass.MethodGroup().ShouldEqual("Fixie.Tests.ReflectionExtensionsTests+ParentClass.MethodDefinedWithinParentClass");
+
+            var parentMethodInheritedByChildClass = typeof(ChildClass).GetInstanceMethod("MethodDefinedWithinParentClass");
+            parentMethodInheritedByChildClass.MethodGroup().ShouldEqual("Fixie.Tests.ReflectionExtensionsTests+ChildClass.MethodDefinedWithinParentClass");
+        }
+
         public void CanDetectVoidReturnType()
         {
             Method("ReturnsVoid").IsVoid().ShouldBeTrue();
@@ -145,6 +156,20 @@ namespace Fixie.Tests
         private static MethodInfo MethodBySignature<T>(Type returnType, string name, params Type[] parameterTypes)
         {
             return typeof(T).GetInstanceMethods().Single(m => m.HasSignature(returnType, name, parameterTypes));
+        }
+
+        class ParentClass
+        {
+            public void MethodDefinedWithinParentClass()
+            {
+            }
+        }
+
+        class ChildClass : ParentClass
+        {
+            public void MethodDefinedWithinChildClass()
+            {
+            }
         }
     }
 }

@@ -20,28 +20,17 @@ namespace Fixie
                          ? caseMethod.MakeGenericMethod(GenericArgumentResolver.ResolveTypeArguments(caseMethod, parameters))
                          : caseMethod;
 
-            Name = GetName();
-            MethodGroup = GetMethodGroup();
+            MethodGroup = caseMethod.MethodGroup();
 
-            exceptions = new List<Exception>();
-        }
-
-        string GetName()
-        {
-            var name = GetMethodGroup();
+            Name = MethodGroup;
 
             if (Method.IsGenericMethod)            
-                name = string.Format("{0}<{1}>", name, string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName)));
+                Name = string.Format("{0}<{1}>", MethodGroup, string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName)));
 
             if (Parameters != null && Parameters.Length > 0)
-                name = string.Format("{0}({1})", name, string.Join(", ", Parameters.Select(x => x.ToDisplayString())));
+                Name = string.Format("{0}({1})", MethodGroup, string.Join(", ", Parameters.Select(x => x.ToDisplayString())));
 
-            return name;
-        }
-
-        string GetMethodGroup()
-        {
-            return Class.FullName + "." + Method.Name;
+            exceptions = new List<Exception>();
         }
 
         public string Name { get; private set; }

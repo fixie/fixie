@@ -25,10 +25,10 @@ namespace Fixie
             Name = MethodGroup;
 
             if (Method.IsGenericMethod)            
-                Name = string.Format("{0}<{1}>", MethodGroup, string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName)));
+                Name = string.Format("{0}<{1}>", Name, string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName)));
 
             if (Parameters != null && Parameters.Length > 0)
-                Name = string.Format("{0}({1})", MethodGroup, string.Join(", ", Parameters.Select(x => x.ToDisplayString())));
+                Name = string.Format("{0}({1})", Name, string.Join(", ", Parameters.Select(x => x.ToDisplayString())));
 
             exceptions = new List<Exception>();
         }

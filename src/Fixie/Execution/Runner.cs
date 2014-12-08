@@ -63,6 +63,21 @@ namespace Fixie.Execution
             return Run(runContext, conventions, type);
         }
 
+        public AssemblyResult RunMethods(Assembly assembly, params MethodInfo[] methods)
+        {
+            if (methods.Length == 1)
+                return RunMethod(assembly, methods.Single());
+
+            var runContext = new RunContext(assembly, options);
+
+            var conventions = GetConventions(runContext);
+
+            foreach (var convention in conventions)
+                convention.Methods.Where(methods.Contains);
+
+            return Run(runContext, conventions, methods.Select(m => m.ReflectedType).ToArray());
+        }
+
         private AssemblyResult RunTypes(RunContext runContext, params Type[] types)
         {
             return Run(runContext, GetConventions(runContext), types);

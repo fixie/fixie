@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using Fixie.Discovery;
 using Fixie.Execution;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -30,10 +30,12 @@ namespace Fixie.VisualStudio.TestAdapter
                 {
                     var assemblyFullPath = Path.GetFullPath(source);
 
+                    var visualStudioListener = new VisualStudioListener(frameworkHandle, source);
+
                     using (var environment = new ExecutionEnvironment(assemblyFullPath))
                     {
                         var runner = environment.Create<ExecutionProxy>();
-                        runner.RunAssembly(assemblyFullPath, new string[] { }, new VisualStudioListener(frameworkHandle, source));
+                        runner.RunAssembly(assemblyFullPath, new string[] { }, visualStudioListener);
                     }
                 }
                 catch (Exception exception)
@@ -53,22 +55,6 @@ namespace Fixie.VisualStudio.TestAdapter
 
             foreach (var assemblyGroup in assemblyGroups)
             {
-                foreach (var test in assemblyGroup)
-                {
-                    var message = new StringBuilder()
-                        .AppendLine("Source: " + test.Source)
-                        .AppendLine("Id: " + test.Id)
-                        .AppendLine("DisplayName: " + test.DisplayName)
-                        .AppendLine("CodeFilePath: " + test.CodeFilePath)
-                        .AppendLine("LineNumber: " + test.LineNumber)
-                        .AppendLine("FullyQualifiedName: " + test.FullyQualifiedName)
-                        .AppendLine("ExecutorUri: " + test.ExecutorUri.OriginalString)
-                        .AppendLine()
-                        .ToString();
-
-                    log.Info(message);
-                }
-
                 var source = assemblyGroup.Key;
 
                 log.Info("Processing " + source);
@@ -77,10 +63,13 @@ namespace Fixie.VisualStudio.TestAdapter
                 {
                     var assemblyFullPath = Path.GetFullPath(source);
 
+                    var testMethods = assemblyGroup.Select(x => new TestMethod(x.FullyQualifiedName)).ToArray();
+                    var visualStudioListener = new VisualStudioListener(frameworkHandle, source);
+
                     using (var environment = new ExecutionEnvironment(assemblyFullPath))
                     {
                         var runner = environment.Create<ExecutionProxy>();
-                        runner.RunAssembly(assemblyFullPath, new string[] { }, new VisualStudioListener(frameworkHandle, source));
+                        runner.RunMethods(assemblyFullPath, new string[] { }, visualStudioListener, testMethods);
                     }
                 }
                 catch (Exception exception)

@@ -8,13 +8,24 @@ namespace Fixie.Discovery
     {
         public string Class { get; private set; }
         public string Method { get; private set; }
-        public string FullName { get; private set; }
+        public string MethodGroup { get; private set; }
 
         public TestMethod(MethodInfo method)
         {
             Class = method.ReflectedType.FullName;
             Method = method.Name;
-            FullName = Class + "." + Method;
+            MethodGroup = method.MethodGroup();
+        }
+
+        public TestMethod(string methodGroup)
+        {
+            var indexOfMemberSeparator = methodGroup.LastIndexOf(".");
+            var className = methodGroup.Substring(0, indexOfMemberSeparator);
+            var methodName = methodGroup.Substring(indexOfMemberSeparator + 1);
+
+            Class = className;
+            Method = methodName;
+            MethodGroup = methodGroup;
         }
     }
 }

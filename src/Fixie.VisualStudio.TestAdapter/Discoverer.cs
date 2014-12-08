@@ -31,9 +31,9 @@ namespace Fixie.VisualStudio.TestAdapter
 
                         foreach (var testMethod in discovery.TestMethods(assemblyFullPath))
                         {
-                            discoverySink.SendTestCase(new TestCase(testMethod.FullName, Executor.Uri, source)
+                            discoverySink.SendTestCase(new TestCase(testMethod.MethodGroup, Executor.Uri, source)
                             {
-                                DisplayName = testMethod.FullName
+                                DisplayName = testMethod.MethodGroup
                             });
                         }
                     }

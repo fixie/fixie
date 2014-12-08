@@ -83,12 +83,12 @@ namespace Fixie.Tests.Execution
 
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IReadOnlyList<>))
             {
-                if (!IsSafeForAppDomainCommunication(type.GetGenericArguments().Single()))
+                if (!IsSafeForAppDomainCommunication(type.GetGenericArguments().Single(), visitedTypes))
                     return false;
             }
             else if (type.IsArray)
             {
-                if (!IsSafeForAppDomainCommunication(type.GetElementType()))
+                if (!IsSafeForAppDomainCommunication(type.GetElementType(), visitedTypes))
                     return false;
             }
             else if (!type.HasOrInherits<SerializableAttribute>())
@@ -96,7 +96,7 @@ namespace Fixie.Tests.Execution
                 return false;
             }
 
-            if (type.IsInNamespace("Fixie"))
+            if (!type.IsArray && type.IsInNamespace("Fixie"))
             {
                 foreach (var property in type.GetProperties(AllMembers))
                 {

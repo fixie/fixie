@@ -79,6 +79,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("$version")]
 [assembly: AssemblyFileVersion("$version")]
 [assembly: AssemblyCopyright("$copyright")]
+[assembly: AssemblyCompany("$maintainers")]
 [assembly: AssemblyConfiguration("$configuration")]
 "@
     }

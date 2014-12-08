@@ -60,7 +60,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("$configuration")]
 "@
 
-        write-host "Generating $assemblyInfoPath"
-        $newContent | out-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" -encoding "UTF8"
+        $oldContent = [IO.File]::ReadAllText($assemblyInfoPath)
+
+        if ($newContent -ne $oldContent) {
+            write-host "Generating $assemblyInfoPath"
+            [System.IO.File]::WriteAllText($assemblyInfoPath, $newContent, [System.Text.Encoding]::UTF8)
+        }
     }
 }

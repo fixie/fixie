@@ -8,13 +8,13 @@ namespace Fixie
 {
     public class DiscoveryProxy : MarshalByRefObject
     {
-        public IReadOnlyList<TestMethod> TestMethods(string assemblyFullPath)
+        public IReadOnlyList<MethodGroup> TestMethodGroups(string assemblyFullPath)
         {
             var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
             var runContext = new RunContext(assembly, Enumerable.Empty<string>().ToLookup(x => x, x => x));
             var conventions = new ConventionDiscoverer(runContext).GetConventions();
 
-            var discoveredTestMethods = new List<TestMethod>();
+            var discoveredTestMethodGroups = new List<MethodGroup>();
 
             foreach (var convention in conventions)
             {
@@ -25,20 +25,20 @@ namespace Fixie
                 var methodDiscoverer = new MethodDiscoverer(convention.Config);
                 foreach (var testClass in testClasses)
                 {
-                    var testMethods = new Dictionary<string, TestMethod>();
+                    var distinctMethodGroups = new Dictionary<string, MethodGroup>();
 
-                    foreach (var method in methodDiscoverer.TestMethods(testClass))
+                    foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
                     {
-                        var testMethod = new TestMethod(method);
+                        var methodGroup = new MethodGroup(testMethod);
 
-                        testMethods[testMethod.MethodGroup] = testMethod;
+                        distinctMethodGroups[methodGroup.FullName] = methodGroup;
                     }
 
-                    discoveredTestMethods.AddRange(testMethods.Values);
+                    discoveredTestMethodGroups.AddRange(distinctMethodGroups.Values);
                 }
             }
 
-            return discoveredTestMethods;
+            return discoveredTestMethodGroups;
         }
     }
 }

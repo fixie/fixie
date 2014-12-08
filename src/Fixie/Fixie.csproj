@@ -39,7 +39,7 @@
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="DiscoveryProxy.cs" />
     <Compile Include="Discovery\ParameterDiscoverer.cs" />
-    <Compile Include="Discovery\TestMethod.cs" />
+    <Compile Include="Discovery\MethodGroup.cs" />
     <Compile Include="ExecutionProxy.cs" />
     <Compile Include="Execution\AssemblyInfo.cs" />
     <Compile Include="Execution\Behavior.cs" />

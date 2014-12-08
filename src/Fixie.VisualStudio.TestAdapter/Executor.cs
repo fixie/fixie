@@ -63,13 +63,13 @@ namespace Fixie.VisualStudio.TestAdapter
                 {
                     var assemblyFullPath = Path.GetFullPath(source);
 
-                    var testMethods = assemblyGroup.Select(x => new TestMethod(x.FullyQualifiedName)).ToArray();
+                    var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
                     var visualStudioListener = new VisualStudioListener(frameworkHandle, source);
 
                     using (var environment = new ExecutionEnvironment(assemblyFullPath))
                     {
                         var runner = environment.Create<ExecutionProxy>();
-                        runner.RunMethods(assemblyFullPath, new string[] { }, visualStudioListener, testMethods);
+                        runner.RunMethods(assemblyFullPath, new string[] { }, visualStudioListener, methodGroups);
                     }
                 }
                 catch (Exception exception)

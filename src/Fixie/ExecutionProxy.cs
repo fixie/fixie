@@ -20,7 +20,7 @@ namespace Fixie
             return runner.RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, string[] args, Listener listener, TestMethod[] testMethods)
+        public AssemblyResult RunMethods(string assemblyFullPath, string[] args, Listener listener, MethodGroup[] methodGroups)
         {
             var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
 
@@ -28,17 +28,17 @@ namespace Fixie
 
             var runner = new Runner(listener, options);
 
-            var methods = testMethods.SelectMany(x => GetMethodInfo(assembly, x)).ToArray();
+            var methods = methodGroups.SelectMany(x => GetMethodInfo(assembly, x)).ToArray();
 
             return runner.RunMethods(assembly, methods);
         }
 
-        static IEnumerable<MethodInfo> GetMethodInfo(Assembly assembly, TestMethod testMethod)
+        static IEnumerable<MethodInfo> GetMethodInfo(Assembly assembly, MethodGroup methodGroup)
         {
             return assembly
-                .GetType(testMethod.Class)
+                .GetType(methodGroup.Class)
                 .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Where(m => m.Name == testMethod.Method);
+                .Where(m => m.Name == methodGroup.Method);
         }
     }
 }

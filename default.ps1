@@ -39,7 +39,7 @@ task AssemblyInfo {
     $date = Get-Date
     $year = $date.Year
     $copyrightSpan = if ($year -eq $birthYear) { $year } else { "$birthYear-$year" }
-    $copyright = "Copyright (c) $copyrightSpan $maintainers"
+    $copyright = "Copyright © $copyrightSpan $maintainers"
 
     foreach ($project in $projects) {
         $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
@@ -58,6 +58,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright(""$copyright"")]
 [assembly: AssemblyCompany(""$maintainers"")]
 [assembly: AssemblyDescription(""$description"")]
-[assembly: AssemblyConfiguration(""$configuration"")]" | out-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" -encoding "ASCII"
+[assembly: AssemblyConfiguration(""$configuration"")]" | out-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" -encoding "UTF8"
     }
 }

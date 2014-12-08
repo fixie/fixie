@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Fixie.Tests")]
 [assembly: AssemblyVersion("0.0.1.0")]
 [assembly: AssemblyFileVersion("0.0.1.0")]
-[assembly: AssemblyCopyright("Copyright (c) 2013-2014 Patrick Lioi")]
+[assembly: AssemblyCopyright("Copyright © 2013-2014 Patrick Lioi")]
 [assembly: AssemblyCompany("Patrick Lioi")]
 [assembly: AssemblyDescription("A convention-based test framework.")]
 [assembly: AssemblyConfiguration("Release")]

@@ -21,13 +21,14 @@ namespace Fixie
                          : caseMethod;
 
             Name = GetName();
+            MethodGroup = GetMethodGroup();
 
             exceptions = new List<Exception>();
         }
 
         string GetName()
         {
-            var name = Class.FullName + "." + Method.Name;
+            var name = GetMethodGroup();
 
             if (Method.IsGenericMethod)            
                 name = string.Format("{0}<{1}>", name, string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName)));
@@ -38,9 +39,15 @@ namespace Fixie
             return name;
         }
 
+        string GetMethodGroup()
+        {
+            return Class.FullName + "." + Method.Name;
+        }
+
         public string Name { get; private set; }
         public Type Class { get; private set; }
         public MethodInfo Method { get; private set; }
+        public string MethodGroup { get; private set; }
         public object[] Parameters { get; private set; }
 
         public IReadOnlyList<Exception> Exceptions { get { return exceptions; } }

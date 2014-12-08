@@ -30,12 +30,7 @@ namespace Fixie.VisualStudio.TestAdapter
                         var discovery = environment.Create<DiscoveryProxy>();
 
                         foreach (var methodGroup in discovery.TestMethodGroups(assemblyFullPath))
-                        {
-                            discoverySink.SendTestCase(new TestCase(methodGroup.FullName, Executor.Uri, source)
-                            {
-                                DisplayName = methodGroup.FullName
-                            });
-                        }
+                            discoverySink.SendTestCase(new TestCase(methodGroup.FullName, Executor.Uri, source));
                     }
                 }
                 catch (Exception exception)

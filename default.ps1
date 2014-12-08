@@ -1,7 +1,6 @@
 Framework '4.0'
 
 properties {
-    $project = "Fixie"
     $birthYear = 2013
     $maintainers = "Patrick Lioi"
     $description = "A convention-based test framework."
@@ -17,22 +16,22 @@ task default -depends Test
 task Package -depends Test {
     rd .\package -recurse -force -ErrorAction SilentlyContinue | out-null
     mkdir .\package -ErrorAction SilentlyContinue | out-null
-    exec { & $src\.nuget\NuGet.exe pack $src\$project\$project.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
+    exec { & $src\.nuget\NuGet.exe pack $src\Fixie\Fixie.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
 
     write-host
     write-host "To publish these packages, issue the following command:"
-    write-host "   nuget push .\package\$project.$version.nupkg"
+    write-host "   nuget push .\package\Fixie.$version.nupkg"
 }
 
 task Test -depends Compile {
-    $fixieRunner = resolve-path ".\build\$project.Console.exe"
-    exec { & $fixieRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll $src\$project.Samples\bin\$configuration\$project.Samples.dll }
+    $fixieRunner = resolve-path ".\build\Fixie.Console.exe"
+    exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
 }
 
 task Compile -depends CommonAssemblyInfo {
   rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
-  exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration $src\$project.sln }
-  exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration $src\$project.sln }
+  exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
+  exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
 }
 
 task CommonAssemblyInfo {
@@ -45,7 +44,7 @@ task CommonAssemblyInfo {
 using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
-[assembly: AssemblyProduct(""$project"")]
+[assembly: AssemblyProduct(""Fixie"")]
 [assembly: AssemblyVersion(""$version"")]
 [assembly: AssemblyFileVersion(""$version"")]
 [assembly: AssemblyCopyright(""$copyright"")]

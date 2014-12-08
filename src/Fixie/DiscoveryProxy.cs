@@ -25,12 +25,16 @@ namespace Fixie
                 var methodDiscoverer = new MethodDiscoverer(convention.Config);
                 foreach (var testClass in testClasses)
                 {
-                    var testMethods = methodDiscoverer.TestMethods(testClass);
+                    var testMethods = new Dictionary<string, TestMethod>();
 
-                    foreach (var testMethod in testMethods)
+                    foreach (var method in methodDiscoverer.TestMethods(testClass))
                     {
-                        discoveredTestMethods.Add(new TestMethod(testMethod));
+                        var testMethod = new TestMethod(method);
+
+                        testMethods[testMethod.MethodGroup] = testMethod;
                     }
+
+                    discoveredTestMethods.AddRange(testMethods.Values);
                 }
             }
 

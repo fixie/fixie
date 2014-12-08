@@ -29,23 +29,19 @@ task Test -depends Compile {
     exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
 }
 
-task Compile -depends AssemblyInfo {
+task Compile -depends AssemblyInfo, License {
   rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
   exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
   exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
 }
 
 task AssemblyInfo {
-    $date = Get-Date
-    $year = $date.Year
-    $copyrightSpan = if ($year -eq $birthYear) { $year } else { "$birthYear-$year" }
-    $copyright = "Copyright © $copyrightSpan $maintainers"
+    $copyright = get-copyright
 
     foreach ($project in $projects) {
         $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
-        $assemblyInfoPath = "$($project.DirectoryName)\Properties\AssemblyInfo.cs"
 
-        $newContent = @"
+        regenerate-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" @"
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -59,12 +55,37 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("$description")]
 [assembly: AssemblyConfiguration("$configuration")]
 "@
+    }
+}
 
-        $oldContent = [IO.File]::ReadAllText($assemblyInfoPath)
+task License {
+    $copyright = get-copyright
 
-        if ($newContent -ne $oldContent) {
-            write-host "Generating $assemblyInfoPath"
-            [System.IO.File]::WriteAllText($assemblyInfoPath, $newContent, [System.Text.Encoding]::UTF8)
-        }
+    regenerate-file "LICENSE.txt" @"
+The MIT License (MIT)
+$copyright
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+"@
+}
+
+function get-copyright {
+    $date = Get-Date
+    $year = $date.Year
+    $copyrightSpan = if ($year -eq $birthYear) { $year } else { "$birthYear-$year" }
+    return "Copyright © $copyrightSpan $maintainers"
+}
+
+function regenerate-file($path, $newContent) {
+    $oldContent = [IO.File]::ReadAllText($path)
+
+    if ($newContent -ne $oldContent) {
+        $relativePath = Resolve-Path -Relative $path
+        write-host "Generating $relativePath"
+        [System.IO.File]::WriteAllText($path, $newContent, [System.Text.Encoding]::UTF8)
     }
 }

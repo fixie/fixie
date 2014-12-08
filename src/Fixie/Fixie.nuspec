@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/plioi/fixie</projectUrl>
     <iconUrl>https://raw.github.com/plioi/fixie/master/img/fixie_256.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>A convention-based test framework.</description>
     <references>
       <reference file="Fixie.dll" />
     </references>

@@ -9,6 +9,7 @@ properties {
     $build = if ($env:build_number -ne $NULL) { $env:build_number } else { '0' }
     $version = [IO.File]::ReadAllText('.\VERSION.txt') + '.' + $build
     $projects = @(gci $src -rec -filter *.csproj)
+    $selfTestProjects = "Fixie.Tests","Fixie.Samples"
 }
 
 task default -depends Test
@@ -28,10 +29,38 @@ task Test -depends Compile {
     exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
 }
 
-task Compile -depends AssemblyInfo, License {
+task Compile -depends SanityCheckOutputPaths, AssemblyInfo, License {
   rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
   exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
   exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
+}
+
+task SanityCheckOutputPaths {
+    $blankLine = ([System.Environment]::NewLine + [System.Environment]::NewLine)
+    $expected = "..\..\build\"
+
+    foreach ($project in $projects) {
+        $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
+
+        $lines = [System.IO.File]::ReadAllLines($project.FullName, [System.Text.Encoding]::UTF8)
+
+        if (!($selfTestProjects -contains $projectName)) {
+            foreach($line in $lines) {
+                if ($line.Contains("<OutputPath>")) {
+
+                    $outputPath = [regex]::Replace($line, '\s*<OutputPath>(.+)</OutputPath>\s*', '$1')
+
+                    if($outputPath -ne $expected){
+                        $summary = "The project '$projectName' has a suspect *.csproj file."
+                        $detail = "Expected OutputPath to be $expected for all configurations."
+
+                        Write-Host -ForegroundColor Yellow "$($blankLine)$($summary)  $($detail)$($blankLine)"
+                        throw $summary
+                    }
+                }
+            }
+        }
+    }
 }
 
 task AssemblyInfo {

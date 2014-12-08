@@ -45,19 +45,22 @@ task AssemblyInfo {
         $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
         $assemblyInfoPath = "$($project.DirectoryName)\Properties\AssemblyInfo.cs"
 
-        write-host "Generating $assemblyInfoPath"
-
-"using System.Reflection;
+        $newContent = @"
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
-[assembly: AssemblyProduct(""Fixie"")]
-[assembly: AssemblyTitle(""$projectName"")]
-[assembly: AssemblyVersion(""$version"")]
-[assembly: AssemblyFileVersion(""$version"")]
-[assembly: AssemblyCopyright(""$copyright"")]
-[assembly: AssemblyCompany(""$maintainers"")]
-[assembly: AssemblyDescription(""$description"")]
-[assembly: AssemblyConfiguration(""$configuration"")]" | out-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" -encoding "UTF8"
+[assembly: AssemblyProduct("Fixie")]
+[assembly: AssemblyTitle("$projectName")]
+[assembly: AssemblyVersion("$version")]
+[assembly: AssemblyFileVersion("$version")]
+[assembly: AssemblyCopyright("$copyright")]
+[assembly: AssemblyCompany("$maintainers")]
+[assembly: AssemblyDescription("$description")]
+[assembly: AssemblyConfiguration("$configuration")]
+"@
+
+        write-host "Generating $assemblyInfoPath"
+        $newContent | out-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" -encoding "UTF8"
     }
 }

@@ -76,10 +76,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.csproj">
-      <Project>{e2335e25-000c-4bcc-bb49-a2d2c3ed4a59}</Project>
-      <Name>Fixie.VisualStudio.TestAdapter</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Fixie\Fixie.csproj">
       <Project>{474ff43b-4580-4032-999b-a717eb7a0cd3}</Project>
       <Name>Fixie</Name>

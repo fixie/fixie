@@ -12,25 +12,33 @@ namespace Fixie
     {
         public AssemblyResult RunAssembly(string assemblyFullPath, string[] args, Listener listener)
         {
-            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+            var assembly = LoadAssembly(assemblyFullPath);
 
-            var options = new CommandLineParser(args).Options;
-
-            var runner = new Runner(listener, options);
-            return runner.RunAssembly(assembly);
+            return Runner(args, listener).RunAssembly(assembly);
         }
 
         public AssemblyResult RunMethods(string assemblyFullPath, string[] args, Listener listener, MethodGroup[] methodGroups)
         {
-            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+            var assembly = LoadAssembly(assemblyFullPath);
 
-            var options = new CommandLineParser(args).Options;
+            var methods = GetMethods(methodGroups, assembly);
 
-            var runner = new Runner(listener, options);
+            return Runner(args, listener).RunMethods(assembly, methods);
+        }
 
-            var methods = methodGroups.SelectMany(x => GetMethodInfo(assembly, x)).ToArray();
+        static Assembly LoadAssembly(string assemblyFullPath)
+        {
+            return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+        }
 
-            return runner.RunMethods(assembly, methods);
+        static Runner Runner(string[] args, Listener listener)
+        {
+            return new Runner(listener, new CommandLineParser(args).Options);
+        }
+
+        static MethodInfo[] GetMethods(MethodGroup[] methodGroups, Assembly assembly)
+        {
+            return methodGroups.SelectMany(x => GetMethodInfo(assembly, x)).ToArray();
         }
 
         static IEnumerable<MethodInfo> GetMethodInfo(Assembly assembly, MethodGroup methodGroup)

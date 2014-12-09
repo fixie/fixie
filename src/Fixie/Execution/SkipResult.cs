@@ -11,20 +11,16 @@ namespace Fixie.Execution
         {
             Name = @case.Name;
             MethodGroup = @case.MethodGroup;
-            Output = @case.Output;
-            Duration = @case.Duration;
-
             SkipReason = skipReason;
         }
 
-        CaseStatus CaseResult.Status { get { return CaseStatus.Skipped; } }
-
         public string Name { get; private set; }
         public MethodGroup MethodGroup { get; private set; }
-        public string Output { get; private set; }
-        public TimeSpan Duration { get; private set; }
-
-        CompoundException CaseResult.Exceptions { get { return null; } }
         public string SkipReason { get; private set; }
+
+        CaseStatus CaseResult.Status { get { return CaseStatus.Skipped; } }
+        string CaseResult.Output { get { return null; } }
+        TimeSpan CaseResult.Duration { get { return TimeSpan.Zero; } }
+        CompoundException CaseResult.Exceptions { get { return null; } }
     }
 }

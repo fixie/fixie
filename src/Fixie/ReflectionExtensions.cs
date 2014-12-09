@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -79,11 +78,6 @@ namespace Fixie
                 return false;
 
             return actual == ns || actual.StartsWith(ns + ".");
-        }
-
-        public static string FileName(this Assembly assembly)
-        {
-            return Path.GetFileName(assembly.Location);
         }
     }
 }

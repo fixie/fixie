@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Fixie.Execution;
 using Should;
 
 namespace Fixie.Tests
@@ -87,12 +86,6 @@ namespace Fixie.Tests
             opCode.IsInNamespace("System.Reflection.Emit").ShouldBeTrue();
             opCode.IsInNamespace("System.Reflection.Emit.OpCode").ShouldBeFalse();
             opCode.IsInNamespace("System.Reflection.Typo").ShouldBeFalse();
-        }
-
-        public void CanGetAssemblyFileName()
-        {
-            typeof(ReflectionExtensionsTests).Assembly.FileName().ShouldEqual("Fixie.Tests.dll");
-            typeof(Runner).Assembly.FileName().ShouldEqual("Fixie.dll");
         }
 
         void ReturnsVoid() { }

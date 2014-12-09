@@ -63,6 +63,21 @@ namespace Fixie.Execution
             return Run(runContext, conventions, type);
         }
 
+        public AssemblyResult RunMethods(Assembly assembly, params MethodInfo[] methods)
+        {
+            if (methods.Length == 1)
+                return RunMethod(assembly, methods.Single());
+
+            var runContext = new RunContext(assembly, options);
+
+            var conventions = GetConventions(runContext);
+
+            foreach (var convention in conventions)
+                convention.Methods.Where(methods.Contains);
+
+            return Run(runContext, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
+        }
+
         private AssemblyResult RunTypes(RunContext runContext, params Type[] types)
         {
             return Run(runContext, GetConventions(runContext), types);
@@ -81,8 +96,9 @@ namespace Fixie.Execution
         AssemblyResult Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
             var assemblyResult = new AssemblyResult(runContext.Assembly.Location);
-            
-            listener.AssemblyStarted(runContext.Assembly);
+            var assemblyInfo = new AssemblyInfo(runContext.Assembly);
+
+            listener.AssemblyStarted(assemblyInfo);
 
             foreach (var convention in conventions)
             {
@@ -91,7 +107,7 @@ namespace Fixie.Execution
                 assemblyResult.Add(conventionResult);
             }
 
-            listener.AssemblyCompleted(runContext.Assembly, assemblyResult);
+            listener.AssemblyCompleted(assemblyInfo, assemblyResult);
 
             return assemblyResult;
         }

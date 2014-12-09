@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Fixie.Execution;
+﻿using Fixie.Execution;
 using Fixie.Results;
 using TestDriven.Framework;
 
@@ -14,7 +13,7 @@ namespace Fixie.TestDriven
             this.tdnet = tdnet;
         }
 
-        public void AssemblyStarted(Assembly assembly)
+        public void AssemblyStarted(AssemblyInfo assembly)
         {
         }
 
@@ -47,7 +46,7 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
         {
         }
     }

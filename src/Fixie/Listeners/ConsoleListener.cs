@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Reflection;
+using System.IO;
 using System.Text;
 using Fixie.Execution;
 using Fixie.Results;
@@ -8,9 +8,9 @@ namespace Fixie.Listeners
 {
     public class ConsoleListener : Listener
     {
-        public void AssemblyStarted(Assembly assembly)
+        public void AssemblyStarted(AssemblyInfo assembly)
         {
-            Console.WriteLine("------ Testing Assembly {0} ------", assembly.FileName());
+            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(assembly.Location));
             Console.WriteLine();
         }
 
@@ -32,24 +32,9 @@ namespace Fixie.Listeners
             Console.WriteLine();
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
         {
-            var assemblyName = typeof(ConsoleListener).Assembly.GetName();
-            var name = assemblyName.Name;
-            var version = assemblyName.Version;
-
-            var line = new StringBuilder();
-
-            line.AppendFormat("{0} passed", result.Passed);
-            line.AppendFormat(", {0} failed", result.Failed);
-
-            if (result.Skipped > 0)
-                line.AppendFormat(", {0} skipped", result.Skipped);
-
-            line.AppendFormat(", took {0:N2} seconds", result.Duration.TotalSeconds);
-
-            line.AppendFormat(" ({0} {1}).", name, version);
-            Console.WriteLine(line);
+            Console.WriteLine(result.Summary);
             Console.WriteLine();
         }
     }

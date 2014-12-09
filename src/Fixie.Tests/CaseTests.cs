@@ -31,6 +31,15 @@ namespace Fixie.Tests
                 .Name.ShouldEqual("Fixie.Tests.CaseTests.Generic<System.Decimal, System.String>(123, 1.23, \"a\", null)");
         }
 
+        public void ShouldHaveMethodGroupComposedOfClassNameAndMethodNameWithNoSignature()
+        {
+            Case("Returns").MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Returns");
+            Case("Parameterized", 123, true, 'a', "s", null, this).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Parameterized");
+            Case("Generic", 123, true, "a", "b").MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
+            Case("Generic", 123, true, 1, null).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
+            Case("Generic", 123, 1.23m, "a", null).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
+        }
+
         public void ShouldInferAppropriateClassGivenCaseMethod()
         {
             var methodDeclaredInChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinChildClass"));

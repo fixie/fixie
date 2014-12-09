@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Fixie.Results
 {
@@ -41,6 +42,30 @@ namespace Fixie.Results
         public int Total
         {
             get { return Passed + Failed + Skipped; }
+        }
+
+        public string Summary
+        {
+            get
+            {
+                var assemblyName = typeof(AssemblyResult).Assembly.GetName();
+                var name = assemblyName.Name;
+                var version = assemblyName.Version;
+
+                var line = new StringBuilder();
+
+                line.AppendFormat("{0} passed", Passed);
+                line.AppendFormat(", {0} failed", Failed);
+
+                if (Skipped > 0)
+                    line.AppendFormat(", {0} skipped", Skipped);
+
+                line.AppendFormat(", took {0:N2} seconds", Duration.TotalSeconds);
+
+                line.AppendFormat(" ({0} {1}).", name, version);
+
+                return line.ToString();
+            }
         }
     }
 }

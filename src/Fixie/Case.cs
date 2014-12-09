@@ -20,6 +20,8 @@ namespace Fixie
                          ? caseMethod.MakeGenericMethod(GenericArgumentResolver.ResolveTypeArguments(caseMethod, parameters))
                          : caseMethod;
 
+            MethodGroup = new MethodGroup(caseMethod);
+
             Name = GetName();
 
             exceptions = new List<Exception>();
@@ -27,9 +29,9 @@ namespace Fixie
 
         string GetName()
         {
-            var name = Class.FullName + "." + Method.Name;
+            var name = MethodGroup.FullName;
 
-            if (Method.IsGenericMethod)            
+            if (Method.IsGenericMethod)
                 name = string.Format("{0}<{1}>", name, string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName)));
 
             if (Parameters != null && Parameters.Length > 0)
@@ -41,6 +43,7 @@ namespace Fixie
         public string Name { get; private set; }
         public Type Class { get; private set; }
         public MethodInfo Method { get; private set; }
+        public MethodGroup MethodGroup { get; private set; }
         public object[] Parameters { get; private set; }
 
         public IReadOnlyList<Exception> Exceptions { get { return exceptions; } }

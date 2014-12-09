@@ -1,6 +1,6 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using Fixie.Execution;
 using Fixie.Results;
@@ -9,9 +9,9 @@ namespace Fixie.Listeners
 {
     public class TeamCityListener : Listener
     {
-        public void AssemblyStarted(Assembly assembly)
+        public void AssemblyStarted(AssemblyInfo assembly)
         {
-            Message("testSuiteStarted name='{0}'", assembly.FileName());
+            Message("testSuiteStarted name='{0}'", SuiteName(assembly));
         }
 
         public void CaseSkipped(SkipResult result)
@@ -34,9 +34,9 @@ namespace Fixie.Listeners
             Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
         {
-            Message("testSuiteFinished name='{0}'", assembly.FileName());
+            Message("testSuiteFinished name='{0}'", SuiteName(assembly));
         }
 
         static void Message(string format, params string[] args)
@@ -78,6 +78,11 @@ namespace Fixie.Listeners
         static string DurationInMilliseconds(TimeSpan duration)
         {
             return ((int)Math.Ceiling(duration.TotalMilliseconds)).ToString();
+        }
+
+        static string SuiteName(AssemblyInfo assembly)
+        {
+            return Path.GetFileName(assembly.Location);
         }
     }
 }

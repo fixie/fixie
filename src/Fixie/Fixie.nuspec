@@ -21,5 +21,6 @@
     <file src="..\..\build\Fixie.dll.tdnet" target="lib/net45"></file>
     <file src="..\..\build\Fixie.TestDriven.dll" target="lib/net45"></file>
     <file src="..\..\build\TestDriven.Framework.dll" target="lib/net45"></file>
+    <file src="..\..\build\Fixie.VisualStudio.TestAdapter.dll" target="lib/net45"></file>
   </files>
 </package>

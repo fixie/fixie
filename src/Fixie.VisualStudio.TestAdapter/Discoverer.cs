@@ -25,12 +25,19 @@ namespace Fixie.VisualStudio.TestAdapter
                 {
                     var assemblyFullPath = Path.GetFullPath(source);
 
-                    using (var environment = new ExecutionEnvironment(assemblyFullPath))
+                    if (SourceDirectoryContainsFixie(assemblyFullPath))
                     {
-                        var discovery = environment.Create<DiscoveryProxy>();
+                        using (var environment = new ExecutionEnvironment(assemblyFullPath))
+                        {
+                            var discovery = environment.Create<DiscoveryProxy>();
 
-                        foreach (var methodGroup in discovery.TestMethodGroups(assemblyFullPath))
-                            discoverySink.SendTestCase(new TestCase(methodGroup.FullName, Executor.Uri, source));
+                            foreach (var methodGroup in discovery.TestMethodGroups(assemblyFullPath))
+                                discoverySink.SendTestCase(new TestCase(methodGroup.FullName, Executor.Uri, source));
+                        }
+                    }
+                    else
+                    {
+                        log.Info("Skipping " + source + " because it is not a test assembly.");
                     }
                 }
                 catch (Exception exception)
@@ -38,6 +45,11 @@ namespace Fixie.VisualStudio.TestAdapter
                     log.Error(exception);
                 }
             }
+        }
+
+        bool SourceDirectoryContainsFixie(string assemblyFileName)
+        {
+            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyFileName), "Fixie.dll"));
         }
     }
 }

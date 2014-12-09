@@ -14,7 +14,7 @@ namespace Fixie.Discovery
         {
             Class = method.ReflectedType.FullName;
             Method = method.Name;
-            FullName = method.MethodGroup();
+            FullName = Class + "." + Method;
         }
 
         public MethodGroup(string fullName)

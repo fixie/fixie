@@ -1,4 +1,5 @@
 ﻿using System;
+using Fixie.Discovery;
 
 namespace Fixie.Execution
 {
@@ -13,7 +14,7 @@ namespace Fixie.Execution
         }
 
         public string Name { get; private set; }
-        public string MethodGroup { get; private set; }
+        public MethodGroup MethodGroup { get; private set; }
         public string Reason { get; private set; }
     }
 }

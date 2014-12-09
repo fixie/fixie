@@ -1,4 +1,5 @@
 ﻿using System;
+using Fixie.Discovery;
 using Fixie.Execution;
 using Fixie.Results;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -36,8 +37,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void CaseSkipped(SkipResult result)
         {
-            var testCase = new TestCase(result.MethodGroup, Executor.Uri, source);
-            log.RecordResult(new TestResult(testCase)
+            log.RecordResult(new TestResult(TestCase(result.MethodGroup))
             {
                 DisplayName = result.Name,
                 Outcome = Map(CaseStatus.Passed),
@@ -47,8 +47,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void CasePassed(PassResult result)
         {
-            var testCase = new TestCase(result.MethodGroup, Executor.Uri, source);
-            log.RecordResult(new TestResult(testCase)
+            log.RecordResult(new TestResult(TestCase(result.MethodGroup))
             {
                 DisplayName = result.Name,
                 Outcome = Map(CaseStatus.Passed),
@@ -59,8 +58,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void CaseFailed(FailResult result)
         {
-            var testCase = new TestCase(result.MethodGroup, Executor.Uri, source);
-            log.RecordResult(new TestResult(testCase)
+            log.RecordResult(new TestResult(TestCase(result.MethodGroup))
             {
                 DisplayName = result.Name,
                 Outcome = Map(CaseStatus.Failed),
@@ -74,6 +72,11 @@ namespace Fixie.VisualStudio.TestAdapter
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
         {
             log.Info(result.Summary);
+        }
+
+        TestCase TestCase(MethodGroup methodGroup)
+        {
+            return new TestCase(methodGroup.FullName, Executor.Uri, source);
         }
 
         static TestOutcome Map(CaseStatus caseStatus)

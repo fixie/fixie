@@ -33,11 +33,11 @@ namespace Fixie.Tests
 
         public void ShouldHaveMethodGroupComposedOfClassNameAndMethodNameWithNoSignature()
         {
-            Case("Returns").MethodGroup.ShouldEqual("Fixie.Tests.CaseTests.Returns");
-            Case("Parameterized", 123, true, 'a', "s", null, this).MethodGroup.ShouldEqual("Fixie.Tests.CaseTests.Parameterized");
-            Case("Generic", 123, true, "a", "b").MethodGroup.ShouldEqual("Fixie.Tests.CaseTests.Generic");
-            Case("Generic", 123, true, 1, null).MethodGroup.ShouldEqual("Fixie.Tests.CaseTests.Generic");
-            Case("Generic", 123, 1.23m, "a", null).MethodGroup.ShouldEqual("Fixie.Tests.CaseTests.Generic");
+            Case("Returns").MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Returns");
+            Case("Parameterized", 123, true, 'a', "s", null, this).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Parameterized");
+            Case("Generic", 123, true, "a", "b").MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
+            Case("Generic", 123, true, 1, null).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
+            Case("Generic", 123, 1.23m, "a", null).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
         }
 
         public void ShouldInferAppropriateClassGivenCaseMethod()

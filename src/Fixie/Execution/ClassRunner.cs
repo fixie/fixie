@@ -158,21 +158,21 @@ namespace Fixie.Execution
         {
             var result = new SkipResult(@case, GetSkipReason(@case));
             listener.CaseSkipped(result);
-            return CaseResult.Skipped(result.Name, result.Reason);
+            return result;
         }
 
         CaseResult Pass(Case @case)
         {
             var result = new PassResult(@case);
             listener.CasePassed(result);
-            return CaseResult.Passed(result.Name, result.Duration);
+            return result;
         }
 
         CaseResult Fail(Case @case)
         {
             var result = new FailResult(@case, assertionLibraryFilter);
             listener.CaseFailed(result);
-            return CaseResult.Failed(result.Name, result.Duration, result.Exceptions);
+            return result;
         }
     }
 }

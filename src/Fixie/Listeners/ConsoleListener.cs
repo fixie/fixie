@@ -17,7 +17,7 @@ namespace Fixie.Listeners
         public void CaseSkipped(SkipResult result)
         {
             using (Foreground.Yellow)
-                Console.WriteLine("Test '{0}' skipped{1}", result.Name, result.Reason == null ? null : ": " + result.Reason);
+                Console.WriteLine("Test '{0}' skipped{1}", result.Name, result.SkipReason == null ? null : ": " + result.SkipReason);
         }
 
         public void CasePassed(PassResult result)

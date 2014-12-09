@@ -54,7 +54,7 @@ namespace Fixie.Tests.Execution
             //perfectly vet all possible candiate types:
             //
             //  1. Checking for [Serializable] does not guarantee a type is truly serializable.
-            //  2. Not every IReadOnlyList<T> will necessarily serialize, but it convenient to
+            //  2. Not every IReadOnlyList<T> will necessarily serialize, but it is convenient to
             //     allow it as the most likely implementations *are* serializable.
             //  3. Although reflection types like Assembly and Type are serializable, they are
             //     also not acceptable for AppDomain communication because they can cause

@@ -52,7 +52,7 @@ namespace Fixie.ConsoleRunner
 
                 foreach (var assemblyPath in commandLineParser.AssemblyPaths)
                 {
-                    var result = Execute(assemblyPath, args);
+                    var result = Execute(assemblyPath, commandLineParser.Options);
 
                     executionResult.Add(result);
                 }
@@ -112,16 +112,16 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static AssemblyResult Execute(string assemblyPath, string[] args)
+        static AssemblyResult Execute(string assemblyPath, Lookup options)
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
 
-            var listener = CreateListener(new CommandLineParser(args).Options);
+            var listener = CreateListener(options);
 
             using (var environment = new ExecutionEnvironment(assemblyFullPath))
             {
                 var runner = environment.Create<ExecutionProxy>();
-                return runner.RunAssembly(assemblyFullPath, new CommandLineParser(args).Options, listener);
+                return runner.RunAssembly(assemblyFullPath, options, listener);
             }
         }
 

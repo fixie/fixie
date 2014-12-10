@@ -7,10 +7,10 @@ namespace Fixie
 {
     public class DiscoveryProxy : MarshalByRefObject
     {
-        public IReadOnlyList<MethodGroup> TestMethodGroups(string assemblyFullPath)
+        public IReadOnlyList<MethodGroup> TestMethodGroups(string assemblyFullPath, Lookup options)
         {
             var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
-            var runContext = new RunContext(assembly, new Lookup());
+            var runContext = new RunContext(assembly, options);
             var conventions = new ConventionDiscoverer(runContext).GetConventions();
 
             var discoveredTestMethodGroups = new List<MethodGroup>();

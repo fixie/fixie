@@ -70,7 +70,6 @@
     <Compile Include="Case.cs" />
     <Compile Include="CommandLineParser.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />
-    <Compile Include="ConsoleRunner.cs" />
     <Compile Include="Convention.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
     <Compile Include="Conventions\FixtureBehaviorExpression.cs" />

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Fixie.Discovery;
 using Fixie.Execution;
+using Fixie.Listeners;
 using Fixie.Results;
 
 namespace Fixie
@@ -47,6 +48,31 @@ namespace Fixie
                 .GetType(methodGroup.Class)
                 .GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 .Where(m => m.Name == methodGroup.Method);
+        }
+
+        [Obsolete("ConsoleListener and TeamCityListener should move into Fixie.Console.exe.")]
+        public AssemblyResult RunAssembly(string assemblyFullPath, string[] args)
+        {
+            var listener = CreateListener(new CommandLineParser(args).Options);
+
+            return RunAssembly(assemblyFullPath, args, listener);
+        }
+
+        [Obsolete("ConsoleListener and TeamCityListener should move into Fixie.Console.exe.")]
+        static Listener CreateListener(ILookup<string, string> options)
+        {
+            var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
+
+            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
+
+            var useTeamCityListener =
+                (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
+                (!teamCityExplicitlySpecified && runningUnderTeamCity);
+
+            if (useTeamCityListener)
+                return new TeamCityListener();
+
+            return new ConsoleListener();
         }
     }
 }

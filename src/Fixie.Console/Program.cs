@@ -119,7 +119,7 @@ namespace FixieConsole
 
             using (var environment = new ExecutionEnvironment(assemblyFullPath))
             {
-                var runner = environment.Create<ConsoleRunner>();
+                var runner = environment.Create<ExecutionProxy>();
                 return runner.RunAssembly(assemblyFullPath, args);
             }
         }

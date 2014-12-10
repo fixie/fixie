@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fixie
+namespace Fixie.ConsoleRunner
 {
     public class Foreground : IDisposable
     {
@@ -25,11 +25,6 @@ namespace Fixie
         public static Foreground Yellow
         {
             get { return new Foreground(ConsoleColor.Yellow); }
-        }
-
-        public static Foreground DarkGray
-        {
-            get { return new Foreground(ConsoleColor.DarkGray); }
         }
     }
 }

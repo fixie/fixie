@@ -5,7 +5,7 @@ using System.Text;
 using Fixie.Execution;
 using Fixie.Results;
 
-namespace Fixie.Listeners
+namespace FixieConsole
 {
     public class TeamCityListener : MarshalByRefObject, Listener
     {

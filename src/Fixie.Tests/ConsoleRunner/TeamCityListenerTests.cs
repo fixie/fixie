@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Fixie.Listeners;
+using FixieConsole;
 
-namespace Fixie.Tests.Listeners
+namespace Fixie.Tests.ConsoleRunner
 {
     public class TeamCityListenerTests
     {

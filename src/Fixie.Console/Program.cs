@@ -6,7 +6,6 @@ using System.Text;
 using System.Xml.Linq;
 using Fixie;
 using Fixie.Execution;
-using Fixie.Listeners;
 using Fixie.Reports;
 using Fixie.Results;
 

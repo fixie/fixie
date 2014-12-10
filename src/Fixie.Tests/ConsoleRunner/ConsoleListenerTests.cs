@@ -1,10 +1,10 @@
-﻿using Fixie.Listeners;
-using System;
+﻿using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using FixieConsole;
 
-namespace Fixie.Tests.Listeners
+namespace Fixie.Tests.ConsoleRunner
 {
     public class ConsoleListenerTests
     {

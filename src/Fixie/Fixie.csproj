@@ -69,7 +69,6 @@
     <Compile Include="ClassBehavior.cs" />
     <Compile Include="Case.cs" />
     <Compile Include="CommandLineParser.cs" />
-    <Compile Include="Listeners\ConsoleListener.cs" />
     <Compile Include="Convention.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
     <Compile Include="Conventions\FixtureBehaviorExpression.cs" />
@@ -95,7 +94,6 @@
     <Compile Include="Results\ExceptionInfo.cs" />
     <Compile Include="Results\ExecutionResult.cs" />
     <Compile Include="RunContext.cs" />
-    <Compile Include="Listeners\TeamCityListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Results\AssemblyResult.cs" />

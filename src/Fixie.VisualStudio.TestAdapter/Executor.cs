@@ -35,7 +35,7 @@ namespace Fixie.VisualStudio.TestAdapter
                     using (var environment = new ExecutionEnvironment(assemblyFullPath))
                     {
                         var runner = environment.Create<ExecutionProxy>();
-                        runner.RunAssembly(assemblyFullPath, new string[] { }, visualStudioListener);
+                        runner.RunAssembly(assemblyFullPath, new Lookup(), visualStudioListener);
                     }
                 }
                 catch (Exception exception)
@@ -69,7 +69,7 @@ namespace Fixie.VisualStudio.TestAdapter
                     using (var environment = new ExecutionEnvironment(assemblyFullPath))
                     {
                         var runner = environment.Create<ExecutionProxy>();
-                        runner.RunMethods(assemblyFullPath, new string[] { }, visualStudioListener, methodGroups);
+                        runner.RunMethods(assemblyFullPath, new Lookup(), visualStudioListener, methodGroups);
                     }
                 }
                 catch (Exception exception)

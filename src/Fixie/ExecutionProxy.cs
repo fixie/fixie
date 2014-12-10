@@ -10,20 +10,20 @@ namespace Fixie
 {
     public class ExecutionProxy : MarshalByRefObject
     {
-        public AssemblyResult RunAssembly(string assemblyFullPath, string[] args, Listener listener)
+        public AssemblyResult RunAssembly(string assemblyFullPath, Lookup options, Listener listener)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Runner(args, listener).RunAssembly(assembly);
+            return Runner(options, listener).RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, string[] args, Listener listener, MethodGroup[] methodGroups)
+        public AssemblyResult RunMethods(string assemblyFullPath, Lookup options, Listener listener, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             var methods = GetMethods(methodGroups, assembly);
 
-            return Runner(args, listener).RunMethods(assembly, methods);
+            return Runner(options, listener).RunMethods(assembly, methods);
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -31,9 +31,9 @@ namespace Fixie
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        static Runner Runner(string[] args, Listener listener)
+        static Runner Runner(Lookup options, Listener listener)
         {
-            return new Runner(listener, new CommandLineParser(args).Options);
+            return new Runner(listener, options);
         }
 
         static MethodInfo[] GetMethods(MethodGroup[] methodGroups, Assembly assembly)

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
-using Fixie;
 using Fixie.Execution;
 using Fixie.Results;
 
-namespace FixieConsole
+namespace Fixie.ConsoleRunner
 {
     public class ConsoleListener : MarshalByRefObject, Listener
     {

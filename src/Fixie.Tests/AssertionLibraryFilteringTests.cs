@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using FixieConsole;
+using Fixie.ConsoleRunner;
 
 namespace Fixie.Tests
 {

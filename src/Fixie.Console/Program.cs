@@ -4,12 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using Fixie;
 using Fixie.Execution;
 using Fixie.Reports;
 using Fixie.Results;
 
-namespace FixieConsole
+namespace Fixie.ConsoleRunner
 {
     class Program
     {

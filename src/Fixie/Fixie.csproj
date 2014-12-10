@@ -48,12 +48,12 @@
     <Compile Include="Execution\Behaviors\CreateInstancePerClass.cs" />
     <Compile Include="Execution\Behaviors\ExecuteCases.cs" />
     <Compile Include="FixtureBehavior.cs" />
-    <Compile Include="CommandLineOption.cs" />
     <Compile Include="Discovery\ClassDiscoverer.cs" />
     <Compile Include="Discovery\ConventionDiscoverer.cs" />
     <Compile Include="Execution\AssertionLibraryFilter.cs" />
     <Compile Include="Conventions\Configuration.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />
+    <Compile Include="Lookup.cs" />
     <Compile Include="ParameterSource.cs" />
     <Compile Include="Results\CompoundException.cs" />
     <Compile Include="TestAssembly.cs" />
@@ -68,7 +68,6 @@
     <Compile Include="RedirectedConsole.cs" />
     <Compile Include="ClassBehavior.cs" />
     <Compile Include="Case.cs" />
-    <Compile Include="CommandLineParser.cs" />
     <Compile Include="Convention.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
     <Compile Include="Conventions\FixtureBehaviorExpression.cs" />

@@ -10,14 +10,28 @@ namespace Fixie
     [Obsolete("Refactor to use ExecutionProxy instead.")]
     public class ConsoleRunner : MarshalByRefObject
     {
+        public AssemblyResult RunAssembly(string assemblyFullPath, string[] args, Listener listener)
+        {
+            var assembly = LoadAssembly(assemblyFullPath);
+
+            return Runner(args, listener).RunAssembly(assembly);
+        }
+
+        static Assembly LoadAssembly(string assemblyFullPath)
+        {
+            return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+        }
+
+        static Runner Runner(string[] args, Listener listener)
+        {
+            return new Runner(listener, new CommandLineParser(args).Options);
+        }
+
         public AssemblyResult RunAssembly(string assemblyFullPath, string[] args)
         {
-            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+            var listener = CreateListener(new CommandLineParser(args).Options);
 
-            var options = new CommandLineParser(args).Options;
-
-            var runner = new Runner(CreateListener(options), options);
-            return runner.RunAssembly(assembly);
+            return RunAssembly(assemblyFullPath, args, listener);
         }
 
         static Listener CreateListener(ILookup<string, string> options)

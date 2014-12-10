@@ -6,6 +6,7 @@ using System.Text;
 using System.Xml.Linq;
 using Fixie;
 using Fixie.Execution;
+using Fixie.Listeners;
 using Fixie.Reports;
 using Fixie.Results;
 
@@ -117,11 +118,29 @@ namespace FixieConsole
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
 
+            var listener = CreateListener(new CommandLineParser(args).Options);
+
             using (var environment = new ExecutionEnvironment(assemblyFullPath))
             {
                 var runner = environment.Create<ExecutionProxy>();
-                return runner.RunAssembly(assemblyFullPath, args);
+                return runner.RunAssembly(assemblyFullPath, args, listener);
             }
+        }
+
+        static Listener CreateListener(ILookup<string, string> options)
+        {
+            var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
+
+            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
+
+            var useTeamCityListener =
+                (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
+                (!teamCityExplicitlySpecified && runningUnderTeamCity);
+
+            if (useTeamCityListener)
+                return new TeamCityListener();
+
+            return new ConsoleListener();
         }
     }
 }

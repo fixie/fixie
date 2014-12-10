@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using Fixie.Execution;
 using Fixie.Results;
 
 namespace Fixie.Listeners
 {
-    public class ConsoleListener : Listener
+    public class ConsoleListener : MarshalByRefObject, Listener
     {
         public void AssemblyStarted(AssemblyInfo assembly)
         {

@@ -7,7 +7,7 @@ using Fixie.Results;
 
 namespace Fixie.Listeners
 {
-    public class TeamCityListener : Listener
+    public class TeamCityListener : MarshalByRefObject, Listener
     {
         public void AssemblyStarted(AssemblyInfo assembly)
         {

@@ -69,7 +69,6 @@
     <Compile Include="RedirectedConsole.cs" />
     <Compile Include="ClassBehavior.cs" />
     <Compile Include="Case.cs" />
-    <Compile Include="CommandLineParser.cs" />
     <Compile Include="Convention.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
     <Compile Include="Conventions\FixtureBehaviorExpression.cs" />

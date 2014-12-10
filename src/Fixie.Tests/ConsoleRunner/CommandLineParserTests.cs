@@ -1,7 +1,8 @@
 ﻿using System.Linq;
+using Fixie.ConsoleRunner;
 using Should;
 
-namespace Fixie.Tests
+namespace Fixie.Tests.ConsoleRunner
 {
     public class CommandLineParserTests
     {

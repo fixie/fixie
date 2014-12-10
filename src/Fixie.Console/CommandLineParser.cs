@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Fixie
+namespace Fixie.ConsoleRunner
 {
     public class CommandLineParser
     {

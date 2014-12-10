@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Fixie.Discovery;
 
@@ -11,7 +10,7 @@ namespace Fixie
         public IReadOnlyList<MethodGroup> TestMethodGroups(string assemblyFullPath)
         {
             var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
-            var runContext = new RunContext(assembly, Enumerable.Empty<string>().ToLookup(x => x, x => x));
+            var runContext = new RunContext(assembly, new Lookup());
             var conventions = new ConventionDiscoverer(runContext).GetConventions();
 
             var discoveredTestMethodGroups = new List<MethodGroup>();

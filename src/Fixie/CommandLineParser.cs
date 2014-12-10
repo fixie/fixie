@@ -12,7 +12,7 @@ namespace Fixie
             var queue = new Queue<string>(args);
 
             var assemblyPaths = new List<string>();
-            var optionList = new List<KeyValuePair<string, string>>();
+            var optionList = new Lookup();
             var errors = new List<string>();
 
             while (queue.Any())
@@ -61,7 +61,7 @@ namespace Fixie
                         }
                     }
 
-                    optionList.Add(new KeyValuePair<string, string>(key, value));
+                    optionList.Add(key, value);
                 }
                 else
                 {
@@ -73,13 +73,13 @@ namespace Fixie
                 errors.Add("Missing required test assembly path(s).");
 
             AssemblyPaths = assemblyPaths.ToArray();
-            Options = optionList.ToLookup(x => x.Key, x => x.Value);
+            Options = optionList;
             Errors = errors.ToArray();
         }
 
         public IEnumerable<string> AssemblyPaths { get; private set; }
 
-        public ILookup<string, string> Options { get; private set; }
+        public Lookup Options { get; private set; }
 
         public IEnumerable<string> Errors { get; private set; }
 

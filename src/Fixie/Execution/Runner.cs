@@ -10,12 +10,12 @@ namespace Fixie.Execution
     public class Runner
     {
         readonly Listener listener;
-        readonly ILookup<string, string> options;
+        readonly Lookup options;
 
         public Runner(Listener listener)
-            : this(listener, Enumerable.Empty<string>().ToLookup(x => x, x => x)) { }
+            : this(listener, new Lookup()) { }
 
-        public Runner(Listener listener, ILookup<string, string> options)
+        public Runner(Listener listener, Lookup options)
         {
             this.listener = listener;
             this.options = options;

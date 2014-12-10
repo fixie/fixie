@@ -89,7 +89,7 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine("====== " + line + " ======");
         }
 
-        static void ProduceReports(ILookup<string, string> options, ExecutionResult executionResult)
+        static void ProduceReports(Lookup options, ExecutionResult executionResult)
         {
             if (options.Contains(CommandLineOption.NUnitXml))
             {
@@ -125,7 +125,7 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static Listener CreateListener(ILookup<string, string> options)
+        static Listener CreateListener(Lookup options)
         {
             var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
 

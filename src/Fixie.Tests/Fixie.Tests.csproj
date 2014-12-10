@@ -62,7 +62,7 @@
     <Compile Include="Reports\NUnitXmlReportTests.cs" />
     <Compile Include="Reports\XUnitXmlReportTests.cs" />
     <Compile Include="Cases\AsyncCaseTests.cs" />
-    <Compile Include="Listeners\ConsoleListenerTests.cs" />
+    <Compile Include="ConsoleRunner\ConsoleListenerTests.cs" />
     <Compile Include="Cases\BasicCaseTests.cs" />
     <Compile Include="Lifecycle\LifecycleTests.cs" />
     <Compile Include="Lifecycle\DisposalTests.cs" />
@@ -78,10 +78,14 @@
     <Compile Include="StubListener.cs" />
     <Compile Include="Discovery\ClassDiscovererTests.cs" />
     <Compile Include="Cases\ParameterizedCaseTests.cs" />
-    <Compile Include="Listeners\TeamCityListenerTests.cs" />
+    <Compile Include="ConsoleRunner\TeamCityListenerTests.cs" />
     <Compile Include="Cases\SkippedCaseTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Fixie.Console\Fixie.Console.csproj">
+      <Project>{3805c0e0-3817-45ad-964f-cf7dc5715b39}</Project>
+      <Name>Fixie.Console</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fixie\Fixie.csproj">
       <Project>{474ff43b-4580-4032-999b-a717eb7a0cd3}</Project>
       <Name>Fixie</Name>

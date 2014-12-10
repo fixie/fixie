@@ -5,9 +5,9 @@ using System.Text;
 using Fixie.Execution;
 using Fixie.Results;
 
-namespace Fixie.Listeners
+namespace Fixie.ConsoleRunner
 {
-    public class TeamCityListener : Listener
+    public class TeamCityListener : MarshalByRefObject, Listener
     {
         public void AssemblyStarted(AssemblyInfo assembly)
         {

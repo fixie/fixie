@@ -1,10 +1,10 @@
-﻿using Fixie.Listeners;
-using System;
+﻿using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Fixie.ConsoleRunner;
 
-namespace Fixie.Tests.Listeners
+namespace Fixie.Tests.ConsoleRunner
 {
     public class ConsoleListenerTests
     {
@@ -36,10 +36,10 @@ namespace Fixie.Tests.Listeners
 
                            "Test '" + testClass + ".FailA' failed: Fixie.Tests.FailureException",
                            "'FailA' failed!",
-                           "   at Fixie.Tests.Listeners.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
+                           "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
                            "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
                            "'FailB' failed!",
-                           "   at Fixie.Tests.Listeners.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
+                           "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
                            "3 passed, 2 failed, 1 skipped, took 1.23 seconds (Fixie 1.2.3.4).");
             }
         }
@@ -77,10 +77,10 @@ namespace Fixie.Tests.Listeners
 
                            "Test '" + testClass + ".FailA' failed: Fixie.Tests.FailureException",
                            "'FailA' failed!",
-                           "   at Fixie.Tests.Listeners.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
+                           "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
                            "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
                            "'FailB' failed!",
-                           "   at Fixie.Tests.Listeners.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
+                           "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
                            "3 passed, 2 failed, took 1.23 seconds (Fixie 1.2.3.4).");
             }
         }

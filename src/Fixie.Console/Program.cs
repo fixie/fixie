@@ -4,14 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Fixie;
 using Fixie.Execution;
 using Fixie.Reports;
 using Fixie.Results;
 
-namespace Fixie.Console
+namespace FixieConsole
 {
-    using Console = System.Console;
-
     class Program
     {
         const int FatalError = -1;

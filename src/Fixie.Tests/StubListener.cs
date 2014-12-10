@@ -17,7 +17,7 @@ namespace Fixie.Tests
 
         public void CaseSkipped(SkipResult result)
         {
-            log.Add(string.Format("{0} skipped{1}", result.Name, result.Reason == null ? "." : ": " + result.Reason));
+            log.Add(string.Format("{0} skipped{1}", result.Name, result.SkipReason == null ? "." : ": " + result.SkipReason));
         }
 
         public void CasePassed(PassResult result)

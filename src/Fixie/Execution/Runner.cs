@@ -85,10 +85,10 @@ namespace Fixie.Execution
 
         static MethodInfo[] GetMethods(Assembly assembly, MethodGroup[] methodGroups)
         {
-            return methodGroups.SelectMany(methodGroup => GetMethodInfos(assembly, methodGroup)).ToArray();
+            return methodGroups.SelectMany(methodGroup => GetMethods(assembly, methodGroup)).ToArray();
         }
 
-        static IEnumerable<MethodInfo> GetMethodInfos(Assembly assembly, MethodGroup methodGroup)
+        static IEnumerable<MethodInfo> GetMethods(Assembly assembly, MethodGroup methodGroup)
         {
             return assembly
                 .GetType(methodGroup.Class)

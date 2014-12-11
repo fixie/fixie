@@ -120,7 +120,7 @@ namespace Fixie.ConsoleRunner
 
             using (var environment = new ExecutionEnvironment(assemblyFullPath))
             {
-                return environment.RunAssembly(assemblyFullPath, options, listener);
+                return environment.RunAssembly(options, listener);
             }
         }
 

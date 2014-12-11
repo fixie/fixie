@@ -30,7 +30,7 @@ namespace Fixie.VisualStudio.TestAdapter
                     {
                         using (var environment = new ExecutionEnvironment(assemblyFullPath))
                         {
-                            var methodGroups = environment.DiscoverTestMethodGroups(assemblyFullPath, new Lookup());
+                            var methodGroups = environment.DiscoverTestMethodGroups(new Lookup());
 
                             foreach (var methodGroup in methodGroups)
                                 discoverySink.SendTestCase(new TestCase(methodGroup.FullName, VsTestExecutor.Uri, source));

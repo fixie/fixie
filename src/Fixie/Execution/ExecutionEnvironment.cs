@@ -10,11 +10,13 @@ namespace Fixie.Execution
 {
     public class ExecutionEnvironment : IDisposable
     {
+        readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
 
         public ExecutionEnvironment(string assemblyFullPath)
         {
+            this.assemblyFullPath = assemblyFullPath;
             appDomain = CreateAppDomain(assemblyFullPath);
 
             previousWorkingDirectory = Directory.GetCurrentDirectory();
@@ -22,17 +24,17 @@ namespace Fixie.Execution
             Directory.SetCurrentDirectory(assemblyDirectory);
         }
 
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Lookup options)
+        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Lookup options)
         {
             return Create<ExecutionProxy>().DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunAssembly(string assemblyFullPath, Lookup options, Listener listener)
+        public AssemblyResult RunAssembly(Lookup options, Listener listener)
         {
             return Create<ExecutionProxy>().RunAssembly(assemblyFullPath, options, listener);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, Lookup options, Listener listener, MethodGroup[] methodGroups)
+        public AssemblyResult RunMethods(Lookup options, Listener listener, MethodGroup[] methodGroups)
         {
             return Create<ExecutionProxy>().RunMethods(assemblyFullPath, options, listener, methodGroups);
         }

@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
 using Fixie.Conventions;
-using Fixie.Internal;
 using Fixie.Internal.Behaviors;
 
-namespace Fixie.Execution
+namespace Fixie.Internal
 {
     public class ExecutionPlan
     {

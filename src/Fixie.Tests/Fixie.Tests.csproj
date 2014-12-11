@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="AssertionLibraryFilteringTests.cs" />
     <Compile Include="Assertions.cs" />
+    <Compile Include="Internal\ExecutionPlan.cs" />
     <Compile Include="MethodGroupTests.cs" />
     <Compile Include="Discovery\ParameterDiscovererTests.cs" />
     <Compile Include="Execution\AppDomainCommunicationAssertions.cs" />

@@ -42,9 +42,9 @@
     <Compile Include="MethodGroup.cs" />
     <Compile Include="Execution\ExecutionProxy.cs" />
     <Compile Include="Execution\AssemblyInfo.cs" />
-    <Compile Include="Execution\Behavior.cs" />
-    <Compile Include="Execution\BehaviorChain.cs" />
-    <Compile Include="Execution\BehaviorContext.cs" />
+    <Compile Include="Internal\Behavior.cs" />
+    <Compile Include="Internal\BehaviorChain.cs" />
+    <Compile Include="Internal\BehaviorContext.cs" />
     <Compile Include="Internal\Behaviors\CreateInstancePerClass.cs" />
     <Compile Include="Internal\Behaviors\ExecuteCases.cs" />
     <Compile Include="FixtureBehavior.cs" />

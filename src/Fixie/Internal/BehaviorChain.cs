@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Fixie.Execution
+namespace Fixie.Internal
 {
     public class BehaviorChain<TContext> where TContext : BehaviorContext
     {

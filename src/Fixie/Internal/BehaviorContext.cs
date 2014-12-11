@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fixie.Execution
+namespace Fixie.Internal
 {
     public interface BehaviorContext
     {

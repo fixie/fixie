@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Fixie.Internal;
 
-namespace Fixie.Tests.Discovery
+namespace Fixie.Tests.Internal
 {
     public class GenericArgumentResolverTests
     {

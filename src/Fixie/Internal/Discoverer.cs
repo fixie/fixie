@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace Fixie.Discovery
+namespace Fixie.Internal
 {
     public class Discoverer
     {

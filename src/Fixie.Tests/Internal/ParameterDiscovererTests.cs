@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using Fixie.Discovery;
+using Fixie.Internal;
 using Should;
 
-namespace Fixie.Tests.Discovery
+namespace Fixie.Tests.Internal
 {
     public class ParameterDiscovererTests
     {

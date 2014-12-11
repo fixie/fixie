@@ -37,8 +37,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
-    <Compile Include="Discovery\Discoverer.cs" />
-    <Compile Include="Discovery\ParameterDiscoverer.cs" />
+    <Compile Include="Internal\Discoverer.cs" />
+    <Compile Include="Internal\ParameterDiscoverer.cs" />
     <Compile Include="MethodGroup.cs" />
     <Compile Include="Execution\ExecutionProxy.cs" />
     <Compile Include="Execution\AssemblyInfo.cs" />
@@ -48,8 +48,8 @@
     <Compile Include="Internal\Behaviors\CreateInstancePerClass.cs" />
     <Compile Include="Internal\Behaviors\ExecuteCases.cs" />
     <Compile Include="FixtureBehavior.cs" />
-    <Compile Include="Discovery\ClassDiscoverer.cs" />
-    <Compile Include="Discovery\ConventionDiscoverer.cs" />
+    <Compile Include="Internal\ClassDiscoverer.cs" />
+    <Compile Include="Internal\ConventionDiscoverer.cs" />
     <Compile Include="Internal\AssertionLibraryFilter.cs" />
     <Compile Include="Conventions\Configuration.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />
@@ -58,7 +58,7 @@
     <Compile Include="Execution\CompoundException.cs" />
     <Compile Include="TestAssembly.cs" />
     <Compile Include="Conventions\ClassExpression.cs" />
-    <Compile Include="Discovery\MethodDiscoverer.cs" />
+    <Compile Include="Internal\MethodDiscoverer.cs" />
     <Compile Include="Conventions\AssertionLibraryExpression.cs" />
     <Compile Include="Execution\ExecutionEnvironment.cs" />
     <Compile Include="Internal\ClassRunner.cs" />

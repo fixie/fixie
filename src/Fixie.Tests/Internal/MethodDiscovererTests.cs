@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Should;
 using Fixie.Conventions;
-using Fixie.Discovery;
+using Fixie.Internal;
+using Should;
 
-namespace Fixie.Tests.Discovery
+namespace Fixie.Tests.Internal
 {
     public class MethodDiscovererTests
     {

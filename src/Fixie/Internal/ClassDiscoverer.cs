@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Fixie.Conventions;
 
-namespace Fixie.Discovery
+namespace Fixie.Internal
 {
     public class ClassDiscoverer
     {

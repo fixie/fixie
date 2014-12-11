@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Fixie.Discovery;
 using Fixie.Internal;
 
 namespace Fixie.Execution

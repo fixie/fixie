@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Fixie.Discovery
+namespace Fixie
 {
     [Serializable]
     public class MethodGroup

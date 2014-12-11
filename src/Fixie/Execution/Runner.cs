@@ -9,6 +9,19 @@ namespace Fixie.Execution
 {
     public class Runner
     {
+        public static MethodInfo[] GetMethods(MethodGroup[] methodGroups, Assembly assembly)
+        {
+            return methodGroups.SelectMany(x => GetMethodInfo(assembly, x)).ToArray();
+        }
+
+        static IEnumerable<MethodInfo> GetMethodInfo(Assembly assembly, MethodGroup methodGroup)
+        {
+            return assembly
+                .GetType(methodGroup.Class)
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(m => m.Name == methodGroup.Method);
+        }
+
         readonly Listener listener;
         readonly Lookup options;
 

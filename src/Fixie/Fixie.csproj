@@ -40,7 +40,7 @@
     <Compile Include="Discovery\Discoverer.cs" />
     <Compile Include="Discovery\ParameterDiscoverer.cs" />
     <Compile Include="Discovery\MethodGroup.cs" />
-    <Compile Include="ExecutionProxy.cs" />
+    <Compile Include="Execution\ExecutionProxy.cs" />
     <Compile Include="Execution\AssemblyInfo.cs" />
     <Compile Include="Execution\Behavior.cs" />
     <Compile Include="Execution\BehaviorChain.cs" />

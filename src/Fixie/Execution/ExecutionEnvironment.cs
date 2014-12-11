@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security;
 using System.Security.Permissions;
+using Fixie.Discovery;
+using Fixie.Results;
 
 namespace Fixie.Execution
 {
@@ -22,6 +25,21 @@ namespace Fixie.Execution
         public T Create<T>(params object[] args) where T : MarshalByRefObject
         {
             return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
+        }
+
+        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Lookup options)
+        {
+            return Create<ExecutionProxy>().DiscoverTestMethodGroups(assemblyFullPath, options);
+        }
+
+        public AssemblyResult RunAssembly(string assemblyFullPath, Lookup options, Listener listener)
+        {
+            return Create<ExecutionProxy>().RunAssembly(assemblyFullPath, options, listener);
+        }
+
+        public AssemblyResult RunMethods(string assemblyFullPath, Lookup options, Listener listener, MethodGroup[] methodGroups)
+        {
+            return Create<ExecutionProxy>().RunMethods(assemblyFullPath, options, listener, methodGroups);
         }
 
         public void Dispose()

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Fixie.Conventions;
 
-namespace Fixie.Execution
+namespace Fixie.Internal
 {
     public class AssertionLibraryFilter
     {

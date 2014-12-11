@@ -50,7 +50,7 @@
     <Compile Include="FixtureBehavior.cs" />
     <Compile Include="Discovery\ClassDiscoverer.cs" />
     <Compile Include="Discovery\ConventionDiscoverer.cs" />
-    <Compile Include="Execution\AssertionLibraryFilter.cs" />
+    <Compile Include="Internal\AssertionLibraryFilter.cs" />
     <Compile Include="Conventions\Configuration.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />
     <Compile Include="Lookup.cs" />

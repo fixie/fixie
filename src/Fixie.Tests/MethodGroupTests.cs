@@ -1,7 +1,6 @@
-﻿using Fixie.Discovery;
-using Should;
+﻿using Should;
 
-namespace Fixie.Tests.Discovery
+namespace Fixie.Tests
 {
     public class MethodGroupTests
     {

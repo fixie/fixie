@@ -76,7 +76,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
         TestCase TestCase(MethodGroup methodGroup)
         {
-            return new TestCase(methodGroup.FullName, Executor.Uri, source);
+            return new TestCase(methodGroup.FullName, VsTestExecutor.Uri, source);
         }
 
         static TestOutcome Map(CaseStatus caseStatus)

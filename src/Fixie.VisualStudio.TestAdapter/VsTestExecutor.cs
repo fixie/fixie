@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 namespace Fixie.VisualStudio.TestAdapter
 {
     [ExtensionUri(Id)]
-    public class Executor : ITestExecutor
+    public class VsTestExecutor : ITestExecutor
     {
         public const string Id = "executor://Fixie.VisualStudio";
         public static Uri Uri = new Uri(Id);

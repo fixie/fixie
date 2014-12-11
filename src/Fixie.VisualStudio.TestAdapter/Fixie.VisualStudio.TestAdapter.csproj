@@ -37,8 +37,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Discoverer.cs" />
-    <Compile Include="Executor.cs" />
+    <Compile Include="VsTestDiscoverer.cs" />
+    <Compile Include="VsTestExecutor.cs" />
     <Compile Include="LoggingExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemotingUtility.cs" />

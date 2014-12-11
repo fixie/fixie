@@ -8,10 +8,10 @@ using Fixie.Execution;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    [DefaultExecutorUri(Executor.Id)]
+    [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
     [FileExtension(".dll")]
-    public class Discoverer : ITestDiscoverer
+    public class VsTestDiscoverer : ITestDiscoverer
     {
         public void DiscoverTests(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger log, ITestCaseDiscoverySink discoverySink)
         {
@@ -29,10 +29,10 @@ namespace Fixie.VisualStudio.TestAdapter
                     {
                         using (var environment = new ExecutionEnvironment(assemblyFullPath))
                         {
-                            var discovery = environment.Create<DiscoveryProxy>();
+                            var discovery = environment.Create<ExecutionProxy>();
 
-                            foreach (var methodGroup in discovery.TestMethodGroups(assemblyFullPath, new Lookup()))
-                                discoverySink.SendTestCase(new TestCase(methodGroup.FullName, Executor.Uri, source));
+                            foreach (var methodGroup in discovery.DiscoverTestMethodGroups(assemblyFullPath, new Lookup()))
+                                discoverySink.SendTestCase(new TestCase(methodGroup.FullName, VsTestExecutor.Uri, source));
                         }
                     }
                     else

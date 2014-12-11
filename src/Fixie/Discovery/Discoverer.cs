@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
-using Fixie.Discovery;
 
-namespace Fixie
+namespace Fixie.Discovery
 {
-    public class DiscoveryProxy : MarshalByRefObject
+    public class Discoverer
     {
-        public IReadOnlyList<MethodGroup> TestMethodGroups(string assemblyFullPath, Lookup options)
+        readonly Lookup options;
+
+        public Discoverer(Lookup options)
         {
-            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+            this.options = options;
+        }
+
+        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Assembly assembly)
+        {
             var runContext = new RunContext(assembly, options);
             var conventions = new ConventionDiscoverer(runContext).GetConventions();
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using Fixie.Execution;
 
 namespace Fixie.Internal.Behaviors
 {

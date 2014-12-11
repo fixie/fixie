@@ -4,9 +4,10 @@ using System.Linq;
 using System.Reflection;
 using Fixie.Conventions;
 using Fixie.Discovery;
+using Fixie.Execution;
 using Fixie.Results;
 
-namespace Fixie.Execution
+namespace Fixie.Internal
 {
     public class ClassRunner
     {

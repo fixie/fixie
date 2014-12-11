@@ -63,7 +63,7 @@
     <Compile Include="Execution\ExecutionEnvironment.cs" />
     <Compile Include="Execution\ClassRunner.cs" />
     <Compile Include="Execution\ExecutionPlan.cs" />
-    <Compile Include="Discovery\GenericArgumentResolver.cs" />
+    <Compile Include="Internal\GenericArgumentResolver.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="RedirectedConsole.cs" />
     <Compile Include="ClassBehavior.cs" />
@@ -81,7 +81,7 @@
     <Compile Include="Execution\Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Execution\Listener.cs" />
     <Compile Include="Conventions\MethodExpression.cs" />
-    <Compile Include="Discovery\ObjectExtensions.cs" />
+    <Compile Include="Internal\ObjectExtensions.cs" />
     <Compile Include="Results\PassResult.cs" />
     <Compile Include="PreservedException.cs" />
     <Compile Include="Reports\XUnitXmlReport.cs" />

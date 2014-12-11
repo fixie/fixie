@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Fixie.Discovery;
+using Fixie.Internal;
 
 namespace Fixie.Tests.Discovery
 {

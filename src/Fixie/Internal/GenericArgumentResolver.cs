@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Fixie.Discovery
+namespace Fixie.Internal
 {
     public class GenericArgumentResolver
     {

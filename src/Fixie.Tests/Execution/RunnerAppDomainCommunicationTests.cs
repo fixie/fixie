@@ -1,4 +1,5 @@
 using Fixie.Execution;
+using Fixie.Internal;
 
 namespace Fixie.Tests.Execution
 {

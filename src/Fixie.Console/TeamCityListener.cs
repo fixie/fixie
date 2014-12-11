@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Fixie.Execution;
-using Fixie.Results;
 
 namespace Fixie.ConsoleRunner
 {

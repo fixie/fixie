@@ -1,4 +1,4 @@
-﻿using Fixie.Execution;
+﻿using Fixie.Internal;
 
 namespace Fixie
 {

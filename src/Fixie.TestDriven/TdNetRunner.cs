@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Fixie.Execution;
-using Fixie.Results;
+using Fixie.Internal;
 using TestDriven.Framework;
 
 namespace Fixie.TestDriven

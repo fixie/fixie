@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fixie.Execution;
-using Fixie.Results;
 using Should;
 
 namespace Fixie.Tests.Execution

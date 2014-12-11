@@ -1,6 +1,4 @@
 ﻿using System;
-using Fixie.Discovery;
-using Fixie.Results;
 
 namespace Fixie.Execution
 {

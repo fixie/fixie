@@ -1,6 +1,5 @@
 ﻿using System;
-using Fixie.Discovery;
-using Fixie.Results;
+using Fixie.Internal;
 
 namespace Fixie.Execution
 {

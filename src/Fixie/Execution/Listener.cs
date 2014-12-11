@@ -1,6 +1,4 @@
-﻿using Fixie.Results;
-
-namespace Fixie.Execution
+﻿namespace Fixie.Execution
 {
     public interface Listener
     {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Fixie.Execution;
-using Fixie.Results;
 
 namespace Fixie.ConsoleRunner
 {

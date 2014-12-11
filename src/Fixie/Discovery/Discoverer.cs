@@ -12,7 +12,7 @@ namespace Fixie.Discovery
             this.options = options;
         }
 
-        public IReadOnlyList<MethodGroup> TestMethodGroups(Assembly assembly)
+        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Assembly assembly)
         {
             var runContext = new RunContext(assembly, options);
             var conventions = new ConventionDiscoverer(runContext).GetConventions();

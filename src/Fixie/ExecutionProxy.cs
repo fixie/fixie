@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Fixie.Discovery;
 using Fixie.Execution;
@@ -8,6 +9,13 @@ namespace Fixie
 {
     public class ExecutionProxy : MarshalByRefObject
     {
+        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Lookup options)
+        {
+            var assembly = LoadAssembly(assemblyFullPath);
+
+            return new Discoverer(options).DiscoverTestMethodGroups(assembly);
+        }
+
         public AssemblyResult RunAssembly(string assemblyFullPath, Lookup options, Listener listener)
         {
             var assembly = LoadAssembly(assemblyFullPath);

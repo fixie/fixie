@@ -29,9 +29,9 @@ namespace Fixie.VisualStudio.TestAdapter
                     {
                         using (var environment = new ExecutionEnvironment(assemblyFullPath))
                         {
-                            var discovery = environment.Create<DiscoveryProxy>();
+                            var discovery = environment.Create<ExecutionProxy>();
 
-                            foreach (var methodGroup in discovery.TestMethodGroups(assemblyFullPath, new Lookup()))
+                            foreach (var methodGroup in discovery.DiscoverTestMethodGroups(assemblyFullPath, new Lookup()))
                                 discoverySink.SendTestCase(new TestCase(methodGroup.FullName, Executor.Uri, source));
                         }
                     }

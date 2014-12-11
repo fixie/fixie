@@ -38,7 +38,6 @@
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="Discovery\Discoverer.cs" />
-    <Compile Include="DiscoveryProxy.cs" />
     <Compile Include="Discovery\ParameterDiscoverer.cs" />
     <Compile Include="Discovery\MethodGroup.cs" />
     <Compile Include="ExecutionProxy.cs" />

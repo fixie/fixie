@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Fixie.Internal;
+using Fixie.Execution;
 
-namespace Fixie.Execution
+namespace Fixie.Internal
 {
     public class ExecutionProxy : MarshalByRefObject
     {

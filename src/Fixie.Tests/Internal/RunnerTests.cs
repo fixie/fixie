@@ -18,12 +18,12 @@ namespace Fixie.Tests.Internal
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.Execution.RunnerTests+PassTestClass.PassA passed.",
-                "Fixie.Tests.Execution.RunnerTests+PassTestClass.PassB passed.",
-                "Fixie.Tests.Execution.RunnerTests+PassFailTestClass.Fail failed: 'Fail' failed!",
-                "Fixie.Tests.Execution.RunnerTests+PassFailTestClass.Pass passed.",
-                "Fixie.Tests.Execution.RunnerTests+SkipTestClass.SkipA skipped.",
-                "Fixie.Tests.Execution.RunnerTests+SkipTestClass.SkipB skipped.");
+                "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassA passed.",
+                "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassB passed.",
+                "Fixie.Tests.Internal.RunnerTests+PassFailTestClass.Fail failed: 'Fail' failed!",
+                "Fixie.Tests.Internal.RunnerTests+PassFailTestClass.Pass passed.",
+                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipA skipped.",
+                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipB skipped.");
         }
 
         public void ShouldAllowRandomShufflingOfCaseExecutionOrder()
@@ -40,12 +40,12 @@ namespace Fixie.Tests.Internal
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
             listener.Entries.ShouldEqual(
-                "Fixie.Tests.Execution.RunnerTests+PassTestClass.PassB passed.",
-                "Fixie.Tests.Execution.RunnerTests+PassTestClass.PassA passed.",
-                "Fixie.Tests.Execution.RunnerTests+PassFailTestClass.Fail failed: 'Fail' failed!",
-                "Fixie.Tests.Execution.RunnerTests+PassFailTestClass.Pass passed.",
-                "Fixie.Tests.Execution.RunnerTests+SkipTestClass.SkipB skipped.",
-                "Fixie.Tests.Execution.RunnerTests+SkipTestClass.SkipA skipped.");
+                "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassB passed.",
+                "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassA passed.",
+                "Fixie.Tests.Internal.RunnerTests+PassFailTestClass.Fail failed: 'Fail' failed!",
+                "Fixie.Tests.Internal.RunnerTests+PassFailTestClass.Pass passed.",
+                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipB skipped.",
+                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipA skipped.");
         }
 
         public void ShouldShortCircuitTestExecutionByFailingAllCasesWhenCaseOrderingThrows()
@@ -70,29 +70,29 @@ namespace Fixie.Tests.Internal
             var strings = listener.Entries.OrderBy(x => x).ToArray();
             strings.ShouldEqual(
 
-                "Fixie.Tests.Execution.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedA failed: Exception thrown while attempting to yield input parameters for method: ParameterizedA" + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedA failed: Exception thrown while attempting to yield input parameters for method: ParameterizedA" + Environment.NewLine +
 	            "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
 	            "        Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Execution.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedB failed: Exception thrown while attempting to yield input parameters for method: ParameterizedB" + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedB failed: Exception thrown while attempting to yield input parameters for method: ParameterizedB" + Environment.NewLine +
 	            "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
 	            "        Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Execution.RunnerTests+PassFailTestClass.Fail failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+PassFailTestClass.Fail failed: Failed to compare two elements in the array." + Environment.NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Execution.RunnerTests+PassFailTestClass.Pass failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+PassFailTestClass.Pass failed: Failed to compare two elements in the array." + Environment.NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Execution.RunnerTests+PassTestClass.PassA failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassA failed: Failed to compare two elements in the array." + Environment.NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Execution.RunnerTests+PassTestClass.PassB failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassB failed: Failed to compare two elements in the array." + Environment.NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Execution.RunnerTests+SkipTestClass.SkipA skipped.",
+                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipA skipped.",
 
-                "Fixie.Tests.Execution.RunnerTests+SkipTestClass.SkipB skipped.");
+                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipB skipped.");
         }
 
         class SampleIrrelevantClass

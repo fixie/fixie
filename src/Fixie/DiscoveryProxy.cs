@@ -9,35 +9,14 @@ namespace Fixie
     {
         public IReadOnlyList<MethodGroup> TestMethodGroups(string assemblyFullPath, Lookup options)
         {
-            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
-            var runContext = new RunContext(assembly, options);
-            var conventions = new ConventionDiscoverer(runContext).GetConventions();
+            var assembly = LoadAssembly(assemblyFullPath);
 
-            var discoveredTestMethodGroups = new List<MethodGroup>();
+            return new Discoverer(options).TestMethodGroups(assembly);
+        }
 
-            foreach (var convention in conventions)
-            {
-                var classDiscoverer = new ClassDiscoverer(convention.Config);
-                var candidateTypes = assembly.GetTypes();
-                var testClasses = classDiscoverer.TestClasses(candidateTypes);
-
-                var methodDiscoverer = new MethodDiscoverer(convention.Config);
-                foreach (var testClass in testClasses)
-                {
-                    var distinctMethodGroups = new Dictionary<string, MethodGroup>();
-
-                    foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                    {
-                        var methodGroup = new MethodGroup(testMethod);
-
-                        distinctMethodGroups[methodGroup.FullName] = methodGroup;
-                    }
-
-                    discoveredTestMethodGroups.AddRange(distinctMethodGroups.Values);
-                }
-            }
-
-            return discoveredTestMethodGroups;
+        static Assembly LoadAssembly(string assemblyFullPath)
+        {
+            return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
     }
 }

@@ -114,14 +114,11 @@ namespace Fixie.ConsoleRunner
 
         static AssemblyResult Execute(string assemblyPath, Lookup options)
         {
-            var assemblyFullPath = Path.GetFullPath(assemblyPath);
-
             var listener = CreateListener(options);
 
-            using (var environment = new ExecutionEnvironment(assemblyFullPath))
+            using (var environment = new ExecutionEnvironment(assemblyPath))
             {
-                var runner = environment.Create<ExecutionProxy>();
-                return runner.RunAssembly(assemblyFullPath, options, listener);
+                return environment.RunAssembly(options, listener);
             }
         }
 

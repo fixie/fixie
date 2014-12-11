@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Fixie.Discovery;
 using Fixie.Execution;
@@ -22,20 +21,17 @@ namespace Fixie.VisualStudio.TestAdapter
 
             IMessageLogger log = frameworkHandle;
 
-            foreach (var source in sources)
+            foreach (var assemblyPath in sources)
             {
-                log.Info("Processing " + source);
+                log.Info("Processing " + assemblyPath);
 
                 try
                 {
-                    var assemblyFullPath = Path.GetFullPath(source);
+                    var listener = new VisualStudioListener(frameworkHandle, assemblyPath);
 
-                    var visualStudioListener = new VisualStudioListener(frameworkHandle, source);
-
-                    using (var environment = new ExecutionEnvironment(assemblyFullPath))
+                    using (var environment = new ExecutionEnvironment(assemblyPath))
                     {
-                        var runner = environment.Create<ExecutionProxy>();
-                        runner.RunAssembly(assemblyFullPath, new Lookup(), visualStudioListener);
+                        environment.RunAssembly(new Lookup(), listener);
                     }
                 }
                 catch (Exception exception)
@@ -55,21 +51,18 @@ namespace Fixie.VisualStudio.TestAdapter
 
             foreach (var assemblyGroup in assemblyGroups)
             {
-                var source = assemblyGroup.Key;
+                var assemblyPath = assemblyGroup.Key;
 
-                log.Info("Processing " + source);
+                log.Info("Processing " + assemblyPath);
 
                 try
                 {
-                    var assemblyFullPath = Path.GetFullPath(source);
-
                     var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
-                    var visualStudioListener = new VisualStudioListener(frameworkHandle, source);
+                    var listener = new VisualStudioListener(frameworkHandle, assemblyPath);
 
-                    using (var environment = new ExecutionEnvironment(assemblyFullPath))
+                    using (var environment = new ExecutionEnvironment(assemblyPath))
                     {
-                        var runner = environment.Create<ExecutionProxy>();
-                        runner.RunMethods(assemblyFullPath, new Lookup(), visualStudioListener, methodGroups);
+                        environment.RunMethods(new Lookup(), listener, methodGroups);
                     }
                 }
                 catch (Exception exception)

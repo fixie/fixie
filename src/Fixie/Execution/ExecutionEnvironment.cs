@@ -1,17 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security;
 using System.Security.Permissions;
+using Fixie.Discovery;
+using Fixie.Results;
 
 namespace Fixie.Execution
 {
     public class ExecutionEnvironment : IDisposable
     {
+        readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
 
-        public ExecutionEnvironment(string assemblyFullPath)
+        public ExecutionEnvironment(string assemblyPath)
         {
+            assemblyFullPath = Path.GetFullPath(assemblyPath);
             appDomain = CreateAppDomain(assemblyFullPath);
 
             previousWorkingDirectory = Directory.GetCurrentDirectory();
@@ -19,7 +24,22 @@ namespace Fixie.Execution
             Directory.SetCurrentDirectory(assemblyDirectory);
         }
 
-        public T Create<T>(params object[] args) where T : MarshalByRefObject
+        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Lookup options)
+        {
+            return Create<ExecutionProxy>().DiscoverTestMethodGroups(assemblyFullPath, options);
+        }
+
+        public AssemblyResult RunAssembly(Lookup options, Listener listener)
+        {
+            return Create<ExecutionProxy>().RunAssembly(assemblyFullPath, options, listener);
+        }
+
+        public AssemblyResult RunMethods(Lookup options, Listener listener, MethodGroup[] methodGroups)
+        {
+            return Create<ExecutionProxy>().RunMethods(assemblyFullPath, options, listener, methodGroups);
+        }
+
+        T Create<T>(params object[] args) where T : MarshalByRefObject
         {
             return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
         }

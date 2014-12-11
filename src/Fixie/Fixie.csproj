@@ -45,8 +45,8 @@
     <Compile Include="Execution\Behavior.cs" />
     <Compile Include="Execution\BehaviorChain.cs" />
     <Compile Include="Execution\BehaviorContext.cs" />
-    <Compile Include="Execution\Behaviors\CreateInstancePerClass.cs" />
-    <Compile Include="Execution\Behaviors\ExecuteCases.cs" />
+    <Compile Include="Internal\Behaviors\CreateInstancePerClass.cs" />
+    <Compile Include="Internal\Behaviors\ExecuteCases.cs" />
     <Compile Include="FixtureBehavior.cs" />
     <Compile Include="Discovery\ClassDiscoverer.cs" />
     <Compile Include="Discovery\ConventionDiscoverer.cs" />
@@ -76,9 +76,9 @@
     <Compile Include="Results\FailResult.cs" />
     <Compile Include="Class.cs" />
     <Compile Include="Fixture.cs" />
-    <Compile Include="Execution\Behaviors\InvokeMethod.cs" />
+    <Compile Include="Internal\Behaviors\InvokeMethod.cs" />
     <Compile Include="CaseBehavior.cs" />
-    <Compile Include="Execution\Behaviors\CreateInstancePerCase.cs" />
+    <Compile Include="Internal\Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Execution\Listener.cs" />
     <Compile Include="Conventions\MethodExpression.cs" />
     <Compile Include="Internal\ObjectExtensions.cs" />

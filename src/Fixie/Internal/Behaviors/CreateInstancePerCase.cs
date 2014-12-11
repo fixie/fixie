@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Fixie.Execution;
 
-namespace Fixie.Execution.Behaviors
+namespace Fixie.Internal.Behaviors
 {
     public class CreateInstancePerCase : ClassBehavior
     {

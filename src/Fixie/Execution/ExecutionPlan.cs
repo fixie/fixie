@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using Fixie.Conventions;
-using Fixie.Execution.Behaviors;
+using Fixie.Internal.Behaviors;
 
 namespace Fixie.Execution
 {

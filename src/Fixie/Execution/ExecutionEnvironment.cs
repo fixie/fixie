@@ -14,9 +14,9 @@ namespace Fixie.Execution
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
 
-        public ExecutionEnvironment(string assemblyFullPath)
+        public ExecutionEnvironment(string assemblyPath)
         {
-            this.assemblyFullPath = assemblyFullPath;
+            assemblyFullPath = Path.GetFullPath(assemblyPath);
             appDomain = CreateAppDomain(assemblyFullPath);
 
             previousWorkingDirectory = Directory.GetCurrentDirectory();

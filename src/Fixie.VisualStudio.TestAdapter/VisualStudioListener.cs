@@ -25,12 +25,12 @@ namespace Fixie.VisualStudio.TestAdapter
         //name, while avoiding glitches for dynamically-generated test case parameters.
 
         readonly ITestExecutionRecorder log;
-        readonly string source;
+        readonly string assemblyPath;
 
-        public VisualStudioListener(ITestExecutionRecorder log, string source)
+        public VisualStudioListener(ITestExecutionRecorder log, string assemblyPath)
         {
             this.log = log;
-            this.source = source;
+            this.assemblyPath = assemblyPath;
         }
 
         public void AssemblyStarted(AssemblyInfo assembly) { }
@@ -76,7 +76,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
         TestCase TestCase(MethodGroup methodGroup)
         {
-            return new TestCase(methodGroup.FullName, VsTestExecutor.Uri, source);
+            return new TestCase(methodGroup.FullName, VsTestExecutor.Uri, assemblyPath);
         }
 
         static TestOutcome Map(CaseStatus caseStatus)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Fixie.Discovery;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
@@ -18,27 +17,25 @@ namespace Fixie.VisualStudio.TestAdapter
         {
             RemotingUtility.CleanUpRegisteredChannels();
 
-            foreach (var source in sources)
+            foreach (var assemblyPath in sources)
             {
-                log.Info("Processing " + source);
+                log.Info("Processing " + assemblyPath);
 
                 try
                 {
-                    var assemblyFullPath = Path.GetFullPath(source);
-
-                    if (SourceDirectoryContainsFixie(assemblyFullPath))
+                    if (AssemblyDirectoryContainsFixie(assemblyPath))
                     {
-                        using (var environment = new ExecutionEnvironment(assemblyFullPath))
+                        using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
                             var methodGroups = environment.DiscoverTestMethodGroups(new Lookup());
 
                             foreach (var methodGroup in methodGroups)
-                                discoverySink.SendTestCase(new TestCase(methodGroup.FullName, VsTestExecutor.Uri, source));
+                                discoverySink.SendTestCase(new TestCase(methodGroup.FullName, VsTestExecutor.Uri, assemblyPath));
                         }
                     }
                     else
                     {
-                        log.Info("Skipping " + source + " because it is not a test assembly.");
+                        log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
                     }
                 }
                 catch (Exception exception)
@@ -48,9 +45,9 @@ namespace Fixie.VisualStudio.TestAdapter
             }
         }
 
-        bool SourceDirectoryContainsFixie(string assemblyFileName)
+        static bool AssemblyDirectoryContainsFixie(string assemblyPath)
         {
-            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyFileName), "Fixie.dll"));
+            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
         }
     }
 }

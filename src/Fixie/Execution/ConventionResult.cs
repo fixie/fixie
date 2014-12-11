@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Fixie.Results
+namespace Fixie.Execution
 {
     [Serializable]
     public class ConventionResult

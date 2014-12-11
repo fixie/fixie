@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using Fixie.Execution;
-using Fixie.Results;
 
 namespace Fixie.Tests
 {

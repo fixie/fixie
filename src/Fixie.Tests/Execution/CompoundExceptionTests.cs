@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Fixie.Execution;
 using Fixie.Internal;
-using Fixie.Results;
 using Should;
 
-namespace Fixie.Tests.Results
+namespace Fixie.Tests.Execution
 {
     public class CompoundExceptionTests
     {
@@ -24,8 +24,8 @@ namespace Fixie.Tests.Results
 
             var compoundException = new CompoundException(new[] { exception }, assertionLibrary);
 
-            compoundException.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
-            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
+            compoundException.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
+            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual(exception.StackTrace);
 
@@ -43,11 +43,11 @@ namespace Fixie.Tests.Results
                .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                .ShouldEqual(
                    "Primary Exception!",
-                   "   at Fixie.Tests.Results.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #",
+                   "   at Fixie.Tests.Execution.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #",
                    "",
                    "------- Inner Exception: System.DivideByZeroException -------",
                    "Divide by Zero Exception!",
-                   "   at Fixie.Tests.Results.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #");
+                   "   at Fixie.Tests.Execution.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #");
         }
 
         public void ShouldSummarizeCollectionsOfExceptionsComprisedOfPrimaryAndSecondaryExceptions()
@@ -59,8 +59,8 @@ namespace Fixie.Tests.Results
 
             var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
-            compoundException.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
-            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
+            compoundException.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
+            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual(primaryException.StackTrace);
             compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
@@ -77,8 +77,8 @@ namespace Fixie.Tests.Results
             compoundException.SecondaryExceptions[0].StackTrace.ShouldBeNull();
             compoundException.SecondaryExceptions[0].InnerException.ShouldBeNull();
 
-            compoundException.SecondaryExceptions[1].DisplayName.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+SecondaryException");
-            compoundException.SecondaryExceptions[1].Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+SecondaryException");
+            compoundException.SecondaryExceptions[1].DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+SecondaryException");
+            compoundException.SecondaryExceptions[1].Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+SecondaryException");
             compoundException.SecondaryExceptions[1].Message.ShouldEqual("Secondary Exception!");
             compoundException.SecondaryExceptions[1].StackTrace.ShouldEqual(secondaryExceptionB.StackTrace);
             compoundException.SecondaryExceptions[1].InnerException.DisplayName.ShouldEqual("System.ApplicationException");
@@ -96,27 +96,27 @@ namespace Fixie.Tests.Results
                 .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                 .ShouldEqual(
                     "Primary Exception!",
-                    "   at Fixie.Tests.Results.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #",
+                    "   at Fixie.Tests.Execution.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #",
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",
                     "Divide by Zero Exception!",
-                    "   at Fixie.Tests.Results.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #",
+                    "   at Fixie.Tests.Execution.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #",
                     "",
                     "===== Secondary Exception: System.NotImplementedException =====",
                     "The method or operation is not implemented.",
                     "",
                     "",
-                    "===== Secondary Exception: Fixie.Tests.Results.CompoundExceptionTests+SecondaryException =====",
+                    "===== Secondary Exception: Fixie.Tests.Execution.CompoundExceptionTests+SecondaryException =====",
                     "Secondary Exception!",
-                    "   at Fixie.Tests.Results.CompoundExceptionTests.GetSecondaryException() in " + PathToThisFile() + ":line #",
+                    "   at Fixie.Tests.Execution.CompoundExceptionTests.GetSecondaryException() in " + PathToThisFile() + ":line #",
                     "",
                     "------- Inner Exception: System.ApplicationException -------",
                     "Application Exception!",
-                    "   at Fixie.Tests.Results.CompoundExceptionTests.GetSecondaryException() in " + PathToThisFile() + ":line #",
+                    "   at Fixie.Tests.Execution.CompoundExceptionTests.GetSecondaryException() in " + PathToThisFile() + ":line #",
                     "",
                     "------- Inner Exception: System.NotImplementedException -------",
                     "Not Implemented Exception!",
-                    "   at Fixie.Tests.Results.CompoundExceptionTests.GetSecondaryException() in " + PathToThisFile() + ":line #");
+                    "   at Fixie.Tests.Execution.CompoundExceptionTests.GetSecondaryException() in " + PathToThisFile() + ":line #");
         }
 
         public void ShouldFilterAssertionLibraryImplementationDetails()
@@ -135,7 +135,7 @@ namespace Fixie.Tests.Results
             var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
             compoundException.PrimaryException.DisplayName.ShouldEqual("");
-            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+PrimaryException");
+            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual("");
             compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
@@ -153,7 +153,7 @@ namespace Fixie.Tests.Results
             compoundException.SecondaryExceptions[0].InnerException.ShouldBeNull();
 
             compoundException.SecondaryExceptions[1].DisplayName.ShouldEqual("");
-            compoundException.SecondaryExceptions[1].Type.ShouldEqual("Fixie.Tests.Results.CompoundExceptionTests+SecondaryException");
+            compoundException.SecondaryExceptions[1].Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+SecondaryException");
             compoundException.SecondaryExceptions[1].Message.ShouldEqual("Secondary Exception!");
             compoundException.SecondaryExceptions[1].StackTrace.ShouldEqual("");
             compoundException.SecondaryExceptions[1].InnerException.DisplayName.ShouldEqual("System.ApplicationException");
@@ -181,7 +181,7 @@ namespace Fixie.Tests.Results
                     "The method or operation is not implemented.",
                     "",
                     "",
-                    "===== Secondary Exception: Fixie.Tests.Results.CompoundExceptionTests+SecondaryException =====",
+                    "===== Secondary Exception: Fixie.Tests.Execution.CompoundExceptionTests+SecondaryException =====",
                     "Secondary Exception!",
                     "",
                     "",

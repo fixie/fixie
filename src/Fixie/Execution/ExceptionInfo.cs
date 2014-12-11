@@ -1,7 +1,7 @@
 using System;
 using Fixie.Internal;
 
-namespace Fixie.Results
+namespace Fixie.Execution
 {
     [Serializable]
     public class ExceptionInfo

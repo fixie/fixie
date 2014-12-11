@@ -6,7 +6,6 @@ using System.Text;
 using System.Xml.Linq;
 using Fixie.Execution;
 using Fixie.Reports;
-using Fixie.Results;
 
 namespace Fixie.ConsoleRunner
 {

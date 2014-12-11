@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="AssertionLibraryFilteringTests.cs" />
     <Compile Include="Assertions.cs" />
-    <Compile Include="Internal\ExecutionPlan.cs" />
     <Compile Include="MethodGroupTests.cs" />
     <Compile Include="Discovery\ParameterDiscovererTests.cs" />
     <Compile Include="Execution\AppDomainCommunicationAssertions.cs" />
@@ -72,7 +71,7 @@
     <Compile Include="Discovery\MethodDiscovererTests.cs" />
     <Compile Include="FailureException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Results\CompoundExceptionTests.cs" />
+    <Compile Include="Execution\CompoundExceptionTests.cs" />
     <Compile Include="SelfTestConvention.cs" />
     <Compile Include="TestExtensions.cs" />
     <Compile Include="ReflectionExtensionsTests.cs" />

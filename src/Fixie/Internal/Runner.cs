@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using Fixie.Discovery;
 using Fixie.Execution;
-using Fixie.Results;
 
 namespace Fixie.Internal
 {

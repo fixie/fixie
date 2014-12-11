@@ -1,7 +1,6 @@
 using System;
-using Fixie.Discovery;
 
-namespace Fixie.Results
+namespace Fixie.Execution
 {
     public interface CaseResult
     {

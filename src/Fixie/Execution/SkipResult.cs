@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fixie.Results
+namespace Fixie.Execution
 {
     [Serializable]
     public class SkipResult : CaseResult

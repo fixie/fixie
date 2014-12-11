@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Fixie.Internal;
 
-namespace Fixie.Results
+namespace Fixie.Execution
 {
     [Serializable]
     public class CompoundException

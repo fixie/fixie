@@ -11,7 +11,6 @@ using System.Xml.Schema;
 using Fixie.Execution;
 using Fixie.Internal;
 using Fixie.Reports;
-using Fixie.Results;
 using Should;
 
 namespace Fixie.Tests.Reports

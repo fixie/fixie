@@ -73,7 +73,7 @@
     <Compile Include="Conventions\FixtureBehaviorExpression.cs" />
     <Compile Include="Conventions\CaseBehaviorExpression.cs" />
     <Compile Include="Conventions\ClassBehaviorExpression.cs" />
-    <Compile Include="Execution\FailResult.cs" />
+    <Compile Include="Results\FailResult.cs" />
     <Compile Include="Class.cs" />
     <Compile Include="Fixture.cs" />
     <Compile Include="Execution\Behaviors\InvokeMethod.cs" />
@@ -82,7 +82,7 @@
     <Compile Include="Execution\Listener.cs" />
     <Compile Include="Conventions\MethodExpression.cs" />
     <Compile Include="Discovery\ObjectExtensions.cs" />
-    <Compile Include="Execution\PassResult.cs" />
+    <Compile Include="Results\PassResult.cs" />
     <Compile Include="PreservedException.cs" />
     <Compile Include="Reports\XUnitXmlReport.cs" />
     <Compile Include="Results\CaseResult.cs" />
@@ -96,7 +96,7 @@
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Results\AssemblyResult.cs" />
     <Compile Include="Execution\Runner.cs" />
-    <Compile Include="Execution\SkipResult.cs" />
+    <Compile Include="Results\SkipResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixie.nuspec" />

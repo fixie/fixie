@@ -1,5 +1,4 @@
 ﻿using System;
-using Fixie.Discovery;
 using Fixie.Execution;
 using Fixie.Results;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;

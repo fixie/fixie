@@ -1,8 +1,6 @@
 ﻿using System;
-using Fixie.Discovery;
-using Fixie.Results;
 
-namespace Fixie.Execution
+namespace Fixie.Results
 {
     [Serializable]
     public class PassResult : CaseResult

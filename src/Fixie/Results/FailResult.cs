@@ -1,8 +1,7 @@
 ﻿using System;
-using Fixie.Discovery;
-using Fixie.Results;
+using Fixie.Execution;
 
-namespace Fixie.Execution
+namespace Fixie.Results
 {
     [Serializable]
     public class FailResult : CaseResult

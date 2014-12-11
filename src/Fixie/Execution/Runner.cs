@@ -78,17 +78,35 @@ namespace Fixie.Execution
             return Run(runContext, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
         }
 
-        private AssemblyResult RunTypes(RunContext runContext, params Type[] types)
+        public AssemblyResult RunMethods(Assembly assembly, MethodGroup[] methodGroups)
+        {
+            return RunMethods(assembly, GetMethods(assembly, methodGroups));
+        }
+
+        static MethodInfo[] GetMethods(Assembly assembly, MethodGroup[] methodGroups)
+        {
+            return methodGroups.SelectMany(methodGroup => GetMethods(assembly, methodGroup)).ToArray();
+        }
+
+        static IEnumerable<MethodInfo> GetMethods(Assembly assembly, MethodGroup methodGroup)
+        {
+            return assembly
+                .GetType(methodGroup.Class)
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(m => m.Name == methodGroup.Method);
+        }
+
+        AssemblyResult RunTypes(RunContext runContext, params Type[] types)
         {
             return Run(runContext, GetConventions(runContext), types);
         }
 
-        private AssemblyResult RunTypes(RunContext runContext, Convention convention, params Type[] types)
+        AssemblyResult RunTypes(RunContext runContext, Convention convention, params Type[] types)
         {
             return Run(runContext, new[] { convention }, types);
         }
 
-        private static Convention[] GetConventions(RunContext runContext)
+        static Convention[] GetConventions(RunContext runContext)
         {
             return new ConventionDiscoverer(runContext).GetConventions();
         }

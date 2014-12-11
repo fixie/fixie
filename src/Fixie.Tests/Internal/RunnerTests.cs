@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fixie.Execution;
+using Fixie.Internal;
 
-namespace Fixie.Tests.Execution
+namespace Fixie.Tests.Internal
 {
     public class RunnerTests
     {

@@ -95,7 +95,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Results\AssemblyResult.cs" />
-    <Compile Include="Execution\Runner.cs" />
+    <Compile Include="Internal\Runner.cs" />
     <Compile Include="Results\SkipResult.cs" />
   </ItemGroup>
   <ItemGroup>

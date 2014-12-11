@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Fixie.Execution;
+using Fixie.Internal;
 
 namespace Fixie.Tests
 {

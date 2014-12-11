@@ -52,7 +52,7 @@
     <Compile Include="ConsoleRunner\CommandLineParserTests.cs" />
     <Compile Include="Execution\AssertionLibraryFilterTests.cs" />
     <Compile Include="Execution\RunnerAppDomainCommunicationTests.cs" />
-    <Compile Include="Execution\RunnerTests.cs" />
+    <Compile Include="Internal\RunnerTests.cs" />
     <Compile Include="Internal\GenericArgumentResolverTests.cs" />
     <Compile Include="Lifecycle\CaseLifecycleTests.cs" />
     <Compile Include="Lifecycle\ClassLifecycleTests.cs" />

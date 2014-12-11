@@ -22,11 +22,6 @@ namespace Fixie.Execution
             Directory.SetCurrentDirectory(assemblyDirectory);
         }
 
-        public T Create<T>(params object[] args) where T : MarshalByRefObject
-        {
-            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
-        }
-
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Lookup options)
         {
             return Create<ExecutionProxy>().DiscoverTestMethodGroups(assemblyFullPath, options);
@@ -40,6 +35,11 @@ namespace Fixie.Execution
         public AssemblyResult RunMethods(string assemblyFullPath, Lookup options, Listener listener, MethodGroup[] methodGroups)
         {
             return Create<ExecutionProxy>().RunMethods(assemblyFullPath, options, listener, methodGroups);
+        }
+
+        T Create<T>(params object[] args) where T : MarshalByRefObject
+        {
+            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
         }
 
         public void Dispose()

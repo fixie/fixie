@@ -19,14 +19,7 @@ namespace Fixie
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return RunMethods(assembly, options, listener, methodGroups);
-        }
-
-        static AssemblyResult RunMethods(Assembly assembly, Lookup options, Listener listener, MethodGroup[] methodGroups)
-        {
-            var methods = Execution.Runner.GetMethods(methodGroups, assembly);
-
-            return Runner(options, listener).RunMethods(assembly, methods);
+            return Runner(options, listener).RunMethods(assembly, methodGroups);
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

@@ -9,12 +9,17 @@ namespace Fixie.Execution
 {
     public class Runner
     {
-        public static MethodInfo[] GetMethods(MethodGroup[] methodGroups, Assembly assembly)
+        public AssemblyResult RunMethods(Assembly assembly, MethodGroup[] methodGroups)
         {
-            return methodGroups.SelectMany(x => GetMethodInfo(assembly, x)).ToArray();
+            return RunMethods(assembly, GetMethods(assembly, methodGroups));
         }
 
-        static IEnumerable<MethodInfo> GetMethodInfo(Assembly assembly, MethodGroup methodGroup)
+        static MethodInfo[] GetMethods(Assembly assembly, MethodGroup[] methodGroups)
+        {
+            return methodGroups.SelectMany(methodGroup => GetMethodInfos(assembly, methodGroup)).ToArray();
+        }
+
+        static IEnumerable<MethodInfo> GetMethodInfos(Assembly assembly, MethodGroup methodGroup)
         {
             return assembly
                 .GetType(methodGroup.Class)

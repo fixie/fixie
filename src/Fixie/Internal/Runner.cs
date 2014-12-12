@@ -57,7 +57,7 @@ namespace Fixie.Internal
             foreach (var convention in conventions)
                 convention.Methods.Where(m => m == method);
 
-            var type = method.DeclaringType;
+            var type = method.ReflectedType;
 
             return Run(runContext, conventions, type);
         }

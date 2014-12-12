@@ -21,12 +21,12 @@ namespace Fixie.VisualStudio.TestAdapter
 
             foreach (var assemblyPath in sources)
             {
-                log.Info("Processing " + assemblyPath);
-
                 try
                 {
                     if (AssemblyDirectoryContainsFixie(assemblyPath))
                     {
+                        log.Info("Processing " + assemblyPath);
+
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
                             var methodGroups = environment.DiscoverTestMethodGroups(new Lookup());

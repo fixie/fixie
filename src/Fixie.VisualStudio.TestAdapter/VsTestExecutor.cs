@@ -16,9 +16,11 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void RunTests(IEnumerable<string> sources, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
-            HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
-
             IMessageLogger log = frameworkHandle;
+
+            log.Version();
+
+            HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
 
             foreach (var assemblyPath in sources)
             {
@@ -42,9 +44,11 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void RunTests(IEnumerable<TestCase> tests, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
-            HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
-
             IMessageLogger log = frameworkHandle;
+
+            log.Version();
+
+            HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
 
             var assemblyGroups = tests.GroupBy(tc => tc.Source);
 
@@ -57,6 +61,7 @@ namespace Fixie.VisualStudio.TestAdapter
                 try
                 {
                     var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
+
                     var listener = new VisualStudioListener(frameworkHandle, assemblyPath);
 
                     using (var environment = new ExecutionEnvironment(assemblyPath))

@@ -22,7 +22,7 @@ namespace Fixie.TestDriven
         {
             var method = member as MethodInfo;
             if (method != null)
-                return Run(testListener, runner => runner.RunMethod(assembly, method));
+                return Run(testListener, runner => runner.RunMethods(assembly, method));
 
             var type = member as Type;
             if (type != null)

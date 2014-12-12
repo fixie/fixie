@@ -48,26 +48,11 @@ namespace Fixie.Internal
             return RunTypes(runContext, convention, types);
         }
 
-        public AssemblyResult RunMethod(Assembly assembly, MethodInfo method)
-        {
-            var runContext = new RunContext(assembly, options, method);
-
-            var conventions = GetConventions(runContext);
-
-            foreach (var convention in conventions)
-                convention.Methods.Where(m => m == method);
-
-            var type = method.ReflectedType;
-
-            return Run(runContext, conventions, type);
-        }
-
         public AssemblyResult RunMethods(Assembly assembly, params MethodInfo[] methods)
         {
-            if (methods.Length == 1)
-                return RunMethod(assembly, methods.Single());
-
-            var runContext = new RunContext(assembly, options);
+            var runContext = methods.Length == 1
+                ? new RunContext(assembly, options, methods.Single())
+                : new RunContext(assembly, options);
 
             var conventions = GetConventions(runContext);
 

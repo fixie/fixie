@@ -2,7 +2,7 @@
 
 namespace Fixie.Tests
 {
-    public class LookupTests
+    public class OptionsTests
     {
         public void ShouldBeEmptyUponConstruction()
         {

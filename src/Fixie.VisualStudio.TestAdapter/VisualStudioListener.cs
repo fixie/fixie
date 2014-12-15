@@ -45,18 +45,22 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void CasePassed(PassResult result)
         {
-            log.RecordResult(new TestResult(TestCase(result.MethodGroup))
+            var testResult = new TestResult(TestCase(result.MethodGroup))
             {
                 DisplayName = result.Name,
                 Outcome = Map(CaseStatus.Passed),
                 Duration = result.Duration,
                 ComputerName = Environment.MachineName
-            });
+            };
+
+            AttachCapturedConsoleOutput(result.Output, testResult);
+
+            log.RecordResult(testResult);
         }
 
         public void CaseFailed(FailResult result)
         {
-            log.RecordResult(new TestResult(TestCase(result.MethodGroup))
+            var testResult = new TestResult(TestCase(result.MethodGroup))
             {
                 DisplayName = result.Name,
                 Outcome = Map(CaseStatus.Failed),
@@ -64,7 +68,11 @@ namespace Fixie.VisualStudio.TestAdapter
                 ComputerName = Environment.MachineName,
                 ErrorMessage = result.Exceptions.PrimaryException.DisplayName,
                 ErrorStackTrace = result.Exceptions.CompoundStackTrace
-            });
+            };
+
+            AttachCapturedConsoleOutput(result.Output, testResult);
+
+            log.RecordResult(testResult);
         }
 
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
@@ -90,6 +98,12 @@ namespace Fixie.VisualStudio.TestAdapter
                 default:
                     return TestOutcome.None;
             }
+        }
+
+        static void AttachCapturedConsoleOutput(string output, TestResult testResult)
+        {
+            if (!String.IsNullOrEmpty(output))
+                testResult.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, output));
         }
     }
 }

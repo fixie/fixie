@@ -7,21 +7,21 @@ namespace Fixie.Internal
 {
     public class ExecutionProxy : MarshalByRefObject
     {
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Lookup options)
+        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             return new Discoverer(options).DiscoverTestMethodGroups(assembly);
         }
 
-        public AssemblyResult RunAssembly(string assemblyFullPath, Lookup options, Listener listener)
+        public AssemblyResult RunAssembly(string assemblyFullPath, Options options, Listener listener)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             return Runner(options, listener).RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, Lookup options, Listener listener, MethodGroup[] methodGroups)
+        public AssemblyResult RunMethods(string assemblyFullPath, Options options, Listener listener, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
@@ -33,7 +33,7 @@ namespace Fixie.Internal
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        static Runner Runner(Lookup options, Listener listener)
+        static Runner Runner(Options options, Listener listener)
         {
             return new Runner(listener, options);
         }

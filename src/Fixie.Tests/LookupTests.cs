@@ -6,7 +6,7 @@ namespace Fixie.Tests
     {
         public void ShouldBeEmptyUponConstruction()
         {
-            var empty = new Lookup();
+            var empty = new Options();
 
             empty.Count.ShouldEqual(0);
             empty.Keys.ShouldBeEmpty();
@@ -14,7 +14,7 @@ namespace Fixie.Tests
 
         public void ShouldAllowLookupOfAllAddedValuesForEachKey()
         {
-            var lookup = new Lookup();
+            var lookup = new Options();
 
             lookup.Add("A", "A1");
             lookup.Add("B", "B1");
@@ -32,7 +32,7 @@ namespace Fixie.Tests
 
         public void ShouldReturnEmptyCollectionForUndefinedKeys()
         {
-            var lookup = new Lookup();
+            var lookup = new Options();
             lookup["undefined key"].ShouldBeEmpty();
         }
     }

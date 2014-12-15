@@ -23,17 +23,17 @@ namespace Fixie.Execution
             Directory.SetCurrentDirectory(assemblyDirectory);
         }
 
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Lookup options)
+        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
         {
             return Create<ExecutionProxy>().DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunAssembly(Lookup options, Listener listener)
+        public AssemblyResult RunAssembly(Options options, Listener listener)
         {
             return Create<ExecutionProxy>().RunAssembly(assemblyFullPath, options, listener);
         }
 
-        public AssemblyResult RunMethods(Lookup options, Listener listener, MethodGroup[] methodGroups)
+        public AssemblyResult RunMethods(Options options, Listener listener, MethodGroup[] methodGroups)
         {
             return Create<ExecutionProxy>().RunMethods(assemblyFullPath, options, listener, methodGroups);
         }

@@ -12,7 +12,7 @@ namespace Fixie.ConsoleRunner
             var queue = new Queue<string>(args);
 
             var assemblyPaths = new List<string>();
-            var optionList = new Lookup();
+            var optionList = new Options();
             var errors = new List<string>();
 
             while (queue.Any())
@@ -79,7 +79,7 @@ namespace Fixie.ConsoleRunner
 
         public IEnumerable<string> AssemblyPaths { get; private set; }
 
-        public Lookup Options { get; private set; }
+        public Options Options { get; private set; }
 
         public IEnumerable<string> Errors { get; private set; }
 

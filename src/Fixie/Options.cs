@@ -5,7 +5,7 @@ using System.Linq;
 namespace Fixie
 {
     [Serializable]
-    public class Lookup
+    public class Options
     {
         readonly IDictionary<string, List<string>> options = new Dictionary<string, List<string>>();
 

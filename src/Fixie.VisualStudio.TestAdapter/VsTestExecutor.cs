@@ -32,7 +32,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
                     using (var environment = new ExecutionEnvironment(assemblyPath))
                     {
-                        environment.RunAssembly(new Lookup(), listener);
+                        environment.RunAssembly(new Options(), listener);
                     }
                 }
                 catch (Exception exception)
@@ -66,7 +66,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
                     using (var environment = new ExecutionEnvironment(assemblyPath))
                     {
-                        environment.RunMethods(new Lookup(), listener, methodGroups);
+                        environment.RunMethods(new Options(), listener, methodGroups);
                     }
                 }
                 catch (Exception exception)

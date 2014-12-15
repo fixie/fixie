@@ -4,10 +4,10 @@ namespace Fixie
 {
     public class RunContext
     {
-        public RunContext(Assembly assembly, Lookup options)
+        public RunContext(Assembly assembly, Options options)
             : this(assembly, options, null) { }
 
-        public RunContext(Assembly assembly, Lookup options, MemberInfo targetMember)
+        public RunContext(Assembly assembly, Options options, MemberInfo targetMember)
         {
             Assembly = assembly;
             Options = options;
@@ -15,7 +15,7 @@ namespace Fixie
         }
 
         public Assembly Assembly { get; private set; }
-        public Lookup Options { get; private set; }
+        public Options Options { get; private set; }
         public MemberInfo TargetMember { get; private set; }
     }
 }

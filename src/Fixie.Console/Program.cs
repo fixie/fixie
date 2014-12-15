@@ -88,7 +88,7 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine("====== " + line + " ======");
         }
 
-        static void ProduceReports(Lookup options, ExecutionResult executionResult)
+        static void ProduceReports(Options options, ExecutionResult executionResult)
         {
             if (options.Contains(CommandLineOption.NUnitXml))
             {
@@ -111,7 +111,7 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static AssemblyResult Execute(string assemblyPath, Lookup options)
+        static AssemblyResult Execute(string assemblyPath, Options options)
         {
             var listener = CreateListener(options);
 
@@ -121,7 +121,7 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static Listener CreateListener(Lookup options)
+        static Listener CreateListener(Options options)
         {
             var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
 

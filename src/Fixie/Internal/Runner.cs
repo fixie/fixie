@@ -9,12 +9,12 @@ namespace Fixie.Internal
     public class Runner
     {
         readonly Listener listener;
-        readonly Lookup options;
+        readonly Options options;
 
         public Runner(Listener listener)
-            : this(listener, new Lookup()) { }
+            : this(listener, new Options()) { }
 
-        public Runner(Listener listener, Lookup options)
+        public Runner(Listener listener, Options options)
         {
             this.listener = listener;
             this.options = options;

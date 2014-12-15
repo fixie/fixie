@@ -53,7 +53,7 @@
     <Compile Include="Internal\AssertionLibraryFilter.cs" />
     <Compile Include="Conventions\Configuration.cs" />
     <Compile Include="Conventions\ConstructionFrequency.cs" />
-    <Compile Include="Lookup.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="ParameterSource.cs" />
     <Compile Include="Execution\CompoundException.cs" />
     <Compile Include="TestAssembly.cs" />

@@ -5,9 +5,9 @@ namespace Fixie.Internal
 {
     public class Discoverer
     {
-        readonly Lookup options;
+        readonly Options options;
 
-        public Discoverer(Lookup options)
+        public Discoverer(Options options)
         {
             this.options = options;
         }

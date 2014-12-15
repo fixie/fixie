@@ -32,6 +32,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
                     using (var environment = new ExecutionEnvironment(assemblyPath))
                     {
+                        environment.RedirectConsole(new VsOutputWindow(log));
                         environment.RunAssembly(new Options(), listener);
                     }
                 }
@@ -66,6 +67,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
                     using (var environment = new ExecutionEnvironment(assemblyPath))
                     {
+                        environment.RedirectConsole(new VsOutputWindow(log));
                         environment.RunMethods(new Options(), listener, methodGroups);
                     }
                 }

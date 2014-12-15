@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Fixie.Execution;
 
@@ -7,6 +8,11 @@ namespace Fixie.Internal
 {
     public class ExecutionProxy : MarshalByRefObject
     {
+        public void RedirectConsole(TextWriter console)
+        {
+            Console.SetOut(console);
+        }
+
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);

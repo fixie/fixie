@@ -65,7 +65,7 @@
     <Compile Include="Internal\ExecutionPlan.cs" />
     <Compile Include="Internal\GenericArgumentResolver.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />
-    <Compile Include="RedirectedConsole.cs" />
+    <Compile Include="Internal\RedirectedConsole.cs" />
     <Compile Include="ClassBehavior.cs" />
     <Compile Include="Case.cs" />
     <Compile Include="Convention.cs" />

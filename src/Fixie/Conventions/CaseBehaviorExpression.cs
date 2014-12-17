@@ -12,17 +12,31 @@ namespace Fixie.Conventions
             this.config = config;
         }
 
+        /// <summary>
+        /// Wraps each test case with the specified behavior type. The behavior may perform custom
+        /// actions before and/or after each test case executes.
+        /// </summary>
         public CaseBehaviorExpression Wrap<TCaseBehavior>() where TCaseBehavior : CaseBehavior
         {
             config.WrapCases<TCaseBehavior>();
             return this;
         }
 
+        /// <summary>
+        /// Allows the specified predicate to determine whether a given test case should be skipped
+        /// during execution. Skipped test cases are never executed, but are counted and identified.
+        /// </summary>
         public CaseBehaviorExpression Skip(Func<Case, bool> skipCase)
         {
             return Skip(skipCase, @case => null);
         }
 
+        /// <summary>
+        /// Allows the specified predicate to determine whether a given test case should be skipped
+        /// during execution. Skipped test cases are never executed, but are counted and identified.
+        /// When a test is skipped, the specified reason generator will be invoked to include an
+        /// explanation in the output.
+        /// </summary>
         public CaseBehaviorExpression Skip(Func<Case, bool> skipCase, Func<Case, string> getSkipReason)
         {
             config.SkipCase = skipCase;

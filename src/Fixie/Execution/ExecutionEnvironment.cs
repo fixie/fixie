@@ -12,7 +12,6 @@ namespace Fixie.Execution
         readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
-        TextWriter redirectedConsole;
 
         public ExecutionEnvironment(string assemblyPath)
         {
@@ -22,13 +21,6 @@ namespace Fixie.Execution
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
-            redirectedConsole = null;
-        }
-
-        public void RedirectConsole(TextWriter console)
-        {
-            Create<ExecutionProxy>().RedirectConsole(console);
-            redirectedConsole = console;
         }
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
@@ -46,15 +38,13 @@ namespace Fixie.Execution
             return Create<ExecutionProxy>().RunMethods(assemblyFullPath, options, listener, methodGroups);
         }
 
-        T Create<T>(params object[] args) where T : MarshalByRefObject
+        public T Create<T>(params object[] args) where T : MarshalByRefObject
         {
             return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
         }
 
         public void Dispose()
         {
-            if (redirectedConsole != null)
-                redirectedConsole.Flush();
             AppDomain.Unload(appDomain);
             Directory.SetCurrentDirectory(previousWorkingDirectory);
         }

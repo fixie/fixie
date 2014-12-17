@@ -75,18 +75,19 @@ namespace Fixie.Tests.Internal
                     typeof(AttributeSample));
         }
 
-        public void CanDiscoverClassesByTypeNameSuffix()
+        public void CanDiscoverClassesByTypeNameSuffixes()
         {
             var convention = new Convention();
 
             convention
                 .Classes
-                .NameEndsWith("Constructor");
+                .NameEndsWith("Constructor", "Sample");
 
             DiscoveredTestClasses(convention)
                 .ShouldEqual(
                     typeof(DefaultConstructor),
-                    typeof(NoDefaultConstructor));
+                    typeof(NoDefaultConstructor),
+                    typeof(AttributeSample));
         }
 
         public void TheDefaultConventionShouldDiscoverClassesWhoseNameEndsWithTests()

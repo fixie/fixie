@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Fixie.Internal;
 
 namespace Fixie.Conventions
@@ -40,11 +41,11 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Limits discovered test classes to those whose names end with the given suffix.
+        /// Limits discovered test classes to those whose names end with any of the given suffixes.
         /// </summary>
-        public ClassExpression NameEndsWith(string suffix)
+        public ClassExpression NameEndsWith(params string[] suffixes)
         {
-            return Where(type => type.Name.EndsWith(suffix));
+            return Where(type => suffixes.Any(suffix => type.Name.EndsWith(suffix)));
         }
     }
 }

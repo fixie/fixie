@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Fixie.Conventions
+namespace Fixie.Internal
 {
     public class Configuration
     {

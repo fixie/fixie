@@ -1,4 +1,5 @@
 ﻿using Fixie.Conventions;
+using Fixie.Internal;
 
 namespace Fixie
 {

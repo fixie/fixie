@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Fixie.Internal;
 
 namespace Fixie.Conventions
 {

@@ -1,4 +1,6 @@
-﻿namespace Fixie.Conventions
+﻿using Fixie.Internal;
+
+namespace Fixie.Conventions
 {
     public class FixtureBehaviorExpression
     {

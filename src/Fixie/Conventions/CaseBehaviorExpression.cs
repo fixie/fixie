@@ -6,7 +6,7 @@ namespace Fixie.Conventions
     {
         readonly Configuration config;
 
-        public CaseBehaviorExpression(Configuration config)
+        internal CaseBehaviorExpression(Configuration config)
         {
             this.config = config;
         }

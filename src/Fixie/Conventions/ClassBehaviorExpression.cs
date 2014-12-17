@@ -6,7 +6,7 @@ namespace Fixie.Conventions
     {
         readonly Configuration config;
 
-        public ClassBehaviorExpression(Configuration config)
+        internal ClassBehaviorExpression(Configuration config)
         {
             this.config = config;
         }

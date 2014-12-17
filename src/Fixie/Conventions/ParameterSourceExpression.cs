@@ -4,7 +4,7 @@
     {
         readonly Configuration config;
 
-        public ParameterSourceExpression(Configuration config)
+        internal ParameterSourceExpression(Configuration config)
         {
             this.config = config;
         }

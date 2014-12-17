@@ -6,7 +6,7 @@ namespace Fixie.Conventions
     {
         readonly Configuration config;
 
-        public AssertionLibraryExpression(Configuration config)
+        internal AssertionLibraryExpression(Configuration config)
         {
             this.config = config;
         }

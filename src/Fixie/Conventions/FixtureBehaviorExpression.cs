@@ -4,7 +4,7 @@
     {
         readonly Configuration config;
 
-        public FixtureBehaviorExpression(Configuration config)
+        internal FixtureBehaviorExpression(Configuration config)
         {
             this.config = config;
         }

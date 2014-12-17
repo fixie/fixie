@@ -4,26 +4,43 @@ using System.Linq;
 
 namespace Fixie
 {
+    /// <summary>
+    /// Custom options made available to test runners and custom conventions.
+    /// For any given key, this collects zero or more values.
+    /// </summary>
     [Serializable]
     public class Options
     {
         readonly IDictionary<string, List<string>> options = new Dictionary<string, List<string>>();
 
+        /// <summary>
+        /// Gets the number of keys in the Options set.
+        /// </summary>
         public int Count
         {
             get { return options.Count; }
         }
 
+        /// <summary>
+        /// Gets all the defined keys in the Options set.
+        /// </summary>
         public IReadOnlyList<string> Keys
         {
             get { return options.Keys.ToArray(); }
         }
 
+        /// <summary>
+        /// Determines whether the Options set contains any elements with the specified key.
+        /// </summary>
         public bool Contains(string key)
         {
             return options.ContainsKey(key);
         }
 
+        /// <summary>
+        /// Adds the specified value to the Options set, under the specified key.
+        /// If multiple values are added for the same key, all of those values are included in the set.
+        /// </summary>
         public void Add(string key, string value)
         {
             if (!Contains(key))
@@ -32,6 +49,9 @@ namespace Fixie
             options[key].Add(value);
         }
 
+        /// <summary>
+        /// Gets all of the Options set values with the specified key.
+        /// </summary>
         public IReadOnlyList<string> this[string key]
         {
             get

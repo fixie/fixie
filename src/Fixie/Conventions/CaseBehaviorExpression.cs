@@ -13,12 +13,22 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Wraps each test case with the specified behavior type. The behavior may perform custom
+        /// Wraps each test case with the specified behavior. The behavior may perform custom
         /// actions before and/or after each test case executes.
         /// </summary>
         public CaseBehaviorExpression Wrap<TCaseBehavior>() where TCaseBehavior : CaseBehavior
         {
-            config.WrapCases<TCaseBehavior>();
+            config.WrapCases(() => (CaseBehavior)Activator.CreateInstance(typeof(TCaseBehavior)));
+            return this;
+        }
+
+        /// <summary>
+        /// Wraps each test case with the specified behavior. The behavior may perform custom
+        /// actions before and/or after each test case executes.
+        /// </summary>
+        public CaseBehaviorExpression Wrap(CaseBehavior behavior)
+        {
+            config.WrapCases(() => behavior);
             return this;
         }
 

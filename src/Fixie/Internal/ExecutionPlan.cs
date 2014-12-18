@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Fixie.Conventions;
 using Fixie.Internal.Behaviors;
 
 namespace Fixie.Internal
@@ -25,7 +25,7 @@ namespace Fixie.Internal
         static BehaviorChain<Class> BuildClassBehaviorChain(Configuration config, BehaviorChain<Fixture> fixtureBehaviors)
         {
             var chain = config.CustomClassBehaviors
-                .Select(customBehavior => (ClassBehavior)Activator.CreateInstance(customBehavior))
+                .Select(customBehavior => customBehavior())
                 .ToList();
 
             chain.Add(GetInnermostBehavior(config, fixtureBehaviors));
@@ -36,7 +36,7 @@ namespace Fixie.Internal
         static BehaviorChain<Fixture> BuildFixtureBehaviorChain(Configuration config, BehaviorChain<Case> caseBehaviors)
         {
             var chain = config.CustomFixtureBehaviors
-                .Select(customBehavior => (FixtureBehavior)Activator.CreateInstance(customBehavior))
+                .Select(customBehavior => customBehavior())
                 .ToList();
 
             chain.Add(new ExecuteCases(caseBehaviors));
@@ -47,7 +47,7 @@ namespace Fixie.Internal
         static BehaviorChain<Case> BuildCaseBehaviorChain(Configuration config)
         {
             var chain = config.CustomCaseBehaviors
-                .Select(customBehavior => (CaseBehavior)Activator.CreateInstance(customBehavior))
+                .Select(customBehavior => customBehavior())
                 .ToList();
 
             chain.Add(new InvokeMethod());

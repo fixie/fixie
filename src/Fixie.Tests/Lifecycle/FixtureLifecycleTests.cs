@@ -60,7 +60,7 @@ namespace Fixie.Tests.Lifecycle
             }
         }
 
-        public void ShouldAllowWrappingFixtureWithBehaviorsWhenConstructingPerCase()
+        public void ShouldAllowWrappingFixtureWithBehaviorTypesWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase();
@@ -88,7 +88,7 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
-        public void ShouldAllowWrappingFixtureWithBehaviorsWhenConstructingPerClass()
+        public void ShouldAllowWrappingFixtureWithBehaviorTypesWhenConstructingPerClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass();
@@ -96,6 +96,57 @@ namespace Fixie.Tests.Lifecycle
             Convention.FixtureExecution
                       .Wrap<Inner>()
                       .Wrap<Outer>();
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "Outer Before", "Inner Before",
+                "Pass", "Fail",
+                "Inner After", "Outer After",
+                "Dispose");
+        }
+
+        public void ShouldAllowWrappingFixtureWithBehaviorInstancesWhenConstructingPerCase()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.FixtureExecution
+                      .Wrap(new Inner())
+                      .Wrap(new Outer());
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "Outer Before", "Inner Before",
+                "Pass",
+                "Inner After", "Outer After",
+                "Dispose",
+                ".ctor",
+                "Outer Before", "Inner Before",
+                "Fail",
+                "Inner After", "Outer After",
+                "Dispose");
+        }
+
+        public void ShouldAllowWrappingFixtureWithBehaviorInstancesWhenConstructingPerClass()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerClass();
+
+            Convention.FixtureExecution
+                      .Wrap(new Inner())
+                      .Wrap(new Outer());
 
             var output = Run();
 

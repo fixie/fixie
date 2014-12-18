@@ -60,7 +60,7 @@ namespace Fixie.Tests.Lifecycle
             }
         }
 
-        public void ShouldAllowWrappingClassWithBehaviorsWhenConstructingPerCase()
+        public void ShouldAllowWrappingClassWithBehaviorTypesWhenConstructingPerCase()
         {
             Convention.ClassExecution
                       .CreateInstancePerCase()
@@ -80,12 +80,51 @@ namespace Fixie.Tests.Lifecycle
                 "Inner After", "Outer After");
         }
 
-        public void ShouldAllowWrappingClassWithBehaviorsWhenConstructingPerClass()
+        public void ShouldAllowWrappingClassWithBehaviorTypesWhenConstructingPerClass()
         {
             Convention.ClassExecution
                       .CreateInstancePerClass()
                       .Wrap<Inner>()
                       .Wrap<Outer>();
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                "Outer Before", "Inner Before",
+                ".ctor", "Pass", "Fail", "Dispose",
+                "Inner After", "Outer After");
+        }
+
+        public void ShouldAllowWrappingClassWithBehaviorInstancesWhenConstructingPerCase()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase()
+                      .Wrap(new Inner())
+                      .Wrap(new Outer());
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                "Outer Before", "Inner Before",
+                ".ctor", "Pass", "Dispose",
+                ".ctor", "Fail", "Dispose",
+                "Inner After", "Outer After");
+        }
+
+        public void ShouldAllowWrappingClassWithBehaviorInstancesWhenConstructingPerClass()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerClass()
+                      .Wrap(new Inner())
+                      .Wrap(new Outer());
 
             var output = Run();
 

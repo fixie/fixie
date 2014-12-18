@@ -45,12 +45,22 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Wraps each test class with the specified behavior type. The behavior may perform custom
+        /// Wraps each test class with the specified behavior. The behavior may perform custom
         /// actions before and/or after each test class executes.
         /// </summary>
         public ClassBehaviorExpression Wrap<TClassBehavior>() where TClassBehavior : ClassBehavior
         {
             config.WrapClasses(() => (ClassBehavior)Activator.CreateInstance(typeof(TClassBehavior)));
+            return this;
+        }
+
+        /// <summary>
+        /// Wraps each test class with the specified behavior. The behavior may perform custom
+        /// actions before and/or after each test class executes.
+        /// </summary>
+        public ClassBehaviorExpression Wrap(ClassBehavior behavior)
+        {
+            config.WrapClasses(() => behavior);
             return this;
         }
 

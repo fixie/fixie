@@ -1,4 +1,5 @@
-﻿using Fixie.Internal;
+﻿using System;
+using Fixie.Internal;
 
 namespace Fixie.Conventions
 {
@@ -17,7 +18,7 @@ namespace Fixie.Conventions
         /// </summary>
         public FixtureBehaviorExpression Wrap<TFixtureBehavior>() where TFixtureBehavior : FixtureBehavior
         {
-            config.WrapFixtures<TFixtureBehavior>();
+            config.WrapFixtures(() => (FixtureBehavior)Activator.CreateInstance(typeof(TFixtureBehavior)));
             return this;
         }
     }

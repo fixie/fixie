@@ -37,8 +37,15 @@ namespace Fixie.Conventions
         /// <summary>
         /// Includes the given delegate as an generator of test method parameters.
         /// All such registered parameter sources will be asked to contribute parameters to test methods.
+        /// 
+        /// <para>
+        /// Given a test method, yields zero or more sets
+        /// of method parameters to be passed into the test method.
+        /// Each object array returned represents a distinct
+        /// invocation of the test method.
+        /// </para>
         /// </summary>
-        public ParameterSourceExpression Add(Func<MethodInfo, IEnumerable<object[]>> getParameters)
+        public ParameterSourceExpression Add(ParameterSourceFunc getParameters)
         {
             config.AddParameterSource(() => new LambdaParameterSource(getParameters));
             return this;
@@ -46,9 +53,9 @@ namespace Fixie.Conventions
 
         class LambdaParameterSource : ParameterSource
         {
-            readonly Func<MethodInfo, IEnumerable<object[]>> getParameters;
+            readonly ParameterSourceFunc getParameters;
 
-            public LambdaParameterSource(Func<MethodInfo, IEnumerable<object[]>> getParameters)
+            public LambdaParameterSource(ParameterSourceFunc getParameters)
             {
                 this.getParameters = getParameters;
             }

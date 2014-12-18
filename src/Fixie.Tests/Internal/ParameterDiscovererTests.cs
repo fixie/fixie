@@ -59,6 +59,31 @@ namespace Fixie.Tests.Internal
                 });
         }
 
+        public void ShouldProvideSetsOfInputsGeneratedByFuncParameterSources()
+        {
+            var customConvention = new Convention();
+
+            customConvention
+                .Parameters
+                .Add(m => new[]
+                {
+                    new object[] { m.Name, 0, false },
+                })
+                .Add(m => new[]
+                {
+                    new object[] { m.Name, 1, false },
+                    new object[] { m.Name, 2, true }
+                });
+
+            DiscoveredParameters(customConvention)
+                .ShouldEqual(new[]
+                {
+                    new object[] { "ParameterizedMethod", 0, false },
+                    new object[] { "ParameterizedMethod", 1, false },
+                    new object[] { "ParameterizedMethod", 2, true }
+                });
+        }
+
         IEnumerable<object[]> DiscoveredParameters(Convention convention)
         {
             return new ParameterDiscoverer(convention.Config).GetParameters(method);

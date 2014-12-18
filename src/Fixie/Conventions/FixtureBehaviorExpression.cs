@@ -31,5 +31,30 @@ namespace Fixie.Conventions
             config.WrapFixtures(() => behavior);
             return this;
         }
+
+        /// <summary>
+        /// Wraps each test fixture (test class instance) with the specified behavior. The
+        /// behavior may perform custom actions before and/or after each test fixture executes.
+        /// </summary>
+        public FixtureBehaviorExpression Wrap(FixtureBehaviorAction behavior)
+        {
+            config.WrapFixtures(() => new LambdaFixtureBehavior(behavior));
+            return this;
+        }
+
+        class LambdaFixtureBehavior : FixtureBehavior
+        {
+            readonly FixtureBehaviorAction execute;
+
+            public LambdaFixtureBehavior(FixtureBehaviorAction execute)
+            {
+                this.execute = execute;
+            }
+
+            public void Execute(Fixture context, Action next)
+            {
+                execute(context, next);
+            }
+        }
     }
 }

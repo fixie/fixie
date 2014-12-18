@@ -162,6 +162,77 @@ namespace Fixie.Tests.Lifecycle
                 "Dispose");
         }
 
+        public void ShouldAllowWrappingFixtureWithBehaviorLambdasWhenConstructingPerCase()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase();
+
+            Convention.FixtureExecution
+                      .Wrap((fixture, next) =>
+                      {
+                          Console.WriteLine("Inner Before");
+                          next();
+                          Console.WriteLine("Inner After");
+                      })
+                      .Wrap((fixture, next) =>
+                      {
+                          Console.WriteLine("Outer Before");
+                          next();
+                          Console.WriteLine("Outer After");
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "Outer Before", "Inner Before",
+                "Pass",
+                "Inner After", "Outer After",
+                "Dispose",
+                ".ctor",
+                "Outer Before", "Inner Before",
+                "Fail",
+                "Inner After", "Outer After",
+                "Dispose");
+        }
+
+        public void ShouldAllowWrappingFixtureWithBehaviorLambdasWhenConstructingPerClass()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerClass();
+
+            Convention.FixtureExecution
+                      .Wrap((fixture, next) =>
+                      {
+                          Console.WriteLine("Inner Before");
+                          next();
+                          Console.WriteLine("Inner After");
+                      })
+                      .Wrap((fixture, next) =>
+                      {
+                          Console.WriteLine("Outer Before");
+                          next();
+                          Console.WriteLine("Outer After");
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "Outer Before", "Inner Before",
+                "Pass", "Fail",
+                "Inner After", "Outer After",
+                "Dispose");
+        }
+
         public void ShouldAllowFixtureBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerCase()
         {
             Convention.ClassExecution

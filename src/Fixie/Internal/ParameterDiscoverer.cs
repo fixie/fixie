@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fixie.Conventions;
 
 namespace Fixie.Internal
 {
@@ -12,8 +10,8 @@ namespace Fixie.Internal
 
         public ParameterDiscoverer(Configuration config)
         {
-            parameterSources = config.ParameterSourceTypes
-                .Select(sourceType => (ParameterSource)Activator.CreateInstance(sourceType))
+            parameterSources = config.ParameterSources
+                .Select(sourceType => sourceType())
                 .ToArray();
         }
 

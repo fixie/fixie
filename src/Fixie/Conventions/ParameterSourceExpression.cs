@@ -1,4 +1,5 @@
-﻿using Fixie.Internal;
+﻿using System;
+using Fixie.Internal;
 
 namespace Fixie.Conventions
 {
@@ -17,7 +18,7 @@ namespace Fixie.Conventions
         /// </summary>
         public ParameterSourceExpression Add<TParameterSource>() where TParameterSource : ParameterSource
         {
-            config.AddParameterSource<TParameterSource>();
+            config.AddParameterSource(() => (ParameterSource)Activator.CreateInstance(typeof(TParameterSource)));
             return this;
         }
     }

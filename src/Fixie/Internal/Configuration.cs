@@ -8,7 +8,7 @@ namespace Fixie.Internal
     {
         readonly List<Func<Type, bool>> testClassConditions;
         readonly List<Func<MethodInfo, bool>> testMethodConditions;
-        readonly List<Type> parameterSourceTypes;
+        readonly List<Func<ParameterSource>> parameterSources;
         readonly List<Func<ClassBehavior>> customClassBehaviors;
         readonly List<Func<FixtureBehavior>> customFixtureBehaviors;
         readonly List<Func<CaseBehavior>> customCaseBehaviors;
@@ -34,7 +34,7 @@ namespace Fixie.Internal
                 ExcludeDispose
             };
 
-            parameterSourceTypes = new List<Type>();
+            parameterSources = new List<Func<ParameterSource>>();
             customClassBehaviors = new List<Func<ClassBehavior>>();
             customFixtureBehaviors = new List<Func<FixtureBehavior>>();
             customCaseBehaviors = new List<Func<CaseBehavior>>();
@@ -89,9 +89,9 @@ namespace Fixie.Internal
             testMethodConditions.Add(testMethodCondition);
         }
 
-        public void AddParameterSource<TParameterSource>() where TParameterSource : ParameterSource
+        public void AddParameterSource(Func<ParameterSource> getParameterSource)
         {
-            parameterSourceTypes.Add(typeof(TParameterSource));
+            parameterSources.Add(getParameterSource);
         }
 
         public void WrapClasses(Func<ClassBehavior> getBehavior)
@@ -116,7 +116,7 @@ namespace Fixie.Internal
 
         public IReadOnlyList<Func<Type, bool>> TestClassConditions { get { return testClassConditions; } }
         public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions { get { return testMethodConditions; } }
-        public IReadOnlyList<Type> ParameterSourceTypes { get { return parameterSourceTypes; } }
+        public IReadOnlyList<Func<ParameterSource>> ParameterSources { get { return parameterSources; } }
         public IReadOnlyList<Func<ClassBehavior>> CustomClassBehaviors { get { return customClassBehaviors; } }
         public IReadOnlyList<Func<FixtureBehavior>> CustomFixtureBehaviors { get { return customFixtureBehaviors; } }
         public IReadOnlyList<Func<CaseBehavior>> CustomCaseBehaviors { get { return customCaseBehaviors; } }

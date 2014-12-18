@@ -138,6 +138,65 @@ namespace Fixie.Tests.Lifecycle
                 "Inner After", "Outer After");
         }
 
+        public void ShouldAllowWrappingClassWithBehaviorLambdasWhenConstructingPerCase()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerCase()
+                      .Wrap((@class, next) =>
+                      {
+                          Console.WriteLine("Inner Before");
+                          next();
+                          Console.WriteLine("Inner After");
+                      })
+                      .Wrap((@class, next) =>
+                      {
+                          Console.WriteLine("Outer Before");
+                          next();
+                          Console.WriteLine("Outer After");
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                "Outer Before", "Inner Before",
+                ".ctor", "Pass", "Dispose",
+                ".ctor", "Fail", "Dispose",
+                "Inner After", "Outer After");
+        }
+
+        public void ShouldAllowWrappingClassWithBehaviorLambdasWhenConstructingPerClass()
+        {
+            Convention.ClassExecution
+                      .CreateInstancePerClass()
+                      .Wrap((@class, next) =>
+                      {
+                          Console.WriteLine("Inner Before");
+                          next();
+                          Console.WriteLine("Inner After");
+                      })
+                      .Wrap((@class, next) =>
+                      {
+                          Console.WriteLine("Outer Before");
+                          next();
+                          Console.WriteLine("Outer After");
+                      });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                "Outer Before", "Inner Before",
+                ".ctor", "Pass", "Fail", "Dispose",
+                "Inner After", "Outer After");
+        }
+
         public void ShouldAllowClassBehaviorsToShortCircuitInnerBehaviorWhenConstructingPerCase()
         {
             Convention.ClassExecution

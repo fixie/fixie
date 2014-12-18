@@ -65,6 +65,16 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
+        /// Wraps each test class with the specified behavior. The behavior may perform custom
+        /// actions before and/or after each test class executes.
+        /// </summary>
+        public ClassBehaviorExpression Wrap(ClassBehaviorAction behavior)
+        {
+            config.WrapClasses(() => new LambdaClassBehavior(behavior));
+            return this;
+        }
+
+        /// <summary>
         /// Randomizes the order of execution of a test class's contained test cases, using the
         /// given pseudo-random number generator.
         /// </summary>
@@ -102,6 +112,21 @@ namespace Fixie.Conventions
                 T temp = array[n];
                 array[n] = array[k];
                 array[k] = temp;
+            }
+        }
+
+        class LambdaClassBehavior : ClassBehavior
+        {
+            readonly ClassBehaviorAction execute;
+
+            public LambdaClassBehavior(ClassBehaviorAction execute)
+            {
+                this.execute = execute;
+            }
+
+            public void Execute(Class context, Action next)
+            {
+                execute(context, next);
             }
         }
     }

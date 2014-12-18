@@ -33,6 +33,16 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
+        /// Wraps each test case with the specified behavior. The behavior may perform custom
+        /// actions before and/or after each test case executes.
+        /// </summary>
+        public CaseBehaviorExpression Wrap(CaseBehaviorAction behavior)
+        {
+            config.WrapCases(() => new LambdaCaseBehavior(behavior));
+            return this;
+        }
+
+        /// <summary>
         /// Allows the specified predicate to determine whether a given test case should be skipped
         /// during execution. Skipped test cases are never executed, but are counted and identified.
         /// </summary>
@@ -52,6 +62,21 @@ namespace Fixie.Conventions
             config.SkipCase = skipCase;
             config.GetSkipReason = getSkipReason;
             return this;
+        }
+
+        class LambdaCaseBehavior : CaseBehavior
+        {
+            readonly CaseBehaviorAction execute;
+
+            public LambdaCaseBehavior(CaseBehaviorAction execute)
+            {
+                this.execute = execute;
+            }
+
+            public void Execute(Case context, Action next)
+            {
+                execute(context, next);
+            }
         }
     }
 }

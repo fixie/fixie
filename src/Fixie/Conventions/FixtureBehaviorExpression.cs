@@ -38,15 +38,15 @@ namespace Fixie.Conventions
         /// </summary>
         public FixtureBehaviorExpression Wrap(FixtureBehaviorAction behavior)
         {
-            config.WrapFixtures(() => new LambdaFixtureBehavior(behavior));
+            config.WrapFixtures(() => new LambdaBehavior(behavior));
             return this;
         }
 
-        class LambdaFixtureBehavior : FixtureBehavior
+        class LambdaBehavior : FixtureBehavior
         {
             readonly FixtureBehaviorAction execute;
 
-            public LambdaFixtureBehavior(FixtureBehaviorAction execute)
+            public LambdaBehavior(FixtureBehaviorAction execute)
             {
                 this.execute = execute;
             }

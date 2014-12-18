@@ -70,7 +70,7 @@ namespace Fixie.Conventions
         /// </summary>
         public ClassBehaviorExpression Wrap(ClassBehaviorAction behavior)
         {
-            config.WrapClasses(() => new LambdaClassBehavior(behavior));
+            config.WrapClasses(() => new LambdaBehavior(behavior));
             return this;
         }
 
@@ -115,11 +115,11 @@ namespace Fixie.Conventions
             }
         }
 
-        class LambdaClassBehavior : ClassBehavior
+        class LambdaBehavior : ClassBehavior
         {
             readonly ClassBehaviorAction execute;
 
-            public LambdaClassBehavior(ClassBehaviorAction execute)
+            public LambdaBehavior(ClassBehaviorAction execute)
             {
                 this.execute = execute;
             }

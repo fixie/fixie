@@ -38,7 +38,7 @@ namespace Fixie.Conventions
         /// </summary>
         public CaseBehaviorExpression Wrap(CaseBehaviorAction behavior)
         {
-            config.WrapCases(() => new LambdaCaseBehavior(behavior));
+            config.WrapCases(() => new LambdaBehavior(behavior));
             return this;
         }
 
@@ -64,11 +64,11 @@ namespace Fixie.Conventions
             return this;
         }
 
-        class LambdaCaseBehavior : CaseBehavior
+        class LambdaBehavior : CaseBehavior
         {
             readonly CaseBehaviorAction execute;
 
-            public LambdaCaseBehavior(CaseBehaviorAction execute)
+            public LambdaBehavior(CaseBehaviorAction execute)
             {
                 this.execute = execute;
             }

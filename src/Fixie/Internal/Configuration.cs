@@ -9,7 +9,7 @@ namespace Fixie.Internal
         readonly List<Func<Type, bool>> testClassConditions;
         readonly List<Func<MethodInfo, bool>> testMethodConditions;
         readonly List<Type> parameterSourceTypes;
-        readonly List<Type> customClassBehaviors;
+        readonly List<Func<ClassBehavior>> customClassBehaviors;
         readonly List<Type> customFixtureBehaviors;
         readonly List<Type> customCaseBehaviors;
         readonly List<Type> assertionLibraryTypes;
@@ -35,7 +35,7 @@ namespace Fixie.Internal
             };
 
             parameterSourceTypes = new List<Type>();
-            customClassBehaviors = new List<Type>();
+            customClassBehaviors = new List<Func<ClassBehavior>>();
             customFixtureBehaviors = new List<Type>();
             customCaseBehaviors = new List<Type>();
             assertionLibraryTypes = new List<Type>();
@@ -94,9 +94,9 @@ namespace Fixie.Internal
             parameterSourceTypes.Add(typeof(TParameterSource));
         }
 
-        public void WrapClasses<TClassBehavior>() where TClassBehavior : ClassBehavior
+        public void WrapClasses(Func<ClassBehavior> getBehavior)
         {
-            customClassBehaviors.Insert(0, typeof(TClassBehavior));
+            customClassBehaviors.Insert(0, getBehavior);
         }
 
         public void WrapFixtures<TFixtureBehavior>() where TFixtureBehavior : FixtureBehavior
@@ -117,7 +117,7 @@ namespace Fixie.Internal
         public IReadOnlyList<Func<Type, bool>> TestClassConditions { get { return testClassConditions; } }
         public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions { get { return testMethodConditions; } }
         public IReadOnlyList<Type> ParameterSourceTypes { get { return parameterSourceTypes; } }
-        public IReadOnlyList<Type> CustomClassBehaviors { get { return customClassBehaviors; } }
+        public IReadOnlyList<Func<ClassBehavior>> CustomClassBehaviors { get { return customClassBehaviors; } }
         public IReadOnlyList<Type> CustomFixtureBehaviors { get { return customFixtureBehaviors; } }
         public IReadOnlyList<Type> CustomCaseBehaviors { get { return customCaseBehaviors; } }
         public IReadOnlyList<Type> AssertionLibraryTypes { get { return assertionLibraryTypes; } }

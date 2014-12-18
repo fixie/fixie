@@ -50,7 +50,7 @@ namespace Fixie.Conventions
         /// </summary>
         public ClassBehaviorExpression Wrap<TClassBehavior>() where TClassBehavior : ClassBehavior
         {
-            config.WrapClasses<TClassBehavior>();
+            config.WrapClasses(() => (ClassBehavior)Activator.CreateInstance(typeof(TClassBehavior)));
             return this;
         }
 

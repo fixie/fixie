@@ -25,7 +25,7 @@ namespace Fixie.Internal
         static BehaviorChain<Class> BuildClassBehaviorChain(Configuration config, BehaviorChain<Fixture> fixtureBehaviors)
         {
             var chain = config.CustomClassBehaviors
-                .Select(customBehavior => (ClassBehavior)Activator.CreateInstance(customBehavior))
+                .Select(customBehavior => customBehavior())
                 .ToList();
 
             chain.Add(GetInnermostBehavior(config, fixtureBehaviors));

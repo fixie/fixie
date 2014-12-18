@@ -18,7 +18,7 @@ namespace Fixie.Conventions
         /// </summary>
         public CaseBehaviorExpression Wrap<TCaseBehavior>() where TCaseBehavior : CaseBehavior
         {
-            config.WrapCases<TCaseBehavior>();
+            config.WrapCases(() => (CaseBehavior)Activator.CreateInstance(typeof(TCaseBehavior)));
             return this;
         }
 

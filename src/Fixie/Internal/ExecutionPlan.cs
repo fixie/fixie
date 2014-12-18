@@ -47,7 +47,7 @@ namespace Fixie.Internal
         static BehaviorChain<Case> BuildCaseBehaviorChain(Configuration config)
         {
             var chain = config.CustomCaseBehaviors
-                .Select(customBehavior => (CaseBehavior)Activator.CreateInstance(customBehavior))
+                .Select(customBehavior => customBehavior())
                 .ToList();
 
             chain.Add(new InvokeMethod());

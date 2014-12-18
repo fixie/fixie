@@ -13,8 +13,12 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Wraps each test case with the specified behavior. The behavior may perform custom
-        /// actions before and/or after each test case executes.
+        /// Wraps each test case with the specified behavior.
+        /// 
+        /// <para>
+        /// The behavior may perform custom actions before, after, or instead of
+        /// executing each test case. Invoke next() to proceed with normal execution.
+        /// </para>
         /// </summary>
         public CaseBehaviorExpression Wrap<TCaseBehavior>() where TCaseBehavior : CaseBehavior
         {
@@ -23,8 +27,12 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Wraps each test case with the specified behavior. The behavior may perform custom
-        /// actions before and/or after each test case executes.
+        /// Wraps each test case with the specified behavior.
+        /// 
+        /// <para>
+        /// The behavior may perform custom actions before, after, or instead of
+        /// executing each test case. Invoke next() to proceed with normal execution.
+        /// </para>
         /// </summary>
         public CaseBehaviorExpression Wrap(CaseBehavior behavior)
         {
@@ -33,8 +41,12 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Wraps each test case with the specified behavior. The behavior may perform custom
-        /// actions before and/or after each test case executes.
+        /// Wraps each test case with the specified behavior.
+        /// 
+        /// <para>
+        /// The behavior may perform custom actions before, after, or instead of
+        /// executing each test case. Invoke next() to proceed with normal execution.
+        /// </para>
         /// </summary>
         public CaseBehaviorExpression Wrap(CaseBehaviorAction behavior)
         {

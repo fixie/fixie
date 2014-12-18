@@ -45,8 +45,12 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Wraps each test class with the specified behavior. The behavior may perform custom
-        /// actions before and/or after each test class executes.
+        /// Wraps each test class with the specified behavior.
+        /// 
+        /// <para>
+        /// The behavior may perform custom actions before, after, or instead of
+        /// executing each test class. Invoke next() to proceed with normal execution.
+        /// </para>
         /// </summary>
         public ClassBehaviorExpression Wrap<TClassBehavior>() where TClassBehavior : ClassBehavior
         {
@@ -55,8 +59,12 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Wraps each test class with the specified behavior. The behavior may perform custom
-        /// actions before and/or after each test class executes.
+        /// Wraps each test class with the specified behavior.
+        /// 
+        /// <para>
+        /// The behavior may perform custom actions before, after, or instead of
+        /// executing each test class. Invoke next() to proceed with normal execution.
+        /// </para>
         /// </summary>
         public ClassBehaviorExpression Wrap(ClassBehavior behavior)
         {
@@ -65,8 +73,12 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Wraps each test class with the specified behavior. The behavior may perform custom
-        /// actions before and/or after each test class executes.
+        /// Wraps each test class with the specified behavior.
+        /// 
+        /// <para>
+        /// The behavior may perform custom actions before, after, or instead of
+        /// executing each test class. Invoke next() to proceed with normal execution.
+        /// </para>
         /// </summary>
         public ClassBehaviorExpression Wrap(ClassBehaviorAction behavior)
         {

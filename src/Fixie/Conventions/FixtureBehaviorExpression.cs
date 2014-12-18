@@ -13,8 +13,12 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Wraps each test fixture (test class instance) with the specified behavior. The
-        /// behavior may perform custom actions before and/or after each test fixture executes.
+        /// Wraps each test fixture (test class instance) with the specified behavior.
+        /// 
+        /// <para>
+        /// The behavior may perform custom actions before, after, or instead of
+        /// executing each test fixture. Invoke next() to proceed with normal execution.
+        /// </para>
         /// </summary>
         public FixtureBehaviorExpression Wrap<TFixtureBehavior>() where TFixtureBehavior : FixtureBehavior
         {
@@ -23,8 +27,12 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Wraps each test fixture (test class instance) with the specified behavior. The
-        /// behavior may perform custom actions before and/or after each test fixture executes.
+        /// Wraps each test fixture (test class instance) with the specified behavior.
+        /// 
+        /// <para>
+        /// The behavior may perform custom actions before, after, or instead of
+        /// executing each test fixture. Invoke next() to proceed with normal execution.
+        /// </para>
         /// </summary>
         public FixtureBehaviorExpression Wrap(FixtureBehavior behavior)
         {
@@ -33,8 +41,12 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Wraps each test fixture (test class instance) with the specified behavior. The
-        /// behavior may perform custom actions before and/or after each test fixture executes.
+        /// Wraps each test fixture (test class instance) with the specified behavior.
+        /// 
+        /// <para>
+        /// The behavior may perform custom actions before, after, or instead of
+        /// executing each test fixture. Invoke next() to proceed with normal execution.
+        /// </para>
         /// </summary>
         public FixtureBehaviorExpression Wrap(FixtureBehaviorAction behavior)
         {

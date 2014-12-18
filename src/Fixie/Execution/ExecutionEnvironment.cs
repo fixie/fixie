@@ -38,7 +38,7 @@ namespace Fixie.Execution
             return Create<ExecutionProxy>().RunMethods(assemblyFullPath, options, listener, methodGroups);
         }
 
-        public T Create<T>(params object[] args) where T : MarshalByRefObject
+        T Create<T>(params object[] args) where T : MarshalByRefObject
         {
             return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
         }

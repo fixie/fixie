@@ -37,8 +37,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleRedirectionProxy.cs" />
-    <Compile Include="VsOutputWindow.cs" />
     <Compile Include="VsTestDiscoverer.cs" />
     <Compile Include="VsTestExecutor.cs" />
     <Compile Include="LoggingExtensions.cs" />

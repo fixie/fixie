@@ -35,10 +35,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
-                            var vsOutputWindow = new VsOutputWindow(log);
-                            environment.Create<ConsoleRedirectionProxy>().RedirectConsole(vsOutputWindow);
                             environment.RunAssembly(new Options(), listener);
-                            vsOutputWindow.Flush();
                         }
                     }
                     else
@@ -79,10 +76,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
-                            var vsOutputWindow = new VsOutputWindow(log);
-                            environment.Create<ConsoleRedirectionProxy>().RedirectConsole(vsOutputWindow);
                             environment.RunMethods(new Options(), listener, methodGroups);
-                            vsOutputWindow.Flush();
                         }
                     }
                     else

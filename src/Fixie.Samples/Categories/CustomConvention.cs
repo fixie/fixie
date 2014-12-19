@@ -6,9 +6,9 @@ namespace Fixie.Samples.Categories
 {
     public class CustomConvention : Convention
     {
-        public CustomConvention(RunContext runContext)
+        public CustomConvention()
         {
-            var desiredCategories = runContext.Options["include"].ToArray();
+            var desiredCategories = Options["include"].ToArray();
             var shouldRunAll = !desiredCategories.Any();
 
             Classes

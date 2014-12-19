@@ -2,7 +2,7 @@
 {
     public class CustomConvention : Convention
     {
-        public CustomConvention(RunContext runContext)
+        public CustomConvention()
         {
             Classes
                 .Where(type => type.IsInNamespace(GetType().Namespace))
@@ -14,7 +14,7 @@
                 {
                     var isMarkedExplicit = method.Has<ExplicitAttribute>();
 
-                    return !isMarkedExplicit || runContext.TargetMember == method;
+                    return !isMarkedExplicit || TargetMember == method;
                 });
 
             ClassExecution

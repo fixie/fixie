@@ -1,4 +1,5 @@
-﻿using Fixie.Conventions;
+﻿using System.Reflection;
+using Fixie.Conventions;
 using Fixie.Internal;
 
 namespace Fixie
@@ -26,6 +27,17 @@ namespace Fixie
         /// the other properties on Convention.
         /// </summary>
         public Configuration Config { get; private set; }
+
+        /// <summary>
+        /// Gets the custom Options set provided by the test runner at the start of execution.
+        /// </summary>
+        public Options Options { get { return RunContext.Current.Options; } }
+
+        /// <summary>
+        /// Gets the target Type or MethodInfo identified by the test runner as the sole item
+        /// to be executed. Null under normal test execution.
+        /// </summary>
+        public MemberInfo TargetMember { get { return RunContext.Current.TargetMember; } }
 
         /// <summary>
         /// Defines the set of conditions that describe which classes are test classes.

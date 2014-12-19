@@ -54,12 +54,12 @@ namespace Fixie.Internal
                 ? new RunContext(assembly, options, methods.Single())
                 : new RunContext(assembly, options);
 
-            var conventions = GetConventions(runContext);
+            var conventions = GetConventions(runContext.Assembly);
 
             foreach (var convention in conventions)
                 convention.Methods.Where(methods.Contains);
 
-            return Run(runContext.Assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
+            return Run(assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
         }
 
         public AssemblyResult RunMethods(Assembly assembly, MethodGroup[] methodGroups)
@@ -82,7 +82,7 @@ namespace Fixie.Internal
 
         AssemblyResult RunTypes(RunContext runContext, params Type[] types)
         {
-            return Run(runContext.Assembly, GetConventions(runContext), types);
+            return Run(runContext.Assembly, GetConventions(runContext.Assembly), types);
         }
 
         AssemblyResult RunTypes(RunContext runContext, Convention convention, params Type[] types)
@@ -90,9 +90,9 @@ namespace Fixie.Internal
             return Run(runContext.Assembly, new[] { convention }, types);
         }
 
-        static Convention[] GetConventions(RunContext runContext)
+        static Convention[] GetConventions(Assembly assembly)
         {
-            return new ConventionDiscoverer(runContext.Assembly).GetConventions();
+            return new ConventionDiscoverer(assembly).GetConventions();
         }
 
         AssemblyResult Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)

@@ -24,7 +24,7 @@ namespace Fixie.Internal
 
             var customConventions =
                 conventionTypes
-                    .Select(t => Construct<Convention>(t, runContext))
+                    .Select(Construct<Convention>)
                     .ToArray();
 
             if (customConventions.Any())
@@ -44,7 +44,7 @@ namespace Fixie.Internal
         Type[] ExplicitlyAppliedConventionTypes(Type[] testAssemblyTypes)
         {
             return testAssemblyTypes
-                .Select(t => Construct<TestAssembly>(t, runContext))
+                .Select(Construct<TestAssembly>)
                 .SelectMany(x => x.ConventionTypes)
                 .ToArray();
         }
@@ -57,17 +57,12 @@ namespace Fixie.Internal
                 .ToArray();
         }
 
-        static T Construct<T>(Type type, RunContext runContext)
+        static T Construct<T>(Type type)
         {
             var constructor = GetConstructor(type);
 
             try
             {
-                var parameters = constructor.GetParameters();
-
-                if (parameters.Length == 1 && parameters.Single().ParameterType == typeof(RunContext))
-                    return (T)constructor.Invoke(new object[] { runContext });
-
                 return (T)constructor.Invoke(null);
             }
             catch (Exception ex)

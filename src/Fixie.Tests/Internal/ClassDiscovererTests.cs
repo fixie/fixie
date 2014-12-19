@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using Fixie.Conventions;
 using Fixie.Internal;
 using Should;
@@ -27,6 +30,29 @@ namespace Fixie.Tests.Internal
             var customConvention = new Convention();
 
             DiscoveredTestClasses(customConvention)
+                .ShouldEqual(
+                    typeof(DefaultConstructor),
+                    typeof(NoDefaultConstructor),
+                    typeof(NameEndsWithTests),
+                    typeof(String),
+                    typeof(AttributeSampleBase),
+                    typeof(AttributeSample));
+        }
+
+        public void ShouldNotConsiderCompilerGeneratedClosureClasses()
+        {
+            var nested = typeof(ClassThatCausesCompilerGeneratedNestedClosureClass)
+                .GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)
+                .Single();
+
+            //Confirm that a nested closure class has actually been generated.
+            nested.Has<CompilerGeneratedAttribute>().ShouldBeTrue();
+
+            //Confirm that the nested closure class is omitted from test class discovery.
+            var customConvention = new Convention();
+
+            new ClassDiscoverer(customConvention.Config)
+                .TestClasses(CandidateTypes.Concat(new[] { nested }))
                 .ShouldEqual(
                     typeof(DefaultConstructor),
                     typeof(NoDefaultConstructor),
@@ -136,5 +162,18 @@ namespace Fixie.Tests.Internal
 
         [NonInherited]
         class AttributeSample : AttributeSampleBase { }
+
+        class ClassThatCausesCompilerGeneratedNestedClosureClass
+        {
+            void MethodThatCausesCompilerGeneratedClosureClass()
+            {
+                //Because this lambda expression refers to a variable in the surrounding
+                //method, the compiler generates a special nested class as an implementation
+                //detail.  Such generated classes should never be mistaken for test classes.
+
+                var s = string.Empty;
+                var func = new Func<string, string>(_ => s);
+            }
+        }
     }
 }

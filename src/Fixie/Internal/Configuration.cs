@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Fixie.Internal
 {
@@ -25,7 +26,8 @@ namespace Fixie.Internal
             testClassConditions = new List<Func<Type, bool>>
             {
                 ConcreteClasses,
-                NonDiscoveryClasses
+                NonDiscoveryClasses,
+                NonCompilerGeneratedClasses
             };
 
             testMethodConditions = new List<Func<MethodInfo, bool>>
@@ -67,6 +69,11 @@ namespace Fixie.Internal
         static bool NonDiscoveryClasses(Type type)
         {
             return !type.IsSubclassOf(typeof(Convention)) && !type.IsSubclassOf(typeof(TestAssembly));
+        }
+
+        static bool NonCompilerGeneratedClasses(Type type)
+        {
+            return !type.Has<CompilerGeneratedAttribute>();
         }
 
         static bool ExcludeMethodsDefinedOnObject(MethodInfo method)

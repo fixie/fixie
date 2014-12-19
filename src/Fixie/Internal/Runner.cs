@@ -92,7 +92,7 @@ namespace Fixie.Internal
 
         static Convention[] GetConventions(RunContext runContext)
         {
-            return new ConventionDiscoverer(runContext).GetConventions();
+            return new ConventionDiscoverer(runContext.Assembly).GetConventions();
         }
 
         AssemblyResult Run(RunContext runContext, IEnumerable<Convention> conventions, params Type[] candidateTypes)

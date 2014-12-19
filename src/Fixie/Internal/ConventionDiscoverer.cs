@@ -7,11 +7,11 @@ namespace Fixie.Internal
 {
     public class ConventionDiscoverer
     {
-        readonly RunContext runContext;
+        readonly Assembly assembly;
 
-        public ConventionDiscoverer(RunContext runContext)
+        public ConventionDiscoverer(Assembly assembly)
         {
-            this.runContext = runContext;
+            this.assembly = assembly;
         }
 
         public Convention[] GetConventions()
@@ -35,7 +35,7 @@ namespace Fixie.Internal
 
         Type[] ConcreteTestAssemblyTypes()
         {
-            return runContext.Assembly
+            return assembly
                 .GetTypes()
                 .Where(t => t.IsSubclassOf(typeof(TestAssembly)) && !t.IsAbstract)
                 .ToArray();
@@ -51,7 +51,7 @@ namespace Fixie.Internal
 
         Type[] LocallyDeclaredConventionTypes()
         {
-            return runContext.Assembly
+            return assembly
                 .GetTypes()
                 .Where(t => t.IsSubclassOf(typeof(Convention)) && !t.IsAbstract)
                 .ToArray();

@@ -45,7 +45,7 @@ namespace Fixie.Internal
         {
             var runContext = new RunContext(assembly, options);
 
-            return RunTypes(runContext, convention, types);
+            return Run(runContext.Assembly, new[] { convention }, types);
         }
 
         public AssemblyResult RunMethods(Assembly assembly, params MethodInfo[] methods)
@@ -83,11 +83,6 @@ namespace Fixie.Internal
         AssemblyResult RunTypes(Assembly assembly, params Type[] types)
         {
             return Run(assembly, GetConventions(assembly), types);
-        }
-
-        AssemblyResult RunTypes(RunContext runContext, Convention convention, params Type[] types)
-        {
-            return Run(runContext.Assembly, new[] { convention }, types);
         }
 
         static Convention[] GetConventions(Assembly assembly)

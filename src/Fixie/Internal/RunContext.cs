@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 
-namespace Fixie
+namespace Fixie.Internal
 {
     /// <summary>
     /// Describes the context in which a test run was initiated.
     /// </summary>
-    public static class RunContext
+    internal static class RunContext
     {
         public static void Set(Options options)
         {

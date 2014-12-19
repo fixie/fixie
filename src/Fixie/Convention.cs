@@ -31,13 +31,13 @@ namespace Fixie
         /// <summary>
         /// Gets the custom Options set provided by the test runner at the start of execution.
         /// </summary>
-        public Options Options { get { return RunContext.Current.Options; } }
+        public Options Options { get { return RunContext.Options; } }
 
         /// <summary>
         /// Gets the target Type or MethodInfo identified by the test runner as the sole item
         /// to be executed. Null under normal test execution.
         /// </summary>
-        public MemberInfo TargetMember { get { return RunContext.Current.TargetMember; } }
+        public MemberInfo TargetMember { get { return RunContext.TargetMember; } }
 
         /// <summary>
         /// Defines the set of conditions that describe which classes are test classes.

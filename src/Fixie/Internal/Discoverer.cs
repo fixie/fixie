@@ -14,7 +14,7 @@ namespace Fixie.Internal
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Assembly assembly)
         {
-            var runContext = new RunContext(assembly, options);
+            RunContext.Set(options);
             var conventions = new ConventionDiscoverer(assembly).GetConventions();
 
             var discoveredTestMethodGroups = new List<MethodGroup>();

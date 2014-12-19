@@ -22,37 +22,38 @@ namespace Fixie.Internal
 
         public AssemblyResult RunAssembly(Assembly assembly)
         {
-            var runContext = new RunContext(options);
+            RunContext.Set(options);
 
             return RunTypes(assembly, assembly.GetTypes());
         }
 
         public AssemblyResult RunNamespace(Assembly assembly, string ns)
         {
-            var runContext = new RunContext(options);
+            RunContext.Set(options);
 
             return RunTypes(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
         public AssemblyResult RunType(Assembly assembly, Type type)
         {
-            var runContext = new RunContext(options, type);
+            RunContext.Set(options, type);
 
             return RunTypes(assembly, type);
         }
 
         public AssemblyResult RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
-            var runContext = new RunContext(options);
+            RunContext.Set(options);
 
             return Run(assembly, new[] { convention }, types);
         }
 
         public AssemblyResult RunMethods(Assembly assembly, params MethodInfo[] methods)
         {
-            var runContext = methods.Length == 1
-                ? new RunContext(options, methods.Single())
-                : new RunContext(options);
+            if (methods.Length == 1)
+                RunContext.Set(options, methods.Single());
+            else
+                RunContext.Set(options);
 
             var conventions = GetConventions(assembly);
 

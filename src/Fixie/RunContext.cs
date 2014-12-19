@@ -9,22 +9,16 @@ namespace Fixie
     {
         public static RunContext Current { get; private set; }
 
-        public RunContext(Assembly assembly, Options options)
-            : this(assembly, options, null) { }
+        public RunContext(Options options)
+            : this(options, null) { }
 
-        public RunContext(Assembly assembly, Options options, MemberInfo targetMember)
+        public RunContext(Options options, MemberInfo targetMember)
         {
-            Assembly = assembly;
             Options = options;
             TargetMember = targetMember;
 
             Current = this;
         }
-
-        /// <summary>
-        /// Gets the test assembly being executed.
-        /// </summary>
-        public Assembly Assembly { get; private set; }
 
         /// <summary>
         /// Gets the custom Options set provided by the test runner at the start of execution.

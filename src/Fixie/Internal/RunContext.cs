@@ -14,7 +14,7 @@ namespace Fixie.Internal
 
         public static void Set(Options options, MemberInfo targetMember)
         {
-            Options = options;
+            Options = options ?? new Options();
             TargetMember = targetMember;
         }
 

@@ -7,6 +7,8 @@ namespace Fixie
     /// </summary>
     public class RunContext
     {
+        public static RunContext Current { get; private set; }
+
         public RunContext(Assembly assembly, Options options)
             : this(assembly, options, null) { }
 
@@ -15,6 +17,8 @@ namespace Fixie
             Assembly = assembly;
             Options = options;
             TargetMember = targetMember;
+
+            Current = this;
         }
 
         /// <summary>

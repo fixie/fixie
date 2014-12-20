@@ -20,6 +20,23 @@ namespace Fixie.Reports
                     new XAttribute("total", executionResult.Total),
                     new XAttribute("failures", executionResult.Failed),
                     new XAttribute("not-run", executionResult.Skipped),
+                    new XAttribute("errors", 0),
+                    new XAttribute("inconclusive", 0),
+                    new XAttribute("ignored", 0),
+                    new XAttribute("skipped", 0),
+                    new XAttribute("invalid", 0),
+                    new XElement("environment",
+                        new XAttribute("nunit-version", "0.0.0.0"),
+                        new XAttribute("clr-version", "0.0.0.0"),
+                        new XAttribute("os-version", "0.0.0.0"),
+                        new XAttribute("platform", "0.0.0.0"),
+                        new XAttribute("cwd", "0.0.0.0"),
+                        new XAttribute("machine-name", "0.0.0.0"),
+                        new XAttribute("user", "0.0.0.0"),
+                        new XAttribute("user-domain", "0.0.0.0")),
+                    new XElement("culture-info",
+                        new XAttribute("current-culture", CultureInfo.InvariantCulture.ToString()),
+                        new XAttribute("current-uiculture", CultureInfo.InvariantCulture.ToString())),
                     executionResult.AssemblyResults.Select(Assembly)));
         }
 
@@ -29,6 +46,8 @@ namespace Fixie.Reports
                 new XAttribute("success", assemblyResult.Failed == 0),
                 new XAttribute("name", assemblyResult.Name),
                 new XAttribute("time", Seconds(assemblyResult.Duration)),
+                new XAttribute("executed", assemblyResult.Passed + assemblyResult.Failed),
+                new XAttribute("type", "Namespace"),
                 new XElement("results", assemblyResult.ConventionResults.Select(Convention)));
         }
 
@@ -38,6 +57,7 @@ namespace Fixie.Reports
                 new XAttribute("success", conventionResult.Failed == 0),
                 new XAttribute("name", conventionResult.Name),
                 new XAttribute("time", Seconds(conventionResult.Duration)),
+                new XAttribute("type", "Namespace"),
                 new XElement("results", conventionResult.ClassResults.Select(Class)));
         }
 
@@ -47,6 +67,7 @@ namespace Fixie.Reports
                 new XAttribute("name", classResult.Name),
                 new XAttribute("success", classResult.Failed == 0),
                 new XAttribute("time", Seconds(classResult.Duration)),
+                new XAttribute("type", "TestFixture"),
                 new XElement("results", classResult.CaseResults.Select(Case)));
         }
 

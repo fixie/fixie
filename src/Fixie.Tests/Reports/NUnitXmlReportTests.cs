@@ -12,6 +12,7 @@ using Fixie.Execution;
 using Fixie.Internal;
 using Fixie.Reports;
 using Should;
+using System.Threading;
 
 namespace Fixie.Tests.Reports
 {

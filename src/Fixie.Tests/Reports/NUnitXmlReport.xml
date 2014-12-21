@@ -1,40 +1,42 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<test-results date="YYYY-MM-DD" time="HH:MM:SS" name="Results" total="6" failures="2" not-run="2">
-    <test-suite success="false" name="[assemblyLocation]" time="1.234">
+﻿<test-results date="YYYY-MM-DD" time="HH:MM:SS" name="Results" total="6" failures="2" not-run="2" errors="0" inconclusive="0" ignored="0" skipped="2" invalid="0">
+  <environment nunit-version="" clr-version="" os-version="" platform="" cwd="" machine-name="" user="" user-domain="" />
+  <culture-info current-culture="" current-uiculture="" />
+  <test-suite success="false" name="[assemblyLocation]" time="1.234" executed="4" type="Namespace" result="Failure">
+    <results>
+      <test-suite success="false" name="Fixie.Convention" time="1.234" executed="4" type="Namespace" result="Failure">
         <results>
-            <test-suite success="false" name="Fixie.Convention" time="1.234">
-                <results>
-                    <test-suite name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass" success="false" time="1.234">
-                        <results>
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipWithReason" executed="false" success="true">
-                            <reason>
-                              <message><![CDATA[reason]]></message>
-                            </reason>
-                          </test-case>
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipWithoutReason" executed="false" success="true" />
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.Fail" executed="true" success="false" time="1.234">
-                            <failure>
-                              <message><![CDATA['Fail' failed!]]></message>
-                              <stack-trace><![CDATA['Fail' failed!
-   at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
-                            </failure>
-                          </test-case>
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.Pass" executed="true" success="true" time="1.234" />
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassIfTrue(False)" executed="true" success="false" time="1.234">
-                            <failure>
-                              <message><![CDATA['PassIfTrue' failed!]]></message>
-                              <stack-trace><![CDATA['PassIfTrue' failed!
-   at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.PassIfTrue(Boolean pass) in [fileLocation]:line #]]></stack-trace>
-                            </failure>
-                          </test-case>
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassIfTrue(True)" executed="true" success="true" time="1.234" />
-                        </results>
-                    </test-suite>
-                </results>
-            </test-suite>
+          <test-suite name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass" success="false" time="1.234" executed="4" type="TestFixture" result="Failure">
+            <results>
+              <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipWithReason" result="Ignored" executed="false" success="true">
+                <reason>
+                  <message><![CDATA[reason]]></message>
+                </reason>
+              </test-case>
+              <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipWithoutReason" result="Ignored" executed="false" success="true" />
+              <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.Fail" result="Failure" executed="true" success="false" time="1.234">
+                <failure>
+                  <message><![CDATA['Fail' failed!]]></message>
+                  <stack-trace>
+                    <![CDATA['Fail' failed!
+   at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.Fail() in [fileLocation]:line #]]>
+                  </stack-trace>
+                </failure>
+              </test-case>
+              <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.Pass" result="Succes" executed="true" success="true" time="1.234" />
+              <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassIfTrue(False)" result="Failure" executed="true" success="false" time="1.234">
+                <failure>
+                  <message><![CDATA['PassIfTrue' failed!]]></message>
+                  <stack-trace>
+                    <![CDATA['PassIfTrue' failed!
+   at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.PassIfTrue(Boolean pass) in [fileLocation]:line #]]>
+                  </stack-trace>
+                </failure>
+              </test-case>
+              <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassIfTrue(True)" result="Succes" executed="true" success="true" time="1.234" />
+            </results>
+          </test-suite>
         </results>
-    </test-suite>
+      </test-suite>
+    </results>
+  </test-suite>
 </test-results>
-
-
-

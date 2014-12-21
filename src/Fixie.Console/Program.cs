@@ -104,10 +104,24 @@ namespace Fixie.ConsoleRunner
             {
                 var report = new XUnitXmlReport();
 
-                var xDocument = report.Transform(executionResult);
+                var xDocuments = report.Transform(executionResult).ToList();
+                var appendNumber = xDocuments.Count > 1;
 
                 foreach (var fileName in options[CommandLineOption.XUnitXml])
-                    xDocument.Save(fileName, SaveOptions.None);
+                {
+                    var ext = Path.GetExtension(fileName);
+                    var name = Path.GetFileNameWithoutExtension(fileName);
+                    var actualFileName = fileName;
+
+                    for (int i = 0; i < xDocuments.Count; i++)
+                    {
+                        if (appendNumber)
+                        {
+                            actualFileName = string.Concat(name, "-", i, ext);
+                        }
+                        xDocuments[i].Save(actualFileName, SaveOptions.None);
+                    }                    
+                }
             }
         }
 

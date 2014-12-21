@@ -10,9 +10,7 @@ namespace Fixie.Reports
     {
         public XDocument Transform(ExecutionResult executionResult)
         {
-            return new XDocument(
-                new XElement("assemblies",
-                    executionResult.AssemblyResults.Select(Assembly)));
+            return new XDocument(executionResult.AssemblyResults.Select(Assembly));
         }
 
         static XElement Assembly(AssemblyResult assemblyResult)

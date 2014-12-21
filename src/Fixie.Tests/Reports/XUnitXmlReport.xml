@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<assemblies>
 <assembly name="[assemblyLocation]" run-date="YYYY-MM-DD" run-time="HH:MM:SS" configFile="[configLocation]" time="1.234" total="6" passed="2" failed="2" skipped="2" environment="00-bit .NET 1.2.3.4" test-framework="Fixie 1.2.3.4">
 	<class time="1.234" name="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass" total="6" passed="2" failed="2" skipped="2">
     <test name="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass.SkipWithReason" type="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass" method="SkipWithReason" result="Skip">
@@ -26,4 +25,3 @@
 		<test name="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass.PassIfTrue(True)" type="Fixie.Tests.Reports.XUnitXmlReportTests+PassFailTestClass" method="PassIfTrue" result="Pass" time="1.234" />
 	</class>
 </assembly>
-</assemblies>

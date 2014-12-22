@@ -32,8 +32,8 @@ namespace Fixie.Tests.Reports
             var report = new XUnitXmlReport();
             var actual = report.Transform(executionResult);
 
-            XsdValidate(actual.Single());
-            CleanBrittleValues(actual.Single().ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
+            XsdValidate(actual);
+            CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
         }
 
         class InputAttributeParameterSource : ParameterSource

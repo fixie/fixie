@@ -3,15 +3,14 @@ using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using Fixie.Execution;
-using System.Collections.Generic;
 
 namespace Fixie.Reports
 {
     public class XUnitXmlReport
     {
-        public IEnumerable<XDocument> Transform(ExecutionResult executionResult)
+        public XDocument Transform(ExecutionResult executionResult)
         {
-            return executionResult.AssemblyResults.Select(a => new XDocument(Assembly(a)));
+            return new XDocument(executionResult.AssemblyResults.Select(Assembly));
         }
 
         static XElement Assembly(AssemblyResult assemblyResult)

@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-        <xs:element name="assembly">
+  <xs:element name="assemblies">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="assembly">
           <xs:complexType>
             <xs:sequence>
               <xs:element maxOccurs="unbounded" name="class">
@@ -68,4 +71,7 @@
             <xs:attribute name="test-framework" type="xs:string" use="required" />
           </xs:complexType>
         </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

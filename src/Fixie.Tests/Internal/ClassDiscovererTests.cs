@@ -51,8 +51,7 @@ namespace Fixie.Tests.Internal
             //Confirm that the nested closure class is omitted from test class discovery.
             var customConvention = new Convention();
 
-            new ClassDiscoverer(customConvention.Config)
-                .TestClasses(CandidateTypes.Concat(new[] { nested }))
+            DiscoveredTestClasses(customConvention, nested)
                 .ShouldEqual(
                     typeof(DefaultConstructor),
                     typeof(NoDefaultConstructor),
@@ -124,8 +123,7 @@ namespace Fixie.Tests.Internal
                 .Classes
                 .InTheSameNamespaceAs(typeof(DefaultConstructor));
 
-            new ClassDiscoverer(convention.Config)
-                .TestClasses(CandidateTypes.Concat(new[] { typeof(NestedNamespace.InNestedNamespace) }))
+            DiscoveredTestClasses(convention, typeof(NestedNamespace.InNestedNamespace))
                 .ShouldEqual(
                     typeof(DefaultConstructor),
                     typeof(NoDefaultConstructor),
@@ -165,6 +163,12 @@ namespace Fixie.Tests.Internal
         {
             return new ClassDiscoverer(convention.Config)
                 .TestClasses(CandidateTypes);
+        }
+
+        static IEnumerable<Type> DiscoveredTestClasses(Convention convention, params Type[] additionalCandidates)
+        {
+            return new ClassDiscoverer(convention.Config)
+                .TestClasses(CandidateTypes.Concat(additionalCandidates));
         }
 
         abstract class AbstractClass { }

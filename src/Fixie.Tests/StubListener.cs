@@ -25,10 +25,16 @@ namespace Fixie.Tests
 
         public void CaseFailed(FailResult result)
         {
-            const string status = "failed";
-            var name = result.Name;
-            var exceptions = result.Exceptions;
+            LogExceptionalResult(result.Exceptions, result.Name, "failed");
+        }
 
+        public void CaseInconclusive(InconclusiveResult result)
+        {
+            throw new NotImplementedException();
+        }
+
+        void LogExceptionalResult(CompoundException exceptions, string name, string status)
+        {
             var entry = new StringBuilder();
 
             var primaryException = exceptions.PrimaryException;
@@ -58,11 +64,6 @@ namespace Fixie.Tests
             }
 
             log.Add(entry.ToString());
-        }
-
-        public void CaseInconclusive(InconclusiveResult result)
-        {
-            throw new NotImplementedException();
         }
 
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)

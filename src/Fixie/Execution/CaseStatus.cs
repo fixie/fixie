@@ -7,6 +7,7 @@ namespace Fixie.Execution
     {
         Passed,
         Failed,
-        Skipped
+        Skipped,
+        Inconclusive
     }
 }

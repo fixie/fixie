@@ -33,6 +33,11 @@ namespace Fixie.ConsoleRunner
             Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
         }
 
+        public void CaseInconclusive(InconclusiveResult result)
+        {
+            throw new NotImplementedException();
+        }
+
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
         {
             Message("testSuiteFinished name='{0}'", SuiteName(assembly));

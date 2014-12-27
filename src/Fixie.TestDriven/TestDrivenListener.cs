@@ -1,4 +1,5 @@
-﻿using Fixie.Execution;
+﻿using System;
+using Fixie.Execution;
 using TestDriven.Framework;
 
 namespace Fixie.TestDriven
@@ -43,6 +44,11 @@ namespace Fixie.TestDriven
                 Message = result.Exceptions.PrimaryException.DisplayName,
                 StackTrace = result.Exceptions.CompoundStackTrace,
             });
+        }
+
+        public void CaseInconclusive(InconclusiveResult result)
+        {
+            throw new NotImplementedException();
         }
 
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)

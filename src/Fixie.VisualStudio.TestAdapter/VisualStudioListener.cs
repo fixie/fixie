@@ -75,6 +75,11 @@ namespace Fixie.VisualStudio.TestAdapter
             log.RecordResult(testResult);
         }
 
+        public void CaseInconclusive(InconclusiveResult result)
+        {
+            throw new NotImplementedException();
+        }
+
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
         {
             log.Info(result.Summary);

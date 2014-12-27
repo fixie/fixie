@@ -30,6 +30,11 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine();
         }
 
+        public void CaseInconclusive(InconclusiveResult result)
+        {
+            throw new NotImplementedException();
+        }
+
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
         {
             Console.WriteLine(result.Summary);

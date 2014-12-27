@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Fixie.Execution;
 
@@ -53,6 +54,11 @@ namespace Fixie.Tests
             }
 
             log.Add(entry.ToString());
+        }
+
+        public void CaseInconclusive(InconclusiveResult result)
+        {
+            throw new NotImplementedException();
         }
 
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)

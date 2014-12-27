@@ -116,6 +116,25 @@ namespace Fixie.Tests.Internal
                     typeof(AttributeSample));
         }
 
+        public void CanDiscoverClassesInTheSameNamespaceAsSpecifiedType()
+        {
+            var convention = new Convention();
+
+            convention
+                .Classes
+                .InTheSameNamespaceAs(typeof(DefaultConstructor));
+
+            new ClassDiscoverer(convention.Config)
+                .TestClasses(CandidateTypes.Concat(new[] { typeof(NestedNamespace.InNestedNamespace) }))
+                .ShouldEqual(
+                    typeof(DefaultConstructor),
+                    typeof(NoDefaultConstructor),
+                    typeof(NameEndsWithTests),
+                    typeof(AttributeSampleBase),
+                    typeof(AttributeSample),
+                    typeof(NestedNamespace.InNestedNamespace));
+        }
+
         public void TheDefaultConventionShouldDiscoverClassesWhoseNameEndsWithTests()
         {
             var defaultConvention = new DefaultConvention();
@@ -176,4 +195,9 @@ namespace Fixie.Tests.Internal
             }
         }
     }
+}
+
+namespace Fixie.Tests.Internal.NestedNamespace
+{
+    class InNestedNamespace { }
 }

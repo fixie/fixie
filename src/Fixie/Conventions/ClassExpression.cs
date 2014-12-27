@@ -47,5 +47,13 @@ namespace Fixie.Conventions
         {
             return Where(type => suffixes.Any(suffix => type.Name.EndsWith(suffix)));
         }
+
+        /// <summary>
+        /// Limits discovered test classes to those in the same namespace as the specified type and below.
+        /// </summary>
+        public ClassExpression InTheSameNamespaceAs(Type targetType)
+        {
+            return Where(type => type.IsInNamespace(targetType.Namespace));
+        }
     }
 }

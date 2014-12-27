@@ -25,11 +25,15 @@ namespace Fixie.Tests
 
         public void CaseFailed(FailResult result)
         {
+            const string status = "failed";
+            var name = result.Name;
+            var exceptions = result.Exceptions;
+
             var entry = new StringBuilder();
 
-            var primaryException = result.Exceptions.PrimaryException;
+            var primaryException = exceptions.PrimaryException;
 
-            entry.AppendFormat("{0} failed: {1}", result.Name, primaryException.Message);
+            entry.AppendFormat("{0} {1}: {2}", name, status, primaryException.Message);
 
             var walk = primaryException;
             while (walk.InnerException != null)
@@ -39,7 +43,7 @@ namespace Fixie.Tests
                 entry.AppendFormat("    Inner Exception: {0}", walk.Message);
             }
 
-            foreach (var secondaryException in result.Exceptions.SecondaryExceptions)
+            foreach (var secondaryException in exceptions.SecondaryExceptions)
             {
                 entry.AppendLine();
                 entry.AppendFormat("    Secondary Failure: {0}", secondaryException.Message);

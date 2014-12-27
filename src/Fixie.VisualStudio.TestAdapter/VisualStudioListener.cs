@@ -77,7 +77,34 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void CaseInconclusive(InconclusiveResult result)
         {
-            throw new NotImplementedException();
+            TestResult testResult = null;
+
+            if (result.Exceptions == null)
+            {
+                testResult = new TestResult(TestCase(result.MethodGroup))
+                {
+                    DisplayName = result.Name,
+                    Outcome = Map(CaseStatus.Inconclusive),
+                    Duration = result.Duration,
+                    ComputerName = Environment.MachineName
+                };
+            }
+            else
+            {
+                testResult = new TestResult(TestCase(result.MethodGroup))
+                {
+                    DisplayName = result.Name,
+                    Outcome = Map(CaseStatus.Inconclusive),
+                    Duration = result.Duration,
+                    ComputerName = Environment.MachineName,
+                    ErrorMessage = result.Exceptions.PrimaryException.DisplayName,
+                    ErrorStackTrace = result.Exceptions.CompoundStackTrace
+                };
+            }
+
+            AttachCapturedConsoleOutput(result.Output, testResult);
+
+            log.RecordResult(testResult);
         }
 
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
@@ -100,6 +127,7 @@ namespace Fixie.VisualStudio.TestAdapter
                     return TestOutcome.Failed;
                 case CaseStatus.Skipped:
                     return TestOutcome.Skipped;
+                case CaseStatus.Inconclusive:
                 default:
                     return TestOutcome.None;
             }

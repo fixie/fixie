@@ -48,7 +48,24 @@ namespace Fixie.TestDriven
 
         public void CaseInconclusive(InconclusiveResult result)
         {
-            throw new NotImplementedException();
+            if (result.Exceptions == null)
+            {
+                tdnet.TestFinished(new TestResult
+                {
+                    Name = result.Name,
+                    State = TestState.Ignored
+                });
+            }
+            else
+            {
+                tdnet.TestFinished(new TestResult
+                {
+                    Name = result.Name,
+                    State = TestState.Ignored,
+                    Message = result.Exceptions.PrimaryException.DisplayName,
+                    StackTrace = result.Exceptions.CompoundStackTrace,
+                });
+            }
         }
 
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)

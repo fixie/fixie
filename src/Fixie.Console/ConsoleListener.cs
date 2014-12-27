@@ -32,7 +32,18 @@ namespace Fixie.ConsoleRunner
 
         public void CaseInconclusive(InconclusiveResult result)
         {
-            throw new NotImplementedException();
+            if (result.Exceptions == null)
+            {
+                using (Foreground.Yellow)
+                    Console.WriteLine("Test '{0}' was inconclusive", result.Name);
+            }
+            else
+            {
+                using (Foreground.Yellow)
+                    Console.WriteLine("Test '{0}' was inconclusive: {1}", result.Name, result.Exceptions.PrimaryException.DisplayName);
+                Console.WriteLine(result.Exceptions.CompoundStackTrace);
+                Console.WriteLine();
+            }
         }
 
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)

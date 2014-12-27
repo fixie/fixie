@@ -35,7 +35,7 @@ namespace Fixie.ConsoleRunner
 
         public void CaseInconclusive(InconclusiveResult result)
         {
-            throw new NotImplementedException();
+            Message("testIgnored name='{0}' message='{1}'", result.Name, "Inconclusive");
         }
 
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)

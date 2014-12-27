@@ -75,7 +75,7 @@ namespace Fixie.Tests.Internal
                 .ShouldEqual(typeof(NoDefaultConstructor));
         }
 
-        public void CanDiscoverMethodsByNonInheritedAttributes()
+        public void CanDiscoverClassesByNonInheritedAttributes()
         {
             var customConvention = new Convention();
 

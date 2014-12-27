@@ -30,7 +30,10 @@ namespace Fixie.Tests
 
         public void CaseInconclusive(InconclusiveResult result)
         {
-            throw new NotImplementedException();
+            if (result.Exceptions == null)
+                log.Add(string.Format("{0} was inconclusive.", result.Name));
+            else
+                LogExceptionalResult(result.Exceptions, result.Name, "was inconclusive");
         }
 
         void LogExceptionalResult(CompoundException exceptions, string name, string status)

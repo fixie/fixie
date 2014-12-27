@@ -116,6 +116,16 @@ namespace Fixie
         /// </summary>
         public object ReturnValue { get; internal set; }
 
+        /// <summary>
+        /// Gets or sets whether the test case's execution should be treated as inconclusive.
+        ///
+        /// <para>
+        /// Unlike a skipped test case, an inconclusive test case is one that did execute,
+        /// but the execution should be treated as neither passed nor failed.
+        /// </para>
+        /// </summary>
+        public bool Inconclusive { get; set; }
+
         internal TimeSpan Duration { get; set; }
         internal string Output { get; set; }
     }

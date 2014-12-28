@@ -81,7 +81,7 @@ namespace Fixie.Internal
                     Run(testClass, casesToExecute);
 
                 foreach (var @case in casesToExecute)
-                    classResult.Add(@case.Exceptions.Any() ? Fail(@case) : Pass(@case));
+                    classResult.Add(ExecutedCaseResult(@case));
             }
 
             if (parameterGenerationFailures.Any())
@@ -95,6 +95,17 @@ namespace Fixie.Internal
             }
 
             return classResult;
+        }
+
+        CaseResult ExecutedCaseResult(Case @case)
+        {
+            if (@case.Inconclusive)
+                return Inconclusive(@case);
+
+            if (@case.Exceptions.Any())
+                return Fail(@case);
+
+            return Pass(@case);
         }
 
         bool SkipCase(Case @case)
@@ -156,6 +167,13 @@ namespace Fixie.Internal
         {
             var result = new SkipResult(@case, GetSkipReason(@case));
             listener.CaseSkipped(result);
+            return result;
+        }
+
+        CaseResult Inconclusive(Case @case)
+        {
+            var result = new InconclusiveResult(@case, assertionLibraryFilter);
+            listener.CaseInconclusive(result);
             return result;
         }
 

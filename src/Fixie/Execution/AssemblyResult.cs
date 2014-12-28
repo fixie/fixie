@@ -39,9 +39,11 @@ namespace Fixie.Execution
 
         public int Skipped { get { return conventionResults.Sum(result => result.Skipped); } }
 
+        public int Inconclusive { get { return conventionResults.Sum(result => result.Inconclusive); } }
+
         public int Total
         {
-            get { return Passed + Failed + Skipped; }
+            get { return Passed + Failed + Skipped + Inconclusive; }
         }
 
         public string Summary
@@ -59,6 +61,9 @@ namespace Fixie.Execution
 
                 if (Skipped > 0)
                     line.AppendFormat(", {0} skipped", Skipped);
+
+                if (Inconclusive > 0)
+                    line.AppendFormat(", {0} inconclusive", Inconclusive);
 
                 line.AppendFormat(", took {0:N2} seconds", Duration.TotalSeconds);
 

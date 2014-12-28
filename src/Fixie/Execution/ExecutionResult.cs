@@ -30,9 +30,11 @@ namespace Fixie.Execution
 
         public int Skipped { get { return assemblyResults.Sum(result => result.Skipped); } }
 
+        public int Inconclusive { get { return assemblyResults.Sum(result => result.Inconclusive); } }
+
         public int Total
         {
-            get { return Passed + Failed + Skipped; }
+            get { return Passed + Failed + Skipped + Inconclusive; }
         }
     }
 }

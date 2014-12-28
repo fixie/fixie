@@ -37,5 +37,7 @@ namespace Fixie.Execution
         public int Failed { get { return classResults.Sum(result => result.Failed); } }
 
         public int Skipped { get { return classResults.Sum(result => result.Skipped); } }
+
+        public int Inconclusive { get { return classResults.Sum(result => result.Inconclusive); } }
     }
 }

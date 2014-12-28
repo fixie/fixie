@@ -133,6 +133,43 @@ namespace Fixie.Tests.Internal
                     typeof(NestedNamespace.InNestedNamespace));
         }
 
+        public void CanDiscoverClassesInAnyOfTheSpecifiedNamespaces()
+        {
+            var convention = new Convention();
+
+            convention
+                .Classes
+                .InTheSameNamespaceAs(typeof(DefaultConstructor), typeof(DateTime));
+
+            DiscoveredTestClasses(convention, typeof(NestedNamespace.InNestedNamespace))
+                .ShouldEqual(
+                    typeof(DefaultConstructor),
+                    typeof(NoDefaultConstructor),
+                    typeof(NameEndsWithTests),
+                    typeof(String),
+                    typeof(AttributeSampleBase),
+                    typeof(AttributeSample),
+                    typeof(NestedNamespace.InNestedNamespace));
+        }
+
+        public void DoesNotMindIfMultipleTypesPointToSameNamespace()
+        {
+            var convention = new Convention();
+
+            convention
+                .Classes
+                .InTheSameNamespaceAs(typeof(DefaultConstructor), typeof(NestedNamespace.InNestedNamespace), typeof(NoDefaultConstructor));
+
+            DiscoveredTestClasses(convention, typeof(NestedNamespace.InNestedNamespace))
+                .ShouldEqual(
+                    typeof(DefaultConstructor),
+                    typeof(NoDefaultConstructor),
+                    typeof(NameEndsWithTests),
+                    typeof(AttributeSampleBase),
+                    typeof(AttributeSample),
+                    typeof(NestedNamespace.InNestedNamespace));
+        }
+
         public void TheDefaultConventionShouldDiscoverClassesWhoseNameEndsWithTests()
         {
             var defaultConvention = new DefaultConvention();

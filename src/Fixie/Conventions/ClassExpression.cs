@@ -49,11 +49,11 @@ namespace Fixie.Conventions
         }
 
         /// <summary>
-        /// Limits discovered test classes to those in the same namespace as the specified type and below.
+        /// Limits discovered test classes to those in the same namespace (and below) as any of the specified types.
         /// </summary>
-        public ClassExpression InTheSameNamespaceAs(Type targetType)
+        public ClassExpression InTheSameNamespaceAs(params Type[] targetTypes)
         {
-            return Where(type => type.IsInNamespace(targetType.Namespace));
+            return Where(type => targetTypes.Any(targetType => type.IsInNamespace(targetType.Namespace)));
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Fixie.Samples.Inclusive
             //automatically excluded, though, ShouldNotBeCalled() will not be called.
 
             Classes
-                .Where(type => type.IsInNamespace(GetType().Namespace));
+                .InTheSameNamespaceAs(typeof(CustomConvention));
 
             Methods
                 .Where(method => method.IsVoid());

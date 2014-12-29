@@ -12,7 +12,7 @@ namespace Fixie.Samples.Categories
             var shouldRunAll = !desiredCategories.Any();
 
             Classes
-                .Where(type => type.IsInNamespace(GetType().Namespace))
+                .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
 
             Methods

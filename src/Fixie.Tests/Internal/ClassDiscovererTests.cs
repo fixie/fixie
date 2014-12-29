@@ -51,8 +51,7 @@ namespace Fixie.Tests.Internal
             //Confirm that the nested closure class is omitted from test class discovery.
             var customConvention = new Convention();
 
-            new ClassDiscoverer(customConvention.Config)
-                .TestClasses(CandidateTypes.Concat(new[] { nested }))
+            DiscoveredTestClasses(customConvention, nested)
                 .ShouldEqual(
                     typeof(DefaultConstructor),
                     typeof(NoDefaultConstructor),
@@ -75,7 +74,7 @@ namespace Fixie.Tests.Internal
                 .ShouldEqual(typeof(NoDefaultConstructor));
         }
 
-        public void CanDiscoverMethodsByNonInheritedAttributes()
+        public void CanDiscoverClassesByNonInheritedAttributes()
         {
             var customConvention = new Convention();
 
@@ -116,6 +115,61 @@ namespace Fixie.Tests.Internal
                     typeof(AttributeSample));
         }
 
+        public void CanDiscoverClassesInTheSameNamespaceAsSpecifiedType()
+        {
+            var convention = new Convention();
+
+            convention
+                .Classes
+                .InTheSameNamespaceAs(typeof(DefaultConstructor));
+
+            DiscoveredTestClasses(convention, typeof(NestedNamespace.InNestedNamespace))
+                .ShouldEqual(
+                    typeof(DefaultConstructor),
+                    typeof(NoDefaultConstructor),
+                    typeof(NameEndsWithTests),
+                    typeof(AttributeSampleBase),
+                    typeof(AttributeSample),
+                    typeof(NestedNamespace.InNestedNamespace));
+        }
+
+        public void CanDiscoverClassesInAnyOfTheSpecifiedNamespaces()
+        {
+            var convention = new Convention();
+
+            convention
+                .Classes
+                .InTheSameNamespaceAs(typeof(DefaultConstructor), typeof(DateTime));
+
+            DiscoveredTestClasses(convention, typeof(NestedNamespace.InNestedNamespace))
+                .ShouldEqual(
+                    typeof(DefaultConstructor),
+                    typeof(NoDefaultConstructor),
+                    typeof(NameEndsWithTests),
+                    typeof(String),
+                    typeof(AttributeSampleBase),
+                    typeof(AttributeSample),
+                    typeof(NestedNamespace.InNestedNamespace));
+        }
+
+        public void DoesNotMindIfMultipleTypesPointToSameNamespace()
+        {
+            var convention = new Convention();
+
+            convention
+                .Classes
+                .InTheSameNamespaceAs(typeof(DefaultConstructor), typeof(NestedNamespace.InNestedNamespace), typeof(NoDefaultConstructor));
+
+            DiscoveredTestClasses(convention, typeof(NestedNamespace.InNestedNamespace))
+                .ShouldEqual(
+                    typeof(DefaultConstructor),
+                    typeof(NoDefaultConstructor),
+                    typeof(NameEndsWithTests),
+                    typeof(AttributeSampleBase),
+                    typeof(AttributeSample),
+                    typeof(NestedNamespace.InNestedNamespace));
+        }
+
         public void TheDefaultConventionShouldDiscoverClassesWhoseNameEndsWithTests()
         {
             var defaultConvention = new DefaultConvention();
@@ -148,6 +202,12 @@ namespace Fixie.Tests.Internal
                 .TestClasses(CandidateTypes);
         }
 
+        static IEnumerable<Type> DiscoveredTestClasses(Convention convention, params Type[] additionalCandidates)
+        {
+            return new ClassDiscoverer(convention.Config)
+                .TestClasses(CandidateTypes.Concat(additionalCandidates));
+        }
+
         abstract class AbstractClass { }
         class DefaultConstructor { }
         class NoDefaultConstructor { public NoDefaultConstructor(int arg) { } }
@@ -176,4 +236,9 @@ namespace Fixie.Tests.Internal
             }
         }
     }
+}
+
+namespace Fixie.Tests.Internal.NestedNamespace
+{
+    class InNestedNamespace { }
 }

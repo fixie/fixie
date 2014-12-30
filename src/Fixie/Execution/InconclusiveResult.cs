@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Fixie.Internal;
 
 namespace Fixie.Execution
@@ -13,7 +14,10 @@ namespace Fixie.Execution
             Output = @case.Output;
             Duration = @case.Duration;
 
-            Exceptions = new CompoundException(@case.Exceptions, filter);
+            Exceptions =
+                @case.Exceptions.Any()
+                    ? new CompoundException(@case.Exceptions, filter)
+                    : null;
         }
 
         public string Name { get; private set; }

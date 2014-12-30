@@ -53,7 +53,8 @@ namespace Fixie.TestDriven
                 tdnet.TestFinished(new TestResult
                 {
                     Name = result.Name,
-                    State = TestState.Ignored
+                    State = TestState.Failed,
+                    Message = "(inconclusive)"
                 });
             }
             else
@@ -61,8 +62,8 @@ namespace Fixie.TestDriven
                 tdnet.TestFinished(new TestResult
                 {
                     Name = result.Name,
-                    State = TestState.Ignored,
-                    Message = result.Exceptions.PrimaryException.DisplayName,
+                    State = TestState.Failed,
+                    Message = "(inconclusive) " + result.Exceptions.PrimaryException.DisplayName,
                     StackTrace = result.Exceptions.CompoundStackTrace,
                 });
             }

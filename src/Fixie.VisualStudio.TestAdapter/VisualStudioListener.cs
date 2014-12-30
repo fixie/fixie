@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Fixie.Execution;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -109,7 +110,26 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
         {
-            log.Info(result.Summary);
+            var assemblyName = typeof(Convention).Assembly.GetName();
+            var name = assemblyName.Name;
+            var version = assemblyName.Version;
+
+            var line = new StringBuilder();
+
+            line.AppendFormat("{0} passed", result.Passed);
+            line.AppendFormat(", {0} failed", result.Failed);
+
+            if (result.Skipped > 0)
+                line.AppendFormat(", {0} skipped", result.Skipped);
+
+            if (result.Inconclusive > 0)
+                line.AppendFormat(", {0} inconclusive", result.Inconclusive);
+
+            line.AppendFormat(", took {0:N2} seconds", result.Duration.TotalSeconds);
+
+            line.AppendFormat(" ({0} {1}).", name, version);
+
+            log.Info(line.ToString());
         }
 
         TestCase TestCase(MethodGroup methodGroup)

@@ -20,6 +20,7 @@ namespace Fixie.Reports
                     new XAttribute("total", executionResult.Total),
                     new XAttribute("failures", executionResult.Failed),
                     new XAttribute("not-run", executionResult.Skipped),
+                    new XAttribute("inconclusive", executionResult.Inconclusive),
                     executionResult.AssemblyResults.Select(Assembly)));
         }
 
@@ -62,6 +63,14 @@ namespace Fixie.Reports
 
             if (caseResult.Status == CaseStatus.Skipped && caseResult.SkipReason != null)
                 @case.Add(new XElement("reason", new XElement("message", new XCData(caseResult.SkipReason))));
+
+            if (caseResult.Status == CaseStatus.Inconclusive)
+            {
+                if (caseResult.Exceptions != null)
+                    @case.Add(new XElement("reason", new XElement("message", new XCData("(inconclusive) " + caseResult.Exceptions.CompoundStackTrace))));
+                else
+                    @case.Add(new XElement("reason", new XElement("message", new XCData("(inconclusive)"))));
+            }
 
             if (caseResult.Status == CaseStatus.Failed)
             {

@@ -8,7 +8,7 @@ namespace Fixie.Tests.Cases
         public void ShouldAllowMarkingCasesWithExceptionsAsInconclusive()
         {
             Convention.CaseExecution
-                .Wrap<TreatNotImplementedTestsAsInconclusivePreservingException>();
+                .Wrap<TreatNotImplementedAsInconclusivePreservingException>();
 
             Run<SampleTestClass>();
 
@@ -21,7 +21,7 @@ namespace Fixie.Tests.Cases
         public void ShouldAllowMarkingCasesWithoutExceptionsAsInconclusive()
         {
             Convention.CaseExecution
-                .Wrap<TreatNotImplementedTestsAsInconclusiveClearingException>();
+                .Wrap<TreatNotImplementedAsInconclusiveClearingException>();
 
             Run<SampleTestClass>();
 
@@ -38,7 +38,7 @@ namespace Fixie.Tests.Cases
             public void Inconclusive() { throw new NotImplementedException(); }
         }
 
-        class TreatNotImplementedTestsAsInconclusivePreservingException : CaseBehavior
+        class TreatNotImplementedAsInconclusivePreservingException : CaseBehavior
         {
             public void Execute(Case @case, Action next)
             {
@@ -51,7 +51,7 @@ namespace Fixie.Tests.Cases
             }
         }
 
-        class TreatNotImplementedTestsAsInconclusiveClearingException : CaseBehavior
+        class TreatNotImplementedAsInconclusiveClearingException : CaseBehavior
         {
             public void Execute(Case @case, Action next)
             {

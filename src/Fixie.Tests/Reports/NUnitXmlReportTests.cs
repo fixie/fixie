@@ -25,6 +25,7 @@ namespace Fixie.Tests.Reports
             var executionResult = new ExecutionResult();
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+            convention.CaseExecution.Wrap<TreatNotImplementedAsInconclusive>();
             convention.Parameters.Add<InputAttributeParameterSource>();
             var assemblyResult = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
             executionResult.Add(assemblyResult);
@@ -117,6 +118,11 @@ namespace Fixie.Tests.Reports
             {
                 throw new ShouldBeUnreachableException();
             }
+
+            public void Inconclusive()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
@@ -143,6 +149,17 @@ namespace Fixie.Tests.Reports
             }
 
             public string Reason { get; private set; }
+        }
+
+        class TreatNotImplementedAsInconclusive : CaseBehavior
+        {
+            public void Execute(Case @case, Action next)
+            {
+                next();
+
+                if (@case.Exceptions.Any() && @case.Exceptions.First() is NotImplementedException)
+                    @case.Inconclusive = true;
+            }
         }
     }
 }

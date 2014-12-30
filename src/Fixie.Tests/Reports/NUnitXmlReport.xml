@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<test-results date="YYYY-MM-DD" time="HH:MM:SS" name="Results" total="6" failures="2" not-run="2">
+<test-results date="YYYY-MM-DD" time="HH:MM:SS" name="Results" total="7" failures="2" not-run="2" inconclusive="1">
     <test-suite success="false" name="[assemblyLocation]" time="1.234">
         <results>
             <test-suite success="false" name="Fixie.Convention" time="1.234">
@@ -18,6 +18,12 @@
                               <stack-trace><![CDATA['Fail' failed!
    at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
                             </failure>
+                          </test-case>
+                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.Inconclusive" executed="true" success="true" time="1.234">
+                            <reason>
+                              <message><![CDATA[(inconclusive) The method or operation is not implemented.
+   at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.Inconclusive() in [fileLocation]:line #]]></message>
+                            </reason>
                           </test-case>
                           <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.Pass" executed="true" success="true" time="1.234" />
                           <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassIfTrue(False)" executed="true" success="false" time="1.234">

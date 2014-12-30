@@ -30,7 +30,7 @@ namespace Fixie.Reports
                 new XAttribute("total", assemblyResult.Total),
                 new XAttribute("passed", assemblyResult.Passed),
                 new XAttribute("failed", assemblyResult.Failed),
-                new XAttribute("skipped", assemblyResult.Skipped),
+                new XAttribute("skipped", assemblyResult.Skipped + assemblyResult.Inconclusive),
                 new XAttribute("environment", String.Format("{0}-bit .NET {1}", IntPtr.Size * 8, Environment.Version)),
                 new XAttribute("test-framework", string.Format("Fixie {0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version)),
                 classResults.Select(Class));
@@ -41,10 +41,10 @@ namespace Fixie.Reports
             return new XElement("class",
                 new XAttribute("time", Seconds(classResult.Duration)),
                 new XAttribute("name", classResult.Name),
-                new XAttribute("total", classResult.Failed + classResult.Passed + classResult.Skipped),
+                new XAttribute("total", classResult.Failed + classResult.Passed + classResult.Skipped + classResult.Inconclusive),
                 new XAttribute("passed", classResult.Passed),
                 new XAttribute("failed", classResult.Failed),
-                new XAttribute("skipped", classResult.Skipped),
+                new XAttribute("skipped", classResult.Skipped + classResult.Inconclusive),
                 classResult.CaseResults.Select(Case));
         }
 
@@ -66,6 +66,14 @@ namespace Fixie.Reports
 
             if (caseResult.Status == CaseStatus.Skipped && caseResult.SkipReason != null)
                 @case.Add(new XElement("reason", new XElement("message", new XCData(caseResult.SkipReason))));
+
+            if (caseResult.Status == CaseStatus.Inconclusive)
+            {
+                if (caseResult.Exceptions != null)
+                    @case.Add(new XElement("reason", new XElement("message", new XCData("(inconclusive) " + caseResult.Exceptions.CompoundStackTrace))));
+                else
+                    @case.Add(new XElement("reason", new XElement("message", new XCData("(inconclusive)"))));
+            }
 
             if (caseResult.Status == CaseStatus.Failed)
                 @case.Add(

@@ -35,6 +35,7 @@
 		<xs:attribute name="name" type="xs:string" use="required" />
 		<xs:attribute name="total" type="xs:decimal" use="required" />
 		<xs:attribute name="failures" type="xs:decimal" use="required" />
+		<xs:attribute name="inconclusive" type="xs:decimal" use="required" />
 		<xs:attribute name="not-run" type="xs:decimal" use="required" />
 		<xs:attribute name="date" type="xs:string" use="required" />
 		<xs:attribute name="time" type="xs:string" use="required" />

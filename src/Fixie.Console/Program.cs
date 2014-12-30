@@ -83,6 +83,9 @@ namespace Fixie.ConsoleRunner
             if (executionResult.Skipped > 0)
                 line.AppendFormat(", {0} skipped", executionResult.Skipped);
 
+            if (executionResult.Inconclusive > 0)
+                line.AppendFormat(", {0} inconclusive", executionResult.Inconclusive);
+
             line.AppendFormat(", took {0:N2} seconds", elapsed.TotalSeconds);
 
             Console.WriteLine("====== " + line + " ======");

@@ -6,9 +6,9 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>https://github.com/plioi/fixie/blob/master/LICENSE.txt</licenseUrl>
-    <projectUrl>https://github.com/plioi/fixie</projectUrl>
-    <iconUrl>https://raw.github.com/plioi/fixie/master/img/fixie_256.png</iconUrl>
+    <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://fixie.github.io</projectUrl>
+    <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A convention-based test framework.</description>
     <references>

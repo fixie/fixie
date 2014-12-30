@@ -41,7 +41,7 @@ namespace Fixie.Reports
             return new XElement("class",
                 new XAttribute("time", Seconds(classResult.Duration)),
                 new XAttribute("name", classResult.Name),
-                new XAttribute("total", classResult.Failed + classResult.Passed + classResult.Skipped + classResult.Inconclusive),
+                new XAttribute("total", classResult.Total),
                 new XAttribute("passed", classResult.Passed),
                 new XAttribute("failed", classResult.Failed),
                 new XAttribute("skipped", classResult.Skipped + classResult.Inconclusive),

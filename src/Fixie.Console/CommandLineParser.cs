@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -21,45 +20,14 @@ namespace Fixie.ConsoleRunner
 
                 if (IsKey(item))
                 {
-                    var key = KeyName(item);
-
-                    key = CorrectlyCasedKey(key);
-
-                    if (key == null)
-                    {
-                        errors.Add(string.Format("Option {0} is not recognized.", item));
-                        break;
-                    }
-
                     if (!queue.Any() || IsKey(queue.Peek()))
                     {
                         errors.Add(string.Format("Option {0} is missing its required value.", item));
                         break;
                     }
 
+                    var key = KeyName(item);
                     var value = queue.Dequeue();
-
-                    if (key == CommandLineOption.Parameter)
-                    {
-                        if (value.Contains("="))
-                        {
-                            var equalSignIndex = value.IndexOf('=');
-
-                            if (equalSignIndex == 0)
-                            {
-                                errors.Add(string.Format("Custom parameter {0} is missing its required key.", value));
-                                break;
-                            }
-
-                            key = value.Substring(0, equalSignIndex);
-                            value = value.Substring(equalSignIndex + 1);
-                        }
-                        else
-                        {
-                            key = value;
-                            value = "on";
-                        }
-                    }
 
                     optionList.Add(key, value);
                 }
@@ -98,25 +66,16 @@ namespace Fixie.ConsoleRunner
             return item.Substring("--".Length);
         }
 
-        static string CorrectlyCasedKey(string key)
-        {
-            foreach (var option in CommandLineOption.GetAll())
-                if (String.Equals(key, option, StringComparison.OrdinalIgnoreCase))
-                    return option;
-
-            return null;
-        }
-
         public static string Usage()
         {
             return new StringBuilder()
-                .AppendLine("Usage: Fixie.Console [--NUnitXml <output-file>] [--XUnitXml <output-file>] [--TeamCity <on|off>] [--parameter <name>=<value>] assembly-path...")
+                .AppendLine("Usage: Fixie.Console [--NUnitXml <output-file>] [--xUnitXml <output-file>] [--TeamCity <on|off>] [--<key> <value>]... assembly-path...")
                 .AppendLine()
                 .AppendLine()
                 .AppendLine("    --NUnitXml <output-file>")
                 .AppendLine("        Write test results to the specified file, using NUnit-style XML.")
                 .AppendLine()
-                .AppendLine("    --XUnitXml <output-file>")
+                .AppendLine("    --xUnitXml <output-file>")
                 .AppendLine("        Write test results to the specified file, using xUnit-style XML.")
                 .AppendLine()
                 .AppendLine("    --TeamCity <on|off>")
@@ -124,11 +83,11 @@ namespace Fixie.ConsoleRunner
                 .AppendLine("        formatted console output is automatically detected. Use this")
                 .AppendLine("        option to force TeamCity-formatted output on or off.")
                 .AppendLine()
-                .AppendLine("    --parameter <name>=<value>")
-                .AppendLine("        Specifies any number of arbitrary name/value pairs, made available")
-                .AppendLine("        to custom conventions. If multiple --parameter options are declared")
-                .AppendLine("        with the same <name>, *all* of the declared <value>s will be")
-                .AppendLine("        available at runtime.")
+                .AppendLine("    --<key> <value>")
+                .AppendLine("        Specifies custom key/value pairs made available to custom")
+                .AppendLine("        conventions. If multiple custom options are declared with the")
+                .AppendLine("        same <key>, *all* of the declared <value>s will be")
+                .AppendLine("        available to the convention at runtime under that <key>.")
                 .AppendLine()
                 .AppendLine("    assembly-path...")
                 .AppendLine("        One or more paths indicating test assembly files.  At least one")

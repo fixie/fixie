@@ -105,5 +105,10 @@ namespace Fixie.VisualStudio.TestAdapter
             if (!String.IsNullOrEmpty(output))
                 testResult.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, output));
         }
+
+        public override object InitializeLifetimeService()
+        {
+            return null; //Allowing the instance to live indefinitely.
+        }
     }
 }

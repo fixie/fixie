@@ -19,6 +19,9 @@ namespace Fixie.Tests.Execution
                 if (method.DeclaringType == typeof(object) || method.DeclaringType == typeof(MarshalByRefObject))
                     continue;
 
+                if (method.Name == "InitializeLifetimeService")
+                    continue;
+
                 if (!method.IsVoid())
                 {
                     IsSafeForAppDomainCommunication(method.ReturnType)

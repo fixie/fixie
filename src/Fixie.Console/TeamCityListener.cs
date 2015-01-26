@@ -83,5 +83,10 @@ namespace Fixie.ConsoleRunner
         {
             return Path.GetFileName(assembly.Location);
         }
+
+        public override object InitializeLifetimeService()
+        {
+            return null; //Allowing the instance to live indefinitely.
+        }
     }
 }

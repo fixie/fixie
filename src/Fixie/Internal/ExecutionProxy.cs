@@ -37,5 +37,10 @@ namespace Fixie.Internal
         {
             return new Runner(listener, options);
         }
+
+        public override object InitializeLifetimeService()
+        {
+            return null; //Allowing the instance to live indefinitely.
+        }
     }
 }

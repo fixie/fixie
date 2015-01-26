@@ -35,5 +35,10 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine(result.Summary);
             Console.WriteLine();
         }
+
+        public override object InitializeLifetimeService()
+        {
+            return null; //Allowing the instance to live indefinitely.
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace Fixie.Internal
             TestClassFactory = UseDefaultConstructor;
             SkipCase = @case => false;
             GetSkipReason = @case => null;
+            GetCaseName = @case => null;
 
             testClassConditions = new List<Func<Type, bool>>
             {
@@ -43,6 +44,7 @@ namespace Fixie.Internal
             assertionLibraryTypes = new List<Type>();
         }
 
+        public Func<Case, string> GetCaseName { get; set; }
         public Action<Case[]> OrderCases { get; set; }
         public ConstructionFrequency ConstructionFrequency { get; set; }
         public Func<Type, object> TestClassFactory { get; set; }

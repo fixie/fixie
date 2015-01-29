@@ -76,6 +76,15 @@ namespace Fixie.Conventions
             return this;
         }
 
+        /// <summary>
+        /// Allows customizing the name of a given case.
+        /// </summary>
+        public CaseBehaviorExpression Name(Func<Case, string> getCaseName)
+        {
+            config.GetCaseName = getCaseName;
+            return this;
+        }
+
         class LambdaBehavior : CaseBehavior
         {
             readonly CaseBehaviorAction execute;

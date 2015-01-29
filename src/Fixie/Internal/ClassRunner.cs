@@ -14,6 +14,7 @@ namespace Fixie.Internal
         readonly ParameterDiscoverer parameterDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
+        readonly Func<Case, string> getCaseName;
         readonly Func<Case, bool> skipCase;
         readonly Func<Case, string> getSkipReason;
         readonly Action<Case[]> orderCases;
@@ -26,6 +27,7 @@ namespace Fixie.Internal
             parameterDiscoverer = new ParameterDiscoverer(config);
             assertionLibraryFilter = new AssertionLibraryFilter(config);
 
+            getCaseName = config.GetCaseName;
             skipCase = config.SkipCase;
             getSkipReason = config.GetSkipReason;
             orderCases = config.OrderCases;
@@ -47,15 +49,15 @@ namespace Fixie.Internal
                     foreach (var parameters in Parameters(method))
                     {
                         methodHasParameterizedCase = true;
-                        cases.Add(new Case(method, parameters));
+                        cases.Add(NewCase(method, parameters));
                     }
 
                     if (!methodHasParameterizedCase)
-                        cases.Add(new Case(method));
+                        cases.Add(NewCase(method));
                 }
                 catch (Exception parameterGenerationException)
                 {
-                    var @case = new Case(method);
+                    var @case = NewCase(method);
                     @case.Fail(parameterGenerationException);
                     parameterGenerationFailures.Add(@case);
                 }
@@ -95,6 +97,33 @@ namespace Fixie.Internal
             }
 
             return classResult;
+        }
+
+        Case NewCase(MethodInfo caseMethod, params object[] parameters)
+        {
+            var @case = new Case(caseMethod, parameters);
+
+            var caseName = GetCaseName(@case);
+            if (!String.IsNullOrWhiteSpace(caseName))
+            {
+                @case.Name = caseName;
+            }
+
+            return @case;
+        }
+
+        string GetCaseName(Case @case)
+        {
+            try
+            {
+                return getCaseName(@case);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                    "Exception thrown while attempting to get a custom case name. " +
+                    "Check the inner exception for more details.", exception);
+            }
         }
 
         bool SkipCase(Case @case)

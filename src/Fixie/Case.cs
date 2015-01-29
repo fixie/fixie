@@ -45,7 +45,7 @@ namespace Fixie
         /// <summary>
         /// Gets the name of the test case, including any input parameters.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; internal set; }
 
         /// <summary>
         /// Gets the test class in which this test case is defined.

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Fixie.Internal;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security;
 using System.Security.Permissions;
-using Fixie.Internal;
 
 namespace Fixie.Execution
 {
@@ -30,12 +30,25 @@ namespace Fixie.Execution
 
         public AssemblyResult RunAssembly(Options options, Listener listener)
         {
+            AssertIsMarshalByRefObject(listener);
             return Create<ExecutionProxy>().RunAssembly(assemblyFullPath, options, listener);
         }
 
         public AssemblyResult RunMethods(Options options, Listener listener, MethodGroup[] methodGroups)
         {
+            AssertIsMarshalByRefObject(listener);
             return Create<ExecutionProxy>().RunMethods(assemblyFullPath, options, listener, methodGroups);
+        }
+
+        static void AssertIsMarshalByRefObject(Listener listener)
+        {
+            if (listener is MarshalByRefObject) return;
+            var listenerType = listener.GetType();
+            var message = string.Format("Type '{0}' in Assembly '{1}' must inherit from '{2}'.",
+                                        listenerType.FullName,
+                                        listenerType.Assembly,
+                                        typeof(MarshalByRefObject).FullName);
+            throw new Exception(message);
         }
 
         T Create<T>(params object[] args) where T : MarshalByRefObject

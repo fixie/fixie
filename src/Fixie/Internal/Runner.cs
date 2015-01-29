@@ -41,6 +41,11 @@ namespace Fixie.Internal
             return RunTypes(assembly, type);
         }
 
+        public AssemblyResult RunTypes(Assembly assembly, params Type[] types)
+        {
+            return Run(assembly, GetConventions(assembly), types);
+        }
+
         public AssemblyResult RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
             RunContext.Set(options);
@@ -80,12 +85,7 @@ namespace Fixie.Internal
                 .GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 .Where(m => m.Name == methodGroup.Method);
         }
-
-        AssemblyResult RunTypes(Assembly assembly, params Type[] types)
-        {
-            return Run(assembly, GetConventions(assembly), types);
-        }
-
+        
         static Convention[] GetConventions(Assembly assembly)
         {
             return new ConventionDiscoverer(assembly).GetConventions();

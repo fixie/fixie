@@ -14,7 +14,7 @@ namespace Fixie
             Config = new Configuration();
 
             Classes = new ClassExpression(Config);
-            Methods = new MethodExpression(Config);;
+            Methods = new MethodExpression(Config);
             Parameters = new ParameterSourceExpression(Config);
             CaseExecution = new CaseBehaviorExpression(Config);
             FixtureExecution = new FixtureBehaviorExpression(Config);

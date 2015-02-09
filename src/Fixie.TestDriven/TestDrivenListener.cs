@@ -21,7 +21,8 @@ namespace Fixie.TestDriven
             tdnet.TestFinished(new TestResult
             {
                 Name = result.Name,
-                State = TestState.Ignored
+                State = TestState.Ignored,
+                Message = result.SkipReason
             });
         }
 

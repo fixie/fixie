@@ -22,7 +22,16 @@ namespace Fixie.TestDriven
         {
             var method = member as MethodInfo;
             if (method != null)
+            {
+                if (method.IsDispose())
+                {
+                    var listener = new TestDrivenListener(testListener);
+                    listener.CaseSkipped(new SkipResult(new Case(method), "Dispose() is not a test."));
+                    return TestRunState.Success;
+                }
+
                 return Run(testListener, runner => runner.RunMethods(assembly, method));
+            }
 
             var type = member as Type;
             if (type != null)

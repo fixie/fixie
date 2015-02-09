@@ -24,7 +24,8 @@ namespace Fixie.Tests.ConsoleRunner
                        .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'")) //Avoid brittle assertion introduced by durations.
                        .ShouldEqual(
                            "##teamcity[testSuiteStarted name='Fixie.Tests.dll']",
-                           "##teamcity[testIgnored name='" + testClass + ".SkipA']",
+                           "##teamcity[testIgnored name='" + testClass + ".SkipWithReason' message='Skipped due to naming convention.']",
+                           "##teamcity[testIgnored name='" + testClass + ".SkipWithoutReason' message='']",
 
                            "Console.Out: FailA",
                            "Console.Error: FailA",
@@ -86,7 +87,9 @@ namespace Fixie.Tests.ConsoleRunner
 
             public void PassC() { WhereAmI(); }
 
-            public void SkipA() { throw new ShouldBeUnreachableException(); }
+            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
+
+            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
 
             static void WhereAmI([CallerMemberName] string member = null)
             {

@@ -15,7 +15,7 @@ namespace Fixie.ConsoleRunner
 
         public void CaseSkipped(SkipResult result)
         {
-            Message("testIgnored name='{0}'", result.Name);
+            Message("testIgnored name='{0}' message='{1}'", result.Name, result.SkipReason);
         }
 
         public void CasePassed(PassResult result)
@@ -52,6 +52,9 @@ namespace Fixie.ConsoleRunner
 
         static string Encode(string value)
         {
+            if (value == null)
+                return "";
+
             var builder = new StringBuilder();
             
             foreach (var ch in value)

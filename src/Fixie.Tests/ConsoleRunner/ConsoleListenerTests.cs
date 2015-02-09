@@ -23,7 +23,8 @@ namespace Fixie.Tests.ConsoleRunner
                        .Select(CleanBrittleValues)
                        .ShouldEqual(
                            "------ Testing Assembly Fixie.Tests.dll ------",
-                           "Test '" + testClass + ".SkipA' skipped",
+                           "Test '" + testClass + ".SkipWithReason' skipped: Skipped due to naming convention.",
+                           "Test '" + testClass + ".SkipWithoutReason' skipped",
                            "Console.Out: FailA",
                            "Console.Error: FailA",
                            "Console.Out: FailB",
@@ -41,7 +42,7 @@ namespace Fixie.Tests.ConsoleRunner
                            "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
                            "'FailB' failed!",
                            "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
-                           "3 passed, 2 failed, 1 skipped, took 1.23 seconds (Fixie 1.2.3.4).");
+                           "3 passed, 2 failed, 2 skipped, took 1.23 seconds (Fixie 1.2.3.4).");
             }
         }
 
@@ -55,7 +56,7 @@ namespace Fixie.Tests.ConsoleRunner
 
                 convention
                     .Methods
-                    .Where(method => method.Name != "SkipA");
+                    .Where(method => method.Name != "SkipWithoutReason" && method.Name != "SkipWithReason");
 
                 typeof(PassFailTestClass).Run(listener, convention);
 
@@ -128,7 +129,9 @@ namespace Fixie.Tests.ConsoleRunner
 
             public void PassC() { WhereAmI(); }
 
-            public void SkipA() { throw new ShouldBeUnreachableException(); }
+            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
+
+            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
 
             static void WhereAmI([CallerMemberName] string member = null)
             {

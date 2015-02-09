@@ -19,9 +19,14 @@ namespace Fixie.Tests
 
             selfTestConvention
                 .CaseExecution
-                    .Skip(@case => @case.Method.Name.StartsWith("Skip"));
+                    .Skip(@case => @case.Method.Name.StartsWith("Skip"), GetSkipReason);
 
             return selfTestConvention;
+        }
+
+        static string GetSkipReason(Case @case)
+        {
+            return @case.Method.Name.StartsWith("SkipWithReason") ? "Skipped due to naming convention." : null;
         }
     }
 }

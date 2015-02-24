@@ -113,15 +113,23 @@ namespace Fixie.ConsoleRunner
 
         static AssemblyResult Execute(string assemblyPath, Options options)
         {
-            var listener = CreateListener(options);
-
-            using (var environment = new ExecutionEnvironment(assemblyPath))
+            if (ShouldUseTeamCityListener(options))
             {
-                return environment.RunAssembly(options, listener);
+                using (var listener = new TeamCityListener())
+                    return Execute(assemblyPath, options, listener);
             }
+
+            using (var listener = new ConsoleListener())
+                return Execute(assemblyPath, options, listener);
         }
 
-        static Listener CreateListener(Options options)
+        static AssemblyResult Execute(string assemblyPath, Options options, Listener listener)
+        {
+            using (var environment = new ExecutionEnvironment(assemblyPath))
+                return environment.RunAssembly(options, listener);
+        }
+
+        static bool ShouldUseTeamCityListener(Options options)
         {
             var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
 
@@ -131,10 +139,7 @@ namespace Fixie.ConsoleRunner
                 (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
                 (!teamCityExplicitlySpecified && runningUnderTeamCity);
 
-            if (useTeamCityListener)
-                return new TeamCityListener();
-
-            return new ConsoleListener();
+            return useTeamCityListener;
         }
     }
 }

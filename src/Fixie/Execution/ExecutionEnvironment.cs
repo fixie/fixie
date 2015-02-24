@@ -25,19 +25,23 @@ namespace Fixie.Execution
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
         {
-            return Create<ExecutionProxy>().DiscoverTestMethodGroups(assemblyFullPath, options);
+            using (var executionProxy = Create<ExecutionProxy>())
+                return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
         public AssemblyResult RunAssembly(Options options, Listener listener)
         {
             AssertIsMarshalByRefObject(listener);
-            return Create<ExecutionProxy>().RunAssembly(assemblyFullPath, options, listener);
+
+            using (var executionProxy = Create<ExecutionProxy>())
+                return executionProxy.RunAssembly(assemblyFullPath, options, listener);
         }
 
         public AssemblyResult RunMethods(Options options, Listener listener, MethodGroup[] methodGroups)
         {
             AssertIsMarshalByRefObject(listener);
-            return Create<ExecutionProxy>().RunMethods(assemblyFullPath, options, listener, methodGroups);
+            using (var executionProxy = Create<ExecutionProxy>())
+                return executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
         }
 
         static void AssertIsMarshalByRefObject(Listener listener)

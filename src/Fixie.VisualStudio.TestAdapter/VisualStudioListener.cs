@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class VisualStudioListener : MarshalByRefObject, Listener
+    public class VisualStudioListener : LongLivedMarshalByRefObject, Listener
     {
         //The Visual Studio test runner has poor support for parameterized test methods,
         //when the arguments are not known ahead of time. It assumes that the TestCase
@@ -104,11 +104,6 @@ namespace Fixie.VisualStudio.TestAdapter
         {
             if (!String.IsNullOrEmpty(output))
                 testResult.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, output));
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            return null; //Allowing the instance to live indefinitely.
         }
     }
 }

@@ -24,21 +24,28 @@ namespace Fixie.Internal
         {
             RunContext.Set(options);
 
-            return RunTypes(assembly, assembly.GetTypes());
+            return RunTypesInternal(assembly, assembly.GetTypes());
         }
 
         public AssemblyResult RunNamespace(Assembly assembly, string ns)
         {
             RunContext.Set(options);
 
-            return RunTypes(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
+            return RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
         public AssemblyResult RunType(Assembly assembly, Type type)
         {
             RunContext.Set(options, type);
 
-            return RunTypes(assembly, type);
+            return RunTypesInternal(assembly, type);
+        }
+
+        public AssemblyResult RunTypes(Assembly assembly, params Type[] types)
+        {
+            RunContext.Set(options);
+
+            return RunTypesInternal(assembly, types);
         }
 
         public AssemblyResult RunTypes(Assembly assembly, Convention convention, params Type[] types)
@@ -81,7 +88,7 @@ namespace Fixie.Internal
                 .Where(m => m.Name == methodGroup.Method);
         }
 
-        AssemblyResult RunTypes(Assembly assembly, params Type[] types)
+        AssemblyResult RunTypesInternal(Assembly assembly, params Type[] types)
         {
             return Run(assembly, GetConventions(assembly), types);
         }

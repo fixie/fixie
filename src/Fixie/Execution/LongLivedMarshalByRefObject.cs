@@ -18,7 +18,7 @@ namespace Fixie.Execution
     /// </summary>
     public class LongLivedMarshalByRefObject : MarshalByRefObject, IDisposable
     {
-        public override object InitializeLifetimeService()
+        public override sealed object InitializeLifetimeService()
         {
             //Returning null here causes the instance to live indefinitely.
 

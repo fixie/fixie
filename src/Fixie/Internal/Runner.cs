@@ -41,6 +41,13 @@ namespace Fixie.Internal
             return RunTypesInternal(assembly, type);
         }
 
+        public AssemblyResult RunTypes(Assembly assembly, params Type[] types)
+        {
+            RunContext.Set(options);
+
+            return RunTypesInternal(assembly, types);
+        }
+
         public AssemblyResult RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
             RunContext.Set(options);

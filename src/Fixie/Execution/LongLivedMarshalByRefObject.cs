@@ -14,7 +14,7 @@ namespace Fixie.Execution
     /// several minutes.  As a consequence, instances must be disposed
     /// to free up all resources.
     /// </summary>
-    public class LongLivedMarshalByRefObject : MarshalByRefObject, IDisposable
+    public abstract class LongLivedMarshalByRefObject : MarshalByRefObject, IDisposable
     {
         public override sealed object InitializeLifetimeService()
         {

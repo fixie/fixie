@@ -31,7 +31,7 @@ namespace Fixie.Execution
 
         public AssemblyResult RunAssembly(Options options, Listener listener)
         {
-            AssertIsMarshalByRefObject(listener);
+            AssertIsLongLivedMarshalByRefObject(listener);
 
             using (var executionProxy = Create<ExecutionProxy>())
                 return executionProxy.RunAssembly(assemblyFullPath, options, listener);
@@ -39,19 +39,20 @@ namespace Fixie.Execution
 
         public AssemblyResult RunMethods(Options options, Listener listener, MethodGroup[] methodGroups)
         {
-            AssertIsMarshalByRefObject(listener);
+            AssertIsLongLivedMarshalByRefObject(listener);
+
             using (var executionProxy = Create<ExecutionProxy>())
                 return executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
         }
 
-        static void AssertIsMarshalByRefObject(Listener listener)
+        static void AssertIsLongLivedMarshalByRefObject(Listener listener)
         {
-            if (listener is MarshalByRefObject) return;
+            if (listener is LongLivedMarshalByRefObject) return;
             var listenerType = listener.GetType();
             var message = string.Format("Type '{0}' in Assembly '{1}' must inherit from '{2}'.",
                                         listenerType.FullName,
                                         listenerType.Assembly,
-                                        typeof(MarshalByRefObject).FullName);
+                                        typeof(LongLivedMarshalByRefObject).FullName);
             throw new Exception(message);
         }
 

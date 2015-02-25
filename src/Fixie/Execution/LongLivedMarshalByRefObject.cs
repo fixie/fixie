@@ -4,27 +4,36 @@ using System.Runtime.Remoting;
 namespace Fixie.Execution
 {
     /// <summary>
-    /// Normally, inheriting from MarshalByRefObject introduces an unexpected defect
-    /// in which your instances cease to exist after they get a few minutes old.
+    /// Simplifies the definition of MarshalByRefObject classes whose
+    /// instances need to live longer than the default lease lifetime
+    /// allows, such as implementations of Listener provided by test
+    /// runners.
     /// 
-    /// For instance, when a runner provides a MarshalByRefObject to act as the test
-    /// Listener, that Listener may disappear after a long-running test finally finishes,
-    /// causing a runtime exception that interrupts the run. The Listener would no longer
-    /// be available to receive the test's results.
-    /// 
-    /// Inheriting from this alternative to MarshalByRefObject allows the instance
-    /// to be kept alive indefinitely, but you must Dispose() of it yourself when
-    /// its natural lifetime has been reached.
+    /// Instances of LongLivedMarshalByRefObject have an infinite
+    /// lease lifetime so that they won't become defective after
+    /// several minutes.  As a consequence, instances must be disposed
+    /// to free up all resources.
     /// </summary>
     public class LongLivedMarshalByRefObject : MarshalByRefObject, IDisposable
     {
         public override sealed object InitializeLifetimeService()
         {
-            //Returning null here causes the instance to live indefinitely.
-
-            //A consequence of keeping a MarshalByRefObject alive like this is that
-            //it must be explicitly cleaned up with a call to RemotingServices.Disconnect(this).
-            //See Dispose().
+            // MarshalByRefObjects have lifetimes unlike normal objects.
+            // The default implementation of InitializeLifetimeService()
+            // causes instances to throw runtime exceptions when the
+            // instance lives for several minutes.
+            // 
+            // This fact poses a problem for long-lived MarshalByRefObjects
+            // used in the cross-AppDomain communication between a Fixie
+            // runner and the running test assembly. Long-lived tests could
+            // cause a MarshalByRefObject Listener, for instance, to become
+            // defective when the running test finally finishes.
+            // 
+            // This class provides a more familiar lifetime for such long-
+            // lived MarshalByRefObjects.  Instances claim an infinite
+            // lease lifetime by returning null here. To prevent memory leaks
+            // as a side effect, Dispose() in order to explicitly end the
+            // lifetime.
 
             return null;
         }

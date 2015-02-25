@@ -12,9 +12,8 @@ namespace Fixie.Tests.ConsoleRunner
         public void ShouldReportResultsToTheConsoleInTeamCityFormat()
         {
             using (var console = new RedirectedConsole())
+            using (var listener = new TeamCityListener())
             {
-                var listener = new TeamCityListener();
-
                 typeof(PassFailTestClass).Run(listener, SelfTestConvention.Build());
 
                 var testClass = typeof(PassFailTestClass).FullName;

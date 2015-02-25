@@ -12,9 +12,8 @@ namespace Fixie.Tests.ConsoleRunner
         public void ShouldReportResultsToTheConsole()
         {
             using (var console = new RedirectedConsole())
+            using (var listener = new ConsoleListener())
             {
-                var listener = new ConsoleListener();
-
                 typeof(PassFailTestClass).Run(listener, SelfTestConvention.Build());
 
                 var testClass = typeof(PassFailTestClass).FullName;
@@ -49,9 +48,8 @@ namespace Fixie.Tests.ConsoleRunner
         public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
         {
             using (var console = new RedirectedConsole())
+            using (var listener = new ConsoleListener())
             {
-                var listener = new ConsoleListener();
-
                 var convention = SelfTestConvention.Build();
 
                 convention

@@ -6,7 +6,7 @@ using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class TeamCityListener : MarshalByRefObject, Listener
+    public class TeamCityListener : LongLivedMarshalByRefObject, Listener
     {
         public void AssemblyStarted(AssemblyInfo assembly)
         {
@@ -85,11 +85,6 @@ namespace Fixie.ConsoleRunner
         static string SuiteName(AssemblyInfo assembly)
         {
             return Path.GetFileName(assembly.Location);
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            return null; //Allowing the instance to live indefinitely.
         }
     }
 }

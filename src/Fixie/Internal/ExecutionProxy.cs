@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using Fixie.Execution;
 
 namespace Fixie.Internal
 {
-    public class ExecutionProxy : MarshalByRefObject
+    public class ExecutionProxy : LongLivedMarshalByRefObject
     {
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
         {
@@ -36,11 +35,6 @@ namespace Fixie.Internal
         static Runner Runner(Options options, Listener listener)
         {
             return new Runner(listener, options);
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            return null; //Allowing the instance to live indefinitely.
         }
     }
 }

@@ -32,6 +32,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb">
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
     <Reference Include="Should">
       <HintPath>..\packages\Should.1.1.12.0\lib\Should.dll</HintPath>
     </Reference>
@@ -81,11 +92,17 @@
     <Compile Include="Cases\ParameterizedCaseTests.cs" />
     <Compile Include="ConsoleRunner\TeamCityListenerTests.cs" />
     <Compile Include="Cases\SkippedCaseTests.cs" />
+    <Compile Include="VisualStudio\TestAdapter\SourceLocationProviderTests.cs" />
+    <Compile Include="VisualStudio\TestAdapter\SourceLocationSamples.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie.Console\Fixie.Console.csproj">
       <Project>{3805c0e0-3817-45ad-964f-cf7dc5715b39}</Project>
       <Name>Fixie.Console</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.csproj">
+      <Project>{E2335E25-000C-4BCC-BB49-A2D2C3ED4A59}</Project>
+      <Name>Fixie.VisualStudio.TestAdapter</Name>
     </ProjectReference>
     <ProjectReference Include="..\Fixie\Fixie.csproj">
       <Project>{474ff43b-4580-4032-999b-a717eb7a0cd3}</Project>

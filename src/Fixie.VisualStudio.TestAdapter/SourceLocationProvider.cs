@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
@@ -77,7 +78,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
         static bool TryGetAsyncStateMachineAttribute(MethodDefinition method, out CustomAttribute attribute)
         {
-            attribute = method.CustomAttributes.FirstOrDefault(c => c.AttributeType.Name == "AsyncStateMachineAttribute");
+            attribute = method.CustomAttributes.FirstOrDefault(c => c.AttributeType.Name == typeof(AsyncStateMachineAttribute).Name);
             return attribute != null;
         }
 

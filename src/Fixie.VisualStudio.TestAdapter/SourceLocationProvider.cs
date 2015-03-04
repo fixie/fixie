@@ -11,10 +11,10 @@ namespace Fixie.VisualStudio.TestAdapter
     {
         readonly IDictionary<string, TypeDefinition> types;
 
-        public SourceLocationProvider(string assemblyFileName)
+        public SourceLocationProvider(string assemblyPath)
         {
             var readerParameters = new ReaderParameters { ReadSymbols = true };
-            var module = ModuleDefinition.ReadModule(assemblyFileName, readerParameters);
+            var module = ModuleDefinition.ReadModule(assemblyPath, readerParameters);
             
             types = new Dictionary<string, TypeDefinition>();
 

@@ -9,21 +9,20 @@ namespace Fixie.VisualStudio.TestAdapter
 {
     public class SourceLocationProvider
     {
-        readonly IDictionary<string, TypeDefinition> types;
+        readonly string assemblyPath;
+        IDictionary<string, TypeDefinition> types;
 
         public SourceLocationProvider(string assemblyPath)
         {
-            var readerParameters = new ReaderParameters { ReadSymbols = true };
-            var module = ModuleDefinition.ReadModule(assemblyPath, readerParameters);
-            
-            types = new Dictionary<string, TypeDefinition>();
-
-            foreach (var type in module.GetTypes())
-                types[type.FullName] = type;
+            this.assemblyPath = assemblyPath;
+            types = null;
         }
 
         public bool TryGetSourceLocation(MethodGroup methodGroup, out SourceLocation sourceLocation)
         {
+            if (types == null)
+                types = CacheTypes(assemblyPath);
+
             sourceLocation = null;
 
             var className = methodGroup.Class;
@@ -35,6 +34,19 @@ namespace Fixie.VisualStudio.TestAdapter
                 sourceLocation = new SourceLocation(sequencePoint.Document.Url, sequencePoint.StartLine);
 
             return sourceLocation != null;
+        }
+
+        static IDictionary<string, TypeDefinition> CacheTypes(string assemblyPath)
+        {
+            var readerParameters = new ReaderParameters { ReadSymbols = true };
+            var module = ModuleDefinition.ReadModule(assemblyPath, readerParameters);
+
+            var types = new Dictionary<string, TypeDefinition>();
+
+            foreach (var type in module.GetTypes())
+                types[type.FullName] = type;
+
+            return types;
         }
 
         bool TryGetSequencePoint(string className, string methodName, out SequencePoint sequencePoint)

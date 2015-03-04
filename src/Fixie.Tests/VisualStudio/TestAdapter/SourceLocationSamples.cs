@@ -66,5 +66,14 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
         public void Overloaded() { } // Debug = Release = 66
 
         public void Overloaded(int y) { } // Debug = Release = 68
+
+        public class BaseClass
+        {
+            public void Inherited() { } // Debug = Release = 72
+        }
+
+        public class ChildClass : BaseClass
+        {
+        }
     }
 }

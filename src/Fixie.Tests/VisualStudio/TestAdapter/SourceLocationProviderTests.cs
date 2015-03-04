@@ -7,8 +7,9 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
     public class SourceLocationProviderTests
     {
         // Line numbers vary slightly between Debug and Release modes.
-        // In Debug mode: opening curly brace.
-        //In Release mode: first non-comment code line or closing curly brace if the method is empty.
+        //
+        //      Debug: opening curly brace.
+        //      Release: first non-comment code line or closing curly brace if the method is empty.
 
         private static readonly string TestAssemblyPath = Path.GetFullPath("Fixie.Tests.dll");
 
@@ -51,6 +52,12 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
         public void ShouldSafelyFailForOverloadedMethodsBecauseTheRequestIsAmbiguous()
         {
             AssertNoLineNumber(typeof(SourceLocationSamples).FullName, "Overloaded");
+        }
+
+        public void ShouldSafelyFailForInheritedMethodsBecauseTheRequestIsAmbiguous()
+        {
+            AssertLineNumber(typeof(SourceLocationSamples.BaseClass).FullName, "Inherited", 72, 72);
+            AssertNoLineNumber(typeof(SourceLocationSamples.ChildClass).FullName, "Inherited");
         }
 
         static void AssertNoLineNumber(string className, string methodName)

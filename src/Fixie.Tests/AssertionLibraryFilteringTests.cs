@@ -98,6 +98,7 @@ namespace Fixie.Tests
                 x = x / x;
             }
 
+            [MethodImplAttribute(MethodImplOptions.NoInlining)]
             public void FailedAssertion()
             {
                 SampleAssertionLibrary.SampleAssert.AreEqual(1, 0);

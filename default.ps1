@@ -25,8 +25,13 @@ task Package -depends Test {
 }
 
 task Test -depends Compile {
-    $fixieRunner = resolve-path ".\build\Fixie.Console.exe"
-    exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
+    $exes = @("Fixie.Console.exe", "Fixie.Console.x86.exe")
+
+    foreach ($exe in $exes) {
+        $fixieRunner = resolve-path ".\build\$exe"
+        write-host "Testing with $exe"
+        exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
+    }
 }
 
 task Compile -depends SanityCheckOutputPaths, AssemblyInfo, License {
@@ -68,6 +73,10 @@ task AssemblyInfo {
 
     foreach ($project in $projects) {
         $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
+
+        if ($projectName.Contains(".x86")) {
+            continue;
+        }
 
         regenerate-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" @"
 using System.Reflection;

@@ -25,13 +25,17 @@ task Package -depends Test {
 }
 
 task Test -depends Compile {
-    $exes = @("Fixie.Console.exe", "Fixie.Console.x86.exe")
+    run-tests "Fixie.Console.exe"
+}
 
-    foreach ($exe in $exes) {
-        $fixieRunner = resolve-path ".\build\$exe"
-        write-host "Testing with $exe"
-        exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
-    }
+task Test32 -depends Compile {
+    run-tests "Fixie.Console.x86.exe"
+}
+
+function run-tests($exe) {
+    $fixieRunner = resolve-path ".\build\$exe"
+    write-host "Testing with $exe"
+    exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
 }
 
 task Compile -depends SanityCheckOutputPaths, AssemblyInfo, License {

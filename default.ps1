@@ -34,7 +34,6 @@ task Test32 -depends Compile {
 
 function run-tests($exe) {
     $fixieRunner = resolve-path ".\build\$exe"
-    write-host "Testing with $exe"
     exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
 }
 

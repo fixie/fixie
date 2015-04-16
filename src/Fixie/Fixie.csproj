@@ -98,6 +98,8 @@
     <Compile Include="Execution\AssemblyResult.cs" />
     <Compile Include="Internal\Runner.cs" />
     <Compile Include="Execution\SkipResult.cs" />
+    <Compile Include="Trait.cs" />
+    <Compile Include="TraitSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixie.nuspec" />

@@ -14,6 +14,7 @@ namespace Fixie.Internal
         readonly List<Func<FixtureBehavior>> customFixtureBehaviors;
         readonly List<Func<CaseBehavior>> customCaseBehaviors;
         readonly List<Type> assertionLibraryTypes;
+        readonly List<Func<TraitSource>> traitSources;
 
         public Configuration()
         {
@@ -41,6 +42,7 @@ namespace Fixie.Internal
             customFixtureBehaviors = new List<Func<FixtureBehavior>>();
             customCaseBehaviors = new List<Func<CaseBehavior>>();
             assertionLibraryTypes = new List<Type>();
+            traitSources = new List<Func<TraitSource>>();
         }
 
         public Action<Case[]> OrderCases { get; set; }
@@ -116,6 +118,11 @@ namespace Fixie.Internal
             customCaseBehaviors.Insert(0, getBehavior);
         }
 
+        public void AddTraitSource(Func<TraitSource> getTraitSource)
+        {
+            traitSources.Add(getTraitSource);
+        }
+
         public void AddAssertionLibraryType(Type libraryInfrastructureType)
         {
             assertionLibraryTypes.Add(libraryInfrastructureType);
@@ -128,5 +135,6 @@ namespace Fixie.Internal
         public IReadOnlyList<Func<FixtureBehavior>> CustomFixtureBehaviors { get { return customFixtureBehaviors; } }
         public IReadOnlyList<Func<CaseBehavior>> CustomCaseBehaviors { get { return customCaseBehaviors; } }
         public IReadOnlyList<Type> AssertionLibraryTypes { get { return assertionLibraryTypes; } }
+        public IReadOnlyList<Func<TraitSource>> TraitSources { get { return traitSources; } }
     }
 }

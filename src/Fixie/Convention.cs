@@ -20,7 +20,9 @@ namespace Fixie
             FixtureExecution = new FixtureBehaviorExpression(Config);
             ClassExecution = new ClassBehaviorExpression(Config);
             HideExceptionDetails = new AssertionLibraryExpression(Config);
+            Traits = new TraitSourceExpression(Config);
         }
+
 
         /// <summary>
         /// The current state describing the convention. This state can be manipulated through
@@ -74,5 +76,10 @@ namespace Fixie
         /// traces can be simplified for readability.
         /// </summary>
         public AssertionLibraryExpression HideExceptionDetails { get; private set; }
+
+        /// <summary>
+        /// Defines the set of Trait Sources, which provide named metadata for test methods.
+        /// </summary>
+        public TraitSourceExpression Traits { get; private set; }
     }
 }

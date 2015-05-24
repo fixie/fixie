@@ -61,26 +61,20 @@ namespace Fixie.Internal
                 }
             }
 
-            var casesBySkipState = cases.ToLookup(SkipCase);
-            var casesToSkip = casesBySkipState[true].ToArray();
-            var casesToExecute = casesBySkipState[false].ToArray();
-
             var classResult = new ClassResult(testClass.FullName);
 
-            if (casesToSkip.Any())
-            {
-                TryOrderCases(casesToSkip);
-
-                foreach (var @case in casesToSkip)
-                    classResult.Add(Skip(@case));
-            }
+            var casesToExecute = GetNonSkippedCases(cases.ToArray(), classResult);
 
             if (casesToExecute.Any())
             {
                 if (TryOrderCases(casesToExecute))
                     Run(testClass, casesToExecute);
 
-                foreach (var @case in casesToExecute)
+                // if no cases were skipped before running, try again to determine
+                // skipped cases (e.g. if the convention looks for an IgnoredException)
+                var nonSkippedCases = GetNonSkippedCases(casesToExecute, classResult);
+
+                foreach (var @case in nonSkippedCases)
                     classResult.Add(@case.Exceptions.Any() ? Fail(@case) : Pass(@case));
             }
 
@@ -95,6 +89,27 @@ namespace Fixie.Internal
             }
 
             return classResult;
+        }
+
+        private Case[] GetNonSkippedCases(Case[] cases, ClassResult classResult)
+        {
+            // if there already are skipped cases, then don't do anything
+            if (classResult.CaseResults.Any(@case => @case.Status == CaseStatus.Skipped))
+                return cases;
+
+            var casesBySkipState = cases.ToLookup(SkipCase);
+            var casesToSkip = casesBySkipState[true].ToArray();
+            var casesToExecute = casesBySkipState[false].ToArray();
+
+            if (casesToSkip.Any())
+            {
+                TryOrderCases(casesToSkip);
+
+                foreach (var @case in casesToSkip)
+                    classResult.Add(Skip(@case));
+            }
+
+            return casesToExecute;
         }
 
         bool SkipCase(Case @case)

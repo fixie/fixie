@@ -22,7 +22,8 @@ namespace Fixie.Internal
             TestClassFactory = UseDefaultConstructor;
             SkipCase = @case => false;
             GetSkipReason = @case => null;
-
+            MethodFlags = BindingFlags.Public | BindingFlags.Instance;
+            
             testClassConditions = new List<Func<Type, bool>>
             {
                 ConcreteClasses,
@@ -48,6 +49,7 @@ namespace Fixie.Internal
         public Func<Type, object> TestClassFactory { get; set; }
         public Func<Case, bool> SkipCase { get; set; }
         public Func<Case, string> GetSkipReason { get; set; }
+        public BindingFlags MethodFlags { get; set; }
 
         static object UseDefaultConstructor(Type type)
         {

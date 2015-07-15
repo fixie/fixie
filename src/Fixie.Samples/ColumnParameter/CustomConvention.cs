@@ -28,46 +28,28 @@ namespace Fixie.Samples.ColumnParameter
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
-                var columns = method.GetParameters();
-                int columnCount = columns.Length;
-                if (columnCount > 0)
-                {
-                    object[][] columnParameters = new object[columnCount][];
-                    int[] columnParameterCount1s = new int[columnCount];
-                    int[] columnParameterIndexes = new int[columnCount];
+                return CartesianProduct(Columns(method));
+            }
 
-                    for (int i = 0; i < columnCount; i++)
-                    {
-                        columnParameters[i] = columns[i].GetCustomAttribute<ColumnAttribute>(true).Parameters;
-                        columnParameterCount1s[i] = columnParameters[i].Length - 1;
-                        columnParameterIndexes[i] = 0;
-                    }
+            static IEnumerable<object[]> Columns(MethodInfo method)
+            {
+                return method
+                    .GetParameters()
+                    .Select(parameter =>
+                        parameter.GetCustomAttributes<ColumnAttribute>(true).Single().Parameters);
+            }
 
-                    bool continueNextCombination;
-                    do
-                    {
-                        object[] aCombination = new object[columnCount];
-                        for (int i = 0; i < columnCount; i++)
-                            aCombination[i] = columnParameters[i][columnParameterIndexes[i]];
-                        yield return aCombination;
+            static IEnumerable<object[]> CartesianProduct(IEnumerable<object[]> sequences)
+            {
+                //See http://blogs.msdn.com/b/ericlippert/archive/2010/06/28/computing-a-cartesian-product-with-linq.aspx
 
-                        continueNextCombination = false;
-                        for (int i = 0; i < columnCount; i++)
-                        {
-                            if (columnParameterIndexes[i] < columnParameterCount1s[i])
-                            {
-                                columnParameterIndexes[i]++;
-                                continueNextCombination = true;
-                                break;
-                            }
-                            else
-                            {
-                                columnParameterIndexes[i] = 0;
-                            }
-                        }
-                    }
-                    while (continueNextCombination);
-                }
+                IEnumerable<object[]> emptyProduct = new[] { new object[] { } };
+                return sequences.Aggregate(
+                    emptyProduct,
+                    (accumulator, sequence) =>
+                        from accseq in accumulator
+                        from item in sequence
+                        select accseq.Concat(new[] { item }).ToArray());
             }
         }
     }

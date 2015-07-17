@@ -85,18 +85,23 @@ namespace Fixie.Tests.ConsoleRunner
             }
         }
 
-        static string CleanBrittleValues(string actualRawContent)
+        internal static string CleanBrittleValues(string actualRawContent)
         {
             //Avoid brittle assertion introduced by fixie version.
             var cleaned = Regex.Replace(actualRawContent, @"\(Fixie \d+\.\d+\.\d+\.\d+\)", @"(Fixie 1.2.3.4)");
 
             //Avoid brittle assertion introduced by test duration.
-            cleaned = Regex.Replace(cleaned, @"took [\d\.]+ seconds", @"took 1.23 seconds");
+            cleaned = cleaned.ReplaceTime(@"took {0} seconds", @"took 1.23 seconds");
 
             //Avoid brittle assertion introduced by stack trace line numbers.
             cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
 
             return cleaned;
+        }
+
+        static string ReplaceTime(string cleaned, string patternFormat, string timePattern, string replacement)
+        {
+            return Regex.Replace(cleaned, string.Format(patternFormat, timePattern), replacement);
         }
 
         static string PathToThisFile([CallerFilePath] string path = null)

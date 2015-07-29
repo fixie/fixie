@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Should;
+using System.Linq;
 
 namespace Fixie.Tests.Cases
 {
@@ -28,6 +29,32 @@ namespace Fixie.Tests.Cases
             Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+        }
+
+        public void ShouldSkipCasesAfterRunning()
+        {
+            Convention.CaseExecution
+                .Skip(ThrewSkipException);
+
+            Run<SkippedWithExceptionTestClass>();
+
+            Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedWithExceptionTestClass.Skip skipped.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedWithExceptionTestClass.Fail failed: 'Fail' failed!",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedWithExceptionTestClass.Pass passed.");
+        }
+
+        public void ShouldSkipCasesAfterRunningWithOptionalReason()
+        {
+            Convention.CaseExecution
+                .Skip(ThrewSkipException, SkipExceptionReason);
+
+            Run<SkippedWithExceptionTestClass>();
+
+            Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedWithExceptionTestClass.Skip skipped: Troublesome test skipped by throwing exception",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedWithExceptionTestClass.Fail failed: 'Fail' failed!",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedWithExceptionTestClass.Pass passed.");
         }
 
         public void ShouldFailWithClearExplanationWhenSkipConditionThrows()
@@ -84,6 +111,30 @@ namespace Fixie.Tests.Cases
         class SkipAttribute : Attribute
         {
             public string Reason { get; set; }
+        }
+
+        class SkippedWithExceptionTestClass
+        {
+            public void Skip() { throw new SkipException("Troublesome test skipped by throwing exception"); }
+
+            public void Fail() { throw new FailureException(); }
+
+            public void Pass() { }
+        }
+
+        class SkipException : Exception
+        {
+            public SkipException(string message) : base(message) { }
+        }
+
+        static bool ThrewSkipException(Case @case)
+        {
+            return @case.Exceptions.Any(e => e is SkipException);
+        }
+
+        static string SkipExceptionReason(Case @case)
+        {
+            return @case.Exceptions.OfType<SkipException>().First().Message;
         }
     }
 }

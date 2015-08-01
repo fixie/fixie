@@ -10,6 +10,7 @@
             Apply<Inclusive.CustomConvention>();
             Apply<IoC.CustomConvention>();
             Apply<LowCeremony.CustomConvention>();
+            Apply<MbUnitStyle.CustomConvention>();
             Apply<NUnitStyle.CustomConvention>();
             Apply<Parameterized.CustomConvention>();
             Apply<Shuffle.CustomConvention>();

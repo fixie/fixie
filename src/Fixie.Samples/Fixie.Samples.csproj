@@ -54,6 +54,9 @@
     <Compile Include="IoC\IoCTests.cs" />
     <Compile Include="LowCeremony\CalculatorTests.cs" />
     <Compile Include="LowCeremony\CustomConvention.cs" />
+    <Compile Include="MbUnitStyle\Attributes.cs" />
+    <Compile Include="MbUnitStyle\CalculatorTests.cs" />
+    <Compile Include="MbUnitStyle\CustomConvention.cs" />
     <Compile Include="NUnitStyle\CalculatorTests.cs" />
     <Compile Include="NUnitStyle\CustomConvention.cs" />
     <Compile Include="NUnitStyle\Attributes.cs" />

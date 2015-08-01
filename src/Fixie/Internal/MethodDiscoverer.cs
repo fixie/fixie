@@ -8,17 +8,19 @@ namespace Fixie.Internal
     public class MethodDiscoverer
     {
         readonly Func<MethodInfo, bool>[] testMethodConditions;
+        readonly BindingFlags methodFlags;
 
         public MethodDiscoverer(Configuration config)
         {
             testMethodConditions = config.TestMethodConditions.ToArray();
+            methodFlags = config.MethodFlags;
         }
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
         {
             try
             {
-                return testClass.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(IsMatch).ToArray();
+                return testClass.GetMethods(methodFlags).Where(IsMatch).ToArray();
             }
             catch (Exception exception)
             {

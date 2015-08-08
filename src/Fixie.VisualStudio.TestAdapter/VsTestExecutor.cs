@@ -15,6 +15,14 @@ namespace Fixie.VisualStudio.TestAdapter
         public const string Id = "executor://Fixie.VisualStudio";
         public static Uri Uri = new Uri(Id);
 
+        /// <summary>
+        /// Called by Visual Studio, when running all tests.
+        /// Called by TFS Build, when running all tests.
+        /// Called by TFS Build, with a filter within the run context, when running selected tests.
+        /// </summary>
+        /// <param name="sources"></param>
+        /// <param name="runContext"></param>
+        /// <param name="frameworkHandle"></param>
         public void RunTests(IEnumerable<string> sources, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             IMessageLogger log = frameworkHandle;
@@ -49,6 +57,13 @@ namespace Fixie.VisualStudio.TestAdapter
             }
         }
 
+        /// <summary>
+        /// Called by Visual Studio, when running selected tests.
+        /// Never called from TFS Build.
+        /// </summary>
+        /// <param name="tests"></param>
+        /// <param name="runContext"></param>
+        /// <param name="frameworkHandle"></param>
         public void RunTests(IEnumerable<TestCase> tests, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             IMessageLogger log = frameworkHandle;

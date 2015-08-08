@@ -30,17 +30,22 @@ namespace Fixie.Samples.MbUnitStyle
         }
 
         [Test]
-        public void ShouldAdd()
+        [Row(2, 3, 5)]
+        [Row(3, 5, 8)]
+        public void ShouldAdd(int a, int b, int expectedSum)
         {
-            log.WhereAmI();
-            calculator.Add(2, 3).ShouldEqual(5);
+            log.AppendFormat("ShouldAdd({0}, {1}, {2})", a, b, expectedSum);
+            log.AppendLine();
+            calculator.Add(a, b).ShouldEqual(expectedSum);
         }
 
         [Test]
-        public void ShouldSubtract()
+        public void ShouldSubtract([Column(7, 8, 9)] int a,
+                                   [Column(5, 6)] int b)
         {
-            log.WhereAmI();
-            calculator.Subtract(5, 3).ShouldEqual(2);
+            log.AppendFormat("ShouldSubtract({0}, {1})", a, b);
+            log.AppendLine();
+            calculator.Subtract(a, b).ShouldEqual(a - b);
         }
 
         [Test]
@@ -77,13 +82,31 @@ namespace Fixie.Samples.MbUnitStyle
                 ".ctor",
                 "FixtureSetUp",
                 "SetUp",
-                "ShouldAdd",
+                "ShouldAdd(2, 3, 5)",
+                "TearDown",
+                "SetUp",
+                "ShouldAdd(3, 5, 8)",
                 "TearDown",
                 "SetUp",
                 "ShouldDivide",
                 "TearDown",
                 "SetUp",
-                "ShouldSubtract",
+                "ShouldSubtract(7, 5)",
+                "TearDown",
+                "SetUp",
+                "ShouldSubtract(7, 6)",
+                "TearDown",
+                "SetUp",
+                "ShouldSubtract(8, 5)",
+                "TearDown",
+                "SetUp",
+                "ShouldSubtract(8, 6)",
+                "TearDown",
+                "SetUp",
+                "ShouldSubtract(9, 5)",
+                "TearDown",
+                "SetUp",
+                "ShouldSubtract(9, 6)",
                 "TearDown",
                 "SetUp",
                 "ShouldThrowWhenDividingByZero",

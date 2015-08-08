@@ -25,6 +25,58 @@ namespace Fixie.Samples.MbUnitStyle
             CaseExecution
                 .Wrap<SupportExpectedExceptions>()
                 .Wrap<SetUpTearDown>();
+
+            Parameters
+                .Add<RowAttributeParameterSource>()
+                .Add<ColumnAttributeParameterSource>();
+        }
+
+        class RowAttributeParameterSource : ParameterSource
+        {
+            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            {
+                return method.GetCustomAttributes<RowAttribute>(true).Select(input => input.Parameters);
+            }
+        }
+
+        class ColumnAttributeParameterSource : ParameterSource
+        {
+            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            {
+                return CartesianProduct(Columns(method));
+            }
+
+            static IEnumerable<object[]> Columns(MethodInfo method)
+            {
+                ParameterInfo[] parameters = method.GetParameters();
+
+                if (parameters.Length == 0)
+                    return null;
+
+                if (parameters[0].GetCustomAttributes<ColumnAttribute>(true).Any() == false)
+                    return null;
+
+                return parameters
+                    .Select(parameter =>
+                        parameter.GetCustomAttributes<ColumnAttribute>(true).Single().Parameters);
+            }
+
+            static IEnumerable<object[]> CartesianProduct(IEnumerable<object[]> sequences)
+            {
+                if (sequences == null)
+                    return new object[][] { };
+
+                //See http://blogs.msdn.com/b/ericlippert/archive/2010/06/28/computing-a-cartesian-product-with-linq.aspx
+
+                IEnumerable<object[]> emptyProduct = new[] { new object[] { } };
+                
+                return sequences.Aggregate(
+                    emptyProduct,
+                    (accumulator, sequence) =>
+                        from accseq in accumulator
+                        from item in sequence
+                        select accseq.Concat(new[] { item }).ToArray());
+            }
         }
     }
 

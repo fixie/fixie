@@ -32,4 +32,26 @@ namespace Fixie.Samples.MbUnitStyle
 
         public string ExpectedMessage { get; set; }
     }
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    class RowAttribute : Attribute
+    {
+        public RowAttribute(params object[] parameters)
+        {
+            Parameters = parameters;
+        }
+
+        public object[] Parameters { get; private set; }
+    }
+    
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
+    class ColumnAttribute : Attribute
+    {
+        public ColumnAttribute(params object[] parameters)
+        {
+            Parameters = parameters;
+        }
+
+        public object[] Parameters { get; private set; }
+    }
 }

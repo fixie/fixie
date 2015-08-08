@@ -39,7 +39,8 @@ namespace Fixie.VisualStudio.TestAdapter
             {
                 DisplayName = result.Name,
                 Outcome = Map(CaseStatus.Skipped),
-                ComputerName = Environment.MachineName
+                ComputerName = Environment.MachineName,
+                ErrorMessage = result.SkipReason
             });
         }
 

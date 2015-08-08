@@ -9,16 +9,23 @@
                 .NameEndsWith("Tests");
 
             Methods
-                .Where(method => method.IsVoid())
-                .Where(method =>
-                {
-                    var isMarkedExplicit = method.Has<ExplicitAttribute>();
-
-                    return !isMarkedExplicit || TargetMember == method;
-                });
+                .Where(method => method.IsVoid());
 
             ClassExecution
                 .CreateInstancePerClass();
+
+            CaseExecution
+                .Skip(SkipDueToExplicitAttribute,
+                      @case => "[Explicit] tests run only when they are individually selected for execution.");
+        }
+
+        bool SkipDueToExplicitAttribute(Case @case)
+        {
+            var method = @case.Method;
+
+            var isMarkedExplicit = method.Has<ExplicitAttribute>();
+
+            return isMarkedExplicit && TargetMember != method;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Fixie.Samples.Explicit
             test.ShouldBeNull();
             test = "ExplicitTest";
 
-            throw new Exception(test + " was invoked explicitly.");
+            Console.WriteLine(test + " was invoked explicitly.");
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Fixie.VisualStudio.TestAdapter
             log.RecordResult(new TestResult(TestCase(result.MethodGroup))
             {
                 DisplayName = result.Name,
-                Outcome = Map(CaseStatus.Passed),
+                Outcome = Map(CaseStatus.Skipped),
                 ComputerName = Environment.MachineName
             });
         }

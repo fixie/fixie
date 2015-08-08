@@ -20,8 +20,7 @@ namespace Fixie.Internal
             OrderCases = executions => { };
             ConstructionFrequency = ConstructionFrequency.PerCase;
             TestClassFactory = UseDefaultConstructor;
-            SkipCase = @case => false;
-            GetSkipReason = @case => null;
+            SkipRule = SkipRule.DoNotSkip;
 
             testClassConditions = new List<Func<Type, bool>>
             {
@@ -46,8 +45,7 @@ namespace Fixie.Internal
         public Action<Case[]> OrderCases { get; set; }
         public ConstructionFrequency ConstructionFrequency { get; set; }
         public Func<Type, object> TestClassFactory { get; set; }
-        public Func<Case, bool> SkipCase { get; set; }
-        public Func<Case, string> GetSkipReason { get; set; }
+        public SkipRule SkipRule { get; set; }
 
         static object UseDefaultConstructor(Type type)
         {

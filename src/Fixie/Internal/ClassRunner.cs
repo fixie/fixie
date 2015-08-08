@@ -14,8 +14,7 @@ namespace Fixie.Internal
         readonly ParameterDiscoverer parameterDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
-        readonly Func<Case, bool> skipCase;
-        readonly Func<Case, string> getSkipReason;
+        readonly SkipRule skipRule;
         readonly Action<Case[]> orderCases;
 
         public ClassRunner(Listener listener, Configuration config)
@@ -26,8 +25,7 @@ namespace Fixie.Internal
             parameterDiscoverer = new ParameterDiscoverer(config);
             assertionLibraryFilter = new AssertionLibraryFilter(config);
 
-            skipCase = config.SkipCase;
-            getSkipReason = config.GetSkipReason;
+            skipRule = config.SkipRule;
             orderCases = config.OrderCases;
         }
 
@@ -101,7 +99,7 @@ namespace Fixie.Internal
         {
             try
             {
-                return skipCase(@case);
+                return skipRule.SkipCase(@case);
             }
             catch (Exception exception)
             {
@@ -115,7 +113,7 @@ namespace Fixie.Internal
         {
             try
             {
-                return getSkipReason(@case);
+                return skipRule.GetSkipReason(@case);
             }
             catch (Exception exception)
             {

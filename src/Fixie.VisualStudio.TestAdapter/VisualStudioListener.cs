@@ -38,8 +38,9 @@ namespace Fixie.VisualStudio.TestAdapter
             log.RecordResult(new TestResult(TestCase(result.MethodGroup))
             {
                 DisplayName = result.Name,
-                Outcome = Map(CaseStatus.Passed),
-                ComputerName = Environment.MachineName
+                Outcome = Map(CaseStatus.Skipped),
+                ComputerName = Environment.MachineName,
+                ErrorMessage = result.SkipReason
             });
         }
 
@@ -94,7 +95,7 @@ namespace Fixie.VisualStudio.TestAdapter
                 case CaseStatus.Failed:
                     return TestOutcome.Failed;
                 case CaseStatus.Skipped:
-                    return TestOutcome.Skipped;
+                    return TestOutcome.None;
                 default:
                     return TestOutcome.None;
             }

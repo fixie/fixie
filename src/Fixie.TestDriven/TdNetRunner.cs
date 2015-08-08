@@ -46,7 +46,7 @@ namespace Fixie.TestDriven
             return TestRunState.Error;
         }
 
-        IEnumerable<Type> GetTypeAndNestedTypes(Type type)
+        static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
         {
             yield return type;
 
@@ -54,7 +54,7 @@ namespace Fixie.TestDriven
                 yield return nested;
         }
 
-        public TestRunState Run(ITestListener testListener, Func<Runner, AssemblyResult> run)
+        static TestRunState Run(ITestListener testListener, Func<Runner, AssemblyResult> run)
         {
             var listener = new TestDrivenListener(testListener);
             var runner = new Runner(listener);

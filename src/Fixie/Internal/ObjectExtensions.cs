@@ -12,33 +12,33 @@ namespace Fixie.Internal
                 return "null";
 
             if (parameter is char)
-            {
-                var ch = (char)parameter;
-                return "'" + ch.Escape(Literal.Character) + "'";
-            }
+                return CharacterLiteral((char)parameter);
 
             var s = parameter as string;
             if (s != null)
-            {
-                const int trimLength = 15;
-
-                if (s.Length > trimLength)
-                    return "\"" + s.Substring(0, trimLength).Escape() + "...\"";
-
-                return "\"" + s.Escape() + "\"";
-            }
+                return ShortStringLiteral(s);
 
             return Convert.ToString(parameter, CultureInfo.InvariantCulture);
         }
 
-        static string Escape(this string s)
+        static string CharacterLiteral(char ch)
         {
+            return "'" + ch.Escape(Literal.Character) + "'";
+        }
+
+        static string ShortStringLiteral(string s)
+        {
+            const int trimLength = 15;
+
+            if (s.Length > trimLength)
+                s = s.Substring(0, trimLength) + "...";
+
             var sb = new StringBuilder();
 
             foreach (var ch in s)
                 sb.Append(ch.Escape(Literal.String));
 
-            return sb.ToString();
+            return "\"" + sb + "\"";
         }
 
         static string Escape(this char ch, Literal literal)

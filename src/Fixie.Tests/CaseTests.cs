@@ -19,9 +19,59 @@ namespace Fixie.Tests
             @case.Name.ShouldEqual("Fixie.Tests.CaseTests.Parameterized(123, True, 'a', \"with \\\"quotes\\\"\", \"long \\\"string\\\" g\"..., null, Fixie.Tests.CaseTests)");
         }
 
-        public void ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasParameters()
+        public void ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasCharParameters()
         {
+            Case("Char", '\"').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\"')");
+            Case("Char", '"').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\"')");
+            Case("Char", '\'').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\'')");
+
+            Case("Char", '\\').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\\\')");
+            Case("Char", '\0').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\0')");
+            Case("Char", '\a').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\a')");
+            Case("Char", '\b').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\b')");
+            Case("Char", '\f').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\f')");
+            Case("Char", '\n').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\n')");
+            Case("Char", '\r').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\r')");
+            Case("Char", '\t').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\t')");
+            Case("Char", '\v').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\v')");
+
+            // Unicode characters 0085, 2028, and 2029 represent line endings Next Line, Line Separator, and Paragraph Separator, respectively.
+            // Just like \r and \n, we escape these in order to present a readable string literal.  All other unicode sequences pass through
+            // with no additional special treatment.
+
+            // \uxxxx - Unicode escape sequence for character with hex value xxxx.
+            Case("Char", '\u0000').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\0')");
+            Case("Char", '\u0085').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\u0085')");
+            Case("Char", '\u2028').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\u2028')");
+            Case("Char", '\u2029').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\u2029')");
+            Case("Char", '\u263A').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('☺')");
+
+            // \xn[n][n][n] - Unicode escape sequence for character with hex value nnnn (variable length version of \uxxxx).
+            Case("Char", '\x0000').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\0')");
+            Case("Char", '\x000').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\0')");
+            Case("Char", '\x00').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\0')");
+            Case("Char", '\x0').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\0')");
+            Case("Char", '\x0085').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\u0085')");
+            Case("Char", '\x085').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\u0085')");
+            Case("Char", '\x85').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\u0085')");
+            Case("Char", '\x2028').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\u2028')");
+            Case("Char", '\x2029').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\u2029')");
+            Case("Char", '\x263A').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('☺')");
+
+            //\Uxxxxxxxx - Unicode escape sequence for character with hex value xxxxxxxx (for generating surrogates).
+            Case("Char", '\U00000000').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\0')");
+            Case("Char", '\U00000085').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\u0085')");
+            Case("Char", '\U00002028').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\u2028')");
+            Case("Char", '\U00002029').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('\\u2029')");
+            Case("Char", '\U0000263A').Name.ShouldEqual("Fixie.Tests.CaseTests.Char('☺')");
+        }
+
+        public void ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasStringParameters()
+        {
+            Case("String", "\'").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"'\")");
+            Case("String", "'").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"'\")");
             Case("String", "\"").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\\"\")");
+
             Case("String", "\\").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\\\\")");
             Case("String", "\0").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\0\")");
             Case("String", "\a").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\a\")");
@@ -152,6 +202,10 @@ namespace Fixie.Tests
         }
 
         void Parameterized(int i, bool b, char ch, string s1, string s2, object obj, CaseTests complex)
+        {
+        }
+
+        void Char(char ch)
         {
         }
 

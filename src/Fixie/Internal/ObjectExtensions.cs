@@ -12,7 +12,10 @@ namespace Fixie.Internal
                 return "null";
 
             if (parameter is char)
-                return "'" + parameter + "'";
+            {
+                var ch = (char)parameter;
+                return "'" + ch.Escape(Literal.Character) + "'";
+            }
 
             var s = parameter as string;
             if (s != null)
@@ -33,16 +36,18 @@ namespace Fixie.Internal
             var sb = new StringBuilder();
 
             foreach (var ch in s)
-                sb.Append(Escape(ch));
+                sb.Append(ch.Escape(Literal.String));
 
             return sb.ToString();
         }
 
-        static string Escape(char ch)
+        static string Escape(this char ch, Literal literal)
         {
             switch (ch)
             {
-                case '\"': return "\\\"";
+                case '\"': return literal == Literal.String ? "\\\"" : Char.ToString(ch);
+                case '\'': return literal == Literal.Character ? "\\\'" : Char.ToString(ch);
+
                 case '\\': return "\\\\";
                 case '\0': return "\\0";
                 case '\a': return "\\a";
@@ -62,5 +67,7 @@ namespace Fixie.Internal
                     return Char.ToString(ch);
             }
         }
+
+        enum Literal { Character, String }
     }
 }

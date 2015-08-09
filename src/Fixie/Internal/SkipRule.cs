@@ -4,15 +4,53 @@ namespace Fixie.Internal
 {
     public class SkipRule
     {
-        public static readonly SkipRule DoNotSkip = new SkipRule(@case => false, @case => null);
+        readonly Func<Case, bool> skipCase;
+        readonly Func<Case, string> getSkipReason;
 
         public SkipRule(Func<Case, bool> skipCase, Func<Case, string> getSkipReason)
         {
-            SkipCase = skipCase;
-            GetSkipReason = getSkipReason;
+            this.skipCase = skipCase;
+            this.getSkipReason = getSkipReason;
         }
 
-        public Func<Case, bool> SkipCase { get; private set; }
-        public Func<Case, string> GetSkipReason { get; private set; }
+        public bool AppliesTo(Case @case, out string reason)
+        {
+            if (SkipCase(@case))
+            {
+                reason = GetSkipReason(@case);
+                return true;
+            }
+
+            reason = null;
+            return false;
+        }
+
+        bool SkipCase(Case @case)
+        {
+            try
+            {
+                return skipCase(@case);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                    "Exception thrown while attempting to run a custom case-skipping predicate. " +
+                    "Check the inner exception for more details.", exception);
+            }
+        }
+
+        string GetSkipReason(Case @case)
+        {
+            try
+            {
+                return getSkipReason(@case);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                    "Exception thrown while attempting to get a custom case-skipped reason. " +
+                    "Check the inner exception for more details.", exception);
+            }
+        }
     }
 }

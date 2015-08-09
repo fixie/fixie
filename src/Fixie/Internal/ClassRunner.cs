@@ -14,7 +14,7 @@ namespace Fixie.Internal
         readonly ParameterDiscoverer parameterDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
-        readonly SkipRule skipRule;
+        readonly IReadOnlyList<SkipRule> skipRules;
         readonly Action<Case[]> orderCases;
 
         public ClassRunner(Listener listener, Configuration config)
@@ -25,7 +25,7 @@ namespace Fixie.Internal
             parameterDiscoverer = new ParameterDiscoverer(config);
             assertionLibraryFilter = new AssertionLibraryFilter(config);
 
-            skipRule = config.SkipRule;
+            skipRules = config.SkipRules;
             orderCases = config.OrderCases;
         }
 
@@ -59,9 +59,19 @@ namespace Fixie.Internal
                 }
             }
 
-            var casesBySkipState = cases.ToLookup(SkipCase);
-            var casesToSkip = casesBySkipState[true].ToArray();
-            var casesToExecute = casesBySkipState[false].ToArray();
+            var casesToSkipList = new List<KeyValuePair<Case, string>>();
+            var casesToExecuteList = new List<Case>();
+            foreach (var @case in cases)
+            {
+                string reason;
+                if (SkipCase(@case, out reason))
+                    casesToSkipList.Add(new KeyValuePair<Case, string>(@case, reason));
+                else
+                    casesToExecuteList.Add(@case);
+            }
+
+            var casesToSkip = casesToSkipList.Select(x => x.Key).ToArray();
+            var casesToExecute = casesToExecuteList.ToArray();
 
             var classResult = new ClassResult(testClass.FullName);
 
@@ -70,7 +80,7 @@ namespace Fixie.Internal
                 TryOrderCases(casesToSkip);
 
                 foreach (var @case in casesToSkip)
-                    classResult.Add(Skip(@case));
+                    classResult.Add(Skip(@case, casesToSkipList.Single(x => x.Key == @case).Value));
             }
 
             if (casesToExecute.Any())
@@ -95,32 +105,20 @@ namespace Fixie.Internal
             return classResult;
         }
 
-        bool SkipCase(Case @case)
+        bool SkipCase(Case @case, out string reason)
         {
-            try
+            foreach (var rule in skipRules)
             {
-                return skipRule.SkipCase(@case);
+                string ruleReason;
+                if (rule.AppliesTo(@case, out ruleReason))
+                {
+                    reason = ruleReason;
+                    return true;
+                }
             }
-            catch (Exception exception)
-            {
-                throw new Exception(
-                    "Exception thrown while attempting to run a custom case-skipping predicate. " +
-                    "Check the inner exception for more details.", exception);
-            }
-        }
 
-        string GetSkipReason(Case @case)
-        {
-            try
-            {
-                return skipRule.GetSkipReason(@case);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(
-                    "Exception thrown while attempting to get a custom case-skipped reason. " +
-                    "Check the inner exception for more details.", exception);
-            }
+            reason = null;
+            return false;
         }
 
         bool TryOrderCases(Case[] cases)
@@ -150,9 +148,9 @@ namespace Fixie.Internal
             executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
         }
 
-        CaseResult Skip(Case @case)
+        CaseResult Skip(Case @case, string reason)
         {
-            var result = new SkipResult(@case, GetSkipReason(@case));
+            var result = new SkipResult(@case, reason);
             listener.CaseSkipped(result);
             return result;
         }

@@ -71,7 +71,7 @@ namespace Fixie.Conventions
         /// </summary>
         public CaseBehaviorExpression Skip(Func<Case, bool> skipCase, Func<Case, string> getSkipReason)
         {
-            config.SkipRule = new SkipRule(skipCase, getSkipReason);
+            config.AddSkipRule(new SkipRule(skipCase, getSkipReason));
             return this;
         }
 

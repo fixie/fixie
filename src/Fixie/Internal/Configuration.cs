@@ -14,13 +14,13 @@ namespace Fixie.Internal
         readonly List<Func<FixtureBehavior>> customFixtureBehaviors;
         readonly List<Func<CaseBehavior>> customCaseBehaviors;
         readonly List<Type> assertionLibraryTypes;
+        readonly List<SkipRule> skipRules;
 
         public Configuration()
         {
             OrderCases = executions => { };
             ConstructionFrequency = ConstructionFrequency.PerCase;
             TestClassFactory = UseDefaultConstructor;
-            SkipRule = SkipRule.DoNotSkip;
 
             testClassConditions = new List<Func<Type, bool>>
             {
@@ -40,12 +40,12 @@ namespace Fixie.Internal
             customFixtureBehaviors = new List<Func<FixtureBehavior>>();
             customCaseBehaviors = new List<Func<CaseBehavior>>();
             assertionLibraryTypes = new List<Type>();
+            skipRules = new List<SkipRule>();
         }
 
         public Action<Case[]> OrderCases { get; set; }
         public ConstructionFrequency ConstructionFrequency { get; set; }
         public Func<Type, object> TestClassFactory { get; set; }
-        public SkipRule SkipRule { get; set; }
 
         static object UseDefaultConstructor(Type type)
         {
@@ -119,6 +119,11 @@ namespace Fixie.Internal
             assertionLibraryTypes.Add(libraryInfrastructureType);
         }
 
+        public void AddSkipRule(SkipRule skipRule)
+        {
+            skipRules.Add(skipRule);
+        }
+
         public IReadOnlyList<Func<Type, bool>> TestClassConditions { get { return testClassConditions; } }
         public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions { get { return testMethodConditions; } }
         public IReadOnlyList<Func<ParameterSource>> ParameterSources { get { return parameterSources; } }
@@ -126,5 +131,6 @@ namespace Fixie.Internal
         public IReadOnlyList<Func<FixtureBehavior>> CustomFixtureBehaviors { get { return customFixtureBehaviors; } }
         public IReadOnlyList<Func<CaseBehavior>> CustomCaseBehaviors { get { return customCaseBehaviors; } }
         public IReadOnlyList<Type> AssertionLibraryTypes { get { return assertionLibraryTypes; } }
+        public IReadOnlyList<SkipRule> SkipRules { get { return skipRules; } }
     }
 }

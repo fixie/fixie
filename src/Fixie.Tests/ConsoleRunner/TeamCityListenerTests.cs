@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Fixie.ConsoleRunner;
@@ -14,7 +15,10 @@ namespace Fixie.Tests.ConsoleRunner
             using (var console = new RedirectedConsole())
             using (var listener = new TeamCityListener())
             {
-                typeof(PassFailTestClass).Run(listener, SelfTestConvention.Build());
+                var convention = SelfTestConvention.Build();
+                convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+
+                typeof(PassFailTestClass).Run(listener, convention);
 
                 var testClass = typeof(PassFailTestClass).FullName;
 
@@ -23,7 +27,7 @@ namespace Fixie.Tests.ConsoleRunner
                        .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'")) //Avoid brittle assertion introduced by durations.
                        .ShouldEqual(
                            "##teamcity[testSuiteStarted name='Fixie.Tests.dll']",
-                           "##teamcity[testIgnored name='" + testClass + ".SkipWithReason' message='Skipped due to naming convention.']",
+                           "##teamcity[testIgnored name='" + testClass + ".SkipWithReason' message='Skipped with reason.']",
                            "##teamcity[testIgnored name='" + testClass + ".SkipWithoutReason' message='']",
 
                            "Console.Out: FailA",
@@ -86,8 +90,10 @@ namespace Fixie.Tests.ConsoleRunner
 
             public void PassC() { WhereAmI(); }
 
+            [Skip]
             public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
 
+            [Skip("Skipped with reason.")]
             public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
 
             static void WhereAmI([CallerMemberName] string member = null)
@@ -95,6 +101,21 @@ namespace Fixie.Tests.ConsoleRunner
                 Console.Out.WriteLine("Console.Out: " + member);
                 Console.Error.WriteLine("Console.Error: " + member);
             }
+        }
+
+        [AttributeUsage(AttributeTargets.Method)]
+        class SkipAttribute : Attribute
+        {
+            public SkipAttribute()
+            {
+            }
+
+            public SkipAttribute(string reason)
+            {
+                Reason = reason;
+            }
+
+            public string Reason { get; private set; }
         }
     }
 }

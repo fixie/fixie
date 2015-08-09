@@ -12,6 +12,7 @@ namespace Fixie.Tests.Internal
         {
             var listener = new StubListener();
             var convention = SelfTestConvention.Build();
+            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>());
 
             new Runner(listener).RunTypes(GetType().Assembly, convention,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
@@ -30,6 +31,7 @@ namespace Fixie.Tests.Internal
         {
             var listener = new StubListener();
             var convention = SelfTestConvention.Build();
+            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>());
 
             convention.ClassExecution
                 .CreateInstancePerClass()
@@ -52,6 +54,7 @@ namespace Fixie.Tests.Internal
         {
             var listener = new StubListener();
             var convention = SelfTestConvention.Build();
+            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>());
 
             convention.ClassExecution
                 .CreateInstancePerClass()
@@ -115,7 +118,9 @@ namespace Fixie.Tests.Internal
 
         class SkipTestClass
         {
+            [Skip]
             public void SkipA() { throw new ShouldBeUnreachableException(); }
+            [Skip]
             public void SkipB() { throw new ShouldBeUnreachableException(); }
         }
 
@@ -134,6 +139,11 @@ namespace Fixie.Tests.Internal
 
                 throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
             }
+        }
+
+        [AttributeUsage(AttributeTargets.Method)]
+        class SkipAttribute : Attribute
+        {
         }
     }
 }

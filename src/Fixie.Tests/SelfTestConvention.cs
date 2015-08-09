@@ -17,16 +17,7 @@ namespace Fixie.Tests
                 .ClassExecution
                     .SortCases((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
 
-            selfTestConvention
-                .CaseExecution
-                    .Skip(@case => @case.Method.Name.StartsWith("Skip"), GetSkipReason);
-
             return selfTestConvention;
-        }
-
-        static string GetSkipReason(Case @case)
-        {
-            return @case.Method.Name.StartsWith("SkipWithReason") ? "Skipped due to naming convention." : null;
         }
     }
 }

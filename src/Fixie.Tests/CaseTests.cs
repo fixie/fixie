@@ -31,6 +31,36 @@ namespace Fixie.Tests
             Case("String", "\r").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\r\")");
             Case("String", "\t").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\t\")");
             Case("String", "\v").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\v\")");
+
+            // Unicode characters 0085, 2028, and 2029 represent line endings Next Line, Line Separator, and Paragraph Separator, respectively.
+            // Just like \r and \n, we escape these in order to present a readable string literal.  All other unicode sequences pass through
+            // with no additional special treatment.
+
+            // \uxxxx - Unicode escape sequence for character with hex value xxxx.
+            Case("String", "\u0000").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\0\")");
+            Case("String", "\u0085").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\u0085\")");
+            Case("String", "\u2028").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\u2028\")");
+            Case("String", "\u2029").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\u2029\")");
+            Case("String", "\u263A").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"☺\")");
+
+            // \xn[n][n][n] - Unicode escape sequence for character with hex value nnnn (variable length version of \uxxxx).
+            Case("String", "\x0000").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\0\")");
+            Case("String", "\x000").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\0\")");
+            Case("String", "\x00").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\0\")");
+            Case("String", "\x0").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\0\")");
+            Case("String", "\x0085").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\u0085\")");
+            Case("String", "\x085").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\u0085\")");
+            Case("String", "\x85").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\u0085\")");
+            Case("String", "\x2028").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\u2028\")");
+            Case("String", "\x2029").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\u2029\")");
+            Case("String", "\x263A").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"☺\")");
+
+            //\Uxxxxxxxx - Unicode escape sequence for character with hex value xxxxxxxx (for generating surrogates).
+            Case("String", "\U00000000").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\0\")");
+            Case("String", "\U00000085").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\u0085\")");
+            Case("String", "\U00002028").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\u2028\")");
+            Case("String", "\U00002029").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\u2029\")");
+            Case("String", "\U0000263A").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"☺\")");
         }
 
         public void ShouldIncludeResolvedGenericArgumentsInNameWhenTheUnderlyingMethodIsGeneric()

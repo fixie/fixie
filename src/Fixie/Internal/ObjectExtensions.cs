@@ -1,29 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.Text;
 
 namespace Fixie.Internal
 {
     public static class ObjectExtensions
     {
-        static readonly Dictionary<string, string> EscapeMapping = new Dictionary<string, string>()
-        {
-            { "\"", "\\\"" },
-            { "\\\\", @"\\" },
-            { "\0", @"\0" },
-            { "\a", @"\a" },
-            { "\b", @"\b" },
-            { "\f", @"\f" },
-            { "\n", @"\n" },
-            { "\r", @"\r" },
-            { "\t", @"\t" },
-            { "\v", @"\v" }
-        };
-
-        static readonly Regex SpecialCharacters = new Regex(string.Join("|", EscapeMapping.Keys.ToArray()));
-
         public static string ToDisplayString(this object parameter)
         {
             if (parameter == null)
@@ -48,12 +30,37 @@ namespace Fixie.Internal
 
         static string Escape(this string s)
         {
-            return SpecialCharacters.Replace(s, Replacement);
+            var sb = new StringBuilder();
+
+            foreach (var ch in s)
+                sb.Append(Escape(ch));
+
+            return sb.ToString();
         }
 
-        static string Replacement(Match m)
+        static string Escape(char ch)
         {
-            return EscapeMapping.ContainsKey(m.Value) ? EscapeMapping[m.Value] : EscapeMapping[Regex.Escape(m.Value)];
+            switch (ch)
+            {
+                case '\"': return "\\\"";
+                case '\\': return "\\\\";
+                case '\0': return "\\0";
+                case '\a': return "\\a";
+                case '\b': return "\\b";
+                case '\f': return "\\f";
+                case '\n': return "\\n";
+                case '\r': return "\\r";
+                case '\t': return "\\t";
+                case '\v': return "\\v";
+
+                case '\u0085': //Next Line
+                case '\u2028': //Line Separator
+                case '\u2029': //Paragraph Separator
+                   return string.Format("\\u{0:X4}", (int)ch);
+
+                default:
+                    return Char.ToString(ch);
+            }
         }
     }
 }

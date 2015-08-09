@@ -76,7 +76,8 @@ namespace Fixie.Reports
 
         static string Seconds(TimeSpan duration)
         {
-            return duration.TotalSeconds.ToString("0.000", CultureInfo.GetCultureInfo("en-US"));
+            //The XML Schema spec requires decimal values to use a culture-ignorant format.
+            return duration.TotalSeconds.ToString("0.000", NumberFormatInfo.InvariantInfo);
         }
     }
 }

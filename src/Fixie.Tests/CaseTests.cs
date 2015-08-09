@@ -19,6 +19,20 @@ namespace Fixie.Tests
             @case.Name.ShouldEqual("Fixie.Tests.CaseTests.Parameterized(123, True, 'a', \"with \\\"quotes\\\"\", \"long \\\"string\\\" g\"..., null, Fixie.Tests.CaseTests)");
         }
 
+        public void ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasParameters()
+        {
+            Case("String", "\"").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\\"\")");
+            Case("String", "\\").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\\\\")");
+            Case("String", "\0").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\0\")");
+            Case("String", "\a").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\a\")");
+            Case("String", "\b").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\b\")");
+            Case("String", "\f").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\f\")");
+            Case("String", "\n").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\n\")");
+            Case("String", "\r").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\r\")");
+            Case("String", "\t").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\t\")");
+            Case("String", "\v").Name.ShouldEqual("Fixie.Tests.CaseTests.String(\"\\v\")");
+        }
+
         public void ShouldIncludeResolvedGenericArgumentsInNameWhenTheUnderlyingMethodIsGeneric()
         {
             Case("Generic", 123, true, "a", "b")
@@ -108,6 +122,10 @@ namespace Fixie.Tests
         }
 
         void Parameterized(int i, bool b, char ch, string s1, string s2, object obj, CaseTests complex)
+        {
+        }
+
+        void String(string s)
         {
         }
 

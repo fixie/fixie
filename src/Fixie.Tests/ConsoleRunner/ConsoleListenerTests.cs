@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Fixie.ConsoleRunner;
 using Fixie.Internal;
 
@@ -95,7 +96,8 @@ namespace Fixie.Tests.ConsoleRunner
             var cleaned = Regex.Replace(actualRawContent, @"\(Fixie \d+\.\d+\.\d+\.\d+\)", @"(Fixie 1.2.3.4)");
 
             //Avoid brittle assertion introduced by test duration.
-            cleaned = Regex.Replace(cleaned, @"took [\d\.]+ seconds", @"took 1.23 seconds");
+            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            cleaned = Regex.Replace(cleaned, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
 
             //Avoid brittle assertion introduced by stack trace line numbers.
             cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");

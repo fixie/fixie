@@ -23,7 +23,7 @@ namespace Fixie.Internal
                 const int trimLength = 15;
 
                 if (s.Length > trimLength)
-                    return "\"" + s.Substring(0, trimLength).Escape() + "\"...";
+                    return "\"" + s.Substring(0, trimLength).Escape() + "...\"";
 
                 return "\"" + s.Escape() + "\"";
             }

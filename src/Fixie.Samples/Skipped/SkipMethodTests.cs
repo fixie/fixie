@@ -34,6 +34,12 @@ namespace Fixie.Samples.Skipped
             calculator.Subtract(5, 3).ShouldEqual(2);
         }
 
+        [Explicit]
+        public void ExplicitTest()
+        {
+            throw new Exception("ExplicitTest was invoked explicitly.");
+        }
+
         public void Dispose()
         {
             log.WhereAmI();

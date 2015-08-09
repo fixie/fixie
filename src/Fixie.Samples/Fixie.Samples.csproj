@@ -46,9 +46,6 @@
     <Compile Include="ColumnParameter\CalculatorTests.cs" />
     <Compile Include="ColumnParameter\ColumnAttribute.cs" />
     <Compile Include="ColumnParameter\CustomConvention.cs" />
-    <Compile Include="Explicit\CalculatorTests.cs" />
-    <Compile Include="Explicit\CustomConvention.cs" />
-    <Compile Include="Explicit\ExplicitAttribute.cs" />
     <Compile Include="Inclusive\CustomConvention.cs" />
     <Compile Include="IoC\CustomConvention.cs" />
     <Compile Include="IoC\Infrastructure.cs" />
@@ -65,6 +62,7 @@
     <Compile Include="SamplesAssembly.cs" />
     <Compile Include="Shuffle\CustomConvention.cs" />
     <Compile Include="Shuffle\OrderTests.cs" />
+    <Compile Include="Skipped\ExplicitAttribute.cs" />
     <Compile Include="Skipped\SkipAttribute.cs" />
     <Compile Include="Skipped\SkipClassTests.cs" />
     <Compile Include="Skipped\CustomConvention.cs" />

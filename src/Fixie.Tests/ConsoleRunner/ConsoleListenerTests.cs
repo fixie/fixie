@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Fixie.ConsoleRunner;
@@ -14,7 +15,10 @@ namespace Fixie.Tests.ConsoleRunner
             using (var console = new RedirectedConsole())
             using (var listener = new ConsoleListener())
             {
-                typeof(PassFailTestClass).Run(listener, SelfTestConvention.Build());
+                var convention = SelfTestConvention.Build();
+                convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+
+                typeof(PassFailTestClass).Run(listener, convention);
 
                 var testClass = typeof(PassFailTestClass).FullName;
 
@@ -22,7 +26,7 @@ namespace Fixie.Tests.ConsoleRunner
                        .Select(CleanBrittleValues)
                        .ShouldEqual(
                            "------ Testing Assembly Fixie.Tests.dll ------",
-                           "Test '" + testClass + ".SkipWithReason' skipped: Skipped due to naming convention.",
+                           "Test '" + testClass + ".SkipWithReason' skipped: Skipped with reason.",
                            "Test '" + testClass + ".SkipWithoutReason' skipped",
                            "Console.Out: FailA",
                            "Console.Error: FailA",
@@ -54,7 +58,7 @@ namespace Fixie.Tests.ConsoleRunner
 
                 convention
                     .Methods
-                    .Where(method => method.Name != "SkipWithoutReason" && method.Name != "SkipWithReason");
+                    .Where(method => !method.Has<SkipAttribute>());
 
                 typeof(PassFailTestClass).Run(listener, convention);
 
@@ -127,8 +131,10 @@ namespace Fixie.Tests.ConsoleRunner
 
             public void PassC() { WhereAmI(); }
 
+            [Skip]
             public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
 
+            [Skip("Skipped with reason.")]
             public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
 
             static void WhereAmI([CallerMemberName] string member = null)
@@ -136,6 +142,21 @@ namespace Fixie.Tests.ConsoleRunner
                 Console.Out.WriteLine("Console.Out: " + member);
                 Console.Error.WriteLine("Console.Error: " + member);
             }
+        }
+
+        [AttributeUsage(AttributeTargets.Method)]
+        class SkipAttribute : Attribute
+        {
+            public SkipAttribute()
+            {
+            }
+
+            public SkipAttribute(string reason)
+            {
+                Reason = reason;
+            }
+
+            public string Reason { get; private set; }
         }
     }
 }

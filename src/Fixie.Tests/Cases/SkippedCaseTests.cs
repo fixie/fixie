@@ -14,7 +14,9 @@ namespace Fixie.Tests.Cases
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
         }
 
@@ -26,6 +28,23 @@ namespace Fixie.Tests.Cases
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+        }
+
+        public void ShouldAllowMultiplePrioritizedSkipRules()
+        {
+            Convention.CaseExecution
+                .Skip(HasExplicitAttribute, ExplicitAttributeReason)
+                .Skip(HasSkipAttribute, SkipAttributeReason);
+
+            Run<SkippedTestClass>();
+
+            Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
         }
@@ -58,6 +77,16 @@ namespace Fixie.Tests.Cases
             exception.InnerException.Message.ShouldEqual("Unsafe case-skipped reason generator threw!");
         }
 
+        static string ExplicitAttributeReason(Case @case)
+        {
+            return "[Explicit] tests run only when they are individually selected for execution.";
+        }
+
+        static bool HasExplicitAttribute(Case @case)
+        {
+            return @case.Method.HasOrInherits<ExplicitAttribute>();
+        }
+
         static string SkipAttributeReason(Case @case)
         {
             var method = @case.Method;
@@ -69,7 +98,7 @@ namespace Fixie.Tests.Cases
 
         static bool HasSkipAttribute(Case @case)
         {
-            return @case.Method.HasOrInherits<SkipAttribute>() || @case.Method.DeclaringType.HasOrInherits<SkipAttribute>();
+            return @case.Method.HasOrInherits<SkipAttribute>();
         }
 
         class SkippedTestClass
@@ -78,9 +107,22 @@ namespace Fixie.Tests.Cases
             public void Fail() { throw new FailureException(); }
 
             public void Pass() { }
+
+            [Explicit]
+            public void Explicit() { }
+
+            [Explicit]
+            [Skip]
+            public void ExplicitAndSkip() { }
         }
 
-        [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+        [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+        class ExplicitAttribute : Attribute
+        {
+            public string Reason { get; set; }
+        }
+
+        [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
         class SkipAttribute : Attribute
         {
             public string Reason { get; set; }

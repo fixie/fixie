@@ -5,7 +5,6 @@
         public SamplesAssembly()
         {
             Apply<Categories.CustomConvention>();
-            Apply<ColumnParameter.CustomConvention>();
             Apply<Inclusive.CustomConvention>();
             Apply<IoC.CustomConvention>();
             Apply<LowCeremony.CustomConvention>();

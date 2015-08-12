@@ -43,7 +43,7 @@ namespace Fixie.Reports
         static XElement Environment()
         {
             return new XElement("environment",
-                new XAttribute("nunit-version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()),
+                new XAttribute("nunit-version", "2.6.4"), //The NUnit version whose XSD we are complying with.
                 new XAttribute("clr-version", System.Environment.Version.ToString()),
                 new XAttribute("os-version", System.Environment.OSVersion.ToString()),
                 new XAttribute("platform", System.Environment.OSVersion.Platform.ToString()),

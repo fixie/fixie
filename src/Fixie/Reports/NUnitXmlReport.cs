@@ -60,6 +60,7 @@ namespace Fixie.Reports
                 new XAttribute("success", assemblyResult.Failed == 0),
                 new XAttribute("name", assemblyResult.Name),
                 new XAttribute("time", Seconds(assemblyResult.Duration)),
+                new XAttribute("executed", true),
                 new XElement("results", assemblyResult.ConventionResults.Select(Convention)));
         }
 
@@ -70,6 +71,7 @@ namespace Fixie.Reports
                 new XAttribute("success", conventionResult.Failed == 0),
                 new XAttribute("name", conventionResult.Name),
                 new XAttribute("time", Seconds(conventionResult.Duration)),
+                new XAttribute("executed", true),
                 new XElement("results", conventionResult.ClassResults.Select(Class)));
         }
 
@@ -80,6 +82,7 @@ namespace Fixie.Reports
                 new XAttribute("name", classResult.Name),
                 new XAttribute("success", classResult.Failed == 0),
                 new XAttribute("time", Seconds(classResult.Duration)),
+                new XAttribute("executed", true),
                 new XElement("results", classResult.CaseResults.Select(Case)));
         }
 

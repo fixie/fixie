@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<test-results date="YYYY-MM-DD" time="HH:MM:SS" name="Results" total="6" failures="2" not-run="2">
+<test-results date="YYYY-MM-DD" time="HH:MM:SS" name="Results" total="6" failures="2" not-run="2" errors="0" inconclusive="0" ignored="0" skipped="0">
     <test-suite success="false" name="[assemblyLocation]" time="1.234">
         <results>
             <test-suite success="false" name="Fixie.Convention" time="1.234">

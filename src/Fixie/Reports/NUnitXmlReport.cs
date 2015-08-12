@@ -20,6 +20,14 @@ namespace Fixie.Reports
                     new XAttribute("total", executionResult.Total),
                     new XAttribute("failures", executionResult.Failed),
                     new XAttribute("not-run", executionResult.Skipped),
+
+                    //Fixie has fewer test states than NUnit, so these counts are always zero.
+                    new XAttribute("errors", 0), //Already accounted for by "failures" above.
+                    new XAttribute("inconclusive", 0), //No such status.
+                    new XAttribute("ignored", 0), //Already accounted for by "not-run" above.
+                    new XAttribute("skipped", 0), //Already accounted for by "not-run" above.
+                    new XAttribute("invalid", 0), //Already accounted for by "failures" above.
+
                     executionResult.AssemblyResults.Select(Assembly)));
         }
 

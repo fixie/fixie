@@ -56,6 +56,7 @@ namespace Fixie.Reports
         static XElement Assembly(AssemblyResult assemblyResult)
         {
             return new XElement("test-suite",
+                new XAttribute("type", "Assembly"),
                 new XAttribute("success", assemblyResult.Failed == 0),
                 new XAttribute("name", assemblyResult.Name),
                 new XAttribute("time", Seconds(assemblyResult.Duration)),
@@ -65,6 +66,7 @@ namespace Fixie.Reports
         static XElement Convention(ConventionResult conventionResult)
         {
             return new XElement("test-suite",
+                new XAttribute("type", "TestSuite"),
                 new XAttribute("success", conventionResult.Failed == 0),
                 new XAttribute("name", conventionResult.Name),
                 new XAttribute("time", Seconds(conventionResult.Duration)),
@@ -74,6 +76,7 @@ namespace Fixie.Reports
         static XElement Class(ClassResult classResult)
         {
             return new XElement("test-suite",
+                new XAttribute("type", "TestFixture"),
                 new XAttribute("name", classResult.Name),
                 new XAttribute("success", classResult.Failed == 0),
                 new XAttribute("time", Seconds(classResult.Duration)),

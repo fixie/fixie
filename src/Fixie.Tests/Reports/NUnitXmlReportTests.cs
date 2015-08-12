@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Fixie.Execution;
+using Fixie.Internal;
+using Fixie.Reports;
+using Should;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,10 +12,6 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using Fixie.Execution;
-using Fixie.Internal;
-using Fixie.Reports;
-using Should;
 
 namespace Fixie.Tests.Reports
 {

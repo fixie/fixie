@@ -28,7 +28,22 @@ namespace Fixie.Reports
                     new XAttribute("skipped", 0), //Already accounted for by "not-run" above.
                     new XAttribute("invalid", 0), //Already accounted for by "failures" above.
 
+                    Environment(),
+
                     executionResult.AssemblyResults.Select(Assembly)));
+        }
+
+        static XElement Environment()
+        {
+            return new XElement("environment",
+                new XAttribute("nunit-version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()),
+                new XAttribute("clr-version", System.Environment.Version.ToString()),
+                new XAttribute("os-version", System.Environment.OSVersion.ToString()),
+                new XAttribute("platform", System.Environment.OSVersion.Platform.ToString()),
+                new XAttribute("cwd", System.Environment.CurrentDirectory),
+                new XAttribute("machine-name", System.Environment.MachineName),
+                new XAttribute("user", System.Environment.UserName),
+                new XAttribute("user-domain", System.Environment.UserDomainName));
         }
 
         static XElement Assembly(AssemblyResult assemblyResult)

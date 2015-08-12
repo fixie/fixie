@@ -7,21 +7,6 @@ namespace Fixie.VisualStudio.TestAdapter
 {
     public class VisualStudioListener : LongLivedMarshalByRefObject, Listener
     {
-        //The Visual Studio test runner has poor support for parameterized test methods,
-        //when the arguments are not known ahead of time. It assumes that the TestCase
-        //FullyQualifyName strings will pefectly match between the discovery phase and
-        //the execution phase. Otherwise, you get a glitchy experience as Visual Studio
-        //tries and fails to match up actual execution results with the list of tests
-        //found at discovery time.
-
-        //The best thing that can be done for parameterized tests, then, is to include
-        //the "Method Group" (full name of the class/method without parameter
-        //information) as the TestCase's FullyQualifiedName while providing the full Case
-        //Name including parameter information as the TestResult's DisplayName. This
-        //combination allows the Visual Studio test runner to display each individual
-        //test case's success or failure, grouping parameterized cases under the method
-        //name, while avoiding glitches for dynamically-generated test case parameters.
-
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
 

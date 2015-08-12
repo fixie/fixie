@@ -23,15 +23,16 @@ namespace Fixie.VisualStudio.TestAdapter
             if (types == null)
                 types = CacheTypes(assemblyPath);
 
-            sourceLocation = null;
-
             var className = methodGroup.Class;
             var methodName = methodGroup.Method;
 
-            SequencePoint sequencePoint;
-
-            if (TryGetSequencePoint(className, methodName, out sequencePoint))
-                sourceLocation = new SourceLocation(sequencePoint.Document.Url, sequencePoint.StartLine);
+            sourceLocation = GetMethods(className)
+                .Where(m => m.Name == methodName)
+                .Select(FirstOrDefaultSequencePoint)
+                .Where(x => x != null)
+                .OrderBy(x => x.StartLine)
+                .Select(x => new SourceLocation(x.Document.Url, x.StartLine))
+                .FirstOrDefault();
 
             return sourceLocation != null;
         }
@@ -49,43 +50,24 @@ namespace Fixie.VisualStudio.TestAdapter
             return types;
         }
 
-        bool TryGetSequencePoint(string className, string methodName, out SequencePoint sequencePoint)
+        IEnumerable<MethodDefinition> GetMethods(string className)
         {
-            sequencePoint = null;
-
-            MethodDefinition testMethod;
-            if (TryGetMethod(className, methodName, out testMethod))
-            {
-                CustomAttribute asyncStateMachineAttribute;
-
-                if (TryGetAsyncStateMachineAttribute(testMethod, out asyncStateMachineAttribute))
-                    testMethod = GetStateMachineMoveNextMethod(asyncStateMachineAttribute);
-
-                sequencePoint = FirstUnhiddenSequencePoint(testMethod.Body);
-            }
-            
-            return sequencePoint != null;
-        }
-
-        bool TryGetMethod(string className, string methodName, out MethodDefinition method)
-        {
-            method = null;
             TypeDefinition type;
 
-            if (TryGetType(className, out type))
-            {
-                var matches = type.GetMethods().Where(m => m.Name == methodName).ToArray();
-
-                if (matches.Length == 1)
-                    method = matches[0];
-            }
-
-            return method != null;
+            if (types.TryGetValue(StandardizeTypeName(className), out type))
+                return type.GetMethods();
+            
+            return Enumerable.Empty<MethodDefinition>();
         }
 
-        bool TryGetType(string className, out TypeDefinition type)
+        static SequencePoint FirstOrDefaultSequencePoint(MethodDefinition testMethod)
         {
-            return types.TryGetValue(StandardizeTypeName(className), out type);
+            CustomAttribute asyncStateMachineAttribute;
+
+            if (TryGetAsyncStateMachineAttribute(testMethod, out asyncStateMachineAttribute))
+                testMethod = GetStateMachineMoveNextMethod(asyncStateMachineAttribute);
+
+            return FirstOrDefaultUnhiddenSequencePoint(testMethod.Body);
         }
 
         static bool TryGetAsyncStateMachineAttribute(MethodDefinition method, out CustomAttribute attribute)
@@ -101,7 +83,7 @@ namespace Fixie.VisualStudio.TestAdapter
             return stateMachineMoveNextMethod;
         }
 
-        static SequencePoint FirstUnhiddenSequencePoint(MethodBody body)
+        static SequencePoint FirstOrDefaultUnhiddenSequencePoint(MethodBody body)
         {
             const int lineNumberIndicatingHiddenLine = 16707566; //0xfeefee
 

@@ -49,9 +49,14 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
             AssertNoLineNumber(typeof(SourceLocationSamples).FullName, "Hidden");
         }
 
-        public void ShouldSafelyFailForOverloadedMethodsBecauseTheRequestIsAmbiguous()
+        public void ShouldDetectLineNumberOfFirstOccurrenceOfOverloadedMethods()
         {
-            AssertNoLineNumber(typeof(SourceLocationSamples).FullName, "Overloaded");
+            // Visual Studio's test running infrastructure is incapable of distinguishing
+            // overloads, even if we were to report accurate line numbers for each individually.
+            // The compromise that all major .NET test frameworks have to make is to report
+            // the line number of *one* of the overload occurrences.
+
+            AssertLineNumber(typeof(SourceLocationSamples).FullName, "Overloaded", 66, 66);
         }
 
         public void ShouldSafelyFailForInheritedMethodsBecauseTheRequestIsAmbiguous()
@@ -78,6 +83,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
             SourceLocation location;
             var success = sourceLocationProvider.TryGetSourceLocation(new MethodGroup(className + "." + methodName), out location);
 
+            success.ShouldBeTrue();
             location.CodeFilePath.EndsWith("SourceLocationSamples.cs").ShouldBeTrue();
 
 #if DEBUG

@@ -69,6 +69,19 @@ namespace Fixie.Tests.Reports
             //Avoid brittle assertion introduced by stack trace line numbers.
             cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
 
+            //Avoid brittle assertion introduced by environment attributes.
+            cleaned = Regex.Replace(cleaned, @"clr-version=""[^""]*""", @"clr-version=""[clr-version]""");
+            cleaned = Regex.Replace(cleaned, @"os-version=""[^""]*""", @"os-version=""[os-version]""");
+            cleaned = Regex.Replace(cleaned, @"platform=""[^""]*""", @"platform=""[platform]""");
+            cleaned = Regex.Replace(cleaned, @"cwd=""[^""]*""", @"cwd=""[cwd]""");
+            cleaned = Regex.Replace(cleaned, @"machine-name=""[^""]*""", @"machine-name=""[machine-name]""");
+            cleaned = Regex.Replace(cleaned, @"user=""[^""]*""", @"user=""[user]""");
+            cleaned = Regex.Replace(cleaned, @"user-domain=""[^""]*""", @"user-domain=""[user-domain]""");
+
+            //Avoid brittle assertion introduced by culture attributes.
+            cleaned = Regex.Replace(cleaned, @"current-culture=""[^""]*""", @"current-culture=""[current-culture]""");
+            cleaned = Regex.Replace(cleaned, @"current-uiculture=""[^""]*""", @"current-uiculture=""[current-uiculture]""");
+
             return cleaned;
         }
 

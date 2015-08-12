@@ -1,33 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<test-results date="YYYY-MM-DD" time="HH:MM:SS" name="Results" total="6" failures="2" not-run="2">
-    <test-suite success="false" name="[assemblyLocation]" time="1.234">
+<test-results date="YYYY-MM-DD" time="HH:MM:SS" name="Results" total="6" failures="2" not-run="2" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
+    <environment nunit-version="2.6.4" clr-version="[clr-version]" os-version="[os-version]" platform="[platform]" cwd="[cwd]" machine-name="[machine-name]" user="[user]" user-domain="[user-domain]" />
+    <culture-info current-culture="[current-culture]" current-uiculture="[current-uiculture]" />
+    <test-suite type="Assembly" success="false" name="[assemblyLocation]" time="1.234" executed="true" result="Failure">
         <results>
-            <test-suite success="false" name="Fixie.Convention" time="1.234">
+            <test-suite type="TestSuite" success="false" name="Fixie.Convention" time="1.234" executed="true" result="Failure">
                 <results>
-                    <test-suite name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass" success="false" time="1.234">
+                    <test-suite type="TestFixture" name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass" success="false" time="1.234" executed="true" result="Failure">
                         <results>
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipWithReason" executed="false" success="true">
+                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipWithReason" executed="false" success="true" result="Ignored">
                             <reason>
                               <message><![CDATA[reason]]></message>
                             </reason>
                           </test-case>
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipWithoutReason" executed="false" success="true" />
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.Fail" executed="true" success="false" time="1.234">
+                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.SkipWithoutReason" executed="false" success="true" result="Ignored" />
+                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.Fail" executed="true" success="false" result="Failure" time="1.234">
                             <failure>
                               <message><![CDATA['Fail' failed!]]></message>
                               <stack-trace><![CDATA['Fail' failed!
    at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
                             </failure>
                           </test-case>
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.Pass" executed="true" success="true" time="1.234" />
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassIfTrue(False)" executed="true" success="false" time="1.234">
+                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.Pass" executed="true" success="true" result="Success" time="1.234" />
+                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassIfTrue(False)" executed="true" success="false" result="Failure" time="1.234">
                             <failure>
                               <message><![CDATA['PassIfTrue' failed!]]></message>
                               <stack-trace><![CDATA['PassIfTrue' failed!
    at Fixie.Tests.Reports.NUnitXmlReportTests.PassFailTestClass.PassIfTrue(Boolean pass) in [fileLocation]:line #]]></stack-trace>
                             </failure>
                           </test-case>
-                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassIfTrue(True)" executed="true" success="true" time="1.234" />
+                          <test-case name="Fixie.Tests.Reports.NUnitXmlReportTests+PassFailTestClass.PassIfTrue(True)" executed="true" success="true" result="Success" time="1.234" />
                         </results>
                     </test-suite>
                 </results>

@@ -20,33 +20,72 @@ namespace Fixie.Reports
                     new XAttribute("total", executionResult.Total),
                     new XAttribute("failures", executionResult.Failed),
                     new XAttribute("not-run", executionResult.Skipped),
+
+                    //Fixie has fewer test states than NUnit, so these counts are always zero.
+                    new XAttribute("errors", 0), //Already accounted for by "failures" above.
+                    new XAttribute("inconclusive", 0), //No such status.
+                    new XAttribute("ignored", 0), //Already accounted for by "not-run" above.
+                    new XAttribute("skipped", 0), //Already accounted for by "not-run" above.
+                    new XAttribute("invalid", 0), //Already accounted for by "failures" above.
+
+                    Environment(),
+                    CultureInfo(),
                     executionResult.AssemblyResults.Select(Assembly)));
+        }
+
+        static XElement CultureInfo()
+        {
+            return new XElement("culture-info",
+                new XAttribute("current-culture", System.Globalization.CultureInfo.CurrentCulture.ToString()),
+                new XAttribute("current-uiculture", System.Globalization.CultureInfo.CurrentUICulture.ToString()));
+        }
+
+        static XElement Environment()
+        {
+            return new XElement("environment",
+                new XAttribute("nunit-version", "2.6.4"), //The NUnit version whose XSD we are complying with.
+                new XAttribute("clr-version", System.Environment.Version.ToString()),
+                new XAttribute("os-version", System.Environment.OSVersion.ToString()),
+                new XAttribute("platform", System.Environment.OSVersion.Platform.ToString()),
+                new XAttribute("cwd", System.Environment.CurrentDirectory),
+                new XAttribute("machine-name", System.Environment.MachineName),
+                new XAttribute("user", System.Environment.UserName),
+                new XAttribute("user-domain", System.Environment.UserDomainName));
         }
 
         static XElement Assembly(AssemblyResult assemblyResult)
         {
             return new XElement("test-suite",
+                new XAttribute("type", "Assembly"),
                 new XAttribute("success", assemblyResult.Failed == 0),
                 new XAttribute("name", assemblyResult.Name),
                 new XAttribute("time", Seconds(assemblyResult.Duration)),
+                new XAttribute("executed", true),
+                new XAttribute("result", assemblyResult.Failed > 0 ? "Failure" : "Success"),
                 new XElement("results", assemblyResult.ConventionResults.Select(Convention)));
         }
 
         static XElement Convention(ConventionResult conventionResult)
         {
             return new XElement("test-suite",
+                new XAttribute("type", "TestSuite"),
                 new XAttribute("success", conventionResult.Failed == 0),
                 new XAttribute("name", conventionResult.Name),
                 new XAttribute("time", Seconds(conventionResult.Duration)),
+                new XAttribute("executed", true),
+                new XAttribute("result", conventionResult.Failed > 0 ? "Failure" : "Success"),
                 new XElement("results", conventionResult.ClassResults.Select(Class)));
         }
 
         static XElement Class(ClassResult classResult)
         {
             return new XElement("test-suite",
+                new XAttribute("type", "TestFixture"),
                 new XAttribute("name", classResult.Name),
                 new XAttribute("success", classResult.Failed == 0),
                 new XAttribute("time", Seconds(classResult.Duration)),
+                new XAttribute("executed", true),
+                new XAttribute("result", classResult.Failed > 0 ? "Failure" : "Success"),
                 new XElement("results", classResult.CaseResults.Select(Case)));
         }
 
@@ -55,7 +94,8 @@ namespace Fixie.Reports
             var @case = new XElement("test-case",
                 new XAttribute("name", caseResult.Name),
                 new XAttribute("executed", caseResult.Status != CaseStatus.Skipped),
-                new XAttribute("success", caseResult.Status != CaseStatus.Failed));
+                new XAttribute("success", caseResult.Status != CaseStatus.Failed),
+                new XAttribute("result", Result(caseResult.Status)));
 
             if (caseResult.Status != CaseStatus.Skipped)
                 @case.Add(new XAttribute("time", Seconds(caseResult.Duration)));
@@ -72,6 +112,21 @@ namespace Fixie.Reports
             }
 
             return @case;
+        }
+
+        static string Result(CaseStatus status)
+        {
+            switch (status)
+            {
+                case CaseStatus.Passed:
+                    return "Success";
+                case CaseStatus.Failed:
+                    return "Failure";
+                case CaseStatus.Skipped:
+                    return "Ignored";
+                default:
+                    throw new ArgumentOutOfRangeException("status");
+            }
         }
 
         static string Seconds(TimeSpan duration)

@@ -31,9 +31,10 @@ installing a NuGet package.  It is not enough to simply have the dlls under
 your packages folder.  As a consequence, the VS runner doesn't run on the Fixie
 solution itself. See https://github.com/fixie/fixie.runners.sandbox for
 a sample project which can be used to test the Visual Studio Test Adapter.
-5. When upgrading to a new version Fixie, it is recommended that you remove
-close and reopen Visual Studio.  It is highly likely that misleading errors
-will be reported in the Tests Output window upon upgrading.
+5. It is highly likely that misleading errors will be reported in the Tests Output window upon upgrading.
+When users of the Test Adapter upgrade to a new version Fixie, it is recommended that they remove the
+old version, close Visual Studio, reopen Visual Studio, and install the new version
+of Fixie.  
 6. If you're having problems discovering or running tests, you may need to reset
 Visual Studio's cache of runner assemblies. Shut down all instances of Visual Studio,
 delete the folder `%TEMP%\VisualStudioTestExplorerExtensions`, and be sure that

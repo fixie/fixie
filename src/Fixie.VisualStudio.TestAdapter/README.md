@@ -11,18 +11,18 @@ surprises in the behavior of the right-click context menu's "Run Tests" option.
 ## Visual Studio's Assumptions and Limitations
 
 1. In a code editor, the right-click context menu can provide a "Run Tests"
-option when a test framework's ITestDiscoverer provides accurate line
+option when a test framework's `ITestDiscoverer` provides accurate line
 number information for discovered test methods, and when the discovered tests'
-TestCase.FullyQualifiedName meets certain undocumented restrictions.
-Experimentation shows that TestCase.FullyQualifiedName may be of the
-form "<full-name-of-test-class>.<method-name>". Straying from that format
-in any way, such as placing argument information like "()" or "(1,2)" at
+`TestCase.FullyQualifiedName` meets certain undocumented restrictions.
+Experimentation shows that `TestCase.FullyQualifiedName` may be of the
+form `<full-name-of-test-class>.<method-name>`. Straying from that format
+in any way, such as placing argument information like `()` or `(1,2)` at
 the end, will break the right-click "Run Tests" behavior.
 2. Even when these rules are followed, Visual Studio's right click "Run
 Tests" behavior is broken in the presence of overloaded test methods.
 3. Visual Studio has poor support for parameterized test methods, for which
 the arguments are not known ahead of execution time. It assumes that
-TestCase.FullyQualifiedName values will pefectly match between the discovery
+`TestCase.FullyQualifiedName` values will pefectly match between the discovery
 phase and the execution phase. Otherwise, you get a glitchy experience as
 Visual Studio tries and fails to match up actual execution results
 with the list of tests found at discovery time.
@@ -36,7 +36,7 @@ close and reopen Visual Studio.  It is highly likely that misleading errors
 will be reported in the Tests Output window upon upgrading.
 6. If you're having problems discovering or running tests, you may need to reset
 Visual Studio's cache of runner assemblies. Shut down all instances of Visual Studio,
-delete the folder %TEMP%\VisualStudioTestExplorerExtensions, and be sure that
+delete the folder `%TEMP%\VisualStudioTestExplorerExtensions`, and be sure that
 your project is only linked against a single version of Fixie.
 
 ## Fixie's Compromises
@@ -57,13 +57,13 @@ so they can be executed by selecting them in Test Explorer like any other test.
 
 To meet the needs of both overloads and paramterized test methods, Fixie
 registers one Visual Studio TestCase instance *per method group*, instead
-of per method.  It does so by setting the TestCase.FullyQualifiedName to
+of per method.  It does so by setting the `TestCase.FullyQualifiedName` to
 the method group of a test case, and by only reporting each discovered
 method group once during discovery.
 
-Thankfully, Visual Studio can be given any number of TestResult objects for
-the same TestCase FullyQualifiedName, and Fixie
-can give each TestResult an arbitrary DisplayName including parameter
+Thankfully, Visual Studio can be given any number of `TestResult` objects for
+the same `TestCase FullyQualifiedName`, and Fixie
+can give each `TestResult` an arbitrary `DisplayName` including parameter
 value information.  This combination allows the Visual Studio test runner to
 display each individual test case's success or failure, grouping parameterized
 and overloaded cases under the method name, while avoiding glitches for
@@ -89,7 +89,8 @@ Right clicking on inherited test methods will fail to successfully execute
 the intended test.
 
 There are likely other scenarios in which right clicking on test methods will
-fail to successfully execute the intended test.
+fail to successfully execute the intended test.  In all cases, the Test Explorer
+window does report the truth about what actually executed.
 
 ## Development on the Test Adapter
 
@@ -98,14 +99,14 @@ Recommended Workflow:
 1. Set up a local NuGet package source pointing at the package/ folder in the
 root of your copy of the Fixie repository.
 2. Implement a change within the Fixie solution.
-3. "build package" at the command line to locally produce a new build of the
+3. `build package` at the command line to locally produce a new build of the
 NuGet package.
 4. Note the creation of the package file inside the package/ folder.
-5. Open the fixie.runners.sandbox solution, uninstall Fixie from all projects,
+5. Open the `fixie.runners.sandbox` solution, uninstall Fixie from all projects,
 and close all instances of Visual Studio.
-6. Delete the contents of %TEMP%\VisualStudioTestExplorerExtensions and reopen
-the fixie.runners.sandbox solution.
-7. In fixie.runners.sandbox, resinstall Fixie but from your local package
+6. Delete the contents of `%TEMP%\VisualStudioTestExplorerExtensions` and reopen
+the `fixie.runners.sandbox` solution.
+7. In `fixie.runners.sandbox`, resinstall Fixie but from your local package
 source.
-8. Run tests within the fixie.runners.sandbox solution to test the effect of
+8. Run tests within the `fixie.runners.sandbox` solution to test the effect of
 your changes.

@@ -29,8 +29,15 @@ namespace Fixie.Reports
                     new XAttribute("invalid", 0), //Already accounted for by "failures" above.
 
                     Environment(),
-
+                    CultureInfo(),
                     executionResult.AssemblyResults.Select(Assembly)));
+        }
+
+        static XElement CultureInfo()
+        {
+            return new XElement("culture-info",
+                new XAttribute("current-culture", System.Globalization.CultureInfo.CurrentCulture.ToString()),
+                new XAttribute("current-uiculture", System.Globalization.CultureInfo.CurrentUICulture.ToString()));
         }
 
         static XElement Environment()

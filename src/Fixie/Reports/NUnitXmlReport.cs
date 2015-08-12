@@ -61,6 +61,7 @@ namespace Fixie.Reports
                 new XAttribute("name", assemblyResult.Name),
                 new XAttribute("time", Seconds(assemblyResult.Duration)),
                 new XAttribute("executed", true),
+                new XAttribute("result", assemblyResult.Failed > 0 ? "Failure" : "Success"),
                 new XElement("results", assemblyResult.ConventionResults.Select(Convention)));
         }
 
@@ -72,6 +73,7 @@ namespace Fixie.Reports
                 new XAttribute("name", conventionResult.Name),
                 new XAttribute("time", Seconds(conventionResult.Duration)),
                 new XAttribute("executed", true),
+                new XAttribute("result", conventionResult.Failed > 0 ? "Failure" : "Success"),
                 new XElement("results", conventionResult.ClassResults.Select(Class)));
         }
 
@@ -83,6 +85,7 @@ namespace Fixie.Reports
                 new XAttribute("success", classResult.Failed == 0),
                 new XAttribute("time", Seconds(classResult.Duration)),
                 new XAttribute("executed", true),
+                new XAttribute("result", classResult.Failed > 0 ? "Failure" : "Success"),
                 new XElement("results", classResult.CaseResults.Select(Case)));
         }
 
@@ -91,7 +94,8 @@ namespace Fixie.Reports
             var @case = new XElement("test-case",
                 new XAttribute("name", caseResult.Name),
                 new XAttribute("executed", caseResult.Status != CaseStatus.Skipped),
-                new XAttribute("success", caseResult.Status != CaseStatus.Failed));
+                new XAttribute("success", caseResult.Status != CaseStatus.Failed),
+                new XAttribute("result", Result(caseResult.Status)));
 
             if (caseResult.Status != CaseStatus.Skipped)
                 @case.Add(new XAttribute("time", Seconds(caseResult.Duration)));
@@ -108,6 +112,21 @@ namespace Fixie.Reports
             }
 
             return @case;
+        }
+
+        static string Result(CaseStatus status)
+        {
+            switch (status)
+            {
+                case CaseStatus.Passed:
+                    return "Success";
+                case CaseStatus.Failed:
+                    return "Failure";
+                case CaseStatus.Skipped:
+                    return "Ignored";
+                default:
+                    throw new ArgumentOutOfRangeException("status");
+            }
         }
 
         static string Seconds(TimeSpan duration)

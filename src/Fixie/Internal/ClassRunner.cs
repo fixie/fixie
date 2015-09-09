@@ -152,21 +152,21 @@ namespace Fixie.Internal
         {
             var result = new SkipResult(@case, reason);
             listener.CaseSkipped(result);
-            return result;
+            return new CaseResult(result);
         }
 
         CaseResult Pass(Case @case)
         {
             var result = new PassResult(@case);
             listener.CasePassed(result);
-            return result;
+            return new CaseResult(result);
         }
 
         CaseResult Fail(Case @case)
         {
             var result = new FailResult(@case, assertionLibraryFilter);
             listener.CaseFailed(result);
-            return result;
+            return new CaseResult(result);
         }
     }
 }

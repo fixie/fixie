@@ -75,12 +75,6 @@ namespace Fixie.Tests.Execution
 
             visitedTypes.Add(type);
 
-            if (type == typeof(CaseResult))
-            {
-                return KnownCaseResultImplementations()
-                    .All(implementationType => IsSafeForAppDomainCommunication(implementationType, visitedTypes));
-            }
-
             if (type == typeof(object))
                 return false;
 
@@ -117,14 +111,6 @@ namespace Fixie.Tests.Execution
             }
 
             return true;
-        }
-
-        static IEnumerable<Type> KnownCaseResultImplementations()
-        {
-            return typeof(CaseResult)
-                .Assembly
-                .GetTypes()
-                .Where(type => typeof(CaseResult).IsAssignableFrom(type) && type.IsClass);
         }
     }
 }

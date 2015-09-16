@@ -29,6 +29,24 @@ namespace Fixie.Execution
                 return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
+        public AssemblyResult RunAssembly<TListenerFactory>(Options options) where TListenerFactory : IListenerFactory
+        {
+            var listenerFactoryAssemblyFullPath = typeof(TListenerFactory).Assembly.Location;
+            var listenerFactoryType = typeof(TListenerFactory).FullName;
+
+            using (var executionProxy = Create<ExecutionProxy>())
+                return executionProxy.RunAssembly(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options);
+        }
+
+        public AssemblyResult RunMethods<TListenerFactory>(Options options, MethodGroup[] methodGroups) where TListenerFactory : IListenerFactory
+        {
+            var listenerFactoryAssemblyFullPath = typeof(TListenerFactory).Assembly.Location;
+            var listenerFactoryType = typeof(TListenerFactory).FullName;
+
+            using (var executionProxy = Create<ExecutionProxy>())
+                return executionProxy.RunMethods(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options, methodGroups);
+        }
+
         [Obsolete]
         public AssemblyResult RunAssembly(Options options, Listener listener)
         {

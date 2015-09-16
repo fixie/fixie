@@ -14,6 +14,40 @@ namespace Fixie.Internal
             return new Discoverer(options).DiscoverTestMethodGroups(assembly);
         }
 
+        public AssemblyResult RunAssembly(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options)
+        {
+            var runner = CreateRunner(options, listenerFactoryAssemblyFullPath, listenerFactoryType);
+
+            var assembly = LoadAssembly(assemblyFullPath);
+
+            return runner.RunAssembly(assembly);
+        }
+
+        public AssemblyResult RunMethods(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, MethodGroup[] methodGroups)
+        {
+            var runner = CreateRunner(options, listenerFactoryAssemblyFullPath, listenerFactoryType);
+
+            var assembly = LoadAssembly(assemblyFullPath);
+
+            return runner.RunMethods(assembly, methodGroups);
+        }
+
+        static Runner CreateRunner(Options options, string listenerFactoryAssemblyFullPath, string listenerFactoryType)
+        {
+            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, options);
+
+            return new Runner(listener, options);
+        }
+
+        static Listener CreateListener(string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options)
+        {
+            var type = Assembly.LoadFrom(listenerFactoryAssemblyFullPath).GetType(listenerFactoryType);
+
+            var factory = (IListenerFactory)Activator.CreateInstance(type);
+
+            return factory.Create(options);
+        }
+
         [Obsolete]
         public AssemblyResult RunAssembly(string assemblyFullPath, Options options, Listener listener)
         {

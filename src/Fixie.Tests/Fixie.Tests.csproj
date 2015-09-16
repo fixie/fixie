@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.ObjectModel">
+      <HintPath>..\..\lib\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.dll</HintPath>
@@ -98,6 +101,7 @@
     <Compile Include="Cases\SkippedCaseTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationProviderTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationSamples.cs" />
+    <Compile Include="VisualStudio\TestAdapter\VisualStudioListenerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie.Console\Fixie.Console.csproj">

@@ -25,6 +25,11 @@ namespace Fixie.Tests
             return console.Output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
         }
 
+        public static IEnumerable<string> Lines(this string multiline)
+        {
+            return multiline.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         public static void Run(this Type sampleTestClass, Listener listener, Convention convention)
         {
             new Runner(listener).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);

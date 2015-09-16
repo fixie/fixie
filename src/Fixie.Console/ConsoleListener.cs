@@ -4,7 +4,7 @@ using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class ConsoleListener : LongLivedMarshalByRefObject, Listener
+    public class ConsoleListener : Listener
     {
         public void AssemblyStarted(AssemblyInfo assembly)
         {

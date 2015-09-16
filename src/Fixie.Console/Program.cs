@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Fixie.Execution;
@@ -113,33 +112,10 @@ namespace Fixie.ConsoleRunner
 
         static AssemblyResult Execute(string assemblyPath, Options options)
         {
-            if (ShouldUseTeamCityListener(options))
-            {
-                using (var listener = new TeamCityListener())
-                    return Execute(assemblyPath, options, listener);
-            }
-
-            using (var listener = new ConsoleListener())
-                return Execute(assemblyPath, options, listener);
-        }
-
-        static AssemblyResult Execute(string assemblyPath, Options options, Listener listener)
-        {
             using (var environment = new ExecutionEnvironment(assemblyPath))
-                return environment.RunAssembly(options, listener);
-        }
-
-        static bool ShouldUseTeamCityListener(Options options)
-        {
-            var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
-
-            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
-
-            var useTeamCityListener =
-                (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
-                (!teamCityExplicitlySpecified && runningUnderTeamCity);
-
-            return useTeamCityListener;
+            {
+                return environment.RunAssembly<ListenerFactory>(options);
+            }
         }
     }
 }

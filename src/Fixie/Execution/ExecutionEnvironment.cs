@@ -29,6 +29,7 @@ namespace Fixie.Execution
                 return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
+        [Obsolete]
         public AssemblyResult RunAssembly(Options options, Listener listener)
         {
             AssertIsLongLivedMarshalByRefObject(listener);
@@ -37,6 +38,7 @@ namespace Fixie.Execution
                 return executionProxy.RunAssembly(assemblyFullPath, options, listener);
         }
 
+        [Obsolete]
         public AssemblyResult RunMethods(Options options, Listener listener, MethodGroup[] methodGroups)
         {
             AssertIsLongLivedMarshalByRefObject(listener);
@@ -45,6 +47,7 @@ namespace Fixie.Execution
                 return executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
         }
 
+        [Obsolete]
         static void AssertIsLongLivedMarshalByRefObject(Listener listener)
         {
             if (listener is LongLivedMarshalByRefObject) return;

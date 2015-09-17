@@ -101,9 +101,8 @@ namespace Fixie.Internal
         AssemblyResult Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
             var assemblyResult = new AssemblyResult(assembly.Location);
-            var assemblyInfo = new AssemblyInfo(assembly);
 
-            listener.AssemblyStarted(assemblyInfo);
+            listener.AssemblyStarted(assembly);
 
             foreach (var convention in conventions)
             {
@@ -112,7 +111,7 @@ namespace Fixie.Internal
                 assemblyResult.Add(conventionResult);
             }
 
-            listener.AssemblyCompleted(assemblyInfo, assemblyResult);
+            listener.AssemblyCompleted(assembly, assemblyResult);
 
             return assemblyResult;
         }

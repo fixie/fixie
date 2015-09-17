@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Fixie.Execution;
 
@@ -8,7 +9,7 @@ namespace Fixie.Tests
     {
         readonly List<string> log = new List<string>();
 
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void AssemblyStarted(Assembly assembly)
         {
         }
 
@@ -55,7 +56,7 @@ namespace Fixie.Tests
             log.Add(entry.ToString());
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {
         }
 

@@ -6,7 +6,7 @@ namespace Fixie.ConsoleRunner
 {
     public class ListenerFactory : IListenerFactory
     {
-        public Listener Create(Options options)
+        public Listener Create(Options options, IExecutionSink executionSink)
         {
             if (ShouldUseTeamCityListener(options))
                 return new TeamCityListener();

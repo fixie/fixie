@@ -14,38 +14,35 @@ namespace Fixie.Internal
             return new Discoverer(options).DiscoverTestMethodGroups(assembly);
         }
 
-        public AssemblyResult RunAssembly(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options)
+        public AssemblyResult RunAssembly(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, IExecutionSink executionSink)
         {
-            var runner = CreateRunner(options, listenerFactoryAssemblyFullPath, listenerFactoryType);
+            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, options, executionSink);
+
+            var runner = new Runner(listener, options);
 
             var assembly = LoadAssembly(assemblyFullPath);
 
             return runner.RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, MethodGroup[] methodGroups)
+        public AssemblyResult RunMethods(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, IExecutionSink executionSink, MethodGroup[] methodGroups)
         {
-            var runner = CreateRunner(options, listenerFactoryAssemblyFullPath, listenerFactoryType);
+            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, options, executionSink);
+
+            var runner = new Runner(listener, options);
 
             var assembly = LoadAssembly(assemblyFullPath);
 
             return runner.RunMethods(assembly, methodGroups);
         }
 
-        static Runner CreateRunner(Options options, string listenerFactoryAssemblyFullPath, string listenerFactoryType)
-        {
-            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, options);
-
-            return new Runner(listener, options);
-        }
-
-        static Listener CreateListener(string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options)
+        static Listener CreateListener(string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, IExecutionSink executionSink)
         {
             var type = Assembly.LoadFrom(listenerFactoryAssemblyFullPath).GetType(listenerFactoryType);
 
             var factory = (IListenerFactory)Activator.CreateInstance(type);
 
-            return factory.Create(options);
+            return factory.Create(options, executionSink);
         }
 
         [Obsolete]

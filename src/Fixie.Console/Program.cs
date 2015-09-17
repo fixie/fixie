@@ -114,7 +114,7 @@ namespace Fixie.ConsoleRunner
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
-                return environment.RunAssembly<ListenerFactory>(options);
+                return environment.RunAssembly<ListenerFactory>(options, null);
             }
         }
     }

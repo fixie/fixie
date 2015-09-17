@@ -1,6 +1,4 @@
-using Fixie.Execution;
-
-namespace Fixie.VisualStudio.TestAdapter
+namespace Fixie.Execution
 {
     public interface IExecutionSink
     {

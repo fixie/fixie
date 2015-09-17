@@ -50,6 +50,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ListenerFactory.cs" />
     <Compile Include="SourceLocation.cs" />
     <Compile Include="SourceLocationProvider.cs" />
     <Compile Include="ExecutionSink.cs" />

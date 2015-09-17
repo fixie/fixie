@@ -2,7 +2,7 @@
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class VisualStudioListener : LongLivedMarshalByRefObject, Listener
+    public class VisualStudioListener : Listener
     {
         readonly IExecutionSink log;
 

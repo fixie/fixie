@@ -3,7 +3,6 @@ using Fixie.Internal;
 
 namespace Fixie.Execution
 {
-    [Serializable]
     public class FailResult
     {
         public FailResult(Case @case, AssertionLibraryFilter filter)

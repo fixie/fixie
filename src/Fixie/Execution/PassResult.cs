@@ -2,7 +2,6 @@
 
 namespace Fixie.Execution
 {
-    [Serializable]
     public class PassResult
     {
         public PassResult(Case @case)

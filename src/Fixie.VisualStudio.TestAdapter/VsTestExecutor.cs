@@ -39,9 +39,9 @@ namespace Fixie.VisualStudio.TestAdapter
                     {
                         log.Info("Processing " + assemblyPath);
 
+                        using (var executionSink = new ExecutionSink(frameworkHandle, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
-                            var executionSink = new ExecutionSink(frameworkHandle, assemblyPath);
                             environment.RunAssembly<ListenerFactory>(new Options(), executionSink);
                         }
                     }
@@ -86,9 +86,9 @@ namespace Fixie.VisualStudio.TestAdapter
 
                         var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
 
+                        using (var executionSink = new ExecutionSink(frameworkHandle, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
-                            var executionSink = new ExecutionSink(frameworkHandle, assemblyPath);
                             environment.RunMethods<ListenerFactory>(new Options(), executionSink, methodGroups);
                         }
                     }

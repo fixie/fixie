@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class ExecutionSink : IExecutionSink
+    public class ExecutionSink : LongLivedMarshalByRefObject, IExecutionSink
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;

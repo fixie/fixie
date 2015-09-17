@@ -18,11 +18,13 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
     {
         public void ShouldReportResultsToExecutionRecorder()
         {
+            const string assemblyPath = "assembly.path.dll";
+            var recorder = new StubExecutionRecorder();
+
             using (var console = new RedirectedConsole())
+            using (var executionSink = new ExecutionSink(recorder, assemblyPath))
             {
-                const string assemblyPath = "assembly.path.dll";
-                var recorder = new StubExecutionRecorder();
-                var listener = new VisualStudioListener(new ExecutionSink(recorder, assemblyPath));
+                var listener = new VisualStudioListener(executionSink);
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
                 convention.Parameters.Add<InputAttributeParameterSource>();

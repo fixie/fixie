@@ -63,16 +63,6 @@ namespace Fixie.Tests.Execution
             //     also not acceptable for AppDomain communication because they can cause
             //     assembly load failures at runtime.
 
-            if (type == typeof(Listener))
-            {
-                //Tests use this routine to vet Listener as a safe remoting *interface*,
-                //but it is also used as an *argument* on other remoting interfaces.
-                //Because it is the responsibility of the Listener implementation to be
-                //a valid MarshalByRefObject, there is nothing left to check for here,
-                //so it is assumed to be valid.
-                return true;
-            }
-
             if (type == typeof(IExecutionSink))
             {
                 //Tests use this routine to vet IExecutionSink as a safe remoting *interface*,

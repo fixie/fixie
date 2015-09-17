@@ -10,11 +10,6 @@ namespace Fixie.Tests.Execution
             typeof(IExecutionSink).ShouldBeSafeAppDomainCommunicationInterface();
         }
 
-        public void ShouldAllowRunnersInOtherAppDomainsToProvideTheirOwnListeners()
-        {
-            typeof(Listener).ShouldBeSafeAppDomainCommunicationInterface();
-        }
-
         public void ShouldAllowRunnersToPerformTestDiscoveryAndExecutionThroughExecutionProxy()
         {
             typeof(ExecutionProxy).ShouldBeSafeAppDomainCommunicationInterface();

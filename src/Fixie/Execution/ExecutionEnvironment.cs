@@ -51,24 +51,6 @@ namespace Fixie.Execution
                 return executionProxy.RunMethods(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options, executionSink, methodGroups);
         }
 
-        [Obsolete]
-        public AssemblyResult RunAssembly(Options options, Listener listener)
-        {
-            AssertIsLongLivedMarshalByRefObject(listener);
-
-            using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunAssembly(assemblyFullPath, options, listener);
-        }
-
-        [Obsolete]
-        public AssemblyResult RunMethods(Options options, Listener listener, MethodGroup[] methodGroups)
-        {
-            AssertIsLongLivedMarshalByRefObject(listener);
-
-            using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
-        }
-
         static void AssertIsLongLivedMarshalByRefObject(object o)
         {
             if (o == null) return;

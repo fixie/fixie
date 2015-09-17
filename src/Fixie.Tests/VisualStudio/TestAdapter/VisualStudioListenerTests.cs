@@ -22,7 +22,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
             {
                 const string assemblyPath = "assembly.path.dll";
                 var recorder = new StubExecutionRecorder();
-                var listener = new VisualStudioListener(recorder, assemblyPath);
+                var listener = new VisualStudioListener(new ExecutionSink(recorder, assemblyPath));
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
                 convention.Parameters.Add<InputAttributeParameterSource>();

@@ -38,7 +38,7 @@ namespace Fixie.Internal
 
         static Listener CreateListener(string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, IExecutionSink executionSink)
         {
-            var type = Assembly.LoadFrom(listenerFactoryAssemblyFullPath).GetType(listenerFactoryType);
+            var type = LoadAssembly(listenerFactoryAssemblyFullPath).GetType(listenerFactoryType);
 
             var factory = (IListenerFactory)Activator.CreateInstance(type);
 

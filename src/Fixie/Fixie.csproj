@@ -37,13 +37,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
+    <Compile Include="Execution\IExecutionSink.cs" />
+    <Compile Include="Execution\IListenerFactory.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Internal\Discoverer.cs" />
     <Compile Include="Internal\ParameterDiscoverer.cs" />
     <Compile Include="Internal\SkipRule.cs" />
     <Compile Include="MethodGroup.cs" />
     <Compile Include="Internal\ExecutionProxy.cs" />
-    <Compile Include="Execution\AssemblyInfo.cs" />
     <Compile Include="Internal\Behavior.cs" />
     <Compile Include="Internal\BehaviorChain.cs" />
     <Compile Include="Internal\BehaviorContext.cs" />

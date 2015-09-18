@@ -29,34 +29,41 @@ namespace Fixie.Execution
                 return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunAssembly(Options options, Listener listener)
+        public AssemblyResult RunAssembly<TListenerFactory>(Options options, IExecutionSink executionSink) where TListenerFactory : IListenerFactory
         {
-            AssertIsLongLivedMarshalByRefObject(listener);
+            AssertIsLongLivedMarshalByRefObject(executionSink);
+
+            var listenerFactoryAssemblyFullPath = typeof(TListenerFactory).Assembly.Location;
+            var listenerFactoryType = typeof(TListenerFactory).FullName;
 
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunAssembly(assemblyFullPath, options, listener);
+                return executionProxy.RunAssembly(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options, executionSink);
         }
 
-        public AssemblyResult RunMethods(Options options, Listener listener, MethodGroup[] methodGroups)
+        public AssemblyResult RunMethods<TListenerFactory>(Options options, IExecutionSink executionSink, MethodGroup[] methodGroups) where TListenerFactory : IListenerFactory
         {
-            AssertIsLongLivedMarshalByRefObject(listener);
+            AssertIsLongLivedMarshalByRefObject(executionSink);
+
+            var listenerFactoryAssemblyFullPath = typeof(TListenerFactory).Assembly.Location;
+            var listenerFactoryType = typeof(TListenerFactory).FullName;
 
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
+                return executionProxy.RunMethods(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options, executionSink, methodGroups);
         }
 
-        static void AssertIsLongLivedMarshalByRefObject(Listener listener)
+        static void AssertIsLongLivedMarshalByRefObject(object o)
         {
-            if (listener is LongLivedMarshalByRefObject) return;
-            var listenerType = listener.GetType();
+            if (o == null) return;
+            if (o is LongLivedMarshalByRefObject) return;
+            var type = o.GetType();
             var message = string.Format("Type '{0}' in Assembly '{1}' must inherit from '{2}'.",
-                                        listenerType.FullName,
-                                        listenerType.Assembly,
+                                        type.FullName,
+                                        type.Assembly,
                                         typeof(LongLivedMarshalByRefObject).FullName);
             throw new Exception(message);
         }
 
-        T Create<T>(params object[] args) where T : MarshalByRefObject
+        T Create<T>(params object[] args) where T : LongLivedMarshalByRefObject
         {
             return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
         }

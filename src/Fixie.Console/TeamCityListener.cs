@@ -1,14 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class TeamCityListener : LongLivedMarshalByRefObject, Listener
+    public class TeamCityListener : Listener
     {
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void AssemblyStarted(Assembly assembly)
         {
             Message("testSuiteStarted name='{0}'", SuiteName(assembly));
         }
@@ -33,7 +34,7 @@ namespace Fixie.ConsoleRunner
             Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {
             Message("testSuiteFinished name='{0}'", SuiteName(assembly));
         }
@@ -82,7 +83,7 @@ namespace Fixie.ConsoleRunner
             return ((int)Math.Ceiling(duration.TotalMilliseconds)).ToString();
         }
 
-        static string SuiteName(AssemblyInfo assembly)
+        static string SuiteName(Assembly assembly)
         {
             return Path.GetFileName(assembly.Location);
         }

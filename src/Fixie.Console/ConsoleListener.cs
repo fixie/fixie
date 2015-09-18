@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class ConsoleListener : LongLivedMarshalByRefObject, Listener
+    public class ConsoleListener : Listener
     {
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void AssemblyStarted(Assembly assembly)
         {
             Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(assembly.Location));
             Console.WriteLine();
@@ -30,7 +31,7 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine();
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {
             Console.WriteLine(result.Summary);
             Console.WriteLine();

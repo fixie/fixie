@@ -14,8 +14,8 @@ namespace Fixie.Tests.ConsoleRunner
         public void ShouldReportResultsToTheConsole()
         {
             using (var console = new RedirectedConsole())
-            using (var listener = new ConsoleListener())
             {
+                var listener = new ConsoleListener();
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
 
@@ -53,8 +53,8 @@ namespace Fixie.Tests.ConsoleRunner
         public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
         {
             using (var console = new RedirectedConsole())
-            using (var listener = new ConsoleListener())
             {
+                var listener = new ConsoleListener();
                 var convention = SelfTestConvention.Build();
 
                 convention

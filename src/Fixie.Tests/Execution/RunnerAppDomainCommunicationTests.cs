@@ -5,9 +5,9 @@ namespace Fixie.Tests.Execution
 {
     public class RunnerAppDomainCommunicationTests
     {
-        public void ShouldAllowRunnersInOtherAppDomainsToProvideTheirOwnListeners()
+        public void ShouldAllowRunnersInOtherAppDomainsToProvideTheirOwnExecutionSinks()
         {
-            typeof(Listener).ShouldBeSafeAppDomainCommunicationInterface();
+            typeof(IExecutionSink).ShouldBeSafeAppDomainCommunicationInterface();
         }
 
         public void ShouldAllowRunnersToPerformTestDiscoveryAndExecutionThroughExecutionProxy()

@@ -12,6 +12,7 @@ namespace Fixie.Execution
         readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
+        readonly RemoteAssemblyResolver assemblyResolver;
 
         public ExecutionEnvironment(string assemblyPath)
         {
@@ -21,6 +22,13 @@ namespace Fixie.Execution
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
+
+            assemblyResolver = Create<RemoteAssemblyResolver>();
+        }
+
+        public void ResolveAssemblyContaining<T>()
+        {
+            assemblyResolver.AddAssemblyLocation(typeof(T).Assembly.Location);
         }
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
@@ -70,6 +78,7 @@ namespace Fixie.Execution
 
         public void Dispose()
         {
+            assemblyResolver.Dispose();
             AppDomain.Unload(appDomain);
             Directory.SetCurrentDirectory(previousWorkingDirectory);
         }

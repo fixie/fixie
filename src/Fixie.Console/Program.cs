@@ -115,6 +115,8 @@ namespace Fixie.ConsoleRunner
             using (var environment = new ExecutionEnvironment(assemblyPath))
             using (var executionSink = new ExecutionSink())
             {
+                environment.ResolveAssemblyContaining<ExecutionSink>();
+
                 return environment.RunAssembly<ListenerFactory>(options, executionSink);
             }
         }

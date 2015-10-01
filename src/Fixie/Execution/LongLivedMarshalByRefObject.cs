@@ -38,7 +38,7 @@ namespace Fixie.Execution
             return null;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             RemotingServices.Disconnect(this);
         }

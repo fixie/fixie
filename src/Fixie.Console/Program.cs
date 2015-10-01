@@ -113,8 +113,9 @@ namespace Fixie.ConsoleRunner
         static AssemblyResult Execute(string assemblyPath, Options options)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
+            using (var executionSink = new ExecutionSink())
             {
-                return environment.RunAssembly<ListenerFactory>(options, null);
+                return environment.RunAssembly<ListenerFactory>(options, executionSink);
             }
         }
     }

@@ -4,8 +4,28 @@ using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
+    public class ExecutionSink : LongLivedMarshalByRefObject, IExecutionSink
+    {
+        public void SendMessage(string message)
+        {
+            Console.WriteLine("SENDMESSAGE: " + message);
+        }
+
+        public void RecordResult(CaseResult caseResult)
+        {
+            Console.WriteLine("RECORDRESULT: " + caseResult.Name);
+        }
+    }
+
     public class ListenerFactory : IListenerFactory
     {
+        readonly IExecutionSink executionSink;
+
+        public ListenerFactory(IExecutionSink executionSink)
+        {
+            executionSink.SendMessage("Message sent to execution sink from within the ListenerFactory's own constructor.");
+        }
+
         public Listener Create(Options options, IExecutionSink executionSink)
         {
             if (ShouldUseTeamCityListener(options))

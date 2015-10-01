@@ -40,7 +40,7 @@ namespace Fixie.Internal
         {
             var type = LoadAssembly(listenerFactoryAssemblyFullPath).GetType(listenerFactoryType);
 
-            var factory = (IListenerFactory)Activator.CreateInstance(type);
+            var factory = (IListenerFactory)Activator.CreateInstance(type, executionSink);
 
             return factory.Create(options, executionSink);
         }

@@ -19,14 +19,12 @@ namespace Fixie.ConsoleRunner
 
     public class ListenerFactory : IListenerFactory
     {
-        readonly IExecutionSink executionSink;
-
-        public ListenerFactory(IExecutionSink executionSink)
+        public ListenerFactory(IExecutionSink executionSink, string message)
         {
-            executionSink.SendMessage("Message sent to execution sink from within the ListenerFactory's own constructor.");
+            executionSink.SendMessage("Message sent to execution sink from within the ListenerFactory's own constructor: " + message);
         }
 
-        public Listener Create(Options options, IExecutionSink executionSink)
+        public Listener Create(Options options)
         {
             if (ShouldUseTeamCityListener(options))
                 return new TeamCityListener();

@@ -37,37 +37,41 @@ namespace Fixie.Execution
                 return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunAssembly<TListenerFactory>(Options options, IExecutionSink executionSink) where TListenerFactory : IListenerFactory
+        public AssemblyResult RunAssembly<TListenerFactory>(Options options, params object[] listenerFactoryArgs) where TListenerFactory : IListenerFactory
         {
-            AssertIsLongLivedMarshalByRefObject(executionSink);
+            foreach (var arg in listenerFactoryArgs)
+                AssertIsLongLivedMarshalByRefObject(arg);
 
             var listenerFactoryAssemblyFullPath = typeof(TListenerFactory).Assembly.Location;
             var listenerFactoryType = typeof(TListenerFactory).FullName;
 
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunAssembly(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options, executionSink);
+                return executionProxy.RunAssembly(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options, listenerFactoryArgs);
         }
 
-        public AssemblyResult RunMethods<TListenerFactory>(Options options, IExecutionSink executionSink, MethodGroup[] methodGroups) where TListenerFactory : IListenerFactory
+        public AssemblyResult RunMethods<TListenerFactory>(Options options, MethodGroup[] methodGroups, params object[] listenerFactoryArgs) where TListenerFactory : IListenerFactory
         {
-            AssertIsLongLivedMarshalByRefObject(executionSink);
+            foreach (var arg in listenerFactoryArgs)
+                AssertIsLongLivedMarshalByRefObject(arg);
 
             var listenerFactoryAssemblyFullPath = typeof(TListenerFactory).Assembly.Location;
             var listenerFactoryType = typeof(TListenerFactory).FullName;
 
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunMethods(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options, executionSink, methodGroups);
+                return executionProxy.RunMethods(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options, methodGroups, listenerFactoryArgs);
         }
 
         static void AssertIsLongLivedMarshalByRefObject(object o)
         {
             if (o == null) return;
             if (o is LongLivedMarshalByRefObject) return;
+            if (o.GetType().Has<SerializableAttribute>()) return;
+
             var type = o.GetType();
-            var message = string.Format("Type '{0}' in Assembly '{1}' must inherit from '{2}'.",
-                                        type.FullName,
-                                        type.Assembly,
-                                        typeof(LongLivedMarshalByRefObject).FullName);
+            var message = string.Format("Type '{0}' in Assembly '{1}' must either be [Serialiable] or inherit from '{2}'.",
+                type.FullName,
+                type.Assembly,
+                typeof(LongLivedMarshalByRefObject).FullName);
             throw new Exception(message);
         }
 

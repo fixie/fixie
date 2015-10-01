@@ -14,9 +14,9 @@ namespace Fixie.Internal
             return new Discoverer(options).DiscoverTestMethodGroups(assembly);
         }
 
-        public AssemblyResult RunAssembly(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, IExecutionSink executionSink)
+        public AssemblyResult RunAssembly(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, object[] listenerFactoryArgs)
         {
-            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, options, executionSink);
+            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, options, listenerFactoryArgs);
 
             var runner = new Runner(listener, options);
 
@@ -25,9 +25,9 @@ namespace Fixie.Internal
             return runner.RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, IExecutionSink executionSink, MethodGroup[] methodGroups)
+        public AssemblyResult RunMethods(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, MethodGroup[] methodGroups, object[] listenerFactoryArgs)
         {
-            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, options, executionSink);
+            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, options, listenerFactoryArgs);
 
             var runner = new Runner(listener, options);
 
@@ -36,13 +36,13 @@ namespace Fixie.Internal
             return runner.RunMethods(assembly, methodGroups);
         }
 
-        static Listener CreateListener(string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, IExecutionSink executionSink)
+        static Listener CreateListener(string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, object[] listenerFactoryArgs)
         {
             var type = LoadAssembly(listenerFactoryAssemblyFullPath).GetType(listenerFactoryType);
 
-            var factory = (IListenerFactory)Activator.CreateInstance(type, executionSink);
+            var factory = (IListenerFactory)Activator.CreateInstance(type, listenerFactoryArgs);
 
-            return factory.Create(options, executionSink);
+            return factory.Create(options);
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

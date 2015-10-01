@@ -117,7 +117,7 @@ namespace Fixie.ConsoleRunner
             {
                 environment.ResolveAssemblyContaining<ExecutionSink>();
 
-                return environment.RunAssembly<ListenerFactory>(options, executionSink);
+                return environment.RunAssembly<ListenerFactory>(options, executionSink, "Hello, world!");
             }
         }
     }

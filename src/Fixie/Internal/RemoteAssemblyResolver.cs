@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Fixie.Execution;
@@ -43,7 +44,7 @@ namespace Fixie.Internal
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    Debug.WriteLine(typeof(RemoteAssemblyResolver).FullName + " failed to load assembly at " + location + ": " + ex);
                 }
             }
 

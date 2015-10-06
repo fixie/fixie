@@ -69,9 +69,9 @@ namespace Fixie.Execution
 
             var type = o.GetType();
             var message = string.Format("Type '{0}' in Assembly '{1}' must either be [Serialiable] or inherit from '{2}'.",
-                type.FullName,
-                type.Assembly,
-                typeof(LongLivedMarshalByRefObject).FullName);
+                                        type.FullName,
+                                        type.Assembly,
+                                        typeof(LongLivedMarshalByRefObject).FullName);
             throw new Exception(message);
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Fixie.Execution;
 
@@ -22,7 +23,17 @@ namespace Fixie.Internal
 
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return runner.RunAssembly(assembly);
+            var assemblyResult = runner.RunAssembly(assembly);
+
+            var sink = ((IExecutionSink)listenerFactoryArgs.First());
+            sink.SendMessage("------------");
+            sink.SendMessage("Although passed across as simply an object, the execution sink's runtime type in the child domain is: " + sink.GetType());
+            sink.SendMessage("At the end of this run, the child appdomain contained these assemblies:");
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies().Select(x => x.ToString()).OrderBy(x => x))
+                sink.SendMessage("\t" + a.ToString());
+            sink.SendMessage("------------");
+
+            return assemblyResult;
         }
 
         public AssemblyResult RunMethods(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, MethodGroup[] methodGroups, object[] listenerFactoryArgs)
@@ -33,7 +44,17 @@ namespace Fixie.Internal
 
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return runner.RunMethods(assembly, methodGroups);
+            var assemblyResult = runner.RunMethods(assembly, methodGroups);
+
+            var sink = ((IExecutionSink)listenerFactoryArgs.First());
+            sink.SendMessage("------------");
+            sink.SendMessage("Although passed across as simply an object, the execution sink's runtime type in the child domain is: " + sink.GetType());
+            sink.SendMessage("At the end of this run, the child appdomain contained these assemblies:");
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies().Select(x => x.ToString()).OrderBy(x => x))
+                sink.SendMessage("\t" + a.ToString());
+            sink.SendMessage("------------");
+
+            return assemblyResult;
         }
 
         static Listener CreateListener(string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, object[] listenerFactoryArgs)

@@ -40,7 +40,7 @@ namespace Fixie.Execution
         public AssemblyResult RunAssembly<TListenerFactory>(Options options, params object[] listenerFactoryArgs) where TListenerFactory : IListenerFactory
         {
             foreach (var arg in listenerFactoryArgs)
-                AssertIsLongLivedMarshalByRefObject(arg);
+                AssertSafeForAppDomainCommunication(arg);
 
             var listenerFactoryAssemblyFullPath = typeof(TListenerFactory).Assembly.Location;
             var listenerFactoryType = typeof(TListenerFactory).FullName;
@@ -52,7 +52,7 @@ namespace Fixie.Execution
         public AssemblyResult RunMethods<TListenerFactory>(Options options, MethodGroup[] methodGroups, params object[] listenerFactoryArgs) where TListenerFactory : IListenerFactory
         {
             foreach (var arg in listenerFactoryArgs)
-                AssertIsLongLivedMarshalByRefObject(arg);
+                AssertSafeForAppDomainCommunication(arg);
 
             var listenerFactoryAssemblyFullPath = typeof(TListenerFactory).Assembly.Location;
             var listenerFactoryType = typeof(TListenerFactory).FullName;
@@ -61,7 +61,7 @@ namespace Fixie.Execution
                 return executionProxy.RunMethods(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options, methodGroups, listenerFactoryArgs);
         }
 
-        static void AssertIsLongLivedMarshalByRefObject(object o)
+        static void AssertSafeForAppDomainCommunication(object o)
         {
             if (o == null) return;
             if (o is LongLivedMarshalByRefObject) return;

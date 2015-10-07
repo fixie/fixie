@@ -2,6 +2,6 @@
 {
     public interface IListenerFactory
     {
-        Listener Create(Options options, IExecutionSink executionSink);
+        Listener Create(Options options);
     }
 }

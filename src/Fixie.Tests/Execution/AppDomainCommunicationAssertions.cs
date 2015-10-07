@@ -75,8 +75,14 @@ namespace Fixie.Tests.Execution
 
             visitedTypes.Add(type);
 
-            if (type == typeof(object))
-                return false;
+            if (type == typeof(object) || type == typeof(object[]))
+            {
+                //These types may or may not cross the AppDomain boundary successfully,
+                //but like IExecutionSink it is the responsibilty of the caller to pass
+                //safe types.  There is nothing left to check for here, so it is assumed
+                //to be valid.
+                return true;
+            }
 
             if (type == typeof(Type))
                 return false;

@@ -40,6 +40,7 @@
     <Compile Include="Execution\IExecutionSink.cs" />
     <Compile Include="Execution\IListenerFactory.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
+    <Compile Include="Internal\RemoteAssemblyResolver.cs" />
     <Compile Include="Internal\Discoverer.cs" />
     <Compile Include="Internal\ParameterDiscoverer.cs" />
     <Compile Include="Internal\SkipRule.cs" />

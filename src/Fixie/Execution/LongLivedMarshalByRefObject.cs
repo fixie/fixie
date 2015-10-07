@@ -6,8 +6,8 @@ namespace Fixie.Execution
     /// <summary>
     /// Simplifies the definition of MarshalByRefObject classes whose
     /// instances need to live longer than the default lease lifetime
-    /// allows, such as implementations of Listener provided by test
-    /// runners.
+    /// allows, such as objects passed from a Fixie runner into the
+    /// AppDomain of a running test assembly.
     /// 
     /// Instances of LongLivedMarshalByRefObject have an infinite
     /// lease lifetime so that they won't become defective after
@@ -38,7 +38,7 @@ namespace Fixie.Execution
             return null;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             RemotingServices.Disconnect(this);
         }

@@ -80,7 +80,7 @@ namespace Fixie.VisualStudio.TestAdapter
                 case CaseStatus.Failed:
                     return TestOutcome.Failed;
                 case CaseStatus.Skipped:
-                    return TestOutcome.None;
+                    return TestOutcome.Skipped;
                 default:
                     return TestOutcome.None;
             }

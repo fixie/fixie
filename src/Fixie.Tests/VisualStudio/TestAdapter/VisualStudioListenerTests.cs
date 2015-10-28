@@ -64,7 +64,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 results[0].TestCase.FullyQualifiedName.ShouldEqual(testClass +".SkipWithReason");
                 results[0].TestCase.DisplayName.ShouldEqual(testClass +".SkipWithReason");
                 results[0].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-                results[0].Outcome.ShouldEqual(TestOutcome.None, "TestOutcome.None corresponds with Fixie's CaseStatus.Skipped status. TestOutcome.Skipped would produce a lackluster user experience.");
+                results[0].Outcome.ShouldEqual(TestOutcome.Skipped);
                 results[0].ErrorMessage.ShouldEqual("Skipped with reason.");
                 results[0].ErrorStackTrace.ShouldBeNull();
                 results[0].DisplayName.ShouldEqual(testClass + ".SkipWithReason");
@@ -74,7 +74,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 results[1].TestCase.FullyQualifiedName.ShouldEqual(testClass +".SkipWithoutReason");
                 results[1].TestCase.DisplayName.ShouldEqual(testClass +".SkipWithoutReason");
                 results[1].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-                results[1].Outcome.ShouldEqual(TestOutcome.None);
+                results[1].Outcome.ShouldEqual(TestOutcome.Skipped);
                 results[1].ErrorMessage.ShouldBeNull();
                 results[1].ErrorStackTrace.ShouldBeNull();
                 results[1].DisplayName.ShouldEqual(testClass +".SkipWithoutReason");

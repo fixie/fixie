@@ -68,10 +68,7 @@ namespace Fixie.Execution
             if (o.GetType().Has<SerializableAttribute>()) return;
 
             var type = o.GetType();
-            var message = string.Format("Type '{0}' in Assembly '{1}' must either be [Serialiable] or inherit from '{2}'.",
-                                        type.FullName,
-                                        type.Assembly,
-                                        typeof(LongLivedMarshalByRefObject).FullName);
+            var message = $"Type '{type.FullName}' in Assembly '{type.Assembly}' must either be [Serialiable] or inherit from '{typeof(LongLivedMarshalByRefObject).FullName}'.";
             throw new Exception(message);
         }
 

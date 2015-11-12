@@ -25,23 +25,17 @@ namespace Fixie.Tests.Execution
                 if (!method.IsVoid())
                 {
                     IsSafeForAppDomainCommunication(method.ReturnType)
-                        .ShouldBeTrue(string.Format(
-                            "{0} is not an acceptable return type for method {1}.{2} " +
-                            "because it will not successfully cross AppDomain boundaries.",
-                            method.ReturnType,
-                            crossAppDomainInterfaceType.FullName,
-                            method.Name));
+                        .ShouldBeTrue(
+                            $"{method.ReturnType} is not an acceptable return type for method {crossAppDomainInterfaceType.FullName}.{method.Name} " +
+                            "because it will not successfully cross AppDomain boundaries.");
                 }
 
                 foreach (var parameterType in method.GetParameters().Select(x => x.ParameterType))
                 {
                     IsSafeForAppDomainCommunication(parameterType)
-                        .ShouldBeTrue(string.Format(
-                            "{0} is not an acceptable parameter type for method {1}.{2} " +
-                            "because it will not successfully cross AppDomain boundaries.",
-                            parameterType,
-                            crossAppDomainInterfaceType.FullName,
-                            method.Name));
+                        .ShouldBeTrue(
+                            $"{parameterType} is not an acceptable parameter type for method {crossAppDomainInterfaceType.FullName}.{method.Name} " +
+                            "because it will not successfully cross AppDomain boundaries.");
                 }
             }
         }

@@ -34,10 +34,10 @@ namespace Fixie
             var name = MethodGroup.FullName;
 
             if (Method.IsGenericMethod)
-                name = string.Format("{0}<{1}>", name, string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName)));
+                name = $"{name}<{string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName))}>";
 
             if (Parameters != null && Parameters.Length > 0)
-                name = string.Format("{0}({1})", name, string.Join(", ", Parameters.Select(x => x.ToDisplayString())));
+                name = $"{name}({string.Join(", ", Parameters.Select(x => x.ToDisplayString()))})";
 
             return name;
         }

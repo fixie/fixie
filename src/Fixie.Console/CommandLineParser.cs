@@ -22,7 +22,7 @@ namespace Fixie.ConsoleRunner
                 {
                     if (!queue.Any() || IsKey(queue.Peek()))
                     {
-                        errors.Add(string.Format("Option {0} is missing its required value.", item));
+                        errors.Add($"Option {item} is missing its required value.");
                         break;
                     }
 

@@ -262,7 +262,7 @@ namespace Fixie.Tests.Cases
 
             static string Format(object obj)
             {
-                return obj == null ? "[null]" : obj.ToString();
+                return obj?.ToString() ?? "[null]";
             }
         }
 
@@ -274,7 +274,7 @@ namespace Fixie.Tests.Cases
                 Parameters = parameters;
             }
 
-            public object[] Parameters { get; private set; }
+            public object[] Parameters { get; }
         }
     }
 }

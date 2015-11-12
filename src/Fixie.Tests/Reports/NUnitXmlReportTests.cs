@@ -140,7 +140,7 @@ namespace Fixie.Tests.Reports
                 Parameters = parameters;
             }
 
-            public object[] Parameters { get; private set; }
+            public object[] Parameters { get; }
         }
 
         [AttributeUsage(AttributeTargets.Method)]
@@ -155,7 +155,7 @@ namespace Fixie.Tests.Reports
                 Reason = reason;
             }
 
-            public string Reason { get; private set; }
+            public string Reason { get; }
         }
     }
 }

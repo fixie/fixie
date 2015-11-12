@@ -60,9 +60,6 @@ namespace Fixie.Tests
         {
         }
 
-        public IEnumerable<string> Entries
-        {
-            get { return log; }
-        }
+        public IEnumerable<string> Entries => log;
     }
 }

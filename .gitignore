@@ -1,8 +1,7 @@
-*.suo
-bin
-obj
-build
-package
-src/packages
+bin/
+obj/
+/build/
+/package/
+/src/packages/
 *.DotSettings.user
 *.csproj.user

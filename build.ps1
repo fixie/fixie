@@ -81,7 +81,7 @@ task AssemblyInfo {
             continue;
         }
 
-        if ($projectName.Contains("Build")) {
+        if ($projectName -eq "Build") {
             continue;
         }
 

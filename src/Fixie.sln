@@ -7,11 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fixie", "Fixie\Fixie.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fixie.Tests", "Fixie.Tests\Fixie.Tests.csproj", "{EE3EC90F-EAFC-40CB-AEE7-400B6D30716D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B5134C76-CDF4-42EA-8533-1B894E7909C1}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fixie.Console", "Fixie.Console\Fixie.Console.csproj", "{3805C0E0-3817-45AD-964F-CF7DC5715B39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fixie.TestDriven", "Fixie.TestDriven\Fixie.TestDriven.csproj", "{C4190A60-2DBA-4C7F-8887-F65CC8194138}"

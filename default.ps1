@@ -9,7 +9,7 @@ properties {
     $build = if ($env:build_number -ne $NULL) { $env:build_number } else { '0' }
     $version = [IO.File]::ReadAllText('.\VERSION.txt') + '.' + $build
     $projects = @(gci $src -rec -filter *.csproj)
-    $selfTestProjects = "Fixie.Tests","Fixie.Samples"
+    $nonPublishedProjects = "Build","Fixie.Tests","Fixie.Samples"
 }
 
 task default -depends Test
@@ -52,7 +52,7 @@ task SanityCheckOutputPaths {
 
         $lines = [System.IO.File]::ReadAllLines($project.FullName, [System.Text.Encoding]::UTF8)
 
-        if (!($selfTestProjects -contains $projectName)) {
+        if (!($nonPublishedProjects -contains $projectName)) {
             foreach($line in $lines) {
                 if ($line.Contains("<OutputPath>")) {
 

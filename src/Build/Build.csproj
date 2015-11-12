@@ -34,6 +34,12 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\build.cmd">
+      <Link>build.cmd</Link>
+    </None>
+    <None Include="..\..\build.ps1">
+      <Link>build.ps1</Link>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

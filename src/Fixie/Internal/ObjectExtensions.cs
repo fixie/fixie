@@ -61,7 +61,8 @@ namespace Fixie.Internal
                 case '\u0085': //Next Line
                 case '\u2028': //Line Separator
                 case '\u2029': //Paragraph Separator
-                   return $"\\u{(int)ch:X4}";
+                    var digits = (int)ch;
+                    return $"\\u{digits:X4}";
 
                 default:
                     return Char.ToString(ch);

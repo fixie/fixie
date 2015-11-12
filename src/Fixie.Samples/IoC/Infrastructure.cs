@@ -11,18 +11,12 @@ namespace Fixie.Samples.IoC
 
     public class RealThirdPartyService : IThirdPartyService
     {
-        public string Invoke()
-        {
-            return typeof(RealThirdPartyService).Name;
-        }
+        public string Invoke() => nameof(RealThirdPartyService);
     }
 
     public class FakeThirdPartyService : IThirdPartyService
     {
-        public string Invoke()
-        {
-            return typeof(FakeThirdPartyService).Name;
-        }
+        public string Invoke() => nameof(FakeThirdPartyService);
     }
 
     public interface IDatabase
@@ -32,18 +26,12 @@ namespace Fixie.Samples.IoC
 
     public class RealDatabase : IDatabase
     {
-        public string Query()
-        {
-            return typeof(RealDatabase).Name;
-        }
+        public string Query() => nameof(RealDatabase);
     }
 
     public class FakeDatabase : IDatabase
     {
-        public string Query()
-        {
-            return typeof(FakeDatabase).Name;
-        }
+        public string Query() => nameof(FakeDatabase);
     }
 
     public class IoCContainer

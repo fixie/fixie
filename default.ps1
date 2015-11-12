@@ -81,6 +81,10 @@ task AssemblyInfo {
             continue;
         }
 
+        if ($projectName.Contains("Build")) {
+            continue;
+        }
+
         regenerate-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" @"
 using System.Reflection;
 using System.Runtime.InteropServices;

@@ -140,15 +140,9 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 public string Message { get; set; }
             }
 
-            public List<SentMessage> Messages { get; } 
+            public List<SentMessage> Messages { get; } = new List<SentMessage>();
 
-            public List<TestResult> TestResults { get; }
-
-            public StubExecutionRecorder()
-            {
-                Messages = new List<SentMessage>();
-                TestResults = new List<TestResult>();
-            }
+            public List<TestResult> TestResults { get; } = new List<TestResult>();
 
             public void SendMessage(TestMessageLevel testMessageLevel, string message)
             {

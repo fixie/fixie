@@ -17,11 +17,11 @@ namespace Fixie.Execution
             CompoundStackTrace = GetCompoundStackTrace(all);
         }
 
-        public ExceptionInfo PrimaryException { get; private set; }
+        public ExceptionInfo PrimaryException { get; }
 
-        public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; private set; }
+        public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; }
 
-        public string CompoundStackTrace { get; private set; }
+        public string CompoundStackTrace { get; }
 
         static string GetCompoundStackTrace(IEnumerable<ExceptionInfo> exceptions)
         {

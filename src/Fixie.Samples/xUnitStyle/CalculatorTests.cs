@@ -76,7 +76,7 @@ namespace Fixie.Samples.xUnitStyle
     public class DisposableFixtureData : IDisposable
     {
         static int InstanceCounter;
-        public static int DisposalCount { get; }
+        public static int DisposalCount { get; private set; }
 
         public int Instance { get; }
 

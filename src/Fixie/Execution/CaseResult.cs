@@ -38,12 +38,12 @@ namespace Fixie.Execution
             SkipReason = result.SkipReason;
         }
 
-        public CaseStatus Status { get; private set; }
-        public string Name { get; private set; }
-        public MethodGroup MethodGroup { get; private set; }
-        public string Output { get; private set; }
-        public TimeSpan Duration { get; private set; }
-        public CompoundException Exceptions { get; private set; }
-        public string SkipReason { get; private set; }
+        public CaseStatus Status { get; }
+        public string Name { get; }
+        public MethodGroup MethodGroup { get; }
+        public string Output { get; }
+        public TimeSpan Duration { get; }
+        public CompoundException Exceptions { get; }
+        public string SkipReason { get; }
     }
 }

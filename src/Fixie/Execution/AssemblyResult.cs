@@ -16,33 +16,19 @@ namespace Fixie.Execution
             Name = name;
         }
 
-        public void Add(ConventionResult classResult)
-        {
-            conventionResults.Add(classResult);
-        }
+        public void Add(ConventionResult classResult) => conventionResults.Add(classResult);
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public TimeSpan Duration
-        {
-            get { return new TimeSpan(conventionResults.Sum(result => result.Duration.Ticks)); }
-        }
+        public TimeSpan Duration => new TimeSpan(conventionResults.Sum(result => result.Duration.Ticks));
 
-        public IReadOnlyList<ConventionResult> ConventionResults
-        {
-            get { return conventionResults; }
-        }
+        public IReadOnlyList<ConventionResult> ConventionResults => conventionResults;
 
-        public int Passed { get { return conventionResults.Sum(result => result.Passed); } }
+        public int Passed => conventionResults.Sum(result => result.Passed);
+        public int Failed => conventionResults.Sum(result => result.Failed);
+        public int Skipped => conventionResults.Sum(result => result.Skipped);
 
-        public int Failed { get { return conventionResults.Sum(result => result.Failed); } }
-
-        public int Skipped { get { return conventionResults.Sum(result => result.Skipped); } }
-
-        public int Total
-        {
-            get { return Passed + Failed + Skipped; }
-        }
+        public int Total => Passed + Failed + Skipped;
 
         public string Summary
         {

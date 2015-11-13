@@ -18,6 +18,6 @@ namespace Fixie
             conventionTypes.Add(typeof(TConvention));
         }
 
-        public IReadOnlyList<Type> ConventionTypes { get { return conventionTypes; } }
+        public IReadOnlyList<Type> ConventionTypes => conventionTypes;
     }
 }

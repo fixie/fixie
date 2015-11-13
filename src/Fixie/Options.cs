@@ -16,26 +16,20 @@ namespace Fixie
         /// <summary>
         /// Gets the number of keys in the Options set.
         /// </summary>
-        public int Count
-        {
-            get { return options.Count; }
-        }
+        public int Count =>
+            options.Count;
 
         /// <summary>
         /// Gets all the defined keys in the Options set.
         /// </summary>
-        public IReadOnlyList<string> Keys
-        {
-            get { return options.Keys.ToArray(); }
-        }
+        public IReadOnlyList<string> Keys =>
+            options.Keys.ToArray();
 
         /// <summary>
         /// Determines whether the Options set contains any elements with the specified key.
         /// </summary>
-        public bool Contains(string key)
-        {
-            return options.ContainsKey(key);
-        }
+        public bool Contains(string key) =>
+            options.ContainsKey(key);
 
         /// <summary>
         /// Adds the specified value to the Options set, under the specified key.

@@ -17,6 +17,6 @@ namespace Fixie
             OriginalException = originalException;
         }
 
-        public Exception OriginalException { get; private set; }
+        public Exception OriginalException { get; }
     }
 }

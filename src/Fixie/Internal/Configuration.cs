@@ -124,13 +124,13 @@ namespace Fixie.Internal
             skipRules.Add(skipRule);
         }
 
-        public IReadOnlyList<Func<Type, bool>> TestClassConditions { get { return testClassConditions; } }
-        public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions { get { return testMethodConditions; } }
-        public IReadOnlyList<Func<ParameterSource>> ParameterSources { get { return parameterSources; } }
-        public IReadOnlyList<Func<ClassBehavior>> CustomClassBehaviors { get { return customClassBehaviors; } }
-        public IReadOnlyList<Func<FixtureBehavior>> CustomFixtureBehaviors { get { return customFixtureBehaviors; } }
-        public IReadOnlyList<Func<CaseBehavior>> CustomCaseBehaviors { get { return customCaseBehaviors; } }
-        public IReadOnlyList<Type> AssertionLibraryTypes { get { return assertionLibraryTypes; } }
-        public IReadOnlyList<SkipRule> SkipRules { get { return skipRules; } }
+        public IReadOnlyList<Func<Type, bool>> TestClassConditions => testClassConditions;
+        public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions => testMethodConditions;
+        public IReadOnlyList<Func<ParameterSource>> ParameterSources => parameterSources;
+        public IReadOnlyList<Func<ClassBehavior>> CustomClassBehaviors => customClassBehaviors;
+        public IReadOnlyList<Func<FixtureBehavior>> CustomFixtureBehaviors => customFixtureBehaviors;
+        public IReadOnlyList<Func<CaseBehavior>> CustomCaseBehaviors => customCaseBehaviors;
+        public IReadOnlyList<Type> AssertionLibraryTypes => assertionLibraryTypes;
+        public IReadOnlyList<SkipRule> SkipRules => skipRules;
     }
 }

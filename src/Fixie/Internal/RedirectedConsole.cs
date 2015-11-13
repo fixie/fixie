@@ -18,10 +18,8 @@ namespace Fixie.Internal
             Console.SetError(console);
         }
 
-        public string Output
-        {
-            get { return console.ToString(); }
-        }
+        public string Output =>
+            console.ToString();
 
         public void Dispose()
         {

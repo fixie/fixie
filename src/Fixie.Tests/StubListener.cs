@@ -15,7 +15,8 @@ namespace Fixie.Tests
 
         public void CaseSkipped(SkipResult result)
         {
-            log.Add($"{result.Name} skipped{(result.SkipReason == null ? "." : ": " + result.SkipReason)}");
+            var optionalReason = result.SkipReason == null ? "." : ": " + result.SkipReason;
+            log.Add($"{result.Name} skipped{optionalReason}");
         }
 
         public void CasePassed(PassResult result)
@@ -29,27 +30,27 @@ namespace Fixie.Tests
 
             var primaryException = result.Exceptions.PrimaryException;
 
-            entry.AppendFormat("{0} failed: {1}", result.Name, primaryException.Message);
+            entry.Append($"{result.Name} failed: {primaryException.Message}");
 
             var walk = primaryException;
             while (walk.InnerException != null)
             {
                 walk = walk.InnerException;
                 entry.AppendLine();
-                entry.AppendFormat("    Inner Exception: {0}", walk.Message);
+                entry.Append($"    Inner Exception: {walk.Message}");
             }
 
             foreach (var secondaryException in result.Exceptions.SecondaryExceptions)
             {
                 entry.AppendLine();
-                entry.AppendFormat("    Secondary Failure: {0}", secondaryException.Message);
+                entry.Append($"    Secondary Failure: {secondaryException.Message}");
 
                 walk = secondaryException;
                 while (walk.InnerException != null)
                 {
                     walk = walk.InnerException;
                     entry.AppendLine();
-                    entry.AppendFormat("        Inner Exception: {0}", walk.Message);
+                    entry.Append($"        Inner Exception: {walk.Message}");
                 }
             }
 

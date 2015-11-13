@@ -40,15 +40,15 @@ namespace Fixie.Execution
 
                 var line = new StringBuilder();
 
-                line.AppendFormat("{0} passed", Passed);
-                line.AppendFormat(", {0} failed", Failed);
+                line.Append($"{Passed} passed");
+                line.Append($", {Failed} failed");
 
                 if (Skipped > 0)
-                    line.AppendFormat(", {0} skipped", Skipped);
+                    line.Append($", {Skipped} skipped");
 
-                line.AppendFormat(", took {0:N2} seconds", Duration.TotalSeconds);
+                line.Append($", took {Duration.TotalSeconds:N2} seconds");
 
-                line.AppendFormat(" ({0} {1}).", name, version);
+                line.Append($" ({name} {version}).");
 
                 return line.ToString();
             }

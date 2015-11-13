@@ -6,9 +6,9 @@ namespace Fixie
     [Serializable]
     public class MethodGroup
     {
-        public string Class { get; private set; }
-        public string Method { get; private set; }
-        public string FullName { get; private set; }
+        public string Class { get; }
+        public string Method { get; }
+        public string FullName { get; }
 
         public MethodGroup(MethodInfo method)
         {

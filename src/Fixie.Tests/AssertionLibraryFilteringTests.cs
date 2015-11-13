@@ -115,7 +115,7 @@ namespace Fixie.Tests
             public static void AreEqual(int expected, int actual)
             {
                 if (expected != actual)
-                    throw new AssertionException(string.Format("Expected {0}, but was {1}.", expected, actual));
+                    throw new AssertionException($"Expected {expected}, but was {actual}.");
             }
         }
 

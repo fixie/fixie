@@ -34,10 +34,10 @@ namespace Fixie
             var name = MethodGroup.FullName;
 
             if (Method.IsGenericMethod)
-                name = string.Format("{0}<{1}>", name, string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName)));
+                name = $"{name}<{string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName))}>";
 
             if (Parameters != null && Parameters.Length > 0)
-                name = string.Format("{0}({1})", name, string.Join(", ", Parameters.Select(x => x.ToDisplayString())));
+                name = $"{name}({string.Join(", ", Parameters.Select(x => x.ToDisplayString()))})";
 
             return name;
         }
@@ -45,28 +45,28 @@ namespace Fixie
         /// <summary>
         /// Gets the name of the test case, including any input parameters.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; }
 
         /// <summary>
         /// Gets the test class in which this test case is defined.
         /// </summary>
-        public Type Class { get; private set; }
+        public Type Class { get; }
 
         /// <summary>
         /// Gets the method that defines this test case.
         /// </summary>
-        public MethodInfo Method { get; private set; }
+        public MethodInfo Method { get; }
 
         /// <summary>
         /// Gets the method group (type name + method name) this test case's method is a part of.
         /// </summary>
-        public MethodGroup MethodGroup { get; private set; }
+        public MethodGroup MethodGroup { get; }
 
         /// <summary>
         /// For parameterized test cases, gets the set of parameters to be passed into the test method.
         /// For zero-argument test methods, this property is null.
         /// </summary>
-        public object[] Parameters { get; private set; }
+        public object[] Parameters { get; }
 
         /// <summary>
         /// Gets all of the exceptions that have contributed to this test case's failure.
@@ -83,7 +83,7 @@ namespace Fixie
         /// complications.
         /// </para>
         /// </summary>
-        public IReadOnlyList<Exception> Exceptions { get { return exceptions; } }
+        public IReadOnlyList<Exception> Exceptions => exceptions;
 
         /// <summary>
         /// Include the given exception in the running test case's list of exceptions, indicating test case failure.

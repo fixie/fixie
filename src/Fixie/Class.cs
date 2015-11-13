@@ -18,12 +18,12 @@ namespace Fixie
         /// <summary>
         /// Gets the test class type being executed.
         /// </summary>
-        public Type Type { get; private set; }
+        public Type Type { get; }
 
         /// <summary>
         /// Gets the test cases being executed for this test class.
         /// </summary>
-        public IReadOnlyList<Case> Cases { get; private set; }
+        public IReadOnlyList<Case> Cases { get; }
 
         /// <summary>
         /// Includes the given exception in all of the test class's

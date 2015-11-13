@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fixie.Execution
+﻿namespace Fixie.Execution
 {
     public class SkipResult
     {
@@ -11,8 +9,8 @@ namespace Fixie.Execution
             SkipReason = skipReason;
         }
 
-        public string Name { get; private set; }
-        public MethodGroup MethodGroup { get; private set; }
-        public string SkipReason { get; private set; }
+        public string Name { get; }
+        public MethodGroup MethodGroup { get; }
+        public string SkipReason { get; }
     }
 }

@@ -78,7 +78,7 @@ namespace Fixie.Samples.xUnitStyle
         static int InstanceCounter;
         public static int DisposalCount { get; private set; }
 
-        public int Instance { get; private set; }
+        public int Instance { get; }
 
         public DisposableFixtureData()
         {
@@ -95,7 +95,7 @@ namespace Fixie.Samples.xUnitStyle
     {
         static int InstanceCounter;
 
-        public int Instance { get; private set; }
+        public int Instance { get; }
 
         public FixtureData()
         {

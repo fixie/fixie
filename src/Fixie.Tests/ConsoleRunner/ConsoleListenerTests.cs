@@ -158,7 +158,7 @@ namespace Fixie.Tests.ConsoleRunner
                 Reason = reason;
             }
 
-            public string Reason { get; private set; }
+            public string Reason { get; }
         }
     }
 }

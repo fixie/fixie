@@ -98,9 +98,9 @@ namespace Fixie.Tests.Cases
 
             public bool BoolThrow() { throw new FailureException(); }
 
-            public bool BoolTrue() { return true; }
+            public bool BoolTrue() => true;
 
-            public bool BoolFalse() { return false; }
+            public bool BoolFalse() => false;
         }
 
         class SampleAsyncTestClass

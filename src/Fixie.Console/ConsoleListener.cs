@@ -9,14 +9,16 @@ namespace Fixie.ConsoleRunner
     {
         public void AssemblyStarted(Assembly assembly)
         {
-            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(assembly.Location));
+            Console.WriteLine($"------ Testing Assembly {Path.GetFileName(assembly.Location)} ------");
             Console.WriteLine();
         }
 
         public void CaseSkipped(SkipResult result)
         {
+            var optionalReason = result.SkipReason == null ? null : ": " + result.SkipReason;
+
             using (Foreground.Yellow)
-                Console.WriteLine("Test '{0}' skipped{1}", result.Name, result.SkipReason == null ? null : ": " + result.SkipReason);
+                Console.WriteLine($"Test '{result.Name}' skipped{optionalReason}");
         }
 
         public void CasePassed(PassResult result)
@@ -26,7 +28,7 @@ namespace Fixie.ConsoleRunner
         public void CaseFailed(FailResult result)
         {
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", result.Name, result.Exceptions.PrimaryException.DisplayName);
+                Console.WriteLine($"Test '{result.Name}' failed: {result.Exceptions.PrimaryException.DisplayName}");
             Console.WriteLine(result.Exceptions.CompoundStackTrace);
             Console.WriteLine();
         }

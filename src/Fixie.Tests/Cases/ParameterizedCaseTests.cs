@@ -211,7 +211,7 @@ namespace Fixie.Tests.Cases
             public void MultipleCasesFromAttributes(int a, int b, int expectedSum)
             {
                 if (a + b != expectedSum)
-                    throw new Exception(string.Format("Expected sum of {0} but was {1}.", expectedSum, a + b));
+                    throw new Exception($"Expected sum of {expectedSum} but was {a + b}.");
             }
         }
 
@@ -224,8 +224,8 @@ namespace Fixie.Tests.Cases
             [Input(123, "stringArg1", 456, typeof(int), typeof(string))]
             public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genericArgument1A, T2 genericArgument2, T1 genericArgument1B, Type expectedT1, Type expectedT2)
             {
-                typeof(T1).ShouldEqual(expectedT1, string.Format("Expected {0}+{1} to resolve to type {2} but found type {3}", Format(genericArgument1A), Format(genericArgument1B), expectedT1, typeof(T1)));
-                typeof(T2).ShouldEqual(expectedT2, string.Format("Expected {0} to resolve to type {1} but found type {2}", Format(genericArgument2), expectedT2, typeof(T2)));
+                typeof(T1).ShouldEqual(expectedT1, $"Expected {Format(genericArgument1A)}+{Format(genericArgument1B)} to resolve to type {expectedT1} but found type {typeof(T1)}");
+                typeof(T2).ShouldEqual(expectedT2, $"Expected {Format(genericArgument2)} to resolve to type {expectedT2} but found type {typeof(T2)}");
             }
 
             [Input(123, 456, typeof(int))]
@@ -238,7 +238,7 @@ namespace Fixie.Tests.Cases
             [Input("stringArg", null, typeof(string))]
             public void SingleGenericArgumentMultipleParameters<T>(T genericArgument1, T genericArgument2, Type expectedT)
             {
-                typeof(T).ShouldEqual(expectedT, string.Format("Expected {0}+{1} to resolve to type {2} but found type {3}", Format(genericArgument1), Format(genericArgument2), expectedT, typeof(T)));
+                typeof(T).ShouldEqual(expectedT, $"Expected {Format(genericArgument1)}+{Format(genericArgument2)} to resolve to type {expectedT} but found type {typeof(T)}");
             }
 
             [Input(123, typeof(int))]
@@ -246,7 +246,7 @@ namespace Fixie.Tests.Cases
             [Input(null, typeof(object))]
             public void SingleGenericArgument<T>(T genericArgument, Type expectedT)
             {
-                typeof(T).ShouldEqual(expectedT, string.Format("Expected {0} to resolve to type {1} but found type {2}", Format(genericArgument), expectedT, typeof(T)));
+                typeof(T).ShouldEqual(expectedT, $"Expected {Format(genericArgument)} to resolve to type {expectedT} but found type {typeof(T)}");
             }
 
             [Input(123, 123)]
@@ -262,7 +262,7 @@ namespace Fixie.Tests.Cases
 
             static string Format(object obj)
             {
-                return obj == null ? "[null]" : obj.ToString();
+                return obj?.ToString() ?? "[null]";
             }
         }
 
@@ -274,7 +274,7 @@ namespace Fixie.Tests.Cases
                 Parameters = parameters;
             }
 
-            public object[] Parameters { get; private set; }
+            public object[] Parameters { get; }
         }
     }
 }

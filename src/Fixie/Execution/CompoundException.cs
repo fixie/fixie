@@ -17,11 +17,11 @@ namespace Fixie.Execution
             CompoundStackTrace = GetCompoundStackTrace(all);
         }
 
-        public ExceptionInfo PrimaryException { get; private set; }
+        public ExceptionInfo PrimaryException { get; }
 
-        public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; private set; }
+        public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; }
 
-        public string CompoundStackTrace { get; private set; }
+        public string CompoundStackTrace { get; }
 
         static string GetCompoundStackTrace(IEnumerable<ExceptionInfo> exceptions)
         {
@@ -40,7 +40,7 @@ namespace Fixie.Execution
                     {
                         console.WriteLine();
                         console.WriteLine();
-                        console.WriteLine("===== Secondary Exception: {0} =====", ex.Type);
+                        console.WriteLine($"===== Secondary Exception: {ex.Type} =====");
                         console.WriteLine(ex.Message);
                         console.Write(ex.StackTrace);
                     }
@@ -51,7 +51,7 @@ namespace Fixie.Execution
                         walk = walk.InnerException;
                         console.WriteLine();
                         console.WriteLine();
-                        console.WriteLine("------- Inner Exception: {0} -------", walk.Type);
+                        console.WriteLine($"------- Inner Exception: {walk.Type} -------");
                         console.WriteLine(walk.Message);
                         console.Write(walk.StackTrace);
                     }

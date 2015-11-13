@@ -15,27 +15,16 @@ namespace Fixie.Execution
             Name = name;
         }
 
-        public void Add(CaseResult caseResult)
-        {
-            caseResults.Add(caseResult);
-        }
+        public void Add(CaseResult caseResult) => caseResults.Add(caseResult);
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public TimeSpan Duration
-        {
-            get { return new TimeSpan(caseResults.Sum(result => result.Duration.Ticks)); }
-        }
+        public TimeSpan Duration => new TimeSpan(caseResults.Sum(result => result.Duration.Ticks));
 
-        public IReadOnlyList<CaseResult> CaseResults
-        {
-            get { return caseResults; }
-        }
+        public IReadOnlyList<CaseResult> CaseResults => caseResults;
 
-        public int Passed { get { return caseResults.Count(result => result.Status == CaseStatus.Passed); } }
-
-        public int Failed { get { return caseResults.Count(result => result.Status == CaseStatus.Failed); } }
-
-        public int Skipped { get { return caseResults.Count(result => result.Status == CaseStatus.Skipped); } }
+        public int Passed => caseResults.Count(result => result.Status == CaseStatus.Passed);
+        public int Failed => caseResults.Count(result => result.Status == CaseStatus.Failed);
+        public int Skipped => caseResults.Count(result => result.Status == CaseStatus.Skipped);
     }
 }

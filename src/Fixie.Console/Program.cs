@@ -67,7 +67,7 @@ namespace Fixie.ConsoleRunner
             catch (Exception exception)
             {
                 using (Foreground.Red)
-                    Console.WriteLine("Fatal Error: {0}", exception);
+                    Console.WriteLine($"Fatal Error: {exception}");
                 return FatalError;
             }
         }
@@ -76,15 +76,15 @@ namespace Fixie.ConsoleRunner
         {
             var line = new StringBuilder();
 
-            line.AppendFormat("{0} passed", executionResult.Passed);
-            line.AppendFormat(", {0} failed", executionResult.Failed);
+            line.Append($"{executionResult.Passed} passed");
+            line.Append($", {executionResult.Failed} failed");
 
             if (executionResult.Skipped > 0)
-                line.AppendFormat(", {0} skipped", executionResult.Skipped);
+                line.Append($", {executionResult.Skipped} skipped");
 
-            line.AppendFormat(", took {0:N2} seconds", elapsed.TotalSeconds);
+            line.Append($", took {elapsed.TotalSeconds:N2} seconds");
 
-            Console.WriteLine("====== " + line + " ======");
+            Console.WriteLine($"====== {line} ======");
         }
 
         static void ProduceReports(Options options, ExecutionResult executionResult)

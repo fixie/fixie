@@ -10,6 +10,6 @@ namespace Fixie.Samples.Parameterized
             Parameters = parameters;
         }
 
-        public object[] Parameters { get; private set; }
+        public object[] Parameters { get; }
     }
 }

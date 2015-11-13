@@ -14,25 +14,14 @@ namespace Fixie.Execution
             assemblyResults = new List<AssemblyResult>();
         }
 
-        public void Add(AssemblyResult assemblyResult)
-        {
-            assemblyResults.Add(assemblyResult);
-        }
+        public void Add(AssemblyResult assemblyResult) => assemblyResults.Add(assemblyResult);
 
-        public IReadOnlyList<AssemblyResult> AssemblyResults
-        {
-            get { return assemblyResults; }
-        }
+        public IReadOnlyList<AssemblyResult> AssemblyResults => assemblyResults;
 
-        public int Passed { get { return assemblyResults.Sum(result => result.Passed); } }
+        public int Passed => assemblyResults.Sum(result => result.Passed);
+        public int Failed => assemblyResults.Sum(result => result.Failed);
+        public int Skipped => assemblyResults.Sum(result => result.Skipped);
 
-        public int Failed { get { return assemblyResults.Sum(result => result.Failed); } }
-
-        public int Skipped { get { return assemblyResults.Sum(result => result.Skipped); } }
-
-        public int Total
-        {
-            get { return Passed + Failed + Skipped; }
-        }
+        public int Total => Passed + Failed + Skipped;
     }
 }

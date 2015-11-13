@@ -58,11 +58,7 @@ namespace Fixie.Samples.xUnitStyle
             void TearDown()
             {
                 foreach (var fixtureInstance in fixtures.Values)
-                {
-                    var disposable = fixtureInstance as IDisposable;
-                    if (disposable != null)
-                        disposable.Dispose();
-                }
+                    (fixtureInstance as IDisposable)?.Dispose();
 
                 fixtures.Clear();
             }

@@ -5,7 +5,7 @@ namespace Fixie.Internal
     /// <summary>
     /// Describes the context in which a test run was initiated.
     /// </summary>
-    internal static class RunContext
+    static class RunContext
     {
         public static void Set(Options options)
         {

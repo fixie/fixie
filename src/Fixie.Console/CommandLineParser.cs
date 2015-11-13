@@ -22,7 +22,7 @@ namespace Fixie.ConsoleRunner
                 {
                     if (!queue.Any() || IsKey(queue.Peek()))
                     {
-                        errors.Add(string.Format("Option {0} is missing its required value.", item));
+                        errors.Add($"Option {item} is missing its required value.");
                         break;
                     }
 
@@ -45,26 +45,17 @@ namespace Fixie.ConsoleRunner
             Errors = errors.ToArray();
         }
 
-        public IEnumerable<string> AssemblyPaths { get; private set; }
+        public IEnumerable<string> AssemblyPaths { get; }
 
-        public Options Options { get; private set; }
+        public Options Options { get; }
 
-        public IEnumerable<string> Errors { get; private set; }
+        public IEnumerable<string> Errors { get; }
 
-        public bool HasErrors
-        {
-            get { return Errors.Any(); }
-        }
+        public bool HasErrors => Errors.Any();
 
-        static bool IsKey(string item)
-        {
-            return item.StartsWith("--");
-        }
+        static bool IsKey(string item) => item.StartsWith("--");
 
-        static string KeyName(string item)
-        {
-            return item.Substring("--".Length);
-        }
+        static string KeyName(string item) => item.Substring("--".Length);
 
         public static string Usage()
         {

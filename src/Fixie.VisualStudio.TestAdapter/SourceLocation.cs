@@ -8,7 +8,7 @@
             LineNumber = lineNumber;
         }
 
-        public string CodeFilePath { get; private set; }
-        public int LineNumber { get; private set; }
+        public string CodeFilePath { get; }
+        public int LineNumber { get; }
     }
 }

@@ -140,9 +140,9 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 public string Message { get; set; }
             }
 
-            public List<SentMessage> Messages { get; private set; } 
+            public List<SentMessage> Messages { get; } 
 
-            public List<TestResult> TestResults { get; private set; }
+            public List<TestResult> TestResults { get; }
 
             public StubExecutionRecorder()
             {
@@ -216,7 +216,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 Parameters = parameters;
             }
 
-            public object[] Parameters { get; private set; }
+            public object[] Parameters { get; }
         }
 
         [AttributeUsage(AttributeTargets.Method)]
@@ -231,7 +231,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 Reason = reason;
             }
 
-            public string Reason { get; private set; }
+            public string Reason { get; }
         }
     }
 }

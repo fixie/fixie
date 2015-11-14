@@ -10,4 +10,13 @@ namespace Fixie.Samples.Skipped
             throw new Exception("This test should be skipped.");
         }
     }
+
+    [Explicit]
+    public class ExplicitClassTests
+    {
+        public void TestWithinExplicitClass()
+        {
+            throw new Exception("TestWithinExplicitClass was invoked explicitly.");
+        }
+    }
 }

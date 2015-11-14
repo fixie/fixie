@@ -14,7 +14,8 @@ namespace Fixie.Samples.Skipped
                 .Where(method => method.IsVoid());
 
             CaseExecution
-                .Skip(SkipDueToExplicitAttribute, @case => "[Explicit] tests run only when they are individually selected for execution.")
+                .Skip(SkipDueToClassLevelExplicitAttribute, @case => "Tests within [Explicit] classes run only when the class is individually selected for execution.")
+                .Skip(SkipDueToMethodLevelExplicitAttribute, @case => "[Explicit] tests run only when they are individually selected for execution.")
                 .Skip(SkipDueToClassLevelSkipAttribute, @case => "whole class skipped")
                 .Skip(SkipDueToMethodLevelSkipAttribute);
 
@@ -23,7 +24,16 @@ namespace Fixie.Samples.Skipped
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
         }
 
-        bool SkipDueToExplicitAttribute(Case @case)
+        bool SkipDueToClassLevelExplicitAttribute(Case @case)
+        {
+            var method = @case.Method;
+
+            var isMarkedExplicit = method.DeclaringType.Has<ExplicitAttribute>();
+
+            return isMarkedExplicit && TargetMember != method.DeclaringType && TargetMember != method;
+        }
+
+        bool SkipDueToMethodLevelExplicitAttribute(Case @case)
         {
             var method = @case.Method;
 
@@ -34,12 +44,12 @@ namespace Fixie.Samples.Skipped
 
         static bool SkipDueToClassLevelSkipAttribute(Case @case)
         {
-            return @case.Method.DeclaringType.HasOrInherits<SkipAttribute>();
+            return @case.Method.DeclaringType.Has<SkipAttribute>();
         }
 
         static bool SkipDueToMethodLevelSkipAttribute(Case @case)
         {
-            return @case.Method.HasOrInherits<SkipAttribute>();
+            return @case.Method.Has<SkipAttribute>();
         }
     }
 }

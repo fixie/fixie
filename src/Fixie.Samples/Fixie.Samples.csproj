@@ -52,6 +52,8 @@
     <Compile Include="MbUnitStyle\Attributes.cs" />
     <Compile Include="MbUnitStyle\CalculatorTests.cs" />
     <Compile Include="MbUnitStyle\CustomConvention.cs" />
+    <Compile Include="Nested\CalculatorTests.cs" />
+    <Compile Include="Nested\CustomConvention.cs" />
     <Compile Include="NUnitStyle\CalculatorTests.cs" />
     <Compile Include="NUnitStyle\CustomConvention.cs" />
     <Compile Include="NUnitStyle\Attributes.cs" />

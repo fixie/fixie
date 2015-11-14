@@ -52,6 +52,8 @@
     <Compile Include="MbUnitStyle\Attributes.cs" />
     <Compile Include="MbUnitStyle\CalculatorTests.cs" />
     <Compile Include="MbUnitStyle\CustomConvention.cs" />
+    <Compile Include="Nested\CalculatorTests.cs" />
+    <Compile Include="Nested\CustomConvention.cs" />
     <Compile Include="NUnitStyle\CalculatorTests.cs" />
     <Compile Include="NUnitStyle\CustomConvention.cs" />
     <Compile Include="NUnitStyle\Attributes.cs" />
@@ -63,6 +65,7 @@
     <Compile Include="Shuffle\CustomConvention.cs" />
     <Compile Include="Shuffle\OrderTests.cs" />
     <Compile Include="Skipped\ExplicitAttribute.cs" />
+    <Compile Include="Skipped\ExplicitClassTests.cs" />
     <Compile Include="Skipped\SkipAttribute.cs" />
     <Compile Include="Skipped\SkipClassTests.cs" />
     <Compile Include="Skipped\CustomConvention.cs" />

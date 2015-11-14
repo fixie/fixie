@@ -37,21 +37,9 @@ namespace Fixie.TestDriven
 
             var type = member as Type;
             if (type != null)
-            {
-                var types = GetTypeAndNestedTypes(type).ToArray();
-
-                return Run(testListener, runner => runner.RunTypes(assembly, types));
-            }
+                return Run(testListener, runner => runner.RunType(assembly, type));
 
             return TestRunState.Error;
-        }
-
-        static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
-        {
-            yield return type;
-
-            foreach (var nested in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).SelectMany(GetTypeAndNestedTypes))
-                yield return nested;
         }
 
         static TestRunState Run(ITestListener testListener, Func<Runner, AssemblyResult> run)

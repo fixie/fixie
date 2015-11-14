@@ -38,13 +38,7 @@ namespace Fixie.Internal
         {
             RunContext.Set(options, type);
 
-            return RunTypesInternal(assembly, type);
-        }
-
-        public AssemblyResult RunTypes(Assembly assembly, params Type[] types)
-        {
-            RunContext.Set(options);
-
+            var types = GetTypeAndNestedTypes(type).ToArray();
             return RunTypesInternal(assembly, types);
         }
 
@@ -73,6 +67,14 @@ namespace Fixie.Internal
         public AssemblyResult RunMethods(Assembly assembly, MethodGroup[] methodGroups)
         {
             return RunMethods(assembly, GetMethods(assembly, methodGroups));
+        }
+
+        static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
+        {
+            yield return type;
+
+            foreach (var nested in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).SelectMany(GetTypeAndNestedTypes))
+                yield return nested;
         }
 
         static MethodInfo[] GetMethods(Assembly assembly, MethodGroup[] methodGroups)

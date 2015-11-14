@@ -65,6 +65,7 @@
     <Compile Include="Shuffle\CustomConvention.cs" />
     <Compile Include="Shuffle\OrderTests.cs" />
     <Compile Include="Skipped\ExplicitAttribute.cs" />
+    <Compile Include="Skipped\ExplicitClassTests.cs" />
     <Compile Include="Skipped\SkipAttribute.cs" />
     <Compile Include="Skipped\SkipClassTests.cs" />
     <Compile Include="Skipped\CustomConvention.cs" />

@@ -104,7 +104,7 @@ namespace Fixie.Internal
         {
             var assemblyResult = new AssemblyResult(assembly.Location);
 
-            bus.AssemblyStarted(new AssemblyStarted(assembly));
+            bus.Publish(new AssemblyStarted(assembly));
 
             foreach (var convention in conventions)
             {
@@ -113,7 +113,7 @@ namespace Fixie.Internal
                 assemblyResult.Add(conventionResult);
             }
 
-            bus.AssemblyCompleted(new AssemblyCompleted(assembly, assemblyResult));
+            bus.Publish(new AssemblyCompleted(assembly, assemblyResult));
 
             return assemblyResult;
         }

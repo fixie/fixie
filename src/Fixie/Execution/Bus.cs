@@ -11,31 +11,31 @@ namespace Fixie.Execution
             listeners.Add(listener);
         }
 
-        public void AssemblyStarted(AssemblyStarted message)
+        public void Publish(AssemblyStarted message)
         {
             foreach (var listener in listeners)
                 listener.Handle(message);
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void Publish(SkipResult result)
         {
             foreach (var listener in listeners)
                 listener.Handle(result);
         }
 
-        public void CasePassed(PassResult result)
+        public void Publish(PassResult result)
         {
             foreach (var listener in listeners)
                 listener.Handle(result);
         }
 
-        public void CaseFailed(FailResult result)
+        public void Publish(FailResult result)
         {
             foreach (var listener in listeners)
                 listener.Handle(result);
         }
 
-        public void AssemblyCompleted(AssemblyCompleted message)
+        public void Publish(AssemblyCompleted message)
         {
             foreach (var listener in listeners)
                 listener.Handle(message);

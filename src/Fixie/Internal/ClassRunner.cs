@@ -151,21 +151,21 @@ namespace Fixie.Internal
         CaseResult Skip(Case @case, string reason)
         {
             var result = new SkipResult(@case, reason);
-            bus.CaseSkipped(result);
+            bus.Publish(result);
             return new CaseResult(result);
         }
 
         CaseResult Pass(Case @case)
         {
             var result = new PassResult(@case);
-            bus.CasePassed(result);
+            bus.Publish(result);
             return new CaseResult(result);
         }
 
         CaseResult Fail(Case @case)
         {
             var result = new FailResult(@case, assertionLibraryFilter);
-            bus.CaseFailed(result);
+            bus.Publish(result);
             return new CaseResult(result);
         }
     }

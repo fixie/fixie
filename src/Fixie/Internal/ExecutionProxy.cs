@@ -11,7 +11,11 @@ namespace Fixie.Internal
 
         public void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
         {
-            var listener = CreateListener(listenerAssemblyFullPath, listenerType, listenerArgs);
+            var assembly = LoadAssembly(listenerAssemblyFullPath);
+
+            var type = assembly.GetType(listenerType);
+
+            var listener = (Listener)Activator.CreateInstance(type, listenerArgs);
 
             bus.Subscribe(listener);
         }
@@ -20,34 +24,27 @@ namespace Fixie.Internal
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return new Discoverer(options).DiscoverTestMethodGroups(assembly);
+            var discoverer = new Discoverer(options);
+
+            return discoverer.DiscoverTestMethodGroups(assembly);
         }
 
         public AssemblyResult RunAssembly(string assemblyFullPath, Options options)
         {
-            var runner = new Runner(bus, options);
-
             var assembly = LoadAssembly(assemblyFullPath);
+
+            var runner = new Runner(bus, options);
 
             return runner.RunAssembly(assembly);
         }
 
         public AssemblyResult RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
-            var runner = new Runner(bus, options);
-
             var assembly = LoadAssembly(assemblyFullPath);
 
+            var runner = new Runner(bus, options);
+
             return runner.RunMethods(assembly, methodGroups);
-        }
-
-        static Listener CreateListener(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
-        {
-            var type = LoadAssembly(listenerAssemblyFullPath).GetType(listenerType);
-
-            var listener = (Listener)Activator.CreateInstance(type, listenerArgs);
-
-            return listener;
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

@@ -7,13 +7,13 @@ namespace Fixie.ConsoleRunner
 {
     public class ConsoleListener : Listener
     {
-        public void AssemblyStarted(AssemblyStarted message)
+        public void Handle(AssemblyStarted message)
         {
             Console.WriteLine($"------ Testing Assembly {Path.GetFileName(message.Assembly.Location)} ------");
             Console.WriteLine();
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void Handle(SkipResult result)
         {
             var optionalReason = result.SkipReason == null ? null : ": " + result.SkipReason;
 
@@ -21,11 +21,11 @@ namespace Fixie.ConsoleRunner
                 Console.WriteLine($"Test '{result.Name}' skipped{optionalReason}");
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(PassResult result)
         {
         }
 
-        public void CaseFailed(FailResult result)
+        public void Handle(FailResult result)
         {
             using (Foreground.Red)
                 Console.WriteLine($"Test '{result.Name}' failed: {result.Exceptions.PrimaryException.DisplayName}");
@@ -33,7 +33,7 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine();
         }
 
-        public void AssemblyCompleted(AssemblyCompleted message)
+        public void Handle(AssemblyCompleted message)
         {
             Console.WriteLine(message.Result.Summary);
             Console.WriteLine();

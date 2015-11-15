@@ -14,31 +14,31 @@ namespace Fixie.Execution
         public void AssemblyStarted(AssemblyStarted message)
         {
             foreach (var listener in listeners)
-                listener.AssemblyStarted(message);
+                listener.Handle(message);
         }
 
         public void CaseSkipped(SkipResult result)
         {
             foreach (var listener in listeners)
-                listener.CaseSkipped(result);
+                listener.Handle(result);
         }
 
         public void CasePassed(PassResult result)
         {
             foreach (var listener in listeners)
-                listener.CasePassed(result);
+                listener.Handle(result);
         }
 
         public void CaseFailed(FailResult result)
         {
             foreach (var listener in listeners)
-                listener.CaseFailed(result);
+                listener.Handle(result);
         }
 
         public void AssemblyCompleted(AssemblyCompleted message)
         {
             foreach (var listener in listeners)
-                listener.AssemblyCompleted(message);
+                listener.Handle(message);
         }
     }
 }

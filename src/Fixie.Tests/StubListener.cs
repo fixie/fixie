@@ -9,22 +9,22 @@ namespace Fixie.Tests
     {
         readonly List<string> log = new List<string>();
 
-        public void AssemblyStarted(AssemblyStarted message)
+        public void Handle(AssemblyStarted message)
         {
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void Handle(SkipResult result)
         {
             var optionalReason = result.SkipReason == null ? "." : ": " + result.SkipReason;
             log.Add($"{result.Name} skipped{optionalReason}");
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(PassResult result)
         {
             log.Add($"{result.Name} passed.");
         }
 
-        public void CaseFailed(FailResult result)
+        public void Handle(FailResult result)
         {
             var entry = new StringBuilder();
 
@@ -57,7 +57,7 @@ namespace Fixie.Tests
             log.Add(entry.ToString());
         }
 
-        public void AssemblyCompleted(AssemblyCompleted message)
+        public void Handle(AssemblyCompleted message)
         {
         }
 

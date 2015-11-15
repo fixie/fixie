@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Fixie.Execution;
+﻿using Fixie.Execution;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
@@ -12,24 +11,24 @@ namespace Fixie.VisualStudio.TestAdapter
             this.log = log;
         }
 
-        public void AssemblyStarted(AssemblyStarted message) { }
+        public void Handle(AssemblyStarted message) { }
 
-        public void CaseSkipped(SkipResult result)
+        public void Handle(SkipResult result)
         {
             log.RecordResult(new CaseResult(result));
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(PassResult result)
         {
             log.RecordResult(new CaseResult(result));
         }
 
-        public void CaseFailed(FailResult result)
+        public void Handle(FailResult result)
         {
             log.RecordResult(new CaseResult(result));
         }
 
-        public void AssemblyCompleted(AssemblyCompleted message)
+        public void Handle(AssemblyCompleted message)
         {
             log.SendMessage(message.Result.Summary);
         }

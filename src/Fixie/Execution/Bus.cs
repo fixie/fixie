@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Fixie.Execution
 {
@@ -15,8 +13,8 @@ namespace Fixie.Execution
 
         public void Publish<TMessage>(TMessage message) where TMessage : IMessage
         {
-            foreach (var handler in handlers.OfType<IHandler<TMessage>>()) //TODO: Avoid repeatedly determining listeners by message type.
-                handler.Handle(message);
+            foreach (var handler in handlers)
+                (handler as IHandler<TMessage>)?.Handle(message);
         }
     }
 }

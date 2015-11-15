@@ -9,9 +9,9 @@ namespace Fixie.ConsoleRunner
 {
     public class TeamCityListener : Listener
     {
-        public void AssemblyStarted(Assembly assembly)
+        public void AssemblyStarted(AssemblyStarted message)
         {
-            Message("testSuiteStarted name='{0}'", SuiteName(assembly));
+            Message("testSuiteStarted name='{0}'", SuiteName(message.Assembly));
         }
 
         public void CaseSkipped(SkipResult result)
@@ -34,9 +34,9 @@ namespace Fixie.ConsoleRunner
             Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
-            Message("testSuiteFinished name='{0}'", SuiteName(assembly));
+            Message("testSuiteFinished name='{0}'", SuiteName(message.Assembly));
         }
 
         static void Message(string format, params string[] args)

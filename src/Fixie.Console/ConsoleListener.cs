@@ -7,9 +7,9 @@ namespace Fixie.ConsoleRunner
 {
     public class ConsoleListener : Listener
     {
-        public void AssemblyStarted(Assembly assembly)
+        public void AssemblyStarted(AssemblyStarted message)
         {
-            Console.WriteLine($"------ Testing Assembly {Path.GetFileName(assembly.Location)} ------");
+            Console.WriteLine($"------ Testing Assembly {Path.GetFileName(message.Assembly.Location)} ------");
             Console.WriteLine();
         }
 
@@ -33,9 +33,9 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine();
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
-            Console.WriteLine(result.Summary);
+            Console.WriteLine(message.Result.Summary);
             Console.WriteLine();
         }
     }

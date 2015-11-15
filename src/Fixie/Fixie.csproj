@@ -37,6 +37,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
+    <Compile Include="Execution\AssemblyCompleted.cs" />
+    <Compile Include="Execution\AssemblyStarted.cs" />
     <Compile Include="Execution\Bus.cs" />
     <Compile Include="Execution\IExecutionSink.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />

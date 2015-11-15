@@ -12,7 +12,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.log = log;
         }
 
-        public void AssemblyStarted(Assembly assembly) { }
+        public void AssemblyStarted(AssemblyStarted message) { }
 
         public void CaseSkipped(SkipResult result)
         {
@@ -29,9 +29,9 @@ namespace Fixie.VisualStudio.TestAdapter
             log.RecordResult(new CaseResult(result));
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
-            log.SendMessage(result.Summary);
+            log.SendMessage(message.Result.Summary);
         }
     }
 }

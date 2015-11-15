@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 
 namespace Fixie.Execution
 {
@@ -12,10 +11,10 @@ namespace Fixie.Execution
             listeners.Add(listener);
         }
 
-        public void AssemblyStarted(Assembly assembly)
+        public void AssemblyStarted(AssemblyStarted message)
         {
             foreach (var listener in listeners)
-                listener.AssemblyStarted(assembly);
+                listener.AssemblyStarted(message);
         }
 
         public void CaseSkipped(SkipResult result)
@@ -36,10 +35,10 @@ namespace Fixie.Execution
                 listener.CaseFailed(result);
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
             foreach (var listener in listeners)
-                listener.AssemblyCompleted(assembly, result);
+                listener.AssemblyCompleted(message);
         }
     }
 }

@@ -1,13 +1,11 @@
-﻿using System.Reflection;
-
-namespace Fixie.Execution
+﻿namespace Fixie.Execution
 {
     public interface Listener
     {
-        void AssemblyStarted(Assembly assembly);
+        void AssemblyStarted(AssemblyStarted message);
         void CaseSkipped(SkipResult result);
         void CasePassed(PassResult result);
         void CaseFailed(FailResult result);
-        void AssemblyCompleted(Assembly assembly, AssemblyResult result);
+        void AssemblyCompleted(AssemblyCompleted message);
     }
 }

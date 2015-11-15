@@ -11,34 +11,13 @@ namespace Fixie.Execution
             listeners.Add(listener);
         }
 
-        public void Publish(AssemblyStarted message)
+        public void Publish<TMessage>(TMessage message) where TMessage : IMessage
         {
             foreach (var listener in listeners)
-                listener.Handle(message);
-        }
-
-        public void Publish(SkipResult result)
-        {
-            foreach (var listener in listeners)
-                listener.Handle(result);
-        }
-
-        public void Publish(PassResult result)
-        {
-            foreach (var listener in listeners)
-                listener.Handle(result);
-        }
-
-        public void Publish(FailResult result)
-        {
-            foreach (var listener in listeners)
-                listener.Handle(result);
-        }
-
-        public void Publish(AssemblyCompleted message)
-        {
-            foreach (var listener in listeners)
-                listener.Handle(message);
+            {
+                var handler = (IHandler<TMessage>)listener;
+                handler.Handle(message);
+            }
         }
     }
 }

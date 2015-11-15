@@ -4,21 +4,15 @@ using TestDriven.Framework;
 namespace Fixie.TestDriven
 {
     public class TestDrivenListener :
-        IHandler<AssemblyStarted>,
         IHandler<SkipResult>,
         IHandler<PassResult>,
-        IHandler<FailResult>,
-        IHandler<AssemblyCompleted>
+        IHandler<FailResult>
     {
         readonly ITestListener tdnet;
 
         public TestDrivenListener(ITestListener tdnet)
         {
             this.tdnet = tdnet;
-        }
-
-        public void Handle(AssemblyStarted message)
-        {
         }
 
         public void Handle(SkipResult result)
@@ -49,10 +43,6 @@ namespace Fixie.TestDriven
                 Message = result.Exceptions.PrimaryException.DisplayName,
                 StackTrace = result.Exceptions.CompoundStackTrace,
             });
-        }
-
-        public void Handle(AssemblyCompleted message)
-        {
         }
     }
 }

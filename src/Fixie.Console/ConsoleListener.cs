@@ -7,7 +7,6 @@ namespace Fixie.ConsoleRunner
     public class ConsoleListener :
         IHandler<AssemblyStarted>,
         IHandler<SkipResult>,
-        IHandler<PassResult>,
         IHandler<FailResult>,
         IHandler<AssemblyCompleted>
     {
@@ -23,10 +22,6 @@ namespace Fixie.ConsoleRunner
 
             using (Foreground.Yellow)
                 Console.WriteLine($"Test '{result.Name}' skipped{optionalReason}");
-        }
-
-        public void Handle(PassResult result)
-        {
         }
 
         public void Handle(FailResult result)

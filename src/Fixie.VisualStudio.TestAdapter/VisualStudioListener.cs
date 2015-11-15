@@ -3,7 +3,6 @@
 namespace Fixie.VisualStudio.TestAdapter
 {
     public class VisualStudioListener :
-        IHandler<AssemblyStarted>,
         IHandler<SkipResult>,
         IHandler<PassResult>,
         IHandler<FailResult>,
@@ -15,8 +14,6 @@ namespace Fixie.VisualStudio.TestAdapter
         {
             this.log = log;
         }
-
-        public void Handle(AssemblyStarted message) { }
 
         public void Handle(SkipResult result)
         {

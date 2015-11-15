@@ -87,7 +87,6 @@
     <Compile Include="Internal\Behaviors\InvokeMethod.cs" />
     <Compile Include="CaseBehavior.cs" />
     <Compile Include="Internal\Behaviors\CreateInstancePerCase.cs" />
-    <Compile Include="Execution\Listener.cs" />
     <Compile Include="Conventions\MethodExpression.cs" />
     <Compile Include="Internal\ObjectExtensions.cs" />
     <Compile Include="Execution\PassResult.cs" />

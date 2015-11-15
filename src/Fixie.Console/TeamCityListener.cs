@@ -7,7 +7,7 @@ using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class TeamCityListener : Listener,
+    public class TeamCityListener :
         IHandler<AssemblyStarted>,
         IHandler<SkipResult>,
         IHandler<PassResult>,

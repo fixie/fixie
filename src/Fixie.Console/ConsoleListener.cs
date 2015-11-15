@@ -4,7 +4,7 @@ using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class ConsoleListener : Listener,
+    public class ConsoleListener :
         IHandler<AssemblyStarted>,
         IHandler<SkipResult>,
         IHandler<PassResult>,

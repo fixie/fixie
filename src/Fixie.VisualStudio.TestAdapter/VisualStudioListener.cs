@@ -2,7 +2,7 @@
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class VisualStudioListener : Listener,
+    public class VisualStudioListener :
         IHandler<AssemblyStarted>,
         IHandler<SkipResult>,
         IHandler<PassResult>,

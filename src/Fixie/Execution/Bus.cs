@@ -1,23 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Fixie.Execution
 {
     public class Bus
     {
-        readonly List<Listener> listeners = new List<Listener>();
+        readonly List<object> handlers = new List<object>();
 
-        public void Subscribe(Listener listener)
+        public void Subscribe(object handler)
         {
-            listeners.Add(listener);
+            handlers.Add(handler);
         }
 
         public void Publish<TMessage>(TMessage message) where TMessage : IMessage
         {
-            foreach (var listener in listeners)
-            {
-                var handler = (IHandler<TMessage>)listener;
+            foreach (var handler in handlers.OfType<IHandler<TMessage>>()) //TODO: Avoid repeatedly determining listeners by message type.
                 handler.Handle(message);
-            }
         }
     }
 }

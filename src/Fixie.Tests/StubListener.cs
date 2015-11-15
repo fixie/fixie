@@ -4,7 +4,7 @@ using Fixie.Execution;
 
 namespace Fixie.Tests
 {
-    public class StubListener : Listener,
+    public class StubListener :
         IHandler<AssemblyStarted>,
         IHandler<SkipResult>,
         IHandler<PassResult>,

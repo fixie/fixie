@@ -18,7 +18,10 @@ namespace Fixie.Internal
         {
             var listener = CreateListener(listenerAssemblyFullPath, listenerType, listenerArgs);
 
-            var runner = new Runner(new Bus(listener), options);
+            var bus = new Bus();
+            bus.Subscribe(listener);
+
+            var runner = new Runner(bus, options);
 
             var assembly = LoadAssembly(assemblyFullPath);
 
@@ -29,7 +32,10 @@ namespace Fixie.Internal
         {
             var listener = CreateListener(listenerAssemblyFullPath, listenerType, listenerArgs);
 
-            var runner = new Runner(new Bus(listener), options);
+            var bus = new Bus();
+            bus.Subscribe(listener);
+
+            var runner = new Runner(bus, options);
 
             var assembly = LoadAssembly(assemblyFullPath);
 

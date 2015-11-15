@@ -1,39 +1,45 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace Fixie.Execution
 {
     public class Bus
     {
-        readonly Listener listener;
+        readonly List<Listener> listeners = new List<Listener>();
 
-        public Bus(Listener listener)
+        public void Subscribe(Listener listener)
         {
-            this.listener = listener;
+            listeners.Add(listener);
         }
 
         public void AssemblyStarted(Assembly assembly)
         {
-            listener.AssemblyStarted(assembly);
+            foreach (var listener in listeners)
+                listener.AssemblyStarted(assembly);
         }
 
         public void CaseSkipped(SkipResult result)
         {
-            listener.CaseSkipped(result);
+            foreach (var listener in listeners)
+                listener.CaseSkipped(result);
         }
 
         public void CasePassed(PassResult result)
         {
-            listener.CasePassed(result);
+            foreach (var listener in listeners)
+                listener.CasePassed(result);
         }
 
         public void CaseFailed(FailResult result)
         {
-            listener.CaseFailed(result);
+            foreach (var listener in listeners)
+                listener.CaseFailed(result);
         }
 
         public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {
-            listener.AssemblyCompleted(assembly, result);
+            foreach (var listener in listeners)
+                listener.AssemblyCompleted(assembly, result);
         }
     }
 }

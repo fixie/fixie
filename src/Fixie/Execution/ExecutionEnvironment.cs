@@ -13,6 +13,7 @@ namespace Fixie.Execution
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
         readonly RemoteAssemblyResolver assemblyResolver;
+        readonly ExecutionProxy executionProxy;
 
         public ExecutionEnvironment(string assemblyPath)
         {
@@ -24,6 +25,7 @@ namespace Fixie.Execution
             Directory.SetCurrentDirectory(assemblyDirectory);
 
             assemblyResolver = Create<RemoteAssemblyResolver>();
+            executionProxy = Create<ExecutionProxy>();
         }
 
         public void ResolveAssemblyContaining<T>()
@@ -33,8 +35,7 @@ namespace Fixie.Execution
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
         {
-            using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
+            return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
         public AssemblyResult RunAssembly<TListener>(Options options, params object[] listenerArgs) where TListener : Listener
@@ -45,11 +46,8 @@ namespace Fixie.Execution
             var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
             var listenerType = typeof(TListener).FullName;
 
-            using (var executionProxy = Create<ExecutionProxy>())
-            {
-                executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
-                return executionProxy.RunAssembly(assemblyFullPath, options);
-            }
+            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
+            return executionProxy.RunAssembly(assemblyFullPath, options);
         }
 
         public AssemblyResult RunMethods<TListener>(Options options, MethodGroup[] methodGroups, params object[] listenerArgs) where TListener : Listener
@@ -60,11 +58,8 @@ namespace Fixie.Execution
             var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
             var listenerType = typeof(TListener).FullName;
 
-            using (var executionProxy = Create<ExecutionProxy>())
-            {
-                executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
-                return executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
-            }
+            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
+            return executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
         }
 
         static void AssertSafeForAppDomainCommunication(object o)
@@ -85,6 +80,7 @@ namespace Fixie.Execution
 
         public void Dispose()
         {
+            executionProxy.Dispose();
             assemblyResolver.Dispose();
             AppDomain.Unload(appDomain);
             Directory.SetCurrentDirectory(previousWorkingDirectory);

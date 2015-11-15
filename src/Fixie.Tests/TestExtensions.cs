@@ -32,7 +32,7 @@ namespace Fixie.Tests
 
         public static void Run(this Type sampleTestClass, Listener listener, Convention convention)
         {
-            new Runner(listener).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
+            new Runner(new Bus(listener)).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
         }
     }
 }

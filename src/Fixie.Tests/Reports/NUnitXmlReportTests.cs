@@ -20,7 +20,7 @@ namespace Fixie.Tests.Reports
         public void ShouldProduceValidXmlDocument()
         {
             var listener = new StubListener();
-            var runner = new Runner(listener);
+            var runner = new Runner(new Bus(listener));
 
             var executionResult = new ExecutionResult();
             var convention = SelfTestConvention.Build();

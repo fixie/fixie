@@ -6,8 +6,8 @@ namespace Fixie.ConsoleRunner
 {
     public class ConsoleListener :
         IHandler<AssemblyStarted>,
-        IHandler<SkipResult>,
-        IHandler<FailResult>,
+        IHandler<CaseSkipped>,
+        IHandler<CaseFailed>,
         IHandler<AssemblyCompleted>
     {
         public void Handle(AssemblyStarted message)
@@ -16,19 +16,19 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine();
         }
 
-        public void Handle(SkipResult result)
+        public void Handle(CaseSkipped message)
         {
-            var optionalReason = result.SkipReason == null ? null : ": " + result.SkipReason;
+            var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
 
             using (Foreground.Yellow)
-                Console.WriteLine($"Test '{result.Name}' skipped{optionalReason}");
+                Console.WriteLine($"Test '{message.Name}' skipped{optionalReason}");
         }
 
-        public void Handle(FailResult result)
+        public void Handle(CaseFailed message)
         {
             using (Foreground.Red)
-                Console.WriteLine($"Test '{result.Name}' failed: {result.Exceptions.PrimaryException.DisplayName}");
-            Console.WriteLine(result.Exceptions.CompoundStackTrace);
+                Console.WriteLine($"Test '{message.Name}' failed: {message.Exceptions.PrimaryException.DisplayName}");
+            Console.WriteLine(message.Exceptions.CompoundStackTrace);
             Console.WriteLine();
         }
 

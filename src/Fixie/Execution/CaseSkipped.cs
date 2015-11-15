@@ -1,8 +1,8 @@
 ﻿namespace Fixie.Execution
 {
-    public class SkipResult : IMessage
+    public class CaseSkipped : IMessage
     {
-        public SkipResult(Case @case, string skipReason)
+        public CaseSkipped(Case @case, string skipReason)
         {
             Name = @case.Name;
             MethodGroup = @case.MethodGroup;

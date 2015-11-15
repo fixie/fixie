@@ -5,30 +5,30 @@ using Fixie.Execution;
 namespace Fixie.Tests
 {
     public class StubListener :
-        IHandler<SkipResult>,
-        IHandler<PassResult>,
-        IHandler<FailResult>
+        IHandler<CaseSkipped>,
+        IHandler<CasePassed>,
+        IHandler<CaseFailed>
     {
         readonly List<string> log = new List<string>();
 
-        public void Handle(SkipResult result)
+        public void Handle(CaseSkipped message)
         {
-            var optionalReason = result.SkipReason == null ? "." : ": " + result.SkipReason;
-            log.Add($"{result.Name} skipped{optionalReason}");
+            var optionalReason = message.SkipReason == null ? "." : ": " + message.SkipReason;
+            log.Add($"{message.Name} skipped{optionalReason}");
         }
 
-        public void Handle(PassResult result)
+        public void Handle(CasePassed message)
         {
-            log.Add($"{result.Name} passed.");
+            log.Add($"{message.Name} passed.");
         }
 
-        public void Handle(FailResult result)
+        public void Handle(CaseFailed message)
         {
             var entry = new StringBuilder();
 
-            var primaryException = result.Exceptions.PrimaryException;
+            var primaryException = message.Exceptions.PrimaryException;
 
-            entry.Append($"{result.Name} failed: {primaryException.Message}");
+            entry.Append($"{message.Name} failed: {primaryException.Message}");
 
             var walk = primaryException;
             while (walk.InnerException != null)
@@ -38,7 +38,7 @@ namespace Fixie.Tests
                 entry.Append($"    Inner Exception: {walk.Message}");
             }
 
-            foreach (var secondaryException in result.Exceptions.SecondaryExceptions)
+            foreach (var secondaryException in message.Exceptions.SecondaryExceptions)
             {
                 entry.AppendLine();
                 entry.Append($"    Secondary Failure: {secondaryException.Message}");

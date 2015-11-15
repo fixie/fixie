@@ -6,6 +6,7 @@ properties {
 
     $configuration = 'Release'
     $src = resolve-path '.\src'
+    $tools = resolve-path '.\tools'
     $build = if ($env:build_number -ne $NULL) { $env:build_number } else { '0' }
     $version = [IO.File]::ReadAllText('.\VERSION.txt') + '.' + $build
     $projects = @(gci $src -rec -filter *.csproj)
@@ -17,7 +18,7 @@ task default -depends Test
 task Package -depends Test {
     rd .\package -recurse -force -ErrorAction SilentlyContinue | out-null
     mkdir .\package -ErrorAction SilentlyContinue | out-null
-    exec { & $src\.nuget\NuGet.exe pack $src\Fixie\Fixie.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
+    exec { & $tools\NuGet.exe pack $src\Fixie\Fixie.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
 
     write-host
     write-host "To publish these packages, issue the following command:"

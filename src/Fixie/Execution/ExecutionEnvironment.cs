@@ -46,7 +46,10 @@ namespace Fixie.Execution
             var listenerType = typeof(TListener).FullName;
 
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunAssembly(assemblyFullPath, listenerAssemblyFullPath, listenerType, options, listenerArgs);
+            {
+                executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
+                return executionProxy.RunAssembly(assemblyFullPath, options);
+            }
         }
 
         public AssemblyResult RunMethods<TListener>(Options options, MethodGroup[] methodGroups, params object[] listenerArgs) where TListener : Listener
@@ -58,7 +61,10 @@ namespace Fixie.Execution
             var listenerType = typeof(TListener).FullName;
 
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunMethods(assemblyFullPath, listenerAssemblyFullPath, listenerType, options, methodGroups, listenerArgs);
+            {
+                executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
+                return executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
+            }
         }
 
         static void AssertSafeForAppDomainCommunication(object o)

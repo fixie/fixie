@@ -7,6 +7,15 @@ namespace Fixie.Internal
 {
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
+        readonly Bus bus = new Bus();
+
+        public void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
+        {
+            var listener = CreateListener(listenerAssemblyFullPath, listenerType, listenerArgs);
+
+            bus.Subscribe(listener);
+        }
+
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
@@ -14,13 +23,8 @@ namespace Fixie.Internal
             return new Discoverer(options).DiscoverTestMethodGroups(assembly);
         }
 
-        public AssemblyResult RunAssembly(string assemblyFullPath, string listenerAssemblyFullPath, string listenerType, Options options, object[] listenerArgs)
+        public AssemblyResult RunAssembly(string assemblyFullPath, Options options)
         {
-            var listener = CreateListener(listenerAssemblyFullPath, listenerType, listenerArgs);
-
-            var bus = new Bus();
-            bus.Subscribe(listener);
-
             var runner = new Runner(bus, options);
 
             var assembly = LoadAssembly(assemblyFullPath);
@@ -28,13 +32,8 @@ namespace Fixie.Internal
             return runner.RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, string listenerAssemblyFullPath, string listenerType, Options options, MethodGroup[] methodGroups, object[] listenerArgs)
+        public AssemblyResult RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
-            var listener = CreateListener(listenerAssemblyFullPath, listenerType, listenerArgs);
-
-            var bus = new Bus();
-            bus.Subscribe(listener);
-
             var runner = new Runner(bus, options);
 
             var assembly = LoadAssembly(assemblyFullPath);

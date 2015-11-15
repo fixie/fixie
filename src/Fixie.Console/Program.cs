@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Fixie.Execution;
@@ -114,8 +115,24 @@ namespace Fixie.ConsoleRunner
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
-                return environment.RunAssembly<ListenerFactory>(options);
+                if (ShouldUseTeamCityListener(options))
+                    return environment.RunAssembly<TeamCityListener>(options);
+
+                return environment.RunAssembly<ConsoleListener>(options);
             }
+        }
+
+        static bool ShouldUseTeamCityListener(Options options)
+        {
+            var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
+
+            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
+
+            var useTeamCityListener =
+                (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
+                (!teamCityExplicitlySpecified && runningUnderTeamCity);
+
+            return useTeamCityListener;
         }
     }
 }

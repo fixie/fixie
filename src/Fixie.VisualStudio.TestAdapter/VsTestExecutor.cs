@@ -44,7 +44,8 @@ namespace Fixie.VisualStudio.TestAdapter
                         {
                             environment.ResolveAssemblyContaining<ExecutionSink>();
 
-                            environment.RunAssembly<VisualStudioListener>(new Options(), executionSink);
+                            environment.Subscribe<VisualStudioListener>(executionSink);
+                            environment.RunAssembly(new Options());
                         }
                     }
                     else
@@ -93,7 +94,8 @@ namespace Fixie.VisualStudio.TestAdapter
                         {
                             environment.ResolveAssemblyContaining<ExecutionSink>();
 
-                            environment.RunMethods<VisualStudioListener>(new Options(), methodGroups, executionSink);
+                            environment.Subscribe<VisualStudioListener>(executionSink);
+                            environment.RunMethods(new Options(), methodGroups);
                         }
                     }
                     else

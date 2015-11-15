@@ -33,32 +33,29 @@ namespace Fixie.Execution
             assemblyResolver.AddAssemblyLocation(typeof(T).Assembly.Location);
         }
 
+        public void Subscribe<TListener>(params object[] listenerArgs) where TListener : Listener
+        {
+            foreach (var arg in listenerArgs)
+                AssertSafeForAppDomainCommunication(arg);
+
+            var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
+            var listenerType = typeof(TListener).FullName;
+
+            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
+        }
+
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
         {
             return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunAssembly<TListener>(Options options, params object[] listenerArgs) where TListener : Listener
+        public AssemblyResult RunAssembly(Options options, params object[] listenerArgs)
         {
-            foreach (var arg in listenerArgs)
-                AssertSafeForAppDomainCommunication(arg);
-
-            var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
-            var listenerType = typeof(TListener).FullName;
-
-            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
             return executionProxy.RunAssembly(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunMethods<TListener>(Options options, MethodGroup[] methodGroups, params object[] listenerArgs) where TListener : Listener
+        public AssemblyResult RunMethods(Options options, MethodGroup[] methodGroups)
         {
-            foreach (var arg in listenerArgs)
-                AssertSafeForAppDomainCommunication(arg);
-
-            var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
-            var listenerType = typeof(TListener).FullName;
-
-            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
             return executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
         }
 

@@ -116,9 +116,11 @@ namespace Fixie.ConsoleRunner
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
                 if (ShouldUseTeamCityListener(options))
-                    return environment.RunAssembly<TeamCityListener>(options);
+                    environment.Subscribe<TeamCityListener>();
+                else
+                    environment.Subscribe<ConsoleListener>();
 
-                return environment.RunAssembly<ConsoleListener>(options);
+                return environment.RunAssembly(options);
             }
         }
 

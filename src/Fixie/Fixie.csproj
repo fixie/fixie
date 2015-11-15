@@ -41,6 +41,8 @@
     <Compile Include="Execution\AssemblyStarted.cs" />
     <Compile Include="Execution\Bus.cs" />
     <Compile Include="Execution\IExecutionSink.cs" />
+    <Compile Include="Execution\IHandler.cs" />
+    <Compile Include="Execution\IMessage.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Internal\RemoteAssemblyResolver.cs" />
     <Compile Include="Internal\Discoverer.cs" />

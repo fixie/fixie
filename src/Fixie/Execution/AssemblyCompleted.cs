@@ -2,7 +2,7 @@
 
 namespace Fixie.Execution
 {
-    public class AssemblyCompleted
+    public class AssemblyCompleted : IMessage
     {
         public AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {

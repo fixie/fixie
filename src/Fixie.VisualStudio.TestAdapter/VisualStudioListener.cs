@@ -2,7 +2,12 @@
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class VisualStudioListener : Listener
+    public class VisualStudioListener : Listener,
+        IHandler<AssemblyStarted>,
+        IHandler<SkipResult>,
+        IHandler<PassResult>,
+        IHandler<FailResult>,
+        IHandler<AssemblyCompleted>
     {
         readonly IExecutionSink log;
 

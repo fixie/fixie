@@ -1,6 +1,6 @@
 ﻿namespace Fixie.Execution
 {
-    public class SkipResult
+    public class SkipResult : IMessage
     {
         public SkipResult(Case @case, string skipReason)
         {

@@ -1,11 +1,15 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class ConsoleListener : Listener
+    public class ConsoleListener : Listener,
+        IHandler<AssemblyStarted>,
+        IHandler<SkipResult>,
+        IHandler<PassResult>,
+        IHandler<FailResult>,
+        IHandler<AssemblyCompleted>
     {
         public void Handle(AssemblyStarted message)
         {

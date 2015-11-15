@@ -1,11 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 using Fixie.Execution;
 
 namespace Fixie.Tests
 {
-    public class StubListener : Listener
+    public class StubListener : Listener,
+        IHandler<AssemblyStarted>,
+        IHandler<SkipResult>,
+        IHandler<PassResult>,
+        IHandler<FailResult>,
+        IHandler<AssemblyCompleted>
     {
         readonly List<string> log = new List<string>();
 

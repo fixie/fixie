@@ -1,10 +1,14 @@
-﻿using System.Reflection;
-using Fixie.Execution;
+﻿using Fixie.Execution;
 using TestDriven.Framework;
 
 namespace Fixie.TestDriven
 {
-    public class TestDrivenListener : Listener
+    public class TestDrivenListener : Listener,
+        IHandler<AssemblyStarted>,
+        IHandler<SkipResult>,
+        IHandler<PassResult>,
+        IHandler<FailResult>,
+        IHandler<AssemblyCompleted>
     {
         readonly ITestListener tdnet;
 

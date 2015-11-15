@@ -3,7 +3,7 @@ using Fixie.Internal;
 
 namespace Fixie.Execution
 {
-    public class FailResult
+    public class FailResult : IMessage
     {
         public FailResult(Case @case, AssertionLibraryFilter filter)
         {

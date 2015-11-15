@@ -2,7 +2,7 @@
 
 namespace Fixie.Execution
 {
-    public class AssemblyStarted
+    public class AssemblyStarted : IMessage
     {
         public AssemblyStarted(Assembly assembly)
         {

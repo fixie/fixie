@@ -2,7 +2,7 @@
 
 namespace Fixie.Execution
 {
-    public class PassResult
+    public class PassResult : IMessage
     {
         public PassResult(Case @case)
         {

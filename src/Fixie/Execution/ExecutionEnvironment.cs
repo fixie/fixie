@@ -37,28 +37,28 @@ namespace Fixie.Execution
                 return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunAssembly<TListenerFactory>(Options options, params object[] listenerFactoryArgs) where TListenerFactory : IListenerFactory
+        public AssemblyResult RunAssembly<TListener>(Options options, params object[] listenerArgs) where TListener : Listener
         {
-            foreach (var arg in listenerFactoryArgs)
+            foreach (var arg in listenerArgs)
                 AssertSafeForAppDomainCommunication(arg);
 
-            var listenerFactoryAssemblyFullPath = typeof(TListenerFactory).Assembly.Location;
-            var listenerFactoryType = typeof(TListenerFactory).FullName;
+            var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
+            var listenerType = typeof(TListener).FullName;
 
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunAssembly(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options, listenerFactoryArgs);
+                return executionProxy.RunAssembly(assemblyFullPath, listenerAssemblyFullPath, listenerType, options, listenerArgs);
         }
 
-        public AssemblyResult RunMethods<TListenerFactory>(Options options, MethodGroup[] methodGroups, params object[] listenerFactoryArgs) where TListenerFactory : IListenerFactory
+        public AssemblyResult RunMethods<TListener>(Options options, MethodGroup[] methodGroups, params object[] listenerArgs) where TListener : Listener
         {
-            foreach (var arg in listenerFactoryArgs)
+            foreach (var arg in listenerArgs)
                 AssertSafeForAppDomainCommunication(arg);
 
-            var listenerFactoryAssemblyFullPath = typeof(TListenerFactory).Assembly.Location;
-            var listenerFactoryType = typeof(TListenerFactory).FullName;
+            var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
+            var listenerType = typeof(TListener).FullName;
 
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunMethods(assemblyFullPath, listenerFactoryAssemblyFullPath, listenerFactoryType, options, methodGroups, listenerFactoryArgs);
+                return executionProxy.RunMethods(assemblyFullPath, listenerAssemblyFullPath, listenerType, options, methodGroups, listenerArgs);
         }
 
         static void AssertSafeForAppDomainCommunication(object o)

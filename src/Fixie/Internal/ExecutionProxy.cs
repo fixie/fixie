@@ -14,9 +14,9 @@ namespace Fixie.Internal
             return new Discoverer(options).DiscoverTestMethodGroups(assembly);
         }
 
-        public AssemblyResult RunAssembly(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, object[] listenerFactoryArgs)
+        public AssemblyResult RunAssembly(string assemblyFullPath, string listenerAssemblyFullPath, string listenerType, Options options, object[] listenerArgs)
         {
-            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, listenerFactoryArgs);
+            var listener = CreateListener(listenerAssemblyFullPath, listenerType, listenerArgs);
 
             var runner = new Runner(listener, options);
 
@@ -25,9 +25,9 @@ namespace Fixie.Internal
             return runner.RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, MethodGroup[] methodGroups, object[] listenerFactoryArgs)
+        public AssemblyResult RunMethods(string assemblyFullPath, string listenerAssemblyFullPath, string listenerType, Options options, MethodGroup[] methodGroups, object[] listenerArgs)
         {
-            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, listenerFactoryArgs);
+            var listener = CreateListener(listenerAssemblyFullPath, listenerType, listenerArgs);
 
             var runner = new Runner(listener, options);
 
@@ -36,13 +36,13 @@ namespace Fixie.Internal
             return runner.RunMethods(assembly, methodGroups);
         }
 
-        static Listener CreateListener(string listenerFactoryAssemblyFullPath, string listenerFactoryType, object[] listenerFactoryArgs)
+        static Listener CreateListener(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
         {
-            var type = LoadAssembly(listenerFactoryAssemblyFullPath).GetType(listenerFactoryType);
+            var type = LoadAssembly(listenerAssemblyFullPath).GetType(listenerType);
 
-            var factory = (IListenerFactory)Activator.CreateInstance(type, listenerFactoryArgs);
+            var listener = (Listener)Activator.CreateInstance(type, listenerArgs);
 
-            return factory.Create();
+            return listener;
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

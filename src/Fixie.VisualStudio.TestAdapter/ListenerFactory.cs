@@ -11,7 +11,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.executionSink = executionSink;
         }
 
-        public Listener Create(Options options)
+        public Listener Create()
         {
             return new VisualStudioListener(executionSink);
         }

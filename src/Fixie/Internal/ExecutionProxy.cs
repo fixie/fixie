@@ -16,7 +16,7 @@ namespace Fixie.Internal
 
         public AssemblyResult RunAssembly(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, object[] listenerFactoryArgs)
         {
-            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, options, listenerFactoryArgs);
+            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, listenerFactoryArgs);
 
             var runner = new Runner(listener, options);
 
@@ -27,7 +27,7 @@ namespace Fixie.Internal
 
         public AssemblyResult RunMethods(string assemblyFullPath, string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, MethodGroup[] methodGroups, object[] listenerFactoryArgs)
         {
-            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, options, listenerFactoryArgs);
+            var listener = CreateListener(listenerFactoryAssemblyFullPath, listenerFactoryType, listenerFactoryArgs);
 
             var runner = new Runner(listener, options);
 
@@ -36,13 +36,13 @@ namespace Fixie.Internal
             return runner.RunMethods(assembly, methodGroups);
         }
 
-        static Listener CreateListener(string listenerFactoryAssemblyFullPath, string listenerFactoryType, Options options, object[] listenerFactoryArgs)
+        static Listener CreateListener(string listenerFactoryAssemblyFullPath, string listenerFactoryType, object[] listenerFactoryArgs)
         {
             var type = LoadAssembly(listenerFactoryAssemblyFullPath).GetType(listenerFactoryType);
 
             var factory = (IListenerFactory)Activator.CreateInstance(type, listenerFactoryArgs);
 
-            return factory.Create(options);
+            return factory.Create();
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

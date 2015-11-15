@@ -4,7 +4,7 @@ namespace Fixie.ConsoleRunner
 {
     public class ConsoleListenerFactory : IListenerFactory
     {
-        public Listener Create(Options options)
+        public Listener Create()
         {
             return new ConsoleListener();
         }
@@ -12,7 +12,7 @@ namespace Fixie.ConsoleRunner
 
     public class TeamCityListenerFactory : IListenerFactory
     {
-        public Listener Create(Options options)
+        public Listener Create()
         {
             return new TeamCityListener();
         }

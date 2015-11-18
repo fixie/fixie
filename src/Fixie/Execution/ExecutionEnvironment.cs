@@ -33,15 +33,15 @@ namespace Fixie.Execution
             assemblyResolver.AddAssemblyLocation(typeof(T).Assembly.Location);
         }
 
-        public void Subscribe<THandler>(params object[] handlerArgs)
+        public void Subscribe<TListener>(params object[] listenerArgs)
         {
-            foreach (var arg in handlerArgs)
+            foreach (var arg in listenerArgs)
                 AssertSafeForAppDomainCommunication(arg);
 
-            var handlerAssemblyFullPath = typeof(THandler).Assembly.Location;
-            var handlerType = typeof(THandler).FullName;
+            var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
+            var listenerType = typeof(TListener).FullName;
 
-            executionProxy.Subscribe(handlerAssemblyFullPath, handlerType, handlerArgs);
+            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
         }
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)

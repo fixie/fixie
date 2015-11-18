@@ -9,15 +9,15 @@ namespace Fixie.Internal
     {
         readonly Bus bus = new Bus();
 
-        public void Subscribe(string handlerAssemblyFullPath, string handlerType, object[] handlerArgs)
+        public void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
         {
-            var assembly = LoadAssembly(handlerAssemblyFullPath);
+            var assembly = LoadAssembly(listenerAssemblyFullPath);
 
-            var type = assembly.GetType(handlerType);
+            var type = assembly.GetType(listenerType);
 
-            var handler = Activator.CreateInstance(type, handlerArgs);
+            var listener = Activator.CreateInstance(type, listenerArgs);
 
-            bus.Subscribe(handler);
+            bus.Subscribe(listener);
         }
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)

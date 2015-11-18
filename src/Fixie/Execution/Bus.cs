@@ -4,17 +4,17 @@ namespace Fixie.Execution
 {
     public class Bus
     {
-        readonly List<object> handlers = new List<object>();
+        readonly List<object> subscribers = new List<object>();
 
-        public void Subscribe(object handler)
+        public void Subscribe(object subscriber)
         {
-            handlers.Add(handler);
+            subscribers.Add(subscriber);
         }
 
         public void Publish<TMessage>(TMessage message) where TMessage : IMessage
         {
-            foreach (var handler in handlers)
-                (handler as IHandler<TMessage>)?.Handle(message);
+            foreach (var subscriber in subscribers)
+                (subscriber as IHandler<TMessage>)?.Handle(message);
         }
     }
 }

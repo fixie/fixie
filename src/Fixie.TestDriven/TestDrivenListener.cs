@@ -1,10 +1,12 @@
-﻿using System.Reflection;
-using Fixie.Execution;
+﻿using Fixie.Execution;
 using TestDriven.Framework;
 
 namespace Fixie.TestDriven
 {
-    public class TestDrivenListener : Listener
+    public class TestDrivenListener :
+        IHandler<CaseSkipped>,
+        IHandler<CasePassed>,
+        IHandler<CaseFailed>
     {
         readonly ITestListener tdnet;
 
@@ -13,42 +15,34 @@ namespace Fixie.TestDriven
             this.tdnet = tdnet;
         }
 
-        public void AssemblyStarted(Assembly assembly)
-        {
-        }
-
-        public void CaseSkipped(SkipResult result)
+        public void Handle(CaseSkipped message)
         {
             tdnet.TestFinished(new TestResult
             {
-                Name = result.Name,
+                Name = message.Name,
                 State = TestState.Ignored,
-                Message = result.SkipReason
+                Message = message.SkipReason
             });
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(CasePassed message)
         {
             tdnet.TestFinished(new TestResult
             {
-                Name = result.Name,
+                Name = message.Name,
                 State = TestState.Passed
             });
         }
 
-        public void CaseFailed(FailResult result)
+        public void Handle(CaseFailed message)
         {
             tdnet.TestFinished(new TestResult
             {
-                Name = result.Name,
+                Name = message.Name,
                 State = TestState.Failed,
-                Message = result.Exceptions.PrimaryException.DisplayName,
-                StackTrace = result.Exceptions.CompoundStackTrace,
+                Message = message.Exceptions.PrimaryException.DisplayName,
+                StackTrace = message.Exceptions.CompoundStackTrace,
             });
-        }
-
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
-        {
         }
     }
 }

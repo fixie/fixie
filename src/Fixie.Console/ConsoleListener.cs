@@ -1,41 +1,40 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class ConsoleListener : Listener
+    public class ConsoleListener :
+        IHandler<AssemblyStarted>,
+        IHandler<CaseSkipped>,
+        IHandler<CaseFailed>,
+        IHandler<AssemblyCompleted>
     {
-        public void AssemblyStarted(Assembly assembly)
+        public void Handle(AssemblyStarted message)
         {
-            Console.WriteLine($"------ Testing Assembly {Path.GetFileName(assembly.Location)} ------");
+            Console.WriteLine($"------ Testing Assembly {Path.GetFileName(message.Assembly.Location)} ------");
             Console.WriteLine();
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void Handle(CaseSkipped message)
         {
-            var optionalReason = result.SkipReason == null ? null : ": " + result.SkipReason;
+            var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
 
             using (Foreground.Yellow)
-                Console.WriteLine($"Test '{result.Name}' skipped{optionalReason}");
+                Console.WriteLine($"Test '{message.Name}' skipped{optionalReason}");
         }
 
-        public void CasePassed(PassResult result)
-        {
-        }
-
-        public void CaseFailed(FailResult result)
+        public void Handle(CaseFailed message)
         {
             using (Foreground.Red)
-                Console.WriteLine($"Test '{result.Name}' failed: {result.Exceptions.PrimaryException.DisplayName}");
-            Console.WriteLine(result.Exceptions.CompoundStackTrace);
+                Console.WriteLine($"Test '{message.Name}' failed: {message.Exceptions.PrimaryException.DisplayName}");
+            Console.WriteLine(message.Exceptions.CompoundStackTrace);
             Console.WriteLine();
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public void Handle(AssemblyCompleted message)
         {
-            Console.WriteLine(result.Summary);
+            Console.WriteLine(message.Result.Summary);
             Console.WriteLine();
         }
     }

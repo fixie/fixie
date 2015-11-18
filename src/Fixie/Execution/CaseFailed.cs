@@ -3,9 +3,9 @@ using Fixie.Internal;
 
 namespace Fixie.Execution
 {
-    public class FailResult
+    public class CaseFailed : IMessage
     {
-        public FailResult(Case @case, AssertionLibraryFilter filter)
+        public CaseFailed(Case @case, AssertionLibraryFilter filter)
         {
             Name = @case.Name;
             MethodGroup = @case.MethodGroup;

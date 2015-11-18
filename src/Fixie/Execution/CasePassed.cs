@@ -2,9 +2,9 @@
 
 namespace Fixie.Execution
 {
-    public class PassResult
+    public class CasePassed : IMessage
     {
-        public PassResult(Case @case)
+        public CasePassed(Case @case)
         {
             Name = @case.Name;
             MethodGroup = @case.MethodGroup;

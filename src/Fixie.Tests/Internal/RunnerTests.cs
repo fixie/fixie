@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Fixie.Execution;
 using Fixie.Internal;
 
 namespace Fixie.Tests.Internal
@@ -14,7 +15,10 @@ namespace Fixie.Tests.Internal
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>());
 
-            new Runner(listener).RunTypes(GetType().Assembly, convention,
+            var bus = new Bus();
+            bus.Subscribe(listener);
+
+            new Runner(bus).RunTypes(GetType().Assembly, convention,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
@@ -37,7 +41,10 @@ namespace Fixie.Tests.Internal
                 .CreateInstancePerClass()
                 .ShuffleCases(new Random(1));
 
-            new Runner(listener).RunTypes(GetType().Assembly, convention,
+            var bus = new Bus();
+            bus.Subscribe(listener);
+
+            new Runner(bus).RunTypes(GetType().Assembly, convention,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
@@ -63,7 +70,10 @@ namespace Fixie.Tests.Internal
             convention.Parameters
                 .Add<BuggyParameterSource>();
 
-            new Runner(listener).RunTypes(GetType().Assembly, convention,
+            var bus = new Bus();
+            bus.Subscribe(listener);
+
+            new Runner(bus).RunTypes(GetType().Assembly, convention,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass), typeof(BuggyParameterGenerationTestClass));
 

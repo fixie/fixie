@@ -1,9 +1,12 @@
-﻿using System.Reflection;
-using Fixie.Execution;
+﻿using Fixie.Execution;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class VisualStudioListener : Listener
+    public class VisualStudioListener :
+        IHandler<CaseSkipped>,
+        IHandler<CasePassed>,
+        IHandler<CaseFailed>,
+        IHandler<AssemblyCompleted>
     {
         readonly IExecutionSink log;
 
@@ -12,26 +15,24 @@ namespace Fixie.VisualStudio.TestAdapter
             this.log = log;
         }
 
-        public void AssemblyStarted(Assembly assembly) { }
-
-        public void CaseSkipped(SkipResult result)
+        public void Handle(CaseSkipped message)
         {
-            log.RecordResult(new CaseResult(result));
+            log.RecordResult(new CaseResult(message));
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(CasePassed message)
         {
-            log.RecordResult(new CaseResult(result));
+            log.RecordResult(new CaseResult(message));
         }
 
-        public void CaseFailed(FailResult result)
+        public void Handle(CaseFailed message)
         {
-            log.RecordResult(new CaseResult(result));
+            log.RecordResult(new CaseResult(message));
         }
 
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public void Handle(AssemblyCompleted message)
         {
-            log.SendMessage(result.Summary);
+            log.SendMessage(message.Result.Summary);
         }
     }
 }

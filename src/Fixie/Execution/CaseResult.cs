@@ -5,7 +5,7 @@ namespace Fixie.Execution
     [Serializable]
     public class CaseResult
     {
-        public CaseResult(PassResult result)
+        public CaseResult(CasePassed result)
         {
             Status = CaseStatus.Passed;
             Name = result.Name;
@@ -16,7 +16,7 @@ namespace Fixie.Execution
             SkipReason= null;
         }
 
-        public CaseResult(FailResult result)
+        public CaseResult(CaseFailed result)
         {
             Status = CaseStatus.Failed;
             Name = result.Name;
@@ -27,7 +27,7 @@ namespace Fixie.Execution
             SkipReason = null;
         }
 
-        public CaseResult(SkipResult result)
+        public CaseResult(CaseSkipped result)
         {
             Status = CaseStatus.Skipped;
             Name = result.Name;

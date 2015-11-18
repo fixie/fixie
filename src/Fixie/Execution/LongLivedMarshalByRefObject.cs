@@ -26,7 +26,7 @@ namespace Fixie.Execution
             // This fact poses a problem for long-lived MarshalByRefObjects
             // used in the cross-AppDomain communication between a Fixie
             // runner and the running test assembly. Long-lived tests could
-            // cause a MarshalByRefObject Listener, for instance, to become
+            // cause a MarshalByRefObject event handler, for instance, to become
             // defective when the running test finally finishes.
             // 
             // This class provides a more familiar lifetime for such long-

@@ -7,42 +7,44 @@ namespace Fixie.Internal
 {
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
+        readonly Bus bus = new Bus();
+
+        public void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
+        {
+            var assembly = LoadAssembly(listenerAssemblyFullPath);
+
+            var type = assembly.GetType(listenerType);
+
+            var listener = Activator.CreateInstance(type, listenerArgs);
+
+            bus.Subscribe(listener);
+        }
+
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return new Discoverer(options).DiscoverTestMethodGroups(assembly);
+            var discoverer = new Discoverer(options);
+
+            return discoverer.DiscoverTestMethodGroups(assembly);
         }
 
-        public AssemblyResult RunAssembly(string assemblyFullPath, string listenerAssemblyFullPath, string listenerType, Options options, object[] listenerArgs)
+        public AssemblyResult RunAssembly(string assemblyFullPath, Options options)
         {
-            var listener = CreateListener(listenerAssemblyFullPath, listenerType, listenerArgs);
-
-            var runner = new Runner(listener, options);
-
             var assembly = LoadAssembly(assemblyFullPath);
+
+            var runner = new Runner(bus, options);
 
             return runner.RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, string listenerAssemblyFullPath, string listenerType, Options options, MethodGroup[] methodGroups, object[] listenerArgs)
+        public AssemblyResult RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
-            var listener = CreateListener(listenerAssemblyFullPath, listenerType, listenerArgs);
-
-            var runner = new Runner(listener, options);
-
             var assembly = LoadAssembly(assemblyFullPath);
 
+            var runner = new Runner(bus, options);
+
             return runner.RunMethods(assembly, methodGroups);
-        }
-
-        static Listener CreateListener(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
-        {
-            var type = LoadAssembly(listenerAssemblyFullPath).GetType(listenerType);
-
-            var listener = (Listener)Activator.CreateInstance(type, listenerArgs);
-
-            return listener;
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

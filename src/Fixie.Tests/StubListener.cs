@@ -1,36 +1,34 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 using Fixie.Execution;
 
 namespace Fixie.Tests
 {
-    public class StubListener : Listener
+    public class StubListener :
+        IHandler<CaseSkipped>,
+        IHandler<CasePassed>,
+        IHandler<CaseFailed>
     {
         readonly List<string> log = new List<string>();
 
-        public void AssemblyStarted(Assembly assembly)
+        public void Handle(CaseSkipped message)
         {
+            var optionalReason = message.SkipReason == null ? "." : ": " + message.SkipReason;
+            log.Add($"{message.Name} skipped{optionalReason}");
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void Handle(CasePassed message)
         {
-            var optionalReason = result.SkipReason == null ? "." : ": " + result.SkipReason;
-            log.Add($"{result.Name} skipped{optionalReason}");
+            log.Add($"{message.Name} passed.");
         }
 
-        public void CasePassed(PassResult result)
-        {
-            log.Add($"{result.Name} passed.");
-        }
-
-        public void CaseFailed(FailResult result)
+        public void Handle(CaseFailed message)
         {
             var entry = new StringBuilder();
 
-            var primaryException = result.Exceptions.PrimaryException;
+            var primaryException = message.Exceptions.PrimaryException;
 
-            entry.Append($"{result.Name} failed: {primaryException.Message}");
+            entry.Append($"{message.Name} failed: {primaryException.Message}");
 
             var walk = primaryException;
             while (walk.InnerException != null)
@@ -40,7 +38,7 @@ namespace Fixie.Tests
                 entry.Append($"    Inner Exception: {walk.Message}");
             }
 
-            foreach (var secondaryException in result.Exceptions.SecondaryExceptions)
+            foreach (var secondaryException in message.Exceptions.SecondaryExceptions)
             {
                 entry.AppendLine();
                 entry.Append($"    Secondary Failure: {secondaryException.Message}");
@@ -55,10 +53,6 @@ namespace Fixie.Tests
             }
 
             log.Add(entry.ToString());
-        }
-
-        public void AssemblyCompleted(Assembly assembly, AssemblyResult result)
-        {
         }
 
         public IEnumerable<string> Entries => log;

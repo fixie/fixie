@@ -49,7 +49,7 @@ namespace Fixie.Execution
             return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunAssembly(Options options, params object[] listenerArgs)
+        public AssemblyResult RunAssembly(Options options)
         {
             return executionProxy.RunAssembly(assemblyFullPath, options);
         }

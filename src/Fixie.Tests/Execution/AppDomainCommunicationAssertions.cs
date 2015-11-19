@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fixie.Execution;
 using Should;
 
 namespace Fixie.Tests.Execution
 {
     public static class AppDomainCommunicationAssertions
     {
-        private const BindingFlags AllMembers =
+        const BindingFlags AllMembers =
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
         public static void ShouldBeSafeAppDomainCommunicationInterface(this Type crossAppDomainInterfaceType)
@@ -57,24 +56,13 @@ namespace Fixie.Tests.Execution
             //     also not acceptable for AppDomain communication because they can cause
             //     assembly load failures at runtime.
 
-            if (type == typeof(IExecutionSink))
-            {
-                //Tests use this routine to vet IExecutionSink as a safe remoting *interface*,
-                //but it is also used as an *argument* on other remoting interfaces.
-                //Because it is the responsibility of the IExecutionSink implementation to be
-                //a valid MarshalByRefObject, there is nothing left to check for here,
-                //so it is assumed to be valid.
-                return true;
-            }
-
             visitedTypes.Add(type);
 
             if (type == typeof(object) || type == typeof(object[]))
             {
                 //These types may or may not cross the AppDomain boundary successfully,
-                //but like IExecutionSink it is the responsibilty of the caller to pass
-                //safe types.  There is nothing left to check for here, so it is assumed
-                //to be valid.
+                //but it is the responsibilty of the caller to pass safe types. There
+                //is nothing left to check for here, so it is assumed to be valid.
                 return true;
             }
 

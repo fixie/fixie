@@ -4,9 +4,9 @@ namespace Fixie.VisualStudio.TestAdapter
 {
     public class VisualStudioListener : IHandler<CaseResult>
     {
-        readonly IExecutionSink log;
+        readonly ExecutionSink log;
 
-        public VisualStudioListener(IExecutionSink log)
+        public VisualStudioListener(ExecutionSink log)
         {
             this.log = log;
         }

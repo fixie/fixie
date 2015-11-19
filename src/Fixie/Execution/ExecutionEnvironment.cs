@@ -33,6 +33,11 @@ namespace Fixie.Execution
             assemblyResolver.AddAssemblyLocation(typeof(T).Assembly.Location);
         }
 
+        public void Subscribe<TListener>(TListener listener) where TListener : LongLivedMarshalByRefObject
+        {
+            executionProxy.Subscribe(listener);
+        }
+
         public void Subscribe<TListener>(params object[] listenerArgs)
         {
             foreach (var arg in listenerArgs)

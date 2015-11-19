@@ -9,7 +9,12 @@ namespace Fixie.Internal
     {
         readonly Bus bus = new Bus();
 
-        public void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
+        internal void Subscribe<TListener>(TListener listener) where TListener : LongLivedMarshalByRefObject
+        {
+            bus.Subscribe(listener);
+        }
+
+        internal void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
         {
             var assembly = LoadAssembly(listenerAssemblyFullPath);
 
@@ -20,7 +25,7 @@ namespace Fixie.Internal
             bus.Subscribe(listener);
         }
 
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
+        internal IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
@@ -29,7 +34,7 @@ namespace Fixie.Internal
             return discoverer.DiscoverTestMethodGroups(assembly);
         }
 
-        public AssemblyResult RunAssembly(string assemblyFullPath, Options options)
+        internal AssemblyResult RunAssembly(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
@@ -38,7 +43,7 @@ namespace Fixie.Internal
             return runner.RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
+        internal AssemblyResult RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 

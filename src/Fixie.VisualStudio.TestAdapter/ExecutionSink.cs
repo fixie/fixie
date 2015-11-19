@@ -16,7 +16,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public void RecordResult(CaseResult caseResult)
+        public void Handle(CaseResult caseResult)
         {
             var testResult = new TestResult(TestCase(caseResult.MethodGroup))
             {

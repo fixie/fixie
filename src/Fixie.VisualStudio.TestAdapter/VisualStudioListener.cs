@@ -13,7 +13,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void Handle(CaseResult message)
         {
-            log.RecordResult(message);
+            log.Handle(message);
         }
     }
 }

@@ -1,7 +1,6 @@
 namespace Fixie.Execution
 {
-    public interface IExecutionSink
+    public interface IExecutionSink : IHandler<CaseResult>
     {
-        void RecordResult(CaseResult caseResult);
     }
 }

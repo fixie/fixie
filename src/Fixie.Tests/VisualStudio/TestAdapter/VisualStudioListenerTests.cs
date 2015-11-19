@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Fixie.Internal;
 using Fixie.VisualStudio.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -32,10 +31,6 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 typeof(PassFailTestClass).Run(listener, convention);
 
                 var testClass = typeof(PassFailTestClass).FullName;
-
-                var summaryMessage = recorder.Messages.Single();
-                summaryMessage.Level.ShouldEqual(TestMessageLevel.Informational);
-                CleanBrittleValues(summaryMessage.Message).ShouldEqual("1 passed, 1 failed, 2 skipped, took 1.23 seconds (Fixie 1.2.3.4).");
 
                 console.Lines()
                     .ShouldEqual(
@@ -119,52 +114,32 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
 
         static string CleanBrittleValues(string actualRawContent)
         {
-            //Avoid brittle assertion introduced by fixie version.
-            var cleaned = Regex.Replace(actualRawContent, @"\(Fixie \d+\.\d+\.\d+\.\d+\)", @"(Fixie 1.2.3.4)");
-
-            //Avoid brittle assertion introduced by test duration.
-            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            cleaned = Regex.Replace(cleaned, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
-
             //Avoid brittle assertion introduced by stack trace line numbers.
-            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
+            var cleaned = Regex.Replace(actualRawContent, @":line \d+", ":line #");
 
             return cleaned;
         }
 
         class StubExecutionRecorder : ITestExecutionRecorder
         {
-            public class SentMessage
-            {
-                public TestMessageLevel Level { get; set; }
-                public string Message { get; set; }
-            }
-
-            public List<SentMessage> Messages { get; } = new List<SentMessage>();
-
             public List<TestResult> TestResults { get; } = new List<TestResult>();
 
-            public void SendMessage(TestMessageLevel testMessageLevel, string message)
-            {
-                Messages.Add(new SentMessage { Level = testMessageLevel, Message = message });
-            }
-
             public void RecordResult(TestResult testResult)
-            {
-                TestResults.Add(testResult);
-            }
+                => TestResults.Add(testResult);
+
+            public void SendMessage(TestMessageLevel testMessageLevel, string message)
+                => NotImplemented();
 
             public void RecordStart(TestCase testCase)
-            {
-                throw new NotImplementedException();
-            }
+                => NotImplemented();
 
             public void RecordEnd(TestCase testCase, TestOutcome outcome)
-            {
-                throw new NotImplementedException();
-            }
+                => NotImplemented();
 
             public void RecordAttachments(IList<AttachmentSet> attachmentSets)
+                => NotImplemented();
+
+            static void NotImplemented()
             {
                 throw new NotImplementedException();
             }

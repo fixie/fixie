@@ -5,8 +5,7 @@ namespace Fixie.VisualStudio.TestAdapter
     public class VisualStudioListener :
         IHandler<CaseSkipped>,
         IHandler<CasePassed>,
-        IHandler<CaseFailed>,
-        IHandler<AssemblyCompleted>
+        IHandler<CaseFailed>
     {
         readonly IExecutionSink log;
 
@@ -28,11 +27,6 @@ namespace Fixie.VisualStudio.TestAdapter
         public void Handle(CaseFailed message)
         {
             log.RecordResult(new CaseResult(message));
-        }
-
-        public void Handle(AssemblyCompleted message)
-        {
-            log.SendMessage(message.Result.Summary);
         }
     }
 }

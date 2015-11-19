@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using System.Threading;
+using Fixie.Execution;
 using Fixie.Internal;
 using Fixie.VisualStudio.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -16,15 +16,39 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
 {
     public class VisualStudioListenerTests
     {
+        public void ShouldSupportReceivingMessagesFromTheChildAppDomain()
+        {
+            typeof(VisualStudioListener)
+                .IsSubclassOf(typeof(LongLivedMarshalByRefObject))
+                .ShouldBeTrue(
+                    $"{nameof(VisualStudioListener)} must be a {nameof(LongLivedMarshalByRefObject)} " +
+                    "so that it can successfully receive test results across the AppDomain boundary.");
+
+            var handledMessageTypes =
+                typeof(VisualStudioListener)
+                    .GetInterfaces()
+                    .Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IHandler<>))
+                    .Select(t => t.GetGenericArguments().Single())
+                    .ToArray();
+
+            foreach (var handledMessageType in handledMessageTypes)
+            {
+                handledMessageType
+                    .Has<SerializableAttribute>()
+                    .ShouldBeTrue(
+                        $"As a {nameof(LongLivedMarshalByRefObject)}, {nameof(VisualStudioListener)} " +
+                        $"may only handle serializable messages, but {handledMessageType} is not serializable.");
+            }
+        }
+
         public void ShouldReportResultsToExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
             using (var console = new RedirectedConsole())
-            using (var executionSink = new ExecutionSink(recorder, assemblyPath))
+            using (var listener = new VisualStudioListener(recorder, assemblyPath))
             {
-                var listener = new VisualStudioListener(executionSink);
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
                 convention.Parameters.Add<InputAttributeParameterSource>();
@@ -32,10 +56,6 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 typeof(PassFailTestClass).Run(listener, convention);
 
                 var testClass = typeof(PassFailTestClass).FullName;
-
-                var summaryMessage = recorder.Messages.Single();
-                summaryMessage.Level.ShouldEqual(TestMessageLevel.Informational);
-                CleanBrittleValues(summaryMessage.Message).ShouldEqual("1 passed, 1 failed, 2 skipped, took 1.23 seconds (Fixie 1.2.3.4).");
 
                 console.Lines()
                     .ShouldEqual(
@@ -119,52 +139,32 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
 
         static string CleanBrittleValues(string actualRawContent)
         {
-            //Avoid brittle assertion introduced by fixie version.
-            var cleaned = Regex.Replace(actualRawContent, @"\(Fixie \d+\.\d+\.\d+\.\d+\)", @"(Fixie 1.2.3.4)");
-
-            //Avoid brittle assertion introduced by test duration.
-            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            cleaned = Regex.Replace(cleaned, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
-
             //Avoid brittle assertion introduced by stack trace line numbers.
-            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
+            var cleaned = Regex.Replace(actualRawContent, @":line \d+", ":line #");
 
             return cleaned;
         }
 
         class StubExecutionRecorder : ITestExecutionRecorder
         {
-            public class SentMessage
-            {
-                public TestMessageLevel Level { get; set; }
-                public string Message { get; set; }
-            }
-
-            public List<SentMessage> Messages { get; } = new List<SentMessage>();
-
             public List<TestResult> TestResults { get; } = new List<TestResult>();
 
-            public void SendMessage(TestMessageLevel testMessageLevel, string message)
-            {
-                Messages.Add(new SentMessage { Level = testMessageLevel, Message = message });
-            }
-
             public void RecordResult(TestResult testResult)
-            {
-                TestResults.Add(testResult);
-            }
+                => TestResults.Add(testResult);
+
+            public void SendMessage(TestMessageLevel testMessageLevel, string message)
+                => NotImplemented();
 
             public void RecordStart(TestCase testCase)
-            {
-                throw new NotImplementedException();
-            }
+                => NotImplemented();
 
             public void RecordEnd(TestCase testCase, TestOutcome outcome)
-            {
-                throw new NotImplementedException();
-            }
+                => NotImplemented();
 
             public void RecordAttachments(IList<AttachmentSet> attachmentSets)
+                => NotImplemented();
+
+            static void NotImplemented()
             {
                 throw new NotImplementedException();
             }

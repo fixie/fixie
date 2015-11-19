@@ -39,12 +39,12 @@ namespace Fixie.VisualStudio.TestAdapter
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        using (var proxy = new VisualStudioListenerProxy(frameworkHandle, assemblyPath))
+                        using (var listener = new VisualStudioListener(frameworkHandle, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
-                            environment.ResolveAssemblyContaining<VisualStudioListenerProxy>();
+                            environment.ResolveAssemblyContaining<VisualStudioListener>();
 
-                            environment.Subscribe<VisualStudioListener>(proxy);
+                            environment.Subscribe(listener);
                             environment.RunAssembly(new Options());
                         }
                     }
@@ -89,12 +89,12 @@ namespace Fixie.VisualStudio.TestAdapter
 
                         var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
 
-                        using (var proxy = new VisualStudioListenerProxy(frameworkHandle, assemblyPath))
+                        using (var listener = new VisualStudioListener(frameworkHandle, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
-                            environment.ResolveAssemblyContaining<VisualStudioListenerProxy>();
+                            environment.ResolveAssemblyContaining<VisualStudioListener>();
 
-                            environment.Subscribe<VisualStudioListener>(proxy);
+                            environment.Subscribe(listener);
                             environment.RunMethods(new Options(), methodGroups);
                         }
                     }

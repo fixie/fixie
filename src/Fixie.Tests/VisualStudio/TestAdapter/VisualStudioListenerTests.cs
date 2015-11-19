@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Fixie.Execution;
 using Fixie.Internal;
 using Fixie.VisualStudio.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -15,15 +16,39 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
 {
     public class VisualStudioListenerTests
     {
+        public void ShouldSupportReceivingMessagesFromTheChildAppDomain()
+        {
+            typeof(VisualStudioListener)
+                .IsSubclassOf(typeof(LongLivedMarshalByRefObject))
+                .ShouldBeTrue(
+                    $"{nameof(VisualStudioListener)} must be a {nameof(LongLivedMarshalByRefObject)} " +
+                    "so that it can successfully receive test results across the AppDomain boundary.");
+
+            var handledMessageTypes =
+                typeof(VisualStudioListener)
+                    .GetInterfaces()
+                    .Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IHandler<>))
+                    .Select(t => t.GetGenericArguments().Single())
+                    .ToArray();
+
+            foreach (var handledMessageType in handledMessageTypes)
+            {
+                handledMessageType
+                    .Has<SerializableAttribute>()
+                    .ShouldBeTrue(
+                        $"As a {nameof(LongLivedMarshalByRefObject)}, {nameof(VisualStudioListener)} " +
+                        $"may only handle serializable messages, but {handledMessageType} is not serializable.");
+            }
+        }
+
         public void ShouldReportResultsToExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
             using (var console = new RedirectedConsole())
-            using (var proxy = new VisualStudioListenerProxy(recorder, assemblyPath))
+            using (var listener = new VisualStudioListener(recorder, assemblyPath))
             {
-                var listener = new VisualStudioListener(proxy);
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
                 convention.Parameters.Add<InputAttributeParameterSource>();

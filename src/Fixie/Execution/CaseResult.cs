@@ -3,7 +3,7 @@ using System;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class CaseResult
+    public class CaseResult : IMessage
     {
         public CaseResult(CasePassed result)
         {

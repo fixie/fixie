@@ -150,23 +150,35 @@ namespace Fixie.Internal
 
         CaseResult Skip(Case @case, string reason)
         {
-            var result = new CaseSkipped(@case, reason);
-            bus.Publish(result);
-            return new CaseResult(result);
+            var caseSkipped = new CaseSkipped(@case, reason);
+            bus.Publish(caseSkipped);
+
+            var caseResult = new CaseResult(caseSkipped);
+            bus.Publish(caseResult);
+
+            return caseResult;
         }
 
         CaseResult Pass(Case @case)
         {
-            var result = new CasePassed(@case);
-            bus.Publish(result);
-            return new CaseResult(result);
+            var casePassed = new CasePassed(@case);
+            bus.Publish(casePassed);
+
+            var caseResult = new CaseResult(casePassed);
+            bus.Publish(caseResult);
+
+            return caseResult;
         }
 
         CaseResult Fail(Case @case)
         {
-            var result = new CaseFailed(@case, assertionLibraryFilter);
-            bus.Publish(result);
-            return new CaseResult(result);
+            var caseFailed = new CaseFailed(@case, assertionLibraryFilter);
+            bus.Publish(caseFailed);
+
+            var caseResult = new CaseResult(caseFailed);
+            bus.Publish(caseResult);
+
+            return caseResult;
         }
     }
 }

@@ -5,12 +5,12 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class ExecutionSink : LongLivedMarshalByRefObject, IHandler<CaseResult>
+    public class VisualStudioListenerProxy : LongLivedMarshalByRefObject, IHandler<CaseResult>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
 
-        public ExecutionSink(ITestExecutionRecorder log, string assemblyPath)
+        public VisualStudioListenerProxy(ITestExecutionRecorder log, string assemblyPath)
         {
             this.log = log;
             this.assemblyPath = assemblyPath;

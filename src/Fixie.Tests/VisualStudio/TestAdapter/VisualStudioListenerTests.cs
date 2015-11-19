@@ -21,9 +21,9 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
             var recorder = new StubExecutionRecorder();
 
             using (var console = new RedirectedConsole())
-            using (var executionSink = new ExecutionSink(recorder, assemblyPath))
+            using (var proxy = new VisualStudioListenerProxy(recorder, assemblyPath))
             {
-                var listener = new VisualStudioListener(executionSink);
+                var listener = new VisualStudioListener(proxy);
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
                 convention.Parameters.Add<InputAttributeParameterSource>();

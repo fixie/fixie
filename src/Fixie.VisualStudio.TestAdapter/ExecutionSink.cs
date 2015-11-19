@@ -16,11 +16,6 @@ namespace Fixie.VisualStudio.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public void SendMessage(string message)
-        {
-            log.Info(message);
-        }
-
         public void RecordResult(CaseResult caseResult)
         {
             var testResult = new TestResult(TestCase(caseResult.MethodGroup))

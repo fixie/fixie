@@ -20,7 +20,7 @@ namespace Fixie.Tests.Execution
                 var bus = new Bus();
                 bus.Subscribe(listener);
                 var assemblyResult = new Runner(bus).RunTypes(GetType().Assembly, convention, typeof(SampleTestClass));
-                var classResult = assemblyResult.ConventionResults.Single().ClassResults.Single();
+                var classResult = assemblyResult.ClassResults.Single();
 
                 var skip = classResult.CaseResults[0];
                 var fail = classResult.CaseResults[1];

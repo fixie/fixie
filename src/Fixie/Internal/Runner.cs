@@ -107,31 +107,24 @@ namespace Fixie.Internal
             bus.Publish(new AssemblyStarted(assembly));
 
             foreach (var convention in conventions)
-            {
-                var conventionResult = Run(convention, candidateTypes);
-
-                assemblyResult.Add(conventionResult);
-            }
+                Run(assemblyResult, convention, candidateTypes);
 
             bus.Publish(new AssemblyCompleted(assembly, assemblyResult));
 
             return assemblyResult;
         }
 
-        ConventionResult Run(Convention convention, Type[] candidateTypes)
+        void Run(AssemblyResult assemblyResult, Convention convention, Type[] candidateTypes)
         {
             var classDiscoverer = new ClassDiscoverer(convention.Config);
-            var conventionResult = new ConventionResult(convention.GetType().FullName);
             var classRunner = new ClassRunner(bus, convention.Config);
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
             {
                 var classResult = classRunner.Run(testClass);
 
-                conventionResult.Add(classResult);
+                assemblyResult.Add(classResult);
             }
-
-            return conventionResult;
         }
     }
 }

@@ -19,8 +19,6 @@ namespace Fixie.Reports
         {
             var now = DateTime.UtcNow;
 
-            var classResults = assemblyResult.ConventionResults.SelectMany(x => x.ClassResults);
-
             return new XElement("assembly",
                 new XAttribute("name", assemblyResult.Name),
                 new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
@@ -33,10 +31,10 @@ namespace Fixie.Reports
                 new XAttribute("skipped", assemblyResult.Skipped),
                 new XAttribute("environment", $"{IntPtr.Size*8}-bit .NET {Environment.Version}"),
                 new XAttribute("test-framework", $"Fixie {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}"),
-                classResults.Select(Class));
+                assemblyResult.ClassResults.Select(Class));
         }
 
-        private static XElement Class(ClassResult classResult)
+        static XElement Class(ClassResult classResult)
         {
             return new XElement("class",
                 new XAttribute("time", Seconds(classResult.Duration)),
@@ -48,7 +46,7 @@ namespace Fixie.Reports
                 classResult.CaseResults.Select(Case));
         }
 
-        private static XElement Case(CaseResult caseResult)
+        static XElement Case(CaseResult caseResult)
         {
             var @case = new XElement("test",
                 new XAttribute("name", caseResult.Name),

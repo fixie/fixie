@@ -62,19 +62,7 @@ namespace Fixie.Reports
                 new XAttribute("time", Seconds(assemblyResult.Duration)),
                 new XAttribute("executed", true),
                 new XAttribute("result", assemblyResult.Failed > 0 ? "Failure" : "Success"),
-                new XElement("results", assemblyResult.ConventionResults.Select(Convention)));
-        }
-
-        static XElement Convention(ConventionResult conventionResult)
-        {
-            return new XElement("test-suite",
-                new XAttribute("type", "TestSuite"),
-                new XAttribute("success", conventionResult.Failed == 0),
-                new XAttribute("name", conventionResult.Name),
-                new XAttribute("time", Seconds(conventionResult.Duration)),
-                new XAttribute("executed", true),
-                new XAttribute("result", conventionResult.Failed > 0 ? "Failure" : "Success"),
-                new XElement("results", conventionResult.ClassResults.Select(Class)));
+                new XElement("results", assemblyResult.ClassResults.Select(Class)));
         }
 
         static XElement Class(ClassResult classResult)

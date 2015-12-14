@@ -57,6 +57,7 @@
     <Compile Include="NUnitStyle\CalculatorTests.cs" />
     <Compile Include="NUnitStyle\CustomConvention.cs" />
     <Compile Include="NUnitStyle\Attributes.cs" />
+    <Compile Include="NUnitStyle\TestCaseSourceAttributeCalculatorTests.cs" />
     <Compile Include="Parameterized\CalculatorTests.cs" />
     <Compile Include="Parameterized\CustomConvention.cs" />
     <Compile Include="Parameterized\InputAttribute.cs" />

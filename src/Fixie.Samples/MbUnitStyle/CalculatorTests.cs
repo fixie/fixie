@@ -63,6 +63,14 @@ namespace Fixie.Samples.MbUnitStyle
             calculator.Divide(1, 0);
         }
 
+        [Test]
+        [ExpectedException(typeof(ArithmeticException))]
+        public void ShouldThrowArithmeticExceptionWhenDividingByZero()
+        {
+            log.WhereAmI();
+            calculator.Divide(1, 0);
+        }
+
         [TearDown]
         public void TearDown()
         {
@@ -107,6 +115,9 @@ namespace Fixie.Samples.MbUnitStyle
                 "TearDown",
                 "SetUp",
                 "ShouldSubtract(9, 6)",
+                "TearDown",
+                "SetUp",
+                "ShouldThrowArithmeticExceptionWhenDividingByZero",
                 "TearDown",
                 "SetUp",
                 "ShouldThrowWhenDividingByZero",

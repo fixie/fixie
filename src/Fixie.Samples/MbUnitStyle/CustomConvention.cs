@@ -99,7 +99,7 @@ namespace Fixie.Samples.MbUnitStyle
             if (exception == null)
                 throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
 
-            if (attribute.ExpectedException.IsAssignableFrom(exception.GetType()) == false)
+            if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
             {
                 @case.ClearExceptions();
 

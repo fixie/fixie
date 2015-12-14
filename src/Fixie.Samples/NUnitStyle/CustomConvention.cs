@@ -15,6 +15,9 @@ namespace Fixie.Samples.NUnitStyle
             Methods
                 .HasOrInherits<TestAttribute>();
 
+            Parameters
+                .Add<TestCaseSourceAttributeParameterSource>();
+
             ClassExecution
                     .CreateInstancePerClass()
                     .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
@@ -25,6 +28,52 @@ namespace Fixie.Samples.NUnitStyle
             CaseExecution
                 .Wrap<SupportExpectedExceptions>()
                 .Wrap<SetUpTearDown>();
+        }
+    }
+
+    class TestCaseSourceAttributeParameterSource : ParameterSource
+    {
+        public IEnumerable<object[]> GetParameters(MethodInfo method)
+        {
+            var testInvocations = new List<object[]>();
+
+            var testCaseSourceAttributes = method.GetCustomAttributes<TestCaseSourceAttribute>(true).ToList();
+
+            foreach (var attribute in testCaseSourceAttributes)
+            {
+                var sourceType = attribute.SourceType ?? method.ReflectedType;
+
+                if (sourceType == null)
+                    throw new Exception("Could not find source type for method " + method.Name);
+
+                var members = sourceType.GetMember(attribute.SourceName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
+
+                if (members.Length != 1)
+                    throw new Exception(String.Format("Found {0} members named '{1}' on type {2}", members.Length, attribute.SourceName, sourceType));
+
+                var member = members.Single();
+
+                testInvocations.AddRange(InvocationsForTestCaseSource(member));
+            }
+
+            return testInvocations;
+        }
+
+        private static IEnumerable<object[]> InvocationsForTestCaseSource(MemberInfo member)
+        {
+            var field = member as FieldInfo;
+            if (field != null && field.IsStatic)
+                return (IEnumerable<object[]>)field.GetValue(null);
+
+            var property = member as PropertyInfo;
+            if (property != null && property.GetGetMethod(true).IsStatic)
+                return (IEnumerable<object[]>)property.GetValue(null, null);
+
+            var m = member as MethodInfo;
+            if (m != null && m.IsStatic)
+                return (IEnumerable<object[]>)m.Invoke(null, null);
+
+            throw new Exception(String.Format("Member '{0}' must be static to be used with TestCaseSource", member.Name));
         }
     }
 

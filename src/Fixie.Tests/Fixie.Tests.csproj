@@ -53,6 +53,8 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="TestDriven.Framework">
@@ -63,6 +65,7 @@
     <Compile Include="AssertionLibraryFilteringTests.cs" />
     <Compile Include="Assertions.cs" />
     <Compile Include="Execution\BusTests.cs" />
+    <Compile Include="ConsoleRunner\AppVeyorListenerTests.cs" />
     <Compile Include="Execution\ExecutionEnvironmentTests.cs" />
     <Compile Include="Execution\CaseResultTests.cs" />
     <Compile Include="MethodGroupTests.cs" />

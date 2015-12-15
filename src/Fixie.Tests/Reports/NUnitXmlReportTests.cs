@@ -18,13 +18,12 @@ namespace Fixie.Tests.Reports
     {
         public void ShouldProduceValidXmlDocument()
         {
-            var listener = new StubListener();
             var executionResult = new ExecutionResult();
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters.Add<InputAttributeParameterSource>();
 
-            var assemblyResult = typeof(PassFailTestClass).Run(listener, convention);
+            var assemblyResult = typeof(PassFailTestClass).Run(convention);
             executionResult.Add(assemblyResult);
 
             var report = new NUnitXmlReport();

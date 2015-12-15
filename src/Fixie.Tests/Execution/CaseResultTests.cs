@@ -17,9 +17,7 @@ namespace Fixie.Tests.Execution
 
             using (new RedirectedConsole())
             {
-                var bus = new Bus();
-                bus.Subscribe(listener);
-                var assemblyResult = new Runner(bus).RunTypes(GetType().Assembly, convention, typeof(SampleTestClass));
+                var assemblyResult = typeof(SampleTestClass).Run(listener, convention);
                 var classResult = assemblyResult.ClassResults.Single();
 
                 var skip = classResult.CaseResults[0];

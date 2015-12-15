@@ -30,11 +30,11 @@ namespace Fixie.Tests
             return multiline.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public static void Run(this Type sampleTestClass, object listener, Convention convention)
+        public static AssemblyResult Run(this Type sampleTestClass, object listener, Convention convention)
         {
             var bus = new Bus();
             bus.Subscribe(listener);
-            new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
+            return new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
         }
     }
 }

@@ -9,7 +9,6 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using Fixie.Execution;
-using Fixie.Internal;
 using Fixie.Reports;
 using Should;
 
@@ -20,16 +19,12 @@ namespace Fixie.Tests.Reports
         public void ShouldProduceValidXmlDocument()
         {
             var listener = new StubListener();
-            var bus = new Bus();
-            bus.Subscribe(listener);
-
-            var runner = new Runner(bus);
-
             var executionResult = new ExecutionResult();
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters.Add<InputAttributeParameterSource>();
-            var assemblyResult = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
+
+            var assemblyResult = typeof(PassFailTestClass).Run(listener, convention);
             executionResult.Add(assemblyResult);
 
             var report = new XUnitXmlReport();

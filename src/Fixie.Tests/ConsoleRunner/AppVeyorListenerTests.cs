@@ -18,7 +18,7 @@ namespace Fixie.Tests.ConsoleRunner
 {
     public class AppVeyorListenerTests
     {
-        public void ShouldReportResultsToTheConsoleInTeamCityFormat()
+        public void ShouldReportResultsToAppVeyorBuildWorkerApi()
         {
             var results = new List<AppVeyorListener.TestResult>();
 

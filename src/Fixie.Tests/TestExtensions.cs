@@ -20,6 +20,11 @@ namespace Fixie.Tests
             return type.GetMethods(InstanceMethods);
         }
 
+        public static IEnumerable<string> Lines(this string multiline)
+        {
+            return multiline.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         public static IEnumerable<string> Lines(this RedirectedConsole console)
         {
             return console.Output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);

@@ -119,6 +119,12 @@ namespace Fixie.ConsoleRunner
                     return Execute(assemblyPath, options, listener);
             }
 
+            if (ShouldUseAppVeyorListener())
+            {
+                using (var listener = new AppVeyorListener())
+                    return Execute(assemblyPath, options, listener);
+            }
+
             using (var listener = new ConsoleListener())
                 return Execute(assemblyPath, options, listener);
         }
@@ -140,6 +146,11 @@ namespace Fixie.ConsoleRunner
                 (!teamCityExplicitlySpecified && runningUnderTeamCity);
 
             return useTeamCityListener;
+        }
+
+        static bool ShouldUseAppVeyorListener()
+        {
+            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
         }
     }
 }

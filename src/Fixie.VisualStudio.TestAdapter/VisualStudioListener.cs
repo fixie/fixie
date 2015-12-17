@@ -59,7 +59,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
             if (caseResult.Status == CaseStatus.Failed)
             {
-                testResult.ErrorMessage = caseResult.Exceptions.PrimaryException.DisplayName;
+                testResult.ErrorMessage = caseResult.ExceptionSummary;
                 testResult.ErrorStackTrace = caseResult.StackTrace;
             }
             else if (caseResult.Status == CaseStatus.Passed)
@@ -69,7 +69,7 @@ namespace Fixie.VisualStudio.TestAdapter
             }
             else if (caseResult.Status == CaseStatus.Skipped)
             {
-                testResult.ErrorMessage = caseResult.SkipReason;
+                testResult.ErrorMessage = caseResult.Message;
                 testResult.ErrorStackTrace = null;
             }
 

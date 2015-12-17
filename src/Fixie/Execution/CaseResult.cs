@@ -12,10 +12,10 @@ namespace Fixie.Execution
             MethodGroup = result.MethodGroup;
             Output = result.Output;
             Duration = result.Duration;
-            Exceptions = null;
+            ExceptionSummary = null;
             ExceptionType = null;
             StackTrace = null;
-            SkipReason= null;
+            Message = null;
         }
 
         public CaseResult(CaseFailed result)
@@ -25,10 +25,10 @@ namespace Fixie.Execution
             MethodGroup = result.MethodGroup;
             Output = result.Output;
             Duration = result.Duration;
-            Exceptions = result.Exceptions;
+            ExceptionSummary = result.Exceptions.PrimaryException.DisplayName;
             ExceptionType = result.Exceptions.PrimaryException.Type;
             StackTrace = result.Exceptions.CompoundStackTrace;
-            SkipReason = null;
+            Message = result.Exceptions.PrimaryException.Message;
         }
 
         public CaseResult(CaseSkipped result)
@@ -38,10 +38,10 @@ namespace Fixie.Execution
             MethodGroup = result.MethodGroup;
             Output = null;
             Duration = TimeSpan.Zero;
-            Exceptions = null;
+            ExceptionSummary = null;
             ExceptionType = null;
             StackTrace = null;
-            SkipReason = result.SkipReason;
+            Message = result.SkipReason;
         }
 
         public CaseStatus Status { get; }
@@ -49,9 +49,10 @@ namespace Fixie.Execution
         public MethodGroup MethodGroup { get; }
         public string Output { get; }
         public TimeSpan Duration { get; }
-        public CompoundException Exceptions { get; }
+
+        public string ExceptionSummary { get; }
         public string ExceptionType { get; }
         public string StackTrace { get; }
-        public string SkipReason { get; }
+        public string Message { get; }
     }
 }

@@ -62,14 +62,14 @@ namespace Fixie.Reports
             if (caseResult.Status != CaseStatus.Skipped)
                 @case.Add(new XAttribute("time", Seconds(caseResult.Duration)));
 
-            if (caseResult.Status == CaseStatus.Skipped && caseResult.SkipReason != null)
-                @case.Add(new XElement("reason", new XElement("message", new XCData(caseResult.SkipReason))));
+            if (caseResult.Status == CaseStatus.Skipped && caseResult.Message != null)
+                @case.Add(new XElement("reason", new XElement("message", new XCData(caseResult.Message))));
 
             if (caseResult.Status == CaseStatus.Failed)
                 @case.Add(
                     new XElement("failure",
                         new XAttribute("exception-type", caseResult.ExceptionType),
-                        new XElement("message", new XCData(caseResult.Exceptions.PrimaryException.Message)),
+                        new XElement("message", new XCData(caseResult.Message ?? "")),
                         new XElement("stack-trace", new XCData(caseResult.StackTrace))));
 
             return @case;

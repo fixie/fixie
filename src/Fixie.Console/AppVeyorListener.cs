@@ -47,7 +47,7 @@ namespace Fixie.ConsoleRunner
 
             if (message.Status == CaseStatus.Failed)
             {
-                testResult.ErrorMessage = message.Exceptions.PrimaryException.DisplayName;
+                testResult.ErrorMessage = message.ExceptionSummary;
                 testResult.ErrorStackTrace = message.StackTrace;
             }
             else if (message.Status == CaseStatus.Passed)
@@ -57,7 +57,7 @@ namespace Fixie.ConsoleRunner
             }
             else if (message.Status == CaseStatus.Skipped)
             {
-                testResult.ErrorMessage = message.SkipReason;
+                testResult.ErrorMessage = message.Message;
                 testResult.ErrorStackTrace = null;
             }
 

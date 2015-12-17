@@ -28,24 +28,24 @@ namespace Fixie.Tests.Execution
                 pass.Output.ShouldEqual("Pass" + Environment.NewLine);
                 pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 pass.Status.ShouldEqual(CaseStatus.Passed);
-                pass.Exceptions.ShouldBeNull();
-                pass.SkipReason.ShouldBeNull();
+                pass.ExceptionSummary.ShouldBeNull();
+                pass.Message.ShouldBeNull();
 
                 fail.Name.ShouldEqual("Fixie.Tests.Execution.CaseResultTests+SampleTestClass.Fail");
                 fail.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseResultTests+SampleTestClass.Fail");
                 fail.Output.ShouldEqual("Fail" + Environment.NewLine);
                 fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 fail.Status.ShouldEqual(CaseStatus.Failed);
-                fail.Exceptions.PrimaryException.Message.ShouldEqual("'Fail' failed!");
-                fail.SkipReason.ShouldBeNull();
+                fail.ExceptionSummary.ShouldEqual("Fixie.Tests.FailureException");
+                fail.Message.ShouldEqual("'Fail' failed!");
 
                 skip.Name.ShouldEqual("Fixie.Tests.Execution.CaseResultTests+SampleTestClass.Skip");
                 skip.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseResultTests+SampleTestClass.Skip");
                 skip.Output.ShouldBeNull();
                 skip.Duration.ShouldEqual(TimeSpan.Zero);
                 skip.Status.ShouldEqual(CaseStatus.Skipped);
-                skip.Exceptions.ShouldBeNull();
-                skip.SkipReason.ShouldEqual("Skipped by naming convention.");
+                skip.ExceptionSummary.ShouldBeNull();
+                skip.Message.ShouldEqual("Skipped by naming convention.");
             }
         }
 

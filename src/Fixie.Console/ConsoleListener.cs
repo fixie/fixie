@@ -20,13 +20,13 @@ namespace Fixie.ConsoleRunner
             if (message.Status == CaseStatus.Failed)
             {
                 using (Foreground.Red)
-                    Console.WriteLine($"Test '{message.Name}' failed: {message.Exceptions.PrimaryException.DisplayName}");
+                    Console.WriteLine($"Test '{message.Name}' failed: {message.ExceptionSummary}");
                 Console.WriteLine(message.StackTrace);
                 Console.WriteLine();
             }
             else if (message.Status == CaseStatus.Skipped)
             {
-                var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
+                var optionalReason = message.Message == null ? null : ": " + message.Message;
 
                 using (Foreground.Yellow)
                     Console.WriteLine($"Test '{message.Name}' skipped{optionalReason}");

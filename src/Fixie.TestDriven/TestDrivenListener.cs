@@ -28,12 +28,12 @@ namespace Fixie.TestDriven
 
             if (message.Status == CaseStatus.Failed)
             {
-                testResult.Message = message.Exceptions.PrimaryException.DisplayName;
+                testResult.Message = message.ExceptionSummary;
                 testResult.StackTrace = message.StackTrace;
             }
             else if (message.Status == CaseStatus.Skipped)
             {
-                testResult.Message = message.SkipReason;
+                testResult.Message = message.Message;
             }
 
             return testResult;

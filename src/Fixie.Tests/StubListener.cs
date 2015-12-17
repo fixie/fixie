@@ -32,7 +32,7 @@ namespace Fixie.Tests
 
         void Skipped(CaseResult message)
         {
-            var optionalReason = message.SkipReason == null ? "." : ": " + message.SkipReason;
+            var optionalReason = message.Message == null ? "." : ": " + message.Message;
             log.Add($"{message.Name} skipped{optionalReason}");
         }
 

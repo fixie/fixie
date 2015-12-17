@@ -14,10 +14,10 @@ namespace Fixie.Tests.Cases
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
         public void ShouldSkipCasesWithOptionalReason()
@@ -28,10 +28,10 @@ namespace Fixie.Tests.Cases
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
         public void ShouldAllowMultiplePrioritizedSkipRules()
@@ -46,7 +46,7 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
         public void ShouldFailWithClearExplanationWhenSkipConditionThrows()

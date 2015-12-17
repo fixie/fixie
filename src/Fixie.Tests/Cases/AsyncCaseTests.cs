@@ -12,7 +12,7 @@ namespace Fixie.Tests.Cases
             Run<AwaitThenPassTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.AsyncCaseTests+AwaitThenPassTestClass.Test passed.");
+                "Fixie.Tests.Cases.AsyncCaseTests+AwaitThenPassTestClass.Test passed");
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()

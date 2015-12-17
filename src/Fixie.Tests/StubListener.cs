@@ -22,7 +22,7 @@ namespace Fixie.Tests
 
         void Passed(CaseResult message)
         {
-            log.Add($"{message.Name} passed.");
+            log.Add($"{message.Name} passed");
         }
 
         void Failed(CaseResult message)
@@ -32,7 +32,7 @@ namespace Fixie.Tests
 
         void Skipped(CaseResult message)
         {
-            var optionalReason = message.Message == null ? "." : ": " + message.Message;
+            var optionalReason = message.Message == null ? null : ": " + message.Message;
             log.Add($"{message.Name} skipped{optionalReason}");
         }
 

@@ -72,7 +72,7 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
@@ -100,7 +100,7 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
@@ -126,7 +126,7 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
@@ -154,7 +154,7 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
@@ -190,7 +190,7 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
@@ -228,7 +228,7 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
@@ -253,8 +253,8 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
-                "SampleTestClass.Fail passed.");
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail passed");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
@@ -274,8 +274,8 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
-                "SampleTestClass.Fail passed.");
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail passed");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
@@ -381,7 +381,7 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
@@ -404,7 +404,7 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed.",
+                "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(

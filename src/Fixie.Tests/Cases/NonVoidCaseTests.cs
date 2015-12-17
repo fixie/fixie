@@ -17,16 +17,16 @@ namespace Fixie.Tests.Cases
                 Run<SampleAsyncTestClass>();
 
                 Listener.Entries.ShouldEqual(
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolFalse passed.",
+                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolFalse passed",
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolThrow failed: 'BoolThrow' failed!",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolTrue passed.",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.Pass passed.",
+                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolTrue passed",
+                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.Pass passed",
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.Throw failed: 'Throw' failed!",
 
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolFalse passed.",
+                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolFalse passed",
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolThrow failed: 'BoolThrow' failed!",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolTrue passed.",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.Pass passed.",
+                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolTrue passed",
+                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.Pass passed",
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.Throw failed: 'Throw' failed!"
                     );
 
@@ -47,8 +47,8 @@ namespace Fixie.Tests.Cases
                 Listener.Entries.ShouldEqual(
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolFalse failed: Boolean test case returned false!",
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolThrow failed: 'BoolThrow' failed!",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolTrue passed.",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.Pass passed.",
+                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolTrue passed",
+                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.Pass passed",
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.Throw failed: 'Throw' failed!"
                     );
 
@@ -75,8 +75,8 @@ namespace Fixie.Tests.Cases
                 Listener.Entries.ShouldEqual(
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolFalse failed: Boolean test case returned false!",
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolThrow failed: 'BoolThrow' failed!",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolTrue passed.",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.Pass passed.",
+                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolTrue passed",
+                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.Pass passed",
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.Throw failed: 'Throw' failed!"
                     );
 

@@ -13,6 +13,7 @@ namespace Fixie.Execution
             Output = result.Output;
             Duration = result.Duration;
             Exceptions = null;
+            ExceptionType = null;
             StackTrace = null;
             SkipReason= null;
         }
@@ -25,6 +26,7 @@ namespace Fixie.Execution
             Output = result.Output;
             Duration = result.Duration;
             Exceptions = result.Exceptions;
+            ExceptionType = result.Exceptions.PrimaryException.Type;
             StackTrace = result.Exceptions.CompoundStackTrace;
             SkipReason = null;
         }
@@ -37,6 +39,7 @@ namespace Fixie.Execution
             Output = null;
             Duration = TimeSpan.Zero;
             Exceptions = null;
+            ExceptionType = null;
             StackTrace = null;
             SkipReason = result.SkipReason;
         }
@@ -47,6 +50,7 @@ namespace Fixie.Execution
         public string Output { get; }
         public TimeSpan Duration { get; }
         public CompoundException Exceptions { get; }
+        public string ExceptionType { get; }
         public string StackTrace { get; }
         public string SkipReason { get; }
     }

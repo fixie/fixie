@@ -28,7 +28,7 @@ namespace Fixie.TestDriven
 
             if (message.Status == CaseStatus.Failed)
             {
-                testResult.Message = message.ExceptionSummary;
+                testResult.Message = message.IsAssertionException ? "" : message.ExceptionType;
                 testResult.StackTrace = message.StackTrace;
             }
             else if (message.Status == CaseStatus.Skipped)

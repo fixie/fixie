@@ -59,7 +59,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
             if (caseResult.Status == CaseStatus.Failed)
             {
-                testResult.ErrorMessage = caseResult.ExceptionSummary;
+                testResult.ErrorMessage = caseResult.IsAssertionException ? "" : caseResult.ExceptionType;
                 testResult.ErrorStackTrace = caseResult.StackTrace;
             }
             else if (caseResult.Status == CaseStatus.Passed)

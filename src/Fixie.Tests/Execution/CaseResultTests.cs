@@ -11,13 +11,12 @@ namespace Fixie.Tests.Execution
     {
         public void ShouldDescribeCaseResults()
         {
-            var listener = new StubListener();
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Name == "Skip", x => "Skipped by naming convention.");
 
             using (new RedirectedConsole())
             {
-                var assemblyResult = typeof(SampleTestClass).Run(listener, convention);
+                var assemblyResult = typeof(SampleTestClass).Run(convention);
                 var classResult = assemblyResult.ClassResults.Single();
 
                 var skip = classResult.CaseResults[0];

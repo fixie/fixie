@@ -31,7 +31,7 @@ namespace Fixie.ConsoleRunner
                 Message("testStdOut name='{0}' out='{1}'", message.Name, message.Output);
 
             if (message.Status == CaseStatus.Failed)
-                Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exceptions.PrimaryException.Message, message.Exceptions.CompoundStackTrace);
+                Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exceptions.PrimaryException.Message, message.StackTrace);
 
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }

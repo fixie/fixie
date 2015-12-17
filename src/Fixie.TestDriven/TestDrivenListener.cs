@@ -29,7 +29,7 @@ namespace Fixie.TestDriven
             if (message.Status == CaseStatus.Failed)
             {
                 testResult.Message = message.Exceptions.PrimaryException.DisplayName;
-                testResult.StackTrace = message.Exceptions.CompoundStackTrace;
+                testResult.StackTrace = message.StackTrace;
             }
             else if (message.Status == CaseStatus.Skipped)
             {

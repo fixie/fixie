@@ -70,7 +70,7 @@ namespace Fixie.Reports
                     new XElement("failure",
                         new XAttribute("exception-type", caseResult.Exceptions.PrimaryException.Type),
                         new XElement("message", new XCData(caseResult.Exceptions.PrimaryException.Message)),
-                        new XElement("stack-trace", new XCData(caseResult.Exceptions.CompoundStackTrace))));
+                        new XElement("stack-trace", new XCData(caseResult.StackTrace))));
 
             return @case;
         }

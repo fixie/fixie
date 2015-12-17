@@ -1,4 +1,4 @@
-Framework '4.5.1'
+Framework '4.5.2'
 
 properties {
     $birthYear = 2013

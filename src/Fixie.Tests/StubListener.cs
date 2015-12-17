@@ -4,25 +4,26 @@ using Fixie.Execution;
 
 namespace Fixie.Tests
 {
-    public class StubListener :
-        IHandler<CaseSkipped>,
-        IHandler<CasePassed>,
-        IHandler<CaseFailed>
+    public class StubListener : IHandler<CaseResult>
     {
         readonly List<string> log = new List<string>();
 
-        public void Handle(CaseSkipped message)
+        public void Handle(CaseResult message)
         {
-            var optionalReason = message.SkipReason == null ? "." : ": " + message.SkipReason;
-            log.Add($"{message.Name} skipped{optionalReason}");
+            if (message.Status == CaseStatus.Passed)
+                Passed(message);
+            else if (message.Status == CaseStatus.Failed)
+                Failed(message);
+            else if (message.Status == CaseStatus.Skipped)
+                Skipped(message);
         }
 
-        public void Handle(CasePassed message)
+        void Passed(CaseResult message)
         {
             log.Add($"{message.Name} passed.");
         }
 
-        public void Handle(CaseFailed message)
+        void Failed(CaseResult message)
         {
             var entry = new StringBuilder();
 
@@ -53,6 +54,12 @@ namespace Fixie.Tests
             }
 
             log.Add(entry.ToString());
+        }
+
+        void Skipped(CaseResult message)
+        {
+            var optionalReason = message.SkipReason == null ? "." : ": " + message.SkipReason;
+            log.Add($"{message.Name} skipped{optionalReason}");
         }
 
         public IEnumerable<string> Entries => log;

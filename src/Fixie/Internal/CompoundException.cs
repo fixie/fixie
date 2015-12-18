@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Fixie.Internal;
 
-namespace Fixie.Execution
+namespace Fixie.Internal
 {
     public class CompoundException
     {

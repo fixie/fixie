@@ -29,7 +29,7 @@ namespace Fixie.Internal
             orderCases = config.OrderCases;
         }
 
-        public ClassResult Run(Type testClass)
+        public ClassReport Run(Type testClass)
         {
             var methods = methodDiscoverer.TestMethods(testClass);
 
@@ -73,14 +73,14 @@ namespace Fixie.Internal
             var casesToSkip = casesToSkipList.Select(x => x.Key).ToArray();
             var casesToExecute = casesToExecuteList.ToArray();
 
-            var classResult = new ClassResult(testClass.FullName);
+            var classReport = new ClassReport(testClass.FullName);
 
             if (casesToSkip.Any())
             {
                 TryOrderCases(casesToSkip);
 
                 foreach (var @case in casesToSkip)
-                    classResult.Add(Skip(@case, casesToSkipList.Single(x => x.Key == @case).Value));
+                    classReport.Add(Skip(@case, casesToSkipList.Single(x => x.Key == @case).Value));
             }
 
             if (casesToExecute.Any())
@@ -89,7 +89,7 @@ namespace Fixie.Internal
                     Run(testClass, casesToExecute);
 
                 foreach (var @case in casesToExecute)
-                    classResult.Add(@case.Exceptions.Any() ? Fail(@case) : Pass(@case));
+                    classReport.Add(@case.Exceptions.Any() ? Fail(@case) : Pass(@case));
             }
 
             if (parameterGenerationFailures.Any())
@@ -99,10 +99,10 @@ namespace Fixie.Internal
                 TryOrderCases(casesToFailWithoutRunning);
 
                 foreach (var caseToFailWithoutRunning in casesToFailWithoutRunning)
-                    classResult.Add(Fail(caseToFailWithoutRunning));
+                    classReport.Add(Fail(caseToFailWithoutRunning));
             }
 
-            return classResult;
+            return classReport;
         }
 
         bool SkipCase(Case @case, out string reason)

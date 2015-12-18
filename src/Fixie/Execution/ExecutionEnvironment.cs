@@ -54,12 +54,12 @@ namespace Fixie.Execution
             return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunAssembly(Options options)
+        public AssemblyReport RunAssembly(Options options)
         {
             return executionProxy.RunAssembly(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunMethods(Options options, MethodGroup[] methodGroups)
+        public AssemblyReport RunMethods(Options options, MethodGroup[] methodGroups)
         {
             return executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
         }

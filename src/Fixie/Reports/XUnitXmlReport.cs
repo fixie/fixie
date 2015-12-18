@@ -8,42 +8,42 @@ namespace Fixie.Reports
 {
     public class XUnitXmlReport
     {
-        public XDocument Transform(ExecutionResult executionResult)
+        public XDocument Transform(Report report)
         {
             return new XDocument(
                 new XElement("assemblies",
-                    executionResult.AssemblyResults.Select(Assembly)));
+                    report.Assemblies.Select(Assembly)));
         }
 
-        static XElement Assembly(AssemblyResult assemblyResult)
+        static XElement Assembly(AssemblyReport assemblyReport)
         {
             var now = DateTime.UtcNow;
 
             return new XElement("assembly",
-                new XAttribute("name", assemblyResult.Name),
+                new XAttribute("name", assemblyReport.Name),
                 new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                 new XAttribute("run-time", now.ToString("HH:mm:ss")),
                 new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
-                new XAttribute("time", Seconds(assemblyResult.Duration)),
-                new XAttribute("total", assemblyResult.Total),
-                new XAttribute("passed", assemblyResult.Passed),
-                new XAttribute("failed", assemblyResult.Failed),
-                new XAttribute("skipped", assemblyResult.Skipped),
+                new XAttribute("time", Seconds(assemblyReport.Duration)),
+                new XAttribute("total", assemblyReport.Total),
+                new XAttribute("passed", assemblyReport.Passed),
+                new XAttribute("failed", assemblyReport.Failed),
+                new XAttribute("skipped", assemblyReport.Skipped),
                 new XAttribute("environment", $"{IntPtr.Size*8}-bit .NET {Environment.Version}"),
                 new XAttribute("test-framework", $"Fixie {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}"),
-                assemblyResult.ClassResults.Select(Class));
+                assemblyReport.Classes.Select(Class));
         }
 
-        static XElement Class(ClassResult classResult)
+        static XElement Class(ClassReport classReport)
         {
             return new XElement("class",
-                new XAttribute("time", Seconds(classResult.Duration)),
-                new XAttribute("name", classResult.Name),
-                new XAttribute("total", classResult.Failed + classResult.Passed + classResult.Skipped),
-                new XAttribute("passed", classResult.Passed),
-                new XAttribute("failed", classResult.Failed),
-                new XAttribute("skipped", classResult.Skipped),
-                classResult.CaseResults.Select(Case));
+                new XAttribute("time", Seconds(classReport.Duration)),
+                new XAttribute("name", classReport.Name),
+                new XAttribute("total", classReport.Failed + classReport.Passed + classReport.Skipped),
+                new XAttribute("passed", classReport.Passed),
+                new XAttribute("failed", classReport.Failed),
+                new XAttribute("skipped", classReport.Skipped),
+                classReport.Cases.Select(Case));
         }
 
         static XElement Case(CaseResult caseResult)

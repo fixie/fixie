@@ -44,7 +44,7 @@ namespace Fixie.ConsoleRunner
                     }
                 }
 
-                var executionResult = new ExecutionResult();
+                var report = new Report();
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -53,17 +53,17 @@ namespace Fixie.ConsoleRunner
                 {
                     var result = Execute(assemblyPath, commandLineParser.Options);
 
-                    executionResult.Add(result);
+                    report.Add(result);
                 }
 
                 stopwatch.Stop();
 
-                if (executionResult.AssemblyResults.Count > 1)
-                    Summarize(executionResult, stopwatch.Elapsed);
+                if (report.Assemblies.Count > 1)
+                    Summarize(report, stopwatch.Elapsed);
 
-                ProduceReports(commandLineParser.Options, executionResult);
+                ProduceReports(commandLineParser.Options, report);
 
-                return executionResult.Failed;
+                return report.Failed;
             }
             catch (Exception exception)
             {
@@ -73,28 +73,26 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static void Summarize(ExecutionResult executionResult, TimeSpan elapsed)
+        static void Summarize(Report report, TimeSpan elapsed)
         {
             var line = new StringBuilder();
 
-            line.Append($"{executionResult.Passed} passed");
-            line.Append($", {executionResult.Failed} failed");
+            line.Append($"{report.Passed} passed");
+            line.Append($", {report.Failed} failed");
 
-            if (executionResult.Skipped > 0)
-                line.Append($", {executionResult.Skipped} skipped");
+            if (report.Skipped > 0)
+                line.Append($", {report.Skipped} skipped");
 
             line.Append($", took {elapsed.TotalSeconds:N2} seconds");
 
             Console.WriteLine($"====== {line} ======");
         }
 
-        static void ProduceReports(Options options, ExecutionResult executionResult)
+        static void ProduceReports(Options options, Report report)
         {
             if (options.Contains(CommandLineOption.NUnitXml))
             {
-                var report = new NUnitXmlReport();
-
-                var xDocument = report.Transform(executionResult);
+                var xDocument = new NUnitXmlReport().Transform(report);
 
                 foreach (var fileName in options[CommandLineOption.NUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);
@@ -102,16 +100,14 @@ namespace Fixie.ConsoleRunner
 
             if (options.Contains(CommandLineOption.XUnitXml))
             {
-                var report = new XUnitXmlReport();
-
-                var xDocument = report.Transform(executionResult);
+                var xDocument = new XUnitXmlReport().Transform(report);
 
                 foreach (var fileName in options[CommandLineOption.XUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);
             }
         }
 
-        static AssemblyResult Execute(string assemblyPath, Options options)
+        static AssemblyReport Execute(string assemblyPath, Options options)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {

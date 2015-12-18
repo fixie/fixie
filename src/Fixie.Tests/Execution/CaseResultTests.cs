@@ -19,16 +19,16 @@ namespace Fixie.Tests.Execution
 
             using (new RedirectedConsole())
             {
-                var assemblyResult = typeof(SampleTestClass).Run(convention);
-                var classResult = assemblyResult.ClassResults.Single();
+                var assemblyReport = typeof(SampleTestClass).Run(convention);
+                var classReport = assemblyReport.Classes.Single();
 
-                classResult.CaseResults.Count.ShouldEqual(5);
+                classReport.Cases.Count.ShouldEqual(5);
 
-                var skip = classResult.CaseResults[0];
-                var skipWithReason = classResult.CaseResults[1];
-                var fail = classResult.CaseResults[2];
-                var failByAssertion = classResult.CaseResults[3];
-                var pass = classResult.CaseResults[4];
+                var skip = classReport.Cases[0];
+                var skipWithReason = classReport.Cases[1];
+                var fail = classReport.Cases[2];
+                var failByAssertion = classReport.Cases[3];
+                var pass = classReport.Cases[4];
 
                 pass.Name.ShouldEqual("Fixie.Tests.Execution.CaseResultTests+SampleTestClass.Pass");
                 pass.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseResultTests+SampleTestClass.Pass");

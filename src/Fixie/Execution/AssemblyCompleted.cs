@@ -6,7 +6,7 @@ namespace Fixie.Execution
     [Serializable]
     public class AssemblyCompleted : IMessage
     {
-        public AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public AssemblyCompleted(Assembly assembly, AssemblyReport assemblyReport)
         {
             var assemblyName = assembly.GetName();
 
@@ -15,10 +15,10 @@ namespace Fixie.Execution
             Version = assemblyName.Version.ToString();
             Location = assembly.Location;
 
-            Passed = result.Passed;
-            Failed = result.Failed;
-            Skipped = result.Skipped;
-            Duration = result.Duration;
+            Passed = assemblyReport.Passed;
+            Failed = assemblyReport.Failed;
+            Skipped = assemblyReport.Skipped;
+            Duration = assemblyReport.Duration;
         }
 
         public string Name { get; }

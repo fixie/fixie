@@ -18,16 +18,15 @@ namespace Fixie.Tests.Reports
     {
         public void ShouldProduceValidXmlDocument()
         {
-            var executionResult = new ExecutionResult();
+            var report = new Report();
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters.Add<InputAttributeParameterSource>();
 
-            var assemblyResult = typeof(PassFailTestClass).Run(convention);
-            executionResult.Add(assemblyResult);
+            var assemblyReport = typeof(PassFailTestClass).Run(convention);
+            report.Add(assemblyReport);
 
-            var report = new XUnitXmlReport();
-            var actual = report.Transform(executionResult);
+            var actual = new XUnitXmlReport().Transform(report);
 
             XsdValidate(actual);
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);

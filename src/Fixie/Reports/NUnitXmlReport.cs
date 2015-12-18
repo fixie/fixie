@@ -95,8 +95,8 @@ namespace Fixie.Reports
             {
                 @case.Add(
                     new XElement("failure",
-                        new XElement("message", new XCData(caseResult.Message ?? "")),
-                        new XElement("stack-trace", new XCData(caseResult.Message + System.Environment.NewLine + caseResult.StackTrace))));
+                        new XElement("message", new XCData(caseResult.Message ?? caseResult.ExceptionType)),
+                        new XElement("stack-trace", new XCData(caseResult.StackTrace))));
             }
 
             return @case;
@@ -113,7 +113,7 @@ namespace Fixie.Reports
                 case CaseStatus.Skipped:
                     return "Ignored";
                 default:
-                    throw new ArgumentOutOfRangeException("status");
+                    throw new ArgumentOutOfRangeException(nameof(status));
             }
         }
 

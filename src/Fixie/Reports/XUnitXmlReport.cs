@@ -69,8 +69,8 @@ namespace Fixie.Reports
                 @case.Add(
                     new XElement("failure",
                         new XAttribute("exception-type", caseResult.ExceptionType),
-                        new XElement("message", new XCData(caseResult.Message ?? "")),
-                        new XElement("stack-trace", new XCData(caseResult.Message + Environment.NewLine + caseResult.StackTrace))));
+                        new XElement("message", new XCData(caseResult.Message ?? caseResult.ExceptionType)),
+                        new XElement("stack-trace", new XCData(caseResult.StackTrace))));
 
             return @case;
         }

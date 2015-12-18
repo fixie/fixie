@@ -96,7 +96,7 @@
     <Compile Include="Internal\MethodDiscovererTests.cs" />
     <Compile Include="FailureException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Execution\CompoundExceptionTests.cs" />
+    <Compile Include="Internal\CompoundExceptionTests.cs" />
     <Compile Include="SelfTestConvention.cs" />
     <Compile Include="TestDriven\TestDrivenListenerTests.cs" />
     <Compile Include="TestExtensions.cs" />

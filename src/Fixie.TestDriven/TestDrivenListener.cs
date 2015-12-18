@@ -1,12 +1,10 @@
-﻿using Fixie.Execution;
+﻿using System;
+using Fixie.Execution;
 using TestDriven.Framework;
 
 namespace Fixie.TestDriven
 {
-    public class TestDrivenListener :
-        IHandler<CaseSkipped>,
-        IHandler<CasePassed>,
-        IHandler<CaseFailed>
+    public class TestDrivenListener : IHandler<CaseResult>
     {
         readonly ITestListener tdnet;
 
@@ -15,34 +13,45 @@ namespace Fixie.TestDriven
             this.tdnet = tdnet;
         }
 
-        public void Handle(CaseSkipped message)
+        public void Handle(CaseResult message)
         {
-            tdnet.TestFinished(new TestResult
-            {
-                Name = message.Name,
-                State = TestState.Ignored,
-                Message = message.SkipReason
-            });
+            tdnet.TestFinished(Map(message));
         }
 
-        public void Handle(CasePassed message)
+        static TestResult Map(CaseResult message)
         {
-            tdnet.TestFinished(new TestResult
+            var testResult = new TestResult
             {
                 Name = message.Name,
-                State = TestState.Passed
-            });
+                State = Map(message.Status)
+            };
+
+            if (message.Status == CaseStatus.Failed)
+            {
+                testResult.Message = message.AssertionFailed ? "" : message.ExceptionType;
+                testResult.StackTrace = message.Message + Environment.NewLine + Environment.NewLine + message.StackTrace;
+            }
+            else if (message.Status == CaseStatus.Skipped)
+            {
+                testResult.Message = message.Message;
+            }
+
+            return testResult;
         }
 
-        public void Handle(CaseFailed message)
+        static TestState Map(CaseStatus caseStatus)
         {
-            tdnet.TestFinished(new TestResult
+            switch (caseStatus)
             {
-                Name = message.Name,
-                State = TestState.Failed,
-                Message = message.Exceptions.PrimaryException.DisplayName,
-                StackTrace = message.Exceptions.CompoundStackTrace,
-            });
+                case CaseStatus.Passed:
+                    return TestState.Passed;
+                case CaseStatus.Failed:
+                    return TestState.Failed;
+                case CaseStatus.Skipped:
+                    return TestState.Ignored;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(caseStatus));
+            }
         }
     }
 }

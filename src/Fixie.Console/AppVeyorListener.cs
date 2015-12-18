@@ -10,9 +10,7 @@ namespace Fixie.ConsoleRunner
 {
     public class AppVeyorListener :
         IHandler<AssemblyStarted>,
-        IHandler<CaseSkipped>,
-        IHandler<CasePassed>,
-        IHandler<CaseFailed>
+        IHandler<CaseResult>
     {
         readonly string url;
         readonly HttpClient client;
@@ -35,48 +33,18 @@ namespace Fixie.ConsoleRunner
             fileName = Path.GetFileName(message.Assembly.Location);
         }
 
-        public void Handle(CaseSkipped message)
+        public void Handle(CaseResult message)
         {
             Post(new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
                 testName = message.Name,
-                outcome = "Skipped",
-                durationMilliseconds = "0",
-                StdOut = null,
-                ErrorMessage = message.SkipReason,
-                ErrorStackTrace = null
-            });
-        }
-
-        public void Handle(CasePassed message)
-        {
-            Post(new TestResult
-            {
-                testFramework = "Fixie",
-                fileName = fileName,
-                testName = message.Name,
-                outcome = "Passed",
+                outcome = message.Status.ToString(),
                 durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
                 StdOut = message.Output,
-                ErrorMessage = null,
-                ErrorStackTrace = null
-            });
-        }
-
-        public void Handle(CaseFailed message)
-        {
-            Post(new TestResult
-            {
-                testFramework = "Fixie",
-                fileName = fileName,
-                testName = message.Name,
-                outcome = "Failed",
-                durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = message.Output,
-                ErrorMessage = message.Exceptions.PrimaryException.DisplayName,
-                ErrorStackTrace = message.Exceptions.CompoundStackTrace
+                ErrorMessage = message.Message,
+                ErrorStackTrace = message.StackTrace
             });
         }
 

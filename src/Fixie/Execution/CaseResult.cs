@@ -1,49 +1,81 @@
 using System;
+using Fixie.Internal;
 
 namespace Fixie.Execution
 {
     [Serializable]
     public class CaseResult : IMessage
     {
-        public CaseResult(CasePassed result)
+        public static CaseResult Passed(Case @case)
         {
-            Status = CaseStatus.Passed;
-            Name = result.Name;
-            MethodGroup = result.MethodGroup;
-            Output = result.Output;
-            Duration = result.Duration;
-            Exceptions = null;
-            SkipReason= null;
+            return new CaseResult(
+                methodGroup: @case.MethodGroup,
+                name: @case.Name,
+                status: CaseStatus.Passed,
+                duration: @case.Duration,
+                output: @case.Output,
+                message: null,
+                exceptionType: null,
+                stackTrace: null,
+                assertionFailed: false
+                );
         }
 
-        public CaseResult(CaseFailed result)
+        public static CaseResult Failed(Case @case, AssertionLibraryFilter filter)
         {
-            Status = CaseStatus.Failed;
-            Name = result.Name;
-            MethodGroup = result.MethodGroup;
-            Output = result.Output;
-            Duration = result.Duration;
-            Exceptions = result.Exceptions;
-            SkipReason = null;
+            var exception = new CompoundException(@case.Exceptions, filter);
+
+            return new CaseResult(
+                methodGroup: @case.MethodGroup,
+                name: @case.Name,
+                status: CaseStatus.Failed,
+                duration: @case.Duration,
+                output: @case.Output,
+                message: exception.Message,
+                exceptionType: exception.Type,
+                stackTrace: exception.CompoundStackTrace,
+                assertionFailed: exception.FailedAssertion
+                );
         }
 
-        public CaseResult(CaseSkipped result)
+        public static CaseResult Skipped(Case @case, string reason)
         {
-            Status = CaseStatus.Skipped;
-            Name = result.Name;
-            MethodGroup = result.MethodGroup;
-            Output = null;
-            Duration = TimeSpan.Zero;
-            Exceptions = null;
-            SkipReason = result.SkipReason;
+            return new CaseResult(
+                methodGroup: @case.MethodGroup,
+                name: @case.Name,
+                status: CaseStatus.Skipped,
+                duration: @case.Duration,
+                output: @case.Output,
+                message: reason,
+                exceptionType: null,
+                stackTrace: null,
+                assertionFailed: false
+                );
         }
 
-        public CaseStatus Status { get; }
-        public string Name { get; }
+        CaseResult(
+            MethodGroup methodGroup, string name, CaseStatus status, TimeSpan duration, string output,
+            string message, string exceptionType, string stackTrace, bool assertionFailed)
+        {
+            MethodGroup = methodGroup;
+            Name = name;
+            Status = status;
+            Duration = duration;
+            Output = output;
+            Message = message;
+            ExceptionType = exceptionType;
+            StackTrace = stackTrace;
+            AssertionFailed = assertionFailed;
+        }
+
         public MethodGroup MethodGroup { get; }
-        public string Output { get; }
+        public string Name { get; }
+        public CaseStatus Status { get; }
         public TimeSpan Duration { get; }
-        public CompoundException Exceptions { get; }
-        public string SkipReason { get; }
+        public string Output { get; }
+        public string Message { get; }
+        public string ExceptionType { get; }
+        public string StackTrace { get; }
+        public bool AssertionFailed { get; }
     }
 }

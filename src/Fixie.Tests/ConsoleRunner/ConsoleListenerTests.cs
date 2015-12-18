@@ -27,6 +27,7 @@ namespace Fixie.Tests.ConsoleRunner
                        .Select(CleanBrittleValues)
                        .ShouldEqual(
                            "------ Testing Assembly Fixie.Tests.dll ------",
+                           "",
                            "Test '" + testClass + ".SkipWithReason' skipped: Skipped with reason.",
                            "Test '" + testClass + ".SkipWithoutReason' skipped",
                            "Console.Out: FailA",
@@ -43,9 +44,11 @@ namespace Fixie.Tests.ConsoleRunner
                            "Test '" + testClass + ".FailA' failed: Fixie.Tests.FailureException",
                            "'FailA' failed!",
                            "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
+                           "",
                            "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
                            "'FailB' failed!",
                            "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
+                           "",
                            "3 passed, 2 failed, 2 skipped, took 1.23 seconds (Fixie 1.2.3.4).");
             }
         }
@@ -69,6 +72,7 @@ namespace Fixie.Tests.ConsoleRunner
                        .Select(CleanBrittleValues)
                        .ShouldEqual(
                            "------ Testing Assembly Fixie.Tests.dll ------",
+                           "",
                            "Console.Out: FailA",
                            "Console.Error: FailA",
                            "Console.Out: FailB",
@@ -83,9 +87,11 @@ namespace Fixie.Tests.ConsoleRunner
                            "Test '" + testClass + ".FailA' failed: Fixie.Tests.FailureException",
                            "'FailA' failed!",
                            "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
+                           "",
                            "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
                            "'FailB' failed!",
                            "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
+                           "",
                            "3 passed, 2 failed, took 1.23 seconds (Fixie 1.2.3.4).");
             }
         }

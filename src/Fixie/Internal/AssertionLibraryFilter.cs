@@ -35,11 +35,9 @@ namespace Fixie.Internal
                         .SkipWhile(ContainsTypeToFilter));
         }
 
-        public string DisplayName(Exception exception)
+        public bool IsAssertionException(Exception exception)
         {
-            var exceptionType = exception.GetType();
-
-            return exceptionTypes.Contains(exceptionType) ? "" : exceptionType.FullName;
+            return exceptionTypes.Contains(exception.GetType());
         }
 
         bool ContainsTypeToFilter(string line)

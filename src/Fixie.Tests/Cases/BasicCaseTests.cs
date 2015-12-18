@@ -7,7 +7,7 @@
             Run<PassTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.BasicCaseTests+PassTestClass.Pass passed.");
+                "Fixie.Tests.Cases.BasicCaseTests+PassTestClass.Pass passed");
         }
 
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
@@ -25,9 +25,9 @@
             Listener.Entries.ShouldEqual(
                 "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.FailA failed: 'FailA' failed!",
                 "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.FailB failed: 'FailB' failed!",
-                "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.PassA passed.",
-                "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.PassB passed.",
-                "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.PassC passed.");
+                "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.PassA passed",
+                "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.PassB passed",
+                "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.PassC passed");
         }
 
         public void ShouldFailWhenTestClassConstructorCannotBeInvoked()

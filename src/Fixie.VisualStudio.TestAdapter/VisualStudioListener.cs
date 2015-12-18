@@ -47,33 +47,27 @@ namespace Fixie.VisualStudio.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public void Handle(CaseResult caseResult)
+        public void Handle(CaseResult message)
         {
-            var testResult = new TestResult(TestCase(caseResult.MethodGroup))
+            var testResult = new TestResult(TestCase(message.MethodGroup))
             {
-                DisplayName = caseResult.Name,
-                Outcome = Map(caseResult.Status),
-                Duration = caseResult.Duration,
+                DisplayName = message.Name,
+                Outcome = Map(message.Status),
+                Duration = message.Duration,
                 ComputerName = Environment.MachineName
             };
 
-            if (caseResult.Status == CaseStatus.Failed)
+            if (message.Status == CaseStatus.Failed)
             {
-                testResult.ErrorMessage = caseResult.Exceptions.PrimaryException.DisplayName;
-                testResult.ErrorStackTrace = caseResult.Exceptions.CompoundStackTrace;
+                testResult.ErrorMessage = message.AssertionFailed ? "" : message.ExceptionType;
+                testResult.ErrorStackTrace = message.Message + Environment.NewLine + Environment.NewLine + message.StackTrace;
             }
-            else if (caseResult.Status == CaseStatus.Passed)
+            else if (message.Status == CaseStatus.Skipped)
             {
-                testResult.ErrorMessage = null;
-                testResult.ErrorStackTrace = null;
-            }
-            else if (caseResult.Status == CaseStatus.Skipped)
-            {
-                testResult.ErrorMessage = caseResult.SkipReason;
-                testResult.ErrorStackTrace = null;
+                testResult.ErrorMessage = message.Message;
             }
 
-            AttachCapturedConsoleOutput(caseResult.Output, testResult);
+            AttachCapturedConsoleOutput(message.Output, testResult);
 
             log.RecordResult(testResult);
         }

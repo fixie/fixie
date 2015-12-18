@@ -62,7 +62,7 @@
     <Compile Include="Internal\ConstructionFrequency.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="ParameterSource.cs" />
-    <Compile Include="Execution\CompoundException.cs" />
+    <Compile Include="Internal\CompoundException.cs" />
     <Compile Include="TestAssembly.cs" />
     <Compile Include="Conventions\ClassExpression.cs" />
     <Compile Include="Internal\MethodDiscoverer.cs" />
@@ -80,7 +80,6 @@
     <Compile Include="Conventions\FixtureBehaviorExpression.cs" />
     <Compile Include="Conventions\CaseBehaviorExpression.cs" />
     <Compile Include="Conventions\ClassBehaviorExpression.cs" />
-    <Compile Include="Execution\CaseFailed.cs" />
     <Compile Include="Class.cs" />
     <Compile Include="Fixture.cs" />
     <Compile Include="Internal\Behaviors\InvokeMethod.cs" />
@@ -88,20 +87,17 @@
     <Compile Include="Internal\Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Conventions\MethodExpression.cs" />
     <Compile Include="Internal\ObjectExtensions.cs" />
-    <Compile Include="Execution\CasePassed.cs" />
     <Compile Include="PreservedException.cs" />
     <Compile Include="Reports\XUnitXmlReport.cs" />
     <Compile Include="Execution\CaseResult.cs" />
     <Compile Include="Execution\CaseStatus.cs" />
     <Compile Include="Execution\ClassResult.cs" />
-    <Compile Include="Execution\ExceptionInfo.cs" />
     <Compile Include="Execution\ExecutionResult.cs" />
     <Compile Include="Internal\RunContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Execution\AssemblyResult.cs" />
     <Compile Include="Internal\Runner.cs" />
-    <Compile Include="Execution\CaseSkipped.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixie.nuspec" />

@@ -61,9 +61,10 @@ namespace Fixie.Tests.TestDriven
                 results[2].Name.ShouldEqual(testClass + ".Fail");
                 results[2].State.ShouldEqual(TestState.Failed);
                 results[2].Message.ShouldEqual("Fixie.Tests.FailureException");
-                results[2].StackTrace.Lines().Select(CleanBrittleValues)
-                                    .ShouldEqual("'Fail' failed!",
-                                         "   at Fixie.Tests.TestDriven.TestDrivenListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
+                results[2].StackTrace.Lines().Select(CleanBrittleValues).ShouldEqual(
+                    "'Fail' failed!",
+                    "",
+                    "   at Fixie.Tests.TestDriven.TestDrivenListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
                 
                 results[3].Name.ShouldEqual(testClass + ".Pass(123)");
                 results[3].State.ShouldEqual(TestState.Passed);

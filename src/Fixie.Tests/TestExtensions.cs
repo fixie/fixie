@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Fixie.Execution;
 using Fixie.Internal;
@@ -22,12 +23,17 @@ namespace Fixie.Tests
 
         public static IEnumerable<string> Lines(this RedirectedConsole console)
         {
-            return console.Output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            return console.Output.Lines();
         }
 
         public static IEnumerable<string> Lines(this string multiline)
         {
-            return multiline.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = multiline.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+
+            while (lines.Count > 0 && lines[lines.Count-1] == "")
+                lines.RemoveAt(lines.Count-1);
+
+            return lines;
         }
 
         public static AssemblyResult Run(this Type sampleTestClass, Convention convention)

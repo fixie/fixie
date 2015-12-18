@@ -80,7 +80,6 @@
     <Compile Include="Conventions\FixtureBehaviorExpression.cs" />
     <Compile Include="Conventions\CaseBehaviorExpression.cs" />
     <Compile Include="Conventions\ClassBehaviorExpression.cs" />
-    <Compile Include="Execution\CaseFailed.cs" />
     <Compile Include="Class.cs" />
     <Compile Include="Fixture.cs" />
     <Compile Include="Internal\Behaviors\InvokeMethod.cs" />
@@ -88,7 +87,6 @@
     <Compile Include="Internal\Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Conventions\MethodExpression.cs" />
     <Compile Include="Internal\ObjectExtensions.cs" />
-    <Compile Include="Execution\CasePassed.cs" />
     <Compile Include="PreservedException.cs" />
     <Compile Include="Reports\XUnitXmlReport.cs" />
     <Compile Include="Execution\CaseResult.cs" />
@@ -100,7 +98,6 @@
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Execution\AssemblyResult.cs" />
     <Compile Include="Internal\Runner.cs" />
-    <Compile Include="Execution\CaseSkipped.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixie.nuspec" />

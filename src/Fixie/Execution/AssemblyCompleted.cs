@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace Fixie.Execution
 {
@@ -6,11 +7,27 @@ namespace Fixie.Execution
     {
         public AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {
-            Assembly = assembly;
-            Result = result;
+            var assemblyName = assembly.GetName();
+
+            Name = assemblyName.Name;
+            FullName = assemblyName.FullName;
+            Version = assemblyName.Version.ToString();
+            Location = assembly.Location;
+
+            Passed = result.Passed;
+            Failed = result.Failed;
+            Skipped = result.Skipped;
+            Duration = result.Duration;
         }
 
-        public Assembly Assembly { get; }
-        public AssemblyResult Result { get; }
+        public string Name { get; }
+        public string FullName { get; }
+        public string Version { get; }
+        public string Location { get; }
+
+        public int Passed { get; }
+        public int Failed { get; }
+        public int Skipped { get; }
+        public TimeSpan Duration { get; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using Fixie.Execution;
 
@@ -14,7 +13,7 @@ namespace Fixie.ConsoleRunner
     {
         public void Handle(AssemblyStarted message)
         {
-            Message("testSuiteStarted name='{0}'", SuiteName(message.Assembly));
+            Message("testSuiteStarted name='{0}'", SuiteName(message.Location));
         }
 
         public void Handle(CaseResult message)
@@ -38,7 +37,7 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(AssemblyCompleted message)
         {
-            Message("testSuiteFinished name='{0}'", SuiteName(message.Assembly));
+            Message("testSuiteFinished name='{0}'", SuiteName(message.Location));
         }
 
         static void Message(string format, params string[] args)
@@ -79,9 +78,9 @@ namespace Fixie.ConsoleRunner
             return ((int)Math.Ceiling(duration.TotalMilliseconds)).ToString();
         }
 
-        static string SuiteName(Assembly assembly)
+        static string SuiteName(string location)
         {
-            return Path.GetFileName(assembly.Location);
+            return Path.GetFileName(location);
         }
     }
 }

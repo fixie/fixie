@@ -30,7 +30,7 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(AssemblyStarted message)
         {
-            fileName = Path.GetFileName(message.Assembly.Location);
+            fileName = Path.GetFileName(message.Location);
         }
 
         public void Handle(CaseResult message)

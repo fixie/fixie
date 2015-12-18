@@ -35,33 +35,17 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(CaseResult message)
         {
-            var testResult = new TestResult
+            Post(new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
                 testName = message.Name,
                 outcome = message.Status.ToString(),
                 durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = message.Output
-            };
-
-            if (message.Status == CaseStatus.Failed)
-            {
-                testResult.ErrorMessage = message.AssertionFailed ? "" : message.ExceptionType;
-                testResult.ErrorStackTrace = message.Message + Environment.NewLine + message.StackTrace;
-            }
-            else if (message.Status == CaseStatus.Passed)
-            {
-                testResult.ErrorMessage = null;
-                testResult.ErrorStackTrace = null;
-            }
-            else if (message.Status == CaseStatus.Skipped)
-            {
-                testResult.ErrorMessage = message.Message;
-                testResult.ErrorStackTrace = null;
-            }
-
-            Post(testResult);
+                StdOut = message.Output,
+                ErrorMessage = message.Message,
+                ErrorStackTrace = message.StackTrace
+            });
         }
 
         void Post(TestResult result)

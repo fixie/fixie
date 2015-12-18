@@ -1,7 +1,9 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace Fixie.Execution
 {
+    [Serializable]
     public class AssemblyStarted : IMessage
     {
         public AssemblyStarted(Assembly assembly)

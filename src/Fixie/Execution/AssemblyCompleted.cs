@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace Fixie.Execution
 {
+    [Serializable]
     public class AssemblyCompleted : IMessage
     {
         public AssemblyCompleted(Assembly assembly, AssemblyResult result)

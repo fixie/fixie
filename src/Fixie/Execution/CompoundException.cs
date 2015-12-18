@@ -15,9 +15,7 @@ namespace Fixie.Execution
             Type = primary.GetType().FullName;
             Message = primary.Message;
             IsAssertionException = filter.IsAssertionException(primary);
-
-            var all = exceptions.Select(x => new ExceptionInfo(x, filter)).ToArray();
-            CompoundStackTrace = GetCompoundStackTrace(all);
+            CompoundStackTrace = GetCompoundStackTrace(exceptions, filter);
         }
 
         public string Type { get; }
@@ -25,7 +23,7 @@ namespace Fixie.Execution
         public bool IsAssertionException { get; }
         public string CompoundStackTrace { get; }
 
-        static string GetCompoundStackTrace(IEnumerable<ExceptionInfo> exceptions)
+        static string GetCompoundStackTrace(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)
         {
             using (var console = new StringWriter())
             {
@@ -36,15 +34,15 @@ namespace Fixie.Execution
                     if (isPrimaryException)
                     {
                         console.WriteLine(ex.Message);
-                        console.Write(ex.StackTrace);
+                        console.Write(filter.FilterStackTrace(ex));
                     }
                     else
                     {
                         console.WriteLine();
                         console.WriteLine();
-                        console.WriteLine($"===== Secondary Exception: {ex.Type} =====");
+                        console.WriteLine($"===== Secondary Exception: {ex.GetType().FullName} =====");
                         console.WriteLine(ex.Message);
-                        console.Write(ex.StackTrace);
+                        console.Write(filter.FilterStackTrace(ex));
                     }
 
                     var walk = ex;
@@ -53,9 +51,9 @@ namespace Fixie.Execution
                         walk = walk.InnerException;
                         console.WriteLine();
                         console.WriteLine();
-                        console.WriteLine($"------- Inner Exception: {walk.Type} -------");
+                        console.WriteLine($"------- Inner Exception: {walk.GetType().FullName} -------");
                         console.WriteLine(walk.Message);
-                        console.Write(walk.StackTrace);
+                        console.Write(filter.FilterStackTrace(walk));
                     }
 
                     isPrimaryException = false;

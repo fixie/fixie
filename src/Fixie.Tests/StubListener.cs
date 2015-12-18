@@ -27,7 +27,7 @@ namespace Fixie.Tests
 
         void Failed(CaseResult message)
         {
-            log.Add($"{message.Name} failed: {String.Join(Environment.NewLine, SimplifyCompoundStackTrace(message.StackTrace))}");
+            log.Add($"{message.Name} failed: {String.Join(Environment.NewLine, SimplifyCompoundStackTrace(message.Message + Environment.NewLine + message.StackTrace))}");
         }
 
         void Skipped(CaseResult message)

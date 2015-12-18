@@ -32,7 +32,6 @@ namespace Fixie.Tests.Execution
                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                .ShouldEqual(
-                   "Primary Exception!",
                    "   at Fixie.Tests.Execution.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #",
                    "",
                    "------- Inner Exception: System.DivideByZeroException -------",
@@ -57,7 +56,6 @@ namespace Fixie.Tests.Execution
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                 .ShouldEqual(
-                    "Primary Exception!",
                     "   at Fixie.Tests.Execution.CompoundExceptionTests.GetPrimaryException() in " + PathToThisFile() + ":line #",
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",
@@ -104,7 +102,6 @@ namespace Fixie.Tests.Execution
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                 .ShouldEqual(
-                    "Primary Exception!",
                     "",
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",

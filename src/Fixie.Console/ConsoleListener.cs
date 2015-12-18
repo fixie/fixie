@@ -20,7 +20,8 @@ namespace Fixie.ConsoleRunner
             if (message.Status == CaseStatus.Failed)
             {
                 using (Foreground.Red)
-                    Console.WriteLine($"Test '{message.Name}' failed: {(message.AssertionFailed ? "" : message.ExceptionType)}");
+                    Console.WriteLine($"Test '{message.Name}' failed: {(message.AssertionFailed ? null : message.ExceptionType)}");
+                Console.WriteLine(message.Message);
                 Console.WriteLine(message.StackTrace);
                 Console.WriteLine();
             }

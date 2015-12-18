@@ -44,26 +44,28 @@ namespace Fixie.ConsoleRunner
                     }
                 }
 
+                var result = new Report();
                 var report = new Report();
+                var reportListener = ShouldProduceReports(commandLineParser.Options) ? new ReportListener(report) : null;
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
                 foreach (var assemblyPath in commandLineParser.AssemblyPaths)
                 {
-                    var result = Execute(assemblyPath, commandLineParser.Options);
+                    var assemblyReport = Execute(assemblyPath, commandLineParser.Options, reportListener);
 
-                    report.Add(result);
+                    result.Add(assemblyReport);
                 }
 
                 stopwatch.Stop();
 
-                if (report.Assemblies.Count > 1)
-                    Summarize(report, stopwatch.Elapsed);
+                if (result.Assemblies.Count > 1)
+                    Summarize(result, stopwatch.Elapsed);
 
                 ProduceReports(commandLineParser.Options, report);
 
-                return report.Failed;
+                return result.Failed;
             }
             catch (Exception exception)
             {
@@ -88,6 +90,11 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine($"====== {line} ======");
         }
 
+        static bool ShouldProduceReports(Options options)
+        {
+            return options.Contains(CommandLineOption.NUnitXml) || options.Contains(CommandLineOption.XUnitXml);
+        }
+
         static void ProduceReports(Options options, Report report)
         {
             if (options.Contains(CommandLineOption.NUnitXml))
@@ -107,7 +114,7 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static AssemblyReport Execute(string assemblyPath, Options options)
+        static AssemblyReport Execute(string assemblyPath, Options options, ReportListener reportListener)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
@@ -118,6 +125,12 @@ namespace Fixie.ConsoleRunner
 
                 if (ShouldUseAppVeyorListener())
                     environment.Subscribe<AppVeyorListener>();
+
+                if (reportListener != null)
+                {
+                    environment.ResolveAssemblyContaining<ReportListener>();
+                    environment.Subscribe(reportListener);
+                }
 
                 return environment.RunAssembly(options);
             }

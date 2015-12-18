@@ -28,7 +28,7 @@ namespace Fixie.Execution
             ExceptionType = result.Exceptions.PrimaryException.Type;
             StackTrace = result.Exceptions.CompoundStackTrace;
             Message = result.Exceptions.PrimaryException.Message;
-            IsAssertionException = result.Exceptions.PrimaryException.IsAssertionException;
+            IsAssertionException = result.Exceptions.IsAssertionException;
         }
 
         public CaseResult(CaseSkipped result)

@@ -14,13 +14,13 @@ namespace Fixie.Execution
             var primary = exceptions.First();
             Type = primary.GetType().FullName;
             Message = primary.Message;
-            IsAssertionException = filter.IsAssertionException(primary);
+            FailedAssertion = filter.IsAssertionException(primary);
             CompoundStackTrace = GetCompoundStackTrace(exceptions, filter);
         }
 
         public string Type { get; }
         public string Message { get; }
-        public bool IsAssertionException { get; }
+        public bool FailedAssertion { get; }
         public string CompoundStackTrace { get; }
 
         static string GetCompoundStackTrace(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)

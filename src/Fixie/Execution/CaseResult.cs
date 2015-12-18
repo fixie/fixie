@@ -15,7 +15,7 @@ namespace Fixie.Execution
             ExceptionType = null;
             StackTrace = null;
             Message = null;
-            IsAssertionException = false;
+            AssertionFailed = false;
         }
 
         public CaseResult(CaseFailed result)
@@ -28,7 +28,7 @@ namespace Fixie.Execution
             ExceptionType = result.Exceptions.Type;
             StackTrace = result.Exceptions.CompoundStackTrace;
             Message = result.Exceptions.Message;
-            IsAssertionException = result.Exceptions.IsAssertionException;
+            AssertionFailed = result.Exceptions.FailedAssertion;
         }
 
         public CaseResult(CaseSkipped result)
@@ -41,7 +41,7 @@ namespace Fixie.Execution
             ExceptionType = null;
             StackTrace = null;
             Message = result.SkipReason;
-            IsAssertionException = false;
+            AssertionFailed = false;
         }
 
         public CaseStatus Status { get; }
@@ -53,6 +53,6 @@ namespace Fixie.Execution
         public string ExceptionType { get; }
         public string StackTrace { get; }
         public string Message { get; }
-        public bool IsAssertionException { get; }
+        public bool AssertionFailed { get; }
     }
 }

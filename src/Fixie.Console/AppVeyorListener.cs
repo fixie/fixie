@@ -47,7 +47,7 @@ namespace Fixie.ConsoleRunner
 
             if (message.Status == CaseStatus.Failed)
             {
-                testResult.ErrorMessage = message.IsAssertionException ? "" : message.ExceptionType;
+                testResult.ErrorMessage = message.AssertionFailed ? "" : message.ExceptionType;
                 testResult.ErrorStackTrace = message.StackTrace;
             }
             else if (message.Status == CaseStatus.Passed)

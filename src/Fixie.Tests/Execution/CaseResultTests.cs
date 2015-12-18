@@ -35,7 +35,7 @@ namespace Fixie.Tests.Execution
                 pass.Output.ShouldEqual("Pass" + Environment.NewLine);
                 pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 pass.Status.ShouldEqual(CaseStatus.Passed);
-                pass.IsAssertionException.ShouldBeFalse();
+                pass.AssertionFailed.ShouldBeFalse();
                 pass.ExceptionType.ShouldBeNull();
                 pass.StackTrace.ShouldBeNull();
                 pass.Message.ShouldBeNull();
@@ -45,7 +45,7 @@ namespace Fixie.Tests.Execution
                 fail.Output.ShouldEqual("Fail" + Environment.NewLine);
                 fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 fail.Status.ShouldEqual(CaseStatus.Failed);
-                fail.IsAssertionException.ShouldBeFalse();
+                fail.AssertionFailed.ShouldBeFalse();
                 fail.ExceptionType.ShouldEqual("Fixie.Tests.FailureException");
                 fail.StackTrace.ShouldNotBeNull();
                 fail.Message.ShouldEqual("'Fail' failed!");
@@ -55,7 +55,7 @@ namespace Fixie.Tests.Execution
                 failByAssertion.Output.ShouldEqual("FailByAssertion" + Environment.NewLine);
                 failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
-                failByAssertion.IsAssertionException.ShouldBeTrue();
+                failByAssertion.AssertionFailed.ShouldBeTrue();
                 failByAssertion.ExceptionType.ShouldEqual("Should.Core.Exceptions.EqualException");
                 failByAssertion.StackTrace.ShouldNotBeNull();
                 failByAssertion.Message.Lines().ShouldEqual(
@@ -68,7 +68,7 @@ namespace Fixie.Tests.Execution
                 skip.Output.ShouldBeNull();
                 skip.Duration.ShouldEqual(TimeSpan.Zero);
                 skip.Status.ShouldEqual(CaseStatus.Skipped);
-                skip.IsAssertionException.ShouldBeFalse();
+                skip.AssertionFailed.ShouldBeFalse();
                 skip.ExceptionType.ShouldBeNull();
                 skip.StackTrace.ShouldBeNull();
                 skip.Message.ShouldBeNull();
@@ -78,7 +78,7 @@ namespace Fixie.Tests.Execution
                 skipWithReason.Output.ShouldBeNull();
                 skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
                 skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);
-                skipWithReason.IsAssertionException.ShouldBeFalse();
+                skipWithReason.AssertionFailed.ShouldBeFalse();
                 skipWithReason.ExceptionType.ShouldBeNull();
                 skipWithReason.StackTrace.ShouldBeNull();
                 skipWithReason.Message.ShouldEqual("Skipped by naming convention.");

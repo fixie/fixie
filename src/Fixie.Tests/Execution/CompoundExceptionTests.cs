@@ -24,7 +24,7 @@ namespace Fixie.Tests.Execution
 
             var compoundException = new CompoundException(new[] { exception }, assertionLibrary);
 
-            compoundException.IsAssertionException.ShouldBeFalse();
+            compoundException.FailedAssertion.ShouldBeFalse();
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
 
@@ -49,7 +49,7 @@ namespace Fixie.Tests.Execution
 
             var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
-            compoundException.IsAssertionException.ShouldBeFalse();
+            compoundException.FailedAssertion.ShouldBeFalse();
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
 
@@ -96,7 +96,7 @@ namespace Fixie.Tests.Execution
 
             var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
-            compoundException.IsAssertionException.ShouldBeTrue();
+            compoundException.FailedAssertion.ShouldBeTrue();
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
 

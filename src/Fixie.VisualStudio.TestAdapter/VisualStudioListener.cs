@@ -62,15 +62,9 @@ namespace Fixie.VisualStudio.TestAdapter
                 testResult.ErrorMessage = message.AssertionFailed ? "" : message.ExceptionType;
                 testResult.ErrorStackTrace = message.Message + Environment.NewLine + Environment.NewLine + message.StackTrace;
             }
-            else if (message.Status == CaseStatus.Passed)
-            {
-                testResult.ErrorMessage = null;
-                testResult.ErrorStackTrace = null;
-            }
             else if (message.Status == CaseStatus.Skipped)
             {
                 testResult.ErrorMessage = message.Message;
-                testResult.ErrorStackTrace = null;
             }
 
             AttachCapturedConsoleOutput(message.Output, testResult);

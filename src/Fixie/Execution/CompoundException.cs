@@ -6,7 +6,6 @@ using Fixie.Internal;
 
 namespace Fixie.Execution
 {
-    [Serializable]
     public class CompoundException
     {
         public CompoundException(IReadOnlyList<Exception> exceptions, AssertionLibraryFilter filter)

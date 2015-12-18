@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Fixie.Execution;
@@ -17,18 +18,19 @@ namespace Fixie.Tests.Execution
             convention.CaseExecution.Skip(x => x.Method.Name == "SkipWithReason", x => "Skipped by naming convention.");
             convention.HideExceptionDetails.For<EqualException>();
 
+            var listener = new StubCaseResultListener();
+
             using (new RedirectedConsole())
             {
-                var assemblyReport = typeof(SampleTestClass).Run(convention);
-                var classReport = assemblyReport.Classes.Single();
+                typeof(SampleTestClass).Run(listener, convention);
 
-                classReport.Cases.Count.ShouldEqual(5);
+                listener.Log.Count.ShouldEqual(5);
 
-                var skip = classReport.Cases[0];
-                var skipWithReason = classReport.Cases[1];
-                var fail = classReport.Cases[2];
-                var failByAssertion = classReport.Cases[3];
-                var pass = classReport.Cases[4];
+                var skip = listener.Log[0];
+                var skipWithReason = listener.Log[1];
+                var fail = listener.Log[2];
+                var failByAssertion = listener.Log[3];
+                var pass = listener.Log[4];
 
                 pass.Name.ShouldEqual("Fixie.Tests.Execution.CaseResultTests+SampleTestClass.Pass");
                 pass.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseResultTests+SampleTestClass.Pass");
@@ -83,6 +85,13 @@ namespace Fixie.Tests.Execution
                 skipWithReason.StackTrace.ShouldBeNull();
                 skipWithReason.Message.ShouldEqual("Skipped by naming convention.");
             }
+        }
+
+        public class StubCaseResultListener : IHandler<CaseResult>
+        {
+            public List<CaseResult> Log { get; set; } = new List<CaseResult>();
+
+            public void Handle(CaseResult message) => Log.Add(message);
         }
 
         static void WhereAmI([CallerMemberName] string member = null)

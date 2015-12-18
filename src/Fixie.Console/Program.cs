@@ -44,28 +44,26 @@ namespace Fixie.ConsoleRunner
                     }
                 }
 
-                var result = new Report();
+                var summary = new ExecutionSummary();
                 var report = new Report();
                 var reportListener = ShouldProduceReports(commandLineParser.Options) ? new ReportListener(report) : null;
 
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-
                 foreach (var assemblyPath in commandLineParser.AssemblyPaths)
                 {
-                    var assemblyReport = Execute(assemblyPath, commandLineParser.Options, reportListener);
+                    var assemblySummary = Execute(assemblyPath, commandLineParser.Options, reportListener);
 
-                    result.Add(assemblyReport);
+                    summary.Duration += assemblySummary.Duration;
+                    summary.Passed += assemblySummary.Passed;
+                    summary.Failed += assemblySummary.Failed;
+                    summary.Skipped += assemblySummary.Skipped;
                 }
 
-                stopwatch.Stop();
-
-                if (result.Assemblies.Count > 1)
-                    Summarize(result, stopwatch.Elapsed);
+                if (commandLineParser.AssemblyPaths.Count > 1)
+                    Console.WriteLine($"====== {summary} ======");
 
                 ProduceReports(commandLineParser.Options, report);
 
-                return result.Failed;
+                return summary.Failed;
             }
             catch (Exception exception)
             {
@@ -73,21 +71,6 @@ namespace Fixie.ConsoleRunner
                     Console.WriteLine($"Fatal Error: {exception}");
                 return FatalError;
             }
-        }
-
-        static void Summarize(Report report, TimeSpan elapsed)
-        {
-            var line = new StringBuilder();
-
-            line.Append($"{report.Passed} passed");
-            line.Append($", {report.Failed} failed");
-
-            if (report.Skipped > 0)
-                line.Append($", {report.Skipped} skipped");
-
-            line.Append($", took {elapsed.TotalSeconds:N2} seconds");
-
-            Console.WriteLine($"====== {line} ======");
         }
 
         static bool ShouldProduceReports(Options options)
@@ -114,7 +97,7 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static AssemblyReport Execute(string assemblyPath, Options options, ReportListener reportListener)
+        static ExecutionSummary Execute(string assemblyPath, Options options, ReportListener reportListener)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {

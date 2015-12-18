@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using Fixie.ConsoleRunner;
 using Fixie.Execution;
 using Fixie.Reports;
 using Should;
@@ -19,12 +20,12 @@ namespace Fixie.Tests.Reports
         public void ShouldProduceValidXmlDocument()
         {
             var report = new Report();
+            var listener = new ReportListener(report);
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters.Add<InputAttributeParameterSource>();
 
-            var assemblyReport = typeof(PassFailTestClass).Run(convention);
-            report.Add(assemblyReport);
+            typeof(PassFailTestClass).Run(listener, convention);
 
             var actual = new XUnitXmlReport().Transform(report);
 

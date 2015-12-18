@@ -34,7 +34,7 @@ namespace Fixie.Internal
             return discoverer.DiscoverTestMethodGroups(assembly);
         }
 
-        internal AssemblyReport RunAssembly(string assemblyFullPath, Options options)
+        internal ExecutionSummary RunAssembly(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
@@ -43,7 +43,7 @@ namespace Fixie.Internal
             return runner.RunAssembly(assembly);
         }
 
-        internal AssemblyReport RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
+        internal ExecutionSummary RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 

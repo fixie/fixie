@@ -20,21 +20,21 @@ namespace Fixie.Internal
             this.options = options;
         }
 
-        public AssemblyReport RunAssembly(Assembly assembly)
+        public ExecutionSummary RunAssembly(Assembly assembly)
         {
             RunContext.Set(options);
 
             return RunTypesInternal(assembly, assembly.GetTypes());
         }
 
-        public AssemblyReport RunNamespace(Assembly assembly, string ns)
+        public ExecutionSummary RunNamespace(Assembly assembly, string ns)
         {
             RunContext.Set(options);
 
             return RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
-        public AssemblyReport RunType(Assembly assembly, Type type)
+        public ExecutionSummary RunType(Assembly assembly, Type type)
         {
             RunContext.Set(options, type);
 
@@ -42,14 +42,14 @@ namespace Fixie.Internal
             return RunTypesInternal(assembly, types);
         }
 
-        public AssemblyReport RunTypes(Assembly assembly, Convention convention, params Type[] types)
+        public ExecutionSummary RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
             RunContext.Set(options);
 
             return Run(assembly, new[] { convention }, types);
         }
 
-        public AssemblyReport RunMethods(Assembly assembly, params MethodInfo[] methods)
+        public ExecutionSummary RunMethods(Assembly assembly, params MethodInfo[] methods)
         {
             if (methods.Length == 1)
                 RunContext.Set(options, methods.Single());
@@ -64,7 +64,7 @@ namespace Fixie.Internal
             return Run(assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
         }
 
-        public AssemblyReport RunMethods(Assembly assembly, MethodGroup[] methodGroups)
+        public ExecutionSummary RunMethods(Assembly assembly, MethodGroup[] methodGroups)
         {
             return RunMethods(assembly, GetMethods(assembly, methodGroups));
         }
@@ -90,7 +90,7 @@ namespace Fixie.Internal
                 .Where(m => m.Name == methodGroup.Method);
         }
 
-        AssemblyReport RunTypesInternal(Assembly assembly, params Type[] types)
+        ExecutionSummary RunTypesInternal(Assembly assembly, params Type[] types)
         {
             return Run(assembly, GetConventions(assembly), types);
         }
@@ -100,21 +100,21 @@ namespace Fixie.Internal
             return new ConventionDiscoverer(assembly).GetConventions();
         }
 
-        AssemblyReport Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
+        ExecutionSummary Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
-            var assemblyReport = new AssemblyReport(assembly.Location);
+            var summary = new ExecutionSummary();
 
             bus.Publish(new AssemblyStarted(assembly));
 
             foreach (var convention in conventions)
-                Run(assemblyReport, convention, candidateTypes);
+                Run(summary, convention, candidateTypes);
 
-            bus.Publish(new AssemblyCompleted(assembly, assemblyReport));
+            bus.Publish(new AssemblyCompleted(assembly, summary));
 
-            return assemblyReport;
+            return summary;
         }
 
-        void Run(AssemblyReport assemblyReport, Convention convention, Type[] candidateTypes)
+        void Run(ExecutionSummary summary, Convention convention, Type[] candidateTypes)
         {
             var classDiscoverer = new ClassDiscoverer(convention.Config);
             var classRunner = new ClassRunner(bus, convention.Config);
@@ -123,7 +123,10 @@ namespace Fixie.Internal
             {
                 var classReport = classRunner.Run(testClass);
 
-                assemblyReport.Add(classReport);
+                summary.Duration += classReport.Duration;
+                summary.Passed += classReport.Passed;
+                summary.Failed += classReport.Failed;
+                summary.Skipped += classReport.Skipped;
             }
         }
     }

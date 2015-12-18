@@ -45,7 +45,7 @@ namespace Fixie.ConsoleRunner
             Errors = errors.ToArray();
         }
 
-        public IEnumerable<string> AssemblyPaths { get; }
+        public IReadOnlyCollection<string> AssemblyPaths { get; }
 
         public Options Options { get; }
 

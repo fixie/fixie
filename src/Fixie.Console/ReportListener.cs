@@ -8,13 +8,13 @@ namespace Fixie.ConsoleRunner
         IHandler<CaseResult>,
         IHandler<AssemblyCompleted>
     {
-        readonly Report result;
+        readonly Report report;
         AssemblyReport currentAssembly;
         ClassReport currentClass;
 
-        public ReportListener(Report result)
+        public ReportListener(Report report)
         {
-            this.result = result;
+            this.report = report;
             currentAssembly = null;
             currentClass = null;
         }
@@ -23,7 +23,7 @@ namespace Fixie.ConsoleRunner
         {
             currentAssembly = new AssemblyReport(message.Location);
             currentClass = null;
-            result.Add(currentAssembly);
+            report.Add(currentAssembly);
         }
 
         public void Handle(CaseResult message)

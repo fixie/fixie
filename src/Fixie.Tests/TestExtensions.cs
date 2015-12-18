@@ -36,13 +36,13 @@ namespace Fixie.Tests
             return lines;
         }
 
-        public static AssemblyReport Run(this Type sampleTestClass, Convention convention)
+        public static ExecutionSummary Run(this Type sampleTestClass, Convention convention)
         {
             var bus = new Bus();
             return new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
         }
 
-        public static AssemblyReport Run(this Type sampleTestClass, object listener, Convention convention)
+        public static ExecutionSummary Run(this Type sampleTestClass, object listener, Convention convention)
         {
             var bus = new Bus();
             bus.Subscribe(listener);

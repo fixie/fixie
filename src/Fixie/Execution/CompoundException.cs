@@ -20,6 +20,8 @@ namespace Fixie.Execution
         }
 
         public ExceptionInfo PrimaryException { get; }
+        public string Type => PrimaryException.Type;
+        public string Message => PrimaryException.Message;
         public bool IsAssertionException { get; }
 
         public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; }

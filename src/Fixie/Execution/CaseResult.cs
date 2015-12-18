@@ -25,9 +25,9 @@ namespace Fixie.Execution
             MethodGroup = result.MethodGroup;
             Output = result.Output;
             Duration = result.Duration;
-            ExceptionType = result.Exceptions.PrimaryException.Type;
+            ExceptionType = result.Exceptions.Type;
             StackTrace = result.Exceptions.CompoundStackTrace;
-            Message = result.Exceptions.PrimaryException.Message;
+            Message = result.Exceptions.Message;
             IsAssertionException = result.Exceptions.IsAssertionException;
         }
 

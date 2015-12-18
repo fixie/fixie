@@ -25,8 +25,8 @@ namespace Fixie.Tests.Execution
             var compoundException = new CompoundException(new[] { exception }, assertionLibrary);
 
             compoundException.IsAssertionException.ShouldBeFalse();
-            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
-            compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
+            compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
+            compoundException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual(exception.StackTrace);
 
             compoundException.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
@@ -59,8 +59,8 @@ namespace Fixie.Tests.Execution
             var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
             compoundException.IsAssertionException.ShouldBeFalse();
-            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
-            compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
+            compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
+            compoundException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual(primaryException.StackTrace);
             compoundException.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
             compoundException.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
@@ -129,8 +129,8 @@ namespace Fixie.Tests.Execution
             var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
             compoundException.IsAssertionException.ShouldBeTrue();
-            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
-            compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
+            compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
+            compoundException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual("");
             compoundException.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
             compoundException.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");

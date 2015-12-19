@@ -20,6 +20,26 @@ namespace Fixie.Execution
         public int Skipped { get; set; }
         public int Total => Passed + Failed + Skipped;
 
+        public void Include(CaseResult caseResult)
+        {
+            Duration += caseResult.Duration;
+
+            if (caseResult.Status == CaseStatus.Passed)
+                Passed += 1;
+            else if (caseResult.Status == CaseStatus.Failed)
+                Failed += 1;
+            else if (caseResult.Status == CaseStatus.Skipped)
+                Skipped += 1;
+        }
+
+        public void Include(ExecutionSummary partial)
+        {
+            Duration += partial.Duration;
+            Passed += partial.Passed;
+            Failed += partial.Failed;
+            Skipped += partial.Skipped;
+        }
+
         public override string ToString()
         {
             var summary = new StringBuilder();

@@ -121,12 +121,9 @@ namespace Fixie.Internal
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
             {
-                var classReport = classRunner.Run(testClass);
+                var classSummary = classRunner.Run(testClass);
 
-                summary.Duration += classReport.Duration;
-                summary.Passed += classReport.Passed;
-                summary.Failed += classReport.Failed;
-                summary.Skipped += classReport.Skipped;
+                summary.Include(classSummary);
             }
         }
     }

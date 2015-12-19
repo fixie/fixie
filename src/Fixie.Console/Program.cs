@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 using Fixie.Execution;
 using Fixie.Reports;
@@ -52,10 +50,7 @@ namespace Fixie.ConsoleRunner
                 {
                     var assemblySummary = Execute(assemblyPath, commandLineParser.Options, reportListener);
 
-                    summary.Duration += assemblySummary.Duration;
-                    summary.Passed += assemblySummary.Passed;
-                    summary.Failed += assemblySummary.Failed;
-                    summary.Skipped += assemblySummary.Skipped;
+                    summary.Include(assemblySummary);
                 }
 
                 if (commandLineParser.AssemblyPaths.Count > 1)

@@ -7,6 +7,8 @@ using Fixie.Reports;
 
 namespace Fixie.ConsoleRunner
 {
+    using System.Collections.Generic;
+
     class Program
     {
         const int FatalError = -1;
@@ -29,7 +31,10 @@ namespace Fixie.ConsoleRunner
                     return FatalError;
                 }
 
-                foreach (var assemblyPath in commandLineParser.AssemblyPaths)
+                var assemblyPaths = commandLineParser.AssemblyPaths;
+                var options = commandLineParser.Options;
+
+                foreach (var assemblyPath in assemblyPaths)
                 {
                     if (!File.Exists(assemblyPath))
                     {
@@ -42,21 +47,10 @@ namespace Fixie.ConsoleRunner
                     }
                 }
 
-                var summary = new ExecutionSummary();
-                var report = new Report();
-                var reportListener = ShouldProduceReports(commandLineParser.Options) ? new ReportListener(report) : null;
+                var summary = Execute(options, assemblyPaths);
 
-                foreach (var assemblyPath in commandLineParser.AssemblyPaths)
-                {
-                    var assemblySummary = Execute(assemblyPath, commandLineParser.Options, reportListener);
-
-                    summary.Include(assemblySummary);
-                }
-
-                if (commandLineParser.AssemblyPaths.Count > 1)
+                if (assemblyPaths.Count > 1)
                     Console.WriteLine($"====== {summary} ======");
-
-                ProduceReports(commandLineParser.Options, report);
 
                 return summary.Failed;
             }
@@ -68,12 +62,38 @@ namespace Fixie.ConsoleRunner
             }
         }
 
+        static ExecutionSummary Execute(Options options, IEnumerable<string> assemblyPaths)
+        {
+            Report report = null;
+            ReportListener reportListener = null;
+
+            if (ShouldProduceReports(options))
+            {
+                report = new Report();
+                reportListener = new ReportListener(report);
+            }
+
+            var summary = new ExecutionSummary();
+
+            foreach (var assemblyPath in assemblyPaths)
+            {
+                var assemblySummary = Execute(assemblyPath, options, reportListener);
+
+                summary.Include(assemblySummary);
+            }
+
+            if (report != null)
+                SaveReport(options, report);
+
+            return summary;
+        }
+
         static bool ShouldProduceReports(Options options)
         {
             return options.Contains(CommandLineOption.NUnitXml) || options.Contains(CommandLineOption.XUnitXml);
         }
 
-        static void ProduceReports(Options options, Report report)
+        static void SaveReport(Options options, Report report)
         {
             if (options.Contains(CommandLineOption.NUnitXml))
             {

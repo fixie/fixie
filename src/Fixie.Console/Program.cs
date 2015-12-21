@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Fixie.Execution;
@@ -33,19 +32,6 @@ namespace Fixie.ConsoleRunner
 
                 var assemblyPaths = commandLineParser.AssemblyPaths;
                 var options = commandLineParser.Options;
-
-                foreach (var assemblyPath in assemblyPaths)
-                {
-                    if (!File.Exists(assemblyPath))
-                    {
-                        using (Foreground.Red)
-                            Console.WriteLine("Specified test assembly does not exist: " + assemblyPath);
-
-                        Console.WriteLine();
-                        Console.WriteLine(CommandLineParser.Usage());
-                        return FatalError;
-                    }
-                }
 
                 var summary = Execute(options, assemblyPaths);
 

@@ -92,6 +92,11 @@ namespace Fixie.Tests.Execution
                 if (!IsSafeForAppDomainCommunication(type.GetElementType(), visitedTypes))
                     return false;
             }
+            else if (type.BaseType == typeof(LongLivedMarshalByRefObject))
+            {
+                type.ShouldBeSafeAppDomainCommunicationInterface();
+                return true;
+            }
             else if (!type.HasOrInherits<SerializableAttribute>())
             {
                 return false;

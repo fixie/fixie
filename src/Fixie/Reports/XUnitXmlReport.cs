@@ -20,7 +20,7 @@ namespace Fixie.Reports
             var now = DateTime.UtcNow;
 
             return new XElement("assembly",
-                new XAttribute("name", assemblyReport.Name),
+                new XAttribute("name", assemblyReport.Location),
                 new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                 new XAttribute("run-time", now.ToString("HH:mm:ss")),
                 new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),

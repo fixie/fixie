@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace Fixie.Execution
 {
-    [Serializable]
     public class ClassReport
     {
         readonly List<CaseResult> cases;

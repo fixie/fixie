@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Fixie.Execution
 {
-    [Serializable]
     public class Report
     {
         readonly List<AssemblyReport> assemblies;

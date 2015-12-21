@@ -87,11 +87,11 @@ namespace Fixie.Tests.Execution
             }
         }
 
-        public class StubCaseResultListener : IHandler<CaseResult>
+        public class StubCaseResultListener : IHandler<CaseCompleted>
         {
-            public List<CaseResult> Log { get; set; } = new List<CaseResult>();
+            public List<CaseCompleted> Log { get; set; } = new List<CaseCompleted>();
 
-            public void Handle(CaseResult message) => Log.Add(message);
+            public void Handle(CaseCompleted message) => Log.Add(message);
         }
 
         static void WhereAmI([CallerMemberName] string member = null)

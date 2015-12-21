@@ -148,25 +148,25 @@ namespace Fixie.Internal
             executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
         }
 
-        CaseResult Skip(Case @case, string reason)
+        CaseCompleted Skip(Case @case, string reason)
         {
-            var caseResult = CaseResult.Skipped(@case, reason);
-            bus.Publish(caseResult);
-            return caseResult;
+            var message = CaseCompleted.Skipped(@case, reason);
+            bus.Publish(message);
+            return message;
         }
 
-        CaseResult Pass(Case @case)
+        CaseCompleted Pass(Case @case)
         {
-            var caseResult = CaseResult.Passed(@case);
-            bus.Publish(caseResult);
-            return caseResult;
+            var message = CaseCompleted.Passed(@case);
+            bus.Publish(message);
+            return message;
         }
 
-        CaseResult Fail(Case @case)
+        CaseCompleted Fail(Case @case)
         {
-            var caseResult = CaseResult.Failed(@case, assertionLibraryFilter);
-            bus.Publish(caseResult);
-            return caseResult;
+            var message = CaseCompleted.Failed(@case, assertionLibraryFilter);
+            bus.Publish(message);
+            return message;
         }
     }
 }

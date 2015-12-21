@@ -6,11 +6,11 @@ using Fixie.Execution;
 
 namespace Fixie.Tests
 {
-    public class StubListener : IHandler<CaseResult>
+    public class StubListener : IHandler<CaseCompleted>
     {
         readonly List<string> log = new List<string>();
 
-        public void Handle(CaseResult message)
+        public void Handle(CaseCompleted message)
         {
             if (message.Status == CaseStatus.Passed)
                 Passed(message);
@@ -20,17 +20,17 @@ namespace Fixie.Tests
                 Skipped(message);
         }
 
-        void Passed(CaseResult message)
+        void Passed(CaseCompleted message)
         {
             log.Add($"{message.Name} passed");
         }
 
-        void Failed(CaseResult message)
+        void Failed(CaseCompleted message)
         {
             log.Add($"{message.Name} failed: {String.Join(Environment.NewLine, SimplifyCompoundStackTrace(message.Message + Environment.NewLine + message.StackTrace))}");
         }
 
-        void Skipped(CaseResult message)
+        void Skipped(CaseCompleted message)
         {
             var optionalReason = message.Message == null ? null : ": " + message.Message;
             log.Add($"{message.Name} skipped{optionalReason}");

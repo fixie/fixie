@@ -7,7 +7,7 @@ namespace Fixie.ConsoleRunner
 {
     public class ConsoleListener :
         IHandler<AssemblyStarted>,
-        IHandler<CaseResult>,
+        IHandler<CaseCompleted>,
         IHandler<AssemblyCompleted>
     {
         public void Handle(AssemblyStarted message)
@@ -16,7 +16,7 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine();
         }
 
-        public void Handle(CaseResult message)
+        public void Handle(CaseCompleted message)
         {
             if (message.Status == CaseStatus.Failed)
             {

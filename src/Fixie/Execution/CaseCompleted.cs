@@ -4,11 +4,11 @@ using Fixie.Internal;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class CaseResult : IMessage
+    public class CaseCompleted : IMessage
     {
-        public static CaseResult Passed(Case @case)
+        public static CaseCompleted Passed(Case @case)
         {
-            return new CaseResult(
+            return new CaseCompleted(
                 methodGroup: @case.MethodGroup,
                 name: @case.Name,
                 status: CaseStatus.Passed,
@@ -21,11 +21,11 @@ namespace Fixie.Execution
                 );
         }
 
-        public static CaseResult Failed(Case @case, AssertionLibraryFilter filter)
+        public static CaseCompleted Failed(Case @case, AssertionLibraryFilter filter)
         {
             var exception = new CompoundException(@case.Exceptions, filter);
 
-            return new CaseResult(
+            return new CaseCompleted(
                 methodGroup: @case.MethodGroup,
                 name: @case.Name,
                 status: CaseStatus.Failed,
@@ -38,9 +38,9 @@ namespace Fixie.Execution
                 );
         }
 
-        public static CaseResult Skipped(Case @case, string reason)
+        public static CaseCompleted Skipped(Case @case, string reason)
         {
-            return new CaseResult(
+            return new CaseCompleted(
                 methodGroup: @case.MethodGroup,
                 name: @case.Name,
                 status: CaseStatus.Skipped,
@@ -53,7 +53,7 @@ namespace Fixie.Execution
                 );
         }
 
-        CaseResult(
+        CaseCompleted(
             MethodGroup methodGroup, string name, CaseStatus status, TimeSpan duration, string output,
             string message, string exceptionType, string stackTrace, bool assertionFailed)
         {

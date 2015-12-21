@@ -36,7 +36,7 @@ namespace Fixie.VisualStudio.TestAdapter
     //     4. CaseResult is guaranteed to remain serializable precisely to support
     //        cross-AppDomain communication)
 
-    public class VisualStudioListener : LongLivedMarshalByRefObject, IHandler<CaseResult>
+    public class VisualStudioListener : LongLivedMarshalByRefObject, IHandler<CaseCompleted>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
@@ -47,7 +47,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public void Handle(CaseResult message)
+        public void Handle(CaseCompleted message)
         {
             var testResult = new TestResult(TestCase(message.MethodGroup))
             {

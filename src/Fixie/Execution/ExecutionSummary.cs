@@ -20,15 +20,15 @@ namespace Fixie.Execution
         public int Skipped { get; set; }
         public int Total => Passed + Failed + Skipped;
 
-        public void Include(CaseResult caseResult)
+        public void Include(CaseCompleted message)
         {
-            Duration += caseResult.Duration;
+            Duration += message.Duration;
 
-            if (caseResult.Status == CaseStatus.Passed)
+            if (message.Status == CaseStatus.Passed)
                 Passed += 1;
-            else if (caseResult.Status == CaseStatus.Failed)
+            else if (message.Status == CaseStatus.Failed)
                 Failed += 1;
-            else if (caseResult.Status == CaseStatus.Skipped)
+            else if (message.Status == CaseStatus.Skipped)
                 Skipped += 1;
         }
 

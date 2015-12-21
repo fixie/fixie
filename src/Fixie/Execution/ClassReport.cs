@@ -6,21 +6,21 @@ namespace Fixie.Execution
 {
     public class ClassReport
     {
-        readonly List<CaseResult> cases;
+        readonly List<CaseCompleted> cases;
 
         public ClassReport(string name)
         {
-            cases = new List<CaseResult>();
+            cases = new List<CaseCompleted>();
             Name = name;
         }
 
-        public void Add(CaseResult caseResult) => cases.Add(caseResult);
+        public void Add(CaseCompleted message) => cases.Add(message);
 
         public string Name { get; }
 
         public TimeSpan Duration => new TimeSpan(cases.Sum(@case => @case.Duration.Ticks));
 
-        public IReadOnlyList<CaseResult> Cases => cases;
+        public IReadOnlyList<CaseCompleted> Cases => cases;
 
         public int Passed => cases.Count(@case => @case.Status == CaseStatus.Passed);
         public int Failed => cases.Count(@case => @case.Status == CaseStatus.Failed);

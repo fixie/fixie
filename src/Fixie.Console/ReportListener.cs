@@ -5,7 +5,7 @@ namespace Fixie.ConsoleRunner
     public class ReportListener :
         LongLivedMarshalByRefObject,
         IHandler<AssemblyStarted>,
-        IHandler<CaseResult>,
+        IHandler<CaseCompleted>,
         IHandler<AssemblyCompleted>
     {
         readonly Report report;
@@ -26,7 +26,7 @@ namespace Fixie.ConsoleRunner
             report.Add(currentAssembly);
         }
 
-        public void Handle(CaseResult message)
+        public void Handle(CaseCompleted message)
         {
             if (currentClass == null || currentClass.Name != message.MethodGroup.Class)
             {

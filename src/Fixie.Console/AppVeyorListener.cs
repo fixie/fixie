@@ -10,7 +10,7 @@ namespace Fixie.ConsoleRunner
 {
     public class AppVeyorListener :
         IHandler<AssemblyStarted>,
-        IHandler<CaseResult>
+        IHandler<CaseCompleted>
     {
         readonly string url;
         readonly HttpClient client;
@@ -33,7 +33,7 @@ namespace Fixie.ConsoleRunner
             fileName = Path.GetFileName(message.Location);
         }
 
-        public void Handle(CaseResult message)
+        public void Handle(CaseCompleted message)
         {
             Post(new TestResult
             {

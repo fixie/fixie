@@ -4,7 +4,7 @@ using TestDriven.Framework;
 
 namespace Fixie.TestDriven
 {
-    public class TestDrivenListener : IHandler<CaseResult>
+    public class TestDrivenListener : IHandler<CaseCompleted>
     {
         readonly ITestListener tdnet;
 
@@ -13,12 +13,12 @@ namespace Fixie.TestDriven
             this.tdnet = tdnet;
         }
 
-        public void Handle(CaseResult message)
+        public void Handle(CaseCompleted message)
         {
             tdnet.TestFinished(Map(message));
         }
 
-        static TestResult Map(CaseResult message)
+        static TestResult Map(CaseCompleted message)
         {
             var testResult = new TestResult
             {

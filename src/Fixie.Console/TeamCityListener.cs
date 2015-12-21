@@ -7,7 +7,7 @@ namespace Fixie.ConsoleRunner
 {
     public class TeamCityListener :
         IHandler<AssemblyStarted>,
-        IHandler<CaseResult>,
+        IHandler<CaseCompleted>,
         IHandler<AssemblyCompleted>
     {
         public void Handle(AssemblyStarted message)
@@ -15,7 +15,7 @@ namespace Fixie.ConsoleRunner
             Message("testSuiteStarted name='{0}'", message.Name);
         }
 
-        public void Handle(CaseResult message)
+        public void Handle(CaseCompleted message)
         {
             if (message.Status == CaseStatus.Skipped)
             {

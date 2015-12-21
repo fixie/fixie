@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
@@ -10,14 +9,19 @@ namespace Fixie.ConsoleRunner
         IHandler<CaseCompleted>,
         IHandler<AssemblyCompleted>
     {
+        ExecutionSummary summary;
+
         public void Handle(AssemblyStarted message)
         {
+            summary = new ExecutionSummary();
             Console.WriteLine($"------ Testing Assembly {Path.GetFileName(message.Location)} ------");
             Console.WriteLine();
         }
 
         public void Handle(CaseCompleted message)
         {
+            summary.Include(message);
+
             if (message.Status == CaseStatus.Failed)
             {
                 using (Foreground.Red)
@@ -41,19 +45,7 @@ namespace Fixie.ConsoleRunner
             var name = assemblyName.Name;
             var version = assemblyName.Version;
 
-            var summary = new StringBuilder();
-
-            summary.Append($"{message.Passed} passed");
-            summary.Append($", {message.Failed} failed");
-
-            if (message.Skipped > 0)
-                summary.Append($", {message.Skipped} skipped");
-
-            summary.Append($", took {message.Duration.TotalSeconds:N2} seconds");
-
-            summary.Append($" ({name} {version}).");
-
-            Console.WriteLine(summary.ToString());
+            Console.WriteLine($"{summary} ({name} {version}).");
             Console.WriteLine();
         }
     }

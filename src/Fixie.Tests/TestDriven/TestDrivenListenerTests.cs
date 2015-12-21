@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Fixie.Execution;
 using Fixie.Internal;
 using Fixie.TestDriven;
 using Should;
@@ -19,7 +20,8 @@ namespace Fixie.Tests.TestDriven
 
             using (var console = new RedirectedConsole())
             {
-                var listener = new TestDrivenListener(testDriven);
+                var summary = new ExecutionSummary();
+                var listener = new TestDrivenListener(testDriven, summary);
 
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
@@ -38,6 +40,11 @@ namespace Fixie.Tests.TestDriven
 
                 var results = testDriven.TestResults;
                 results.Count.ShouldEqual(4);
+
+                summary.Passed.ShouldEqual(1);
+                summary.Failed.ShouldEqual(1);
+                summary.Skipped.ShouldEqual(2);
+                summary.Total.ShouldEqual(4);
 
                 foreach (var result in results)
                 {

@@ -25,7 +25,7 @@ namespace Fixie.TestDriven
             {
                 if (method.IsDispose())
                 {
-                    var listener = new TestDrivenListener(testListener);
+                    var listener = new TestDrivenListener(testListener, new ExecutionSummary());
                     listener.Handle(CaseCompleted.Skipped(new Case(method), "Dispose() is not a test."));
                     return TestRunState.Success;
                 }
@@ -40,13 +40,15 @@ namespace Fixie.TestDriven
             return TestRunState.Error;
         }
 
-        static TestRunState Run(ITestListener testListener, Func<Runner, ExecutionSummary> run)
+        static TestRunState Run(ITestListener testListener, Action<Runner> run)
         {
-            var listener = new TestDrivenListener(testListener);
+            var summary = new ExecutionSummary();
+            var listener = new TestDrivenListener(testListener, summary);
             var bus = new Bus();
             bus.Subscribe(listener);
+            
             var runner = new Runner(bus);
-            var summary = run(runner);
+            run(runner);
 
             if (summary.Total == 0)
                 return TestRunState.NoTests;

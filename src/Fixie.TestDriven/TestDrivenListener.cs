@@ -6,15 +6,18 @@ namespace Fixie.TestDriven
 {
     public class TestDrivenListener : IHandler<CaseCompleted>
     {
+        readonly ExecutionSummary summary;
         readonly ITestListener tdnet;
 
-        public TestDrivenListener(ITestListener tdnet)
+        public TestDrivenListener(ITestListener tdnet, ExecutionSummary summary)
         {
             this.tdnet = tdnet;
+            this.summary = summary;
         }
 
         public void Handle(CaseCompleted message)
         {
+            summary.Include(message);
             tdnet.TestFinished(Map(message));
         }
 

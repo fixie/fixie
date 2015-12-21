@@ -20,36 +20,36 @@ namespace Fixie.Internal
             this.options = options;
         }
 
-        public ExecutionSummary RunAssembly(Assembly assembly)
+        public void RunAssembly(Assembly assembly)
         {
             RunContext.Set(options);
 
-            return RunTypesInternal(assembly, assembly.GetTypes());
+            RunTypesInternal(assembly, assembly.GetTypes());
         }
 
-        public ExecutionSummary RunNamespace(Assembly assembly, string ns)
+        public void RunNamespace(Assembly assembly, string ns)
         {
             RunContext.Set(options);
 
-            return RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
+            RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
-        public ExecutionSummary RunType(Assembly assembly, Type type)
+        public void RunType(Assembly assembly, Type type)
         {
             RunContext.Set(options, type);
 
             var types = GetTypeAndNestedTypes(type).ToArray();
-            return RunTypesInternal(assembly, types);
+            RunTypesInternal(assembly, types);
         }
 
-        public ExecutionSummary RunTypes(Assembly assembly, Convention convention, params Type[] types)
+        public void RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
             RunContext.Set(options);
 
-            return Run(assembly, new[] { convention }, types);
+            Run(assembly, new[] { convention }, types);
         }
 
-        public ExecutionSummary RunMethods(Assembly assembly, params MethodInfo[] methods)
+        public void RunMethods(Assembly assembly, params MethodInfo[] methods)
         {
             if (methods.Length == 1)
                 RunContext.Set(options, methods.Single());
@@ -61,12 +61,12 @@ namespace Fixie.Internal
             foreach (var convention in conventions)
                 convention.Methods.Where(methods.Contains);
 
-            return Run(assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
+            Run(assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
         }
 
-        public ExecutionSummary RunMethods(Assembly assembly, MethodGroup[] methodGroups)
+        public void RunMethods(Assembly assembly, MethodGroup[] methodGroups)
         {
-            return RunMethods(assembly, GetMethods(assembly, methodGroups));
+            RunMethods(assembly, GetMethods(assembly, methodGroups));
         }
 
         static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
@@ -90,9 +90,9 @@ namespace Fixie.Internal
                 .Where(m => m.Name == methodGroup.Method);
         }
 
-        ExecutionSummary RunTypesInternal(Assembly assembly, params Type[] types)
+        void RunTypesInternal(Assembly assembly, params Type[] types)
         {
-            return Run(assembly, GetConventions(assembly), types);
+            Run(assembly, GetConventions(assembly), types);
         }
 
         static Convention[] GetConventions(Assembly assembly)
@@ -100,31 +100,23 @@ namespace Fixie.Internal
             return new ConventionDiscoverer(assembly).GetConventions();
         }
 
-        ExecutionSummary Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
+        void Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
-            var summary = new ExecutionSummary();
-
             bus.Publish(new AssemblyStarted(assembly));
 
             foreach (var convention in conventions)
-                Run(summary, convention, candidateTypes);
+                Run(convention, candidateTypes);
 
-            bus.Publish(new AssemblyCompleted(assembly, summary));
-
-            return summary;
+            bus.Publish(new AssemblyCompleted(assembly));
         }
 
-        void Run(ExecutionSummary summary, Convention convention, Type[] candidateTypes)
+        void Run(Convention convention, Type[] candidateTypes)
         {
             var classDiscoverer = new ClassDiscoverer(convention.Config);
             var classRunner = new ClassRunner(bus, convention.Config);
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
-            {
-                var classSummary = classRunner.Run(testClass);
-
-                summary.Include(classSummary);
-            }
+                classRunner.Run(testClass);
         }
     }
 }

@@ -7,11 +7,11 @@ namespace Fixie.Internal
 {
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
-        readonly Bus bus = new Bus();
+        readonly List<object> subscribers = new List<object>();
 
         public void Subscribe<TListener>(TListener listener) where TListener : LongLivedMarshalByRefObject
         {
-            bus.Subscribe(listener);
+            subscribers.Add(listener);
         }
 
         public void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
@@ -22,7 +22,7 @@ namespace Fixie.Internal
 
             var listener = Activator.CreateInstance(type, listenerArgs);
 
-            bus.Subscribe(listener);
+            subscribers.Add(listener);
         }
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
@@ -36,25 +36,56 @@ namespace Fixie.Internal
 
         public ExecutionSummary RunAssembly(string assemblyFullPath, Options options)
         {
-            var assembly = LoadAssembly(assemblyFullPath);
+            var bus = CreateBus();
+
+            var summary = new ExecutionSummary();
+            bus.Subscribe(new ExecutionSummaryListener(summary));
 
             var runner = new Runner(bus, options);
 
-            return runner.RunAssembly(assembly);
+            runner.RunAssembly(LoadAssembly(assemblyFullPath));
+            return summary;
         }
 
         public ExecutionSummary RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
-            var assembly = LoadAssembly(assemblyFullPath);
+            var bus = CreateBus();
+
+            var summary = new ExecutionSummary();
+            bus.Subscribe(new ExecutionSummaryListener(summary));
 
             var runner = new Runner(bus, options);
+            runner.RunMethods(LoadAssembly(assemblyFullPath), methodGroups);
 
-            return runner.RunMethods(assembly, methodGroups);
+            return summary;
+        }
+
+        Bus CreateBus()
+        {
+            var bus = new Bus();
+
+            foreach (var subscriber in subscribers)
+                bus.Subscribe(subscriber);
+
+            return bus;
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
         {
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+        }
+
+        class ExecutionSummaryListener : IHandler<CaseCompleted>
+        {
+            readonly ExecutionSummary summary;
+
+            public ExecutionSummaryListener(ExecutionSummary summary)
+            {
+                this.summary = summary;
+            }
+
+            public void Handle(CaseCompleted message)
+                => summary.Include(message);
         }
     }
 }

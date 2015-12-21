@@ -29,7 +29,7 @@ namespace Fixie.Internal
             orderCases = config.OrderCases;
         }
 
-        public ExecutionSummary Run(Type testClass)
+        public void Run(Type testClass)
         {
             var methods = methodDiscoverer.TestMethods(testClass);
 
@@ -73,14 +73,12 @@ namespace Fixie.Internal
             var casesToSkip = casesToSkipList.Select(x => x.Key).ToArray();
             var casesToExecute = casesToExecuteList.ToArray();
 
-            var summary = new ExecutionSummary();
-
             if (casesToSkip.Any())
             {
                 TryOrderCases(casesToSkip);
 
                 foreach (var @case in casesToSkip)
-                    summary.Include(Skip(@case, casesToSkipList.Single(x => x.Key == @case).Value));
+                    Skip(@case, casesToSkipList.Single(x => x.Key == @case).Value);
             }
 
             if (casesToExecute.Any())
@@ -89,7 +87,12 @@ namespace Fixie.Internal
                     Run(testClass, casesToExecute);
 
                 foreach (var @case in casesToExecute)
-                    summary.Include(@case.Exceptions.Any() ? Fail(@case) : Pass(@case));
+                {
+                    if (@case.Exceptions.Any())
+                        Fail(@case);
+                    else
+                        Pass(@case);
+                }
             }
 
             if (parameterGenerationFailures.Any())
@@ -99,10 +102,8 @@ namespace Fixie.Internal
                 TryOrderCases(casesToFailWithoutRunning);
 
                 foreach (var caseToFailWithoutRunning in casesToFailWithoutRunning)
-                    summary.Include(Fail(caseToFailWithoutRunning));
+                    Fail(caseToFailWithoutRunning);
             }
-
-            return summary;
         }
 
         bool SkipCase(Case @case, out string reason)
@@ -139,34 +140,18 @@ namespace Fixie.Internal
         }
 
         IEnumerable<object[]> Parameters(MethodInfo method)
-        {
-            return parameterDiscoverer.GetParameters(method);
-        }
+            => parameterDiscoverer.GetParameters(method);
 
         void Run(Type testClass, Case[] casesToExecute)
-        {
-            executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
-        }
+            => executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
 
-        CaseCompleted Skip(Case @case, string reason)
-        {
-            var message = CaseCompleted.Skipped(@case, reason);
-            bus.Publish(message);
-            return message;
-        }
+        void Skip(Case @case, string reason)
+            => bus.Publish(CaseCompleted.Skipped(@case, reason));
 
-        CaseCompleted Pass(Case @case)
-        {
-            var message = CaseCompleted.Passed(@case);
-            bus.Publish(message);
-            return message;
-        }
+        void Pass(Case @case)
+            => bus.Publish(CaseCompleted.Passed(@case));
 
-        CaseCompleted Fail(Case @case)
-        {
-            var message = CaseCompleted.Failed(@case, assertionLibraryFilter);
-            bus.Publish(message);
-            return message;
-        }
+        void Fail(Case @case)
+            => bus.Publish(CaseCompleted.Failed(@case, assertionLibraryFilter));
     }
 }

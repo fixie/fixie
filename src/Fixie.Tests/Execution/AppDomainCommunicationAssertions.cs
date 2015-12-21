@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Fixie.Execution;
 using Should;
 
 namespace Fixie.Tests.Execution
@@ -10,6 +11,15 @@ namespace Fixie.Tests.Execution
     {
         const BindingFlags AllMembers =
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+
+        public static void ShouldSupportReceivingMessagesFromTheChildAppDomain(this Type listenerType)
+        {
+            listenerType
+                .IsSubclassOf(typeof(LongLivedMarshalByRefObject))
+                .ShouldBeTrue(
+                    $"{listenerType.Name} must be a {nameof(LongLivedMarshalByRefObject)} " +
+                    "so that it can successfully receive messages across the AppDomain boundary.");
+        }
 
         public static void ShouldBeSafeAppDomainCommunicationInterface(this Type crossAppDomainInterfaceType)
         {

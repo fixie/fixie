@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Fixie.Execution;
 using Fixie.Internal;
+using Fixie.Tests.Execution;
 using Fixie.VisualStudio.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -18,11 +19,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
     {
         public void ShouldSupportReceivingMessagesFromTheChildAppDomain()
         {
-            typeof(VisualStudioListener)
-                .IsSubclassOf(typeof(LongLivedMarshalByRefObject))
-                .ShouldBeTrue(
-                    $"{nameof(VisualStudioListener)} must be a {nameof(LongLivedMarshalByRefObject)} " +
-                    "so that it can successfully receive test results across the AppDomain boundary.");
+            typeof(VisualStudioListener).ShouldSupportReceivingMessagesFromTheChildAppDomain();
         }
 
         public void ShouldReportResultsToExecutionRecorder()

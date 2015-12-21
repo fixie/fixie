@@ -23,22 +23,6 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 .ShouldBeTrue(
                     $"{nameof(VisualStudioListener)} must be a {nameof(LongLivedMarshalByRefObject)} " +
                     "so that it can successfully receive test results across the AppDomain boundary.");
-
-            var handledMessageTypes =
-                typeof(VisualStudioListener)
-                    .GetInterfaces()
-                    .Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IHandler<>))
-                    .Select(t => t.GetGenericArguments().Single())
-                    .ToArray();
-
-            foreach (var handledMessageType in handledMessageTypes)
-            {
-                handledMessageType
-                    .Has<SerializableAttribute>()
-                    .ShouldBeTrue(
-                        $"As a {nameof(LongLivedMarshalByRefObject)}, {nameof(VisualStudioListener)} " +
-                        $"may only handle serializable messages, but {handledMessageType} is not serializable.");
-            }
         }
 
         public void ShouldReportResultsToExecutionRecorder()

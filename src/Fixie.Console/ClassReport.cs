@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Fixie.Execution;
 
-namespace Fixie.Execution
+namespace Fixie.ConsoleRunner
 {
     public class ClassReport
     {

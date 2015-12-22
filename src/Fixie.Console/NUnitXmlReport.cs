@@ -4,7 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Fixie.Execution;
 
-namespace Fixie.Reports
+namespace Fixie.ConsoleRunner
 {
     public class NUnitXmlReport
     {

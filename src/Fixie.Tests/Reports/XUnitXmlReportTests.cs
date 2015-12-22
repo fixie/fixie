@@ -9,8 +9,6 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using Fixie.ConsoleRunner;
-using Fixie.Execution;
-using Fixie.Reports;
 using Should;
 
 namespace Fixie.Tests.Reports

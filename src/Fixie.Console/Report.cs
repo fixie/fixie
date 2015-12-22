@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Fixie.Execution
+namespace Fixie.ConsoleRunner
 {
     public class Report
     {

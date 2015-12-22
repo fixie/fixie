@@ -43,14 +43,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppVeyorListener.cs" />
+    <Compile Include="AssemblyReport.cs" />
+    <Compile Include="ClassReport.cs" />
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="CommandLineParser.cs" />
     <Compile Include="ConsoleListener.cs" />
     <Compile Include="Foreground.cs" />
+    <Compile Include="NUnitXmlReport.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report.cs" />
     <Compile Include="ReportListener.cs" />
     <Compile Include="TeamCityListener.cs" />
+    <Compile Include="XUnitXmlReport.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

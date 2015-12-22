@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Fixie.Execution;
 using Fixie.Internal;
 using Fixie.Tests.Execution;
 using Fixie.VisualStudio.TestAdapter;
@@ -15,11 +14,11 @@ using Should;
 
 namespace Fixie.Tests.VisualStudio.TestAdapter
 {
-    public class VisualStudioListenerTests
+    public class VisualStudioExecutionListenerTests
     {
         public void ShouldSupportReceivingMessagesFromTheChildAppDomain()
         {
-            typeof(VisualStudioListener).ShouldSupportReceivingMessagesFromTheChildAppDomain();
+            typeof(VisualStudioExecutionListener).ShouldSupportReceivingMessagesFromTheChildAppDomain();
         }
 
         public void ShouldReportResultsToExecutionRecorder()
@@ -28,7 +27,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
             var recorder = new StubExecutionRecorder();
 
             using (var console = new RedirectedConsole())
-            using (var listener = new VisualStudioListener(recorder, assemblyPath))
+            using (var listener = new VisualStudioExecutionListener(recorder, assemblyPath))
             {
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
@@ -61,7 +60,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                     result.TestCase.CodeFilePath.ShouldBeNull();
                     result.TestCase.LineNumber.ShouldEqual(-1);
                 }
-                
+
                 results[0].TestCase.FullyQualifiedName.ShouldEqual(testClass +".SkipWithReason");
                 results[0].TestCase.DisplayName.ShouldEqual(testClass +".SkipWithReason");
                 results[0].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
@@ -91,7 +90,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                     .ShouldEqual(
                         "'Fail' failed!",
                         "",
-                        "   at Fixie.Tests.VisualStudio.TestAdapter.VisualStudioListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
+                        "   at Fixie.Tests.VisualStudio.TestAdapter.VisualStudioExecutionListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
                 results[2].DisplayName.ShouldEqual(testClass +".Fail");
                 results[2].Messages.Count.ShouldEqual(1);
                 results[2].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);

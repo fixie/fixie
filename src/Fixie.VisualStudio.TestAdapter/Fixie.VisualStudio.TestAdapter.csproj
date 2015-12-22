@@ -52,7 +52,7 @@
   <ItemGroup>
     <Compile Include="SourceLocation.cs" />
     <Compile Include="SourceLocationProvider.cs" />
-    <Compile Include="VisualStudioListener.cs" />
+    <Compile Include="VisualStudioExecutionListener.cs" />
     <Compile Include="VsTestDiscoverer.cs" />
     <Compile Include="VsTestExecutor.cs" />
     <Compile Include="LoggingExtensions.cs" />

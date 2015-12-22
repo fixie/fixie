@@ -150,10 +150,5 @@ namespace Fixie.Tests.Internal
                 throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
             }
         }
-
-        [AttributeUsage(AttributeTargets.Method)]
-        class SkipAttribute : Attribute
-        {
-        }
     }
 }

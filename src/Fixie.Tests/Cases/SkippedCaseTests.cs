@@ -61,7 +61,7 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
         public void ShouldAllowSkippingViaBehaviorInstances()
@@ -76,7 +76,7 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
         public void ShouldFailWithClearExplanationWhenSkipConditionThrows()
@@ -133,33 +133,19 @@ namespace Fixie.Tests.Cases
 
         class SkipByExplicitAttribute : SkipBehavior
         {
-            public override bool SkipCase(Case @case)
-            {
-                return HasExplicitAttribute(@case);
-            }
-
-            public override string GetSkipReason(Case @case)
-            {
-                return ExplicitAttributeReason(@case);
-            }
+            public override bool SkipCase(Case @case) => HasExplicitAttribute(@case);
+            public override string GetSkipReason(Case @case) => ExplicitAttributeReason(@case);
         }
 
         class SkipBySkipAttribute : SkipBehavior
         {
-            public override bool SkipCase(Case @case)
-            {
-                return HasSkipAttribute(@case);
-            }
-
-            public override string GetSkipReason(Case @case)
-            {
-                return SkipAttributeReason(@case);
-            }
+            public override bool SkipCase(Case @case) => HasSkipAttribute(@case);
+            public override string GetSkipReason(Case @case) => SkipAttributeReason(@case);
         }
 
         class SkippedTestClass
         {
-            [Skip(Reason = "Troublesome test skipped.")]
+            [Skip("Troublesome test skipped.")]
             public void Fail() { throw new FailureException(); }
 
             public void Pass() { }
@@ -174,12 +160,6 @@ namespace Fixie.Tests.Cases
 
         [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
         class ExplicitAttribute : Attribute
-        {
-            public string Reason { get; set; }
-        }
-
-        [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-        class SkipAttribute : Attribute
         {
             public string Reason { get; set; }
         }

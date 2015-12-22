@@ -49,6 +49,36 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
         }
 
+        public void ShouldAllowSkippingViaBehaviorTypes()
+        {
+            Convention.CaseExecution
+                .Skip<SkipByExplicitAttribute>()
+                .Skip<SkipBySkipAttribute>();
+
+            Run<SkippedTestClass>();
+
+            Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+        }
+
+        public void ShouldAllowSkippingViaBehaviorInstances()
+        {
+            Convention.CaseExecution
+                .Skip(new SkipByExplicitAttribute())
+                .Skip(new SkipBySkipAttribute());
+
+            Run<SkippedTestClass>();
+
+            Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+        }
+
         public void ShouldFailWithClearExplanationWhenSkipConditionThrows()
         {
             Convention.CaseExecution
@@ -99,6 +129,32 @@ namespace Fixie.Tests.Cases
         static bool HasSkipAttribute(Case @case)
         {
             return @case.Method.HasOrInherits<SkipAttribute>();
+        }
+
+        class SkipByExplicitAttribute : SkipBehavior
+        {
+            public override bool SkipCase(Case @case)
+            {
+                return HasExplicitAttribute(@case);
+            }
+
+            public override string GetSkipReason(Case @case)
+            {
+                return ExplicitAttributeReason(@case);
+            }
+        }
+
+        class SkipBySkipAttribute : SkipBehavior
+        {
+            public override bool SkipCase(Case @case)
+            {
+                return HasSkipAttribute(@case);
+            }
+
+            public override string GetSkipReason(Case @case)
+            {
+                return SkipAttributeReason(@case);
+            }
         }
 
         class SkippedTestClass

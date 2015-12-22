@@ -57,6 +57,28 @@ namespace Fixie.Conventions
         /// <summary>
         /// Allows the specified predicate to determine whether a given test case should be skipped
         /// during execution. Skipped test cases are never executed, but are counted and identified.
+        /// When a test is skipped, the behavior may include an optional explanation in the output.
+        /// </summary>
+        public CaseBehaviorExpression Skip<TSkipBehavior>() where TSkipBehavior : SkipBehavior
+        {
+            var behavior = (SkipBehavior)Activator.CreateInstance(typeof(TSkipBehavior));
+            return Skip(behavior);
+        }
+
+        /// <summary>
+        /// Allows the specified predicate to determine whether a given test case should be skipped
+        /// during execution. Skipped test cases are never executed, but are counted and identified.
+        /// When a test is skipped, the behavior may include an optional explanation in the output.
+        /// </summary>
+        public CaseBehaviorExpression Skip(SkipBehavior behavior)
+        {
+            return Skip(behavior.SkipCase, behavior.GetSkipReason);
+        }
+
+        /// <summary>
+        /// Allows the specified predicate to determine whether a given test case should be skipped
+        /// during execution. Skipped test cases are never executed, but are counted and identified.
+        /// When a test is skipped, this overload will not include an explanation in the output.
         /// </summary>
         public CaseBehaviorExpression Skip(Func<Case, bool> skipCase)
         {

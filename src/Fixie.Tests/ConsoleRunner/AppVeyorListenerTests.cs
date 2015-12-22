@@ -92,14 +92,6 @@ namespace Fixie.Tests.ConsoleRunner
             }
         }
 
-        class InputAttributeParameterSource : ParameterSource
-        {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
-            {
-                return method.GetCustomAttributes<InputAttribute>().Select(x => x.Parameters);
-            }
-        }
-
         static string CleanBrittleValues(string actualRawContent)
         {
             //Avoid brittle assertion introduced by stack trace line numbers.
@@ -138,17 +130,6 @@ namespace Fixie.Tests.ConsoleRunner
                 Console.Out.WriteLine("Console.Out: " + member);
                 Console.Error.WriteLine("Console.Error: " + member);
             }
-        }
-
-        [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-        class InputAttribute : Attribute
-        {
-            public InputAttribute(params object[] parameters)
-            {
-                Parameters = parameters;
-            }
-
-            public object[] Parameters { get; }
         }
 
         class FakeHandler : DelegatingHandler

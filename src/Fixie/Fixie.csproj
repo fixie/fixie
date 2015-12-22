@@ -59,6 +59,7 @@
     <Compile Include="Internal\AssertionLibraryFilter.cs" />
     <Compile Include="Internal\Configuration.cs" />
     <Compile Include="Internal\ConstructionFrequency.cs" />
+    <Compile Include="Execution\MethodGroupDiscovered.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="ParameterSource.cs" />
     <Compile Include="Internal\CompoundException.cs" />

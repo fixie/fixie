@@ -34,6 +34,7 @@ namespace Fixie.Execution
 
         public void Subscribe<TListener>(TListener listener) where TListener : LongLivedMarshalByRefObject
         {
+            ResolveAssemblyContaining<TListener>();
             executionProxy.Subscribe(listener);
         }
 

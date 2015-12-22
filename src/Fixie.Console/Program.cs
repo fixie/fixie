@@ -110,10 +110,7 @@ namespace Fixie.ConsoleRunner
                     environment.Subscribe<AppVeyorListener>();
 
                 if (reportListener != null)
-                {
-                    environment.ResolveAssemblyContaining<ReportListener>();
                     environment.Subscribe(reportListener);
-                }
 
                 return environment.RunAssembly(options);
             }

@@ -30,7 +30,6 @@ namespace Fixie.VisualStudio.TestAdapter
                         using (var listener = new VisualStudioDiscoveryListener(discoverySink, log, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
-                            environment.ResolveAssemblyContaining<VisualStudioDiscoveryListener>();
                             environment.Subscribe(listener);
                             environment.DiscoverMethodGroups(new Options());
                         }

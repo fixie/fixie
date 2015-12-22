@@ -14,10 +14,11 @@ using Should;
 
 namespace Fixie.Tests.VisualStudio.TestAdapter
 {
-    public class VisualStudioExecutionListenerTests
+    public class VisualStudioListenerTests
     {
         public void ShouldSupportReceivingMessagesFromTheChildAppDomain()
         {
+            typeof(VisualStudioDiscoveryListener).ShouldSupportReceivingMessagesFromTheChildAppDomain();
             typeof(VisualStudioExecutionListener).ShouldSupportReceivingMessagesFromTheChildAppDomain();
         }
 
@@ -90,7 +91,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                     .ShouldEqual(
                         "'Fail' failed!",
                         "",
-                        "   at Fixie.Tests.VisualStudio.TestAdapter.VisualStudioExecutionListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
+                        "   at Fixie.Tests.VisualStudio.TestAdapter.VisualStudioListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
                 results[2].DisplayName.ShouldEqual(testClass +".Fail");
                 results[2].Messages.Count.ShouldEqual(1);
                 results[2].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);

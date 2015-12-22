@@ -1,6 +1,5 @@
 ﻿using Fixie.Internal;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security;
 using System.Security.Permissions;
@@ -49,9 +48,9 @@ namespace Fixie.Execution
             executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
         }
 
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
+        public void DiscoverMethodGroups(Options options)
         {
-            return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
+            executionProxy.DiscoverMethodGroups(assemblyFullPath, options);
         }
 
         public ExecutionSummary RunAssembly(Options options)

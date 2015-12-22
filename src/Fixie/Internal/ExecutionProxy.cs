@@ -25,13 +25,18 @@ namespace Fixie.Internal
             subscribers.Add(listener);
         }
 
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
+        public void DiscoverMethodGroups(string assemblyFullPath, Options options)
         {
+            var bus = CreateBus();
+
             var assembly = LoadAssembly(assemblyFullPath);
 
             var discoverer = new Discoverer(options);
 
-            return discoverer.DiscoverTestMethodGroups(assembly);
+            var methodGroups = discoverer.DiscoverTestMethodGroups(assembly);
+
+            foreach (var methodGroup in methodGroups)
+                bus.Publish(new MethodGroupDiscovered(methodGroup));
         }
 
         public ExecutionSummary RunAssembly(string assemblyFullPath, Options options)

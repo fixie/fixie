@@ -110,7 +110,7 @@
     <Compile Include="Cases\SkippedCaseTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationProviderTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationSamples.cs" />
-    <Compile Include="VisualStudio\TestAdapter\VisualStudioExecutionListenerTests.cs" />
+    <Compile Include="VisualStudio\TestAdapter\VisualStudioListenerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie.Console\Fixie.Console.csproj">

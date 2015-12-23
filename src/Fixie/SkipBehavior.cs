@@ -15,9 +15,6 @@
         /// <summary>
         /// When a test case should be skipped during execution, returns an optional string to explain why.
         /// </summary>
-        public virtual string GetSkipReason(Case @case)
-        {
-            return null;
-        }
+        public abstract string GetSkipReason(Case @case);
     }
 }

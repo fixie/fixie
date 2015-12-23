@@ -66,7 +66,7 @@ namespace Fixie.Internal
 
         static bool NonDiscoveryClasses(Type type)
         {
-            return !type.IsSubclassOf(typeof(Convention)) && !type.IsSubclassOf(typeof(TestAssembly));
+            return !type.IsSubclassOf(typeof(Convention));
         }
 
         static bool NonCompilerGeneratedClasses(Type type)

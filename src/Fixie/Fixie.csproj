@@ -64,7 +64,6 @@
     <Compile Include="ParameterSource.cs" />
     <Compile Include="Internal\CompoundException.cs" />
     <Compile Include="SkipBehavior.cs" />
-    <Compile Include="TestAssembly.cs" />
     <Compile Include="Conventions\ClassExpression.cs" />
     <Compile Include="Internal\MethodDiscoverer.cs" />
     <Compile Include="Conventions\AssertionLibraryExpression.cs" />

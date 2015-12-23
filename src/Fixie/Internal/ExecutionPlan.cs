@@ -7,8 +7,10 @@ namespace Fixie.Internal
     {
         readonly BehaviorChain<Class> classBehaviors;
 
-        public ExecutionPlan(Configuration config)
+        public ExecutionPlan(Convention convention)
         {
+            var config = convention.Config;
+
             classBehaviors =
                 BuildClassBehaviorChain(config,
                     BuildFixtureBehaviorChain(config,

@@ -75,7 +75,7 @@ namespace Fixie.Tests.Internal
 
         AssertionLibraryFilter AssertionLibraryFilter()
         {
-            return new AssertionLibraryFilter(convention.Config);
+            return new AssertionLibraryFilter(convention);
         }
 
         class FakeException : Exception

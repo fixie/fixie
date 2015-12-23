@@ -9,9 +9,9 @@ namespace Fixie.Internal
     {
         readonly Func<MethodInfo, bool>[] testMethodConditions;
 
-        public MethodDiscoverer(Configuration config)
+        public MethodDiscoverer(Convention convention)
         {
-            testMethodConditions = config.TestMethodConditions.ToArray();
+            testMethodConditions = convention.Config.TestMethodConditions.ToArray();
         }
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)

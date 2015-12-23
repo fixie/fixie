@@ -86,7 +86,7 @@ namespace Fixie.Tests.Internal
 
         IEnumerable<object[]> DiscoveredParameters(Convention convention)
         {
-            return new ParameterDiscoverer(convention.Config).GetParameters(method);
+            return new ParameterDiscoverer(convention).GetParameters(method);
         }
 
         class SampleTestClass

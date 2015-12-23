@@ -8,9 +8,9 @@ namespace Fixie.Internal
     {
         readonly Func<Type, bool>[] testClassConditions;
 
-        public ClassDiscoverer(Configuration config)
+        public ClassDiscoverer(Convention convention)
         {
-            testClassConditions = config.TestClassConditions.ToArray();
+            testClassConditions = convention.Config.TestClassConditions.ToArray();
         }
 
         public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)

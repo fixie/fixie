@@ -21,11 +21,11 @@ namespace Fixie.Internal
 
             foreach (var convention in conventions)
             {
-                var classDiscoverer = new ClassDiscoverer(convention.Config);
+                var classDiscoverer = new ClassDiscoverer(convention);
                 var candidateTypes = assembly.GetTypes();
                 var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
-                var methodDiscoverer = new MethodDiscoverer(convention.Config);
+                var methodDiscoverer = new MethodDiscoverer(convention);
                 foreach (var testClass in testClasses)
                 {
                     var distinctMethodGroups = new Dictionary<string, MethodGroup>();

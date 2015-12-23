@@ -8,9 +8,9 @@ namespace Fixie.Internal
     {
         readonly ParameterSource[] parameterSources;
 
-        public ParameterDiscoverer(Configuration config)
+        public ParameterDiscoverer(Convention convention)
         {
-            parameterSources = config.ParameterSources
+            parameterSources = convention.Config.ParameterSources
                 .Select(sourceType => sourceType())
                 .ToArray();
         }

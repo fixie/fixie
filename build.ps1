@@ -7,7 +7,8 @@ properties {
     $configuration = 'Release'
     $src = resolve-path '.\src'
     $tools = resolve-path '.\tools'
-    $build = if ($env:build_number -ne $NULL) { $env:build_number } else { '0' }
+    $runningUnderCI = $env:APPVEYOR -eq "True"
+    $build = if ($runningUnderCI) { $env:APPVEYOR_BUILD_NUMBER } else { '0' }
     $version = [IO.File]::ReadAllText('.\VERSION.txt') + '.' + $build
     $projects = @(gci $src -rec -filter *.csproj)
     $nonPublishedProjects = "Build","Fixie.Tests","Fixie.Samples"

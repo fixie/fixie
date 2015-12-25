@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Fixie.TestDriven")]
 [assembly: AssemblyVersion("2.0.0.0")]
 [assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyInformationalVersion("2.0.0.0-alpha")]
 [assembly: AssemblyCopyright("Copyright © 2013-2015 Patrick Lioi")]
 [assembly: AssemblyCompany("Patrick Lioi")]
 [assembly: AssemblyConfiguration("Release")]

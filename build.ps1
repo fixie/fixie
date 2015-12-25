@@ -10,6 +10,7 @@ properties {
     $runningUnderCI = $env:APPVEYOR -eq "True"
     $build = if ($runningUnderCI) { $env:APPVEYOR_BUILD_NUMBER } else { '0' }
     $version = [IO.File]::ReadAllText('.\VERSION.txt') + '.' + $build
+    $versionSuffix = "-alpha"
     $projects = @(gci $src -rec -filter *.csproj)
     $nonPublishedProjects = "Build","Fixie.Tests","Fixie.Samples"
 }
@@ -96,6 +97,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("$projectName")]
 [assembly: AssemblyVersion("$version")]
 [assembly: AssemblyFileVersion("$version")]
+[assembly: AssemblyInformationalVersion("$version$versionSuffix")]
 [assembly: AssemblyCopyright("$copyright")]
 [assembly: AssemblyCompany("$maintainers")]
 [assembly: AssemblyConfiguration("$configuration")]

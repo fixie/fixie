@@ -5,8 +5,6 @@ using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    using System.Collections.Generic;
-
     class Program
     {
         const int FatalError = -1;
@@ -29,13 +27,7 @@ namespace Fixie.ConsoleRunner
                     return FatalError;
                 }
 
-                var assemblyPaths = commandLineParser.AssemblyPaths;
-                var options = commandLineParser.Options;
-
-                var summary = Execute(options, assemblyPaths);
-
-                if (assemblyPaths.Count > 1)
-                    Console.WriteLine($"====== {summary} ======");
+                var summary = Execute(commandLineParser);
 
                 return summary.Failed;
             }
@@ -47,8 +39,10 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static ExecutionSummary Execute(Options options, IEnumerable<string> assemblyPaths)
+        static ExecutionSummary Execute(CommandLineParser commandLineParser)
         {
+            var options = commandLineParser.Options;
+
             Report report = null;
             ReportListener reportListener = null;
 
@@ -58,14 +52,7 @@ namespace Fixie.ConsoleRunner
                 reportListener = new ReportListener(report);
             }
 
-            var summary = new ExecutionSummary();
-
-            foreach (var assemblyPath in assemblyPaths)
-            {
-                var assemblySummary = Execute(assemblyPath, options, reportListener);
-
-                summary.Include(assemblySummary);
-            }
+            var summary = Execute(commandLineParser.AssemblyPath, options, reportListener);
 
             if (report != null)
                 SaveReport(options, report);

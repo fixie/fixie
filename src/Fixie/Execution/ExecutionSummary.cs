@@ -32,14 +32,6 @@ namespace Fixie.Execution
                 Skipped += 1;
         }
 
-        public void Include(ExecutionSummary partial)
-        {
-            Duration += partial.Duration;
-            Passed += partial.Passed;
-            Failed += partial.Failed;
-            Skipped += partial.Skipped;
-        }
-
         public override string ToString()
         {
             var summary = new StringBuilder();

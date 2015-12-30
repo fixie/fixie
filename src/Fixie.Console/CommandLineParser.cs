@@ -12,7 +12,7 @@ namespace Fixie.ConsoleRunner
             var queue = new Queue<string>(args);
 
             var assemblyPaths = new List<string>();
-            var optionList = new Options();
+            var options = new Options();
             var errors = new List<string>();
 
             while (queue.Any())
@@ -30,7 +30,7 @@ namespace Fixie.ConsoleRunner
                     var key = KeyName(item);
                     var value = queue.Dequeue();
 
-                    optionList.Add(key, value);
+                    options.Add(key, value);
                 }
                 else
                 {
@@ -38,19 +38,26 @@ namespace Fixie.ConsoleRunner
                 }
             }
 
-            if (!errors.Any() && !assemblyPaths.Any())
-                errors.Add("Missing required test assembly path(s).");
+            if (!errors.Any())
+            {
+                if (assemblyPaths.Count == 0)
+                    errors.Add("Missing required test assembly path.");
+                else if (assemblyPaths.Count > 1)
+                    errors.Add("Only one test assembly path is allowed. Invoke the test runner once per test assembly.");
+                else
+                {
+                    AssemblyPath = assemblyPaths.Single();
 
-            foreach (var assemblyPath in assemblyPaths)
-                if (!File.Exists(assemblyPath))
-                    errors.Add("Specified test assembly does not exist: " + assemblyPath);
+                    if (!File.Exists(assemblyPaths.Single()))
+                        errors.Add("Specified test assembly does not exist: " + AssemblyPath);
+                }
+            }
 
-            AssemblyPaths = assemblyPaths.ToArray();
-            Options = optionList;
+            Options = options;
             Errors = errors.ToArray();
         }
 
-        public IReadOnlyCollection<string> AssemblyPaths { get; }
+        public string AssemblyPath { get; }
 
         public Options Options { get; }
 
@@ -65,8 +72,10 @@ namespace Fixie.ConsoleRunner
         public static string Usage()
         {
             return new StringBuilder()
-                .AppendLine("Usage: Fixie.Console [--NUnitXml <output-file>] [--xUnitXml <output-file>] [--TeamCity <on|off>] [--<key> <value>]... assembly-path...")
+                .AppendLine("Usage: Fixie.Console assembly-path [--NUnitXml <output-file>] [--xUnitXml <output-file>] [--TeamCity <on|off>] [--<key> <value>]...")
                 .AppendLine()
+                .AppendLine("    assembly-path")
+                .AppendLine("        A path to a test assembly containing the tests to execute.")
                 .AppendLine()
                 .AppendLine("    --NUnitXml <output-file>")
                 .AppendLine("        Write test results to the specified file, using NUnit-style XML.")
@@ -84,10 +93,6 @@ namespace Fixie.ConsoleRunner
                 .AppendLine("        conventions. If multiple custom options are declared with the")
                 .AppendLine("        same <key>, *all* of the declared <value>s will be")
                 .AppendLine("        available to the convention at runtime under that <key>.")
-                .AppendLine()
-                .AppendLine("    assembly-path...")
-                .AppendLine("        One or more paths indicating test assembly files.  At least one")
-                .AppendLine("        test assembly must be specified.")
                 .ToString();
         }
     }

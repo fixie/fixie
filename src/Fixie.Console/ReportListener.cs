@@ -4,26 +4,14 @@ namespace Fixie.ConsoleRunner
 {
     public class ReportListener :
         LongLivedMarshalByRefObject,
-        IHandler<AssemblyStarted>,
-        IHandler<CaseCompleted>,
-        IHandler<AssemblyCompleted>
+        IHandler<CaseCompleted>
     {
-        readonly Report report;
-        AssemblyReport currentAssembly;
+        readonly AssemblyReport report;
         ClassReport currentClass;
 
-        public ReportListener(Report report)
+        public ReportListener(AssemblyReport report)
         {
             this.report = report;
-            currentAssembly = null;
-            currentClass = null;
-        }
-
-        public void Handle(AssemblyStarted message)
-        {
-            currentAssembly = new AssemblyReport(message.Location);
-            currentClass = null;
-            report.Add(currentAssembly);
         }
 
         public void Handle(CaseCompleted message)
@@ -31,16 +19,10 @@ namespace Fixie.ConsoleRunner
             if (currentClass == null || currentClass.Name != message.MethodGroup.Class)
             {
                 currentClass = new ClassReport(message.MethodGroup.Class);
-                currentAssembly.Add(currentClass);
+                report.Add(currentClass);
             }
 
             currentClass.Add(message);
-        }
-
-        public void Handle(AssemblyCompleted message)
-        {
-            currentAssembly = null;
-            currentClass = null;
         }
     }
 }

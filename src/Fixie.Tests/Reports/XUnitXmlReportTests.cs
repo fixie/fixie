@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
@@ -17,7 +15,7 @@ namespace Fixie.Tests.Reports
     {
         public void ShouldProduceValidXmlDocument()
         {
-            var report = new Report();
+            var report = new AssemblyReport(typeof(PassFailTestClass).Assembly.Location);
             var listener = new ReportListener(report);
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);

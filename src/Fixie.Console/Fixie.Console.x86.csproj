@@ -50,7 +50,6 @@
     <Compile Include="NUnitXmlReport.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Report.cs" />
     <Compile Include="ReportListener.cs" />
     <Compile Include="TeamCityListener.cs" />
     <Compile Include="XUnitXmlReport.cs" />

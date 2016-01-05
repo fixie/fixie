@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Fixie.Execution;
@@ -43,12 +44,12 @@ namespace Fixie.ConsoleRunner
         {
             var options = commandLineParser.Options;
 
-            Report report = null;
+            AssemblyReport report = null;
             ReportListener reportListener = null;
 
             if (ShouldProduceReports(options))
             {
-                report = new Report();
+                report = new AssemblyReport(Path.GetFullPath(commandLineParser.AssemblyPath));
                 reportListener = new ReportListener(report);
             }
 
@@ -65,7 +66,7 @@ namespace Fixie.ConsoleRunner
             return options.Contains(CommandLineOption.NUnitXml) || options.Contains(CommandLineOption.XUnitXml);
         }
 
-        static void SaveReport(Options options, Report report)
+        static void SaveReport(Options options, AssemblyReport report)
         {
             if (options.Contains(CommandLineOption.NUnitXml))
             {

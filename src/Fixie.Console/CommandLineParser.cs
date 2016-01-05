@@ -48,7 +48,7 @@ namespace Fixie.ConsoleRunner
                 {
                     AssemblyPath = assemblyPaths.Single();
 
-                    if (!File.Exists(assemblyPaths.Single()))
+                    if (!File.Exists(AssemblyPath))
                         errors.Add("Specified test assembly does not exist: " + AssemblyPath);
                 }
             }

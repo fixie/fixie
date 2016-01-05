@@ -33,13 +33,22 @@ namespace Fixie.Tests.ConsoleRunner
             parser.Errors.ShouldEqual("Only one test assembly path is allowed. Invoke the test runner once per test assembly.");
         }
 
-        public void DemandsAssemblyPathsExist()
+        public void DemandsAssemblyPathExists()
         {
             var parser = new CommandLineParser("foo.dll");
             parser.AssemblyPath.ShouldEqual("foo.dll");
             parser.Options.Count.ShouldEqual(0);
             parser.HasErrors.ShouldBeTrue();
             parser.Errors.ShouldEqual("Specified test assembly does not exist: foo.dll");
+        }
+
+        public void ParsesExistingAssemblyPaths()
+        {
+            var parser = new CommandLineParser(assemblyPathA);
+            parser.AssemblyPath.ShouldEqual(assemblyPathA);
+            parser.Options.Count.ShouldEqual(0);
+            parser.HasErrors.ShouldBeFalse();
+            parser.Errors.ShouldBeEmpty();
         }
 
         public void ParsesNUnitXmlOutputFile()

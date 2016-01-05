@@ -8,11 +8,9 @@ namespace Fixie.ConsoleRunner
 {
     public class XUnitXmlReport
     {
-        public XDocument Transform(Report report)
+        public XDocument Transform(AssemblyReport report)
         {
-            return new XDocument(
-                new XElement("assemblies",
-                    report.Assemblies.Select(Assembly)));
+            return new XDocument(new XElement("assemblies", Assembly(report)));
         }
 
         static XElement Assembly(AssemblyReport assemblyReport)

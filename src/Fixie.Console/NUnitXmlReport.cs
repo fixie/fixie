@@ -8,7 +8,7 @@ namespace Fixie.ConsoleRunner
 {
     public class NUnitXmlReport
     {
-        public XDocument Transform(Report report)
+        public XDocument Transform(AssemblyReport report)
         {
             var now = DateTime.UtcNow;
 
@@ -30,7 +30,7 @@ namespace Fixie.ConsoleRunner
 
                     Environment(),
                     CultureInfo(),
-                    report.Assemblies.Select(Assembly)));
+                    Assembly(report)));
         }
 
         static XElement CultureInfo()

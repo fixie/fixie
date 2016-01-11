@@ -1,4 +1,4 @@
-Framework '4.5.1'
+Framework '4.5.2'
 
 properties {
     $birthYear = 2013
@@ -6,10 +6,10 @@ properties {
 
     $configuration = 'Release'
     $src = resolve-path '.\src'
-    $build = if ($env:build_number -ne $NULL) { $env:build_number } else { '0' }
-    $version = [IO.File]::ReadAllText('.\VERSION.txt') + '.' + $build
+    $tools = resolve-path '.\tools'
+    $version = [IO.File]::ReadAllText('.\VERSION.txt')
     $projects = @(gci $src -rec -filter *.csproj)
-    $selfTestProjects = "Fixie.Tests","Fixie.Samples"
+    $nonPublishedProjects = "Build","Fixie.Tests","Fixie.Samples"
 }
 
 task default -depends Test
@@ -17,11 +17,11 @@ task default -depends Test
 task Package -depends Test {
     rd .\package -recurse -force -ErrorAction SilentlyContinue | out-null
     mkdir .\package -ErrorAction SilentlyContinue | out-null
-    exec { & $src\.nuget\NuGet.exe pack $src\Fixie\Fixie.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
+    exec { & $tools\NuGet.exe pack $src\Fixie\Fixie.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
 
     write-host
     write-host "To publish these packages, issue the following command:"
-    write-host "   nuget push .\package\Fixie.$version.nupkg"
+    write-host "   tools\NuGet push .\package\Fixie.$version.nupkg"
 }
 
 task Test -depends Compile {
@@ -34,7 +34,8 @@ task Test32 -depends Compile {
 
 function run-tests($exe) {
     $fixieRunner = resolve-path ".\build\$exe"
-    exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
+    exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll }
+    exec { & $fixieRunner $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
 }
 
 task Compile -depends SanityCheckOutputPaths, AssemblyInfo, License {
@@ -52,7 +53,7 @@ task SanityCheckOutputPaths {
 
         $lines = [System.IO.File]::ReadAllLines($project.FullName, [System.Text.Encoding]::UTF8)
 
-        if (!($selfTestProjects -contains $projectName)) {
+        if (!($nonPublishedProjects -contains $projectName)) {
             foreach($line in $lines) {
                 if ($line.Contains("<OutputPath>")) {
 
@@ -72,12 +73,21 @@ task SanityCheckOutputPaths {
 }
 
 task AssemblyInfo {
+    $assemblyVersion = $version
+    if ($assemblyVersion.Contains("-")) {
+        $assemblyVersion = $assemblyVersion.Substring(0, $assemblyVersion.IndexOf("-"))
+    }
+
     $copyright = get-copyright
 
     foreach ($project in $projects) {
         $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
 
         if ($projectName.Contains(".x86")) {
+            continue;
+        }
+
+        if ($projectName -eq "Build") {
             continue;
         }
 
@@ -88,8 +98,9 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: AssemblyProduct("Fixie")]
 [assembly: AssemblyTitle("$projectName")]
-[assembly: AssemblyVersion("$version")]
-[assembly: AssemblyFileVersion("$version")]
+[assembly: AssemblyVersion("$assemblyVersion")]
+[assembly: AssemblyFileVersion("$assemblyVersion")]
+[assembly: AssemblyInformationalVersion("$version")]
 [assembly: AssemblyCopyright("$copyright")]
 [assembly: AssemblyCompany("$maintainers")]
 [assembly: AssemblyConfiguration("$configuration")]

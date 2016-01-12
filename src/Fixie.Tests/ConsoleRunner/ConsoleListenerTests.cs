@@ -142,20 +142,5 @@ namespace Fixie.Tests.ConsoleRunner
                 Console.Error.WriteLine("Console.Error: " + member);
             }
         }
-
-        [AttributeUsage(AttributeTargets.Method)]
-        class SkipAttribute : Attribute
-        {
-            public SkipAttribute()
-            {
-            }
-
-            public SkipAttribute(string reason)
-            {
-                Reason = reason;
-            }
-
-            public string Reason { get; private set; }
-        }
     }
 }

@@ -152,21 +152,6 @@ namespace Fixie.Tests.ConsoleRunner
             public object[] Parameters { get; private set; }
         }
 
-        [AttributeUsage(AttributeTargets.Method)]
-        class SkipAttribute : Attribute
-        {
-            public SkipAttribute()
-            {
-            }
-
-            public SkipAttribute(string reason)
-            {
-                Reason = reason;
-            }
-
-            public string Reason { get; private set; }
-        }
-
         private class FakeHandler : DelegatingHandler
         {
             readonly Func<HttpRequestMessage, HttpResponseMessage> func;

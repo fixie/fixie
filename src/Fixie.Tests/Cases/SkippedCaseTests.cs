@@ -145,7 +145,7 @@ namespace Fixie.Tests.Cases
 
         class SkippedTestClass
         {
-            [Skip(Reason = "Troublesome test skipped.")]
+            [Skip("Troublesome test skipped.")]
             public void Fail() { throw new FailureException(); }
 
             public void Pass() { }
@@ -160,12 +160,6 @@ namespace Fixie.Tests.Cases
 
         [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
         class ExplicitAttribute : Attribute
-        {
-            public string Reason { get; set; }
-        }
-
-        [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-        class SkipAttribute : Attribute
         {
             public string Reason { get; set; }
         }

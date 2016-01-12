@@ -36,9 +36,7 @@ namespace Fixie.Internal.Behaviors
             var fixture = new Fixture(testClass, instance, casesForThisInstance);
             fixtureBehaviors.Execute(fixture);
 
-            var disposable = instance as IDisposable;
-            if (disposable != null)
-                disposable.Dispose();
+            (instance as IDisposable)?.Dispose();
         }
     }
 }

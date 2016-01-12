@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
+    <Compile Include="Framework.cs" />
     <Compile Include="Internal\Discoverer.cs" />
     <Compile Include="Internal\ParameterDiscoverer.cs" />
     <Compile Include="Internal\SkipRule.cs" />

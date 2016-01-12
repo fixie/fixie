@@ -34,8 +34,7 @@ namespace Fixie.Samples.MbUnitStyle
         [Row(3, 5, 8)]
         public void ShouldAdd(int a, int b, int expectedSum)
         {
-            log.AppendFormat("ShouldAdd({0}, {1}, {2})", a, b, expectedSum);
-            log.AppendLine();
+            log.AppendLine($"ShouldAdd({a}, {b}, {expectedSum})");
             calculator.Add(a, b).ShouldEqual(expectedSum);
         }
 
@@ -43,8 +42,7 @@ namespace Fixie.Samples.MbUnitStyle
         public void ShouldSubtract([Column(7, 8, 9)] int a,
                                    [Column(5, 6)] int b)
         {
-            log.AppendFormat("ShouldSubtract({0}, {1})", a, b);
-            log.AppendLine();
+            log.AppendLine($"ShouldSubtract({a}, {b})");
             calculator.Subtract(a, b).ShouldEqual(a - b);
         }
 

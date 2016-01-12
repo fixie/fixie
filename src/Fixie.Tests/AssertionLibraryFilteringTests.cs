@@ -32,7 +32,7 @@ namespace Fixie.Tests
                         "   at Fixie.Tests.SampleAssertionLibrary.SampleAssert.AreEqual(Int32 expected, Int32 actual) in " + PathToThisFile() + ":line #",
                         "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.FailedAssertion() in " + PathToThisFile() + ":line #",
                         "",
-                        "0 passed, 2 failed, took 1.23 seconds (Fixie 1.2.3.4).",
+                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").",
                         "",
                         "");
             }
@@ -66,7 +66,7 @@ namespace Fixie.Tests
                         "Expected 1, but was 0.",
                         "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.FailedAssertion() in " + PathToThisFile() + ":line #",
                         "",
-                        "0 passed, 2 failed, took 1.23 seconds (Fixie 1.2.3.4).",
+                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").",
                         "",
                         "");
             }
@@ -74,12 +74,9 @@ namespace Fixie.Tests
 
         static string CleanBrittleValues(string actualRawContent)
         {
-            //Avoid brittle assertion introduced by fixie version.
-            var cleaned = Regex.Replace(actualRawContent, @"\(Fixie \d+\.\d+\.\d+\.\d+\)", @"(Fixie 1.2.3.4)");
-
             //Avoid brittle assertion introduced by test duration.
             var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            cleaned = Regex.Replace(cleaned, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
+            var cleaned = Regex.Replace(actualRawContent, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
 
             //Avoid brittle assertion introduced by stack trace line numbers.
             cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
@@ -115,7 +112,7 @@ namespace Fixie.Tests
             public static void AreEqual(int expected, int actual)
             {
                 if (expected != actual)
-                    throw new AssertionException(string.Format("Expected {0}, but was {1}.", expected, actual));
+                    throw new AssertionException($"Expected {expected}, but was {actual}.");
             }
         }
 

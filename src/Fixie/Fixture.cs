@@ -19,17 +19,17 @@ namespace Fixie
         /// <summary>
         /// Gets the test class being executed.
         /// </summary>
-        public Class Class { get; private set; }
+        public Class Class { get; }
 
         /// <summary>
         /// Gets the instance of the test class being executed.
         /// </summary>
-        public object Instance { get; private set; }
+        public object Instance { get; }
 
         /// <summary>
         /// Gets the test cases being executed for this instance of the test class.
         /// </summary>
-        public IReadOnlyList<Case> Cases { get; private set; }
+        public IReadOnlyList<Case> Cases { get; }
 
         /// <summary>
         /// Includes the given exception in all of the test class instance's

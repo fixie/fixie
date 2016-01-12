@@ -48,10 +48,6 @@ namespace Fixie.Execution
         {
             get
             {
-                var assemblyName = typeof(AssemblyResult).Assembly.GetName();
-                var name = assemblyName.Name;
-                var version = assemblyName.Version;
-
                 var line = new StringBuilder();
 
                 line.AppendFormat("{0} passed", Passed);
@@ -62,7 +58,7 @@ namespace Fixie.Execution
 
                 line.AppendFormat(", took {0:N2} seconds", Duration.TotalSeconds);
 
-                line.AppendFormat(" ({0} {1}).", name, version);
+                line.AppendFormat(" ({0}).", Framework.Version);
 
                 return line.ToString();
             }

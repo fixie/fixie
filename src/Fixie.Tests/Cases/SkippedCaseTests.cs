@@ -14,10 +14,10 @@ namespace Fixie.Tests.Cases
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
         public void ShouldSkipCasesWithOptionalReason()
@@ -28,10 +28,10 @@ namespace Fixie.Tests.Cases
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped.",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed",
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
         public void ShouldAllowMultiplePrioritizedSkipRules()
@@ -46,7 +46,7 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
         public void ShouldAllowSkippingViaBehaviorTypes()
@@ -61,7 +61,7 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
         public void ShouldAllowSkippingViaBehaviorInstances()
@@ -76,7 +76,7 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed.");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
         public void ShouldFailWithClearExplanationWhenSkipConditionThrows()
@@ -133,28 +133,14 @@ namespace Fixie.Tests.Cases
 
         class SkipByExplicitAttribute : SkipBehavior
         {
-            public override bool SkipCase(Case @case)
-            {
-                return HasExplicitAttribute(@case);
-            }
-
-            public override string GetSkipReason(Case @case)
-            {
-                return ExplicitAttributeReason(@case);
-            }
+            public override bool SkipCase(Case @case) => HasExplicitAttribute(@case);
+            public override string GetSkipReason(Case @case) => ExplicitAttributeReason(@case);
         }
 
         class SkipBySkipAttribute : SkipBehavior
         {
-            public override bool SkipCase(Case @case)
-            {
-                return HasSkipAttribute(@case);
-            }
-
-            public override string GetSkipReason(Case @case)
-            {
-                return SkipAttributeReason(@case);
-            }
+            public override bool SkipCase(Case @case) => HasSkipAttribute(@case);
+            public override string GetSkipReason(Case @case) => SkipAttributeReason(@case);
         }
 
         class SkippedTestClass

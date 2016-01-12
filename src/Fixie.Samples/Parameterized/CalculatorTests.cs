@@ -20,8 +20,7 @@ namespace Fixie.Samples.Parameterized
         [Input(3, 5, 8)]
         public void ShouldAdd(int a, int b, int expectedSum)
         {
-            log.AppendFormat("ShouldAdd({0}, {1}, {2})", a, b, expectedSum);
-            log.AppendLine();
+            log.AppendLine($"ShouldAdd({a}, {b}, {expectedSum})");
             calculator.Add(a, b).ShouldEqual(expectedSum);
         }
 
@@ -30,8 +29,7 @@ namespace Fixie.Samples.Parameterized
         [Input(10, 5, 5)]
         public void ShouldSubtract(int a, int b, int expectedDifference)
         {
-            log.AppendFormat("ShouldSubtract({0}, {1}, {2})", a, b, expectedDifference);
-            log.AppendLine();
+            log.AppendLine($"ShouldSubtract({a}, {b}, {expectedDifference})");
             calculator.Subtract(a, b).ShouldEqual(expectedDifference);
         }
 

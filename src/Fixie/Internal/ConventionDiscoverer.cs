@@ -67,7 +67,7 @@ namespace Fixie.Internal
             }
             catch (Exception ex)
             {
-                throw new Exception(String.Format("Could not construct an instance of type '{0}'.", type.FullName), ex);
+                throw new Exception($"Could not construct an instance of type '{type.FullName}'.", ex);
             }
         }
 
@@ -79,8 +79,7 @@ namespace Fixie.Internal
                 return constructors.Single();
 
             throw new Exception(
-                String.Format("Could not construct an instance of type '{0}'.  Expected to find exactly 1 public constructor, but found {1}.",
-                    type.FullName, constructors.Length));
+                $"Could not construct an instance of type '{type.FullName}'.  Expected to find exactly 1 public constructor, but found {constructors.Length}.");
         }
     }
 }

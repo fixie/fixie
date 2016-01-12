@@ -14,12 +14,13 @@ namespace Fixie.Tests
 
         public void CaseSkipped(SkipResult result)
         {
-            log.Add(string.Format("{0} skipped{1}", result.Name, result.SkipReason == null ? "." : ": " + result.SkipReason));
+            var optionalReason = result.SkipReason == null ? null : ": " + result.SkipReason;
+            log.Add($"{result.Name} skipped{optionalReason}");
         }
 
         public void CasePassed(PassResult result)
         {
-            log.Add(string.Format("{0} passed.", result.Name));
+            log.Add($"{result.Name} passed");
         }
 
         public void CaseFailed(FailResult result)

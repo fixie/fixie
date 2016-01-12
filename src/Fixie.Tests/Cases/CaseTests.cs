@@ -8,8 +8,8 @@
             Convention = SelfTestConvention.Build();
         }
 
-        protected Convention Convention { get; private set; }
-        protected StubListener Listener { get; private set; }
+        protected Convention Convention { get; }
+        protected StubListener Listener { get; }
 
         protected void Run<TSampleTestClass>()
         {

@@ -125,7 +125,7 @@ namespace Fixie.Reports
                 case CaseStatus.Skipped:
                     return "Ignored";
                 default:
-                    throw new ArgumentOutOfRangeException("status");
+                    throw new ArgumentOutOfRangeException(nameof(status));
             }
         }
 

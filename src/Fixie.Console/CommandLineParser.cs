@@ -11,7 +11,7 @@ namespace Fixie.ConsoleRunner
             var queue = new Queue<string>(args);
 
             var assemblyPaths = new List<string>();
-            var optionList = new Options();
+            var options = new Options();
             var errors = new List<string>();
 
             while (queue.Any())
@@ -22,14 +22,14 @@ namespace Fixie.ConsoleRunner
                 {
                     if (!queue.Any() || IsKey(queue.Peek()))
                     {
-                        errors.Add(string.Format("Option {0} is missing its required value.", item));
+                        errors.Add($"Option {item} is missing its required value.");
                         break;
                     }
 
                     var key = KeyName(item);
                     var value = queue.Dequeue();
 
-                    optionList.Add(key, value);
+                    options.Add(key, value);
                 }
                 else
                 {
@@ -41,30 +41,21 @@ namespace Fixie.ConsoleRunner
                 errors.Add("Missing required test assembly path(s).");
 
             AssemblyPaths = assemblyPaths.ToArray();
-            Options = optionList;
+            Options = options;
             Errors = errors.ToArray();
         }
 
-        public IEnumerable<string> AssemblyPaths { get; private set; }
+        public IEnumerable<string> AssemblyPaths { get; }
 
-        public Options Options { get; private set; }
+        public Options Options { get; }
 
-        public IEnumerable<string> Errors { get; private set; }
+        public IEnumerable<string> Errors { get; }
 
-        public bool HasErrors
-        {
-            get { return Errors.Any(); }
-        }
+        public bool HasErrors => Errors.Any();
 
-        static bool IsKey(string item)
-        {
-            return item.StartsWith("--");
-        }
+        static bool IsKey(string item) => item.StartsWith("--");
 
-        static string KeyName(string item)
-        {
-            return item.Substring("--".Length);
-        }
+        static string KeyName(string item) => item.Substring("--".Length);
 
         public static string Usage()
         {

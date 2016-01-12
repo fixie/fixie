@@ -41,7 +41,7 @@ namespace Fixie.Samples.MbUnitStyle
             Parameters = parameters;
         }
 
-        public object[] Parameters { get; private set; }
+        public object[] Parameters { get; }
     }
     
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
@@ -52,6 +52,6 @@ namespace Fixie.Samples.MbUnitStyle
             Parameters = parameters;
         }
 
-        public object[] Parameters { get; private set; }
+        public object[] Parameters { get; }
     }
 }

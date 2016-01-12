@@ -46,7 +46,7 @@ namespace Fixie.Tests.ConsoleRunner
                            "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
                            "'FailB' failed!",
                            "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
-                           "3 passed, 2 failed, 2 skipped, took 1.23 seconds (Fixie 1.2.3.4).");
+                           "3 passed, 2 failed, 2 skipped, took 1.23 seconds (" + Framework.Version + ").");
             }
         }
 
@@ -86,18 +86,15 @@ namespace Fixie.Tests.ConsoleRunner
                            "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
                            "'FailB' failed!",
                            "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
-                           "3 passed, 2 failed, took 1.23 seconds (Fixie 1.2.3.4).");
+                           "3 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
             }
         }
 
         static string CleanBrittleValues(string actualRawContent)
         {
-            //Avoid brittle assertion introduced by fixie version.
-            var cleaned = Regex.Replace(actualRawContent, @"\(Fixie \d+\.\d+\.\d+\.\d+\)", @"(Fixie 1.2.3.4)");
-
             //Avoid brittle assertion introduced by test duration.
             var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            cleaned = Regex.Replace(cleaned, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
+            var cleaned = Regex.Replace(actualRawContent, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
 
             //Avoid brittle assertion introduced by stack trace line numbers.
             cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");

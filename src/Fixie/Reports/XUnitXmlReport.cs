@@ -32,7 +32,7 @@ namespace Fixie.Reports
                 new XAttribute("failed", assemblyResult.Failed),
                 new XAttribute("skipped", assemblyResult.Skipped),
                 new XAttribute("environment", String.Format("{0}-bit .NET {1}", IntPtr.Size * 8, Environment.Version)),
-                new XAttribute("test-framework", string.Format("Fixie {0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version)),
+                new XAttribute("test-framework", Framework.Version),
                 classResults.Select(Class));
         }
 

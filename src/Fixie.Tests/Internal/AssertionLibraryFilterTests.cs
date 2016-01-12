@@ -81,17 +81,12 @@ namespace Fixie.Tests.Internal
 
         class FakeException : Exception
         {
-            readonly string stackTrace;
-
             public FakeException(string stackTrace)
             {
-                this.stackTrace = stackTrace;
+                StackTrace = stackTrace;
             }
 
-            public override string StackTrace
-            {
-                get { return stackTrace; }
-            }
+            public override string StackTrace { get; }
         }
     }
 }

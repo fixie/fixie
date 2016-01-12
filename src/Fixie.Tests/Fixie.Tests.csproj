@@ -60,6 +60,8 @@
     <Compile Include="Assertions.cs" />
     <Compile Include="ConsoleRunner\AppVeyorListenerTests.cs" />
     <Compile Include="Execution\ExecutionEnvironmentTests.cs" />
+    <Compile Include="InputAttribute.cs" />
+    <Compile Include="InputAttributeParameterSource.cs" />
     <Compile Include="MethodGroupTests.cs" />
     <Compile Include="Internal\ParameterDiscovererTests.cs" />
     <Compile Include="Execution\AppDomainCommunicationAssertions.cs" />

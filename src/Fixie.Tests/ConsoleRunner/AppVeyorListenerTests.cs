@@ -106,14 +106,6 @@ namespace Fixie.Tests.ConsoleRunner
             return cleaned;
         }
 
-        class InputAttributeParameterSource : ParameterSource
-        {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
-            {
-                return method.GetCustomAttributes<InputAttribute>().Select(x => x.Parameters);
-            }
-        }
-
         class PassFailTestClass
         {
             [Input(123)]
@@ -139,17 +131,6 @@ namespace Fixie.Tests.ConsoleRunner
                 Console.Out.WriteLine("Console.Out: " + member);
                 Console.Error.WriteLine("Console.Error: " + member);
             }
-        }
-
-        [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-        class InputAttribute : Attribute
-        {
-            public InputAttribute(params object[] parameters)
-            {
-                Parameters = parameters;
-            }
-
-            public object[] Parameters { get; private set; }
         }
 
         private class FakeHandler : DelegatingHandler

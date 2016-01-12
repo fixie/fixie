@@ -36,14 +36,6 @@ namespace Fixie.Tests.Reports
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
         }
 
-        class InputAttributeParameterSource : ParameterSource
-        {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
-            {
-                return method.GetCustomAttributes<InputAttribute>().Select(x => x.Parameters);
-            }
-        }
-
         static void XsdValidate(XDocument doc)
         {
             var schemaSet = new XmlSchemaSet();
@@ -125,17 +117,6 @@ namespace Fixie.Tests.Reports
             {
                 throw new ShouldBeUnreachableException();
             }
-        }
-
-        [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-        class InputAttribute : Attribute
-        {
-            public InputAttribute(params object[] parameters)
-            {
-                Parameters = parameters;
-            }
-
-            public object[] Parameters { get; private set; }
         }
     }
 }

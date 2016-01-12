@@ -93,17 +93,17 @@ namespace Fixie.Tests.ConsoleRunner
             }
         }
 
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
-        }
-
         static string CleanBrittleValues(string actualRawContent)
         {
             //Avoid brittle assertion introduced by stack trace line numbers.
             var cleaned = Regex.Replace(actualRawContent, @":line \d+", ":line #");
 
             return cleaned;
+        }
+
+        static string PathToThisFile([CallerFilePath] string path = null)
+        {
+            return path;
         }
 
         class PassFailTestClass
@@ -133,7 +133,7 @@ namespace Fixie.Tests.ConsoleRunner
             }
         }
 
-        private class FakeHandler : DelegatingHandler
+        class FakeHandler : DelegatingHandler
         {
             readonly Func<HttpRequestMessage, HttpResponseMessage> func;
 

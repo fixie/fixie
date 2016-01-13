@@ -63,7 +63,6 @@ namespace Fixie.VisualStudio.TestAdapter
 
         public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
         {
-            log.Info(result.Summary);
         }
 
         TestCase TestCase(MethodGroup methodGroup)

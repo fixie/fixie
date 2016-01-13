@@ -121,9 +121,9 @@ namespace Fixie.Internal
 
         ConventionResult Run(Convention convention, Type[] candidateTypes)
         {
-            var classDiscoverer = new ClassDiscoverer(convention.Config);
+            var classDiscoverer = new ClassDiscoverer(convention);
             var conventionResult = new ConventionResult(convention.GetType().FullName);
-            var classRunner = new ClassRunner(listener, convention.Config);
+            var classRunner = new ClassRunner(listener, convention);
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
             {

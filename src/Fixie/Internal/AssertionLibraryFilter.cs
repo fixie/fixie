@@ -10,12 +10,12 @@ namespace Fixie.Internal
         readonly List<Type> exceptionTypes;
         readonly List<Type> stackTraceTypes;
 
-        public AssertionLibraryFilter(Configuration config)
+        public AssertionLibraryFilter(Convention convention)
         {
             exceptionTypes = new List<Type>();
             stackTraceTypes = new List<Type>();
 
-            foreach (var type in config.AssertionLibraryTypes)
+            foreach (var type in convention.Config.AssertionLibraryTypes)
             {
                 bool isExceptionType = type.IsSubclassOf(typeof(Exception));
 

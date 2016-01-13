@@ -196,7 +196,7 @@ namespace Fixie.Tests.Execution
 
         AssertionLibraryFilter AssertionLibraryFilter()
         {
-            return new AssertionLibraryFilter(convention.Config);
+            return new AssertionLibraryFilter(convention);
         }
 
         static Exception GetPrimaryException()

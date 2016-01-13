@@ -17,13 +17,15 @@ namespace Fixie.Internal
         readonly IReadOnlyList<SkipRule> skipRules;
         readonly Action<Case[]> orderCases;
 
-        public ClassRunner(Listener listener, Configuration config)
+        public ClassRunner(Listener listener, Convention convention)
         {
+            var config = convention.Config;
+
             this.listener = listener;
-            executionPlan = new ExecutionPlan(config);
-            methodDiscoverer = new MethodDiscoverer(config);
-            parameterDiscoverer = new ParameterDiscoverer(config);
-            assertionLibraryFilter = new AssertionLibraryFilter(config);
+            executionPlan = new ExecutionPlan(convention);
+            methodDiscoverer = new MethodDiscoverer(convention);
+            parameterDiscoverer = new ParameterDiscoverer(convention);
+            assertionLibraryFilter = new AssertionLibraryFilter(convention);
 
             skipRules = config.SkipRules;
             orderCases = config.OrderCases;

@@ -198,13 +198,13 @@ namespace Fixie.Tests.Internal
 
         static IEnumerable<Type> DiscoveredTestClasses(Convention convention)
         {
-            return new ClassDiscoverer(convention.Config)
+            return new ClassDiscoverer(convention)
                 .TestClasses(CandidateTypes);
         }
 
         static IEnumerable<Type> DiscoveredTestClasses(Convention convention, params Type[] additionalCandidates)
         {
-            return new ClassDiscoverer(convention.Config)
+            return new ClassDiscoverer(convention)
                 .TestClasses(CandidateTypes.Concat(additionalCandidates));
         }
 

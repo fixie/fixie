@@ -43,34 +43,41 @@ namespace Fixie.ConsoleRunner
                     }
                 }
 
-                var executionResult = new ExecutionResult();
+                var summary = Execute(commandLineParser);
 
-                foreach (var assemblyPath in commandLineParser.AssemblyPaths)
-                {
-                    var result = Execute(assemblyPath, commandLineParser.Options);
-
-                    executionResult.Add(result);
-                }
-
-                ProduceReports(commandLineParser.Options, executionResult);
-
-                return executionResult.Failed;
+                return summary.Failed;
             }
             catch (Exception exception)
             {
                 using (Foreground.Red)
-                    Console.WriteLine("Fatal Error: {0}", exception);
+                    Console.WriteLine($"Fatal Error: {exception}");
                 return FatalError;
             }
         }
 
-        static void ProduceReports(Options options, ExecutionResult executionResult)
+        static ExecutionResult Execute(CommandLineParser commandLineParser)
+        {
+            var options = commandLineParser.Options;
+
+            var summary = new ExecutionResult();
+
+            foreach (var assemblyPath in commandLineParser.AssemblyPaths)
+            {
+                var result = Execute(assemblyPath, options);
+
+                summary.Add(result);
+            }
+
+            SaveReport(options, summary);
+
+            return summary;
+        }
+
+        static void SaveReport(Options options, ExecutionResult executionResult)
         {
             if (options.Contains(CommandLineOption.NUnitXml))
             {
-                var report = new NUnitXmlReport();
-
-                var xDocument = report.Transform(executionResult);
+                var xDocument = new NUnitXmlReport().Transform(executionResult);
 
                 foreach (var fileName in options[CommandLineOption.NUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);
@@ -78,9 +85,7 @@ namespace Fixie.ConsoleRunner
 
             if (options.Contains(CommandLineOption.XUnitXml))
             {
-                var report = new XUnitXmlReport();
-
-                var xDocument = report.Transform(executionResult);
+                var xDocument = new XUnitXmlReport().Transform(executionResult);
 
                 foreach (var fileName in options[CommandLineOption.XUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);
@@ -89,26 +94,19 @@ namespace Fixie.ConsoleRunner
 
         static AssemblyResult Execute(string assemblyPath, Options options)
         {
-            if (ShouldUseTeamCityListener(options))
-            {
-                using (var listener = new TeamCityListener())
-                    return Execute(assemblyPath, options, listener);
-            }
-
-            if (ShouldUseAppVeyorListener())
-            {
-                using (var listener = new AppVeyorListener())
-                    return Execute(assemblyPath, options, listener);
-            }
-
-            using (var listener = new ConsoleListener())
-                return Execute(assemblyPath, options, listener);
-        }
-
-        static AssemblyResult Execute(string assemblyPath, Options options, Listener listener)
-        {
             using (var environment = new ExecutionEnvironment(assemblyPath))
-                return environment.RunAssembly(options, listener);
+            {
+                if (ShouldUseTeamCityListener(options))
+                    using (var listener = new TeamCityListener())
+                        return environment.RunAssembly(options, listener);
+
+                if (ShouldUseAppVeyorListener())
+                    using (var listener = new AppVeyorListener())
+                        return environment.RunAssembly(options, listener);
+
+                using (var listener = new ConsoleListener())
+                    return environment.RunAssembly(options, listener);
+            }
         }
 
         static bool ShouldUseTeamCityListener(Options options)

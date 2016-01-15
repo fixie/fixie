@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -39,6 +40,10 @@ namespace Fixie.ConsoleRunner
 
             if (!errors.Any() && !assemblyPaths.Any())
                 errors.Add("Missing required test assembly path(s).");
+
+            foreach (var assemblyPath in assemblyPaths)
+                if (!File.Exists(assemblyPath))
+                    errors.Add("Specified test assembly does not exist: " + assemblyPath);
 
             AssemblyPaths = assemblyPaths.ToArray();
             Options = options;

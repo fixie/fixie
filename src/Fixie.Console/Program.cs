@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -28,19 +27,6 @@ namespace Fixie.ConsoleRunner
                     Console.WriteLine();
                     Console.WriteLine(CommandLineParser.Usage());
                     return FatalError;
-                }
-
-                foreach (var assemblyPath in commandLineParser.AssemblyPaths)
-                {
-                    if (!File.Exists(assemblyPath))
-                    {
-                        using (Foreground.Red)
-                            Console.WriteLine("Specified test assembly does not exist: " + assemblyPath);
-
-                        Console.WriteLine();
-                        Console.WriteLine(CommandLineParser.Usage());
-                        return FatalError;
-                    }
                 }
 
                 var summary = Execute(commandLineParser);

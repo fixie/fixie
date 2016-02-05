@@ -42,6 +42,16 @@ namespace Fixie.Tests.ConsoleRunner
             parser.Errors.ShouldEqual("Specified test assembly does not exist: foo.dll", "Specified test assembly does not exist: bar.dll");
         }
 
+        public void DemandsAssemblyDirectoryContainsFixie()
+        {
+            var mscorlib = typeof(string).Assembly.Location;
+            var parser = new CommandLineParser(mscorlib);
+            parser.AssemblyPaths.ShouldEqual(mscorlib);
+            parser.Options.Count.ShouldEqual(0);
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual($"Specified assembly {mscorlib} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
+        }
+
         public void ParsesNUnitXmlOutputFile()
         {
             var parser = new CommandLineParser(assemblyPathA, "--NUnitXml", "TestResult.xml");

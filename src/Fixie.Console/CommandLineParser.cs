@@ -42,8 +42,12 @@ namespace Fixie.ConsoleRunner
                 errors.Add("Missing required test assembly path(s).");
 
             foreach (var assemblyPath in assemblyPaths)
+            {
                 if (!File.Exists(assemblyPath))
                     errors.Add("Specified test assembly does not exist: " + assemblyPath);
+                else if (!AssemblyDirectoryContainsFixie(assemblyPath))
+                    errors.Add($"Specified assembly {assemblyPath} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
+            }
 
             AssemblyPaths = assemblyPaths.ToArray();
             Options = options;
@@ -90,5 +94,8 @@ namespace Fixie.ConsoleRunner
                 .AppendLine("        test assembly must be specified.")
                 .ToString();
         }
+
+        static bool AssemblyDirectoryContainsFixie(string assemblyPath)
+            => File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
     }
 }

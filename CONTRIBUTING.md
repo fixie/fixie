@@ -1,4 +1,0 @@
-###Contribution Guidelines
-1. Please work within a branch dedicated to your feature or bug fix, instead of working within `master` directly.
-2. Include test coverage for your feature. Where possible, use a similar testing style to the existing test suite. It is strongly recommended that you follow the "red, green, refactor" approach, especially when working with the fundamentals of Fixie's test execution and exception handling. For instance, introducing a bug in the deepest parts of test execution may cause all tests to always pass, so it's important to deliberately witness failing tests during development. (As a final sanity check before pushing new changes up, I usually break a test deliberately to confirm that failures are still being caught.)
-3. If your change involves noteworthy changes to Fixie's architecture, be sure to describe these in the commit messages and/or pull request body.

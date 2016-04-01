@@ -1,3 +1,8 @@
-- [ ] Did you [read the documentation](http://fixie.github.io/docs/)?
-- [ ] Did you search the issues list to see if someone already reported it?
-- [ ] Did you create a simple repro for the problem?
+## Steps to Reproduce
+
+
+## Expected Behavior
+
+
+## Actual Behavior
+

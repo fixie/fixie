@@ -111,7 +111,7 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.ConstrainedGeneric<System.Int32>(1) passed",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.UnconstrainedGeneric<System.Int32>(0) passed",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.UnconstrainedGeneric<System.Int32>(1) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.ConstrainedGeneric<> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.UnconstrainedGeneric<System.Object> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric");
         }
 
@@ -122,10 +122,10 @@ namespace Fixie.Tests.Cases
             Run<GenericTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.ConstrainedGeneric<>(\"Oops\") failed: Could not resolve type parameters for generic test case.",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.ConstrainedGeneric<System.Int32>(1) passed",
+                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic test case.",
 
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.ConstrainedGenericMethodWithNoInputsProvided<> failed: Could not resolve type parameters for generic test case.",
+                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.ConstrainedGenericMethodWithNoInputsProvided<T> failed: Could not resolve type parameters for generic test case.",
 
                 "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.GenericMethodWithIncorrectParameterCountProvided<System.Object>(123, 123) failed: Parameter count mismatch.",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.GenericMethodWithNoInputsProvided<System.Object> failed: Parameter count mismatch.",

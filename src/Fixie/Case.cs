@@ -46,7 +46,7 @@ namespace Fixie
             var name = MethodGroup.FullName;
 
             if (Method.IsGenericMethod)
-                name = $"{name}<{string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName))}>";
+                name = $"{name}<{string.Join(", ", Method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";
 
             if (Parameters != null && Parameters.Length > 0)
                 name = $"{name}({string.Join(", ", Parameters.Select(x => x.ToDisplayString()))})";

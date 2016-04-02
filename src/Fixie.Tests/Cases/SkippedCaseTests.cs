@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Should;
 
 namespace Fixie.Tests.Cases
 {
@@ -79,32 +78,44 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
-        public void ShouldFailWithClearExplanationWhenSkipConditionThrows()
+        public void ShouldFailCaseWithClearExplanationWhenSkipConditionThrows()
         {
             Convention.CaseExecution
                 .Skip(@case => { throw new Exception("Unsafe case-skipping predicate threw!"); });
 
-            Action attemptFaultySkip = Run<SkippedTestClass>;
+            Run<SkippedTestClass>();
 
-            var exception = attemptFaultySkip.ShouldThrow<Exception>(
-                "Exception thrown while attempting to run a custom case-skipping predicate. " +
-                "Check the inner exception for more details.");
+            Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                "    Inner Exception: Unsafe case-skipping predicate threw!",
 
-            exception.InnerException.Message.ShouldEqual("Unsafe case-skipping predicate threw!");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                "    Inner Exception: Unsafe case-skipping predicate threw!",
+
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                "    Inner Exception: Unsafe case-skipping predicate threw!",
+
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                "    Inner Exception: Unsafe case-skipping predicate threw!");
         }
 
-        public void ShouldFailWithClearExplanationWhenSkipReasonThrows()
+        public void ShouldFailCaseWithClearExplanationWhenSkipReasonThrows()
         {
             Convention.CaseExecution
                 .Skip(HasSkipAttribute, @case => { throw new Exception("Unsafe case-skipped reason generator threw!"); });
 
-            Action attemptFaultySkip = Run<SkippedTestClass>;
+            Run<SkippedTestClass>();
 
-            var exception = attemptFaultySkip.ShouldThrow<Exception>(
-                "Exception thrown while attempting to get a custom case-skipped reason. " +
-                "Check the inner exception for more details.");
+            Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + Environment.NewLine +
+                "    Inner Exception: Unsafe case-skipped reason generator threw!",
 
-            exception.InnerException.Message.ShouldEqual("Unsafe case-skipped reason generator threw!");
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + Environment.NewLine +
+                "    Inner Exception: Unsafe case-skipped reason generator threw!",
+
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed",
+
+                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
         static string ExplicitAttributeReason(Case @case)

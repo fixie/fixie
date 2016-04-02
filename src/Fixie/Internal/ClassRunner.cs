@@ -77,13 +77,29 @@ namespace Fixie.Internal
 
             foreach (var @case in sortedCases)
             {
-                string reason;
                 if (@case.Exceptions.Any())
                     classResult.Add(Fail(@case));
-                else if (SkipCase(@case, out reason))
-                    classResult.Add(Skip(@case, reason));
                 else
-                    casesToExecute.Add(@case);
+                {
+                    string reason;
+                    bool skipCase;
+
+                    try
+                    {
+                        skipCase = SkipCase(@case, out reason);
+                    }
+                    catch (Exception exception)
+                    {
+                        @case.Fail(exception);
+                        classResult.Add(Fail(@case));
+                        continue;
+                    }
+
+                    if (skipCase)
+                        classResult.Add(Skip(@case, reason));
+                    else
+                        casesToExecute.Add(@case);
+                }
             }
 
             if (casesToExecute.Any())

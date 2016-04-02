@@ -93,7 +93,7 @@ namespace Fixie.Conventions
         /// </summary>
         public CaseBehaviorExpression Skip(Func<Case, bool> skipCase, Func<Case, string> getSkipReason)
         {
-            config.AddSkipRule(new SkipRule(skipCase, getSkipReason));
+            config.AddSkipBehavior(new LambdaSkipBehavior(skipCase, getSkipReason));
             return this;
         }
 
@@ -107,9 +107,25 @@ namespace Fixie.Conventions
             }
 
             public void Execute(Case context, Action next)
+                => execute(context, next);
+        }
+
+        class LambdaSkipBehavior : SkipBehavior
+        {
+            readonly Func<Case, bool> skipCase;
+            readonly Func<Case, string> getSkipReason;
+
+            public LambdaSkipBehavior(Func<Case, bool> skipCase, Func<Case, string> getSkipReason)
             {
-                execute(context, next);
+                this.skipCase = skipCase;
+                this.getSkipReason = getSkipReason;
             }
+
+            public override bool SkipCase(Case @case)
+                => skipCase(@case);
+
+            public override string GetSkipReason(Case @case)
+                => getSkipReason(@case);
         }
     }
 }

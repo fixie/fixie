@@ -14,7 +14,7 @@ namespace Fixie.Internal
         readonly ParameterDiscoverer parameterDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
-        readonly IReadOnlyList<SkipRule> skipRules;
+        readonly IReadOnlyList<SkipBehavior> skipBehaviors;
         readonly Action<Case[]> orderCases;
 
         public ClassRunner(Listener listener, Convention convention)
@@ -27,7 +27,7 @@ namespace Fixie.Internal
             parameterDiscoverer = new ParameterDiscoverer(convention);
             assertionLibraryFilter = new AssertionLibraryFilter(convention);
 
-            skipRules = config.SkipRules;
+            skipBehaviors = config.SkipBehaviors;
             orderCases = config.OrderCases;
         }
 
@@ -109,18 +109,45 @@ namespace Fixie.Internal
 
         bool SkipCase(Case @case, out string reason)
         {
-            foreach (var rule in skipRules)
+            foreach (var skipBehavior in skipBehaviors)
             {
-                string ruleReason;
-                if (rule.AppliesTo(@case, out ruleReason))
+                if (SkipCase(skipBehavior, @case))
                 {
-                    reason = ruleReason;
+                    reason = GetSkipReason(skipBehavior, @case);
                     return true;
                 }
             }
 
             reason = null;
             return false;
+        }
+
+        bool SkipCase(SkipBehavior skipBehavior, Case @case)
+        {
+            try
+            {
+                return skipBehavior.SkipCase(@case);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                    "Exception thrown while attempting to run a custom case-skipping predicate. " +
+                    "Check the inner exception for more details.", exception);
+            }
+        }
+
+        string GetSkipReason(SkipBehavior skipBehavior, Case @case)
+        {
+            try
+            {
+                return skipBehavior.GetSkipReason(@case);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                    "Exception thrown while attempting to get a custom case-skipped reason. " +
+                    "Check the inner exception for more details.", exception);
+            }
         }
 
         bool TryOrderCases(Case[] cases)

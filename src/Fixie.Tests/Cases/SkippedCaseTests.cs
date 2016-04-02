@@ -34,7 +34,7 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
         }
 
-        public void ShouldAllowMultiplePrioritizedSkipRules()
+        public void ShouldAllowMultiplePrioritizedSkipBehaviors()
         {
             Convention.CaseExecution
                 .Skip(HasExplicitAttribute, ExplicitAttributeReason)

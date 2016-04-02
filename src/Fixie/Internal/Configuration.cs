@@ -14,7 +14,7 @@ namespace Fixie.Internal
         readonly List<Func<FixtureBehavior>> customFixtureBehaviors;
         readonly List<Func<CaseBehavior>> customCaseBehaviors;
         readonly List<Type> assertionLibraryTypes;
-        readonly List<SkipRule> skipRules;
+        readonly List<SkipBehavior> skipBehaviors;
 
         public Configuration()
         {
@@ -40,7 +40,7 @@ namespace Fixie.Internal
             customFixtureBehaviors = new List<Func<FixtureBehavior>>();
             customCaseBehaviors = new List<Func<CaseBehavior>>();
             assertionLibraryTypes = new List<Type>();
-            skipRules = new List<SkipRule>();
+            skipBehaviors = new List<SkipBehavior>();
         }
 
         public Action<Case[]> OrderCases { get; set; }
@@ -119,9 +119,9 @@ namespace Fixie.Internal
             assertionLibraryTypes.Add(libraryInfrastructureType);
         }
 
-        public void AddSkipRule(SkipRule skipRule)
+        public void AddSkipBehavior(SkipBehavior skipBehavior)
         {
-            skipRules.Add(skipRule);
+            skipBehaviors.Add(skipBehavior);
         }
 
         public IReadOnlyList<Func<Type, bool>> TestClassConditions => testClassConditions;
@@ -131,6 +131,6 @@ namespace Fixie.Internal
         public IReadOnlyList<Func<FixtureBehavior>> CustomFixtureBehaviors => customFixtureBehaviors;
         public IReadOnlyList<Func<CaseBehavior>> CustomCaseBehaviors => customCaseBehaviors;
         public IReadOnlyList<Type> AssertionLibraryTypes => assertionLibraryTypes;
-        public IReadOnlyList<SkipRule> SkipRules => skipRules;
+        public IReadOnlyList<SkipBehavior> SkipBehaviors => skipBehaviors;
     }
 }

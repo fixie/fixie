@@ -86,6 +86,10 @@ namespace Fixie.Tests.Cases
             Run<ParameterizedTestClass>();
 
             Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs",
+
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(0) passed",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(1) failed: Expected 0, but was 1",
 
@@ -93,11 +97,7 @@ namespace Fixie.Tests.Cases
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
 
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(0) failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(1) failed: Parameter count mismatch.",
-
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs");
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(1) failed: Parameter count mismatch.");
         }
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
@@ -107,12 +107,12 @@ namespace Fixie.Tests.Cases
             Run<ConstrainedGenericTestClass>();
 
             Listener.Entries.ShouldEqual(
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.UnconstrainedGeneric<System.Object> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.ConstrainedGeneric<System.Int32>(0) passed",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.ConstrainedGeneric<System.Int32>(1) passed",
                 "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.UnconstrainedGeneric<System.Int32>(0) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.UnconstrainedGeneric<System.Int32>(1) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.UnconstrainedGeneric<System.Object> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric");
+                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.UnconstrainedGeneric<System.Int32>(1) passed");
         }
 
         public void ShouldResolveGenericTypeParameters()

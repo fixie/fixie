@@ -93,9 +93,11 @@ namespace Fixie.Tests.Internal
                 "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassB failed: Failed to compare two elements in the array." + Environment.NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipA skipped",
+                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipA failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipB skipped");
+                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipB failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "    Inner Exception: SortCases lambda expression threw!");
         }
 
         class SampleIrrelevantClass

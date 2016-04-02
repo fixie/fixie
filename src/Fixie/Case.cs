@@ -19,7 +19,7 @@ namespace Fixie
             Class = caseMethod.ReflectedType;
 
             Method = caseMethod.IsGenericMethodDefinition
-                         ? caseMethod.MakeGenericMethod(GenericArgumentResolver.ResolveTypeArguments(caseMethod, parameters))
+                         ? TryMakeGenericMethod(caseMethod, parameters)
                          : caseMethod;
 
             MethodGroup = new MethodGroup(caseMethod);
@@ -27,6 +27,18 @@ namespace Fixie
             Name = GetName();
 
             exceptions = new List<Exception>();
+        }
+
+        private static MethodInfo TryMakeGenericMethod(MethodInfo caseMethod, object[] parameters)
+        {
+            try
+            {
+                return caseMethod.MakeGenericMethod(GenericArgumentResolver.ResolveTypeArguments(caseMethod, parameters));
+            }
+            catch (Exception e)
+            {
+                return caseMethod;
+            }
         }
 
         string GetName()

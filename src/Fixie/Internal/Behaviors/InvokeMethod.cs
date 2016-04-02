@@ -21,7 +21,7 @@ namespace Fixie.Internal.Behaviors
                 object returnValue;
                 try
                 {
-                    if (method.IsGenericMethodDefinition)
+                    if (method.ContainsGenericParameters)
                         throw new Exception("Could not resolve type parameters for generic test case.");
 
                     returnValue = method.Invoke(@case.Fixture.Instance, @case.Parameters);

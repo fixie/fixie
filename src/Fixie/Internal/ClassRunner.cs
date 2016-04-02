@@ -60,13 +60,19 @@ namespace Fixie.Internal
                 }
             }
 
-            var sortedCases = cases.ToArray();
+            var orderedCases = cases.ToArray();
             try
             {
-                orderCases(sortedCases);
+                orderCases(orderedCases);
             }
             catch (Exception exception)
             {
+                // When an exception is thrown attempting to sort an array,
+                // the behavior is undefined, so at this point orderedCases
+                // is no longer reliable and needs to be fixed. The best we
+                // can do is go with the original order.
+                orderedCases = cases.ToArray();
+
                 foreach (var @case in cases)
                     @case.Fail(exception);
             }
@@ -75,7 +81,7 @@ namespace Fixie.Internal
 
             var casesToExecute = new List<Case>();
 
-            foreach (var @case in sortedCases)
+            foreach (var @case in orderedCases)
             {
                 if (@case.Exceptions.Any())
                     classResult.Add(Fail(@case));

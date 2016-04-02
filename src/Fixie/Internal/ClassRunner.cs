@@ -41,16 +41,21 @@ namespace Fixie.Internal
             {
                 try
                 {
-                    bool methodHasParameterizedCase = false;
+                    bool generatedInputParameters = false;
 
                     foreach (var parameters in Parameters(method))
                     {
-                        methodHasParameterizedCase = true;
+                        generatedInputParameters = true;
                         cases.Add(new Case(method, parameters));
                     }
 
-                    if (!methodHasParameterizedCase)
+                    if (!generatedInputParameters)
+                    {
+                        if (method.GetParameters().Length > 0)
+                            throw new Exception("This test case has declared parameters, but no parameter values have been provided to it.");
+
                         cases.Add(new Case(method));
+                    }
                 }
                 catch (Exception parameterGenerationException)
                 {

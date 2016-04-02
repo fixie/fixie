@@ -12,7 +12,7 @@ namespace Fixie.Tests
             @case.Name.ShouldEqual("Fixie.Tests.CaseTests.Returns");
         }
 
-        public void ShouldIncludeParmeterValuesInNameWhenTheUnderlyingMethodHasParameters()
+        public void ShouldIncludeParameterValuesInNameWhenTheUnderlyingMethodHasParameters()
         {
             var @case = Case("Parameterized", 123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this);
 
@@ -123,6 +123,18 @@ namespace Fixie.Tests
 
             Case("Generic", 123, 1.23m, "a", null)
                 .Name.ShouldEqual("Fixie.Tests.CaseTests.Generic<System.Decimal, System.String>(123, 1.23, \"a\", null)");
+
+            Case("ConstrainedGeneric", 1)
+                .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<System.Int32>(1)");
+
+            Case("ConstrainedGeneric", true)
+                .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<System.Boolean>(True)");
+        }
+
+        public void ShouldUseGenericTypeParametersInNameWhenGenericTypeParamtersCannotBeResolved()
+        {
+            Case("ConstrainedGeneric", "Incompatable")
+                .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<T>(\"Incompatable\")");
         }
 
         public void ShouldHaveMethodGroupComposedOfClassNameAndMethodNameWithNoSignature()
@@ -132,6 +144,9 @@ namespace Fixie.Tests
             Case("Generic", 123, true, "a", "b").MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
             Case("Generic", 123, true, 1, null).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
             Case("Generic", 123, 1.23m, "a", null).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
+            Case("ConstrainedGeneric", 1).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric");
+            Case("ConstrainedGeneric", true).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric");
+            Case("ConstrainedGeneric", "Incompatable").MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric");
         }
 
         public void ShouldInferAppropriateClassGivenCaseMethod()
@@ -214,6 +229,10 @@ namespace Fixie.Tests
         }
 
         void Generic<T1, T2>(int i, T1 t1, T2 t2a, T2 t2b)
+        {
+        }
+
+        void ConstrainedGeneric<T>(T t) where T : struct
         {
         }
     }

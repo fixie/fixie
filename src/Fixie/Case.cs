@@ -18,9 +18,7 @@ namespace Fixie
             Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
             Class = caseMethod.ReflectedType;
 
-            Method = caseMethod.IsGenericMethodDefinition
-                         ? caseMethod.MakeGenericMethod(GenericArgumentResolver.ResolveTypeArguments(caseMethod, parameters))
-                         : caseMethod;
+            Method = TryResolveTypeArguments(caseMethod, parameters);
 
             MethodGroup = new MethodGroup(caseMethod);
 
@@ -29,12 +27,31 @@ namespace Fixie
             exceptions = new List<Exception>();
         }
 
+        private static MethodInfo TryResolveTypeArguments(MethodInfo caseMethod, object[] parameters)
+        {
+            if (caseMethod.IsGenericMethodDefinition)
+            {
+                var typeArguments = GenericArgumentResolver.ResolveTypeArguments(caseMethod, parameters);
+
+                try
+                {
+                    return caseMethod.MakeGenericMethod(typeArguments);
+                }
+                catch (Exception)
+                {
+                    return caseMethod;
+                }
+            }
+
+            return caseMethod;
+        }
+
         string GetName()
         {
             var name = MethodGroup.FullName;
 
             if (Method.IsGenericMethod)
-                name = $"{name}<{string.Join(", ", Method.GetGenericArguments().Select(x => x.FullName))}>";
+                name = $"{name}<{string.Join(", ", Method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";
 
             if (Parameters != null && Parameters.Length > 0)
                 name = $"{name}({string.Join(", ", Parameters.Select(x => x.ToDisplayString()))})";

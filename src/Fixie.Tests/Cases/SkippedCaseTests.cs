@@ -144,14 +144,14 @@ namespace Fixie.Tests.Cases
 
         class SkipByExplicitAttribute : SkipBehavior
         {
-            public override bool SkipCase(Case @case) => HasExplicitAttribute(@case);
-            public override string GetSkipReason(Case @case) => ExplicitAttributeReason(@case);
+            public bool SkipCase(Case @case) => HasExplicitAttribute(@case);
+            public string GetSkipReason(Case @case) => ExplicitAttributeReason(@case);
         }
 
         class SkipBySkipAttribute : SkipBehavior
         {
-            public override bool SkipCase(Case @case) => HasSkipAttribute(@case);
-            public override string GetSkipReason(Case @case) => SkipAttributeReason(@case);
+            public bool SkipCase(Case @case) => HasSkipAttribute(@case);
+            public string GetSkipReason(Case @case) => SkipAttributeReason(@case);
         }
 
         class SkippedTestClass

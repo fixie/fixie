@@ -6,7 +6,7 @@ using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class TeamCityListener : LongLivedMarshalByRefObject, Listener
+    public class TeamCityListener : Listener
     {
         public void AssemblyStarted(AssemblyInfo assembly)
         {

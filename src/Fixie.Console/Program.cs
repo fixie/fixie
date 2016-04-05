@@ -83,15 +83,12 @@ namespace Fixie.ConsoleRunner
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
                 if (ShouldUseTeamCityListener(options))
-                    using (var listener = new TeamCityListener())
-                        return environment.RunAssembly(options, listener);
+                    return environment.RunAssembly(options, new TeamCityListener());
 
                 if (ShouldUseAppVeyorListener())
-                    using (var listener = new AppVeyorListener())
-                        return environment.RunAssembly(options, listener);
+                    return environment.RunAssembly(options, new AppVeyorListener());
 
-                using (var listener = new ConsoleListener())
-                    return environment.RunAssembly(options, listener);
+                return environment.RunAssembly(options, new ConsoleListener());
             }
         }
 

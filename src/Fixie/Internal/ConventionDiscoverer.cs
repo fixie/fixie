@@ -16,14 +16,8 @@ namespace Fixie.Internal
 
         public Convention[] GetConventions()
         {
-            var testAssemblyTypes = ConcreteTestAssemblyTypes();
-
-            var conventionTypes = testAssemblyTypes.Any()
-                ? ExplicitlyAppliedConventionTypes(testAssemblyTypes)
-                : LocallyDeclaredConventionTypes();
-
             var customConventions =
-                conventionTypes
+                LocallyDeclaredConventionTypes()
                     .Select(Construct<Convention>)
                     .ToArray();
 
@@ -31,22 +25,6 @@ namespace Fixie.Internal
                 return customConventions;
 
             return new[] { (Convention)new DefaultConvention() };
-        }
-
-        Type[] ConcreteTestAssemblyTypes()
-        {
-            return assembly
-                .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(TestAssembly)) && !t.IsAbstract)
-                .ToArray();
-        }
-
-        Type[] ExplicitlyAppliedConventionTypes(Type[] testAssemblyTypes)
-        {
-            return testAssemblyTypes
-                .Select(Construct<TestAssembly>)
-                .SelectMany(x => x.ConventionTypes)
-                .ToArray();
         }
 
         Type[] LocallyDeclaredConventionTypes()

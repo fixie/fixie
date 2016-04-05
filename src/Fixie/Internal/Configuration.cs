@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Fixie.Internal
 {
-    public class Configuration
+    class Configuration
     {
         readonly List<Func<Type, bool>> testClassConditions;
         readonly List<Func<MethodInfo, bool>> testMethodConditions;

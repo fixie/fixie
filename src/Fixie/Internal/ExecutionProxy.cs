@@ -13,14 +13,14 @@ namespace Fixie.Internal
             return new Discoverer(options).DiscoverTestMethodGroups(assembly);
         }
 
-        public AssemblyResult RunAssembly(string assemblyFullPath, Options options, Listener listener)
+        public AssemblyResult RunAssembly(string assemblyFullPath, Options options, MarshallingListener listener)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             return Runner(options, listener).RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, Options options, Listener listener, MethodGroup[] methodGroups)
+        public AssemblyResult RunMethods(string assemblyFullPath, Options options, MarshallingListener listener, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
@@ -32,7 +32,7 @@ namespace Fixie.Internal
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        static Runner Runner(Options options, Listener listener)
+        static Runner Runner(Options options, MarshallingListener listener)
         {
             return new Runner(listener, options);
         }

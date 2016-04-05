@@ -31,29 +31,16 @@ namespace Fixie.Execution
 
         public AssemblyResult RunAssembly(Options options, Listener listener)
         {
-            AssertIsLongLivedMarshalByRefObject(listener);
-
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunAssembly(assemblyFullPath, options, listener);
+            using (var marshallingListener = new MarshallingListener(listener))
+                return executionProxy.RunAssembly(assemblyFullPath, options, marshallingListener);
         }
 
         public AssemblyResult RunMethods(Options options, Listener listener, MethodGroup[] methodGroups)
         {
-            AssertIsLongLivedMarshalByRefObject(listener);
-
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
-        }
-
-        static void AssertIsLongLivedMarshalByRefObject(Listener listener)
-        {
-            if (listener is LongLivedMarshalByRefObject) return;
-            var listenerType = listener.GetType();
-            var message = string.Format("Type '{0}' in Assembly '{1}' must inherit from '{2}'.",
-                                        listenerType.FullName,
-                                        listenerType.Assembly,
-                                        typeof(LongLivedMarshalByRefObject).FullName);
-            throw new Exception(message);
+            using (var marshallingListener = new MarshallingListener(listener))
+                return executionProxy.RunMethods(assemblyFullPath, options, marshallingListener, methodGroups);
         }
 
         T Create<T>(params object[] args) where T : MarshalByRefObject

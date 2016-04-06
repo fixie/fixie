@@ -3,7 +3,12 @@ using TestDriven.Framework;
 
 namespace Fixie.TestDriven
 {
-    public class TestDrivenListener : Listener
+    public class TestDrivenListener :
+        Handler<AssemblyInfo>,
+        Handler<SkipResult>,
+        Handler<PassResult>,
+        Handler<FailResult>,
+        Handler<AssemblyCompleted>
     {
         readonly ITestListener tdnet;
 

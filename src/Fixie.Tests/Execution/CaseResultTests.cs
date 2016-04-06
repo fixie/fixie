@@ -80,7 +80,12 @@ namespace Fixie.Tests.Execution
             }
         }
 
-        public class StubCaseResultListener : Listener
+        public class StubCaseResultListener :
+            Handler<AssemblyInfo>,
+            Handler<SkipResult>,
+            Handler<PassResult>,
+            Handler<FailResult>,
+            Handler<AssemblyCompleted>
         {
             public List<CaseResult> Log { get; set; } = new List<CaseResult>();
 

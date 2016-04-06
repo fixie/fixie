@@ -5,7 +5,12 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class VisualStudioListener : Listener
+    public class VisualStudioListener :
+        Handler<AssemblyInfo>,
+        Handler<SkipResult>,
+        Handler<PassResult>,
+        Handler<FailResult>,
+        Handler<AssemblyCompleted>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;

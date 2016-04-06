@@ -4,7 +4,12 @@ using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class ConsoleListener : Listener
+    public class ConsoleListener :
+        Handler<AssemblyInfo>,
+        Handler<SkipResult>,
+        Handler<PassResult>,
+        Handler<FailResult>,
+        Handler<AssemblyCompleted>
     {
         public void Handle(AssemblyInfo message)
         {

@@ -8,7 +8,12 @@ using System.Web.Script.Serialization;
 
 namespace Fixie.ConsoleRunner
 {
-    public class AppVeyorListener : Listener
+    public class AppVeyorListener :
+        Handler<AssemblyInfo>,
+        Handler<SkipResult>,
+        Handler<PassResult>,
+        Handler<FailResult>,
+        Handler<AssemblyCompleted>
     {
         readonly string url;
         readonly HttpClient client;

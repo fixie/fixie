@@ -36,7 +36,7 @@ namespace Fixie.Tests
             return lines;
         }
 
-        public static AssemblyResult Run(this Type sampleTestClass, Listener listener, Convention convention)
+        public static AssemblyResult Run(this Type sampleTestClass, object listener, Convention convention)
         {
             using (var bus = new Bus(listener))
                 return new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);

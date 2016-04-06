@@ -6,7 +6,12 @@ using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class TeamCityListener : Listener
+    public class TeamCityListener :
+        Handler<AssemblyInfo>,
+        Handler<SkipResult>,
+        Handler<PassResult>,
+        Handler<FailResult>,
+        Handler<AssemblyCompleted>
     {
         public void Handle(AssemblyInfo message)
         {

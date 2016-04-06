@@ -4,7 +4,12 @@ using Fixie.Execution;
 
 namespace Fixie.Tests
 {
-    public class StubListener : Listener
+    public class StubListener :
+        Handler<AssemblyInfo>,
+        Handler<SkipResult>,
+        Handler<PassResult>,
+        Handler<FailResult>,
+        Handler<AssemblyCompleted>
     {
         readonly List<string> log = new List<string>();
 

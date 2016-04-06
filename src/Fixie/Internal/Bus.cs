@@ -2,7 +2,7 @@ using Fixie.Execution;
 
 namespace Fixie.Internal
 {
-    public class Bus : LongLivedMarshalByRefObject, Listener
+    public class Bus : LongLivedMarshalByRefObject
     {
         readonly object listener;
 

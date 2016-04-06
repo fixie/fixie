@@ -61,7 +61,7 @@ namespace Fixie.VisualStudio.TestAdapter
             log.RecordResult(testResult);
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
         }
 

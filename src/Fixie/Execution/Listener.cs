@@ -6,6 +6,6 @@
         void CaseSkipped(SkipResult result);
         void CasePassed(PassResult result);
         void CaseFailed(FailResult result);
-        void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result);
+        void AssemblyCompleted(AssemblyCompleted message);
     }
 }

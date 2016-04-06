@@ -90,7 +90,7 @@ namespace Fixie.Tests.Execution
             public void CasePassed(PassResult result) => Log.Add(result);
             public void CaseFailed(FailResult result) => Log.Add(result);
 
-            public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result) { }
+            public void AssemblyCompleted(AssemblyCompleted message) { }
         }
 
         static void WhereAmI([CallerMemberName] string member = null)

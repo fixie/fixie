@@ -114,7 +114,7 @@ namespace Fixie.Internal
                 assemblyResult.Add(conventionResult);
             }
 
-            listener.AssemblyCompleted(assemblyInfo, assemblyResult);
+            listener.AssemblyCompleted(new AssemblyCompleted(assemblyInfo, assemblyResult));
 
             return assemblyResult;
         }

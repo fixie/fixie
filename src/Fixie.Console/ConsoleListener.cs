@@ -30,9 +30,9 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine();
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
-            Console.WriteLine(result.Summary);
+            Console.WriteLine(message.Result.Summary);
             Console.WriteLine();
         }
     }

@@ -82,7 +82,7 @@ namespace Fixie.ConsoleRunner
             });
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
         }
 

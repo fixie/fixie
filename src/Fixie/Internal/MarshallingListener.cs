@@ -12,6 +12,6 @@ namespace Fixie.Internal
         public void CaseSkipped(SkipResult result) => listener.CaseSkipped(result);
         public void CasePassed(PassResult result) => listener.CasePassed(result);
         public void CaseFailed(FailResult result) => listener.CaseFailed(result);
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result) => listener.AssemblyCompleted(assembly, result);
+        public void AssemblyCompleted(AssemblyCompleted message) => listener.AssemblyCompleted(message);
     }
 }

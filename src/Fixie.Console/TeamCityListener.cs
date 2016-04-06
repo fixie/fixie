@@ -33,9 +33,9 @@ namespace Fixie.ConsoleRunner
             Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
-            Message("testSuiteFinished name='{0}'", SuiteName(assembly));
+            Message("testSuiteFinished name='{0}'", SuiteName(message.Assembly));
         }
 
         static void Message(string format, params string[] args)

@@ -36,9 +36,9 @@ namespace Fixie.Tests
             return lines;
         }
 
-        public static void Run(this Type sampleTestClass, Listener listener, Convention convention)
+        public static AssemblyResult Run(this Type sampleTestClass, Listener listener, Convention convention)
         {
-            new Runner(listener).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
+            return new Runner(listener).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
         }
     }
 }

@@ -4,14 +4,26 @@ namespace Fixie.Internal
 {
     public class MarshallingListener : LongLivedMarshalByRefObject, Listener
     {
-        readonly Listener listener;
+        readonly object listener;
 
-        public MarshallingListener(Listener listener) { this.listener = listener; }
+        public MarshallingListener(object listener) { this.listener = listener; }
 
-        public void Handle(AssemblyInfo message) => listener.Handle(message);
-        public void Handle(SkipResult message) => listener.Handle(message);
-        public void Handle(PassResult message) => listener.Handle(message);
-        public void Handle(FailResult message) => listener.Handle(message);
-        public void Handle(AssemblyCompleted message) => listener.Handle(message);
+        public void Handle(AssemblyInfo message)
+            => Publish(message);
+
+        public void Handle(SkipResult message)
+            => Publish(message);
+
+        public void Handle(PassResult message)
+            => Publish(message);
+
+        public void Handle(FailResult message)
+            => Publish(message);
+
+        public void Handle(AssemblyCompleted message)
+            => Publish(message);
+
+        void Publish<TMessage>(TMessage message) where TMessage : Message
+            => (listener as Handler<TMessage>)?.Handle(message);
     }
 }

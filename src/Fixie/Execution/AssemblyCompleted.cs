@@ -3,7 +3,7 @@ using System;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class AssemblyCompleted
+    public class AssemblyCompleted : Message
     {
         public AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
         {

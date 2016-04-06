@@ -4,7 +4,7 @@ using Fixie.Internal;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class FailResult : CaseResult
+    public class FailResult : CaseResult, Message
     {
         public FailResult(Case @case, AssertionLibraryFilter filter)
         {

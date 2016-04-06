@@ -3,7 +3,7 @@
 namespace Fixie.Execution
 {
     [Serializable]
-    public class SkipResult : CaseResult
+    public class SkipResult : CaseResult, Message
     {
         public SkipResult(Case @case, string skipReason)
         {

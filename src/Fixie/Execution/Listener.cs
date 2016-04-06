@@ -1,11 +1,11 @@
 ﻿namespace Fixie.Execution
 {
-    public interface Listener
+    public interface Listener:
+        Handler<AssemblyInfo>,
+        Handler<SkipResult>,
+        Handler<PassResult>,
+        Handler<FailResult>,
+        Handler<AssemblyCompleted>
     {
-        void Handle(AssemblyInfo assembly);
-        void Handle(SkipResult result);
-        void Handle(PassResult result);
-        void Handle(FailResult result);
-        void Handle(AssemblyCompleted message);
     }
 }

@@ -4,7 +4,7 @@ using System.Reflection;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class AssemblyInfo
+    public class AssemblyInfo : Message
     {
         public AssemblyInfo(Assembly assembly)
         {

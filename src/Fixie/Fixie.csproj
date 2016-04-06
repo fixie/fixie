@@ -37,7 +37,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
+    <Compile Include="Execution\Handler.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
+    <Compile Include="Execution\Message.cs" />
     <Compile Include="Internal\MarshallingListener.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="Internal\Discoverer.cs" />

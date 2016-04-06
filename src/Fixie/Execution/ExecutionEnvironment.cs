@@ -32,15 +32,15 @@ namespace Fixie.Execution
         public AssemblyResult RunAssembly(Options options, object listener)
         {
             using (var executionProxy = Create<ExecutionProxy>())
-            using (var marshallingListener = new MarshallingListener(listener))
-                return executionProxy.RunAssembly(assemblyFullPath, options, marshallingListener);
+            using (var bus = new Bus(listener))
+                return executionProxy.RunAssembly(assemblyFullPath, options, bus);
         }
 
         public AssemblyResult RunMethods(Options options, object listener, MethodGroup[] methodGroups)
         {
             using (var executionProxy = Create<ExecutionProxy>())
-            using (var marshallingListener = new MarshallingListener(listener))
-                return executionProxy.RunMethods(assemblyFullPath, options, marshallingListener, methodGroups);
+            using (var bus = new Bus(listener))
+                return executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
         }
 
         T Create<T>(params object[] args) where T : MarshalByRefObject

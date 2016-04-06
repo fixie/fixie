@@ -85,7 +85,7 @@ namespace Fixie.Tests.Execution
                 if (!IsSafeForAppDomainCommunication(type.GetElementType(), visitedTypes))
                     return false;
             }
-            else if (type == typeof(MarshallingListener))
+            else if (type == typeof(Bus))
             {
                 type.ShouldBeSafeAppDomainCommunicationInterface();
                 return true;

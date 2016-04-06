@@ -2,11 +2,11 @@ using Fixie.Execution;
 
 namespace Fixie.Internal
 {
-    public class MarshallingListener : LongLivedMarshalByRefObject, Listener
+    public class Bus : LongLivedMarshalByRefObject, Listener
     {
         readonly object listener;
 
-        public MarshallingListener(object listener) { this.listener = listener; }
+        public Bus(object listener) { this.listener = listener; }
 
         public void Handle(AssemblyInfo message)
             => Publish(message);

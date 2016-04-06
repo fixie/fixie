@@ -16,47 +16,47 @@ namespace Fixie.VisualStudio.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public void Handle(AssemblyInfo assembly) { }
+        public void Handle(AssemblyInfo message) { }
 
-        public void Handle(SkipResult result)
+        public void Handle(SkipResult message)
         {
-            log.RecordResult(new TestResult(TestCase(result.MethodGroup))
+            log.RecordResult(new TestResult(TestCase(message.MethodGroup))
             {
-                DisplayName = result.Name,
+                DisplayName = message.Name,
                 Outcome = Map(CaseStatus.Skipped),
                 ComputerName = Environment.MachineName,
-                ErrorMessage = result.SkipReason
+                ErrorMessage = message.SkipReason
             });
         }
 
-        public void Handle(PassResult result)
+        public void Handle(PassResult message)
         {
-            var testResult = new TestResult(TestCase(result.MethodGroup))
+            var testResult = new TestResult(TestCase(message.MethodGroup))
             {
-                DisplayName = result.Name,
+                DisplayName = message.Name,
                 Outcome = Map(CaseStatus.Passed),
-                Duration = result.Duration,
+                Duration = message.Duration,
                 ComputerName = Environment.MachineName
             };
 
-            AttachCapturedConsoleOutput(result.Output, testResult);
+            AttachCapturedConsoleOutput(message.Output, testResult);
 
             log.RecordResult(testResult);
         }
 
-        public void Handle(FailResult result)
+        public void Handle(FailResult message)
         {
-            var testResult = new TestResult(TestCase(result.MethodGroup))
+            var testResult = new TestResult(TestCase(message.MethodGroup))
             {
-                DisplayName = result.Name,
+                DisplayName = message.Name,
                 Outcome = Map(CaseStatus.Failed),
-                Duration = result.Duration,
+                Duration = message.Duration,
                 ComputerName = Environment.MachineName,
-                ErrorMessage = result.Exceptions.PrimaryException.DisplayName,
-                ErrorStackTrace = result.Exceptions.CompoundStackTrace
+                ErrorMessage = message.Exceptions.PrimaryException.DisplayName,
+                ErrorStackTrace = message.Exceptions.CompoundStackTrace
             };
 
-            AttachCapturedConsoleOutput(result.Output, testResult);
+            AttachCapturedConsoleOutput(message.Output, testResult);
 
             log.RecordResult(testResult);
         }

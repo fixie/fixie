@@ -6,27 +6,27 @@ namespace Fixie.ConsoleRunner
 {
     public class ConsoleListener : Listener
     {
-        public void Handle(AssemblyInfo assembly)
+        public void Handle(AssemblyInfo message)
         {
-            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(assembly.Location));
+            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(message.Location));
             Console.WriteLine();
         }
 
-        public void Handle(SkipResult result)
+        public void Handle(SkipResult message)
         {
             using (Foreground.Yellow)
-                Console.WriteLine("Test '{0}' skipped{1}", result.Name, result.SkipReason == null ? null : ": " + result.SkipReason);
+                Console.WriteLine("Test '{0}' skipped{1}", message.Name, message.SkipReason == null ? null : ": " + message.SkipReason);
         }
 
-        public void Handle(PassResult result)
+        public void Handle(PassResult message)
         {
         }
 
-        public void Handle(FailResult result)
+        public void Handle(FailResult message)
         {
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", result.Name, result.Exceptions.PrimaryException.DisplayName);
-            Console.WriteLine(result.Exceptions.CompoundStackTrace);
+                Console.WriteLine("Test '{0}' failed: {1}", message.Name, message.Exceptions.PrimaryException.DisplayName);
+            Console.WriteLine(message.Exceptions.CompoundStackTrace);
             Console.WriteLine();
         }
 

@@ -84,11 +84,11 @@ namespace Fixie.Tests.Execution
         {
             public List<CaseResult> Log { get; set; } = new List<CaseResult>();
 
-            public void Handle(AssemblyInfo assembly) { }
+            public void Handle(AssemblyInfo message) { }
 
-            public void Handle(SkipResult result) => Log.Add(result);
-            public void Handle(PassResult result) => Log.Add(result);
-            public void Handle(FailResult result) => Log.Add(result);
+            public void Handle(SkipResult message) => Log.Add(message);
+            public void Handle(PassResult message) => Log.Add(message);
+            public void Handle(FailResult message) => Log.Add(message);
 
             public void Handle(AssemblyCompleted message) { }
         }

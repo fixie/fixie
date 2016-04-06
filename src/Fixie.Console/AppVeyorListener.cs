@@ -26,14 +26,14 @@ namespace Fixie.ConsoleRunner
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public void Handle(AssemblyInfo assembly)
+        public void Handle(AssemblyInfo message)
         {
-            fileName = Path.GetFileName(assembly.Location);
+            fileName = Path.GetFileName(message.Location);
         }
 
-        public void Handle(SkipResult result)
+        public void Handle(SkipResult message)
         {
-            var caseResult = (CaseResult)result;
+            var caseResult = (CaseResult)message;
 
             Post(new TestResult
             {
@@ -48,9 +48,9 @@ namespace Fixie.ConsoleRunner
             });
         }
 
-        public void Handle(PassResult result)
+        public void Handle(PassResult message)
         {
-            var caseResult = (CaseResult)result;
+            var caseResult = (CaseResult)message;
 
             Post(new TestResult
             {
@@ -65,9 +65,9 @@ namespace Fixie.ConsoleRunner
             });
         }
 
-        public void Handle(FailResult result)
+        public void Handle(FailResult message)
         {
-            var caseResult = (CaseResult)result;
+            var caseResult = (CaseResult)message;
 
             Post(new TestResult
             {

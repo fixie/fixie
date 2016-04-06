@@ -12,37 +12,37 @@ namespace Fixie.TestDriven
             this.tdnet = tdnet;
         }
 
-        public void Handle(AssemblyInfo assembly)
+        public void Handle(AssemblyInfo message)
         {
         }
 
-        public void Handle(SkipResult result)
+        public void Handle(SkipResult message)
         {
             tdnet.TestFinished(new TestResult
             {
-                Name = result.Name,
+                Name = message.Name,
                 State = TestState.Ignored,
-                Message = result.SkipReason
+                Message = message.SkipReason
             });
         }
 
-        public void Handle(PassResult result)
+        public void Handle(PassResult message)
         {
             tdnet.TestFinished(new TestResult
             {
-                Name = result.Name,
+                Name = message.Name,
                 State = TestState.Passed
             });
         }
 
-        public void Handle(FailResult result)
+        public void Handle(FailResult message)
         {
             tdnet.TestFinished(new TestResult
             {
-                Name = result.Name,
+                Name = message.Name,
                 State = TestState.Failed,
-                Message = result.Exceptions.PrimaryException.DisplayName,
-                StackTrace = result.Exceptions.CompoundStackTrace,
+                Message = message.Exceptions.PrimaryException.DisplayName,
+                StackTrace = message.Exceptions.CompoundStackTrace,
             });
         }
 

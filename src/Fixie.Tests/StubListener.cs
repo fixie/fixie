@@ -8,28 +8,28 @@ namespace Fixie.Tests
     {
         readonly List<string> log = new List<string>();
 
-        public void Handle(AssemblyInfo assembly)
+        public void Handle(AssemblyInfo message)
         {
         }
 
-        public void Handle(SkipResult result)
+        public void Handle(SkipResult message)
         {
-            var optionalReason = result.SkipReason == null ? null : ": " + result.SkipReason;
-            log.Add($"{result.Name} skipped{optionalReason}");
+            var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
+            log.Add($"{message.Name} skipped{optionalReason}");
         }
 
-        public void Handle(PassResult result)
+        public void Handle(PassResult message)
         {
-            log.Add($"{result.Name} passed");
+            log.Add($"{message.Name} passed");
         }
 
-        public void Handle(FailResult result)
+        public void Handle(FailResult message)
         {
             var entry = new StringBuilder();
 
-            var primaryException = result.Exceptions.PrimaryException;
+            var primaryException = message.Exceptions.PrimaryException;
 
-            entry.AppendFormat("{0} failed: {1}", result.Name, primaryException.Message);
+            entry.AppendFormat("{0} failed: {1}", message.Name, primaryException.Message);
 
             var walk = primaryException;
             while (walk.InnerException != null)
@@ -39,7 +39,7 @@ namespace Fixie.Tests
                 entry.AppendFormat("    Inner Exception: {0}", walk.Message);
             }
 
-            foreach (var secondaryException in result.Exceptions.SecondaryExceptions)
+            foreach (var secondaryException in message.Exceptions.SecondaryExceptions)
             {
                 entry.AppendLine();
                 entry.AppendFormat("    Secondary Failure: {0}", secondaryException.Message);

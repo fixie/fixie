@@ -26,12 +26,12 @@ namespace Fixie.ConsoleRunner
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void Handle(AssemblyInfo assembly)
         {
             fileName = Path.GetFileName(assembly.Location);
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void Handle(SkipResult result)
         {
             var caseResult = (CaseResult)result;
 
@@ -48,7 +48,7 @@ namespace Fixie.ConsoleRunner
             });
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(PassResult result)
         {
             var caseResult = (CaseResult)result;
 
@@ -65,7 +65,7 @@ namespace Fixie.ConsoleRunner
             });
         }
 
-        public void CaseFailed(FailResult result)
+        public void Handle(FailResult result)
         {
             var caseResult = (CaseResult)result;
 
@@ -82,7 +82,7 @@ namespace Fixie.ConsoleRunner
             });
         }
 
-        public void AssemblyCompleted(AssemblyCompleted message)
+        public void Handle(AssemblyCompleted message)
         {
         }
 

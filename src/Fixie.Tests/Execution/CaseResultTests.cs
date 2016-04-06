@@ -84,13 +84,13 @@ namespace Fixie.Tests.Execution
         {
             public List<CaseResult> Log { get; set; } = new List<CaseResult>();
 
-            public void AssemblyStarted(AssemblyInfo assembly) { }
+            public void Handle(AssemblyInfo assembly) { }
 
-            public void CaseSkipped(SkipResult result) => Log.Add(result);
-            public void CasePassed(PassResult result) => Log.Add(result);
-            public void CaseFailed(FailResult result) => Log.Add(result);
+            public void Handle(SkipResult result) => Log.Add(result);
+            public void Handle(PassResult result) => Log.Add(result);
+            public void Handle(FailResult result) => Log.Add(result);
 
-            public void AssemblyCompleted(AssemblyCompleted message) { }
+            public void Handle(AssemblyCompleted message) { }
         }
 
         static void WhereAmI([CallerMemberName] string member = null)

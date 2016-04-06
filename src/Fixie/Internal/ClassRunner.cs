@@ -178,21 +178,21 @@ namespace Fixie.Internal
         CaseResult Skip(Case @case, string reason)
         {
             var result = new SkipResult(@case, reason);
-            listener.CaseSkipped(result);
+            listener.Handle(result);
             return result;
         }
 
         CaseResult Pass(Case @case)
         {
             var result = new PassResult(@case);
-            listener.CasePassed(result);
+            listener.Handle(result);
             return result;
         }
 
         CaseResult Fail(Case @case)
         {
             var result = new FailResult(@case, assertionLibraryFilter);
-            listener.CaseFailed(result);
+            listener.Handle(result);
             return result;
         }
     }

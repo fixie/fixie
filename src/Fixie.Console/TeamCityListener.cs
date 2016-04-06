@@ -8,24 +8,24 @@ namespace Fixie.ConsoleRunner
 {
     public class TeamCityListener : Listener
     {
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void Handle(AssemblyInfo assembly)
         {
             Message("testSuiteStarted name='{0}'", SuiteName(assembly));
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void Handle(SkipResult result)
         {
             Message("testIgnored name='{0}' message='{1}'", result.Name, result.SkipReason);
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(PassResult result)
         {
             Message("testStarted name='{0}'", result.Name);
             Output(result.Name, result.Output);
             Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
         }
 
-        public void CaseFailed(FailResult result)
+        public void Handle(FailResult result)
         {
             Message("testStarted name='{0}'", result.Name);
             Output(result.Name, result.Output);
@@ -33,7 +33,7 @@ namespace Fixie.ConsoleRunner
             Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
         }
 
-        public void AssemblyCompleted(AssemblyCompleted message)
+        public void Handle(AssemblyCompleted message)
         {
             Message("testSuiteFinished name='{0}'", SuiteName(message.Assembly));
         }

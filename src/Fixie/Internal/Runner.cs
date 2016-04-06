@@ -105,7 +105,7 @@ namespace Fixie.Internal
             var assemblyResult = new AssemblyResult(assembly.Location);
             var assemblyInfo = new AssemblyInfo(assembly);
 
-            listener.AssemblyStarted(assemblyInfo);
+            listener.Handle(assemblyInfo);
 
             foreach (var convention in conventions)
             {
@@ -114,7 +114,7 @@ namespace Fixie.Internal
                 assemblyResult.Add(conventionResult);
             }
 
-            listener.AssemblyCompleted(new AssemblyCompleted(assemblyInfo, assemblyResult));
+            listener.Handle(new AssemblyCompleted(assemblyInfo, assemblyResult));
 
             return assemblyResult;
         }

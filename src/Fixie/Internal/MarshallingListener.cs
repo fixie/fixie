@@ -8,10 +8,10 @@ namespace Fixie.Internal
 
         public MarshallingListener(Listener listener) { this.listener = listener; }
 
-        public void AssemblyStarted(AssemblyInfo assembly) => listener.AssemblyStarted(assembly);
-        public void CaseSkipped(SkipResult result) => listener.CaseSkipped(result);
-        public void CasePassed(PassResult result) => listener.CasePassed(result);
-        public void CaseFailed(FailResult result) => listener.CaseFailed(result);
-        public void AssemblyCompleted(AssemblyCompleted message) => listener.AssemblyCompleted(message);
+        public void Handle(AssemblyInfo assembly) => listener.Handle(assembly);
+        public void Handle(SkipResult result) => listener.Handle(result);
+        public void Handle(PassResult result) => listener.Handle(result);
+        public void Handle(FailResult result) => listener.Handle(result);
+        public void Handle(AssemblyCompleted message) => listener.Handle(message);
     }
 }

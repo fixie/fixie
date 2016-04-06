@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Fixie.Execution;
 using Fixie.Internal;
 using TestDriven.Framework;
@@ -45,16 +46,19 @@ namespace Fixie.TestDriven
         static TestRunState Run(ITestListener testListener, Func<Runner, AssemblyResult> run)
         {
             var listener = new TestDrivenListener(testListener);
-            var runner = new Runner(listener);
-            var result = run(runner);
+            using (var bus = new Bus(listener))
+            {
+                var runner = new Runner(bus);
+                var result = run(runner);
 
-            if (result.Total == 0)
-                return TestRunState.NoTests;
+                if (result.Total == 0)
+                    return TestRunState.NoTests;
 
-            if (result.Failed > 0)
-                return TestRunState.Failure;
+                if (result.Failed > 0)
+                    return TestRunState.Failure;
 
-            return TestRunState.Success;
+                return TestRunState.Success;
+            }
         }
     }
 }

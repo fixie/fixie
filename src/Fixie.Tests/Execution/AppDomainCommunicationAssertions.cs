@@ -96,8 +96,8 @@ namespace Fixie.Tests.Execution
                 //If a generic type parameter is constrained to inherit from Message,
                 //we can assume we're already covered.
 
-                if (type.GetGenericParameterConstraints().Contains(typeof(Message)))
-                    return true;
+                if (!type.GetGenericParameterConstraints().Contains(typeof(Message)))
+                    return false;
             }
             else if (!type.HasOrInherits<SerializableAttribute>())
             {

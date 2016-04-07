@@ -5,17 +5,11 @@ using Fixie.Execution;
 namespace Fixie.Tests
 {
     public class StubListener :
-        Handler<AssemblyInfo>,
         Handler<SkipResult>,
         Handler<PassResult>,
-        Handler<FailResult>,
-        Handler<AssemblyCompleted>
+        Handler<FailResult>
     {
         readonly List<string> log = new List<string>();
-
-        public void Handle(AssemblyInfo message)
-        {
-        }
 
         public void Handle(SkipResult message)
         {
@@ -61,13 +55,6 @@ namespace Fixie.Tests
             log.Add(entry.ToString());
         }
 
-        public void Handle(AssemblyCompleted message)
-        {
-        }
-
-        public IEnumerable<string> Entries
-        {
-            get { return log; }
-        }
+        public IEnumerable<string> Entries => log;
     }
 }

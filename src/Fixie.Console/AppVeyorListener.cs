@@ -12,8 +12,7 @@ namespace Fixie.ConsoleRunner
         Handler<AssemblyInfo>,
         Handler<SkipResult>,
         Handler<PassResult>,
-        Handler<FailResult>,
-        Handler<AssemblyCompleted>
+        Handler<FailResult>
     {
         readonly string url;
         readonly HttpClient client;
@@ -85,10 +84,6 @@ namespace Fixie.ConsoleRunner
                 ErrorMessage = caseResult.Exceptions.PrimaryException.DisplayName,
                 ErrorStackTrace = caseResult.Exceptions.CompoundStackTrace
             });
-        }
-
-        public void Handle(AssemblyCompleted message)
-        {
         }
 
         void Post(TestResult result)

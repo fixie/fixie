@@ -93,7 +93,7 @@ namespace Fixie.Tests.Execution
             else if (type.IsGenericParameter)
             {
                 //All Message types are are already vetted by another test.
-                //If a generic type paramter is constrained to inherit from Message,
+                //If a generic type parameter is constrained to inherit from Message,
                 //we can assume we're already covered.
 
                 if (type.GetGenericParameterConstraints().Contains(typeof(Message)))

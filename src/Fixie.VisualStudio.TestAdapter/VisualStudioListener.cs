@@ -6,11 +6,9 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 namespace Fixie.VisualStudio.TestAdapter
 {
     public class VisualStudioListener :
-        Handler<AssemblyInfo>,
         Handler<SkipResult>,
         Handler<PassResult>,
-        Handler<FailResult>,
-        Handler<AssemblyCompleted>
+        Handler<FailResult>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
@@ -20,8 +18,6 @@ namespace Fixie.VisualStudio.TestAdapter
             this.log = log;
             this.assemblyPath = assemblyPath;
         }
-
-        public void Handle(AssemblyInfo message) { }
 
         public void Handle(SkipResult message)
         {
@@ -64,10 +60,6 @@ namespace Fixie.VisualStudio.TestAdapter
             AttachCapturedConsoleOutput(message.Output, testResult);
 
             log.RecordResult(testResult);
-        }
-
-        public void Handle(AssemblyCompleted message)
-        {
         }
 
         TestCase TestCase(MethodGroup methodGroup)

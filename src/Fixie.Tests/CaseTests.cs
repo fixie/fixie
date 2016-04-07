@@ -131,7 +131,7 @@ namespace Fixie.Tests
                 .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<System.Boolean>(True)");
         }
 
-        public void ShouldUseGenericTypeParametersInNameWhenGenericTypeParamtersCannotBeResolved()
+        public void ShouldUseGenericTypeParametersInNameWhenGenericTypeParametersCannotBeResolved()
         {
             Case("ConstrainedGeneric", "Incompatable")
                 .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<T>(\"Incompatable\")");

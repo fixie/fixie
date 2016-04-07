@@ -8,7 +8,11 @@ using System.Web.Script.Serialization;
 
 namespace Fixie.ConsoleRunner
 {
-    public class AppVeyorListener : LongLivedMarshalByRefObject, Listener
+    public class AppVeyorListener :
+        Handler<AssemblyInfo>,
+        Handler<SkipResult>,
+        Handler<PassResult>,
+        Handler<FailResult>
     {
         readonly string url;
         readonly HttpClient client;
@@ -26,14 +30,14 @@ namespace Fixie.ConsoleRunner
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void Handle(AssemblyInfo message)
         {
-            fileName = Path.GetFileName(assembly.Location);
+            fileName = Path.GetFileName(message.Location);
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void Handle(SkipResult message)
         {
-            var caseResult = (CaseResult)result;
+            var caseResult = (CaseResult)message;
 
             Post(new TestResult
             {
@@ -48,9 +52,9 @@ namespace Fixie.ConsoleRunner
             });
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(PassResult message)
         {
-            var caseResult = (CaseResult)result;
+            var caseResult = (CaseResult)message;
 
             Post(new TestResult
             {
@@ -65,9 +69,9 @@ namespace Fixie.ConsoleRunner
             });
         }
 
-        public void CaseFailed(FailResult result)
+        public void Handle(FailResult message)
         {
-            var caseResult = (CaseResult)result;
+            var caseResult = (CaseResult)message;
 
             Post(new TestResult
             {
@@ -80,10 +84,6 @@ namespace Fixie.ConsoleRunner
                 ErrorMessage = caseResult.Exceptions.PrimaryException.DisplayName,
                 ErrorStackTrace = caseResult.Exceptions.CompoundStackTrace
             });
-        }
-
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
-        {
         }
 
         void Post(TestResult result)

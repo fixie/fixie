@@ -36,8 +36,8 @@ namespace Fixie.Tests.ConsoleRunner
             }));
 
             using (var console = new RedirectedConsole())
-            using (var listener = new AppVeyorListener("http://localhost:4567", httpClient))
             {
+                var listener = new AppVeyorListener("http://localhost:4567", httpClient);
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
                 convention.Parameters.Add<InputAttributeParameterSource>();

@@ -29,34 +29,21 @@ namespace Fixie.Execution
                 return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunAssembly(Options options, Listener listener)
+        public AssemblyResult RunAssembly(Options options, object listener)
         {
-            AssertIsLongLivedMarshalByRefObject(listener);
-
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunAssembly(assemblyFullPath, options, listener);
+            using (var bus = new Bus(listener))
+                return executionProxy.RunAssembly(assemblyFullPath, options, bus);
         }
 
-        public AssemblyResult RunMethods(Options options, Listener listener, MethodGroup[] methodGroups)
+        public AssemblyResult RunMethods(Options options, object listener, MethodGroup[] methodGroups)
         {
-            AssertIsLongLivedMarshalByRefObject(listener);
-
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
+            using (var bus = new Bus(listener))
+                return executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
         }
 
-        static void AssertIsLongLivedMarshalByRefObject(Listener listener)
-        {
-            if (listener is LongLivedMarshalByRefObject) return;
-            var listenerType = listener.GetType();
-            var message = string.Format("Type '{0}' in Assembly '{1}' must inherit from '{2}'.",
-                                        listenerType.FullName,
-                                        listenerType.Assembly,
-                                        typeof(LongLivedMarshalByRefObject).FullName);
-            throw new Exception(message);
-        }
-
-        T Create<T>(params object[] args) where T : MarshalByRefObject
+        T Create<T>(params object[] args) where T : LongLivedMarshalByRefObject
         {
             return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
         }

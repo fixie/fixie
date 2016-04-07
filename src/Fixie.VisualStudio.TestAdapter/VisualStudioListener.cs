@@ -5,7 +5,10 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class VisualStudioListener : LongLivedMarshalByRefObject, Listener
+    public class VisualStudioListener :
+        Handler<SkipResult>,
+        Handler<PassResult>,
+        Handler<FailResult>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
@@ -16,53 +19,47 @@ namespace Fixie.VisualStudio.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public void AssemblyStarted(AssemblyInfo assembly) { }
-
-        public void CaseSkipped(SkipResult result)
+        public void Handle(SkipResult message)
         {
-            log.RecordResult(new TestResult(TestCase(result.MethodGroup))
+            log.RecordResult(new TestResult(TestCase(message.MethodGroup))
             {
-                DisplayName = result.Name,
+                DisplayName = message.Name,
                 Outcome = Map(CaseStatus.Skipped),
                 ComputerName = Environment.MachineName,
-                ErrorMessage = result.SkipReason
+                ErrorMessage = message.SkipReason
             });
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(PassResult message)
         {
-            var testResult = new TestResult(TestCase(result.MethodGroup))
+            var testResult = new TestResult(TestCase(message.MethodGroup))
             {
-                DisplayName = result.Name,
+                DisplayName = message.Name,
                 Outcome = Map(CaseStatus.Passed),
-                Duration = result.Duration,
+                Duration = message.Duration,
                 ComputerName = Environment.MachineName
             };
 
-            AttachCapturedConsoleOutput(result.Output, testResult);
+            AttachCapturedConsoleOutput(message.Output, testResult);
 
             log.RecordResult(testResult);
         }
 
-        public void CaseFailed(FailResult result)
+        public void Handle(FailResult message)
         {
-            var testResult = new TestResult(TestCase(result.MethodGroup))
+            var testResult = new TestResult(TestCase(message.MethodGroup))
             {
-                DisplayName = result.Name,
+                DisplayName = message.Name,
                 Outcome = Map(CaseStatus.Failed),
-                Duration = result.Duration,
+                Duration = message.Duration,
                 ComputerName = Environment.MachineName,
-                ErrorMessage = result.Exceptions.PrimaryException.DisplayName,
-                ErrorStackTrace = result.Exceptions.CompoundStackTrace
+                ErrorMessage = message.Exceptions.PrimaryException.DisplayName,
+                ErrorStackTrace = message.Exceptions.CompoundStackTrace
             };
 
-            AttachCapturedConsoleOutput(result.Output, testResult);
+            AttachCapturedConsoleOutput(message.Output, testResult);
 
             log.RecordResult(testResult);
-        }
-
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
-        {
         }
 
         TestCase TestCase(MethodGroup methodGroup)

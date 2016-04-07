@@ -8,7 +8,7 @@ namespace Fixie.Internal
 {
     public class ClassRunner
     {
-        readonly Listener listener;
+        readonly Bus bus;
         readonly ExecutionPlan executionPlan;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
@@ -17,11 +17,11 @@ namespace Fixie.Internal
         readonly IReadOnlyList<SkipBehavior> skipBehaviors;
         readonly Action<Case[]> orderCases;
 
-        public ClassRunner(Listener listener, Convention convention)
+        public ClassRunner(Bus bus, Convention convention)
         {
             var config = convention.Config;
 
-            this.listener = listener;
+            this.bus = bus;
             executionPlan = new ExecutionPlan(convention);
             methodDiscoverer = new MethodDiscoverer(convention);
             parameterDiscoverer = new ParameterDiscoverer(convention);
@@ -178,21 +178,21 @@ namespace Fixie.Internal
         CaseResult Skip(Case @case, string reason)
         {
             var result = new SkipResult(@case, reason);
-            listener.CaseSkipped(result);
+            bus.Publish(result);
             return result;
         }
 
         CaseResult Pass(Case @case)
         {
             var result = new PassResult(@case);
-            listener.CasePassed(result);
+            bus.Publish(result);
             return result;
         }
 
         CaseResult Fail(Case @case)
         {
             var result = new FailResult(@case, assertionLibraryFilter);
-            listener.CaseFailed(result);
+            bus.Publish(result);
             return result;
         }
     }

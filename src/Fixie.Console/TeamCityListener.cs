@@ -6,36 +6,41 @@ using Fixie.Execution;
 
 namespace Fixie.ConsoleRunner
 {
-    public class TeamCityListener : LongLivedMarshalByRefObject, Listener
+    public class TeamCityListener :
+        Handler<AssemblyInfo>,
+        Handler<SkipResult>,
+        Handler<PassResult>,
+        Handler<FailResult>,
+        Handler<AssemblyCompleted>
     {
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void Handle(AssemblyInfo message)
         {
-            Message("testSuiteStarted name='{0}'", SuiteName(assembly));
+            Message("testSuiteStarted name='{0}'", SuiteName(message));
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void Handle(SkipResult message)
         {
-            Message("testIgnored name='{0}' message='{1}'", result.Name, result.SkipReason);
+            Message("testIgnored name='{0}' message='{1}'", message.Name, message.SkipReason);
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(PassResult message)
         {
-            Message("testStarted name='{0}'", result.Name);
-            Output(result.Name, result.Output);
-            Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
+            Message("testStarted name='{0}'", message.Name);
+            Output(message.Name, message.Output);
+            Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
-        public void CaseFailed(FailResult result)
+        public void Handle(FailResult message)
         {
-            Message("testStarted name='{0}'", result.Name);
-            Output(result.Name, result.Output);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", result.Name, result.Exceptions.PrimaryException.Message, result.Exceptions.CompoundStackTrace);
-            Message("testFinished name='{0}' duration='{1}'", result.Name, DurationInMilliseconds(result.Duration));
+            Message("testStarted name='{0}'", message.Name);
+            Output(message.Name, message.Output);
+            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exceptions.PrimaryException.Message, message.Exceptions.CompoundStackTrace);
+            Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void Handle(AssemblyCompleted message)
         {
-            Message("testSuiteFinished name='{0}'", SuiteName(assembly));
+            Message("testSuiteFinished name='{0}'", SuiteName(message.Assembly));
         }
 
         static void Message(string format, params string[] args)

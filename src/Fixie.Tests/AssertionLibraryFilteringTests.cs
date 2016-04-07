@@ -13,8 +13,8 @@ namespace Fixie.Tests
         public void ShouldNotAffectOutputByDefault()
         {
             using (var console = new RedirectedConsole())
-            using (var listener = new ConsoleListener())
             {
+                var listener = new ConsoleListener();
                 typeof(SampleTestClass).Run(listener, SelfTestConvention.Build());
 
                 console
@@ -41,8 +41,8 @@ namespace Fixie.Tests
         public void ShouldFilterAssertionLibraryImplementationDetailsWhenLibraryTypesAreSpecified()
         {
             using (var console = new RedirectedConsole())
-            using (var listener = new ConsoleListener())
             {
+                var listener = new ConsoleListener();
                 var convention = SelfTestConvention.Build();
 
                 convention

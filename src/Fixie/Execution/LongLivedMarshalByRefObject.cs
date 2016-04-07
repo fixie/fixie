@@ -6,8 +6,8 @@ namespace Fixie.Execution
     /// <summary>
     /// Simplifies the definition of MarshalByRefObject classes whose
     /// instances need to live longer than the default lease lifetime
-    /// allows, such as implementations of Listener provided by test
-    /// runners.
+    /// allows, such as objects passed from a Fixie runner into the
+    /// AppDomain of a running test assembly.
     /// 
     /// Instances of LongLivedMarshalByRefObject have an infinite
     /// lease lifetime so that they won't become defective after
@@ -16,7 +16,7 @@ namespace Fixie.Execution
     /// </summary>
     public abstract class LongLivedMarshalByRefObject : MarshalByRefObject, IDisposable
     {
-        public override sealed object InitializeLifetimeService()
+        public sealed override object InitializeLifetimeService()
         {
             // MarshalByRefObjects have lifetimes unlike normal objects.
             // The default implementation of InitializeLifetimeService()
@@ -26,7 +26,7 @@ namespace Fixie.Execution
             // This fact poses a problem for long-lived MarshalByRefObjects
             // used in the cross-AppDomain communication between a Fixie
             // runner and the running test assembly. Long-lived tests could
-            // cause a MarshalByRefObject Listener, for instance, to become
+            // cause a MarshalByRefObject message handler, for instance, to become
             // defective when the running test finally finishes.
             // 
             // This class provides a more familiar lifetime for such long-

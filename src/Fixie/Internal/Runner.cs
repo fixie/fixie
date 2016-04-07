@@ -8,15 +8,15 @@ namespace Fixie.Internal
 {
     public class Runner
     {
-        readonly Listener listener;
+        readonly Bus bus;
         readonly Options options;
 
-        public Runner(Listener listener)
-            : this(listener, new Options()) { }
+        public Runner(Bus bus)
+            : this(bus, new Options()) { }
 
-        public Runner(Listener listener, Options options)
+        public Runner(Bus bus, Options options)
         {
-            this.listener = listener;
+            this.bus = bus;
             this.options = options;
         }
 
@@ -105,7 +105,7 @@ namespace Fixie.Internal
             var assemblyResult = new AssemblyResult(assembly.Location);
             var assemblyInfo = new AssemblyInfo(assembly);
 
-            listener.AssemblyStarted(assemblyInfo);
+            bus.Publish(assemblyInfo);
 
             foreach (var convention in conventions)
             {
@@ -114,7 +114,7 @@ namespace Fixie.Internal
                 assemblyResult.Add(conventionResult);
             }
 
-            listener.AssemblyCompleted(assemblyInfo, assemblyResult);
+            bus.Publish(new AssemblyCompleted(assemblyInfo, assemblyResult));
 
             return assemblyResult;
         }
@@ -123,7 +123,7 @@ namespace Fixie.Internal
         {
             var classDiscoverer = new ClassDiscoverer(convention);
             var conventionResult = new ConventionResult(convention.GetType().FullName);
-            var classRunner = new ClassRunner(listener, convention);
+            var classRunner = new ClassRunner(bus, convention);
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
             {

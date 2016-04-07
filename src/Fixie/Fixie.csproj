@@ -37,7 +37,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
+    <Compile Include="Execution\AssemblyCompleted.cs" />
+    <Compile Include="Execution\Handler.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
+    <Compile Include="Execution\Message.cs" />
+    <Compile Include="Internal\Bus.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="Internal\Discoverer.cs" />
     <Compile Include="Internal\ParameterDiscoverer.cs" />
@@ -81,7 +85,6 @@
     <Compile Include="Internal\Behaviors\InvokeMethod.cs" />
     <Compile Include="CaseBehavior.cs" />
     <Compile Include="Internal\Behaviors\CreateInstancePerCase.cs" />
-    <Compile Include="Execution\Listener.cs" />
     <Compile Include="Conventions\MethodExpression.cs" />
     <Compile Include="Internal\ObjectExtensions.cs" />
     <Compile Include="Execution\PassResult.cs" />

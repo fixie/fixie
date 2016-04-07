@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fixie.Execution;
+using Fixie.Internal;
 using Should;
 
 namespace Fixie.Tests.Execution
@@ -11,15 +12,6 @@ namespace Fixie.Tests.Execution
     {
         const BindingFlags AllMembers =
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
-
-        public static void ShouldSupportReceivingMessagesFromTheChildAppDomain(this Type listenerType)
-        {
-            listenerType
-                .IsSubclassOf(typeof(LongLivedMarshalByRefObject))
-                .ShouldBeTrue(
-                    $"{listenerType.Name} must be a {nameof(LongLivedMarshalByRefObject)} " +
-                    "so that it can successfully receive messages across the AppDomain boundary.");
-        }
 
         public static void ShouldBeSafeAppDomainCommunicationInterface(this Type crossAppDomainInterfaceType)
         {
@@ -66,16 +58,6 @@ namespace Fixie.Tests.Execution
             //     also not acceptable for AppDomain communication because they can cause
             //     assembly load failures at runtime.
 
-            if (type == typeof(Listener))
-            {
-                //Tests use this routine to vet Listener as a safe remoting *interface*,
-                //but it is also used as an *argument* on other remoting interfaces.
-                //Because it is the responsibility of the Listener implementation to be
-                //a valid MarshalByRefObject, there is nothing left to check for here,
-                //so it is assumed to be valid.
-                return true;
-            }
-
             visitedTypes.Add(type);
 
             if (type == typeof(CaseResult))
@@ -101,6 +83,20 @@ namespace Fixie.Tests.Execution
             else if (type.IsArray)
             {
                 if (!IsSafeForAppDomainCommunication(type.GetElementType(), visitedTypes))
+                    return false;
+            }
+            else if (type == typeof(Bus))
+            {
+                type.ShouldBeSafeAppDomainCommunicationInterface();
+                return true;
+            }
+            else if (type.IsGenericParameter)
+            {
+                //All Message types are are already vetted by another test.
+                //If a generic type parameter is constrained to inherit from Message,
+                //we can assume we're already covered.
+
+                if (!type.GetGenericParameterConstraints().Contains(typeof(Message)))
                     return false;
             }
             else if (!type.HasOrInherits<SerializableAttribute>())

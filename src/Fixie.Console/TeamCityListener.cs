@@ -7,13 +7,13 @@ using Fixie.Execution;
 namespace Fixie.ConsoleRunner
 {
     public class TeamCityListener :
-        Handler<AssemblyInfo>,
+        Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
-        public void Handle(AssemblyInfo message)
+        public void Handle(AssemblyStarted message)
         {
             Message("testSuiteStarted name='{0}'", Path.GetFileName(message.Location));
         }

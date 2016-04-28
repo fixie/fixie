@@ -4,9 +4,9 @@ using System.Reflection;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class AssemblyInfo : Message
+    public class AssemblyStarted : Message
     {
-        public AssemblyInfo(Assembly assembly)
+        public AssemblyStarted(Assembly assembly)
         {
             Name = assembly.GetName().Name;
             Location = assembly.Location;

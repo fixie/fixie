@@ -5,12 +5,12 @@ using Fixie.Execution;
 namespace Fixie.ConsoleRunner
 {
     public class ConsoleListener :
-        Handler<AssemblyInfo>,
+        Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
-        public void Handle(AssemblyInfo message)
+        public void Handle(AssemblyStarted message)
         {
             Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(message.Location));
             Console.WriteLine();

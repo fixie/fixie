@@ -9,7 +9,7 @@ using System.Web.Script.Serialization;
 namespace Fixie.ConsoleRunner
 {
     public class AppVeyorListener :
-        Handler<AssemblyInfo>,
+        Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>
@@ -30,7 +30,7 @@ namespace Fixie.ConsoleRunner
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public void Handle(AssemblyInfo message)
+        public void Handle(AssemblyStarted message)
         {
             fileName = Path.GetFileName(message.Location);
         }

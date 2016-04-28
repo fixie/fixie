@@ -37,33 +37,33 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(CaseSkipped message)
         {
-            var caseResult = (CaseResult)message;
+            var caseCompleted = (CaseCompleted)message;
 
             Post(new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
-                testName = caseResult.Name,
+                testName = caseCompleted.Name,
                 outcome = "Skipped",
-                durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseResult.Output,
-                ErrorMessage = caseResult.SkipReason,
+                durationMilliseconds = caseCompleted.Duration.TotalMilliseconds.ToString("0"),
+                StdOut = caseCompleted.Output,
+                ErrorMessage = caseCompleted.SkipReason,
                 ErrorStackTrace = null
             });
         }
 
         public void Handle(CasePassed message)
         {
-            var caseResult = (CaseResult)message;
+            var caseCompleted = (CaseCompleted)message;
 
             Post(new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
-                testName = caseResult.Name,
+                testName = caseCompleted.Name,
                 outcome = "Passed",
-                durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseResult.Output,
+                durationMilliseconds = caseCompleted.Duration.TotalMilliseconds.ToString("0"),
+                StdOut = caseCompleted.Output,
                 ErrorMessage = null,
                 ErrorStackTrace = null
             });
@@ -71,18 +71,18 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(CaseFailed message)
         {
-            var caseResult = (CaseResult)message;
+            var caseCompleted = (CaseCompleted)message;
 
             Post(new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
-                testName = caseResult.Name,
+                testName = caseCompleted.Name,
                 outcome = "Failed",
-                durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseResult.Output,
-                ErrorMessage = caseResult.Exceptions.PrimaryException.DisplayName,
-                ErrorStackTrace = caseResult.Exceptions.CompoundStackTrace
+                durationMilliseconds = caseCompleted.Duration.TotalMilliseconds.ToString("0"),
+                StdOut = caseCompleted.Output,
+                ErrorMessage = caseCompleted.Exceptions.PrimaryException.DisplayName,
+                ErrorStackTrace = caseCompleted.Exceptions.CompoundStackTrace
             });
         }
 

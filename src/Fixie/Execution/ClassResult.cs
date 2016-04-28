@@ -7,35 +7,35 @@ namespace Fixie.Execution
     [Serializable]
     public class ClassResult
     {
-        readonly List<CaseResult> caseResults;
+        readonly List<CaseCompleted> cases;
 
         public ClassResult(string name)
         {
-            caseResults = new List<CaseResult>();
+            cases = new List<CaseCompleted>();
             Name = name;
         }
 
-        public void Add(CaseResult caseResult)
+        public void Add(CaseCompleted message)
         {
-            caseResults.Add(caseResult);
+            cases.Add(message);
         }
 
         public string Name { get; private set; }
 
         public TimeSpan Duration
         {
-            get { return new TimeSpan(caseResults.Sum(result => result.Duration.Ticks)); }
+            get { return new TimeSpan(cases.Sum(result => result.Duration.Ticks)); }
         }
 
-        public IReadOnlyList<CaseResult> CaseResults
+        public IReadOnlyList<CaseCompleted> Cases
         {
-            get { return caseResults; }
+            get { return cases; }
         }
 
-        public int Passed { get { return caseResults.Count(result => result.Status == CaseStatus.Passed); } }
+        public int Passed { get { return cases.Count(result => result.Status == CaseStatus.Passed); } }
 
-        public int Failed { get { return caseResults.Count(result => result.Status == CaseStatus.Failed); } }
+        public int Failed { get { return cases.Count(result => result.Status == CaseStatus.Failed); } }
 
-        public int Skipped { get { return caseResults.Count(result => result.Status == CaseStatus.Skipped); } }
+        public int Skipped { get { return cases.Count(result => result.Status == CaseStatus.Skipped); } }
     }
 }

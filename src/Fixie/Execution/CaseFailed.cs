@@ -4,7 +4,7 @@ using Fixie.Internal;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class CaseFailed : CaseResult, Message
+    public class CaseFailed : CaseCompleted, Message
     {
         public CaseFailed(Case @case, AssertionLibraryFilter filter)
         {
@@ -22,7 +22,7 @@ namespace Fixie.Execution
         public TimeSpan Duration { get; private set; }
         public CompoundException Exceptions { get; private set; }
 
-        CaseStatus CaseResult.Status { get { return CaseStatus.Failed; } }
-        string CaseResult.SkipReason { get { return null; } }
+        CaseStatus CaseCompleted.Status { get { return CaseStatus.Failed; } }
+        string CaseCompleted.SkipReason { get { return null; } }
     }
 }

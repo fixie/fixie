@@ -175,21 +175,21 @@ namespace Fixie.Internal
         void Run(Type testClass, IReadOnlyList<Case> casesToExecute)
             => executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
 
-        CaseResult Skip(Case @case, string reason)
+        CaseCompleted Skip(Case @case, string reason)
         {
             var result = new CaseSkipped(@case, reason);
             bus.Publish(result);
             return result;
         }
 
-        CaseResult Pass(Case @case)
+        CaseCompleted Pass(Case @case)
         {
             var result = new CasePassed(@case);
             bus.Publish(result);
             return result;
         }
 
-        CaseResult Fail(Case @case)
+        CaseCompleted Fail(Case @case)
         {
             var result = new CaseFailed(@case, assertionLibraryFilter);
             bus.Publish(result);

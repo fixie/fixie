@@ -37,33 +37,29 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(CaseSkipped message)
         {
-            var caseCompleted = (CaseCompleted)message;
-
             Post(new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
-                testName = caseCompleted.Name,
+                testName = message.Name,
                 outcome = "Skipped",
-                durationMilliseconds = caseCompleted.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseCompleted.Output,
-                ErrorMessage = caseCompleted.SkipReason,
+                durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
+                StdOut = message.Output,
+                ErrorMessage = message.SkipReason,
                 ErrorStackTrace = null
             });
         }
 
         public void Handle(CasePassed message)
         {
-            var caseCompleted = (CaseCompleted)message;
-
             Post(new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
-                testName = caseCompleted.Name,
+                testName = message.Name,
                 outcome = "Passed",
-                durationMilliseconds = caseCompleted.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseCompleted.Output,
+                durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
+                StdOut = message.Output,
                 ErrorMessage = null,
                 ErrorStackTrace = null
             });
@@ -71,18 +67,16 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(CaseFailed message)
         {
-            var caseCompleted = (CaseCompleted)message;
-
             Post(new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
-                testName = caseCompleted.Name,
+                testName = message.Name,
                 outcome = "Failed",
-                durationMilliseconds = caseCompleted.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseCompleted.Output,
-                ErrorMessage = caseCompleted.Exceptions.PrimaryException.DisplayName,
-                ErrorStackTrace = caseCompleted.Exceptions.CompoundStackTrace
+                durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
+                StdOut = message.Output,
+                ErrorMessage = message.Exceptions.PrimaryException.DisplayName,
+                ErrorStackTrace = message.Exceptions.CompoundStackTrace
             });
         }
 

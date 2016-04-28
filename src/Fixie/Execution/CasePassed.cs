@@ -9,16 +9,19 @@ namespace Fixie.Execution
         {
             MethodGroup = @case.MethodGroup;
             Name = @case.Name;
+            Status = CaseStatus.Passed;
             Duration = @case.Duration;
             Output = @case.Output;
+            Exceptions = null;
+            SkipReason = null;
         }
 
         public MethodGroup MethodGroup { get; }
         public string Name { get; }
-        public CaseStatus Status { get { return CaseStatus.Passed; } }
+        public CaseStatus Status { get; }
         public TimeSpan Duration { get; }
         public string Output { get; }
-        public CompoundException Exceptions { get { return null; } }
-        public string SkipReason { get { return null; } }
+        public CompoundException Exceptions { get; }
+        public string SkipReason { get; }
     }
 }

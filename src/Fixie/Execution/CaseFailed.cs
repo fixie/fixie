@@ -10,18 +10,19 @@ namespace Fixie.Execution
         {
             MethodGroup = @case.MethodGroup;
             Name = @case.Name;
+            Status = CaseStatus.Failed;
             Duration = @case.Duration;
             Output = @case.Output;
-
             Exceptions = new CompoundException(@case.Exceptions, filter);
+            SkipReason = null;
         }
 
         public MethodGroup MethodGroup { get; }
         public string Name { get; }
-        public CaseStatus Status { get { return CaseStatus.Failed; } }
+        public CaseStatus Status { get; }
         public TimeSpan Duration { get; }
         public string Output { get; }
         public CompoundException Exceptions { get; }
-        public string SkipReason { get { return null; } }
+        public string SkipReason { get; }
     }
 }

@@ -1,17 +1,18 @@
 using System;
+using System.Reflection;
 
 namespace Fixie.Execution
 {
     [Serializable]
     public class AssemblyCompleted : Message
     {
-        public AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {
-            Assembly = assembly;
+            Location = assembly.Location;
             Result = result;
         }
 
-        public AssemblyInfo Assembly { get; private set; }
+        public string Location { get; }
         public AssemblyResult Result { get; private set; }
     }
 }

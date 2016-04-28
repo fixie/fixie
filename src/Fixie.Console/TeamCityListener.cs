@@ -15,7 +15,7 @@ namespace Fixie.ConsoleRunner
     {
         public void Handle(AssemblyInfo message)
         {
-            Message("testSuiteStarted name='{0}'", SuiteName(message));
+            Message("testSuiteStarted name='{0}'", Path.GetFileName(message.Location));
         }
 
         public void Handle(CaseSkipped message)
@@ -40,7 +40,7 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(AssemblyCompleted message)
         {
-            Message("testSuiteFinished name='{0}'", SuiteName(message.Assembly));
+            Message("testSuiteFinished name='{0}'", Path.GetFileName(message.Location));
         }
 
         static void Message(string format, params string[] args)
@@ -85,11 +85,6 @@ namespace Fixie.ConsoleRunner
         static string DurationInMilliseconds(TimeSpan duration)
         {
             return ((int)Math.Ceiling(duration.TotalMilliseconds)).ToString();
-        }
-
-        static string SuiteName(AssemblyInfo assembly)
-        {
-            return Path.GetFileName(assembly.Location);
         }
     }
 }

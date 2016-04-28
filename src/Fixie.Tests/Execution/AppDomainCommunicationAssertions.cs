@@ -123,7 +123,7 @@ namespace Fixie.Tests.Execution
             return typeof(CaseCompleted)
                 .Assembly
                 .GetTypes()
-                .Where(type => typeof(CaseCompleted).IsAssignableFrom(type) && type.IsClass);
+                .Where(type => type != typeof(CaseCompleted) && typeof(CaseCompleted).IsAssignableFrom(type) && type.IsClass);
         }
     }
 }

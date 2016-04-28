@@ -4,7 +4,7 @@ using Fixie.Internal;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class CaseFailed : CaseCompleted, Message
+    public class CaseFailed : CaseCompleted
     {
         public CaseFailed(Case @case, AssertionLibraryFilter filter)
         {
@@ -16,13 +16,5 @@ namespace Fixie.Execution
             Exceptions = new CompoundException(@case.Exceptions, filter);
             SkipReason = null;
         }
-
-        public MethodGroup MethodGroup { get; }
-        public string Name { get; }
-        public CaseStatus Status { get; }
-        public TimeSpan Duration { get; }
-        public string Output { get; }
-        public CompoundException Exceptions { get; }
-        public string SkipReason { get; }
     }
 }

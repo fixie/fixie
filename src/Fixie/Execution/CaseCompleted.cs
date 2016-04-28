@@ -2,14 +2,15 @@ using System;
 
 namespace Fixie.Execution
 {
-    public interface CaseCompleted
+    [Serializable]
+    public abstract class CaseCompleted : Message
     {
-        MethodGroup MethodGroup  { get; }
-        string Name  { get; }
-        CaseStatus Status { get; }
-        TimeSpan Duration  { get; }
-        string Output  { get; }
-        CompoundException Exceptions { get; }
-        string SkipReason { get; }
+        public MethodGroup MethodGroup  { get; protected set; }
+        public string Name  { get; protected set; }
+        public CaseStatus Status { get; protected set; }
+        public TimeSpan Duration  { get; protected set; }
+        public string Output  { get; protected set; }
+        public CompoundException Exceptions { get; protected set; }
+        public string SkipReason { get; protected set; }
     }
 }

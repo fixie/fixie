@@ -12,12 +12,12 @@ namespace Fixie.Execution
             SkipReason = skipReason;
         }
 
-        public MethodGroup MethodGroup { get; private set; }
-        public string Name { get; private set; }
-        CaseStatus CaseCompleted.Status { get { return CaseStatus.Skipped; } }
-        TimeSpan CaseCompleted.Duration { get { return TimeSpan.Zero; } }
-        string CaseCompleted.Output { get { return null; } }
-        CompoundException CaseCompleted.Exceptions { get { return null; } }
-        public string SkipReason { get; private set; }
+        public MethodGroup MethodGroup { get; }
+        public string Name { get; }
+        public CaseStatus Status { get { return CaseStatus.Skipped; } }
+        public TimeSpan Duration { get { return TimeSpan.Zero; } }
+        public string Output { get { return null; } }
+        public CompoundException Exceptions { get { return null; } }
+        public string SkipReason { get; }
     }
 }

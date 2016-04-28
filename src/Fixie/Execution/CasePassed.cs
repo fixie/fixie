@@ -13,12 +13,12 @@ namespace Fixie.Execution
             Output = @case.Output;
         }
 
-        public MethodGroup MethodGroup { get; private set; }
-        public string Name { get; private set; }
-        CaseStatus CaseCompleted.Status { get { return CaseStatus.Passed; } }
-        public TimeSpan Duration { get; private set; }
-        public string Output { get; private set; }
-        CompoundException CaseCompleted.Exceptions { get { return null; } }
-        string CaseCompleted.SkipReason { get { return null; } }
+        public MethodGroup MethodGroup { get; }
+        public string Name { get; }
+        public CaseStatus Status { get { return CaseStatus.Passed; } }
+        public TimeSpan Duration { get; }
+        public string Output { get; }
+        public CompoundException Exceptions { get { return null; } }
+        public string SkipReason { get { return null; } }
     }
 }

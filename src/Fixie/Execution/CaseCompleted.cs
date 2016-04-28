@@ -4,11 +4,11 @@ namespace Fixie.Execution
 {
     public interface CaseCompleted
     {
-        CaseStatus Status { get; }
-        string Name  { get; }
         MethodGroup MethodGroup  { get; }
-        string Output  { get; }
+        string Name  { get; }
+        CaseStatus Status { get; }
         TimeSpan Duration  { get; }
+        string Output  { get; }
         CompoundException Exceptions { get; }
         string SkipReason { get; }
     }

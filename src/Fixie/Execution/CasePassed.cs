@@ -7,18 +7,17 @@ namespace Fixie.Execution
     {
         public CasePassed(Case @case)
         {
-            Name = @case.Name;
             MethodGroup = @case.MethodGroup;
-            Output = @case.Output;
+            Name = @case.Name;
             Duration = @case.Duration;
+            Output = @case.Output;
         }
 
-        public string Name { get; private set; }
         public MethodGroup MethodGroup { get; private set; }
-        public string Output { get; private set; }
-        public TimeSpan Duration { get; private set; }
-
+        public string Name { get; private set; }
         CaseStatus CaseCompleted.Status { get { return CaseStatus.Passed; } }
+        public TimeSpan Duration { get; private set; }
+        public string Output { get; private set; }
         CompoundException CaseCompleted.Exceptions { get { return null; } }
         string CaseCompleted.SkipReason { get { return null; } }
     }

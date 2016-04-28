@@ -10,9 +10,9 @@ namespace Fixie.ConsoleRunner
 {
     public class AppVeyorListener :
         Handler<AssemblyInfo>,
-        Handler<SkipResult>,
-        Handler<PassResult>,
-        Handler<FailResult>
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly string url;
         readonly HttpClient client;
@@ -35,7 +35,7 @@ namespace Fixie.ConsoleRunner
             fileName = Path.GetFileName(message.Location);
         }
 
-        public void Handle(SkipResult message)
+        public void Handle(CaseSkipped message)
         {
             var caseResult = (CaseResult)message;
 
@@ -52,7 +52,7 @@ namespace Fixie.ConsoleRunner
             });
         }
 
-        public void Handle(PassResult message)
+        public void Handle(CasePassed message)
         {
             var caseResult = (CaseResult)message;
 
@@ -69,7 +69,7 @@ namespace Fixie.ConsoleRunner
             });
         }
 
-        public void Handle(FailResult message)
+        public void Handle(CaseFailed message)
         {
             var caseResult = (CaseResult)message;
 

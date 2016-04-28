@@ -4,9 +4,9 @@ using TestDriven.Framework;
 namespace Fixie.TestDriven
 {
     public class TestDrivenListener :
-        Handler<SkipResult>,
-        Handler<PassResult>,
-        Handler<FailResult>
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly ITestListener tdnet;
 
@@ -15,7 +15,7 @@ namespace Fixie.TestDriven
             this.tdnet = tdnet;
         }
 
-        public void Handle(SkipResult message)
+        public void Handle(CaseSkipped message)
         {
             tdnet.TestFinished(new TestResult
             {
@@ -25,7 +25,7 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void Handle(PassResult message)
+        public void Handle(CasePassed message)
         {
             tdnet.TestFinished(new TestResult
             {
@@ -34,7 +34,7 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void Handle(FailResult message)
+        public void Handle(CaseFailed message)
         {
             tdnet.TestFinished(new TestResult
             {

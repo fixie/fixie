@@ -81,15 +81,15 @@ namespace Fixie.Tests.Execution
         }
 
         public class StubCaseResultListener :
-            Handler<SkipResult>,
-            Handler<PassResult>,
-            Handler<FailResult>
+            Handler<CaseSkipped>,
+            Handler<CasePassed>,
+            Handler<CaseFailed>
         {
             public List<CaseResult> Log { get; set; } = new List<CaseResult>();
 
-            public void Handle(SkipResult message) => Log.Add(message);
-            public void Handle(PassResult message) => Log.Add(message);
-            public void Handle(FailResult message) => Log.Add(message);
+            public void Handle(CaseSkipped message) => Log.Add(message);
+            public void Handle(CasePassed message) => Log.Add(message);
+            public void Handle(CaseFailed message) => Log.Add(message);
         }
 
         static void WhereAmI([CallerMemberName] string member = null)

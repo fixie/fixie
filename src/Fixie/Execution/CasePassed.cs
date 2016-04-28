@@ -3,9 +3,9 @@
 namespace Fixie.Execution
 {
     [Serializable]
-    public class PassResult : CaseResult, Message
+    public class CasePassed : CaseResult, Message
     {
-        public PassResult(Case @case)
+        public CasePassed(Case @case)
         {
             Name = @case.Name;
             MethodGroup = @case.MethodGroup;

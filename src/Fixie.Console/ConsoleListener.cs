@@ -6,8 +6,8 @@ namespace Fixie.ConsoleRunner
 {
     public class ConsoleListener :
         Handler<AssemblyInfo>,
-        Handler<SkipResult>,
-        Handler<FailResult>,
+        Handler<CaseSkipped>,
+        Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
         public void Handle(AssemblyInfo message)
@@ -16,13 +16,13 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine();
         }
 
-        public void Handle(SkipResult message)
+        public void Handle(CaseSkipped message)
         {
             using (Foreground.Yellow)
                 Console.WriteLine("Test '{0}' skipped{1}", message.Name, message.SkipReason == null ? null : ": " + message.SkipReason);
         }
 
-        public void Handle(FailResult message)
+        public void Handle(CaseFailed message)
         {
             using (Foreground.Red)
                 Console.WriteLine("Test '{0}' failed: {1}", message.Name, message.Exceptions.PrimaryException.DisplayName);

@@ -3,9 +3,9 @@
 namespace Fixie.Execution
 {
     [Serializable]
-    public class SkipResult : CaseResult, Message
+    public class CaseSkipped : CaseResult, Message
     {
-        public SkipResult(Case @case, string skipReason)
+        public CaseSkipped(Case @case, string skipReason)
         {
             Name = @case.Name;
             MethodGroup = @case.MethodGroup;

@@ -8,9 +8,9 @@ namespace Fixie.ConsoleRunner
 {
     public class TeamCityListener :
         Handler<AssemblyInfo>,
-        Handler<SkipResult>,
-        Handler<PassResult>,
-        Handler<FailResult>,
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
         public void Handle(AssemblyInfo message)
@@ -18,19 +18,19 @@ namespace Fixie.ConsoleRunner
             Message("testSuiteStarted name='{0}'", SuiteName(message));
         }
 
-        public void Handle(SkipResult message)
+        public void Handle(CaseSkipped message)
         {
             Message("testIgnored name='{0}' message='{1}'", message.Name, message.SkipReason);
         }
 
-        public void Handle(PassResult message)
+        public void Handle(CasePassed message)
         {
             Message("testStarted name='{0}'", message.Name);
             Output(message.Name, message.Output);
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
-        public void Handle(FailResult message)
+        public void Handle(CaseFailed message)
         {
             Message("testStarted name='{0}'", message.Name);
             Output(message.Name, message.Output);

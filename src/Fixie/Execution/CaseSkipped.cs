@@ -6,14 +6,16 @@ namespace Fixie.Execution
     public class CaseSkipped : CaseCompleted
     {
         public CaseSkipped(Case @case, string skipReason)
+            : base(
+                methodGroup: @case.MethodGroup,
+                name: @case.Name,
+                status: CaseStatus.Skipped,
+                duration: TimeSpan.Zero,
+                output: null,
+                exceptions: null,
+                skipReason: skipReason
+                )
         {
-            MethodGroup = @case.MethodGroup;
-            Name = @case.Name;
-            Status = CaseStatus.Skipped;
-            Duration = TimeSpan.Zero;
-            Output = null;
-            Exceptions = null;
-            SkipReason = skipReason;
         }
     }
 }

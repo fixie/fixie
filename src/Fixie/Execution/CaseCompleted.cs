@@ -5,12 +5,25 @@ namespace Fixie.Execution
     [Serializable]
     public abstract class CaseCompleted : Message
     {
-        public MethodGroup MethodGroup  { get; protected set; }
-        public string Name  { get; protected set; }
-        public CaseStatus Status { get; protected set; }
-        public TimeSpan Duration  { get; protected set; }
-        public string Output  { get; protected set; }
-        public CompoundException Exceptions { get; protected set; }
-        public string SkipReason { get; protected set; }
+        protected CaseCompleted(
+            MethodGroup methodGroup, string name, CaseStatus status, TimeSpan duration, string output,
+            CompoundException exceptions, string skipReason)
+        {
+            MethodGroup = methodGroup;
+            Name = name;
+            Status = status;
+            Duration = duration;
+            Output = output;
+            Exceptions = exceptions;
+            SkipReason = skipReason;
+        }
+
+        public MethodGroup MethodGroup  { get; }
+        public string Name  { get; }
+        public CaseStatus Status { get; }
+        public TimeSpan Duration  { get; }
+        public string Output  { get; }
+        public CompoundException Exceptions { get; }
+        public string SkipReason { get; }
     }
 }

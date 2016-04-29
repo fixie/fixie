@@ -1,17 +1,21 @@
 using Fixie.Execution;
+using System.Collections.Generic;
 
 namespace Fixie.Internal
 {
     public class Bus : LongLivedMarshalByRefObject
     {
-        readonly object listener;
+        readonly List<object> listeners;
 
-        public Bus(object listener)
+        public Bus(params object[] listeners)
         {
-            this.listener = listener;
+            this.listeners = new List<object>(listeners);
         }
 
         public void Publish<TMessage>(TMessage message) where TMessage : Message
-            => (listener as Handler<TMessage>)?.Handle(message);
+        {
+            foreach (var listener in listeners)
+                (listener as Handler<TMessage>)?.Handle(message);
+        }
     }
 }

@@ -15,27 +15,16 @@ namespace Fixie.Execution
             Name = name;
         }
 
-        public void Add(ClassReport classReport)
-        {
-            classes.Add(classReport);
-        }
+        public void Add(ClassReport classReport) => classes.Add(classReport);
 
         public string Name { get; private set; }
 
-        public TimeSpan Duration
-        {
-            get { return new TimeSpan(classes.Sum(result => result.Duration.Ticks)); }
-        }
+        public TimeSpan Duration => new TimeSpan(classes.Sum(result => result.Duration.Ticks));
 
-        public IReadOnlyList<ClassReport> Classes
-        {
-            get { return classes; }
-        }
+        public IReadOnlyList<ClassReport> Classes => classes;
 
-        public int Passed { get { return classes.Sum(result => result.Passed); } }
-
-        public int Failed { get { return classes.Sum(result => result.Failed); } }
-
-        public int Skipped { get { return classes.Sum(result => result.Skipped); } }
+        public int Passed => classes.Sum(result => result.Passed);
+        public int Failed => classes.Sum(result => result.Failed);
+        public int Skipped => classes.Sum(result => result.Skipped);
     }
 }

@@ -19,7 +19,7 @@ namespace Fixie.Execution
 
         public string Name { get; }
 
-        public TimeSpan Duration => new TimeSpan(cases.Sum(result => result.Duration.Ticks));
+        public TimeSpan Duration => new TimeSpan(cases.Sum(@case => @case.Duration.Ticks));
 
         public IReadOnlyList<CaseCompleted> Cases => cases;
 

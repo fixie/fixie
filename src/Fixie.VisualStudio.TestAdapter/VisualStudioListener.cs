@@ -6,9 +6,9 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 namespace Fixie.VisualStudio.TestAdapter
 {
     public class VisualStudioListener :
-        Handler<SkipResult>,
-        Handler<PassResult>,
-        Handler<FailResult>
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
@@ -19,7 +19,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public void Handle(SkipResult message)
+        public void Handle(CaseSkipped message)
         {
             log.RecordResult(new TestResult(TestCase(message.MethodGroup))
             {
@@ -30,7 +30,7 @@ namespace Fixie.VisualStudio.TestAdapter
             });
         }
 
-        public void Handle(PassResult message)
+        public void Handle(CasePassed message)
         {
             var testResult = new TestResult(TestCase(message.MethodGroup))
             {
@@ -45,7 +45,7 @@ namespace Fixie.VisualStudio.TestAdapter
             log.RecordResult(testResult);
         }
 
-        public void Handle(FailResult message)
+        public void Handle(CaseFailed message)
         {
             var testResult = new TestResult(TestCase(message.MethodGroup))
             {

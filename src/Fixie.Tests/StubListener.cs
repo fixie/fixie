@@ -5,24 +5,24 @@ using Fixie.Execution;
 namespace Fixie.Tests
 {
     public class StubListener :
-        Handler<SkipResult>,
-        Handler<PassResult>,
-        Handler<FailResult>
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly List<string> log = new List<string>();
 
-        public void Handle(SkipResult message)
+        public void Handle(CaseSkipped message)
         {
             var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
             log.Add($"{message.Name} skipped{optionalReason}");
         }
 
-        public void Handle(PassResult message)
+        public void Handle(CasePassed message)
         {
             log.Add($"{message.Name} passed");
         }
 
-        public void Handle(FailResult message)
+        public void Handle(CaseFailed message)
         {
             var entry = new StringBuilder();
 

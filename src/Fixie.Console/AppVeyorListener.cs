@@ -9,10 +9,10 @@ using System.Web.Script.Serialization;
 namespace Fixie.ConsoleRunner
 {
     public class AppVeyorListener :
-        Handler<AssemblyInfo>,
-        Handler<SkipResult>,
-        Handler<PassResult>,
-        Handler<FailResult>
+        Handler<AssemblyStarted>,
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly string url;
         readonly HttpClient client;
@@ -30,59 +30,53 @@ namespace Fixie.ConsoleRunner
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public void Handle(AssemblyInfo message)
+        public void Handle(AssemblyStarted message)
         {
             fileName = Path.GetFileName(message.Location);
         }
 
-        public void Handle(SkipResult message)
+        public void Handle(CaseSkipped message)
         {
-            var caseResult = (CaseResult)message;
-
             Post(new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
-                testName = caseResult.Name,
+                testName = message.Name,
                 outcome = "Skipped",
-                durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseResult.Output,
-                ErrorMessage = caseResult.SkipReason,
+                durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
+                StdOut = message.Output,
+                ErrorMessage = message.SkipReason,
                 ErrorStackTrace = null
             });
         }
 
-        public void Handle(PassResult message)
+        public void Handle(CasePassed message)
         {
-            var caseResult = (CaseResult)message;
-
             Post(new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
-                testName = caseResult.Name,
+                testName = message.Name,
                 outcome = "Passed",
-                durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseResult.Output,
+                durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
+                StdOut = message.Output,
                 ErrorMessage = null,
                 ErrorStackTrace = null
             });
         }
 
-        public void Handle(FailResult message)
+        public void Handle(CaseFailed message)
         {
-            var caseResult = (CaseResult)message;
-
             Post(new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
-                testName = caseResult.Name,
+                testName = message.Name,
                 outcome = "Failed",
-                durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseResult.Output,
-                ErrorMessage = caseResult.Exceptions.PrimaryException.DisplayName,
-                ErrorStackTrace = caseResult.Exceptions.CompoundStackTrace
+                durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
+                StdOut = message.Output,
+                ErrorMessage = message.Exceptions.PrimaryException.DisplayName,
+                ErrorStackTrace = message.Exceptions.CompoundStackTrace
             });
         }
 

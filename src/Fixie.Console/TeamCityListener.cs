@@ -7,30 +7,30 @@ using Fixie.Execution;
 namespace Fixie.ConsoleRunner
 {
     public class TeamCityListener :
-        Handler<AssemblyInfo>,
-        Handler<SkipResult>,
-        Handler<PassResult>,
-        Handler<FailResult>,
+        Handler<AssemblyStarted>,
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
-        public void Handle(AssemblyInfo message)
+        public void Handle(AssemblyStarted message)
         {
-            Message("testSuiteStarted name='{0}'", SuiteName(message));
+            Message("testSuiteStarted name='{0}'", Path.GetFileName(message.Location));
         }
 
-        public void Handle(SkipResult message)
+        public void Handle(CaseSkipped message)
         {
             Message("testIgnored name='{0}' message='{1}'", message.Name, message.SkipReason);
         }
 
-        public void Handle(PassResult message)
+        public void Handle(CasePassed message)
         {
             Message("testStarted name='{0}'", message.Name);
             Output(message.Name, message.Output);
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
-        public void Handle(FailResult message)
+        public void Handle(CaseFailed message)
         {
             Message("testStarted name='{0}'", message.Name);
             Output(message.Name, message.Output);
@@ -40,7 +40,7 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(AssemblyCompleted message)
         {
-            Message("testSuiteFinished name='{0}'", SuiteName(message.Assembly));
+            Message("testSuiteFinished name='{0}'", Path.GetFileName(message.Location));
         }
 
         static void Message(string format, params string[] args)
@@ -85,11 +85,6 @@ namespace Fixie.ConsoleRunner
         static string DurationInMilliseconds(TimeSpan duration)
         {
             return ((int)Math.Ceiling(duration.TotalMilliseconds)).ToString();
-        }
-
-        static string SuiteName(AssemblyInfo assembly)
-        {
-            return Path.GetFileName(assembly.Location);
         }
     }
 }

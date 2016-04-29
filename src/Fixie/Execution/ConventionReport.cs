@@ -5,11 +5,11 @@ using System.Linq;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class ConventionResult
+    public class ConventionReport
     {
         readonly List<ClassReport> classes;
 
-        public ConventionResult(string name)
+        public ConventionReport(string name)
         {
             classes = new List<ClassReport>();
             Name = name;

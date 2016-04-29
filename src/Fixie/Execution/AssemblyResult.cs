@@ -8,36 +8,36 @@ namespace Fixie.Execution
     [Serializable]
     public class AssemblyResult
     {
-        readonly List<ConventionResult> conventionResults;
+        readonly List<ConventionReport> conventions;
 
         public AssemblyResult(string name)
         {
-            conventionResults = new List<ConventionResult>();
+            conventions = new List<ConventionReport>();
             Name = name;
         }
 
-        public void Add(ConventionResult conventionResult)
+        public void Add(ConventionReport conventionReport)
         {
-            conventionResults.Add(conventionResult);
+            conventions.Add(conventionReport);
         }
 
         public string Name { get; private set; }
 
         public TimeSpan Duration
         {
-            get { return new TimeSpan(conventionResults.Sum(result => result.Duration.Ticks)); }
+            get { return new TimeSpan(conventions.Sum(result => result.Duration.Ticks)); }
         }
 
-        public IReadOnlyList<ConventionResult> ConventionResults
+        public IReadOnlyList<ConventionReport> Conventions
         {
-            get { return conventionResults; }
+            get { return conventions; }
         }
 
-        public int Passed { get { return conventionResults.Sum(result => result.Passed); } }
+        public int Passed { get { return conventions.Sum(result => result.Passed); } }
 
-        public int Failed { get { return conventionResults.Sum(result => result.Failed); } }
+        public int Failed { get { return conventions.Sum(result => result.Failed); } }
 
-        public int Skipped { get { return conventionResults.Sum(result => result.Skipped); } }
+        public int Skipped { get { return conventions.Sum(result => result.Skipped); } }
 
         public int Total
         {

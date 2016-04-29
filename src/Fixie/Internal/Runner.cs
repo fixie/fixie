@@ -108,9 +108,9 @@ namespace Fixie.Internal
 
             foreach (var convention in conventions)
             {
-                var conventionResult = Run(convention, candidateTypes);
+                var conventionReport = Run(convention, candidateTypes);
 
-                assemblyResult.Add(conventionResult);
+                assemblyResult.Add(conventionReport);
             }
 
             bus.Publish(new AssemblyCompleted(assembly, assemblyResult));
@@ -118,20 +118,20 @@ namespace Fixie.Internal
             return assemblyResult;
         }
 
-        ConventionResult Run(Convention convention, Type[] candidateTypes)
+        ConventionReport Run(Convention convention, Type[] candidateTypes)
         {
             var classDiscoverer = new ClassDiscoverer(convention);
-            var conventionResult = new ConventionResult(convention.GetType().FullName);
+            var conventionReport = new ConventionReport(convention.GetType().FullName);
             var classRunner = new ClassRunner(bus, convention);
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
             {
                 var classReport = classRunner.Run(testClass);
 
-                conventionResult.Add(classReport);
+                conventionReport.Add(classReport);
             }
 
-            return conventionResult;
+            return conventionReport;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Fixie.Reports
         {
             var now = DateTime.UtcNow;
 
-            var classes = assemblyResult.ConventionResults.SelectMany(x => x.Classes);
+            var classes = assemblyResult.Conventions.SelectMany(x => x.Classes);
 
             return new XElement("assembly",
                 new XAttribute("name", assemblyResult.Name),

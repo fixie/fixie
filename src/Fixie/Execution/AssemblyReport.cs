@@ -24,9 +24,9 @@ namespace Fixie.Execution
 
         public IReadOnlyList<ClassReport> Classes => classes;
 
-        public int Passed => classes.Sum(result => result.Passed);
-        public int Failed => classes.Sum(result => result.Failed);
-        public int Skipped => classes.Sum(result => result.Skipped);
+        public int Passed => classes.Sum(@class => @class.Passed);
+        public int Failed => classes.Sum(@class => @class.Failed);
+        public int Skipped => classes.Sum(@class => @class.Skipped);
         public int Total => Passed + Failed + Skipped;
 
         public string Summary

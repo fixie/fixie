@@ -23,8 +23,8 @@ namespace Fixie.Execution
 
         public IReadOnlyList<CaseCompleted> Cases => cases;
 
-        public int Passed => cases.Count(result => result.Status == CaseStatus.Passed);
-        public int Failed => cases.Count(result => result.Status == CaseStatus.Failed);
-        public int Skipped => cases.Count(result => result.Status == CaseStatus.Skipped);
+        public int Passed => cases.Count(@case => @case.Status == CaseStatus.Passed);
+        public int Failed => cases.Count(@case => @case.Status == CaseStatus.Failed);
+        public int Skipped => cases.Count(@case => @case.Status == CaseStatus.Skipped);
     }
 }

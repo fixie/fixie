@@ -20,21 +20,21 @@ namespace Fixie.Internal
             this.options = options;
         }
 
-        public AssemblyResult RunAssembly(Assembly assembly)
+        public AssemblyReport RunAssembly(Assembly assembly)
         {
             RunContext.Set(options);
 
             return RunTypesInternal(assembly, assembly.GetTypes());
         }
 
-        public AssemblyResult RunNamespace(Assembly assembly, string ns)
+        public AssemblyReport RunNamespace(Assembly assembly, string ns)
         {
             RunContext.Set(options);
 
             return RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
-        public AssemblyResult RunType(Assembly assembly, Type type)
+        public AssemblyReport RunType(Assembly assembly, Type type)
         {
             RunContext.Set(options, type);
 
@@ -42,14 +42,14 @@ namespace Fixie.Internal
             return RunTypesInternal(assembly, types);
         }
 
-        public AssemblyResult RunTypes(Assembly assembly, Convention convention, params Type[] types)
+        public AssemblyReport RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
             RunContext.Set(options);
 
             return Run(assembly, new[] { convention }, types);
         }
 
-        public AssemblyResult RunMethods(Assembly assembly, params MethodInfo[] methods)
+        public AssemblyReport RunMethods(Assembly assembly, params MethodInfo[] methods)
         {
             if (methods.Length == 1)
                 RunContext.Set(options, methods.Single());
@@ -64,7 +64,7 @@ namespace Fixie.Internal
             return Run(assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
         }
 
-        public AssemblyResult RunMethods(Assembly assembly, MethodGroup[] methodGroups)
+        public AssemblyReport RunMethods(Assembly assembly, MethodGroup[] methodGroups)
         {
             return RunMethods(assembly, GetMethods(assembly, methodGroups));
         }
@@ -90,7 +90,7 @@ namespace Fixie.Internal
                 .Where(m => m.Name == methodGroup.Method);
         }
 
-        AssemblyResult RunTypesInternal(Assembly assembly, params Type[] types)
+        AssemblyReport RunTypesInternal(Assembly assembly, params Type[] types)
         {
             return Run(assembly, GetConventions(assembly), types);
         }
@@ -100,9 +100,9 @@ namespace Fixie.Internal
             return new ConventionDiscoverer(assembly).GetConventions();
         }
 
-        AssemblyResult Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
+        AssemblyReport Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
-            var assemblyResult = new AssemblyResult(assembly.Location);
+            var assemblyResult = new AssemblyReport(assembly.Location);
 
             bus.Publish(new AssemblyStarted(assembly));
 

@@ -6,13 +6,13 @@ namespace Fixie.Execution
     [Serializable]
     public class AssemblyCompleted : Message
     {
-        public AssemblyCompleted(Assembly assembly, AssemblyResult result)
+        public AssemblyCompleted(Assembly assembly, AssemblyReport result)
         {
             Location = assembly.Location;
             Result = result;
         }
 
         public string Location { get; }
-        public AssemblyResult Result { get; private set; }
+        public AssemblyReport Result { get; private set; }
     }
 }

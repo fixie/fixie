@@ -12,25 +12,25 @@ namespace Fixie.Reports
         {
             return new XDocument(
                 new XElement("assemblies",
-                    executionResult.AssemblyResults.Select(Assembly)));
+                    executionResult.Assemblies.Select(Assembly)));
         }
 
-        static XElement Assembly(AssemblyResult assemblyResult)
+        static XElement Assembly(AssemblyReport assemblyReport)
         {
             var now = DateTime.UtcNow;
 
-            var classes = assemblyResult.Conventions.SelectMany(x => x.Classes);
+            var classes = assemblyReport.Conventions.SelectMany(x => x.Classes);
 
             return new XElement("assembly",
-                new XAttribute("name", assemblyResult.Name),
+                new XAttribute("name", assemblyReport.Name),
                 new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                 new XAttribute("run-time", now.ToString("HH:mm:ss")),
                 new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
-                new XAttribute("time", Seconds(assemblyResult.Duration)),
-                new XAttribute("total", assemblyResult.Total),
-                new XAttribute("passed", assemblyResult.Passed),
-                new XAttribute("failed", assemblyResult.Failed),
-                new XAttribute("skipped", assemblyResult.Skipped),
+                new XAttribute("time", Seconds(assemblyReport.Duration)),
+                new XAttribute("total", assemblyReport.Total),
+                new XAttribute("passed", assemblyReport.Passed),
+                new XAttribute("failed", assemblyReport.Failed),
+                new XAttribute("skipped", assemblyReport.Skipped),
                 new XAttribute("environment", String.Format("{0}-bit .NET {1}", IntPtr.Size * 8, Environment.Version)),
                 new XAttribute("test-framework", Framework.Version),
                 classes.Select(Class));

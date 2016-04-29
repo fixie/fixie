@@ -30,7 +30,7 @@ namespace Fixie.Reports
 
                     Environment(),
                     CultureInfo(),
-                    executionResult.AssemblyResults.Select(Assembly)));
+                    executionResult.Assemblies.Select(Assembly)));
         }
 
         static XElement CultureInfo()
@@ -53,16 +53,16 @@ namespace Fixie.Reports
                 new XAttribute("user-domain", System.Environment.UserDomainName));
         }
 
-        static XElement Assembly(AssemblyResult assemblyResult)
+        static XElement Assembly(AssemblyReport assemblyReport)
         {
             return new XElement("test-suite",
                 new XAttribute("type", "Assembly"),
-                new XAttribute("success", assemblyResult.Failed == 0),
-                new XAttribute("name", assemblyResult.Name),
-                new XAttribute("time", Seconds(assemblyResult.Duration)),
+                new XAttribute("success", assemblyReport.Failed == 0),
+                new XAttribute("name", assemblyReport.Name),
+                new XAttribute("time", Seconds(assemblyReport.Duration)),
                 new XAttribute("executed", true),
-                new XAttribute("result", assemblyResult.Failed > 0 ? "Failure" : "Success"),
-                new XElement("results", assemblyResult.Conventions.Select(Convention)));
+                new XAttribute("result", assemblyReport.Failed > 0 ? "Failure" : "Success"),
+                new XElement("results", assemblyReport.Conventions.Select(Convention)));
         }
 
         static XElement Convention(ConventionReport conventionReport)

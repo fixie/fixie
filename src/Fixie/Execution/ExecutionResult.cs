@@ -7,28 +7,28 @@ namespace Fixie.Execution
     [Serializable]
     public class ExecutionResult
     {
-        readonly List<AssemblyResult> assemblyResults;
+        readonly List<AssemblyReport> assemblies;
 
         public ExecutionResult()
         {
-            assemblyResults = new List<AssemblyResult>();
+            assemblies = new List<AssemblyReport>();
         }
 
-        public void Add(AssemblyResult assemblyResult)
+        public void Add(AssemblyReport assemblyReport)
         {
-            assemblyResults.Add(assemblyResult);
+            assemblies.Add(assemblyReport);
         }
 
-        public IReadOnlyList<AssemblyResult> AssemblyResults
+        public IReadOnlyList<AssemblyReport> Assemblies
         {
-            get { return assemblyResults; }
+            get { return assemblies; }
         }
 
-        public int Passed { get { return assemblyResults.Sum(result => result.Passed); } }
+        public int Passed { get { return assemblies.Sum(result => result.Passed); } }
 
-        public int Failed { get { return assemblyResults.Sum(result => result.Failed); } }
+        public int Failed { get { return assemblies.Sum(result => result.Failed); } }
 
-        public int Skipped { get { return assemblyResults.Sum(result => result.Skipped); } }
+        public int Skipped { get { return assemblies.Sum(result => result.Skipped); } }
 
         public int Total
         {

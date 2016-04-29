@@ -99,7 +99,7 @@
     <Compile Include="Internal\RunContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
-    <Compile Include="Execution\AssemblyResult.cs" />
+    <Compile Include="Execution\AssemblyReport.cs" />
     <Compile Include="Internal\Runner.cs" />
     <Compile Include="Execution\CaseSkipped.cs" />
   </ItemGroup>

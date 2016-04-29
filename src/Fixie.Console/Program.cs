@@ -78,7 +78,7 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static AssemblyResult Execute(string assemblyPath, Options options)
+        static AssemblyReport Execute(string assemblyPath, Options options)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {

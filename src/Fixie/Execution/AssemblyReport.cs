@@ -6,11 +6,11 @@ using System.Text;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class AssemblyResult
+    public class AssemblyReport
     {
         readonly List<ConventionReport> conventions;
 
-        public AssemblyResult(string name)
+        public AssemblyReport(string name)
         {
             conventions = new List<ConventionReport>();
             Name = name;

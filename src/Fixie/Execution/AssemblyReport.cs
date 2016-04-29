@@ -10,15 +10,15 @@ namespace Fixie.Execution
     {
         readonly List<ClassReport> classes;
 
-        public AssemblyReport(string name)
+        public AssemblyReport(string location)
         {
             classes = new List<ClassReport>();
-            Name = name;
+            Location = location;
         }
 
         public void Add(ClassReport classReport) => classes.Add(classReport);
 
-        public string Name { get; }
+        public string Location { get; }
 
         public TimeSpan Duration => new TimeSpan(classes.Sum(result => result.Duration.Ticks));
 

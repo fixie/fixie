@@ -126,9 +126,9 @@ namespace Fixie.Internal
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
             {
-                var classResult = classRunner.Run(testClass);
+                var classReport = classRunner.Run(testClass);
 
-                conventionResult.Add(classResult);
+                conventionResult.Add(classReport);
             }
 
             return conventionResult;

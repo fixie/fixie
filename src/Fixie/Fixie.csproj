@@ -92,7 +92,7 @@
     <Compile Include="Reports\XUnitXmlReport.cs" />
     <Compile Include="Execution\CaseCompleted.cs" />
     <Compile Include="Execution\CaseStatus.cs" />
-    <Compile Include="Execution\ClassResult.cs" />
+    <Compile Include="Execution\ClassReport.cs" />
     <Compile Include="Execution\ConventionResult.cs" />
     <Compile Include="Execution\ExceptionInfo.cs" />
     <Compile Include="Execution\ExecutionResult.cs" />

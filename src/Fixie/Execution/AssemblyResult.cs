@@ -16,9 +16,9 @@ namespace Fixie.Execution
             Name = name;
         }
 
-        public void Add(ConventionResult classResult)
+        public void Add(ConventionResult conventionResult)
         {
-            conventionResults.Add(classResult);
+            conventionResults.Add(conventionResult);
         }
 
         public string Name { get; private set; }

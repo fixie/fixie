@@ -74,19 +74,19 @@ namespace Fixie.Reports
                 new XAttribute("time", Seconds(conventionResult.Duration)),
                 new XAttribute("executed", true),
                 new XAttribute("result", conventionResult.Failed > 0 ? "Failure" : "Success"),
-                new XElement("results", conventionResult.ClassResults.Select(Class)));
+                new XElement("results", conventionResult.Classes.Select(Class)));
         }
 
-        static XElement Class(ClassResult classResult)
+        static XElement Class(ClassReport classReport)
         {
             return new XElement("test-suite",
                 new XAttribute("type", "TestFixture"),
-                new XAttribute("name", classResult.Name),
-                new XAttribute("success", classResult.Failed == 0),
-                new XAttribute("time", Seconds(classResult.Duration)),
+                new XAttribute("name", classReport.Name),
+                new XAttribute("success", classReport.Failed == 0),
+                new XAttribute("time", Seconds(classReport.Duration)),
                 new XAttribute("executed", true),
-                new XAttribute("result", classResult.Failed > 0 ? "Failure" : "Success"),
-                new XElement("results", classResult.Cases.Select(Case)));
+                new XAttribute("result", classReport.Failed > 0 ? "Failure" : "Success"),
+                new XElement("results", classReport.Cases.Select(Case)));
         }
 
         static XElement Case(CaseCompleted message)

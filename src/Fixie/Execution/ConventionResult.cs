@@ -7,35 +7,35 @@ namespace Fixie.Execution
     [Serializable]
     public class ConventionResult
     {
-        readonly List<ClassResult> classResults;
+        readonly List<ClassReport> classes;
 
         public ConventionResult(string name)
         {
-            classResults = new List<ClassResult>();
+            classes = new List<ClassReport>();
             Name = name;
         }
 
-        public void Add(ClassResult classResult)
+        public void Add(ClassReport classReport)
         {
-            classResults.Add(classResult);
+            classes.Add(classReport);
         }
 
         public string Name { get; private set; }
 
         public TimeSpan Duration
         {
-            get { return new TimeSpan(classResults.Sum(result => result.Duration.Ticks)); }
+            get { return new TimeSpan(classes.Sum(result => result.Duration.Ticks)); }
         }
 
-        public IReadOnlyList<ClassResult> ClassResults
+        public IReadOnlyList<ClassReport> Classes
         {
-            get { return classResults; }
+            get { return classes; }
         }
 
-        public int Passed { get { return classResults.Sum(result => result.Passed); } }
+        public int Passed { get { return classes.Sum(result => result.Passed); } }
 
-        public int Failed { get { return classResults.Sum(result => result.Failed); } }
+        public int Failed { get { return classes.Sum(result => result.Failed); } }
 
-        public int Skipped { get { return classResults.Sum(result => result.Skipped); } }
+        public int Skipped { get { return classes.Sum(result => result.Skipped); } }
     }
 }

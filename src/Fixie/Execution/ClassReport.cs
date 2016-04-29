@@ -5,11 +5,11 @@ using System.Linq;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class ClassResult
+    public class ClassReport
     {
         readonly List<CaseCompleted> cases;
 
-        public ClassResult(string name)
+        public ClassReport(string name)
         {
             cases = new List<CaseCompleted>();
             Name = name;

@@ -19,7 +19,7 @@ namespace Fixie.Reports
         {
             var now = DateTime.UtcNow;
 
-            var classResults = assemblyResult.ConventionResults.SelectMany(x => x.ClassResults);
+            var classes = assemblyResult.ConventionResults.SelectMany(x => x.Classes);
 
             return new XElement("assembly",
                 new XAttribute("name", assemblyResult.Name),
@@ -33,19 +33,19 @@ namespace Fixie.Reports
                 new XAttribute("skipped", assemblyResult.Skipped),
                 new XAttribute("environment", String.Format("{0}-bit .NET {1}", IntPtr.Size * 8, Environment.Version)),
                 new XAttribute("test-framework", Framework.Version),
-                classResults.Select(Class));
+                classes.Select(Class));
         }
 
-        private static XElement Class(ClassResult classResult)
+        private static XElement Class(ClassReport classReport)
         {
             return new XElement("class",
-                new XAttribute("time", Seconds(classResult.Duration)),
-                new XAttribute("name", classResult.Name),
-                new XAttribute("total", classResult.Failed + classResult.Passed + classResult.Skipped),
-                new XAttribute("passed", classResult.Passed),
-                new XAttribute("failed", classResult.Failed),
-                new XAttribute("skipped", classResult.Skipped),
-                classResult.Cases.Select(Case));
+                new XAttribute("time", Seconds(classReport.Duration)),
+                new XAttribute("name", classReport.Name),
+                new XAttribute("total", classReport.Failed + classReport.Passed + classReport.Skipped),
+                new XAttribute("passed", classReport.Passed),
+                new XAttribute("failed", classReport.Failed),
+                new XAttribute("skipped", classReport.Skipped),
+                classReport.Cases.Select(Case));
         }
 
         private static XElement Case(CaseCompleted message)

@@ -21,8 +21,8 @@ namespace Fixie.Tests.Reports
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters.Add<InputAttributeParameterSource>();
-            var assemblyResult = typeof(PassFailTestClass).Run(listener, convention);
-            executionReport.Add(assemblyResult);
+            var assemblyReport = typeof(PassFailTestClass).Run(listener, convention);
+            executionReport.Add(assemblyReport);
 
             var report = new NUnitXmlReport();
             var actual = report.Transform(executionReport);

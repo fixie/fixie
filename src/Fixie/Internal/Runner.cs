@@ -102,36 +102,29 @@ namespace Fixie.Internal
 
         AssemblyReport Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
-            var assemblyResult = new AssemblyReport(assembly.Location);
+            var assemblyReport = new AssemblyReport(assembly.Location);
 
             bus.Publish(new AssemblyStarted(assembly));
 
             foreach (var convention in conventions)
-            {
-                var conventionReport = Run(convention, candidateTypes);
+                Run(assemblyReport, convention, candidateTypes);
 
-                assemblyResult.Add(conventionReport);
-            }
+            bus.Publish(new AssemblyCompleted(assembly, assemblyReport));
 
-            bus.Publish(new AssemblyCompleted(assembly, assemblyResult));
-
-            return assemblyResult;
+            return assemblyReport;
         }
 
-        ConventionReport Run(Convention convention, Type[] candidateTypes)
+        void Run(AssemblyReport assemblyReport, Convention convention, Type[] candidateTypes)
         {
             var classDiscoverer = new ClassDiscoverer(convention);
-            var conventionReport = new ConventionReport(convention.GetType().FullName);
             var classRunner = new ClassRunner(bus, convention);
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
             {
                 var classReport = classRunner.Run(testClass);
 
-                conventionReport.Add(classReport);
+                assemblyReport.Add(classReport);
             }
-
-            return conventionReport;
         }
     }
 }

@@ -93,7 +93,6 @@
     <Compile Include="Execution\CaseCompleted.cs" />
     <Compile Include="Execution\CaseStatus.cs" />
     <Compile Include="Execution\ClassReport.cs" />
-    <Compile Include="Execution\ConventionReport.cs" />
     <Compile Include="Execution\ExceptionInfo.cs" />
     <Compile Include="Execution\ExecutionReport.cs" />
     <Compile Include="Internal\RunContext.cs" />

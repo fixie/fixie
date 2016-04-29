@@ -18,7 +18,7 @@ namespace Fixie.Execution
 
         public void Add(ConventionReport conventionReport) => conventions.Add(conventionReport);
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public TimeSpan Duration => new TimeSpan(conventions.Sum(result => result.Duration.Ticks));
 

@@ -13,6 +13,6 @@ namespace Fixie.Execution
         }
 
         public string Location { get; }
-        public AssemblyReport Result { get; private set; }
+        public AssemblyReport Result { get; }
     }
 }

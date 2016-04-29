@@ -12,7 +12,7 @@ namespace Fixie.Execution
             Location = assembly.Location;
         }
 
-        public string Name { get; private set; }
-        public string Location { get; private set; }
+        public string Name { get; }
+        public string Location { get; }
     }
 }

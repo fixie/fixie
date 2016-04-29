@@ -17,7 +17,7 @@ namespace Fixie.Execution
 
         public void Add(CaseCompleted message) => cases.Add(message);
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public TimeSpan Duration => new TimeSpan(cases.Sum(result => result.Duration.Ticks));
 

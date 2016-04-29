@@ -17,7 +17,7 @@ namespace Fixie.Execution
 
         public void Add(ClassReport classReport) => classes.Add(classReport);
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public TimeSpan Duration => new TimeSpan(classes.Sum(result => result.Duration.Ticks));
 

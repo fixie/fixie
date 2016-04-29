@@ -5,11 +5,11 @@ using System.Linq;
 namespace Fixie.Execution
 {
     [Serializable]
-    public class ExecutionResult
+    public class ExecutionReport
     {
         readonly List<AssemblyReport> assemblies;
 
-        public ExecutionResult()
+        public ExecutionReport()
         {
             assemblies = new List<AssemblyReport>();
         }

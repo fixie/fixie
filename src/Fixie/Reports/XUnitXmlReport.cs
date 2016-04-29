@@ -8,11 +8,11 @@ namespace Fixie.Reports
 {
     public class XUnitXmlReport
     {
-        public XDocument Transform(ExecutionResult executionResult)
+        public XDocument Transform(ExecutionReport executionReport)
         {
             return new XDocument(
                 new XElement("assemblies",
-                    executionResult.Assemblies.Select(Assembly)));
+                    executionReport.Assemblies.Select(Assembly)));
         }
 
         static XElement Assembly(AssemblyReport assemblyReport)

@@ -8,7 +8,7 @@ namespace Fixie.Reports
 {
     public class NUnitXmlReport
     {
-        public XDocument Transform(ExecutionResult executionResult)
+        public XDocument Transform(ExecutionReport executionReport)
         {
             var now = DateTime.UtcNow;
 
@@ -17,9 +17,9 @@ namespace Fixie.Reports
                     new XAttribute("date", now.ToString("yyyy-MM-dd")),
                     new XAttribute("time", now.ToString("HH:mm:ss")),
                     new XAttribute("name", "Results"),
-                    new XAttribute("total", executionResult.Total),
-                    new XAttribute("failures", executionResult.Failed),
-                    new XAttribute("not-run", executionResult.Skipped),
+                    new XAttribute("total", executionReport.Total),
+                    new XAttribute("failures", executionReport.Failed),
+                    new XAttribute("not-run", executionReport.Skipped),
 
                     //Fixie has fewer test states than NUnit, so these counts are always zero.
                     new XAttribute("errors", 0), //Already accounted for by "failures" above.
@@ -30,7 +30,7 @@ namespace Fixie.Reports
 
                     Environment(),
                     CultureInfo(),
-                    executionResult.Assemblies.Select(Assembly)));
+                    executionReport.Assemblies.Select(Assembly)));
         }
 
         static XElement CultureInfo()

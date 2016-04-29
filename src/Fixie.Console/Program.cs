@@ -41,11 +41,11 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static ExecutionResult Execute(CommandLineParser commandLineParser)
+        static ExecutionReport Execute(CommandLineParser commandLineParser)
         {
             var options = commandLineParser.Options;
 
-            var summary = new ExecutionResult();
+            var summary = new ExecutionReport();
 
             foreach (var assemblyPath in commandLineParser.AssemblyPaths)
             {
@@ -59,11 +59,11 @@ namespace Fixie.ConsoleRunner
             return summary;
         }
 
-        static void SaveReport(Options options, ExecutionResult executionResult)
+        static void SaveReport(Options options, ExecutionReport executionReport)
         {
             if (options.Contains(CommandLineOption.NUnitXml))
             {
-                var xDocument = new NUnitXmlReport().Transform(executionResult);
+                var xDocument = new NUnitXmlReport().Transform(executionReport);
 
                 foreach (var fileName in options[CommandLineOption.NUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);
@@ -71,14 +71,14 @@ namespace Fixie.ConsoleRunner
 
             if (options.Contains(CommandLineOption.XUnitXml))
             {
-                var xDocument = new XUnitXmlReport().Transform(executionResult);
+                var xDocument = new XUnitXmlReport().Transform(executionReport);
 
                 foreach (var fileName in options[CommandLineOption.XUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);
             }
         }
 
-        static AssemblyResult Execute(string assemblyPath, Options options)
+        static AssemblyReport Execute(string assemblyPath, Options options)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {

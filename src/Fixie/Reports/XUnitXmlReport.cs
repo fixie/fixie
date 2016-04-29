@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
@@ -8,47 +9,45 @@ namespace Fixie.Reports
 {
     public class XUnitXmlReport
     {
-        public XDocument Transform(ExecutionResult executionResult)
+        public XDocument Transform(ExecutionReport executionReport)
         {
             return new XDocument(
                 new XElement("assemblies",
-                    executionResult.AssemblyResults.Select(Assembly)));
+                    executionReport.Assemblies.Select(Assembly)));
         }
 
-        static XElement Assembly(AssemblyResult assemblyResult)
+        static XElement Assembly(AssemblyReport assemblyReport)
         {
             var now = DateTime.UtcNow;
 
-            var classResults = assemblyResult.ConventionResults.SelectMany(x => x.ClassResults);
-
             return new XElement("assembly",
-                new XAttribute("name", assemblyResult.Name),
+                new XAttribute("name", assemblyReport.Location),
                 new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                 new XAttribute("run-time", now.ToString("HH:mm:ss")),
                 new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
-                new XAttribute("time", Seconds(assemblyResult.Duration)),
-                new XAttribute("total", assemblyResult.Total),
-                new XAttribute("passed", assemblyResult.Passed),
-                new XAttribute("failed", assemblyResult.Failed),
-                new XAttribute("skipped", assemblyResult.Skipped),
+                new XAttribute("time", Seconds(assemblyReport.Duration)),
+                new XAttribute("total", assemblyReport.Total),
+                new XAttribute("passed", assemblyReport.Passed),
+                new XAttribute("failed", assemblyReport.Failed),
+                new XAttribute("skipped", assemblyReport.Skipped),
                 new XAttribute("environment", String.Format("{0}-bit .NET {1}", IntPtr.Size * 8, Environment.Version)),
                 new XAttribute("test-framework", Framework.Version),
-                classResults.Select(Class));
+                assemblyReport.Classes.Select(Class));
         }
 
-        private static XElement Class(ClassResult classResult)
+        static XElement Class(ClassReport classReport)
         {
             return new XElement("class",
-                new XAttribute("time", Seconds(classResult.Duration)),
-                new XAttribute("name", classResult.Name),
-                new XAttribute("total", classResult.Failed + classResult.Passed + classResult.Skipped),
-                new XAttribute("passed", classResult.Passed),
-                new XAttribute("failed", classResult.Failed),
-                new XAttribute("skipped", classResult.Skipped),
-                classResult.Cases.Select(Case));
+                new XAttribute("time", Seconds(classReport.Duration)),
+                new XAttribute("name", classReport.Name),
+                new XAttribute("total", classReport.Failed + classReport.Passed + classReport.Skipped),
+                new XAttribute("passed", classReport.Passed),
+                new XAttribute("failed", classReport.Failed),
+                new XAttribute("skipped", classReport.Skipped),
+                classReport.Cases.Select(Case));
         }
 
-        private static XElement Case(CaseCompleted message)
+        static XElement Case(CaseCompleted message)
         {
             var @case = new XElement("test",
                 new XAttribute("name", message.Name),

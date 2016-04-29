@@ -29,14 +29,14 @@ namespace Fixie.Execution
                 return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunAssembly(Options options, object listener)
+        public AssemblyReport RunAssembly(Options options, object listener)
         {
             using (var executionProxy = Create<ExecutionProxy>())
             using (var bus = new Bus(listener))
                 return executionProxy.RunAssembly(assemblyFullPath, options, bus);
         }
 
-        public AssemblyResult RunMethods(Options options, object listener, MethodGroup[] methodGroups)
+        public AssemblyReport RunMethods(Options options, object listener, MethodGroup[] methodGroups)
         {
             using (var executionProxy = Create<ExecutionProxy>())
             using (var bus = new Bus(listener))

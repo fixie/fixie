@@ -31,7 +31,7 @@ namespace Fixie.Internal
             orderCases = config.OrderCases;
         }
 
-        public ClassResult Run(Type testClass)
+        public ClassReport Run(Type testClass)
         {
             var methods = methodDiscoverer.TestMethods(testClass);
 
@@ -82,14 +82,14 @@ namespace Fixie.Internal
                     @case.Fail(exception);
             }
 
-            var classResult = new ClassResult(testClass.FullName);
+            var classReport = new ClassReport(testClass.FullName);
 
             var casesToExecute = new List<Case>();
 
             foreach (var @case in orderedCases)
             {
                 if (@case.Exceptions.Any())
-                    classResult.Add(Fail(@case));
+                    classReport.Add(Fail(@case));
                 else
                 {
                     string reason;
@@ -102,12 +102,12 @@ namespace Fixie.Internal
                     catch (Exception exception)
                     {
                         @case.Fail(exception);
-                        classResult.Add(Fail(@case));
+                        classReport.Add(Fail(@case));
                         continue;
                     }
 
                     if (skipCase)
-                        classResult.Add(Skip(@case, reason));
+                        classReport.Add(Skip(@case, reason));
                     else
                         casesToExecute.Add(@case);
                 }
@@ -118,10 +118,10 @@ namespace Fixie.Internal
                 Run(testClass, casesToExecute);
 
                 foreach (var @case in casesToExecute)
-                    classResult.Add(@case.Exceptions.Any() ? Fail(@case) : Pass(@case));
+                    classReport.Add(@case.Exceptions.Any() ? Fail(@case) : Pass(@case));
             }
 
-            return classResult;
+            return classReport;
         }
 
         bool SkipCase(Case @case, out string reason)

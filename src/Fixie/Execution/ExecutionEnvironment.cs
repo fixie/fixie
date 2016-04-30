@@ -12,6 +12,7 @@ namespace Fixie.Execution
         readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
+        readonly List<object> listeners = new List<object>();
 
         public ExecutionEnvironment(string assemblyPath)
         {
@@ -23,23 +24,28 @@ namespace Fixie.Execution
             Directory.SetCurrentDirectory(assemblyDirectory);
         }
 
+        public void Subscribe(object listener)
+        {
+            listeners.Add(listener);
+        }
+
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())
                 return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyReport RunAssembly(Options options, object listener)
+        public AssemblyReport RunAssembly(Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listener))
+            using (var bus = new Bus(listeners))
                 return executionProxy.RunAssembly(assemblyFullPath, options, bus);
         }
 
-        public AssemblyReport RunMethods(Options options, object listener, MethodGroup[] methodGroups)
+        public AssemblyReport RunMethods(Options options, MethodGroup[] methodGroups)
         {
             using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listener))
+            using (var bus = new Bus(listeners))
                 return executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
         }
 

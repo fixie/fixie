@@ -1,5 +1,5 @@
+﻿using System.Collections.Generic;
 using Fixie.Execution;
-using System.Collections.Generic;
 
 namespace Fixie.Internal
 {
@@ -7,7 +7,12 @@ namespace Fixie.Internal
     {
         readonly List<object> listeners;
 
-        public Bus(params object[] listeners)
+        public Bus(object listener)
+            : this(new[] { listener })
+        {
+        }
+
+        public Bus(IEnumerable<object> listeners)
         {
             this.listeners = new List<object>(listeners);
         }

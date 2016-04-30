@@ -65,11 +65,16 @@ namespace Fixie.Samples.MbUnitStyle
                 ParameterInfo[] parameterInfos = method.GetParameters();
 
                 if (parameterInfos.Length == 0)
-                    yield break;
+                    return null;
 
                 if (parameterInfos[0].GetCustomAttributes<ColumnAttribute>(true).Any() == false)
-                    yield break;
+                    return null;
 
+                return GetColumnParameters(parameterInfos);
+            }
+
+            private static IEnumerable<object[]> GetColumnParameters(ParameterInfo[] parameterInfos)
+            {
                 foreach (var parameterInfo in parameterInfos)
                 {
                     yield return Array.ConvertAll(parameterInfo.GetCustomAttributes<ColumnAttribute>(true).Single().Parameters,

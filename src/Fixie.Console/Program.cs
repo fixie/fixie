@@ -46,7 +46,10 @@ namespace Fixie.ConsoleRunner
             var options = commandLineParser.Options;
 
             var summary = new ExecutionReport();
-            ReportListener reportListener = new ReportListener();
+            ReportListener reportListener = null;
+
+            if (ShouldProduceReports(options))
+                reportListener = new ReportListener();
 
             foreach (var assemblyPath in commandLineParser.AssemblyPaths)
             {
@@ -55,9 +58,15 @@ namespace Fixie.ConsoleRunner
                 summary.Add(result);
             }
 
-            SaveReport(options, reportListener.Report);
+            if (reportListener != null)
+                SaveReport(options, reportListener.Report);
 
             return summary;
+        }
+
+        static bool ShouldProduceReports(Options options)
+        {
+            return options.Contains(CommandLineOption.NUnitXml) || options.Contains(CommandLineOption.XUnitXml);
         }
 
         static void SaveReport(Options options, ExecutionReport executionReport)
@@ -91,7 +100,8 @@ namespace Fixie.ConsoleRunner
                 if (ShouldUseAppVeyorListener())
                     environment.Subscribe(new AppVeyorListener());
 
-                environment.Subscribe(reportListener);
+                if (reportListener != null)
+                    environment.Subscribe(reportListener);
 
                 return environment.RunAssembly(options);
             }

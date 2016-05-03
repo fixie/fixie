@@ -46,15 +46,16 @@ namespace Fixie.ConsoleRunner
             var options = commandLineParser.Options;
 
             var summary = new ExecutionReport();
+            ReportListener reportListener = new ReportListener();
 
             foreach (var assemblyPath in commandLineParser.AssemblyPaths)
             {
-                var result = Execute(assemblyPath, options);
+                var result = Execute(assemblyPath, options, reportListener);
 
                 summary.Add(result);
             }
 
-            SaveReport(options, summary);
+            SaveReport(options, reportListener.Report);
 
             return summary;
         }
@@ -78,7 +79,7 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static AssemblyReport Execute(string assemblyPath, Options options)
+        static AssemblyReport Execute(string assemblyPath, Options options, ReportListener reportListener)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
@@ -89,6 +90,8 @@ namespace Fixie.ConsoleRunner
 
                 if (ShouldUseAppVeyorListener())
                     environment.Subscribe(new AppVeyorListener());
+
+                environment.Subscribe(reportListener);
 
                 return environment.RunAssembly(options);
             }

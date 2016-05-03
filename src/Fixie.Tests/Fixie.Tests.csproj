@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="AssertionLibraryFilteringTests.cs" />
     <Compile Include="Assertions.cs" />
+    <Compile Include="ConsoleRunner\ReportListenerTests.cs" />
     <Compile Include="InputAttribute.cs" />
     <Compile Include="InputAttributeParameterSource.cs" />
     <Compile Include="Internal\BusTests.cs" />

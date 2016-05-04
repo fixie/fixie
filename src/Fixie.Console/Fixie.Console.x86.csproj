@@ -44,6 +44,7 @@
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="CommandLineParser.cs" />
     <Compile Include="ConsoleListener.cs" />
+    <Compile Include="SummaryListener.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Fixie.Execution;
@@ -41,27 +40,23 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static ExecutionReport Execute(CommandLineParser commandLineParser)
+        static ExecutionSummary Execute(CommandLineParser commandLineParser)
         {
             var options = commandLineParser.Options;
 
-            var summary = new ExecutionReport();
+            var summaryListener = new SummaryListener();
             ReportListener reportListener = null;
 
             if (ShouldProduceReports(options))
                 reportListener = new ReportListener();
 
             foreach (var assemblyPath in commandLineParser.AssemblyPaths)
-            {
-                var result = Execute(assemblyPath, options, reportListener);
-
-                summary.Add(result);
-            }
+                Execute(assemblyPath, options, summaryListener, reportListener);
 
             if (reportListener != null)
                 SaveReport(options, reportListener.Report);
 
-            return summary;
+            return summaryListener.Summary;
         }
 
         static bool ShouldProduceReports(Options options)
@@ -88,7 +83,7 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static AssemblyReport Execute(string assemblyPath, Options options, ReportListener reportListener)
+        static void Execute(string assemblyPath, Options options, SummaryListener summaryListener, ReportListener reportListener)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
@@ -103,7 +98,9 @@ namespace Fixie.ConsoleRunner
                 if (reportListener != null)
                     environment.Subscribe(reportListener);
 
-                return environment.RunAssembly(options);
+                environment.Subscribe(summaryListener);
+
+                environment.RunAssembly(options);
             }
         }
 

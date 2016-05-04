@@ -7,14 +7,13 @@ using System.Threading;
 using Fixie.ConsoleRunner;
 using Fixie.Internal;
 using Fixie.Execution;
+using Should;
 
 namespace Fixie.Tests.ConsoleRunner
 {
-    using Should;
-
     public class ReportListenerTests
     {
-        public void ShouldBuildExecutionReport()
+        public void ShouldBuildReport()
         {
             using (var console = new RedirectedConsole())
             {

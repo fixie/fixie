@@ -12,10 +12,10 @@ namespace Fixie.ConsoleRunner
 
         public ReportListener()
         {
-            Report = new ExecutionReport();
+            Report = new Report();
         }
 
-        public ExecutionReport Report { get; }
+        public Report Report { get; }
 
         public void Handle(AssemblyStarted message)
         {

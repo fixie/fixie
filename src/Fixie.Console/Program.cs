@@ -64,11 +64,11 @@ namespace Fixie.ConsoleRunner
             return options.Contains(CommandLineOption.NUnitXml) || options.Contains(CommandLineOption.XUnitXml);
         }
 
-        static void SaveReport(Options options, ExecutionReport executionReport)
+        static void SaveReport(Options options, Report report)
         {
             if (options.Contains(CommandLineOption.NUnitXml))
             {
-                var xDocument = new NUnitXmlReport().Transform(executionReport);
+                var xDocument = new NUnitXmlReport().Transform(report);
 
                 foreach (var fileName in options[CommandLineOption.NUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);
@@ -76,7 +76,7 @@ namespace Fixie.ConsoleRunner
 
             if (options.Contains(CommandLineOption.XUnitXml))
             {
-                var xDocument = new XUnitXmlReport().Transform(executionReport);
+                var xDocument = new XUnitXmlReport().Transform(report);
 
                 foreach (var fileName in options[CommandLineOption.XUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);

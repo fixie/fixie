@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Fixie.Execution
 {
-    public class ExecutionReport
+    public class Report
     {
         readonly List<AssemblyReport> assemblies = new List<AssemblyReport>();
 

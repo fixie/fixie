@@ -42,8 +42,6 @@ namespace Fixie.Tests.ConsoleRunner
                 assemblyReport.Failed.ShouldEqual(2);
                 assemblyReport.Skipped.ShouldEqual(2);
                 assemblyReport.Total.ShouldEqual(7);
-                CleanBrittleValues(assemblyReport.Summary)
-                    .ShouldEqual("3 passed, 2 failed, 2 skipped, took 1.23 seconds (" + Framework.Version + ").");
 
                 var classReport = assemblyReport.Classes.Single();
                 classReport.Name.ShouldEqual(testClass);

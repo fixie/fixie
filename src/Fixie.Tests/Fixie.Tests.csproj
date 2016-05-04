@@ -64,7 +64,7 @@
   <ItemGroup>
     <Compile Include="AssertionLibraryFilteringTests.cs" />
     <Compile Include="Assertions.cs" />
-    <Compile Include="ConsoleRunner\ReportListenerTests.cs" />
+    <Compile Include="ConsoleRunner\Reports\ReportListenerTests.cs" />
     <Compile Include="Execution\ExecutionSummaryTests.cs" />
     <Compile Include="InputAttribute.cs" />
     <Compile Include="InputAttributeParameterSource.cs" />
@@ -90,8 +90,8 @@
     <Compile Include="Lifecycle\ConstructionTests.cs" />
     <Compile Include="Lifecycle\FixtureLifecycleTests.cs" />
     <Compile Include="OptionsTests.cs" />
-    <Compile Include="Reports\NUnitXmlReportTests.cs" />
-    <Compile Include="Reports\XUnitXmlReportTests.cs" />
+    <Compile Include="ConsoleRunner\Reports\NUnitXmlReportTests.cs" />
+    <Compile Include="ConsoleRunner\Reports\XUnitXmlReportTests.cs" />
     <Compile Include="Cases\AsyncCaseTests.cs" />
     <Compile Include="ConsoleRunner\ConsoleListenerTests.cs" />
     <Compile Include="Cases\BasicCaseTests.cs" />
@@ -136,18 +136,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Reports\NUnitXmlReport.xml">
+    <None Include="ConsoleRunner\Reports\NUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Reports\NUnitXmlReport.xsd">
+    <None Include="ConsoleRunner\Reports\NUnitXmlReport.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Reports\XUnitXmlReport.xsd">
+    <None Include="ConsoleRunner\Reports\XUnitXmlReport.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Reports\XUnitXmlReport.xml">
+    <None Include="ConsoleRunner\Reports\XUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

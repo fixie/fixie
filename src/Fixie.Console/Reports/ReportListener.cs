@@ -1,6 +1,6 @@
 ﻿using Fixie.Execution;
 
-namespace Fixie.ConsoleRunner
+namespace Fixie.ConsoleRunner.Reports
 {
     public class ReportListener :
         Handler<AssemblyStarted>,

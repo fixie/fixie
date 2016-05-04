@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Xml.Linq;
 using Fixie.Execution;
-using Fixie.Reports;
+using Fixie.ConsoleRunner.Reports;
 
 namespace Fixie.ConsoleRunner
 {

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using Fixie.Execution;
 
-namespace Fixie.Reports
+namespace Fixie.ConsoleRunner.Reports
 {
     public class XUnitXmlReport
     {

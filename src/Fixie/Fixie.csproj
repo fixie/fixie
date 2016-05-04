@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="Execution\AssemblyCompleted.cs" />
+    <Compile Include="Execution\ExecutionSummary.cs" />
     <Compile Include="Execution\Handler.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Execution\Message.cs" />

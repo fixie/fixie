@@ -31,7 +31,7 @@ namespace Fixie.Internal
             orderCases = config.OrderCases;
         }
 
-        public ClassReport Run(Type testClass)
+        public void Run(Type testClass)
         {
             var methods = methodDiscoverer.TestMethods(testClass);
 
@@ -82,14 +82,12 @@ namespace Fixie.Internal
                     @case.Fail(exception);
             }
 
-            var classReport = new ClassReport(testClass.FullName);
-
             var casesToExecute = new List<Case>();
 
             foreach (var @case in orderedCases)
             {
                 if (@case.Exceptions.Any())
-                    classReport.Add(Fail(@case));
+                    Fail(@case);
                 else
                 {
                     string reason;
@@ -102,12 +100,12 @@ namespace Fixie.Internal
                     catch (Exception exception)
                     {
                         @case.Fail(exception);
-                        classReport.Add(Fail(@case));
+                        Fail(@case);
                         continue;
                     }
 
                     if (skipCase)
-                        classReport.Add(Skip(@case, reason));
+                        Skip(@case, reason);
                     else
                         casesToExecute.Add(@case);
                 }
@@ -118,10 +116,13 @@ namespace Fixie.Internal
                 Run(testClass, casesToExecute);
 
                 foreach (var @case in casesToExecute)
-                    classReport.Add(@case.Exceptions.Any() ? Fail(@case) : Pass(@case));
+                {
+                    if (@case.Exceptions.Any())
+                        Fail(@case);
+                    else
+                        Pass(@case);
+                }
             }
-
-            return classReport;
         }
 
         bool SkipCase(Case @case, out string reason)
@@ -175,25 +176,8 @@ namespace Fixie.Internal
         void Run(Type testClass, IReadOnlyList<Case> casesToExecute)
             => executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
 
-        CaseCompleted Skip(Case @case, string reason)
-        {
-            var result = new CaseSkipped(@case, reason);
-            bus.Publish(result);
-            return result;
-        }
-
-        CaseCompleted Pass(Case @case)
-        {
-            var result = new CasePassed(@case);
-            bus.Publish(result);
-            return result;
-        }
-
-        CaseCompleted Fail(Case @case)
-        {
-            var result = new CaseFailed(@case, assertionLibraryFilter);
-            bus.Publish(result);
-            return result;
-        }
+        void Skip(Case @case, string reason) => bus.Publish(new CaseSkipped(@case, reason));
+        void Pass(Case @case) => bus.Publish(new CasePassed(@case));
+        void Fail(Case @case) => bus.Publish(new CaseFailed(@case, assertionLibraryFilter));
     }
 }

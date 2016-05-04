@@ -5,27 +5,25 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using Fixie.Execution;
+using Fixie.ConsoleRunner;
 using Fixie.Reports;
 using Should;
 
 namespace Fixie.Tests.Reports
 {
-    public class NUnitXmlReportTests
+ public class NUnitXmlReportTests
     {
         public void ShouldProduceValidXmlDocument()
         {
-            var listener = new StubListener();
+            var listener = new ReportListener();
 
-            var executionReport = new ExecutionReport();
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters.Add<InputAttributeParameterSource>();
-            var assemblyReport = typeof(PassFailTestClass).Run(listener, convention);
-            executionReport.Add(assemblyReport);
+            typeof(PassFailTestClass).Run(listener, convention);
 
             var report = new NUnitXmlReport();
-            var actual = report.Transform(executionReport);
+            var actual = report.Transform(listener.Report);
 
             XsdValidate(actual);
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);

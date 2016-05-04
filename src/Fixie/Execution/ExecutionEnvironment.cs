@@ -35,18 +35,18 @@ namespace Fixie.Execution
                 return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyReport RunAssembly(Options options)
+        public void RunAssembly(Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())
             using (var bus = new Bus(listeners))
-                return executionProxy.RunAssembly(assemblyFullPath, options, bus);
+                executionProxy.RunAssembly(assemblyFullPath, options, bus);
         }
 
-        public AssemblyReport RunMethods(Options options, MethodGroup[] methodGroups)
+        public void RunMethods(Options options, MethodGroup[] methodGroups)
         {
             using (var executionProxy = Create<ExecutionProxy>())
             using (var bus = new Bus(listeners))
-                return executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
+                executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
         }
 
         T Create<T>(params object[] args) where T : LongLivedMarshalByRefObject

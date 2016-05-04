@@ -20,36 +20,36 @@ namespace Fixie.Internal
             this.options = options;
         }
 
-        public AssemblyReport RunAssembly(Assembly assembly)
+        public void RunAssembly(Assembly assembly)
         {
             RunContext.Set(options);
 
-            return RunTypesInternal(assembly, assembly.GetTypes());
+            RunTypesInternal(assembly, assembly.GetTypes());
         }
 
-        public AssemblyReport RunNamespace(Assembly assembly, string ns)
+        public void RunNamespace(Assembly assembly, string ns)
         {
             RunContext.Set(options);
 
-            return RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
+            RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
-        public AssemblyReport RunType(Assembly assembly, Type type)
+        public void RunType(Assembly assembly, Type type)
         {
             RunContext.Set(options, type);
 
             var types = GetTypeAndNestedTypes(type).ToArray();
-            return RunTypesInternal(assembly, types);
+            RunTypesInternal(assembly, types);
         }
 
-        public AssemblyReport RunTypes(Assembly assembly, Convention convention, params Type[] types)
+        public void RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
             RunContext.Set(options);
 
-            return Run(assembly, new[] { convention }, types);
+            Run(assembly, new[] { convention }, types);
         }
 
-        public AssemblyReport RunMethods(Assembly assembly, params MethodInfo[] methods)
+        public void RunMethods(Assembly assembly, params MethodInfo[] methods)
         {
             if (methods.Length == 1)
                 RunContext.Set(options, methods.Single());
@@ -61,12 +61,12 @@ namespace Fixie.Internal
             foreach (var convention in conventions)
                 convention.Methods.Where(methods.Contains);
 
-            return Run(assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
+            Run(assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
         }
 
-        public AssemblyReport RunMethods(Assembly assembly, MethodGroup[] methodGroups)
+        public void RunMethods(Assembly assembly, MethodGroup[] methodGroups)
         {
-            return RunMethods(assembly, GetMethods(assembly, methodGroups));
+            RunMethods(assembly, GetMethods(assembly, methodGroups));
         }
 
         static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
@@ -90,9 +90,9 @@ namespace Fixie.Internal
                 .Where(m => m.Name == methodGroup.Method);
         }
 
-        AssemblyReport RunTypesInternal(Assembly assembly, params Type[] types)
+        void RunTypesInternal(Assembly assembly, params Type[] types)
         {
-            return Run(assembly, GetConventions(assembly), types);
+            Run(assembly, GetConventions(assembly), types);
         }
 
         static Convention[] GetConventions(Assembly assembly)
@@ -100,31 +100,23 @@ namespace Fixie.Internal
             return new ConventionDiscoverer(assembly).GetConventions();
         }
 
-        AssemblyReport Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
+        void Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
-            var assemblyReport = new AssemblyReport(assembly.Location);
-
             bus.Publish(new AssemblyStarted(assembly));
 
             foreach (var convention in conventions)
-                Run(assemblyReport, convention, candidateTypes);
+                Run(convention, candidateTypes);
 
             bus.Publish(new AssemblyCompleted(assembly));
-
-            return assemblyReport;
         }
 
-        void Run(AssemblyReport assemblyReport, Convention convention, Type[] candidateTypes)
+        void Run(Convention convention, Type[] candidateTypes)
         {
             var classDiscoverer = new ClassDiscoverer(convention);
             var classRunner = new ClassRunner(bus, convention);
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
-            {
-                var classReport = classRunner.Run(testClass);
-
-                assemblyReport.Add(classReport);
-            }
+                classRunner.Run(testClass);
         }
     }
 }

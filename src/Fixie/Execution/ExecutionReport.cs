@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace Fixie.Execution
 {
-    [Serializable]
     public class ExecutionReport
     {
         readonly List<AssemblyReport> assemblies = new List<AssemblyReport>();

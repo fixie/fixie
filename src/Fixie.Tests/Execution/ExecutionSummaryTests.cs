@@ -45,7 +45,7 @@ namespace Fixie.Tests.Execution
 
             convention
                 .Methods
-                .Where(method =>! method.Name.StartsWith("Skip"));
+                .Where(method => ! method.Name.StartsWith("Skip"));
 
             var listener = new StubExecutionSummaryListener();
 

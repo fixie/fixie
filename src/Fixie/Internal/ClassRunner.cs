@@ -169,9 +169,7 @@ namespace Fixie.Internal
         }
 
         IEnumerable<object[]> Parameters(MethodInfo method)
-        {
-            return parameterDiscoverer.GetParameters(method);
-        }
+            => parameterDiscoverer.GetParameters(method);
 
         void Run(Type testClass, IReadOnlyList<Case> casesToExecute)
             => executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));

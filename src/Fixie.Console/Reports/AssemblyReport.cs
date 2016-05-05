@@ -18,7 +18,7 @@ namespace Fixie.ConsoleRunner.Reports
 
         public string Location { get; }
 
-        public TimeSpan Duration => new TimeSpan(classes.Sum(result => result.Duration.Ticks));
+        public TimeSpan Duration => new TimeSpan(classes.Sum(@class => @class.Duration.Ticks));
 
         public IReadOnlyList<ClassReport> Classes => classes;
 

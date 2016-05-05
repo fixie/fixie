@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Fixie.Execution;
@@ -47,11 +48,18 @@ namespace Fixie.ConsoleRunner
             var summaryListener = new SummaryListener();
             ReportListener reportListener = null;
 
+            var listeners = StatelessListeners(options).ToList();
+
+            listeners.Add(summaryListener);
+
             if (ShouldProduceReports(options))
+            {
                 reportListener = new ReportListener();
+                listeners.Add(reportListener);
+            }
 
             foreach (var assemblyPath in commandLineParser.AssemblyPaths)
-                Execute(assemblyPath, options, summaryListener, reportListener);
+                Execute(assemblyPath, options, listeners);
 
             if (reportListener != null)
                 SaveReport(options, reportListener.Report);
@@ -83,25 +91,26 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static void Execute(string assemblyPath, Options options, SummaryListener summaryListener, ReportListener reportListener)
+        static void Execute(string assemblyPath, Options options, IEnumerable<object> listeners)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
-                if (ShouldUseTeamCityListener(options))
-                    environment.Subscribe(new TeamCityListener());
-                else
-                    environment.Subscribe(new ConsoleListener());
-
-                if (ShouldUseAppVeyorListener())
-                    environment.Subscribe(new AppVeyorListener());
-
-                if (reportListener != null)
-                    environment.Subscribe(reportListener);
-
-                environment.Subscribe(summaryListener);
+                foreach (var listener in listeners)
+                    environment.Subscribe(listener);
 
                 environment.RunAssembly(options);
             }
+        }
+
+        static IEnumerable<object> StatelessListeners(Options options)
+        {
+            if (ShouldUseTeamCityListener(options))
+                yield return new TeamCityListener();
+            else
+                yield return new ConsoleListener();
+
+            if (ShouldUseAppVeyorListener())
+                yield return new AppVeyorListener();
         }
 
         static bool ShouldUseTeamCityListener(Options options)

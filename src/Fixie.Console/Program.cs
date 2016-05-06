@@ -59,7 +59,8 @@ namespace Fixie.ConsoleRunner
             }
 
             foreach (var assemblyPath in commandLineParser.AssemblyPaths)
-                Execute(assemblyPath, options, listeners);
+                using (var environment = new ExecutionEnvironment(assemblyPath, listeners))
+                    environment.RunAssembly(options);
 
             if (reportListener != null)
                 SaveReport(options, reportListener.Report);
@@ -88,17 +89,6 @@ namespace Fixie.ConsoleRunner
 
                 foreach (var fileName in options[CommandLineOption.XUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);
-            }
-        }
-
-        static void Execute(string assemblyPath, Options options, IEnumerable<object> listeners)
-        {
-            using (var environment = new ExecutionEnvironment(assemblyPath))
-            {
-                foreach (var listener in listeners)
-                    environment.Subscribe(listener);
-
-                environment.RunAssembly(options);
             }
         }
 

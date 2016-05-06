@@ -41,11 +41,8 @@ namespace Fixie.VisualStudio.TestAdapter
 
                         var listener = new VisualStudioListener(frameworkHandle, assemblyPath);
 
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
-                        {
-                            environment.Subscribe(listener);
+                        using (var environment = new ExecutionEnvironment(assemblyPath, listener))
                             environment.RunAssembly(new Options());
-                        }
                     }
                     else
                     {
@@ -90,11 +87,8 @@ namespace Fixie.VisualStudio.TestAdapter
 
                         var listener = new VisualStudioListener(frameworkHandle, assemblyPath);
 
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
-                        {
-                            environment.Subscribe(listener);
+                        using (var environment = new ExecutionEnvironment(assemblyPath, listener))
                             environment.RunMethods(new Options(), methodGroups);
-                        }
                     }
                     else
                     {

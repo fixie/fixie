@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security;
 using System.Security.Permissions;
 
@@ -12,21 +13,28 @@ namespace Fixie.Execution
         readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
-        readonly List<object> listeners = new List<object>();
+        readonly object[] listeners;
 
         public ExecutionEnvironment(string assemblyPath)
+            : this(assemblyPath, new object[] { })
         {
+        }
+
+        public ExecutionEnvironment(string assemblyPath, object listener)
+            : this(assemblyPath, new[] { listener })
+        {
+        }
+
+        public ExecutionEnvironment(string assemblyPath, IReadOnlyCollection<object> listeners)
+        {
+            this.listeners = listeners.ToArray();
+
             assemblyFullPath = Path.GetFullPath(assemblyPath);
             appDomain = CreateAppDomain(assemblyFullPath);
 
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
-        }
-
-        public void Subscribe(object listener)
-        {
-            listeners.Add(listener);
         }
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)

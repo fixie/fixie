@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Fixie.Execution;
 
-namespace Fixie.Execution
+namespace Fixie.ConsoleRunner.Reports
 {
-    [Serializable]
     public class ClassReport
     {
         readonly List<CaseCompleted> cases;

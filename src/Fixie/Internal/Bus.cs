@@ -12,7 +12,7 @@ namespace Fixie.Internal
         {
         }
 
-        public Bus(IEnumerable<object> listeners)
+        public Bus(IReadOnlyCollection<object> listeners)
         {
             this.listeners = new List<object>(listeners);
         }

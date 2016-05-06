@@ -54,11 +54,11 @@ namespace Fixie.ConsoleRunner
             Errors = errors.ToArray();
         }
 
-        public IEnumerable<string> AssemblyPaths { get; }
+        public IReadOnlyCollection<string> AssemblyPaths { get; }
 
         public Options Options { get; }
 
-        public IEnumerable<string> Errors { get; }
+        public IReadOnlyCollection<string> Errors { get; }
 
         public bool HasErrors => Errors.Any();
 

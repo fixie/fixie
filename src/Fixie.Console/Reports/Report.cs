@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Fixie.Execution
+namespace Fixie.ConsoleRunner.Reports
 {
-    [Serializable]
-    public class ExecutionReport
+    public class Report
     {
         readonly List<AssemblyReport> assemblies = new List<AssemblyReport>();
 

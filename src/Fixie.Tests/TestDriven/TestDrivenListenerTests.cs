@@ -27,6 +27,12 @@ namespace Fixie.Tests.TestDriven
 
                 typeof(PassFailTestClass).Run(listener, convention);
 
+                var summary = listener.Summary;
+                summary.Passed.ShouldEqual(1);
+                summary.Failed.ShouldEqual(1);
+                summary.Skipped.ShouldEqual(2);
+                summary.Total.ShouldEqual(4);
+
                 var testClass = typeof(PassFailTestClass).FullName;
 
                 console.Lines()

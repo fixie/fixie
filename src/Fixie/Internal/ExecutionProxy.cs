@@ -13,18 +13,18 @@ namespace Fixie.Internal
             return new Discoverer(options).DiscoverTestMethodGroups(assembly);
         }
 
-        public AssemblyReport RunAssembly(string assemblyFullPath, Options options, Bus bus)
+        public void RunAssembly(string assemblyFullPath, Options options, Bus bus)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Runner(options, bus).RunAssembly(assembly);
+            Runner(options, bus).RunAssembly(assembly);
         }
 
-        public AssemblyReport RunMethods(string assemblyFullPath, Options options, Bus bus, MethodGroup[] methodGroups)
+        public void RunMethods(string assemblyFullPath, Options options, Bus bus, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Runner(options, bus).RunMethods(assembly, methodGroups);
+            Runner(options, bus).RunMethods(assembly, methodGroups);
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

@@ -14,7 +14,7 @@ namespace Fixie.Tests.Internal
                 new AnotherEventHandler(),
                 new CombinationEventHandler()
             };
-            
+
             using (var bus = new Bus(listeners))
             using (var console = new RedirectedConsole())
             {

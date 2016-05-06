@@ -1,9 +1,9 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Fixie.Execution;
-using Fixie.Reports;
+using Fixie.ConsoleRunner.Reports;
 
 namespace Fixie.ConsoleRunner
 {
@@ -41,29 +41,43 @@ namespace Fixie.ConsoleRunner
             }
         }
 
-        static ExecutionReport Execute(CommandLineParser commandLineParser)
+        static ExecutionSummary Execute(CommandLineParser commandLineParser)
         {
             var options = commandLineParser.Options;
 
-            var summary = new ExecutionReport();
+            var summaryListener = new SummaryListener();
+            ReportListener reportListener = null;
 
-            foreach (var assemblyPath in commandLineParser.AssemblyPaths)
+            var listeners = StatelessListeners(options).ToList();
+
+            listeners.Add(summaryListener);
+
+            if (ShouldProduceReports(options))
             {
-                var result = Execute(assemblyPath, options);
-
-                summary.Add(result);
+                reportListener = new ReportListener();
+                listeners.Add(reportListener);
             }
 
-            SaveReport(options, summary);
+            foreach (var assemblyPath in commandLineParser.AssemblyPaths)
+                using (var environment = new ExecutionEnvironment(assemblyPath, listeners))
+                    environment.RunAssembly(options);
 
-            return summary;
+            if (reportListener != null)
+                SaveReport(options, reportListener.Report);
+
+            return summaryListener.Summary;
         }
 
-        static void SaveReport(Options options, ExecutionReport executionReport)
+        static bool ShouldProduceReports(Options options)
+        {
+            return options.Contains(CommandLineOption.NUnitXml) || options.Contains(CommandLineOption.XUnitXml);
+        }
+
+        static void SaveReport(Options options, Report report)
         {
             if (options.Contains(CommandLineOption.NUnitXml))
             {
-                var xDocument = new NUnitXmlReport().Transform(executionReport);
+                var xDocument = new NUnitXmlReport().Transform(report);
 
                 foreach (var fileName in options[CommandLineOption.NUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);
@@ -71,27 +85,22 @@ namespace Fixie.ConsoleRunner
 
             if (options.Contains(CommandLineOption.XUnitXml))
             {
-                var xDocument = new XUnitXmlReport().Transform(executionReport);
+                var xDocument = new XUnitXmlReport().Transform(report);
 
                 foreach (var fileName in options[CommandLineOption.XUnitXml])
                     xDocument.Save(fileName, SaveOptions.None);
             }
         }
 
-        static AssemblyReport Execute(string assemblyPath, Options options)
+        static IEnumerable<object> StatelessListeners(Options options)
         {
-            using (var environment = new ExecutionEnvironment(assemblyPath))
-            {
-                if (ShouldUseTeamCityListener(options))
-                    environment.Subscribe(new TeamCityListener());
-                else
-                    environment.Subscribe(new ConsoleListener());
+            if (ShouldUseTeamCityListener(options))
+                yield return new TeamCityListener();
+            else
+                yield return new ConsoleListener();
 
-                if (ShouldUseAppVeyorListener())
-                    environment.Subscribe(new AppVeyorListener());
-
-                return environment.RunAssembly(options);
-            }
+            if (ShouldUseAppVeyorListener())
+                yield return new AppVeyorListener();
         }
 
         static bool ShouldUseTeamCityListener(Options options)

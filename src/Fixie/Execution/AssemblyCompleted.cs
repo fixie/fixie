@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 
 namespace Fixie.Execution
@@ -6,13 +6,11 @@ namespace Fixie.Execution
     [Serializable]
     public class AssemblyCompleted : Message
     {
-        public AssemblyCompleted(Assembly assembly, AssemblyReport result)
+        public AssemblyCompleted(Assembly assembly)
         {
             Location = assembly.Location;
-            Result = result;
         }
 
         public string Location { get; }
-        public AssemblyReport Result { get; }
     }
 }

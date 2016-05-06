@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="Execution\AssemblyCompleted.cs" />
+    <Compile Include="Execution\ExecutionSummary.cs" />
     <Compile Include="Execution\Handler.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Execution\Message.cs" />
@@ -70,7 +71,6 @@
     <Compile Include="Internal\ClassRunner.cs" />
     <Compile Include="Internal\ExecutionPlan.cs" />
     <Compile Include="Internal\GenericArgumentResolver.cs" />
-    <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="Internal\RedirectedConsole.cs" />
     <Compile Include="ClassBehavior.cs" />
     <Compile Include="Case.cs" />
@@ -89,16 +89,12 @@
     <Compile Include="Internal\ObjectExtensions.cs" />
     <Compile Include="Execution\CasePassed.cs" />
     <Compile Include="PreservedException.cs" />
-    <Compile Include="Reports\XUnitXmlReport.cs" />
     <Compile Include="Execution\CaseCompleted.cs" />
     <Compile Include="Execution\CaseStatus.cs" />
-    <Compile Include="Execution\ClassReport.cs" />
     <Compile Include="Execution\ExceptionInfo.cs" />
-    <Compile Include="Execution\ExecutionReport.cs" />
     <Compile Include="Internal\RunContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
-    <Compile Include="Execution\AssemblyReport.cs" />
     <Compile Include="Internal\Runner.cs" />
     <Compile Include="Execution\CaseSkipped.cs" />
   </ItemGroup>

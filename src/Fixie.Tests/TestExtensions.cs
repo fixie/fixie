@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fixie.Execution;
 using Fixie.Internal;
 
 namespace Fixie.Tests
@@ -36,10 +35,10 @@ namespace Fixie.Tests
             return lines;
         }
 
-        public static AssemblyReport Run(this Type sampleTestClass, object listener, Convention convention)
+        public static void Run(this Type sampleTestClass, object listener, Convention convention)
         {
             using (var bus = new Bus(listener))
-                return new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
+                new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
         }
     }
 }

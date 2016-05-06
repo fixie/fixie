@@ -27,10 +27,9 @@ namespace Fixie.VisualStudio.TestAdapter
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        var sourceLocationProvider = new SourceLocationProvider(assemblyPath);
-
+                        var listener = new VisualStudioDiscoveryListener(log, discoverySink, assemblyPath);
                         using (var environment = new ExecutionEnvironment(assemblyPath))
-                            DiscoverMethodGroups(log, discoverySink, environment, assemblyPath, sourceLocationProvider);
+                            listener.DiscoverMethodGroups(environment);
                     }
                     else
                     {
@@ -41,32 +40,6 @@ namespace Fixie.VisualStudio.TestAdapter
                 {
                     log.Error(exception);
                 }
-            }
-        }
-
-        static void DiscoverMethodGroups(IMessageLogger log, ITestCaseDiscoverySink discoverySink, ExecutionEnvironment environment, string assemblyPath, SourceLocationProvider sourceLocationProvider)
-        {
-            var methodGroups = environment.DiscoverTestMethodGroups(new Options());
-
-            foreach (var methodGroup in methodGroups)
-            {
-                var testCase = new TestCase(methodGroup.FullName, VsTestExecutor.Uri, assemblyPath);
-
-                try
-                {
-                    SourceLocation sourceLocation;
-                    if (sourceLocationProvider.TryGetSourceLocation(methodGroup, out sourceLocation))
-                    {
-                        testCase.CodeFilePath = sourceLocation.CodeFilePath;
-                        testCase.LineNumber = sourceLocation.LineNumber;
-                    }
-                }
-                catch (Exception exception)
-                {
-                    log.Error(exception);
-                }
-
-                discoverySink.SendTestCase(testCase);
             }
         }
 

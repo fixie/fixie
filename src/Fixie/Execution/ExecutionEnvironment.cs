@@ -44,13 +44,6 @@ namespace Fixie.Execution
                 executionProxy.DiscoverMethodGroups(assemblyFullPath, options, bus);
         }
 
-        [Obsolete]
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
-        {
-            using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
-        }
-
         public void RunAssembly(Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())

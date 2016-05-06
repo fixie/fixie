@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using Fixie.Execution;
 
 namespace Fixie.Internal
@@ -16,14 +15,6 @@ namespace Fixie.Internal
 
             foreach (var methodGroup in methodGroups)
                 bus.Publish(new MethodGroupDiscovered(methodGroup));
-        }
-
-        [System.Obsolete]
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
-        {
-            var assembly = LoadAssembly(assemblyFullPath);
-
-            return new Discoverer(options).DiscoverTestMethodGroups(assembly);
         }
 
         public void RunAssembly(string assemblyFullPath, Options options, Bus bus)

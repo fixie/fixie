@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class VisualStudioDiscoveryListener
+    public class VisualStudioDiscoveryListener : Handler<MethodGroupDiscovered>
     {
         readonly IMessageLogger log;
         readonly ITestCaseDiscoverySink discoverySink;
@@ -21,16 +21,10 @@ namespace Fixie.VisualStudio.TestAdapter
             this.sourceLocationProvider = new SourceLocationProvider(assemblyPath);
         }
 
-        public void DiscoverMethodGroups(ExecutionEnvironment environment)
+        public void Handle(MethodGroupDiscovered message)
         {
-            var methodGroups = environment.DiscoverTestMethodGroups(new Options());
+            var methodGroup = message.MethodGroup;
 
-            foreach (var methodGroup in methodGroups)
-                Handle(methodGroup);
-        }
-
-        void Handle(MethodGroup methodGroup)
-        {
             var testCase = new TestCase(methodGroup.FullName, VsTestExecutor.Uri, assemblyPath);
 
             try

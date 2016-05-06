@@ -28,8 +28,8 @@ namespace Fixie.VisualStudio.TestAdapter
                         log.Info("Processing " + assemblyPath);
 
                         var listener = new VisualStudioDiscoveryListener(log, discoverySink, assemblyPath);
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
-                            listener.DiscoverMethodGroups(environment);
+                        using (var environment = new ExecutionEnvironment(assemblyPath, listener))
+                            environment.DiscoverMethodGroups(new Options());
                     }
                     else
                     {

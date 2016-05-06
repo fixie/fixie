@@ -6,6 +6,19 @@ namespace Fixie.Internal
 {
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
+        public void DiscoverMethodGroups(string assemblyFullPath, Options options, Bus bus)
+        {
+            var assembly = LoadAssembly(assemblyFullPath);
+
+            var discoverer = new Discoverer(options);
+
+            var methodGroups = discoverer.DiscoverTestMethodGroups(assembly);
+
+            foreach (var methodGroup in methodGroups)
+                bus.Publish(new MethodGroupDiscovered(methodGroup));
+        }
+
+        [System.Obsolete]
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);

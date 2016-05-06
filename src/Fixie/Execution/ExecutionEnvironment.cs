@@ -37,6 +37,14 @@ namespace Fixie.Execution
             Directory.SetCurrentDirectory(assemblyDirectory);
         }
 
+        public void DiscoverMethodGroups(Options options)
+        {
+            using (var executionProxy = Create<ExecutionProxy>())
+            using (var bus = new Bus(listeners))
+                executionProxy.DiscoverMethodGroups(assemblyFullPath, options, bus);
+        }
+
+        [Obsolete]
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())

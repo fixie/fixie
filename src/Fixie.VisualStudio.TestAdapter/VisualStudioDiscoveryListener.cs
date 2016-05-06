@@ -18,7 +18,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.log = log;
             this.discoverySink = discoverySink;
             this.assemblyPath = assemblyPath;
-            this.sourceLocationProvider = new SourceLocationProvider(assemblyPath);
+            sourceLocationProvider = new SourceLocationProvider(assemblyPath);
         }
 
         public void Handle(MethodGroupDiscovered message)

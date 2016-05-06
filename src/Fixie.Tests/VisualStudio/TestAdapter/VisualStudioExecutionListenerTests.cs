@@ -55,8 +55,8 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                     result.TestCase.LineNumber.ShouldEqual(-1);
                 }
 
-                results[0].TestCase.FullyQualifiedName.ShouldEqual(testClass +".SkipWithReason");
-                results[0].TestCase.DisplayName.ShouldEqual(testClass +".SkipWithReason");
+                results[0].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".SkipWithReason");
+                results[0].TestCase.DisplayName.ShouldEqual(testClass + ".SkipWithReason");
                 results[0].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
                 results[0].Outcome.ShouldEqual(TestOutcome.Skipped);
                 results[0].ErrorMessage.ShouldEqual("Skipped with reason.");
@@ -65,18 +65,18 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 results[0].Messages.ShouldBeEmpty();
                 results[0].Duration.ShouldEqual(TimeSpan.Zero);
 
-                results[1].TestCase.FullyQualifiedName.ShouldEqual(testClass +".SkipWithoutReason");
-                results[1].TestCase.DisplayName.ShouldEqual(testClass +".SkipWithoutReason");
+                results[1].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".SkipWithoutReason");
+                results[1].TestCase.DisplayName.ShouldEqual(testClass + ".SkipWithoutReason");
                 results[1].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
                 results[1].Outcome.ShouldEqual(TestOutcome.Skipped);
                 results[1].ErrorMessage.ShouldBeNull();
                 results[1].ErrorStackTrace.ShouldBeNull();
-                results[1].DisplayName.ShouldEqual(testClass +".SkipWithoutReason");
+                results[1].DisplayName.ShouldEqual(testClass + ".SkipWithoutReason");
                 results[1].Messages.ShouldBeEmpty();
                 results[1].Duration.ShouldEqual(TimeSpan.Zero);
 
-                results[2].TestCase.FullyQualifiedName.ShouldEqual(testClass +".Fail");
-                results[2].TestCase.DisplayName.ShouldEqual(testClass +".Fail");
+                results[2].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".Fail");
+                results[2].TestCase.DisplayName.ShouldEqual(testClass + ".Fail");
                 results[2].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
                 results[2].Outcome.ShouldEqual(TestOutcome.Failed);
                 results[2].ErrorMessage.ShouldEqual("Fixie.Tests.FailureException");
@@ -90,13 +90,13 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 results[2].Messages[0].Text.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
                 results[2].Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-                results[3].TestCase.FullyQualifiedName.ShouldEqual(testClass +".Pass");
-                results[3].TestCase.DisplayName.ShouldEqual(testClass +".Pass");
+                results[3].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".Pass");
+                results[3].TestCase.DisplayName.ShouldEqual(testClass + ".Pass");
                 results[3].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
                 results[3].Outcome.ShouldEqual(TestOutcome.Passed);
                 results[3].ErrorMessage.ShouldBeNull();
                 results[3].ErrorStackTrace.ShouldBeNull();
-                results[3].DisplayName.ShouldEqual(testClass +".Pass(123)");
+                results[3].DisplayName.ShouldEqual(testClass + ".Pass(123)");
                 results[3].Messages.Count.ShouldEqual(1);
                 results[3].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
                 results[3].Messages[0].Text.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
@@ -157,10 +157,16 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
             }
 
             [Skip]
-            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
+            public void SkipWithoutReason()
+            {
+                throw new ShouldBeUnreachableException();
+            }
 
             [Skip("Skipped with reason.")]
-            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
+            public void SkipWithReason()
+            {
+                throw new ShouldBeUnreachableException();
+            }
 
             static void WhereAmI([CallerMemberName] string member = null)
             {

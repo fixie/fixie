@@ -13,7 +13,7 @@ using Should;
 
 namespace Fixie.Tests.VisualStudio.TestAdapter
 {
-    public class VisualStudioListenerTests
+    public class VisualStudioExecutionListenerTests
     {
         public void ShouldReportResultsToExecutionRecorder()
         {
@@ -22,7 +22,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
 
             using (var console = new RedirectedConsole())
             {
-                var listener = new VisualStudioListener(recorder, assemblyPath);
+                var listener = new VisualStudioExecutionListener(recorder, assemblyPath);
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
                 convention.Parameters.Add<InputAttributeParameterSource>();
@@ -83,7 +83,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 results[2].ErrorStackTrace.Lines().Select(CleanBrittleValues)
                     .ShouldEqual(
                         "'Fail' failed!",
-                        "   at Fixie.Tests.VisualStudio.TestAdapter.VisualStudioListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
+                        "   at Fixie.Tests.VisualStudio.TestAdapter.VisualStudioExecutionListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
                 results[2].DisplayName.ShouldEqual(testClass + ".Fail");
                 results[2].Messages.Count.ShouldEqual(1);
                 results[2].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);

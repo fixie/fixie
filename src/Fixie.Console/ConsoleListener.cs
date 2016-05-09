@@ -16,7 +16,7 @@ namespace Fixie.ConsoleRunner
         public void Handle(AssemblyStarted message)
         {
             summary = new ExecutionSummary();
-            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(message.Location));
+            Console.WriteLine($"------ Testing Assembly {Path.GetFileName(message.Location)} ------");
             Console.WriteLine();
         }
 
@@ -25,7 +25,7 @@ namespace Fixie.ConsoleRunner
             summary.Add(message);
 
             using (Foreground.Yellow)
-                Console.WriteLine("Test '{0}' skipped{1}", message.Name, message.SkipReason == null ? null : ": " + message.SkipReason);
+                Console.WriteLine($"Test '{message.Name}' skipped{(message.SkipReason == null ? null : ": " + message.SkipReason)}");
         }
 
         public void Handle(CasePassed message)
@@ -38,7 +38,7 @@ namespace Fixie.ConsoleRunner
             summary.Add(message);
 
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", message.Name, message.Exceptions.PrimaryException.DisplayName);
+                Console.WriteLine($"Test '{message.Name}' failed: {message.Exceptions.PrimaryException.DisplayName}");
             Console.WriteLine(message.Exceptions.CompoundStackTrace);
             Console.WriteLine();
         }

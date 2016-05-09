@@ -40,7 +40,7 @@ namespace Fixie.Execution
                     {
                         console.WriteLine();
                         console.WriteLine();
-                        console.WriteLine("===== Secondary Exception: {0} =====", ex.Type);
+                        console.WriteLine($"===== Secondary Exception: {ex.Type} =====");
                         console.WriteLine(ex.Message);
                         console.Write(ex.StackTrace);
                     }
@@ -51,7 +51,7 @@ namespace Fixie.Execution
                         walk = walk.InnerException;
                         console.WriteLine();
                         console.WriteLine();
-                        console.WriteLine("------- Inner Exception: {0} -------", walk.Type);
+                        console.WriteLine($"------- Inner Exception: {walk.Type} -------");
                         console.WriteLine(walk.Message);
                         console.Write(walk.StackTrace);
                     }

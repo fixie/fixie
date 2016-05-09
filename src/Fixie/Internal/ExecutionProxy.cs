@@ -1,16 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using Fixie.Execution;
 
 namespace Fixie.Internal
 {
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
+        public void DiscoverMethodGroups(string assemblyFullPath, Options options, Bus bus)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return new Discoverer(options).DiscoverTestMethodGroups(assembly);
+            var discoverer = new Discoverer(options);
+
+            var methodGroups = discoverer.DiscoverTestMethodGroups(assembly);
+
+            foreach (var methodGroup in methodGroups)
+                bus.Publish(new MethodGroupDiscovered(methodGroup));
         }
 
         public void RunAssembly(string assemblyFullPath, Options options, Bus bus)

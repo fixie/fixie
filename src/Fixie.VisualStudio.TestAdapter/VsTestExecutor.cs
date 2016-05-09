@@ -39,7 +39,7 @@ namespace Fixie.VisualStudio.TestAdapter
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        var listener = new VisualStudioListener(frameworkHandle, assemblyPath);
+                        var listener = new VisualStudioExecutionListener(frameworkHandle, assemblyPath);
 
                         using (var environment = new ExecutionEnvironment(assemblyPath, listener))
                             environment.RunAssembly(new Options());
@@ -85,7 +85,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
                         var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
 
-                        var listener = new VisualStudioListener(frameworkHandle, assemblyPath);
+                        var listener = new VisualStudioExecutionListener(frameworkHandle, assemblyPath);
 
                         using (var environment = new ExecutionEnvironment(assemblyPath, listener))
                             environment.RunMethods(new Options(), methodGroups);

@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class VisualStudioListener :
+    public class VisualStudioExecutionListener :
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>
@@ -13,7 +13,7 @@ namespace Fixie.VisualStudio.TestAdapter
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
 
-        public VisualStudioListener(ITestExecutionRecorder log, string assemblyPath)
+        public VisualStudioExecutionListener(ITestExecutionRecorder log, string assemblyPath)
         {
             this.log = log;
             this.assemblyPath = assemblyPath;

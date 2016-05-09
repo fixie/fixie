@@ -42,6 +42,7 @@
     <Compile Include="Execution\Handler.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Execution\Message.cs" />
+    <Compile Include="Execution\MethodGroupDiscovered.cs" />
     <Compile Include="Internal\Bus.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="Internal\Discoverer.cs" />

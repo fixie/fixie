@@ -96,7 +96,7 @@ namespace Fixie.ConsoleRunner.Reports
                 @case.Add(
                     new XElement("failure",
                         new XElement("message", new XCData(message.Exceptions.PrimaryException.Message)),
-                        new XElement("stack-trace", new XCData(message.Exceptions.CompoundStackTrace))));
+                        new XElement("stack-trace", new XCData(message.Exceptions.PrimaryException.Type + System.Environment.NewLine + message.Exceptions.CompoundStackTrace))));
             }
 
             return @case;

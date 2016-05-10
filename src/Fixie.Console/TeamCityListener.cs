@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Text;
 using Fixie.Execution;
@@ -15,7 +14,7 @@ namespace Fixie.ConsoleRunner
     {
         public void Handle(AssemblyStarted message)
         {
-            Message("testSuiteStarted name='{0}'", Path.GetFileName(message.Location));
+            Message("testSuiteStarted name='{0}'", message.Name);
         }
 
         public void Handle(CaseSkipped message)
@@ -40,7 +39,7 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(AssemblyCompleted message)
         {
-            Message("testSuiteFinished name='{0}'", Path.GetFileName(message.Location));
+            Message("testSuiteFinished name='{0}'", message.Name);
         }
 
         static void Message(string format, params string[] args)

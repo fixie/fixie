@@ -26,7 +26,7 @@ namespace Fixie.Tests.ConsoleRunner
                        .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                        .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'")) //Avoid brittle assertion introduced by durations.
                        .ShouldEqual(
-                           "##teamcity[testSuiteStarted name='Fixie.Tests.dll']",
+                           "##teamcity[testSuiteStarted name='Fixie.Tests']",
                            "##teamcity[testIgnored name='" + testClass + ".SkipWithReason' message='Skipped with reason.']",
                            "##teamcity[testIgnored name='" + testClass + ".SkipWithoutReason' message='']",
 
@@ -58,7 +58,7 @@ namespace Fixie.Tests.ConsoleRunner
                            "##teamcity[testStarted name='" + testClass + ".PassC']",
                            "##teamcity[testStdOut name='" + testClass + ".PassC' out='Console.Out: PassC|r|nConsole.Error: PassC|r|n']",
                            "##teamcity[testFinished name='" + testClass + ".PassC' duration='#']",
-                           "##teamcity[testSuiteFinished name='Fixie.Tests.dll']");
+                           "##teamcity[testSuiteFinished name='Fixie.Tests']");
             }
         }
 

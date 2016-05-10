@@ -51,7 +51,7 @@ namespace Fixie.TestDriven
                 Name = message.Name,
                 State = TestState.Failed,
                 Message = message.Exceptions.PrimaryException.DisplayName,
-                StackTrace = message.Exceptions.PrimaryException.Message + Environment.NewLine + message.Exceptions.CompoundStackTrace,
+                StackTrace = message.Exceptions.PrimaryException.Message + Environment.NewLine + Environment.NewLine + message.Exceptions.CompoundStackTrace,
             });
         }
     }

@@ -80,8 +80,7 @@ namespace Fixie.Tests.ConsoleRunner
                 int.Parse(results[2].durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
                 results[2].ErrorMessage.ShouldEqual("'Fail' failed!");
                 results[2].ErrorStackTrace.Lines().Select(CleanBrittleValues)
-                    .ShouldEqual("Fixie.Tests.FailureException",
-                         "   at Fixie.Tests.ConsoleRunner.AppVeyorListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
+                    .ShouldEqual("   at Fixie.Tests.ConsoleRunner.AppVeyorListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
                 results[2].StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
 
                 results[3].testName.ShouldEqual(testClass + ".Pass(123)");

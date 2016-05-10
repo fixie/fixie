@@ -54,7 +54,7 @@ namespace Fixie.VisualStudio.TestAdapter
                 Duration = message.Duration,
                 ComputerName = Environment.MachineName,
                 ErrorMessage = message.Exceptions.PrimaryException.Message,
-                ErrorStackTrace = message.Exceptions.PrimaryException.Type + Environment.NewLine + message.Exceptions.CompoundStackTrace
+                ErrorStackTrace = message.Exceptions.CompoundStackTrace
             };
 
             AttachCapturedConsoleOutput(message.Output, testResult);

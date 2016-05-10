@@ -15,16 +15,14 @@
                   <test-case name="Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests+PassFailTestClass.Fail" executed="true" success="false" result="Failure" time="1.234">
                     <failure>
                       <message><![CDATA['Fail' failed!]]></message>
-                      <stack-trace><![CDATA[Fixie.Tests.FailureException
-   at Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests.PassFailTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
+                      <stack-trace><![CDATA[   at Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests.PassFailTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
                     </failure>
                   </test-case>
                   <test-case name="Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests+PassFailTestClass.Pass" executed="true" success="true" result="Success" time="1.234" />
                   <test-case name="Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests+PassFailTestClass.PassIfTrue(False)" executed="true" success="false" result="Failure" time="1.234">
                     <failure>
                       <message><![CDATA['PassIfTrue' failed!]]></message>
-                      <stack-trace><![CDATA[Fixie.Tests.FailureException
-   at Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests.PassFailTestClass.PassIfTrue(Boolean pass) in [fileLocation]:line #]]></stack-trace>
+                      <stack-trace><![CDATA[   at Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests.PassFailTestClass.PassIfTrue(Boolean pass) in [fileLocation]:line #]]></stack-trace>
                     </failure>
                   </test-case>
                   <test-case name="Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests+PassFailTestClass.PassIfTrue(True)" executed="true" success="true" result="Success" time="1.234" />

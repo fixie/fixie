@@ -81,9 +81,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 results[2].Outcome.ShouldEqual(TestOutcome.Failed);
                 results[2].ErrorMessage.ShouldEqual("'Fail' failed!");
                 results[2].ErrorStackTrace.Lines().Select(CleanBrittleValues)
-                    .ShouldEqual(
-                        "Fixie.Tests.FailureException",
-                        "   at Fixie.Tests.VisualStudio.TestAdapter.VisualStudioExecutionListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
+                    .ShouldEqual("   at Fixie.Tests.VisualStudio.TestAdapter.VisualStudioExecutionListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
                 results[2].DisplayName.ShouldEqual(testClass + ".Fail");
                 results[2].Messages.Count.ShouldEqual(1);
                 results[2].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);

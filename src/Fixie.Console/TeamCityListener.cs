@@ -25,14 +25,14 @@ namespace Fixie.ConsoleRunner
         public void Handle(CasePassed message)
         {
             Message("testStarted name='{0}'", message.Name);
-            Output(message.Name, message.Output);
+            Output(message);
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
         public void Handle(CaseFailed message)
         {
             Message("testStarted name='{0}'", message.Name);
-            Output(message.Name, message.Output);
+            Output(message);
             Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exceptions.PrimaryException.Message, message.Exceptions.CompoundStackTrace);
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
@@ -48,10 +48,10 @@ namespace Fixie.ConsoleRunner
             Console.WriteLine("##teamcity["+format+"]", encodedArgs);
         }
 
-        static void Output(string name, string output)
+        static void Output(CaseCompleted message)
         {
-            if (!String.IsNullOrEmpty(output))
-                Message("testStdOut name='{0}' out='{1}'", name, output);
+            if (!String.IsNullOrEmpty(message.Output))
+                Message("testStdOut name='{0}' out='{1}'", message.Name, message.Output);
         }
 
         static string Encode(string value)

@@ -29,7 +29,7 @@ namespace Fixie.ConsoleRunner.Reports
                 new XAttribute("passed", assemblyReport.Passed),
                 new XAttribute("failed", assemblyReport.Failed),
                 new XAttribute("skipped", assemblyReport.Skipped),
-                new XAttribute("environment", String.Format("{0}-bit .NET {1}", IntPtr.Size * 8, Environment.Version)),
+                new XAttribute("environment", $"{IntPtr.Size*8}-bit .NET {Environment.Version}"),
                 new XAttribute("test-framework", Framework.Version),
                 assemblyReport.Classes.Select(Class));
         }

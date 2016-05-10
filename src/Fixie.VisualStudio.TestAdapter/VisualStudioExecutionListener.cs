@@ -5,10 +5,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class VisualStudioExecutionListener :
-        Handler<CaseSkipped>,
-        Handler<CasePassed>,
-        Handler<CaseFailed>
+    public class VisualStudioExecutionListener : Handler<CaseCompleted>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
@@ -19,43 +16,25 @@ namespace Fixie.VisualStudio.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public void Handle(CaseSkipped message)
-        {
-            log.RecordResult(new TestResult(TestCase(message.MethodGroup))
-            {
-                DisplayName = message.Name,
-                Outcome = Map(CaseStatus.Skipped),
-                ComputerName = Environment.MachineName,
-                ErrorMessage = message.SkipReason
-            });
-        }
-
-        public void Handle(CasePassed message)
+        public void Handle(CaseCompleted message)
         {
             var testResult = new TestResult(TestCase(message.MethodGroup))
             {
                 DisplayName = message.Name,
-                Outcome = Map(CaseStatus.Passed),
+                Outcome = Map(message.Status),
                 Duration = message.Duration,
                 ComputerName = Environment.MachineName
             };
 
-            AttachCapturedConsoleOutput(message.Output, testResult);
-
-            log.RecordResult(testResult);
-        }
-
-        public void Handle(CaseFailed message)
-        {
-            var testResult = new TestResult(TestCase(message.MethodGroup))
+            if (message.Status == CaseStatus.Skipped)
             {
-                DisplayName = message.Name,
-                Outcome = Map(CaseStatus.Failed),
-                Duration = message.Duration,
-                ComputerName = Environment.MachineName,
-                ErrorMessage = message.Exceptions.PrimaryException.Message,
-                ErrorStackTrace = message.Exceptions.CompoundStackTrace
-            };
+                testResult.ErrorMessage = message.SkipReason;
+            }
+            else if (message.Status == CaseStatus.Failed)
+            {
+                testResult.ErrorMessage = message.Exceptions.PrimaryException.Message;
+                testResult.ErrorStackTrace = message.Exceptions.CompoundStackTrace;
+            }
 
             AttachCapturedConsoleOutput(message.Output, testResult);
 

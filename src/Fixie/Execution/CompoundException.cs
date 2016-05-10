@@ -33,7 +33,6 @@ namespace Fixie.Execution
                 {
                     if (isPrimaryException)
                     {
-                        console.WriteLine(ex.Message);
                         console.Write(ex.StackTrace);
                     }
                     else

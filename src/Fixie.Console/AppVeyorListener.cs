@@ -75,8 +75,8 @@ namespace Fixie.ConsoleRunner
                 outcome = "Failed",
                 durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
                 StdOut = message.Output,
-                ErrorMessage = message.Exceptions.PrimaryException.DisplayName,
-                ErrorStackTrace = message.Exceptions.CompoundStackTrace
+                ErrorMessage = message.Exceptions.PrimaryException.Message,
+                ErrorStackTrace = message.Exceptions.PrimaryException.Type + Environment.NewLine + message.Exceptions.CompoundStackTrace
             });
         }
 

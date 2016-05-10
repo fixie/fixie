@@ -1,4 +1,5 @@
-﻿using Fixie.Execution;
+﻿using System;
+using Fixie.Execution;
 using TestDriven.Framework;
 
 namespace Fixie.TestDriven
@@ -50,7 +51,7 @@ namespace Fixie.TestDriven
                 Name = message.Name,
                 State = TestState.Failed,
                 Message = message.Exceptions.PrimaryException.DisplayName,
-                StackTrace = message.Exceptions.CompoundStackTrace,
+                StackTrace = message.Exceptions.PrimaryException.Message + Environment.NewLine + message.Exceptions.CompoundStackTrace,
             });
         }
     }

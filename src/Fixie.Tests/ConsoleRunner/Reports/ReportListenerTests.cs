@@ -82,9 +82,8 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                     .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #");
                 cases[2].Exceptions.PrimaryException.InnerException.ShouldBeNull();
                 cases[2].Exceptions.SecondaryExceptions.ShouldBeEmpty();
-                CleanBrittleValues(cases[2].Exceptions.CompoundStackTrace).Lines().ShouldEqual(
-                    "'FailA' failed!",
-                    "   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #");
+                CleanBrittleValues(cases[2].Exceptions.CompoundStackTrace)
+                    .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #");
                 cases[2].SkipReason.ShouldEqual(null);
 
                 cases[3].MethodGroup.FullName.ShouldEqual(testClass + ".FailB");
@@ -99,9 +98,8 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                     .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #");
                 cases[3].Exceptions.PrimaryException.InnerException.ShouldBeNull();
                 cases[3].Exceptions.SecondaryExceptions.ShouldBeEmpty();
-                CleanBrittleValues(cases[3].Exceptions.CompoundStackTrace).Lines().ShouldEqual(
-                    "'FailB' failed!",
-                    "   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #");
+                CleanBrittleValues(cases[3].Exceptions.CompoundStackTrace)
+                    .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #");
                 cases[3].SkipReason.ShouldEqual(null);
 
                 cases[4].MethodGroup.FullName.ShouldEqual(testClass + ".PassA");

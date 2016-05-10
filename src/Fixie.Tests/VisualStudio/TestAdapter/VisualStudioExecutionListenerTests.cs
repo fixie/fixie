@@ -79,10 +79,10 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
                 results[2].TestCase.DisplayName.ShouldEqual(testClass + ".Fail");
                 results[2].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
                 results[2].Outcome.ShouldEqual(TestOutcome.Failed);
-                results[2].ErrorMessage.ShouldEqual("Fixie.Tests.FailureException");
+                results[2].ErrorMessage.ShouldEqual("'Fail' failed!");
                 results[2].ErrorStackTrace.Lines().Select(CleanBrittleValues)
                     .ShouldEqual(
-                        "'Fail' failed!",
+                        "Fixie.Tests.FailureException",
                         "   at Fixie.Tests.VisualStudio.TestAdapter.VisualStudioExecutionListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
                 results[2].DisplayName.ShouldEqual(testClass + ".Fail");
                 results[2].Messages.Count.ShouldEqual(1);

@@ -43,11 +43,11 @@ namespace Fixie.Tests.ConsoleRunner
 
                            "##teamcity[testStarted name='"+testClass+".FailA']",
                            "##teamcity[testStdOut name='" + testClass + ".FailA' out='Console.Out: FailA|r|nConsole.Error: FailA|r|n']",
-                           "##teamcity[testFailed name='" + testClass + ".FailA' message='|'FailA|' failed!' details='|'FailA|' failed!|r|n   at Fixie.Tests.ConsoleRunner.TeamCityListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #']",
+                           "##teamcity[testFailed name='" + testClass + ".FailA' message='|'FailA|' failed!' details='Fixie.Tests.FailureException|r|n   at Fixie.Tests.ConsoleRunner.TeamCityListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #']",
                            "##teamcity[testFinished name='" + testClass + ".FailA' duration='#']",
                            "##teamcity[testStarted name='" + testClass + ".FailB']",
                            "##teamcity[testStdOut name='" + testClass + ".FailB' out='Console.Out: FailB|r|nConsole.Error: FailB|r|n']",
-                           "##teamcity[testFailed name='" + testClass + ".FailB' message='|'FailB|' failed!' details='|'FailB|' failed!|r|n   at Fixie.Tests.ConsoleRunner.TeamCityListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #']",
+                           "##teamcity[testFailed name='" + testClass + ".FailB' message='|'FailB|' failed!' details='Fixie.Tests.FailureException|r|n   at Fixie.Tests.ConsoleRunner.TeamCityListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #']",
                            "##teamcity[testFinished name='" + testClass + ".FailB' duration='#']",
                            "##teamcity[testStarted name='" + testClass + ".PassA']",
                            "##teamcity[testStdOut name='" + testClass + ".PassA' out='Console.Out: PassA|r|nConsole.Error: PassA|r|n']",

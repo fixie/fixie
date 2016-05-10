@@ -24,10 +24,10 @@ namespace Fixie.ConsoleRunner
         {
             summary.Add(message);
 
-            var skipReason = (message.SkipReason == null ? null : ": " + message.SkipReason);
+            var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
 
             using (Foreground.Yellow)
-                Console.WriteLine($"Test '{message.Name}' skipped{skipReason}");
+                Console.WriteLine($"Test '{message.Name}' skipped{optionalReason}");
         }
 
         public void Handle(CasePassed message)

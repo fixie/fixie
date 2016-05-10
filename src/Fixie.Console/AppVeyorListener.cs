@@ -10,9 +10,7 @@ namespace Fixie.ConsoleRunner
 {
     public class AppVeyorListener :
         Handler<AssemblyStarted>,
-        Handler<CaseSkipped>,
-        Handler<CasePassed>,
-        Handler<CaseFailed>
+        Handler<CaseCompleted>
     {
         readonly string url;
         readonly HttpClient client;
@@ -35,49 +33,29 @@ namespace Fixie.ConsoleRunner
             fileName = Path.GetFileName(message.Location);
         }
 
-        public void Handle(CaseSkipped message)
+        public void Handle(CaseCompleted message)
         {
-            Post(new TestResult
+            var testResult = new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
                 testName = message.Name,
-                outcome = "Skipped",
+                outcome = message.Status.ToString(),
                 durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = message.Output,
-                ErrorMessage = message.SkipReason,
-                ErrorStackTrace = null
-            });
-        }
+                StdOut = message.Output
+            };
 
-        public void Handle(CasePassed message)
-        {
-            Post(new TestResult
+            if (message.Status == CaseStatus.Skipped)
             {
-                testFramework = "Fixie",
-                fileName = fileName,
-                testName = message.Name,
-                outcome = "Passed",
-                durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = message.Output,
-                ErrorMessage = null,
-                ErrorStackTrace = null
-            });
-        }
+                testResult.ErrorMessage = message.SkipReason;
+            }
+            else if (message.Status == CaseStatus.Failed)
+            {
+                testResult.ErrorMessage = message.Exceptions.PrimaryException.Message;
+                testResult.ErrorStackTrace = message.Exceptions.CompoundStackTrace;
+            }
 
-        public void Handle(CaseFailed message)
-        {
-            Post(new TestResult
-            {
-                testFramework = "Fixie",
-                fileName = fileName,
-                testName = message.Name,
-                outcome = "Failed",
-                durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = message.Output,
-                ErrorMessage = message.Exceptions.PrimaryException.Message,
-                ErrorStackTrace = message.Exceptions.CompoundStackTrace
-            });
+            Post(testResult);
         }
 
         void Post(TestResult result)

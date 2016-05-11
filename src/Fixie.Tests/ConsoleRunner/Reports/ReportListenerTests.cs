@@ -83,7 +83,6 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 CleanBrittleValues(cases[2].Exceptions.PrimaryException.StackTrace)
                     .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #");
                 cases[2].Exceptions.PrimaryException.InnerException.ShouldBeNull();
-                cases[2].Exceptions.SecondaryExceptions.ShouldBeEmpty();
                 CleanBrittleValues(cases[2].Exceptions.CompoundStackTrace)
                     .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #");
                 cases[2].SkipReason.ShouldEqual(null);
@@ -101,7 +100,6 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 CleanBrittleValues(cases[3].Exceptions.PrimaryException.StackTrace)
                     .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #");
                 cases[3].Exceptions.PrimaryException.InnerException.ShouldBeNull();
-                cases[3].Exceptions.SecondaryExceptions.ShouldBeEmpty();
                 CleanBrittleValues(cases[3].Exceptions.CompoundStackTrace)
                     .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #");
                 cases[3].SkipReason.ShouldEqual(null);

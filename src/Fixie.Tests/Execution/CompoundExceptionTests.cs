@@ -24,11 +24,8 @@ namespace Fixie.Tests.Execution
 
             var compoundException = new CompoundException(new[] { exception }, assertionLibrary);
 
-            compoundException.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
-            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
-            compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
             compoundException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual(exception.StackTrace);
 
@@ -59,11 +56,8 @@ namespace Fixie.Tests.Execution
 
             var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
-            compoundException.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
-            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
-            compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
             compoundException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual(primaryException.StackTrace);
             compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
@@ -114,11 +108,8 @@ namespace Fixie.Tests.Execution
 
             var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
 
-            compoundException.PrimaryException.DisplayName.ShouldEqual("");
             compoundException.DisplayName.ShouldEqual("");
-            compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
-            compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
             compoundException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual("");
             compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");

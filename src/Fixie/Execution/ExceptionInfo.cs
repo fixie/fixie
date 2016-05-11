@@ -7,12 +7,11 @@ namespace Fixie.Execution
     [Obsolete]
     public class ExceptionInfo
     {
-        public ExceptionInfo(Exception exception, AssertionLibraryFilter filter)
+        public ExceptionInfo(Exception exception)
         {
             Type = exception.GetType().FullName;
             Message = exception.Message;
-            StackTrace = filter.FilterStackTrace(exception);
-            InnerException = exception.InnerException == null ? null : new ExceptionInfo(exception.InnerException, filter);
+            InnerException = exception.InnerException == null ? null : new ExceptionInfo(exception.InnerException);
         }
 
         [Obsolete]
@@ -20,9 +19,6 @@ namespace Fixie.Execution
 
         [Obsolete]
         public string Message { get; }
-
-        [Obsolete]
-        public string StackTrace { get; }
 
         [Obsolete]
         public ExceptionInfo InnerException { get; }

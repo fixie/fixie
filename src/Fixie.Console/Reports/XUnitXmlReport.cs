@@ -68,7 +68,7 @@ namespace Fixie.ConsoleRunner.Reports
             if (message.Status == CaseStatus.Failed)
                 @case.Add(
                     new XElement("failure",
-                        new XAttribute("exception-type", message.Exceptions.PrimaryException.Type),
+                        new XAttribute("exception-type", message.Exceptions.Type),
                         new XElement("message", new XCData(message.Exceptions.Message)),
                         new XElement("stack-trace", new XCData(message.Exceptions.CompoundStackTrace))));
 

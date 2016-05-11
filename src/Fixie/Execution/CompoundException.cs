@@ -19,6 +19,7 @@ namespace Fixie.Execution
 
         [Obsolete]
         public ExceptionInfo PrimaryException { get; }
+        public string Type => PrimaryException.Type;
         public string Message => PrimaryException.Message;
 
         public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; }

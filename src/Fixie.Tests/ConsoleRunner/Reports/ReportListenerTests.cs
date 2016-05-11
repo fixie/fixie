@@ -76,6 +76,7 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 cases[2].Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 cases[2].Output.Lines().ShouldEqual("Console.Out: FailA", "Console.Error: FailA");
                 cases[2].Exceptions.PrimaryException.Type.ShouldEqual("Fixie.Tests.FailureException");
+                cases[2].Exceptions.Type.ShouldEqual("Fixie.Tests.FailureException");
                 cases[2].Exceptions.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.FailureException");
                 cases[2].Exceptions.PrimaryException.Message.ShouldEqual("'FailA' failed!");
                 cases[2].Exceptions.Message.ShouldEqual("'FailA' failed!");
@@ -93,6 +94,7 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 cases[3].Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 cases[3].Output.Lines().ShouldEqual("Console.Out: FailB", "Console.Error: FailB");
                 cases[3].Exceptions.PrimaryException.Type.ShouldEqual("Fixie.Tests.FailureException");
+                cases[3].Exceptions.Type.ShouldEqual("Fixie.Tests.FailureException");
                 cases[3].Exceptions.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.FailureException");
                 cases[3].Exceptions.PrimaryException.Message.ShouldEqual("'FailB' failed!");
                 cases[3].Exceptions.Message.ShouldEqual("'FailB' failed!");

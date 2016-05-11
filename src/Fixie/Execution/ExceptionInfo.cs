@@ -4,6 +4,7 @@ using Fixie.Internal;
 namespace Fixie.Execution
 {
     [Serializable]
+    [Obsolete]
     public class ExceptionInfo
     {
         public ExceptionInfo(Exception exception, AssertionLibraryFilter filter)
@@ -14,9 +15,16 @@ namespace Fixie.Execution
             InnerException = exception.InnerException == null ? null : new ExceptionInfo(exception.InnerException, filter);
         }
 
+        [Obsolete]
         public string Type { get; }
+
+        [Obsolete]
         public string Message { get; }
+
+        [Obsolete]
         public string StackTrace { get; }
+
+        [Obsolete]
         public ExceptionInfo InnerException { get; }
     }
 }

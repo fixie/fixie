@@ -27,6 +27,7 @@ namespace Fixie.Tests.Execution
             compoundException.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
+            compoundException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual(exception.StackTrace);
 
             compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
@@ -61,6 +62,7 @@ namespace Fixie.Tests.Execution
             compoundException.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
+            compoundException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual(primaryException.StackTrace);
             compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
             compoundException.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
@@ -135,6 +137,7 @@ namespace Fixie.Tests.Execution
             compoundException.PrimaryException.DisplayName.ShouldEqual("");
             compoundException.PrimaryException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.PrimaryException.Message.ShouldEqual("Primary Exception!");
+            compoundException.Message.ShouldEqual("Primary Exception!");
             compoundException.PrimaryException.StackTrace.ShouldEqual("");
             compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
             compoundException.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");

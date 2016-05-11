@@ -54,6 +54,7 @@ namespace Fixie.Tests.Execution
                 fail.Exceptions.PrimaryException.Type.ShouldEqual("Fixie.Tests.FailureException");
                 fail.Exceptions.CompoundStackTrace.ShouldNotBeNull();
                 fail.Exceptions.PrimaryException.Message.ShouldEqual("'Fail' failed!");
+                fail.Exceptions.Message.ShouldEqual("'Fail' failed!");
                 fail.SkipReason.ShouldBeNull();
 
                 failByAssertion.Name.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.FailByAssertion");
@@ -64,6 +65,10 @@ namespace Fixie.Tests.Execution
                 failByAssertion.Exceptions.PrimaryException.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
                 failByAssertion.Exceptions.CompoundStackTrace.ShouldNotBeNull();
                 failByAssertion.Exceptions.PrimaryException.Message.Lines().ShouldEqual(
+                    "Assert.Equal() Failure",
+                    "Expected: 2",
+                    "Actual:   1");
+                failByAssertion.Exceptions.Message.Lines().ShouldEqual(
                     "Assert.Equal() Failure",
                     "Expected: 2",
                     "Actual:   1");

@@ -26,11 +26,9 @@ namespace Fixie.Tests
         {
             var entry = new StringBuilder();
 
-            var primaryException = message.Exceptions.PrimaryException;
+            entry.AppendFormat("{0} failed: {1}", message.Name, message.Exceptions.Message);
 
-            entry.AppendFormat("{0} failed: {1}", message.Name, primaryException.Message);
-
-            var walk = primaryException;
+            var walk = message.Exceptions.PrimaryException;
             while (walk.InnerException != null)
             {
                 walk = walk.InnerException;

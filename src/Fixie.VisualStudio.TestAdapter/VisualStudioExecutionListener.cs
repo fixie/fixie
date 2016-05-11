@@ -32,7 +32,7 @@ namespace Fixie.VisualStudio.TestAdapter
             }
             else if (message.Status == CaseStatus.Failed)
             {
-                testResult.ErrorMessage = message.Exceptions.PrimaryException.Message;
+                testResult.ErrorMessage = message.Exceptions.Message;
                 testResult.ErrorStackTrace = message.Exceptions.CompoundStackTrace;
             }
 

@@ -17,7 +17,9 @@ namespace Fixie.Execution
             CompoundStackTrace = GetCompoundStackTrace(all);
         }
 
+        [Obsolete]
         public ExceptionInfo PrimaryException { get; }
+        public string Message => PrimaryException.Message;
 
         public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; }
 

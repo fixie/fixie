@@ -78,6 +78,7 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 cases[2].Exceptions.PrimaryException.Type.ShouldEqual("Fixie.Tests.FailureException");
                 cases[2].Exceptions.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.FailureException");
                 cases[2].Exceptions.PrimaryException.Message.ShouldEqual("'FailA' failed!");
+                cases[2].Exceptions.Message.ShouldEqual("'FailA' failed!");
                 CleanBrittleValues(cases[2].Exceptions.PrimaryException.StackTrace)
                     .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #");
                 cases[2].Exceptions.PrimaryException.InnerException.ShouldBeNull();
@@ -94,6 +95,7 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 cases[3].Exceptions.PrimaryException.Type.ShouldEqual("Fixie.Tests.FailureException");
                 cases[3].Exceptions.PrimaryException.DisplayName.ShouldEqual("Fixie.Tests.FailureException");
                 cases[3].Exceptions.PrimaryException.Message.ShouldEqual("'FailB' failed!");
+                cases[3].Exceptions.Message.ShouldEqual("'FailB' failed!");
                 CleanBrittleValues(cases[3].Exceptions.PrimaryException.StackTrace)
                     .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #");
                 cases[3].Exceptions.PrimaryException.InnerException.ShouldBeNull();

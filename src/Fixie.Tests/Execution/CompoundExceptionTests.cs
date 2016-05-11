@@ -27,14 +27,6 @@ namespace Fixie.Tests.Execution
             compoundException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
-            compoundException.PrimaryException.StackTrace.ShouldEqual(exception.StackTrace);
-
-            compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
-            compoundException.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
-            compoundException.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
-            compoundException.PrimaryException.InnerException.StackTrace.ShouldEqual(exception.InnerException.StackTrace);
-
-            compoundException.PrimaryException.InnerException.InnerException.ShouldBeNull();
 
             compoundException.CompoundStackTrace
                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
@@ -59,12 +51,6 @@ namespace Fixie.Tests.Execution
             compoundException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
-            compoundException.PrimaryException.StackTrace.ShouldEqual(primaryException.StackTrace);
-            compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
-            compoundException.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
-            compoundException.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
-            compoundException.PrimaryException.InnerException.StackTrace.ShouldEqual(primaryException.InnerException.StackTrace);
-            compoundException.PrimaryException.InnerException.InnerException.ShouldBeNull();
 
             compoundException.CompoundStackTrace
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
@@ -111,12 +97,6 @@ namespace Fixie.Tests.Execution
             compoundException.DisplayName.ShouldEqual("");
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
-            compoundException.PrimaryException.StackTrace.ShouldEqual("");
-            compoundException.PrimaryException.InnerException.DisplayName.ShouldEqual("System.DivideByZeroException");
-            compoundException.PrimaryException.InnerException.Type.ShouldEqual("System.DivideByZeroException");
-            compoundException.PrimaryException.InnerException.Message.ShouldEqual("Divide by Zero Exception!");
-            compoundException.PrimaryException.InnerException.StackTrace.ShouldEqual("");
-            compoundException.PrimaryException.InnerException.InnerException.ShouldBeNull();
 
             compoundException.CompoundStackTrace
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)

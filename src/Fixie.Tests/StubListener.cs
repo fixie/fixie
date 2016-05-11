@@ -26,27 +26,27 @@ namespace Fixie.Tests
         {
             var entry = new StringBuilder();
 
-            entry.AppendFormat("{0} failed: {1}", message.Name, message.Exceptions.Message);
+            entry.Append($"{message.Name} failed: {message.Exceptions.Message}");
 
             var walk = message.Exceptions.PrimaryException;
             while (walk.InnerException != null)
             {
                 walk = walk.InnerException;
                 entry.AppendLine();
-                entry.AppendFormat("    Inner Exception: {0}", walk.Message);
+                entry.Append($"    Inner Exception: {walk.Message}");
             }
 
             foreach (var secondaryException in message.Exceptions.SecondaryExceptions)
             {
                 entry.AppendLine();
-                entry.AppendFormat("    Secondary Failure: {0}", secondaryException.Message);
+                entry.Append($"    Secondary Failure: {secondaryException.Message}");
 
                 walk = secondaryException;
                 while (walk.InnerException != null)
                 {
                     walk = walk.InnerException;
                     entry.AppendLine();
-                    entry.AppendFormat("        Inner Exception: {0}", walk.Message);
+                    entry.Append($"        Inner Exception: {walk.Message}");
                 }
             }
 

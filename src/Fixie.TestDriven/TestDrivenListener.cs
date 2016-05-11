@@ -50,7 +50,7 @@ namespace Fixie.TestDriven
             {
                 Name = message.Name,
                 State = TestState.Failed,
-                Message = message.Exceptions.PrimaryException.DisplayName,
+                Message = message.Exceptions.DisplayName,
                 StackTrace = message.Exceptions.Message + Environment.NewLine + Environment.NewLine + message.Exceptions.CompoundStackTrace,
             });
         }

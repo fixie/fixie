@@ -56,24 +56,6 @@ namespace Fixie.Tests.Internal
                 .ShouldEqual(filteredStackTrace);
         }
 
-        public void ShouldGetExceptionTypeAsDisplayNameByDefault()
-        {
-            AssertionLibraryFilter()
-                .DisplayName(new FakeException(null))
-                .ShouldEqual(typeof(FakeException).FullName);
-        }
-
-        public void ShouldGetBlankDisplayNameWhenExceptionTypeIsAnAssertionLibraryImplementationDetail()
-        {
-            convention
-                .HideExceptionDetails
-                .For<FakeException>();
-
-            AssertionLibraryFilter()
-                .DisplayName(new FakeException(null))
-                .ShouldEqual("");
-        }
-
         public void ShouldDetermineWhetherAnExceptionTypeIsAnAssertionLibraryImplementationDetail()
         {
             convention

@@ -12,7 +12,7 @@ namespace Fixie.Execution
         public CompoundException(IReadOnlyList<Exception> exceptions, AssertionLibraryFilter filter)
         {
             var primary = exceptions.First();
-            DisplayName = filter.DisplayName(primary);
+            DisplayName = filter.IsFailedAssertion(primary) ? "" : primary.GetType().FullName;
             Type = primary.GetType().FullName;
             Message = primary.Message;
             StackTrace = GetCompoundStackTrace(exceptions, filter);

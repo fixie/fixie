@@ -18,6 +18,7 @@ namespace Fixie.Execution
             StackTrace = GetCompoundStackTrace(exceptions, filter);
         }
 
+        [Obsolete]
         public string DisplayName { get; }
         public string Type { get; }
         public string Message { get; }

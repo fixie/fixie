@@ -74,6 +74,23 @@ namespace Fixie.Tests.Internal
                 .ShouldEqual("");
         }
 
+        public void ShouldDetermineWhetherAnExceptionTypeIsAnAssertionLibraryImplementationDetail()
+        {
+            convention
+                .HideExceptionDetails
+                .For<SampleAssertionLibrary.AssertionException>();
+
+            var filter = AssertionLibraryFilter();
+
+            filter
+                .IsFailedAssertion(new FakeException(null))
+                .ShouldBeFalse();
+
+            filter
+                .IsFailedAssertion(new SampleAssertionLibrary.AssertionException(null))
+                .ShouldBeTrue();
+        }
+
         AssertionLibraryFilter AssertionLibraryFilter()
         {
             return new AssertionLibraryFilter(convention);

@@ -33,7 +33,7 @@ namespace Fixie.ConsoleRunner
         {
             Message("testStarted name='{0}'", message.Name);
             Output(message);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exceptions.Message, message.Exceptions.CompoundStackTrace);
+            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exceptions.Message, message.Exceptions.StackTrace);
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 

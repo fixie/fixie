@@ -28,7 +28,7 @@ namespace Fixie.Tests.Execution
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
 
-            compoundException.CompoundStackTrace
+            compoundException.StackTrace
                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                .ShouldEqual(
@@ -52,7 +52,7 @@ namespace Fixie.Tests.Execution
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
 
-            compoundException.CompoundStackTrace
+            compoundException.StackTrace
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                 .ShouldEqual(
@@ -98,7 +98,7 @@ namespace Fixie.Tests.Execution
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
 
-            compoundException.CompoundStackTrace
+            compoundException.StackTrace
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                 .ShouldEqual(

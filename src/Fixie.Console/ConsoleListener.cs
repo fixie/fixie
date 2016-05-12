@@ -42,7 +42,7 @@ namespace Fixie.ConsoleRunner
             using (Foreground.Red)
                 Console.WriteLine($"Test '{message.Name}' failed: {message.Exceptions.DisplayName}");
             Console.WriteLine(message.Exceptions.Message);
-            Console.WriteLine(message.Exceptions.CompoundStackTrace);
+            Console.WriteLine(message.Exceptions.StackTrace);
             Console.WriteLine();
         }
 

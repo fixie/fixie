@@ -33,7 +33,7 @@ namespace Fixie.VisualStudio.TestAdapter
             else if (message.Status == CaseStatus.Failed)
             {
                 testResult.ErrorMessage = message.Exceptions.Message;
-                testResult.ErrorStackTrace = message.Exceptions.CompoundStackTrace;
+                testResult.ErrorStackTrace = message.Exceptions.StackTrace;
             }
 
             AttachCapturedConsoleOutput(message.Output, testResult);

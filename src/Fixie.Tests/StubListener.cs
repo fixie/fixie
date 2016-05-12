@@ -26,7 +26,7 @@ namespace Fixie.Tests
 
         public void Handle(CaseFailed message)
         {
-            log.Add($"{message.Name} failed: {message.Exceptions.Message}{SimplifyCompoundStackTrace(message.Exceptions.CompoundStackTrace)}");
+            log.Add($"{message.Name} failed: {message.Exceptions.Message}{SimplifyCompoundStackTrace(message.Exceptions.StackTrace)}");
         }
 
         static string SimplifyCompoundStackTrace(string compoundStackTrace)

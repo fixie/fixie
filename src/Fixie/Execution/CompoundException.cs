@@ -9,7 +9,7 @@ namespace Fixie.Execution
     [Serializable]
     public class CompoundException
     {
-        public CompoundException(IReadOnlyCollection<Exception> exceptions, AssertionLibraryFilter filter)
+        public CompoundException(IReadOnlyList<Exception> exceptions, AssertionLibraryFilter filter)
         {
             var primary = exceptions.First();
             CompoundStackTrace = GetCompoundStackTrace(exceptions, filter);

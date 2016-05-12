@@ -27,6 +27,7 @@ namespace Fixie.Tests.Execution
             compoundException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
+            compoundException.FailedAssertion.ShouldEqual(false);
 
             compoundException.StackTrace
                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
@@ -51,6 +52,7 @@ namespace Fixie.Tests.Execution
             compoundException.DisplayName.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
+            compoundException.FailedAssertion.ShouldEqual(false);
 
             compoundException.StackTrace
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
@@ -97,6 +99,7 @@ namespace Fixie.Tests.Execution
             compoundException.DisplayName.ShouldEqual("");
             compoundException.Type.ShouldEqual("Fixie.Tests.Execution.CompoundExceptionTests+PrimaryException");
             compoundException.Message.ShouldEqual("Primary Exception!");
+            compoundException.FailedAssertion.ShouldEqual(true);
 
             compoundException.StackTrace
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)

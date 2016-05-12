@@ -13,22 +13,16 @@ namespace Fixie.Execution
         {
             var primary = exceptions.First();
             var all = exceptions.Select(x => new ExceptionInfo(x)).ToArray();
-            PrimaryException = all.First();
-            SecondaryExceptions = all.Skip(1).ToArray();
             CompoundStackTrace = GetCompoundStackTrace(exceptions, filter);
 
             DisplayName = filter.DisplayName(primary);
             Type = primary.GetType().FullName;
+            Message = primary.Message;
         }
 
-        [Obsolete]
-        public ExceptionInfo PrimaryException { get; }
         public string DisplayName { get; }
         public string Type { get; }
-        public string Message => PrimaryException.Message;
-
-        [Obsolete]
-        public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; }
+        public string Message { get; }
 
         public string CompoundStackTrace { get; }
 

@@ -12,7 +12,6 @@ namespace Fixie.Execution
         public CompoundException(IReadOnlyCollection<Exception> exceptions, AssertionLibraryFilter filter)
         {
             var primary = exceptions.First();
-            var all = exceptions.Select(x => new ExceptionInfo(x)).ToArray();
             CompoundStackTrace = GetCompoundStackTrace(exceptions, filter);
 
             DisplayName = filter.DisplayName(primary);

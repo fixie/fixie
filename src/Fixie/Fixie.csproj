@@ -90,7 +90,6 @@
     <Compile Include="PreservedException.cs" />
     <Compile Include="Execution\CaseCompleted.cs" />
     <Compile Include="Execution\CaseStatus.cs" />
-    <Compile Include="Execution\ExceptionInfo.cs" />
     <Compile Include="Internal\RunContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />

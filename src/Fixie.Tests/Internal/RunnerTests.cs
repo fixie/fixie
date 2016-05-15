@@ -84,11 +84,11 @@ namespace Fixie.Tests.Internal
 
                 "Fixie.Tests.Internal.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedA failed: Exception thrown while attempting to yield input parameters for method: ParameterizedA" + Environment.NewLine +
 	            "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
-	            "        Inner Exception: SortCases lambda expression threw!",
+	            "    Inner Exception: SortCases lambda expression threw!",
 
                 "Fixie.Tests.Internal.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedB failed: Exception thrown while attempting to yield input parameters for method: ParameterizedB" + Environment.NewLine +
 	            "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
-	            "        Inner Exception: SortCases lambda expression threw!",
+	            "    Inner Exception: SortCases lambda expression threw!",
 
                 "Fixie.Tests.Internal.RunnerTests+PassFailTestClass.Fail failed: Failed to compare two elements in the array." + Environment.NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",

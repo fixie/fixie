@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Fixie.Execution;
 
 namespace Fixie.Tests
@@ -24,35 +26,31 @@ namespace Fixie.Tests
 
         public void Handle(CaseFailed message)
         {
-            var entry = new StringBuilder();
+            log.Add($"{message.Name} failed: {message.Exceptions.Message}{SimplifyCompoundStackTrace(message.Exceptions.StackTrace)}");
+        }
 
-            var primaryException = message.Exceptions.PrimaryException;
+        static string SimplifyCompoundStackTrace(string compoundStackTrace)
+        {
+            var stackTrace = compoundStackTrace;
 
-            entry.AppendFormat("{0} failed: {1}", message.Name, primaryException.Message);
+            var newLine = Environment.NewLine;
+            var regexNewLine = Regex.Escape(newLine);
 
-            var walk = primaryException;
-            while (walk.InnerException != null)
-            {
-                walk = walk.InnerException;
-                entry.AppendLine();
-                entry.AppendFormat("    Inner Exception: {0}", walk.Message);
-            }
+            stackTrace =
+                String.Join(newLine,
+                    stackTrace.Split(new[] { newLine }, StringSplitOptions.RemoveEmptyEntries)
+                        .Where(x => !x.StartsWith("   at "))
+                        .Where(x => x != "--- End of stack trace from previous location where exception was thrown ---"));
 
-            foreach (var secondaryException in message.Exceptions.SecondaryExceptions)
-            {
-                entry.AppendLine();
-                entry.AppendFormat("    Secondary Failure: {0}", secondaryException.Message);
+            stackTrace = Regex.Replace(stackTrace,
+                @"===== Secondary Exception: [a-zA-Z\.]+ =====" + regexNewLine + "([^" + regexNewLine + "]+)(" + regexNewLine + ")?",
+                newLine + "    Secondary Failure: $1", RegexOptions.Multiline);
 
-                walk = secondaryException;
-                while (walk.InnerException != null)
-                {
-                    walk = walk.InnerException;
-                    entry.AppendLine();
-                    entry.AppendFormat("        Inner Exception: {0}", walk.Message);
-                }
-            }
+            stackTrace = Regex.Replace(stackTrace,
+                @"------- Inner Exception: [a-zA-Z\.]+ -------" + regexNewLine + "([^" + regexNewLine + "]+)(" + regexNewLine + ")?",
+                newLine + "    Inner Exception: $1", RegexOptions.Multiline);
 
-            log.Add(entry.ToString());
+            return stackTrace;
         }
 
         public IEnumerable<string> Entries => log;

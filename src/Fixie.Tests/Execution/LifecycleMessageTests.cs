@@ -51,9 +51,9 @@ namespace Fixie.Tests.Execution
                 fail.Output.ShouldEqual("Fail" + Environment.NewLine);
                 fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 fail.Status.ShouldEqual(CaseStatus.Failed);
-                fail.Exceptions.PrimaryException.Type.ShouldEqual("Fixie.Tests.FailureException");
-                fail.Exceptions.CompoundStackTrace.ShouldNotBeNull();
-                fail.Exceptions.PrimaryException.Message.ShouldEqual("'Fail' failed!");
+                fail.Exceptions.Type.ShouldEqual("Fixie.Tests.FailureException");
+                fail.Exceptions.StackTrace.ShouldNotBeNull();
+                fail.Exceptions.Message.ShouldEqual("'Fail' failed!");
                 fail.SkipReason.ShouldBeNull();
 
                 failByAssertion.Name.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.FailByAssertion");
@@ -61,9 +61,9 @@ namespace Fixie.Tests.Execution
                 failByAssertion.Output.ShouldEqual("FailByAssertion" + Environment.NewLine);
                 failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
-                failByAssertion.Exceptions.PrimaryException.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
-                failByAssertion.Exceptions.CompoundStackTrace.ShouldNotBeNull();
-                failByAssertion.Exceptions.PrimaryException.Message.Lines().ShouldEqual(
+                failByAssertion.Exceptions.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
+                failByAssertion.Exceptions.StackTrace.ShouldNotBeNull();
+                failByAssertion.Exceptions.Message.Lines().ShouldEqual(
                     "Assert.Equal() Failure",
                     "Expected: 2",
                     "Actual:   1");

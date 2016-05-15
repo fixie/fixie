@@ -9,21 +9,21 @@ namespace Fixie.Execution
     [Serializable]
     public class CompoundException
     {
-        public CompoundException(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)
+        public CompoundException(IReadOnlyList<Exception> exceptions, AssertionLibraryFilter filter)
         {
-            var all = exceptions.Select(x => new ExceptionInfo(x, filter)).ToArray();
-            PrimaryException = all.First();
-            SecondaryExceptions = all.Skip(1).ToArray();
-            CompoundStackTrace = GetCompoundStackTrace(all);
+            var primary = exceptions.First();
+            Type = primary.GetType().FullName;
+            Message = primary.Message;
+            FailedAssertion = filter.IsFailedAssertion(primary);
+            StackTrace = GetCompoundStackTrace(exceptions, filter);
         }
 
-        public ExceptionInfo PrimaryException { get; }
+        public string Type { get; }
+        public string Message { get; }
+        public bool FailedAssertion { get; }
+        public string StackTrace { get; }
 
-        public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; }
-
-        public string CompoundStackTrace { get; }
-
-        static string GetCompoundStackTrace(IEnumerable<ExceptionInfo> exceptions)
+        static string GetCompoundStackTrace(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)
         {
             using (var console = new StringWriter())
             {
@@ -33,15 +33,15 @@ namespace Fixie.Execution
                 {
                     if (isPrimaryException)
                     {
-                        console.Write(ex.StackTrace);
+                        console.Write(filter.FilterStackTrace(ex));
                     }
                     else
                     {
                         console.WriteLine();
                         console.WriteLine();
-                        console.WriteLine($"===== Secondary Exception: {ex.Type} =====");
+                        console.WriteLine($"===== Secondary Exception: {ex.GetType().FullName} =====");
                         console.WriteLine(ex.Message);
-                        console.Write(ex.StackTrace);
+                        console.Write(filter.FilterStackTrace(ex));
                     }
 
                     var walk = ex;
@@ -50,9 +50,9 @@ namespace Fixie.Execution
                         walk = walk.InnerException;
                         console.WriteLine();
                         console.WriteLine();
-                        console.WriteLine($"------- Inner Exception: {walk.Type} -------");
+                        console.WriteLine($"------- Inner Exception: {walk.GetType().FullName} -------");
                         console.WriteLine(walk.Message);
-                        console.Write(walk.StackTrace);
+                        console.Write(filter.FilterStackTrace(walk));
                     }
 
                     isPrimaryException = false;

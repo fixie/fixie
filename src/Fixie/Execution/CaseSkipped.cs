@@ -10,8 +10,8 @@ namespace Fixie.Execution
                 methodGroup: @case.MethodGroup,
                 name: @case.Name,
                 status: CaseStatus.Skipped,
-                duration: TimeSpan.Zero,
-                output: null
+                duration: @case.Duration,
+                output: @case.Output
                 )
         {
             Reason = reason;

@@ -91,8 +91,8 @@ namespace Fixie.ConsoleRunner.Reports
             if (message.Status == CaseStatus.Skipped)
             {
                 var skip = (CaseSkipped)message;
-                if (skip.SkipReason != null)
-                    @case.Add(new XElement("reason", new XElement("message", new XCData(skip.SkipReason))));
+                if (skip.Reason != null)
+                    @case.Add(new XElement("reason", new XElement("message", new XCData(skip.Reason))));
             }
 
             if (message.Status == CaseStatus.Failed)

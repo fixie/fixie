@@ -5,7 +5,7 @@ namespace Fixie.Execution
     [Serializable]
     public class CaseSkipped : CaseCompleted
     {
-        public CaseSkipped(Case @case, string skipReason)
+        public CaseSkipped(Case @case, string reason)
             : base(
                 methodGroup: @case.MethodGroup,
                 name: @case.Name,
@@ -14,9 +14,9 @@ namespace Fixie.Execution
                 output: null
                 )
         {
-            SkipReason = skipReason;
+            Reason = reason;
         }
 
-        public string SkipReason { get; }
+        public string Reason { get; }
     }
 }

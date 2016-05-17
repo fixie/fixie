@@ -24,7 +24,7 @@ namespace Fixie.ConsoleRunner
         {
             summary.Add(message);
 
-            var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
+            var optionalReason = message.Reason == null ? null : ": " + message.Reason;
 
             using (Foreground.Yellow)
                 Console.WriteLine($"Test '{message.Name}' skipped{optionalReason}");

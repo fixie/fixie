@@ -67,14 +67,14 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);
                 skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
                 skipWithReason.Output.ShouldEqual(null);
-                skipWithReason.SkipReason.ShouldEqual("Skipped with reason.");
+                skipWithReason.Reason.ShouldEqual("Skipped with reason.");
 
                 skipWithoutReason.MethodGroup.FullName.ShouldEqual(testClass + ".SkipWithoutReason");
                 skipWithoutReason.Name.ShouldEqual(testClass + ".SkipWithoutReason");
                 skipWithoutReason.Status.ShouldEqual(CaseStatus.Skipped);
                 skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
                 skipWithoutReason.Output.ShouldEqual(null);
-                skipWithoutReason.SkipReason.ShouldEqual(null);
+                skipWithoutReason.Reason.ShouldEqual(null);
 
                 failA.MethodGroup.FullName.ShouldEqual(testClass + ".FailA");
                 failA.Name.ShouldEqual(testClass + ".FailA");

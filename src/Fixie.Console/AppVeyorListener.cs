@@ -39,7 +39,7 @@ namespace Fixie.ConsoleRunner
         {
             Post(message, x =>
             {
-                x.ErrorMessage = message.SkipReason;
+                x.ErrorMessage = message.Reason;
             });
         }
 

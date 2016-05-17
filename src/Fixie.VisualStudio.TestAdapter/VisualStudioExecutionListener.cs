@@ -23,7 +23,7 @@ namespace Fixie.VisualStudio.TestAdapter
         {
             Log(message, x =>
             {
-                x.ErrorMessage = message.SkipReason;
+                x.ErrorMessage = message.Reason;
             });
         }
 

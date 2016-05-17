@@ -70,14 +70,14 @@ namespace Fixie.Tests.Execution
                 skip.Output.ShouldBeNull();
                 skip.Duration.ShouldEqual(TimeSpan.Zero);
                 skip.Status.ShouldEqual(CaseStatus.Skipped);
-                skip.SkipReason.ShouldBeNull();
+                skip.Reason.ShouldBeNull();
 
                 skipWithReason.Name.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.SkipWithReason");
                 skipWithReason.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.SkipWithReason");
                 skipWithReason.Output.ShouldBeNull();
                 skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
                 skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);
-                skipWithReason.SkipReason.ShouldEqual("Skipped by naming convention.");
+                skipWithReason.Reason.ShouldEqual("Skipped by naming convention.");
 
                 var assemblyCompleted = listener.AssemblyCompletions.Single();
                 assemblyCompleted.Name.ShouldEqual("Fixie.Tests");

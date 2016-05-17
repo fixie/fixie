@@ -56,8 +56,8 @@ namespace Fixie.Tests.ConsoleRunner.Reports
 
                 var skipWithReason = (CaseSkipped)cases[0];
                 var skipWithoutReason = (CaseSkipped)cases[1];
-                var failA = cases[2];
-                var failB = cases[3];
+                var failA = (CaseFailed)cases[2];
+                var failB = (CaseFailed)cases[3];
                 var passA = cases[4];
                 var passB = cases[5];
                 var passC = cases[6];
@@ -67,7 +67,6 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);
                 skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
                 skipWithReason.Output.ShouldEqual(null);
-                skipWithReason.Exceptions.ShouldEqual(null);
                 skipWithReason.SkipReason.ShouldEqual("Skipped with reason.");
 
                 skipWithoutReason.MethodGroup.FullName.ShouldEqual(testClass + ".SkipWithoutReason");
@@ -75,7 +74,6 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 skipWithoutReason.Status.ShouldEqual(CaseStatus.Skipped);
                 skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
                 skipWithoutReason.Output.ShouldEqual(null);
-                skipWithoutReason.Exceptions.ShouldEqual(null);
                 skipWithoutReason.SkipReason.ShouldEqual(null);
 
                 failA.MethodGroup.FullName.ShouldEqual(testClass + ".FailA");
@@ -83,10 +81,10 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 failA.Status.ShouldEqual(CaseStatus.Failed);
                 failA.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 failA.Output.Lines().ShouldEqual("Console.Out: FailA", "Console.Error: FailA");
-                failA.Exceptions.Type.ShouldEqual("Fixie.Tests.FailureException");
-                failA.Exceptions.Message.ShouldEqual("'FailA' failed!");
-                failA.Exceptions.FailedAssertion.ShouldEqual(false);
-                CleanBrittleValues(failA.Exceptions.StackTrace)
+                failA.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
+                failA.Exception.Message.ShouldEqual("'FailA' failed!");
+                failA.Exception.FailedAssertion.ShouldEqual(false);
+                CleanBrittleValues(failA.Exception.StackTrace)
                     .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #");
 
                 failB.MethodGroup.FullName.ShouldEqual(testClass + ".FailB");
@@ -94,10 +92,10 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 failB.Status.ShouldEqual(CaseStatus.Failed);
                 failB.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 failB.Output.Lines().ShouldEqual("Console.Out: FailB", "Console.Error: FailB");
-                failB.Exceptions.Type.ShouldEqual("Fixie.Tests.FailureException");
-                failB.Exceptions.Message.ShouldEqual("'FailB' failed!");
-                failB.Exceptions.FailedAssertion.ShouldEqual(false);
-                CleanBrittleValues(failB.Exceptions.StackTrace)
+                failB.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
+                failB.Exception.Message.ShouldEqual("'FailB' failed!");
+                failB.Exception.FailedAssertion.ShouldEqual(false);
+                CleanBrittleValues(failB.Exception.StackTrace)
                     .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #");
 
                 passA.MethodGroup.FullName.ShouldEqual(testClass + ".PassA");
@@ -105,21 +103,18 @@ namespace Fixie.Tests.ConsoleRunner.Reports
                 passA.Status.ShouldEqual(CaseStatus.Passed);
                 passA.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 passA.Output.Lines().ShouldEqual("Console.Out: PassA", "Console.Error: PassA");
-                passA.Exceptions.ShouldEqual(null);
 
                 passB.MethodGroup.FullName.ShouldEqual(testClass + ".PassB");
                 passB.Name.ShouldEqual(testClass + ".PassB");
                 passB.Status.ShouldEqual(CaseStatus.Passed);
                 passB.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 passB.Output.Lines().ShouldEqual("Console.Out: PassB", "Console.Error: PassB");
-                passB.Exceptions.ShouldEqual(null);
 
                 passC.MethodGroup.FullName.ShouldEqual(testClass + ".PassC");
                 passC.Name.ShouldEqual(testClass + ".PassC");
                 passC.Status.ShouldEqual(CaseStatus.Passed);
                 passC.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 passC.Output.Lines().ShouldEqual("Console.Out: PassC", "Console.Error: PassC");
-                passC.Exceptions.ShouldEqual(null);
 
                 console.Lines().ShouldEqual(
                     "Console.Out: FailA",

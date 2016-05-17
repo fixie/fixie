@@ -34,8 +34,8 @@ namespace Fixie.Tests.Execution
 
                 var skip = (CaseSkipped)listener.Cases[0];
                 var skipWithReason = (CaseSkipped)listener.Cases[1];
-                var fail = listener.Cases[2];
-                var failByAssertion = listener.Cases[3];
+                var fail = (CaseFailed)listener.Cases[2];
+                var failByAssertion = (CaseFailed)listener.Cases[3];
                 var pass = listener.Cases[4];
 
                 pass.Name.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.Pass");
@@ -43,25 +43,24 @@ namespace Fixie.Tests.Execution
                 pass.Output.ShouldEqual("Pass" + Environment.NewLine);
                 pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 pass.Status.ShouldEqual(CaseStatus.Passed);
-                pass.Exceptions.ShouldBeNull();
 
                 fail.Name.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.Fail");
                 fail.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.Fail");
                 fail.Output.ShouldEqual("Fail" + Environment.NewLine);
                 fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 fail.Status.ShouldEqual(CaseStatus.Failed);
-                fail.Exceptions.Type.ShouldEqual("Fixie.Tests.FailureException");
-                fail.Exceptions.StackTrace.ShouldNotBeNull();
-                fail.Exceptions.Message.ShouldEqual("'Fail' failed!");
+                fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
+                fail.Exception.StackTrace.ShouldNotBeNull();
+                fail.Exception.Message.ShouldEqual("'Fail' failed!");
 
                 failByAssertion.Name.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.FailByAssertion");
                 failByAssertion.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.FailByAssertion");
                 failByAssertion.Output.ShouldEqual("FailByAssertion" + Environment.NewLine);
                 failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
-                failByAssertion.Exceptions.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
-                failByAssertion.Exceptions.StackTrace.ShouldNotBeNull();
-                failByAssertion.Exceptions.Message.Lines().ShouldEqual(
+                failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
+                failByAssertion.Exception.StackTrace.ShouldNotBeNull();
+                failByAssertion.Exception.Message.Lines().ShouldEqual(
                     "Assert.Equal() Failure",
                     "Expected: 2",
                     "Actual:   1");
@@ -71,7 +70,6 @@ namespace Fixie.Tests.Execution
                 skip.Output.ShouldBeNull();
                 skip.Duration.ShouldEqual(TimeSpan.Zero);
                 skip.Status.ShouldEqual(CaseStatus.Skipped);
-                skip.Exceptions.ShouldBeNull();
                 skip.SkipReason.ShouldBeNull();
 
                 skipWithReason.Name.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.SkipWithReason");
@@ -79,7 +77,6 @@ namespace Fixie.Tests.Execution
                 skipWithReason.Output.ShouldBeNull();
                 skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
                 skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);
-                skipWithReason.Exceptions.ShouldBeNull();
                 skipWithReason.SkipReason.ShouldEqual("Skipped by naming convention.");
 
                 var assemblyCompleted = listener.AssemblyCompletions.Single();

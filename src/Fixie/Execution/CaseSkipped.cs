@@ -11,8 +11,7 @@ namespace Fixie.Execution
                 name: @case.Name,
                 status: CaseStatus.Skipped,
                 duration: TimeSpan.Zero,
-                output: null,
-                exceptions: null
+                output: null
                 )
         {
             SkipReason = skipReason;

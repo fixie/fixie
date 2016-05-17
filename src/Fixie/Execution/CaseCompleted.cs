@@ -6,15 +6,13 @@ namespace Fixie.Execution
     public abstract class CaseCompleted : Message
     {
         protected CaseCompleted(
-            MethodGroup methodGroup, string name, CaseStatus status, TimeSpan duration, string output,
-            CompoundException exceptions)
+            MethodGroup methodGroup, string name, CaseStatus status, TimeSpan duration, string output)
         {
             MethodGroup = methodGroup;
             Name = name;
             Status = status;
             Duration = duration;
             Output = output;
-            Exceptions = exceptions;
         }
 
         public MethodGroup MethodGroup { get; }
@@ -22,6 +20,5 @@ namespace Fixie.Execution
         public CaseStatus Status { get; }
         public TimeSpan Duration { get; }
         public string Output { get; }
-        public CompoundException Exceptions { get; }
     }
 }

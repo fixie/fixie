@@ -52,8 +52,8 @@ namespace Fixie.ConsoleRunner
         {
             Post(message, x=>
             {
-                x.ErrorMessage = message.Exceptions.Message;
-                x.ErrorStackTrace = message.Exceptions.StackTrace;
+                x.ErrorMessage = message.Exception.Message;
+                x.ErrorStackTrace = message.Exception.StackTrace;
             });
         }
 

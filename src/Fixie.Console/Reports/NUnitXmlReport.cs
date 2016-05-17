@@ -97,10 +97,11 @@ namespace Fixie.ConsoleRunner.Reports
 
             if (message.Status == CaseStatus.Failed)
             {
+                var fail = (CaseFailed)message;
                 @case.Add(
                     new XElement("failure",
-                        new XElement("message", new XCData(message.Exceptions.Message)),
-                        new XElement("stack-trace", new XCData(message.Exceptions.StackTrace))));
+                        new XElement("message", new XCData(fail.Exception.Message)),
+                        new XElement("stack-trace", new XCData(fail.Exception.StackTrace))));
             }
 
             return @case;

@@ -18,8 +18,7 @@ namespace Fixie.Execution
                 status: CaseStatus.Failed,
                 duration: @case.Duration,
                 output: @case.Output,
-                exceptions: exception,
-                skipReason: null
+                exceptions: exception
                 )
         {
         }

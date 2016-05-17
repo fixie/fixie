@@ -32,8 +32,8 @@ namespace Fixie.Tests.Execution
 
                 listener.Cases.Count.ShouldEqual(5);
 
-                var skip = listener.Cases[0];
-                var skipWithReason = listener.Cases[1];
+                var skip = (CaseSkipped)listener.Cases[0];
+                var skipWithReason = (CaseSkipped)listener.Cases[1];
                 var fail = listener.Cases[2];
                 var failByAssertion = listener.Cases[3];
                 var pass = listener.Cases[4];
@@ -44,7 +44,6 @@ namespace Fixie.Tests.Execution
                 pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 pass.Status.ShouldEqual(CaseStatus.Passed);
                 pass.Exceptions.ShouldBeNull();
-                pass.SkipReason.ShouldBeNull();
 
                 fail.Name.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.Fail");
                 fail.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.Fail");
@@ -54,7 +53,6 @@ namespace Fixie.Tests.Execution
                 fail.Exceptions.Type.ShouldEqual("Fixie.Tests.FailureException");
                 fail.Exceptions.StackTrace.ShouldNotBeNull();
                 fail.Exceptions.Message.ShouldEqual("'Fail' failed!");
-                fail.SkipReason.ShouldBeNull();
 
                 failByAssertion.Name.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.FailByAssertion");
                 failByAssertion.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.FailByAssertion");
@@ -67,7 +65,6 @@ namespace Fixie.Tests.Execution
                     "Assert.Equal() Failure",
                     "Expected: 2",
                     "Actual:   1");
-                failByAssertion.SkipReason.ShouldBeNull();
 
                 skip.Name.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.Skip");
                 skip.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.LifecycleMessageTests+SampleTestClass.Skip");

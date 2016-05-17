@@ -88,8 +88,12 @@ namespace Fixie.ConsoleRunner.Reports
             if (message.Status != CaseStatus.Skipped)
                 @case.Add(new XAttribute("time", Seconds(message.Duration)));
 
-            if (message.Status == CaseStatus.Skipped && message.SkipReason != null)
-                @case.Add(new XElement("reason", new XElement("message", new XCData(message.SkipReason))));
+            if (message.Status == CaseStatus.Skipped)
+            {
+                var skip = (CaseSkipped)message;
+                if (skip.SkipReason != null)
+                    @case.Add(new XElement("reason", new XElement("message", new XCData(skip.SkipReason))));
+            }
 
             if (message.Status == CaseStatus.Failed)
             {

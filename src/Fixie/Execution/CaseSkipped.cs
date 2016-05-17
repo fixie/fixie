@@ -12,10 +12,12 @@ namespace Fixie.Execution
                 status: CaseStatus.Skipped,
                 duration: TimeSpan.Zero,
                 output: null,
-                exceptions: null,
-                skipReason: skipReason
+                exceptions: null
                 )
         {
+            SkipReason = skipReason;
         }
+
+        public string SkipReason { get; }
     }
 }

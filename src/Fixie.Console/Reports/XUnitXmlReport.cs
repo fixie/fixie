@@ -62,15 +62,22 @@ namespace Fixie.ConsoleRunner.Reports
             if (message.Status != CaseStatus.Skipped)
                 @case.Add(new XAttribute("time", Seconds(message.Duration)));
 
-            if (message.Status == CaseStatus.Skipped && message.SkipReason != null)
-                @case.Add(new XElement("reason", new XElement("message", new XCData(message.SkipReason))));
+            if (message.Status == CaseStatus.Skipped)
+            {
+                var skip = (CaseSkipped)message;
+                if (skip.Reason != null)
+                    @case.Add(new XElement("reason", new XElement("message", new XCData(skip.Reason))));
+            }
 
             if (message.Status == CaseStatus.Failed)
+            {
+                var fail = (CaseFailed)message;
                 @case.Add(
                     new XElement("failure",
-                        new XAttribute("exception-type", message.Exceptions.Type),
-                        new XElement("message", new XCData(message.Exceptions.Message)),
-                        new XElement("stack-trace", new XCData(message.Exceptions.StackTrace))));
+                        new XAttribute("exception-type", fail.Exception.Type),
+                        new XElement("message", new XCData(fail.Exception.Message)),
+                        new XElement("stack-trace", new XCData(fail.Exception.StackTrace))));
+            }
 
             return @case;
         }

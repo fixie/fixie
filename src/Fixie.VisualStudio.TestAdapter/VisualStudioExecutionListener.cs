@@ -5,7 +5,10 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
-    public class VisualStudioExecutionListener : Handler<CaseCompleted>
+    public class VisualStudioExecutionListener :
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
@@ -16,7 +19,29 @@ namespace Fixie.VisualStudio.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public void Handle(CaseCompleted message)
+        public void Handle(CaseSkipped message)
+        {
+            Log(message, x =>
+            {
+                x.ErrorMessage = message.Reason;
+            });
+        }
+
+        public void Handle(CasePassed message)
+        {
+            Log(message);
+        }
+
+        public void Handle(CaseFailed message)
+        {
+            Log(message, x =>
+            {
+                x.ErrorMessage = message.Exception.Message;
+                x.ErrorStackTrace = message.Exception.StackTrace;
+            });
+        }
+
+        void Log(CaseCompleted message, Action<TestResult> customize = null)
         {
             var testResult = new TestResult(TestCase(message.MethodGroup))
             {
@@ -26,17 +51,9 @@ namespace Fixie.VisualStudio.TestAdapter
                 ComputerName = Environment.MachineName
             };
 
-            if (message.Status == CaseStatus.Skipped)
-            {
-                testResult.ErrorMessage = message.SkipReason;
-            }
-            else if (message.Status == CaseStatus.Failed)
-            {
-                testResult.ErrorMessage = message.Exceptions.Message;
-                testResult.ErrorStackTrace = message.Exceptions.StackTrace;
-            }
-
             AttachCapturedConsoleOutput(message.Output, testResult);
+
+            customize?.Invoke(testResult);
 
             log.RecordResult(testResult);
         }

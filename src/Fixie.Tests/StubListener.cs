@@ -15,7 +15,7 @@ namespace Fixie.Tests
 
         public void Handle(CaseSkipped message)
         {
-            var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
+            var optionalReason = message.Reason == null ? null : ": " + message.Reason;
             log.Add($"{message.Name} skipped{optionalReason}");
         }
 
@@ -26,7 +26,7 @@ namespace Fixie.Tests
 
         public void Handle(CaseFailed message)
         {
-            log.Add($"{message.Name} failed: {message.Exceptions.Message}{SimplifyCompoundStackTrace(message.Exceptions.StackTrace)}");
+            log.Add($"{message.Name} failed: {message.Exception.Message}{SimplifyCompoundStackTrace(message.Exception.StackTrace)}");
         }
 
         static string SimplifyCompoundStackTrace(string compoundStackTrace)

@@ -7,21 +7,17 @@ namespace Fixie.Execution
     public class CaseFailed : CaseCompleted
     {
         public CaseFailed(Case @case, AssertionLibraryFilter filter)
-            : this(@case, new CompoundException(@case.Exceptions, filter))
-        {
-        }
-
-        CaseFailed(Case @case, CompoundException exception)
             : base(
                 methodGroup: @case.MethodGroup,
                 name: @case.Name,
                 status: CaseStatus.Failed,
                 duration: @case.Duration,
-                output: @case.Output,
-                exceptions: exception,
-                skipReason: null
+                output: @case.Output
                 )
         {
+            Exception = new CompoundException(@case.Exceptions, filter);
         }
+
+        public CompoundException Exception { get; }
     }
 }

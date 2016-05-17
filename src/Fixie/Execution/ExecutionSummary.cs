@@ -43,8 +43,6 @@ namespace Fixie.Execution
 
             line.Append($", took {Duration.TotalSeconds:N2} seconds");
 
-            line.Append($" ({Framework.Version}).");
-
             return line.ToString();
         }
     }

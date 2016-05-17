@@ -36,7 +36,7 @@ namespace Fixie.Tests.Execution
             typeof(SampleTestClass).Run(listener, convention);
 
             CleanBrittleValues(listener.Summary.ToString())
-                .ShouldEqual("1 passed, 2 failed, 3 skipped, took 1.23 seconds (" + Framework.Version + ").");
+                .ShouldEqual("1 passed, 2 failed, 3 skipped, took 1.23 seconds");
         }
 
         public void ShouldNotReportSkipCountsInUserFacingStringRepresentationWhenZeroTestsHaveBeenSkipped()
@@ -52,7 +52,7 @@ namespace Fixie.Tests.Execution
             typeof(SampleTestClass).Run(listener, convention);
 
             CleanBrittleValues(listener.Summary.ToString())
-                .ShouldEqual("1 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
+                .ShouldEqual("1 passed, 2 failed, took 1.23 seconds");
         }
 
         static string CleanBrittleValues(string actualRawContent)

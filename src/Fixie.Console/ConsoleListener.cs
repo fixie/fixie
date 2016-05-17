@@ -48,7 +48,7 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(AssemblyCompleted message)
         {
-            Console.WriteLine(summary);
+            Console.WriteLine($"{summary} ({Framework.Version}).");
             Console.WriteLine();
         }
     }

@@ -10,7 +10,9 @@ namespace Fixie.ConsoleRunner
 {
     public class AppVeyorListener :
         Handler<AssemblyStarted>,
-        Handler<CaseCompleted>
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly string url;
         readonly HttpClient client;
@@ -33,7 +35,29 @@ namespace Fixie.ConsoleRunner
             fileName = Path.GetFileName(message.Location);
         }
 
-        public void Handle(CaseCompleted message)
+        public void Handle(CaseSkipped message)
+        {
+            Post(message, x =>
+            {
+                x.ErrorMessage = message.SkipReason;
+            });
+        }
+
+        public void Handle(CasePassed message)
+        {
+            Post(message);
+        }
+
+        public void Handle(CaseFailed message)
+        {
+            Post(message, x=>
+            {
+                x.ErrorMessage = message.Exceptions.Message;
+                x.ErrorStackTrace = message.Exceptions.StackTrace;
+            });
+        }
+
+        void Post(CaseCompleted message, Action<TestResult> customize = null)
         {
             var testResult = new TestResult
             {
@@ -45,15 +69,7 @@ namespace Fixie.ConsoleRunner
                 StdOut = message.Output
             };
 
-            if (message.Status == CaseStatus.Skipped)
-            {
-                testResult.ErrorMessage = message.SkipReason;
-            }
-            else if (message.Status == CaseStatus.Failed)
-            {
-                testResult.ErrorMessage = message.Exceptions.Message;
-                testResult.ErrorStackTrace = message.Exceptions.StackTrace;
-            }
+            customize?.Invoke(testResult);
 
             Post(testResult);
         }

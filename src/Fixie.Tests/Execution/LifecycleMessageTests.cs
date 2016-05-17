@@ -49,6 +49,7 @@ namespace Fixie.Tests.Execution
                 fail.Output.ShouldEqual("Fail" + Environment.NewLine);
                 fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 fail.Status.ShouldEqual(CaseStatus.Failed);
+                fail.Exception.FailedAssertion.ShouldBeFalse();
                 fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
                 fail.Exception.StackTrace.ShouldNotBeNull();
                 fail.Exception.Message.ShouldEqual("'Fail' failed!");
@@ -58,6 +59,7 @@ namespace Fixie.Tests.Execution
                 failByAssertion.Output.ShouldEqual("FailByAssertion" + Environment.NewLine);
                 failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
+                failByAssertion.Exception.FailedAssertion.ShouldBeTrue();
                 failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
                 failByAssertion.Exception.StackTrace.ShouldNotBeNull();
                 failByAssertion.Exception.Message.Lines().ShouldEqual(

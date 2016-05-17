@@ -50,7 +50,7 @@ namespace Fixie.ConsoleRunner
 
         public void Handle(CaseFailed message)
         {
-            Post(message, x=>
+            Post(message, x =>
             {
                 x.ErrorMessage = message.Exception.Message;
                 x.ErrorStackTrace = message.Exception.StackTrace;

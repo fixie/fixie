@@ -88,7 +88,7 @@ namespace Fixie.Tests.Execution
         public class StubCaseCompletedListener :
             Handler<AssemblyStarted>,
             Handler<CaseCompleted>,
-            Handler<AssemblyCompleted> 
+            Handler<AssemblyCompleted>
         {
             public List<AssemblyStarted> AssemblyStarts { get; set; } = new List<AssemblyStarted>();
             public List<CaseCompleted> Cases { get; set; } = new List<CaseCompleted>();

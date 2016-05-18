@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Samples.MbUnitStyle
+﻿namespace Fixie.Samples.MbUnitStyle
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Class)]
     public class TestFixtureAttribute : Attribute { }
 

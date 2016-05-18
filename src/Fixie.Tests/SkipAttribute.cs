@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public class SkipAttribute : Attribute
     {

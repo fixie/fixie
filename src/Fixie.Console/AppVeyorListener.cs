@@ -1,13 +1,13 @@
-﻿using Fixie.Execution;
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Web.Script.Serialization;
-
-namespace Fixie.ConsoleRunner
+﻿namespace Fixie.ConsoleRunner
 {
+    using System;
+    using System.IO;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Text;
+    using System.Web.Script.Serialization;
+    using Execution;
+
     public class AppVeyorListener :
         Handler<AssemblyStarted>,
         Handler<CaseSkipped>,

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System;
+
     public interface Behavior<in TContext> where TContext : BehaviorContext
     {
         /// <summary>

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Globalization;
-using System.Text;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System;
+    using System.Globalization;
+    using System.Text;
+
     public static class ObjectExtensions
     {
         public static string ToDisplayString(this object parameter)

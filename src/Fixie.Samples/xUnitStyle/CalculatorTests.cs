@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.xUnitStyle
+﻿namespace Fixie.Samples.xUnitStyle
 {
+    using System;
+    using System.Text;
+    using Should;
+
     public class CalculatorTests : IUseFixture<FixtureData>, IUseFixture<DisposableFixtureData>, IDisposable
     {
         readonly Calculator calculator;

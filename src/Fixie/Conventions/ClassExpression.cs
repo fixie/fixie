@@ -1,9 +1,9 @@
-using System;
-using System.Linq;
-using Fixie.Internal;
-
 namespace Fixie.Conventions
 {
+    using System;
+    using System.Linq;
+    using Internal;
+
     public class ClassExpression
     {
         readonly Configuration config;

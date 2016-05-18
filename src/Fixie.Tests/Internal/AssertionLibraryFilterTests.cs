@@ -1,10 +1,10 @@
-using System;
-using System.Text;
-using Fixie.Internal;
-using Should;
-
 namespace Fixie.Tests.Internal
 {
+    using System;
+    using System.Text;
+    using Fixie.Internal;
+    using Should;
+
     public class AssertionLibraryFilterTests
     {
         readonly Convention convention;

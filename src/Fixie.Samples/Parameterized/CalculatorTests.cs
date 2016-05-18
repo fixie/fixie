@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.Parameterized
+﻿namespace Fixie.Samples.Parameterized
 {
+    using System;
+    using System.Text;
+    using Should;
+
     public class CalculatorTests : IDisposable
     {
         readonly Calculator calculator;

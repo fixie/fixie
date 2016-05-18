@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.IoC
+﻿namespace Fixie.Samples.IoC
 {
+    using System;
+    using System.Text;
+    using Should;
+
     public class IoCTests : IDisposable
     {
         readonly IDatabase database;

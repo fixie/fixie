@@ -1,7 +1,7 @@
-﻿using System.Reflection;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System.Reflection;
+
     /// <summary>
     /// Describes the context in which a test run was initiated.
     /// </summary>

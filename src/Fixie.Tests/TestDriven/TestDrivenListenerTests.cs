@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using Fixie.Internal;
-using Fixie.TestDriven;
-using Should;
-using TestDriven.Framework;
+﻿using TestDriven.Framework;
 
 namespace Fixie.Tests.TestDriven
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
+    using Fixie.Internal;
+    using Fixie.TestDriven;
+    using Should;
+
     public class TestDrivenListenerTests
     {
         public void ShouldReportResultsToTestDrivenDotNet()

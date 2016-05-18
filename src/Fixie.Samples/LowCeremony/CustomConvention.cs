@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-
-namespace Fixie.Samples.LowCeremony
+﻿namespace Fixie.Samples.LowCeremony
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+
     public class CustomConvention : Convention
     {
         static readonly string[] LifecycleMethods = { "FixtureSetUp", "FixtureTearDown", "SetUp", "TearDown" };

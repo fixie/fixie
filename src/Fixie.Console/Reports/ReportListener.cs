@@ -1,7 +1,7 @@
-﻿using Fixie.Execution;
-
-namespace Fixie.ConsoleRunner.Reports
+﻿namespace Fixie.ConsoleRunner.Reports
 {
+    using Execution;
+
     public class ReportListener :
         Handler<AssemblyStarted>,
         Handler<CaseCompleted>,

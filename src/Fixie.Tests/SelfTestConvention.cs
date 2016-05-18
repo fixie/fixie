@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System;
+
     public static class SelfTestConvention
     {
         public static Convention Build()

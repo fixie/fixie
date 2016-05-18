@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Samples.Inclusive
+﻿namespace Fixie.Samples.Inclusive
 {
+    using System;
+
     public class CustomConvention : Convention
     {
         public CustomConvention()

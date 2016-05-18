@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Fixie.Internal.Behaviors
+﻿namespace Fixie.Internal.Behaviors
 {
+    using System;
+    using System.Collections.Generic;
+
     public class CreateInstancePerCase : ClassBehavior
     {
         readonly Func<Type, object> testClassFactory;

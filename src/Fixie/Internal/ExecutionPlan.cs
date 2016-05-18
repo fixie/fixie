@@ -1,8 +1,8 @@
-using System.Linq;
-using Fixie.Internal.Behaviors;
-
 namespace Fixie.Internal
 {
+    using System.Linq;
+    using Behaviors;
+
     public class ExecutionPlan
     {
         readonly BehaviorChain<Class> classBehaviors;

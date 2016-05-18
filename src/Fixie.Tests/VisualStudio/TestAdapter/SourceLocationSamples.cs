@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Fixie.Tests.VisualStudio.TestAdapter
+﻿namespace Fixie.Tests.VisualStudio.TestAdapter
 {
+    using System;
+    using System.Threading.Tasks;
+
     public class SourceLocationSamples
     {
         public void Empty_OneLine() { } // Debug = Release = 8

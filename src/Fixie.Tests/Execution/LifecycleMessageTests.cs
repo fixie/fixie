@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Fixie.Execution;
-using Fixie.Internal;
-using Should;
-using Should.Core.Exceptions;
-
-namespace Fixie.Tests.Execution
+﻿namespace Fixie.Tests.Execution
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using Fixie.Execution;
+    using Fixie.Internal;
+    using Should;
+    using Should.Core.Exceptions;
+
     public class LifecycleMessageTests
     {
         public void ShouldDescribeCaseCompletion()

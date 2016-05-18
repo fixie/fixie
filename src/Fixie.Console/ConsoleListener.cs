@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using Fixie.Execution;
-
-namespace Fixie.ConsoleRunner
+﻿namespace Fixie.ConsoleRunner
 {
+    using System;
+    using System.IO;
+    using Execution;
+
     public class ConsoleListener :
         Handler<AssemblyStarted>,
         Handler<CaseSkipped>,

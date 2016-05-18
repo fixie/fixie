@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using Fixie.ConsoleRunner;
-using Should;
-
-namespace Fixie.Tests.ConsoleRunner
+﻿namespace Fixie.Tests.ConsoleRunner
 {
+    using System.Linq;
+    using Fixie.ConsoleRunner;
+    using Should;
+
     public class CommandLineParserTests
     {
         readonly string assemblyPathA;

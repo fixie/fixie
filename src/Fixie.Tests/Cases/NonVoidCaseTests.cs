@@ -1,12 +1,12 @@
-using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Fixie.Internal;
-using Should;
-
 namespace Fixie.Tests.Cases
 {
+    using System;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+    using Fixie.Internal;
+    using Should;
+
     public class NonVoidCaseTests : CaseTests
     {
         public void ShouldIgnoreCaseReturnValuesByDefault()

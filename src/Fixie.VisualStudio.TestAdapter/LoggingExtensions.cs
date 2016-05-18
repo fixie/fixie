@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-
-namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
+    using System;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+
     public static class LoggingExtensions
     {
         public static void Info(this IMessageLogger logger, string message)

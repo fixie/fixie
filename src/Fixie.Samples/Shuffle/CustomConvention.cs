@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Samples.Shuffle
+﻿namespace Fixie.Samples.Shuffle
 {
+    using System;
+
     public class CustomConvention : Convention
     {
         const int Seed = 8675309;

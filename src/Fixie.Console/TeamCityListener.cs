@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using Fixie.Execution;
-
-namespace Fixie.ConsoleRunner
+﻿namespace Fixie.ConsoleRunner
 {
+    using System;
+    using System.Linq;
+    using System.Text;
+    using Execution;
+
     public class TeamCityListener :
         Handler<AssemblyStarted>,
         Handler<CaseSkipped>,

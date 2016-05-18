@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Fixie.ConsoleRunner.Reports
+﻿namespace Fixie.ConsoleRunner.Reports
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class Report
     {
         readonly List<AssemblyReport> assemblies = new List<AssemblyReport>();

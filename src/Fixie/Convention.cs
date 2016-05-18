@@ -1,9 +1,9 @@
-﻿using System.Reflection;
-using Fixie.Conventions;
-using Fixie.Internal;
-
-namespace Fixie
+﻿namespace Fixie
 {
+    using System.Reflection;
+    using Conventions;
+    using Internal;
+
     /// <summary>
     /// Base class for all Fixie conventions.  Subclass Convention to customize test discovery and execution.
     /// </summary>

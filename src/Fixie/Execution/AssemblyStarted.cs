@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reflection;
-
-namespace Fixie.Execution
+﻿namespace Fixie.Execution
 {
+    using System;
+    using System.Reflection;
+
     [Serializable]
     public class AssemblyStarted : Message
     {

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Execution
+﻿namespace Fixie.Execution
 {
+    using System;
+
     [Serializable]
     public class CasePassed : CaseCompleted
     {

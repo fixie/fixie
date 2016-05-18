@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+
     public class GenericArgumentResolver
     {
         public static Type[] ResolveTypeArguments(MethodInfo method, object[] parameters)

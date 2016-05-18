@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using Fixie.Internal;
-using Should;
-
-namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests.Internal
 {
+    using System.Collections.Generic;
+    using System.Reflection;
+    using Fixie.Internal;
+    using Should;
+
     public class ParameterDiscovererTests
     {
         readonly MethodInfo method;

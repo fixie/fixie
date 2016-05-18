@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System.Collections.Generic;
+    using System.Reflection;
+
     public class Discoverer
     {
         readonly Options options;

@@ -1,9 +1,9 @@
-﻿using System.IO;
-using Fixie.VisualStudio.TestAdapter;
-using Should;
-
-namespace Fixie.Tests.VisualStudio.TestAdapter
+﻿namespace Fixie.Tests.VisualStudio.TestAdapter
 {
+    using System.IO;
+    using Fixie.VisualStudio.TestAdapter;
+    using Should;
+
     public class SourceLocationProviderTests
     {
         // Line numbers vary slightly between Debug and Release modes.

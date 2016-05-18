@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Fixie.Internal;
-
-namespace Fixie
+﻿namespace Fixie
 {
+    using System;
+    using System.Collections.Generic;
+    using Internal;
+
     /// <summary>
     /// A test fixture (test class instance) being executed.
     /// </summary>

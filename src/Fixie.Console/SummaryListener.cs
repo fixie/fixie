@@ -1,7 +1,7 @@
-﻿using Fixie.Execution;
-
-namespace Fixie.ConsoleRunner
+﻿namespace Fixie.ConsoleRunner
 {
+    using Execution;
+
     public class SummaryListener : Handler<CaseCompleted>
     {
         public ExecutionSummary Summary { get; } = new ExecutionSummary();

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System;
+    using System.Runtime.CompilerServices;
+
     public class ShouldBeUnreachableException : Exception
     {
         public ShouldBeUnreachableException([CallerMemberName] string member = null)

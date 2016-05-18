@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Should;
-
-namespace Fixie.Tests.Cases
+﻿namespace Fixie.Tests.Cases
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Should;
+
     public class ParameterizedCaseTests : CaseTests
     {
         public void ShouldAllowConventionToGeneratePotentiallyManySetsOfInputParametersPerMethod()

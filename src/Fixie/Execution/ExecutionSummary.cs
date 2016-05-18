@@ -1,8 +1,8 @@
-﻿using System;
-using System.Text;
-
-namespace Fixie.Execution
+﻿namespace Fixie.Execution
 {
+    using System;
+    using System.Text;
+
     public class ExecutionSummary
     {
         public ExecutionSummary()

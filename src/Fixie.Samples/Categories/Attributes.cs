@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Samples.Categories
+﻿namespace Fixie.Samples.Categories
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public abstract class CategoryAttribute : Attribute
     {

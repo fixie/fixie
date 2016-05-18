@@ -1,10 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.NUnitStyle
+﻿namespace Fixie.Samples.NUnitStyle
 {
+    using System;
+    using System.Text;
     using System.Collections.Generic;
+    using Should;
 
     [TestFixture]
     public class TestCaseSourceAttributeCalculatorTests : IDisposable

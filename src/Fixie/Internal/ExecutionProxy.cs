@@ -1,8 +1,8 @@
-﻿using System.Reflection;
-using Fixie.Execution;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System.Reflection;
+    using Execution;
+
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
         public void DiscoverMethodGroups(string assemblyFullPath, Options options, Bus bus)

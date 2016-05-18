@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using Fixie.Conventions;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using Conventions;
+
     public class ConventionDiscoverer
     {
         readonly Assembly assembly;

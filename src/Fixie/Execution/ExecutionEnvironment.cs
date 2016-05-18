@@ -1,13 +1,13 @@
-﻿using Fixie.Internal;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security;
-using System.Security.Permissions;
-
-namespace Fixie.Execution
+﻿namespace Fixie.Execution
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Security;
+    using System.Security.Permissions;
+    using Internal;
+
     public class ExecutionEnvironment : IDisposable
     {
         readonly string assemblyFullPath;

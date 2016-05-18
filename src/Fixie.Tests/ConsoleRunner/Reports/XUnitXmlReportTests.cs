@@ -1,16 +1,16 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Schema;
-using Fixie.ConsoleRunner.Reports;
-using Should;
-
-namespace Fixie.Tests.ConsoleRunner.Reports
+﻿namespace Fixie.Tests.ConsoleRunner.Reports
 {
+    using System;
+    using System.IO;
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
+    using System.Xml;
+    using System.Xml.Linq;
+    using System.Xml.Schema;
+    using Fixie.ConsoleRunner.Reports;
+    using Should;
+
     public class XUnitXmlReportTests
     {
         public void ShouldProduceValidXmlDocument()

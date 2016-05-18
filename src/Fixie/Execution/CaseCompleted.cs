@@ -1,7 +1,7 @@
-using System;
-
 namespace Fixie.Execution
 {
+    using System;
+
     [Serializable]
     public abstract class CaseCompleted : Message
     {

@@ -1,10 +1,10 @@
-﻿using System;
-using Fixie.Execution;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-
-namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
+    using System;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+    using Execution;
+
     public class VisualStudioExecutionListener :
         Handler<CaseSkipped>,
         Handler<CasePassed>,

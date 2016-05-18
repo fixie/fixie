@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Samples.Skipped
+﻿namespace Fixie.Samples.Skipped
 {
+    using System;
+
     [Skip]
     public class SkipClassTests
     {

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.ConsoleRunner
+﻿namespace Fixie.ConsoleRunner
 {
+    using System;
+
     public class Foreground : IDisposable
     {
         readonly ConsoleColor before;

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using Fixie.ConsoleRunner;
-using Fixie.Internal;
-
-namespace Fixie.Tests.ConsoleRunner
+﻿namespace Fixie.Tests.ConsoleRunner
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
+    using Fixie.ConsoleRunner;
+    using Fixie.Internal;
+
     public class TeamCityListenerTests
     {
         public void ShouldReportResultsToTheConsoleInTeamCityFormat()

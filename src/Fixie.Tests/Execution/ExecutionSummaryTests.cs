@@ -1,11 +1,11 @@
-﻿using Should;
-using System;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Fixie.Execution;
-
-namespace Fixie.Tests.Execution
+﻿namespace Fixie.Tests.Execution
 {
+    using Should;
+    using System;
+    using System.Text.RegularExpressions;
+    using System.Threading;
+    using Fixie.Execution;
+
     public class ExecutionSummaryTests
     {
         public void ShouldAccumulateCaseStatusCountsAndDurations()

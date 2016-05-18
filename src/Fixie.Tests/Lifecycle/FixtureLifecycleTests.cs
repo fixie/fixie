@@ -1,7 +1,7 @@
-using System;
-
 namespace Fixie.Tests.Lifecycle
 {
+    using System;
+
     public class FixtureLifecycleTests : LifecycleTests
     {
         class Inner : FixtureBehavior

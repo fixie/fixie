@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Fixie.Execution;
-
 namespace Fixie.ConsoleRunner.Reports
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Execution;
+
     public class ClassReport
     {
         readonly List<CaseCompleted> cases;

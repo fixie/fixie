@@ -1,11 +1,11 @@
-using System;
-using Fixie.Execution;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-
 namespace Fixie.VisualStudio.TestAdapter
 {
+    using System;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using Execution;
+
     public class VisualStudioDiscoveryListener : Handler<MethodGroupDiscovered>
     {
         readonly IMessageLogger log;

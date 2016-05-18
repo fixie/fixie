@@ -1,8 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-
-namespace Fixie.Internal.Behaviors
+﻿namespace Fixie.Internal.Behaviors
 {
+    using System;
+    using System.Diagnostics;
+
     public class ExecuteCases : FixtureBehavior
     {
         readonly BehaviorChain<Case> caseBehaviors;

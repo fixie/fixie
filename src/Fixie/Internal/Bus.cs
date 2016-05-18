@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Fixie.Execution;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System.Collections.Generic;
+    using Execution;
+
     public class Bus : LongLivedMarshalByRefObject
     {
         readonly List<object> listeners;

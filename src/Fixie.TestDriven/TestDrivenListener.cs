@@ -1,9 +1,10 @@
-﻿using System;
-using Fixie.Execution;
-using TestDriven.Framework;
+﻿using TestDriven.Framework;
 
 namespace Fixie.TestDriven
 {
+    using System;
+    using Execution;
+
     public class TestDrivenListener :
         Handler<CaseSkipped>,
         Handler<CasePassed>,

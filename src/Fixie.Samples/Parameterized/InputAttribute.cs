@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Samples.Parameterized
+﻿namespace Fixie.Samples.Parameterized
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     class InputAttribute : Attribute
     {

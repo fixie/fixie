@@ -1,9 +1,9 @@
-﻿using System;
-using Fixie.Execution;
-using Fixie.Internal;
-
-namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests.Internal
 {
+    using System;
+    using Fixie.Execution;
+    using Fixie.Internal;
+
     public class BusTests
     {
         public void ShouldPublishEventsForAllListeners()

@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Fixie.Internal;
-using Should;
-
 namespace Fixie.Tests.Internal
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Fixie.Internal;
+    using Should;
+
     public class BehaviorChainTests
     {
         public void ShouldDoNothingWhenEmpty()

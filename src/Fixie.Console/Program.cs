@@ -65,7 +65,12 @@ namespace Fixie.ConsoleRunner
             if (reportListener != null)
                 SaveReport(options, reportListener.Report);
 
-            return summaryListener.Summary;
+            var summary = summaryListener.Summary;
+
+            if (commandLineParser.AssemblyPaths.Count > 1)
+                Console.WriteLine("====== " + summary + " ======");
+
+            return summary;
         }
 
         static bool ShouldProduceReports(Options options)

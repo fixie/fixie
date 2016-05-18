@@ -2,13 +2,13 @@
 {
     using System.IO;
     using System.Reflection;
-    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Schema;
     using Fixie.ConsoleRunner.Reports;
     using Should;
+    using static Utility;
 
     public class NUnitXmlReportTests
     {
@@ -80,11 +80,6 @@
                                 .Replace("[assemblyLocation]", assemblyLocation)
                                 .Replace("[fileLocation]", fileLocation);
             }
-        }
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
         }
 
         class PassFailTestClass

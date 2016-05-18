@@ -15,6 +15,7 @@
     using System.Web.Script.Serialization;
     using Fixie.ConsoleRunner;
     using Fixie.Internal;
+    using static Utility;
 
     public class AppVeyorListenerTests
     {
@@ -98,11 +99,6 @@
             var cleaned = Regex.Replace(actualRawContent, @":line \d+", ":line #");
 
             return cleaned;
-        }
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
         }
 
         class PassFailTestClass

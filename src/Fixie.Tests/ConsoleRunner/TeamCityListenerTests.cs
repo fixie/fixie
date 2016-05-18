@@ -7,6 +7,7 @@
     using System.Text.RegularExpressions;
     using Fixie.ConsoleRunner;
     using Fixie.Internal;
+    using static Utility;
 
     public class TeamCityListenerTests
     {
@@ -60,11 +61,6 @@
                            "##teamcity[testFinished name='" + testClass + ".PassC' duration='#']",
                            "##teamcity[testSuiteFinished name='Fixie.Tests']");
             }
-        }
-
-        static string PathToThisFile([CallerFilePath] string path=null)
-        {
-            return path;
         }
 
         class PassFailTestClass

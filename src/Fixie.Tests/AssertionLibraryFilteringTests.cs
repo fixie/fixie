@@ -7,6 +7,7 @@
     using System.Threading;
     using Fixie.ConsoleRunner;
     using Fixie.Internal;
+    using static Utility;
 
     public class AssertionLibraryFilteringTests
     {
@@ -82,11 +83,6 @@
             cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
 
             return cleaned;
-        }
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
         }
 
         class SampleTestClass

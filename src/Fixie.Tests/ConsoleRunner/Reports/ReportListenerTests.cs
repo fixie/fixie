@@ -10,6 +10,7 @@
     using Fixie.Execution;
     using Fixie.Internal;
     using Should;
+    using static Utility;
 
     public class ReportListenerTests
     {
@@ -139,11 +140,6 @@
             cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
 
             return cleaned;
-        }
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
         }
 
         class PassFailTestClass

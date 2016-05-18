@@ -1,5 +1,6 @@
 ﻿using System;
-using System.IO;
+using System.Diagnostics;
+using System.Text;
 using System.Linq;
 using System.Xml.Linq;
 using Fixie.Execution;
@@ -47,6 +48,9 @@ namespace Fixie.ConsoleRunner
 
             var summary = new ExecutionResult();
 
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             foreach (var assemblyPath in commandLineParser.AssemblyPaths)
             {
                 var result = Execute(assemblyPath, options);
@@ -54,9 +58,29 @@ namespace Fixie.ConsoleRunner
                 summary.Add(result);
             }
 
+            stopwatch.Stop();
+
+            if (summary.AssemblyResults.Count > 1)
+                Summarize(summary, stopwatch.Elapsed);
+
             SaveReport(options, summary);
 
             return summary;
+        }
+
+        static void Summarize(ExecutionResult executionResult, TimeSpan elapsed)
+        {
+            var line = new StringBuilder();
+
+            line.AppendFormat("{0} passed", executionResult.Passed);
+            line.AppendFormat(", {0} failed", executionResult.Failed);
+
+            if (executionResult.Skipped > 0)
+                line.AppendFormat(", {0} skipped", executionResult.Skipped);
+
+            line.AppendFormat(", took {0:N2} seconds", elapsed.TotalSeconds);
+
+            Console.WriteLine("====== " + line + " ======");
         }
 
         static void SaveReport(Options options, ExecutionResult executionResult)

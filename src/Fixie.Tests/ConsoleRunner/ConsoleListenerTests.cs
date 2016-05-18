@@ -22,7 +22,7 @@
 
                 typeof(PassFailTestClass).Run(listener, convention);
 
-                var testClass = typeof(PassFailTestClass).FullName;
+                var testClass = FullName<PassFailTestClass>();
 
                 console.Lines()
                        .Select(CleanBrittleValues)
@@ -44,11 +44,11 @@
 
                            "Test '" + testClass + ".FailA' failed: Fixie.Tests.FailureException",
                            "'FailA' failed!",
-                           "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
+                           At<PassFailTestClass>("FailA()"),
                            "",
                            "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
                            "'FailB' failed!",
-                           "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
+                           At<PassFailTestClass>("FailB()"),
                            "",
                            "3 passed, 2 failed, 2 skipped, took 1.23 seconds (" + Framework.Version + ").");
             }
@@ -67,7 +67,7 @@
 
                 typeof(PassFailTestClass).Run(listener, convention);
 
-                var testClass = typeof(PassFailTestClass).FullName;
+                var testClass = FullName<PassFailTestClass>();
 
                 console.Lines()
                        .Select(CleanBrittleValues)
@@ -87,11 +87,11 @@
 
                            "Test '" + testClass + ".FailA' failed: Fixie.Tests.FailureException",
                            "'FailA' failed!",
-                           "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
+                           At<PassFailTestClass>("FailA()"),
                            "",
                            "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
                            "'FailB' failed!",
-                           "   at Fixie.Tests.ConsoleRunner.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
+                           At<PassFailTestClass>("FailB()"),
                            "",
                            "3 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
             }

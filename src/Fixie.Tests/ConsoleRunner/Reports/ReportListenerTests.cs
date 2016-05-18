@@ -24,7 +24,7 @@
 
                 typeof(PassFailTestClass).Run(listener, convention);
 
-                var testClass = typeof(PassFailTestClass).FullName;
+                var testClass = FullName<PassFailTestClass>();
 
                 var report = listener.Report;
 
@@ -85,7 +85,7 @@
                 failA.Exception.Message.ShouldEqual("'FailA' failed!");
                 failA.Exception.FailedAssertion.ShouldEqual(false);
                 CleanBrittleValues(failA.Exception.StackTrace)
-                    .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #");
+                    .ShouldEqual(At<PassFailTestClass>("FailA()"));
 
                 failB.MethodGroup.FullName.ShouldEqual(testClass + ".FailB");
                 failB.Name.ShouldEqual(testClass + ".FailB");
@@ -96,7 +96,7 @@
                 failB.Exception.Message.ShouldEqual("'FailB' failed!");
                 failB.Exception.FailedAssertion.ShouldEqual(false);
                 CleanBrittleValues(failB.Exception.StackTrace)
-                    .ShouldEqual("   at Fixie.Tests.ConsoleRunner.Reports.ReportListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #");
+                    .ShouldEqual(At<PassFailTestClass>("FailB()"));
 
                 passA.MethodGroup.FullName.ShouldEqual(testClass + ".PassA");
                 passA.Name.ShouldEqual(testClass + ".PassA");

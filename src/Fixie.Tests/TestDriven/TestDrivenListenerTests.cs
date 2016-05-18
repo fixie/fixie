@@ -35,7 +35,7 @@ namespace Fixie.Tests.TestDriven
                 summary.Skipped.ShouldEqual(2);
                 summary.Total.ShouldEqual(4);
 
-                var testClass = typeof(PassFailTestClass).FullName;
+                var testClass = FullName<PassFailTestClass>();
 
                 console.Lines()
                     .ShouldEqual(
@@ -72,7 +72,7 @@ namespace Fixie.Tests.TestDriven
                 results[2].StackTrace.Lines().Select(CleanBrittleValues).ShouldEqual(
                     "'Fail' failed!",
                     "",
-                    "   at Fixie.Tests.TestDriven.TestDrivenListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
+                    At<PassFailTestClass>("Fail()"));
                 
                 results[3].Name.ShouldEqual(testClass + ".Pass(123)");
                 results[3].State.ShouldEqual(TestState.Passed);

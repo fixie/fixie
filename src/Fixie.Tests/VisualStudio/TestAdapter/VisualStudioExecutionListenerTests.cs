@@ -30,7 +30,7 @@
 
                 typeof(PassFailTestClass).Run(listener, convention);
 
-                var testClass = typeof(PassFailTestClass).FullName;
+                var testClass = FullName<PassFailTestClass>();
 
                 console.Lines()
                     .ShouldEqual(
@@ -82,7 +82,7 @@
                 results[2].Outcome.ShouldEqual(TestOutcome.Failed);
                 results[2].ErrorMessage.ShouldEqual("'Fail' failed!");
                 results[2].ErrorStackTrace.Lines().Select(CleanBrittleValues)
-                    .ShouldEqual("   at Fixie.Tests.VisualStudio.TestAdapter.VisualStudioExecutionListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
+                    .ShouldEqual(At<PassFailTestClass>("Fail()"));
                 results[2].DisplayName.ShouldEqual(testClass + ".Fail");
                 results[2].Messages.Count.ShouldEqual(1);
                 results[2].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);

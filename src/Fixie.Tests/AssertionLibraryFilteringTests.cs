@@ -11,6 +11,8 @@
 
     public class AssertionLibraryFilteringTests
     {
+        readonly string testClass = FullName<SampleTestClass>();
+
         public void ShouldNotAffectOutputByDefault()
         {
             using (var console = new RedirectedConsole())
@@ -24,14 +26,14 @@
                     .ShouldEqual(
                         "------ Testing Assembly Fixie.Tests.dll ------",
                         "",
-                        "Test 'Fixie.Tests.AssertionLibraryFilteringTests+SampleTestClass.DivideByZero' failed: System.DivideByZeroException",
+                        "Test '" + testClass + ".DivideByZero' failed: System.DivideByZeroException",
                         "Attempted to divide by zero.",
-                        "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.DivideByZero() in " + PathToThisFile() + ":line #",
+                        At<SampleTestClass>("DivideByZero()"),
                         "",
-                        "Test 'Fixie.Tests.AssertionLibraryFilteringTests+SampleTestClass.FailedAssertion' failed: Fixie.Tests.SampleAssertionLibrary.AssertionException",
+                        "Test '" + testClass + ".FailedAssertion' failed: Fixie.Tests.SampleAssertionLibrary.AssertionException",
                         "Expected 1, but was 0.",
                         "   at Fixie.Tests.SampleAssertionLibrary.SampleAssert.AreEqual(Int32 expected, Int32 actual) in " + PathToThisFile() + ":line #",
-                        "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.FailedAssertion() in " + PathToThisFile() + ":line #",
+                        At<SampleTestClass>("FailedAssertion()"),
                         "",
                         "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").",
                         "",
@@ -59,13 +61,13 @@
                     .ShouldEqual(
                         "------ Testing Assembly Fixie.Tests.dll ------",
                         "",
-                        "Test 'Fixie.Tests.AssertionLibraryFilteringTests+SampleTestClass.DivideByZero' failed: System.DivideByZeroException",
+                        "Test '" + testClass + ".DivideByZero' failed: System.DivideByZeroException",
                         "Attempted to divide by zero.",
-                        "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.DivideByZero() in " + PathToThisFile() + ":line #",
+                        At<SampleTestClass>("DivideByZero()"),
                         "",
-                        "Test 'Fixie.Tests.AssertionLibraryFilteringTests+SampleTestClass.FailedAssertion' failed: ",
+                        "Test '" + testClass + ".FailedAssertion' failed: ",
                         "Expected 1, but was 0.",
-                        "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.FailedAssertion() in " + PathToThisFile() + ":line #",
+                        At<SampleTestClass>("FailedAssertion()"),
                         "",
                         "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").",
                         "",

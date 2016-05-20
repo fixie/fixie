@@ -2,8 +2,6 @@
 {
     using System;
     using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Threading;
     using Fixie.ConsoleRunner.Reports;
     using Fixie.Execution;
     using Fixie.Internal;
@@ -88,7 +86,8 @@
             fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
             fail.Exception.Message.ShouldEqual("'Fail' failed!");
             fail.Exception.FailedAssertion.ShouldEqual(false);
-            CleanBrittleValues(fail.Exception.StackTrace)
+            fail.Exception.StackTrace
+                .CleanStackTraceLineNumbers()
                 .ShouldEqual(At<SampleTestClass>("Fail()"));
 
             failByAssertion.MethodGroup.FullName.ShouldEqual(testClass + ".FailByAssertion");
@@ -102,7 +101,8 @@
                 "Expected: 2",
                 "Actual:   1");
             failByAssertion.Exception.FailedAssertion.ShouldEqual(true);
-            CleanBrittleValues(failByAssertion.Exception.StackTrace)
+            failByAssertion.Exception.StackTrace
+                .CleanStackTraceLineNumbers()
                 .ShouldEqual(At<SampleTestClass>("FailByAssertion()"));
 
             pass.MethodGroup.FullName.ShouldEqual(testClass + ".Pass");
@@ -110,18 +110,6 @@
             pass.Status.ShouldEqual(CaseStatus.Passed);
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             pass.Output.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
-        }
-
-        static string CleanBrittleValues(string actualRawContent)
-        {
-            //Avoid brittle assertion introduced by test duration.
-            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            var cleaned = Regex.Replace(actualRawContent, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
-
-            //Avoid brittle assertion introduced by stack trace line numbers.
-            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
-
-            return cleaned;
         }
     }
 }

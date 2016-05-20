@@ -20,6 +20,7 @@
                 typeof(SampleTestClass).Run(listener, convention);
 
                 console.Lines()
+                       .Select(x => x.CleanStackTraceLineNumbers())
                        .Select(CleanBrittleValues)
                        .ShouldEqual(
                            "------ Testing Assembly Fixie.Tests.dll ------",
@@ -52,9 +53,6 @@
             //Avoid brittle assertion introduced by test duration.
             var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             var cleaned = Regex.Replace(actualRawContent, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
-
-            //Avoid brittle assertion introduced by stack trace line numbers.
-            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
 
             return cleaned;
         }

@@ -19,7 +19,7 @@
                 typeof(SampleTestClass).Run(listener, convention);
 
                 console.Lines()
-                       .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
+                       .Select(x => x.CleanStackTraceLineNumbers()) //Avoid brittle assertion introduced by stack trace line numbers.
                        .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'")) //Avoid brittle assertion introduced by durations.
                        .ShouldEqual(
                            "##teamcity[testSuiteStarted name='Fixie.Tests']",

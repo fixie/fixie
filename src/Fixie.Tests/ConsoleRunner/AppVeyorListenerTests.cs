@@ -3,11 +3,9 @@
     using Should;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
@@ -85,7 +83,8 @@
             fail.outcome.ShouldEqual("Failed");
             int.Parse(fail.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             fail.ErrorMessage.ShouldEqual("'Fail' failed!");
-            fail.ErrorStackTrace.Lines().Select(CleanBrittleValues)
+            fail.ErrorStackTrace
+                .CleanStackTraceLineNumbers()
                 .ShouldEqual(At<SampleTestClass>("Fail()"));
             fail.StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
 
@@ -96,7 +95,8 @@
                 "Assert.Equal() Failure",
                 "Expected: 2",
                 "Actual:   1");
-            failByAssertion.ErrorStackTrace.Lines().Select(CleanBrittleValues)
+            failByAssertion.ErrorStackTrace
+                .CleanStackTraceLineNumbers()
                 .ShouldEqual(At<SampleTestClass>("FailByAssertion()"));
             failByAssertion.StdOut.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
 
@@ -106,14 +106,6 @@
             pass.ErrorMessage.ShouldBeNull();
             pass.ErrorStackTrace.ShouldBeNull();
             pass.StdOut.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
-        }
-
-        static string CleanBrittleValues(string actualRawContent)
-        {
-            //Avoid brittle assertion introduced by stack trace line numbers.
-            var cleaned = Regex.Replace(actualRawContent, @":line \d+", ":line #");
-
-            return cleaned;
         }
 
         class FakeHandler : DelegatingHandler

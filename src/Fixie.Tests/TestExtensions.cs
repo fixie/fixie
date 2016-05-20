@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Text.RegularExpressions;
     using Fixie.Internal;
 
     public static class TestExtensions
@@ -39,6 +40,13 @@
         {
             using (var bus = new Bus(listener))
                 new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
+        }
+
+        public static string CleanStackTraceLineNumbers(this string stackTrace)
+        {
+            //Avoid brittle assertion introduced by stack trace line numbers.
+
+            return Regex.Replace(stackTrace, @":line \d+", ":line #");
         }
     }
 }

@@ -24,7 +24,7 @@
 
             using (var console = new RedirectedConsole())
             {
-                typeof(PassFailTestClass).Run(listener, convention);
+                typeof(SampleTestClass).Run(listener, convention);
 
                 console.Lines()
                     .ShouldEqual(
@@ -97,7 +97,7 @@
             }
         }
 
-        class PassFailTestClass
+        class SampleTestClass
         {
             public void Fail()
             {

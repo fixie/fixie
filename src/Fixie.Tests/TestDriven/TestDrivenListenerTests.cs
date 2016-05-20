@@ -26,7 +26,7 @@ namespace Fixie.Tests.TestDriven
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
 
-                typeof(PassFailTestClass).Run(listener, convention);
+                typeof(SampleTestClass).Run(listener, convention);
 
                 var summary = listener.Summary;
                 summary.Passed.ShouldEqual(1);
@@ -34,7 +34,7 @@ namespace Fixie.Tests.TestDriven
                 summary.Skipped.ShouldEqual(2);
                 summary.Total.ShouldEqual(4);
 
-                var testClass = FullName<PassFailTestClass>();
+                var testClass = FullName<SampleTestClass>();
 
                 console.Lines()
                     .ShouldEqual(
@@ -71,7 +71,7 @@ namespace Fixie.Tests.TestDriven
                 results[2].StackTrace.Lines().Select(CleanBrittleValues).ShouldEqual(
                     "'Fail' failed!",
                     "",
-                    At<PassFailTestClass>("Fail()"));
+                    At<SampleTestClass>("Fail()"));
                 
                 results[3].Name.ShouldEqual(testClass + ".Pass");
                 results[3].State.ShouldEqual(TestState.Passed);
@@ -108,7 +108,7 @@ namespace Fixie.Tests.TestDriven
             }
         }
 
-        class PassFailTestClass
+        class SampleTestClass
         {
             public void Pass()
             {

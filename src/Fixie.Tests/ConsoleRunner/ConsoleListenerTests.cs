@@ -21,9 +21,9 @@
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
 
-                typeof(PassFailTestClass).Run(listener, convention);
+                typeof(SampleTestClass).Run(listener, convention);
 
-                var testClass = FullName<PassFailTestClass>();
+                var testClass = FullName<SampleTestClass>();
 
                 console.Lines()
                        .Select(CleanBrittleValues)
@@ -41,13 +41,13 @@
 
                            "Test '" + testClass + ".Fail' failed: Fixie.Tests.FailureException",
                            "'Fail' failed!",
-                           At<PassFailTestClass>("Fail()"),
+                           At<SampleTestClass>("Fail()"),
                            "",
                            "Test '" + testClass + ".FailByAssertion' failed: Should.Core.Exceptions.EqualException",
                            "Assert.Equal() Failure",
                            "Expected: 2",
                            "Actual:   1",
-                           At<PassFailTestClass>("FailByAssertion()"),
+                           At<SampleTestClass>("FailByAssertion()"),
                            "",
                            "1 passed, 2 failed, 2 skipped, took 1.23 seconds (" + Framework.Version + ").");
             }
@@ -64,9 +64,9 @@
                     .Methods
                     .Where(method => !method.Has<SkipAttribute>());
 
-                typeof(PassFailTestClass).Run(listener, convention);
+                typeof(SampleTestClass).Run(listener, convention);
 
-                var testClass = FullName<PassFailTestClass>();
+                var testClass = FullName<SampleTestClass>();
 
                 console.Lines()
                        .Select(CleanBrittleValues)
@@ -82,13 +82,13 @@
 
                            "Test '" + testClass + ".Fail' failed: Fixie.Tests.FailureException",
                            "'Fail' failed!",
-                           At<PassFailTestClass>("Fail()"),
+                           At<SampleTestClass>("Fail()"),
                            "",
                            "Test '" + testClass + ".FailByAssertion' failed: Should.Core.Exceptions.EqualException",
                            "Assert.Equal() Failure",
                            "Expected: 2",
                            "Actual:   1",
-                           At<PassFailTestClass>("FailByAssertion()"),
+                           At<SampleTestClass>("FailByAssertion()"),
                            "",
                            "1 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
             }
@@ -106,7 +106,7 @@
             return cleaned;
         }
 
-        class PassFailTestClass
+        class SampleTestClass
         {
             public void Fail()
             {

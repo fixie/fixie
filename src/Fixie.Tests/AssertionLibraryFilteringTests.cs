@@ -65,7 +65,7 @@
                         "Attempted to divide by zero.",
                         At<SampleTestClass>("DivideByZero()"),
                         "",
-                        "Test '" + testClass + ".FailedAssertion' failed: ",
+                        "Test '" + testClass + ".FailedAssertion' failed:",
                         "Expected 1, but was 0.",
                         At<SampleTestClass>("FailedAssertion()"),
                         "",

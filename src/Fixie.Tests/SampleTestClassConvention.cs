@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using Should.Core.Exceptions;
 
     public static class SampleTestClassConvention
     {
@@ -17,7 +18,14 @@
                 .ClassExecution
                 .SortCases((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
 
-            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+            convention
+                .CaseExecution
+                .Skip(
+                    x => x.Method.Has<SkipAttribute>(),
+                    x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+
+            convention.
+                HideExceptionDetails.For<EqualException>();
 
             return convention;
         }

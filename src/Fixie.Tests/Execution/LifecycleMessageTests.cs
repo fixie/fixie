@@ -3,14 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using System.Threading;
     using Fixie.Execution;
     using Fixie.Internal;
     using Should;
-    using Should.Core.Exceptions;
     using static Utility;
 
     public class LifecycleMessageTests
@@ -18,7 +15,6 @@
         public void ShouldDescribeCaseCompletion()
         {
             var convention = SampleTestClassConvention.Build();
-            convention.HideExceptionDetails.For<EqualException>();
 
             var listener = new StubCaseCompletedListener();
 

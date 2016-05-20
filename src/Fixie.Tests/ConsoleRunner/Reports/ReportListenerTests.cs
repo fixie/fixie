@@ -94,7 +94,7 @@
                     "Assert.Equal() Failure",
                     "Expected: 2",
                     "Actual:   1");
-                failByAssertion.Exception.FailedAssertion.ShouldEqual(false);
+                failByAssertion.Exception.FailedAssertion.ShouldEqual(true);
                 CleanBrittleValues(failByAssertion.Exception.StackTrace)
                     .ShouldEqual(At<SampleTestClass>("FailByAssertion()"));
 

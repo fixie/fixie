@@ -42,7 +42,7 @@
                            "'Fail' failed!",
                            At<SampleTestClass>("Fail()"),
                            "",
-                           "Test '" + testClass + ".FailByAssertion' failed: Should.Core.Exceptions.EqualException",
+                           "Test '" + testClass + ".FailByAssertion' failed:",
                            "Assert.Equal() Failure",
                            "Expected: 2",
                            "Actual:   1",

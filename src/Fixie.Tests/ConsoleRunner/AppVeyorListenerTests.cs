@@ -62,45 +62,51 @@
                     result.fileName.ShouldEqual("Fixie.Tests.dll");
                 }
 
-                results[0].testName.ShouldEqual(testClass + ".SkipWithReason");
-                results[0].outcome.ShouldEqual("Skipped");
-                results[0].durationMilliseconds.ShouldEqual("0");
-                results[0].ErrorMessage.ShouldEqual("Skipped with reason.");
-                results[0].ErrorStackTrace.ShouldBeNull();
-                results[0].StdOut.ShouldBeNull();
+                var skipWithReason = results[0];
+                var skipWithoutReason = results[1];
+                var fail = results[2];
+                var failByAssertion = results[3];
+                var pass = results[4];
 
-                results[1].testName.ShouldEqual(testClass + ".SkipWithoutReason");
-                results[1].outcome.ShouldEqual("Skipped");
-                results[1].durationMilliseconds.ShouldEqual("0");
-                results[1].ErrorMessage.ShouldBeNull();
-                results[1].ErrorStackTrace.ShouldBeNull();
-                results[1].StdOut.ShouldBeNull();
+                skipWithReason.testName.ShouldEqual(testClass + ".SkipWithReason");
+                skipWithReason.outcome.ShouldEqual("Skipped");
+                skipWithReason.durationMilliseconds.ShouldEqual("0");
+                skipWithReason.ErrorMessage.ShouldEqual("Skipped with reason.");
+                skipWithReason.ErrorStackTrace.ShouldBeNull();
+                skipWithReason.StdOut.ShouldBeNull();
 
-                results[2].testName.ShouldEqual(testClass + ".Fail");
-                results[2].outcome.ShouldEqual("Failed");
-                int.Parse(results[2].durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-                results[2].ErrorMessage.ShouldEqual("'Fail' failed!");
-                results[2].ErrorStackTrace.Lines().Select(CleanBrittleValues)
+                skipWithoutReason.testName.ShouldEqual(testClass + ".SkipWithoutReason");
+                skipWithoutReason.outcome.ShouldEqual("Skipped");
+                skipWithoutReason.durationMilliseconds.ShouldEqual("0");
+                skipWithoutReason.ErrorMessage.ShouldBeNull();
+                skipWithoutReason.ErrorStackTrace.ShouldBeNull();
+                skipWithoutReason.StdOut.ShouldBeNull();
+
+                fail.testName.ShouldEqual(testClass + ".Fail");
+                fail.outcome.ShouldEqual("Failed");
+                int.Parse(fail.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+                fail.ErrorMessage.ShouldEqual("'Fail' failed!");
+                fail.ErrorStackTrace.Lines().Select(CleanBrittleValues)
                     .ShouldEqual(At<SampleTestClass>("Fail()"));
-                results[2].StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
+                fail.StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
 
-                results[3].testName.ShouldEqual(testClass + ".FailByAssertion");
-                results[3].outcome.ShouldEqual("Failed");
-                int.Parse(results[3].durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-                results[3].ErrorMessage.Lines().ShouldEqual(
+                failByAssertion.testName.ShouldEqual(testClass + ".FailByAssertion");
+                failByAssertion.outcome.ShouldEqual("Failed");
+                int.Parse(failByAssertion.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+                failByAssertion.ErrorMessage.Lines().ShouldEqual(
                     "Assert.Equal() Failure",
                     "Expected: 2",
                     "Actual:   1");
-                results[3].ErrorStackTrace.Lines().Select(CleanBrittleValues)
+                failByAssertion.ErrorStackTrace.Lines().Select(CleanBrittleValues)
                     .ShouldEqual(At<SampleTestClass>("FailByAssertion()"));
-                results[3].StdOut.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
+                failByAssertion.StdOut.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
 
-                results[4].testName.ShouldEqual(testClass + ".Pass");
-                results[4].outcome.ShouldEqual("Passed");
-                int.Parse(results[4].durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-                results[4].ErrorMessage.ShouldBeNull();
-                results[4].ErrorStackTrace.ShouldBeNull();
-                results[4].StdOut.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
+                pass.testName.ShouldEqual(testClass + ".Pass");
+                pass.outcome.ShouldEqual("Passed");
+                int.Parse(pass.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+                pass.ErrorMessage.ShouldBeNull();
+                pass.ErrorStackTrace.ShouldBeNull();
+                pass.StdOut.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
             }
         }
 

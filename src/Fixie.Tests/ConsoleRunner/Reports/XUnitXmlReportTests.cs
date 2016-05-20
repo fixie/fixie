@@ -21,7 +21,6 @@
 
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
-            convention.Parameters.Add<InputAttributeParameterSource>();
 
             using (var console = new RedirectedConsole())
             {
@@ -31,12 +30,10 @@
                     .ShouldEqual(
                         "Console.Out: Fail",
                         "Console.Error: Fail",
+                        "Console.Out: FailByAssertion",
+                        "Console.Error: FailByAssertion",
                         "Console.Out: Pass",
-                        "Console.Error: Pass",
-                        "Console.Out: PassIfTrue",
-                        "Console.Error: PassIfTrue",
-                        "Console.Out: PassIfTrue",
-                        "Console.Error: PassIfTrue");
+                        "Console.Error: Pass");
             }
 
             var report = new XUnitXmlReport();
@@ -108,12 +105,10 @@
                 WhereAmI();
             }
 
-            [Input(false)]
-            [Input(true)]
-            public void PassIfTrue(bool pass)
+            public void FailByAssertion()
             {
                 WhereAmI();
-                if (!pass) throw new FailureException();
+                1.ShouldEqual(2);
             }
 
             [Skip]

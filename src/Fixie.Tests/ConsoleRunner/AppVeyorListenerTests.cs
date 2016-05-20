@@ -41,7 +41,6 @@
                 var listener = new AppVeyorListener("http://localhost:4567", httpClient);
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
-                convention.Parameters.Add<InputAttributeParameterSource>();
 
                 typeof(PassFailTestClass).Run(listener, convention);
 
@@ -84,7 +83,7 @@
                     .ShouldEqual(At<PassFailTestClass>("Fail()"));
                 results[2].StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
 
-                results[3].testName.ShouldEqual(testClass + ".Pass(123)");
+                results[3].testName.ShouldEqual(testClass + ".Pass");
                 results[3].outcome.ShouldEqual("Passed");
                 int.Parse(results[3].durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
                 results[3].ErrorMessage.ShouldBeNull();
@@ -103,8 +102,7 @@
 
         class PassFailTestClass
         {
-            [Input(123)]
-            public void Pass(int x)
+            public void Pass()
             {
                 WhereAmI();
             }

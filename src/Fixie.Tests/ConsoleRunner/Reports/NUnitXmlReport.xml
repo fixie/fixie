@@ -4,29 +4,29 @@
     <culture-info current-culture="[current-culture]" current-uiculture="[current-uiculture]" />
     <test-suite type="Assembly" success="false" name="[assemblyLocation]" time="1.234" executed="true" result="Failure">
         <results>
-            <test-suite type="TestFixture" name="Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests+SampleTestClass" success="false" time="1.234" executed="true" result="Failure">
+            <test-suite type="TestFixture" name="Fixie.Tests.SampleTestClass" success="false" time="1.234" executed="true" result="Failure">
                 <results>
-                  <test-case name="Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests+SampleTestClass.SkipWithReason" executed="false" success="true" result="Ignored">
+                  <test-case name="Fixie.Tests.SampleTestClass.SkipWithReason" executed="false" success="true" result="Ignored">
                     <reason>
-                      <message><![CDATA[reason]]></message>
+                      <message><![CDATA[Skipped with reason.]]></message>
                     </reason>
                   </test-case>
-                  <test-case name="Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests+SampleTestClass.SkipWithoutReason" executed="false" success="true" result="Ignored" />
-                  <test-case name="Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests+SampleTestClass.Fail" executed="true" success="false" result="Failure" time="1.234">
+                  <test-case name="Fixie.Tests.SampleTestClass.SkipWithoutReason" executed="false" success="true" result="Ignored" />
+                  <test-case name="Fixie.Tests.SampleTestClass.Fail" executed="true" success="false" result="Failure" time="1.234">
                     <failure>
                       <message><![CDATA['Fail' failed!]]></message>
-                      <stack-trace><![CDATA[   at Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests.SampleTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
+                      <stack-trace><![CDATA[   at Fixie.Tests.SampleTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
                     </failure>
                   </test-case>
-                  <test-case name="Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests+SampleTestClass.FailByAssertion" executed="true" success="false" result="Failure" time="1.234">
+                  <test-case name="Fixie.Tests.SampleTestClass.FailByAssertion" executed="true" success="false" result="Failure" time="1.234">
                     <failure>
                       <message><![CDATA[Assert.Equal() Failure
 Expected: 2
 Actual:   1]]></message>
-                      <stack-trace><![CDATA[   at Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests.SampleTestClass.FailByAssertion() in [fileLocation]:line #]]></stack-trace>
+                      <stack-trace><![CDATA[   at Fixie.Tests.SampleTestClass.FailByAssertion() in [fileLocation]:line #]]></stack-trace>
                     </failure>
                   </test-case>
-                  <test-case name="Fixie.Tests.ConsoleRunner.Reports.NUnitXmlReportTests+SampleTestClass.Pass" executed="true" success="true" result="Success" time="1.234" />
+                  <test-case name="Fixie.Tests.SampleTestClass.Pass" executed="true" success="true" result="Success" time="1.234" />
                 </results>
             </test-suite>
         </results>

@@ -11,7 +11,6 @@
     using Fixie.ConsoleRunner.Reports;
     using Fixie.Internal;
     using Should;
-    using static Utility;
 
     public class NUnitXmlReportTests
     {
@@ -19,8 +18,7 @@
         {
             var listener = new ReportListener();
 
-            var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+            var convention = SampleTestClassConvention.Build();
 
             using (var console = new RedirectedConsole())
             {
@@ -89,43 +87,11 @@
             get
             {
                 var assemblyLocation = GetType().Assembly.Location;
-                var fileLocation = PathToThisFile();
+                var fileLocation = SampleTestClass.FilePath();
                 return XDocument.Parse(File.ReadAllText(Path.Combine("ConsoleRunner", Path.Combine("Reports", "NUnitXmlReport.xml"))))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
                                 .Replace("[fileLocation]", fileLocation);
-            }
-        }
-
-        class SampleTestClass
-        {
-            public void Fail()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
-
-            public void FailByAssertion()
-            {
-                WhereAmI();
-                1.ShouldEqual(2);
-            }
-
-            public void Pass()
-            {
-                WhereAmI();
-            }
-
-            [Skip]
-            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
-
-            [Skip("reason")]
-            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
-
-            static void WhereAmI([CallerMemberName] string member = null)
-            {
-                Console.Out.WriteLine("Console.Out: " + member);
-                Console.Error.WriteLine("Console.Error: " + member);
             }
         }
     }

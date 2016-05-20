@@ -17,8 +17,7 @@
     {
         public void ShouldDescribeCaseCompletion()
         {
-            var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+            var convention = SampleTestClassConvention.Build();
             convention.HideExceptionDetails.For<EqualException>();
 
             var listener = new StubCaseCompletedListener();
@@ -116,38 +115,6 @@
             cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
 
             return cleaned;
-        }
-
-        class SampleTestClass
-        {
-            public void Fail()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
-
-            public void FailByAssertion()
-            {
-                WhereAmI();
-                1.ShouldEqual(2);
-            }
-
-            public void Pass()
-            {
-                WhereAmI();
-            }
-
-            [Skip]
-            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
-
-            [Skip("Skipped with reason.")]
-            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
-
-            static void WhereAmI([CallerMemberName] string member = null)
-            {
-                Console.Out.WriteLine("Console.Out: " + member);
-                Console.Error.WriteLine("Console.Error: " + member);
-            }
         }
     }
 }

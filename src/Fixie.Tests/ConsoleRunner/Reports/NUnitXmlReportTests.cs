@@ -1,12 +1,15 @@
 ﻿namespace Fixie.Tests.ConsoleRunner.Reports
 {
+    using System;
     using System.IO;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Schema;
     using Fixie.ConsoleRunner.Reports;
+    using Fixie.Internal;
     using Should;
     using static Utility;
 
@@ -19,7 +22,22 @@
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters.Add<InputAttributeParameterSource>();
-            typeof(PassFailTestClass).Run(listener, convention);
+
+            using (var console = new RedirectedConsole())
+            {
+                typeof(PassFailTestClass).Run(listener, convention);
+
+                console.Lines()
+                    .ShouldEqual(
+                        "Console.Out: Fail",
+                        "Console.Error: Fail",
+                        "Console.Out: Pass",
+                        "Console.Error: Pass",
+                        "Console.Out: PassIfTrue",
+                        "Console.Error: PassIfTrue",
+                        "Console.Out: PassIfTrue",
+                        "Console.Error: PassIfTrue");
+            }
 
             var report = new NUnitXmlReport();
             var actual = report.Transform(listener.Report);
@@ -86,28 +104,33 @@
         {
             public void Fail()
             {
+                WhereAmI();
                 throw new FailureException();
             }
 
-            public void Pass() { }
+            public void Pass()
+            {
+                WhereAmI();
+            }
 
             [Input(false)]
             [Input(true)]
             public void PassIfTrue(bool pass)
             {
+                WhereAmI();
                 if (!pass) throw new FailureException();
             }
 
             [Skip]
-            public void SkipWithoutReason()
-            {
-                throw new ShouldBeUnreachableException();
-            }
+            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
 
             [Skip("reason")]
-            public void SkipWithReason()
+            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
+
+            static void WhereAmI([CallerMemberName] string member = null)
             {
-                throw new ShouldBeUnreachableException();
+                Console.Out.WriteLine("Console.Out: " + member);
+                Console.Error.WriteLine("Console.Error: " + member);
             }
         }
     }

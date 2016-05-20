@@ -8,6 +8,7 @@
     using System.Threading;
     using Fixie.ConsoleRunner;
     using Fixie.Internal;
+    using Should;
     using static Utility;
 
     public class ConsoleListenerTests
@@ -31,26 +32,24 @@
                            "",
                            "Test '" + testClass + ".SkipWithReason' skipped: Skipped with reason.",
                            "Test '" + testClass + ".SkipWithoutReason' skipped",
-                           "Console.Out: FailA",
-                           "Console.Error: FailA",
-                           "Console.Out: FailB",
-                           "Console.Error: FailB",
-                           "Console.Out: PassA",
-                           "Console.Error: PassA",
-                           "Console.Out: PassB",
-                           "Console.Error: PassB",
-                           "Console.Out: PassC",
-                           "Console.Error: PassC",
+                           "Console.Out: Fail",
+                           "Console.Error: Fail",
+                           "Console.Out: FailByAssertion",
+                           "Console.Error: FailByAssertion",
+                           "Console.Out: Pass",
+                           "Console.Error: Pass",
 
-                           "Test '" + testClass + ".FailA' failed: Fixie.Tests.FailureException",
-                           "'FailA' failed!",
-                           At<PassFailTestClass>("FailA()"),
+                           "Test '" + testClass + ".Fail' failed: Fixie.Tests.FailureException",
+                           "'Fail' failed!",
+                           At<PassFailTestClass>("Fail()"),
                            "",
-                           "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
-                           "'FailB' failed!",
-                           At<PassFailTestClass>("FailB()"),
+                           "Test '" + testClass + ".FailByAssertion' failed: Should.Core.Exceptions.EqualException",
+                           "Assert.Equal() Failure",
+                           "Expected: 2",
+                           "Actual:   1",
+                           At<PassFailTestClass>("FailByAssertion()"),
                            "",
-                           "3 passed, 2 failed, 2 skipped, took 1.23 seconds (" + Framework.Version + ").");
+                           "1 passed, 2 failed, 2 skipped, took 1.23 seconds (" + Framework.Version + ").");
             }
         }
 
@@ -74,26 +73,24 @@
                        .ShouldEqual(
                            "------ Testing Assembly Fixie.Tests.dll ------",
                            "",
-                           "Console.Out: FailA",
-                           "Console.Error: FailA",
-                           "Console.Out: FailB",
-                           "Console.Error: FailB",
-                           "Console.Out: PassA",
-                           "Console.Error: PassA",
-                           "Console.Out: PassB",
-                           "Console.Error: PassB",
-                           "Console.Out: PassC",
-                           "Console.Error: PassC",
+                           "Console.Out: Fail",
+                           "Console.Error: Fail",
+                           "Console.Out: FailByAssertion",
+                           "Console.Error: FailByAssertion",
+                           "Console.Out: Pass",
+                           "Console.Error: Pass",
 
-                           "Test '" + testClass + ".FailA' failed: Fixie.Tests.FailureException",
-                           "'FailA' failed!",
-                           At<PassFailTestClass>("FailA()"),
+                           "Test '" + testClass + ".Fail' failed: Fixie.Tests.FailureException",
+                           "'Fail' failed!",
+                           At<PassFailTestClass>("Fail()"),
                            "",
-                           "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
-                           "'FailB' failed!",
-                           At<PassFailTestClass>("FailB()"),
+                           "Test '" + testClass + ".FailByAssertion' failed: Should.Core.Exceptions.EqualException",
+                           "Assert.Equal() Failure",
+                           "Expected: 2",
+                           "Actual:   1",
+                           At<PassFailTestClass>("FailByAssertion()"),
                            "",
-                           "3 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
+                           "1 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
             }
         }
 
@@ -111,26 +108,22 @@
 
         class PassFailTestClass
         {
-            public void FailA()
+            public void Fail()
             {
                 WhereAmI();
                 throw new FailureException();
             }
 
-            public void PassA()
+            public void FailByAssertion()
+            {
+                WhereAmI();
+                1.ShouldEqual(2);
+            }
+
+            public void Pass()
             {
                 WhereAmI();
             }
-
-            public void FailB()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
-
-            public void PassB() { WhereAmI(); }
-
-            public void PassC() { WhereAmI(); }
 
             [Skip]
             public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }

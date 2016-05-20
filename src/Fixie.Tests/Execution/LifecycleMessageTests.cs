@@ -5,6 +5,8 @@
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
+    using System.Threading;
     using Fixie.Execution;
     using Fixie.Internal;
     using Should;
@@ -52,7 +54,8 @@
                 fail.Status.ShouldEqual(CaseStatus.Failed);
                 fail.Exception.FailedAssertion.ShouldBeFalse();
                 fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
-                fail.Exception.StackTrace.ShouldNotBeNull();
+                CleanBrittleValues(fail.Exception.StackTrace)
+                    .ShouldEqual(At<SampleTestClass>("Fail()"));
                 fail.Exception.Message.ShouldEqual("'Fail' failed!");
 
                 failByAssertion.Name.ShouldEqual(FullName<SampleTestClass>() + ".FailByAssertion");
@@ -62,7 +65,8 @@
                 failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
                 failByAssertion.Exception.FailedAssertion.ShouldBeTrue();
                 failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
-                failByAssertion.Exception.StackTrace.ShouldNotBeNull();
+                CleanBrittleValues(failByAssertion.Exception.StackTrace)
+                    .ShouldEqual(At<SampleTestClass>("FailByAssertion()"));
                 failByAssertion.Exception.Message.Lines().ShouldEqual(
                     "Assert.Equal() Failure",
                     "Expected: 2",
@@ -100,6 +104,18 @@
             public void Handle(AssemblyStarted message) => AssemblyStarts.Add(message);
             public void Handle(CaseCompleted message) => Cases.Add(message);
             public void Handle(AssemblyCompleted message) => AssemblyCompletions.Add(message);
+        }
+
+        static string CleanBrittleValues(string actualRawContent)
+        {
+            //Avoid brittle assertion introduced by test duration.
+            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            var cleaned = Regex.Replace(actualRawContent, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
+
+            //Avoid brittle assertion introduced by stack trace line numbers.
+            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
+
+            return cleaned;
         }
 
         class SampleTestClass

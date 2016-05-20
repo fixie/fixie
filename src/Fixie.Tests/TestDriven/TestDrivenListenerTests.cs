@@ -30,9 +30,9 @@ namespace Fixie.Tests.TestDriven
 
                 var summary = listener.Summary;
                 summary.Passed.ShouldEqual(1);
-                summary.Failed.ShouldEqual(1);
+                summary.Failed.ShouldEqual(2);
                 summary.Skipped.ShouldEqual(2);
-                summary.Total.ShouldEqual(4);
+                summary.Total.ShouldEqual(5);
 
                 var testClass = FullName<SampleTestClass>();
 
@@ -40,11 +40,13 @@ namespace Fixie.Tests.TestDriven
                     .ShouldEqual(
                         "Console.Out: Fail",
                         "Console.Error: Fail",
+                        "Console.Out: FailByAssertion",
+                        "Console.Error: FailByAssertion",
                         "Console.Out: Pass",
                         "Console.Error: Pass");
 
                 var results = testDriven.TestResults;
-                results.Count.ShouldEqual(4);
+                results.Count.ShouldEqual(5);
 
                 foreach (var result in results)
                 {
@@ -72,11 +74,21 @@ namespace Fixie.Tests.TestDriven
                     "'Fail' failed!",
                     "",
                     At<SampleTestClass>("Fail()"));
-                
-                results[3].Name.ShouldEqual(testClass + ".Pass");
-                results[3].State.ShouldEqual(TestState.Passed);
-                results[3].Message.ShouldBeNull();
-                results[3].StackTrace.ShouldBeNull();
+
+                results[3].Name.ShouldEqual(testClass + ".FailByAssertion");
+                results[3].State.ShouldEqual(TestState.Failed);
+                results[3].Message.ShouldEqual("Should.Core.Exceptions.EqualException");
+                results[3].StackTrace.Lines().Select(CleanBrittleValues).ShouldEqual(
+                    "Assert.Equal() Failure",
+                    "Expected: 2",
+                    "Actual:   1",
+                    "",
+                    At<SampleTestClass>("FailByAssertion()"));
+
+                results[4].Name.ShouldEqual(testClass + ".Pass");
+                results[4].State.ShouldEqual(TestState.Passed);
+                results[4].Message.ShouldBeNull();
+                results[4].StackTrace.ShouldBeNull();
             }
         }
 
@@ -119,6 +131,12 @@ namespace Fixie.Tests.TestDriven
             {
                 WhereAmI();
                 throw new FailureException();
+            }
+
+            public void FailByAssertion()
+            {
+                WhereAmI();
+                1.ShouldEqual(2);
             }
 
             [Skip]

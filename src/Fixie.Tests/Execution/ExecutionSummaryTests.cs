@@ -2,8 +2,6 @@
 {
     using Should;
     using System;
-    using System.Text.RegularExpressions;
-    using System.Threading;
     using Fixie.Execution;
 
     public class ExecutionSummaryTests
@@ -35,7 +33,9 @@
 
             typeof(SampleTestClass).Run(listener, convention);
 
-            CleanBrittleValues(listener.Summary.ToString())
+            listener.Summary
+                .ToString()
+                .CleanDuration()
                 .ShouldEqual("1 passed, 2 failed, 3 skipped, took 1.23 seconds");
         }
 
@@ -51,17 +51,10 @@
 
             typeof(SampleTestClass).Run(listener, convention);
 
-            CleanBrittleValues(listener.Summary.ToString())
+            listener.Summary
+                .ToString()
+                .CleanDuration()
                 .ShouldEqual("1 passed, 2 failed, took 1.23 seconds");
-        }
-
-        static string CleanBrittleValues(string actualRawContent)
-        {
-            //Avoid brittle assertion introduced by test duration.
-            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            var cleaned = Regex.Replace(actualRawContent, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
-
-            return cleaned;
         }
 
         class StubExecutionSummaryListener : Handler<CaseCompleted>

@@ -1,10 +1,7 @@
 ﻿namespace Fixie.Tests
 {
     using System;
-    using System.Linq;
     using System.Runtime.CompilerServices;
-    using System.Text.RegularExpressions;
-    using System.Threading;
     using Fixie.ConsoleRunner;
     using Fixie.Internal;
     using static Utility;
@@ -21,9 +18,10 @@
                 typeof(SampleTestClass).Run(listener, SelfTestConvention.Build());
 
                 console
-                    .Output.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                    .Select(x => x.CleanStackTraceLineNumbers())
-                    .Select(CleanBrittleValues)
+                    .Output
+                    .CleanStackTraceLineNumbers()
+                    .CleanDuration()
+                    .Lines()
                     .ShouldEqual(
                         "------ Testing Assembly Fixie.Tests.dll ------",
                         "",
@@ -36,9 +34,7 @@
                         "   at Fixie.Tests.SampleAssertionLibrary.SampleAssert.AreEqual(Int32 expected, Int32 actual) in " + PathToThisFile() + ":line #",
                         At<SampleTestClass>("FailedAssertion()"),
                         "",
-                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").",
-                        "",
-                        "");
+                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
             }
         }
 
@@ -57,9 +53,10 @@
                 typeof(SampleTestClass).Run(listener, convention);
 
                 console
-                    .Output.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                    .Select(x => x.CleanStackTraceLineNumbers())
-                    .Select(CleanBrittleValues)
+                    .Output
+                    .CleanStackTraceLineNumbers()
+                    .CleanDuration()
+                    .Lines()
                     .ShouldEqual(
                         "------ Testing Assembly Fixie.Tests.dll ------",
                         "",
@@ -71,19 +68,8 @@
                         "Expected 1, but was 0.",
                         At<SampleTestClass>("FailedAssertion()"),
                         "",
-                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").",
-                        "",
-                        "");
+                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
             }
-        }
-
-        static string CleanBrittleValues(string actualRawContent)
-        {
-            //Avoid brittle assertion introduced by test duration.
-            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            var cleaned = Regex.Replace(actualRawContent, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
-
-            return cleaned;
         }
 
         class SampleTestClass

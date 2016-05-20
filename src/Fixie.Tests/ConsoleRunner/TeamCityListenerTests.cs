@@ -1,27 +1,22 @@
 ﻿namespace Fixie.Tests.ConsoleRunner
 {
-    using System;
     using System.Linq;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using Fixie.ConsoleRunner;
     using Fixie.Internal;
-    using Should;
     using static Utility;
 
     public class TeamCityListenerTests
     {
         public void ShouldReportResultsToTheConsoleInTeamCityFormat()
         {
+            var listener = new TeamCityListener();
+            var convention = SampleTestClassConvention.Build();
+            var testClass = FullName<SampleTestClass>();
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new TeamCityListener();
-                var convention = SampleTestClassConvention.Build();
-
                 typeof(SampleTestClass).Run(listener, convention);
-
-                var testClass = FullName<SampleTestClass>();
 
                 console.Lines()
                        .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.

@@ -1,28 +1,23 @@
 ﻿namespace Fixie.Tests.ConsoleRunner
 {
-    using System;
     using System.Linq;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using System.Threading;
     using Fixie.ConsoleRunner;
     using Fixie.Internal;
-    using Should;
     using static Utility;
 
     public class ConsoleListenerTests
     {
         public void ShouldReportResultsToTheConsole()
         {
+            var listener = new ConsoleListener();
+            var convention = SampleTestClassConvention.Build();
+            var testClass = FullName<SampleTestClass>();
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new ConsoleListener();
-                var convention = SampleTestClassConvention.Build();
-
                 typeof(SampleTestClass).Run(listener, convention);
-
-                var testClass = FullName<SampleTestClass>();
 
                 console.Lines()
                        .Select(CleanBrittleValues)

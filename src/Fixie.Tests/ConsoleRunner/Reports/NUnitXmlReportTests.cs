@@ -1,9 +1,6 @@
 ﻿namespace Fixie.Tests.ConsoleRunner.Reports
 {
-    using System;
     using System.IO;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using System.Xml;
     using System.Xml.Linq;

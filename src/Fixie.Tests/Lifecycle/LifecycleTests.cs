@@ -27,12 +27,11 @@
 
         protected Output Run()
         {
+            var listener = new StubListener();
+            Convention.ClassExecution.SortCases((x, y) => String.Compare(y.Name, x.Name, StringComparison.Ordinal));
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new StubListener();
-
-                Convention.ClassExecution.SortCases((x, y) => String.Compare(y.Name, x.Name, StringComparison.Ordinal));
-
                 typeof(SampleTestClass).Run(listener, Convention);
 
                 return new Output(console.Lines().ToArray(), listener.Entries.ToArray());

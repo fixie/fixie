@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Tests.ConsoleRunner
 {
-    using System.Linq;
     using Fixie.ConsoleRunner;
     using Fixie.Internal;
     using static Utility;
@@ -15,7 +14,7 @@
 
             using (var console = new RedirectedConsole())
             {
-                typeof(SampleTestClass).Run(listener, convention);
+                Run<SampleTestClass>(listener, convention);
 
                 console.Output
                        .CleanStackTraceLineNumbers()

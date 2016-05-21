@@ -32,7 +32,7 @@
 
             using (var console = new RedirectedConsole())
             {
-                typeof(SampleTestClass).Run(listener, Convention);
+                Utility.Run<SampleTestClass>(listener, Convention);
 
                 return new Output(console.Lines().ToArray(), listener.Entries.ToArray());
             }

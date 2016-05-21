@@ -16,7 +16,7 @@
             var convention = SampleTestClassConvention.Build();
 
             using (new RedirectedConsole())
-                typeof(SampleTestClass).Run(listener, convention);
+                Run<SampleTestClass>(listener, convention);
 
             var assembly = typeof(LifecycleMessageTests).Assembly;
 

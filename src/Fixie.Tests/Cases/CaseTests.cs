@@ -12,8 +12,6 @@
         protected StubListener Listener { get; }
 
         protected void Run<TSampleTestClass>()
-        {
-            typeof(TSampleTestClass).Run(Listener, Convention);
-        }
+            => Utility.Run<TSampleTestClass>(Listener, Convention);
     }
 }

@@ -12,10 +12,12 @@
 
         public void ShouldNotAffectOutputByDefault()
         {
+            var listener = new ConsoleListener();
+            var convention = SelfTestConvention.Build();
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new ConsoleListener();
-                typeof(SampleTestClass).Run(listener, SelfTestConvention.Build());
+                Run<SampleTestClass>(listener, convention);
 
                 console
                     .Output
@@ -40,17 +42,17 @@
 
         public void ShouldFilterAssertionLibraryImplementationDetailsWhenLibraryTypesAreSpecified()
         {
+            var listener = new ConsoleListener();
+            var convention = SelfTestConvention.Build();
+
+            convention
+                .HideExceptionDetails
+                .For<SampleAssertionLibrary.AssertionException>()
+                .For(typeof(SampleAssertionLibrary.SampleAssert));
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new ConsoleListener();
-                var convention = SelfTestConvention.Build();
-
-                convention
-                    .HideExceptionDetails
-                    .For<SampleAssertionLibrary.AssertionException>()
-                    .For(typeof(SampleAssertionLibrary.SampleAssert));
-
-                typeof(SampleTestClass).Run(listener, convention);
+                Run<SampleTestClass>(listener, convention);
 
                 console
                     .Output

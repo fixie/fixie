@@ -37,12 +37,6 @@
             return lines;
         }
 
-        public static void Run(this Type sampleTestClass, object listener, Convention convention)
-        {
-            using (var bus = new Bus(listener))
-                new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
-        }
-
         public static string CleanStackTraceLineNumbers(this string stackTrace)
         {
             //Avoid brittle assertion introduced by stack trace line numbers.

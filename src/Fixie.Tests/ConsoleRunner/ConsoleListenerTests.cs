@@ -2,19 +2,16 @@
 {
     using Fixie.ConsoleRunner;
     using Fixie.Internal;
-    using static Utility;
 
-    public class ConsoleListenerTests
+    public class ConsoleListenerTests : MessagingTests
     {
         public void ShouldReportResultsToTheConsole()
         {
             var listener = new ConsoleListener();
-            var convention = SampleTestClassConvention.Build();
-            var testClass = FullName<SampleTestClass>();
 
             using (var console = new RedirectedConsole())
             {
-                Run<SampleTestClass>(listener, convention);
+                Run(listener);
 
                 console.Output
                        .CleanStackTraceLineNumbers()
@@ -23,8 +20,8 @@
                        .ShouldEqual(
                            "------ Testing Assembly Fixie.Tests.dll ------",
                            "",
-                           "Test '" + testClass + ".SkipWithReason' skipped: Skipped with reason.",
-                           "Test '" + testClass + ".SkipWithoutReason' skipped",
+                           "Test '" + TestClass + ".SkipWithReason' skipped: Skipped with reason.",
+                           "Test '" + TestClass + ".SkipWithoutReason' skipped",
                            "Console.Out: Fail",
                            "Console.Error: Fail",
                            "Console.Out: FailByAssertion",
@@ -32,15 +29,15 @@
                            "Console.Out: Pass",
                            "Console.Error: Pass",
 
-                           "Test '" + testClass + ".Fail' failed: Fixie.Tests.FailureException",
+                           "Test '" + TestClass + ".Fail' failed: Fixie.Tests.FailureException",
                            "'Fail' failed!",
-                           At<SampleTestClass>("Fail()"),
+                           At("Fail()"),
                            "",
-                           "Test '" + testClass + ".FailByAssertion' failed:",
+                           "Test '" + TestClass + ".FailByAssertion' failed:",
                            "Assert.Equal() Failure",
                            "Expected: 2",
                            "Actual:   1",
-                           At<SampleTestClass>("FailByAssertion()"),
+                           At("FailByAssertion()"),
                            "",
                            "1 passed, 2 failed, 2 skipped, took 1.23 seconds (" + Framework.Version + ").");
             }

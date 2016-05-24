@@ -67,8 +67,7 @@
     <Compile Include="ConsoleRunner\Reports\ReportListenerTests.cs" />
     <Compile Include="Execution\ExecutionSummaryTests.cs" />
     <Compile Include="Internal\BusTests.cs" />
-    <Compile Include="SampleTestClass.cs" />
-    <Compile Include="SampleTestClassConvention.cs" />
+    <Compile Include="MessagingTests.cs" />
     <Compile Include="SkipAttribute.cs" />
     <Compile Include="ConsoleRunner\AppVeyorListenerTests.cs" />
     <Compile Include="Execution\ExecutionEnvironmentTests.cs" />

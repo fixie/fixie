@@ -8,19 +8,16 @@
     using Fixie.ConsoleRunner.Reports;
     using Fixie.Internal;
     using Should;
-    using static Utility;
 
-    public class NUnitXmlReportTests
+    public class NUnitXmlReportTests : MessagingTests
     {
         public void ShouldProduceValidXmlDocument()
         {
             var listener = new ReportListener();
 
-            var convention = SampleTestClassConvention.Build();
-
             using (var console = new RedirectedConsole())
             {
-                Run<SampleTestClass>(listener, convention);
+                Run(listener);
 
                 console.Lines()
                     .ShouldEqual(
@@ -85,11 +82,13 @@
             get
             {
                 var assemblyLocation = GetType().Assembly.Location;
-                var fileLocation = SampleTestClass.FilePath();
+                var fileLocation = TestClassPath();
                 return XDocument.Parse(File.ReadAllText(Path.Combine("ConsoleRunner", Path.Combine("Reports", "NUnitXmlReport.xml"))))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
-                                .Replace("[fileLocation]", fileLocation);
+                                .Replace("[fileLocation]", fileLocation)
+                                .Replace("[testClass]", TestClass)
+                                .Replace("[testClassForStackTrace]", TestClass.Replace("+", "."));
             }
         }
     }

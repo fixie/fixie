@@ -1,6 +1,5 @@
 namespace Fixie.Tests
 {
-    using System;
     using System.Runtime.CompilerServices;
     using Fixie.Internal;
 
@@ -11,9 +10,6 @@ namespace Fixie.Tests
 
         public static string At<T>(string method, [CallerFilePath] string path = null)
         {
-            if (typeof(T) == typeof(SampleTestClass))
-                path = SampleTestClass.FilePath();
-
             return $"   at {FullName<T>().Replace("+", ".")}.{method} in {path}:line #";
         }
 

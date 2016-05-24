@@ -11,9 +11,8 @@
     using System.Web.Script.Serialization;
     using Fixie.ConsoleRunner;
     using Fixie.Internal;
-    using static Utility;
 
-    public class AppVeyorListenerTests
+    public class AppVeyorListenerTests : MessagingTests
     {
         public void ShouldReportResultsToAppVeyorBuildWorkerApi()
         {
@@ -33,11 +32,10 @@
             }));
 
             var listener = new AppVeyorListener("http://localhost:4567", httpClient);
-            var convention = SampleTestClassConvention.Build();
 
             using (var console = new RedirectedConsole())
             {
-                Run<SampleTestClass>(listener, convention);
+                Run(listener);
 
                 console.Lines()
                     .ShouldEqual(
@@ -48,8 +46,6 @@
                         "Console.Out: Pass",
                         "Console.Error: Pass");
             }
-
-            var testClass = FullName<SampleTestClass>();
 
             results.Count.ShouldEqual(5);
 
@@ -65,30 +61,30 @@
             var failByAssertion = results[3];
             var pass = results[4];
 
-            skipWithReason.testName.ShouldEqual(testClass + ".SkipWithReason");
+            skipWithReason.testName.ShouldEqual(TestClass + ".SkipWithReason");
             skipWithReason.outcome.ShouldEqual("Skipped");
             skipWithReason.durationMilliseconds.ShouldEqual("0");
             skipWithReason.ErrorMessage.ShouldEqual("Skipped with reason.");
             skipWithReason.ErrorStackTrace.ShouldBeNull();
             skipWithReason.StdOut.ShouldBeNull();
 
-            skipWithoutReason.testName.ShouldEqual(testClass + ".SkipWithoutReason");
+            skipWithoutReason.testName.ShouldEqual(TestClass + ".SkipWithoutReason");
             skipWithoutReason.outcome.ShouldEqual("Skipped");
             skipWithoutReason.durationMilliseconds.ShouldEqual("0");
             skipWithoutReason.ErrorMessage.ShouldBeNull();
             skipWithoutReason.ErrorStackTrace.ShouldBeNull();
             skipWithoutReason.StdOut.ShouldBeNull();
 
-            fail.testName.ShouldEqual(testClass + ".Fail");
+            fail.testName.ShouldEqual(TestClass + ".Fail");
             fail.outcome.ShouldEqual("Failed");
             int.Parse(fail.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             fail.ErrorMessage.ShouldEqual("'Fail' failed!");
             fail.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
-                .ShouldEqual(At<SampleTestClass>("Fail()"));
+                .ShouldEqual(At("Fail()"));
             fail.StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
 
-            failByAssertion.testName.ShouldEqual(testClass + ".FailByAssertion");
+            failByAssertion.testName.ShouldEqual(TestClass + ".FailByAssertion");
             failByAssertion.outcome.ShouldEqual("Failed");
             int.Parse(failByAssertion.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             failByAssertion.ErrorMessage.Lines().ShouldEqual(
@@ -97,10 +93,10 @@
                 "Actual:   1");
             failByAssertion.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
-                .ShouldEqual(At<SampleTestClass>("FailByAssertion()"));
+                .ShouldEqual(At("FailByAssertion()"));
             failByAssertion.StdOut.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
 
-            pass.testName.ShouldEqual(testClass + ".Pass");
+            pass.testName.ShouldEqual(TestClass + ".Pass");
             pass.outcome.ShouldEqual("Passed");
             int.Parse(pass.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             pass.ErrorMessage.ShouldBeNull();

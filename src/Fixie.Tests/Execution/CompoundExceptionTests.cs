@@ -1,8 +1,6 @@
 ﻿namespace Fixie.Tests.Execution
 {
     using System;
-    using System.Linq;
-    using System.Text.RegularExpressions;
     using Fixie.Execution;
     using Fixie.Internal;
     using Should;
@@ -29,14 +27,14 @@
             compoundException.FailedAssertion.ShouldEqual(false);
 
             compoundException.StackTrace
-               .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-               .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
-               .ShouldEqual(
-                   At<CompoundExceptionTests>("GetPrimaryException()"),
-                   "",
-                   "------- Inner Exception: System.DivideByZeroException -------",
-                   "Divide by Zero Exception!",
-                   At<CompoundExceptionTests>("GetPrimaryException()"));
+                .CleanStackTraceLineNumbers()
+                .Lines()
+                .ShouldEqual(
+                    At<CompoundExceptionTests>("GetPrimaryException()"),
+                    "",
+                    "------- Inner Exception: System.DivideByZeroException -------",
+                    "Divide by Zero Exception!",
+                    At<CompoundExceptionTests>("GetPrimaryException()"));
         }
 
         public void ShouldSummarizeCollectionsOfExceptionsComprisedOfPrimaryAndSecondaryExceptions()
@@ -53,8 +51,8 @@
             compoundException.FailedAssertion.ShouldEqual(false);
 
             compoundException.StackTrace
-                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
+                .CleanStackTraceLineNumbers()
+                .Lines()
                 .ShouldEqual(
                     At<CompoundExceptionTests>("GetPrimaryException()"),
                     "",
@@ -99,8 +97,7 @@
             compoundException.FailedAssertion.ShouldEqual(true);
 
             compoundException.StackTrace
-                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
+                .Lines()
                 .ShouldEqual(
                     "",
                     "",
@@ -121,8 +118,7 @@
                     "",
                     "",
                     "------- Inner Exception: System.NotImplementedException -------",
-                    "Not Implemented Exception!",
-                    "");
+                    "Not Implemented Exception!");
         }
 
         AssertionLibraryFilter AssertionLibraryFilter()

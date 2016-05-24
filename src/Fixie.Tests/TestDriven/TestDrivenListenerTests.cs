@@ -4,89 +4,93 @@ namespace Fixie.Tests.TestDriven
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
-    using System.Text.RegularExpressions;
     using Fixie.Internal;
     using Fixie.TestDriven;
     using Should;
-    using static Utility;
 
-    public class TestDrivenListenerTests
+    public class TestDrivenListenerTests : MessagingTests
     {
         public void ShouldReportResultsToTestDrivenDotNet()
         {
             var testDriven = new StubTestListener();
+            var listener = new TestDrivenListener(testDriven);
 
             using (var console = new RedirectedConsole())
             {
-                var listener = new TestDrivenListener(testDriven);
-
-                var convention = SelfTestConvention.Build();
-                convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
-                convention.Parameters.Add<InputAttributeParameterSource>();
-
-                typeof(PassFailTestClass).Run(listener, convention);
-
-                var summary = listener.Summary;
-                summary.Passed.ShouldEqual(1);
-                summary.Failed.ShouldEqual(1);
-                summary.Skipped.ShouldEqual(2);
-                summary.Total.ShouldEqual(4);
-
-                var testClass = FullName<PassFailTestClass>();
+                Run(listener);
 
                 console.Lines()
                     .ShouldEqual(
                         "Console.Out: Fail",
                         "Console.Error: Fail",
+                        "Console.Out: FailByAssertion",
+                        "Console.Error: FailByAssertion",
                         "Console.Out: Pass",
                         "Console.Error: Pass");
+            }
 
-                var results = testDriven.TestResults;
-                results.Count.ShouldEqual(4);
+            var summary = listener.Summary;
+            summary.Passed.ShouldEqual(1);
+            summary.Failed.ShouldEqual(2);
+            summary.Skipped.ShouldEqual(2);
+            summary.Total.ShouldEqual(5);
 
-                foreach (var result in results)
-                {
-                    result.FixtureType.ShouldEqual(null);
-                    result.Method.ShouldEqual(null);
-                    result.TimeSpan.ShouldEqual(TimeSpan.Zero);
-                    result.TotalTests.ShouldEqual(0);
-                    result.TestRunnerName.ShouldBeNull();
-                }
+            var results = testDriven.TestResults;
+            results.Count.ShouldEqual(5);
 
-                results[0].Name.ShouldEqual(testClass + ".SkipWithReason");
-                results[0].State.ShouldEqual(TestState.Ignored);
-                results[0].Message.ShouldEqual("Skipped with reason.");
-                results[0].StackTrace.ShouldBeNull();
+            foreach (var result in results)
+            {
+                result.FixtureType.ShouldEqual(null);
+                result.Method.ShouldEqual(null);
+                result.TimeSpan.ShouldEqual(TimeSpan.Zero);
+                result.TotalTests.ShouldEqual(0);
+                result.TestRunnerName.ShouldBeNull();
+            }
 
-                results[1].Name.ShouldEqual(testClass + ".SkipWithoutReason");
-                results[1].State.ShouldEqual(TestState.Ignored);
-                results[1].Message.ShouldBeNull();
-                results[1].StackTrace.ShouldBeNull();
+            var skipWithReason = results[0];
+            var skipWithoutReason = results[1];
+            var fail = results[2];
+            var failByAssertion = results[3];
+            var pass = results[4];
 
-                results[2].Name.ShouldEqual(testClass + ".Fail");
-                results[2].State.ShouldEqual(TestState.Failed);
-                results[2].Message.ShouldEqual("Fixie.Tests.FailureException");
-                results[2].StackTrace.Lines().Select(CleanBrittleValues).ShouldEqual(
+            skipWithReason.Name.ShouldEqual(TestClass + ".SkipWithReason");
+            skipWithReason.State.ShouldEqual(TestState.Ignored);
+            skipWithReason.Message.ShouldEqual("Skipped with reason.");
+            skipWithReason.StackTrace.ShouldBeNull();
+
+            skipWithoutReason.Name.ShouldEqual(TestClass + ".SkipWithoutReason");
+            skipWithoutReason.State.ShouldEqual(TestState.Ignored);
+            skipWithoutReason.Message.ShouldBeNull();
+            skipWithoutReason.StackTrace.ShouldBeNull();
+
+            fail.Name.ShouldEqual(TestClass + ".Fail");
+            fail.State.ShouldEqual(TestState.Failed);
+            fail.Message.ShouldEqual("Fixie.Tests.FailureException");
+            fail.StackTrace
+                .CleanStackTraceLineNumbers()
+                .Lines()
+                .ShouldEqual(
                     "'Fail' failed!",
                     "",
-                    At<PassFailTestClass>("Fail()"));
-                
-                results[3].Name.ShouldEqual(testClass + ".Pass(123)");
-                results[3].State.ShouldEqual(TestState.Passed);
-                results[3].Message.ShouldBeNull();
-                results[3].StackTrace.ShouldBeNull();
-            }
-        }
+                    At("Fail()"));
 
-        static string CleanBrittleValues(string actualRawContent)
-        {
-            //Avoid brittle assertion introduced by stack trace line numbers.
-            var cleaned = Regex.Replace(actualRawContent, @":line \d+", ":line #");
+            failByAssertion.Name.ShouldEqual(TestClass + ".FailByAssertion");
+            failByAssertion.State.ShouldEqual(TestState.Failed);
+            failByAssertion.Message.ShouldEqual("");
+            failByAssertion.StackTrace
+                .CleanStackTraceLineNumbers()
+                .Lines()
+                .ShouldEqual(
+                    "Assert.Equal() Failure",
+                    "Expected: 2",
+                    "Actual:   1",
+                    "",
+                    At("FailByAssertion()"));
 
-            return cleaned;
+            pass.Name.ShouldEqual(TestClass + ".Pass");
+            pass.State.ShouldEqual(TestState.Passed);
+            pass.Message.ShouldBeNull();
+            pass.StackTrace.ShouldBeNull();
         }
 
         class StubTestListener : ITestListener
@@ -106,33 +110,6 @@ namespace Fixie.Tests.TestDriven
             public void TestResultsUrl(string resultsUrl)
             {
                 throw new NotImplementedException();
-            }
-        }
-
-        class PassFailTestClass
-        {
-            [Input(123)]
-            public void Pass(int x)
-            {
-                WhereAmI();
-            }
-
-            public void Fail()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
-
-            [Skip]
-            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
-
-            [Skip("Skipped with reason.")]
-            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
-
-            static void WhereAmI([CallerMemberName] string member = null)
-            {
-                Console.Out.WriteLine("Console.Out: " + member);
-                Console.Error.WriteLine("Console.Error: " + member);
             }
         }
     }

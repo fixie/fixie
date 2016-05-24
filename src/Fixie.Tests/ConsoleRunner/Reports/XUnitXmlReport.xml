@@ -1,27 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <assemblies>
-<assembly name="[assemblyLocation]" run-date="YYYY-MM-DD" run-time="HH:MM:SS" configFile="[configLocation]" time="1.234" total="6" passed="2" failed="2" skipped="2" environment="00-bit .NET 1.2.3.4" test-framework="Fixie 1.2.3.4">
-	<class time="1.234" name="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass" total="6" passed="2" failed="2" skipped="2">
-    <test name="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass.SkipWithReason" type="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass" method="SkipWithReason" result="Skip">
+<assembly name="[assemblyLocation]" run-date="YYYY-MM-DD" run-time="HH:MM:SS" configFile="[configLocation]" time="1.234" total="5" passed="1" failed="2" skipped="2" environment="00-bit .NET 1.2.3.4" test-framework="Fixie 1.2.3.4">
+	<class time="1.234" name="[testClass]" total="5" passed="1" failed="2" skipped="2">
+    <test name="[testClass].SkipWithReason" type="[testClass]" method="SkipWithReason" result="Skip">
       <reason>
-        <message><![CDATA[reason]]></message>
+        <message><![CDATA[Skipped with reason.]]></message>
       </reason>
     </test>
-    <test name="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass.SkipWithoutReason" type="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass" method="SkipWithoutReason" result="Skip" />
-    <test name="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass.Fail" type="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass" method="Fail" result="Fail" time="1.234">
+    <test name="[testClass].SkipWithoutReason" type="[testClass]" method="SkipWithoutReason" result="Skip" />
+    <test name="[testClass].Fail" type="[testClass]" method="Fail" result="Fail" time="1.234">
 			<failure exception-type="Fixie.Tests.FailureException">
 				<message><![CDATA['Fail' failed!]]></message>
-				<stack-trace><![CDATA[   at Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests.PassFailTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
+				<stack-trace><![CDATA[   at [testClassForStackTrace].Fail() in [fileLocation]:line #]]></stack-trace>
 			</failure>
 		</test>
-		<test name="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass.Pass" type="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass" method="Pass" result="Pass" time="1.234" />
-		<test name="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass.PassIfTrue(False)" type="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass" method="PassIfTrue" result="Fail" time="1.234">
-			<failure exception-type="Fixie.Tests.FailureException">
-				<message><![CDATA['PassIfTrue' failed!]]></message>
-				<stack-trace><![CDATA[   at Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests.PassFailTestClass.PassIfTrue(Boolean pass) in [fileLocation]:line #]]></stack-trace>
+		<test name="[testClass].FailByAssertion" type="[testClass]" method="FailByAssertion" result="Fail" time="1.234">
+			<failure exception-type="Should.Core.Exceptions.EqualException">
+				<message><![CDATA[Assert.Equal() Failure
+Expected: 2
+Actual:   1]]></message>
+				<stack-trace><![CDATA[   at [testClassForStackTrace].FailByAssertion() in [fileLocation]:line #]]></stack-trace>
 			</failure>
 		</test>
-		<test name="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass.PassIfTrue(True)" type="Fixie.Tests.ConsoleRunner.Reports.XUnitXmlReportTests+PassFailTestClass" method="PassIfTrue" result="Pass" time="1.234" />
-	</class>
+    <test name="[testClass].Pass" type="[testClass]" method="Pass" result="Pass" time="1.234" />
+  </class>
 </assembly>
 </assemblies>

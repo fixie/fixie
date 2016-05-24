@@ -3,89 +3,83 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using Fixie.Execution;
     using Fixie.Internal;
     using Should;
-    using Should.Core.Exceptions;
-    using static Utility;
 
-    public class LifecycleMessageTests
+    public class LifecycleMessageTests : MessagingTests
     {
         public void ShouldDescribeCaseCompletion()
         {
-            var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Method.Name == "Skip");
-            convention.CaseExecution.Skip(x => x.Method.Name == "SkipWithReason", x => "Skipped by naming convention.");
-            convention.HideExceptionDetails.For<EqualException>();
-
             var listener = new StubCaseCompletedListener();
 
             using (new RedirectedConsole())
-            {
-                typeof(SampleTestClass).Run(listener, convention);
+                Run(listener);
 
-                var assembly = typeof(LifecycleMessageTests).Assembly;
+            var assembly = typeof(LifecycleMessageTests).Assembly;
 
-                var assemblyStarted = listener.AssemblyStarts.Single();
-                assemblyStarted.Name.ShouldEqual("Fixie.Tests");
-                assemblyStarted.Location.ShouldEqual(assembly.Location);
+            var assemblyStarted = listener.AssemblyStarts.Single();
+            assemblyStarted.Name.ShouldEqual("Fixie.Tests");
+            assemblyStarted.Location.ShouldEqual(assembly.Location);
 
-                listener.Cases.Count.ShouldEqual(5);
+            listener.Cases.Count.ShouldEqual(5);
 
-                var skip = (CaseSkipped)listener.Cases[0];
-                var skipWithReason = (CaseSkipped)listener.Cases[1];
-                var fail = (CaseFailed)listener.Cases[2];
-                var failByAssertion = (CaseFailed)listener.Cases[3];
-                var pass = listener.Cases[4];
+            var skipWithReason = (CaseSkipped)listener.Cases[0];
+            var skipWithoutReason = (CaseSkipped)listener.Cases[1];
+            var fail = (CaseFailed)listener.Cases[2];
+            var failByAssertion = (CaseFailed)listener.Cases[3];
+            var pass = listener.Cases[4];
 
-                pass.Name.ShouldEqual(FullName<SampleTestClass>() + ".Pass");
-                pass.MethodGroup.FullName.ShouldEqual(FullName<SampleTestClass>() + ".Pass");
-                pass.Output.ShouldEqual("Pass" + Environment.NewLine);
-                pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-                pass.Status.ShouldEqual(CaseStatus.Passed);
+            pass.Name.ShouldEqual(TestClass + ".Pass");
+            pass.MethodGroup.FullName.ShouldEqual(TestClass + ".Pass");
+            pass.Output.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
+            pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            pass.Status.ShouldEqual(CaseStatus.Passed);
 
-                fail.Name.ShouldEqual(FullName<SampleTestClass>() + ".Fail");
-                fail.MethodGroup.FullName.ShouldEqual(FullName<SampleTestClass>() + ".Fail");
-                fail.Output.ShouldEqual("Fail" + Environment.NewLine);
-                fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-                fail.Status.ShouldEqual(CaseStatus.Failed);
-                fail.Exception.FailedAssertion.ShouldBeFalse();
-                fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
-                fail.Exception.StackTrace.ShouldNotBeNull();
-                fail.Exception.Message.ShouldEqual("'Fail' failed!");
+            fail.Name.ShouldEqual(TestClass + ".Fail");
+            fail.MethodGroup.FullName.ShouldEqual(TestClass + ".Fail");
+            fail.Output.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
+            fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            fail.Status.ShouldEqual(CaseStatus.Failed);
+            fail.Exception.FailedAssertion.ShouldBeFalse();
+            fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
+            fail.Exception.StackTrace
+                .CleanStackTraceLineNumbers()
+                .ShouldEqual(At("Fail()"));
+            fail.Exception.Message.ShouldEqual("'Fail' failed!");
 
-                failByAssertion.Name.ShouldEqual(FullName<SampleTestClass>() + ".FailByAssertion");
-                failByAssertion.MethodGroup.FullName.ShouldEqual(FullName<SampleTestClass>() + ".FailByAssertion");
-                failByAssertion.Output.ShouldEqual("FailByAssertion" + Environment.NewLine);
-                failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-                failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
-                failByAssertion.Exception.FailedAssertion.ShouldBeTrue();
-                failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
-                failByAssertion.Exception.StackTrace.ShouldNotBeNull();
-                failByAssertion.Exception.Message.Lines().ShouldEqual(
-                    "Assert.Equal() Failure",
-                    "Expected: 2",
-                    "Actual:   1");
+            failByAssertion.Name.ShouldEqual(TestClass + ".FailByAssertion");
+            failByAssertion.MethodGroup.FullName.ShouldEqual(TestClass + ".FailByAssertion");
+            failByAssertion.Output.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
+            failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
+            failByAssertion.Exception.FailedAssertion.ShouldBeTrue();
+            failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
+            failByAssertion.Exception.StackTrace
+                .CleanStackTraceLineNumbers()
+                .ShouldEqual(At("FailByAssertion()"));
+            failByAssertion.Exception.Message.Lines().ShouldEqual(
+                "Assert.Equal() Failure",
+                "Expected: 2",
+                "Actual:   1");
 
-                skip.Name.ShouldEqual(FullName<SampleTestClass>() + ".Skip");
-                skip.MethodGroup.FullName.ShouldEqual(FullName<SampleTestClass>() + ".Skip");
-                skip.Output.ShouldBeNull();
-                skip.Duration.ShouldEqual(TimeSpan.Zero);
-                skip.Status.ShouldEqual(CaseStatus.Skipped);
-                skip.Reason.ShouldBeNull();
+            skipWithReason.Name.ShouldEqual(TestClass + ".SkipWithReason");
+            skipWithReason.MethodGroup.FullName.ShouldEqual(TestClass + ".SkipWithReason");
+            skipWithReason.Output.ShouldBeNull();
+            skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
+            skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);
+            skipWithReason.Reason.ShouldEqual("Skipped with reason.");
 
-                skipWithReason.Name.ShouldEqual(FullName<SampleTestClass>() + ".SkipWithReason");
-                skipWithReason.MethodGroup.FullName.ShouldEqual(FullName<SampleTestClass>() + ".SkipWithReason");
-                skipWithReason.Output.ShouldBeNull();
-                skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
-                skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);
-                skipWithReason.Reason.ShouldEqual("Skipped by naming convention.");
+            skipWithoutReason.Name.ShouldEqual(TestClass + ".SkipWithoutReason");
+            skipWithoutReason.MethodGroup.FullName.ShouldEqual(TestClass + ".SkipWithoutReason");
+            skipWithoutReason.Output.ShouldBeNull();
+            skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
+            skipWithoutReason.Status.ShouldEqual(CaseStatus.Skipped);
+            skipWithoutReason.Reason.ShouldBeNull();
 
-                var assemblyCompleted = listener.AssemblyCompletions.Single();
-                assemblyCompleted.Name.ShouldEqual("Fixie.Tests");
-                assemblyCompleted.Location.ShouldEqual(assembly.Location);
-            }
+            var assemblyCompleted = listener.AssemblyCompletions.Single();
+            assemblyCompleted.Name.ShouldEqual("Fixie.Tests");
+            assemblyCompleted.Location.ShouldEqual(assembly.Location);
         }
 
         public class StubCaseCompletedListener :
@@ -100,41 +94,6 @@
             public void Handle(AssemblyStarted message) => AssemblyStarts.Add(message);
             public void Handle(CaseCompleted message) => Cases.Add(message);
             public void Handle(AssemblyCompleted message) => AssemblyCompletions.Add(message);
-        }
-
-        static void WhereAmI([CallerMemberName] string member = null)
-        {
-            Console.WriteLine(member);
-        }
-
-        class SampleTestClass
-        {
-            public void Fail()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
-
-            public void FailByAssertion()
-            {
-                WhereAmI();
-                1.ShouldEqual(2);
-            }
-
-            public void Pass()
-            {
-                WhereAmI();
-            }
-
-            public void Skip()
-            {
-                WhereAmI();
-            }
-
-            public void SkipWithReason()
-            {
-                WhereAmI();
-            }
         }
     }
 }

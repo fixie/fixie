@@ -3,21 +3,16 @@
     using Should;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
-    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
     using Fixie.ConsoleRunner;
     using Fixie.Internal;
-    using static Utility;
 
-    public class AppVeyorListenerTests
+    public class AppVeyorListenerTests : MessagingTests
     {
         public void ShouldReportResultsToAppVeyorBuildWorkerApi()
         {
@@ -36,96 +31,77 @@
                 return new HttpResponseMessage { StatusCode = HttpStatusCode.Accepted };
             }));
 
+            var listener = new AppVeyorListener("http://localhost:4567", httpClient);
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new AppVeyorListener("http://localhost:4567", httpClient);
-                var convention = SelfTestConvention.Build();
-                convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
-                convention.Parameters.Add<InputAttributeParameterSource>();
-
-                typeof(PassFailTestClass).Run(listener, convention);
-
-                var testClass = FullName<PassFailTestClass>();
+                Run(listener);
 
                 console.Lines()
                     .ShouldEqual(
                         "Console.Out: Fail",
                         "Console.Error: Fail",
+                        "Console.Out: FailByAssertion",
+                        "Console.Error: FailByAssertion",
                         "Console.Out: Pass",
                         "Console.Error: Pass");
-
-                results.Count.ShouldEqual(4);
-
-                foreach (var result in results)
-                {
-                    result.testFramework.ShouldEqual("Fixie");
-                    result.fileName.ShouldEqual("Fixie.Tests.dll");
-                }
-
-                results[0].testName.ShouldEqual(testClass + ".SkipWithReason");
-                results[0].outcome.ShouldEqual("Skipped");
-                results[0].durationMilliseconds.ShouldEqual("0");
-                results[0].ErrorMessage.ShouldEqual("Skipped with reason.");
-                results[0].ErrorStackTrace.ShouldBeNull();
-                results[0].StdOut.ShouldBeNull();
-
-                results[1].testName.ShouldEqual(testClass + ".SkipWithoutReason");
-                results[1].outcome.ShouldEqual("Skipped");
-                results[1].durationMilliseconds.ShouldEqual("0");
-                results[1].ErrorMessage.ShouldBeNull();
-                results[1].ErrorStackTrace.ShouldBeNull();
-                results[1].StdOut.ShouldBeNull();
-
-                results[2].testName.ShouldEqual(testClass + ".Fail");
-                results[2].outcome.ShouldEqual("Failed");
-                int.Parse(results[2].durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-                results[2].ErrorMessage.ShouldEqual("'Fail' failed!");
-                results[2].ErrorStackTrace.Lines().Select(CleanBrittleValues)
-                    .ShouldEqual(At<PassFailTestClass>("Fail()"));
-                results[2].StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
-
-                results[3].testName.ShouldEqual(testClass + ".Pass(123)");
-                results[3].outcome.ShouldEqual("Passed");
-                int.Parse(results[3].durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-                results[3].ErrorMessage.ShouldBeNull();
-                results[3].ErrorStackTrace.ShouldBeNull();
-                results[3].StdOut.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
             }
-        }
 
-        static string CleanBrittleValues(string actualRawContent)
-        {
-            //Avoid brittle assertion introduced by stack trace line numbers.
-            var cleaned = Regex.Replace(actualRawContent, @":line \d+", ":line #");
+            results.Count.ShouldEqual(5);
 
-            return cleaned;
-        }
-
-        class PassFailTestClass
-        {
-            [Input(123)]
-            public void Pass(int x)
+            foreach (var result in results)
             {
-                WhereAmI();
+                result.testFramework.ShouldEqual("Fixie");
+                result.fileName.ShouldEqual("Fixie.Tests.dll");
             }
 
-            public void Fail()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
+            var skipWithReason = results[0];
+            var skipWithoutReason = results[1];
+            var fail = results[2];
+            var failByAssertion = results[3];
+            var pass = results[4];
 
-            [Skip]
-            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
+            skipWithReason.testName.ShouldEqual(TestClass + ".SkipWithReason");
+            skipWithReason.outcome.ShouldEqual("Skipped");
+            skipWithReason.durationMilliseconds.ShouldEqual("0");
+            skipWithReason.ErrorMessage.ShouldEqual("Skipped with reason.");
+            skipWithReason.ErrorStackTrace.ShouldBeNull();
+            skipWithReason.StdOut.ShouldBeNull();
 
-            [Skip("Skipped with reason.")]
-            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
+            skipWithoutReason.testName.ShouldEqual(TestClass + ".SkipWithoutReason");
+            skipWithoutReason.outcome.ShouldEqual("Skipped");
+            skipWithoutReason.durationMilliseconds.ShouldEqual("0");
+            skipWithoutReason.ErrorMessage.ShouldBeNull();
+            skipWithoutReason.ErrorStackTrace.ShouldBeNull();
+            skipWithoutReason.StdOut.ShouldBeNull();
 
-            static void WhereAmI([CallerMemberName] string member = null)
-            {
-                Console.Out.WriteLine("Console.Out: " + member);
-                Console.Error.WriteLine("Console.Error: " + member);
-            }
+            fail.testName.ShouldEqual(TestClass + ".Fail");
+            fail.outcome.ShouldEqual("Failed");
+            int.Parse(fail.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            fail.ErrorMessage.ShouldEqual("'Fail' failed!");
+            fail.ErrorStackTrace
+                .CleanStackTraceLineNumbers()
+                .ShouldEqual(At("Fail()"));
+            fail.StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
+
+            failByAssertion.testName.ShouldEqual(TestClass + ".FailByAssertion");
+            failByAssertion.outcome.ShouldEqual("Failed");
+            int.Parse(failByAssertion.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            failByAssertion.ErrorMessage.Lines().ShouldEqual(
+                "Assert.Equal() Failure",
+                "Expected: 2",
+                "Actual:   1");
+            failByAssertion.ErrorStackTrace
+                .CleanStackTraceLineNumbers()
+                .ShouldEqual(At("FailByAssertion()"));
+            failByAssertion.StdOut.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
+
+            pass.testName.ShouldEqual(TestClass + ".Pass");
+            pass.outcome.ShouldEqual("Passed");
+            int.Parse(pass.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            pass.ErrorMessage.ShouldBeNull();
+            pass.ErrorStackTrace.ShouldBeNull();
+            pass.StdOut.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
         }
 
         class FakeHandler : DelegatingHandler

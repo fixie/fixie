@@ -5,6 +5,7 @@ namespace Fixie.Tests.Internal
     using System.Linq;
     using System.Reflection;
     using Fixie.Internal;
+    using static System.Environment;
 
     public class RunnerTests
     {
@@ -82,30 +83,30 @@ namespace Fixie.Tests.Internal
             var strings = listener.Entries.OrderBy(x => x).ToArray();
             strings.ShouldEqual(
 
-                "Fixie.Tests.Internal.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedA failed: Exception thrown while attempting to yield input parameters for method: ParameterizedA" + Environment.NewLine +
-	            "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedA failed: Exception thrown while attempting to yield input parameters for method: ParameterizedA" + NewLine +
+	            "    Secondary Failure: Failed to compare two elements in the array." + NewLine +
 	            "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Internal.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedB failed: Exception thrown while attempting to yield input parameters for method: ParameterizedB" + Environment.NewLine +
-	            "    Secondary Failure: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+BuggyParameterGenerationTestClass.ParameterizedB failed: Exception thrown while attempting to yield input parameters for method: ParameterizedB" + NewLine +
+	            "    Secondary Failure: Failed to compare two elements in the array." + NewLine +
 	            "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Internal.RunnerTests+PassFailTestClass.Fail failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+PassFailTestClass.Fail failed: Failed to compare two elements in the array." + NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Internal.RunnerTests+PassFailTestClass.Pass failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+PassFailTestClass.Pass failed: Failed to compare two elements in the array." + NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassA failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassA failed: Failed to compare two elements in the array." + NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassB failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassB failed: Failed to compare two elements in the array." + NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipA failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipA failed: Failed to compare two elements in the array." + NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",
 
-                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipB failed: Failed to compare two elements in the array." + Environment.NewLine +
+                "Fixie.Tests.Internal.RunnerTests+SkipTestClass.SkipB failed: Failed to compare two elements in the array." + NewLine +
                 "    Inner Exception: SortCases lambda expression threw!");
         }
 

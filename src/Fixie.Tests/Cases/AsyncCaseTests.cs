@@ -4,6 +4,7 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Should;
+    using static System.Environment;
 
     public class AsyncCaseTests : CaseTests
     {
@@ -20,8 +21,8 @@
             Run<AwaitThenFailTestClass>();
 
             Listener.Entries.ShouldEqual(
-                For<AwaitThenFailTestClass>(".Test failed: Assert.Equal() Failure" + Environment.NewLine +
-                "Expected: 0" + Environment.NewLine +
+                For<AwaitThenFailTestClass>(".Test failed: Assert.Equal() Failure" + NewLine +
+                "Expected: 0" + NewLine +
                 "Actual:   3"));
         }
 

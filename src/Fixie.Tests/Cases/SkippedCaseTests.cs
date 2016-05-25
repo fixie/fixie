@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using static System.Environment;
 
     public class SkippedCaseTests : CaseTests
     {
@@ -92,16 +93,16 @@
 
             Listener.Entries.ShouldEqual(
                 For<SkippedTestClass>(
-                    ".Explicit failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                    ".Explicit failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
                     "    Inner Exception: Unsafe case-skipping predicate threw!",
 
-                    ".ExplicitAndSkip failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                    ".ExplicitAndSkip failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
                     "    Inner Exception: Unsafe case-skipping predicate threw!",
 
-                    ".Fail failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                    ".Fail failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
                     "    Inner Exception: Unsafe case-skipping predicate threw!",
 
-                    ".Pass failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                    ".Pass failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
                     "    Inner Exception: Unsafe case-skipping predicate threw!"));
         }
 
@@ -114,10 +115,10 @@
 
             Listener.Entries.ShouldEqual(
                 For<SkippedTestClass>(
-                    ".ExplicitAndSkip failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + Environment.NewLine +
+                    ".ExplicitAndSkip failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + NewLine +
                     "    Inner Exception: Unsafe case-skipped reason generator threw!",
 
-                    ".Fail failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + Environment.NewLine +
+                    ".Fail failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + NewLine +
                     "    Inner Exception: Unsafe case-skipped reason generator threw!",
 
                     ".Explicit passed",

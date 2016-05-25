@@ -50,6 +50,7 @@
         {
             Console.WriteLine($"{summary} ({Framework.Version}).");
             Console.WriteLine();
+            summary = null;
         }
     }
 }

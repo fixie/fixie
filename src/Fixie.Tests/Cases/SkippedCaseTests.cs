@@ -13,10 +13,11 @@
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
+                For<SkippedTestClass>(
+                    ".ExplicitAndSkip skipped",
+                    ".Fail skipped",
+                    ".Explicit passed",
+                    ".Pass passed"));
         }
 
         public void ShouldSkipCasesWithOptionalReason()
@@ -27,10 +28,11 @@
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
+                For<SkippedTestClass>(
+                    ".ExplicitAndSkip skipped",
+                    ".Fail skipped: Troublesome test skipped.",
+                    ".Explicit passed",
+                    ".Pass passed"));
         }
 
         public void ShouldAllowMultiplePrioritizedSkipBehaviors()
@@ -42,10 +44,11 @@
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
+                For<SkippedTestClass>(
+                    ".Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
+                    ".ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
+                    ".Fail skipped: Troublesome test skipped.",
+                    ".Pass passed"));
         }
 
         public void ShouldAllowSkippingViaBehaviorTypes()
@@ -57,10 +60,11 @@
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
+                For<SkippedTestClass>(
+                    ".Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
+                    ".ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
+                    ".Fail skipped: Troublesome test skipped.",
+                    ".Pass passed"));
         }
 
         public void ShouldAllowSkippingViaBehaviorInstances()
@@ -72,10 +76,11 @@
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail skipped: Troublesome test skipped.",
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
+                For<SkippedTestClass>(
+                    ".Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
+                    ".ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
+                    ".Fail skipped: Troublesome test skipped.",
+                    ".Pass passed"));
         }
 
         public void ShouldFailCaseWithClearExplanationWhenSkipConditionThrows()
@@ -86,17 +91,18 @@
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
-                "    Inner Exception: Unsafe case-skipping predicate threw!",
+                For<SkippedTestClass>(
+                    ".Explicit failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                    "    Inner Exception: Unsafe case-skipping predicate threw!",
 
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
-                "    Inner Exception: Unsafe case-skipping predicate threw!",
+                    ".ExplicitAndSkip failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                    "    Inner Exception: Unsafe case-skipping predicate threw!",
 
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
-                "    Inner Exception: Unsafe case-skipping predicate threw!",
+                    ".Fail failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                    "    Inner Exception: Unsafe case-skipping predicate threw!",
 
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
-                "    Inner Exception: Unsafe case-skipping predicate threw!");
+                    ".Pass failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + Environment.NewLine +
+                    "    Inner Exception: Unsafe case-skipping predicate threw!"));
         }
 
         public void ShouldFailCaseWithClearExplanationWhenSkipReasonThrows()
@@ -107,15 +113,16 @@
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.ExplicitAndSkip failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + Environment.NewLine +
-                "    Inner Exception: Unsafe case-skipped reason generator threw!",
+                For<SkippedTestClass>(
+                    ".ExplicitAndSkip failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + Environment.NewLine +
+                    "    Inner Exception: Unsafe case-skipped reason generator threw!",
 
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Fail failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + Environment.NewLine +
-                "    Inner Exception: Unsafe case-skipped reason generator threw!",
+                    ".Fail failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + Environment.NewLine +
+                    "    Inner Exception: Unsafe case-skipped reason generator threw!",
 
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Explicit passed",
+                    ".Explicit passed",
 
-                "Fixie.Tests.Cases.SkippedCaseTests+SkippedTestClass.Pass passed");
+                    ".Pass passed"));
         }
 
         static string ExplicitAttributeReason(Case @case)

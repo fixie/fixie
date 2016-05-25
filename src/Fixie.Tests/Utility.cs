@@ -9,9 +9,7 @@ namespace Fixie.Tests
             => typeof(T).FullName;
 
         public static string At<T>(string method, [CallerFilePath] string path = null)
-        {
-            return $"   at {FullName<T>().Replace("+", ".")}.{method} in {path}:line #";
-        }
+            => $"   at {FullName<T>().Replace("+", ".")}.{method} in {path}:line #";
 
         public static string PathToThisFile([CallerFilePath] string path = null)
             => path;

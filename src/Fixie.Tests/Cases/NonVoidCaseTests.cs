@@ -16,19 +16,23 @@ namespace Fixie.Tests.Cases
                 Run<SampleTestClass>();
                 Run<SampleAsyncTestClass>();
 
-                Listener.Entries.ShouldEqual(
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolFalse passed",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolThrow failed: 'BoolThrow' failed!",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolTrue passed",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.Pass passed",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.Throw failed: 'Throw' failed!",
+                var expectedSyncEntries = For<SampleTestClass>(
+                    ".BoolFalse passed",
+                    ".BoolThrow failed: 'BoolThrow' failed!",
+                    ".BoolTrue passed",
+                    ".Pass passed",
+                    ".Throw failed: 'Throw' failed!");
 
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolFalse passed",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolThrow failed: 'BoolThrow' failed!",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolTrue passed",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.Pass passed",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.Throw failed: 'Throw' failed!"
-                    );
+                var expectedAsyncEntries = For<SampleAsyncTestClass>(
+                    ".BoolFalse passed",
+                    ".BoolThrow failed: 'BoolThrow' failed!",
+                    ".BoolTrue passed",
+                    ".Pass passed",
+                    ".Throw failed: 'Throw' failed!");
+
+                Listener.Entries.ShouldEqual(
+                    expectedSyncEntries.Concat(
+                        expectedAsyncEntries).ToArray());
 
                 console.Output.ShouldBeEmpty();
             }
@@ -45,12 +49,12 @@ namespace Fixie.Tests.Cases
                 Run<SampleTestClass>();
 
                 Listener.Entries.ShouldEqual(
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolFalse failed: Boolean test case returned false!",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolThrow failed: 'BoolThrow' failed!",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.BoolTrue passed",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.Pass passed",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.Throw failed: 'Throw' failed!"
-                    );
+                    For<SampleTestClass>(
+                        ".BoolFalse failed: Boolean test case returned false!",
+                        ".BoolThrow failed: 'BoolThrow' failed!",
+                        ".BoolTrue passed",
+                        ".Pass passed",
+                        ".Throw failed: 'Throw' failed!"));
 
                 console.Lines().ShouldEqual(
                     "BoolFalse False",
@@ -72,12 +76,12 @@ namespace Fixie.Tests.Cases
                 Run<SampleAsyncTestClass>();
 
                 Listener.Entries.ShouldEqual(
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolFalse failed: Boolean test case returned false!",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolThrow failed: 'BoolThrow' failed!",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.BoolTrue passed",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.Pass passed",
-                    "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.Throw failed: 'Throw' failed!"
-                    );
+                    For<SampleAsyncTestClass>(
+                        ".BoolFalse failed: Boolean test case returned false!",
+                        ".BoolThrow failed: 'BoolThrow' failed!",
+                        ".BoolTrue passed",
+                        ".Pass passed",
+                        ".Throw failed: 'Throw' failed!"));
 
                 console.Lines().ShouldEqual(
                     "BoolFalse False",

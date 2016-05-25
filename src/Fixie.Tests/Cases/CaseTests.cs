@@ -1,5 +1,9 @@
 ﻿namespace Fixie.Tests.Cases
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using static Utility;
+
     public abstract class CaseTests
     {
         protected CaseTests()
@@ -13,5 +17,8 @@
 
         protected void Run<TSampleTestClass>()
             => Utility.Run<TSampleTestClass>(Listener, Convention);
+
+        protected static string[] For<TSampleTestClass>(params string[] entries)
+            => entries.Select(x => FullName<TSampleTestClass>() + x).ToArray();
     }
 }

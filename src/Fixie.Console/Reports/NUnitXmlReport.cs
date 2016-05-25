@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Xml.Linq;
     using Execution;
-    using static System.Environment;
 
     public class NUnitXmlReport
     {

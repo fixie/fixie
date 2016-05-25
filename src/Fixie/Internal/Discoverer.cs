@@ -12,12 +12,12 @@
             this.options = options;
         }
 
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Assembly assembly)
+        public IReadOnlyList<MethodGroup> DiscoverMethodGroups(Assembly assembly)
         {
             RunContext.Set(options);
             var conventions = new ConventionDiscoverer(assembly).GetConventions();
 
-            var discoveredTestMethodGroups = new List<MethodGroup>();
+            var discoveredMethodGroups = new List<MethodGroup>();
 
             foreach (var convention in conventions)
             {
@@ -37,11 +37,11 @@
                         distinctMethodGroups[methodGroup.FullName] = methodGroup;
                     }
 
-                    discoveredTestMethodGroups.AddRange(distinctMethodGroups.Values);
+                    discoveredMethodGroups.AddRange(distinctMethodGroups.Values);
                 }
             }
 
-            return discoveredTestMethodGroups;
+            return discoveredMethodGroups;
         }
     }
 }

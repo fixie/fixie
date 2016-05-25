@@ -11,7 +11,7 @@
 
             var discoverer = new Discoverer(options);
 
-            var methodGroups = discoverer.DiscoverTestMethodGroups(assembly);
+            var methodGroups = discoverer.DiscoverMethodGroups(assembly);
 
             foreach (var methodGroup in methodGroups)
                 bus.Publish(new MethodGroupDiscovered(methodGroup));

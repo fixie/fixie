@@ -50,10 +50,12 @@
 
         public void Handle(CaseFailed message)
         {
+            var exception = message.Exception;
+
             Post(message, x =>
             {
-                x.ErrorMessage = message.Exception.Message;
-                x.ErrorStackTrace = message.Exception.StackTrace;
+                x.ErrorMessage = exception.Message;
+                x.ErrorStackTrace = exception.TypedStackTrace();
             });
         }
 

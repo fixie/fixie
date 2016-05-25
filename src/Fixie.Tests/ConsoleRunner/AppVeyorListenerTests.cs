@@ -71,7 +71,8 @@
             fail.ErrorMessage.ShouldEqual("'Fail' failed!");
             fail.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
-                .ShouldEqual(At("Fail()"));
+                .Lines()
+                .ShouldEqual("Fixie.Tests.FailureException", At("Fail()"));
             fail.StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
 
             failByAssertion.testName.ShouldEqual(TestClass + ".FailByAssertion");

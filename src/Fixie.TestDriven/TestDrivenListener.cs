@@ -4,6 +4,7 @@ namespace Fixie.TestDriven
 {
     using System;
     using Execution;
+    using static System.Environment;
 
     public class TestDrivenListener :
         Handler<CaseSkipped>,
@@ -39,11 +40,13 @@ namespace Fixie.TestDriven
 
         public void Handle(CaseFailed message)
         {
+            var exception = message.Exception;
+
             Log(message, x =>
             {
                 x.State = TestState.Failed;
-                x.Message = message.Exception.FailedAssertion ? "" : message.Exception.Type;
-                x.StackTrace = message.Exception.Message + Environment.NewLine + Environment.NewLine + message.Exception.StackTrace;
+                x.Message = exception.FailedAssertion ? "" : exception.Type;
+                x.StackTrace = exception.Message + NewLine + NewLine + exception.StackTrace;
             });
         }
 

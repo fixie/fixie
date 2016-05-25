@@ -71,12 +71,12 @@
 
             if (message.Status == CaseStatus.Failed)
             {
-                var fail = (CaseFailed)message;
+                var exception = ((CaseFailed)message).Exception;
                 @case.Add(
                     new XElement("failure",
-                        new XAttribute("exception-type", fail.Exception.Type),
-                        new XElement("message", new XCData(fail.Exception.Message)),
-                        new XElement("stack-trace", new XCData(fail.Exception.StackTrace))));
+                        new XAttribute("exception-type", exception.Type),
+                        new XElement("message", new XCData(exception.Message)),
+                        new XElement("stack-trace", new XCData(exception.StackTrace))));
             }
 
             return @case;

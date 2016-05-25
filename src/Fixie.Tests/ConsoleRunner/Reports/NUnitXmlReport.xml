@@ -15,7 +15,8 @@
                   <test-case name="[testClass].Fail" executed="true" success="false" result="Failure" time="1.234">
                     <failure>
                       <message><![CDATA['Fail' failed!]]></message>
-                      <stack-trace><![CDATA[   at [testClassForStackTrace].Fail() in [fileLocation]:line #]]></stack-trace>
+                      <stack-trace><![CDATA[Fixie.Tests.FailureException
+   at [testClassForStackTrace].Fail() in [fileLocation]:line #]]></stack-trace>
                     </failure>
                   </test-case>
                   <test-case name="[testClass].FailByAssertion" executed="true" success="false" result="Failure" time="1.234">

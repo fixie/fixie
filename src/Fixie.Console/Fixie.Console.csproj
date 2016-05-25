@@ -45,6 +45,7 @@
     <Compile Include="AppVeyorListener.cs" />
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="CommandLineParser.cs" />
+    <Compile Include="CompoundExceptionExtensions.cs" />
     <Compile Include="ConsoleListener.cs" />
     <Compile Include="Reports\AssemblyReport.cs" />
     <Compile Include="Reports\ClassReport.cs" />

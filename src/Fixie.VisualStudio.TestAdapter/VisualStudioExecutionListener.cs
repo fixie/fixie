@@ -34,11 +34,21 @@
 
         public void Handle(CaseFailed message)
         {
+            var exception = message.Exception;
+
             Log(message, x =>
             {
-                x.ErrorMessage = message.Exception.Message;
-                x.ErrorStackTrace = message.Exception.StackTrace;
+                x.ErrorMessage = exception.Message;
+                x.ErrorStackTrace = TypedStackTrace(exception);
             });
+        }
+
+        static string TypedStackTrace(CompoundException exception)
+        {
+            if (exception.FailedAssertion)
+                return exception.StackTrace;
+
+            return exception.Type + Environment.NewLine + exception.StackTrace;
         }
 
         void Log(CaseCompleted message, Action<TestResult> customize = null)

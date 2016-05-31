@@ -1,6 +1,7 @@
 namespace Fixie.Tests
 {
     using System.Runtime.CompilerServices;
+    using Fixie.Execution;
     using Fixie.Internal;
 
     public static class Utility
@@ -14,7 +15,7 @@ namespace Fixie.Tests
         public static string PathToThisFile([CallerFilePath] string path = null)
             => path;
 
-        public static void Run<TSampleTestClass>(object listener, Convention convention)
+        public static void Run<TSampleTestClass>(Listener listener, Convention convention)
         {
             var sampleTestClass = typeof(TSampleTestClass);
 

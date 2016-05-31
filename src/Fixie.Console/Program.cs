@@ -97,7 +97,7 @@
             }
         }
 
-        static IEnumerable<object> StatelessListeners(Options options)
+        static IEnumerable<Listener> StatelessListeners(Options options)
         {
             if (ShouldUseTeamCityListener(options))
                 yield return new TeamCityListener();

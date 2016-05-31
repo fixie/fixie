@@ -3,6 +3,7 @@
     using System;
     using System.Reflection;
     using System.Runtime.CompilerServices;
+    using Fixie.Execution;
     using Should;
     using Should.Core.Exceptions;
     using static Utility;
@@ -37,7 +38,7 @@
 
         protected string TestClass { get; }
 
-        protected void Run(object listener)
+        protected void Run(Listener listener)
             => Run<SampleTestClass>(listener, convention);
 
         class SampleTestClass

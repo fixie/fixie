@@ -8,7 +8,7 @@
     {
         public void ShouldPublishEventsForAllListeners()
         {
-            var listeners = new object[]
+            var listeners = new Listener[]
             {
                 new EventHandler(),
                 new AnotherEventHandler(),

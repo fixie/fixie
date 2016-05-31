@@ -5,16 +5,16 @@
 
     public class Bus : LongLivedMarshalByRefObject
     {
-        readonly List<object> listeners;
+        readonly List<Listener> listeners;
 
-        public Bus(object listener)
+        public Bus(Listener listener)
             : this(new[] { listener })
         {
         }
 
-        public Bus(IReadOnlyCollection<object> listeners)
+        public Bus(IReadOnlyCollection<Listener> listeners)
         {
-            this.listeners = new List<object>(listeners);
+            this.listeners = new List<Listener>(listeners);
         }
 
         public void Publish<TMessage>(TMessage message) where TMessage : Message

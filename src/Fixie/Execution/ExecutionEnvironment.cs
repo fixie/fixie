@@ -13,19 +13,14 @@
         readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
-        readonly object[] listeners;
+        readonly Listener[] listeners;
 
-        public ExecutionEnvironment(string assemblyPath)
-            : this(assemblyPath, new object[] { })
-        {
-        }
-
-        public ExecutionEnvironment(string assemblyPath, object listener)
+        public ExecutionEnvironment(string assemblyPath, Listener listener)
             : this(assemblyPath, new[] { listener })
         {
         }
 
-        public ExecutionEnvironment(string assemblyPath, IReadOnlyCollection<object> listeners)
+        public ExecutionEnvironment(string assemblyPath, IReadOnlyCollection<Listener> listeners)
         {
             this.listeners = listeners.ToArray();
 

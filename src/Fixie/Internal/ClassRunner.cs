@@ -33,6 +33,8 @@
 
         public void Run(Type testClass)
         {
+            Start(testClass);
+
             var methods = methodDiscoverer.TestMethods(testClass);
 
             var cases = new List<Case>();
@@ -123,6 +125,8 @@
                         Pass(@case);
                 }
             }
+
+            Complete(testClass);
         }
 
         bool SkipCase(Case @case, out string reason)
@@ -174,8 +178,10 @@
         void Run(Type testClass, IReadOnlyList<Case> casesToExecute)
             => executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
 
+        void Start(Type testClass) => bus.Publish(new ClassStarted(testClass));
         void Skip(Case @case, string reason) => bus.Publish(new CaseSkipped(@case, reason));
         void Pass(Case @case) => bus.Publish(new CasePassed(@case));
         void Fail(Case @case) => bus.Publish(new CaseFailed(@case, assertionLibraryFilter));
+        void Complete(Type testClass) => bus.Publish(new ClassCompleted(testClass));
     }
 }

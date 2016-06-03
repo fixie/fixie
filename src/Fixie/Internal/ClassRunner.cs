@@ -33,8 +33,6 @@
 
         public void Run(Type testClass)
         {
-            Start(testClass);
-
             var methods = methodDiscoverer.TestMethods(testClass);
 
             var cases = new List<Case>();
@@ -83,6 +81,11 @@
                 foreach (var @case in cases)
                     @case.Fail(exception);
             }
+
+            if (!orderedCases.Any())
+                return;
+
+            Start(testClass);
 
             var casesToExecute = new List<Case>();
 

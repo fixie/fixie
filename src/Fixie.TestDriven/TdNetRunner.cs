@@ -52,14 +52,7 @@ namespace Fixie.TestDriven
                 var summary = listener.Summary;
 
                 if (summary.Total == 0)
-                {
-                    Console.WriteLine($"{summary} ({Framework.Version}).");
-                    Console.WriteLine();
-                    Console.WriteLine("Defaulting to TestDriven.NET's own \"Ad Hoc\" runner...");
-                    Console.WriteLine();
-
                     return TestRunState.NoTests;
-                }
 
                 if (summary.Failed > 0)
                     return TestRunState.Failure;

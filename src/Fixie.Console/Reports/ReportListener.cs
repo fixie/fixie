@@ -4,7 +4,9 @@
 
     public class ReportListener :
         Handler<AssemblyStarted>,
+        Handler<ClassStarted>,
         Handler<CaseCompleted>,
+        Handler<ClassCompleted>,
         Handler<AssemblyCompleted>
     {
         AssemblyReport currentAssembly;
@@ -20,23 +22,27 @@
         public void Handle(AssemblyStarted message)
         {
             currentAssembly = new AssemblyReport(message.Location);
+            Report.Add(currentAssembly);
+        }
+
+        public void Handle(ClassStarted message)
+        {
+            currentClass = new ClassReport(message.FullName);
+            currentAssembly.Add(currentClass);
         }
 
         public void Handle(CaseCompleted message)
         {
-            if (currentClass == null || currentClass.Name != message.MethodGroup.Class)
-            {
-                currentClass = new ClassReport(message.MethodGroup.Class);
-                currentAssembly.Add(currentClass);
-            }
-
             currentClass.Add(message);
+        }
+
+        public void Handle(ClassCompleted message)
+        {
+            currentClass = null;
         }
 
         public void Handle(AssemblyCompleted message)
         {
-            Report.Add(currentAssembly);
-
             currentAssembly = null;
         }
     }

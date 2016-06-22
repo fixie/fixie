@@ -8,7 +8,7 @@ $nonPublishedProjects = "Build","Fixie.Tests","Fixie.Samples"
 
 function main {
     try {
-
+        step { Restore }
         step { SanityCheckOutputPaths }
         step { AssemblyInfo }
         step { License }
@@ -32,6 +32,10 @@ function main {
         write-host "Build Failed!" -fore RED
         exit 1
     }
+}
+
+function Restore {
+    .\tools\NuGet.exe restore .\src\Fixie.sln -source "https://nuget.org/api/v2/" -RequireConsent -o ".\src\packages"
 }
 
 function Package {

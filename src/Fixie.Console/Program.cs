@@ -58,19 +58,13 @@
                 listeners.Add(reportListener);
             }
 
-            foreach (var assemblyPath in commandLineParser.AssemblyPaths)
-                using (var environment = new ExecutionEnvironment(assemblyPath, listeners))
-                    environment.RunAssembly(options);
+            using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath, listeners))
+                environment.RunAssembly(options);
 
             if (reportListener != null)
                 SaveReport(options, reportListener.Report);
 
-            var summary = summaryListener.Summary;
-
-            if (commandLineParser.AssemblyPaths.Count > 1)
-                Console.WriteLine("====== " + summary + " ======");
-
-            return summary;
+            return summaryListener.Summary;
         }
 
         static bool ShouldProduceReports(Options options)

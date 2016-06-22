@@ -6,7 +6,7 @@
     using System.Xml.Linq;
     using Execution;
 
-    public class NUnitXmlReport
+    public class NUnitXmlReport : XmlFormat
     {
         public XDocument Transform(Report report)
         {

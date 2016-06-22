@@ -49,6 +49,7 @@
     <Compile Include="Reports\ClassReport.cs" />
     <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="Reports\Report.cs" />
+    <Compile Include="Reports\XmlFormat.cs" />
     <Compile Include="SummaryListener.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Program.cs" />

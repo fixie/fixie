@@ -1,52 +1,64 @@
-Framework '4.5.2'
+param([string]$target)
 
-properties {
-    $birthYear = 2013
-    $maintainers = "Patrick Lioi"
+$birthYear = 2013
+$maintainers = "Patrick Lioi"
+$configuration = 'Release'
+$version = "2.0.0-alpha"
+$nonPublishedProjects = "Fixie.Tests","Fixie.Samples"
 
-    $configuration = 'Release'
-    $src = resolve-path '.\src'
-    $tools = resolve-path '.\tools'
-    $version = [IO.File]::ReadAllText('.\VERSION.txt')
-    $projects = @(gci $src -rec -filter *.csproj)
-    $nonPublishedProjects = "Build","Fixie.Tests","Fixie.Samples"
+function main {
+    step { Restore }
+    step { SanityCheckOutputPaths }
+    step { AssemblyInfo }
+    step { License }
+    step { Compile }
+    step { Test }
+    step { Test32 }
+
+    if ($target -eq "package") {
+        step { Package }
+    }
 }
 
-task default -depends Test
+function Restore {
+    .\tools\NuGet.exe restore .\src\Fixie.sln -source "https://nuget.org/api/v2/" -RequireConsent -o ".\src\packages"
+}
 
-task Package -depends Test {
+function Package {
     rd .\package -recurse -force -ErrorAction SilentlyContinue | out-null
     mkdir .\package -ErrorAction SilentlyContinue | out-null
-    exec { & $tools\NuGet.exe pack $src\Fixie\Fixie.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
+    exec { & .\tools\NuGet.exe pack .\src\Fixie\Fixie.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
 
     write-host
     write-host "To publish these packages, issue the following command:"
     write-host "   tools\NuGet push .\package\Fixie.$version.nupkg"
 }
 
-task Test -depends Compile {
+function Test {
     run-tests "Fixie.Console.exe"
 }
 
-task Test32 -depends Compile {
+function Test32 {
     run-tests "Fixie.Console.x86.exe"
 }
 
 function run-tests($exe) {
     $fixieRunner = resolve-path ".\build\$exe"
-    exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
+    exec { & $fixieRunner .\src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll .\src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
 }
 
-task Compile -depends SanityCheckOutputPaths, AssemblyInfo, License {
-  rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
-  exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
-  exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
+function Compile {
+    Set-Alias msbuild (get-msbuild-path)
+    rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
+    exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration .\src\Fixie.sln }
+    exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration .\src\Fixie.sln }
 }
 
-task SanityCheckOutputPaths {
+function SanityCheckOutputPaths {
     $blankLine = ([System.Environment]::NewLine + [System.Environment]::NewLine)
     $expected = "..\..\build\"
 
+    $projects = @(gci .\src -rec -filter *.csproj)
     foreach ($project in $projects) {
         $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
 
@@ -71,7 +83,7 @@ task SanityCheckOutputPaths {
     }
 }
 
-task AssemblyInfo {
+function AssemblyInfo {
     $assemblyVersion = $version
     if ($assemblyVersion.Contains("-")) {
         $assemblyVersion = $assemblyVersion.Substring(0, $assemblyVersion.IndexOf("-"))
@@ -79,14 +91,11 @@ task AssemblyInfo {
 
     $copyright = get-copyright
 
+    $projects = @(gci .\src -rec -filter *.csproj)
     foreach ($project in $projects) {
         $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
 
         if ($projectName.Contains(".x86")) {
-            continue;
-        }
-
-        if ($projectName -eq "Build") {
             continue;
         }
 
@@ -107,7 +116,7 @@ using System.Runtime.InteropServices;
     }
 }
 
-task License {
+function License {
     $copyright = get-copyright
 
     regenerate-file "LICENSE.txt" @"
@@ -137,4 +146,77 @@ function regenerate-file($path, $newContent) {
         write-host "Generating $relativePath"
         [System.IO.File]::WriteAllText($path, $newContent, [System.Text.Encoding]::UTF8)
     }
+}
+
+function exec($cmd) {
+    $global:lastexitcode = 0
+    & $cmd
+    if ($lastexitcode -ne 0) {
+        throw "Error executing command:$cmd"
+    }
+}
+
+function get-msbuild-path {
+    [cmdletbinding()]
+    param(
+        [Parameter(Position=0)]
+        [ValidateSet('32bit','64bit')]
+        [string]$bitness = '32bit'
+    )
+    process{
+
+        # Find the highest installed version of msbuild.exe.
+
+        $regLocalKey = $null
+
+        if($bitness -eq '32bit') {
+            $regLocalKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine,[Microsoft.Win32.RegistryView]::Registry32)
+        } else {
+            $regLocalKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine,[Microsoft.Win32.RegistryView]::Registry64)
+        }
+
+        $versionKeyName = $regLocalKey.OpenSubKey('SOFTWARE\Microsoft\MSBuild\ToolsVersions\').GetSubKeyNames() | Sort-Object {[double]$_} -Descending
+
+        $keyToReturn = ('SOFTWARE\Microsoft\MSBuild\ToolsVersions\{0}' -f $versionKeyName)
+
+        $path = ( '{0}msbuild.exe' -f $regLocalKey.OpenSubKey($keyToReturn).GetValue('MSBuildToolsPath'))
+
+        return $path
+    }
+}
+
+function step($block) {
+    $name = $block.ToString().Trim()
+    write-host "Executing $name" -fore CYAN
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+    &$block
+    $sw.Stop()
+
+    if (!$script:timings) {
+        $script:timings = @()
+    }
+
+    $script:timings += new-object PSObject -property @{
+        Name = $name;
+        Duration = $sw.Elapsed
+    }
+}
+
+function summarize-steps {
+    $script:timings | format-table -autoSize -property Name,Duration | out-string -stream | where-object { $_ }
+}
+
+try {
+    main
+    write-host
+    write-host "Build Succeeded!" -fore GREEN
+    write-host
+    summarize-steps
+    exit 0
+} catch [Exception] {
+    write-host
+    write-host $_.Exception.Message -fore DARKRED
+    write-host
+    write-host "Build Failed!" -fore DARKRED
+    exit 1
 }

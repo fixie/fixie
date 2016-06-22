@@ -7,7 +7,7 @@ properties {
     $configuration = 'Release'
     $src = resolve-path '.\src'
     $tools = resolve-path '.\tools'
-    $version = [IO.File]::ReadAllText('.\VERSION.txt')
+    $version = "2.0.0-alpha"
     $projects = @(gci $src -rec -filter *.csproj)
     $nonPublishedProjects = "Build","Fixie.Tests","Fixie.Samples"
 }

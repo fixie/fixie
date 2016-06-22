@@ -140,6 +140,14 @@ function regenerate-file($path, $newContent) {
     }
 }
 
+function exec($cmd) {
+    $global:lastexitcode = 0
+    & $cmd
+    if ($lastexitcode -ne 0) {
+        throw "Error executing command:$cmd"
+    }
+}
+
 function get-msbuild-path {
     [cmdletbinding()]
     param(

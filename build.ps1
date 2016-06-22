@@ -4,7 +4,7 @@ $birthYear = 2013
 $maintainers = "Patrick Lioi"
 $configuration = 'Release'
 $version = "2.0.0-alpha"
-$nonPublishedProjects = "Build","Fixie.Tests","Fixie.Samples"
+$nonPublishedProjects = "Fixie.Tests","Fixie.Samples"
 
 function main {
     try {
@@ -113,10 +113,6 @@ function AssemblyInfo {
             continue;
         }
 
-        if ($projectName -eq "Build") {
-            continue;
-        }
-
         regenerate-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" @"
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -205,7 +201,7 @@ function get-msbuild-path {
 
 function step($block) {
     $name = $block.ToString().Trim()
-    write-host $name -fore CYAN
+    write-host "Executing $name" -fore CYAN
     $sw = [Diagnostics.Stopwatch]::StartNew()
     &$block
     $sw.Stop()

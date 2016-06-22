@@ -7,30 +7,16 @@ $version = "2.0.0-alpha"
 $nonPublishedProjects = "Fixie.Tests","Fixie.Samples"
 
 function main {
-    try {
-        step { Restore }
-        step { SanityCheckOutputPaths }
-        step { AssemblyInfo }
-        step { License }
-        step { Compile }
-        step { Test }
-        step { Test32 }
+    step { Restore }
+    step { SanityCheckOutputPaths }
+    step { AssemblyInfo }
+    step { License }
+    step { Compile }
+    step { Test }
+    step { Test32 }
 
-        if ($target -eq "package") {
-            step { Package }
-        }
-
-        write-host
-        write-host "Build Succeeded!" -fore GREEN
-        write-host
-        summarize-steps
-        exit 0
-    } catch [Exception] {
-        write-host
-        write-host $_.Exception.Message -fore RED
-        write-host
-        write-host "Build Failed!" -fore RED
-        exit 1
+    if ($target -eq "package") {
+        step { Package }
     }
 }
 
@@ -220,4 +206,17 @@ function summarize-steps {
     $script:timings | format-table -autoSize -property Name,Duration | out-string -stream | where-object { $_ }
 }
 
-main
+try {
+    main
+    write-host
+    write-host "Build Succeeded!" -fore GREEN
+    write-host
+    summarize-steps
+    exit 0
+} catch [Exception] {
+    write-host
+    write-host $_.Exception.Message -fore DARKRED
+    write-host
+    write-host "Build Failed!" -fore DARKRED
+    exit 1
+}

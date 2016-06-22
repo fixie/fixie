@@ -24,11 +24,19 @@ task Package -depends Test {
     write-host "   tools\NuGet push .\package\Fixie.$version.nupkg"
 }
 
-task Test -depends Compile {
+task Test {
+    sanity-check-output-paths
+    generate-assembly-info
+    generate-license
+    compile-solution
     run-tests "Fixie.Console.exe"
 }
 
-task Test32 -depends Compile {
+task Test32 {
+    sanity-check-output-paths
+    generate-assembly-info
+    generate-license
+    compile-solution
     run-tests "Fixie.Console.x86.exe"
 }
 
@@ -37,14 +45,14 @@ function run-tests($exe) {
     exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
 }
 
-task Compile -depends SanityCheckOutputPaths, AssemblyInfo, License {
+function compile-solution {
     Set-Alias msbuild (get-msbuild-path)
     rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
     exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
     exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
 }
 
-task SanityCheckOutputPaths {
+function sanity-check-output-paths {
     $blankLine = ([System.Environment]::NewLine + [System.Environment]::NewLine)
     $expected = "..\..\build\"
 
@@ -72,7 +80,7 @@ task SanityCheckOutputPaths {
     }
 }
 
-task AssemblyInfo {
+function generate-assembly-info {
     $assemblyVersion = $version
     if ($assemblyVersion.Contains("-")) {
         $assemblyVersion = $assemblyVersion.Substring(0, $assemblyVersion.IndexOf("-"))
@@ -108,7 +116,7 @@ using System.Runtime.InteropServices;
     }
 }
 
-task License {
+function generate-license {
     $copyright = get-copyright
 
     regenerate-file "LICENSE.txt" @"

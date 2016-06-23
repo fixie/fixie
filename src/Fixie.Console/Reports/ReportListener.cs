@@ -1,6 +1,7 @@
 ﻿namespace Fixie.ConsoleRunner.Reports
 {
     using System;
+    using System.IO;
     using System.Xml.Linq;
     using Execution;
 
@@ -14,17 +15,15 @@
     {
         AssemblyReport assembly;
         ClassReport currentClass;
-        private readonly XmlFormat format;
-        readonly Action<XDocument> save;
+        readonly Action<AssemblyReport> save;
 
-        public ReportListener(Action<XDocument> save)
+        public ReportListener(Action<AssemblyReport> save)
         {
-            format = new TXmlFormat();
             this.save = save;
         }
 
-        public ReportListener(string fileName)
-            : this(xDocument => xDocument.Save(fileName, SaveOptions.None))
+        public ReportListener()
+            : this(Save)
         {
         }
 
@@ -51,9 +50,16 @@
 
         public void Handle(AssemblyCompleted message)
         {
-            save(format.Transform(assembly));
-
+            save(assembly);
             assembly = null;
+        }
+
+        static void Save(AssemblyReport assembly)
+        {
+            var format = new TXmlFormat();
+            var xDocument = format.Transform(assembly);
+            var filePath = Path.GetFullPath(assembly.Location) + ".xml";
+            xDocument.Save(filePath, SaveOptions.None);
         }
     }
 }

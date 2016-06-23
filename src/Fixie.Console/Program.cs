@@ -67,15 +67,14 @@
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
 
-            foreach (var format in options[CommandLineOption.ReportFormat])
+            var format = options[CommandLineOption.ReportFormat].SingleOrDefault();
+            if (format != null)
             {
-                var fileName = Path.GetFileName(commandLineParser.AssemblyPath) + ".xml";
-
                 if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
-                    yield return new ReportListener<NUnitXml>(fileName);
+                    yield return new ReportListener<NUnitXml>();
 
                 else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
-                    yield return new ReportListener<XUnitXml>(fileName);
+                    yield return new ReportListener<XUnitXml>();
             }
         }
 

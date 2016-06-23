@@ -61,24 +61,34 @@
             parser.Errors.ShouldEqual($"Specified assembly {mscorlib} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
         }
 
-        public void ParsesNUnitXmlOutputFile()
+        public void ParsesNUnitXmlReportFormat()
         {
-            var parser = new CommandLineParser(assemblyPathA, "--NUnitXml", "TestResult.xml");
+            var parser = new CommandLineParser(assemblyPathA, "--ReportFormat", "NUnit");
             parser.AssemblyPath.ShouldEqual(assemblyPathA);
-            parser.Options.Keys.ShouldEqual("NUnitXml");
-            parser.Options["NUnitXml"].ShouldEqual("TestResult.xml");
+            parser.Options.Keys.ShouldEqual("ReportFormat");
+            parser.Options["ReportFormat"].ShouldEqual("NUnit");
             parser.HasErrors.ShouldBeFalse();
             parser.Errors.ShouldBeEmpty();
         }
 
-        public void ParsesXUnitXmlOutputFile()
+        public void ParsesXUnitXmlReportFormat()
         {
-            var parser = new CommandLineParser(assemblyPathA, "--xUnitXml", "TestResult.xml");
+            var parser = new CommandLineParser(assemblyPathA, "--ReportFormat", "xUnit");
             parser.AssemblyPath.ShouldEqual(assemblyPathA);
-            parser.Options.Keys.ShouldEqual("xUnitXml");
-            parser.Options["xUnitXml"].ShouldEqual("TestResult.xml");
+            parser.Options.Keys.ShouldEqual("ReportFormat");
+            parser.Options["ReportFormat"].ShouldEqual("xUnit");
             parser.HasErrors.ShouldBeFalse();
             parser.Errors.ShouldBeEmpty();
+        }
+
+        public void DemandsSupportedReportFormat()
+        {
+            var parser = new CommandLineParser(assemblyPathA, "--ReportFormat", "NUnit", "--ReportFormat", "unsupported");
+            parser.AssemblyPath.ShouldEqual(assemblyPathA);
+            parser.Options.Keys.ShouldEqual("ReportFormat");
+            parser.Options["ReportFormat"].ShouldEqual("NUnit", "unsupported");
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual("The specified report format, 'unsupported', is not supported.");
         }
 
         public void ParsesTeamCityOutputFlag()

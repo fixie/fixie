@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using Execution;
     using Reports;
@@ -42,22 +43,22 @@
 
         static ExecutionSummary Execute(CommandLineParser commandLineParser)
         {
-            var options = commandLineParser.Options;
-
             var summaryListener = new SummaryListener();
 
-            var listeners = Listeners(options).ToList();
+            var listeners = Listeners(commandLineParser).ToList();
 
             listeners.Add(summaryListener);
 
             using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath, listeners))
-                environment.RunAssembly(options);
+                environment.RunAssembly(commandLineParser.Options);
 
             return summaryListener.Summary;
         }
 
-        static IEnumerable<Listener> Listeners(Options options)
+        static IEnumerable<Listener> Listeners(CommandLineParser commandLineParser)
         {
+            var options = commandLineParser.Options;
+
             if (ShouldUseTeamCityListener(options))
                 yield return new TeamCityListener();
             else
@@ -66,11 +67,16 @@
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
 
-            foreach (var fileName in options[CommandLineOption.NUnitXml])
-                yield return new ReportListener<NUnitXml>(fileName);
+            foreach (var format in options[CommandLineOption.ReportFormat])
+            {
+                var fileName = Path.GetFileName(commandLineParser.AssemblyPath) + ".xml";
 
-            foreach (var fileName in options[CommandLineOption.XUnitXml])
-                yield return new ReportListener<XUnitXml>(fileName);
+                if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
+                    yield return new ReportListener<NUnitXml>(fileName);
+
+                else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
+                    yield return new ReportListener<XUnitXml>(fileName);
+            }
         }
 
         static bool ShouldUseTeamCityListener(Options options)

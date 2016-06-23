@@ -67,10 +67,10 @@
                 yield return new AppVeyorListener();
 
             foreach (var fileName in options[CommandLineOption.NUnitXml])
-                yield return new ReportListener<NUnitXmlReport>(fileName);
+                yield return new ReportListener<NUnitXml>(fileName);
 
             foreach (var fileName in options[CommandLineOption.XUnitXml])
-                yield return new ReportListener<XUnitXmlReport>(fileName);
+                yield return new ReportListener<XUnitXml>(fileName);
         }
 
         static bool ShouldUseTeamCityListener(Options options)

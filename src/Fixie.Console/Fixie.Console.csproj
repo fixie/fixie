@@ -49,7 +49,7 @@
     <Compile Include="ConsoleListener.cs" />
     <Compile Include="Reports\AssemblyReport.cs" />
     <Compile Include="Reports\ClassReport.cs" />
-    <Compile Include="Reports\NUnitXmlReport.cs" />
+    <Compile Include="Reports\NUnitXml.cs" />
     <Compile Include="Reports\Report.cs" />
     <Compile Include="Reports\XmlFormat.cs" />
     <Compile Include="SummaryListener.cs" />
@@ -58,7 +58,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\ReportListener.cs" />
     <Compile Include="TeamCityListener.cs" />
-    <Compile Include="Reports\XUnitXmlReport.cs" />
+    <Compile Include="Reports\XUnitXml.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

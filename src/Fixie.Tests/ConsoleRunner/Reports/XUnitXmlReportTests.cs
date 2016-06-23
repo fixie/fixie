@@ -16,7 +16,7 @@
         {
             XDocument actual = null;
 
-            var listener = new ReportListener<XUnitXmlReport>(xDocument => { actual = xDocument; });
+            var listener = new ReportListener<XUnitXml>(xDocument => { actual = xDocument; });
 
             using (var console = new RedirectedConsole())
             {

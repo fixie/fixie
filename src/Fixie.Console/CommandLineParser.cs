@@ -5,11 +5,10 @@
     using System.IO;
     using System.Linq;
     using System.Text;
-    using Reports;
 
     public class CommandLineParser
     {
-        static string[] SupportedReportFormats = { "NUnit", "xUnit" };
+        static readonly string[] SupportedReportFormats = { "NUnit", "xUnit" };
 
         public CommandLineParser(params string[] args)
         {
@@ -54,6 +53,9 @@
             foreach (var format in formats)
                 if (!SupportedReportFormats.Contains(format, StringComparer.CurrentCultureIgnoreCase))
                     errors.Add($"The specified report format, '{format}', is not supported.");
+
+            if (formats.Count > 1)
+                errors.Add("To avoid writing multiple reports over the same file, only one report format may be specified.");
 
             if (!errors.Any())
             {

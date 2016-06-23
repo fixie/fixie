@@ -83,12 +83,22 @@
 
         public void DemandsSupportedReportFormat()
         {
-            var parser = new CommandLineParser(assemblyPathA, "--ReportFormat", "NUnit", "--ReportFormat", "unsupported");
+            var parser = new CommandLineParser(assemblyPathA, "--ReportFormat", "unsupported");
             parser.AssemblyPath.ShouldEqual(assemblyPathA);
             parser.Options.Keys.ShouldEqual("ReportFormat");
-            parser.Options["ReportFormat"].ShouldEqual("NUnit", "unsupported");
+            parser.Options["ReportFormat"].ShouldEqual("unsupported");
             parser.HasErrors.ShouldBeTrue();
             parser.Errors.ShouldEqual("The specified report format, 'unsupported', is not supported.");
+        }
+
+        public void DemandsAtMostOneReportFormat()
+        {
+            var parser = new CommandLineParser(assemblyPathA, "--ReportFormat", "NUnit", "--ReportFormat", "xUnit");
+            parser.AssemblyPath.ShouldEqual(assemblyPathA);
+            parser.Options.Keys.ShouldEqual("ReportFormat");
+            parser.Options["ReportFormat"].ShouldEqual("NUnit", "xUnit");
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual("To avoid writing multiple reports over the same file, only one report format may be specified.");
         }
 
         public void ParsesTeamCityOutputFlag()

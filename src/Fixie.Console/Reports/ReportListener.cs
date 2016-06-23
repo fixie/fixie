@@ -20,7 +20,7 @@
 
         public ReportListener(Action<XDocument> save)
         {
-            report = new Report();
+            report = null;
             format = new TXmlFormat();
             this.save = save;
         }
@@ -33,7 +33,7 @@
         public void Handle(AssemblyStarted message)
         {
             currentAssembly = new AssemblyReport(message.Location);
-            report.Add(currentAssembly);
+            report = new Report(currentAssembly);
         }
 
         public void Handle(ClassStarted message)

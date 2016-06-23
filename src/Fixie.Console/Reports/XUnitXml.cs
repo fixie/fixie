@@ -12,7 +12,7 @@
         {
             return new XDocument(
                 new XElement("assemblies",
-                    report.Assemblies.Select(Assembly)));
+                    Assembly(report.Assembly)));
         }
 
         static XElement Assembly(AssemblyReport assemblyReport)

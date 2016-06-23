@@ -30,7 +30,7 @@
 
                     Environment(),
                     CultureInfo(),
-                    report.Assemblies.Select(Assembly)));
+                    Assembly(report.Assembly)));
         }
 
         static XElement CultureInfo()

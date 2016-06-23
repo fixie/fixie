@@ -1,19 +1,17 @@
 ﻿namespace Fixie.ConsoleRunner.Reports
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
     public class Report
     {
-        readonly List<AssemblyReport> assemblies = new List<AssemblyReport>();
+        public Report(AssemblyReport assembly)
+        {
+            Assembly = assembly;
+        }
 
-        public void Add(AssemblyReport assemblyReport) => assemblies.Add(assemblyReport);
+        public AssemblyReport Assembly { get; }
 
-        public IReadOnlyList<AssemblyReport> Assemblies => assemblies;
-
-        public int Passed => assemblies.Sum(result => result.Passed);
-        public int Failed => assemblies.Sum(result => result.Failed);
-        public int Skipped => assemblies.Sum(result => result.Skipped);
+        public int Passed => Assembly.Passed;
+        public int Failed => Assembly.Failed;
+        public int Skipped => Assembly.Skipped;
         public int Total => Passed + Failed + Skipped;
     }
 }

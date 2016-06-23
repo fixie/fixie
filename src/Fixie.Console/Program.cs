@@ -46,11 +46,9 @@
 
             var summaryListener = new SummaryListener();
 
-            var listeners = StatelessListeners(options).ToList();
+            var listeners = Listeners(options).ToList();
 
             listeners.Add(summaryListener);
-
-            listeners.AddRange(ReportingListeners(options));
 
             using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath, listeners))
                 environment.RunAssembly(options);
@@ -58,7 +56,7 @@
             return summaryListener.Summary;
         }
 
-        static IEnumerable<Listener> StatelessListeners(Options options)
+        static IEnumerable<Listener> Listeners(Options options)
         {
             if (ShouldUseTeamCityListener(options))
                 yield return new TeamCityListener();
@@ -67,10 +65,7 @@
 
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
-        }
 
-        static IEnumerable<Listener> ReportingListeners(Options options)
-        {
             foreach (var fileName in options[CommandLineOption.NUnitXml])
                 yield return new ReportListener<NUnitXmlReport>(fileName);
 

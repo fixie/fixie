@@ -12,15 +12,13 @@
         Handler<AssemblyCompleted>
         where TXmlFormat : XmlFormat, new()
     {
-        Report report;
-        AssemblyReport currentAssembly;
+        AssemblyReport assembly;
         ClassReport currentClass;
         private readonly XmlFormat format;
         readonly Action<XDocument> save;
 
         public ReportListener(Action<XDocument> save)
         {
-            report = null;
             format = new TXmlFormat();
             this.save = save;
         }
@@ -32,14 +30,13 @@
 
         public void Handle(AssemblyStarted message)
         {
-            currentAssembly = new AssemblyReport(message.Location);
-            report = new Report(currentAssembly);
+            assembly = new AssemblyReport(message.Location);
         }
 
         public void Handle(ClassStarted message)
         {
             currentClass = new ClassReport(message.FullName);
-            currentAssembly.Add(currentClass);
+            assembly.Add(currentClass);
         }
 
         public void Handle(CaseCompleted message)
@@ -54,11 +51,9 @@
 
         public void Handle(AssemblyCompleted message)
         {
-            currentAssembly = null;
+            save(format.Transform(assembly));
 
-            save(format.Transform(report));
-
-            report = null;
+            assembly = null;
         }
     }
 }

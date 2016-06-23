@@ -8,7 +8,7 @@
 
     public class NUnitXml : XmlFormat
     {
-        public XDocument Transform(Report report)
+        public XDocument Transform(AssemblyReport assemblyReport)
         {
             var now = DateTime.UtcNow;
 
@@ -17,9 +17,9 @@
                     new XAttribute("date", now.ToString("yyyy-MM-dd")),
                     new XAttribute("time", now.ToString("HH:mm:ss")),
                     new XAttribute("name", "Results"),
-                    new XAttribute("total", report.Total),
-                    new XAttribute("failures", report.Failed),
-                    new XAttribute("not-run", report.Skipped),
+                    new XAttribute("total", assemblyReport.Total),
+                    new XAttribute("failures", assemblyReport.Failed),
+                    new XAttribute("not-run", assemblyReport.Skipped),
 
                     //Fixie has fewer test states than NUnit, so these counts are always zero.
                     new XAttribute("errors", 0), //Already accounted for by "failures" above.
@@ -30,7 +30,7 @@
 
                     Environment(),
                     CultureInfo(),
-                    Assembly(report.Assembly)));
+                    Assembly(assemblyReport)));
         }
 
         static XElement CultureInfo()

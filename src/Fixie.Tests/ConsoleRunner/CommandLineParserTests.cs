@@ -61,22 +61,12 @@
             parser.Errors.ShouldEqual($"Specified assembly {mscorlib} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
         }
 
-        public void ParsesNUnitXmlReportFormat()
+        public void ParsesSupportedXmlReportFormat()
         {
-            var parser = new CommandLineParser(assemblyPathA, "--ReportFormat", "NUnit");
+            var parser = new CommandLineParser(assemblyPathA, "--ReportFormat", "NUnit", "--ReportFormat", "xUnit");
             parser.AssemblyPath.ShouldEqual(assemblyPathA);
             parser.Options.Keys.ShouldEqual("ReportFormat");
-            parser.Options["ReportFormat"].ShouldEqual("NUnit");
-            parser.HasErrors.ShouldBeFalse();
-            parser.Errors.ShouldBeEmpty();
-        }
-
-        public void ParsesXUnitXmlReportFormat()
-        {
-            var parser = new CommandLineParser(assemblyPathA, "--ReportFormat", "xUnit");
-            parser.AssemblyPath.ShouldEqual(assemblyPathA);
-            parser.Options.Keys.ShouldEqual("ReportFormat");
-            parser.Options["ReportFormat"].ShouldEqual("xUnit");
+            parser.Options["ReportFormat"].ShouldEqual("NUnit", "xUnit");
             parser.HasErrors.ShouldBeFalse();
             parser.Errors.ShouldBeEmpty();
         }
@@ -89,16 +79,6 @@
             parser.Options["ReportFormat"].ShouldEqual("unsupported");
             parser.HasErrors.ShouldBeTrue();
             parser.Errors.ShouldEqual("The specified report format, 'unsupported', is not supported.");
-        }
-
-        public void DemandsAtMostOneReportFormat()
-        {
-            var parser = new CommandLineParser(assemblyPathA, "--ReportFormat", "NUnit", "--ReportFormat", "xUnit");
-            parser.AssemblyPath.ShouldEqual(assemblyPathA);
-            parser.Options.Keys.ShouldEqual("ReportFormat");
-            parser.Options["ReportFormat"].ShouldEqual("NUnit", "xUnit");
-            parser.HasErrors.ShouldBeTrue();
-            parser.Errors.ShouldEqual("To avoid writing multiple reports over the same file, only one report format may be specified.");
         }
 
         public void ParsesTeamCityOutputFlag()

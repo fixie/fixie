@@ -8,6 +8,8 @@
 
     public class XUnitXml : XmlFormat
     {
+        public string Name => "xUnit";
+
         public XDocument Transform(AssemblyReport assemblyReport)
         {
             var now = DateTime.UtcNow;

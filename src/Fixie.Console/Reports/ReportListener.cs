@@ -58,7 +58,10 @@
         {
             var format = new TXmlFormat();
             var xDocument = format.Transform(assembly);
-            var filePath = Path.GetFullPath(assembly.Location) + ".xml";
+            var folder = Path.GetDirectoryName(assembly.Location);
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(assembly.Location);
+            var formatName = format.Name;
+            var filePath = Path.Combine(folder, $"{fileNameWithoutExtension}.{formatName}.xml");
             xDocument.Save(filePath, SaveOptions.None);
         }
     }

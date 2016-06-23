@@ -67,8 +67,7 @@
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
 
-            var format = options[CommandLineOption.ReportFormat].SingleOrDefault();
-            if (format != null)
+            foreach (var format in options[CommandLineOption.ReportFormat])
             {
                 if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
                     yield return new ReportListener<NUnitXml>();

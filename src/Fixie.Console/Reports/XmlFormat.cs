@@ -4,6 +4,7 @@ namespace Fixie.ConsoleRunner.Reports
 
     public interface XmlFormat
     {
+        string Name { get; }
         XDocument Transform(AssemblyReport assemblyReport);
     }
 }

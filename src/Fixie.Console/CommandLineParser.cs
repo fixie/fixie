@@ -54,9 +54,6 @@
                 if (!SupportedReportFormats.Contains(format, StringComparer.CurrentCultureIgnoreCase))
                     errors.Add($"The specified report format, '{format}', is not supported.");
 
-            if (formats.Count > 1)
-                errors.Add("To avoid writing multiple reports over the same file, only one report format may be specified.");
-
             if (!errors.Any())
             {
                 if (!File.Exists(AssemblyPath))

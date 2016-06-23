@@ -1,28 +1,39 @@
 ﻿namespace Fixie.ConsoleRunner.Reports
 {
+    using System;
+    using System.Xml.Linq;
     using Execution;
 
-    public class ReportListener :
+    public class ReportListener<TXmlFormat> :
         Handler<AssemblyStarted>,
         Handler<ClassStarted>,
         Handler<CaseCompleted>,
         Handler<ClassCompleted>,
         Handler<AssemblyCompleted>
+        where TXmlFormat : XmlFormat, new()
     {
+        Report report;
         AssemblyReport currentAssembly;
         ClassReport currentClass;
+        private readonly XmlFormat format;
+        readonly Action<XDocument> save;
 
-        public ReportListener()
+        public ReportListener(Action<XDocument> save)
         {
-            Report = new Report();
+            report = new Report();
+            format = new TXmlFormat();
+            this.save = save;
         }
 
-        public Report Report { get; }
+        public ReportListener(string fileName)
+            : this(xDocument => xDocument.Save(fileName, SaveOptions.None))
+        {
+        }
 
         public void Handle(AssemblyStarted message)
         {
             currentAssembly = new AssemblyReport(message.Location);
-            Report.Add(currentAssembly);
+            report.Add(currentAssembly);
         }
 
         public void Handle(ClassStarted message)
@@ -44,6 +55,10 @@
         public void Handle(AssemblyCompleted message)
         {
             currentAssembly = null;
+
+            save(format.Transform(report));
+
+            report = null;
         }
     }
 }

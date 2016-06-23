@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Xml.Linq;
     using Execution;
     using Reports;
 
@@ -46,49 +45,17 @@
             var options = commandLineParser.Options;
 
             var summaryListener = new SummaryListener();
-            ReportListener reportListener = null;
 
             var listeners = StatelessListeners(options).ToList();
 
             listeners.Add(summaryListener);
 
-            if (ShouldProduceReports(options))
-            {
-                reportListener = new ReportListener();
-                listeners.Add(reportListener);
-            }
+            listeners.AddRange(ReportingListeners(options));
 
             using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath, listeners))
                 environment.RunAssembly(options);
 
-            if (reportListener != null)
-                SaveReport(options, reportListener.Report);
-
             return summaryListener.Summary;
-        }
-
-        static bool ShouldProduceReports(Options options)
-        {
-            return options.Contains(CommandLineOption.NUnitXml) || options.Contains(CommandLineOption.XUnitXml);
-        }
-
-        static void SaveReport(Options options, Report report)
-        {
-            if (options.Contains(CommandLineOption.NUnitXml))
-            {
-                var xDocument = new NUnitXmlReport().Transform(report);
-
-                foreach (var fileName in options[CommandLineOption.NUnitXml])
-                    xDocument.Save(fileName, SaveOptions.None);
-            }
-
-            if (options.Contains(CommandLineOption.XUnitXml))
-            {
-                var xDocument = new XUnitXmlReport().Transform(report);
-
-                foreach (var fileName in options[CommandLineOption.XUnitXml])
-                    xDocument.Save(fileName, SaveOptions.None);
-            }
         }
 
         static IEnumerable<Listener> StatelessListeners(Options options)
@@ -100,6 +67,15 @@
 
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
+        }
+
+        static IEnumerable<Listener> ReportingListeners(Options options)
+        {
+            foreach (var fileName in options[CommandLineOption.NUnitXml])
+                yield return new ReportListener<NUnitXmlReport>(fileName);
+
+            foreach (var fileName in options[CommandLineOption.XUnitXml])
+                yield return new ReportListener<XUnitXmlReport>(fileName);
         }
 
         static bool ShouldUseTeamCityListener(Options options)

@@ -14,7 +14,9 @@
     {
         public void ShouldProduceValidXmlDocument()
         {
-            var listener = new ReportListener();
+            XDocument actual = null;
+
+            var listener = new ReportListener<XUnitXmlReport>(xDocument => { actual = xDocument; });
 
             using (var console = new RedirectedConsole())
             {
@@ -29,9 +31,6 @@
                         "Console.Out: Pass",
                         "Console.Error: Pass");
             }
-
-            var report = new XUnitXmlReport();
-            var actual = report.Transform(listener.Report);
 
             XsdValidate(actual);
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);

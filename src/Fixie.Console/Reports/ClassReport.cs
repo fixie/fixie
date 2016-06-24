@@ -2,29 +2,33 @@ namespace Fixie.ConsoleRunner.Reports
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Execution;
 
     public class ClassReport
     {
         readonly List<CaseCompleted> cases;
+        readonly ExecutionSummary summary;
 
         public ClassReport(string name)
         {
             cases = new List<CaseCompleted>();
+            summary = new ExecutionSummary();
             Name = name;
         }
 
-        public void Add(CaseCompleted message) => cases.Add(message);
+        public void Add(CaseCompleted message)
+        {
+            cases.Add(message);
+            summary.Add(message);
+        }
 
         public string Name { get; }
 
-        public TimeSpan Duration => new TimeSpan(cases.Sum(@case => @case.Duration.Ticks));
-
         public IReadOnlyList<CaseCompleted> Cases => cases;
 
-        public int Passed => cases.Count(@case => @case.Status == CaseStatus.Passed);
-        public int Failed => cases.Count(@case => @case.Status == CaseStatus.Failed);
-        public int Skipped => cases.Count(@case => @case.Status == CaseStatus.Skipped);
+        public int Passed => summary.Passed;
+        public int Failed => summary.Failed;
+        public int Skipped => summary.Skipped;
+        public TimeSpan Duration => summary.Duration;
     }
 }

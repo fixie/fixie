@@ -9,11 +9,13 @@
     using Fixie.Internal;
     using Should;
 
-    public class NUnitXmlReportTests : MessagingTests
+    public class NUnitXmlTests : MessagingTests
     {
         public void ShouldProduceValidXmlDocument()
         {
-            var listener = new ReportListener();
+            XDocument actual = null;
+
+            var listener = new ReportListener<NUnitXml>(assembly => actual = new NUnitXml().Transform(assembly));
 
             using (var console = new RedirectedConsole())
             {
@@ -28,9 +30,6 @@
                         "Console.Out: Pass",
                         "Console.Error: Pass");
             }
-
-            var report = new NUnitXmlReport();
-            var actual = report.Transform(listener.Report);
 
             XsdValidate(actual);
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);

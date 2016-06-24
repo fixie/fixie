@@ -1,5 +1,6 @@
 ﻿namespace Fixie.ConsoleRunner
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -7,6 +8,8 @@
 
     public class CommandLineParser
     {
+        static readonly string[] SupportedReportFormats = { "NUnit", "xUnit" };
+
         public CommandLineParser(params string[] args)
         {
             var queue = new Queue<string>(args);
@@ -45,6 +48,12 @@
             else
                 AssemblyPath = assemblyPaths.Single();
 
+            var formats = options[CommandLineOption.ReportFormat];
+
+            foreach (var format in formats)
+                if (!SupportedReportFormats.Contains(format, StringComparer.CurrentCultureIgnoreCase))
+                    errors.Add($"The specified report format, '{format}', is not supported.");
+
             if (!errors.Any())
             {
                 if (!File.Exists(AssemblyPath))
@@ -72,17 +81,14 @@
         public static string Usage()
         {
             return new StringBuilder()
-                .AppendLine("Usage: Fixie.Console assembly-path [--NUnitXml <output-file>] [--xUnitXml <output-file>] [--TeamCity <on|off>] [--<key> <value>]...")
+                .AppendLine("Usage: Fixie.Console assembly-path [--ReportFormat <NUnit|xUnit>] [--TeamCity <on|off>] [--<key> <value>]...")
                 .AppendLine()
                 .AppendLine()
                 .AppendLine("    assembly-path")
                 .AppendLine("        A path indicating the test assembly the run.")
                 .AppendLine()
-                .AppendLine("    --NUnitXml <output-file>")
-                .AppendLine("        Write test results to the specified file, using NUnit-style XML.")
-                .AppendLine()
-                .AppendLine("    --xUnitXml <output-file>")
-                .AppendLine("        Write test results to the specified file, using xUnit-style XML.")
+                .AppendLine("    --ReportFormat <NUnit|xUnit>")
+                .AppendLine("        Write test results to a file, using NUnit or xUnit XML format.")
                 .AppendLine()
                 .AppendLine("    --TeamCity <on|off>")
                 .AppendLine("        When this option is *not* specified, the need for TeamCity-")

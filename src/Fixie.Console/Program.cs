@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
-    using System.Xml.Linq;
     using Execution;
     using Reports;
 
@@ -43,56 +43,22 @@
 
         static ExecutionSummary Execute(CommandLineParser commandLineParser)
         {
-            var options = commandLineParser.Options;
-
             var summaryListener = new SummaryListener();
-            ReportListener reportListener = null;
 
-            var listeners = StatelessListeners(options).ToList();
+            var listeners = Listeners(commandLineParser).ToList();
 
             listeners.Add(summaryListener);
 
-            if (ShouldProduceReports(options))
-            {
-                reportListener = new ReportListener();
-                listeners.Add(reportListener);
-            }
-
             using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath, listeners))
-                environment.RunAssembly(options);
-
-            if (reportListener != null)
-                SaveReport(options, reportListener.Report);
+                environment.RunAssembly(commandLineParser.Options);
 
             return summaryListener.Summary;
         }
 
-        static bool ShouldProduceReports(Options options)
+        static IEnumerable<Listener> Listeners(CommandLineParser commandLineParser)
         {
-            return options.Contains(CommandLineOption.NUnitXml) || options.Contains(CommandLineOption.XUnitXml);
-        }
+            var options = commandLineParser.Options;
 
-        static void SaveReport(Options options, Report report)
-        {
-            if (options.Contains(CommandLineOption.NUnitXml))
-            {
-                var xDocument = new NUnitXmlReport().Transform(report);
-
-                foreach (var fileName in options[CommandLineOption.NUnitXml])
-                    xDocument.Save(fileName, SaveOptions.None);
-            }
-
-            if (options.Contains(CommandLineOption.XUnitXml))
-            {
-                var xDocument = new XUnitXmlReport().Transform(report);
-
-                foreach (var fileName in options[CommandLineOption.XUnitXml])
-                    xDocument.Save(fileName, SaveOptions.None);
-            }
-        }
-
-        static IEnumerable<Listener> StatelessListeners(Options options)
-        {
             if (ShouldUseTeamCityListener(options))
                 yield return new TeamCityListener();
             else
@@ -100,6 +66,15 @@
 
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
+
+            foreach (var format in options[CommandLineOption.ReportFormat])
+            {
+                if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
+                    yield return new ReportListener<NUnitXml>();
+
+                else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
+                    yield return new ReportListener<XUnitXml>();
+            }
         }
 
         static bool ShouldUseTeamCityListener(Options options)

@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests.ConsoleRunner.Reports
 {
+    using System;
     using System.IO;
     using System.Text.RegularExpressions;
     using System.Xml;
@@ -9,13 +10,13 @@
     using Fixie.Internal;
     using Should;
 
-    public class NUnitXmlReportTests : MessagingTests
+    public class XUnitXmlTests : MessagingTests
     {
         public void ShouldProduceValidXmlDocument()
         {
             XDocument actual = null;
 
-            var listener = new ReportListener<NUnitXml>(assembly => actual = new NUnitXml().Transform(assembly));
+            var listener = new ReportListener<XUnitXml>(assembly => actual = new XUnitXml().Transform(assembly));
 
             using (var console = new RedirectedConsole())
             {
@@ -38,7 +39,7 @@
         static void XsdValidate(XDocument doc)
         {
             var schemaSet = new XmlSchemaSet();
-            using (var xmlReader = XmlReader.Create(Path.Combine("ConsoleRunner", Path.Combine("Reports", "NUnitXmlReport.xsd"))))
+            using (var xmlReader = XmlReader.Create(Path.Combine("ConsoleRunner", Path.Combine("Reports", "XUnitXmlReport.xsd"))))
             {
                 schemaSet.Add(null, xmlReader);
             }
@@ -49,29 +50,22 @@
         static string CleanBrittleValues(string actualRawContent)
         {
             //Avoid brittle assertion introduced by system date.
-            var cleaned = Regex.Replace(actualRawContent, @"date=""\d\d\d\d-\d\d-\d\d""", @"date=""YYYY-MM-DD""");
+            var cleaned = Regex.Replace(actualRawContent, @"run-date=""\d\d\d\d-\d\d-\d\d""", @"run-date=""YYYY-MM-DD""");
 
             //Avoid brittle assertion introduced by system time.
-            cleaned = Regex.Replace(cleaned, @"time=""\d\d:\d\d:\d\d""", @"time=""HH:MM:SS""");
+            cleaned = Regex.Replace(cleaned, @"run-time=""\d\d:\d\d:\d\d""", @"run-time=""HH:MM:SS""");
+
+            //Avoid brittle assertion introduced by .NET version.
+            cleaned = Regex.Replace(cleaned, @"environment=""\d+-bit \.NET [\.\d]+""", @"environment=""00-bit .NET 1.2.3.4""");
+
+            //Avoid brittle assertion introduced by fixie version.
+            cleaned = Regex.Replace(cleaned, @"test-framework=""Fixie \d+(\.\d+)*(\-[^""]+)?""", @"test-framework=""Fixie 1.2.3.4""");
 
             //Avoid brittle assertion introduced by test duration.
             cleaned = Regex.Replace(cleaned, @"time=""[\d\.]+""", @"time=""1.234""");
 
             //Avoid brittle assertion introduced by stack trace line numbers.
             cleaned = cleaned.CleanStackTraceLineNumbers();
-
-            //Avoid brittle assertion introduced by environment attributes.
-            cleaned = Regex.Replace(cleaned, @"clr-version=""[^""]*""", @"clr-version=""[clr-version]""");
-            cleaned = Regex.Replace(cleaned, @"os-version=""[^""]*""", @"os-version=""[os-version]""");
-            cleaned = Regex.Replace(cleaned, @"platform=""[^""]*""", @"platform=""[platform]""");
-            cleaned = Regex.Replace(cleaned, @"cwd=""[^""]*""", @"cwd=""[cwd]""");
-            cleaned = Regex.Replace(cleaned, @"machine-name=""[^""]*""", @"machine-name=""[machine-name]""");
-            cleaned = Regex.Replace(cleaned, @"user=""[^""]*""", @"user=""[user]""");
-            cleaned = Regex.Replace(cleaned, @"user-domain=""[^""]*""", @"user-domain=""[user-domain]""");
-
-            //Avoid brittle assertion introduced by culture attributes.
-            cleaned = Regex.Replace(cleaned, @"current-culture=""[^""]*""", @"current-culture=""[current-culture]""");
-            cleaned = Regex.Replace(cleaned, @"current-uiculture=""[^""]*""", @"current-uiculture=""[current-uiculture]""");
 
             return cleaned;
         }
@@ -81,10 +75,12 @@
             get
             {
                 var assemblyLocation = GetType().Assembly.Location;
+                var configLocation = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
                 var fileLocation = TestClassPath();
-                return XDocument.Parse(File.ReadAllText(Path.Combine("ConsoleRunner", Path.Combine("Reports", "NUnitXmlReport.xml"))))
+                return XDocument.Parse(File.ReadAllText(Path.Combine("ConsoleRunner", Path.Combine("Reports", "XUnitXmlReport.xml"))))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
+                                .Replace("[configLocation]", configLocation)
                                 .Replace("[fileLocation]", fileLocation)
                                 .Replace("[testClass]", TestClass)
                                 .Replace("[testClassForStackTrace]", TestClass.Replace("+", "."));

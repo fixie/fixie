@@ -61,7 +61,7 @@
             parser.Errors.ShouldEqual($"Specified assembly {mscorlib} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
         }
 
-        public void ParsesSupportedXmlReportFormat()
+        public void ParsesReportFormat()
         {
             var parser = new CommandLineParser(assemblyPathA, "--ReportFormat", "NUnit", "--ReportFormat", "xUnit");
             parser.AssemblyPath.ShouldEqual(assemblyPathA);

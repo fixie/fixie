@@ -1,8 +1,9 @@
-﻿{
+{
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Fixie": { "target": "project" }
+    "Fixie": { "target": "project" },
+    "Mono.Cecil": "0.9.6.1"
   },
 
   "frameworks": {

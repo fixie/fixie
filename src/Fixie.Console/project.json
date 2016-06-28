@@ -5,6 +5,7 @@
   },
 
   "dependencies": {
+    "Fixie": { "target": "project" }
   },
 
   "frameworks": {

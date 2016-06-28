@@ -2,6 +2,10 @@
   "version": "1.0.0-*",
 
   "dependencies": {
+    "Fixie": { "target": "project" },
+    "Fixie.Console": { "target": "project" },
+    "Fixie.TestDriven": { "target": "project" },
+    "Fixie.VisualStudio.TestAdapter": { "target": "project" }
   },
 
   "frameworks": {

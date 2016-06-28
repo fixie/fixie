@@ -1,1 +1,5 @@
+*.sln text eol=crlf
+*.xproj text
+*.cs text diff=csharp
+*.json text
 *.md text

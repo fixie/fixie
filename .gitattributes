@@ -2,6 +2,9 @@
 *.xproj text
 *.cs text diff=csharp
 *.json text
+*.nuspec text
 *.md text
 
 *.exe binary
+*.dll binary
+*.nupkg binary

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>TestDriven.Framework</id>
+    <version>2.0.0.0</version>
+    <authors>plioi</authors>
+    <owners>plioi</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Wrapped TestDriven.Framework.dll, so that it can be referenced by .NET Core projects. This package is NOT to be published.</description>
+    <copyright>Copyright (C) Mutant Design 2002-2010</copyright>
+  </metadata>
+  <files>
+    <file src="TestDriven.Framework.dll" target="lib/net45"></file>
+  </files>
+</package>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Microsoft.VisualStudio.TestPlatform.ObjectModel</id>
+    <version>11.0.60315.1</version>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Wrapped Microsoft.VisualStudio.TestPlatform.ObjectModel.dll, so that it can be referenced by .NET Core projects. This package is NOT to be published.</description>
+    <copyright>Copyright Microsoft Corporation</copyright>
+  </metadata>
+  <files>
+    <file src="Microsoft.VisualStudio.TestPlatform.ObjectModel.dll" target="lib/net45"></file>
+  </files>
+</package>

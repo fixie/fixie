@@ -4,16 +4,28 @@ $birthYear = 2013
 $maintainers = "Patrick Lioi"
 $configuration = 'Release'
 $version = "2.0.0-alpha"
+$nonPublishedProjects = "Fixie.Tests","Fixie.Samples"
 
 function main {
     step { Restore }
     step { AssemblyInfo }
     step { License }
     step { Compile }
+    step { Test }
 }
 
 function Restore {
     exec { .\tools\NuGet.exe restore .\Fixie.sln -ConfigFile nuget.config -RequireConsent -o ".\src\packages" }
+}
+
+function Test {
+    run-tests "Fixie.Console.exe"
+}
+
+function run-tests($exe) {
+    $fixieRunner = resolve-path ".\src\Fixie.Console\bin\$configuration\net452\win7-x64\$exe"
+    exec { & $fixieRunner .\src\Fixie.Tests\bin\$configuration\net452\Fixie.Tests.dll }
+    exec { & $fixieRunner .\src\Fixie.Samples\bin\$configuration\net452\Fixie.Samples.dll }
 }
 
 function Compile {

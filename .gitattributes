@@ -9,6 +9,7 @@
 *.nuspec text
 *.tdnet text
 *.md text
+*.txt text
 
 *.exe binary
 *.dll binary

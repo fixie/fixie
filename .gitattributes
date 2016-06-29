@@ -1,3 +1,6 @@
+*.cmd text
+*.ps1 text
+
 *.sln text eol=crlf
 *.xproj text
 *.cs text diff=csharp

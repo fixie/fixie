@@ -3,3 +3,5 @@
 *.cs text diff=csharp
 *.json text
 *.md text
+
+*.exe binary

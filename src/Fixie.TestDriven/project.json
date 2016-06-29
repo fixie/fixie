@@ -6,6 +6,10 @@
   },
 
   "frameworks": {
-    "net452": {}
+    "net452": {
+      "dependencies": {
+        "TestDriven.Framework": "2.0.0.0"
+      }
+    }
   }
 }

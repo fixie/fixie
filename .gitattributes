@@ -4,6 +4,7 @@
 *.json text
 *.config text
 *.nuspec text
+*.tdnet text
 *.md text
 
 *.exe binary

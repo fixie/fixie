@@ -1,0 +1,6 @@
+﻿<TestRunner>
+	<FriendlyName>Fixie {0}.{1}.{2}.{3}</FriendlyName>
+	<AssemblyPath>Fixie.TestDriven.dll</AssemblyPath>
+	<TypeName>Fixie.TestDriven.TdNetRunner</TypeName>
+	<ApartmentState>STA</ApartmentState>
+</TestRunner>

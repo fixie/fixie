@@ -16,3 +16,4 @@
 *.exe binary
 *.dll binary
 *.nupkg binary
+*.png binary

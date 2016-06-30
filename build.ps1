@@ -10,12 +10,12 @@ function main {
     step { Restore }
     step { AssemblyInfo }
     step { License }
-    step { Compile }
+    step { Build }
     step { Test }
 }
 
 function Restore {
-    exec { .\tools\NuGet.exe restore .\Fixie.sln -ConfigFile nuget.config -RequireConsent -o ".\src\packages" }
+    exec { & dotnet restore --verbosity Warning }
 }
 
 function Test {
@@ -28,11 +28,13 @@ function run-tests($exe) {
     exec { & $fixieRunner .\src\Fixie.Samples\bin\$configuration\net452\Fixie.Samples.dll }
 }
 
-function Compile {
-    Set-Alias msbuild (get-msbuild-path)
-    rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
-    exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration .\Fixie.sln }
-    exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration .\Fixie.sln }
+function Build {
+    exec { & dotnet build .\src\Fixie --configuration $configuration }
+    exec { & dotnet build .\src\Fixie.Console --configuration $configuration }
+    exec { & dotnet build .\src\Fixie.TestDriven --configuration $configuration }
+    exec { & dotnet build .\src\Fixie.VisualStudio.TestAdapter --configuration $configuration }
+    exec { & dotnet build .\src\Fixie.Samples --configuration $configuration }
+    exec { & dotnet build .\src\Fixie.Tests --configuration $configuration }
 }
 
 function AssemblyInfo {
@@ -101,35 +103,6 @@ function exec($cmd) {
     & $cmd
     if ($lastexitcode -ne 0) {
         throw "Error executing command:$cmd"
-    }
-}
-
-function get-msbuild-path {
-    [cmdletbinding()]
-    param(
-        [Parameter(Position=0)]
-        [ValidateSet('32bit','64bit')]
-        [string]$bitness = '32bit'
-    )
-    process{
-
-        # Find the highest installed version of msbuild.exe.
-
-        $regLocalKey = $null
-
-        if($bitness -eq '32bit') {
-            $regLocalKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine,[Microsoft.Win32.RegistryView]::Registry32)
-        } else {
-            $regLocalKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine,[Microsoft.Win32.RegistryView]::Registry64)
-        }
-
-        $versionKeyName = $regLocalKey.OpenSubKey('SOFTWARE\Microsoft\MSBuild\ToolsVersions\').GetSubKeyNames() | Sort-Object {[double]$_} -Descending
-
-        $keyToReturn = ('SOFTWARE\Microsoft\MSBuild\ToolsVersions\{0}' -f $versionKeyName)
-
-        $path = ( '{0}msbuild.exe' -f $regLocalKey.OpenSubKey($keyToReturn).GetValue('MSBuildToolsPath'))
-
-        return $path
     }
 }
 

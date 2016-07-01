@@ -1,6 +1,4 @@
 {
-  "version": "1.0.0-*",
-
   "dependencies": {
     "Fixie": { "target": "project" },
     "Should": "1.1.20"

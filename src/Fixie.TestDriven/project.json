@@ -1,5 +1,11 @@
 ﻿{
-  "version": "1.0.0-*",
+  "buildOptions": {
+    "copyToOutput": {
+      "include": [
+        "Fixie.dll.tdnet"
+      ]
+    }
+  },
 
   "dependencies": {
     "Fixie": { "target": "project" }

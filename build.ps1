@@ -1,10 +1,12 @@
-param([string]$target)
+param([string]$target, [int]$buildNumber=0)
 
 $birthYear = 2013
 $maintainers = "Patrick Lioi"
 $configuration = 'Release'
-$version = "2.0.0-alpha"
 $nonPublishedProjects = "Fixie.Tests","Fixie.Samples"
+
+$revision = "{0:D4}" -f [convert]::ToInt32($buildNumber, 10)
+$version = "2.0.0-alpha-*".Replace("*", $revision)
 
 function main {
     step { Restore }

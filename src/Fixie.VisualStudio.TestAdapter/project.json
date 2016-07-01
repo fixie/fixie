@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "Fixie": { "target": "project" },
+    "Mono.Cecil": "0.9.6.1"
+  },
+
+  "frameworks": {
+    "net452": {
+      "dependencies": {
+        "Microsoft.VisualStudio.TestPlatform.ObjectModel": "11.0.60315.1"
+      }
+    }
+  }
+}

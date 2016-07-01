@@ -1,0 +1,21 @@
+﻿{
+  "buildOptions": {
+    "copyToOutput": {
+      "include": [
+        "Fixie.dll.tdnet"
+      ]
+    }
+  },
+
+  "dependencies": {
+    "Fixie": { "target": "project" }
+  },
+
+  "frameworks": {
+    "net452": {
+      "dependencies": {
+        "TestDriven.Framework": "2.0.0.0"
+      }
+    }
+  }
+}

@@ -1,19 +1,19 @@
-param([string]$target)
+param([string]$target, [int]$buildNumber=0)
 
 $birthYear = 2013
 $maintainers = "Patrick Lioi"
 $configuration = 'Release'
-$version = "2.0.0-alpha"
 $nonPublishedProjects = "Fixie.Tests","Fixie.Samples"
+
+$revision = "{0:D4}" -f [convert]::ToInt32($buildNumber, 10)
+$version = "2.0.0-alpha-*".Replace("*", $revision)
 
 function main {
     step { Restore }
-    step { SanityCheckOutputPaths }
     step { AssemblyInfo }
     step { License }
-    step { Compile }
+    step { Build }
     step { Test }
-    step { Test32 }
 
     if ($target -eq "package") {
         step { Package }
@@ -21,67 +21,33 @@ function main {
 }
 
 function Restore {
-    .\tools\NuGet.exe restore .\src\Fixie.sln -source "https://nuget.org/api/v2/" -RequireConsent -o ".\src\packages"
+    exec { & dotnet restore --verbosity Warning }
 }
 
 function Package {
-    rd .\package -recurse -force -ErrorAction SilentlyContinue | out-null
-    mkdir .\package -ErrorAction SilentlyContinue | out-null
-    exec { & .\tools\NuGet.exe pack .\src\Fixie\Fixie.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
+    rd .\artifacts -recurse -force -ErrorAction SilentlyContinue | out-null
+    mkdir .\artifacts -ErrorAction SilentlyContinue | out-null
 
-    write-host
-    write-host "To publish these packages, issue the following command:"
-    write-host "   tools\NuGet push .\package\Fixie.$version.nupkg"
+    exec { & .\tools\NuGet.exe pack .\src\Fixie\Fixie.nuspec -Symbols -Properties Configuration=$configuration -Version $version -OutputDirectory .\artifacts }
 }
 
 function Test {
     run-tests "Fixie.Console.exe"
 }
 
-function Test32 {
-    run-tests "Fixie.Console.x86.exe"
-}
-
 function run-tests($exe) {
-    $fixieRunner = resolve-path ".\build\$exe"
-    exec { & $fixieRunner .\src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll }
-    exec { & $fixieRunner .\src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
+    $fixieRunner = resolve-path ".\src\Fixie.Console\bin\$configuration\net452\win7-x64\$exe"
+    exec { & $fixieRunner .\src\Fixie.Tests\bin\$configuration\net452\Fixie.Tests.dll }
+    exec { & $fixieRunner .\src\Fixie.Samples\bin\$configuration\net452\Fixie.Samples.dll }
 }
 
-function Compile {
-    Set-Alias msbuild (get-msbuild-path)
-    rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
-    exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration .\src\Fixie.sln }
-    exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration .\src\Fixie.sln }
-}
-
-function SanityCheckOutputPaths {
-    $blankLine = ([System.Environment]::NewLine + [System.Environment]::NewLine)
-    $expected = "..\..\build\"
-
-    $projects = @(gci .\src -rec -filter *.csproj)
-    foreach ($project in $projects) {
-        $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
-
-        $lines = [System.IO.File]::ReadAllLines($project.FullName, [System.Text.Encoding]::UTF8)
-
-        if (!($nonPublishedProjects -contains $projectName)) {
-            foreach($line in $lines) {
-                if ($line.Contains("<OutputPath>")) {
-
-                    $outputPath = [regex]::Replace($line, '\s*<OutputPath>(.+)</OutputPath>\s*', '$1')
-
-                    if($outputPath -ne $expected){
-                        $summary = "The project '$projectName' has a suspect *.csproj file."
-                        $detail = "Expected OutputPath to be $expected for all configurations."
-
-                        Write-Host -ForegroundColor Yellow "$($blankLine)$($summary)  $($detail)$($blankLine)"
-                        throw $summary
-                    }
-                }
-            }
-        }
-    }
+function Build {
+    exec { & dotnet build .\src\Fixie --configuration $configuration }
+    exec { & dotnet build .\src\Fixie.Console --configuration $configuration }
+    exec { & dotnet build .\src\Fixie.TestDriven --configuration $configuration }
+    exec { & dotnet build .\src\Fixie.VisualStudio.TestAdapter --configuration $configuration }
+    exec { & dotnet build .\src\Fixie.Samples --configuration $configuration }
+    exec { & dotnet build .\src\Fixie.Tests --configuration $configuration }
 }
 
 function AssemblyInfo {
@@ -92,13 +58,9 @@ function AssemblyInfo {
 
     $copyright = get-copyright
 
-    $projects = @(gci .\src -rec -filter *.csproj)
+    $projects = @(gci .\src -rec -filter *.xproj)
     foreach ($project in $projects) {
         $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
-
-        if ($projectName.Contains(".x86")) {
-            continue;
-        }
 
         regenerate-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" @"
 using System.Reflection;
@@ -154,35 +116,6 @@ function exec($cmd) {
     & $cmd
     if ($lastexitcode -ne 0) {
         throw "Error executing command:$cmd"
-    }
-}
-
-function get-msbuild-path {
-    [cmdletbinding()]
-    param(
-        [Parameter(Position=0)]
-        [ValidateSet('32bit','64bit')]
-        [string]$bitness = '32bit'
-    )
-    process{
-
-        # Find the highest installed version of msbuild.exe.
-
-        $regLocalKey = $null
-
-        if($bitness -eq '32bit') {
-            $regLocalKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine,[Microsoft.Win32.RegistryView]::Registry32)
-        } else {
-            $regLocalKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine,[Microsoft.Win32.RegistryView]::Registry64)
-        }
-
-        $versionKeyName = $regLocalKey.OpenSubKey('SOFTWARE\Microsoft\MSBuild\ToolsVersions\').GetSubKeyNames() | Sort-Object {[double]$_} -Descending
-
-        $keyToReturn = ('SOFTWARE\Microsoft\MSBuild\ToolsVersions\{0}' -f $versionKeyName)
-
-        $path = ( '{0}msbuild.exe' -f $regLocalKey.OpenSubKey($keyToReturn).GetValue('MSBuildToolsPath'))
-
-        return $path
     }
 }
 

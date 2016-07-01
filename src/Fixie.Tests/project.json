@@ -1,6 +1,17 @@
 {
   "version": "1.0.0-*",
 
+  "buildOptions": {
+    "copyToOutput": {
+      "include": [
+        "ConsoleRunner/Reports/NUnitXmlReport.xml",
+        "ConsoleRunner/Reports/XUnitXmlReport.xml",
+        "ConsoleRunner/Reports/NUnitXmlReport.xsd",
+        "ConsoleRunner/Reports/XUnitXmlReport.xsd"
+      ]
+    }
+  },
+
   "dependencies": {
     "Fixie": { "target": "project" },
     "Fixie.Console": { "target": "project" },

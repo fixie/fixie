@@ -14,10 +14,21 @@ function main {
     step { License }
     step { Build }
     step { Test }
+
+    if ($target -eq "package") {
+        step { Package }
+    }
 }
 
 function Restore {
     exec { & dotnet restore --verbosity Warning }
+}
+
+function Package {
+    rd .\artifacts -recurse -force -ErrorAction SilentlyContinue | out-null
+    mkdir .\artifacts -ErrorAction SilentlyContinue | out-null
+
+    exec { & .\tools\NuGet.exe pack .\src\Fixie\Fixie.nuspec -Symbols -Properties Configuration=$configuration -Version $version -OutputDirectory .\artifacts }
 }
 
 function Test {

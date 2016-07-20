@@ -3,6 +3,8 @@ using Fixie.Internal.Behaviors;
 
 namespace Fixie.Internal
 {
+    using System.Collections.Generic;
+
     public class ExecutionPlan
     {
         readonly BehaviorChain<Class> classBehaviors;
@@ -29,6 +31,8 @@ namespace Fixie.Internal
                 .ToList();
 
             chain.Add(GetInnermostBehavior(config, fixtureBehaviors));
+
+            chain.Insert(0, new TimeClassExecution());
 
             return new BehaviorChain<Class>(chain);
         }

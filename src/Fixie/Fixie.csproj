@@ -41,6 +41,7 @@
     <Compile Include="Framework.cs" />
     <Compile Include="Internal\Discoverer.cs" />
     <Compile Include="Internal\ParameterDiscoverer.cs" />
+    <Compile Include="Internal\Behaviors\TimeClassExecution.cs" />
     <Compile Include="MethodGroup.cs" />
     <Compile Include="Internal\ExecutionProxy.cs" />
     <Compile Include="Execution\AssemblyInfo.cs" />

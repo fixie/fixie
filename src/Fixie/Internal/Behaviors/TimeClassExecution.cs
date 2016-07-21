@@ -8,22 +8,28 @@ namespace Fixie.Internal.Behaviors
     {
         public void Execute(Class context, Action next)
         {
-            var sw = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             next();
-            sw.Stop();
-            var classExecutionDuration = sw.Elapsed;
+            stopwatch.Stop();
+
+            var classExecutionDuration = stopwatch.Elapsed;
 
             var totalCaseDuration = TimeSpan.FromTicks(context.Cases.Sum(x => x.Duration.Ticks));
 
-            var numberOfCases = context.Cases.Count;
+            // Due to the Stopwatch's precision, it is possible that the sum of multiple
+            // imprecise Case measurements will exceed the single imprecise measurement
+            // of the whole class's execution. If so, there's no need to adjust timings.
 
-            var buildChainDuration = classExecutionDuration - totalCaseDuration;
-
-            var buildChainDurationPerCase = TimeSpan.FromTicks(buildChainDuration.Ticks/numberOfCases);
-
-            foreach (var @case in context.Cases)
+            if (classExecutionDuration > totalCaseDuration)
             {
-                @case.Duration = @case.Duration + buildChainDurationPerCase;
+                var buildChainDuration = classExecutionDuration - totalCaseDuration;
+
+                var numberOfCases = context.Cases.Count;
+
+                var buildChainDurationPerCase = TimeSpan.FromTicks(buildChainDuration.Ticks / numberOfCases);
+
+                foreach (var @case in context.Cases)
+                    @case.Duration = @case.Duration + buildChainDurationPerCase;
             }
         }
     }

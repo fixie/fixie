@@ -29,7 +29,7 @@ namespace Fixie.Internal.Behaviors
                 var buildChainDurationPerCase = TimeSpan.FromTicks(buildChainDuration.Ticks / numberOfCases);
 
                 foreach (var @case in context.Cases)
-                    @case.Duration = @case.Duration + buildChainDurationPerCase;
+                    @case.Duration += buildChainDurationPerCase;
             }
         }
     }

@@ -35,7 +35,7 @@
                     stopwatch.Stop();
 
                     @case.Fixture = null;
-                    @case.Duration = stopwatch.Elapsed;
+                    @case.Duration += stopwatch.Elapsed;
                     @case.Output = console.Output;
                 }
 

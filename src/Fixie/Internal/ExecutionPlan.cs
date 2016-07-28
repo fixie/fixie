@@ -2,6 +2,7 @@ namespace Fixie.Internal
 {
     using System.Linq;
     using Behaviors;
+    using System.Collections.Generic;
 
     public class ExecutionPlan
     {
@@ -29,6 +30,8 @@ namespace Fixie.Internal
                 .ToList();
 
             chain.Add(GetInnermostBehavior(config, fixtureBehaviors));
+
+            chain.Insert(0, new TimeClassExecution());
 
             return new BehaviorChain<Class>(chain);
         }

@@ -7,7 +7,6 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Execution;
 
     [ExtensionUri(Id)]
     public class VsTestExecutor : ITestExecutor
@@ -41,8 +40,8 @@
 
                         var listener = new VisualStudioExecutionListener(frameworkHandle, assemblyPath);
 
-                        using (var environment = new ExecutionEnvironment(assemblyPath, new[] { listener }))
-                            environment.RunAssembly(new Options());
+                        using (var environment = new ExecutionEnvironment(assemblyPath))
+                            environment.RunAssembly(listener, new Options());
                     }
                     else
                     {
@@ -87,8 +86,8 @@
 
                         var listener = new VisualStudioExecutionListener(frameworkHandle, assemblyPath);
 
-                        using (var environment = new ExecutionEnvironment(assemblyPath, new[] { listener }))
-                            environment.RunMethods(new Options(), methodGroups);
+                        using (var environment = new ExecutionEnvironment(assemblyPath))
+                            environment.RunMethods(listener, new Options(), methodGroups);
                     }
                     else
                     {

@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using Execution;
     using Reports;
@@ -49,8 +48,8 @@
 
             listeners.Add(summaryListener);
 
-            using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath, listeners))
-                environment.RunAssembly(commandLineParser.Options);
+            using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
+                environment.RunAssembly(listeners, commandLineParser.Options);
 
             return summaryListener.Summary;
         }

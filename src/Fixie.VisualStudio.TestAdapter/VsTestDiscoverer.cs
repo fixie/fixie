@@ -6,7 +6,6 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Execution;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
@@ -28,8 +27,8 @@
                         log.Info("Processing " + assemblyPath);
 
                         var listener = new VisualStudioDiscoveryListener(log, discoverySink, assemblyPath);
-                        using (var environment = new ExecutionEnvironment(assemblyPath, new[] { listener }))
-                            environment.DiscoverMethodGroups(new Options());
+                        using (var environment = new ExecutionEnvironment(assemblyPath))
+                            environment.DiscoverMethodGroups(listener, new Options());
                     }
                     else
                     {

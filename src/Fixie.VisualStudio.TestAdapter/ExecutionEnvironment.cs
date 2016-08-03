@@ -1,9 +1,7 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Security;
     using System.Security.Permissions;
     using Execution;
@@ -14,12 +12,9 @@
         readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
-        readonly Listener[] listeners;
 
-        public ExecutionEnvironment(string assemblyPath, IReadOnlyCollection<Listener> listeners)
+        public ExecutionEnvironment(string assemblyPath)
         {
-            this.listeners = listeners.ToArray();
-
             assemblyFullPath = Path.GetFullPath(assemblyPath);
             appDomain = CreateAppDomain(assemblyFullPath);
 
@@ -28,21 +23,21 @@
             Directory.SetCurrentDirectory(assemblyDirectory);
         }
 
-        public void DiscoverMethodGroups(Options options)
+        public void DiscoverMethodGroups(Listener listeners, Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())
             using (var bus = new Bus(listeners))
                 executionProxy.DiscoverMethodGroups(assemblyFullPath, options, bus);
         }
 
-        public void RunAssembly(Options options)
+        public void RunAssembly(Listener listeners, Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())
             using (var bus = new Bus(listeners))
                 executionProxy.RunAssembly(assemblyFullPath, options, bus);
         }
 
-        public void RunMethods(Options options, MethodGroup[] methodGroups)
+        public void RunMethods(Listener listeners, Options options, MethodGroup[] methodGroups)
         {
             using (var executionProxy = Create<ExecutionProxy>())
             using (var bus = new Bus(listeners))

@@ -34,16 +34,11 @@
 
             listeners.Add(summaryListener);
 
-            RunAssembly(listeners, options);
-
-            return summaryListener.Summary.Failed;
-        }
-
-        public void RunAssembly(IReadOnlyCollection<Listener> listeners, Options options)
-        {
             using (var executionProxy = Create<ExecutionProxy>())
             using (var bus = new Bus(listeners))
                 executionProxy.RunAssembly(assemblyFullPath, options, bus);
+
+            return summaryListener.Summary.Failed;
         }
 
         static IEnumerable<Listener> Listeners(Options options)

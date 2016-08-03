@@ -1,11 +1,10 @@
-﻿namespace Fixie.ConsoleRunner.Reports
+﻿namespace Fixie.Internal.Reports
 {
     using System;
     using System.Globalization;
     using System.Linq;
     using System.Xml.Linq;
     using Execution;
-    using Internal;
 
     public class NUnitXml : XmlFormat
     {

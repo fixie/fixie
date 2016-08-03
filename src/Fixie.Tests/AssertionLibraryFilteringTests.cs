@@ -2,7 +2,6 @@
 {
     using System;
     using System.Runtime.CompilerServices;
-    using Fixie.ConsoleRunner;
     using Fixie.Internal;
     using static Utility;
 

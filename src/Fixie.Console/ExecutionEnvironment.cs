@@ -8,7 +8,7 @@
     using System.Security.Permissions;
     using Execution;
     using Internal;
-    using Reports;
+    using Internal.Reports;
 
     public class ExecutionEnvironment : IDisposable
     {

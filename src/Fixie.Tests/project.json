@@ -2,10 +2,10 @@
   "buildOptions": {
     "copyToOutput": {
       "include": [
-        "ConsoleRunner/Reports/NUnitXmlReport.xml",
-        "ConsoleRunner/Reports/XUnitXmlReport.xml",
-        "ConsoleRunner/Reports/NUnitXmlReport.xsd",
-        "ConsoleRunner/Reports/XUnitXmlReport.xsd"
+        "Internal/Reports/NUnitXmlReport.xml",
+        "Internal/Reports/XUnitXmlReport.xml",
+        "Internal/Reports/NUnitXmlReport.xsd",
+        "Internal/Reports/XUnitXmlReport.xsd"
       ]
     }
   },

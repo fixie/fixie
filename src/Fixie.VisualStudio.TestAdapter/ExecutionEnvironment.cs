@@ -1,4 +1,4 @@
-﻿namespace Fixie.Execution
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
     using System;
     using System.Collections.Generic;
@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Security;
     using System.Security.Permissions;
+    using Execution;
     using Internal;
 
     public class ExecutionEnvironment : IDisposable

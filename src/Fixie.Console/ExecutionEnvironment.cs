@@ -28,17 +28,19 @@
 
         public int RunAssembly(Options options)
         {
-            var summaryListener = new SummaryListener();
-
-            var listeners = Listeners(options).ToList();
-
-            listeners.Add(summaryListener);
-
             using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listeners))
-                executionProxy.RunAssembly(assemblyFullPath, options, bus);
+            {
+                var summaryListener = new SummaryListener();
 
-            return summaryListener.Summary.Failed;
+                var listeners = Listeners(options).ToList();
+
+                listeners.Add(summaryListener);
+
+                using (var bus = new Bus(listeners))
+                    executionProxy.RunAssembly(assemblyFullPath, options, bus);
+
+                return summaryListener.Summary.Failed;
+            }
         }
 
         static IEnumerable<Listener> Listeners(Options options)

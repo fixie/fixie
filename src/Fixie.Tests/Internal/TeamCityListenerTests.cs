@@ -1,8 +1,7 @@
-﻿namespace Fixie.Tests.ConsoleRunner
+﻿namespace Fixie.Tests.Internal
 {
     using System.Linq;
     using System.Text.RegularExpressions;
-    using Fixie.ConsoleRunner;
     using Fixie.Internal;
 
     public class TeamCityListenerTests : MessagingTests

@@ -1,10 +1,9 @@
-﻿namespace Fixie.ConsoleRunner
+﻿namespace Fixie.Internal
 {
     using System;
     using System.Linq;
     using System.Text;
     using Execution;
-    using Internal;
 
     public class TeamCityListener :
         Handler<AssemblyStarted>,

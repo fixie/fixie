@@ -9,7 +9,7 @@
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
-        public void DiscoverMethodGroups(string assemblyFullPath, Options options, Bus bus)
+        public void DiscoverMethodGroups(string assemblyFullPath, Options options, Listener listener)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
@@ -17,8 +17,9 @@
 
             var methodGroups = discoverer.DiscoverMethodGroups(assembly);
 
-            foreach (var methodGroup in methodGroups)
-                bus.Publish(new MethodGroupDiscovered(methodGroup));
+            using (var bus = new Bus(listener))
+                foreach (var methodGroup in methodGroups)
+                    bus.Publish(new MethodGroupDiscovered(methodGroup));
         }
 
         public int RunAssembly(string assemblyFullPath, Options options)
@@ -29,24 +30,25 @@
 
             listeners.Add(summaryListener);
 
-            using (var bus = new Bus(listeners))
-                RunAssembly(assemblyFullPath, options, bus);
+            RunAssembly(assemblyFullPath, options, listeners);
 
             return summaryListener.Summary.Failed;
         }
 
-        public void RunAssembly(string assemblyFullPath, Options options, Bus bus)
+        public void RunAssembly(string assemblyFullPath, Options options, IReadOnlyList<Listener> listeners)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            Runner(options, bus).RunAssembly(assembly);
+            using (var bus = new Bus(listeners))
+                Runner(options, bus).RunAssembly(assembly);
         }
 
-        public void RunMethods(string assemblyFullPath, Options options, Bus bus, MethodGroup[] methodGroups)
+        public void RunMethods(string assemblyFullPath, Options options, Listener listener, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            Runner(options, bus).RunMethods(assembly, methodGroups);
+            using (var bus = new Bus(listener))
+                Runner(options, bus).RunMethods(assembly, methodGroups);
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

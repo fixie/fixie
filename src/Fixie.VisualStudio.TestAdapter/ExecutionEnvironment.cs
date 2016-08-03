@@ -23,25 +23,22 @@
             Directory.SetCurrentDirectory(assemblyDirectory);
         }
 
-        public void DiscoverMethodGroups(Listener listeners, Options options)
+        public void DiscoverMethodGroups(Listener listener, Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listeners))
-                executionProxy.DiscoverMethodGroups(assemblyFullPath, options, bus);
+                executionProxy.DiscoverMethodGroups(assemblyFullPath, options, listener);
         }
 
-        public void RunAssembly(Listener listeners, Options options)
+        public void RunAssembly(Listener listener, Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listeners))
-                executionProxy.RunAssembly(assemblyFullPath, options, bus);
+                executionProxy.RunAssembly(assemblyFullPath, options, new[] { listener });
         }
 
-        public void RunMethods(Listener listeners, Options options, MethodGroup[] methodGroups)
+        public void RunMethods(Listener listener, Options options, MethodGroup[] methodGroups)
         {
             using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listeners))
-                executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
+                executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
         }
 
         T Create<T>() where T : LongLivedMarshalByRefObject

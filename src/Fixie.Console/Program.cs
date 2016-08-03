@@ -1,6 +1,7 @@
 ﻿namespace Fixie.ConsoleRunner
 {
     using System;
+    using Internal;
 
     class Program
     {

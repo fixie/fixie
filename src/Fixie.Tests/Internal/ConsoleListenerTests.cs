@@ -1,6 +1,5 @@
-﻿namespace Fixie.Tests.ConsoleRunner
+﻿namespace Fixie.Tests.Internal
 {
-    using Fixie.ConsoleRunner;
     using Fixie.Internal;
 
     public class ConsoleListenerTests : MessagingTests

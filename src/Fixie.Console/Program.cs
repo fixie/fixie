@@ -28,9 +28,7 @@
                     return FatalError;
                 }
 
-                var summary = Execute(commandLineParser);
-
-                return summary.Failed;
+                return Execute(commandLineParser);
             }
             catch (Exception exception)
             {
@@ -40,7 +38,7 @@
             }
         }
 
-        static ExecutionSummary Execute(CommandLineParser commandLineParser)
+        static int Execute(CommandLineParser commandLineParser)
         {
             var options = commandLineParser.Options;
 
@@ -53,7 +51,7 @@
             using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
                 environment.RunAssembly(listeners, options);
 
-            return summaryListener.Summary;
+            return summaryListener.Summary.Failed;
         }
 
         static IEnumerable<Listener> Listeners(Options options)

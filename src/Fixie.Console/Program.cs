@@ -28,7 +28,10 @@
                     return FatalError;
                 }
 
-                return Execute(commandLineParser);
+                var options = commandLineParser.Options;
+
+                using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
+                    return RunAssembly(environment, options);
             }
             catch (Exception exception)
             {
@@ -38,18 +41,15 @@
             }
         }
 
-        static int Execute(CommandLineParser commandLineParser)
+        static int RunAssembly(ExecutionEnvironment environment, Options options)
         {
-            var options = commandLineParser.Options;
-
             var summaryListener = new SummaryListener();
 
             var listeners = Listeners(options).ToList();
 
             listeners.Add(summaryListener);
 
-            using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
-                environment.RunAssembly(listeners, options);
+            environment.RunAssembly(listeners, options);
 
             return summaryListener.Summary.Failed;
         }

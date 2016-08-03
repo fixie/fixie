@@ -3,10 +3,12 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Security;
     using System.Security.Permissions;
     using Execution;
     using Internal;
+    using Reports;
 
     public class ExecutionEnvironment : IDisposable
     {
@@ -24,11 +26,62 @@
             Directory.SetCurrentDirectory(assemblyDirectory);
         }
 
+        public int RunAssembly(Options options)
+        {
+            var summaryListener = new SummaryListener();
+
+            var listeners = Listeners(options).ToList();
+
+            listeners.Add(summaryListener);
+
+            RunAssembly(listeners, options);
+
+            return summaryListener.Summary.Failed;
+        }
+
         public void RunAssembly(IReadOnlyCollection<Listener> listeners, Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())
             using (var bus = new Bus(listeners))
                 executionProxy.RunAssembly(assemblyFullPath, options, bus);
+        }
+
+        static IEnumerable<Listener> Listeners(Options options)
+        {
+            if (ShouldUseTeamCityListener(options))
+                yield return new TeamCityListener();
+            else
+                yield return new ConsoleListener();
+
+            if (ShouldUseAppVeyorListener())
+                yield return new AppVeyorListener();
+
+            foreach (var format in options[CommandLineOption.ReportFormat])
+            {
+                if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
+                    yield return new ReportListener<NUnitXml>();
+
+                else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
+                    yield return new ReportListener<XUnitXml>();
+            }
+        }
+
+        static bool ShouldUseTeamCityListener(Options options)
+        {
+            var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
+
+            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
+
+            var useTeamCityListener =
+                (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
+                (!teamCityExplicitlySpecified && runningUnderTeamCity);
+
+            return useTeamCityListener;
+        }
+
+        static bool ShouldUseAppVeyorListener()
+        {
+            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
         }
 
         T Create<T>() where T : LongLivedMarshalByRefObject

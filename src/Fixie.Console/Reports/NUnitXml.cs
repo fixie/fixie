@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Xml.Linq;
     using Execution;
+    using Internal;
 
     public class NUnitXml : XmlFormat
     {

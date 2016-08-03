@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Text;
     using Execution;
+    using Internal;
 
     public class TeamCityListener :
         Handler<AssemblyStarted>,

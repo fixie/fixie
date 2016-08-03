@@ -96,8 +96,7 @@ namespace Fixie.Tests.Execution
             }
             else if (type == typeof(Bus))
             {
-                type.ShouldBeSafeAppDomainCommunicationInterface();
-                return true;
+                return false;
             }
             else if (type.IsGenericParameter)
             {

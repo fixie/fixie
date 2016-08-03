@@ -17,9 +17,9 @@
 
             var methodGroups = discoverer.DiscoverMethodGroups(assembly);
 
-            using (var bus = new Bus(listener))
-                foreach (var methodGroup in methodGroups)
-                    bus.Publish(new MethodGroupDiscovered(methodGroup));
+            var bus = new Bus(listener);
+            foreach (var methodGroup in methodGroups)
+                bus.Publish(new MethodGroupDiscovered(methodGroup));
         }
 
         public int RunAssembly(string assemblyFullPath, Options options)
@@ -39,16 +39,16 @@
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            using (var bus = new Bus(listeners))
-                Runner(options, bus).RunAssembly(assembly);
+            var bus = new Bus(listeners);
+            Runner(options, bus).RunAssembly(assembly);
         }
 
         public void RunMethods(string assemblyFullPath, Options options, Listener listener, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            using (var bus = new Bus(listener))
-                Runner(options, bus).RunMethods(assembly, methodGroups);
+            var bus = new Bus(listener);
+            Runner(options, bus).RunMethods(assembly, methodGroups);
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

@@ -15,7 +15,7 @@
                 new CombinationEventHandler()
             };
 
-            using (var bus = new Bus(listeners))
+            var bus = new Bus(listeners);
             using (var console = new RedirectedConsole())
             {
                 bus.Publish(new Event(1));

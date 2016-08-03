@@ -26,7 +26,7 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        var listener = new VisualStudioDiscoveryListener(log, discoverySink, assemblyPath);
+                        using (var listener = new VisualStudioDiscoveryListener(log, discoverySink, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                             environment.DiscoverMethodGroups(listener, new Options());
                     }

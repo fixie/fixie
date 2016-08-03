@@ -6,7 +6,7 @@ namespace Fixie.VisualStudio.TestAdapter
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Execution;
 
-    public class VisualStudioDiscoveryListener : Handler<MethodGroupDiscovered>
+    public class VisualStudioDiscoveryListener : LongLivedMarshalByRefObject, Handler<MethodGroupDiscovered>
     {
         readonly IMessageLogger log;
         readonly ITestCaseDiscoverySink discoverySink;

@@ -5,7 +5,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Execution;
 
-    public class VisualStudioExecutionListener :
+    public class VisualStudioExecutionListener : LongLivedMarshalByRefObject,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>

@@ -42,22 +42,22 @@
 
         static ExecutionSummary Execute(CommandLineParser commandLineParser)
         {
+            var options = commandLineParser.Options;
+
             var summaryListener = new SummaryListener();
 
-            var listeners = Listeners(commandLineParser).ToList();
+            var listeners = Listeners(options).ToList();
 
             listeners.Add(summaryListener);
 
             using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
-                environment.RunAssembly(listeners, commandLineParser.Options);
+                environment.RunAssembly(listeners, options);
 
             return summaryListener.Summary;
         }
 
-        static IEnumerable<Listener> Listeners(CommandLineParser commandLineParser)
+        static IEnumerable<Listener> Listeners(Options options)
         {
-            var options = commandLineParser.Options;
-
             if (ShouldUseTeamCityListener(options))
                 yield return new TeamCityListener();
             else

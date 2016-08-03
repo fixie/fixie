@@ -41,7 +41,7 @@
 
                         var listener = new VisualStudioExecutionListener(frameworkHandle, assemblyPath);
 
-                        using (var environment = new ExecutionEnvironment(assemblyPath, listener))
+                        using (var environment = new ExecutionEnvironment(assemblyPath, new[] { listener }))
                             environment.RunAssembly(new Options());
                     }
                     else
@@ -87,7 +87,7 @@
 
                         var listener = new VisualStudioExecutionListener(frameworkHandle, assemblyPath);
 
-                        using (var environment = new ExecutionEnvironment(assemblyPath, listener))
+                        using (var environment = new ExecutionEnvironment(assemblyPath, new[] { listener }))
                             environment.RunMethods(new Options(), methodGroups);
                     }
                     else

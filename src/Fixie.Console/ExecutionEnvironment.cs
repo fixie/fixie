@@ -16,11 +16,6 @@
         readonly string previousWorkingDirectory;
         readonly Listener[] listeners;
 
-        public ExecutionEnvironment(string assemblyPath, Listener listener)
-            : this(assemblyPath, new[] { listener })
-        {
-        }
-
         public ExecutionEnvironment(string assemblyPath, IReadOnlyCollection<Listener> listeners)
         {
             this.listeners = listeners.ToArray();
@@ -33,13 +28,6 @@
             Directory.SetCurrentDirectory(assemblyDirectory);
         }
 
-        public void DiscoverMethodGroups(Options options)
-        {
-            using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listeners))
-                executionProxy.DiscoverMethodGroups(assemblyFullPath, options, bus);
-        }
-
         public void RunAssembly(Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())
@@ -47,16 +35,9 @@
                 executionProxy.RunAssembly(assemblyFullPath, options, bus);
         }
 
-        public void RunMethods(Options options, MethodGroup[] methodGroups)
+        T Create<T>() where T : LongLivedMarshalByRefObject
         {
-            using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listeners))
-                executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
-        }
-
-        T Create<T>(params object[] args) where T : LongLivedMarshalByRefObject
-        {
-            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
+            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, null, null, null);
         }
 
         public void Dispose()

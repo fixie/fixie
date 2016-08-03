@@ -16,11 +16,6 @@
         readonly string previousWorkingDirectory;
         readonly Listener[] listeners;
 
-        public ExecutionEnvironment(string assemblyPath, Listener listener)
-            : this(assemblyPath, new[] { listener })
-        {
-        }
-
         public ExecutionEnvironment(string assemblyPath, IReadOnlyCollection<Listener> listeners)
         {
             this.listeners = listeners.ToArray();
@@ -54,9 +49,9 @@
                 executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
         }
 
-        T Create<T>(params object[] args) where T : LongLivedMarshalByRefObject
+        T Create<T>() where T : LongLivedMarshalByRefObject
         {
-            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
+            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, null, null, null);
         }
 
         public void Dispose()

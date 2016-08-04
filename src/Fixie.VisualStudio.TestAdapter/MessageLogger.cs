@@ -11,9 +11,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.log = log;
         }
 
-        public void SendMessage(TestMessageLevel testMessageLevel, string message)
-        {
-            log.SendMessage(testMessageLevel, message);
-        }
+        public void Error(string error)
+            => log.SendMessage(TestMessageLevel.Error, error);
     }
 }

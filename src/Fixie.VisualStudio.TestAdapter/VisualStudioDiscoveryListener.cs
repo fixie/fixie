@@ -36,7 +36,7 @@ namespace Fixie.VisualStudio.TestAdapter
             }
             catch (Exception exception)
             {
-                log.Error(exception);
+                log.Error(exception.ToString());
             }
 
             discoverySink.SendTestCase(testCase);

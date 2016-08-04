@@ -2,18 +2,16 @@ namespace Fixie.VisualStudio.TestAdapter
 {
     using System;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Execution;
 
     public class VisualStudioDiscoveryListener : LongLivedMarshalByRefObject, Handler<MethodGroupDiscovered>
     {
-        readonly IMessageLogger log;
-        readonly ITestCaseDiscoverySink discoverySink;
+        readonly MessageLogger log;
+        readonly TestCaseDiscoverySink discoverySink;
         readonly string assemblyPath;
         readonly SourceLocationProvider sourceLocationProvider;
 
-        public VisualStudioDiscoveryListener(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)
+        public VisualStudioDiscoveryListener(MessageLogger log, TestCaseDiscoverySink discoverySink, string assemblyPath)
         {
             this.log = log;
             this.discoverySink = discoverySink;

@@ -11,6 +11,9 @@
         public static void Error(this IMessageLogger logger, Exception exception)
             => logger.SendMessage(TestMessageLevel.Error, exception.ToString());
 
+        public static void Error(this MessageLogger logger, Exception exception)
+            => logger.SendMessage(TestMessageLevel.Error, exception.ToString());
+
         public static void Version(this IMessageLogger logger)
             => logger.Info(Framework.Version);
     }

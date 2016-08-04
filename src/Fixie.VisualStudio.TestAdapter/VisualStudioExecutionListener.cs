@@ -2,7 +2,6 @@
 {
     using System;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Execution;
 
     public class VisualStudioExecutionListener : LongLivedMarshalByRefObject,
@@ -10,10 +9,10 @@
         Handler<CasePassed>,
         Handler<CaseFailed>
     {
-        readonly ITestExecutionRecorder log;
+        readonly TestExecutionRecorder log;
         readonly string assemblyPath;
 
-        public VisualStudioExecutionListener(ITestExecutionRecorder log, string assemblyPath)
+        public VisualStudioExecutionListener(TestExecutionRecorder log, string assemblyPath)
         {
             this.log = log;
             this.assemblyPath = assemblyPath;

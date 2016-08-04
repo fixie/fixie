@@ -14,7 +14,8 @@
         public void ShouldReportResultsToExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
-            var recorder = new StubExecutionRecorder();
+            var log = new StubExecutionRecorder();
+            var recorder = new TestExecutionRecorder(log);
             using (var listener = new VisualStudioExecutionListener(recorder, assemblyPath))
             using (var console = new RedirectedConsole())
             {
@@ -30,7 +31,7 @@
                         "Console.Error: Pass");
             }
 
-            var results = recorder.TestResults;
+            var results = log.TestResults;
             results.Count.ShouldEqual(5);
 
             foreach (var result in results)

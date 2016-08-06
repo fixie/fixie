@@ -12,6 +12,8 @@
         readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
+        readonly RemoteAssemblyResolver assemblyResolver;
+        readonly ExecutionProxy executionProxy;
 
         public ExecutionEnvironment(string assemblyPath)
         {
@@ -21,21 +23,44 @@
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
+
+            assemblyResolver = Create<RemoteAssemblyResolver>();
+            executionProxy = Create<ExecutionProxy>();
+        }
+
+        public void Subscribe<TListener>(params object[] listenerArgs)
+        {
+            var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
+            var listenerType = typeof(TListener).FullName;
+
+            assemblyResolver.RegisterAssemblyLocation(listenerAssemblyFullPath);
+            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
+        }
+
+        public void DiscoverMethodGroups(Options options)
+        {
+            executionProxy.DiscoverMethodGroups(assemblyFullPath, options);
         }
 
         public int RunAssembly(Options options)
         {
-            using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunAssemblyForConsoleRunner(assemblyFullPath, options);
+            return executionProxy.RunAssembly(assemblyFullPath, options);
         }
 
-        T Create<T>() where T : LongLivedMarshalByRefObject
+        public void RunMethods(Options options, MethodGroup[] methodGroups)
+        {
+            executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
+        }
+
+        T Create<T>() where T : LongLivedMarshalByRefObject, new()
         {
             return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, null, null, null);
         }
 
         public void Dispose()
         {
+            executionProxy.Dispose();
+            assemblyResolver.Dispose();
             AppDomain.Unload(appDomain);
             Directory.SetCurrentDirectory(previousWorkingDirectory);
         }

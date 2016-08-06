@@ -42,9 +42,9 @@
             executionProxy.DiscoverMethodGroups(assemblyFullPath, options);
         }
 
-        public void RunAssembly(Options options)
+        public int RunAssembly(Options options)
         {
-            executionProxy.RunAssembly(assemblyFullPath, options);
+            return executionProxy.RunAssembly(assemblyFullPath, options);
         }
 
         public void RunMethods(Options options, MethodGroup[] methodGroups)

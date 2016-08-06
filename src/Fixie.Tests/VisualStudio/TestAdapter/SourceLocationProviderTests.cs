@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Tests.VisualStudio.TestAdapter
 {
-    using System.IO;
     using Fixie.VisualStudio.TestAdapter;
     using Should;
     using static Utility;
@@ -12,7 +11,7 @@
         //      Debug: opening curly brace.
         //      Release: first non-comment code line or closing curly brace if the method is empty.
 
-        private static readonly string TestAssemblyPath = Path.GetFullPath("Fixie.Tests.dll");
+        private static readonly string TestAssemblyPath = typeof(SourceLocationSamples).Assembly.Location;
 
         public void ShouldSafelyFailForUnknownMethods()
         {

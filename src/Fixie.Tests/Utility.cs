@@ -15,6 +15,14 @@ namespace Fixie.Tests
         public static string PathToThisFile([CallerFilePath] string path = null)
             => path;
 
+        public static void Discover<TSampleTestClass>(Listener listener, Convention convention)
+        {
+            var sampleTestClass = typeof(TSampleTestClass);
+
+            var bus = new Bus(listener);
+            new Discoverer(bus).DiscoverMethodGroups(sampleTestClass.Assembly, convention);
+        }
+
         public static void Run<TSampleTestClass>(Listener listener, Convention convention)
         {
             var sampleTestClass = typeof(TSampleTestClass);

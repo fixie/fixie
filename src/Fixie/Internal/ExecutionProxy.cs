@@ -9,14 +9,28 @@
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
-        public void DiscoverMethodGroups(string assemblyFullPath, Options options, Listener listener)
+        readonly List<Listener> subscribedListeners = new List<Listener>();
+
+        public void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
+        {
+            var listener = Construct<Listener>(listenerAssemblyFullPath, listenerType, listenerArgs);
+
+            subscribedListeners.Add(listener);
+        }
+
+        static T Construct<T>(string assemblyFullPath, string typeFullName, object[] args)
+        {
+            var type = LoadAssembly(assemblyFullPath).GetType(typeFullName);
+
+            return (T)Activator.CreateInstance(type, args);
+        }
+
+        public void DiscoverMethodGroups(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            var bus = new Bus(listener);
-            var discoverer = new Discoverer(bus, options);
-
-            discoverer.DiscoverMethodGroups(assembly);
+            var bus = new Bus(subscribedListeners);
+            new Discoverer(bus, options).DiscoverMethodGroups(assembly);
         }
 
         public int RunAssembly(string assemblyFullPath, Options options)

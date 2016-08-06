@@ -30,7 +30,10 @@
                         using (var messageLogger = new MessageLogger(log))
                         using (var testCaseDiscoverySink = new TestCaseDiscoverySink(discoverySink))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
-                            environment.DiscoverMethodGroups(listener, new Options());
+                        {
+                            environment.Subscribe<VisualStudioDiscoveryListener>(messageLogger, testCaseDiscoverySink, assemblyPath);
+                            environment.DiscoverMethodGroups(new Options());
+                        }
                     }
                     else
                     {

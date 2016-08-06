@@ -4,7 +4,7 @@ namespace Fixie.VisualStudio.TestAdapter
     using Execution;
     using Wrappers;
 
-    public class VisualStudioDiscoveryListener : LongLivedMarshalByRefObject, Handler<MethodGroupDiscovered>
+    public class VisualStudioDiscoveryListener : Handler<MethodGroupDiscovered>
     {
         readonly MessageLogger log;
         readonly TestCaseDiscoverySink discoverySink;

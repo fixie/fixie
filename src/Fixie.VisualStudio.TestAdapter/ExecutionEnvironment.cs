@@ -12,6 +12,8 @@
         readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
+        readonly RemoteAssemblyResolver assemblyResolver;
+        readonly ExecutionProxy executionProxy;
 
         public ExecutionEnvironment(string assemblyPath)
         {
@@ -21,24 +23,33 @@
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
+
+            assemblyResolver = Create<RemoteAssemblyResolver>();
+            executionProxy = Create<ExecutionProxy>();
         }
 
-        public void DiscoverMethodGroups(Listener listener, Options options)
+        public void Subscribe<TListener>(params object[] listenerArgs)
         {
-            using (var executionProxy = Create<ExecutionProxy>())
-                executionProxy.DiscoverMethodGroups(assemblyFullPath, options, listener);
+            var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
+            var listenerType = typeof(TListener).FullName;
+
+            assemblyResolver.RegisterAssemblyLocation(listenerAssemblyFullPath);
+            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
+        }
+
+        public void DiscoverMethodGroups(Options options)
+        {
+            executionProxy.DiscoverMethodGroups(assemblyFullPath, options);
         }
 
         public void RunAssembly(Listener listener, Options options)
         {
-            using (var executionProxy = Create<ExecutionProxy>())
-                executionProxy.RunAssembly(assemblyFullPath, options, new[] { listener });
+            executionProxy.RunAssembly(assemblyFullPath, options, new[] { listener });
         }
 
         public void RunMethods(Listener listener, Options options, MethodGroup[] methodGroups)
         {
-            using (var executionProxy = Create<ExecutionProxy>())
-                executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
+            executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
         }
 
         T Create<T>() where T : LongLivedMarshalByRefObject
@@ -48,6 +59,8 @@
 
         public void Dispose()
         {
+            executionProxy.Dispose();
+            assemblyResolver.Dispose();
             AppDomain.Unload(appDomain);
             Directory.SetCurrentDirectory(previousWorkingDirectory);
         }

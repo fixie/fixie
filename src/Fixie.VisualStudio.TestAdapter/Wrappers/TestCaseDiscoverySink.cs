@@ -1,8 +1,9 @@
 namespace Fixie.VisualStudio.TestAdapter.Wrappers
 {
+    using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
-    public class TestCaseDiscoverySink
+    public class TestCaseDiscoverySink : LongLivedMarshalByRefObject
     {
         readonly ITestCaseDiscoverySink discoverySink;
 

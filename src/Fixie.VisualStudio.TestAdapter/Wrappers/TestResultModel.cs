@@ -2,6 +2,7 @@ namespace Fixie.VisualStudio.TestAdapter.Wrappers
 {
     using System;
 
+    [Serializable]
     public class TestResultModel
     {
         public TestCaseModel TestCase { get; set; }

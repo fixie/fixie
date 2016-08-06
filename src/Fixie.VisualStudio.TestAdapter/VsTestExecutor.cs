@@ -39,7 +39,7 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        var recorder = new TestExecutionRecorder(frameworkHandle);
+                        using (var recorder = new TestExecutionRecorder(frameworkHandle))
                         using (var listener = new VisualStudioExecutionListener(recorder, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                             environment.RunAssembly(listener, new Options());
@@ -85,7 +85,7 @@
 
                         var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
 
-                        var recorder = new TestExecutionRecorder(frameworkHandle);
+                        using (var recorder = new TestExecutionRecorder(frameworkHandle))
                         using (var listener = new VisualStudioExecutionListener(recorder, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                             environment.RunMethods(listener, new Options(), methodGroups);

@@ -16,7 +16,7 @@
         {
             const string assemblyPath = "assembly.path.dll";
             var log = new StubExecutionRecorder();
-            var recorder = new TestExecutionRecorder(log);
+            using (var recorder = new TestExecutionRecorder(log))
             using (var listener = new VisualStudioExecutionListener(recorder, assemblyPath))
             using (var console = new RedirectedConsole())
             {

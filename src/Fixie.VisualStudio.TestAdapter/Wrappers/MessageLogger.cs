@@ -1,8 +1,9 @@
 namespace Fixie.VisualStudio.TestAdapter.Wrappers
 {
+    using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
-    public class MessageLogger
+    public class MessageLogger : LongLivedMarshalByRefObject
     {
         readonly IMessageLogger log;
 

@@ -82,11 +82,9 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
 
         void Discover(StubMessageLogger messageLogger, StubTestCaseDiscoverySink testCaseDiscoverySink, string assemblyPath)
         {
-            using (var listener =
-                new VisualStudioDiscoveryListener(
-                    new MessageLogger(messageLogger),
-                    new TestCaseDiscoverySink(testCaseDiscoverySink),
-                    assemblyPath))
+            using (var messageLoggerWrapper = new MessageLogger(messageLogger))
+            using (var testCaseDiscoverySinkWrapper = new TestCaseDiscoverySink(testCaseDiscoverySink))
+            using (var listener = new VisualStudioDiscoveryListener(messageLoggerWrapper, testCaseDiscoverySinkWrapper, assemblyPath))
             {
                 Discover(listener);
             }

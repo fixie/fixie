@@ -1,6 +1,5 @@
-namespace Fixie.VisualStudio.TestAdapter
+namespace Fixie.VisualStudio.TestAdapter.Wrappers
 {
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
     public class TestExecutionRecorder
@@ -12,9 +11,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.recorder = recorder;
         }
 
-        public void RecordResult(TestResult testResult)
-        {
-            recorder.RecordResult(testResult);
-        }
+        public void RecordResult(TestResultModel testResult)
+            => recorder.RecordResult(testResult.ToVisualStudioType());
     }
 }

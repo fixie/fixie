@@ -1,4 +1,4 @@
-namespace Fixie.VisualStudio.TestAdapter
+namespace Fixie.VisualStudio.TestAdapter.Wrappers
 {
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 

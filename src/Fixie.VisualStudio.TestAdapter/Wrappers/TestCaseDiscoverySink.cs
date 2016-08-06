@@ -1,6 +1,5 @@
-namespace Fixie.VisualStudio.TestAdapter
+namespace Fixie.VisualStudio.TestAdapter.Wrappers
 {
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
     public class TestCaseDiscoverySink
@@ -12,9 +11,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.discoverySink = discoverySink;
         }
 
-        public void SendTestCase(TestCase discoveredTest)
-        {
-            discoverySink.SendTestCase(discoveredTest);
-        }
+        public void SendTestCase(TestCaseModel discoveredTest)
+            => discoverySink.SendTestCase(discoveredTest.ToVisualStudioType());
     }
 }

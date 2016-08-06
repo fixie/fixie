@@ -4,6 +4,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
     using System.Collections.Generic;
     using System.Linq;
     using Fixie.VisualStudio.TestAdapter;
+    using Fixie.VisualStudio.TestAdapter.Wrappers;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;

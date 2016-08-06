@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Fixie.Internal;
     using Fixie.VisualStudio.TestAdapter;
+    using Fixie.VisualStudio.TestAdapter.Wrappers;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;

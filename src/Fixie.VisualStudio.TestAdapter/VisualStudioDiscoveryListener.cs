@@ -1,8 +1,8 @@
 namespace Fixie.VisualStudio.TestAdapter
 {
     using System;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Execution;
+    using Wrappers;
 
     public class VisualStudioDiscoveryListener : LongLivedMarshalByRefObject, Handler<MethodGroupDiscovered>
     {
@@ -23,7 +23,11 @@ namespace Fixie.VisualStudio.TestAdapter
         {
             var methodGroup = message.MethodGroup;
 
-            var testCase = new TestCase(methodGroup.FullName, VsTestExecutor.Uri, assemblyPath);
+            var testCase = new TestCaseModel
+            {
+                MethodGroup = methodGroup.FullName,
+                AssemblyPath = assemblyPath
+            };
 
             try
             {

@@ -35,11 +35,12 @@
                     {
                         var methodGroup = new MethodGroup(testMethod);
 
-                        distinctMethodGroups[methodGroup.FullName] = methodGroup;
+                        if (!distinctMethodGroups.ContainsKey(methodGroup.FullName))
+                        {
+                            distinctMethodGroups[methodGroup.FullName] = methodGroup;
+                            bus.Publish(new MethodGroupDiscovered(methodGroup));
+                        }
                     }
-
-                    foreach (var methodGroup in distinctMethodGroups.Values)
-                        bus.Publish(new MethodGroupDiscovered(methodGroup));
                 }
             }
         }

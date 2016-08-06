@@ -2,22 +2,23 @@
 {
     using System.Collections.Generic;
     using System.Reflection;
+    using Execution;
 
     public class Discoverer
     {
+        readonly Bus bus;
         readonly Options options;
 
-        public Discoverer(Options options)
+        public Discoverer(Bus bus, Options options)
         {
+            this.bus = bus;
             this.options = options;
         }
 
-        public IReadOnlyList<MethodGroup> DiscoverMethodGroups(Assembly assembly)
+        public void DiscoverMethodGroups(Assembly assembly)
         {
             RunContext.Set(options);
             var conventions = new ConventionDiscoverer(assembly).GetConventions();
-
-            var discoveredMethodGroups = new List<MethodGroup>();
 
             foreach (var convention in conventions)
             {
@@ -37,11 +38,10 @@
                         distinctMethodGroups[methodGroup.FullName] = methodGroup;
                     }
 
-                    discoveredMethodGroups.AddRange(distinctMethodGroups.Values);
+                    foreach (var methodGroup in distinctMethodGroups.Values)
+                        bus.Publish(new MethodGroupDiscovered(methodGroup));
                 }
             }
-
-            return discoveredMethodGroups;
         }
     }
 }

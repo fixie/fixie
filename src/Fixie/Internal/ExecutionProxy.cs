@@ -13,13 +13,10 @@
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            var discoverer = new Discoverer(options);
-
-            var methodGroups = discoverer.DiscoverMethodGroups(assembly);
-
             var bus = new Bus(listener);
-            foreach (var methodGroup in methodGroups)
-                bus.Publish(new MethodGroupDiscovered(methodGroup));
+            var discoverer = new Discoverer(bus, options);
+
+            discoverer.DiscoverMethodGroups(assembly);
         }
 
         public int RunAssembly(string assemblyFullPath, Options options)

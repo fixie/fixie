@@ -33,7 +33,23 @@
             new Discoverer(bus, options).DiscoverMethodGroups(assembly);
         }
 
-        public int RunAssembly(string assemblyFullPath, Options options)
+        public void RunAssembly(string assemblyFullPath, Options options)
+        {
+            var assembly = LoadAssembly(assemblyFullPath);
+
+            var bus = new Bus(subscribedListeners);
+            Runner(options, bus).RunAssembly(assembly);
+        }
+
+        public void RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
+        {
+            var assembly = LoadAssembly(assemblyFullPath);
+
+            var bus = new Bus(subscribedListeners);
+            Runner(options, bus).RunMethods(assembly, methodGroups);
+        }
+
+        public int RunAssemblyForConsoleRunner(string assemblyFullPath, Options options)
         {
             var summaryListener = new SummaryListener();
 
@@ -41,25 +57,12 @@
 
             listeners.Add(summaryListener);
 
-            RunAssembly(assemblyFullPath, options, listeners);
-
-            return summaryListener.Summary.Failed;
-        }
-
-        public void RunAssembly(string assemblyFullPath, Options options, IReadOnlyList<Listener> listeners)
-        {
             var assembly = LoadAssembly(assemblyFullPath);
 
             var bus = new Bus(listeners);
             Runner(options, bus).RunAssembly(assembly);
-        }
 
-        public void RunMethods(string assemblyFullPath, Options options, Listener listener, MethodGroup[] methodGroups)
-        {
-            var assembly = LoadAssembly(assemblyFullPath);
-
-            var bus = new Bus(listener);
-            Runner(options, bus).RunMethods(assembly, methodGroups);
+            return summaryListener.Summary.Failed;
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

@@ -42,17 +42,17 @@
             executionProxy.DiscoverMethodGroups(assemblyFullPath, options);
         }
 
-        public void RunAssembly(Listener listener, Options options)
+        public void RunAssembly(Options options)
         {
-            executionProxy.RunAssembly(assemblyFullPath, options, new[] { listener });
+            executionProxy.RunAssembly(assemblyFullPath, options);
         }
 
-        public void RunMethods(Listener listener, Options options, MethodGroup[] methodGroups)
+        public void RunMethods(Options options, MethodGroup[] methodGroups)
         {
-            executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
+            executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
         }
 
-        T Create<T>() where T : LongLivedMarshalByRefObject
+        T Create<T>() where T : LongLivedMarshalByRefObject, new()
         {
             return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, null, null, null);
         }

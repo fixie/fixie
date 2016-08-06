@@ -40,9 +40,11 @@
                         log.Info("Processing " + assemblyPath);
 
                         using (var recorder = new TestExecutionRecorder(frameworkHandle))
-                        using (var listener = new VisualStudioExecutionListener(recorder, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
-                            environment.RunAssembly(listener, new Options());
+                        {
+                            environment.Subscribe<VisualStudioExecutionListener>(recorder, assemblyPath);
+                            environment.RunAssembly(new Options());
+                        }
                     }
                     else
                     {
@@ -86,9 +88,11 @@
                         var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
 
                         using (var recorder = new TestExecutionRecorder(frameworkHandle))
-                        using (var listener = new VisualStudioExecutionListener(recorder, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
-                            environment.RunMethods(listener, new Options(), methodGroups);
+                        {
+                            environment.Subscribe<VisualStudioExecutionListener>(recorder, assemblyPath);
+                            environment.RunMethods(new Options(), methodGroups);
+                        }
                     }
                     else
                     {

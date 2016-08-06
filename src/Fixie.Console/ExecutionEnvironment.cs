@@ -26,7 +26,7 @@
         public int RunAssembly(Options options)
         {
             using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunAssembly(assemblyFullPath, options);
+                return executionProxy.RunAssemblyForConsoleRunner(assemblyFullPath, options);
         }
 
         T Create<T>() where T : LongLivedMarshalByRefObject

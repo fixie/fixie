@@ -4,7 +4,7 @@
     using Execution;
     using Wrappers;
 
-    public class VisualStudioExecutionListener : LongLivedMarshalByRefObject,
+    public class VisualStudioExecutionListener :
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>

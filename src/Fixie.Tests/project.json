@@ -1,4 +1,6 @@
 {
+  "testRunner": "fixie",
+
   "buildOptions": {
     "copyToOutput": {
       "include": [

@@ -9,11 +9,11 @@ namespace Fixie.ConsoleRunner.Reports
         readonly List<CaseCompleted> cases;
         readonly ExecutionSummary summary;
 
-        public ClassReport(string name)
+        public ClassReport(Type testClass)
         {
+            TestClass = testClass;
             cases = new List<CaseCompleted>();
             summary = new ExecutionSummary();
-            Name = name;
         }
 
         public void Add(CaseCompleted message)
@@ -22,7 +22,7 @@ namespace Fixie.ConsoleRunner.Reports
             summary.Add(message);
         }
 
-        public string Name { get; }
+        public Type TestClass { get; }
 
         public IReadOnlyList<CaseCompleted> Cases => cases;
 

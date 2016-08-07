@@ -6,9 +6,9 @@
     {
         public ClassCompleted(Type testClass)
         {
-            FullName = testClass.FullName;
+            TestClass = testClass;
         }
 
-        public string FullName { get; }
+        public Type TestClass { get; }
     }
 }

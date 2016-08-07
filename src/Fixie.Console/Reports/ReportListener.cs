@@ -34,7 +34,7 @@
 
         public void Handle(ClassStarted message)
         {
-            currentClass = new ClassReport(message.FullName);
+            currentClass = new ClassReport(message.TestClass);
             assembly.Add(currentClass);
         }
 

@@ -4,3 +4,4 @@ obj/
 *.xproj.user
 project.lock.json
 /artifacts/
+*.DotSettings.user

@@ -1,8 +1,5 @@
 ﻿namespace Fixie.Execution
 {
-    using System;
-
-    [Serializable]
     public class CaseSkipped : CaseCompleted
     {
         public CaseSkipped(Case @case, string reason)

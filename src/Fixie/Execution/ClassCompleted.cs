@@ -2,7 +2,6 @@
 {
     using System;
 
-    [Serializable]
     public class ClassCompleted : Message
     {
         public ClassCompleted(Type testClass)

@@ -2,7 +2,6 @@
 {
     using System;
 
-    [Serializable]
     public class ClassStarted : Message
     {
         public ClassStarted(Type testClass)

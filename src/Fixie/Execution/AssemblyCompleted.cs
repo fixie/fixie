@@ -6,11 +6,9 @@
     {
         public AssemblyCompleted(Assembly assembly)
         {
-            Name = assembly.GetName().Name;
-            Location = assembly.Location;
+            Assembly = assembly;
         }
 
-        public string Name { get; }
-        public string Location { get; }
+        public Assembly Assembly { get; }
     }
 }

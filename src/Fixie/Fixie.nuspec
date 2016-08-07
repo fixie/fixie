@@ -18,8 +18,7 @@
   <files>
     <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll" target="lib/net452"></file>
 
-    <file src="..\Fixie.Console\bin\Release\net452\win7-x64\Fixie.Console.exe" target="lib/net452"></file>
-    <file src="..\Fixie.Console\bin\Release\net452\win7-x64\Fixie.Console.exe.config" target="lib/net452"></file>
+    <file src="..\dotnet-test-fixie\bin\Release\net452\win7-x64\dotnet-test-fixie.exe" target="lib/net452"></file>
         
     <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" target="lib/net452"></file>
     <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" target="lib/net452"></file>

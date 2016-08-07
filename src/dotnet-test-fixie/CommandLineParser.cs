@@ -81,7 +81,7 @@
         public static string Usage()
         {
             return new StringBuilder()
-                .AppendLine("Usage: Fixie.Console assembly-path [--ReportFormat <NUnit|xUnit>] [--TeamCity <on|off>] [--<key> <value>]...")
+                .AppendLine("Usage: dotnet-test-fixie.exe assembly-path [--ReportFormat <NUnit|xUnit>] [--TeamCity <on|off>] [--<key> <value>]...")
                 .AppendLine()
                 .AppendLine()
                 .AppendLine("    assembly-path")

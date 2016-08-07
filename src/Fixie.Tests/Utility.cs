@@ -28,7 +28,7 @@ namespace Fixie.Tests
             var sampleTestClass = typeof(TSampleTestClass);
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
+            new Fixie.Internal.Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
         }
     }
 }

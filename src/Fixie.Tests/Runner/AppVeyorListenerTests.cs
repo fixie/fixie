@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.ConsoleRunner
+﻿namespace Fixie.Tests.Runner
 {
     using Should;
     using System;
@@ -9,8 +9,8 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
-    using Fixie.ConsoleRunner;
     using Fixie.Internal;
+    using Fixie.Runner;
 
     public class AppVeyorListenerTests : MessagingTests
     {

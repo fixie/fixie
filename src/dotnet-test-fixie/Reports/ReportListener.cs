@@ -1,4 +1,4 @@
-﻿namespace Fixie.ConsoleRunner.Reports
+﻿namespace Fixie.Runner.Reports
 {
     using System;
     using System.IO;

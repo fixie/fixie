@@ -20,7 +20,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Fixie.TestDriven", "src\Fix
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Fixie.VisualStudio.TestAdapter", "src\Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.xproj", "{7A46DAD5-8606-4BD3-A1A6-01391264EE6F}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dotnet-test-fixie", "src\dotnet-test-fixie\dotnet-test-fixie.xproj", "{8192A5F1-6E49-4939-8B77-2EB754A9E74C}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Fixie.Runner", "src\Fixie.Runner\Fixie.Runner.xproj", "{8192A5F1-6E49-4939-8B77-2EB754A9E74C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -38,7 +38,7 @@ function Test {
 
 function Build {
     exec { & dotnet build .\src\Fixie --configuration $configuration }
-    exec { & dotnet build .\src\dotnet-test-fixie --configuration $configuration }
+    exec { & dotnet build .\src\Fixie.Runner --configuration $configuration }
     exec { & dotnet build .\src\Fixie.TestDriven --configuration $configuration }
     exec { & dotnet build .\src\Fixie.VisualStudio.TestAdapter --configuration $configuration }
     exec { & dotnet build .\src\Fixie.Samples --configuration $configuration }

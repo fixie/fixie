@@ -16,7 +16,7 @@
     "Fixie": { "target": "project" },
     "Fixie.TestDriven": { "target": "project" },
     "Fixie.VisualStudio.TestAdapter": { "target": "project" },
-    "dotnet-test-fixie" : {"target": "project"},
+    "Fixie.Runner" : {"target": "project"},
     "Mono.Cecil": "0.9.6.1",
     "Should": "1.1.20"
   },

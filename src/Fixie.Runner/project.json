@@ -1,6 +1,7 @@
 ﻿{
   "buildOptions": {
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "outputName": "dotnet-test-fixie"
   },
 
   "dependencies": {

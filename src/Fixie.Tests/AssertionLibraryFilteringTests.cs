@@ -2,8 +2,8 @@
 {
     using System;
     using System.Runtime.CompilerServices;
-    using Fixie.ConsoleRunner;
     using Fixie.Internal;
+    using Fixie.Runner;
     using static Utility;
 
     public class AssertionLibraryFilteringTests

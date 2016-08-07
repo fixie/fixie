@@ -1,20 +1,22 @@
 {
+  "testRunner": "fixie",
+
   "buildOptions": {
     "copyToOutput": {
       "include": [
-        "ConsoleRunner/Reports/NUnitXmlReport.xml",
-        "ConsoleRunner/Reports/XUnitXmlReport.xml",
-        "ConsoleRunner/Reports/NUnitXmlReport.xsd",
-        "ConsoleRunner/Reports/XUnitXmlReport.xsd"
+        "Runner/Reports/NUnitXmlReport.xml",
+        "Runner/Reports/XUnitXmlReport.xml",
+        "Runner/Reports/NUnitXmlReport.xsd",
+        "Runner/Reports/XUnitXmlReport.xsd"
       ]
     }
   },
 
   "dependencies": {
     "Fixie": { "target": "project" },
-    "Fixie.Console": { "target": "project" },
     "Fixie.TestDriven": { "target": "project" },
     "Fixie.VisualStudio.TestAdapter": { "target": "project" },
+    "Fixie.Runner" : {"target": "project"},
     "Mono.Cecil": "0.9.6.1",
     "Should": "1.1.20"
   },

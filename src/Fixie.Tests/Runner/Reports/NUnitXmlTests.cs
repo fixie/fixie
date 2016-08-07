@@ -1,12 +1,12 @@
-﻿namespace Fixie.Tests.ConsoleRunner.Reports
+﻿namespace Fixie.Tests.Runner.Reports
 {
     using System.IO;
     using System.Text.RegularExpressions;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Schema;
-    using Fixie.ConsoleRunner.Reports;
     using Fixie.Internal;
+    using Fixie.Runner.Reports;
     using Should;
 
     public class NUnitXmlTests : MessagingTests
@@ -38,7 +38,7 @@
         static void XsdValidate(XDocument doc)
         {
             var schemaSet = new XmlSchemaSet();
-            using (var xmlReader = XmlReader.Create(Path.Combine("ConsoleRunner", Path.Combine("Reports", "NUnitXmlReport.xsd"))))
+            using (var xmlReader = XmlReader.Create(Path.Combine("Runner", Path.Combine("Reports", "NUnitXmlReport.xsd"))))
             {
                 schemaSet.Add(null, xmlReader);
             }
@@ -82,7 +82,7 @@
             {
                 var assemblyLocation = GetType().Assembly.Location;
                 var fileLocation = TestClassPath();
-                return XDocument.Parse(File.ReadAllText(Path.Combine("ConsoleRunner", Path.Combine("Reports", "NUnitXmlReport.xml"))))
+                return XDocument.Parse(File.ReadAllText(Path.Combine("Runner", Path.Combine("Reports", "NUnitXmlReport.xml"))))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
                                 .Replace("[fileLocation]", fileLocation)

@@ -3,6 +3,7 @@ namespace Fixie.Tests.Execution
     using System.Linq;
     using Fixie.Execution;
     using Fixie.Internal;
+    using Fixie.VisualStudio.TestAdapter.Wrappers;
     using Should;
 
     public class RunnerAppDomainCommunicationTests
@@ -25,6 +26,13 @@ namespace Fixie.Tests.Execution
         public void ShouldAllowRunnersInOtherAppDomainsToPerformTestDiscoveryAndExecutionThroughExecutionProxy()
         {
             typeof(ExecutionProxy).ShouldBeSafeAppDomainCommunicationInterface();
+        }
+
+        public void ShouldAllowRunnersInOtherAppDomainsToReportTestDiscoveryAndExecutionToVisualStudio()
+        {
+            typeof(MessageLogger).ShouldBeSafeAppDomainCommunicationInterface();
+            typeof(TestCaseDiscoverySink).ShouldBeSafeAppDomainCommunicationInterface();
+            typeof(TestExecutionRecorder).ShouldBeSafeAppDomainCommunicationInterface();
         }
     }
 }

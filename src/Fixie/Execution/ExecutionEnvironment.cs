@@ -1,9 +1,7 @@
 ﻿namespace Fixie.Execution
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Security;
     using System.Security.Permissions;
     using Internal;
@@ -13,53 +11,55 @@
         readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
-        readonly Listener[] listeners;
+        readonly RemoteAssemblyResolver assemblyResolver;
+        readonly ExecutionProxy executionProxy;
 
-        public ExecutionEnvironment(string assemblyPath, Listener listener)
-            : this(assemblyPath, new[] { listener })
+        public ExecutionEnvironment(string assemblyPath)
         {
-        }
-
-        public ExecutionEnvironment(string assemblyPath, IReadOnlyCollection<Listener> listeners)
-        {
-            this.listeners = listeners.ToArray();
-
             assemblyFullPath = Path.GetFullPath(assemblyPath);
             appDomain = CreateAppDomain(assemblyFullPath);
 
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
+
+            assemblyResolver = Create<RemoteAssemblyResolver>();
+            executionProxy = Create<ExecutionProxy>();
+        }
+
+        public void Subscribe<TListener>(params object[] listenerArgs)
+        {
+            var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
+            var listenerType = typeof(TListener).FullName;
+
+            assemblyResolver.RegisterAssemblyLocation(listenerAssemblyFullPath);
+            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
         }
 
         public void DiscoverMethodGroups(Options options)
         {
-            using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listeners))
-                executionProxy.DiscoverMethodGroups(assemblyFullPath, options, bus);
+            executionProxy.DiscoverMethodGroups(assemblyFullPath, options);
         }
 
-        public void RunAssembly(Options options)
+        public int RunAssembly(Options options)
         {
-            using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listeners))
-                executionProxy.RunAssembly(assemblyFullPath, options, bus);
+            return executionProxy.RunAssembly(assemblyFullPath, options);
         }
 
         public void RunMethods(Options options, MethodGroup[] methodGroups)
         {
-            using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listeners))
-                executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
+            executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
         }
 
-        T Create<T>(params object[] args) where T : LongLivedMarshalByRefObject
+        T Create<T>() where T : LongLivedMarshalByRefObject, new()
         {
-            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
+            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, null, null, null);
         }
 
         public void Dispose()
         {
+            executionProxy.Dispose();
+            assemblyResolver.Dispose();
             AppDomain.Unload(appDomain);
             Directory.SetCurrentDirectory(previousWorkingDirectory);
         }

@@ -1,33 +1,56 @@
 ﻿namespace Fixie.Internal
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using Execution;
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
-        public void DiscoverMethodGroups(string assemblyFullPath, Options options, Bus bus)
+        readonly List<Listener> subscribedListeners = new List<Listener>();
+
+        public void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
         {
-            var assembly = LoadAssembly(assemblyFullPath);
+            var listener = Construct<Listener>(listenerAssemblyFullPath, listenerType, listenerArgs);
 
-            var discoverer = new Discoverer(options);
-
-            var methodGroups = discoverer.DiscoverMethodGroups(assembly);
-
-            foreach (var methodGroup in methodGroups)
-                bus.Publish(new MethodGroupDiscovered(methodGroup));
+            subscribedListeners.Add(listener);
         }
 
-        public void RunAssembly(string assemblyFullPath, Options options, Bus bus)
+        static T Construct<T>(string assemblyFullPath, string typeFullName, object[] args)
+        {
+            var type = LoadAssembly(assemblyFullPath).GetType(typeFullName);
+
+            return (T)Activator.CreateInstance(type, args);
+        }
+
+        public void DiscoverMethodGroups(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
+            var bus = new Bus(subscribedListeners);
+            new Discoverer(bus, options).DiscoverMethodGroups(assembly);
+        }
+
+        public int RunAssembly(string assemblyFullPath, Options options)
+        {
+            var assembly = LoadAssembly(assemblyFullPath);
+
+            var summaryListener = new SummaryListener();
+            var listeners = subscribedListeners.ToList();
+            listeners.Add(summaryListener);
+
+            var bus = new Bus(listeners);
             Runner(options, bus).RunAssembly(assembly);
+
+            return summaryListener.Summary.Failed;
         }
 
-        public void RunMethods(string assemblyFullPath, Options options, Bus bus, MethodGroup[] methodGroups)
+        public void RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
+            var bus = new Bus(subscribedListeners);
             Runner(options, bus).RunMethods(assembly, methodGroups);
         }
 

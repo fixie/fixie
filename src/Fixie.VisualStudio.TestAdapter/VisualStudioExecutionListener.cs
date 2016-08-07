@@ -1,19 +1,18 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
     using System;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Execution;
+    using Wrappers;
 
     public class VisualStudioExecutionListener :
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>
     {
-        readonly ITestExecutionRecorder log;
+        readonly TestExecutionRecorder log;
         readonly string assemblyPath;
 
-        public VisualStudioExecutionListener(ITestExecutionRecorder log, string assemblyPath)
+        public VisualStudioExecutionListener(TestExecutionRecorder log, string assemblyPath)
         {
             this.log = log;
             this.assemblyPath = assemblyPath;
@@ -51,47 +50,24 @@
             return exception.Type + Environment.NewLine + exception.StackTrace;
         }
 
-        void Log(CaseCompleted message, Action<TestResult> customize = null)
+        void Log(CaseCompleted message, Action<TestResultModel> customize = null)
         {
-            var testResult = new TestResult(TestCase(message.MethodGroup))
+            var testResult = new TestResultModel
             {
-                DisplayName = message.Name,
-                Outcome = Map(message.Status),
+                TestCase = new TestCaseModel
+                {
+                    MethodGroup = message.MethodGroup.FullName,
+                    AssemblyPath = assemblyPath
+                },
+                Name = message.Name,
+                Status = message.Status.ToString(),
                 Duration = message.Duration,
-                ComputerName = Environment.MachineName
+                Output = message.Output
             };
-
-            AttachCapturedConsoleOutput(message.Output, testResult);
 
             customize?.Invoke(testResult);
 
             log.RecordResult(testResult);
-        }
-
-        TestCase TestCase(MethodGroup methodGroup)
-        {
-            return new TestCase(methodGroup.FullName, VsTestExecutor.Uri, assemblyPath);
-        }
-
-        static TestOutcome Map(CaseStatus caseStatus)
-        {
-            switch (caseStatus)
-            {
-                case CaseStatus.Passed:
-                    return TestOutcome.Passed;
-                case CaseStatus.Failed:
-                    return TestOutcome.Failed;
-                case CaseStatus.Skipped:
-                    return TestOutcome.Skipped;
-                default:
-                    return TestOutcome.None;
-            }
-        }
-
-        static void AttachCapturedConsoleOutput(string output, TestResult testResult)
-        {
-            if (!String.IsNullOrEmpty(output))
-                testResult.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, output));
         }
     }
 }

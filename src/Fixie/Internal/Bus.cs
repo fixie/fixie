@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using Execution;
 
-    public class Bus : LongLivedMarshalByRefObject
+    public class Bus
     {
         readonly List<Listener> listeners;
 

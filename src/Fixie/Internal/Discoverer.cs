@@ -2,23 +2,42 @@
 {
     using System.Collections.Generic;
     using System.Reflection;
+    using Execution;
 
     public class Discoverer
     {
+        readonly Bus bus;
         readonly Options options;
 
-        public Discoverer(Options options)
+        public Discoverer(Bus bus)
+            : this(bus, new Options()) { }
+
+        public Discoverer(Bus bus, Options options)
         {
+            this.bus = bus;
             this.options = options;
         }
 
-        public IReadOnlyList<MethodGroup> DiscoverMethodGroups(Assembly assembly)
+        public void DiscoverMethodGroups(Assembly assembly)
         {
             RunContext.Set(options);
+
             var conventions = new ConventionDiscoverer(assembly).GetConventions();
 
-            var discoveredMethodGroups = new List<MethodGroup>();
+            DiscoverMethodGroups(assembly, conventions);
+        }
 
+        public void DiscoverMethodGroups(Assembly assembly, Convention convention)
+        {
+            RunContext.Set(options);
+
+            var conventions = new[] { convention };
+
+            DiscoverMethodGroups(assembly, conventions);
+        }
+
+        void DiscoverMethodGroups(Assembly assembly, Convention[] conventions)
+        {
             foreach (var convention in conventions)
             {
                 var classDiscoverer = new ClassDiscoverer(convention);
@@ -34,14 +53,14 @@
                     {
                         var methodGroup = new MethodGroup(testMethod);
 
-                        distinctMethodGroups[methodGroup.FullName] = methodGroup;
+                        if (!distinctMethodGroups.ContainsKey(methodGroup.FullName))
+                        {
+                            distinctMethodGroups[methodGroup.FullName] = methodGroup;
+                            bus.Publish(new MethodGroupDiscovered(methodGroup));
+                        }
                     }
-
-                    discoveredMethodGroups.AddRange(distinctMethodGroups.Values);
                 }
             }
-
-            return discoveredMethodGroups;
         }
     }
 }

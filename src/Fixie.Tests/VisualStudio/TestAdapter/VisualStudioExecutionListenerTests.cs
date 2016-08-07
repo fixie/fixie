@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Fixie.Internal;
     using Fixie.VisualStudio.TestAdapter;
+    using Fixie.VisualStudio.TestAdapter.Wrappers;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
@@ -14,11 +15,12 @@
         public void ShouldReportResultsToExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
-            var recorder = new StubExecutionRecorder();
-            var listener = new VisualStudioExecutionListener(recorder, assemblyPath);
-
+            var log = new StubExecutionRecorder();
+            using (var recorder = new TestExecutionRecorder(log))
             using (var console = new RedirectedConsole())
             {
+                var listener = new VisualStudioExecutionListener(recorder, assemblyPath);
+
                 Run(listener);
 
                 console.Lines()
@@ -31,7 +33,7 @@
                         "Console.Error: Pass");
             }
 
-            var results = recorder.TestResults;
+            var results = log.TestResults;
             results.Count.ShouldEqual(5);
 
             foreach (var result in results)

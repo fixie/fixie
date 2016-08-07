@@ -4,10 +4,11 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Execution;
+    using Wrappers;
 
     [ExtensionUri(Id)]
     public class VsTestExecutor : ITestExecutor
@@ -39,10 +40,12 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        var listener = new VisualStudioExecutionListener(frameworkHandle, assemblyPath);
-
-                        using (var environment = new ExecutionEnvironment(assemblyPath, listener))
+                        using (var recorder = new TestExecutionRecorder(frameworkHandle))
+                        using (var environment = new ExecutionEnvironment(assemblyPath))
+                        {
+                            environment.Subscribe<VisualStudioExecutionListener>(recorder, assemblyPath);
                             environment.RunAssembly(new Options());
+                        }
                     }
                     else
                     {
@@ -85,10 +88,12 @@
 
                         var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
 
-                        var listener = new VisualStudioExecutionListener(frameworkHandle, assemblyPath);
-
-                        using (var environment = new ExecutionEnvironment(assemblyPath, listener))
+                        using (var recorder = new TestExecutionRecorder(frameworkHandle))
+                        using (var environment = new ExecutionEnvironment(assemblyPath))
+                        {
+                            environment.Subscribe<VisualStudioExecutionListener>(recorder, assemblyPath);
                             environment.RunMethods(new Options(), methodGroups);
+                        }
                     }
                     else
                     {

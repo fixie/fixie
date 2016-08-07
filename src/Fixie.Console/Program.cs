@@ -1,8 +1,6 @@
 ﻿namespace Fixie.ConsoleRunner
 {
     using System;
-    using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using Execution;
     using Reports;
@@ -29,51 +27,35 @@
                     return FatalError;
                 }
 
-                var summary = Execute(commandLineParser);
+                var options = commandLineParser.Options;
 
-                return summary.Failed;
+                using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
+                {
+                    if (ShouldUseTeamCityListener(options))
+                        environment.Subscribe<TeamCityListener>();
+                    else
+                        environment.Subscribe<ConsoleListener>();
+
+                    if (ShouldUseAppVeyorListener())
+                        environment.Subscribe<AppVeyorListener>();
+
+                    foreach (var format in options[CommandLineOption.ReportFormat])
+                    {
+                        if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
+                            environment.Subscribe<ReportListener<NUnitXml>>();
+
+                        else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
+                            environment.Subscribe<ReportListener<XUnitXml>>();
+                    }
+
+                    return environment.RunAssembly(options);
+                }
             }
             catch (Exception exception)
             {
                 using (Foreground.Red)
                     Console.WriteLine($"Fatal Error: {exception}");
                 return FatalError;
-            }
-        }
-
-        static ExecutionSummary Execute(CommandLineParser commandLineParser)
-        {
-            var summaryListener = new SummaryListener();
-
-            var listeners = Listeners(commandLineParser).ToList();
-
-            listeners.Add(summaryListener);
-
-            using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath, listeners))
-                environment.RunAssembly(commandLineParser.Options);
-
-            return summaryListener.Summary;
-        }
-
-        static IEnumerable<Listener> Listeners(CommandLineParser commandLineParser)
-        {
-            var options = commandLineParser.Options;
-
-            if (ShouldUseTeamCityListener(options))
-                yield return new TeamCityListener();
-            else
-                yield return new ConsoleListener();
-
-            if (ShouldUseAppVeyorListener())
-                yield return new AppVeyorListener();
-
-            foreach (var format in options[CommandLineOption.ReportFormat])
-            {
-                if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
-                    yield return new ReportListener<NUnitXml>();
-
-                else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
-                    yield return new ReportListener<XUnitXml>();
             }
         }
 

@@ -1,19 +1,17 @@
 namespace Fixie.VisualStudio.TestAdapter
 {
     using System;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Execution;
+    using Wrappers;
 
     public class VisualStudioDiscoveryListener : Handler<MethodGroupDiscovered>
     {
-        readonly IMessageLogger log;
-        readonly ITestCaseDiscoverySink discoverySink;
+        readonly MessageLogger log;
+        readonly TestCaseDiscoverySink discoverySink;
         readonly string assemblyPath;
         readonly SourceLocationProvider sourceLocationProvider;
 
-        public VisualStudioDiscoveryListener(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)
+        public VisualStudioDiscoveryListener(MessageLogger log, TestCaseDiscoverySink discoverySink, string assemblyPath)
         {
             this.log = log;
             this.discoverySink = discoverySink;
@@ -25,7 +23,11 @@ namespace Fixie.VisualStudio.TestAdapter
         {
             var methodGroup = message.MethodGroup;
 
-            var testCase = new TestCase(methodGroup.FullName, VsTestExecutor.Uri, assemblyPath);
+            var testCase = new TestCaseModel
+            {
+                MethodGroup = methodGroup.FullName,
+                AssemblyPath = assemblyPath
+            };
 
             try
             {
@@ -38,7 +40,7 @@ namespace Fixie.VisualStudio.TestAdapter
             }
             catch (Exception exception)
             {
-                log.Error(exception);
+                log.Error(exception.ToString());
             }
 
             discoverySink.SendTestCase(testCase);

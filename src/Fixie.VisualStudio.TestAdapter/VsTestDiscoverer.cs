@@ -3,10 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Execution;
+    using Wrappers;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
@@ -27,9 +28,13 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        var listener = new VisualStudioDiscoveryListener(log, discoverySink, assemblyPath);
-                        using (var environment = new ExecutionEnvironment(assemblyPath, listener))
+                        using (var messageLogger = new MessageLogger(log))
+                        using (var testCaseDiscoverySink = new TestCaseDiscoverySink(discoverySink))
+                        using (var environment = new ExecutionEnvironment(assemblyPath))
+                        {
+                            environment.Subscribe<VisualStudioDiscoveryListener>(messageLogger, testCaseDiscoverySink, assemblyPath);
                             environment.DiscoverMethodGroups(new Options());
+                        }
                     }
                     else
                     {

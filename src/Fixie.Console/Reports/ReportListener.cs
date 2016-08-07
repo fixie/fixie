@@ -29,7 +29,7 @@
 
         public void Handle(AssemblyStarted message)
         {
-            assembly = new AssemblyReport(message.Assembly.Location);
+            assembly = new AssemblyReport(message.Assembly);
         }
 
         public void Handle(ClassStarted message)
@@ -54,12 +54,12 @@
             assembly = null;
         }
 
-        static void Save(AssemblyReport assembly)
+        static void Save(AssemblyReport assemblyReport)
         {
             var format = new TXmlFormat();
-            var xDocument = format.Transform(assembly);
-            var folder = Path.GetDirectoryName(assembly.Location);
-            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(assembly.Location);
+            var xDocument = format.Transform(assemblyReport);
+            var folder = Path.GetDirectoryName(assemblyReport.Assembly.Location);
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(assemblyReport.Assembly.Location);
             var formatName = format.Name;
             var filePath = Path.Combine(folder, $"{fileNameWithoutExtension}.{formatName}.xml");
             xDocument.Save(filePath, SaveOptions.None);

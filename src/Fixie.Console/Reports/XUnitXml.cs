@@ -17,7 +17,7 @@
             return new XDocument(
                 new XElement("assemblies",
                     new XElement("assembly",
-                        new XAttribute("name", assemblyReport.Location),
+                        new XAttribute("name", assemblyReport.Assembly.Location),
                         new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                         new XAttribute("run-time", now.ToString("HH:mm:ss")),
                         new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),

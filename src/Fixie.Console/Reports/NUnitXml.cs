@@ -60,7 +60,7 @@
             return new XElement("test-suite",
                 new XAttribute("type", "Assembly"),
                 new XAttribute("success", assemblyReport.Failed == 0),
-                new XAttribute("name", assemblyReport.Location),
+                new XAttribute("name", assemblyReport.Assembly.Location),
                 new XAttribute("time", Seconds(assemblyReport.Duration)),
                 new XAttribute("executed", true),
                 new XAttribute("result", assemblyReport.Failed > 0 ? "Failure" : "Success"),

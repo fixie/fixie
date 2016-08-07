@@ -32,17 +32,13 @@ function Package {
 }
 
 function Test {
-    run-tests "Fixie.Console.exe"
-}
-
-function run-tests($exe) {
-    dotnet test .\src\Fixie.Tests --configuration $configuration
-    dotnet test .\src\Fixie.Samples --configuration $configuration
+    exec { & dotnet test .\src\Fixie.Tests --configuration $configuration }
+    exec { & dotnet test .\src\Fixie.Samples --configuration $configuration }
 }
 
 function Build {
     exec { & dotnet build .\src\Fixie --configuration $configuration }
-    exec { & dotnet build .\src\Fixie.Console --configuration $configuration }
+    exec { & dotnet build .\src\dotnet-test-fixie --configuration $configuration }
     exec { & dotnet build .\src\Fixie.TestDriven --configuration $configuration }
     exec { & dotnet build .\src\Fixie.VisualStudio.TestAdapter --configuration $configuration }
     exec { & dotnet build .\src\Fixie.Samples --configuration $configuration }

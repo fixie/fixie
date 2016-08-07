@@ -35,7 +35,7 @@
         {
             return new XElement("class",
                 new XAttribute("time", Seconds(classReport.Duration)),
-                new XAttribute("name", classReport.Name),
+                new XAttribute("name", classReport.TestClass.FullName),
                 new XAttribute("total", classReport.Failed + classReport.Passed + classReport.Skipped),
                 new XAttribute("passed", classReport.Passed),
                 new XAttribute("failed", classReport.Failed),

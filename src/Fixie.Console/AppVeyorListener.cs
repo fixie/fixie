@@ -32,7 +32,7 @@
 
         public void Handle(AssemblyStarted message)
         {
-            fileName = Path.GetFileName(message.Location);
+            fileName = Path.GetFileName(message.Assembly.Location);
         }
 
         public void Handle(CaseSkipped message)

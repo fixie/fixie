@@ -6,7 +6,6 @@ namespace Fixie.Execution
     using System.Linq;
     using Internal;
 
-    [Serializable]
     public class CompoundException
     {
         public CompoundException(IReadOnlyList<Exception> exceptions, AssertionLibraryFilter filter)

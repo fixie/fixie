@@ -29,12 +29,12 @@
 
         public void Handle(AssemblyStarted message)
         {
-            assembly = new AssemblyReport(message.Location);
+            assembly = new AssemblyReport(message.Assembly.Location);
         }
 
         public void Handle(ClassStarted message)
         {
-            currentClass = new ClassReport(message.FullName);
+            currentClass = new ClassReport(message.TestClass);
             assembly.Add(currentClass);
         }
 

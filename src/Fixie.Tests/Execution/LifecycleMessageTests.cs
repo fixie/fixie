@@ -19,8 +19,7 @@
             var assembly = typeof(LifecycleMessageTests).Assembly;
 
             var assemblyStarted = listener.AssemblyStarts.Single();
-            assemblyStarted.Name.ShouldEqual("Fixie.Tests");
-            assemblyStarted.Location.ShouldEqual(assembly.Location);
+            assemblyStarted.Assembly.ShouldEqual(assembly);
 
             listener.Cases.Count.ShouldEqual(5);
 
@@ -78,8 +77,7 @@
             skipWithoutReason.Reason.ShouldBeNull();
 
             var assemblyCompleted = listener.AssemblyCompletions.Single();
-            assemblyCompleted.Name.ShouldEqual("Fixie.Tests");
-            assemblyCompleted.Location.ShouldEqual(assembly.Location);
+            assemblyCompleted.Assembly.ShouldEqual(assembly);
         }
 
         public class StubCaseCompletedListener :

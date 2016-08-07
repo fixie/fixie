@@ -36,9 +36,8 @@ function Test {
 }
 
 function run-tests($exe) {
-    $fixieRunner = resolve-path ".\src\Fixie.Console\bin\$configuration\net452\win7-x64\$exe"
-    exec { & $fixieRunner .\src\Fixie.Tests\bin\$configuration\net452\Fixie.Tests.dll }
-    exec { & $fixieRunner .\src\Fixie.Samples\bin\$configuration\net452\Fixie.Samples.dll }
+    dotnet test .\src\Fixie.Tests --configuration $configuration
+    dotnet test .\src\Fixie.Samples --configuration $configuration
 }
 
 function Build {

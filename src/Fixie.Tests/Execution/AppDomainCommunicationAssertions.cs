@@ -58,15 +58,6 @@ namespace Fixie.Tests.Execution
             //     also not acceptable for AppDomain communication because they can cause
             //     assembly load failures at runtime.
 
-            if (type == typeof(Listener))
-            {
-                //A Listener may be used as an *argument* on a remoting interface.
-                //Because it is the responsibility of such a Listener implementation to be
-                //a valid MarshalByRefObject, there is nothing left to check for here,
-                //so it is assumed to be valid.
-                return true;
-            }
-
             visitedTypes.Add(type);
 
             if (type == typeof(CaseCompleted))
@@ -98,10 +89,6 @@ namespace Fixie.Tests.Execution
             {
                 if (!IsSafeForAppDomainCommunication(type.GetElementType(), visitedTypes))
                     return false;
-            }
-            else if (type == typeof(Bus))
-            {
-                return false;
             }
             else if (type.IsGenericParameter)
             {

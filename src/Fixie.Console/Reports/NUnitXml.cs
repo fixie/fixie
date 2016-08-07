@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal.Reports
+﻿namespace Fixie.ConsoleRunner.Reports
 {
     using System;
     using System.Globalization;

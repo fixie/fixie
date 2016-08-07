@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.ConsoleRunner
 {
     using System;
     using System.IO;

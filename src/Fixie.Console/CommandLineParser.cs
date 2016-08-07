@@ -5,7 +5,6 @@
     using System.IO;
     using System.Linq;
     using System.Text;
-    using Internal;
 
     public class CommandLineParser
     {

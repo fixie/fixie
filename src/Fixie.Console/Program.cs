@@ -1,10 +1,9 @@
 ﻿namespace Fixie.ConsoleRunner
 {
     using System;
-    using Internal;
-    using Internal.Reports;
     using System.Linq;
     using Execution;
+    using Reports;
 
     class Program
     {
@@ -43,7 +42,7 @@
                     foreach (var format in options[CommandLineOption.ReportFormat])
                     {
                         if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
-                            environment.Subscribe<NUnitXml>();
+                            environment.Subscribe<ReportListener<NUnitXml>>();
 
                         else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
                             environment.Subscribe<ReportListener<XUnitXml>>();

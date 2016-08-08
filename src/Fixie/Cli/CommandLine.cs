@@ -26,6 +26,7 @@
                 Errors = new List<string>();
 
                 var arguments = ScanArguments<T>();
+                var options = ScanOptions<T>();
 
                 var argumentValues = new List<string>();
 
@@ -34,7 +35,36 @@
                 {
                     var item = queue.Dequeue();
 
-                    argumentValues.Add(item);
+                    if (IsKey(item))
+                    {
+                        var option = options[KeyName(item)];
+
+                        object value;
+
+                        bool requireValue = option.Type != typeof(bool);
+
+                        if (requireValue)
+                        {
+                            if (!queue.Any() || IsKey(queue.Peek()))
+                            {
+                                Errors.Add($"Option {item} is missing its required value.");
+                                continue;
+                            }
+
+                            value = queue.Dequeue();
+                        }
+                        else
+                        {
+                            value = true;
+                        }
+
+                        option.Value = value;
+                        option.Value = ConvertOrDefault(option.Type, option.Name, option.Value);
+                    }
+                    else
+                    {
+                        argumentValues.Add(item);
+                    }
                 }
 
                 //If there are not enough argumentValues, assume default(T) for the missing ones.
@@ -46,22 +76,65 @@
                             : Default(arguments[i].Type);
                 }
 
-                //If the argument types are not convertible, note the error and assume default(T).
                 foreach (var argument in arguments)
+                    argument.Value = ConvertOrDefault(argument.Type, argument.Name, argument.Value);
+
+                Model = Create<T>(arguments, options);
+                ExtraArguments = argumentValues.Skip(arguments.Count).ToList();
+            }
+
+            object ConvertOrDefault(Type type, string name, object value)
+            {
+                if (type == typeof(bool?) || type == typeof(bool))
                 {
-                    try
+                    var stringValue = value as string;
+                    if (value != null)
                     {
-                        argument.Value = Convert.ChangeType(argument.Value, argument.Type);
-                    }
-                    catch (Exception)
-                    {
-                        Errors.Add($"Expected {argument.Name} to be convertible to {argument.Type.FullName}.");
-                        argument.Value = Default(argument.Type);
+                        if (stringValue == "on" || stringValue == "true")
+                            value = true;
+                        else if (stringValue == "off" || stringValue == "false")
+                            value = false;
                     }
                 }
 
-                Model = Create<T>(arguments);
-                ExtraArguments = argumentValues.Skip(arguments.Count).ToList();
+                object convertedValue;
+                try
+                {
+                    convertedValue =
+                        value == null
+                            ? null
+                            : Convert.ChangeType(value, Nullable.GetUnderlyingType(type) ?? type);
+                }
+                catch (Exception)
+                {
+                    var expectedTypeName = ExpectedTypeName(type);
+                    Errors.Add($"Expected {name} to be convertible to {expectedTypeName}.");
+                    convertedValue = Default(type);
+                }
+                return convertedValue;
+            }
+
+            static string ExpectedTypeName(Type expected)
+            {
+                var nullableUnderlyingType = Nullable.GetUnderlyingType(expected);
+                var suffix = nullableUnderlyingType == null ? "" : "?";
+                expected = nullableUnderlyingType ?? expected;
+
+                if (expected == typeof(bool)) return "bool" + suffix;
+                if (expected == typeof(byte)) return "byte" + suffix;
+                if (expected == typeof(char)) return "char" + suffix;
+                if (expected == typeof(decimal)) return "decimal" + suffix;
+                if (expected == typeof(double)) return "double" + suffix;
+                if (expected == typeof(float)) return "float" + suffix;
+                if (expected == typeof(int)) return "int" + suffix;
+                if (expected == typeof(long)) return "long" + suffix;
+                if (expected == typeof(sbyte)) return "sbyte" + suffix;
+                if (expected == typeof(short)) return "short" + suffix;
+                if (expected == typeof(uint)) return "uint" + suffix;
+                if (expected == typeof(ulong)) return "ulong" + suffix;
+                if (expected == typeof(ushort)) return "ushort" + suffix;
+                if (expected == typeof(string)) return "string";
+                return expected.FullName;
             }
 
             static void DemandSingleConstructor<T>()
@@ -78,11 +151,28 @@
                     .Select(p => new Argument(p))
                     .ToList();
 
-            static T Create<T>(List<Argument> arguments) where T : class
+            static Dictionary<string, Option> ScanOptions<T>() where T : class
+                => typeof(T).GetProperties()
+                    .Where(p => p.CanWrite)
+                    .ToDictionary(p => p.Name, p => new Option(p));
+
+            static T Create<T>(List<Argument> arguments, Dictionary<string, Option> options) where T : class
             {
                 var model = Construct<T>(arguments);
 
+                Populate(model, options);
+
                 return model;
+            }
+
+            static void Populate<T>(T instance, Dictionary<string, Option> options) where T : class
+            {
+                foreach (var name in options.Keys)
+                {
+                    var property = typeof(T).GetProperty(name);
+
+                    property.SetValue(instance, options[name].Value);
+                }
             }
 
             static T Construct<T>(List<Argument> arguments) where T : class
@@ -97,6 +187,12 @@
 
             static ConstructorInfo GetConstructor<T>() where T : class
                 => typeof(T).GetConstructors().Single();
+
+            static bool IsKey(string item)
+                => item.StartsWith("--");
+
+            static string KeyName(string item)
+                => item.Substring("--".Length);
         }
 
         class Argument
@@ -105,6 +201,19 @@
             {
                 Type = parameter.ParameterType;
                 Name = parameter.Name;
+            }
+
+            public Type Type { get; }
+            public string Name { get; }
+            public object Value { get; set; }
+        }
+
+        class Option
+        {
+            public Option(PropertyInfo property)
+            {
+                Type = property.PropertyType;
+                Name = property.Name;
             }
 
             public Type Type { get; }

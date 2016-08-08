@@ -60,6 +60,50 @@
                 .ShouldSucceed(new ModelWithArguments<int>(1, 2, 0));
         }
 
+        public void ShouldParseNullableValueTypeArguments()
+        {
+            Parse<ModelWithArguments<int?>>("1", "2")
+                .ShouldSucceed(new ModelWithArguments<int?>(1, 2, null));
+
+            Parse<ModelWithArguments<char?>>("a", "b")
+                .ShouldSucceed(new ModelWithArguments<char?>('a', 'b', null));
+        }
+
+        public void ShouldParseBoolArgumentsWithExplicitValues()
+        {
+            Parse<ModelWithArguments<bool>>("true", "false")
+                .ShouldSucceed(new ModelWithArguments<bool>(true, false, false));
+
+            Parse<ModelWithArguments<bool>>("on", "off")
+                .ShouldSucceed(new ModelWithArguments<bool>(true, false, false));
+
+            Parse<ModelWithArguments<bool>>("value1", "value2")
+                .ShouldFail(new ModelWithArguments<bool>(false, false, false),
+                    "Expected first to be convertible to bool.",
+                    "Expected second to be convertible to bool.");
+        }
+
+        public void ShouldParseNullableBoolArgumentsWithExplicitValues()
+        {
+            Parse<ModelWithArguments<bool?>>("true", "false")
+                .ShouldSucceed(new ModelWithArguments<bool?>(true, false, null));
+
+            Parse<ModelWithArguments<bool?>>("on", "off")
+                .ShouldSucceed(new ModelWithArguments<bool?>(true, false, null));
+
+            Parse<ModelWithArguments<bool?>>("value1", "value2")
+                .ShouldFail(new ModelWithArguments<bool?>(null, null, null),
+                    "Expected first to be convertible to bool?.",
+                    "Expected second to be convertible to bool?.");
+        }
+
+        public void ShouldFailWithClearExplanationWhenArgumentsAreNotConvertibleToParameterTypes()
+        {
+            Parse<ModelWithArguments<int>>("1", "2", "abc")
+                .ShouldFail(new ModelWithArguments<int>(1, 2, 0),
+                    "Expected third to be convertible to int.");
+        }
+
         public void ShouldCollectExcessArgumentsForLaterInspection()
         {
             Parse<ModelWithArguments<string>>("first", "second", "third", "fourth", "fifth")
@@ -73,11 +117,115 @@
                     "4", "5");
         }
 
-        public void ShouldFailWithClearExplanationWhenArgumentsAreNotConvertibleToParameterType()
+        class ModelWithOptions<T>
         {
-            Parse<ModelWithArguments<int>>("1", "2", "abc")
-                .ShouldFail(new ModelWithArguments<int>(1, 2, 0),
-                    "Expected third to be convertible to System.Int32.");
+            public T First { get; set; }
+            public T Second { get; set; }
+            public T Third { get; set; }
+        }
+
+        public void ShouldParseOptionsAsProperties()
+        {
+            Parse<ModelWithOptions<string>>("--First", "value1", "--Second", "value2", "--Third", "value3")
+                .ShouldSucceed(new ModelWithOptions<string>
+                {
+                    First = "value1", Second = "value2", Third = "value3"
+                });
+
+            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "2", "--Third", "3")
+                .ShouldSucceed(new ModelWithOptions<int>
+                {
+                    First = 1, Second = 2, Third = 3
+                });
+        }
+
+        public void ShouldLeaveDefaultValuesForMissingOptions()
+        {
+            Parse<ModelWithOptions<string>>("--First", "value1", "--Second", "value2")
+                .ShouldSucceed(new ModelWithOptions<string>
+                {
+                    First = "value1", Second = "value2", Third = null
+                });
+
+            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "2")
+                .ShouldSucceed(new ModelWithOptions<int>
+                {
+                    First = 1, Second = 2, Third = 0
+                });
+        }
+
+        public void ShouldFailWithClearExplanationWhenOptionsAreNotConvertibleToPropertyTypes()
+        {
+            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "2", "--Third", "abc")
+                .ShouldFail(new ModelWithOptions<int>
+                {
+                    First = 1, Second = 2, Third = 0
+                },
+                "Expected Third to be convertible to int.");
+        }
+
+        public void ShouldFailWithClearExplanationWhenOptionsAreMissingTheirRequiredValues()
+        {
+            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "2", "--Third")
+                .ShouldFail(new ModelWithOptions<int>
+                {
+                    First = 1, Second = 2, Third = 0
+                },
+                "Option --Third is missing its required value.");
+
+            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "--Third", "3")
+                .ShouldFail(new ModelWithOptions<int>
+                {
+                    First = 1, Second = 0, Third = 3
+                },
+                "Option --Second is missing its required value.");
+        }
+
+        public void ShouldParseNullableValueTypeOptions()
+        {
+            Parse<ModelWithOptions<int?>>("--First", "1", "--Third", "2")
+                .ShouldSucceed(new ModelWithOptions<int?>
+                {
+                    First = 1, Second = null, Third = 2
+                });
+
+            Parse<ModelWithOptions<char?>>("--First", "a", "--Third", "c")
+                .ShouldSucceed(new ModelWithOptions<char?>
+                {
+                    First = 'a', Second = null, Third = 'c'
+                });
+        }
+
+        public void ShouldParseBoolOptionsAsFlagsWithoutExplicitValues()
+        {
+            Parse<ModelWithOptions<bool>>("--First", "--Third")
+                .ShouldSucceed(new ModelWithOptions<bool>
+                {
+                    First = true, Second = false, Third = true
+                });
+        }
+
+        public void ShouldParseNullableBoolOptionsAsFlagsWithExplicitValues()
+        {
+            Parse<ModelWithOptions<bool?>>("--First", "true", "--Third", "false")
+                .ShouldSucceed(new ModelWithOptions<bool?>
+                {
+                    First = true, Second = null, Third = false
+                });
+
+            Parse<ModelWithOptions<bool?>>("--First", "on", "--Third", "off")
+                .ShouldSucceed(new ModelWithOptions<bool?>
+                {
+                    First = true, Second = null, Third = false
+                });
+
+            Parse<ModelWithOptions<bool?>>("--First", "value1", "--Third", "value2")
+                .ShouldFail(new ModelWithOptions<bool?>
+                {
+                    First = null, Second = null, Third = null
+                },
+                "Expected First to be convertible to bool?.",
+                "Expected Third to be convertible to bool?.");
         }
 
         static Scenario<T> Parse<T>(params string[] args) where T : class
@@ -96,23 +244,23 @@
 
             public void ShouldSucceed(T expectedModel, params string[] expectedExtraArguments)
             {
-                result.Model.ShouldMatch(expectedModel);
+                result.Errors.ShouldEqual(new string[] {});
                 result.ExtraArguments.ShouldEqual(expectedExtraArguments);
-                result.Errors.ShouldBeEmpty();
+                result.Model.ShouldMatch(expectedModel);
             }
 
             public void ShouldFail(T expectedModel, params string[] expectedErrors)
             {
-                result.Model.ShouldMatch(expectedModel);
-                result.ExtraArguments.ShouldBeEmpty();
                 result.Errors.ShouldEqual(expectedErrors);
+                result.ExtraArguments.ShouldBeEmpty();
+                result.Model.ShouldMatch(expectedModel);
             }
 
             public void ShouldFail(T expectedModel, string[] expectedExtraArguments, params string[] expectedErrors)
             {
-                result.Model.ShouldMatch(expectedModel);
-                result.ExtraArguments.ShouldBeEmpty();
                 result.Errors.ShouldEqual(expectedErrors);
+                result.ExtraArguments.ShouldBeEmpty();
+                result.Model.ShouldMatch(expectedModel);
             }
         }
     }

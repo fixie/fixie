@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using Cli;
     using Execution;
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
@@ -24,15 +25,15 @@
             return (T)Activator.CreateInstance(type, args);
         }
 
-        public void DiscoverMethodGroups(string assemblyFullPath, Options options)
+        public void DiscoverMethodGroups(string assemblyFullPath, string[] args)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             var bus = new Bus(subscribedListeners);
-            new Discoverer(bus, options).DiscoverMethodGroups(assembly);
+            Discoverer(bus, args).DiscoverMethodGroups(assembly);
         }
 
-        public int RunAssembly(string assemblyFullPath, Options options)
+        public int RunAssembly(string assemblyFullPath, string[] args)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
@@ -41,17 +42,17 @@
             listeners.Add(summaryListener);
 
             var bus = new Bus(listeners);
-            Runner(options, bus).RunAssembly(assembly);
+            Runner(bus, args).RunAssembly(assembly);
 
             return summaryListener.Summary.Failed;
         }
 
-        public void RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
+        public void RunMethods(string assemblyFullPath, MethodGroup[] methodGroups, string[] args)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             var bus = new Bus(subscribedListeners);
-            Runner(options, bus).RunMethods(assembly, methodGroups);
+            Runner(bus, args).RunMethods(assembly, methodGroups);
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -59,9 +60,16 @@
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        static Runner Runner(Options options, Bus bus)
+        static Runner Runner(Bus bus, string[] args)
         {
+            var options = new CommandLineParser(args).Options;
             return new Runner(bus, options);
+        }
+
+        static Discoverer Discoverer(Bus bus, string[] args)
+        {
+            var options = new CommandLineParser(args).Options;
+            return new Discoverer(bus, options);
         }
     }
 }

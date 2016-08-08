@@ -44,7 +44,7 @@
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
                             environment.Subscribe<VisualStudioExecutionListener>(recorder, assemblyPath);
-                            environment.RunAssembly(new Options());
+                            environment.RunAssembly();
                         }
                     }
                     else
@@ -92,7 +92,7 @@
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
                             environment.Subscribe<VisualStudioExecutionListener>(recorder, assemblyPath);
-                            environment.RunMethods(new Options(), methodGroups);
+                            environment.RunMethods(methodGroups);
                         }
                     }
                     else

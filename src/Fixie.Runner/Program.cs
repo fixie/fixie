@@ -29,7 +29,7 @@
                     return FatalError;
                 }
 
-                return RunAssembly(commandLineParser);
+                return RunAssembly(commandLineParser, args);
             }
             catch (Exception exception)
             {
@@ -39,7 +39,7 @@
             }
         }
 
-        static int RunAssembly(CommandLineParser commandLineParser)
+        static int RunAssembly(CommandLineParser commandLineParser, string[] args)
         {
             var options = commandLineParser.Options;
 
@@ -62,7 +62,7 @@
                         environment.Subscribe<ReportListener<XUnitXml>>();
                 }
 
-                return environment.RunAssembly(options);
+                return environment.RunAssembly(args);
             }
         }
 

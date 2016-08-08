@@ -1,6 +1,5 @@
 ﻿namespace Fixie
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -8,7 +7,6 @@
     /// Custom options made available to test runners and custom conventions.
     /// For any given key, this collects zero or more values.
     /// </summary>
-    [Serializable]
     public class Options
     {
         readonly IDictionary<string, List<string>> options = new Dictionary<string, List<string>>();

@@ -36,19 +36,19 @@
             executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
         }
 
-        public void DiscoverMethodGroups(Options options)
+        public void DiscoverMethodGroups(params string[] args)
         {
-            executionProxy.DiscoverMethodGroups(assemblyFullPath, options);
+            executionProxy.DiscoverMethodGroups(assemblyFullPath, args);
         }
 
-        public int RunAssembly(Options options)
+        public int RunAssembly(params string[] args)
         {
-            return executionProxy.RunAssembly(assemblyFullPath, options);
+            return executionProxy.RunAssembly(assemblyFullPath, args);
         }
 
-        public void RunMethods(Options options, MethodGroup[] methodGroups)
+        public void RunMethods(MethodGroup[] methodGroups, params string[] args)
         {
-            executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
+            executionProxy.RunMethods(assemblyFullPath, methodGroups, args);
         }
 
         T Create<T>() where T : LongLivedMarshalByRefObject, new()

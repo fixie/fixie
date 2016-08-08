@@ -33,7 +33,7 @@
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
                             environment.Subscribe<VisualStudioDiscoveryListener>(messageLogger, testCaseDiscoverySink, assemblyPath);
-                            environment.DiscoverMethodGroups(new Options());
+                            environment.DiscoverMethodGroups();
                         }
                     }
                     else

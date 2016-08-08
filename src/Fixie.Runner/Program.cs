@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Text;
     using Execution;
     using Reports;
 
@@ -23,7 +24,7 @@
                             Console.WriteLine(error);
 
                     Console.WriteLine();
-                    Console.WriteLine(CommandLineParser.Usage());
+                    Console.WriteLine(Usage());
                     return FatalError;
                 }
 
@@ -75,6 +76,31 @@
         static bool ShouldUseAppVeyorListener()
         {
             return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
+        }
+
+        static string Usage()
+        {
+            return new StringBuilder()
+                .AppendLine("Usage: dotnet-test-fixie.exe assembly-path [--ReportFormat <NUnit|xUnit>] [--TeamCity <on|off>] [--<key> <value>]...")
+                .AppendLine()
+                .AppendLine()
+                .AppendLine("    assembly-path")
+                .AppendLine("        A path indicating the test assembly the run.")
+                .AppendLine()
+                .AppendLine("    --ReportFormat <NUnit|xUnit>")
+                .AppendLine("        Write test results to a file, using NUnit or xUnit XML format.")
+                .AppendLine()
+                .AppendLine("    --TeamCity <on|off>")
+                .AppendLine("        When this option is *not* specified, the need for TeamCity-")
+                .AppendLine("        formatted console output is automatically detected. Use this")
+                .AppendLine("        option to force TeamCity-formatted output on or off.")
+                .AppendLine()
+                .AppendLine("    --<key> <value>")
+                .AppendLine("        Specifies custom key/value pairs made available to custom")
+                .AppendLine("        conventions. If multiple custom options are declared with the")
+                .AppendLine("        same <key>, *all* of the declared <value>s will be")
+                .AppendLine("        available to the convention at runtime under that <key>.")
+                .ToString();
         }
     }
 }

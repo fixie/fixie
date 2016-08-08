@@ -28,35 +28,40 @@
                     return FatalError;
                 }
 
-                var options = commandLineParser.Options;
-
-                using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
-                {
-                    if (ShouldUseTeamCityListener(options))
-                        environment.Subscribe<TeamCityListener>();
-                    else
-                        environment.Subscribe<ConsoleListener>();
-
-                    if (ShouldUseAppVeyorListener())
-                        environment.Subscribe<AppVeyorListener>();
-
-                    foreach (var format in options[CommandLineOption.ReportFormat])
-                    {
-                        if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
-                            environment.Subscribe<ReportListener<NUnitXml>>();
-
-                        else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
-                            environment.Subscribe<ReportListener<XUnitXml>>();
-                    }
-
-                    return environment.RunAssembly(options);
-                }
+                return RunAssembly(commandLineParser);
             }
             catch (Exception exception)
             {
                 using (Foreground.Red)
                     Console.WriteLine($"Fatal Error: {exception}");
                 return FatalError;
+            }
+        }
+
+        static int RunAssembly(CommandLineParser commandLineParser)
+        {
+            var options = commandLineParser.Options;
+
+            using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
+            {
+                if (ShouldUseTeamCityListener(options))
+                    environment.Subscribe<TeamCityListener>();
+                else
+                    environment.Subscribe<ConsoleListener>();
+
+                if (ShouldUseAppVeyorListener())
+                    environment.Subscribe<AppVeyorListener>();
+
+                foreach (var format in options[CommandLineOption.ReportFormat])
+                {
+                    if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
+                        environment.Subscribe<ReportListener<NUnitXml>>();
+
+                    else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
+                        environment.Subscribe<ReportListener<XUnitXml>>();
+                }
+
+                return environment.RunAssembly(options);
             }
         }
 

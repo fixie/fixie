@@ -1,10 +1,9 @@
-﻿namespace Fixie.Runner
+﻿namespace Fixie.Cli
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
 
     public class CommandLineParser
     {
@@ -77,31 +76,6 @@
         static bool IsKey(string item) => item.StartsWith("--");
 
         static string KeyName(string item) => item.Substring("--".Length);
-
-        public static string Usage()
-        {
-            return new StringBuilder()
-                .AppendLine("Usage: dotnet-test-fixie.exe assembly-path [--ReportFormat <NUnit|xUnit>] [--TeamCity <on|off>] [--<key> <value>]...")
-                .AppendLine()
-                .AppendLine()
-                .AppendLine("    assembly-path")
-                .AppendLine("        A path indicating the test assembly the run.")
-                .AppendLine()
-                .AppendLine("    --ReportFormat <NUnit|xUnit>")
-                .AppendLine("        Write test results to a file, using NUnit or xUnit XML format.")
-                .AppendLine()
-                .AppendLine("    --TeamCity <on|off>")
-                .AppendLine("        When this option is *not* specified, the need for TeamCity-")
-                .AppendLine("        formatted console output is automatically detected. Use this")
-                .AppendLine("        option to force TeamCity-formatted output on or off.")
-                .AppendLine()
-                .AppendLine("    --<key> <value>")
-                .AppendLine("        Specifies custom key/value pairs made available to custom")
-                .AppendLine("        conventions. If multiple custom options are declared with the")
-                .AppendLine("        same <key>, *all* of the declared <value>s will be")
-                .AppendLine("        available to the convention at runtime under that <key>.")
-                .ToString();
-        }
 
         static bool AssemblyDirectoryContainsFixie(string assemblyPath)
             => File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));

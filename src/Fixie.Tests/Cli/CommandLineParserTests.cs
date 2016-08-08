@@ -1,7 +1,7 @@
-﻿namespace Fixie.Tests.Runner
+﻿namespace Fixie.Tests.Cli
 {
     using System.Linq;
-    using Fixie.Runner;
+    using Fixie.Cli;
     using Should;
 
     public class CommandLineParserTests

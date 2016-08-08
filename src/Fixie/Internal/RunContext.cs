@@ -1,20 +1,21 @@
 ﻿namespace Fixie.Internal
 {
     using System.Reflection;
+    using Cli;
 
     /// <summary>
     /// Describes the context in which a test run was initiated.
     /// </summary>
     static class RunContext
     {
-        public static void Set(Options options)
+        public static void Set(string[] args)
         {
-            Set(options, null);
+            Set(args, null);
         }
 
-        public static void Set(Options options, MemberInfo targetMember)
+        public static void Set(string[] args, MemberInfo targetMember)
         {
-            Options = options ?? new Options();
+            Options = new CommandLineParser(args).Options;
             TargetMember = targetMember;
         }
 

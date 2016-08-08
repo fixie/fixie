@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Cli;
     using Execution;
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
@@ -61,15 +60,9 @@
         }
 
         static Runner Runner(Bus bus, string[] args)
-        {
-            var options = new CommandLineParser(args).Options;
-            return new Runner(bus, options);
-        }
+            => new Runner(bus, args);
 
         static Discoverer Discoverer(Bus bus, string[] args)
-        {
-            var options = new CommandLineParser(args).Options;
-            return new Discoverer(bus, options);
-        }
+            => new Discoverer(bus, args);
     }
 }

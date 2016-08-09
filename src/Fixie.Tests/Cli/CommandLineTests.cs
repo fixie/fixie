@@ -349,11 +349,11 @@
                 "--nullable-integer", "56",
                 "--nullable-boolean", "off",
                 "--strings", "first",
-                "--unexpected-option",
+                "--unexpected-argument",
                 "--strings", "second",
                 "unexpectedArgument",
                 "--integers", "78",
-                "--unexpected-option-with-value", "unexpectedValue",
+                "--unexpected-argument-with-value", "unexpectedValue",
                 "--integers", "90")
                 .ShouldSucceed(new Complex("abc", 12)
                 {
@@ -366,9 +366,9 @@
                     Integers = new[] { 78, 90 }
                 }, expectedUnusedArguments: new[]
                     {
-                        "--unexpected-option",
+                        "--unexpected-argument",
                         "unexpectedArgument",
-                        "--unexpected-option-with-value",
+                        "--unexpected-argument-with-value",
                         "unexpectedValue"
                     });
         }

@@ -27,44 +27,44 @@
             public T Model { get; }
             public List<string> UnusedArguments { get; }
 
-            public Parser(string[] args)
+            public Parser(string[] arguments)
             {
                 DemandSingleConstructor();
                 UnusedArguments = new List<string>();
 
-                var arguments = ScanArguments();
-                var options = ScanOptions();
+                var positionalArguments = ScanPositionalArguments();
+                var namedArguments = ScanNamedArguments();
 
-                var argumentValues = new List<string>();
+                var positionalArgumentValues = new List<string>();
 
-                var queue = new Queue<string>(args);
+                var queue = new Queue<string>(arguments);
                 while (queue.Any())
                 {
                     var item = queue.Dequeue();
 
-                    if (IsOption(item))
+                    if (IsNamedArgumentKey(item))
                     {
-                        var name = Option.Normalize(item);
+                        var name = NamedArgument.Normalize(item);
 
-                        if (!options.ContainsKey(name))
+                        if (!namedArguments.ContainsKey(name))
                         {
                             UnusedArguments.Add(item);
 
-                            if (queue.Any() && !IsOption(queue.Peek()))
+                            if (queue.Any() && !IsNamedArgumentKey(queue.Peek()))
                                 UnusedArguments.Add(queue.Dequeue());
 
                             continue;
                         }
 
-                        var option = options[name];
+                        var namedArgument = namedArguments[name];
 
                         object value;
 
-                        bool requireValue = option.ItemType != typeof(bool);
+                        bool requireValue = namedArgument.ItemType != typeof(bool);
 
                         if (requireValue)
                         {
-                            if (!queue.Any() || IsOption(queue.Peek()))
+                            if (!queue.Any() || IsNamedArgumentKey(queue.Peek()))
                                 throw new CommandLineException($"{item} is missing its required value.");
 
                             value = queue.Dequeue();
@@ -74,33 +74,33 @@
                             value = true;
                         }
 
-                        if (option.Values.Count == 1 && !option.IsArray)
+                        if (namedArgument.Values.Count == 1 && !namedArgument.IsArray)
                             throw new CommandLineException($"{item} cannot be specified more than once.");
 
-                        option.Values.Add(Convert(option.ItemType, item, value));
+                        namedArgument.Values.Add(Convert(namedArgument.ItemType, item, value));
                     }
                     else
                     {
-                        if (argumentValues.Count >= arguments.Count)
+                        if (positionalArgumentValues.Count >= positionalArguments.Count)
                             UnusedArguments.Add(item);
                         else
-                            argumentValues.Add(item);
+                            positionalArgumentValues.Add(item);
                     }
                 }
 
                 //If there are not enough argumentValues, assume default(T) for the missing ones.
-                for (int i = 0; i < arguments.Count; i++)
+                for (int i = 0; i < positionalArguments.Count; i++)
                 {
-                    arguments[i].Value =
-                        i < argumentValues.Count
-                            ? argumentValues[i]
-                            : Default(arguments[i].Type);
+                    positionalArguments[i].Value =
+                        i < positionalArgumentValues.Count
+                            ? positionalArgumentValues[i]
+                            : Default(positionalArguments[i].Type);
                 }
 
-                foreach (var argument in arguments)
+                foreach (var argument in positionalArguments)
                     argument.Value = Convert(argument.Type, argument.Name, argument.Value);
 
-                Model = Create(arguments, options);
+                Model = Create(positionalArguments, namedArguments);
             }
 
             static object Convert(Type type, string userFacingName, object value)
@@ -158,62 +158,62 @@
                         "is ambiguous, because it has more than one constructor.");
             }
 
-            static List<Argument> ScanArguments()
+            static List<PositionalArgument> ScanPositionalArguments()
                 => GetConstructor()
                     .GetParameters()
-                    .Select(p => new Argument(p))
+                    .Select(p => new PositionalArgument(p))
                     .ToList();
 
-            static Dictionary<string, Option> ScanOptions()
+            static Dictionary<string, NamedArgument> ScanNamedArguments()
             {
-                var options = typeof(T).GetProperties()
+                var namedArguments = typeof(T).GetProperties()
                     .Where(p => p.CanWrite)
-                    .Select(p => new Option(p))
+                    .Select(p => new NamedArgument(p))
                     .ToArray();
 
-                var dictionary = new Dictionary<string, Option>();
-                foreach (var option in options)
+                var dictionary = new Dictionary<string, NamedArgument>();
+                foreach (var namedArgument in namedArguments)
                 {
-                    if (dictionary.ContainsKey(option.Name))
+                    if (dictionary.ContainsKey(namedArgument.Name))
                         throw new CommandLineException(
                             $"Parsing command line arguments for type {typeof(T).Name} " +
                             "is ambiguous, because it has more than one property corresponding " +
-                            $"with the --{option.Name} argument.");
+                            $"with the --{namedArgument.Name} argument.");
 
-                    dictionary.Add(option.Name, option);
+                    dictionary.Add(namedArgument.Name, namedArgument);
                 }
                 return dictionary;
             }
 
-            static T Create(List<Argument> arguments, Dictionary<string, Option> options)
+            static T Create(List<PositionalArgument> arguments, Dictionary<string, NamedArgument> namedArguments)
             {
                 var model = Construct(arguments);
 
-                Populate(model, options);
+                Populate(model, namedArguments);
 
                 return model;
             }
 
-            static void Populate(T instance, Dictionary<string, Option> options)
-            {
-                foreach (var name in options.Keys)
-                {
-                    var option = options[name];
-
-                    var property = typeof(T).GetProperty(option.PropertyName);
-
-                    if (option.IsArray)
-                        property.SetValue(instance, option.CreateTypedValuesArray());
-                    else if (option.Values.Count != 0)
-                        property.SetValue(instance, option.Values.Single());
-                }
-            }
-
-            static T Construct(List<Argument> arguments)
+            static T Construct(List<PositionalArgument> arguments)
             {
                 var parameters = arguments.Select(x => x.Value).ToArray();
 
                 return (T)GetConstructor().Invoke(parameters);
+            }
+
+            static void Populate(T instance, Dictionary<string, NamedArgument> namedArguments)
+            {
+                foreach (var name in namedArguments.Keys)
+                {
+                    var namedArgument = namedArguments[name];
+
+                    var property = typeof(T).GetProperty(namedArgument.PropertyName);
+
+                    if (namedArgument.IsArray)
+                        property.SetValue(instance, namedArgument.CreateTypedValuesArray());
+                    else if (namedArgument.Values.Count != 0)
+                        property.SetValue(instance, namedArgument.Values.Single());
+                }
             }
 
             static object Default(Type type)
@@ -222,13 +222,13 @@
             static ConstructorInfo GetConstructor()
                 => typeof(T).GetConstructors().Single();
 
-            static bool IsOption(string item)
+            static bool IsNamedArgumentKey(string item)
                 => item.StartsWith("--");
         }
 
-        class Argument
+        class PositionalArgument
         {
-            public Argument(ParameterInfo parameter)
+            public PositionalArgument(ParameterInfo parameter)
             {
                 Type = parameter.ParameterType;
                 Name = parameter.Name;
@@ -239,9 +239,9 @@
             public object Value { get; set; }
         }
 
-        class Option
+        class NamedArgument
         {
-            public Option(PropertyInfo property)
+            public NamedArgument(PropertyInfo property)
             {
                 IsArray = property.PropertyType.IsArray;
 
@@ -267,8 +267,8 @@
                 return destinationArray;
             }
 
-            public static string Normalize(string option)
-                => option.ToLower().Replace("-", "");
+            public static string Normalize(string namedArgumentKey)
+                => namedArgumentKey.ToLower().Replace("-", "");
         }
     }
 }

@@ -65,7 +65,7 @@
                         if (requireValue)
                         {
                             if (!queue.Any() || IsOption(queue.Peek()))
-                                throw new CommandLineException($"Option {item} is missing its required value.");
+                                throw new CommandLineException($"{item} is missing its required value.");
 
                             value = queue.Dequeue();
                         }
@@ -75,9 +75,9 @@
                         }
 
                         if (option.Values.Count == 1 && !option.IsArray)
-                            throw new CommandLineException($"Option {item} cannot be specified more than once.");
+                            throw new CommandLineException($"{item} cannot be specified more than once.");
 
-                        option.Values.Add(ConvertOrDefault(option.ItemType, item, value));
+                        option.Values.Add(Convert(option.ItemType, item, value));
                     }
                     else
                     {
@@ -98,12 +98,12 @@
                 }
 
                 foreach (var argument in arguments)
-                    argument.Value = ConvertOrDefault(argument.Type, argument.Name, argument.Value);
+                    argument.Value = Convert(argument.Type, argument.Name, argument.Value);
 
                 Model = Create(arguments, options);
             }
 
-            static object ConvertOrDefault(Type type, string userFacingName, object value)
+            static object Convert(Type type, string userFacingName, object value)
             {
                 if (type == typeof(bool?) || type == typeof(bool))
                 {
@@ -136,42 +136,18 @@
                                     .Cast<object>()
                                     .Select(x => x.ToString()));
 
-                        throw new CommandLineException($"Expected {userFacingName} to be one of: {allowedValues}.", exception);
+                        throw new CommandLineException($"{userFacingName} must be one of: {allowedValues}.", exception);
                     }
                 }
 
                 try
                 {
-                    return Convert.ChangeType(value, conversionType);
+                    return System.Convert.ChangeType(value, conversionType);
                 }
                 catch (Exception exception)
                 {
-                    var expectedTypeName = ExpectedTypeName(type);
-                    throw new CommandLineException($"Expected {userFacingName} to be convertible to {expectedTypeName}.", exception);
+                    throw new CommandLineException($"{userFacingName} was not in the correct format.", exception);
                 }
-            }
-
-            static string ExpectedTypeName(Type expected)
-            {
-                var nullableUnderlyingType = Nullable.GetUnderlyingType(expected);
-                var suffix = nullableUnderlyingType == null ? "" : "?";
-                expected = nullableUnderlyingType ?? expected;
-
-                if (expected == typeof(bool)) return "bool" + suffix;
-                if (expected == typeof(byte)) return "byte" + suffix;
-                if (expected == typeof(char)) return "char" + suffix;
-                if (expected == typeof(decimal)) return "decimal" + suffix;
-                if (expected == typeof(double)) return "double" + suffix;
-                if (expected == typeof(float)) return "float" + suffix;
-                if (expected == typeof(int)) return "int" + suffix;
-                if (expected == typeof(long)) return "long" + suffix;
-                if (expected == typeof(sbyte)) return "sbyte" + suffix;
-                if (expected == typeof(short)) return "short" + suffix;
-                if (expected == typeof(uint)) return "uint" + suffix;
-                if (expected == typeof(ulong)) return "ulong" + suffix;
-                if (expected == typeof(ushort)) return "ushort" + suffix;
-                if (expected == typeof(string)) return "string";
-                return expected.FullName;
             }
 
             static void DemandSingleConstructor()
@@ -202,7 +178,7 @@
                         throw new CommandLineException(
                             $"Parsing command line arguments for type {typeof(T).Name} " +
                             "is ambiguous, because it has more than one property corresponding " +
-                            $"with the --{option.Name} option.");
+                            $"with the --{option.Name} argument.");
 
                     dictionary.Add(option.Name, option);
                 }

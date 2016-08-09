@@ -161,7 +161,7 @@
                 {
                     First = 1, Second = 2, Third = 0
                 },
-                "Expected Third to be convertible to int.");
+                "Expected --Third to be convertible to int.");
         }
 
         public void ShouldFailWithClearExplanationWhenOptionsAreMissingTheirRequiredValues()
@@ -224,8 +224,8 @@
                 {
                     First = null, Second = null, Third = null
                 },
-                "Expected First to be convertible to bool?.",
-                "Expected Third to be convertible to bool?.");
+                "Expected --First to be convertible to bool?.",
+                "Expected --Third to be convertible to bool?.");
         }
 
         public void ShouldFailWithClearExplanationWhenNonArrayOptionsAreRepeated()

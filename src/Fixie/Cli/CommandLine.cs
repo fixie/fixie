@@ -77,7 +77,7 @@
                             continue;
                         }
 
-                        option.Values.Add(ConvertOrDefault(option.ItemType, option.Name, value));
+                        option.Values.Add(ConvertOrDefault(option.ItemType, item, value));
                     }
                     else
                     {
@@ -103,7 +103,7 @@
                 Model = Create<T>(arguments, options);
             }
 
-            object ConvertOrDefault(Type type, string name, object value)
+            object ConvertOrDefault(Type type, string userFacingName, object value)
             {
                 if (type == typeof(bool?) || type == typeof(bool))
                 {
@@ -128,7 +128,7 @@
                 catch (Exception)
                 {
                     var expectedTypeName = ExpectedTypeName(type);
-                    Errors.Add($"Expected {name} to be convertible to {expectedTypeName}.");
+                    Errors.Add($"Expected {userFacingName} to be convertible to {expectedTypeName}.");
                     convertedValue = Default(type);
                 }
                 return convertedValue;

@@ -7,8 +7,6 @@
 
     public class CommandLineParser
     {
-        static readonly string[] SupportedReportFormats = { "NUnit", "xUnit" };
-
         public CommandLineParser(params string[] args)
         {
             var queue = new Queue<string>(args);
@@ -50,8 +48,11 @@
             var formats = options[CommandLineOption.ReportFormat];
 
             foreach (var format in formats)
-                if (!SupportedReportFormats.Contains(format, StringComparer.CurrentCultureIgnoreCase))
+            {
+                ReportFormat parsed;
+                if (!Enum.TryParse(format, true, out parsed))
                     errors.Add($"The specified report format, '{format}', is not supported.");
+            }
 
             if (!errors.Any())
             {

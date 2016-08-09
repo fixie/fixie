@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Runner
 {
     using System;
-    using System.Linq;
     using System.Text;
     using Cli;
     using Execution;
@@ -16,20 +15,23 @@
         {
             try
             {
-                var commandLineParser = new CommandLineParser(args);
-
-                if (commandLineParser.HasErrors)
+                Options options;
+                try
+                {
+                    options = CommandLine.Parse<Options>(args);
+                    options.Validate();
+                }
+                catch (CommandLineException exception)
                 {
                     using (Foreground.Red)
-                        foreach (var error in commandLineParser.Errors)
-                            Console.WriteLine(error);
+                        Console.WriteLine(exception.Message);
 
                     Console.WriteLine();
                     Console.WriteLine(Usage());
                     return FatalError;
                 }
 
-                return RunAssembly(commandLineParser, args);
+                return RunAssembly(options, args);
             }
             catch (Exception exception)
             {
@@ -39,11 +41,9 @@
             }
         }
 
-        static int RunAssembly(CommandLineParser commandLineParser, string[] args)
+        static int RunAssembly(Options options, string[] args)
         {
-            var options = commandLineParser.Options;
-
-            using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
+            using (var environment = new ExecutionEnvironment(options.AssemblyPath))
             {
                 if (ShouldUseTeamCityListener(options))
                     environment.Subscribe<TeamCityListener>();
@@ -53,14 +53,10 @@
                 if (ShouldUseAppVeyorListener())
                     environment.Subscribe<AppVeyorListener>();
 
-                foreach (var format in options[CommandLineOption.ReportFormat])
-                {
-                    if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
-                        environment.Subscribe<ReportListener<NUnitXml>>();
-
-                    else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
-                        environment.Subscribe<ReportListener<XUnitXml>>();
-                }
+                if (options.ReportFormat == ReportFormat.NUnit)
+                    environment.Subscribe<ReportListener<NUnitXml>>();
+                else if (options.ReportFormat == ReportFormat.xUnit)
+                    environment.Subscribe<ReportListener<XUnitXml>>();
 
                 return environment.RunAssembly(args);
             }
@@ -68,15 +64,11 @@
 
         static bool ShouldUseTeamCityListener(Options options)
         {
-            var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
+            var teamCityExplicitlyEnabled = options.TeamCity == true;
 
             var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
 
-            var useTeamCityListener =
-                (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
-                (!teamCityExplicitlySpecified && runningUnderTeamCity);
-
-            return useTeamCityListener;
+            return teamCityExplicitlyEnabled || runningUnderTeamCity;
         }
 
         static bool ShouldUseAppVeyorListener()

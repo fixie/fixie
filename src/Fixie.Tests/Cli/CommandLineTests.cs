@@ -2,7 +2,6 @@
 {
     using System;
     using Fixie.Cli;
-    using Should;
 
     public class CommandLineTests
     {
@@ -400,20 +399,6 @@
                 Action shouldThrow = () => CommandLine.Parse<T>(args);
 
                 shouldThrow.ShouldThrow<CommandLineException>(expectedExceptionMessage);
-            }
-        }
-    }
-
-    public static class AssertionExtensions
-    {
-        public static void ShouldMatch<T>(this T actual, T expected)
-        {
-            foreach (var property in typeof(T).GetProperties())
-            {
-                var actualValue = property.GetValue(actual);
-                var expectedValue = property.GetValue(expected);
-
-                actualValue.ShouldEqual(expectedValue);
             }
         }
     }

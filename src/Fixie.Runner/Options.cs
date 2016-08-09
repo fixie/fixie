@@ -1,55 +1,32 @@
 ﻿namespace Fixie.Runner
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    using System.IO;
+    using Cli;
 
-    /// <summary>
-    /// Custom options made available to test runners and custom conventions.
-    /// For any given key, this collects zero or more values.
-    /// </summary>
     public class Options
     {
-        readonly IDictionary<string, List<string>> options = new Dictionary<string, List<string>>();
-
-        /// <summary>
-        /// Gets the number of keys in the Options set.
-        /// </summary>
-        public int Count => options.Count;
-
-        /// <summary>
-        /// Gets all the defined keys in the Options set.
-        /// </summary>
-        public IReadOnlyList<string> Keys => options.Keys.ToArray();
-
-        /// <summary>
-        /// Determines whether the Options set contains any elements with the specified key.
-        /// </summary>
-        public bool Contains(string key) => options.ContainsKey(key);
-
-        /// <summary>
-        /// Adds the specified value to the Options set, under the specified key.
-        /// If multiple values are added for the same key, all of those values are included in the set.
-        /// </summary>
-        public void Add(string key, string value)
+        public Options(string assemblyPath)
         {
-            if (!Contains(key))
-                options[key] = new List<string>();
-
-            options[key].Add(value);
+            AssemblyPath = assemblyPath;
         }
 
-        /// <summary>
-        /// Gets all of the Options set values with the specified key.
-        /// </summary>
-        public IReadOnlyList<string> this[string key]
-        {
-            get
-            {
-                if (!Contains(key))
-                    return new string[] { };
+        public string AssemblyPath { get; }
+        public ReportFormat? ReportFormat { get; set; }
+        public bool? TeamCity { get; set; }
 
-                return options[key];
-            }
+        public void Validate()
+        {
+            if (AssemblyPath == null)
+                throw new CommandLineException("Missing required test assembly path.");
+
+            if (!File.Exists(AssemblyPath))
+                throw new CommandLineException("Specified test assembly does not exist: " + AssemblyPath);
+
+            if (!AssemblyDirectoryContainsFixie(AssemblyPath))
+                throw new CommandLineException($"Specified assembly {AssemblyPath} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
         }
+
+        static bool AssemblyDirectoryContainsFixie(string assemblyPath)
+            => File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
     }
 }

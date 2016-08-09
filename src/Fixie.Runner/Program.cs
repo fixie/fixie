@@ -104,9 +104,14 @@
 
         static string Usage()
         {
+            //TODO: As of .NET Core 1.0.0 VS 2015 Tooling Preview 2, it appears that you cannot have a -- separator yet
+            //      between [dotnet arguments] and Fixie's own arguments. The implementation of https://github.com/dotnet/cli/blob/rel/1.0.0/src/dotnet/CommandLine/CommandLineApplication.cs
+            //      on master, though, suggests that the omission has already been fixed. Once that fix is deployed, this usage
+            //      will need to change to reflect the corrected behavior.
+
             return new StringBuilder()
                 .AppendLine("Usage: dotnet test [dotnet arguments]")
-                .AppendLine("       dotnet test [dotnet arguments] -- [--report-format <NUnit|xUnit>] [--team-city <on|off>] [--] [convention arguments]...")
+                .AppendLine("       dotnet test [dotnet arguments] [--report-format <NUnit|xUnit>] [--team-city <on|off>] [--] [convention arguments]...")
                 .AppendLine()
                 .AppendLine()
                 .AppendLine("    dotnet arguments")

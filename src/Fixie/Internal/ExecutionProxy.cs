@@ -10,29 +10,29 @@
     {
         readonly List<Listener> subscribedListeners = new List<Listener>();
 
-        public void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArgs)
+        public void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArguments)
         {
-            var listener = Construct<Listener>(listenerAssemblyFullPath, listenerType, listenerArgs);
+            var listener = Construct<Listener>(listenerAssemblyFullPath, listenerType, listenerArguments);
 
             subscribedListeners.Add(listener);
         }
 
-        static T Construct<T>(string assemblyFullPath, string typeFullName, object[] args)
+        static T Construct<T>(string assemblyFullPath, string typeFullName, object[] constructorArguments)
         {
             var type = LoadAssembly(assemblyFullPath).GetType(typeFullName);
 
-            return (T)Activator.CreateInstance(type, args);
+            return (T)Activator.CreateInstance(type, constructorArguments);
         }
 
-        public void DiscoverMethodGroups(string assemblyFullPath, string[] args)
+        public void DiscoverMethodGroups(string assemblyFullPath, string[] conventionArguments)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             var bus = new Bus(subscribedListeners);
-            Discoverer(bus, args).DiscoverMethodGroups(assembly);
+            Discoverer(bus, conventionArguments).DiscoverMethodGroups(assembly);
         }
 
-        public int RunAssembly(string assemblyFullPath, string[] args)
+        public int RunAssembly(string assemblyFullPath, string[] conventionArguments)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
@@ -41,17 +41,17 @@
             listeners.Add(summaryListener);
 
             var bus = new Bus(listeners);
-            Runner(bus, args).RunAssembly(assembly);
+            Runner(bus, conventionArguments).RunAssembly(assembly);
 
             return summaryListener.Summary.Failed;
         }
 
-        public void RunMethods(string assemblyFullPath, MethodGroup[] methodGroups, string[] args)
+        public void RunMethods(string assemblyFullPath, MethodGroup[] methodGroups, string[] conventionArguments)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             var bus = new Bus(subscribedListeners);
-            Runner(bus, args).RunMethods(assembly, methodGroups);
+            Runner(bus, conventionArguments).RunMethods(assembly, methodGroups);
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -59,10 +59,10 @@
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        static Runner Runner(Bus bus, string[] args)
-            => new Runner(bus, args);
+        static Runner Runner(Bus bus, string[] conventionArguments)
+            => new Runner(bus, conventionArguments);
 
-        static Discoverer Discoverer(Bus bus, string[] args)
-            => new Discoverer(bus, args);
+        static Discoverer Discoverer(Bus bus, string[] conventionArguments)
+            => new Discoverer(bus, conventionArguments);
     }
 }

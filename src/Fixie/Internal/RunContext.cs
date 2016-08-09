@@ -1,28 +1,27 @@
 ﻿namespace Fixie.Internal
 {
     using System.Reflection;
-    using Cli;
 
     /// <summary>
     /// Describes the context in which a test run was initiated.
     /// </summary>
     static class RunContext
     {
-        public static void Set(string[] args)
+        public static void Set(string[] conventionArguments)
         {
-            Set(args, null);
+            Set(conventionArguments, null);
         }
 
-        public static void Set(string[] args, MemberInfo targetMember)
+        public static void Set(string[] conventionArguments, MemberInfo targetMember)
         {
-            Options = new CommandLineParser(args).Options;
+            ConventionArguments = conventionArguments;
             TargetMember = targetMember;
         }
 
         /// <summary>
-        /// Gets the custom Options set provided by the test runner at the start of execution.
+        /// Gets the custom convention command line arguments provided by the test runner at the start of execution.
         /// </summary>
-        public static Options Options { get; private set; }
+        public static string[] ConventionArguments { get; private set; }
 
         /// <summary>
         /// Gets the target Type or MethodInfo identified by

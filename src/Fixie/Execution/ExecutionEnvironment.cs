@@ -27,28 +27,28 @@
             executionProxy = Create<ExecutionProxy>();
         }
 
-        public void Subscribe<TListener>(params object[] listenerArgs)
+        public void Subscribe<TListener>(params object[] listenerArguments)
         {
             var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
             var listenerType = typeof(TListener).FullName;
 
             assemblyResolver.RegisterAssemblyLocation(listenerAssemblyFullPath);
-            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArgs);
+            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArguments);
         }
 
-        public void DiscoverMethodGroups(params string[] args)
+        public void DiscoverMethodGroups(params string[] conventionArguments)
         {
-            executionProxy.DiscoverMethodGroups(assemblyFullPath, args);
+            executionProxy.DiscoverMethodGroups(assemblyFullPath, conventionArguments);
         }
 
-        public int RunAssembly(params string[] args)
+        public int RunAssembly(params string[] conventionArguments)
         {
-            return executionProxy.RunAssembly(assemblyFullPath, args);
+            return executionProxy.RunAssembly(assemblyFullPath, conventionArguments);
         }
 
-        public void RunMethods(MethodGroup[] methodGroups, params string[] args)
+        public void RunMethods(MethodGroup[] methodGroups, params string[] conventionArguments)
         {
-            executionProxy.RunMethods(assemblyFullPath, methodGroups, args);
+            executionProxy.RunMethods(assemblyFullPath, methodGroups, conventionArguments);
         }
 
         T Create<T>() where T : LongLivedMarshalByRefObject, new()

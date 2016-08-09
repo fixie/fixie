@@ -228,6 +228,78 @@
                 "Expected Third to be convertible to bool?.");
         }
 
+        public void ShouldFailWithClearExplanationWhenNonArrayOptionsAreRepeated()
+        {
+            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "2", "--First", "3")
+                .ShouldFail(new ModelWithOptions<int>
+                {
+                    First = 1,
+                    Second = 2,
+                    Third = 0
+                },
+                "Option --First cannot be specified more than once.");
+        }
+
+        class ModelWithArrays
+        {
+            public int[] Integer { get; set; }
+            public string[] String { get; set; }
+        }
+
+        public void ShouldParseRepeatedOptionsAsArrayProperties()
+        {
+            Parse<ModelWithArrays>(
+                "--Integer", "1", "--Integer", "2",
+                "--String", "three", "--String", "four")
+                .ShouldSucceed(new ModelWithArrays
+                {
+                    Integer = new[] { 1, 2 },
+                    String = new[] { "three", "four" }
+                });
+        }
+
+        public void ShouldSetEmptyArraysForMissingArrayOptions()
+        {
+            Parse<ModelWithArrays>()
+                .ShouldSucceed(new ModelWithArrays
+                {
+                    Integer = new int[] { },
+                    String = new string[] { }
+                });
+        }
+
+        public void ShouldCollectExcessOptionsForLaterInspection()
+        {
+            Parse<ModelWithOptions<string>>(
+                "--First", "value1",
+                "--Second", "value2",
+                "--Third", "value3",
+                "--Fourth", "value4",
+                "--Array", "value5",
+                "--Array", "--value6")
+                .ShouldSucceed(new ModelWithOptions<string>
+                {
+                    First = "value1",
+                    Second = "value2",
+                    Third = "value3"
+                },
+                "--Fourth", "value4", "--Array", "value5", "--Array", "--value6");
+
+            Parse<ModelWithOptions<int>>(
+                "--First", "1",
+                "--Second", "2",
+                "--Third", "3",
+                "--Fourth", "4",
+                "--Array", "5",
+                "--Array", "6")
+                .ShouldSucceed(new ModelWithOptions<int>
+                {
+                    First = 1,
+                    Second = 2,
+                    Third = 3
+                },
+                "--Fourth", "4", "--Array", "5", "--Array", "6");
+        }
         static Scenario<T> Parse<T>(params string[] args) where T : class
         {
             return new Scenario<T>(args);

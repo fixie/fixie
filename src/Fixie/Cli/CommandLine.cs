@@ -24,6 +24,7 @@
             {
                 DemandSingleConstructor<T>();
                 Errors = new List<string>();
+                ExtraArguments = new List<string>();
 
                 var arguments = ScanArguments<T>();
                 var options = ScanOptions<T>();
@@ -37,11 +38,23 @@
 
                     if (IsKey(item))
                     {
-                        var option = options[KeyName(item)];
+                        var key = KeyName(item);
+
+                        if (!options.ContainsKey(key))
+                        {
+                            ExtraArguments.Add(item);
+
+                            if (queue.Any() && !IsKey(queue.Peek()))
+                                ExtraArguments.Add(queue.Dequeue());
+
+                            continue;
+                        }
+
+                        var option = options[key];
 
                         object value;
 
-                        bool requireValue = option.Type != typeof(bool);
+                        bool requireValue = option.ItemType != typeof(bool);
 
                         if (requireValue)
                         {
@@ -58,12 +71,20 @@
                             value = true;
                         }
 
-                        option.Value = value;
-                        option.Value = ConvertOrDefault(option.Type, option.Name, option.Value);
+                        if (option.Values.Count == 1 && !option.IsArray)
+                        {
+                            Errors.Add($"Option {item} cannot be specified more than once.");
+                            continue;
+                        }
+
+                        option.Values.Add(ConvertOrDefault(option.ItemType, option.Name, value));
                     }
                     else
                     {
-                        argumentValues.Add(item);
+                        if (argumentValues.Count >= arguments.Count)
+                            ExtraArguments.Add(item);
+                        else
+                           argumentValues.Add(item);
                     }
                 }
 
@@ -80,7 +101,6 @@
                     argument.Value = ConvertOrDefault(argument.Type, argument.Name, argument.Value);
 
                 Model = Create<T>(arguments, options);
-                ExtraArguments = argumentValues.Skip(arguments.Count).ToList();
             }
 
             object ConvertOrDefault(Type type, string name, object value)
@@ -171,7 +191,12 @@
                 {
                     var property = typeof(T).GetProperty(name);
 
-                    property.SetValue(instance, options[name].Value);
+                    var option = options[name];
+
+                    if (option.IsArray)
+                        property.SetValue(instance, option.CreateTypedValuesArray());
+                    else if (option.Values.Count != 0)
+                        property.SetValue(instance, option.Values.Single());
                 }
             }
 
@@ -212,13 +237,27 @@
         {
             public Option(PropertyInfo property)
             {
-                Type = property.PropertyType;
+                IsArray = property.PropertyType.IsArray;
+
+                ItemType = IsArray
+                    ? property.PropertyType.GetElementType()
+                    : property.PropertyType;
+
                 Name = property.Name;
+                Values = new List<object>();
             }
 
-            public Type Type { get; }
+            public bool IsArray { get; }
+            public Type ItemType { get; }
             public string Name { get; }
-            public object Value { get; set; }
+            public List<object> Values { get; }
+
+            public Array CreateTypedValuesArray()
+            {
+                Array destinationArray = Array.CreateInstance(ItemType, Values.Count);
+                Array.Copy(Values.ToArray(), destinationArray, Values.Count);
+                return destinationArray;
+            }
         }
     }
 }

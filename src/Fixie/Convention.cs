@@ -1,6 +1,9 @@
 ﻿namespace Fixie
 {
+    using System;
+    using System.Linq;
     using System.Reflection;
+    using Cli;
     using Conventions;
     using Internal;
 
@@ -29,9 +32,20 @@
         internal Configuration Config { get; }
 
         /// <summary>
-        /// Gets the custom Options set provided by the test runner at the start of execution.
+        /// Take the custom command line arguments provided to the test runner at the start of
+        /// execution, and bind them to the properties of the given model.
         /// </summary>
-        public Options Options => RunContext.Options;
+        public TOptionModel Options<TOptionModel>() where TOptionModel : class, new()
+        {
+            var result = CommandLine.Parse<TOptionModel>(RunContext.CommandLineArguments);
+
+            if (result.Errors.Any())
+                throw new Exception(
+                    $"Failed to parse command line arguments for type {typeof(TOptionModel).Name}:" + Environment.NewLine
+                    + "\t" + String.Join("\t" + Environment.NewLine, result.Errors));
+
+            return result.Model;
+        }
 
         /// <summary>
         /// Gets the target Type or MethodInfo identified by the test runner as the sole item

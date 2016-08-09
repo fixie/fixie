@@ -205,9 +205,9 @@
                 {
                     if (dictionary.ContainsKey(option.Name))
                         throw new Exception(
-                            "Parsing command line arguments for type AmbiguousOptions " +
+                            $"Parsing command line arguments for type {typeof(T).Name} " +
                             "is ambiguous, because it has more than one property corresponding " +
-                            "with the --property option.");
+                            $"with the --{option.Name} option.");
 
                     dictionary.Add(option.Name, option);
                 }

@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Internal
 {
     using System.Reflection;
-    using Cli;
 
     /// <summary>
     /// Describes the context in which a test run was initiated.
@@ -15,14 +14,14 @@
 
         public static void Set(string[] args, MemberInfo targetMember)
         {
-            Options = new CommandLineParser(args).Options;
+            CommandLineArguments = args;
             TargetMember = targetMember;
         }
 
         /// <summary>
-        /// Gets the custom Options set provided by the test runner at the start of execution.
+        /// Gets the custom command line arguments provided by the test runner at the start of execution.
         /// </summary>
-        public static Options Options { get; private set; }
+        public static string[] CommandLineArguments { get; private set; }
 
         /// <summary>
         /// Gets the target Type or MethodInfo identified by

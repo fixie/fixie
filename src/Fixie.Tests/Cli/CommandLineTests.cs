@@ -233,9 +233,9 @@
                 "Expected --third to be convertible to bool?.");
         }
 
-        public void ShouldParseEnumOptionsByTheirStringRepresentation()
+        public void ShouldParseEnumOptionsByTheirCaseInsensitiveStringRepresentation()
         {
-            Parse<ModelWithOptions<Level>>("--first", "Warning", "--third", "Error")
+            Parse<ModelWithOptions<Level>>("--first", "Warning", "--third", "ErRoR")
                 .ShouldSucceed(new ModelWithOptions<Level>
                 {
                     First = Level.Warning,
@@ -243,7 +243,7 @@
                     Third = Level.Error
                 });
 
-            Parse<ModelWithOptions<Level?>>("--first", "Warning", "--third", "Error")
+            Parse<ModelWithOptions<Level?>>("--first", "Warning", "--third", "eRrOr")
                 .ShouldSucceed(new ModelWithOptions<Level?>
                 {
                     First = Level.Warning,

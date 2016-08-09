@@ -130,7 +130,7 @@
                         {
                             try
                             {
-                                convertedValue = Enum.Parse(conversionType, (string)value);
+                                convertedValue = Enum.Parse(conversionType, (string)value, ignoreCase: true);
                             }
                             catch (Exception)
                             {

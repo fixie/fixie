@@ -126,13 +126,13 @@
 
         public void ShouldParseOptionsAsProperties()
         {
-            Parse<ModelWithOptions<string>>("--First", "value1", "--Second", "value2", "--Third", "value3")
+            Parse<ModelWithOptions<string>>("--first", "value1", "--second", "value2", "--third", "value3")
                 .ShouldSucceed(new ModelWithOptions<string>
                 {
                     First = "value1", Second = "value2", Third = "value3"
                 });
 
-            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "2", "--Third", "3")
+            Parse<ModelWithOptions<int>>("--first", "1", "--second", "2", "--third", "3")
                 .ShouldSucceed(new ModelWithOptions<int>
                 {
                     First = 1, Second = 2, Third = 3
@@ -141,13 +141,13 @@
 
         public void ShouldLeaveDefaultValuesForMissingOptions()
         {
-            Parse<ModelWithOptions<string>>("--First", "value1", "--Second", "value2")
+            Parse<ModelWithOptions<string>>("--first", "value1", "--second", "value2")
                 .ShouldSucceed(new ModelWithOptions<string>
                 {
                     First = "value1", Second = "value2", Third = null
                 });
 
-            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "2")
+            Parse<ModelWithOptions<int>>("--first", "1", "--second", "2")
                 .ShouldSucceed(new ModelWithOptions<int>
                 {
                     First = 1, Second = 2, Third = 0
@@ -156,40 +156,40 @@
 
         public void ShouldFailWithClearExplanationWhenOptionsAreNotConvertibleToPropertyTypes()
         {
-            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "2", "--Third", "abc")
+            Parse<ModelWithOptions<int>>("--first", "1", "--second", "2", "--third", "abc")
                 .ShouldFail(new ModelWithOptions<int>
                 {
                     First = 1, Second = 2, Third = 0
                 },
-                "Expected --Third to be convertible to int.");
+                "Expected --third to be convertible to int.");
         }
 
         public void ShouldFailWithClearExplanationWhenOptionsAreMissingTheirRequiredValues()
         {
-            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "2", "--Third")
+            Parse<ModelWithOptions<int>>("--first", "1", "--second", "2", "--third")
                 .ShouldFail(new ModelWithOptions<int>
                 {
                     First = 1, Second = 2, Third = 0
                 },
-                "Option --Third is missing its required value.");
+                "Option --third is missing its required value.");
 
-            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "--Third", "3")
+            Parse<ModelWithOptions<int>>("--first", "1", "--second", "--third", "3")
                 .ShouldFail(new ModelWithOptions<int>
                 {
                     First = 1, Second = 0, Third = 3
                 },
-                "Option --Second is missing its required value.");
+                "Option --second is missing its required value.");
         }
 
         public void ShouldParseNullableValueTypeOptions()
         {
-            Parse<ModelWithOptions<int?>>("--First", "1", "--Third", "2")
+            Parse<ModelWithOptions<int?>>("--first", "1", "--third", "2")
                 .ShouldSucceed(new ModelWithOptions<int?>
                 {
                     First = 1, Second = null, Third = 2
                 });
 
-            Parse<ModelWithOptions<char?>>("--First", "a", "--Third", "c")
+            Parse<ModelWithOptions<char?>>("--first", "a", "--third", "c")
                 .ShouldSucceed(new ModelWithOptions<char?>
                 {
                     First = 'a', Second = null, Third = 'c'
@@ -198,7 +198,7 @@
 
         public void ShouldParseBoolOptionsAsFlagsWithoutExplicitValues()
         {
-            Parse<ModelWithOptions<bool>>("--First", "--Third")
+            Parse<ModelWithOptions<bool>>("--first", "--third")
                 .ShouldSucceed(new ModelWithOptions<bool>
                 {
                     First = true, Second = false, Third = true
@@ -207,37 +207,37 @@
 
         public void ShouldParseNullableBoolOptionsAsFlagsWithExplicitValues()
         {
-            Parse<ModelWithOptions<bool?>>("--First", "true", "--Third", "false")
+            Parse<ModelWithOptions<bool?>>("--first", "true", "--third", "false")
                 .ShouldSucceed(new ModelWithOptions<bool?>
                 {
                     First = true, Second = null, Third = false
                 });
 
-            Parse<ModelWithOptions<bool?>>("--First", "on", "--Third", "off")
+            Parse<ModelWithOptions<bool?>>("--first", "on", "--third", "off")
                 .ShouldSucceed(new ModelWithOptions<bool?>
                 {
                     First = true, Second = null, Third = false
                 });
 
-            Parse<ModelWithOptions<bool?>>("--First", "value1", "--Third", "value2")
+            Parse<ModelWithOptions<bool?>>("--first", "value1", "--third", "value2")
                 .ShouldFail(new ModelWithOptions<bool?>
                 {
                     First = null, Second = null, Third = null
                 },
-                "Expected --First to be convertible to bool?.",
-                "Expected --Third to be convertible to bool?.");
+                "Expected --first to be convertible to bool?.",
+                "Expected --third to be convertible to bool?.");
         }
 
         public void ShouldFailWithClearExplanationWhenNonArrayOptionsAreRepeated()
         {
-            Parse<ModelWithOptions<int>>("--First", "1", "--Second", "2", "--First", "3")
+            Parse<ModelWithOptions<int>>("--first", "1", "--second", "2", "--first", "3")
                 .ShouldFail(new ModelWithOptions<int>
                 {
                     First = 1,
                     Second = 2,
                     Third = 0
                 },
-                "Option --First cannot be specified more than once.");
+                "Option --first cannot be specified more than once.");
         }
 
         class ModelWithArrays
@@ -249,8 +249,8 @@
         public void ShouldParseRepeatedOptionsAsArrayProperties()
         {
             Parse<ModelWithArrays>(
-                "--Integer", "1", "--Integer", "2",
-                "--String", "three", "--String", "four")
+                "--integer", "1", "--integer", "2",
+                "--string", "three", "--string", "four")
                 .ShouldSucceed(new ModelWithArrays
                 {
                     Integer = new[] { 1, 2 },
@@ -271,34 +271,50 @@
         public void ShouldCollectExcessOptionsForLaterInspection()
         {
             Parse<ModelWithOptions<string>>(
-                "--First", "value1",
-                "--Second", "value2",
-                "--Third", "value3",
-                "--Fourth", "value4",
-                "--Array", "value5",
-                "--Array", "--value6")
+                "--first", "value1",
+                "--second", "value2",
+                "--third", "value3",
+                "--fourth", "value4",
+                "--array", "value5",
+                "--array", "--value6")
                 .ShouldSucceed(new ModelWithOptions<string>
                 {
                     First = "value1",
                     Second = "value2",
                     Third = "value3"
                 },
-                "--Fourth", "value4", "--Array", "value5", "--Array", "--value6");
+                "--fourth", "value4", "--array", "value5", "--array", "--value6");
 
             Parse<ModelWithOptions<int>>(
-                "--First", "1",
-                "--Second", "2",
-                "--Third", "3",
-                "--Fourth", "4",
-                "--Array", "5",
-                "--Array", "6")
+                "--first", "1",
+                "--second", "2",
+                "--third", "3",
+                "--fourth", "4",
+                "--array", "5",
+                "--array", "6")
                 .ShouldSucceed(new ModelWithOptions<int>
                 {
                     First = 1,
                     Second = 2,
                     Third = 3
                 },
-                "--Fourth", "4", "--Array", "5", "--Array", "6");
+                "--fourth", "4", "--array", "5", "--array", "6");
+        }
+
+        class AmbiguousOptions
+        {
+            public int PROPERTY { get; set; }
+            public int property { get; set; }
+        }
+
+        public void ShouldDemandUnambiguousPropertyNames()
+        {
+            Action ambiguousPropertyNames = () => Parse<AmbiguousOptions>();
+
+            ambiguousPropertyNames.ShouldThrow<Exception>(
+                "Parsing command line arguments for type AmbiguousOptions " +
+                "is ambiguous, because it has more than one property corresponding " +
+                "with the --property option.");
         }
         static Scenario<T> Parse<T>(params string[] args) where T : class
         {

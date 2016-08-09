@@ -36,21 +36,21 @@
                 {
                     var item = queue.Dequeue();
 
-                    if (IsKey(item))
+                    if (IsOption(item))
                     {
-                        var key = KeyName(item);
+                        var name = Option.Normalize(item);
 
-                        if (!options.ContainsKey(key))
+                        if (!options.ContainsKey(name))
                         {
                             ExtraArguments.Add(item);
 
-                            if (queue.Any() && !IsKey(queue.Peek()))
+                            if (queue.Any() && !IsOption(queue.Peek()))
                                 ExtraArguments.Add(queue.Dequeue());
 
                             continue;
                         }
 
-                        var option = options[key];
+                        var option = options[name];
 
                         object value;
 
@@ -58,7 +58,7 @@
 
                         if (requireValue)
                         {
-                            if (!queue.Any() || IsKey(queue.Peek()))
+                            if (!queue.Any() || IsOption(queue.Peek()))
                             {
                                 Errors.Add($"Option {item} is missing its required value.");
                                 continue;
@@ -172,9 +172,25 @@
                     .ToList();
 
             static Dictionary<string, Option> ScanOptions<T>() where T : class
-                => typeof(T).GetProperties()
+            {
+                var options = typeof(T).GetProperties()
                     .Where(p => p.CanWrite)
-                    .ToDictionary(p => p.Name, p => new Option(p));
+                    .Select(p => new Option(p))
+                    .ToArray();
+
+                var dictionary = new Dictionary<string, Option>();
+                foreach (var option in options)
+                {
+                    if (dictionary.ContainsKey(option.Name))
+                        throw new Exception(
+                            "Parsing command line arguments for type AmbiguousOptions " +
+                            "is ambiguous, because it has more than one property corresponding " +
+                            "with the --property option.");
+
+                    dictionary.Add(option.Name, option);
+                }
+                return dictionary;
+            }
 
             static T Create<T>(List<Argument> arguments, Dictionary<string, Option> options) where T : class
             {
@@ -189,9 +205,9 @@
             {
                 foreach (var name in options.Keys)
                 {
-                    var property = typeof(T).GetProperty(name);
-
                     var option = options[name];
+
+                    var property = typeof(T).GetProperty(option.PropertyName);
 
                     if (option.IsArray)
                         property.SetValue(instance, option.CreateTypedValuesArray());
@@ -213,11 +229,8 @@
             static ConstructorInfo GetConstructor<T>() where T : class
                 => typeof(T).GetConstructors().Single();
 
-            static bool IsKey(string item)
+            static bool IsOption(string item)
                 => item.StartsWith("--");
-
-            static string KeyName(string item)
-                => item.Substring("--".Length);
         }
 
         class Argument
@@ -243,12 +256,14 @@
                     ? property.PropertyType.GetElementType()
                     : property.PropertyType;
 
-                Name = property.Name;
+                PropertyName = property.Name;
+                Name = Normalize(PropertyName);
                 Values = new List<object>();
             }
 
             public bool IsArray { get; }
             public Type ItemType { get; }
+            public string PropertyName { get; }
             public string Name { get; }
             public List<object> Values { get; }
 
@@ -258,6 +273,9 @@
                 Array.Copy(Values.ToArray(), destinationArray, Values.Count);
                 return destinationArray;
             }
+
+            public static string Normalize(string option)
+                => option.ToLower().Replace("-", "");
         }
     }
 }

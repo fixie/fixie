@@ -316,6 +316,67 @@
                 "is ambiguous, because it has more than one property corresponding " +
                 "with the --property option.");
         }
+
+        class Complex
+        {
+            public Complex(string firstArgument, int secondArgument)
+            {
+                FirstArgument = firstArgument;
+                SecondArgument = secondArgument;
+            }
+
+            public string FirstArgument { get; }
+            public int SecondArgument { get; }
+
+            public string String { get; set; }
+            public int Integer { get; set; }
+            public bool Bool { get; set; }
+            public int? NullableInteger { get; set; }
+            public bool? NullableBoolean { get; set; }
+
+            public string[] Strings { get; set; }
+            public int[] Integers { get; set; }
+        }
+
+        public void ShouldBindCommandLineToComplexModels()
+        {
+            Parse<Complex>()
+                .ShouldSucceed(new Complex(null, 0)
+                {
+                    Strings = new string[] { },
+                    Integers = new int[] { }
+                });
+
+            Parse<Complex>("--string", "def", "abc", "12",
+                "--integer", "34",
+                "--bool",
+                "--nullable-integer", "56",
+                "--nullable-boolean", "off",
+                "--strings", "first",
+                "--unexpected-option",
+                "--strings", "second",
+                "unexpectedArgument",
+                "--integers", "78",
+                "--unexpected-option-with-value", "unexpectedValue",
+                "--integers", "90")
+                .ShouldSucceed(new Complex("abc", 12)
+                {
+                    String = "def",
+                    Integer = 34,
+                    Bool = true,
+                    NullableInteger = 56,
+                    NullableBoolean = false,
+                    Strings = new[] { "first", "second" },
+                    Integers = new[] { 78, 90 }
+                }, expectedExtraArguments: new[]
+                    {
+                        "--unexpected-option",
+                        "unexpectedArgument",
+                        "--unexpected-option-with-value",
+                        "unexpectedValue"
+                    });
+        }
+
         static Scenario<T> Parse<T>(params string[] args) where T : class
         {
             return new Scenario<T>(args);

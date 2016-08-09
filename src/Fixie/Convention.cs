@@ -34,9 +34,7 @@
         /// execution, and bind them to the properties of the given model.
         /// </summary>
         public TOptionModel Options<TOptionModel>() where TOptionModel : class, new()
-        {
-            return CommandLine.Parse<TOptionModel>(RunContext.CommandLineArguments).Model;
-        }
+            => CommandLine.Parse<TOptionModel>(RunContext.CommandLineArguments);
 
         /// <summary>
         /// Gets the target Type or MethodInfo identified by the test runner as the sole item

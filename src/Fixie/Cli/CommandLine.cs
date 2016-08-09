@@ -7,22 +7,30 @@
 
     public class CommandLine
     {
-        public static ParseResult<T> Parse<T>(params string[] args) where T : class
+        public static T Parse<T>(string[] arguments) where T : class
         {
-            var parser = new Parser<T>(args);
+            string[] unusedArguments;
+            return Parse<T>(arguments, out unusedArguments);
+        }
 
-            return new ParseResult<T>(parser.Model, parser.ExtraArguments);
+        public static T Parse<T>(string[] arguments, out string[] unusedArguments) where T : class
+        {
+            var parser = new Parser<T>(arguments);
+
+            unusedArguments = parser.UnusedArguments.ToArray();
+
+            return parser.Model;
         }
 
         class Parser<T> where T : class
         {
             public T Model { get; }
-            public List<string> ExtraArguments { get; }
+            public List<string> UnusedArguments { get; }
 
             public Parser(string[] args)
             {
                 DemandSingleConstructor();
-                ExtraArguments = new List<string>();
+                UnusedArguments = new List<string>();
 
                 var arguments = ScanArguments();
                 var options = ScanOptions();
@@ -40,10 +48,10 @@
 
                         if (!options.ContainsKey(name))
                         {
-                            ExtraArguments.Add(item);
+                            UnusedArguments.Add(item);
 
                             if (queue.Any() && !IsOption(queue.Peek()))
-                                ExtraArguments.Add(queue.Dequeue());
+                                UnusedArguments.Add(queue.Dequeue());
 
                             continue;
                         }
@@ -74,9 +82,9 @@
                     else
                     {
                         if (argumentValues.Count >= arguments.Count)
-                            ExtraArguments.Add(item);
+                            UnusedArguments.Add(item);
                         else
-                           argumentValues.Add(item);
+                            argumentValues.Add(item);
                     }
                 }
 

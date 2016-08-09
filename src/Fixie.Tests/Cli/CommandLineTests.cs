@@ -369,7 +369,7 @@
                     NullableBoolean = false,
                     Strings = new[] { "first", "second" },
                     Integers = new[] { 78, 90 }
-                }, expectedExtraArguments: new[]
+                }, expectedUnusedArguments: new[]
                     {
                         "--unexpected-option",
                         "unexpectedArgument",
@@ -392,11 +392,12 @@
                 this.args = args;
             }
 
-            public void ShouldSucceed(T expectedModel, params string[] expectedExtraArguments)
+            public void ShouldSucceed(T expectedModel, params string[] expectedUnusedArguments)
             {
-                var result = CommandLine.Parse<T>(args);
-                result.Model.ShouldMatch(expectedModel);
-                result.ExtraArguments.ShouldEqual(expectedExtraArguments);
+                string[] unusedArguments;
+                var model = CommandLine.Parse<T>(args, out unusedArguments);
+                model.ShouldMatch(expectedModel);
+                unusedArguments.ShouldEqual(expectedUnusedArguments);
             }
 
             public void ShouldFail(string expectedExceptionMessage)

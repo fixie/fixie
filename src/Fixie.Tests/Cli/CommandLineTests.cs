@@ -372,31 +372,31 @@
                     });
         }
 
-        static Scenario<T> Parse<T>(params string[] args) where T : class
+        static Scenario<T> Parse<T>(params string[] arguments) where T : class
         {
-            return new Scenario<T>(args);
+            return new Scenario<T>(arguments);
         }
 
         class Scenario<T> where T : class
         {
-            readonly string[] args;
+            readonly string[] arguments;
 
-            public Scenario(params string[] args)
+            public Scenario(params string[] arguments)
             {
-                this.args = args;
+                this.arguments = arguments;
             }
 
             public void ShouldSucceed(T expectedModel, params string[] expectedUnusedArguments)
             {
                 string[] unusedArguments;
-                var model = CommandLine.Parse<T>(args, out unusedArguments);
+                var model = CommandLine.Parse<T>(arguments, out unusedArguments);
                 model.ShouldMatch(expectedModel);
                 unusedArguments.ShouldEqual(expectedUnusedArguments);
             }
 
             public void ShouldFail(string expectedExceptionMessage)
             {
-                Action shouldThrow = () => CommandLine.Parse<T>(args);
+                Action shouldThrow = () => CommandLine.Parse<T>(arguments);
 
                 shouldThrow.ShouldThrow<CommandLineException>(expectedExceptionMessage);
             }

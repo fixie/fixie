@@ -120,10 +120,32 @@
                 object convertedValue;
                 try
                 {
-                    convertedValue =
-                        value == null
-                            ? null
-                            : Convert.ChangeType(value, Nullable.GetUnderlyingType(type) ?? type);
+                    if (value == null)
+                        convertedValue = null;
+                    else
+                    {
+                        var conversionType = Nullable.GetUnderlyingType(type) ?? type;
+
+                        if (conversionType.IsEnum && value is string)
+                        {
+                            try
+                            {
+                                convertedValue = Enum.Parse(conversionType, (string)value);
+                            }
+                            catch (Exception)
+                            {
+                                var allowedValues =
+                                    String.Join(", ",
+                                        Enum.GetValues(conversionType)
+                                            .Cast<object>()
+                                            .Select(x => x.ToString()));
+                                Errors.Add($"Expected {userFacingName} to be one of: {allowedValues}.");
+                                convertedValue = Default(type);
+                            }
+                        }
+                        else
+                            convertedValue = Convert.ChangeType(value, conversionType);
+                    }
                 }
                 catch (Exception)
                 {

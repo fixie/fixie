@@ -124,6 +124,11 @@
             public T Third { get; set; }
         }
 
+        enum Level
+        {
+            Information, Warning, Error
+        }
+
         public void ShouldParseOptionsAsProperties()
         {
             Parse<ModelWithOptions<string>>("--first", "value1", "--second", "value2", "--third", "value3")
@@ -226,6 +231,46 @@
                 },
                 "Expected --first to be convertible to bool?.",
                 "Expected --third to be convertible to bool?.");
+        }
+
+        public void ShouldParseEnumOptionsByTheirStringRepresentation()
+        {
+            Parse<ModelWithOptions<Level>>("--first", "Warning", "--third", "Error")
+                .ShouldSucceed(new ModelWithOptions<Level>
+                {
+                    First = Level.Warning,
+                    Second = default(Level),
+                    Third = Level.Error
+                });
+
+            Parse<ModelWithOptions<Level?>>("--first", "Warning", "--third", "Error")
+                .ShouldSucceed(new ModelWithOptions<Level?>
+                {
+                    First = Level.Warning,
+                    Second = null,
+                    Third = Level.Error
+                });
+        }
+
+        public void ShouldFailWithClearExplanationWhenEnumOptionsCannotBeParsed()
+        {
+            Parse<ModelWithOptions<Level>>("--first", "Warning", "--third", "TYPO")
+                .ShouldFail(new ModelWithOptions<Level>
+                {
+                    First = Level.Warning,
+                    Second = default(Level),
+                    Third = default(Level)
+                },
+                "Expected --third to be one of: Information, Warning, Error.");
+
+            Parse<ModelWithOptions<Level?>>("--first", "Warning", "--third", "TYPO")
+                .ShouldFail(new ModelWithOptions<Level?>
+                {
+                    First = Level.Warning,
+                    Second = null,
+                    Third = null
+                },
+                "Expected --third to be one of: Information, Warning, Error.");
         }
 
         public void ShouldFailWithClearExplanationWhenNonArrayOptionsAreRepeated()

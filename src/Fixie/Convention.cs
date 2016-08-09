@@ -1,7 +1,5 @@
 ﻿namespace Fixie
 {
-    using System;
-    using System.Linq;
     using System.Reflection;
     using Cli;
     using Conventions;
@@ -37,14 +35,7 @@
         /// </summary>
         public TOptionModel Options<TOptionModel>() where TOptionModel : class, new()
         {
-            var result = CommandLine.Parse<TOptionModel>(RunContext.CommandLineArguments);
-
-            if (result.Errors.Any())
-                throw new Exception(
-                    $"Failed to parse command line arguments for type {typeof(TOptionModel).Name}:" + Environment.NewLine
-                    + "\t" + String.Join("\t" + Environment.NewLine, result.Errors));
-
-            return result.Model;
+            return CommandLine.Parse<TOptionModel>(RunContext.CommandLineArguments).Model;
         }
 
         /// <summary>

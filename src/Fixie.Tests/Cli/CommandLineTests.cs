@@ -21,11 +21,9 @@
 
         public void ShouldDemandExactlyOneConstructor()
         {
-            Action tooManyConstructors = () => Parse<TooManyConstructors>();
-
-            tooManyConstructors.ShouldThrow<Exception>(
-                "Parsing command line arguments for type TooManyConstructors " +
-                "is ambiguous, because it has more than one constructor.");
+            Parse<TooManyConstructors>()
+                .ShouldFail("Parsing command line arguments for type TooManyConstructors " +
+                            "is ambiguous, because it has more than one constructor.");
         }
 
         class ModelWithArguments<T>
@@ -78,9 +76,7 @@
                 .ShouldSucceed(new ModelWithArguments<bool>(true, false, false));
 
             Parse<ModelWithArguments<bool>>("value1", "value2")
-                .ShouldFail(new ModelWithArguments<bool>(false, false, false),
-                    "Expected first to be convertible to bool.",
-                    "Expected second to be convertible to bool.");
+                .ShouldFail("Expected first to be convertible to bool.");
         }
 
         public void ShouldParseNullableBoolArgumentsWithExplicitValues()
@@ -92,16 +88,13 @@
                 .ShouldSucceed(new ModelWithArguments<bool?>(true, false, null));
 
             Parse<ModelWithArguments<bool?>>("value1", "value2")
-                .ShouldFail(new ModelWithArguments<bool?>(null, null, null),
-                    "Expected first to be convertible to bool?.",
-                    "Expected second to be convertible to bool?.");
+                .ShouldFail("Expected first to be convertible to bool?.");
         }
 
         public void ShouldFailWithClearExplanationWhenArgumentsAreNotConvertibleToParameterTypes()
         {
             Parse<ModelWithArguments<int>>("1", "2", "abc")
-                .ShouldFail(new ModelWithArguments<int>(1, 2, 0),
-                    "Expected third to be convertible to int.");
+                .ShouldFail("Expected third to be convertible to int.");
         }
 
         public void ShouldCollectExcessArgumentsForLaterInspection()
@@ -162,28 +155,16 @@
         public void ShouldFailWithClearExplanationWhenOptionsAreNotConvertibleToPropertyTypes()
         {
             Parse<ModelWithOptions<int>>("--first", "1", "--second", "2", "--third", "abc")
-                .ShouldFail(new ModelWithOptions<int>
-                {
-                    First = 1, Second = 2, Third = 0
-                },
-                "Expected --third to be convertible to int.");
+                .ShouldFail("Expected --third to be convertible to int.");
         }
 
         public void ShouldFailWithClearExplanationWhenOptionsAreMissingTheirRequiredValues()
         {
             Parse<ModelWithOptions<int>>("--first", "1", "--second", "2", "--third")
-                .ShouldFail(new ModelWithOptions<int>
-                {
-                    First = 1, Second = 2, Third = 0
-                },
-                "Option --third is missing its required value.");
+                .ShouldFail("Option --third is missing its required value.");
 
             Parse<ModelWithOptions<int>>("--first", "1", "--second", "--third", "3")
-                .ShouldFail(new ModelWithOptions<int>
-                {
-                    First = 1, Second = 0, Third = 3
-                },
-                "Option --second is missing its required value.");
+                .ShouldFail("Option --second is missing its required value.");
         }
 
         public void ShouldParseNullableValueTypeOptions()
@@ -225,12 +206,7 @@
                 });
 
             Parse<ModelWithOptions<bool?>>("--first", "value1", "--third", "value2")
-                .ShouldFail(new ModelWithOptions<bool?>
-                {
-                    First = null, Second = null, Third = null
-                },
-                "Expected --first to be convertible to bool?.",
-                "Expected --third to be convertible to bool?.");
+                .ShouldFail("Expected --first to be convertible to bool?.");
         }
 
         public void ShouldParseEnumOptionsByTheirCaseInsensitiveStringRepresentation()
@@ -255,34 +231,16 @@
         public void ShouldFailWithClearExplanationWhenEnumOptionsCannotBeParsed()
         {
             Parse<ModelWithOptions<Level>>("--first", "Warning", "--third", "TYPO")
-                .ShouldFail(new ModelWithOptions<Level>
-                {
-                    First = Level.Warning,
-                    Second = default(Level),
-                    Third = default(Level)
-                },
-                "Expected --third to be one of: Information, Warning, Error.");
+                .ShouldFail("Expected --third to be one of: Information, Warning, Error.");
 
             Parse<ModelWithOptions<Level?>>("--first", "Warning", "--third", "TYPO")
-                .ShouldFail(new ModelWithOptions<Level?>
-                {
-                    First = Level.Warning,
-                    Second = null,
-                    Third = null
-                },
-                "Expected --third to be one of: Information, Warning, Error.");
+                .ShouldFail("Expected --third to be one of: Information, Warning, Error.");
         }
 
         public void ShouldFailWithClearExplanationWhenNonArrayOptionsAreRepeated()
         {
             Parse<ModelWithOptions<int>>("--first", "1", "--second", "2", "--first", "3")
-                .ShouldFail(new ModelWithOptions<int>
-                {
-                    First = 1,
-                    Second = 2,
-                    Third = 0
-                },
-                "Option --first cannot be specified more than once.");
+                .ShouldFail("Option --first cannot be specified more than once.");
         }
 
         class ModelWithArrays
@@ -354,12 +312,10 @@
 
         public void ShouldDemandUnambiguousPropertyNames()
         {
-            Action ambiguousPropertyNames = () => Parse<AmbiguousOptions>();
-
-            ambiguousPropertyNames.ShouldThrow<Exception>(
-                "Parsing command line arguments for type AmbiguousOptions " +
-                "is ambiguous, because it has more than one property corresponding " +
-                "with the --property option.");
+            Parse<AmbiguousOptions>()
+                .ShouldFail("Parsing command line arguments for type AmbiguousOptions " +
+                            "is ambiguous, because it has more than one property corresponding " +
+                            "with the --property option.");
         }
 
         class Complex
@@ -429,32 +385,25 @@
 
         class Scenario<T> where T : class
         {
-            readonly ParseResult<T> result; 
+            readonly string[] args;
 
             public Scenario(params string[] args)
             {
-                result = CommandLine.Parse<T>(args);
+                this.args = args;
             }
 
             public void ShouldSucceed(T expectedModel, params string[] expectedExtraArguments)
             {
-                result.Errors.ShouldEqual(new string[] {});
+                var result = CommandLine.Parse<T>(args);
+                result.Model.ShouldMatch(expectedModel);
                 result.ExtraArguments.ShouldEqual(expectedExtraArguments);
-                result.Model.ShouldMatch(expectedModel);
             }
 
-            public void ShouldFail(T expectedModel, params string[] expectedErrors)
+            public void ShouldFail(string expectedExceptionMessage)
             {
-                result.Errors.ShouldEqual(expectedErrors);
-                result.ExtraArguments.ShouldBeEmpty();
-                result.Model.ShouldMatch(expectedModel);
-            }
+                Action shouldThrow = () => CommandLine.Parse<T>(args);
 
-            public void ShouldFail(T expectedModel, string[] expectedExtraArguments, params string[] expectedErrors)
-            {
-                result.Errors.ShouldEqual(expectedErrors);
-                result.ExtraArguments.ShouldBeEmpty();
-                result.Model.ShouldMatch(expectedModel);
+                shouldThrow.ShouldThrow<CommandLineException>(expectedExceptionMessage);
             }
         }
     }

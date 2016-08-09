@@ -11,19 +11,17 @@
         {
             var parser = new Parser<T>(args);
 
-            return new ParseResult<T>(parser.Model, parser.ExtraArguments, parser.Errors);
+            return new ParseResult<T>(parser.Model, parser.ExtraArguments);
         }
 
         class Parser<T> where T : class
         {
             public T Model { get; }
             public List<string> ExtraArguments { get; }
-            public List<string> Errors { get; }
 
             public Parser(string[] args)
             {
                 DemandSingleConstructor();
-                Errors = new List<string>();
                 ExtraArguments = new List<string>();
 
                 var arguments = ScanArguments();
@@ -59,10 +57,7 @@
                         if (requireValue)
                         {
                             if (!queue.Any() || IsOption(queue.Peek()))
-                            {
-                                Errors.Add($"Option {item} is missing its required value.");
-                                continue;
-                            }
+                                throw new CommandLineException($"Option {item} is missing its required value.");
 
                             value = queue.Dequeue();
                         }
@@ -72,10 +67,7 @@
                         }
 
                         if (option.Values.Count == 1 && !option.IsArray)
-                        {
-                            Errors.Add($"Option {item} cannot be specified more than once.");
-                            continue;
-                        }
+                            throw new CommandLineException($"Option {item} cannot be specified more than once.");
 
                         option.Values.Add(ConvertOrDefault(option.ItemType, item, value));
                     }
@@ -118,41 +110,44 @@
                 }
 
                 object convertedValue;
-                try
+
+                if (value == null)
+                    convertedValue = null;
+                else
                 {
-                    if (value == null)
-                        convertedValue = null;
+                    var conversionType = Nullable.GetUnderlyingType(type) ?? type;
+
+                    if (conversionType.IsEnum && value is string)
+                    {
+                        try
+                        {
+                            convertedValue = Enum.Parse(conversionType, (string)value, ignoreCase: true);
+                        }
+                        catch (Exception exception)
+                        {
+                            var allowedValues =
+                                String.Join(", ",
+                                    Enum.GetValues(conversionType)
+                                        .Cast<object>()
+                                        .Select(x => x.ToString()));
+
+                            throw new CommandLineException($"Expected {userFacingName} to be one of: {allowedValues}.", exception);
+                        }
+                    }
                     else
                     {
-                        var conversionType = Nullable.GetUnderlyingType(type) ?? type;
-
-                        if (conversionType.IsEnum && value is string)
+                        try
                         {
-                            try
-                            {
-                                convertedValue = Enum.Parse(conversionType, (string)value, ignoreCase: true);
-                            }
-                            catch (Exception)
-                            {
-                                var allowedValues =
-                                    String.Join(", ",
-                                        Enum.GetValues(conversionType)
-                                            .Cast<object>()
-                                            .Select(x => x.ToString()));
-                                Errors.Add($"Expected {userFacingName} to be one of: {allowedValues}.");
-                                convertedValue = Default(type);
-                            }
-                        }
-                        else
                             convertedValue = Convert.ChangeType(value, conversionType);
+                        }
+                        catch (Exception exception)
+                        {
+                            var expectedTypeName = ExpectedTypeName(type);
+                            throw new CommandLineException($"Expected {userFacingName} to be convertible to {expectedTypeName}.", exception);
+                        }
                     }
                 }
-                catch (Exception)
-                {
-                    var expectedTypeName = ExpectedTypeName(type);
-                    Errors.Add($"Expected {userFacingName} to be convertible to {expectedTypeName}.");
-                    convertedValue = Default(type);
-                }
+
                 return convertedValue;
             }
 
@@ -182,7 +177,7 @@
             static void DemandSingleConstructor()
             {
                 if (typeof(T).GetConstructors().Length > 1)
-                    throw new Exception(
+                    throw new CommandLineException(
                         $"Parsing command line arguments for type {typeof(T).Name} " +
                         "is ambiguous, because it has more than one constructor.");
             }
@@ -204,7 +199,7 @@
                 foreach (var option in options)
                 {
                     if (dictionary.ContainsKey(option.Name))
-                        throw new Exception(
+                        throw new CommandLineException(
                             $"Parsing command line arguments for type {typeof(T).Name} " +
                             "is ambiguous, because it has more than one property corresponding " +
                             $"with the --{option.Name} option.");

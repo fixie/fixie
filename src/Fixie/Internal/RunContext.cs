@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        /// Gets the custom command line arguments provided by the test runner at the start of execution.
+        /// Gets the custom convention command line arguments provided by the test runner at the start of execution.
         /// </summary>
         public static string[] ConventionArguments { get; private set; }
 

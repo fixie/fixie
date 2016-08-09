@@ -6,6 +6,8 @@
 
     public class CommandLineTests
     {
+        enum Level { Information, Warning, Error }
+
         class Empty { }
 
         public void ShouldParseEmptyModels()
@@ -26,13 +28,13 @@
                             "is ambiguous, because it has more than one constructor.");
         }
 
-        class ModelWithArguments<T>
+        class ModelWithConstructor<T>
         {
             public T First { get; }
             public T Second { get; }
             public T Third { get; }
 
-            public ModelWithArguments(T first, T second, T third)
+            public ModelWithConstructor(T first, T second, T third)
             {
                 First = first;
                 Second = second;
@@ -42,205 +44,231 @@
 
         public void ShouldParseArgumentsAsConstructorParameters()
         {
-            Parse<ModelWithArguments<string>>("first", "second", "third")
-                .ShouldSucceed(new ModelWithArguments<string>("first", "second", "third"));
+            Parse<ModelWithConstructor<string>>("first", "second", "third")
+                .ShouldSucceed(new ModelWithConstructor<string>("first", "second", "third"));
 
-            Parse<ModelWithArguments<int>>("1", "2", "3")
-                .ShouldSucceed(new ModelWithArguments<int>(1, 2, 3));
+            Parse<ModelWithConstructor<int>>("1", "2", "3")
+                .ShouldSucceed(new ModelWithConstructor<int>(1, 2, 3));
+
+            Parse<ModelWithConstructor<int>>("1", "2", "abc")
+                .ShouldFail("third was not in the correct format.");
         }
 
         public void ShouldPassDefaultValuesToMissingConstructorParameters()
         {
-            Parse<ModelWithArguments<string>>("first", "second")
-                .ShouldSucceed(new ModelWithArguments<string>("first", "second", null));
+            Parse<ModelWithConstructor<string>>("first", "second")
+                .ShouldSucceed(new ModelWithConstructor<string>("first", "second", null));
 
-            Parse<ModelWithArguments<int>>("1", "2")
-                .ShouldSucceed(new ModelWithArguments<int>(1, 2, 0));
+            Parse<ModelWithConstructor<int>>("1", "2")
+                .ShouldSucceed(new ModelWithConstructor<int>(1, 2, 0));
         }
 
         public void ShouldParseNullableValueTypeArguments()
         {
-            Parse<ModelWithArguments<int?>>("1", "2")
-                .ShouldSucceed(new ModelWithArguments<int?>(1, 2, null));
+            Parse<ModelWithConstructor<int?>>("1", "2")
+                .ShouldSucceed(new ModelWithConstructor<int?>(1, 2, null));
 
-            Parse<ModelWithArguments<char?>>("a", "b")
-                .ShouldSucceed(new ModelWithArguments<char?>('a', 'b', null));
+            Parse<ModelWithConstructor<char?>>("a", "b")
+                .ShouldSucceed(new ModelWithConstructor<char?>('a', 'b', null));
         }
 
         public void ShouldParseBoolArgumentsWithExplicitValues()
         {
-            Parse<ModelWithArguments<bool>>("true", "false")
-                .ShouldSucceed(new ModelWithArguments<bool>(true, false, false));
+            Parse<ModelWithConstructor<bool>>("true", "false")
+                .ShouldSucceed(new ModelWithConstructor<bool>(true, false, false));
 
-            Parse<ModelWithArguments<bool>>("on", "off")
-                .ShouldSucceed(new ModelWithArguments<bool>(true, false, false));
+            Parse<ModelWithConstructor<bool>>("on", "off")
+                .ShouldSucceed(new ModelWithConstructor<bool>(true, false, false));
 
-            Parse<ModelWithArguments<bool>>("value1", "value2")
-                .ShouldFail("Expected first to be convertible to bool.");
+            Parse<ModelWithConstructor<bool>>("value1", "value2")
+                .ShouldFail("first was not in the correct format.");
         }
 
         public void ShouldParseNullableBoolArgumentsWithExplicitValues()
         {
-            Parse<ModelWithArguments<bool?>>("true", "false")
-                .ShouldSucceed(new ModelWithArguments<bool?>(true, false, null));
+            Parse<ModelWithConstructor<bool?>>("true", "false")
+                .ShouldSucceed(new ModelWithConstructor<bool?>(true, false, null));
 
-            Parse<ModelWithArguments<bool?>>("on", "off")
-                .ShouldSucceed(new ModelWithArguments<bool?>(true, false, null));
+            Parse<ModelWithConstructor<bool?>>("on", "off")
+                .ShouldSucceed(new ModelWithConstructor<bool?>(true, false, null));
 
-            Parse<ModelWithArguments<bool?>>("value1", "value2")
-                .ShouldFail("Expected first to be convertible to bool?.");
+            Parse<ModelWithConstructor<bool?>>("value1", "value2")
+                .ShouldFail("first was not in the correct format.");
         }
 
-        public void ShouldFailWithClearExplanationWhenArgumentsAreNotConvertibleToParameterTypes()
+        public void ShouldParseEnumArgumentsByTheirCaseInsensitiveStringRepresentation()
         {
-            Parse<ModelWithArguments<int>>("1", "2", "abc")
-                .ShouldFail("Expected third to be convertible to int.");
+            Parse<ModelWithConstructor<Level>>("Warning", "ErRoR")
+                .ShouldSucceed(new ModelWithConstructor<Level>(Level.Warning, Level.Error, Level.Information));
+
+            Parse<ModelWithConstructor<Level>>("Warning", "TYPO")
+                .ShouldFail("second must be one of: Information, Warning, Error.");
+
+            Parse<ModelWithConstructor<Level?>>("Warning", "eRrOr")
+                .ShouldSucceed(new ModelWithConstructor<Level?>(Level.Warning, Level.Error, null));
+
+            Parse<ModelWithConstructor<Level?>>("Warning", "TYPO")
+                .ShouldFail("second must be one of: Information, Warning, Error.");
         }
 
         public void ShouldCollectExcessArgumentsForLaterInspection()
         {
-            Parse<ModelWithArguments<string>>("first", "second", "third", "fourth", "fifth")
+            Parse<ModelWithConstructor<string>>("first", "second", "third", "fourth", "fifth")
                 .ShouldSucceed(
-                    new ModelWithArguments<string>("first", "second", "third"),
+                    new ModelWithConstructor<string>("first", "second", "third"),
                     "fourth", "fifth");
 
-            Parse<ModelWithArguments<int>>("1", "2", "3", "4", "5")
+            Parse<ModelWithConstructor<int>>("1", "2", "3", "4", "5")
                 .ShouldSucceed(
-                    new ModelWithArguments<int>(1, 2, 3),
+                    new ModelWithConstructor<int>(1, 2, 3),
                     "4", "5");
         }
 
-        class ModelWithOptions<T>
+        class ModelWithProperties<T>
         {
             public T First { get; set; }
             public T Second { get; set; }
             public T Third { get; set; }
         }
 
-        enum Level
+        public void ShouldParseNamedArgumentsAsProperties()
         {
-            Information, Warning, Error
-        }
-
-        public void ShouldParseOptionsAsProperties()
-        {
-            Parse<ModelWithOptions<string>>("--first", "value1", "--second", "value2", "--third", "value3")
-                .ShouldSucceed(new ModelWithOptions<string>
+            Parse<ModelWithProperties<string>>("--first", "value1", "--second", "value2", "--third", "value3")
+                .ShouldSucceed(new ModelWithProperties<string>
                 {
                     First = "value1", Second = "value2", Third = "value3"
                 });
 
-            Parse<ModelWithOptions<int>>("--first", "1", "--second", "2", "--third", "3")
-                .ShouldSucceed(new ModelWithOptions<int>
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "2", "--third", "3")
+                .ShouldSucceed(new ModelWithProperties<int>
                 {
                     First = 1, Second = 2, Third = 3
                 });
+
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "2", "--third", "abc")
+                .ShouldFail("--third was not in the correct format.");
         }
 
-        public void ShouldLeaveDefaultValuesForMissingOptions()
+        public void ShouldFailWhenNamedArgumentsAreMissingTheirRequiredValues()
         {
-            Parse<ModelWithOptions<string>>("--first", "value1", "--second", "value2")
-                .ShouldSucceed(new ModelWithOptions<string>
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "2", "--third")
+                .ShouldFail("--third is missing its required value.");
+
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "--third", "3")
+                .ShouldFail("--second is missing its required value.");
+        }
+
+        public void ShouldLeaveDefaultValuesForMissingNamedArguments()
+        {
+            Parse<ModelWithProperties<string>>("--first", "value1", "--second", "value2")
+                .ShouldSucceed(new ModelWithProperties<string>
                 {
                     First = "value1", Second = "value2", Third = null
                 });
 
-            Parse<ModelWithOptions<int>>("--first", "1", "--second", "2")
-                .ShouldSucceed(new ModelWithOptions<int>
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "2")
+                .ShouldSucceed(new ModelWithProperties<int>
                 {
                     First = 1, Second = 2, Third = 0
                 });
         }
 
-        public void ShouldFailWithClearExplanationWhenOptionsAreNotConvertibleToPropertyTypes()
+        public void ShouldParseNullableValueTypeNamedArguments()
         {
-            Parse<ModelWithOptions<int>>("--first", "1", "--second", "2", "--third", "abc")
-                .ShouldFail("Expected --third to be convertible to int.");
-        }
-
-        public void ShouldFailWithClearExplanationWhenOptionsAreMissingTheirRequiredValues()
-        {
-            Parse<ModelWithOptions<int>>("--first", "1", "--second", "2", "--third")
-                .ShouldFail("Option --third is missing its required value.");
-
-            Parse<ModelWithOptions<int>>("--first", "1", "--second", "--third", "3")
-                .ShouldFail("Option --second is missing its required value.");
-        }
-
-        public void ShouldParseNullableValueTypeOptions()
-        {
-            Parse<ModelWithOptions<int?>>("--first", "1", "--third", "2")
-                .ShouldSucceed(new ModelWithOptions<int?>
+            Parse<ModelWithProperties<int?>>("--first", "1", "--third", "2")
+                .ShouldSucceed(new ModelWithProperties<int?>
                 {
                     First = 1, Second = null, Third = 2
                 });
 
-            Parse<ModelWithOptions<char?>>("--first", "a", "--third", "c")
-                .ShouldSucceed(new ModelWithOptions<char?>
+            Parse<ModelWithProperties<char?>>("--first", "a", "--third", "c")
+                .ShouldSucceed(new ModelWithProperties<char?>
                 {
                     First = 'a', Second = null, Third = 'c'
                 });
         }
 
-        public void ShouldParseBoolOptionsAsFlagsWithoutExplicitValues()
+        public void ShouldParseBoolNamedArgumentsAsFlagsWithoutExplicitValues()
         {
-            Parse<ModelWithOptions<bool>>("--first", "--third")
-                .ShouldSucceed(new ModelWithOptions<bool>
+            Parse<ModelWithProperties<bool>>("--first", "--third")
+                .ShouldSucceed(new ModelWithProperties<bool>
                 {
                     First = true, Second = false, Third = true
                 });
         }
 
-        public void ShouldParseNullableBoolOptionsAsFlagsWithExplicitValues()
+        public void ShouldParseNullableBoolNamedArgumentsAsFlagsWithExplicitValues()
         {
-            Parse<ModelWithOptions<bool?>>("--first", "true", "--third", "false")
-                .ShouldSucceed(new ModelWithOptions<bool?>
+            Parse<ModelWithProperties<bool?>>("--first", "true", "--third", "false")
+                .ShouldSucceed(new ModelWithProperties<bool?>
                 {
                     First = true, Second = null, Third = false
                 });
 
-            Parse<ModelWithOptions<bool?>>("--first", "on", "--third", "off")
-                .ShouldSucceed(new ModelWithOptions<bool?>
+            Parse<ModelWithProperties<bool?>>("--first", "on", "--third", "off")
+                .ShouldSucceed(new ModelWithProperties<bool?>
                 {
                     First = true, Second = null, Third = false
                 });
 
-            Parse<ModelWithOptions<bool?>>("--first", "value1", "--third", "value2")
-                .ShouldFail("Expected --first to be convertible to bool?.");
+            Parse<ModelWithProperties<bool?>>("--first", "value1", "--third", "value2")
+                .ShouldFail("--first was not in the correct format.");
         }
 
-        public void ShouldParseEnumOptionsByTheirCaseInsensitiveStringRepresentation()
+        public void ShouldParseEnumNamedArgumentsByTheirCaseInsensitiveStringRepresentation()
         {
-            Parse<ModelWithOptions<Level>>("--first", "Warning", "--third", "ErRoR")
-                .ShouldSucceed(new ModelWithOptions<Level>
+            Parse<ModelWithProperties<Level>>("--first", "Warning", "--third", "ErRoR")
+                .ShouldSucceed(new ModelWithProperties<Level>
                 {
-                    First = Level.Warning,
-                    Second = default(Level),
-                    Third = Level.Error
+                    First = Level.Warning, Second = Level.Information, Third = Level.Error
                 });
 
-            Parse<ModelWithOptions<Level?>>("--first", "Warning", "--third", "eRrOr")
-                .ShouldSucceed(new ModelWithOptions<Level?>
+            Parse<ModelWithProperties<Level>>("--first", "Warning", "--third", "TYPO")
+                .ShouldFail("--third must be one of: Information, Warning, Error.");
+
+            Parse<ModelWithProperties<Level?>>("--first", "Warning", "--third", "eRrOr")
+                .ShouldSucceed(new ModelWithProperties<Level?>
                 {
-                    First = Level.Warning,
-                    Second = null,
-                    Third = Level.Error
+                    First = Level.Warning, Second = null, Third = Level.Error
                 });
+
+            Parse<ModelWithProperties<Level?>>("--first", "Warning", "--third", "TYPO")
+                .ShouldFail("--third must be one of: Information, Warning, Error.");
         }
 
-        public void ShouldFailWithClearExplanationWhenEnumOptionsCannotBeParsed()
+        public void ShouldCollectExcessNamedArgumentsForLaterInspection()
         {
-            Parse<ModelWithOptions<Level>>("--first", "Warning", "--third", "TYPO")
-                .ShouldFail("Expected --third to be one of: Information, Warning, Error.");
+            Parse<ModelWithProperties<string>>(
+                "--first", "value1",
+                "--second", "value2",
+                "--third", "value3",
+                "--fourth", "value4",
+                "--array", "value5",
+                "--array", "--value6")
+                .ShouldSucceed(new ModelWithProperties<string>
+                {
+                    First = "value1", Second = "value2", Third = "value3"
+                },
+                    "--fourth", "value4", "--array", "value5", "--array", "--value6");
 
-            Parse<ModelWithOptions<Level?>>("--first", "Warning", "--third", "TYPO")
-                .ShouldFail("Expected --third to be one of: Information, Warning, Error.");
+            Parse<ModelWithProperties<int>>(
+                "--first", "1",
+                "--second", "2",
+                "--third", "3",
+                "--fourth", "4",
+                "--array", "5",
+                "--array", "6")
+                .ShouldSucceed(new ModelWithProperties<int>
+                {
+                    First = 1, Second = 2, Third = 3
+                },
+                    "--fourth", "4", "--array", "5", "--array", "6");
         }
 
-        public void ShouldFailWithClearExplanationWhenNonArrayOptionsAreRepeated()
+        public void ShouldFailWhenNonArrayNamedArgumentsAreRepeated()
         {
-            Parse<ModelWithOptions<int>>("--first", "1", "--second", "2", "--first", "3")
-                .ShouldFail("Option --first cannot be specified more than once.");
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "2", "--first", "3")
+                .ShouldFail("--first cannot be specified more than once.");
         }
 
         class ModelWithArrays
@@ -249,7 +277,7 @@
             public string[] String { get; set; }
         }
 
-        public void ShouldParseRepeatedOptionsAsArrayProperties()
+        public void ShouldParseRepeatedNamedArgumentsAsArrayProperties()
         {
             Parse<ModelWithArrays>(
                 "--integer", "1", "--integer", "2",
@@ -261,7 +289,7 @@
                 });
         }
 
-        public void ShouldSetEmptyArraysForMissingArrayOptions()
+        public void ShouldSetEmptyArraysForMissingArrayNamedArguments()
         {
             Parse<ModelWithArrays>()
                 .ShouldSucceed(new ModelWithArrays
@@ -271,40 +299,7 @@
                 });
         }
 
-        public void ShouldCollectExcessOptionsForLaterInspection()
-        {
-            Parse<ModelWithOptions<string>>(
-                "--first", "value1",
-                "--second", "value2",
-                "--third", "value3",
-                "--fourth", "value4",
-                "--array", "value5",
-                "--array", "--value6")
-                .ShouldSucceed(new ModelWithOptions<string>
-                {
-                    First = "value1",
-                    Second = "value2",
-                    Third = "value3"
-                },
-                "--fourth", "value4", "--array", "value5", "--array", "--value6");
-
-            Parse<ModelWithOptions<int>>(
-                "--first", "1",
-                "--second", "2",
-                "--third", "3",
-                "--fourth", "4",
-                "--array", "5",
-                "--array", "6")
-                .ShouldSucceed(new ModelWithOptions<int>
-                {
-                    First = 1,
-                    Second = 2,
-                    Third = 3
-                },
-                "--fourth", "4", "--array", "5", "--array", "6");
-        }
-
-        class AmbiguousOptions
+        class AmbiguousProperties
         {
             public int PROPERTY { get; set; }
             public int property { get; set; }
@@ -312,10 +307,10 @@
 
         public void ShouldDemandUnambiguousPropertyNames()
         {
-            Parse<AmbiguousOptions>()
-                .ShouldFail("Parsing command line arguments for type AmbiguousOptions " +
+            Parse<AmbiguousProperties>()
+                .ShouldFail("Parsing command line arguments for type AmbiguousProperties " +
                             "is ambiguous, because it has more than one property corresponding " +
-                            "with the --property option.");
+                            "with the --property argument.");
         }
 
         class Complex
@@ -339,7 +334,7 @@
             public int[] Integers { get; set; }
         }
 
-        public void ShouldBindCommandLineToComplexModels()
+        public void ShouldBindCommandLineArgumentsToComplexModels()
         {
             Parse<Complex>()
                 .ShouldSucceed(new Complex(null, 0)

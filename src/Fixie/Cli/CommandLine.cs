@@ -95,7 +95,7 @@
                 Model = Create(arguments, options);
             }
 
-            object ConvertOrDefault(Type type, string userFacingName, object value)
+            static object ConvertOrDefault(Type type, string userFacingName, object value)
             {
                 if (type == typeof(bool?) || type == typeof(bool))
                 {
@@ -109,46 +109,38 @@
                     }
                 }
 
-                object convertedValue;
-
                 if (value == null)
-                    convertedValue = null;
-                else
+                    return null;
+
+                var conversionType = Nullable.GetUnderlyingType(type) ?? type;
+
+                if (conversionType.IsEnum && value is string)
                 {
-                    var conversionType = Nullable.GetUnderlyingType(type) ?? type;
-
-                    if (conversionType.IsEnum && value is string)
+                    try
                     {
-                        try
-                        {
-                            convertedValue = Enum.Parse(conversionType, (string)value, ignoreCase: true);
-                        }
-                        catch (Exception exception)
-                        {
-                            var allowedValues =
-                                String.Join(", ",
-                                    Enum.GetValues(conversionType)
-                                        .Cast<object>()
-                                        .Select(x => x.ToString()));
-
-                            throw new CommandLineException($"Expected {userFacingName} to be one of: {allowedValues}.", exception);
-                        }
+                        return Enum.Parse(conversionType, (string)value, ignoreCase: true);
                     }
-                    else
+                    catch (Exception exception)
                     {
-                        try
-                        {
-                            convertedValue = Convert.ChangeType(value, conversionType);
-                        }
-                        catch (Exception exception)
-                        {
-                            var expectedTypeName = ExpectedTypeName(type);
-                            throw new CommandLineException($"Expected {userFacingName} to be convertible to {expectedTypeName}.", exception);
-                        }
+                        var allowedValues =
+                            String.Join(", ",
+                                Enum.GetValues(conversionType)
+                                    .Cast<object>()
+                                    .Select(x => x.ToString()));
+
+                        throw new CommandLineException($"Expected {userFacingName} to be one of: {allowedValues}.", exception);
                     }
                 }
 
-                return convertedValue;
+                try
+                {
+                    return Convert.ChangeType(value, conversionType);
+                }
+                catch (Exception exception)
+                {
+                    var expectedTypeName = ExpectedTypeName(type);
+                    throw new CommandLineException($"Expected {userFacingName} to be convertible to {expectedTypeName}.", exception);
+                }
             }
 
             static string ExpectedTypeName(Type expected)

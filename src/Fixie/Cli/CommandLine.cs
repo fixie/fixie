@@ -22,12 +22,12 @@
 
             public Parser(string[] args)
             {
-                DemandSingleConstructor<T>();
+                DemandSingleConstructor();
                 Errors = new List<string>();
                 ExtraArguments = new List<string>();
 
-                var arguments = ScanArguments<T>();
-                var options = ScanOptions<T>();
+                var arguments = ScanArguments();
+                var options = ScanOptions();
 
                 var argumentValues = new List<string>();
 
@@ -100,7 +100,7 @@
                 foreach (var argument in arguments)
                     argument.Value = ConvertOrDefault(argument.Type, argument.Name, argument.Value);
 
-                Model = Create<T>(arguments, options);
+                Model = Create(arguments, options);
             }
 
             object ConvertOrDefault(Type type, string userFacingName, object value)
@@ -179,7 +179,7 @@
                 return expected.FullName;
             }
 
-            static void DemandSingleConstructor<T>()
+            static void DemandSingleConstructor()
             {
                 if (typeof(T).GetConstructors().Length > 1)
                     throw new Exception(
@@ -187,13 +187,13 @@
                         "is ambiguous, because it has more than one constructor.");
             }
 
-            static List<Argument> ScanArguments<T>() where T : class
-                => GetConstructor<T>()
+            static List<Argument> ScanArguments()
+                => GetConstructor()
                     .GetParameters()
                     .Select(p => new Argument(p))
                     .ToList();
 
-            static Dictionary<string, Option> ScanOptions<T>() where T : class
+            static Dictionary<string, Option> ScanOptions()
             {
                 var options = typeof(T).GetProperties()
                     .Where(p => p.CanWrite)
@@ -214,16 +214,16 @@
                 return dictionary;
             }
 
-            static T Create<T>(List<Argument> arguments, Dictionary<string, Option> options) where T : class
+            static T Create(List<Argument> arguments, Dictionary<string, Option> options)
             {
-                var model = Construct<T>(arguments);
+                var model = Construct(arguments);
 
                 Populate(model, options);
 
                 return model;
             }
 
-            static void Populate<T>(T instance, Dictionary<string, Option> options) where T : class
+            static void Populate(T instance, Dictionary<string, Option> options)
             {
                 foreach (var name in options.Keys)
                 {
@@ -238,17 +238,17 @@
                 }
             }
 
-            static T Construct<T>(List<Argument> arguments) where T : class
+            static T Construct(List<Argument> arguments)
             {
                 var parameters = arguments.Select(x => x.Value).ToArray();
 
-                return (T)GetConstructor<T>().Invoke(parameters);
+                return (T)GetConstructor().Invoke(parameters);
             }
 
             static object Default(Type type)
                 => type.IsValueType ? Activator.CreateInstance(type) : null;
 
-            static ConstructorInfo GetConstructor<T>() where T : class
+            static ConstructorInfo GetConstructor()
                 => typeof(T).GetConstructors().Single();
 
             static bool IsOption(string item)

@@ -5,7 +5,8 @@
   },
 
   "dependencies": {
-    "Fixie": { "target": "project" }
+    "Fixie": { "target": "project" },
+    "Microsoft.Extensions.Testing.Abstractions": "1.0.0-preview2-003121"
   },
 
   "frameworks": {

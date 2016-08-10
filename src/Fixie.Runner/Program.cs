@@ -2,11 +2,17 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+    using System.Net;
+    using System.Net.Sockets;
     using System.Text;
     using Cli;
     using Execution;
+    using Microsoft.Extensions.Testing.Abstractions;
+    using Newtonsoft.Json;
     using Reports;
+    using Message = Microsoft.Extensions.Testing.Abstractions.Message;
 
     class Program
     {
@@ -15,7 +21,7 @@
         [STAThread]
         static int Main(string[] arguments)
         {
-            var fixieArguments = new List<string>();
+            var runnerArguments = new List<string>();
             var conventionArguments = new List<string>();
 
             bool separatorFound = false;
@@ -30,7 +36,7 @@
                 if (separatorFound)
                     conventionArguments.Add(arg);
                 else
-                    fixieArguments.Add(arg);
+                    runnerArguments.Add(arg);
             }
 
             try
@@ -39,7 +45,7 @@
                 try
                 {
                     string[] unusedArguments;
-                    options = CommandLine.Parse<Options>(fixieArguments, out unusedArguments);
+                    options = CommandLine.Parse<Options>(runnerArguments, out unusedArguments);
 
                     using (Foreground.Yellow)
                         foreach (var unusedArgument in unusedArguments)
@@ -57,7 +63,13 @@
                     return FatalError;
                 }
 
-                return RunAssembly(options, conventionArguments);
+                if (options.DesignTime)
+                {
+                    RunAssemblyForIde(options, conventionArguments);
+                    return 0;
+                }
+
+                return RunAssemblyForConsole(options, conventionArguments);
             }
             catch (Exception exception)
             {
@@ -67,7 +79,61 @@
             }
         }
 
-        static int RunAssembly(Options options, IReadOnlyList<string> conventionArguments)
+        static void RunAssemblyForIde(Options options, IReadOnlyList<string> conventionArguments)
+        {
+            using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+            {
+                var ipEndPoint = new IPEndPoint(IPAddress.Loopback, options.Port.Value);
+                socket.Connect(ipEndPoint);
+
+                using (var networkStream = new NetworkStream(socket))
+                using (var writer = new BinaryWriter(networkStream))
+                using (var reader = new BinaryReader(networkStream))
+                using (var sink = new DesignTimeSink(writer))
+                {
+                    if (options.List)
+                    {
+                        using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                        {
+                            environment.Subscribe<DesignTimeDiscoveryListener>(sink);
+                            environment.DiscoverMethodGroups(conventionArguments.ToArray());
+                        }
+
+                        sink.SendTestCompleted();
+                    }
+                    else if (options.WaitCommand)
+                    {
+                        sink.SendWaitingCommand();
+
+                        var rawMessage = reader.ReadString();
+                        var message = JsonConvert.DeserializeObject<Message>(rawMessage);
+                        var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
+
+                        if (testsToRun.Any())
+                        {
+                            using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                            {
+                                environment.Subscribe<DesignTimeExecutionListener>(sink);
+                                var methodGroups = testsToRun.Select(x => new MethodGroup(x)).ToArray();
+                                environment.RunMethods(methodGroups, conventionArguments.ToArray());
+                            }
+                        }
+                        else
+                        {
+                            using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                            {
+                                environment.Subscribe<DesignTimeExecutionListener>(sink);
+                                environment.RunAssembly(conventionArguments.ToArray());
+                            }
+                        }
+
+                        sink.SendTestCompleted();
+                    }
+                }
+            }
+        }
+
+        static int RunAssemblyForConsole(Options options, IReadOnlyList<string> conventionArguments)
         {
             using (var environment = new ExecutionEnvironment(options.AssemblyPath))
             {

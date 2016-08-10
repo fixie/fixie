@@ -7,13 +7,13 @@
 
     public class CommandLine
     {
-        public static T Parse<T>(IEnumerable<string> arguments) where T : class
+        public static T Parse<T>(IReadOnlyList<string> arguments) where T : class
         {
             string[] unusedArguments;
             return Parse<T>(arguments, out unusedArguments);
         }
 
-        public static T Parse<T>(IEnumerable<string> arguments, out string[] unusedArguments) where T : class
+        public static T Parse<T>(IReadOnlyList<string> arguments, out string[] unusedArguments) where T : class
         {
             var parser = new Parser<T>(arguments.ToArray());
 

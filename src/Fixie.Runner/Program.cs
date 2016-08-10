@@ -32,14 +32,7 @@
                         runnerArguments.Add(arg);
                 }
 
-                string[] unusedArguments;
-                var options = CommandLine.Parse<Options>(runnerArguments, out unusedArguments);
-
-                using (Foreground.Yellow)
-                    foreach (var unusedArgument in unusedArguments)
-                        Console.WriteLine($"The argument '{unusedArgument}' was unexpected and will be ignored.");
-
-                options.Validate();
+                var options = ParseRunnerArguments(runnerArguments);
 
                 if (options.DesignTime)
                     return DesignTimeRunner.Run(options, conventionArguments);
@@ -61,6 +54,19 @@
                     Console.WriteLine($"Fatal Error: {exception}");
                 return FatalError;
             }
+        }
+
+        static Options ParseRunnerArguments(IReadOnlyList<string> runnerArguments)
+        {
+            string[] unusedArguments;
+            var options = CommandLine.Parse<Options>(runnerArguments, out unusedArguments);
+
+            using (Foreground.Yellow)
+                foreach (var unusedArgument in unusedArguments)
+                    Console.WriteLine($"The argument '{unusedArgument}' was unexpected and will be ignored.");
+
+            options.Validate();
+            return options;
         }
 
         static string Usage()

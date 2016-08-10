@@ -2,8 +2,12 @@
 
 ## Introduction
 
+This project integrates the Visual Studio Test Explorer window with Fixie, for
+test assemblies that are built with pre-.NET Core project types. For .NET Core
+project types, a separate `dotnet test` integration project enables Test Explorer.
+
 Visual Studio's test running infrastructure has several fundamental flaws
-which limit integration with test frameworks.  Fixie's implementation relies
+which limit integration with test frameworks. Fixie's implementation relies
 on a few reasonable compromises, which in unision provide a safe-by-default
 set of behaviors, no UI glitches in the Test Explorer window, and minimal
 surprises in the behavior of the right-click context menu's "Run Tests" option.
@@ -97,7 +101,7 @@ window does report the truth about what actually executed.
 
 Recommended Workflow:
 
-1. Set up a local NuGet package source pointing at the package/ folder in the
+1. Set up a local NuGet package source pointing at the artifacts/ folder in the
 root of your copy of the Fixie repository.
 2. Implement a change within the Fixie solution.
 3. `build package` at the command line to locally produce a new build of the

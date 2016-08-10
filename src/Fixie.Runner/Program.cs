@@ -2,17 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Sockets;
     using System.Text;
     using Cli;
-    using Execution;
-    using Microsoft.Extensions.Testing.Abstractions;
-    using Newtonsoft.Json;
-    using Reports;
-    using Message = Microsoft.Extensions.Testing.Abstractions.Message;
 
     class Program
     {
@@ -64,12 +55,9 @@
                 }
 
                 if (options.DesignTime)
-                {
-                    RunAssemblyForIde(options, conventionArguments);
-                    return 0;
-                }
+                    return DesignTimeRunner.Run(options, conventionArguments);
 
-                return RunAssemblyForConsole(options, conventionArguments);
+                return ConsoleRunner.Run(options, conventionArguments);
             }
             catch (Exception exception)
             {
@@ -77,95 +65,6 @@
                     Console.WriteLine($"Fatal Error: {exception}");
                 return FatalError;
             }
-        }
-
-        static void RunAssemblyForIde(Options options, IReadOnlyList<string> conventionArguments)
-        {
-            using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-            {
-                var ipEndPoint = new IPEndPoint(IPAddress.Loopback, options.Port.Value);
-                socket.Connect(ipEndPoint);
-
-                using (var networkStream = new NetworkStream(socket))
-                using (var writer = new BinaryWriter(networkStream))
-                using (var reader = new BinaryReader(networkStream))
-                using (var sink = new DesignTimeSink(writer))
-                {
-                    if (options.List)
-                    {
-                        using (var environment = new ExecutionEnvironment(options.AssemblyPath))
-                        {
-                            environment.Subscribe<DesignTimeDiscoveryListener>(sink);
-                            environment.DiscoverMethodGroups(conventionArguments.ToArray());
-                        }
-
-                        sink.SendTestCompleted();
-                    }
-                    else if (options.WaitCommand)
-                    {
-                        sink.SendWaitingCommand();
-
-                        var rawMessage = reader.ReadString();
-                        var message = JsonConvert.DeserializeObject<Message>(rawMessage);
-                        var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
-
-                        if (testsToRun.Any())
-                        {
-                            using (var environment = new ExecutionEnvironment(options.AssemblyPath))
-                            {
-                                environment.Subscribe<DesignTimeExecutionListener>(sink);
-                                var methodGroups = testsToRun.Select(x => new MethodGroup(x)).ToArray();
-                                environment.RunMethods(methodGroups, conventionArguments.ToArray());
-                            }
-                        }
-                        else
-                        {
-                            using (var environment = new ExecutionEnvironment(options.AssemblyPath))
-                            {
-                                environment.Subscribe<DesignTimeExecutionListener>(sink);
-                                environment.RunAssembly(conventionArguments.ToArray());
-                            }
-                        }
-
-                        sink.SendTestCompleted();
-                    }
-                }
-            }
-        }
-
-        static int RunAssemblyForConsole(Options options, IReadOnlyList<string> conventionArguments)
-        {
-            using (var environment = new ExecutionEnvironment(options.AssemblyPath))
-            {
-                if (ShouldUseTeamCityListener(options))
-                    environment.Subscribe<TeamCityListener>();
-                else
-                    environment.Subscribe<ConsoleListener>();
-
-                if (ShouldUseAppVeyorListener())
-                    environment.Subscribe<AppVeyorListener>();
-
-                if (options.ReportFormat == ReportFormat.NUnit)
-                    environment.Subscribe<ReportListener<NUnitXml>>();
-                else if (options.ReportFormat == ReportFormat.xUnit)
-                    environment.Subscribe<ReportListener<XUnitXml>>();
-
-                return environment.RunAssembly(conventionArguments.ToArray());
-            }
-        }
-
-        static bool ShouldUseTeamCityListener(Options options)
-        {
-            var teamCityExplicitlyEnabled = options.TeamCity == true;
-
-            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
-
-            return teamCityExplicitlyEnabled || runningUnderTeamCity;
-        }
-
-        static bool ShouldUseAppVeyorListener()
-        {
-            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
         }
 
         static string Usage()

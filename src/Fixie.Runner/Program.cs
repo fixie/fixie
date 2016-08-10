@@ -12,26 +12,26 @@
         [STAThread]
         static int Main(string[] arguments)
         {
-            var runnerArguments = new List<string>();
-            var conventionArguments = new List<string>();
-
-            bool separatorFound = false;
-            foreach (var arg in arguments)
-            {
-                if (arg == "--")
-                {
-                    separatorFound = true;
-                    continue;
-                }
-
-                if (separatorFound)
-                    conventionArguments.Add(arg);
-                else
-                    runnerArguments.Add(arg);
-            }
-
             try
             {
+                var runnerArguments = new List<string>();
+                var conventionArguments = new List<string>();
+
+                bool separatorFound = false;
+                foreach (var arg in arguments)
+                {
+                    if (arg == "--")
+                    {
+                        separatorFound = true;
+                        continue;
+                    }
+
+                    if (separatorFound)
+                        conventionArguments.Add(arg);
+                    else
+                        runnerArguments.Add(arg);
+                }
+
                 Options options;
                 try
                 {

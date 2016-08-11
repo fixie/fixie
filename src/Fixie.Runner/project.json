@@ -6,7 +6,8 @@
 
   "dependencies": {
     "Fixie": { "target": "project" },
-    "Microsoft.Extensions.Testing.Abstractions": "1.0.0-preview2-003121"
+    "Microsoft.Extensions.Testing.Abstractions": "1.0.0-preview2-003121",
+    "Mono.Cecil": "0.9.6.4"
   },
 
   "frameworks": {

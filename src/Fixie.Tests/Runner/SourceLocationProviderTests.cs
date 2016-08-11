@@ -1,6 +1,6 @@
-﻿namespace Fixie.Tests.VisualStudio.TestAdapter
+﻿namespace Fixie.Tests.Runner
 {
-    using Fixie.VisualStudio.TestAdapter;
+    using Fixie.Runner;
     using Should;
     using static Utility;
 

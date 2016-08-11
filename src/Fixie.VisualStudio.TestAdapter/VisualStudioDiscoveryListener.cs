@@ -2,6 +2,7 @@ namespace Fixie.VisualStudio.TestAdapter
 {
     using System;
     using Execution;
+    using Runner;
     using Wrappers;
 
     public class VisualStudioDiscoveryListener : Handler<MethodGroupDiscovered>

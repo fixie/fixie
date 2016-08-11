@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "Fixie": { "target": "project" },
-    "Mono.Cecil": "0.9.6.1"
+    "Fixie.Runner": { "target": "project" }
   },
 
   "frameworks": {

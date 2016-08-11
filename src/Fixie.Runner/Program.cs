@@ -2,11 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
     using Cli;
-    using Execution;
-    using Reports;
 
     class Program
     {
@@ -15,49 +12,41 @@
         [STAThread]
         static int Main(string[] arguments)
         {
-            var fixieArguments = new List<string>();
-            var conventionArguments = new List<string>();
-
-            bool separatorFound = false;
-            foreach (var arg in arguments)
-            {
-                if (arg == "--")
-                {
-                    separatorFound = true;
-                    continue;
-                }
-
-                if (separatorFound)
-                    conventionArguments.Add(arg);
-                else
-                    fixieArguments.Add(arg);
-            }
-
             try
             {
-                Options options;
-                try
+                var runnerArguments = new List<string>();
+                var conventionArguments = new List<string>();
+
+                bool separatorFound = false;
+                foreach (var arg in arguments)
                 {
-                    string[] unusedArguments;
-                    options = CommandLine.Parse<Options>(fixieArguments, out unusedArguments);
+                    if (arg == "--")
+                    {
+                        separatorFound = true;
+                        continue;
+                    }
 
-                    using (Foreground.Yellow)
-                        foreach (var unusedArgument in unusedArguments)
-                            Console.WriteLine($"The argument '{unusedArgument}' was unexpected and will be ignored.");
-
-                    options.Validate();
-                }
-                catch (CommandLineException exception)
-                {
-                    using (Foreground.Red)
-                        Console.WriteLine(exception.Message);
-
-                    Console.WriteLine();
-                    Console.WriteLine(Usage());
-                    return FatalError;
+                    if (separatorFound)
+                        conventionArguments.Add(arg);
+                    else
+                        runnerArguments.Add(arg);
                 }
 
-                return RunAssembly(options, conventionArguments);
+                var options = ParseRunnerArguments(runnerArguments);
+
+                if (options.DesignTime)
+                    return DesignTimeRunner.Run(options, conventionArguments);
+
+                return ConsoleRunner.Run(options, conventionArguments);
+            }
+            catch (CommandLineException exception)
+            {
+                using (Foreground.Red)
+                    Console.WriteLine(exception.Message);
+
+                Console.WriteLine();
+                Console.WriteLine(Usage());
+                return FatalError;
             }
             catch (Exception exception)
             {
@@ -67,39 +56,17 @@
             }
         }
 
-        static int RunAssembly(Options options, IReadOnlyList<string> conventionArguments)
+        static Options ParseRunnerArguments(IReadOnlyList<string> runnerArguments)
         {
-            using (var environment = new ExecutionEnvironment(options.AssemblyPath))
-            {
-                if (ShouldUseTeamCityListener(options))
-                    environment.Subscribe<TeamCityListener>();
-                else
-                    environment.Subscribe<ConsoleListener>();
+            string[] unusedArguments;
+            var options = CommandLine.Parse<Options>(runnerArguments, out unusedArguments);
 
-                if (ShouldUseAppVeyorListener())
-                    environment.Subscribe<AppVeyorListener>();
+            using (Foreground.Yellow)
+                foreach (var unusedArgument in unusedArguments)
+                    Console.WriteLine($"The argument '{unusedArgument}' was unexpected and will be ignored.");
 
-                if (options.ReportFormat == ReportFormat.NUnit)
-                    environment.Subscribe<ReportListener<NUnitXml>>();
-                else if (options.ReportFormat == ReportFormat.xUnit)
-                    environment.Subscribe<ReportListener<XUnitXml>>();
-
-                return environment.RunAssembly(conventionArguments.ToArray());
-            }
-        }
-
-        static bool ShouldUseTeamCityListener(Options options)
-        {
-            var teamCityExplicitlyEnabled = options.TeamCity == true;
-
-            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
-
-            return teamCityExplicitlyEnabled || runningUnderTeamCity;
-        }
-
-        static bool ShouldUseAppVeyorListener()
-        {
-            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
+            options.Validate();
+            return options;
         }
 
         static string Usage()

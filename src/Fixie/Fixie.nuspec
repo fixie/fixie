@@ -16,17 +16,17 @@
     </references>
   </metadata>
   <files>
-    <file src="..\Fixie\bin\Release\net452\Fixie.dll" target="lib/net452"></file>
-
+    <file src="..\Fixie.Runner\bin\Release\net452\win7-x64\Fixie.dll" target="lib/net452"></file>
     <file src="..\Fixie.Runner\bin\Release\net452\win7-x64\dotnet-test-fixie.exe" target="lib/net452"></file>
-        
+    <file src="..\Fixie.Runner\bin\Release\net452\win7-x64\Mono.Cecil.dll" target="lib/net452"></file>
+    <file src="..\Fixie.Runner\bin\Release\net452\win7-x64\Mono.Cecil.Rocks.dll" target="lib/net452"></file>
+    <file src="..\Fixie.Runner\bin\Release\net452\win7-x64\Mono.Cecil.Pdb.dll" target="lib/net452"></file>
+    <file src="..\Fixie.Runner\bin\Release\net452\win7-x64\Newtonsoft.Json.dll" target="lib/net452"></file>
+
     <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" target="lib/net452"></file>
     <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" target="lib/net452"></file>
     <file src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" target="lib/net452"></file>
 
     <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" target="lib/net452"></file>
-    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" target="lib/net452"></file>
-    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" target="lib/net452"></file>
-    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" target="lib/net452"></file>
   </files>
 </package>

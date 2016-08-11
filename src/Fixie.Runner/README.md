@@ -1,10 +1,25 @@
-﻿# Fixie's Visual Studio Test Adapter
+﻿# Fixie's `dotnet test` Runner
 
 ## Introduction
 
-This project integrates the Visual Studio Test Explorer window with Fixie, for
-test assemblies that are built with pre-.NET Core project types. For .NET Core
-project types, a separate `dotnet test` integration project enables Test Explorer.
+This project provides both a console runner as well as integration with the Visual Studio
+Test Explorer window, for test assemblies that are build with .NET Core project types.
+For pre-.NET Core project types, a separate project (Fixie.VisualStudio.TestAdapter.dll)
+provides that legacy integration.
+
+The runner may be invoked by end users at the command line, or by IDEs. Command line arguments
+determine which mode we are in. The presence of --port ##### indicates that an IDE is making
+the request. IDEs also redundantly send --designtime when they send --port:
+
+1) IDE requests test discovery:
+    --designtime --port ##### --list
+
+2) IDE requests test execution:
+    --designtime --port #### --wait-command
+
+3) Console mode is assumed whenever --port is omitted. When
+   --port is omitted, the following arguments would make no
+   sense: --designtime, --wait-command.
 
 Visual Studio's test running infrastructure has several fundamental flaws
 which limit integration with test frameworks. Fixie's implementation relies
@@ -30,19 +45,6 @@ the arguments are not known ahead of execution time. It assumes that
 phase and the execution phase. Otherwise, you get a glitchy experience as
 Visual Studio tries and fails to match up actual execution results
 with the list of tests found at discovery time.
-4. Visual Studio requires that new versions of the runner be installed by
-installing a NuGet package.  It is not enough to simply have the dlls under
-your packages folder.  As a consequence, the VS runner doesn't run on the Fixie
-solution itself. See https://github.com/fixie/fixie.runners.sandbox for
-a sample project which can be used to test the Visual Studio Test Adapter.
-5. It is highly likely that misleading errors will be reported in the Tests Output window upon upgrading.
-When users of the Test Adapter upgrade to a new version Fixie, it is recommended that they remove the
-old version, close Visual Studio, reopen Visual Studio, and install the new version
-of Fixie.  
-6. If you're having problems discovering or running tests, you may need to reset
-Visual Studio's cache of runner assemblies. Shut down all instances of Visual Studio,
-delete the folder `%TEMP%\VisualStudioTestExplorerExtensions`, and be sure that
-your project is only linked against a single version of Fixie.
 
 ## Fixie's Compromises
 
@@ -61,19 +63,19 @@ Inherited tests are still correctly discovered and appear in Test Explorer,
 so they can be executed by selecting them in Test Explorer like any other test.
 
 To meet the needs of both overloads and parameterized test methods, Fixie
-registers one Visual Studio `TestCase` instance *per method group*, instead
+registers one Visual Studio `Test` instance *per method group*, instead
 of per method.  It does so by setting the `FullyQualifiedName` to
 the method group of a test case, and by only reporting each discovered
 method group once during discovery.
 
 Thankfully, Visual Studio can be given any number of `TestResult` objects for
-the same `TestCase.FullyQualifiedName`, and Fixie
+the same `Test.FullyQualifiedName`, and Fixie
 can give each `TestResult` an arbitrary `DisplayName` including parameter
 value information.  This combination allows the Visual Studio test runner to
 display each individual test case's success or failure, grouping parameterized
 and overloaded cases under the method name, while avoiding glitches for
 dynamically-generated test case parameters.  In other words, a Visual Studio
-"Test Case" is really a method group name, and a Visual Studio "Test Result"
+"Test" is really a method group name, and a Visual Studio "Test Result"
 is really an individual invocation of some method in that method group.
 
 ## "Won't Fix" Bugs
@@ -96,22 +98,3 @@ the intended test.
 There are likely other scenarios in which right clicking on test methods will
 fail to successfully execute the intended test.  In all cases, the Test Explorer
 window does report the truth about what actually executed.
-
-## Development on the Test Adapter
-
-Recommended Workflow:
-
-1. Set up a local NuGet package source pointing at the artifacts/ folder in the
-root of your copy of the Fixie repository.
-2. Implement a change within the Fixie solution.
-3. `build package` at the command line to locally produce a new build of the
-NuGet package.
-4. Note the creation of the package file inside the package/ folder.
-5. Open the `fixie.runners.sandbox` solution, uninstall Fixie from all projects,
-and close all instances of Visual Studio.
-6. Delete the contents of `%TEMP%\VisualStudioTestExplorerExtensions` and reopen
-the `fixie.runners.sandbox` solution.
-7. In `fixie.runners.sandbox`, resinstall Fixie but from your local package
-source.
-8. Run tests within the `fixie.runners.sandbox` solution to test the effect of
-your changes.

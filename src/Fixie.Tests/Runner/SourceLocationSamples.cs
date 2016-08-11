@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.VisualStudio.TestAdapter
+﻿namespace Fixie.Tests.Runner
 {
     using System;
     using System.Threading.Tasks;

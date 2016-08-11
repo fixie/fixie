@@ -1,4 +1,4 @@
-﻿namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.Runner
 {
     public class SourceLocation
     {

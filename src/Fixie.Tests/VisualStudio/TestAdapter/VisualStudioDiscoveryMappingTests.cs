@@ -1,15 +1,17 @@
-namespace Fixie.Tests.Runner
+namespace Fixie.Tests.VisualStudio.TestAdapter
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Fixie.Runner;
     using Fixie.Runner.Contracts;
+    using Fixie.VisualStudio.TestAdapter;
     using Newtonsoft.Json;
     using Should;
 
-    public class DesignTimeDiscoveryListenerTests : MessagingTests
+    public class VisualStudioDiscoveryMappingTests : MessagingTests
     {
-        public void ShouldReportDiscoveredMethodGroupsToDiscoverySink()
+        public void ShouldMapDiscoveredTestContractsToVisualStudioTypes()
         {
             string assemblyPath = typeof(MessagingTests).Assembly.Location;
 
@@ -18,22 +20,25 @@ namespace Fixie.Tests.Runner
 
             sink.LogEntries.ShouldBeEmpty();
 
-            var tests = sink.Messages
+            var testCases = sink.Messages
                 .Select(jsonMessage => Payload<Test>(jsonMessage, "TestDiscovery.TestFound"))
                 .OrderBy(x => x.FullyQualifiedName)
+                .Select(x => x.ToVisualStudioType(assemblyPath))
                 .ToArray();
 
-            foreach (var test in tests)
+            foreach (var testCase in testCases)
             {
-                test.Id.ShouldEqual(null);
-                test.DisplayName.ShouldEqual(test.FullyQualifiedName);
-                test.Properties.ShouldBeEmpty();
+                testCase.LocalExtensionData.ShouldBeNull();
+                testCase.Id.ShouldNotEqual(Guid.Empty);
+                testCase.ExecutorUri.ShouldEqual(VsTestExecutor.Uri);
+                testCase.Source.ShouldEqual(assemblyPath);
+                testCase.DisplayName.ShouldEqual(testCase.FullyQualifiedName);
 
-                test.CodeFilePath.EndsWith("MessagingTests.cs").ShouldBeTrue();
-                test.LineNumber.ShouldBeGreaterThan(0);
+                testCase.CodeFilePath.EndsWith("MessagingTests.cs").ShouldBeTrue();
+                testCase.LineNumber.ShouldBeGreaterThan(0);
             }
 
-            tests.Select(x => x.FullyQualifiedName)
+            testCases.Select(x => x.FullyQualifiedName)
                 .ShouldEqual(
                     TestClass + ".Fail",
                     TestClass + ".FailByAssertion",
@@ -51,22 +56,25 @@ namespace Fixie.Tests.Runner
 
             sink.LogEntries.Count.ShouldEqual(5);
 
-            var tests = sink.Messages
+            var testCases = sink.Messages
                 .Select(jsonMessage => Payload<Test>(jsonMessage, "TestDiscovery.TestFound"))
                 .OrderBy(x => x.FullyQualifiedName)
+                .Select(x => x.ToVisualStudioType(invalidAssemblyPath))
                 .ToArray();
 
-            foreach (var test in tests)
+            foreach (var testCase in testCases)
             {
-                test.Id.ShouldEqual(null);
-                test.DisplayName.ShouldEqual(test.FullyQualifiedName);
-                test.Properties.ShouldBeEmpty();
+                testCase.LocalExtensionData.ShouldBeNull();
+                testCase.Id.ShouldNotEqual(Guid.Empty);
+                testCase.ExecutorUri.ShouldEqual(VsTestExecutor.Uri);
+                testCase.Source.ShouldEqual(invalidAssemblyPath);
+                testCase.DisplayName.ShouldEqual(testCase.FullyQualifiedName);
 
-                test.CodeFilePath.ShouldBeNull();
-                test.LineNumber.ShouldBeNull();
+                testCase.CodeFilePath.ShouldBeNull();
+                testCase.LineNumber.ShouldEqual(-1);
             }
 
-            tests.Select(x => x.FullyQualifiedName)
+            testCases.Select(x => x.FullyQualifiedName)
                 .ShouldEqual(
                     TestClass + ".Fail",
                     TestClass + ".FailByAssertion",

@@ -3,24 +3,33 @@
     using System;
     using System.Collections.Generic;
     using Fixie.Internal;
-    using Fixie.VisualStudio.TestAdapter;
-    using Fixie.VisualStudio.TestAdapter.Wrappers;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using Fixie.Runner;
+    using Fixie.Runner.Contracts;
+    using Newtonsoft.Json;
     using Should;
 
-    public class VisualStudioExecutionListenerTests : MessagingTests
+    using DotNetTest = Fixie.Runner.Contracts.Test;
+    using DotNetTestResult = Fixie.Runner.Contracts.TestResult;
+
+    using VsTestOutcome = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome;
+    using VsTestCase = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestCase;
+    using VsTestResult = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestResult;
+    using VsTestResultMessage = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestResultMessage;
+
+    using Fixie.VisualStudio.TestAdapter;
+    using System.Linq;
+
+    public class VisualStudioExecutionMappingTests : MessagingTests
     {
-        public void ShouldReportResultsToExecutionRecorder()
+        public void ShouldMapTestResultContractsToVisualStudioTypes()
         {
             const string assemblyPath = "assembly.path.dll";
-            var log = new StubExecutionRecorder();
-            using (var recorder = new TestExecutionRecorder(log))
+
+            var sink = new StubDesignTimeSink();
+            var listener = new DesignTimeExecutionListener(sink);
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new VisualStudioExecutionListener(recorder, assemblyPath);
-
                 Run(listener);
 
                 console.Lines()
@@ -33,14 +42,59 @@
                         "Console.Error: Pass");
             }
 
-            var results = log.TestResults;
-            results.Count.ShouldEqual(5);
+            sink.LogEntries.ShouldBeEmpty();
+            sink.Messages.Count.ShouldEqual(10);
+
+            var starts = new List<VsTestCase>();
+            var results = new List<VsTestResult>();
+
+            starts.Add(Payload<DotNetTest>(sink.Messages[0], "TestExecution.TestStarted").ToVisualStudioType(assemblyPath));
+            results.Add(Payload<DotNetTestResult>(sink.Messages[1], "TestExecution.TestResult").ToVisualStudioType(assemblyPath));
+
+            starts.Add(Payload<DotNetTest>(sink.Messages[2], "TestExecution.TestStarted").ToVisualStudioType(assemblyPath));
+            results.Add(Payload<DotNetTestResult>(sink.Messages[3], "TestExecution.TestResult").ToVisualStudioType(assemblyPath));
+
+            starts.Add(Payload<DotNetTest>(sink.Messages[4], "TestExecution.TestStarted").ToVisualStudioType(assemblyPath));
+            results.Add(Payload<DotNetTestResult>(sink.Messages[5], "TestExecution.TestResult").ToVisualStudioType(assemblyPath));
+
+            starts.Add(Payload<DotNetTest>(sink.Messages[6], "TestExecution.TestStarted").ToVisualStudioType(assemblyPath));
+            results.Add(Payload<DotNetTestResult>(sink.Messages[7], "TestExecution.TestResult").ToVisualStudioType(assemblyPath));
+
+            starts.Add(Payload<DotNetTest>(sink.Messages[8], "TestExecution.TestStarted").ToVisualStudioType(assemblyPath));
+            results.Add(Payload<DotNetTestResult>(sink.Messages[9], "TestExecution.TestResult").ToVisualStudioType(assemblyPath));
+
+            foreach (var start in starts)
+            {
+                start.Id.ShouldNotEqual(Guid.Empty);
+                start.Properties.ShouldBeEmpty();
+
+                //Source locations are a discovery-time concern.
+                start.CodeFilePath.ShouldBeNull();
+                start.LineNumber.ShouldBeNull();
+            }
+
+            starts.Select(x => x.FullyQualifiedName)
+                .ShouldEqual(
+                    TestClass + ".SkipWithReason",
+                    TestClass + ".SkipWithoutReason",
+                    TestClass + ".Fail",
+                    TestClass + ".FailByAssertion",
+                    TestClass + ".Pass");
+
+            starts.Select(x => x.DisplayName)
+                .ShouldEqual(
+                    TestClass + ".SkipWithReason",
+                    TestClass + ".SkipWithoutReason",
+                    TestClass + ".Fail",
+                    TestClass + ".FailByAssertion",
+                    TestClass + ".Pass");
 
             foreach (var result in results)
             {
                 result.Traits.ShouldBeEmpty();
                 result.Attachments.ShouldBeEmpty();
                 result.ComputerName.ShouldEqual(Environment.MachineName);
+                result.TestCase.Id.ShouldNotEqual(Guid.Empty);
                 result.TestCase.Traits.ShouldBeEmpty();
                 result.TestCase.LocalExtensionData.ShouldBeNull();
                 result.TestCase.Source.ShouldEqual("assembly.path.dll");
@@ -59,7 +113,7 @@
             skipWithReason.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".SkipWithReason");
             skipWithReason.TestCase.DisplayName.ShouldEqual(TestClass + ".SkipWithReason");
             skipWithReason.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-            skipWithReason.Outcome.ShouldEqual(TestOutcome.Skipped);
+            skipWithReason.Outcome.ShouldEqual(VsTestOutcome.Skipped);
             skipWithReason.ErrorMessage.ShouldEqual("Skipped with reason.");
             skipWithReason.ErrorStackTrace.ShouldBeNull();
             skipWithReason.DisplayName.ShouldEqual(TestClass + ".SkipWithReason");
@@ -69,7 +123,7 @@
             skipWithoutReason.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".SkipWithoutReason");
             skipWithoutReason.TestCase.DisplayName.ShouldEqual(TestClass + ".SkipWithoutReason");
             skipWithoutReason.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-            skipWithoutReason.Outcome.ShouldEqual(TestOutcome.Skipped);
+            skipWithoutReason.Outcome.ShouldEqual(VsTestOutcome.Skipped);
             skipWithoutReason.ErrorMessage.ShouldBeNull();
             skipWithoutReason.ErrorStackTrace.ShouldBeNull();
             skipWithoutReason.DisplayName.ShouldEqual(TestClass + ".SkipWithoutReason");
@@ -79,7 +133,7 @@
             fail.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".Fail");
             fail.TestCase.DisplayName.ShouldEqual(TestClass + ".Fail");
             fail.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-            fail.Outcome.ShouldEqual(TestOutcome.Failed);
+            fail.Outcome.ShouldEqual(VsTestOutcome.Failed);
             fail.ErrorMessage.ShouldEqual("'Fail' failed!");
             fail.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
@@ -87,14 +141,14 @@
                 .ShouldEqual("Fixie.Tests.FailureException", At("Fail()"));
             fail.DisplayName.ShouldEqual(TestClass + ".Fail");
             fail.Messages.Count.ShouldEqual(1);
-            fail.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
+            fail.Messages[0].Category.ShouldEqual(VsTestResultMessage.StandardOutCategory);
             fail.Messages[0].Text.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             failByAssertion.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".FailByAssertion");
             failByAssertion.TestCase.DisplayName.ShouldEqual(TestClass + ".FailByAssertion");
             failByAssertion.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-            failByAssertion.Outcome.ShouldEqual(TestOutcome.Failed);
+            failByAssertion.Outcome.ShouldEqual(VsTestOutcome.Failed);
             failByAssertion.ErrorMessage.Lines().ShouldEqual(
                 "Assert.Equal() Failure",
                 "Expected: 2",
@@ -104,46 +158,39 @@
                 .ShouldEqual(At("FailByAssertion()"));
             failByAssertion.DisplayName.ShouldEqual(TestClass + ".FailByAssertion");
             failByAssertion.Messages.Count.ShouldEqual(1);
-            failByAssertion.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
+            failByAssertion.Messages[0].Category.ShouldEqual(VsTestResultMessage.StandardOutCategory);
             failByAssertion.Messages[0].Text.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             pass.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".Pass");
             pass.TestCase.DisplayName.ShouldEqual(TestClass + ".Pass");
             pass.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-            pass.Outcome.ShouldEqual(TestOutcome.Passed);
+            pass.Outcome.ShouldEqual(VsTestOutcome.Passed);
             pass.ErrorMessage.ShouldBeNull();
             pass.ErrorStackTrace.ShouldBeNull();
             pass.DisplayName.ShouldEqual(TestClass + ".Pass");
             pass.Messages.Count.ShouldEqual(1);
-            pass.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
+            pass.Messages[0].Category.ShouldEqual(VsTestResultMessage.StandardOutCategory);
             pass.Messages[0].Text.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);            
         }
 
-        class StubExecutionRecorder : ITestExecutionRecorder
+        static TExpectedPayload Payload<TExpectedPayload>(string jsonMessage, string expectedMessageType)
         {
-            public List<TestResult> TestResults { get; } = new List<TestResult>();
+            var message = JsonConvert.DeserializeObject<Message>(jsonMessage);
 
-            public void RecordResult(TestResult testResult)
-                => TestResults.Add(testResult);
+            message.MessageType.ShouldEqual(expectedMessageType);
 
-            public void SendMessage(TestMessageLevel testMessageLevel, string message)
-                => NotImplemented();
+            return message.Payload.ToObject<TExpectedPayload>();
+        }
 
-            public void RecordStart(TestCase testCase)
-                => NotImplemented();
+        class StubDesignTimeSink : IDesignTimeSink
+        {
+            public List<string> Messages { get; } = new List<string>();
+            public List<string> LogEntries { get; } = new List<string>();
 
-            public void RecordEnd(TestCase testCase, TestOutcome outcome)
-                => NotImplemented();
-
-            public void RecordAttachments(IList<AttachmentSet> attachmentSets)
-                => NotImplemented();
-
-            static void NotImplemented()
-            {
-                throw new NotImplementedException();
-            }
+            public void Send(string message) => Messages.Add(message);
+            public void Log(string message) => LogEntries.Add(message);
         }
     }
 }

@@ -18,17 +18,10 @@ namespace Fixie.Tests.Runner
 
             sink.LogEntries.ShouldBeEmpty();
 
-            var tests = new List<Test>();
-            foreach (var jsonMessage in sink.Messages)
-            {
-                var message = JsonConvert.DeserializeObject<Message>(jsonMessage);
-
-                message.MessageType.ShouldEqual("TestDiscovery.TestFound");
-
-                tests.Add(message.Payload.ToObject<Test>());
-            }
-
-            tests = tests.OrderBy(x => x.FullyQualifiedName).ToList();
+            var tests = sink.Messages
+                .Select(jsonMessage => Payload<Test>(jsonMessage, "TestDiscovery.TestFound"))
+                .OrderBy(x => x.FullyQualifiedName)
+                .ToArray();
 
             foreach (var test in tests)
             {
@@ -58,17 +51,10 @@ namespace Fixie.Tests.Runner
 
             sink.LogEntries.Count.ShouldEqual(5);
 
-            var tests = new List<Test>();
-            foreach (var jsonMessage in sink.Messages)
-            {
-                var message = JsonConvert.DeserializeObject<Message>(jsonMessage);
-
-                message.MessageType.ShouldEqual("TestDiscovery.TestFound");
-
-                tests.Add(message.Payload.ToObject<Test>());
-            }
-
-            tests = tests.OrderBy(x => x.FullyQualifiedName).ToList();
+            var tests = sink.Messages
+                .Select(jsonMessage => Payload<Test>(jsonMessage, "TestDiscovery.TestFound"))
+                .OrderBy(x => x.FullyQualifiedName)
+                .ToArray();
 
             foreach (var test in tests)
             {
@@ -87,6 +73,15 @@ namespace Fixie.Tests.Runner
                     TestClass + ".Pass",
                     TestClass + ".SkipWithoutReason",
                     TestClass + ".SkipWithReason");
+        }
+
+        static TExpectedPayload Payload<TExpectedPayload>(string jsonMessage, string expectedMessageType)
+        {
+            var message = JsonConvert.DeserializeObject<Message>(jsonMessage);
+
+            message.MessageType.ShouldEqual(expectedMessageType);
+
+            return message.Payload.ToObject<TExpectedPayload>();
         }
 
         class StubDesignTimeSink : IDesignTimeSink

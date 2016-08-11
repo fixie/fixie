@@ -15,10 +15,10 @@ surprises in the behavior of the right-click context menu's "Run Tests" option.
 ## Visual Studio's Assumptions and Limitations
 
 1. In a code editor, the right-click context menu can provide a "Run Tests"
-option when a test framework's `ITestDiscoverer` provides accurate line
-number information for discovered test methods, and when the discovered tests'
-`TestCase.FullyQualifiedName` meets certain undocumented restrictions.
-Experimentation shows that `TestCase.FullyQualifiedName` may be of the
+option when a test framework provides accurate line number information for
+discovered test methods, and when the discovered tests'
+`FullyQualifiedName` meets certain undocumented restrictions.
+Experimentation shows that `FullyQualifiedName` may be of the
 form `<full-name-of-test-class>.<method-name>`. Straying from that format
 in any way, such as placing argument information like `()` or `(1,2)` at
 the end, will break the right-click "Run Tests" behavior.
@@ -26,7 +26,7 @@ the end, will break the right-click "Run Tests" behavior.
 Tests" behavior is broken in the presence of overloaded test methods.
 3. Visual Studio has poor support for parameterized test methods, for which
 the arguments are not known ahead of execution time. It assumes that
-`TestCase.FullyQualifiedName` values will pefectly match between the discovery
+`FullyQualifiedName` values will pefectly match between the discovery
 phase and the execution phase. Otherwise, you get a glitchy experience as
 Visual Studio tries and fails to match up actual execution results
 with the list of tests found at discovery time.
@@ -61,13 +61,13 @@ Inherited tests are still correctly discovered and appear in Test Explorer,
 so they can be executed by selecting them in Test Explorer like any other test.
 
 To meet the needs of both overloads and parameterized test methods, Fixie
-registers one Visual Studio TestCase instance *per method group*, instead
-of per method.  It does so by setting the `TestCase.FullyQualifiedName` to
+registers one Visual Studio `TestCase` instance *per method group*, instead
+of per method.  It does so by setting the `FullyQualifiedName` to
 the method group of a test case, and by only reporting each discovered
 method group once during discovery.
 
 Thankfully, Visual Studio can be given any number of `TestResult` objects for
-the same `TestCase FullyQualifiedName`, and Fixie
+the same `TestCase.FullyQualifiedName`, and Fixie
 can give each `TestResult` an arbitrary `DisplayName` including parameter
 value information.  This combination allows the Visual Studio test runner to
 display each individual test case's success or failure, grouping parameterized

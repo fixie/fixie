@@ -53,7 +53,7 @@
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
-                environment.Subscribe<DesignTimeDiscoveryListener>(sink);
+                environment.Subscribe<DesignTimeDiscoveryListener>(sink, assemblyPath);
                 environment.DiscoverMethodGroups(conventionArguments.ToArray());
             }
         }

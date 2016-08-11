@@ -4,12 +4,10 @@
     using System.Collections.Generic;
     using Fixie.Internal;
     using Fixie.Runner;
+    using Fixie.Runner.Contracts;
     using Newtonsoft.Json;
     using Should;
-    using TestOutcome = Fixie.Runner.Contracts.TestOutcome;
-    using TestResult = Fixie.Runner.Contracts.TestResult;
     using System.Linq;
-    using Fixie.Runner.Contracts;
 
     public class DesignTimeExecutionListenerTests : MessagingTests
     {

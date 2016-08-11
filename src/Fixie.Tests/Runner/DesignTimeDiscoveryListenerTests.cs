@@ -3,7 +3,7 @@ namespace Fixie.Tests.Runner
     using System.Collections.Generic;
     using System.Linq;
     using Fixie.Runner;
-    using Microsoft.Extensions.Testing.Abstractions;
+    using Fixie.Runner.Contracts;
     using Newtonsoft.Json;
     using Should;
 

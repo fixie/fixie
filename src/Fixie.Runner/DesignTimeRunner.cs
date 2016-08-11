@@ -5,10 +5,10 @@
     using System.Linq;
     using System.Net;
     using System.Net.Sockets;
+    using Contracts;
     using Execution;
-    using Microsoft.Extensions.Testing.Abstractions;
     using Newtonsoft.Json;
-    using Message = Microsoft.Extensions.Testing.Abstractions.Message;
+    using Message = Contracts.Message;
 
     public class DesignTimeRunner
     {

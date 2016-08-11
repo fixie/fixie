@@ -2,11 +2,11 @@
 {
     using System;
     using System.IO;
+    using Contracts;
     using Execution;
-    using Microsoft.Extensions.Testing.Abstractions;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-    using Message = Microsoft.Extensions.Testing.Abstractions.Message;
+    using Message = Contracts.Message;
     using static System.Environment;
 
     public interface IDesignTimeSink

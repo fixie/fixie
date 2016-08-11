@@ -1,9 +1,9 @@
 namespace Fixie.Runner
 {
     using System;
+    using Contracts;
     using Execution;
-    using Microsoft.Extensions.Testing.Abstractions;
-    
+
     public class DesignTimeDiscoveryListener : Handler<MethodGroupDiscovered>
     {
         readonly IDesignTimeSink sink;

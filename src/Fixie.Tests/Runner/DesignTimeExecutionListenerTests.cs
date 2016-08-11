@@ -56,6 +56,7 @@
             {
                 start.Id.ShouldEqual(null);
                 start.Properties.ShouldBeEmpty();
+                start.DisplayName.ShouldEqual(start.FullyQualifiedName);
 
                 //Source locations are a discovery-time concern.
                 start.CodeFilePath.ShouldBeNull();
@@ -63,14 +64,6 @@
             }
 
             starts.Select(x => x.FullyQualifiedName)
-                .ShouldEqual(
-                    TestClass + ".SkipWithReason",
-                    TestClass + ".SkipWithoutReason",
-                    TestClass + ".Fail",
-                    TestClass + ".FailByAssertion",
-                    TestClass + ".Pass");
-
-            starts.Select(x => x.DisplayName)
                 .ShouldEqual(
                     TestClass + ".SkipWithReason",
                     TestClass + ".SkipWithoutReason",

@@ -1,11 +1,11 @@
 namespace Fixie.Tests.VisualStudio.TestAdapter
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Fixie.Runner;
     using Fixie.Runner.Contracts;
     using Fixie.VisualStudio.TestAdapter;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Newtonsoft.Json;
     using Should;
 
@@ -20,31 +20,14 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
 
             sink.LogEntries.ShouldBeEmpty();
 
-            var testCases = sink.Messages
-                .Select(jsonMessage => Payload<Test>(jsonMessage, "TestDiscovery.TestFound"))
-                .OrderBy(x => x.FullyQualifiedName)
-                .Select(x => x.ToVisualStudioType(assemblyPath))
-                .ToArray();
+            var testCases = DiscoveredTestCases(sink, assemblyPath);
 
-            foreach (var testCase in testCases)
-            {
-                testCase.LocalExtensionData.ShouldBeNull();
-                testCase.Id.ShouldNotEqual(Guid.Empty);
-                testCase.ExecutorUri.ShouldEqual(VsTestExecutor.Uri);
-                testCase.Source.ShouldEqual(assemblyPath);
-                testCase.DisplayName.ShouldEqual(testCase.FullyQualifiedName);
-
-                testCase.CodeFilePath.EndsWith("MessagingTests.cs").ShouldBeTrue();
-                testCase.LineNumber.ShouldBeGreaterThan(0);
-            }
-
-            testCases.Select(x => x.FullyQualifiedName)
-                .ShouldEqual(
-                    TestClass + ".Fail",
-                    TestClass + ".FailByAssertion",
-                    TestClass + ".Pass",
-                    TestClass + ".SkipWithoutReason",
-                    TestClass + ".SkipWithReason");
+            testCases.Length.ShouldEqual(5);
+            testCases[0].ShouldBeDiscoveryTimeTestCase(assemblyPath, TestClass + ".Fail");
+            testCases[1].ShouldBeDiscoveryTimeTestCase(assemblyPath, TestClass + ".FailByAssertion");
+            testCases[2].ShouldBeDiscoveryTimeTestCase(assemblyPath, TestClass + ".Pass");
+            testCases[3].ShouldBeDiscoveryTimeTestCase(assemblyPath, TestClass + ".SkipWithoutReason");
+            testCases[4].ShouldBeDiscoveryTimeTestCase(assemblyPath, TestClass + ".SkipWithReason");
         }
 
         public void ShouldDefaultSourceLocationPropertiesWhenSourceInspectionThrows()
@@ -56,31 +39,23 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
 
             sink.LogEntries.Count.ShouldEqual(5);
 
-            var testCases = sink.Messages
+            var testCases = DiscoveredTestCases(sink, invalidAssemblyPath);
+
+            testCases.Length.ShouldEqual(5);
+            testCases[0].ShouldBeDiscoveryTimeTestCaseMissingSourceLocation(invalidAssemblyPath, TestClass+ ".Fail");
+            testCases[1].ShouldBeDiscoveryTimeTestCaseMissingSourceLocation(invalidAssemblyPath, TestClass+ ".FailByAssertion");
+            testCases[2].ShouldBeDiscoveryTimeTestCaseMissingSourceLocation(invalidAssemblyPath, TestClass+ ".Pass");
+            testCases[3].ShouldBeDiscoveryTimeTestCaseMissingSourceLocation(invalidAssemblyPath, TestClass+ ".SkipWithoutReason");
+            testCases[4].ShouldBeDiscoveryTimeTestCaseMissingSourceLocation(invalidAssemblyPath, TestClass+ ".SkipWithReason");
+        }
+
+        static TestCase[] DiscoveredTestCases(StubDesignTimeSink sink, string assemblyPath)
+        {
+            return sink.Messages
                 .Select(jsonMessage => Payload<Test>(jsonMessage, "TestDiscovery.TestFound"))
                 .OrderBy(x => x.FullyQualifiedName)
-                .Select(x => x.ToVisualStudioType(invalidAssemblyPath))
+                .Select(x => x.ToVisualStudioType(assemblyPath))
                 .ToArray();
-
-            foreach (var testCase in testCases)
-            {
-                testCase.LocalExtensionData.ShouldBeNull();
-                testCase.Id.ShouldNotEqual(Guid.Empty);
-                testCase.ExecutorUri.ShouldEqual(VsTestExecutor.Uri);
-                testCase.Source.ShouldEqual(invalidAssemblyPath);
-                testCase.DisplayName.ShouldEqual(testCase.FullyQualifiedName);
-
-                testCase.CodeFilePath.ShouldBeNull();
-                testCase.LineNumber.ShouldEqual(-1);
-            }
-
-            testCases.Select(x => x.FullyQualifiedName)
-                .ShouldEqual(
-                    TestClass + ".Fail",
-                    TestClass + ".FailByAssertion",
-                    TestClass + ".Pass",
-                    TestClass + ".SkipWithoutReason",
-                    TestClass + ".SkipWithReason");
         }
 
         static TExpectedPayload Payload<TExpectedPayload>(string jsonMessage, string expectedMessageType)

@@ -17,13 +17,12 @@
     using VsTestResultMessage = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestResultMessage;
 
     using Fixie.VisualStudio.TestAdapter;
-    using System.Linq;
 
     public class VisualStudioExecutionMappingTests : MessagingTests
     {
         public void ShouldMapTestResultContractsToVisualStudioTypes()
         {
-            const string assemblyPath = "assembly.path.dll";
+            var assemblyPath = typeof(MessagingTests).Assembly.Location;
 
             var sink = new StubDesignTimeSink();
             var listener = new DesignTimeExecutionListener(sink);
@@ -63,45 +62,19 @@
             starts.Add(Payload<DotNetTest>(sink.Messages[8], "TestExecution.TestStarted").ToVisualStudioType(assemblyPath));
             results.Add(Payload<DotNetTestResult>(sink.Messages[9], "TestExecution.TestResult").ToVisualStudioType(assemblyPath));
 
-            foreach (var start in starts)
-            {
-                start.Id.ShouldNotEqual(Guid.Empty);
-                start.Properties.ShouldBeEmpty();
+            starts.Count.ShouldEqual(5);
+            starts[0].ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".SkipWithReason");
+            starts[1].ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".SkipWithoutReason");
+            starts[2].ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".Fail");
+            starts[3].ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".FailByAssertion");
+            starts[4].ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".Pass");
 
-                //Source locations are a discovery-time concern.
-                start.CodeFilePath.ShouldBeNull();
-                start.LineNumber.ShouldBeNull();
-            }
-
-            starts.Select(x => x.FullyQualifiedName)
-                .ShouldEqual(
-                    TestClass + ".SkipWithReason",
-                    TestClass + ".SkipWithoutReason",
-                    TestClass + ".Fail",
-                    TestClass + ".FailByAssertion",
-                    TestClass + ".Pass");
-
-            starts.Select(x => x.DisplayName)
-                .ShouldEqual(
-                    TestClass + ".SkipWithReason",
-                    TestClass + ".SkipWithoutReason",
-                    TestClass + ".Fail",
-                    TestClass + ".FailByAssertion",
-                    TestClass + ".Pass");
-
+            results.Count.ShouldEqual(5);
             foreach (var result in results)
             {
                 result.Traits.ShouldBeEmpty();
                 result.Attachments.ShouldBeEmpty();
                 result.ComputerName.ShouldEqual(Environment.MachineName);
-                result.TestCase.Id.ShouldNotEqual(Guid.Empty);
-                result.TestCase.Traits.ShouldBeEmpty();
-                result.TestCase.LocalExtensionData.ShouldBeNull();
-                result.TestCase.Source.ShouldEqual("assembly.path.dll");
-
-                //Source locations are a discovery-time concern.
-                result.TestCase.CodeFilePath.ShouldBeNull();
-                result.TestCase.LineNumber.ShouldEqual(-1);
             }
 
             var skipWithReason = results[0];
@@ -110,9 +83,7 @@
             var failByAssertion = results[3];
             var pass = results[4];
 
-            skipWithReason.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".SkipWithReason");
-            skipWithReason.TestCase.DisplayName.ShouldEqual(TestClass + ".SkipWithReason");
-            skipWithReason.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+            skipWithReason.TestCase.ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".SkipWithReason");
             skipWithReason.Outcome.ShouldEqual(VsTestOutcome.Skipped);
             skipWithReason.ErrorMessage.ShouldEqual("Skipped with reason.");
             skipWithReason.ErrorStackTrace.ShouldBeNull();
@@ -120,9 +91,7 @@
             skipWithReason.Messages.ShouldBeEmpty();
             skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
 
-            skipWithoutReason.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.TestCase.DisplayName.ShouldEqual(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+            skipWithoutReason.TestCase.ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".SkipWithoutReason");
             skipWithoutReason.Outcome.ShouldEqual(VsTestOutcome.Skipped);
             skipWithoutReason.ErrorMessage.ShouldBeNull();
             skipWithoutReason.ErrorStackTrace.ShouldBeNull();
@@ -130,9 +99,7 @@
             skipWithoutReason.Messages.ShouldBeEmpty();
             skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
 
-            fail.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".Fail");
-            fail.TestCase.DisplayName.ShouldEqual(TestClass + ".Fail");
-            fail.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+            fail.TestCase.ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".Fail");
             fail.Outcome.ShouldEqual(VsTestOutcome.Failed);
             fail.ErrorMessage.ShouldEqual("'Fail' failed!");
             fail.ErrorStackTrace
@@ -145,9 +112,7 @@
             fail.Messages[0].Text.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            failByAssertion.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".FailByAssertion");
-            failByAssertion.TestCase.DisplayName.ShouldEqual(TestClass + ".FailByAssertion");
-            failByAssertion.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+            failByAssertion.TestCase.ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".FailByAssertion");
             failByAssertion.Outcome.ShouldEqual(VsTestOutcome.Failed);
             failByAssertion.ErrorMessage.Lines().ShouldEqual(
                 "Assert.Equal() Failure",
@@ -162,9 +127,7 @@
             failByAssertion.Messages[0].Text.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            pass.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".Pass");
-            pass.TestCase.DisplayName.ShouldEqual(TestClass + ".Pass");
-            pass.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+            pass.TestCase.ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".Pass");
             pass.Outcome.ShouldEqual(VsTestOutcome.Passed);
             pass.ErrorMessage.ShouldBeNull();
             pass.ErrorStackTrace.ShouldBeNull();

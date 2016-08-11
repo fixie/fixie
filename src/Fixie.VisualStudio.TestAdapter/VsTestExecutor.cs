@@ -8,7 +8,6 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Wrappers;
 
     [ExtensionUri(Id)]
     public class VsTestExecutor : ITestExecutor
@@ -40,12 +39,8 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        using (var recorder = new TestExecutionRecorder(frameworkHandle))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
-                        {
-                            environment.Subscribe<VisualStudioExecutionListener>(recorder, assemblyPath);
                             environment.RunAssembly();
-                        }
                     }
                     else
                     {
@@ -88,12 +83,8 @@
 
                         var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
 
-                        using (var recorder = new TestExecutionRecorder(frameworkHandle))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
-                        {
-                            environment.Subscribe<VisualStudioExecutionListener>(recorder, assemblyPath);
                             environment.RunMethods(methodGroups);
-                        }
                     }
                     else
                     {

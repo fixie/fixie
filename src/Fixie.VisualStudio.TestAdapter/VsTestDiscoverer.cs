@@ -7,7 +7,6 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Wrappers;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
@@ -28,13 +27,8 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        using (var messageLogger = new MessageLogger(log))
-                        using (var testCaseDiscoverySink = new TestCaseDiscoverySink(discoverySink))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
-                        {
-                            environment.Subscribe<VisualStudioDiscoveryListener>(messageLogger, testCaseDiscoverySink, assemblyPath);
                             environment.DiscoverMethodGroups();
-                        }
                     }
                     else
                     {

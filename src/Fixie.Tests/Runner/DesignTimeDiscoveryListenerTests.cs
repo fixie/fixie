@@ -14,6 +14,8 @@ namespace Fixie.Tests.Runner
             var sink = new StubDesignTimeSink();
             Discover(new DesignTimeDiscoveryListener(sink));
 
+            sink.LogEntries.ShouldBeEmpty();
+
             var tests = new List<Test>();
             foreach (var jsonMessage in sink.Messages)
             {
@@ -51,8 +53,10 @@ namespace Fixie.Tests.Runner
         class StubDesignTimeSink : IDesignTimeSink
         {
             public List<string> Messages { get; } = new List<string>();
+            public List<string> LogEntries { get; } = new List<string>();
 
             public void Send(string message) => Messages.Add(message);
+            public void Log(string message) => LogEntries.Add(message);
         }
     }
 }

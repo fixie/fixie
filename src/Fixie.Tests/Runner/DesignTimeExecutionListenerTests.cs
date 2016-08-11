@@ -33,6 +33,7 @@
                         "Console.Error: Pass");
             }
 
+            sink.LogEntries.ShouldBeEmpty();
             sink.Messages.Count.ShouldEqual(10);
 
             var starts = new List<Test>();
@@ -162,8 +163,10 @@
         class StubDesignTimeSink : IDesignTimeSink
         {
             public List<string> Messages { get; } = new List<string>();
+            public List<string> LogEntries { get; } = new List<string>();
 
             public void Send(string message) => Messages.Add(message);
+            public void Log(string message) => LogEntries.Add(message);
         }
     }
 }

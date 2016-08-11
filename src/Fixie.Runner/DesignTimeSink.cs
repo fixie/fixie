@@ -1,15 +1,18 @@
 ﻿namespace Fixie.Runner
 {
+    using System;
     using System.IO;
     using Execution;
     using Microsoft.Extensions.Testing.Abstractions;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Message = Microsoft.Extensions.Testing.Abstractions.Message;
+    using static System.Environment;
 
     public interface IDesignTimeSink
     {
         void Send(string message);
+        void Log(string message);
     }
 
     public class DesignTimeSink : LongLivedMarshalByRefObject, IDesignTimeSink
@@ -23,6 +26,9 @@
 
         public void Send(string message)
             => writer.Write(message);
+
+        public void Log(string message)
+            => File.AppendAllText("fixie.log", $"{DateTime.Now}: {message}{NewLine}{NewLine}");
     }
 
     public static class DesignTimeSinkExtensions

@@ -53,7 +53,7 @@
 
     public enum TestOutcome
     {
-        Passed, Failed, Skipped
+        None, Passed, Failed, Skipped, NotFound,
     }
 
     public class RunTestsMessage

@@ -52,35 +52,17 @@
             starts.Add(Payload<Test>(sink.Messages[8], "TestExecution.TestStarted"));
             results.Add(Payload<TestResult>(sink.Messages[9], "TestExecution.TestResult"));
 
-            foreach (var start in starts)
-            {
-                start.Id.ShouldEqual(null);
-                start.Properties.ShouldBeEmpty();
-                start.DisplayName.ShouldEqual(start.FullyQualifiedName);
+            starts.Count.ShouldEqual(5);
+            starts[0].ShouldBeExecutionTimeTest(TestClass + ".SkipWithReason");
+            starts[1].ShouldBeExecutionTimeTest(TestClass + ".SkipWithoutReason");
+            starts[2].ShouldBeExecutionTimeTest(TestClass + ".Fail");
+            starts[3].ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion");
+            starts[4].ShouldBeExecutionTimeTest(TestClass + ".Pass");
 
-                //Source locations are a discovery-time concern.
-                start.CodeFilePath.ShouldBeNull();
-                start.LineNumber.ShouldBeNull();
-            }
-
-            starts.Select(x => x.FullyQualifiedName)
-                .ShouldEqual(
-                    TestClass + ".SkipWithReason",
-                    TestClass + ".SkipWithoutReason",
-                    TestClass + ".Fail",
-                    TestClass + ".FailByAssertion",
-                    TestClass + ".Pass");
+            results.Count.ShouldEqual(5);
 
             foreach (var result in results)
-            {
                 result.ComputerName.ShouldEqual(Environment.MachineName);
-                result.Test.Id.ShouldEqual(null);
-                result.Test.Properties.ShouldBeEmpty();
-
-                //Source locations are a discovery-time concern.
-                result.Test.CodeFilePath.ShouldBeNull();
-                result.Test.LineNumber.ShouldBeNull();
-            }
 
             var skipWithReason = results[0];
             var skipWithoutReason = results[1];
@@ -88,8 +70,7 @@
             var failByAssertion = results[3];
             var pass = results[4];
 
-            skipWithReason.Test.FullyQualifiedName.ShouldEqual(TestClass + ".SkipWithReason");
-            skipWithReason.Test.DisplayName.ShouldEqual(TestClass + ".SkipWithReason");
+            skipWithReason.Test.ShouldBeExecutionTimeTest(TestClass + ".SkipWithReason");
             skipWithReason.Outcome.ShouldEqual(TestOutcome.Skipped);
             skipWithReason.ErrorMessage.ShouldEqual("Skipped with reason.");
             skipWithReason.ErrorStackTrace.ShouldBeNull();
@@ -97,8 +78,7 @@
             skipWithReason.Messages.ShouldBeEmpty();
             skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
 
-            skipWithoutReason.Test.FullyQualifiedName.ShouldEqual(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.Test.DisplayName.ShouldEqual(TestClass + ".SkipWithoutReason");
+            skipWithoutReason.Test.ShouldBeExecutionTimeTest(TestClass + ".SkipWithoutReason");
             skipWithoutReason.Outcome.ShouldEqual(TestOutcome.Skipped);
             skipWithoutReason.ErrorMessage.ShouldBeNull();
             skipWithoutReason.ErrorStackTrace.ShouldBeNull();
@@ -106,8 +86,7 @@
             skipWithoutReason.Messages.ShouldBeEmpty();
             skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
 
-            fail.Test.FullyQualifiedName.ShouldEqual(TestClass + ".Fail");
-            fail.Test.DisplayName.ShouldEqual(TestClass + ".Fail");
+            fail.Test.ShouldBeExecutionTimeTest(TestClass + ".Fail");
             fail.Outcome.ShouldEqual(TestOutcome.Failed);
             fail.ErrorMessage.ShouldEqual("'Fail' failed!");
             fail.ErrorStackTrace
@@ -118,8 +97,7 @@
             fail.Messages.Single().Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            failByAssertion.Test.FullyQualifiedName.ShouldEqual(TestClass + ".FailByAssertion");
-            failByAssertion.Test.DisplayName.ShouldEqual(TestClass + ".FailByAssertion");
+            failByAssertion.Test.ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion");
             failByAssertion.Outcome.ShouldEqual(TestOutcome.Failed);
             failByAssertion.ErrorMessage.Lines().ShouldEqual(
                 "Assert.Equal() Failure",
@@ -132,8 +110,7 @@
             failByAssertion.Messages.Single().Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            pass.Test.FullyQualifiedName.ShouldEqual(TestClass + ".Pass");
-            pass.Test.DisplayName.ShouldEqual(TestClass + ".Pass");
+            pass.Test.ShouldBeExecutionTimeTest(TestClass + ".Pass");
             pass.Outcome.ShouldEqual(TestOutcome.Passed);
             pass.ErrorMessage.ShouldBeNull();
             pass.ErrorStackTrace.ShouldBeNull();

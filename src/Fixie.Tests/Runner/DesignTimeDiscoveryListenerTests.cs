@@ -11,35 +11,21 @@ namespace Fixie.Tests.Runner
     {
         public void ShouldReportDiscoveredMethodGroupsToDiscoverySink()
         {
-            string assemblyPath = typeof(MessagingTests).Assembly.Location;
+            var assemblyPath = typeof(MessagingTests).Assembly.Location;
 
             var sink = new StubDesignTimeSink();
             Discover(new DesignTimeDiscoveryListener(sink, assemblyPath));
 
             sink.LogEntries.ShouldBeEmpty();
 
-            var tests = sink.Messages
-                .Select(jsonMessage => Payload<Test>(jsonMessage, "TestDiscovery.TestFound"))
-                .OrderBy(x => x.FullyQualifiedName)
-                .ToArray();
+            var tests = DiscoveredTests(sink);
 
-            foreach (var test in tests)
-            {
-                test.Id.ShouldEqual(null);
-                test.DisplayName.ShouldEqual(test.FullyQualifiedName);
-                test.Properties.ShouldBeEmpty();
-
-                test.CodeFilePath.EndsWith("MessagingTests.cs").ShouldBeTrue();
-                test.LineNumber.ShouldBeGreaterThan(0);
-            }
-
-            tests.Select(x => x.FullyQualifiedName)
-                .ShouldEqual(
-                    TestClass + ".Fail",
-                    TestClass + ".FailByAssertion",
-                    TestClass + ".Pass",
-                    TestClass + ".SkipWithoutReason",
-                    TestClass + ".SkipWithReason");
+            tests.Length.ShouldEqual(5);
+            tests[0].ShouldBeDiscoveryTimeTest(TestClass + ".Fail");
+            tests[1].ShouldBeDiscoveryTimeTest(TestClass + ".FailByAssertion");
+            tests[2].ShouldBeDiscoveryTimeTest(TestClass + ".Pass");
+            tests[3].ShouldBeDiscoveryTimeTest(TestClass + ".SkipWithoutReason");
+            tests[4].ShouldBeDiscoveryTimeTest(TestClass + ".SkipWithReason");
         }
 
         public void ShouldDefaultSourceLocationPropertiesWhenSourceInspectionThrows()
@@ -51,28 +37,22 @@ namespace Fixie.Tests.Runner
 
             sink.LogEntries.Count.ShouldEqual(5);
 
-            var tests = sink.Messages
+            var tests = DiscoveredTests(sink);
+
+            tests.Length.ShouldEqual(5);
+            tests[0].ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail");
+            tests[1].ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".FailByAssertion");
+            tests[2].ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass");
+            tests[3].ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".SkipWithoutReason");
+            tests[4].ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".SkipWithReason");
+        }
+
+        static Test[] DiscoveredTests(StubDesignTimeSink sink)
+        {
+            return sink.Messages
                 .Select(jsonMessage => Payload<Test>(jsonMessage, "TestDiscovery.TestFound"))
                 .OrderBy(x => x.FullyQualifiedName)
                 .ToArray();
-
-            foreach (var test in tests)
-            {
-                test.Id.ShouldEqual(null);
-                test.DisplayName.ShouldEqual(test.FullyQualifiedName);
-                test.Properties.ShouldBeEmpty();
-
-                test.CodeFilePath.ShouldBeNull();
-                test.LineNumber.ShouldBeNull();
-            }
-
-            tests.Select(x => x.FullyQualifiedName)
-                .ShouldEqual(
-                    TestClass + ".Fail",
-                    TestClass + ".FailByAssertion",
-                    TestClass + ".Pass",
-                    TestClass + ".SkipWithoutReason",
-                    TestClass + ".SkipWithReason");
         }
 
         static TExpectedPayload Payload<TExpectedPayload>(string jsonMessage, string expectedMessageType)

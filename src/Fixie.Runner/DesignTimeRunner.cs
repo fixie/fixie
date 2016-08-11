@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Runner
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -24,25 +25,32 @@
                 using (var reader = new BinaryReader(networkStream))
                 using (var sink = new DesignTimeSink(writer))
                 {
-                    if (options.List)
+                    try
                     {
-                        DiscoverTests(sink, options.AssemblyPath, conventionArguments);
+                        if (options.List)
+                        {
+                            DiscoverTests(sink, options.AssemblyPath, conventionArguments);
+                        }
+                        else if (options.WaitCommand)
+                        {
+                            sink.SendWaitingCommand();
+
+                            var rawMessage = reader.ReadString();
+                            var message = JsonConvert.DeserializeObject<Message>(rawMessage);
+                            var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
+
+                            if (testsToRun.Any())
+                                RunTests(sink, options.AssemblyPath, conventionArguments, testsToRun);
+                            else
+                                RunAllTests(sink, options.AssemblyPath, conventionArguments);
+                        }
+
+                        sink.SendTestCompleted();
                     }
-                    else if (options.WaitCommand)
+                    catch (Exception exception)
                     {
-                        sink.SendWaitingCommand();
-
-                        var rawMessage = reader.ReadString();
-                        var message = JsonConvert.DeserializeObject<Message>(rawMessage);
-                        var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
-
-                        if (testsToRun.Any())
-                            RunTests(sink, options.AssemblyPath, conventionArguments, testsToRun);
-                        else
-                            RunAllTests(sink, options.AssemblyPath, conventionArguments);
+                        sink.Log(exception.ToString());
                     }
-
-                    sink.SendTestCompleted();
                 }
             }
 

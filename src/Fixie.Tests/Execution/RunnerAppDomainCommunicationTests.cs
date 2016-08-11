@@ -1,6 +1,7 @@
 namespace Fixie.Tests.Execution
 {
     using Fixie.Internal;
+    using Fixie.Runner;
     using Fixie.VisualStudio.TestAdapter.Wrappers;
 
     public class RunnerAppDomainCommunicationTests
@@ -15,6 +16,7 @@ namespace Fixie.Tests.Execution
             typeof(MessageLogger).ShouldBeSafeAppDomainCommunicationInterface();
             typeof(TestCaseDiscoverySink).ShouldBeSafeAppDomainCommunicationInterface();
             typeof(TestExecutionRecorder).ShouldBeSafeAppDomainCommunicationInterface();
+            typeof(DesignTimeSink).ShouldBeSafeAppDomainCommunicationInterface();
         }
     }
 }

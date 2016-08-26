@@ -3,10 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using Runner.Contracts;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
@@ -27,8 +27,7 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
-                            environment.DiscoverMethodGroups();
+                        DiscoverTests(assemblyPath, log, discoverySink);
                     }
                     else
                     {
@@ -45,6 +44,38 @@
         static bool AssemblyDirectoryContainsFixie(string assemblyPath)
         {
             return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
+        }
+
+        static void DiscoverTests(string assemblyPath, IMessageLogger log, ITestCaseDiscoverySink discoverySink)
+        {
+            using (var messages = new MessageQueue())
+            using (var testRunnerChannel = RunnerChannel.CreateAndListen(messages))
+            {
+                testRunnerChannel.EnqueueMessagesOnBackgroundThread();
+
+                var port = testRunnerChannel.Port;
+
+                new RunnerProcess(log, assemblyPath, "--list", "--designtime", "--port", $"{port}")
+                    .Start();
+
+                Message message;
+                while (messages.TryTake(out message))
+                {
+                    if (message.MessageType == "TestDiscovery.TestFound")
+                    {
+                        discoverySink.SendTestCase(message.Payload.ToObject<Test>().ToVisualStudioType(assemblyPath));
+                    }
+                    else if (message.MessageType == "TestRunner.TestCompleted")
+                    {
+                        log.Info("Test discovery completed.");
+                        break;
+                    }
+                    else
+                    {
+                        log.Info("Unexpected message type: " + message.MessageType);
+                    }
+                }
+            }
         }
     }
 }

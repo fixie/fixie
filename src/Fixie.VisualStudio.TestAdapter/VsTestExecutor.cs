@@ -4,10 +4,11 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using Newtonsoft.Json.Linq;
+    using Runner.Contracts;
 
     [ExtensionUri(Id)]
     public class VsTestExecutor : ITestExecutor
@@ -39,8 +40,7 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
-                            environment.RunAssembly();
+                        Run(assemblyPath, log, frameworkHandle);
                     }
                     else
                     {
@@ -81,10 +81,7 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
-
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
-                            environment.RunMethods(methodGroups);
+                        Run(assemblyPath, log, frameworkHandle, assemblyGroup.Select(x => x.FullyQualifiedName).ToArray());
                     }
                     else
                     {
@@ -111,6 +108,55 @@
         static bool AssemblyDirectoryContainsFixie(string assemblyPath)
         {
             return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
+        }
+
+        static void Run(string assemblyPath, IMessageLogger log, IFrameworkHandle executionSink)
+        {
+            Run(assemblyPath, log, executionSink, new string[] { });
+        }
+
+        static void Run(string assemblyPath, IMessageLogger log, IFrameworkHandle executionSink, string[] testsToRun)
+        {
+            using (var messages = new MessageQueue())
+            using (var testRunnerChannel = RunnerChannel.CreateAndListen(messages))
+            {
+                testRunnerChannel.EnqueueMessagesOnBackgroundThread();
+
+                new RunnerProcess(log, assemblyPath, "--designtime", "--port", $"{testRunnerChannel.Port}", "--wait-command").Start();
+
+                Message message;
+                while (messages.TryTake(out message))
+                {
+                    if (message.MessageType == "TestRunner.WaitingCommand")
+                    {
+                        testRunnerChannel.Send(new Message
+                        {
+                            MessageType = "TestRunner.Execute",
+                            Payload = JToken.FromObject(new RunTestsMessage
+                            {
+                                Tests = new List<string>(testsToRun)
+                            })
+                        });
+                    }
+                    else if (message.MessageType == "TestExecution.TestStarted")
+                    {
+                        executionSink.RecordStart(message.Payload.ToObject<Test>().ToVisualStudioType(assemblyPath));
+                    }
+                    else if (message.MessageType == "TestExecution.TestResult")
+                    {
+                        executionSink.RecordResult(message.Payload.ToObject<Runner.Contracts.TestResult>().ToVisualStudioType(assemblyPath));
+                    }
+                    else if (message.MessageType == "TestRunner.TestCompleted")
+                    {
+                        log.Info("Test execution completed.");
+                        break;
+                    }
+                    else
+                    {
+                        log.Info("Unexpected message type: " + message.MessageType);
+                    }
+                }
+            }
         }
     }
 }

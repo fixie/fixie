@@ -44,12 +44,14 @@
                             else
                                 RunAllTests(sink, options.AssemblyPath, conventionArguments);
                         }
-
-                        sink.SendTestCompleted();
                     }
                     catch (Exception exception)
                     {
                         sink.Log(exception.ToString());
+                    }
+                    finally
+                    {
+                        sink.SendTestCompleted();
                     }
                 }
             }

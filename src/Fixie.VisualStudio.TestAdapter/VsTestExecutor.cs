@@ -7,6 +7,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Runner.Contracts;
 
@@ -117,46 +118,49 @@
 
         static void Run(string assemblyPath, IMessageLogger log, IFrameworkHandle executionSink, string[] testsToRun)
         {
-            using (var messages = new MessageQueue())
-            using (var testRunnerChannel = RunnerChannel.CreateAndListen(messages))
+            var runnerChannel = new RunnerChannel();
+            var port = runnerChannel.HandleMessagesOnBackgroundThread(MessageHandler(assemblyPath, log, executionSink, testsToRun), log);
+
+            new RunnerProcess(log, assemblyPath, "--designtime", "--port", $"{port}", "--wait-command")
+                .Run();
+
+            log.Info("Waiting for background thread to exit.");
+            runnerChannel.WaitForBackgroundThread();
+        }
+
+        static Action<Message, Action<Message>> MessageHandler(string assemblyPath, IMessageLogger log, IFrameworkHandle executionSink, string[] testsToRun)
+        {
+            return (message, send) =>
             {
-                testRunnerChannel.EnqueueMessagesOnBackgroundThread();
-
-                new RunnerProcess(log, assemblyPath, "--designtime", "--port", $"{testRunnerChannel.Port}", "--wait-command").Start();
-
-                Message message;
-                while (messages.TryTake(out message))
+                if (message.MessageType == "TestRunner.WaitingCommand")
                 {
-                    if (message.MessageType == "TestRunner.WaitingCommand")
+                    send(new Message
                     {
-                        testRunnerChannel.Send(new Message
+                        MessageType = "TestRunner.Execute",
+                        Payload = JToken.FromObject(new RunTestsMessage
                         {
-                            MessageType = "TestRunner.Execute",
-                            Payload = JToken.FromObject(new RunTestsMessage
-                            {
-                                Tests = new List<string>(testsToRun)
-                            })
-                        });
-                    }
-                    else if (message.MessageType == "TestExecution.TestStarted")
-                    {
-                        executionSink.RecordStart(message.Payload.ToObject<Test>().ToVisualStudioType(assemblyPath));
-                    }
-                    else if (message.MessageType == "TestExecution.TestResult")
-                    {
-                        executionSink.RecordResult(message.Payload.ToObject<Runner.Contracts.TestResult>().ToVisualStudioType(assemblyPath));
-                    }
-                    else if (message.MessageType == "TestRunner.TestCompleted")
-                    {
-                        log.Info("Test execution completed.");
-                        break;
-                    }
-                    else
-                    {
-                        log.Info("Unexpected message type: " + message.MessageType);
-                    }
+                            Tests = new List<string>(testsToRun)
+                        })
+                    });
                 }
-            }
+                else if (message.MessageType == "TestExecution.TestStarted")
+                {
+                    executionSink.RecordStart(message.Payload.ToObject<Test>().ToVisualStudioType(assemblyPath));
+                }
+                else if (message.MessageType == "TestExecution.TestResult")
+                {
+                    executionSink.RecordResult(message.Payload.ToObject<Runner.Contracts.TestResult>().ToVisualStudioType(assemblyPath));
+                }
+                else if (message.MessageType == "TestRunner.TestCompleted")
+                {
+                    log.Info("Test execution completed.");
+                }
+                else
+                {
+                    log.Info("Unexpected message:");
+                    log.Info(JsonConvert.SerializeObject(message));
+                }
+            };
         }
     }
 }

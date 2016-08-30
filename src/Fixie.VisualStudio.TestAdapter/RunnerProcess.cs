@@ -14,7 +14,7 @@ namespace Fixie.VisualStudio.TestAdapter
             this.arguments = arguments;
         }
 
-        public void Start()
+        public void Run()
         {
             var startInfo = new ProcessStartInfo
             {
@@ -28,6 +28,7 @@ namespace Fixie.VisualStudio.TestAdapter
                 log.Info($"{startInfo.FileName} {startInfo.Arguments}");
                 process.EnableRaisingEvents = true;
                 process.Start();
+                process.WaitForExit();
             }
         }
     }

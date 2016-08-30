@@ -6,6 +6,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using Newtonsoft.Json;
     using Runner.Contracts;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]
@@ -48,34 +49,35 @@
 
         static void DiscoverTests(string assemblyPath, IMessageLogger log, ITestCaseDiscoverySink discoverySink)
         {
-            using (var messages = new MessageQueue())
-            using (var testRunnerChannel = RunnerChannel.CreateAndListen(messages))
+            var runnerChannel = new RunnerChannel();
+
+            var port = runnerChannel.HandleMessagesOnBackgroundThread(MessageHandler(assemblyPath, log, discoverySink), log);
+
+            new RunnerProcess(log, assemblyPath, "--list", "--designtime", "--port", $"{port}")
+                .Run();
+
+            log.Info("Waiting for background thread to exit.");
+            runnerChannel.WaitForBackgroundThread();
+        }
+
+        static Action<Message, Action<Message>> MessageHandler(string assemblyPath, IMessageLogger log, ITestCaseDiscoverySink discoverySink)
+        {
+            return (message, send) =>
             {
-                testRunnerChannel.EnqueueMessagesOnBackgroundThread();
-
-                var port = testRunnerChannel.Port;
-
-                new RunnerProcess(log, assemblyPath, "--list", "--designtime", "--port", $"{port}")
-                    .Start();
-
-                Message message;
-                while (messages.TryTake(out message))
+                if (message.MessageType == "TestDiscovery.TestFound")
                 {
-                    if (message.MessageType == "TestDiscovery.TestFound")
-                    {
-                        discoverySink.SendTestCase(message.Payload.ToObject<Test>().ToVisualStudioType(assemblyPath));
-                    }
-                    else if (message.MessageType == "TestRunner.TestCompleted")
-                    {
-                        log.Info("Test discovery completed.");
-                        break;
-                    }
-                    else
-                    {
-                        log.Info("Unexpected message type: " + message.MessageType);
-                    }
+                    discoverySink.SendTestCase(message.Payload.ToObject<Test>().ToVisualStudioType(assemblyPath));
                 }
-            }
+                else if (message.MessageType == "TestRunner.TestCompleted")
+                {
+                    log.Info("Test discovery completed.");
+                }
+                else
+                {
+                    log.Info("Unexpected message:");
+                    log.Info(JsonConvert.SerializeObject(message));
+                }
+            };
         }
     }
 }

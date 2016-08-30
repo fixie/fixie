@@ -5,84 +5,86 @@
     using System.Net;
     using System.Net.Sockets;
     using System.Threading;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Newtonsoft.Json;
     using Runner.Contracts;
 
-    public class RunnerChannel : IDisposable
+    public class RunnerChannel
     {
-        readonly MessageQueue messages;
-        BinaryWriter writer;
-        BinaryReader reader;
+        readonly ManualResetEvent terminateWaitHandle;
 
-        public Socket ConnectSocket { get; }
-        public int Port { get; }
+        public RunnerChannel()
+        {
+            terminateWaitHandle = new ManualResetEvent(false);
+        }
 
-        public static RunnerChannel CreateAndListen(MessageQueue messages)
+        public void WaitForBackgroundThread()
+        {
+            terminateWaitHandle.WaitOne();
+        }
+
+        public int HandleMessagesOnBackgroundThread(Action<Message, Action<Message>> handle, IMessageLogger log)
         {
             const int anyAvailablePort = 0;
 
-            var listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var connectSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            listenSocket.Bind(new IPEndPoint(IPAddress.Loopback, anyAvailablePort));
-            listenSocket.Listen(10);
+            connectSocket.Bind(new IPEndPoint(IPAddress.Loopback, anyAvailablePort));
+            connectSocket.Listen(10);
 
-            return new RunnerChannel(listenSocket, ((IPEndPoint)listenSocket.LocalEndPoint).Port, messages);
-        }
+            var port = ((IPEndPoint)connectSocket.LocalEndPoint).Port;
 
-        RunnerChannel(Socket connectSocket, int port, MessageQueue messages)
-        {
-            this.messages = messages;
-            ConnectSocket = connectSocket;
-            Port = port;
-        }
+            terminateWaitHandle.Reset();
 
-        Socket Socket { get; set; }
-
-        public void Send(Message message)
-        {
-            lock (writer)
-            {
-                writer.Write(JsonConvert.SerializeObject(message));
-            }
-        }
-
-        void ReadMessagesIntoTheQueue()
-        {
-            while (true)
-            {
-                var rawMessage = reader.ReadString();
-                var message = JsonConvert.DeserializeObject<Message>(rawMessage);
-
-                messages.Add(message);
-
-                if (message.MessageType == "TestRunner.TestCompleted")
-                    break;
-            }
-        }
-
-        public void EnqueueMessagesOnBackgroundThread()
-        {
             new Thread(() =>
             {
-                using (ConnectSocket)
+                try
                 {
-                    Socket = ConnectSocket.Accept();
+                    using (connectSocket)
+                    {
+                        using (var socket = connectSocket.Accept())
+                        {
+                            using (var stream = new NetworkStream(socket))
+                            using (var writer = new BinaryWriter(stream))
+                            using (var reader = new BinaryReader(stream))
+                            {
+                                while (true)
+                                {
+                                    var rawMessage = reader.ReadString();
 
-                    var stream = new NetworkStream(Socket);
-                    writer = new BinaryWriter(stream);
-                    reader = new BinaryReader(stream);
+                                    log.Info(rawMessage);
 
-                    new Thread(ReadMessagesIntoTheQueue) { IsBackground = true }.Start();
+                                    var message = JsonConvert.DeserializeObject<Message>(rawMessage);
+
+                                    try
+                                    {
+                                        handle(message, messageToSend => writer.Write(JsonConvert.SerializeObject(messageToSend)));
+                                    }
+                                    catch (Exception exception)
+                                    {
+                                        log.Error(exception);
+                                    }
+
+                                    if (message.MessageType == "TestRunner.TestCompleted")
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-            })
-            {
-                IsBackground = true
-            }.Start();
-        }
+                catch (Exception ex)
+                {
+                    log.Error(ex);
+                }
 
-        public void Dispose()
-        {
-            Socket?.Dispose();
+                log.Info("Exiting background thread.");
+
+                terminateWaitHandle.Set();
+            }) { IsBackground = true }.Start();
+
+            return port;
         }
     }
 }

@@ -118,14 +118,15 @@
 
         static void Run(string assemblyPath, IMessageLogger log, IFrameworkHandle executionSink, string[] testsToRun)
         {
-            var runnerChannel = new RunnerChannel();
-            var port = runnerChannel.HandleMessagesOnBackgroundThread(MessageHandler(assemblyPath, log, executionSink, testsToRun), log);
+            using (var runnerChannel = new RunnerChannel(log))
+            {
+                var runnerProcess = new RunnerProcess(log, assemblyPath, "--designtime", "--port", $"{runnerChannel.Port}", "--wait-command");
+                runnerProcess.Start();
 
-            new RunnerProcess(log, assemblyPath, "--designtime", "--port", $"{port}", "--wait-command")
-                .Run();
+                runnerChannel.HandleMessages(MessageHandler(assemblyPath, log, executionSink, testsToRun));
 
-            log.Info("Waiting for background thread to exit.");
-            runnerChannel.WaitForBackgroundThread();
+                runnerProcess.WaitForExit();
+            }
         }
 
         static Action<Message, Action<Message>> MessageHandler(string assemblyPath, IMessageLogger log, IFrameworkHandle executionSink, string[] testsToRun)

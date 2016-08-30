@@ -49,15 +49,15 @@
 
         static void DiscoverTests(string assemblyPath, IMessageLogger log, ITestCaseDiscoverySink discoverySink)
         {
-            var runnerChannel = new RunnerChannel();
+            using (var runnerChannel = new RunnerChannel(log))
+            {
+                var runnerProcess = new RunnerProcess(log, assemblyPath, "--list", "--designtime", "--port", $"{runnerChannel.Port}");
+                runnerProcess.Start();
 
-            var port = runnerChannel.HandleMessagesOnBackgroundThread(MessageHandler(assemblyPath, log, discoverySink), log);
+                runnerChannel.HandleMessages(MessageHandler(assemblyPath, log, discoverySink));
 
-            new RunnerProcess(log, assemblyPath, "--list", "--designtime", "--port", $"{port}")
-                .Run();
-
-            log.Info("Waiting for background thread to exit.");
-            runnerChannel.WaitForBackgroundThread();
+                runnerProcess.WaitForExit();
+            }
         }
 
         static Action<Message, Action<Message>> MessageHandler(string assemblyPath, IMessageLogger log, ITestCaseDiscoverySink discoverySink)

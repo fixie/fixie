@@ -82,7 +82,7 @@
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
                 environment.Subscribe<DesignTimeExecutionListener>(sink);
-                var methodGroups = testsToRun.Select(x => new MethodGroup(x)).ToArray();
+                var methodGroups = testsToRun;
                 environment.RunMethods(methodGroups, conventionArguments.ToArray());
             }
         }

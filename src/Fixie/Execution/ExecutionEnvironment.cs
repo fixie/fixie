@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Execution
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Security;
     using System.Security.Permissions;
@@ -46,7 +47,7 @@
             return executionProxy.RunAssembly(assemblyFullPath, conventionArguments);
         }
 
-        public void RunMethods(MethodGroup[] methodGroups, params string[] conventionArguments)
+        public void RunMethods(IReadOnlyList<string> methodGroups, params string[] conventionArguments)
         {
             executionProxy.RunMethods(assemblyFullPath, methodGroups, conventionArguments);
         }

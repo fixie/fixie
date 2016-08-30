@@ -18,11 +18,11 @@
         {
             typeof(AttributeSample).Has<InheritedAttribute>().ShouldBeFalse();
             typeof(AttributeSample).Has<NonInheritedAttribute>().ShouldBeTrue();
-            typeof(AttributeSample).Has<SerializableAttribute>().ShouldBeFalse();
+            typeof(AttributeSample).Has<AttributeUsageAttribute>().ShouldBeFalse();
 
             typeof(AttributeSample).HasOrInherits<InheritedAttribute>().ShouldBeTrue();
             typeof(AttributeSample).HasOrInherits<NonInheritedAttribute>().ShouldBeTrue();
-            typeof(AttributeSample).HasOrInherits<SerializableAttribute>().ShouldBeFalse();
+            typeof(AttributeSample).HasOrInherits<AttributeUsageAttribute>().ShouldBeFalse();
         }
 
         public void CanDetectMethodAttributes()
@@ -112,7 +112,7 @@
             public virtual void NoAttrribute() { }
         }
 
-        [NonInheritedAttribute]
+        [NonInherited]
         class AttributeSample : AttributeSampleBase
         {
             public override void AttributeOnBaseDeclaration() { }

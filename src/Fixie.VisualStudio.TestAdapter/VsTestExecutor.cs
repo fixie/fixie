@@ -4,11 +4,12 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Wrappers;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+    using Runner.Contracts;
 
     [ExtensionUri(Id)]
     public class VsTestExecutor : ITestExecutor
@@ -40,12 +41,7 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        using (var recorder = new TestExecutionRecorder(frameworkHandle))
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
-                        {
-                            environment.Subscribe<VisualStudioExecutionListener>(recorder, assemblyPath);
-                            environment.RunAssembly();
-                        }
+                        Run(assemblyPath, log, frameworkHandle);
                     }
                     else
                     {
@@ -86,14 +82,7 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
-
-                        using (var recorder = new TestExecutionRecorder(frameworkHandle))
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
-                        {
-                            environment.Subscribe<VisualStudioExecutionListener>(recorder, assemblyPath);
-                            environment.RunMethods(methodGroups);
-                        }
+                        Run(assemblyPath, log, frameworkHandle, assemblyGroup.Select(x => x.FullyQualifiedName).ToArray());
                     }
                     else
                     {
@@ -120,6 +109,59 @@
         static bool AssemblyDirectoryContainsFixie(string assemblyPath)
         {
             return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
+        }
+
+        static void Run(string assemblyPath, IMessageLogger log, IFrameworkHandle executionSink)
+        {
+            Run(assemblyPath, log, executionSink, new string[] { });
+        }
+
+        static void Run(string assemblyPath, IMessageLogger log, IFrameworkHandle executionSink, string[] testsToRun)
+        {
+            using (var runnerChannel = new RunnerChannel(log))
+            {
+                var runnerProcess = new RunnerProcess(log, assemblyPath, "--designtime", "--port", $"{runnerChannel.Port}", "--wait-command");
+                runnerProcess.Start();
+
+                runnerChannel.HandleMessages(MessageHandler(assemblyPath, log, executionSink, testsToRun));
+
+                runnerProcess.WaitForExit();
+            }
+        }
+
+        static Action<Message, Action<Message>> MessageHandler(string assemblyPath, IMessageLogger log, IFrameworkHandle executionSink, string[] testsToRun)
+        {
+            return (message, send) =>
+            {
+                if (message.MessageType == "TestRunner.WaitingCommand")
+                {
+                    send(new Message
+                    {
+                        MessageType = "TestRunner.Execute",
+                        Payload = JToken.FromObject(new RunTestsMessage
+                        {
+                            Tests = new List<string>(testsToRun)
+                        })
+                    });
+                }
+                else if (message.MessageType == "TestExecution.TestStarted")
+                {
+                    executionSink.RecordStart(message.Payload.ToObject<Test>().ToVisualStudioType(assemblyPath));
+                }
+                else if (message.MessageType == "TestExecution.TestResult")
+                {
+                    executionSink.RecordResult(message.Payload.ToObject<Runner.Contracts.TestResult>().ToVisualStudioType(assemblyPath));
+                }
+                else if (message.MessageType == "TestRunner.TestCompleted")
+                {
+                    log.Info("Test execution completed.");
+                }
+                else
+                {
+                    log.Info("Unexpected message:");
+                    log.Info(JsonConvert.SerializeObject(message));
+                }
+            };
         }
     }
 }

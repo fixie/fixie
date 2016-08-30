@@ -5,7 +5,7 @@
     using System.Text;
     using Cli;
 
-    class Program
+    public class Program
     {
         const int FatalError = -1;
 

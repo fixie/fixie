@@ -18,17 +18,22 @@
     public class DesignTimeSink : LongLivedMarshalByRefObject, IDesignTimeSink
     {
         readonly BinaryWriter writer;
+        readonly string logPath;
 
         public DesignTimeSink(BinaryWriter writer)
         {
             this.writer = writer;
+
+            var folder = Path.Combine(GetFolderPath(SpecialFolder.LocalApplicationData), "Fixie");
+            Directory.CreateDirectory(folder);
+
+            logPath = Path.Combine(folder, "design-time.log");
         }
 
         public void Send(string message)
             => writer.Write(message);
 
-        public void Log(string message)
-            => File.AppendAllText("fixie.log", $"{DateTime.Now}: {message}{NewLine}{NewLine}");
+        public void Log(string message) => File.AppendAllText(logPath, $"{DateTime.Now}: {message}{NewLine}{NewLine}");
     }
 
     public static class DesignTimeSinkExtensions

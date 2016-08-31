@@ -12,7 +12,7 @@
   },
 
   "frameworks": {
-    "net452": {
+    "net45": {
       "dependencies": {
         "TestDriven.Framework": "2.0.0.0"
       }

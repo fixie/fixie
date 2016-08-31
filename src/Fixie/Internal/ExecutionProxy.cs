@@ -46,12 +46,13 @@
             return summaryListener.Summary.Failed;
         }
 
-        public void RunMethods(string assemblyFullPath, MethodGroup[] methodGroups, string[] conventionArguments)
+        public void RunMethods(string assemblyFullPath, IReadOnlyList<string> methodGroups, string[] conventionArguments)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             var bus = new Bus(subscribedListeners);
-            Runner(bus, conventionArguments).RunMethods(assembly, methodGroups);
+
+            Runner(bus, conventionArguments).RunMethods(assembly, methodGroups.Select(x => new MethodGroup(x)).ToArray());
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

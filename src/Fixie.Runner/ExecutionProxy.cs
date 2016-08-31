@@ -1,10 +1,11 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Runner
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using Execution;
+    using Internal;
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {

@@ -1,4 +1,4 @@
-namespace Fixie.Internal
+namespace Fixie.Runner
 {
     using System;
     using System.Collections.Generic;

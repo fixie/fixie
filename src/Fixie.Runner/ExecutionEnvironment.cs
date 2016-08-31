@@ -1,4 +1,4 @@
-﻿namespace Fixie.Execution
+﻿namespace Fixie.Runner
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     using System.Linq;
     using System.Security;
     using System.Security.Permissions;
-    using Internal;
+    using Execution;
 
     public class ExecutionEnvironment : IDisposable
     {

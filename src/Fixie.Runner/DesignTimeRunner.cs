@@ -64,7 +64,7 @@
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
                 environment.Subscribe<DesignTimeDiscoveryListener>(sink, assemblyPath);
-                environment.DiscoverMethodGroups(conventionArguments.ToArray());
+                environment.DiscoverMethodGroups(conventionArguments);
             }
         }
 
@@ -73,7 +73,7 @@
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
                 environment.Subscribe<DesignTimeExecutionListener>(sink);
-                environment.RunAssembly(conventionArguments.ToArray());
+                environment.RunAssembly(conventionArguments);
             }
         }
 
@@ -83,7 +83,7 @@
             {
                 environment.Subscribe<DesignTimeExecutionListener>(sink);
                 var methodGroups = testsToRun;
-                environment.RunMethods(methodGroups, conventionArguments.ToArray());
+                environment.RunMethods(methodGroups, conventionArguments);
             }
         }
     }

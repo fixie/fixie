@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Security;
     using System.Security.Permissions;
     using Internal;
@@ -37,19 +38,19 @@
             executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArguments);
         }
 
-        public void DiscoverMethodGroups(params string[] conventionArguments)
+        public void DiscoverMethodGroups(IReadOnlyList<string> conventionArguments)
         {
-            executionProxy.DiscoverMethodGroups(assemblyFullPath, conventionArguments);
+            executionProxy.DiscoverMethodGroups(assemblyFullPath, conventionArguments.ToArray());
         }
 
-        public int RunAssembly(params string[] conventionArguments)
+        public int RunAssembly(IReadOnlyList<string> conventionArguments)
         {
-            return executionProxy.RunAssembly(assemblyFullPath, conventionArguments);
+            return executionProxy.RunAssembly(assemblyFullPath, conventionArguments.ToArray());
         }
 
-        public void RunMethods(IReadOnlyList<string> methodGroups, params string[] conventionArguments)
+        public void RunMethods(IReadOnlyList<string> methodGroups, IReadOnlyList<string> conventionArguments)
         {
-            executionProxy.RunMethods(assemblyFullPath, methodGroups, conventionArguments);
+            executionProxy.RunMethods(assemblyFullPath, methodGroups, conventionArguments.ToArray());
         }
 
         T Create<T>() where T : LongLivedMarshalByRefObject, new()

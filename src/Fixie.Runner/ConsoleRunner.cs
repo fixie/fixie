@@ -25,7 +25,7 @@ namespace Fixie.Runner
                 else if (options.ReportFormat == ReportFormat.xUnit)
                     environment.Subscribe<ReportListener<XUnitXml>>();
 
-                return environment.RunAssembly(conventionArguments.ToArray());
+                return environment.RunAssembly(conventionArguments);
             }
         }
 

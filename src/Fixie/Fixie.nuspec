@@ -12,7 +12,15 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A convention-based test framework.</description>
     <references>
+
       <reference file="Fixie.dll" />
+
+      <reference file="dotnet-test-fixie.exe" />
+      <reference file="Mono.Cecil.dll" />
+      <reference file="Mono.Cecil.Rocks.dll" />
+      <reference file="Mono.Cecil.Pdb.dll" />
+      <reference file="Newtonsoft.Json.dll" />
+
     </references>
   </metadata>
   <files>

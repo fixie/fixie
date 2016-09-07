@@ -1,4 +1,4 @@
-﻿namespace Fixie.Execution
+﻿namespace Fixie.Runner
 {
     using System;
     using System.Runtime.Remoting;

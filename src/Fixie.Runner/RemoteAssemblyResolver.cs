@@ -5,7 +5,6 @@ namespace Fixie.Runner
     using System.Diagnostics;
     using System.IO;
     using System.Reflection;
-    using Execution;
 
     public class RemoteAssemblyResolver : LongLivedMarshalByRefObject
     {

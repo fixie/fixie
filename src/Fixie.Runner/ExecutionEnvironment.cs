@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Security;
     using System.Security.Permissions;
-    using Execution;
 
     public class ExecutionEnvironment : IDisposable
     {

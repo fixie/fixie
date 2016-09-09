@@ -1,4 +1,4 @@
-﻿namespace Fixie.Execution
+﻿namespace Fixie.Runner
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Security;
     using System.Security.Permissions;
-    using Internal;
 
     public class ExecutionEnvironment : IDisposable
     {
@@ -25,7 +24,9 @@
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
 
-            assemblyResolver = Create<RemoteAssemblyResolver>();
+            assemblyResolver = CreateFrom<RemoteAssemblyResolver>();
+            assemblyResolver.RegisterAssemblyLocation(typeof(ExecutionProxy).Assembly.Location);
+
             executionProxy = Create<ExecutionProxy>();
         }
 
@@ -51,6 +52,11 @@
         public void RunMethods(IReadOnlyList<string> methodGroups, IReadOnlyList<string> conventionArguments)
         {
             executionProxy.RunMethods(assemblyFullPath, methodGroups, conventionArguments.ToArray());
+        }
+
+        T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()
+        {
+            return (T)appDomain.CreateInstanceFromAndUnwrap(typeof(T).Assembly.Location, typeof(T).FullName, false, 0, null, null, null, null);
         }
 
         T Create<T>() where T : LongLivedMarshalByRefObject, new()

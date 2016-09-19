@@ -10,8 +10,8 @@ namespace Should.Core.Assertions
 
         public bool Equals(IEnumerable x, IEnumerable y)
         {
-            IEnumerator enumeratorX = x.GetEnumerator();
-            IEnumerator enumeratorY = y.GetEnumerator();
+            var enumeratorX = x.GetEnumerator();
+            var enumeratorY = y.GetEnumerator();
 
             Position = 0;
 
@@ -58,7 +58,7 @@ namespace Should.Core.Assertions
             throw new NotImplementedException();
         }
 
-        private bool Equals(object a, object b, Type baseType)
+        static bool Equals(object a, object b, Type baseType)
         {
             var assertComparerType = typeof(AssertEqualityComparer<>).MakeGenericType(baseType);
             var assertComparer = Activator.CreateInstance(assertComparerType);

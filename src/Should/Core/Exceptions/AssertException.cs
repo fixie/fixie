@@ -14,7 +14,7 @@ namespace Should.Core.Exceptions
         public AssertException(string userMessage)
             : base(userMessage)
         {
-            this.UserMessage = userMessage;
+            UserMessage = userMessage;
         }
 
         protected AssertException(string userMessage, Exception innerException)
@@ -38,11 +38,11 @@ namespace Should.Core.Exceptions
             if (stackTrace == null)
                 return null;
 
-            List<string> results = new List<string>();
+            var results = new List<string>();
 
-            foreach (string line in SplitLines(stackTrace))
+            foreach (var line in SplitLines(stackTrace))
             {
-                string trimmedLine = line.TrimStart();
+                var trimmedLine = line.TrimStart();
                 if (!trimmedLine.StartsWith( "at " + FilterStackTraceAssemblyPrefix) )
                     results.Add(line);
             }

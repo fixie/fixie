@@ -6,6 +6,6 @@ namespace Should.Core.Exceptions
     {
         public IsTypeException(Type expected,
                                object actual)
-            : base(expected, actual == null ? null : actual.GetType(), "Assert.IsType() Failure") { }
+            : base(expected, actual?.GetType(), "Assert.IsType() Failure") { }
     }
 }

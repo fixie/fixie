@@ -24,8 +24,8 @@ namespace Should.Core.Exceptions
         {
             if (!skipPositionCheck)
             {
-                IEnumerable enumerableActual = actual as IEnumerable;
-                IEnumerable enumerableExpected = expected as IEnumerable;
+                var enumerableActual = actual as IEnumerable;
+                var enumerableExpected = expected as IEnumerable;
 
                 if (enumerableActual != null && enumerableExpected != null)
                 {
@@ -44,8 +44,8 @@ namespace Should.Core.Exceptions
                 actual.ToString() == expected.ToString() &&
                 actual.GetType() != expected.GetType())
             {
-                this.actual += String.Format(" ({0})", actual.GetType().FullName);
-                this.expected += String.Format(" ({0})", expected.GetType().FullName);
+                this.actual += $" ({actual.GetType().FullName})";
+                this.expected += $" ({expected.GetType().FullName})";
             }
         }
 
@@ -74,11 +74,11 @@ namespace Should.Core.Exceptions
 
         static string ConvertToString(object value)
         {
-            Array valueArray = value as Array;
+            var valueArray = value as Array;
             if (valueArray == null)
                 return value.ToString();
 
-            List<string> valueStrings = new List<string>();
+            var valueStrings = new List<string>();
 
             foreach (object valueObject in valueArray)
                 valueStrings.Add(valueObject == null ? "(null)" : valueObject.ToString());

@@ -8,7 +8,7 @@ namespace Should.Core.Assertions
     {
         public bool Equals(T x, T y)
         {
-            Type type = typeof(T);
+            var type = typeof(T);
 
             // Null?
             if (!type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Nullable<>))))
@@ -31,8 +31,8 @@ namespace Should.Core.Assertions
                 return ((IEquatable<T>)y).Equals(x);
 
             // Enumerable?
-            IEnumerable enumerableX = x as IEnumerable;
-            IEnumerable enumerableY = y as IEnumerable;
+            var enumerableX = x as IEnumerable;
+            var enumerableY = y as IEnumerable;
 
             if (enumerableX != null && enumerableY != null)
             {

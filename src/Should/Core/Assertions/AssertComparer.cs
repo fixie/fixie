@@ -7,7 +7,7 @@ namespace Should.Core.Assertions
     {
         public int Compare(T x, T y)
         {
-            Type type = typeof(T);
+            var type = typeof(T);
 
             // Null?
             if (!type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Nullable<>))))
@@ -25,16 +25,16 @@ namespace Should.Core.Assertions
             var yIsAssignableFromX = y.GetType().IsAssignableFrom(x.GetType());
 
             if (!xIsAssignableFromY && !yIsAssignableFromX)
-                throw new InvalidOperationException(string.Format("Cannot compare objects of type {0} and {1} because neither is assignable from the other.", x.GetType().Name, y.GetType().Name));
+                throw new InvalidOperationException($"Cannot compare objects of type {x.GetType().Name} and {y.GetType().Name} because neither is assignable from the other.");
 
             // x Implements IComparable<T>?
-            IComparable<T> comparable1 = x as IComparable<T>;
+            var comparable1 = x as IComparable<T>;
 
             if (comparable1 != null && xIsAssignableFromY)
                 return comparable1.CompareTo(y);
 
             // y Implements IComparable<T>?
-            IComparable<T> comparable2 = y as IComparable<T>;
+            var comparable2 = y as IComparable<T>;
 
             if (comparable2 != null && yIsAssignableFromX)
                 return comparable2.CompareTo(x) * -1;
@@ -46,7 +46,7 @@ namespace Should.Core.Assertions
                 return comparable3.CompareTo(y);
 
             // y Implements IComparable?
-            IComparable comparable4 = y as IComparable;
+            var comparable4 = y as IComparable;
 
             if (comparable4 != null && yIsAssignableFromX)
                 return comparable4.CompareTo(x) *-1;
@@ -74,11 +74,11 @@ namespace Should.Core.Assertions
                 }
             }
 
-            throw new InvalidOperationException(string.Format("Cannot compare objects of type {0} and {1} because neither implements IComparable or IComparable<T> nor overloads comparaison operators.", x.GetType().Name, y.GetType().Name));
+            throw new InvalidOperationException($"Cannot compare objects of type {x.GetType().Name} and {y.GetType().Name} because neither implements IComparable or IComparable<T> nor overloads comparaison operators.");
         }
 
         //Note: Handles edge case of a class where operators are overloaded but niether IComparable or IComparable<T> are implemented
-        private int? CompareUsingOperators(T x, T y, Type type)
+        static int? CompareUsingOperators(T x, T y, Type type)
         {
             var greaterThan = type.GetMethod("op_GreaterThan");
             if (greaterThan != null)

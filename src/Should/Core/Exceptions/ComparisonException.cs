@@ -6,16 +6,16 @@
         public string Right { get; private set; }
 
         protected ComparisonException(object left, object right, string methodName, string operation)
-            : base(string.Format("Assert.{0}() Failure:\r\n\tExpected: {1} {2} {3}\r\n\tbut it was not", methodName, Format(right), operation, Format(left)))
+            : base($"Assert.{methodName}() Failure:\r\n\tExpected: {Format(right)} {operation} {Format(left)}\r\n\tbut it was not")
         {
-            Left = left != null ? left.ToString() : null;
-            Right = right != null ? right.ToString() : null;
+            Left = left?.ToString();
+            Right = right?.ToString();
         }
 
         protected ComparisonException(object left, object right, string message) : base(message)
         {
-            Left = left != null ? left.ToString() : null;
-            Right = right != null ? right.ToString() : null;
+            Left = left?.ToString();
+            Right = right?.ToString();
         }
 
         public static string Format(object value)
@@ -26,7 +26,7 @@
             }
             var type = value.GetType();
             return type == typeof(string) // || type == typeof(DateTime) || type == typeof(DateTime?)
-                ? string.Format("\"{0}\"", value)
+                ? $"\"{value}\""
                 : value.ToString();
         }
     }

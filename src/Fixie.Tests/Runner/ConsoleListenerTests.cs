@@ -34,7 +34,7 @@
                            At("Fail()"),
                            "",
                            "Test '" + TestClass + ".FailByAssertion' failed:",
-                           "Assert.Equal() Failure",
+                           "Assertion Failure",
                            "Expected: 2",
                            "Actual:   1",
                            At("FailByAssertion()"),

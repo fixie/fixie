@@ -115,7 +115,7 @@
             failByAssertion.TestCase.ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".FailByAssertion");
             failByAssertion.Outcome.ShouldEqual(VsTestOutcome.Failed);
             failByAssertion.ErrorMessage.Lines().ShouldEqual(
-                "Assert.Equal() Failure",
+                "Assertion Failure",
                 "Expected: 2",
                 "Actual:   1");
             failByAssertion.ErrorStackTrace

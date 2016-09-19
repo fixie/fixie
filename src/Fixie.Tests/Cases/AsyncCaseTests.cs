@@ -21,7 +21,7 @@
             Run<AwaitThenFailTestClass>();
 
             Listener.Entries.ShouldEqual(
-                For<AwaitThenFailTestClass>(".Test failed: Assert.Equal() Failure" + NewLine +
+                For<AwaitThenFailTestClass>(".Test failed: Assertion Failure" + NewLine +
                 "Expected: 0" + NewLine +
                 "Actual:   3"));
         }

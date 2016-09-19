@@ -7,33 +7,14 @@ namespace Should.Core.Exceptions
     {
         public static string FilterStackTraceAssemblyPrefix = "Should.";
 
-        readonly string stackTrace;
-
-        public AssertException() { }
-
-        public AssertException(string userMessage)
-            : base(userMessage)
+        public AssertException(string message)
+            : base(message)
         {
-            UserMessage = userMessage;
         }
 
-        protected AssertException(string userMessage, Exception innerException)
-            : base(userMessage, innerException) { }
+        public override string StackTrace => FilterStackTrace(base.StackTrace);
 
-        protected AssertException(string userMessage, string stackTrace)
-            : base(userMessage)
-        {
-            this.stackTrace = stackTrace;
-        }
-
-        public override string StackTrace
-        {
-            get { return FilterStackTrace(stackTrace ?? base.StackTrace); }
-        }
-
-        public string UserMessage { get; protected set; }
-
-        protected static string FilterStackTrace(string stackTrace)
+        static string FilterStackTrace(string stackTrace)
         {
             if (stackTrace == null)
                 return null;

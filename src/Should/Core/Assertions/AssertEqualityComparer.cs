@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Should.Core.Assertions
 {
-    internal class AssertEqualityComparer<T> : IEqualityComparer<T>
+    class AssertEqualityComparer<T> : IEqualityComparer<T>
     {
         public bool Equals(T x, T y)
         {

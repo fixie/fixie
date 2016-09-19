@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Should.Core.Exceptions
+﻿namespace Should.Core.Exceptions
 {
     public abstract class ComparisonException : AssertException
     {

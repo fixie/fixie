@@ -5,33 +5,17 @@ using Should.Core.Assertions;
 
 namespace Should.Core.Exceptions
 {
-    /// <summary>
-    /// Base class for exceptions that have actual and expected values
-    /// </summary>
     public class AssertActualExpectedException : AssertException
     {
         readonly string actual;
         readonly string differencePosition = "";
         readonly string expected;
 
-        /// <summary>
-        /// Creates a new instance of the <see href="AssertActualExpectedException"/> class.
-        /// </summary>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
-        /// <param name="userMessage">The user message to be shown</param>
         public AssertActualExpectedException(object expected,
                                              object actual,
                                              string userMessage)
             : this(expected, actual, userMessage, false) { }
 
-        /// <summary>
-        /// Creates a new instance of the <see href="AssertActualExpectedException"/> class.
-        /// </summary>
-        /// <param name="expected">The expected value</param>
-        /// <param name="actual">The actual value</param>
-        /// <param name="userMessage">The user message to be shown</param>
-        /// <param name="skipPositionCheck">Set to true to skip the check for difference position</param>
         public AssertActualExpectedException(object expected,
                                              object actual,
                                              string userMessage,
@@ -65,27 +49,16 @@ namespace Should.Core.Exceptions
             }
         }
 
-        /// <summary>
-        /// Gets the actual value.
-        /// </summary>
         public string Actual
         {
             get { return actual; }
         }
 
-        /// <summary>
-        /// Gets the expected value.
-        /// </summary>
         public string Expected
         {
             get { return expected; }
         }
 
-        /// <summary>
-        /// Gets a message that describes the current exception. Includes the expected and actual values.
-        /// </summary>
-        /// <returns>The error message that explains the reason for the exception, or an empty string("").</returns>
-        /// <filterpriority>1</filterpriority>
         public override string Message
         {
             get

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Should.Core.Assertions
 {
-    internal class AssertComparer<T> : IComparer<T>
+    class AssertComparer<T> : IComparer<T>
     {
         public int Compare(T x, T y)
         {

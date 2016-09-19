@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Should.Core.Assertions
 {
-    internal class EnumerableEqualityComparer : IEqualityComparer<IEnumerable>
+    class EnumerableEqualityComparer : IEqualityComparer<IEnumerable>
     {
         public int Position { get; set; }
 

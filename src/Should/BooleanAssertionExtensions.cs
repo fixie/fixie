@@ -1,29 +1,33 @@
-﻿using Should.Core.Assertions;
-
-namespace Should
+﻿namespace Should
 {
+    using Core.Exceptions;
+
     public static class BooleanAssertionExtensions
     {
         public static void ShouldBeFalse(this bool condition)
         {
-            Assert.False(condition);
+            if (condition)
+                throw new FalseException(null);
         }
 
         public static void ShouldBeFalse(this bool condition,
                                          string userMessage)
         {
-            Assert.False(condition, userMessage);
+            if (condition)
+                throw new FalseException(userMessage);
         }
 
         public static void ShouldBeTrue(this bool condition)
         {
-            Assert.True(condition);
+            if (!condition)
+                throw new TrueException(null);
         }
 
         public static void ShouldBeTrue(this bool condition,
                                         string userMessage)
         {
-            Assert.True(condition, userMessage);
+            if (!condition)
+                throw new TrueException(userMessage);
         }
     }
 }

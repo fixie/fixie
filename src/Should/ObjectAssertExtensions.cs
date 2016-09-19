@@ -2,26 +2,37 @@ using Should.Core.Assertions;
 
 namespace Should
 {
+    using System;
+    using Core.Exceptions;
+
     public static class ObjectAssertExtensions
     {
         public static void ShouldBeGreaterThan<T>(this T @object, T value)
         {
-            Assert.GreaterThan(@object, value);
+            var comparer = new AssertComparer<T>();
+            if (comparer.Compare(@object, value) <= 0)
+                throw new GreaterThanException(@object, value);
         }
 
         public static void ShouldBeGreaterThanOrEqualTo<T>(this T @object, T value)
         {
-            Assert.GreaterThanOrEqual(@object, value);
+            var comparer = new AssertComparer<T>();
+            if (comparer.Compare(@object, value) < 0)
+                throw new GreaterThanOrEqualException(@object, value);
         }
 
         public static void ShouldBeNull(this object @object)
         {
-            Assert.Null(@object);
+            if (@object != null)
+                throw new NullException(@object);
         }
 
         public static T ShouldBeType<T>(this object @object)
         {
-            return Assert.IsType<T>(@object);
+            Type expectedType = typeof(T);
+            if (@object == null || !expectedType.Equals(@object.GetType()))
+                throw new IsTypeException(expectedType, @object);
+            return (T)@object;
         }
 
         public static void ShouldEqual<T>(this T actual,
@@ -34,19 +45,24 @@ namespace Should
                                           T expected,
                                           string userMessage)
         {
-            Assert.Equal(expected, actual, userMessage);
+            var comparer = new AssertEqualityComparer<T>();
+            if (!comparer.Equals(expected, actual))
+                throw new EqualException(expected, actual, userMessage);
         }
 
         public static T ShouldNotBeNull<T>(this T @object) where T : class
         {
-            Assert.NotNull(@object);
+            if (@object == null)
+                throw new NotNullException();
             return @object;
         }
 
         public static void ShouldNotEqual<T>(this T actual,
                                              T expected)
         {
-            Assert.NotEqual(expected, actual);
+            var comparer = new AssertEqualityComparer<T>();
+            if (comparer.Equals(expected, actual))
+                throw new NotEqualException(expected, actual);
         }
     }
 }

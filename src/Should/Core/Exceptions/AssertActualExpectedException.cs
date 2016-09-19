@@ -7,9 +7,9 @@ namespace Should.Core.Exceptions
 {
     public class AssertActualExpectedException : AssertException
     {
+        readonly string expected;
         readonly string actual;
         readonly string differencePosition = "";
-        readonly string expected;
 
         public AssertActualExpectedException(object expected,
                                              object actual,
@@ -40,16 +40,6 @@ namespace Should.Core.Exceptions
             }
         }
 
-        public string Actual
-        {
-            get { return actual; }
-        }
-
-        public string Expected
-        {
-            get { return expected; }
-        }
-
         public override string Message
         {
             get
@@ -57,8 +47,8 @@ namespace Should.Core.Exceptions
                 return string.Format("{0}{4}{1}Expected: {2}{4}Actual:   {3}",
                                      base.Message,
                                      differencePosition,
-                                     FormatMultiLine(Expected ?? "(null)"),
-                                     FormatMultiLine(Actual ?? "(null)"),
+                                     FormatMultiLine(expected ?? "(null)"),
+                                     FormatMultiLine(actual ?? "(null)"),
                                      Environment.NewLine);
             }
         }

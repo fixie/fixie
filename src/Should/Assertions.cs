@@ -31,14 +31,14 @@ namespace Should
         {
             var comparer = new AssertComparer<T>();
             if (comparer.Compare(@object, value) <= 0)
-                throw new GreaterThanException(@object, value);
+                throw new ComparisonException(@object, value, ">");
         }
 
         public static void ShouldBeGreaterThanOrEqualTo<T>(this T @object, T value)
         {
             var comparer = new AssertComparer<T>();
             if (comparer.Compare(@object, value) < 0)
-                throw new GreaterThanOrEqualException(@object, value);
+                throw new ComparisonException(@object, value, ">=");
         }
 
         public static void ShouldBeNull(this object actual)

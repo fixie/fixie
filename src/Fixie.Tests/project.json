@@ -16,8 +16,8 @@
     "Fixie": { "target": "project" },
     "Fixie.TestDriven": { "target": "project" },
     "Fixie.VisualStudio.TestAdapter": { "target": "project" },
-    "Fixie.Runner" : {"target": "project"},
-    "Should": "1.1.20"
+    "Fixie.Runner": { "target": "project" },
+    "Should": { "target": "project" }
   },
 
   "frameworks": {

@@ -12,25 +12,19 @@ namespace Should
         public static void ShouldBeFalse(this bool condition)
         {
             if (condition)
-                throw new FalseException(null);
-        }
-
-        public static void ShouldBeFalse(this bool condition, string userMessage)
-        {
-            if (condition)
-                throw new FalseException(userMessage);
+                throw new AssertException("Assert.False() Failure");
         }
 
         public static void ShouldBeTrue(this bool condition)
         {
             if (!condition)
-                throw new TrueException(null);
+                throw new AssertException("Assert.True() Failure");
         }
 
         public static void ShouldBeTrue(this bool condition, string userMessage)
         {
             if (!condition)
-                throw new TrueException(userMessage);
+                throw new AssertException(userMessage);
         }
 
         public static void ShouldBeGreaterThan<T>(this T @object, T value)
@@ -47,10 +41,10 @@ namespace Should
                 throw new GreaterThanOrEqualException(@object, value);
         }
 
-        public static void ShouldBeNull(this object @object)
+        public static void ShouldBeNull(this object actual)
         {
-            if (@object != null)
-                throw new NullException(@object);
+            if (actual != null)
+                throw new AssertActualExpectedException(null, actual, "Assert.Null() Failure");
         }
 
         public static T ShouldBeType<T>(this object @object)
@@ -70,13 +64,13 @@ namespace Should
         {
             var comparer = new AssertEqualityComparer<T>();
             if (!comparer.Equals(expected, actual))
-                throw new EqualException(expected, actual, userMessage);
+                throw new AssertActualExpectedException(expected, actual, userMessage);
         }
 
         public static T ShouldNotBeNull<T>(this T @object) where T : class
         {
             if (@object == null)
-                throw new NotNullException();
+                throw new AssertException("Assert.NotNull() Failure");
             return @object;
         }
 
@@ -85,7 +79,7 @@ namespace Should
         {
             var comparer = new AssertEqualityComparer<T>();
             if (comparer.Equals(expected, actual))
-                throw new NotEqualException(expected, actual);
+                throw new AssertActualExpectedException(expected, actual, "Assert.NotEqual() Failure");
         }
 
         public static void ShouldBeEmpty(this IEnumerable collection)
@@ -93,7 +87,7 @@ namespace Should
             if (collection == null) throw new ArgumentNullException(nameof(collection), "cannot be null");
 
             foreach (var @object in collection)
-                throw new EmptyException();
+                throw new AssertException("Assert.Empty() failure");
         }
 
         public static void ShouldContain<T>(this IEnumerable<T> collection, T expected)
@@ -104,7 +98,7 @@ namespace Should
                 if (comparer.Equals(expected, item))
                     return;
 
-            throw new ContainsException(expected);
+            throw new AssertException($"Assert.Contains() failure: Not found: {expected}");
         }
     }
 }

@@ -31,7 +31,7 @@
                     x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
 
             convention.
-                HideExceptionDetails.For<EqualException>();
+                HideExceptionDetails.For<AssertActualExpectedException>();
 
             TestClass = FullName<SampleTestClass>();
         }

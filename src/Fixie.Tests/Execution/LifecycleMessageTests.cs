@@ -53,7 +53,7 @@
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
             failByAssertion.Exception.FailedAssertion.ShouldBeTrue();
-            failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
+            failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.AssertActualExpectedException");
             failByAssertion.Exception.StackTrace
                 .CleanStackTraceLineNumbers()
                 .ShouldEqual(At("FailByAssertion()"));

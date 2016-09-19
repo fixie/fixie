@@ -14,26 +14,17 @@ namespace Should.Core.Exceptions
         public AssertActualExpectedException(object expected,
                                              object actual,
                                              string userMessage)
-            : this(expected, actual, userMessage, false) { }
-
-        public AssertActualExpectedException(object expected,
-                                             object actual,
-                                             string userMessage,
-                                             bool skipPositionCheck)
             : base(userMessage)
         {
-            if (!skipPositionCheck)
+            var enumerableActual = actual as IEnumerable;
+            var enumerableExpected = expected as IEnumerable;
+
+            if (enumerableActual != null && enumerableExpected != null)
             {
-                var enumerableActual = actual as IEnumerable;
-                var enumerableExpected = expected as IEnumerable;
+                var comparer = new EnumerableEqualityComparer();
+                comparer.Equals(enumerableActual, enumerableExpected);
 
-                if (enumerableActual != null && enumerableExpected != null)
-                {
-                    var comparer = new EnumerableEqualityComparer();
-                    comparer.Equals(enumerableActual, enumerableExpected);
-
-                    differencePosition = "Position: First difference is at position " + comparer.Position + Environment.NewLine;
-                }
+                differencePosition = "Position: First difference is at position " + comparer.Position + Environment.NewLine;
             }
 
             this.actual = actual == null ? null : ConvertToString(actual);

@@ -5,9 +5,5 @@
         public GreaterThanOrEqualException(object left, object right) 
             : base(right, left, "GreaterThanOrEqual", ">=")
         { }
-
-        public GreaterThanOrEqualException(object left, object right, string message)
-            : base(left, right, message) 
-        { }
     }
 }

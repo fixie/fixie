@@ -8,7 +8,8 @@
   },
 
   "dependencies": {
-    "Fixie": { "target": "project" }
+    "Fixie": { "target": "project" },
+    "Fixie.Execution": { "target": "project" }
   },
 
   "frameworks": {

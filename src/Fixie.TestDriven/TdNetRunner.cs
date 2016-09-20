@@ -5,7 +5,6 @@ namespace Fixie.TestDriven
     using System;
     using System.Reflection;
     using Execution;
-    using Internal;
 
     public class TdNetRunner : ITestRunner
     {

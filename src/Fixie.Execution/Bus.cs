@@ -1,7 +1,6 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Execution
 {
     using System.Collections.Generic;
-    using Execution;
 
     public class Bus
     {

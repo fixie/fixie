@@ -5,7 +5,7 @@
     /// <summary>
     /// Describes the context in which a test run was initiated.
     /// </summary>
-    static class RunContext
+    public static class RunContext
     {
         public static void Set(string[] conventionArguments)
         {

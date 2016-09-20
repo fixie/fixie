@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests.Execution
 {
     using System;
     using Fixie.Execution;

@@ -2,7 +2,6 @@ namespace Fixie.Tests
 {
     using System.Runtime.CompilerServices;
     using Fixie.Execution;
-    using Fixie.Internal;
 
     public static class Utility
     {
@@ -28,7 +27,7 @@ namespace Fixie.Tests
             var sampleTestClass = typeof(TSampleTestClass);
 
             var bus = new Bus(listener);
-            new Fixie.Internal.Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
+            new Fixie.Execution.Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
         }
     }
 }

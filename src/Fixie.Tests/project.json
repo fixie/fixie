@@ -14,6 +14,7 @@
 
   "dependencies": {
     "Fixie": { "target": "project" },
+    "Fixie.Execution": { "target": "project" },
     "Fixie.TestDriven": { "target": "project" },
     "Fixie.VisualStudio.TestAdapter": { "target": "project" },
     "Fixie.Runner": { "target": "project" },

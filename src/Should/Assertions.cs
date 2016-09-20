@@ -2,8 +2,7 @@ using Should.Core.Assertions;
 
 namespace Should
 {
-    using System;
-    using System.Collections;
+    using System.Linq;
     using System.Collections.Generic;
     using Core.Exceptions;
 
@@ -77,12 +76,15 @@ namespace Should
                 throw new AssertActualExpectedException(expected, actual, "Assert.NotEqual() Failure");
         }
 
-        public static void ShouldBeEmpty(this IEnumerable collection)
+        public static void ShouldBeEmpty(this string actual)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection), "cannot be null");
+            actual.ShouldEqual("");
+        }
 
-            foreach (var @object in collection)
-                throw new AssertException("Assert.Empty() failure");
+        public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
+        {
+            if (collection.Any())
+                throw new AssertException("Collection was not empty.");
         }
 
         public static void ShouldContain<T>(this IEnumerable<T> collection, T expected)
@@ -93,7 +95,7 @@ namespace Should
                 if (comparer.Equals(expected, item))
                     return;
 
-            throw new AssertException($"Assert.Contains() failure: Not found: {expected}");
+            throw new AssertException($"Collection does not contain expected item: {expected}");
         }
     }
 }

@@ -88,13 +88,8 @@ namespace Should
 
         public static void ShouldContain<T>(this IEnumerable<T> collection, T expected)
         {
-            var comparer = new AssertEqualityComparer<T>();
-
-            foreach (var item in collection)
-                if (comparer.Equals(expected, item))
-                    return;
-
-            throw new AssertException($"Assertion Failure{NewLine}Collection does not contain expected item: {Format(expected)}");
+            if (!collection.Contains(expected))
+                throw new AssertException($"Assertion Failure{NewLine}Collection does not contain expected item: {Format(expected)}");
         }
 
         static string Format(object value)

@@ -40,8 +40,7 @@ namespace Should
 
         public static void ShouldBeNull(this object actual)
         {
-            if (actual != null)
-                throw new AssertActualExpectedException(null, actual, "Assert.Null() Failure");
+            actual.ShouldEqual(null);
         }
 
         public static T ShouldBeType<T>(this object @object)
@@ -64,11 +63,10 @@ namespace Should
                 throw new AssertActualExpectedException(expected, actual, userMessage);
         }
 
-        public static T ShouldNotBeNull<T>(this T @object) where T : class
+        public static void ShouldNotBeNull<T>(this T @object) where T : class
         {
             if (@object == null)
                 throw new AssertException("Assert.NotNull() Failure");
-            return @object;
         }
 
         public static void ShouldNotEqual<T>(this T actual,

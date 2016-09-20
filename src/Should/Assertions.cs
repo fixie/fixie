@@ -49,12 +49,9 @@ namespace Should
             actual.ShouldEqual(null);
         }
 
-        public static T ShouldBeType<T>(this object @object)
+        public static void ShouldBeType<T>(this object actual)
         {
-            var expectedType = typeof(T);
-            if (@object == null || !expectedType.Equals(@object.GetType()))
-                throw new IsTypeException(expectedType, @object);
-            return (T)@object;
+            (actual?.GetType()).ShouldEqual(typeof(T));
         }
 
         public static void ShouldEqual<T>(this T actual, T expected)

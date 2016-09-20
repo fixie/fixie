@@ -2,6 +2,7 @@ using Should.Core.Assertions;
 
 namespace Should
 {
+    using System;
     using System.Linq;
     using System.Collections.Generic;
     using Core.Exceptions;
@@ -28,14 +29,19 @@ namespace Should
         {
             var comparer = new AssertComparer<T>();
             if (comparer.Compare(@object, value) <= 0)
-                throw new ComparisonException(@object, value, ">");
+                throw new AssertException(ComparisonFailure(@object, value, ">"));
         }
 
         public static void ShouldBeGreaterThanOrEqualTo<T>(this T @object, T value)
         {
             var comparer = new AssertComparer<T>();
             if (comparer.Compare(@object, value) < 0)
-                throw new ComparisonException(@object, value, ">=");
+                throw new AssertException(ComparisonFailure(@object, value, ">="));
+        }
+
+        static string ComparisonFailure(object left, object right, string operation)
+        {
+            return $"Assertion Failure:{NewLine}Expected: {Format(left)} {operation} {Format(right)}{NewLine}but it was not";
         }
 
         public static void ShouldBeNull(this object actual)

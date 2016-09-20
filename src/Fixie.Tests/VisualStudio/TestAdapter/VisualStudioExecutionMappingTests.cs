@@ -2,12 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using Assertions;
     using Fixie.Internal;
     using Fixie.Runner;
     using Fixie.Runner.Contracts;
     using Newtonsoft.Json;
-    using Should;
-
     using DotNetTest = Fixie.Runner.Contracts.Test;
     using DotNetTestResult = Fixie.Runner.Contracts.TestResult;
 
@@ -115,7 +114,7 @@
             failByAssertion.TestCase.ShouldBeExecutionTimeTestCase(assemblyPath, TestClass + ".FailByAssertion");
             failByAssertion.Outcome.ShouldEqual(VsTestOutcome.Failed);
             failByAssertion.ErrorMessage.Lines().ShouldEqual(
-                "Assert.Equal() Failure",
+                "Assertion Failure",
                 "Expected: 2",
                 "Actual:   1");
             failByAssertion.ErrorStackTrace

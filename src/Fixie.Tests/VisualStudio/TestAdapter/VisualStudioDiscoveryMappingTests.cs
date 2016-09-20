@@ -2,12 +2,12 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Assertions;
     using Fixie.Runner;
     using Fixie.Runner.Contracts;
     using Fixie.VisualStudio.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Newtonsoft.Json;
-    using Should;
 
     public class VisualStudioDiscoveryMappingTests : MessagingTests
     {

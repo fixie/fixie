@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Tests.Runner
 {
-    using Should;
     using System;
     using System.Collections.Generic;
     using System.Net;
@@ -9,6 +8,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
+    using Assertions;
     using Fixie.Internal;
     using Fixie.Runner;
 
@@ -79,7 +79,7 @@
             failByAssertion.outcome.ShouldEqual("Failed");
             int.Parse(failByAssertion.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             failByAssertion.ErrorMessage.Lines().ShouldEqual(
-                "Assert.Equal() Failure",
+                "Assertion Failure",
                 "Expected: 2",
                 "Actual:   1");
             failByAssertion.ErrorStackTrace

@@ -3,8 +3,8 @@
     using System;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using Assertions;
     using Fixie.Internal;
-    using Should;
 
     public abstract class LifecycleTests
     {

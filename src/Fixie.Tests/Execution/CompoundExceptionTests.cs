@@ -1,9 +1,9 @@
 ﻿namespace Fixie.Tests.Execution
 {
     using System;
+    using Assertions;
     using Fixie.Execution;
     using Fixie.Internal;
-    using Should;
     using static Utility;
 
     public class CompoundExceptionTests

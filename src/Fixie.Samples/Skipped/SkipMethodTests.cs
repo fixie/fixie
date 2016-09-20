@@ -2,7 +2,7 @@
 {
     using System;
     using System.Text;
-    using Should;
+    using Assertions;
 
     public class SkipMethodTests : IDisposable
     {

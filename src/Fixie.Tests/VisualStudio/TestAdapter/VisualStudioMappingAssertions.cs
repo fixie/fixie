@@ -1,9 +1,9 @@
 namespace Fixie.Tests.VisualStudio.TestAdapter
 {
     using System;
+    using Assertions;
     using Fixie.VisualStudio.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using Should;
 
     public static class VisualStudioMappingAssertions
     {

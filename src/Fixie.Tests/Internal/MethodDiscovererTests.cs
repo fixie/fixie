@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Assertions;
     using Conventions;
     using Fixie.Internal;
-    using Should;
 
     public class MethodDiscovererTests
     {

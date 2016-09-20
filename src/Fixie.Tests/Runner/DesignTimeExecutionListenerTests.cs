@@ -6,8 +6,8 @@
     using Fixie.Runner;
     using Fixie.Runner.Contracts;
     using Newtonsoft.Json;
-    using Should;
     using System.Linq;
+    using Assertions;
 
     public class DesignTimeExecutionListenerTests : MessagingTests
     {
@@ -100,7 +100,7 @@
             failByAssertion.Test.ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion");
             failByAssertion.Outcome.ShouldEqual(TestOutcome.Failed);
             failByAssertion.ErrorMessage.Lines().ShouldEqual(
-                "Assert.Equal() Failure",
+                "Assertion Failure",
                 "Expected: 2",
                 "Actual:   1");
             failByAssertion.ErrorStackTrace

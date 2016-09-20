@@ -3,7 +3,7 @@ namespace Fixie.Tests.Lifecycle
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using Should;
+    using Assertions;
 
     public class ConstructionTests : LifecycleTests
     {

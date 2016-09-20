@@ -5,7 +5,7 @@ namespace Fixie.Tests.Execution
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Versioning;
-    using Should;
+    using Assertions;
 
     public class ExecutionEnvironmentTests
     {

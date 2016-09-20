@@ -21,7 +21,7 @@
                   </test-case>
                   <test-case name="[testClass].FailByAssertion" executed="true" success="false" result="Failure" time="1.234">
                     <failure>
-                      <message><![CDATA[Assert.Equal() Failure
+                      <message><![CDATA[Assertion Failure
 Expected: 2
 Actual:   1]]></message>
                       <stack-trace><![CDATA[   at [testClassForStackTrace].FailByAssertion() in [fileLocation]:line #]]></stack-trace>

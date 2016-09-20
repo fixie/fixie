@@ -3,7 +3,7 @@
     using System;
     using System.Text;
     using System.Collections.Generic;
-    using Should;
+    using Assertions;
 
     [TestFixture]
     public class TestCaseSourceAttributeCalculatorTests : IDisposable

@@ -3,7 +3,7 @@
     using System;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
-    using Should;
+    using Assertions;
     using static System.Environment;
 
     public class AsyncCaseTests : CaseTests
@@ -21,7 +21,7 @@
             Run<AwaitThenFailTestClass>();
 
             Listener.Entries.ShouldEqual(
-                For<AwaitThenFailTestClass>(".Test failed: Assert.Equal() Failure" + NewLine +
+                For<AwaitThenFailTestClass>(".Test failed: Assertion Failure" + NewLine +
                 "Expected: 0" + NewLine +
                 "Actual:   3"));
         }

@@ -15,8 +15,8 @@
 			</failure>
 		</test>
 		<test name="[testClass].FailByAssertion" type="[testClass]" method="FailByAssertion" result="Fail" time="1.234">
-			<failure exception-type="Should.Core.Exceptions.EqualException">
-				<message><![CDATA[Assert.Equal() Failure
+			<failure exception-type="Fixie.Assertions.AssertActualExpectedException">
+				<message><![CDATA[Assertion Failure
 Expected: 2
 Actual:   1]]></message>
 				<stack-trace><![CDATA[   at [testClassForStackTrace].FailByAssertion() in [fileLocation]:line #]]></stack-trace>

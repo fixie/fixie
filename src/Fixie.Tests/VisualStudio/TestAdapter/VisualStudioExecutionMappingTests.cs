@@ -2,12 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using Assertions;
     using Fixie.Internal;
     using Fixie.Runner;
     using Fixie.Runner.Contracts;
     using Newtonsoft.Json;
-    using Should;
-
     using DotNetTest = Fixie.Runner.Contracts.Test;
     using DotNetTestResult = Fixie.Runner.Contracts.TestResult;
 

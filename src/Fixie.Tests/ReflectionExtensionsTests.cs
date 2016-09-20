@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
-    using Should;
+    using Assertions;
 
     public class ReflectionExtensionsTests
     {

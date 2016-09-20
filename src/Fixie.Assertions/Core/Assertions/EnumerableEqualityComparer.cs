@@ -1,9 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Should.Core.Assertions
+namespace Fixie.Assertions.Core.Assertions
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+
     class EnumerableEqualityComparer : IEqualityComparer<IEnumerable>
     {
         public int Position { get; set; }

@@ -3,9 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Assertions;
     using Fixie.Execution;
     using Fixie.Internal;
-    using Should;
 
     public class LifecycleMessageTests : MessagingTests
     {
@@ -53,7 +53,7 @@
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
             failByAssertion.Exception.FailedAssertion.ShouldBeTrue();
-            failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.AssertActualExpectedException");
+            failByAssertion.Exception.Type.ShouldEqual("Fixie.Assertions.Core.Exceptions.AssertActualExpectedException");
             failByAssertion.Exception.StackTrace
                 .CleanStackTraceLineNumbers()
                 .ShouldEqual(At("FailByAssertion()"));

@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-
-namespace Should.Core.Exceptions
+namespace Fixie.Assertions.Core.Exceptions
 {
+    using System;
+    using System.Collections.Generic;
+
     public class AssertException : Exception
     {
-        public static string FilterStackTraceAssemblyPrefix = "Should.";
+        public static string FilterStackTraceAssemblyPrefix = "Fixie.Assertions.";
 
         public AssertException(string message)
             : base(message)

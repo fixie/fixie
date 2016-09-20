@@ -1,6 +1,6 @@
 ﻿namespace Fixie.Samples.Categories
 {
-    using Should;
+    using Assertions;
 
     public class CalculatorTests
     {

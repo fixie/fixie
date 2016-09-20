@@ -22,7 +22,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Fixie.VisualStudio.TestAdap
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Fixie.Runner", "src\Fixie.Runner\Fixie.Runner.xproj", "{8192A5F1-6E49-4939-8B77-2EB754A9E74C}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Should", "src\Should\Should.xproj", "{213BECFC-7B7D-40C0-AA19-5273A4089932}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Fixie.Assertions", "src\Fixie.Assertions\Fixie.Assertions.xproj", "{213BECFC-7B7D-40C0-AA19-5273A4089932}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

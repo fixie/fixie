@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-
-namespace Should.Core.Assertions
+namespace Fixie.Assertions.Core.Assertions
 {
+    using System;
+    using System.Collections.Generic;
+
     class AssertComparer<T> : IComparer<T>
     {
         public int Compare(T x, T y)

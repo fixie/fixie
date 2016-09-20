@@ -1,6 +1,6 @@
 ﻿namespace Fixie.Tests
 {
-    using Should;
+    using Assertions;
 
     public class MethodGroupTests
     {

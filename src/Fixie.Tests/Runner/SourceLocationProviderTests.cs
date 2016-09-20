@@ -1,7 +1,7 @@
 ﻿namespace Fixie.Tests.Runner
 {
+    using Assertions;
     using Fixie.Runner;
-    using Should;
     using static Utility;
 
     public class SourceLocationProviderTests

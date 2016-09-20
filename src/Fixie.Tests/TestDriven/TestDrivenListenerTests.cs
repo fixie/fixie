@@ -4,9 +4,9 @@ namespace Fixie.Tests.TestDriven
 {
     using System;
     using System.Collections.Generic;
+    using Assertions;
     using Fixie.Internal;
     using Fixie.TestDriven;
-    using Should;
 
     public class TestDrivenListenerTests : MessagingTests
     {

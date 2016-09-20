@@ -3,7 +3,7 @@
     using System;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
-    using Should;
+    using Assertions;
     using static System.Environment;
 
     public class AsyncCaseTests : CaseTests

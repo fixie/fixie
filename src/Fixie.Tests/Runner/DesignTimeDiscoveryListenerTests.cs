@@ -2,10 +2,10 @@ namespace Fixie.Tests.Runner
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Assertions;
     using Fixie.Runner;
     using Fixie.Runner.Contracts;
     using Newtonsoft.Json;
-    using Should;
 
     public class DesignTimeDiscoveryListenerTests : MessagingTests
     {

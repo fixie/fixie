@@ -4,7 +4,7 @@
   "dependencies": {
     "Fixie": { "target": "project" },
     "Fixie.Runner": { "target": "project" },
-    "Should":  { "target": "project" }
+    "Fixie.Assertions": { "target": "project" }
   },
 
   "frameworks": {

@@ -1,14 +1,13 @@
-using Should.Core.Assertions;
-
-namespace Should
+namespace Fixie.Assertions
 {
     using System;
-    using System.Linq;
     using System.Collections.Generic;
+    using System.Linq;
+    using Core.Assertions;
     using Core.Exceptions;
     using static System.Environment;
 
-    public static class Assertions
+    public static class AssertionExtensions
     {
         public static void ShouldBeFalse(this bool condition)
         {

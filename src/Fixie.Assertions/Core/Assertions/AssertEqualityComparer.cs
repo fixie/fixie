@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Should.Core.Assertions
+﻿namespace Fixie.Assertions.Core.Assertions
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+
     class AssertEqualityComparer<T> : IEqualityComparer<T>
     {
         public bool Equals(T x, T y)

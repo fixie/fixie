@@ -2,7 +2,7 @@
 {
     using System.Runtime.CompilerServices;
     using System.Text;
-    using Should;
+    using Assertions;
 
     public static class StringBuilderExtensions
     {

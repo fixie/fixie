@@ -1,10 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Should.Core.Assertions;
-
-namespace Should.Core.Exceptions
+namespace Fixie.Assertions.Core.Exceptions
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using Assertions;
+
     public class AssertActualExpectedException : AssertException
     {
         readonly string expected;

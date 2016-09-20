@@ -17,7 +17,7 @@
     "Fixie.TestDriven": { "target": "project" },
     "Fixie.VisualStudio.TestAdapter": { "target": "project" },
     "Fixie.Runner": { "target": "project" },
-    "Should": { "target": "project" }
+    "Fixie.Assertions": { "target": "project" }
   },
 
   "frameworks": {

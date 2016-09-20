@@ -1,7 +1,7 @@
-using Should.Core.Exceptions;
-
-namespace Should.Core.Assertions
+namespace Fixie.Assertions.Core.Assertions
 {
+    using Exceptions;
+
     public class Assert
     {
         public static void Equal<T>(T expected, T actual)

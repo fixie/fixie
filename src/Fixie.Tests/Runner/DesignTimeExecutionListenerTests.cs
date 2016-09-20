@@ -6,8 +6,8 @@
     using Fixie.Runner;
     using Fixie.Runner.Contracts;
     using Newtonsoft.Json;
-    using Should;
     using System.Linq;
+    using Assertions;
 
     public class DesignTimeExecutionListenerTests : MessagingTests
     {

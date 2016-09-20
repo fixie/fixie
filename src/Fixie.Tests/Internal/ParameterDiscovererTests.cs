@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Reflection;
+    using Assertions;
     using Fixie.Internal;
-    using Should;
 
     public class ParameterDiscovererTests
     {

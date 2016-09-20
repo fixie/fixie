@@ -2,7 +2,7 @@
 {
     using System;
     using System.Text;
-    using Should;
+    using Assertions;
 
     [TestFixture]
     public class CalculatorTests : IDisposable

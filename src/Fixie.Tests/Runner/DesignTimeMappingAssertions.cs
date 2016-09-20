@@ -1,7 +1,7 @@
 namespace Fixie.Tests.Runner
 {
+    using Assertions;
     using Fixie.Runner.Contracts;
-    using Should;
 
     public static class DesignTimeMappingAssertions
     {

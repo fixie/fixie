@@ -2,8 +2,8 @@ namespace Fixie.Tests.Internal
 {
     using System;
     using System.Text;
+    using Assertions;
     using Fixie.Internal;
-    using Should;
 
     public class AssertionLibraryFilterTests
     {

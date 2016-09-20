@@ -11,6 +11,11 @@ namespace Should.Core.Exceptions
         readonly string actual;
         readonly string differencePosition = "";
 
+        public AssertActualExpectedException(object expected, object actual)
+            : this(expected, actual, "Assertion Failure")
+        {
+        }
+
         public AssertActualExpectedException(object expected,
                                              object actual,
                                              string userMessage)

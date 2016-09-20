@@ -8,7 +8,7 @@ namespace Should.Core.Assertions
         {
             var comparer = new AssertEqualityComparer<T>();
             if (!comparer.Equals(expected, actual))
-                throw new AssertActualExpectedException(expected, actual, "Assertion Failure");
+                throw new AssertActualExpectedException(expected, actual);
         }
     }
 }

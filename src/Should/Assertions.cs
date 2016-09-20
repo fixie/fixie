@@ -11,20 +11,17 @@ namespace Should
     {
         public static void ShouldBeFalse(this bool condition)
         {
-            if (condition)
-                throw new AssertException("Assert.False() Failure");
+            condition.ShouldEqual(false);
         }
 
         public static void ShouldBeTrue(this bool condition)
         {
-            if (!condition)
-                throw new AssertException("Assert.True() Failure");
+            condition.ShouldEqual(true);
         }
 
         public static void ShouldBeTrue(this bool condition, string userMessage)
         {
-            if (!condition)
-                throw new AssertException(userMessage);
+            condition.ShouldEqual(true, userMessage);
         }
 
         public static void ShouldBeGreaterThan<T>(this T @object, T value)

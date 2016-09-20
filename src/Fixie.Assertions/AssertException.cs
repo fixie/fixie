@@ -1,4 +1,4 @@
-namespace Fixie.Assertions.Core.Exceptions
+namespace Fixie.Assertions
 {
     using System;
     using System.Collections.Generic;

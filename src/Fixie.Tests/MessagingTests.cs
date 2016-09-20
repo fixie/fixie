@@ -4,7 +4,6 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using Assertions;
-    using Assertions.Core.Exceptions;
     using Fixie.Execution;
     using static Utility;
 

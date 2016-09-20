@@ -1,4 +1,4 @@
-namespace Fixie.Assertions.Core.Assertions
+namespace Fixie.Assertions
 {
     using System;
     using System.Collections;

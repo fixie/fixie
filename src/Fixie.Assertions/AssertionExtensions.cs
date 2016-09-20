@@ -1,10 +1,7 @@
 namespace Fixie.Assertions
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Core.Assertions;
-    using Core.Exceptions;
     using static System.Environment;
 
     public static class AssertionExtensions

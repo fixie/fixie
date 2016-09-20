@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using Assertions;
-    using Assertions.Core.Assertions;
 
     public static class AssertionExtensions
     {

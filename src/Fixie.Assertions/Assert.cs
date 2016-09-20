@@ -1,7 +1,5 @@
-namespace Fixie.Assertions.Core.Assertions
+namespace Fixie.Assertions
 {
-    using Exceptions;
-
     public class Assert
     {
         public static void Equal<T>(T expected, T actual)

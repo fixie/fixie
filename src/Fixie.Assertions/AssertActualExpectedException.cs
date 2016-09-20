@@ -1,9 +1,8 @@
-namespace Fixie.Assertions.Core.Exceptions
+namespace Fixie.Assertions
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using Assertions;
 
     public class AssertActualExpectedException : AssertException
     {

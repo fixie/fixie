@@ -5,6 +5,7 @@ namespace Should
     using System.Linq;
     using System.Collections.Generic;
     using Core.Exceptions;
+    using static System.Environment;
 
     public static class Assertions
     {
@@ -64,16 +65,14 @@ namespace Should
 
         public static void ShouldNotBeNull<T>(this T @object) where T : class
         {
-            if (@object == null)
-                throw new AssertException("Assert.NotNull() Failure");
+            @object.ShouldNotEqual(null);
         }
 
-        public static void ShouldNotEqual<T>(this T actual,
-                                             T expected)
+        public static void ShouldNotEqual<T>(this T actual, T expected)
         {
             var comparer = new AssertEqualityComparer<T>();
             if (comparer.Equals(expected, actual))
-                throw new AssertActualExpectedException(expected, actual, "Assert.NotEqual() Failure");
+                throw new AssertException($"Assertion Failure{NewLine}Unexpected: {Format(expected)}");
         }
 
         public static void ShouldBeEmpty(this string actual)
@@ -84,7 +83,7 @@ namespace Should
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
         {
             if (collection.Any())
-                throw new AssertException("Collection was not empty.");
+                throw new AssertException($"Assertion Failure{NewLine}Collection was not empty.");
         }
 
         public static void ShouldContain<T>(this IEnumerable<T> collection, T expected)
@@ -95,7 +94,12 @@ namespace Should
                 if (comparer.Equals(expected, item))
                     return;
 
-            throw new AssertException($"Collection does not contain expected item: {expected}");
+            throw new AssertException($"Assertion Failure{NewLine}Collection does not contain expected item: {Format(expected)}");
+        }
+
+        static string Format(object value)
+        {
+            return value?.ToString() ?? "(null)";
         }
     }
 }

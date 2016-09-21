@@ -2,7 +2,6 @@
 {
     using System;
     using System.Diagnostics;
-    using Internal;
 
     public class ExecuteCases : FixtureBehavior
     {

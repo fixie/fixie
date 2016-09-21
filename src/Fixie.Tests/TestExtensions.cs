@@ -6,7 +6,7 @@
     using System.Reflection;
     using System.Text.RegularExpressions;
     using System.Threading;
-    using Fixie.Internal;
+    using Fixie.Execution;
 
     public static class TestExtensions
     {

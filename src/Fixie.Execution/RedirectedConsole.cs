@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Execution
 {
     using System;
     using System.IO;

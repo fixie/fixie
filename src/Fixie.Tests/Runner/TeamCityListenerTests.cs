@@ -2,7 +2,7 @@
 {
     using System.Linq;
     using System.Text.RegularExpressions;
-    using Fixie.Internal;
+    using Fixie.Execution;
     using Fixie.Runner;
 
     public class TeamCityListenerTests : MessagingTests

@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.CompilerServices;
-    using Fixie.Internal;
+    using Fixie.Execution;
     using Fixie.Runner;
     using static Utility;
 

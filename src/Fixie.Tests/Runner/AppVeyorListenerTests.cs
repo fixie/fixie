@@ -9,7 +9,7 @@
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
     using Assertions;
-    using Fixie.Internal;
+    using Fixie.Execution;
     using Fixie.Runner;
 
     public class AppVeyorListenerTests : MessagingTests

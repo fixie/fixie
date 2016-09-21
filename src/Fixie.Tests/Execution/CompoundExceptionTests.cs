@@ -3,7 +3,6 @@
     using System;
     using Assertions;
     using Fixie.Execution;
-    using Fixie.Internal;
     using static Utility;
 
     public class CompoundExceptionTests

@@ -4,7 +4,6 @@ namespace Fixie.Execution
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Internal;
 
     public class CompoundException
     {

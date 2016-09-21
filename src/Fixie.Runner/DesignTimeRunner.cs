@@ -7,13 +7,12 @@
     using System.Net;
     using System.Net.Sockets;
     using Contracts;
-    using Execution;
     using Newtonsoft.Json;
     using Message = Contracts.Message;
 
     public class DesignTimeRunner
     {
-        public static int Run(Options options, IReadOnlyList<string> conventionArguments)
+        public static int Run(Options options, IReadOnlyList<string> conventionArguments, ExecutionEnvironment environment)
         {
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
             {
@@ -27,25 +26,22 @@
                 {
                     try
                     {
-                        using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                        if (options.List)
                         {
-                            if (options.List)
-                            {
-                                DiscoverTests(sink, options.AssemblyPath, conventionArguments, environment);
-                            }
-                            else if (options.WaitCommand)
-                            {
-                                sink.SendWaitingCommand();
+                            DiscoverTests(sink, options.AssemblyPath, conventionArguments, environment);
+                        }
+                        else if (options.WaitCommand)
+                        {
+                            sink.SendWaitingCommand();
 
-                                var rawMessage = reader.ReadString();
-                                var message = JsonConvert.DeserializeObject<Message>(rawMessage);
-                                var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
+                            var rawMessage = reader.ReadString();
+                            var message = JsonConvert.DeserializeObject<Message>(rawMessage);
+                            var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
 
-                                if (testsToRun.Any())
-                                    RunTests(sink, conventionArguments, testsToRun, environment);
-                                else
-                                    RunAllTests(sink, conventionArguments, environment);
-                            }
+                            if (testsToRun.Any())
+                                RunTests(sink, conventionArguments, testsToRun, environment);
+                            else
+                                RunAllTests(sink, conventionArguments, environment);
                         }
                     }
                     catch (Exception exception)

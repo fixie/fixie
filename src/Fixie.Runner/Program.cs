@@ -34,11 +34,13 @@
 
                 var options = ParseRunnerArguments(runnerArguments);
 
-                if (options.DesignTime)
-                    return DesignTimeRunner.Run(options, conventionArguments);
-
                 using (var environment = new ExecutionEnvironment(options.AssemblyPath))
-                    return ConsoleRunner.RunAssembly(options, conventionArguments, environment);
+                {
+                    if (options.DesignTime)
+                        return DesignTimeRunner.Run(options, conventionArguments, environment);
+
+                    return ConsoleRunner.Run(options, conventionArguments, environment);
+                }
             }
             catch (CommandLineException exception)
             {

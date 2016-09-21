@@ -2,13 +2,11 @@ namespace Fixie.Runner
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using Execution;
     using Reports;
 
     public class ConsoleRunner
     {
-        public static int RunAssembly(Options options, IReadOnlyList<string> conventionArguments, ExecutionEnvironment environment)
+        public static int Run(Options options, IReadOnlyList<string> conventionArguments, ExecutionEnvironment environment)
         {
             if (ShouldUseTeamCityListener(options))
                 environment.Subscribe<TeamCityListener>();

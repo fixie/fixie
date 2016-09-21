@@ -41,14 +41,11 @@
                             var message = JsonConvert.DeserializeObject<Message>(rawMessage);
                             var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
 
-                            if (testsToRun.Any())
+                            using (var environment = new ExecutionEnvironment(options.AssemblyPath))
                             {
-                                using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                                if (testsToRun.Any())
                                     RunTests(sink, conventionArguments, testsToRun, environment);
-                            }
-                            else
-                            {
-                                using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                                else
                                     RunAllTests(sink, conventionArguments, environment);
                             }
                         }

@@ -39,15 +39,15 @@
                             var message = JsonConvert.DeserializeObject<Message>(rawMessage);
                             var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
 
+                            environment.Subscribe<DesignTimeExecutionListener>(sink);
+
                             if (testsToRun.Any())
                             {
-                                environment.Subscribe<DesignTimeExecutionListener>(sink);
                                 var methodGroups = testsToRun;
                                 environment.RunMethods(methodGroups, conventionArguments);
                             }
                             else
                             {
-                                environment.Subscribe<DesignTimeExecutionListener>(sink);
                                 environment.RunAssembly(conventionArguments);
                             }
                         }

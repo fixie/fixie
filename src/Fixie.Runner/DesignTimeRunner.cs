@@ -27,22 +27,20 @@
                 {
                     try
                     {
-                        if (options.List)
+                        using (var environment = new ExecutionEnvironment(options.AssemblyPath))
                         {
-                            string assemblyPath = options.AssemblyPath;
-                            using (var environment = new ExecutionEnvironment(assemblyPath))
-                                DiscoverTests(sink, assemblyPath, conventionArguments, environment);
-                        }
-                        else if (options.WaitCommand)
-                        {
-                            sink.SendWaitingCommand();
-
-                            var rawMessage = reader.ReadString();
-                            var message = JsonConvert.DeserializeObject<Message>(rawMessage);
-                            var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
-
-                            using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                            if (options.List)
                             {
+                                DiscoverTests(sink, options.AssemblyPath, conventionArguments, environment);
+                            }
+                            else if (options.WaitCommand)
+                            {
+                                sink.SendWaitingCommand();
+
+                                var rawMessage = reader.ReadString();
+                                var message = JsonConvert.DeserializeObject<Message>(rawMessage);
+                                var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
+
                                 if (testsToRun.Any())
                                     RunTests(sink, conventionArguments, testsToRun, environment);
                                 else

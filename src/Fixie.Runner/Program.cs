@@ -37,7 +37,8 @@
                 if (options.DesignTime)
                     return DesignTimeRunner.Run(options, conventionArguments);
 
-                return ConsoleRunner.Run(options, conventionArguments);
+                using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                    return ConsoleRunner.RunAssembly(options, conventionArguments, environment);
             }
             catch (CommandLineException exception)
             {

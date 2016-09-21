@@ -29,7 +29,9 @@
                     {
                         if (options.List)
                         {
-                            DiscoverTests(sink, options.AssemblyPath, conventionArguments);
+                            string assemblyPath = options.AssemblyPath;
+                            using (var environment = new ExecutionEnvironment(assemblyPath))
+                                DiscoverTests(sink, assemblyPath, conventionArguments, environment);
                         }
                         else if (options.WaitCommand)
                         {
@@ -40,9 +42,15 @@
                             var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
 
                             if (testsToRun.Any())
-                                RunTests(sink, options.AssemblyPath, conventionArguments, testsToRun);
+                            {
+                                using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                                    RunTests(sink, conventionArguments, testsToRun, environment);
+                            }
                             else
-                                RunAllTests(sink, options.AssemblyPath, conventionArguments);
+                            {
+                                using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                                    RunAllTests(sink, conventionArguments, environment);
+                            }
                         }
                     }
                     catch (Exception exception)
@@ -59,32 +67,23 @@
             return 0;
         }
 
-        static void DiscoverTests(DesignTimeSink sink, string assemblyPath, IReadOnlyList<string> conventionArguments)
+        static void DiscoverTests(DesignTimeSink sink, string assemblyPath, IReadOnlyList<string> conventionArguments, ExecutionEnvironment environment)
         {
-            using (var environment = new ExecutionEnvironment(assemblyPath))
-            {
-                environment.Subscribe<DesignTimeDiscoveryListener>(sink, assemblyPath);
-                environment.DiscoverMethodGroups(conventionArguments);
-            }
+            environment.Subscribe<DesignTimeDiscoveryListener>(sink, assemblyPath);
+            environment.DiscoverMethodGroups(conventionArguments);
         }
 
-        static void RunAllTests(DesignTimeSink sink, string assemblyPath, IReadOnlyList<string> conventionArguments)
+        static void RunAllTests(DesignTimeSink sink, IReadOnlyList<string> conventionArguments, ExecutionEnvironment environment)
         {
-            using (var environment = new ExecutionEnvironment(assemblyPath))
-            {
-                environment.Subscribe<DesignTimeExecutionListener>(sink);
-                environment.RunAssembly(conventionArguments);
-            }
+            environment.Subscribe<DesignTimeExecutionListener>(sink);
+            environment.RunAssembly(conventionArguments);
         }
 
-        static void RunTests(DesignTimeSink sink, string assemblyPath, IReadOnlyList<string> conventionArguments, IReadOnlyList<string> testsToRun)
+        static void RunTests(DesignTimeSink sink, IReadOnlyList<string> conventionArguments, IReadOnlyList<string> testsToRun, ExecutionEnvironment environment)
         {
-            using (var environment = new ExecutionEnvironment(assemblyPath))
-            {
-                environment.Subscribe<DesignTimeExecutionListener>(sink);
-                var methodGroups = testsToRun;
-                environment.RunMethods(methodGroups, conventionArguments);
-            }
+            environment.Subscribe<DesignTimeExecutionListener>(sink);
+            var methodGroups = testsToRun;
+            environment.RunMethods(methodGroups, conventionArguments);
         }
     }
 }

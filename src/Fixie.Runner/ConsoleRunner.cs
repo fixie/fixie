@@ -8,25 +8,22 @@ namespace Fixie.Runner
 
     public class ConsoleRunner
     {
-        public static int Run(Options options, IReadOnlyList<string> conventionArguments)
+        public static int RunAssembly(Options options, IReadOnlyList<string> conventionArguments, ExecutionEnvironment environment)
         {
-            using (var environment = new ExecutionEnvironment(options.AssemblyPath))
-            {
-                if (ShouldUseTeamCityListener(options))
-                    environment.Subscribe<TeamCityListener>();
-                else
-                    environment.Subscribe<ConsoleListener>();
+            if (ShouldUseTeamCityListener(options))
+                environment.Subscribe<TeamCityListener>();
+            else
+                environment.Subscribe<ConsoleListener>();
 
-                if (ShouldUseAppVeyorListener())
-                    environment.Subscribe<AppVeyorListener>();
+            if (ShouldUseAppVeyorListener())
+                environment.Subscribe<AppVeyorListener>();
 
-                if (options.ReportFormat == ReportFormat.NUnit)
-                    environment.Subscribe<ReportListener<NUnitXml>>();
-                else if (options.ReportFormat == ReportFormat.xUnit)
-                    environment.Subscribe<ReportListener<XUnitXml>>();
+            if (options.ReportFormat == ReportFormat.NUnit)
+                environment.Subscribe<ReportListener<NUnitXml>>();
+            else if (options.ReportFormat == ReportFormat.xUnit)
+                environment.Subscribe<ReportListener<XUnitXml>>();
 
-                return environment.RunAssembly(conventionArguments);
-            }
+            return environment.RunAssembly(conventionArguments);
         }
 
         static bool ShouldUseTeamCityListener(Options options)

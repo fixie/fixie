@@ -27,7 +27,7 @@
         /// The current state describing the convention. This state can be manipulated through
         /// the other properties on Convention.
         /// </summary>
-        public Configuration Config { get; }
+        internal Configuration Config { get; }
 
         /// <summary>
         /// Take the custom convention command line arguments provided to the test runner at the

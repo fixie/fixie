@@ -5,7 +5,7 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
-    public class Configuration
+    class Configuration
     {
         readonly List<Func<Type, bool>> testClassConditions;
         readonly List<Func<MethodInfo, bool>> testMethodConditions;

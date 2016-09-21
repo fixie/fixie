@@ -126,12 +126,12 @@
         /// <summary>
         /// The fixture (test class instance) under which the test case is executing.
         /// </summary>
-        public Fixture Fixture { get; internal set; }
+        public Fixture Fixture { get; set; }
 
         /// <summary>
         /// The object returned by the invocation of the test case method.
         /// </summary>
-        public object ReturnValue { get; internal set; }
+        public object ReturnValue { get; set; }
 
         public TimeSpan Duration { get; set; }
         public string Output { get; set; }

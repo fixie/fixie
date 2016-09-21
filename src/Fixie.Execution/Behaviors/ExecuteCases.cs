@@ -1,7 +1,8 @@
-﻿namespace Fixie.Internal.Behaviors
+﻿namespace Fixie.Execution.Behaviors
 {
     using System;
     using System.Diagnostics;
+    using Internal;
 
     public class ExecuteCases : FixtureBehavior
     {

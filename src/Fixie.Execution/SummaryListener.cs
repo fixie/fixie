@@ -1,7 +1,5 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Execution
 {
-    using Execution;
-
     public class SummaryListener : Handler<CaseCompleted>
     {
         public ExecutionSummary Summary { get; } = new ExecutionSummary();

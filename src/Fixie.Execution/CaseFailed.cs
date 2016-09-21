@@ -1,7 +1,5 @@
 ﻿namespace Fixie.Execution
 {
-    using Internal;
-
     public class CaseFailed : CaseCompleted
     {
         public CaseFailed(Case @case, AssertionLibraryFilter filter)

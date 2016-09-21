@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Reflection;
     using Execution;
-    using Internal;
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {

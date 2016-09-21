@@ -16,6 +16,7 @@
       <reference file="Fixie.dll" />
 
       <reference file="dotnet-test-fixie.exe" />
+      <reference file="Fixie.Execution.dll" />
       <reference file="Mono.Cecil.dll" />
       <reference file="Mono.Cecil.Rocks.dll" />
       <reference file="Mono.Cecil.Pdb.dll" />
@@ -26,6 +27,7 @@
   <files>
     <file src="..\Fixie.Runner\bin\Release\net45\win7-x64\Fixie.dll" target="lib/net45"></file>
     <file src="..\Fixie.Runner\bin\Release\net45\win7-x64\dotnet-test-fixie.exe" target="lib/net45"></file>
+    <file src="..\Fixie.Runner\bin\Release\net45\win7-x64\Fixie.Execution.dll" target="lib/net45"></file>
     <file src="..\Fixie.Runner\bin\Release\net45\win7-x64\Mono.Cecil.dll" target="lib/net45"></file>
     <file src="..\Fixie.Runner\bin\Release\net45\win7-x64\Mono.Cecil.Rocks.dll" target="lib/net45"></file>
     <file src="..\Fixie.Runner\bin\Release\net45\win7-x64\Mono.Cecil.Pdb.dll" target="lib/net45"></file>

@@ -6,7 +6,7 @@
     using System.Xml.Linq;
     using System.Xml.Schema;
     using Assertions;
-    using Fixie.Internal;
+    using Fixie.Execution;
     using Fixie.Runner.Reports;
 
     public class NUnitXmlTests : MessagingTests

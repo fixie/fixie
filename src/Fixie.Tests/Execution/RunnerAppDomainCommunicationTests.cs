@@ -1,6 +1,5 @@
 namespace Fixie.Tests.Execution
 {
-    using Fixie.Internal;
     using Fixie.Runner;
 
     public class RunnerAppDomainCommunicationTests

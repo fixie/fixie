@@ -5,7 +5,6 @@
     using System.Linq;
     using Assertions;
     using Fixie.Execution;
-    using Fixie.Internal;
 
     public class LifecycleMessageTests : MessagingTests
     {

@@ -1,8 +1,8 @@
-namespace Fixie.Internal
+namespace Fixie.Execution
 {
     using System.Linq;
     using Behaviors;
-    using System.Collections.Generic;
+    using Internal;
 
     public class ExecutionPlan
     {

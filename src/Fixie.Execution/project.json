@@ -1,0 +1,9 @@
+﻿{
+  "dependencies": {
+    "Fixie": { "target": "project" }
+  },
+
+  "frameworks": {
+    "net45": {}
+  }
+}

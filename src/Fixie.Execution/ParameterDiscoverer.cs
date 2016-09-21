@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Execution
 {
     using System.Collections.Generic;
     using System.Linq;

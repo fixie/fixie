@@ -1,7 +1,8 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Execution
 {
     using System;
     using System.Collections.Generic;
+    using Internal;
 
     public class BehaviorChain<TContext> where TContext : BehaviorContext
     {

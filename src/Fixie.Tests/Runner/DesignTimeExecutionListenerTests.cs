@@ -2,12 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using Fixie.Internal;
+    using Fixie.Execution;
     using Fixie.Runner;
     using Fixie.Runner.Contracts;
     using Newtonsoft.Json;
     using System.Linq;
     using Assertions;
+    using Message = Fixie.Runner.Contracts.Message;
 
     public class DesignTimeExecutionListenerTests : MessagingTests
     {

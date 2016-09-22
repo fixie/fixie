@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Security;
     using System.Security.Permissions;
+    using Cli;
     using Execution;
 
     public class ExecutionEnvironment : IDisposable
@@ -30,6 +31,16 @@
             assemblyResolver.RegisterAssemblyLocation(typeof(SummaryListener).Assembly.Location);
 
             executionProxy = Create<ExecutionProxy>();
+        }
+
+        public int Run(IReadOnlyList<string> runnerArguments, List<string> conventionArguments)
+        {
+            var options = CommandLine.Parse<Options>(runnerArguments);
+
+            if (options.DesignTime)
+                return DesignTimeRunner.Run(options, conventionArguments, this);
+
+            return ConsoleRunner.Run(options, conventionArguments, this);
         }
 
         public void Subscribe<TListener>(params object[] listenerArguments)

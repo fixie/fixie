@@ -1,27 +1,35 @@
-namespace Fixie.Runner
+﻿namespace Fixie.Runner
 {
     using System;
     using System.Collections.Generic;
+    using Execution;
     using Reports;
 
-    public class ConsoleRunner
+    public class ConsoleRunner : RunnerBase
     {
-        public static int Run(Options options, IReadOnlyList<string> conventionArguments, ExecutionEnvironment environment)
+        public override int Run(string assemblyFullPath, Options options, IReadOnlyList<string> conventionArguments)
         {
+            var listeners = new List<Listener>();
+
             if (ShouldUseTeamCityListener(options))
-                environment.Subscribe<TeamCityListener>();
+                listeners.Add(new TeamCityListener());
             else
-                environment.Subscribe<ConsoleListener>();
+                listeners.Add(new ConsoleListener());
 
             if (ShouldUseAppVeyorListener())
-                environment.Subscribe<AppVeyorListener>();
+                listeners.Add(new AppVeyorListener());
 
             if (options.ReportFormat == ReportFormat.NUnit)
-                environment.Subscribe<ReportListener<NUnitXml>>();
+                listeners.Add(new ReportListener<NUnitXml>());
             else if (options.ReportFormat == ReportFormat.xUnit)
-                environment.Subscribe<ReportListener<XUnitXml>>();
+                listeners.Add(new ReportListener<XUnitXml>());
 
-            return environment.RunAssembly(conventionArguments);
+            var summaryListener = new SummaryListener();
+            listeners.Add(summaryListener);
+
+            RunAssembly(listeners, assemblyFullPath, conventionArguments);
+
+            return summaryListener.Summary.Failed;
         }
 
         static bool ShouldUseTeamCityListener(Options options)
@@ -34,8 +42,6 @@ namespace Fixie.Runner
         }
 
         static bool ShouldUseAppVeyorListener()
-        {
-            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
-        }
+            => Environment.GetEnvironmentVariable("APPVEYOR") == "True";
     }
 }

@@ -11,7 +11,7 @@
         {
         }
 
-        public Bus(IReadOnlyCollection<Listener> listeners)
+        public Bus(IReadOnlyList<Listener> listeners)
         {
             this.listeners = new List<Listener>(listeners);
         }

@@ -7,7 +7,7 @@
 
     public class Program
     {
-        const int FatalError = -1;
+        public const int FatalError = -1;
 
         [STAThread]
         static int Main(string[] arguments)

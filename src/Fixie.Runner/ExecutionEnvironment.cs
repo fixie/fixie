@@ -3,10 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Security;
     using System.Security.Permissions;
-    using Cli;
     using Execution;
 
     public class ExecutionEnvironment : IDisposable
@@ -33,37 +31,9 @@
             executionProxy = Create<ExecutionProxy>();
         }
 
-        public int Run(IReadOnlyList<string> runnerArguments, List<string> conventionArguments)
+        public int Run(IReadOnlyList<string> runnerArguments, IReadOnlyList<string> conventionArguments)
         {
-            var options = CommandLine.Parse<Options>(runnerArguments);
-
-            if (options.DesignTime)
-                return DesignTimeRunner.Run(options, conventionArguments, this);
-
-            return ConsoleRunner.Run(options, conventionArguments, this);
-        }
-
-        public void Subscribe<TListener>(params object[] listenerArguments)
-        {
-            var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
-            var listenerType = typeof(TListener).FullName;
-
-            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArguments);
-        }
-
-        public void DiscoverMethodGroups(IReadOnlyList<string> conventionArguments)
-        {
-            executionProxy.DiscoverMethodGroups(assemblyFullPath, conventionArguments.ToArray());
-        }
-
-        public int RunAssembly(IReadOnlyList<string> conventionArguments)
-        {
-            return executionProxy.RunAssembly(assemblyFullPath, conventionArguments.ToArray());
-        }
-
-        public void RunMethods(IReadOnlyList<string> methodGroups, IReadOnlyList<string> conventionArguments)
-        {
-            executionProxy.RunMethods(assemblyFullPath, methodGroups, conventionArguments.ToArray());
+            return executionProxy.Run(assemblyFullPath, runnerArguments, conventionArguments);
         }
 
         T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()

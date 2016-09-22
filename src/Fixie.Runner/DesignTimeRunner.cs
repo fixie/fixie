@@ -7,12 +7,13 @@
     using System.Net;
     using System.Net.Sockets;
     using Contracts;
+    using Execution;
     using Newtonsoft.Json;
     using Message = Contracts.Message;
 
-    public class DesignTimeRunner
+    public class DesignTimeRunner : RunnerBase
     {
-        public static int Run(Options options, IReadOnlyList<string> conventionArguments, ExecutionEnvironment environment)
+        public override int Run(string assemblyFullPath, Options options, IReadOnlyList<string> conventionArguments)
         {
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
             {
@@ -26,10 +27,12 @@
                 {
                     try
                     {
+                        var listeners = new List<Listener>();
+
                         if (options.List)
                         {
-                            environment.Subscribe<DesignTimeDiscoveryListener>(sink, options.AssemblyPath);
-                            environment.DiscoverMethodGroups(conventionArguments);
+                            listeners.Add(new DesignTimeDiscoveryListener(sink, assemblyFullPath));
+                            DiscoverMethodGroups(listeners, assemblyFullPath, conventionArguments);
                         }
                         else if (options.WaitCommand)
                         {
@@ -39,22 +42,28 @@
                             var message = JsonConvert.DeserializeObject<Message>(rawMessage);
                             var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
 
-                            environment.Subscribe<DesignTimeExecutionListener>(sink);
+                            listeners.Add(new DesignTimeExecutionListener(sink));
+
+                            var summaryListener = new SummaryListener();
+                            listeners.Add(summaryListener);
 
                             if (testsToRun.Any())
                             {
                                 var methodGroups = testsToRun;
-                                environment.RunMethods(methodGroups, conventionArguments);
+                                RunMethods(listeners, assemblyFullPath, methodGroups, conventionArguments);
                             }
                             else
                             {
-                                environment.RunAssembly(conventionArguments);
+                                RunAssembly(listeners, assemblyFullPath, conventionArguments);
                             }
+
+                            return summaryListener.Summary.Failed;
                         }
                     }
                     catch (Exception exception)
                     {
                         sink.Log(exception.ToString());
+                        return Program.FatalError;
                     }
                     finally
                     {

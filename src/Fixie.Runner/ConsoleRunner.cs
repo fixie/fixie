@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
     using Execution;
     using Reports;
 
@@ -27,7 +28,7 @@
             var summaryListener = new SummaryListener();
             listeners.Add(summaryListener);
 
-            RunAssembly(listeners, assemblyFullPath, conventionArguments);
+            RunAssembly(Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath)), conventionArguments, listeners);
 
             return summaryListener.Summary.Failed;
         }

@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Net;
     using System.Net.Sockets;
+    using System.Reflection;
     using Contracts;
     using Execution;
     using Newtonsoft.Json;
@@ -30,10 +31,12 @@
                     {
                         var listeners = new List<Listener>();
 
+                        var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+
                         if (options.List)
                         {
                             listeners.Add(new DesignTimeDiscoveryListener(sink, assemblyFullPath));
-                            DiscoverMethodGroups(listeners, assemblyFullPath, conventionArguments);
+                            DiscoverMethodGroups(assembly, conventionArguments, listeners);
                         }
                         else if (options.WaitCommand)
                         {
@@ -51,11 +54,11 @@
                             if (testsToRun.Any())
                             {
                                 var methodGroups = testsToRun;
-                                RunMethods(listeners, assemblyFullPath, methodGroups, conventionArguments);
+                                RunMethods(assembly, conventionArguments, methodGroups, listeners);
                             }
                             else
                             {
-                                RunAssembly(listeners, assemblyFullPath, conventionArguments);
+                                RunAssembly(assembly, conventionArguments, listeners);
                             }
 
                             return summaryListener.Summary.Failed;

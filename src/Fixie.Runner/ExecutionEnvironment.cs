@@ -26,7 +26,7 @@
 
             assemblyResolver = CreateFrom<RemoteAssemblyResolver>();
             assemblyResolver.RegisterAssemblyLocation(typeof(ExecutionProxy).Assembly.Location);
-            assemblyResolver.RegisterAssemblyLocation(typeof(SummaryListener).Assembly.Location);
+            assemblyResolver.RegisterAssemblyLocation(typeof(Runner).Assembly.Location);
 
             executionProxy = Create<ExecutionProxy>();
         }

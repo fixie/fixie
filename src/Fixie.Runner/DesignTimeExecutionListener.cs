@@ -36,16 +36,8 @@
             Log(message, x =>
             {
                 x.ErrorMessage = exception.Message;
-                x.ErrorStackTrace = TypedStackTrace(exception);
+                x.ErrorStackTrace = exception.TypedStackTrace();
             });
-        }
-
-        static string TypedStackTrace(CompoundException exception)
-        {
-            if (exception.FailedAssertion)
-                return exception.StackTrace;
-
-            return exception.Type + Environment.NewLine + exception.StackTrace;
         }
 
         void Log(CaseCompleted message, Action<TestResult> customize = null)

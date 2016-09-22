@@ -8,10 +8,5 @@ namespace Fixie.Tests.Execution
         {
             typeof(ExecutionProxy).ShouldBeSafeAppDomainCommunicationInterface();
         }
-
-        public void ShouldAllowRunnersInOtherAppDomainsToReportTestDiscoveryAndExecutionToVisualStudio()
-        {
-            typeof(DesignTimeSink).ShouldBeSafeAppDomainCommunicationInterface();
-        }
     }
 }

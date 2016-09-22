@@ -14,7 +14,7 @@
         void Log(string message);
     }
 
-    public class DesignTimeSink : LongLivedMarshalByRefObject, IDesignTimeSink
+    public class DesignTimeSink : IDesignTimeSink
     {
         readonly BinaryWriter writer;
         readonly string logPath;

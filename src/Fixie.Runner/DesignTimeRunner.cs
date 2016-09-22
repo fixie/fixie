@@ -23,8 +23,9 @@
                 using (var networkStream = new NetworkStream(socket))
                 using (var writer = new BinaryWriter(networkStream))
                 using (var reader = new BinaryReader(networkStream))
-                using (var sink = new DesignTimeSink(writer))
                 {
+                    var sink = new DesignTimeSink(writer);
+
                     try
                     {
                         var listeners = new List<Listener>();

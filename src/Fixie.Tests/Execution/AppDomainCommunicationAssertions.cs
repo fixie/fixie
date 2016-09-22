@@ -38,8 +38,7 @@ namespace Fixie.Tests.Execution
             //it is the responsibilty of the caller to pass safe types.
 
             return type == typeof(int)
-                || type == typeof(string) || type == typeof(string[]) || type == typeof(IReadOnlyList<string>)
-                || type == typeof(object) || type == typeof(object[]);
+                   || type == typeof(string) || type == typeof(IReadOnlyList<string>);
         }
     }
 }

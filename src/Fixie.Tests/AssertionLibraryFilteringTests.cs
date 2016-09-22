@@ -3,7 +3,7 @@
     using System;
     using System.Runtime.CompilerServices;
     using Fixie.Execution;
-    using Fixie.Runner;
+    using Fixie.Execution.Listeners;
     using static Utility;
 
     public class AssertionLibraryFilteringTests

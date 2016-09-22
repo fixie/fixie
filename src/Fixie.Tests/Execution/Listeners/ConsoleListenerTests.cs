@@ -1,7 +1,7 @@
-﻿namespace Fixie.Tests.Runner
+﻿namespace Fixie.Tests.Execution.Listeners
 {
     using Fixie.Execution;
-    using Fixie.Runner;
+    using Fixie.Execution.Listeners;
 
     public class ConsoleListenerTests : MessagingTests
     {

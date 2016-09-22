@@ -4,6 +4,11 @@
   },
 
   "frameworks": {
-    "net45": {}
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Net.Http": "4.0.0.0",
+        "System.Web.Extensions": "4.0.0.0"
+      }
+    }
   }
 }

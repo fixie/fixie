@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.Runner
+﻿namespace Fixie.Tests.Execution.Listeners
 {
     using System;
     using System.Collections.Generic;
@@ -10,7 +10,7 @@
     using System.Web.Script.Serialization;
     using Assertions;
     using Fixie.Execution;
-    using Fixie.Runner;
+    using Fixie.Execution.Listeners;
 
     public class AppVeyorListenerTests : MessagingTests
     {

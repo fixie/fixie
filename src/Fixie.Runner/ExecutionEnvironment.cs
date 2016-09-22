@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Security;
     using System.Security.Permissions;
+    using Execution;
 
     public class ExecutionEnvironment : IDisposable
     {
@@ -26,6 +27,7 @@
 
             assemblyResolver = CreateFrom<RemoteAssemblyResolver>();
             assemblyResolver.RegisterAssemblyLocation(typeof(ExecutionProxy).Assembly.Location);
+            assemblyResolver.RegisterAssemblyLocation(typeof(SummaryListener).Assembly.Location);
 
             executionProxy = Create<ExecutionProxy>();
         }
@@ -35,7 +37,6 @@
             var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
             var listenerType = typeof(TListener).FullName;
 
-            assemblyResolver.RegisterAssemblyLocation(listenerAssemblyFullPath);
             executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArguments);
         }
 

@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Runner
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using Cli;
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
@@ -9,7 +10,9 @@
         {
             var options = CommandLine.Parse<Options>(runnerArguments);
 
-            return Runner(options).Run(assemblyFullPath, options, conventionArguments);
+            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+
+            return Runner(options).Run(assemblyFullPath, assembly, options, conventionArguments);
         }
 
         static RunnerBase Runner(Options options)

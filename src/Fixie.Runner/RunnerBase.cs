@@ -7,7 +7,7 @@ namespace Fixie.Runner
 
     public abstract class RunnerBase
     {
-        public abstract int Run(string assemblyFullPath, Options options, IReadOnlyList<string> conventionArguments);
+        public abstract int Run(string assemblyFullPath, Assembly assembly, Options options, IReadOnlyList<string> conventionArguments);
 
         protected static void DiscoverMethodGroups(Assembly assembly, IReadOnlyList<string> conventionArguments, IReadOnlyList<Listener> listeners)
         {

@@ -8,7 +8,7 @@
 
     public class ConsoleRunner : RunnerBase
     {
-        public override int Run(string assemblyFullPath, Options options, IReadOnlyList<string> conventionArguments)
+        public override int Run(string assemblyFullPath, Assembly assembly, Options options, IReadOnlyList<string> conventionArguments)
         {
             var listeners = new List<Listener>();
 
@@ -28,7 +28,7 @@
             var summaryListener = new SummaryListener();
             listeners.Add(summaryListener);
 
-            RunAssembly(Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath)), conventionArguments, listeners);
+            RunAssembly(assembly, conventionArguments, listeners);
 
             return summaryListener.Summary.Failed;
         }

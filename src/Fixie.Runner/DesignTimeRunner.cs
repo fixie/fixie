@@ -14,7 +14,7 @@
 
     public class DesignTimeRunner : RunnerBase
     {
-        public override int Run(string assemblyFullPath, Options options, IReadOnlyList<string> conventionArguments)
+        public override int Run(string assemblyFullPath, Assembly assembly, Options options, IReadOnlyList<string> conventionArguments)
         {
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
             {
@@ -30,8 +30,6 @@
                     try
                     {
                         var listeners = new List<Listener>();
-
-                        var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
 
                         if (options.List)
                         {

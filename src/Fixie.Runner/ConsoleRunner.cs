@@ -5,7 +5,6 @@
     using System.Reflection;
     using Execution;
     using Execution.Listeners;
-    using Reports;
 
     public class ConsoleRunner : RunnerBase
     {

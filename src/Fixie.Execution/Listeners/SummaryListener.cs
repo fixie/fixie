@@ -1,4 +1,4 @@
-﻿namespace Fixie.Execution
+﻿namespace Fixie.Execution.Listeners
 {
     public class SummaryListener : Handler<CaseCompleted>
     {

@@ -1,32 +1,36 @@
-namespace Fixie.Runner
+﻿namespace Fixie.Runner
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Reflection;
     using Execution;
-    using Reports;
+    using Execution.Listeners;
 
-    public class ConsoleRunner
+    public class ConsoleRunner : RunnerBase
     {
-        public static int Run(Options options, IReadOnlyList<string> conventionArguments)
+        public override int Run(string assemblyFullPath, Assembly assembly, Options options, IReadOnlyList<string> conventionArguments)
         {
-            using (var environment = new ExecutionEnvironment(options.AssemblyPath))
-            {
-                if (ShouldUseTeamCityListener(options))
-                    environment.Subscribe<TeamCityListener>();
-                else
-                    environment.Subscribe<ConsoleListener>();
+            var listeners = new List<Listener>();
 
-                if (ShouldUseAppVeyorListener())
-                    environment.Subscribe<AppVeyorListener>();
+            if (ShouldUseTeamCityListener(options))
+                listeners.Add(new TeamCityListener());
+            else
+                listeners.Add(new ConsoleListener());
 
-                if (options.ReportFormat == ReportFormat.NUnit)
-                    environment.Subscribe<ReportListener<NUnitXml>>();
-                else if (options.ReportFormat == ReportFormat.xUnit)
-                    environment.Subscribe<ReportListener<XUnitXml>>();
+            if (ShouldUseAppVeyorListener())
+                listeners.Add(new AppVeyorListener());
 
-                return environment.RunAssembly(conventionArguments);
-            }
+            if (options.ReportFormat == ReportFormat.NUnit)
+                listeners.Add(new ReportListener<NUnitXml>());
+            else if (options.ReportFormat == ReportFormat.xUnit)
+                listeners.Add(new ReportListener<XUnitXml>());
+
+            var summaryListener = new SummaryListener();
+            listeners.Add(summaryListener);
+
+            RunAssembly(assembly, conventionArguments, listeners);
+
+            return summaryListener.Summary.Failed;
         }
 
         static bool ShouldUseTeamCityListener(Options options)
@@ -39,8 +43,6 @@ namespace Fixie.Runner
         }
 
         static bool ShouldUseAppVeyorListener()
-        {
-            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
-        }
+            => Environment.GetEnvironmentVariable("APPVEYOR") == "True";
     }
 }

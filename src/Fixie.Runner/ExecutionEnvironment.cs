@@ -3,9 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Security;
     using System.Security.Permissions;
+    using Execution;
 
     public class ExecutionEnvironment : IDisposable
     {
@@ -26,32 +26,14 @@
 
             assemblyResolver = CreateFrom<RemoteAssemblyResolver>();
             assemblyResolver.RegisterAssemblyLocation(typeof(ExecutionProxy).Assembly.Location);
+            assemblyResolver.RegisterAssemblyLocation(typeof(Runner).Assembly.Location);
 
             executionProxy = Create<ExecutionProxy>();
         }
 
-        public void Subscribe<TListener>(params object[] listenerArguments)
+        public int Run(IReadOnlyList<string> runnerArguments, IReadOnlyList<string> conventionArguments)
         {
-            var listenerAssemblyFullPath = typeof(TListener).Assembly.Location;
-            var listenerType = typeof(TListener).FullName;
-
-            assemblyResolver.RegisterAssemblyLocation(listenerAssemblyFullPath);
-            executionProxy.Subscribe(listenerAssemblyFullPath, listenerType, listenerArguments);
-        }
-
-        public void DiscoverMethodGroups(IReadOnlyList<string> conventionArguments)
-        {
-            executionProxy.DiscoverMethodGroups(assemblyFullPath, conventionArguments.ToArray());
-        }
-
-        public int RunAssembly(IReadOnlyList<string> conventionArguments)
-        {
-            return executionProxy.RunAssembly(assemblyFullPath, conventionArguments.ToArray());
-        }
-
-        public void RunMethods(IReadOnlyList<string> methodGroups, IReadOnlyList<string> conventionArguments)
-        {
-            executionProxy.RunMethods(assemblyFullPath, methodGroups, conventionArguments.ToArray());
+            return executionProxy.Run(assemblyFullPath, runnerArguments, conventionArguments);
         }
 
         T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()

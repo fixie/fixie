@@ -1,9 +1,9 @@
-﻿namespace Fixie.Tests.Runner
+﻿namespace Fixie.Tests.Execution.Listeners
 {
     using System.Linq;
     using System.Text.RegularExpressions;
     using Fixie.Execution;
-    using Fixie.Runner;
+    using Fixie.Execution.Listeners;
 
     public class TeamCityListenerTests : MessagingTests
     {

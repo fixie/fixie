@@ -7,7 +7,7 @@
 
     public class Program
     {
-        const int FatalError = -1;
+        public const int FatalError = -1;
 
         [STAThread]
         static int Main(string[] arguments)
@@ -34,10 +34,8 @@
 
                 var options = ParseRunnerArguments(runnerArguments);
 
-                if (options.DesignTime)
-                    return DesignTimeRunner.Run(options, conventionArguments);
-
-                return ConsoleRunner.Run(options, conventionArguments);
+                using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                    return environment.Run(runnerArguments, conventionArguments);
             }
             catch (CommandLineException exception)
             {

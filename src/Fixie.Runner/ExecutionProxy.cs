@@ -1,69 +1,26 @@
 ﻿namespace Fixie.Runner
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
-    using Execution;
+    using Cli;
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
-        readonly List<Listener> subscribedListeners = new List<Listener>();
-
-        public void Subscribe(string listenerAssemblyFullPath, string listenerType, object[] listenerArguments)
+        public int Run(string assemblyFullPath, IReadOnlyList<string> runnerArguments, IReadOnlyList<string> conventionArguments)
         {
-            var listener = Construct<Listener>(listenerAssemblyFullPath, listenerType, listenerArguments);
+            var options = CommandLine.Parse<Options>(runnerArguments);
 
-            subscribedListeners.Add(listener);
+            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+
+            return Runner(options).Run(assemblyFullPath, assembly, options, conventionArguments);
         }
 
-        static T Construct<T>(string assemblyFullPath, string typeFullName, object[] constructorArguments)
+        static RunnerBase Runner(Options options)
         {
-            var type = LoadAssembly(assemblyFullPath).GetType(typeFullName);
+            if (options.DesignTime)
+                return new DesignTimeRunner();
 
-            return (T)Activator.CreateInstance(type, constructorArguments);
+            return new ConsoleRunner();
         }
-
-        public void DiscoverMethodGroups(string assemblyFullPath, string[] conventionArguments)
-        {
-            var assembly = LoadAssembly(assemblyFullPath);
-
-            var bus = new Bus(subscribedListeners);
-            Discoverer(bus, conventionArguments).DiscoverMethodGroups(assembly);
-        }
-
-        public int RunAssembly(string assemblyFullPath, string[] conventionArguments)
-        {
-            var assembly = LoadAssembly(assemblyFullPath);
-
-            var summaryListener = new SummaryListener();
-            var listeners = subscribedListeners.ToList();
-            listeners.Add(summaryListener);
-
-            var bus = new Bus(listeners);
-            Runner(bus, conventionArguments).RunAssembly(assembly);
-
-            return summaryListener.Summary.Failed;
-        }
-
-        public void RunMethods(string assemblyFullPath, IReadOnlyList<string> methodGroups, string[] conventionArguments)
-        {
-            var assembly = LoadAssembly(assemblyFullPath);
-
-            var bus = new Bus(subscribedListeners);
-
-            Runner(bus, conventionArguments).RunMethods(assembly, methodGroups.Select(x => new MethodGroup(x)).ToArray());
-        }
-
-        static Assembly LoadAssembly(string assemblyFullPath)
-        {
-            return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
-        }
-
-        static Runner Runner(Bus bus, string[] conventionArguments)
-            => new Runner(bus, conventionArguments);
-
-        static Discoverer Discoverer(Bus bus, string[] conventionArguments)
-            => new Discoverer(bus, conventionArguments);
     }
 }

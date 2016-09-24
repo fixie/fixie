@@ -6,14 +6,16 @@
     using System.Linq;
     using System.Net;
     using System.Net.Sockets;
+    using System.Reflection;
     using Contracts;
     using Execution;
+    using Execution.Listeners;
     using Newtonsoft.Json;
     using Message = Contracts.Message;
 
-    public class DesignTimeRunner
+    public class DesignTimeRunner : RunnerBase
     {
-        public static int Run(Options options, IReadOnlyList<string> conventionArguments)
+        public override int Run(string assemblyFullPath, Assembly assembly, Options options, IReadOnlyList<string> conventionArguments)
         {
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
             {
@@ -23,13 +25,17 @@
                 using (var networkStream = new NetworkStream(socket))
                 using (var writer = new BinaryWriter(networkStream))
                 using (var reader = new BinaryReader(networkStream))
-                using (var sink = new DesignTimeSink(writer))
                 {
+                    var sink = new DesignTimeSink(writer);
+
                     try
                     {
+                        var listeners = new List<Listener>();
+
                         if (options.List)
                         {
-                            DiscoverTests(sink, options.AssemblyPath, conventionArguments);
+                            listeners.Add(new DesignTimeDiscoveryListener(sink, assemblyFullPath));
+                            DiscoverMethodGroups(assembly, conventionArguments, listeners);
                         }
                         else if (options.WaitCommand)
                         {
@@ -39,15 +45,28 @@
                             var message = JsonConvert.DeserializeObject<Message>(rawMessage);
                             var testsToRun = message.Payload.ToObject<RunTestsMessage>().Tests;
 
+                            listeners.Add(new DesignTimeExecutionListener(sink));
+
+                            var summaryListener = new SummaryListener();
+                            listeners.Add(summaryListener);
+
                             if (testsToRun.Any())
-                                RunTests(sink, options.AssemblyPath, conventionArguments, testsToRun);
+                            {
+                                var methodGroups = testsToRun;
+                                RunMethods(assembly, conventionArguments, methodGroups, listeners);
+                            }
                             else
-                                RunAllTests(sink, options.AssemblyPath, conventionArguments);
+                            {
+                                RunAssembly(assembly, conventionArguments, listeners);
+                            }
+
+                            return summaryListener.Summary.Failed;
                         }
                     }
                     catch (Exception exception)
                     {
                         sink.Log(exception.ToString());
+                        return Program.FatalError;
                     }
                     finally
                     {
@@ -57,34 +76,6 @@
             }
 
             return 0;
-        }
-
-        static void DiscoverTests(DesignTimeSink sink, string assemblyPath, IReadOnlyList<string> conventionArguments)
-        {
-            using (var environment = new ExecutionEnvironment(assemblyPath))
-            {
-                environment.Subscribe<DesignTimeDiscoveryListener>(sink, assemblyPath);
-                environment.DiscoverMethodGroups(conventionArguments);
-            }
-        }
-
-        static void RunAllTests(DesignTimeSink sink, string assemblyPath, IReadOnlyList<string> conventionArguments)
-        {
-            using (var environment = new ExecutionEnvironment(assemblyPath))
-            {
-                environment.Subscribe<DesignTimeExecutionListener>(sink);
-                environment.RunAssembly(conventionArguments);
-            }
-        }
-
-        static void RunTests(DesignTimeSink sink, string assemblyPath, IReadOnlyList<string> conventionArguments, IReadOnlyList<string> testsToRun)
-        {
-            using (var environment = new ExecutionEnvironment(assemblyPath))
-            {
-                environment.Subscribe<DesignTimeExecutionListener>(sink);
-                var methodGroups = testsToRun;
-                environment.RunMethods(methodGroups, conventionArguments);
-            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Fixie.Runner.Reports
+﻿namespace Fixie.Execution.Listeners
 {
     using System;
     using System.IO;

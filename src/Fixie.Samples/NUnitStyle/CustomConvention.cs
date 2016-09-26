@@ -46,7 +46,7 @@
                 if (sourceType == null)
                     throw new Exception("Could not find source type for method " + method.Name);
 
-                var members = sourceType.GetMember(attribute.SourceName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
+                var members = sourceType.GetMember(attribute.SourceName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 
                 if (members.Length != 1)
                     throw new Exception($"Found {members.Length} members named '{attribute.SourceName}' on type {sourceType}");

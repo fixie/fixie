@@ -16,7 +16,6 @@
     "Fixie": { "target": "project" },
     "Fixie.Execution": { "target": "project" },
     "Fixie.TestDriven": { "target": "project" },
-    "Fixie.VisualStudio.TestAdapter": { "target": "project" },
     "Fixie.Runner": { "target": "project" },
     "Fixie.Assertions": { "target": "project" }
   },
@@ -28,8 +27,7 @@
         "System.Xml": "4.0.0.0"
       },
       "dependencies": {
-        "TestDriven.Framework": "2.0.0.0",
-        "Microsoft.VisualStudio.TestPlatform.ObjectModel": "11.0.60315.1"
+        "TestDriven.Framework": "2.0.0.0"
       }
     }
   }

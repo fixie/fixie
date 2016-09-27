@@ -36,7 +36,5 @@
     <file src="..\Fixie.TestDriven\bin\Release\net45\Fixie.dll.tdnet" target="lib/net45"></file>
     <file src="..\Fixie.TestDriven\bin\Release\net45\Fixie.TestDriven.dll" target="lib/net45"></file>
     <file src="..\Fixie.TestDriven\bin\Release\net45\TestDriven.Framework.dll" target="lib/net45"></file>
-
-    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net45\Fixie.VisualStudio.TestAdapter.dll" target="lib/net45"></file>
   </files>
 </package>

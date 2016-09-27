@@ -4,8 +4,11 @@
 
 This project provides both a console runner as well as integration with the Visual Studio
 Test Explorer window, for test assemblies that are build with .NET Core project types.
-For pre-.NET Core project types, a separate project (Fixie.VisualStudio.TestAdapter.dll)
-provides that legacy integration.
+
+For pre-.NET Core project types, the legacy Test Explorer plugin is no longer supported.
+For that, use Fixie 1.x which contains Fixie.VisualStudio.TestAdapter.dll. Due to Visual
+Studio's problematic handling of such plugins, especially in the presence of modern
+`dotnet test` integration, legacy project support was removed from Fixie 2.x.
 
 The runner may be invoked by end users at the command line, or by IDEs. Command line arguments
 determine which mode we are in. The presence of --port ##### indicates that an IDE is making
@@ -93,8 +96,4 @@ Right clicking overloaded test methods may surprisingly run *more* than you
 intended, as it will really run the whole method group.
         
 Right clicking on inherited test methods will fail to successfully execute
-the intended test.
-
-There are likely other scenarios in which right clicking on test methods will
-fail to successfully execute the intended test.  In all cases, the Test Explorer
-window does report the truth about what actually executed.
+the intended test, since the request is ambiguous.

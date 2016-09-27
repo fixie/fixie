@@ -104,7 +104,7 @@ root of your copy of the Fixie repository.
 NuGet package.
 4. Note the creation of the package file inside the package/ folder.
 5. Open the `fixie.runners.sandbox` solution, uninstall Fixie from all projects,
-and close all instances of Visual Studio.
+close Test Explorer, and close all instances of Visual Studio.
 6. Delete the contents of `%TEMP%\VisualStudioTestExplorerExtensions` and reopen
 the `fixie.runners.sandbox` solution.
 7. In `fixie.runners.sandbox`, resinstall Fixie but from your local package

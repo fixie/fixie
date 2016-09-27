@@ -1,16 +1,14 @@
-The *.nuspec files in this folder were originally created
-with the following commands, and then manually edited to
-package their respective DLLs:
+The *.nuspec file in this folder was originally created
+with the following command, and then manually edited to
+package its DLL:
 
 	..\tools\NuGet.exe spec TestDriven.Framework
-	..\tools\NuGet.exe spec Microsoft.VisualStudio.TestPlatform.ObjectModel
 
-From those nuspec files, the nupkg files can be regenerated
-with the following commands:
+From that nuspec file, the nupkg file can be regenerated
+with the following command:
 
     ..\tools\NuGet.exe pack TestDriven.Framework.nuspec
-    ..\tools\NuGet.exe pack Microsoft.VisualStudio.TestPlatform.ObjectModel.nuspec
 
 Because the root nuget.config lists this folder as a
-package source, these packages can be referenced by
+package source, this package can be referenced by
 projects in the solution.

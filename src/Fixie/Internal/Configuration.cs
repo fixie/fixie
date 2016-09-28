@@ -29,12 +29,7 @@
                 NonCompilerGeneratedClasses
             };
 
-            testMethodConditions = new List<Func<MethodInfo, bool>>
-            {
-                ExcludeMethodsDefinedOnObject,
-                ExcludeDispose
-            };
-
+            testMethodConditions = new List<Func<MethodInfo, bool>>();
             parameterSources = new List<Func<ParameterSource>>();
             customClassBehaviors = new List<Func<ClassBehavior>>();
             customFixtureBehaviors = new List<Func<FixtureBehavior>>();
@@ -72,16 +67,6 @@
         static bool NonCompilerGeneratedClasses(Type type)
         {
             return !type.Has<CompilerGeneratedAttribute>();
-        }
-
-        static bool ExcludeMethodsDefinedOnObject(MethodInfo method)
-        {
-            return method.DeclaringType != typeof(object);
-        }
-
-        static bool ExcludeDispose(MethodInfo method)
-        {
-            return !method.IsDispose();
         }
 
         public void AddTestClassCondition(Func<Type, bool> testClassCondition)

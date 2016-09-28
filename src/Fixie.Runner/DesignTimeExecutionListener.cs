@@ -42,7 +42,7 @@
 
         void Log(CaseCompleted message, Action<TestResult> customize = null)
         {
-            var methodGroup = message.MethodGroup.FullName;
+            var methodGroup = new MethodGroup(message.Method).FullName;
 
             var test = new Test
             {

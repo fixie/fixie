@@ -4,7 +4,8 @@
     {
         public CasePassed(Case @case)
             : base(
-                methodGroup: @case.MethodGroup,
+                @class: @case.Class,
+                method: @case.Method,
                 name: @case.Name,
                 status: CaseStatus.Passed,
                 duration: @case.Duration,

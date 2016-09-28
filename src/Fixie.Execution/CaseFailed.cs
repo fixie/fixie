@@ -4,7 +4,8 @@
     {
         public CaseFailed(Case @case, AssertionLibraryFilter filter)
             : base(
-                methodGroup: @case.MethodGroup,
+                @class: @case.Class,
+                method: @case.Method,
                 name: @case.Name,
                 status: CaseStatus.Failed,
                 duration: @case.Duration,

@@ -4,7 +4,8 @@
     {
         public CaseSkipped(Case @case, string reason)
             : base(
-                methodGroup: @case.MethodGroup,
+                @class: @case.Class,
+                method: @case.Method,
                 name: @case.Name,
                 status: CaseStatus.Skipped,
                 duration: @case.Duration,

@@ -29,13 +29,15 @@
             var pass = listener.Cases[4];
 
             pass.Name.ShouldEqual(TestClass + ".Pass");
-            pass.MethodGroup.FullName.ShouldEqual(TestClass + ".Pass");
+            pass.Class.FullName.ShouldEqual(TestClass);
+            pass.Method.Name.ShouldEqual("Pass");
             pass.Output.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             pass.Status.ShouldEqual(CaseStatus.Passed);
 
             fail.Name.ShouldEqual(TestClass + ".Fail");
-            fail.MethodGroup.FullName.ShouldEqual(TestClass + ".Fail");
+            fail.Class.FullName.ShouldEqual(TestClass);
+            fail.Method.Name.ShouldEqual("Fail");
             fail.Output.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             fail.Status.ShouldEqual(CaseStatus.Failed);
@@ -47,7 +49,8 @@
             fail.Exception.Message.ShouldEqual("'Fail' failed!");
 
             failByAssertion.Name.ShouldEqual(TestClass + ".FailByAssertion");
-            failByAssertion.MethodGroup.FullName.ShouldEqual(TestClass + ".FailByAssertion");
+            failByAssertion.Class.FullName.ShouldEqual(TestClass);
+            failByAssertion.Method.Name.ShouldEqual("FailByAssertion");
             failByAssertion.Output.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
@@ -62,14 +65,16 @@
                 "Actual:   1");
 
             skipWithReason.Name.ShouldEqual(TestClass + ".SkipWithReason");
-            skipWithReason.MethodGroup.FullName.ShouldEqual(TestClass + ".SkipWithReason");
+            skipWithReason.Class.FullName.ShouldEqual(TestClass);
+            skipWithReason.Method.Name.ShouldEqual("SkipWithReason");
             skipWithReason.Output.ShouldBeNull();
             skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
             skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);
             skipWithReason.Reason.ShouldEqual("Skipped with reason.");
 
             skipWithoutReason.Name.ShouldEqual(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.MethodGroup.FullName.ShouldEqual(TestClass + ".SkipWithoutReason");
+            skipWithoutReason.Class.FullName.ShouldEqual(TestClass);
+            skipWithoutReason.Method.Name.ShouldEqual("SkipWithoutReason");
             skipWithoutReason.Output.ShouldBeNull();
             skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
             skipWithoutReason.Status.ShouldEqual(CaseStatus.Skipped);

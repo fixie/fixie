@@ -26,7 +26,7 @@ namespace Fixie.TestDriven
                 if (method.IsDispose())
                 {
                     var listener = new TestDrivenListener(testListener);
-                    listener.Handle(new CaseSkipped(new Case(method), "Dispose() is not a test."));
+                    listener.Handle(new CaseSkipped(new Case(method.DeclaringType, method), "Dispose() is not a test."));
                     return TestRunState.Success;
                 }
 

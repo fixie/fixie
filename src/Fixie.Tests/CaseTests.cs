@@ -138,15 +138,18 @@
                 .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<T>(\"Incompatable\")");
         }
 
-        public void ShouldInferAppropriateClassGivenCaseMethod()
+        public void ShouldHaveConcreteTestClass()
         {
-            var methodDeclaredInChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinChildClass"));
+            var methodDeclaredInChildClass =
+                Case<SampleChildTestClass>("TestMethodDefinedWithinChildClass");
             methodDeclaredInChildClass.Class.ShouldEqual(typeof(SampleChildTestClass));
 
-            var methodDeclaredInParentClass = new Case(typeof(SampleParentTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"));
+            var methodDeclaredInParentClass =
+                Case<SampleParentTestClass>("TestMethodDefinedWithinParentClass");
             methodDeclaredInParentClass.Class.ShouldEqual(typeof(SampleParentTestClass));
 
-            var parentMethodInheritedByChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"));
+            var parentMethodInheritedByChildClass =
+                Case<SampleChildTestClass>("TestMethodDefinedWithinParentClass");
             parentMethodInheritedByChildClass.Class.ShouldEqual(typeof(SampleChildTestClass));
         }
 
@@ -245,7 +248,15 @@
 
         static Case Case(string methodName, params object[] parameters)
         {
-            return new Case(typeof(CaseTests).GetInstanceMethod(methodName), parameters);
+            return Case<CaseTests>(methodName, parameters);
+        }
+
+        static Case Case<TTestClass>(string methodName, params object[] parameters)
+        {
+            return new Case(
+                typeof(TTestClass),
+                typeof(TTestClass)
+                    .GetInstanceMethod(methodName), parameters);
         }
 
         void Returns()

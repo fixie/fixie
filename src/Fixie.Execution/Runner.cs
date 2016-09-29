@@ -46,6 +46,20 @@
             Run(assembly, new[] { convention }, types);
         }
 
+        public void RunMethodsForTestDriven(Assembly assembly, params MethodInfo[] methods)
+        {
+            if (methods.Length == 1)
+                RunContext.Set(conventionArguments, methods.Single());
+            else
+                RunContext.Set(conventionArguments);
+
+            var conventions = GetConventions(assembly);
+
+            foreach (var convention in conventions)
+                convention.Methods.Where(methods.Contains);
+
+            Run(assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
+        }
         public void RunMethods(Assembly assembly, params MethodInfo[] methods)
         {
             if (methods.Length == 1)

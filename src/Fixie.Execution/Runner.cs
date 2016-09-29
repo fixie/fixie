@@ -46,19 +46,7 @@
             Run(assembly, new[] { convention }, types);
         }
 
-        public void RunMethod(Assembly assembly, Method method)
-        {
-            RunContext.Set(conventionArguments, method.MethodInfo);
-
-            var conventions = GetConventions(assembly);
-
-            foreach (var convention in conventions)
-                convention.Methods.Where(m => m == method.MethodInfo);
-
-            Run(assembly, conventions, method.Class);
-        }
-
-        public void RunMethods(Assembly assembly, Method[] methods)
+        public void RunMethods(Assembly assembly, params Method[] methods)
         {
             var methodInfos = methods.Select(m => m.MethodInfo).ToArray();
 

@@ -37,13 +37,6 @@
             return method.Has<AsyncStateMachineAttribute>();
         }
 
-        public static bool IsDispose(this MethodInfo method)
-        {
-            var @class = method.ReflectedType;
-
-            return IsDispose(@class, method);
-        }
-
         public static bool IsDispose(Type @class, MethodInfo method)
         {
             var hasDisposeSignature = method.Name == "Dispose" && method.IsVoid() && method.GetParameters().Length == 0;

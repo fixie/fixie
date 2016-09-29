@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Execution
 {
-    using System.Collections.Generic;
     using System.Reflection;
     using Internal;
 
@@ -15,25 +14,25 @@
             this.conventionArguments = conventionArguments;
         }
 
-        public void DiscoverMethodGroups(Assembly assembly)
+        public void DiscoverMethods(Assembly assembly)
         {
             RunContext.Set(conventionArguments);
 
             var conventions = new ConventionDiscoverer(assembly).GetConventions();
 
-            DiscoverMethodGroups(assembly, conventions);
+            DiscoverMethods(assembly, conventions);
         }
 
-        public void DiscoverMethodGroups(Assembly assembly, Convention convention)
+        public void DiscoverMethods(Assembly assembly, Convention convention)
         {
             RunContext.Set(conventionArguments);
 
             var conventions = new[] { convention };
 
-            DiscoverMethodGroups(assembly, conventions);
+            DiscoverMethods(assembly, conventions);
         }
 
-        void DiscoverMethodGroups(Assembly assembly, Convention[] conventions)
+        void DiscoverMethods(Assembly assembly, Convention[] conventions)
         {
             foreach (var convention in conventions)
             {

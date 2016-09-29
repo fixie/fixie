@@ -9,11 +9,11 @@ namespace Fixie.Runner
     {
         public abstract int Run(string assemblyFullPath, Assembly assembly, Options options, IReadOnlyList<string> conventionArguments);
 
-        protected static void DiscoverMethodGroups(Assembly assembly, IReadOnlyList<string> conventionArguments, IReadOnlyList<Listener> listeners)
+        protected static void DiscoverMethods(Assembly assembly, IReadOnlyList<string> conventionArguments, IReadOnlyList<Listener> listeners)
         {
             var bus = new Bus(listeners);
 
-            Discoverer(bus, conventionArguments).DiscoverMethodGroups(assembly);
+            Discoverer(bus, conventionArguments).DiscoverMethods(assembly);
         }
 
         protected static void RunAssembly(Assembly assembly, IReadOnlyList<string> conventionArguments, IReadOnlyList<Listener> listeners)

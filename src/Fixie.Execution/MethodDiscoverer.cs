@@ -7,26 +7,23 @@
 
     public class MethodDiscoverer
     {
-        readonly IReadOnlyList<Func<MethodInfo, bool>> testMethodConditions;
+        readonly Func<MethodInfo, bool>[] testMethodConditions;
 
         public MethodDiscoverer(Convention convention)
         {
-            var conditions = new List<Func<MethodInfo, bool>>
-            {
-               ExcludeMethodsDefinedOnObject,
-               ExcludeDispose
-            };
-
-            conditions.AddRange(convention.Config.TestMethodConditions);
-
-            testMethodConditions = conditions;
+            testMethodConditions = convention.Config.TestMethodConditions.ToArray();
         }
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
         {
             try
             {
-                return testClass.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(IsMatch).ToArray();
+                return testClass
+                    .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(ExcludeMethodsDefinedOnObject)
+                    .Where(method => !ReflectionExtensions.IsDispose(testClass, method))
+                    .Where(IsMatch)
+                    .ToArray();
             }
             catch (Exception exception)
             {
@@ -41,8 +38,5 @@
 
         static bool ExcludeMethodsDefinedOnObject(MethodInfo method)
             => method.DeclaringType != typeof(object);
-
-        static bool ExcludeDispose(MethodInfo method)
-            => !method.IsDispose();
     }
 }

@@ -39,12 +39,19 @@
 
         public static bool IsDispose(this MethodInfo method)
         {
+            var @class = method.ReflectedType;
+
+            return IsDispose(@class, method);
+        }
+
+        public static bool IsDispose(Type @class, MethodInfo method)
+        {
             var hasDisposeSignature = method.Name == "Dispose" && method.IsVoid() && method.GetParameters().Length == 0;
 
             if (!hasDisposeSignature)
                 return false;
 
-            return method.ReflectedType.GetInterfaces().Any(type => type == typeof(IDisposable));
+            return @class.GetInterfaces().Any(type => type == typeof(IDisposable));
         }
 
         public static bool HasSignature(this MethodInfo method, Type returnType, string name, params Type[] parameterTypes)

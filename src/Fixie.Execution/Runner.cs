@@ -58,10 +58,8 @@
             Run(assembly, conventions, method.Class);
         }
 
-        public void RunMethods(Assembly assembly, MethodGroup[] methodGroups)
+        public void RunMethods(Assembly assembly, Method[] methods)
         {
-            var methods = GetMethods(assembly, methodGroups);
-
             var methodInfos = methods.Select(m => m.MethodInfo).ToArray();
 
             if (methodInfos.Length == 1)
@@ -83,21 +81,6 @@
 
             foreach (var nested in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).SelectMany(GetTypeAndNestedTypes))
                 yield return nested;
-        }
-
-        static Method[] GetMethods(Assembly assembly, MethodGroup[] methodGroups)
-        {
-            return methodGroups.SelectMany(methodGroup => GetMethods(assembly, methodGroup)).ToArray();
-        }
-
-        static IEnumerable<Method> GetMethods(Assembly assembly, MethodGroup methodGroup)
-        {
-            var testClass = assembly.GetType(methodGroup.Class);
-
-            return testClass
-                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Where(m => m.Name == methodGroup.Method)
-                .Select(m => new Method(testClass, m));
         }
 
         void RunTypesInternal(Assembly assembly, params Type[] types)

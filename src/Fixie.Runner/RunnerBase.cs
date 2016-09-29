@@ -27,7 +27,12 @@ namespace Fixie.Runner
         {
             var bus = new Bus(listeners);
 
-            Runner(bus, conventionArguments).RunMethods(assembly, methodGroups.Select(x => new MethodGroup(x)).ToArray());
+            var methods = methodGroups
+                .Select(x => new MethodGroup(x))
+                .SelectMany(methodGroup => GetMethods(assembly, methodGroup))
+                .ToArray();
+
+            Runner(bus, conventionArguments).RunMethods(assembly, methods);
         }
 
         static Runner Runner(Bus bus, IReadOnlyList<string> conventionArguments)
@@ -35,5 +40,15 @@ namespace Fixie.Runner
 
         static Discoverer Discoverer(Bus bus, IReadOnlyList<string> conventionArguments)
             => new Discoverer(bus, conventionArguments.ToArray());
+
+        static IEnumerable<Method> GetMethods(Assembly assembly, MethodGroup methodGroup)
+        {
+            var testClass = assembly.GetType(methodGroup.Class);
+
+            return testClass
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(m => m.Name == methodGroup.Method)
+                .Select(m => new Method(testClass, m));
+        }
     }
 }

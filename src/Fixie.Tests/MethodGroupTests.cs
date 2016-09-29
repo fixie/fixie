@@ -4,26 +4,34 @@
 
     public class MethodGroupTests
     {
-        public void CanConstructMethodGroupFromMethodInfoWithRespectToTheReflectedType()
+        public void CanRepresentMethodDeclaredInChildClass()
         {
             var methodDeclaredInChildClass = typeof(ChildClass).GetInstanceMethod("MethodDefinedWithinChildClass");
-            var methodDeclaredInParentClass = typeof(ParentClass).GetInstanceMethod("MethodDefinedWithinParentClass");
-            var parentMethodInheritedByChildClass = typeof(ChildClass).GetInstanceMethod("MethodDefinedWithinParentClass");
 
             AssertMethodGroup(
-                new MethodGroup(methodDeclaredInChildClass),
+                new MethodGroup(typeof(ChildClass), methodDeclaredInChildClass),
                 "Fixie.Tests.MethodGroupTests+ChildClass",
                 "MethodDefinedWithinChildClass",
                 "Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinChildClass");
+        }
+
+        public void CanRepresentMethodDeclaredInParentClass()
+        {
+            var methodDeclaredInParentClass = typeof(ParentClass).GetInstanceMethod("MethodDefinedWithinParentClass");
 
             AssertMethodGroup(
-                new MethodGroup(methodDeclaredInParentClass),
+                new MethodGroup(typeof(ParentClass), methodDeclaredInParentClass),
                 "Fixie.Tests.MethodGroupTests+ParentClass",
                 "MethodDefinedWithinParentClass",
                 "Fixie.Tests.MethodGroupTests+ParentClass.MethodDefinedWithinParentClass");
+        }
+
+        public void CanRepresentMethodInheritedByChildClass()
+        {
+            var parentMethodInheritedByChildClass = typeof(ChildClass).GetInstanceMethod("MethodDefinedWithinParentClass");
 
             AssertMethodGroup(
-                new MethodGroup(parentMethodInheritedByChildClass),
+                new MethodGroup(typeof(ChildClass), parentMethodInheritedByChildClass),
                 "Fixie.Tests.MethodGroupTests+ChildClass",
                 "MethodDefinedWithinParentClass",
                 "Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinParentClass");

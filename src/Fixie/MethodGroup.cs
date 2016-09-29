@@ -1,5 +1,6 @@
 namespace Fixie
 {
+    using System;
     using System.Reflection;
 
     public class MethodGroup
@@ -8,9 +9,9 @@ namespace Fixie
         public string Method { get; }
         public string FullName { get; }
 
-        public MethodGroup(MethodInfo method)
+        public MethodGroup(Type @class, MethodInfo method)
         {
-            Class = method.ReflectedType.FullName;
+            Class = @class.FullName;
             Method = method.Name;
             FullName = Class + "." + Method;
         }

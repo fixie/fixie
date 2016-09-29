@@ -20,9 +20,13 @@
 
             Method = TryResolveTypeArguments(caseMethod, parameters);
 
-            var methodGroup = new MethodGroup(caseMethod);
+            Name = new MethodGroup(caseMethod).FullName;
 
-            Name = GetName(methodGroup);
+            if (Method.IsGenericMethod)
+                Name += $"<{string.Join(", ", Method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";
+
+            if (Parameters != null && Parameters.Length > 0)
+                Name += $"({string.Join(", ", Parameters.Select(x => x.ToDisplayString()))})";
 
             exceptions = new List<Exception>();
         }
@@ -44,19 +48,6 @@
             }
 
             return caseMethod;
-        }
-
-        string GetName(MethodGroup methodGroup)
-        {
-            var name = methodGroup.FullName;
-
-            if (Method.IsGenericMethod)
-                name = $"{name}<{string.Join(", ", Method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";
-
-            if (Parameters != null && Parameters.Length > 0)
-                name = $"{name}({string.Join(", ", Parameters.Select(x => x.ToDisplayString()))})";
-
-            return name;
         }
 
         /// <summary>

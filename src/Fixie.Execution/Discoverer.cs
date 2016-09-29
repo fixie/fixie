@@ -42,21 +42,10 @@
                 var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
                 var methodDiscoverer = new MethodDiscoverer(convention);
+
                 foreach (var testClass in testClasses)
-                {
-                    var distinctMethodGroups = new Dictionary<string, MethodGroup>();
-
                     foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                    {
-                        var methodGroup = new MethodGroup(testMethod);
-
-                        if (!distinctMethodGroups.ContainsKey(methodGroup.FullName))
-                        {
-                            distinctMethodGroups[methodGroup.FullName] = methodGroup;
-                            bus.Publish(new MethodGroupDiscovered(methodGroup));
-                        }
-                    }
-                }
+                        bus.Publish(new MethodDiscovered(testMethod));
             }
         }
     }

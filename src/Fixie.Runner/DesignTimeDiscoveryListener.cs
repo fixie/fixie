@@ -4,7 +4,7 @@ namespace Fixie.Runner
     using Contracts;
     using Execution;
 
-    public class DesignTimeDiscoveryListener : Handler<MethodGroupDiscovered>
+    public class DesignTimeDiscoveryListener : Handler<MethodDiscovered>
     {
         readonly IDesignTimeSink sink;
         readonly SourceLocationProvider sourceLocationProvider;
@@ -15,9 +15,9 @@ namespace Fixie.Runner
             sourceLocationProvider = new SourceLocationProvider(assemblyPath);
         }
 
-        public void Handle(MethodGroupDiscovered message)
+        public void Handle(MethodDiscovered message)
         {
-            var methodGroup = message.MethodGroup;
+            var methodGroup = new MethodGroup(message.Method);
 
             var test = new Test
             {

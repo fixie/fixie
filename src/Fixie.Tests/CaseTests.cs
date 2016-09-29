@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests
 {
     using System;
+    using System.Linq;
     using Assertions;
 
     public class CaseTests
@@ -147,6 +148,58 @@
 
             var parentMethodInheritedByChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"));
             parentMethodInheritedByChildClass.Class.ShouldEqual(typeof(SampleChildTestClass));
+        }
+
+        public void ShouldHaveMethodInfoIncludingResolvedGenericArguments()
+        {
+            var method = Case("Returns").Method;
+            method.Name.ShouldEqual("Returns");
+            method.GetParameters().ShouldBeEmpty();
+
+            method = Case("Parameterized", 123, true, 'a', "s", null, this).Method;
+            method.Name.ShouldEqual("Parameterized");
+            method.GetParameters()
+                .Select(x => x.ParameterType)
+                .ShouldEqual(
+                    typeof(int), typeof(bool),
+                    typeof(char), typeof(string),
+                    typeof(string), typeof(object),
+                    typeof(CaseTests));
+
+            method = Case("Generic", 123, true, "a", "b").Method;
+            method.Name.ShouldEqual("Generic");
+            method.GetParameters()
+                .Select(x => x.ParameterType)
+                .ShouldEqual(typeof(int), typeof(bool), typeof(string), typeof(string));
+
+            method = Case("Generic", 123, true, 1, null).Method;
+            method.Name.ShouldEqual("Generic");
+            method.GetParameters()
+                .Select(x => x.ParameterType)
+                .ShouldEqual(typeof(int), typeof(bool), typeof(object), typeof(object));
+
+            method = Case("Generic", 123, 1.23m, "a", null).Method;
+            method.Name.ShouldEqual("Generic");
+            method.GetParameters()
+                .Select(x => x.ParameterType)
+                .ShouldEqual(typeof(int), typeof(decimal), typeof(string), typeof(string));
+
+            method = Case("ConstrainedGeneric", 1).Method;
+            method.Name.ShouldEqual("ConstrainedGeneric");
+            method.GetParameters().Single().ParameterType.ShouldEqual(typeof(int));
+
+            method = Case("ConstrainedGeneric", true).Method;
+            method.Name.ShouldEqual("ConstrainedGeneric");
+            method.GetParameters().Single().ParameterType.ShouldEqual(typeof(bool));
+            var resolvedParameterType = method.GetParameters().Single().ParameterType;
+            resolvedParameterType.Name.ShouldEqual("Boolean");
+            resolvedParameterType.IsGenericParameter.ShouldBeFalse();
+
+            method = Case("ConstrainedGeneric", "Incompatable").Method;
+            method.Name.ShouldEqual("ConstrainedGeneric");
+            var unresolvedParameterType = method.GetParameters().Single().ParameterType;
+            unresolvedParameterType.Name.ShouldEqual("T");
+            unresolvedParameterType.IsGenericParameter.ShouldBeTrue();
         }
 
         public void ShouldTrackExceptionsAsFailureReasons()

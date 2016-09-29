@@ -20,9 +20,9 @@
 
             Method = TryResolveTypeArguments(caseMethod, parameters);
 
-            MethodGroup = new MethodGroup(caseMethod);
+            var methodGroup = new MethodGroup(caseMethod);
 
-            Name = GetName();
+            Name = GetName(methodGroup);
 
             exceptions = new List<Exception>();
         }
@@ -46,9 +46,9 @@
             return caseMethod;
         }
 
-        string GetName()
+        string GetName(MethodGroup methodGroup)
         {
-            var name = MethodGroup.FullName;
+            var name = methodGroup.FullName;
 
             if (Method.IsGenericMethod)
                 name = $"{name}<{string.Join(", ", Method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";
@@ -73,11 +73,6 @@
         /// Gets the method that defines this test case.
         /// </summary>
         public MethodInfo Method { get; }
-
-        /// <summary>
-        /// Gets the method group (type name + method name) this test case's method is a part of.
-        /// </summary>
-        public MethodGroup MethodGroup { get; }
 
         /// <summary>
         /// For parameterized test cases, gets the set of parameters to be passed into the test method.

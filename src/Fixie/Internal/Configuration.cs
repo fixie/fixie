@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using System.Runtime.CompilerServices;
 
     class Configuration
     {
@@ -22,13 +21,7 @@
             ConstructionFrequency = ConstructionFrequency.PerCase;
             TestClassFactory = UseDefaultConstructor;
 
-            testClassConditions = new List<Func<Type, bool>>
-            {
-                ConcreteClasses,
-                NonDiscoveryClasses,
-                NonCompilerGeneratedClasses
-            };
-
+            testClassConditions = new List<Func<Type, bool>>();
             testMethodConditions = new List<Func<MethodInfo, bool>>();
             parameterSources = new List<Func<ParameterSource>>();
             customClassBehaviors = new List<Func<ClassBehavior>>();
@@ -52,21 +45,6 @@
             {
                 throw new PreservedException(exception.InnerException);
             }
-        }
-
-        static bool ConcreteClasses(Type type)
-        {
-            return type.IsClass && !type.IsAbstract;
-        }
-
-        static bool NonDiscoveryClasses(Type type)
-        {
-            return !type.IsSubclassOf(typeof(Convention));
-        }
-
-        static bool NonCompilerGeneratedClasses(Type type)
-        {
-            return !type.Has<CompilerGeneratedAttribute>();
         }
 
         public void AddTestClassCondition(Func<Type, bool> testClassCondition)

@@ -37,12 +37,7 @@ function Test {
 }
 
 function Build {
-    exec { & dotnet build .\src\Fixie --configuration $configuration }
-    exec { & dotnet build .\src\Fixie.Execution --configuration $configuration }
-    exec { & dotnet build .\src\Fixie.Runner --configuration $configuration }
-    exec { & dotnet build .\src\Fixie.TestDriven --configuration $configuration }
-    exec { & dotnet build .\src\Fixie.Samples --configuration $configuration }
-    exec { & dotnet build .\src\Fixie.Tests --configuration $configuration }
+    exec { & dotnet build **\project.json --configuration $configuration }
 }
 
 function AssemblyInfo {

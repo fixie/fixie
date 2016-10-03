@@ -20,7 +20,7 @@
 
             Method = TryResolveTypeArguments(caseMethod, parameters);
 
-            Name = new MethodGroup(testClass, caseMethod).FullName;
+            Name = testClass.FullName + "." + caseMethod.Name;
 
             if (Method.IsGenericMethod)
                 Name += $"<{string.Join(", ", Method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";

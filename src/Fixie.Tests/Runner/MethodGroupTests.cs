@@ -1,6 +1,7 @@
-﻿namespace Fixie.Tests
+﻿namespace Fixie.Tests.Runner
 {
     using Assertions;
+    using Fixie.Runner;
 
     public class MethodGroupTests
     {
@@ -10,9 +11,9 @@
 
             AssertMethodGroup(
                 new MethodGroup(typeof(ChildClass), methodDeclaredInChildClass),
-                "Fixie.Tests.MethodGroupTests+ChildClass",
+                "Fixie.Tests.Runner.MethodGroupTests+ChildClass",
                 "MethodDefinedWithinChildClass",
-                "Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinChildClass");
+                "Fixie.Tests.Runner.MethodGroupTests+ChildClass.MethodDefinedWithinChildClass");
         }
 
         public void CanRepresentMethodDeclaredInParentClass()
@@ -21,9 +22,9 @@
 
             AssertMethodGroup(
                 new MethodGroup(typeof(ParentClass), methodDeclaredInParentClass),
-                "Fixie.Tests.MethodGroupTests+ParentClass",
+                "Fixie.Tests.Runner.MethodGroupTests+ParentClass",
                 "MethodDefinedWithinParentClass",
-                "Fixie.Tests.MethodGroupTests+ParentClass.MethodDefinedWithinParentClass");
+                "Fixie.Tests.Runner.MethodGroupTests+ParentClass.MethodDefinedWithinParentClass");
         }
 
         public void CanRepresentMethodInheritedByChildClass()
@@ -32,30 +33,30 @@
 
             AssertMethodGroup(
                 new MethodGroup(typeof(ChildClass), parentMethodInheritedByChildClass),
-                "Fixie.Tests.MethodGroupTests+ChildClass",
+                "Fixie.Tests.Runner.MethodGroupTests+ChildClass",
                 "MethodDefinedWithinParentClass",
-                "Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinParentClass");
+                "Fixie.Tests.Runner.MethodGroupTests+ChildClass.MethodDefinedWithinParentClass");
         }
 
         public void CanParseFromFullNameStrings()
         {
             AssertMethodGroup(
-                new MethodGroup("Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinChildClass"),
-                "Fixie.Tests.MethodGroupTests+ChildClass",
+                new MethodGroup("Fixie.Tests.Runner.MethodGroupTests+ChildClass.MethodDefinedWithinChildClass"),
+                "Fixie.Tests.Runner.MethodGroupTests+ChildClass",
                 "MethodDefinedWithinChildClass",
-                "Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinChildClass");
+                "Fixie.Tests.Runner.MethodGroupTests+ChildClass.MethodDefinedWithinChildClass");
 
             AssertMethodGroup(
-                new MethodGroup("Fixie.Tests.MethodGroupTests+ParentClass.MethodDefinedWithinParentClass"),
-                "Fixie.Tests.MethodGroupTests+ParentClass",
+                new MethodGroup("Fixie.Tests.Runner.MethodGroupTests+ParentClass.MethodDefinedWithinParentClass"),
+                "Fixie.Tests.Runner.MethodGroupTests+ParentClass",
                 "MethodDefinedWithinParentClass",
-                "Fixie.Tests.MethodGroupTests+ParentClass.MethodDefinedWithinParentClass");
+                "Fixie.Tests.Runner.MethodGroupTests+ParentClass.MethodDefinedWithinParentClass");
 
             AssertMethodGroup(
-                new MethodGroup("Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinParentClass"),
-                "Fixie.Tests.MethodGroupTests+ChildClass",
+                new MethodGroup("Fixie.Tests.Runner.MethodGroupTests+ChildClass.MethodDefinedWithinParentClass"),
+                "Fixie.Tests.Runner.MethodGroupTests+ChildClass",
                 "MethodDefinedWithinParentClass",
-                "Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinParentClass");
+                "Fixie.Tests.Runner.MethodGroupTests+ChildClass.MethodDefinedWithinParentClass");
         }
 
         static void AssertMethodGroup(MethodGroup actual, string expectedClass, string expectedMethod, string expectedFullName)

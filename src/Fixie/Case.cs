@@ -13,14 +13,14 @@
     {
         readonly List<Exception> exceptions;
 
-        public Case(MethodInfo caseMethod, params object[] parameters)
+        public Case(Type testClass, MethodInfo caseMethod, params object[] parameters)
         {
             Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
-            Class = caseMethod.ReflectedType;
+            Class = testClass;
 
             Method = TryResolveTypeArguments(caseMethod, parameters);
 
-            Name = new MethodGroup(caseMethod).FullName;
+            Name = testClass.FullName + "." + caseMethod.Name;
 
             if (Method.IsGenericMethod)
                 Name += $"<{string.Join(", ", Method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";

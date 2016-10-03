@@ -45,12 +45,12 @@
 
         public void CanDetectWhetherMethodIsDispose()
         {
-            Method("ReturnsVoid").IsDispose().ShouldBeFalse();
-            Method("ReturnsInt").IsDispose().ShouldBeFalse();
-            Method("Async").IsDispose().ShouldBeFalse();
-            Method<NonDisposableWithDisposeMethod>("Dispose").IsDispose().ShouldBeFalse();
-            MethodBySignature<Disposable>(typeof(void), "Dispose", typeof(bool)).IsDispose().ShouldBeFalse();
-            MethodBySignature<Disposable>(typeof(void), "Dispose").IsDispose().ShouldBeTrue();
+            ReflectionExtensions.IsDispose(typeof(ReflectionExtensionsTests), Method("ReturnsVoid")).ShouldBeFalse();
+            ReflectionExtensions.IsDispose(typeof(ReflectionExtensionsTests), Method("ReturnsInt")).ShouldBeFalse();
+            ReflectionExtensions.IsDispose(typeof(ReflectionExtensionsTests), Method("Async")).ShouldBeFalse();
+            ReflectionExtensions.IsDispose(typeof(NonDisposableWithDisposeMethod), Method<NonDisposableWithDisposeMethod>("Dispose")).ShouldBeFalse();
+            ReflectionExtensions.IsDispose(typeof(Disposable), MethodBySignature<Disposable>(typeof(void), "Dispose", typeof(bool))).ShouldBeFalse();
+            ReflectionExtensions.IsDispose(typeof(Disposable), MethodBySignature<Disposable>(typeof(void), "Dispose")).ShouldBeTrue();
         }
 
         public void CanDetectWhetherMethodHasSignature()

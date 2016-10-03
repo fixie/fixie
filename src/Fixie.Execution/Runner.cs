@@ -46,24 +46,21 @@
             Run(assembly, new[] { convention }, types);
         }
 
-        public void RunMethods(Assembly assembly, params MethodInfo[] methods)
+        public void RunMethods(Assembly assembly, params Method[] methods)
         {
-            if (methods.Length == 1)
-                RunContext.Set(conventionArguments, methods.Single());
+            var methodInfos = methods.Select(m => m.MethodInfo).ToArray();
+
+            if (methodInfos.Length == 1)
+                RunContext.Set(conventionArguments, methodInfos.Single());
             else
                 RunContext.Set(conventionArguments);
 
             var conventions = GetConventions(assembly);
 
             foreach (var convention in conventions)
-                convention.Methods.Where(methods.Contains);
+                convention.Methods.Where(methodInfos.Contains);
 
-            Run(assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
-        }
-
-        public void RunMethods(Assembly assembly, MethodGroup[] methodGroups)
-        {
-            RunMethods(assembly, GetMethods(assembly, methodGroups));
+            Run(assembly, conventions, methods.Select(m => m.Class).Distinct().ToArray());
         }
 
         static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
@@ -72,19 +69,6 @@
 
             foreach (var nested in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).SelectMany(GetTypeAndNestedTypes))
                 yield return nested;
-        }
-
-        static MethodInfo[] GetMethods(Assembly assembly, MethodGroup[] methodGroups)
-        {
-            return methodGroups.SelectMany(methodGroup => GetMethods(assembly, methodGroup)).ToArray();
-        }
-
-        static IEnumerable<MethodInfo> GetMethods(Assembly assembly, MethodGroup methodGroup)
-        {
-            return assembly
-                .GetType(methodGroup.Class)
-                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Where(m => m.Name == methodGroup.Method);
         }
 
         void RunTypesInternal(Assembly assembly, params Type[] types)

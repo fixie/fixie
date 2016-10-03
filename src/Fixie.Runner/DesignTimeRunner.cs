@@ -35,7 +35,7 @@
                         if (options.List)
                         {
                             listeners.Add(new DesignTimeDiscoveryListener(sink, assemblyFullPath));
-                            DiscoverMethodGroups(assembly, conventionArguments, listeners);
+                            DiscoverMethods(assembly, conventionArguments, listeners);
                         }
                         else if (options.WaitCommand)
                         {

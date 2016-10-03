@@ -17,7 +17,7 @@ namespace Fixie.Runner
 
         public void Handle(MethodDiscovered message)
         {
-            var methodGroup = new MethodGroup(message.Method);
+            var methodGroup = new MethodGroup(message.Class, message.Method);
 
             var test = new Test
             {

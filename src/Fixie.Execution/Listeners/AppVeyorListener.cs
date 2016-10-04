@@ -5,8 +5,8 @@
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
-    using System.Web.Script.Serialization;
     using Execution;
+    using Newtonsoft.Json;
 
     public class AppVeyorListener :
         Handler<AssemblyStarted>,
@@ -78,7 +78,7 @@
 
         void Post(TestResult result)
         {
-            var content = new JavaScriptSerializer().Serialize(result);
+            var content = JsonConvert.SerializeObject(result);
             client.PostAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
                   .ContinueWith(x => x.Result.EnsureSuccessStatusCode())
                   .Wait();

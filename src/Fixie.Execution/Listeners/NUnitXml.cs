@@ -2,6 +2,7 @@
 {
     using System;
     using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Xml.Linq;
     using Execution;
@@ -49,7 +50,7 @@
                 new XAttribute("clr-version", System.Environment.Version.ToString()),
                 new XAttribute("os-version", System.Environment.OSVersion.ToString()),
                 new XAttribute("platform", System.Environment.OSVersion.Platform.ToString()),
-                new XAttribute("cwd", System.Environment.CurrentDirectory),
+                new XAttribute("cwd", Directory.GetCurrentDirectory()),
                 new XAttribute("machine-name", System.Environment.MachineName),
                 new XAttribute("user", System.Environment.UserName),
                 new XAttribute("user-domain", System.Environment.UserDomainName));

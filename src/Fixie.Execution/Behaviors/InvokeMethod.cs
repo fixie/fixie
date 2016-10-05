@@ -43,7 +43,7 @@
                         throw new PreservedException(exception.InnerExceptions.First());
                     }
 
-                    if (method.ReturnType.IsGenericType)
+                    if (method.ReturnType.IsGenericType())
                     {
                         var property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public);
 

@@ -7,7 +7,7 @@
     using System.Net.Http.Headers;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Web.Script.Serialization;
+    using Newtonsoft.Json;
     using Assertions;
     using Fixie.Execution;
     using Fixie.Execution.Listeners;
@@ -104,8 +104,8 @@
                 request.Headers.Accept.ShouldContain(new MediaTypeWithQualityHeaderValue("application/json"));
                 request.Content.Headers.ContentType.ToString().ShouldEqual("application/json; charset=utf-8");
 
-                var requestContent1 = request.Content.ReadAsStringAsync().Result;
-                results.Add(new JavaScriptSerializer().Deserialize<AppVeyorListener.TestResult>(requestContent1));
+                var requestContent = request.Content.ReadAsStringAsync().Result;
+                results.Add(JsonConvert.DeserializeObject<AppVeyorListener.TestResult>(requestContent));
 
                 return new HttpResponseMessage { StatusCode = HttpStatusCode.Accepted };
             }));

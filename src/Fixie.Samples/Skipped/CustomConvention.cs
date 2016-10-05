@@ -30,7 +30,7 @@
 
             var isMarkedExplicit = method.DeclaringType.Has<ExplicitAttribute>();
 
-            return isMarkedExplicit && TargetMember != method.DeclaringType && TargetMember != method;
+            return isMarkedExplicit && !IsTarget(method.DeclaringType) && !IsTarget(method);
         }
 
         bool SkipDueToMethodLevelExplicitAttribute(Case @case)
@@ -39,7 +39,7 @@
 
             var isMarkedExplicit = method.Has<ExplicitAttribute>();
 
-            return isMarkedExplicit && TargetMember != method;
+            return isMarkedExplicit && !IsTarget(method);
         }
 
         static bool SkipDueToClassLevelSkipAttribute(Case @case)

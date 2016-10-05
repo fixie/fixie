@@ -62,7 +62,10 @@
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(assemblyReport.Assembly.Location);
             var formatName = format.Name;
             var filePath = Path.Combine(folder, $"{fileNameWithoutExtension}.{formatName}.xml");
-            xDocument.Save(filePath, SaveOptions.None);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var writer = new StreamWriter(stream))
+                xDocument.Save(writer, SaveOptions.None);
         }
     }
 }

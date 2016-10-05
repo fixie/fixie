@@ -20,13 +20,13 @@
                         new XAttribute("name", assemblyReport.Assembly.Location),
                         new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                         new XAttribute("run-time", now.ToString("HH:mm:ss")),
-                        new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
+                        new XAttribute("configFile", Env.ConfigurationFile),
                         new XAttribute("time", Seconds(assemblyReport.Duration)),
                         new XAttribute("total", assemblyReport.Total),
                         new XAttribute("passed", assemblyReport.Passed),
                         new XAttribute("failed", assemblyReport.Failed),
                         new XAttribute("skipped", assemblyReport.Skipped),
-                        new XAttribute("environment", $"{IntPtr.Size*8}-bit .NET {Environment.Version}"),
+                        new XAttribute("environment", $"{IntPtr.Size*8}-bit .NET {Env.Version}"),
                         new XAttribute("test-framework", Framework.Version),
                         assemblyReport.Classes.Select(Class))));
         }

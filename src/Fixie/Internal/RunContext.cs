@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Internal
 {
+    using System;
     using System.Reflection;
 
     /// <summary>
@@ -9,13 +10,23 @@
     {
         public static void Set(string[] conventionArguments)
         {
-            Set(conventionArguments, null);
+            ConventionArguments = conventionArguments;
+            TargetType = null;
+            TargetMethod = null;
         }
 
-        public static void Set(string[] conventionArguments, MemberInfo targetMember)
+        public static void Set(string[] conventionArguments, Type targetType)
         {
             ConventionArguments = conventionArguments;
-            TargetMember = targetMember;
+            TargetType = targetType;
+            TargetMethod = null;
+        }
+
+        public static void Set(string[] conventionArguments, MethodInfo targetMethod)
+        {
+            ConventionArguments = conventionArguments;
+            TargetType = null;
+            TargetMethod = targetMethod;
         }
 
         /// <summary>
@@ -24,10 +35,15 @@
         public static string[] ConventionArguments { get; private set; }
 
         /// <summary>
-        /// Gets the target Type or MethodInfo identified by
-        /// the test runner as the sole item to be executed.
-        /// Null under normal test execution.
+        /// Gets the target Type identified by the test runner as the
+        /// sole item to be executed. Null under normal test execution.
         /// </summary>
-        public static MemberInfo TargetMember { get; private set; }
+        public static Type TargetType { get; private set; }
+
+        /// <summary>
+        /// Gets the target MethodInfo identified by the test runner as the
+        /// sole item to be executed. Null under normal test execution.
+        /// </summary>
+        public static MethodInfo TargetMethod { get; private set; }
     }
 }

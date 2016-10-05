@@ -1,5 +1,6 @@
 ﻿namespace Fixie
 {
+    using System;
     using System.Reflection;
     using Cli;
     using Conventions;
@@ -37,10 +38,18 @@
             => CommandLine.Parse<TModel>(RunContext.ConventionArguments);
 
         /// <summary>
-        /// Gets the target Type or MethodInfo identified by the test runner as the sole item
-        /// to be executed. Null under normal test execution.
+        /// Determines whether the given Type was selected as the sole
+        /// item to be executed. False under normal test execution.
         /// </summary>
-        public MemberInfo TargetMember => RunContext.TargetMember;
+        public static bool IsTarget(Type type)
+            => RunContext.TargetType == type;
+
+        /// <summary>
+        /// Determines whether the given MethodInfo was selected as the sole
+        /// item to be executed. False under normal test execution.
+        /// </summary>
+        public static bool IsTarget(MethodInfo method)
+            => RunContext.TargetMethod == method;
 
         /// <summary>
         /// Defines the set of conditions that describe which classes are test classes.

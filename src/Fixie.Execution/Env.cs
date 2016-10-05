@@ -22,6 +22,9 @@
 
         public static string UserDomainName
             => Environment.UserDomainName;
+
+        public static string ConfigurationFile
+            => AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
     }
 #elif NETSTANDARD1_3
     using System.Runtime.InteropServices;
@@ -58,7 +61,10 @@
             => "Unknown UserName";
 
         public static string UserDomainName
-            => "UserDomainName";
+            => "Unknown UserDomainName";
+
+        public static string ConfigurationFile
+            => "Unknown Configuration File";
     }
 #endif
 }

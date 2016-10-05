@@ -11,6 +11,11 @@
         "System.Xml.Linq": "4.0.0.0",
         "System.Net.Http": "4.0.0.0"
       }
+    },
+    "netstandard1.5": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0"
+      }
     }
   }
 }

@@ -26,7 +26,7 @@
         public static string ConfigurationFile
             => AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
     }
-#elif NETSTANDARD1_3
+#elif NETSTANDARD1_5
     using System.Runtime.InteropServices;
 
     static class Env

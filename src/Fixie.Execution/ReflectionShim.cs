@@ -14,7 +14,7 @@
         public static bool IsGenericType(this Type type)
             => type.IsGenericType;
     }
-#elif NETSTANDARD1_3
+#elif NETSTANDARD1_5
     using System;
     using System.Reflection;
 

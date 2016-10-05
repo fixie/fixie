@@ -47,13 +47,13 @@
         {
             return new XElement("environment",
                 new XAttribute("nunit-version", "2.6.4"), //The NUnit version whose XSD we are complying with.
-                new XAttribute("clr-version", System.Environment.Version.ToString()),
-                new XAttribute("os-version", System.Environment.OSVersion.ToString()),
-                new XAttribute("platform", System.Environment.OSVersion.Platform.ToString()),
+                new XAttribute("clr-version", Env.Version),
+                new XAttribute("os-version", Env.OSVersion),
+                new XAttribute("platform", Env.OSVersionPlatform),
                 new XAttribute("cwd", Directory.GetCurrentDirectory()),
-                new XAttribute("machine-name", System.Environment.MachineName),
-                new XAttribute("user", System.Environment.UserName),
-                new XAttribute("user-domain", System.Environment.UserDomainName));
+                new XAttribute("machine-name", Env.MachineName),
+                new XAttribute("user", Env.UserName),
+                new XAttribute("user-domain", Env.UserDomainName));
         }
 
         static XElement Assembly(AssemblyReport assemblyReport)

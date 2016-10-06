@@ -26,7 +26,7 @@
                 using (var writer = new BinaryWriter(networkStream))
                 using (var reader = new BinaryReader(networkStream))
                 {
-                    var sink = new DesignTimeSink(writer);
+                    var sink = new DesignTimeSink(assemblyFullPath, writer);
 
                     try
                     {

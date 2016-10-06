@@ -19,14 +19,13 @@
         readonly BinaryWriter writer;
         readonly string logPath;
 
-        public DesignTimeSink(BinaryWriter writer)
+        public DesignTimeSink(string assemblyFullPath, BinaryWriter writer)
         {
             this.writer = writer;
 
-            var folder = Path.Combine(GetFolderPath(SpecialFolder.LocalApplicationData), "Fixie");
-            Directory.CreateDirectory(folder);
+            var folder = Path.GetDirectoryName(assemblyFullPath);
 
-            logPath = Path.Combine(folder, "design-time.log");
+            logPath = Path.Combine(folder, "fixie-design-time.log");
         }
 
         public void Send(string message)

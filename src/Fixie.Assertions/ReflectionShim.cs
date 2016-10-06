@@ -11,7 +11,7 @@
         public static bool IsValueType(this Type type)
             => type.IsValueType;
     }
-#elif NETSTANDARD1_5
+#else
     using System;
     using System.Reflection;
 

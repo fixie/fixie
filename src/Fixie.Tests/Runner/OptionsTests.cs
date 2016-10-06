@@ -18,7 +18,7 @@
 
         public void ParsesExistingAssemblyPath()
         {
-            var assemblyPath = typeof(OptionsTests).Assembly.Location;
+            var assemblyPath = typeof(OptionsTests).Assembly().Location;
 
             var options = new Options(assemblyPath);
 
@@ -37,7 +37,7 @@
 
         public void DemandsAssemblyDirectoryContainsFixie()
         {
-            var mscorlib = typeof(string).Assembly.Location;
+            var mscorlib = typeof(string).Assembly().Location;
             var options = new Options(mscorlib);
 
             Action validate = options.Validate;

@@ -74,7 +74,7 @@
         {
             get
             {
-                var assemblyLocation = GetType().Assembly.Location;
+                var assemblyLocation = GetType().Assembly().Location;
                 var configLocation = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
                 var fileLocation = TestClassPath();
                 return XDocument.Parse(File.ReadAllText(Path.Combine("Execution", Path.Combine("Listeners", "XUnitXmlReport.xml"))))

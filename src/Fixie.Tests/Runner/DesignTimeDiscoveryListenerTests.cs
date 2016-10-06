@@ -11,7 +11,7 @@ namespace Fixie.Tests.Runner
     {
         public void ShouldReportDiscoveredMethodGroupsToDiscoverySink()
         {
-            var assemblyPath = typeof(MessagingTests).Assembly.Location;
+            var assemblyPath = typeof(MessagingTests).Assembly().Location;
 
             var sink = new StubDesignTimeSink();
             Discover(new DesignTimeDiscoveryListener(sink, assemblyPath));

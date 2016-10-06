@@ -19,7 +19,7 @@ namespace Fixie.Tests
             var sampleTestClass = typeof(TSampleTestClass);
 
             var bus = new Bus(listener);
-            new Discoverer(bus).DiscoverMethods(sampleTestClass.Assembly, convention);
+            new Discoverer(bus).DiscoverMethods(sampleTestClass.Assembly(), convention);
         }
 
         public static void Run<TSampleTestClass>(Listener listener, Convention convention)
@@ -27,7 +27,7 @@ namespace Fixie.Tests
             var sampleTestClass = typeof(TSampleTestClass);
 
             var bus = new Bus(listener);
-            new Fixie.Execution.Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
+            new Fixie.Execution.Runner(bus).RunTypes(sampleTestClass.Assembly(), convention, sampleTestClass);
         }
     }
 }

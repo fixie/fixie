@@ -33,7 +33,7 @@ namespace Fixie.Tests.Execution
 
             var targetFramework =
                 typeof(ExecutionEnvironmentTests)
-                    .Assembly
+                    .Assembly()
                     .GetCustomAttributes(typeof(TargetFrameworkAttribute), true)
                     .Cast<TargetFrameworkAttribute>()
                     .Single()

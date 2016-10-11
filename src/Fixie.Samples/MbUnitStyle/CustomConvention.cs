@@ -77,8 +77,12 @@
             {
                 foreach (var parameterInfo in parameterInfos)
                 {
-                    yield return Array.ConvertAll(parameterInfo.GetCustomAttributes<ColumnAttribute>(true).Single().Parameters,
-                                                  x => ChangeType(x, parameterInfo.ParameterType));
+                    yield return parameterInfo
+                        .GetCustomAttributes<ColumnAttribute>(true)
+                        .Single()
+                        .Parameters
+                        .Select(x => ChangeType(x, parameterInfo.ParameterType))
+                        .ToArray();
                 }
             }
 

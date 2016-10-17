@@ -9,14 +9,11 @@
 
   "dependencies": {
     "Fixie": { "target": "project" },
-    "Fixie.Execution": { "target": "project" }
+    "Fixie.Execution": { "target": "project" },
+    "TestDriven.Framework": "2.0.0-alpha2"
   },
 
   "frameworks": {
-    "net45": {
-      "dependencies": {
-        "TestDriven.Framework": "2.0.0.0"
-      }
-    }
+    "net45": { }
   }
 }

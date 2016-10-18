@@ -1,3 +1,4 @@
+#if NET45
 namespace Fixie.Tests.Execution
 {
     using System;
@@ -43,3 +44,4 @@ namespace Fixie.Tests.Execution
         }
     }
 }
+#endif

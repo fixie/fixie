@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Runner
 {
+#if NET45
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
@@ -105,4 +106,20 @@
             return className.Replace("+", "/");
         }
     }
+#else
+    // SourceLocationProvider cannot be implemented for netstandard until
+    // after upgrading the Mono.Cecil dependencies.
+    public class SourceLocationProvider
+    {
+        public SourceLocationProvider(string assemblyPath)
+        {
+        }
+
+        public bool TryGetSourceLocation(MethodGroup methodGroup, out SourceLocation sourceLocation)
+        {
+            sourceLocation = null;
+            return false;
+        }
+    }
+#endif
 }

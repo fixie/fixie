@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests.Execution
 {
     using System;
+    using System.IO;
     using Assertions;
     using Fixie.Execution;
     using static Utility;
@@ -67,8 +68,8 @@
                     "Secondary Exception!",
                     At<CompoundExceptionTests>("GetSecondaryException()"),
                     "",
-                    "------- Inner Exception: System.ApplicationException -------",
-                    "Application Exception!",
+                    "------- Inner Exception: System.IO.IOException -------",
+                    "IO Exception!",
                     At<CompoundExceptionTests>("GetSecondaryException()"),
                     "",
                     "------- Inner Exception: System.NotImplementedException -------",
@@ -112,8 +113,8 @@
                     "Secondary Exception!",
                     "",
                     "",
-                    "------- Inner Exception: System.ApplicationException -------",
-                    "Application Exception!",
+                    "------- Inner Exception: System.IO.IOException -------",
+                    "IO Exception!",
                     "",
                     "",
                     "------- Inner Exception: System.NotImplementedException -------",
@@ -156,7 +157,7 @@
                     }
                     catch (Exception exception)
                     {
-                        throw new ApplicationException("Application Exception!", exception);
+                        throw new IOException("IO Exception!", exception);
                     }
                 }
                 catch (Exception exception)

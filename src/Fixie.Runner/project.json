@@ -15,6 +15,14 @@
       "dependencies": {
         "Mono.Cecil": "0.9.6.4"
       }
+    },
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.1"
+        }
+      }
     }
   }
 }

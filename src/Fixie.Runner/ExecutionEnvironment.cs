@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Runner
 {
+#if NET45
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -73,4 +74,37 @@
             return File.Exists(configFullPath) ? configFullPath : null;
         }
     }
+#else
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+
+    public class ExecutionEnvironment : IDisposable
+    {
+        readonly string assemblyFullPath;
+        readonly string previousWorkingDirectory;
+        readonly ExecutionProxy executionProxy;
+
+        public ExecutionEnvironment(string assemblyPath)
+        {
+            assemblyFullPath = Path.GetFullPath(assemblyPath);
+
+            previousWorkingDirectory = Directory.GetCurrentDirectory();
+            var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
+            Directory.SetCurrentDirectory(assemblyDirectory);
+
+            executionProxy = new ExecutionProxy();
+        }
+
+        public int Run(IReadOnlyList<string> runnerArguments, IReadOnlyList<string> conventionArguments)
+        {
+            return executionProxy.Run(assemblyFullPath, runnerArguments, conventionArguments);
+        }
+
+        public void Dispose()
+        {
+            Directory.SetCurrentDirectory(previousWorkingDirectory);
+        }
+    }
+#endif
 }

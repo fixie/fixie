@@ -11,9 +11,11 @@ namespace Fixie.Runner
 
         protected static void DiscoverMethods(Assembly assembly, IReadOnlyList<string> conventionArguments, IReadOnlyList<Listener> listeners)
         {
+#if NET45
             var bus = new Bus(listeners);
 
             Discoverer(bus, conventionArguments).DiscoverMethods(assembly);
+#endif
         }
 
         protected static void RunAssembly(Assembly assembly, IReadOnlyList<string> conventionArguments, IReadOnlyList<Listener> listeners)

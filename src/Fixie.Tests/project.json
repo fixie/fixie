@@ -17,7 +17,8 @@
     "Fixie.Execution": { "target": "project" },
     "Fixie.TestDriven": { "target": "project" },
     "Fixie.Runner": { "target": "project" },
-    "Fixie.Assertions": { "target": "project" }
+    "Fixie.Assertions": { "target": "project" },
+    "TestDriven.Framework": "2.0.0-alpha2"
   },
 
   "frameworks": {
@@ -25,9 +26,6 @@
       "frameworkAssemblies": {
         "System.Configuration": "4.0.0.0",
         "System.Xml": "4.0.0.0"
-      },
-      "dependencies": {
-        "TestDriven.Framework": "2.0.0.0"
       }
     }
   }

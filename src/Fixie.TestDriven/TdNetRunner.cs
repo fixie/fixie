@@ -35,9 +35,11 @@ namespace Fixie.TestDriven
                 return Run(testListener, runner => runner.RunMethods(assembly, new Method(testClass, method)));
             }
 
+#if NET45
             var type = member as Type;
             if (type != null)
                 return Run(testListener, runner => runner.RunType(assembly, type));
+#endif
 
             return TestRunState.Error;
         }

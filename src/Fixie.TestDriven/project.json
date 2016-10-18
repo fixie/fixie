@@ -9,13 +9,15 @@
 
   "dependencies": {
     "Fixie": { "target": "project" },
-    "Fixie.Execution": { "target": "project" }
+    "Fixie.Execution": { "target": "project" },
+    "TestDriven.Framework": "2.0.0-alpha2"
   },
 
   "frameworks": {
-    "net45": {
+    "net45": {},
+    "netstandard1.6": {
       "dependencies": {
-        "TestDriven.Framework": "2.0.0.0"
+        "NETStandard.Library": "1.6.0"
       }
     }
   }

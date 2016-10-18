@@ -1,3 +1,4 @@
+#if NET45
 namespace Fixie.Runner
 {
     using System;
@@ -56,3 +57,4 @@ namespace Fixie.Runner
         }
     }
 }
+#endif

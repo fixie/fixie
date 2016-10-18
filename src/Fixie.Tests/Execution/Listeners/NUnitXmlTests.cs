@@ -37,6 +37,7 @@
 
         static void XsdValidate(XDocument doc)
         {
+#if NET45
             var schemaSet = new XmlSchemaSet();
             using (var xmlReader = XmlReader.Create(Path.Combine("Execution", Path.Combine("Listeners", "NUnitXmlReport.xsd"))))
             {
@@ -44,6 +45,7 @@
             }
 
             doc.Validate(schemaSet, null);
+#endif
         }
 
         static string CleanBrittleValues(string actualRawContent)

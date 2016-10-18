@@ -38,6 +38,7 @@
 
         static void XsdValidate(XDocument doc)
         {
+#if NET45
             var schemaSet = new XmlSchemaSet();
             using (var xmlReader = XmlReader.Create(Path.Combine("Execution", Path.Combine("Listeners", "XUnitXmlReport.xsd"))))
             {
@@ -45,6 +46,7 @@
             }
 
             doc.Validate(schemaSet, null);
+#endif
         }
 
         static string CleanBrittleValues(string actualRawContent)
@@ -75,7 +77,12 @@
             get
             {
                 var assemblyLocation = GetType().Assembly().Location;
-                var configLocation = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+                var configLocation =
+#if NET45
+                    AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+#else
+                    "Unknown Configuration File";
+#endif
                 var fileLocation = TestClassPath();
                 return XDocument.Parse(File.ReadAllText(Path.Combine("Execution", Path.Combine("Listeners", "XUnitXmlReport.xml"))))
                                 .ToString(SaveOptions.DisableFormatting)

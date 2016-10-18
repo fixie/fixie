@@ -1,4 +1,5 @@
-﻿namespace Fixie.Runner
+﻿#if NET45
+namespace Fixie.Runner
 {
     using System;
     using System.Runtime.Remoting;
@@ -44,3 +45,4 @@
         }
     }
 }
+#endif

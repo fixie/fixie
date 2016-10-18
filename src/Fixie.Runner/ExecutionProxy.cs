@@ -4,13 +4,21 @@
     using System.Reflection;
     using Cli;
 
-    public class ExecutionProxy : LongLivedMarshalByRefObject
+    public class ExecutionProxy
+#if NET45
+        : LongLivedMarshalByRefObject
+#endif
     {
         public int Run(string assemblyFullPath, IReadOnlyList<string> runnerArguments, IReadOnlyList<string> conventionArguments)
         {
             var options = CommandLine.Parse<Options>(runnerArguments);
 
-            var assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+            Assembly assembly =
+#if NET45
+                Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+#else
+                null;
+#endif
 
             return Runner(options).Run(assemblyFullPath, assembly, options, conventionArguments);
         }

@@ -26,9 +26,10 @@ function Restore {
 
 function Package {
     rd .\artifacts -recurse -force -ErrorAction SilentlyContinue | out-null
-    mkdir .\artifacts -ErrorAction SilentlyContinue | out-null
 
-    exec { & .\tools\NuGet.exe pack .\src\Fixie\Fixie.nuspec -Symbols -Properties Configuration=$configuration -Version $version -OutputDirectory .\artifacts }
+    foreach ($project in (".\src\Fixie", ".\src\Fixie.Execution", ".\src\Fixie.Runner")) {
+        exec { & dotnet pack $project --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
+    }
 }
 
 function Test {
@@ -37,7 +38,7 @@ function Test {
 }
 
 function Build {
-    exec { & dotnet build **\project.json --configuration $configuration }
+    exec { & dotnet build **\project.json --configuration $configuration --version-suffix $revision }
 }
 
 function AssemblyInfo {

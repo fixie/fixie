@@ -6,7 +6,6 @@
 *.cs text diff=csharp
 *.json text
 *.config text
-*.nuspec text
 *.xml text
 *.xsd text
 *.tdnet text

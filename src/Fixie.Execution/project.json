@@ -1,4 +1,21 @@
 ﻿{
+  "version": "2.0.0-alpha-*",
+
+  "copyright": "2013-2016 Patrick Lioi",
+
+  "packOptions": {
+    "summary": "Test execution utility for the Fixie test framework.",
+    "owners": [ "Patrick Lioi" ],
+    "iconUrl": "https://raw.github.com/fixie/fixie/master/img/fixie_256.png",
+    "projectUrl": "https://fixie.github.io",
+    "licenseUrl": "https://github.com/fixie/fixie/blob/master/LICENSE.txt",
+    "requireLicenseAcceptance": false,
+    "repository": {
+      "type": "git",
+      "url": "http://github.com/fixie/fixie"
+    }
+  },
+
   "dependencies": {
     "Fixie": { "target": "project" },
     "Newtonsoft.Json": "9.0.1"

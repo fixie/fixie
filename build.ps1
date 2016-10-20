@@ -3,14 +3,11 @@ param([string]$target, [int]$buildNumber=0)
 $birthYear = 2013
 $maintainers = "Patrick Lioi"
 $configuration = 'Release'
-$nonPublishedProjects = "Fixie.Tests","Fixie.Samples"
 
 $revision = "{0:D4}" -f [convert]::ToInt32($buildNumber, 10)
-$version = "2.0.0-alpha-*".Replace("*", $revision)
 
 function main {
     step { Restore }
-    step { AssemblyInfo }
     step { License }
     step { Build }
     step { Test }
@@ -39,35 +36,6 @@ function Test {
 
 function Build {
     exec { & dotnet build **\project.json --configuration $configuration --version-suffix $revision }
-}
-
-function AssemblyInfo {
-    $assemblyVersion = $version
-    if ($assemblyVersion.Contains("-")) {
-        $assemblyVersion = $assemblyVersion.Substring(0, $assemblyVersion.IndexOf("-"))
-    }
-
-    $copyright = get-copyright
-
-    $projects = @(gci .\src -rec -filter *.xproj)
-    foreach ($project in $projects) {
-        $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
-
-        regenerate-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" @"
-using System.Reflection;
-using System.Runtime.InteropServices;
-
-[assembly: ComVisible(false)]
-[assembly: AssemblyProduct("Fixie")]
-[assembly: AssemblyTitle("$projectName")]
-[assembly: AssemblyVersion("$assemblyVersion")]
-[assembly: AssemblyFileVersion("$assemblyVersion")]
-[assembly: AssemblyInformationalVersion("$version")]
-[assembly: AssemblyCopyright("$copyright")]
-[assembly: AssemblyCompany("$maintainers")]
-[assembly: AssemblyConfiguration("$configuration")]
-"@
-    }
 }
 
 function License {

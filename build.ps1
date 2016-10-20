@@ -37,9 +37,9 @@ function Restore {
 }
 
 function Package {
-    foreach ($project in (".\src\Fixie", ".\src\Fixie.Execution", ".\src\Fixie.Runner")) {
-        exec { & dotnet pack $project --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
-    }
+    exec { & dotnet pack .\src\Fixie --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
+    exec { & dotnet pack .\src\Fixie.Execution --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
+    exec { & dotnet pack .\src\Fixie.Runner --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
 }
 
 function Test {

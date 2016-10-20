@@ -7,6 +7,7 @@ $configuration = 'Release'
 $revision = "{0:D4}" -f [convert]::ToInt32($buildNumber, 10)
 
 function main {
+    step { Clean }
     step { Restore }
     step { License }
     step { Build }
@@ -17,13 +18,25 @@ function main {
     }
 }
 
+function Clean {
+    rd .\artifacts -recurse -force -ErrorAction SilentlyContinue | out-null
+
+    foreach ($folder in @(gci .\src -rec -filter bin)) {
+       write-host "Removing $($folder.FullName)"
+       rd $folder.FullName -recurse -force -ErrorAction SilentlyContinue | out-null
+    }
+
+    foreach ($folder in @(gci .\src -rec -filter obj)) {
+       write-host "Removing $($folder.FullName)"
+       rd $folder.FullName -recurse -force -ErrorAction SilentlyContinue | out-null
+    }
+}
+
 function Restore {
     exec { & dotnet restore --verbosity Warning }
 }
 
 function Package {
-    rd .\artifacts -recurse -force -ErrorAction SilentlyContinue | out-null
-
     foreach ($project in (".\src\Fixie", ".\src\Fixie.Execution", ".\src\Fixie.Runner")) {
         exec { & dotnet pack $project --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
     }

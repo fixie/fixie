@@ -1,4 +1,4 @@
-param([string]$target, [int]$buildNumber=0)
+param([int]$buildNumber=0)
 
 $birthYear = 2013
 $maintainers = "Patrick Lioi"
@@ -12,10 +12,7 @@ function main {
     step { License }
     step { Build }
     step { Test }
-
-    if ($target -eq "package") {
-        step { Package }
-    }
+    step { Package }
 }
 
 function Clean {

@@ -11,7 +11,6 @@ function main {
     step { Restore }
     step { License }
     step { Build }
-    step { Test }
 }
 
 function Clean {
@@ -32,11 +31,6 @@ function Restore {
     exec { & dotnet restore --verbosity Warning }
 }
 
-function Test {
-    dotnet-test Fixie.Tests
-    dotnet-test Fixie.Samples
-}
-
 function Build {
     dotnet-pack Fixie
     dotnet-pack Fixie.Execution
@@ -44,8 +38,9 @@ function Build {
 
     dotnet-build Fixie.TestDriven
     dotnet-build Fixie.Assertions
-    dotnet-build Fixie.Samples
-    dotnet-build Fixie.Tests
+
+    dotnet-test Fixie.Tests
+    dotnet-test Fixie.Samples
 }
 
 function dotnet-test($project) {

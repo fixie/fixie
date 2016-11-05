@@ -12,7 +12,6 @@ function main {
     step { License }
     step { Build }
     step { Test }
-    step { Package }
 }
 
 function Clean {
@@ -33,19 +32,24 @@ function Restore {
     exec { & dotnet restore --verbosity Warning }
 }
 
-function Package {
-    exec { & dotnet pack .\src\Fixie --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
-    exec { & dotnet pack .\src\Fixie.Execution --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
-    exec { & dotnet pack .\src\Fixie.Runner --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
-}
-
 function Test {
     exec { & dotnet test .\src\Fixie.Tests --configuration $configuration }
     exec { & dotnet test .\src\Fixie.Samples --configuration $configuration }
 }
 
 function Build {
-    exec { & dotnet build **\project.json --configuration $configuration --version-suffix $revision }
+    exec { & dotnet build src\Fixie\project.json --configuration $configuration --version-suffix $revision }
+    exec { & dotnet build src\Fixie.Execution\project.json --configuration $configuration --version-suffix $revision }
+    exec { & dotnet build src\Fixie.Runner\project.json --configuration $configuration --version-suffix $revision }
+
+    exec { & dotnet pack .\src\Fixie --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
+    exec { & dotnet pack .\src\Fixie.Execution --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
+    exec { & dotnet pack .\src\Fixie.Runner --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
+
+    exec { & dotnet build src\Fixie.TestDriven\project.json --configuration $configuration --version-suffix $revision }
+    exec { & dotnet build src\Fixie.Assertions\project.json --configuration $configuration --version-suffix $revision }
+    exec { & dotnet build src\Fixie.Samples\project.json --configuration $configuration --version-suffix $revision }
+    exec { & dotnet build src\Fixie.Tests\project.json --configuration $configuration --version-suffix $revision }
 }
 
 function License {

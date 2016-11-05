@@ -33,23 +33,35 @@ function Restore {
 }
 
 function Test {
-    exec { & dotnet test .\src\Fixie.Tests --configuration $configuration }
-    exec { & dotnet test .\src\Fixie.Samples --configuration $configuration }
+    dotnet-test Fixie.Tests
+    dotnet-test Fixie.Samples
 }
 
 function Build {
-    exec { & dotnet build src\Fixie\project.json --configuration $configuration --version-suffix $revision }
-    exec { & dotnet build src\Fixie.Execution\project.json --configuration $configuration --version-suffix $revision }
-    exec { & dotnet build src\Fixie.Runner\project.json --configuration $configuration --version-suffix $revision }
+    dotnet-build Fixie
+    dotnet-build Fixie.Execution
+    dotnet-build Fixie.Runner
 
-    exec { & dotnet pack .\src\Fixie --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
-    exec { & dotnet pack .\src\Fixie.Execution --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
-    exec { & dotnet pack .\src\Fixie.Runner --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
+    dotnet-pack Fixie
+    dotnet-pack Fixie.Execution
+    dotnet-pack Fixie.Runner
 
-    exec { & dotnet build src\Fixie.TestDriven\project.json --configuration $configuration --version-suffix $revision }
-    exec { & dotnet build src\Fixie.Assertions\project.json --configuration $configuration --version-suffix $revision }
-    exec { & dotnet build src\Fixie.Samples\project.json --configuration $configuration --version-suffix $revision }
-    exec { & dotnet build src\Fixie.Tests\project.json --configuration $configuration --version-suffix $revision }
+    dotnet-build Fixie.TestDriven
+    dotnet-build Fixie.Assertions
+    dotnet-build Fixie.Samples
+    dotnet-build Fixie.Tests
+}
+
+function dotnet-test($project) {
+    exec { & dotnet test .\src\$project --configuration $configuration }
+}
+
+function dotnet-build($project) {
+    exec { & dotnet build .\src\$project --configuration $configuration --version-suffix $revision }
+}
+
+function dotnet-pack($project) {
+    exec { & dotnet pack .\src\$project --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
 }
 
 function License {

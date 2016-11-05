@@ -38,10 +38,6 @@ function Test {
 }
 
 function Build {
-    dotnet-build Fixie
-    dotnet-build Fixie.Execution
-    dotnet-build Fixie.Runner
-
     dotnet-pack Fixie
     dotnet-pack Fixie.Execution
     dotnet-pack Fixie.Runner
@@ -61,7 +57,7 @@ function dotnet-build($project) {
 }
 
 function dotnet-pack($project) {
-    exec { & dotnet pack .\src\$project --output .\artifacts --no-build --configuration $configuration --version-suffix $revision }
+    exec { & dotnet pack .\src\$project --output .\artifacts --configuration $configuration --version-suffix $revision }
 }
 
 function License {

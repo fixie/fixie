@@ -8,7 +8,6 @@ $revision = "{0:D4}" -f [convert]::ToInt32($buildNumber, 10)
 
 function main {
     step { Clean }
-    step { Restore }
     step { License }
     step { Build }
 }
@@ -27,11 +26,9 @@ function Clean {
     }
 }
 
-function Restore {
-    exec { & dotnet restore --verbosity Warning }
-}
-
 function Build {
+    dotnet-restore
+
     dotnet-pack Fixie
     dotnet-pack Fixie.Execution
     dotnet-pack Fixie.Runner
@@ -41,6 +38,10 @@ function Build {
 
     dotnet-test Fixie.Tests
     dotnet-test Fixie.Samples
+}
+
+function dotnet-restore {
+    exec { & dotnet restore --verbosity Warning }
 }
 
 function dotnet-test($project) {

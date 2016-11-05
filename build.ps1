@@ -7,26 +7,9 @@ $configuration = 'Release'
 $revision = "{0:D4}" -f [convert]::ToInt32($buildNumber, 10)
 
 function main {
-    step { Clean }
-    step { License }
-    step { Build }
-}
+    clean
+    license
 
-function Clean {
-    rd .\artifacts -recurse -force -ErrorAction SilentlyContinue | out-null
-
-    foreach ($folder in @(gci .\src -rec -filter bin)) {
-       write-host "Removing $($folder.FullName)"
-       rd $folder.FullName -recurse -force -ErrorAction SilentlyContinue | out-null
-    }
-
-    foreach ($folder in @(gci .\src -rec -filter obj)) {
-       write-host "Removing $($folder.FullName)"
-       rd $folder.FullName -recurse -force -ErrorAction SilentlyContinue | out-null
-    }
-}
-
-function Build {
     dotnet-restore
 
     dotnet-pack Fixie
@@ -40,23 +23,43 @@ function Build {
     dotnet-test Fixie.Samples
 }
 
+function clean {
+    heading "clean"
+    rd .\artifacts -recurse -force -ErrorAction SilentlyContinue | out-null
+
+    foreach ($folder in @(gci .\src -rec -filter bin)) {
+       write-host "Removing $($folder.FullName)"
+       rd $folder.FullName -recurse -force -ErrorAction SilentlyContinue | out-null
+    }
+
+    foreach ($folder in @(gci .\src -rec -filter obj)) {
+       write-host "Removing $($folder.FullName)"
+       rd $folder.FullName -recurse -force -ErrorAction SilentlyContinue | out-null
+    }
+}
+
 function dotnet-restore {
+    heading "dotnet restore"
     exec { & dotnet restore --verbosity Warning }
 }
 
 function dotnet-test($project) {
+    heading "dotnet test $project"
     exec { & dotnet test .\src\$project --configuration $configuration }
 }
 
 function dotnet-build($project) {
+    heading "dotnet build $project"
     exec { & dotnet build .\src\$project --configuration $configuration --version-suffix $revision }
 }
 
 function dotnet-pack($project) {
+    heading "dotnet pack $project"
     exec { & dotnet pack .\src\$project --output .\artifacts --configuration $configuration --version-suffix $revision }
 }
 
-function License {
+function license {
+    heading "license"
     $copyright = get-copyright
 
     regenerate-file "LICENSE.txt" @"
@@ -96,33 +99,15 @@ function exec($cmd) {
     }
 }
 
-function step($block) {
-    $name = $block.ToString().Trim()
-    write-host "Executing $name" -fore CYAN
-    $sw = [Diagnostics.Stopwatch]::StartNew()
-    &$block
-    $sw.Stop()
-
-    if (!$script:timings) {
-        $script:timings = @()
-    }
-
-    $script:timings += new-object PSObject -property @{
-        Name = $name;
-        Duration = $sw.Elapsed
-    }
-}
-
-function summarize-steps {
-    $script:timings | format-table -autoSize -property Name,Duration | out-string -stream | where-object { $_ }
+function heading($text) {
+    write-host $text -fore CYAN
+    write-host
 }
 
 try {
     main
     write-host
     write-host "Build Succeeded!" -fore GREEN
-    write-host
-    summarize-steps
     exit 0
 } catch [Exception] {
     write-host

@@ -23,13 +23,8 @@ function clean {
     @(gci .\src -rec -filter obj) | % { delete-folder $_.FullName }
 }
 
-function dotnet-restore($project, $localSource) {
-    $remoteSource = "https://api.nuget.org/v3/index.json"
-    if ($localSource) {
-        exec { & dotnet restore .\src\$project --verbosity Verbose --source $localSource --source $remoteSource }
-    } else {
-        exec { & dotnet restore .\src\$project --verbosity Verbose --source $remoteSource }
-    }
+function dotnet-restore($project, $source="https://api.nuget.org/v3/index.json") {
+    exec { & dotnet restore .\src\$project --verbosity Verbose --source $source }
 }
 
 function dotnet-pack($project) {

@@ -23,8 +23,8 @@ function clean {
     @(gci .\src -rec -filter obj) | % { delete-folder $_.FullName }
 }
 
-function dotnet-restore {
-    exec { & dotnet restore --verbosity Warning }
+function dotnet-restore($project) {
+    exec { & dotnet restore .\src\$project --verbosity Verbose }
 }
 
 function dotnet-pack($project) {
@@ -51,15 +51,21 @@ run-build {
     step { clean }
     step { license }
 
-    step { dotnet-restore }
+    step { dotnet-restore Fixie }
+    step { dotnet-restore Fixie.Execution }
+    step { dotnet-restore Fixie.Runner }
 
     step { dotnet-pack Fixie }
     step { dotnet-pack Fixie.Execution }
     step { dotnet-pack Fixie.Runner }
 
+    step { dotnet-restore Fixie.TestDriven }
+    step { dotnet-restore Fixie.Assertions }
+    step { dotnet-restore Fixie.Tests }
+    step { dotnet-restore Fixie.Samples }
+
     step { dotnet-build Fixie.TestDriven }
     step { dotnet-build Fixie.Assertions }
-
     step { dotnet-test Fixie.Tests }
     step { dotnet-test Fixie.Samples }
 }

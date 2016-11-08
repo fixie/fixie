@@ -23,8 +23,13 @@ function clean {
     @(gci .\src -rec -filter obj) | % { delete-folder $_.FullName }
 }
 
-function dotnet-restore($project) {
-    exec { & dotnet restore .\src\$project --verbosity Verbose }
+function dotnet-restore($project, $localSource) {
+    $remoteSource = "https://api.nuget.org/v3/index.json"
+    if ($localSource) {
+        exec { & dotnet restore .\src\$project --verbosity Verbose --source $localSource --source $remoteSource }
+    } else {
+        exec { & dotnet restore .\src\$project --verbosity Verbose --source $remoteSource }
+    }
 }
 
 function dotnet-pack($project) {
@@ -61,8 +66,10 @@ run-build {
 
     step { dotnet-restore Fixie.TestDriven }
     step { dotnet-restore Fixie.Assertions }
+
+    $artifacts = resolve-path .\artifacts
     step { dotnet-restore Fixie.Tests }
-    step { dotnet-restore Fixie.Samples }
+    step { dotnet-restore Fixie.Samples $artifacts }
 
     step { dotnet-build Fixie.TestDriven }
     step { dotnet-build Fixie.Assertions }

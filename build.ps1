@@ -1,12 +1,21 @@
-param([int]$buildNumber=0)
+param($buildNumber)
 
 . .\build-helpers
 
 $birthYear = 2013
 $maintainers = "Patrick Lioi"
 $configuration = 'Release'
+$prerelease = $true
 
-$revision = "{0:D4}" -f [convert]::ToInt32($buildNumber, 10)
+if ($buildNumber -eq $null) {
+    $revision = "dev-" + (Get-Date).ToString("yyyyMMdd-HHmmss")
+} else {
+    if ($prerelease) {
+        $revision = "alpha-{0:D4}" -f [convert]::ToInt32($buildNumber, 10)
+    } else {
+        $revision = ""
+    }
+}
 
 function clean {
     delete-folder .\artifacts
@@ -19,11 +28,19 @@ function dotnet-restore {
 }
 
 function dotnet-pack($project) {
-    exec { & dotnet pack .\src\$project --output .\artifacts --configuration $configuration --version-suffix $revision }
+    if ($revision) {
+        exec { & dotnet pack .\src\$project --output .\artifacts --configuration $configuration --version-suffix $revision }
+    } else {
+        exec { & dotnet pack .\src\$project --output .\artifacts --configuration $configuration }
+    }
 }
 
 function dotnet-build($project) {
-    exec { & dotnet build .\src\$project --configuration $configuration --version-suffix $revision }
+    if ($revision) {
+        exec { & dotnet build .\src\$project --configuration $configuration --version-suffix "$revision" }
+    } else {
+        exec { & dotnet build .\src\$project --configuration $configuration }
+    }
 }
 
 function dotnet-test($project) {

@@ -13,10 +13,19 @@
   },
 
   "dependencies": {
-    "Fixie": { "target": "project" },
-    "Fixie.Execution": { "target": "project" },
+    "Fixie": {
+      "target": "package",
+      "version": "2.0.0-*"
+    },
+    "Fixie.Execution": {
+      "target": "package",
+      "version": "2.0.0-*"
+    },
+    "Fixie.Runner": {
+      "target": "package",
+      "version": "2.0.0-*"
+    },
     "Fixie.TestDriven": { "target": "project" },
-    "Fixie.Runner": { "target": "project" },
     "Fixie.Assertions": { "target": "project" },
     "TestDriven.Framework": "2.0.0-alpha2"
   },

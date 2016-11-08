@@ -51,6 +51,7 @@ run-build {
     step { clean }
     step { license }
 
+
     step { dotnet-restore Fixie }
     step { dotnet-restore Fixie.Execution }
     step { dotnet-restore Fixie.Runner }
@@ -59,15 +60,18 @@ run-build {
     step { dotnet-pack Fixie.Execution }
     step { dotnet-pack Fixie.Runner }
 
+
     step { dotnet-restore Fixie.TestDriven }
     step { dotnet-restore Fixie.Assertions }
 
-    $artifacts = resolve-path .\artifacts
-    step { dotnet-restore Fixie.Tests }
-    step { dotnet-restore Fixie.Samples $artifacts }
-
     step { dotnet-build Fixie.TestDriven }
     step { dotnet-build Fixie.Assertions }
+
+
+    $artifacts = resolve-path .\artifacts
+    step { dotnet-restore Fixie.Tests $artifacts }
+    step { dotnet-restore Fixie.Samples $artifacts }
+
     step { dotnet-test Fixie.Tests }
     step { dotnet-test Fixie.Samples }
 }

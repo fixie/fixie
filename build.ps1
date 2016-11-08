@@ -24,7 +24,7 @@ function clean {
 }
 
 function dotnet-restore($project, $source="https://api.nuget.org/v3/index.json") {
-    exec { & dotnet restore .\src\$project --verbosity Verbose --source $source }
+    exec { & dotnet restore .\src\$project --verbosity Information --source $source }
 }
 
 function dotnet-pack($project) {

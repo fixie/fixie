@@ -127,7 +127,7 @@ namespace Fixie.Tests.Execution
             return typeof(CaseCompleted)
                 .Assembly
                 .GetTypes()
-                .Where(type => typeof(CaseCompleted).IsAssignableFrom(type) && type.IsClass);
+                .Where(type => typeof(CaseCompleted).IsAssignableFrom(type) && type.IsClass && !type.IsAbstract);
         }
     }
 }

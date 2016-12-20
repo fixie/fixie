@@ -6,20 +6,16 @@
     public class CasePassed : CaseCompleted
     {
         public CasePassed(Case @case)
+            : base(
+                  status: CaseStatus.Passed,
+                  name: @case.Name,
+                  methodGroup: @case.MethodGroup,
+                  output: @case.Output,
+                  duration: @case.Duration,
+                  exceptions: null,
+                  skipReason: null
+                  )
         {
-            Name = @case.Name;
-            MethodGroup = @case.MethodGroup;
-            Output = @case.Output;
-            Duration = @case.Duration;
         }
-
-        public string Name { get; private set; }
-        public MethodGroup MethodGroup { get; private set; }
-        public string Output { get; private set; }
-        public TimeSpan Duration { get; private set; }
-
-        CaseStatus CaseCompleted.Status { get { return CaseStatus.Passed; } }
-        CompoundException CaseCompleted.Exceptions { get { return null; } }
-        string CaseCompleted.SkipReason { get { return null; } }
     }
 }

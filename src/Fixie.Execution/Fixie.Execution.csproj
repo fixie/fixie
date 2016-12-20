@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Foreground.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />
+    <Compile Include="Listeners\TeamCityListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

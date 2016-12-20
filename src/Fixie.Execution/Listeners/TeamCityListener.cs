@@ -1,4 +1,4 @@
-﻿namespace Fixie.ConsoleRunner
+﻿namespace Fixie.Execution.Listeners
 {
     using System;
     using System.IO;

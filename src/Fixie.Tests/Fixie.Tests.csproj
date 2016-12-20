@@ -107,7 +107,7 @@
     <Compile Include="StubListener.cs" />
     <Compile Include="Internal\ClassDiscovererTests.cs" />
     <Compile Include="Cases\ParameterizedCaseTests.cs" />
-    <Compile Include="ConsoleRunner\TeamCityListenerTests.cs" />
+    <Compile Include="Execution\Listeners\TeamCityListenerTests.cs" />
     <Compile Include="Cases\SkippedCaseTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationProviderTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationSamples.cs" />

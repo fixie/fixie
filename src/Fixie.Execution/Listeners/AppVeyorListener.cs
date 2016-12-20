@@ -26,14 +26,14 @@
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void AssemblyStarted(AssemblyInfo message)
         {
-            fileName = Path.GetFileName(assembly.Location);
+            fileName = Path.GetFileName(message.Location);
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void CaseSkipped(SkipResult message)
         {
-            var caseResult = (CaseResult)result;
+            var caseResult = (CaseResult)message;
 
             Post(new TestResult
             {
@@ -48,9 +48,9 @@
             });
         }
 
-        public void CasePassed(PassResult result)
+        public void CasePassed(PassResult message)
         {
-            var caseResult = (CaseResult)result;
+            var caseResult = (CaseResult)message;
 
             Post(new TestResult
             {
@@ -65,9 +65,9 @@
             });
         }
 
-        public void CaseFailed(FailResult result)
+        public void CaseFailed(FailResult message)
         {
-            var caseResult = (CaseResult)result;
+            var caseResult = (CaseResult)message;
 
             Post(new TestResult
             {
@@ -82,7 +82,7 @@
             });
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result)
         {
         }
 

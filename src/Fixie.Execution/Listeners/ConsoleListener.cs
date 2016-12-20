@@ -6,31 +6,31 @@
 
     public class ConsoleListener : LongLivedMarshalByRefObject, Listener
     {
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void AssemblyStarted(AssemblyInfo message)
         {
-            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(assembly.Location));
+            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(message.Location));
             Console.WriteLine();
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void CaseSkipped(SkipResult message)
         {
             using (Foreground.Yellow)
-                Console.WriteLine("Test '{0}' skipped{1}", result.Name, result.SkipReason == null ? null : ": " + result.SkipReason);
+                Console.WriteLine("Test '{0}' skipped{1}", message.Name, message.SkipReason == null ? null : ": " + message.SkipReason);
         }
 
-        public void CasePassed(PassResult result)
+        public void CasePassed(PassResult message)
         {
         }
 
-        public void CaseFailed(FailResult result)
+        public void CaseFailed(FailResult message)
         {
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", result.Name, result.Exceptions.PrimaryException.DisplayName);
-            Console.WriteLine(result.Exceptions.CompoundStackTrace);
+                Console.WriteLine("Test '{0}' failed: {1}", message.Name, message.Exceptions.PrimaryException.DisplayName);
+            Console.WriteLine(message.Exceptions.CompoundStackTrace);
             Console.WriteLine();
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result)
         {
             Console.WriteLine(result.Summary);
             Console.WriteLine();

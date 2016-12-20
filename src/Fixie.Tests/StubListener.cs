@@ -8,28 +8,28 @@
     {
         readonly List<string> log = new List<string>();
 
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void AssemblyStarted(AssemblyInfo message)
         {
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void CaseSkipped(SkipResult message)
         {
-            var optionalReason = result.SkipReason == null ? null : ": " + result.SkipReason;
-            log.Add($"{result.Name} skipped{optionalReason}");
+            var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
+            log.Add($"{message.Name} skipped{optionalReason}");
         }
 
-        public void CasePassed(PassResult result)
+        public void CasePassed(PassResult message)
         {
-            log.Add($"{result.Name} passed");
+            log.Add($"{message.Name} passed");
         }
 
-        public void CaseFailed(FailResult result)
+        public void CaseFailed(FailResult message)
         {
             var entry = new StringBuilder();
 
-            var primaryException = result.Exceptions.PrimaryException;
+            var primaryException = message.Exceptions.PrimaryException;
 
-            entry.AppendFormat("{0} failed: {1}", result.Name, primaryException.Message);
+            entry.AppendFormat("{0} failed: {1}", message.Name, primaryException.Message);
 
             var walk = primaryException;
             while (walk.InnerException != null)
@@ -39,7 +39,7 @@
                 entry.AppendFormat("    Inner Exception: {0}", walk.Message);
             }
 
-            foreach (var secondaryException in result.Exceptions.SecondaryExceptions)
+            foreach (var secondaryException in message.Exceptions.SecondaryExceptions)
             {
                 entry.AppendLine();
                 entry.AppendFormat("    Secondary Failure: {0}", secondaryException.Message);
@@ -56,7 +56,7 @@
             log.Add(entry.ToString());
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result)
         {
         }
 

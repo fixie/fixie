@@ -16,52 +16,52 @@
             this.assemblyPath = assemblyPath;
         }
 
-        public void AssemblyStarted(AssemblyInfo assembly) { }
+        public void AssemblyStarted(AssemblyInfo message) { }
 
-        public void CaseSkipped(SkipResult result)
+        public void CaseSkipped(SkipResult message)
         {
-            log.RecordResult(new TestResult(TestCase(result.MethodGroup))
+            log.RecordResult(new TestResult(TestCase(message.MethodGroup))
             {
-                DisplayName = result.Name,
+                DisplayName = message.Name,
                 Outcome = Map(CaseStatus.Skipped),
                 ComputerName = Environment.MachineName,
-                ErrorMessage = result.SkipReason
+                ErrorMessage = message.SkipReason
             });
         }
 
-        public void CasePassed(PassResult result)
+        public void CasePassed(PassResult message)
         {
-            var testResult = new TestResult(TestCase(result.MethodGroup))
+            var testResult = new TestResult(TestCase(message.MethodGroup))
             {
-                DisplayName = result.Name,
+                DisplayName = message.Name,
                 Outcome = Map(CaseStatus.Passed),
-                Duration = result.Duration,
+                Duration = message.Duration,
                 ComputerName = Environment.MachineName
             };
 
-            AttachCapturedConsoleOutput(result.Output, testResult);
+            AttachCapturedConsoleOutput(message.Output, testResult);
 
             log.RecordResult(testResult);
         }
 
-        public void CaseFailed(FailResult result)
+        public void CaseFailed(FailResult message)
         {
-            var testResult = new TestResult(TestCase(result.MethodGroup))
+            var testResult = new TestResult(TestCase(message.MethodGroup))
             {
-                DisplayName = result.Name,
+                DisplayName = message.Name,
                 Outcome = Map(CaseStatus.Failed),
-                Duration = result.Duration,
+                Duration = message.Duration,
                 ComputerName = Environment.MachineName,
-                ErrorMessage = result.Exceptions.PrimaryException.DisplayName,
-                ErrorStackTrace = result.Exceptions.CompoundStackTrace
+                ErrorMessage = message.Exceptions.PrimaryException.DisplayName,
+                ErrorStackTrace = message.Exceptions.CompoundStackTrace
             };
 
-            AttachCapturedConsoleOutput(result.Output, testResult);
+            AttachCapturedConsoleOutput(message.Output, testResult);
 
             log.RecordResult(testResult);
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result)
         {
         }
 

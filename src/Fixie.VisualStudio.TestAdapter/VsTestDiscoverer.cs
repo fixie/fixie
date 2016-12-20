@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-using Fixie.Execution;
-
-namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using Execution;
+
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
     [FileExtension(".dll")]

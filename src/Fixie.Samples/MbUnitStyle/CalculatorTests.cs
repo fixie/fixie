@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.MbUnitStyle
+﻿namespace Fixie.Samples.MbUnitStyle
 {
+    using System;
+    using System.Text;
+    using Should;
+
     [TestFixture]
     public class CalculatorTests : IDisposable
     {

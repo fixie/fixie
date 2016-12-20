@@ -1,14 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Fixie.ConsoleRunner;
-using Fixie.Internal;
-
-namespace Fixie.Tests.ConsoleRunner
+﻿namespace Fixie.Tests.ConsoleRunner
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
+    using System.Threading;
+    using Fixie.ConsoleRunner;
+    using Fixie.Internal;
+
     public class ConsoleListenerTests
     {
         public void ShouldReportResultsToTheConsole()

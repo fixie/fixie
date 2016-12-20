@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Fixie.Internal;
-
-namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests.Internal
 {
+    using System;
+    using System.Collections.Generic;
+    using Fixie.Internal;
+
     public class GenericArgumentResolverTests
     {
         public void ShouldResolveToObjectWhenGenericTypeHasNoMatchingParameters()

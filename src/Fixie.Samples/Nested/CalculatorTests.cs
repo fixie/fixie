@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.Nested
+﻿namespace Fixie.Samples.Nested
 {
+    using System;
+    using System.Text;
+    using Should;
+
     public class CalculatorTests
     {
         class AddingTests : IDisposable

@@ -1,9 +1,7 @@
-using System.Linq;
-using Fixie.Internal.Behaviors;
-
 namespace Fixie.Internal
 {
-    using System.Collections.Generic;
+    using System.Linq;
+    using Behaviors;
 
     public class ExecutionPlan
     {

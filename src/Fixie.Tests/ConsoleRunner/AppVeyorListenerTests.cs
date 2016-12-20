@@ -1,21 +1,21 @@
-﻿using Should;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
-using Fixie.ConsoleRunner;
-using Fixie.Internal;
-
-namespace Fixie.Tests.ConsoleRunner
+﻿namespace Fixie.Tests.ConsoleRunner
 {
+    using Should;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Web.Script.Serialization;
+    using Fixie.ConsoleRunner;
+    using Fixie.Internal;
+
     public class AppVeyorListenerTests
     {
         public void ShouldReportResultsToAppVeyorBuildWorkerApi()

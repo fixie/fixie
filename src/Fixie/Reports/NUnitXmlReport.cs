@@ -1,11 +1,11 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Xml.Linq;
-using Fixie.Execution;
-
-namespace Fixie.Reports
+﻿namespace Fixie.Reports
 {
+    using System;
+    using System.Globalization;
+    using System.Linq;
+    using System.Xml.Linq;
+    using Execution;
+
     public class NUnitXmlReport
     {
         public XDocument Transform(ExecutionResult executionResult)

@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using Fixie.Internal;
-using Fixie.Tests.Execution;
-using Fixie.VisualStudio.TestAdapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-using Should;
-
-namespace Fixie.Tests.VisualStudio.TestAdapter
+﻿namespace Fixie.Tests.VisualStudio.TestAdapter
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
+    using Fixie.Internal;
+    using Fixie.Tests.Execution;
+    using Fixie.VisualStudio.TestAdapter;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using Should;
+
     public class VisualStudioListenerTests
     {
         public void ShouldSupportReceivingMessagesFromTheChildAppDomain()

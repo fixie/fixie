@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using Fixie.Conventions;
-using Fixie.Internal;
-using Should;
-
-namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests.Internal
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+    using Conventions;
+    using Fixie.Internal;
+    using Should;
+
     public class ClassDiscovererTests
     {
         static readonly Type[] CandidateTypes =

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Fixie.Internal;
-
-namespace Fixie
+﻿namespace Fixie
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Internal;
+
     /// <summary>
     /// A test case being executed, representing a single call to a test method.
     /// </summary>

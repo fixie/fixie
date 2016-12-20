@@ -1,7 +1,7 @@
-using System;
-
 namespace Fixie.Execution
 {
+    using System;
+
     public interface CaseResult
     {
         CaseStatus Status { get; }

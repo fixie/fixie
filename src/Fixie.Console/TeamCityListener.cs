@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Fixie.Execution;
-
-namespace Fixie.ConsoleRunner
+﻿namespace Fixie.ConsoleRunner
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using Execution;
+
     public class TeamCityListener : LongLivedMarshalByRefObject, Listener
     {
         public void AssemblyStarted(AssemblyInfo assembly)

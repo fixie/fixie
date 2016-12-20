@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
     public class AssertionLibraryFilter
     {
         readonly List<Type> exceptionTypes;

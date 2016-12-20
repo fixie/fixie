@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Fixie.Execution;
-using Should;
-
 namespace Fixie.Tests.Execution
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Fixie.Execution;
+    using Should;
+
     public static class AppDomainCommunicationAssertions
     {
         const BindingFlags AllMembers =

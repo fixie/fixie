@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Fixie.Internal
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class ClassDiscoverer
     {
         readonly Func<Type, bool>[] testClassConditions;

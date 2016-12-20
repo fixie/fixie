@@ -1,8 +1,8 @@
-﻿using System;
-using Should;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System;
+    using Should;
+
     public class CaseTests
     {
         public void ShouldBeNamedAfterTheUnderlyingMethod()

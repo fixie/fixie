@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Fixie
+﻿namespace Fixie
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     /// <summary>
     /// Custom options made available to test runners and custom conventions.
     /// For any given key, this collects zero or more values.

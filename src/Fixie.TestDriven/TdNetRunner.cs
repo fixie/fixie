@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Fixie.Execution;
-using Fixie.Internal;
-using TestDriven.Framework;
+﻿using TestDriven.Framework;
 
 namespace Fixie.TestDriven
 {
+    using System;
+    using System.Reflection;
+    using Execution;
+    using Internal;
+
     public class TdNetRunner : ITestRunner
     {
         public TestRunState RunAssembly(ITestListener testListener, Assembly assembly)

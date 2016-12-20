@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
-namespace Fixie.ConsoleRunner
+﻿namespace Fixie.ConsoleRunner
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+
     public class CommandLineParser
     {
         public CommandLineParser(params string[] args)

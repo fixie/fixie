@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.LowCeremony
+﻿namespace Fixie.Samples.LowCeremony
 {
+    using System;
+    using System.Text;
+    using Should;
+
     public class CalculatorTests : IDisposable
     {
         Calculator calculator;

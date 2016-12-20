@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-
-namespace Fixie
+﻿namespace Fixie
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+
     public static class ReflectionExtensions
     {
         public static bool IsVoid(this MethodInfo method)

@@ -1,8 +1,8 @@
-﻿using System;
-using Fixie.Internal;
-
-namespace Fixie.Conventions
+﻿namespace Fixie.Conventions
 {
+    using System;
+    using Internal;
+
     public class FixtureBehaviorExpression
     {
         readonly Configuration config;

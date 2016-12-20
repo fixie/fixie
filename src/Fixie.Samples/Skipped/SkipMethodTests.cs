@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.Skipped
+﻿namespace Fixie.Samples.Skipped
 {
+    using System;
+    using System.Text;
+    using Should;
+
     public class SkipMethodTests : IDisposable
     {
         Calculator calculator;

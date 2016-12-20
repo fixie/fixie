@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Should;
-using Should.Core.Assertions;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Should;
+    using Should.Core.Assertions;
+
     public static class Assertions
     {
         public static void ShouldEqual<T>(this IEnumerable<T> actual, params T[] expected)

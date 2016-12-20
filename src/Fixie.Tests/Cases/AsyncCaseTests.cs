@@ -1,10 +1,10 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Should;
-
-namespace Fixie.Tests.Cases
+﻿namespace Fixie.Tests.Cases
 {
+    using System;
+    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+    using Should;
+
     public class AsyncCaseTests : CaseTests
     {
         public void ShouldPassUponSuccessfulAsyncExecution()

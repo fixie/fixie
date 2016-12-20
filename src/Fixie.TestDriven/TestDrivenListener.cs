@@ -1,8 +1,9 @@
-﻿using Fixie.Execution;
-using TestDriven.Framework;
+﻿using TestDriven.Framework;
 
 namespace Fixie.TestDriven
 {
+    using Execution;
+
     public class TestDrivenListener : Listener
     {
         readonly ITestListener tdnet;

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Fixie
+﻿namespace Fixie
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// Subclass TestAssembly within your test assembly in order to explicitly list which conventions to apply.
     /// </summary>

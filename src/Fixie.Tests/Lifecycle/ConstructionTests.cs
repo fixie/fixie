@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Should;
-
 namespace Fixie.Tests.Lifecycle
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using Should;
+
     public class ConstructionTests : LifecycleTests
     {
         public void ShouldConstructPerCaseByDefault()

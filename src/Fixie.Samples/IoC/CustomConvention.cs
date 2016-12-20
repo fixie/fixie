@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Samples.IoC
+﻿namespace Fixie.Samples.IoC
 {
+    using System;
+
     public class CustomConvention : Convention
     {
         readonly IoCContainer container;

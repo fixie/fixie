@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System;
+    using System.IO;
+
     public class RedirectedConsole : IDisposable
     {
         readonly TextWriter outBefore;

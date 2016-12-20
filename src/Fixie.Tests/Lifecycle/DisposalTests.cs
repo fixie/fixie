@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Tests.Lifecycle
+﻿namespace Fixie.Tests.Lifecycle
 {
+    using System;
+
     public class DisposalTests : LifecycleTests
     {
         public void ShouldDisposePerCaseWhenConstructingPerCaseAndDisposable()

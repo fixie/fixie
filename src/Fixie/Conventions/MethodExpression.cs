@@ -1,9 +1,9 @@
-﻿using System;
-using System.Reflection;
-using Fixie.Internal;
-
-namespace Fixie.Conventions
+﻿namespace Fixie.Conventions
 {
+    using System;
+    using System.Reflection;
+    using Internal;
+
     public class MethodExpression
     {
         readonly Configuration config;

@@ -1,7 +1,7 @@
-﻿using Should;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using Should;
+
     public class OptionsTests
     {
         public void ShouldBeEmptyUponConstruction()

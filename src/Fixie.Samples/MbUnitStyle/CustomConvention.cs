@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace Fixie.Samples.MbUnitStyle
+﻿namespace Fixie.Samples.MbUnitStyle
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public class CustomConvention : Convention
     {
         public CustomConvention()

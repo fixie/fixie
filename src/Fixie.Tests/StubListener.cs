@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using Fixie.Execution;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System.Collections.Generic;
+    using System.Text;
+    using Fixie.Execution;
+
     public class StubListener : Listener
     {
         readonly List<string> log = new List<string>();

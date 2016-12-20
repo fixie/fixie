@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
-
-namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using Mono.Cecil;
+    using Mono.Cecil.Cil;
+    using Mono.Cecil.Rocks;
+
     public class SourceLocationProvider
     {
         readonly string assemblyPath;

@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public class InputAttributeParameterSource : ParameterSource
     {
         public IEnumerable<object[]> GetParameters(MethodInfo method)

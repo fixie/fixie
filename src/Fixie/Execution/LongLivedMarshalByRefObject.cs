@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.Remoting;
-
-namespace Fixie.Execution
+﻿namespace Fixie.Execution
 {
+    using System;
+    using System.Runtime.Remoting;
+
     /// <summary>
     /// Simplifies the definition of MarshalByRefObject classes whose
     /// instances need to live longer than the default lease lifetime

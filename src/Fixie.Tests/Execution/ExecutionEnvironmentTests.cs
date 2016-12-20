@@ -1,12 +1,12 @@
-using System;
-using System.Configuration;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Versioning;
-using Should;
-
 namespace Fixie.Tests.Execution
 {
+    using System;
+    using System.Configuration;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.Versioning;
+    using Should;
+
     public class ExecutionEnvironmentTests
     {
         public void ShouldEnableAccessToTestAssemblyConfigFile()

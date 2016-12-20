@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+
     public class Configuration
     {
         readonly List<Func<Type, bool>> testClassConditions;

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-
-namespace Fixie.Samples.Categories
+﻿namespace Fixie.Samples.Categories
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+
     public class CustomConvention : Convention
     {
         public CustomConvention()

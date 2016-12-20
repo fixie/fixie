@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-
-namespace Fixie.Internal.Behaviors
+﻿namespace Fixie.Internal.Behaviors
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+
     public class InvokeMethod : CaseBehavior
     {
         public void Execute(Case @case, Action next)

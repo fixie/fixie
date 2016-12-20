@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reflection;
-
-namespace Fixie.Tests.Cases
+﻿namespace Fixie.Tests.Cases
 {
+    using System;
+    using System.Reflection;
+
     public class SkippedCaseTests : CaseTests
     {
         public void ShouldSkipCases()

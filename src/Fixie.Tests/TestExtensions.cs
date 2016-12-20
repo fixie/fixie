@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Fixie.Execution;
-using Fixie.Internal;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Fixie.Execution;
+    using Fixie.Internal;
+
     public static class TestExtensions
     {
         const BindingFlags InstanceMethods = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;

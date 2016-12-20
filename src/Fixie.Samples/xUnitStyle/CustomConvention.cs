@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace Fixie.Samples.xUnitStyle
+﻿namespace Fixie.Samples.xUnitStyle
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public class CustomConvention : Convention
     {
         static readonly Dictionary<MethodInfo, object> fixtures = new Dictionary<MethodInfo, object>();

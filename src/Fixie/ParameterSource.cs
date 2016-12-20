@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-
-namespace Fixie
+﻿namespace Fixie
 {
+    using System.Collections.Generic;
+    using System.Reflection;
+
     /// <summary>
     /// Defines a source of test case input parameters.
     /// 

@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using Fixie.Execution;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System.Collections.Generic;
+    using System.Reflection;
+    using Execution;
+
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)

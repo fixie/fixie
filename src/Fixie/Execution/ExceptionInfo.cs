@@ -1,8 +1,8 @@
-using System;
-using Fixie.Internal;
-
 namespace Fixie.Execution
 {
+    using System;
+    using Internal;
+
     [Serializable]
     public class ExceptionInfo
     {

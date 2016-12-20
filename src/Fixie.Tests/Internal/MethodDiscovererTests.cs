@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Fixie.Conventions;
-using Fixie.Internal;
-using Should;
-
-namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests.Internal
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Conventions;
+    using Fixie.Internal;
+    using Should;
+
     public class MethodDiscovererTests
     {
         public void ShouldConsiderOnlyPublicInstanceMethods()

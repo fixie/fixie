@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Fixie.Internal;
-using Should;
-
-namespace Fixie.Tests.Lifecycle
+﻿namespace Fixie.Tests.Lifecycle
 {
+    using System;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using Fixie.Internal;
+    using Should;
+
     public abstract class LifecycleTests
     {
         static string[] FailingMembers;

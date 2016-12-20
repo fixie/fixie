@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Fixie.Samples.IoC
+﻿namespace Fixie.Samples.IoC
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public interface IThirdPartyService
     {
         string Invoke();

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
+    using System;
+    using System.Collections.Generic;
+
     public class BehaviorChain<TContext> where TContext : BehaviorContext
     {
         readonly List<Behavior<TContext>> behaviors;

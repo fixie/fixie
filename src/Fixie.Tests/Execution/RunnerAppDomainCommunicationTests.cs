@@ -1,8 +1,8 @@
-using Fixie.Execution;
-using Fixie.Internal;
-
 namespace Fixie.Tests.Execution
 {
+    using Fixie.Execution;
+    using Fixie.Internal;
+
     public class RunnerAppDomainCommunicationTests
     {
         public void ShouldAllowRunnersInOtherAppDomainsToProvideTheirOwnListeners()

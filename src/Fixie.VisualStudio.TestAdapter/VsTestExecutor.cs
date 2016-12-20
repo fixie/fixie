@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Fixie.Execution;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-
-namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using Execution;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+
     [ExtensionUri(Id)]
     public class VsTestExecutor : ITestExecutor
     {

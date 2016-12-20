@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-
-namespace Fixie
+﻿namespace Fixie
 {
+    using System.Diagnostics;
+    using System.Reflection;
+
     public static class Framework
     {
         public static string Version

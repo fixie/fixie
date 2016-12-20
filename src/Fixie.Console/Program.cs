@@ -1,13 +1,13 @@
-﻿using System;
-using System.Diagnostics;
-using System.Text;
-using System.Linq;
-using System.Xml.Linq;
-using Fixie.Execution;
-using Fixie.Reports;
-
-namespace Fixie.ConsoleRunner
+﻿namespace Fixie.ConsoleRunner
 {
+    using System;
+    using System.Diagnostics;
+    using System.Text;
+    using System.Linq;
+    using System.Xml.Linq;
+    using Execution;
+    using Reports;
+
     class Program
     {
         const int FatalError = -1;

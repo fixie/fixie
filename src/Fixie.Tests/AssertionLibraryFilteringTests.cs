@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Fixie.ConsoleRunner;
-using Fixie.Internal;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
+    using System.Threading;
+    using Fixie.ConsoleRunner;
+    using Fixie.Internal;
+
     public class AssertionLibraryFilteringTests
     {
         public void ShouldNotAffectOutputByDefault()

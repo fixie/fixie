@@ -1,7 +1,7 @@
-﻿using System.Runtime.Remoting.Channels;
-
-namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
+    using System.Runtime.Remoting.Channels;
+
     public static class RemotingUtility
     {
         /// <summary>

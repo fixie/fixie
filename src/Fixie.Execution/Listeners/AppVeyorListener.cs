@@ -33,7 +33,7 @@
 
         public void CaseSkipped(SkipResult message)
         {
-            var caseResult = (CaseResult)message;
+            var caseResult = (CaseCompleted)message;
 
             Post(new TestResult
             {
@@ -50,7 +50,7 @@
 
         public void CasePassed(PassResult message)
         {
-            var caseResult = (CaseResult)message;
+            var caseResult = (CaseCompleted)message;
 
             Post(new TestResult
             {
@@ -67,7 +67,7 @@
 
         public void CaseFailed(FailResult message)
         {
-            var caseResult = (CaseResult)message;
+            var caseResult = (CaseCompleted)message;
 
             Post(new TestResult
             {

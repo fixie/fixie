@@ -48,31 +48,31 @@
                 classResult.CaseResults.Select(Case));
         }
 
-        private static XElement Case(CaseResult caseResult)
+        private static XElement Case(CaseCompleted message)
         {
             var @case = new XElement("test",
-                new XAttribute("name", caseResult.Name),
-                new XAttribute("type", caseResult.MethodGroup.Class),
-                new XAttribute("method", caseResult.MethodGroup.Method),
+                new XAttribute("name", message.Name),
+                new XAttribute("type", message.MethodGroup.Class),
+                new XAttribute("method", message.MethodGroup.Method),
                 new XAttribute("result",
-                    caseResult.Status == CaseStatus.Failed
+                    message.Status == CaseStatus.Failed
                         ? "Fail"
-                        : caseResult.Status == CaseStatus.Passed
+                        : message.Status == CaseStatus.Passed
                             ? "Pass"
                             : "Skip"));
 
-            if (caseResult.Status != CaseStatus.Skipped)
-                @case.Add(new XAttribute("time", Seconds(caseResult.Duration)));
+            if (message.Status != CaseStatus.Skipped)
+                @case.Add(new XAttribute("time", Seconds(message.Duration)));
 
-            if (caseResult.Status == CaseStatus.Skipped && caseResult.SkipReason != null)
-                @case.Add(new XElement("reason", new XElement("message", new XCData(caseResult.SkipReason))));
+            if (message.Status == CaseStatus.Skipped && message.SkipReason != null)
+                @case.Add(new XElement("reason", new XElement("message", new XCData(message.SkipReason))));
 
-            if (caseResult.Status == CaseStatus.Failed)
+            if (message.Status == CaseStatus.Failed)
                 @case.Add(
                     new XElement("failure",
-                        new XAttribute("exception-type", caseResult.Exceptions.PrimaryException.Type),
-                        new XElement("message", new XCData(caseResult.Exceptions.PrimaryException.Message)),
-                        new XElement("stack-trace", new XCData(caseResult.Exceptions.CompoundStackTrace))));
+                        new XAttribute("exception-type", message.Exceptions.PrimaryException.Type),
+                        new XElement("message", new XCData(message.Exceptions.PrimaryException.Message)),
+                        new XElement("stack-trace", new XCData(message.Exceptions.CompoundStackTrace))));
 
             return @case;
         }

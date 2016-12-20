@@ -85,7 +85,7 @@
     <Compile Include="Internal\ObjectExtensions.cs" />
     <Compile Include="Execution\PassResult.cs" />
     <Compile Include="PreservedException.cs" />
-    <Compile Include="Execution\CaseResult.cs" />
+    <Compile Include="Execution\CaseCompleted.cs" />
     <Compile Include="Execution\CaseStatus.cs" />
     <Compile Include="Execution\ClassResult.cs" />
     <Compile Include="Execution\ConventionResult.cs" />

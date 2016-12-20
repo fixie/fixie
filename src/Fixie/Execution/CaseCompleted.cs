@@ -2,7 +2,7 @@ namespace Fixie.Execution
 {
     using System;
 
-    public interface CaseResult
+    public interface CaseCompleted
     {
         CaseStatus Status { get; }
         string Name  { get; }

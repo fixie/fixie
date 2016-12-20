@@ -3,7 +3,7 @@
     using System;
 
     [Serializable]
-    public class PassResult : CaseResult
+    public class PassResult : CaseCompleted
     {
         public PassResult(Case @case)
         {
@@ -18,8 +18,8 @@
         public string Output { get; private set; }
         public TimeSpan Duration { get; private set; }
 
-        CaseStatus CaseResult.Status { get { return CaseStatus.Passed; } }
-        CompoundException CaseResult.Exceptions { get { return null; } }
-        string CaseResult.SkipReason { get { return null; } }
+        CaseStatus CaseCompleted.Status { get { return CaseStatus.Passed; } }
+        CompoundException CaseCompleted.Exceptions { get { return null; } }
+        string CaseCompleted.SkipReason { get { return null; } }
     }
 }

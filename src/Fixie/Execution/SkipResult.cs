@@ -3,7 +3,7 @@
     using System;
 
     [Serializable]
-    public class SkipResult : CaseResult
+    public class SkipResult : CaseCompleted
     {
         public SkipResult(Case @case, string skipReason)
         {
@@ -16,9 +16,9 @@
         public MethodGroup MethodGroup { get; private set; }
         public string SkipReason { get; private set; }
 
-        CaseStatus CaseResult.Status { get { return CaseStatus.Skipped; } }
-        string CaseResult.Output { get { return null; } }
-        TimeSpan CaseResult.Duration { get { return TimeSpan.Zero; } }
-        CompoundException CaseResult.Exceptions { get { return null; } }
+        CaseStatus CaseCompleted.Status { get { return CaseStatus.Skipped; } }
+        string CaseCompleted.Output { get { return null; } }
+        TimeSpan CaseCompleted.Duration { get { return TimeSpan.Zero; } }
+        CompoundException CaseCompleted.Exceptions { get { return null; } }
     }
 }

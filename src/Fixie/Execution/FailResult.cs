@@ -4,7 +4,7 @@
     using Internal;
 
     [Serializable]
-    public class FailResult : CaseResult
+    public class FailResult : CaseCompleted
     {
         public FailResult(Case @case, AssertionLibraryFilter filter)
         {
@@ -22,7 +22,7 @@
         public TimeSpan Duration { get; private set; }
         public CompoundException Exceptions { get; private set; }
 
-        CaseStatus CaseResult.Status { get { return CaseStatus.Failed; } }
-        string CaseResult.SkipReason { get { return null; } }
+        CaseStatus CaseCompleted.Status { get { return CaseStatus.Failed; } }
+        string CaseCompleted.SkipReason { get { return null; } }
     }
 }

@@ -1,6 +1,5 @@
-﻿namespace Fixie.Tests.ConsoleRunner
+﻿namespace Fixie.Tests.Execution.Listeners
 {
-    using Should;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -13,8 +12,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
-    using Fixie.ConsoleRunner;
+    using Fixie.Execution.Listeners;
     using Fixie.Internal;
+    using Should;
 
     public class AppVeyorListenerTests
     {
@@ -81,7 +81,7 @@
                 results[2].ErrorMessage.ShouldEqual("Fixie.Tests.FailureException");
                 results[2].ErrorStackTrace.Lines().Select(CleanBrittleValues)
                     .ShouldEqual("'Fail' failed!",
-                         "   at Fixie.Tests.ConsoleRunner.AppVeyorListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
+                         "   at Fixie.Tests.Execution.Listeners.AppVeyorListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
                 results[2].StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
 
                 results[3].testName.ShouldEqual(testClass + ".Pass(123)");

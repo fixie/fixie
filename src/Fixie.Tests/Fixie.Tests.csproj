@@ -67,7 +67,7 @@
     <Compile Include="InputAttribute.cs" />
     <Compile Include="InputAttributeParameterSource.cs" />
     <Compile Include="SkipAttribute.cs" />
-    <Compile Include="ConsoleRunner\AppVeyorListenerTests.cs" />
+    <Compile Include="Execution\Listeners\AppVeyorListenerTests.cs" />
     <Compile Include="Execution\ExecutionEnvironmentTests.cs" />
     <Compile Include="Execution\CaseResultTests.cs" />
     <Compile Include="MethodGroupTests.cs" />

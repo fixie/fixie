@@ -5,7 +5,7 @@
     using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using System.Threading;
-    using Fixie.ConsoleRunner;
+    using Fixie.Execution.Listeners;
     using Fixie.Internal;
 
     public class AssertionLibraryFilteringTests

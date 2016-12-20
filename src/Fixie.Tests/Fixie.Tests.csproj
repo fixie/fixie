@@ -90,7 +90,7 @@
     <Compile Include="Reports\NUnitXmlReportTests.cs" />
     <Compile Include="Reports\XUnitXmlReportTests.cs" />
     <Compile Include="Cases\AsyncCaseTests.cs" />
-    <Compile Include="ConsoleRunner\ConsoleListenerTests.cs" />
+    <Compile Include="Execution\Listeners\ConsoleListenerTests.cs" />
     <Compile Include="Cases\BasicCaseTests.cs" />
     <Compile Include="Lifecycle\LifecycleTests.cs" />
     <Compile Include="Lifecycle\DisposalTests.cs" />

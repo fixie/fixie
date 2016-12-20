@@ -4,9 +4,9 @@
     using Internal;
 
     [Serializable]
-    public class FailResult : CaseCompleted
+    public class CaseFailed : CaseCompleted
     {
-        public FailResult(Case @case, AssertionLibraryFilter filter)
+        public CaseFailed(Case @case, AssertionLibraryFilter filter)
         {
             Name = @case.Name;
             MethodGroup = @case.MethodGroup;

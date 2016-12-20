@@ -12,17 +12,17 @@
             Console.WriteLine();
         }
 
-        public void CaseSkipped(SkipResult message)
+        public void CaseSkipped(CaseSkipped message)
         {
             using (Foreground.Yellow)
                 Console.WriteLine("Test '{0}' skipped{1}", message.Name, message.SkipReason == null ? null : ": " + message.SkipReason);
         }
 
-        public void CasePassed(PassResult message)
+        public void CasePassed(CasePassed message)
         {
         }
 
-        public void CaseFailed(FailResult message)
+        public void CaseFailed(CaseFailed message)
         {
             using (Foreground.Red)
                 Console.WriteLine("Test '{0}' failed: {1}", message.Name, message.Exceptions.PrimaryException.DisplayName);

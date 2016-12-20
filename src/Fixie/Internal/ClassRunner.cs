@@ -177,21 +177,21 @@
 
         CaseCompleted Skip(Case @case, string reason)
         {
-            var result = new SkipResult(@case, reason);
+            var result = new CaseSkipped(@case, reason);
             listener.CaseSkipped(result);
             return result;
         }
 
         CaseCompleted Pass(Case @case)
         {
-            var result = new PassResult(@case);
+            var result = new CasePassed(@case);
             listener.CasePassed(result);
             return result;
         }
 
         CaseCompleted Fail(Case @case)
         {
-            var result = new FailResult(@case, assertionLibraryFilter);
+            var result = new CaseFailed(@case, assertionLibraryFilter);
             listener.CaseFailed(result);
             return result;
         }

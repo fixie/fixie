@@ -13,19 +13,19 @@
             Message("testSuiteStarted name='{0}'", SuiteName(message));
         }
 
-        public void CaseSkipped(SkipResult message)
+        public void CaseSkipped(CaseSkipped message)
         {
             Message("testIgnored name='{0}' message='{1}'", message.Name, message.SkipReason);
         }
 
-        public void CasePassed(PassResult message)
+        public void CasePassed(CasePassed message)
         {
             Message("testStarted name='{0}'", message.Name);
             Output(message.Name, message.Output);
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
-        public void CaseFailed(FailResult message)
+        public void CaseFailed(CaseFailed message)
         {
             Message("testStarted name='{0}'", message.Name);
             Output(message.Name, message.Output);

@@ -3,9 +3,9 @@
     public interface Listener
     {
         void AssemblyStarted(AssemblyInfo message);
-        void CaseSkipped(SkipResult message);
-        void CasePassed(PassResult message);
-        void CaseFailed(FailResult message);
+        void CaseSkipped(CaseSkipped message);
+        void CasePassed(CasePassed message);
+        void CaseFailed(CaseFailed message);
         void AssemblyCompleted(AssemblyInfo message, AssemblyResult result);
     }
 }

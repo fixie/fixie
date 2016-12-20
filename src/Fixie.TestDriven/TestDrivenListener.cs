@@ -17,7 +17,7 @@ namespace Fixie.TestDriven
         {
         }
 
-        public void CaseSkipped(SkipResult message)
+        public void CaseSkipped(CaseSkipped message)
         {
             tdnet.TestFinished(new TestResult
             {
@@ -27,7 +27,7 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void CasePassed(PassResult message)
+        public void CasePassed(CasePassed message)
         {
             tdnet.TestFinished(new TestResult
             {
@@ -36,7 +36,7 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void CaseFailed(FailResult message)
+        public void CaseFailed(CaseFailed message)
         {
             tdnet.TestFinished(new TestResult
             {

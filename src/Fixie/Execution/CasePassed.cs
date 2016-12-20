@@ -3,9 +3,9 @@
     using System;
 
     [Serializable]
-    public class PassResult : CaseCompleted
+    public class CasePassed : CaseCompleted
     {
-        public PassResult(Case @case)
+        public CasePassed(Case @case)
         {
             Name = @case.Name;
             MethodGroup = @case.MethodGroup;

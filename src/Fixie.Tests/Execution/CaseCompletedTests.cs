@@ -86,9 +86,9 @@
 
             public void AssemblyStarted(AssemblyInfo message) { }
 
-            public void CaseSkipped(SkipResult message) => Log.Add(message);
-            public void CasePassed(PassResult message) => Log.Add(message);
-            public void CaseFailed(FailResult message) => Log.Add(message);
+            public void CaseSkipped(CaseSkipped message) => Log.Add(message);
+            public void CasePassed(CasePassed message) => Log.Add(message);
+            public void CaseFailed(CaseFailed message) => Log.Add(message);
 
             public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result) { }
         }

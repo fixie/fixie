@@ -12,18 +12,18 @@
         {
         }
 
-        public void CaseSkipped(SkipResult message)
+        public void CaseSkipped(CaseSkipped message)
         {
             var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
             log.Add($"{message.Name} skipped{optionalReason}");
         }
 
-        public void CasePassed(PassResult message)
+        public void CasePassed(CasePassed message)
         {
             log.Add($"{message.Name} passed");
         }
 
-        public void CaseFailed(FailResult message)
+        public void CaseFailed(CaseFailed message)
         {
             var entry = new StringBuilder();
 

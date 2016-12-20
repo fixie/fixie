@@ -31,7 +31,7 @@
             fileName = Path.GetFileName(message.Location);
         }
 
-        public void CaseSkipped(SkipResult message)
+        public void CaseSkipped(CaseSkipped message)
         {
             var caseResult = (CaseCompleted)message;
 
@@ -48,7 +48,7 @@
             });
         }
 
-        public void CasePassed(PassResult message)
+        public void CasePassed(CasePassed message)
         {
             var caseResult = (CaseCompleted)message;
 
@@ -65,7 +65,7 @@
             });
         }
 
-        public void CaseFailed(FailResult message)
+        public void CaseFailed(CaseFailed message)
         {
             var caseResult = (CaseCompleted)message;
 

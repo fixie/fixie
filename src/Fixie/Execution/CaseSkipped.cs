@@ -3,9 +3,9 @@
     using System;
 
     [Serializable]
-    public class SkipResult : CaseCompleted
+    public class CaseSkipped : CaseCompleted
     {
-        public SkipResult(Case @case, string skipReason)
+        public CaseSkipped(Case @case, string skipReason)
         {
             Name = @case.Name;
             MethodGroup = @case.MethodGroup;

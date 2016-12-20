@@ -18,7 +18,7 @@
 
         public void AssemblyStarted(AssemblyInfo message) { }
 
-        public void CaseSkipped(SkipResult message)
+        public void CaseSkipped(CaseSkipped message)
         {
             log.RecordResult(new TestResult(TestCase(message.MethodGroup))
             {
@@ -29,7 +29,7 @@
             });
         }
 
-        public void CasePassed(PassResult message)
+        public void CasePassed(CasePassed message)
         {
             var testResult = new TestResult(TestCase(message.MethodGroup))
             {
@@ -44,7 +44,7 @@
             log.RecordResult(testResult);
         }
 
-        public void CaseFailed(FailResult message)
+        public void CaseFailed(CaseFailed message)
         {
             var testResult = new TestResult(TestCase(message.MethodGroup))
             {

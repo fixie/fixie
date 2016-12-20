@@ -16,6 +16,7 @@
     </references>
   </metadata>
   <files>
+    <file src="..\..\build\Fixie.Execution.dll" target="lib/net45"></file>
     <file src="..\..\build\Fixie.Console.exe" target="lib/net45"></file>
     <file src="..\..\build\Fixie.Console.exe.config" target="lib/net45"></file>
     <file src="..\..\build\Fixie.Console.x86.exe" target="lib/net45"></file>

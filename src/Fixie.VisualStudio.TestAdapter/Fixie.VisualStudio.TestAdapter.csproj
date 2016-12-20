@@ -60,6 +60,10 @@
     <Compile Include="VisualStudioListener.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Fixie.Execution\Fixie.Execution.csproj">
+      <Project>{c0c4dd53-d549-4469-9af5-79187ac9f034}</Project>
+      <Name>Fixie.Execution</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fixie\Fixie.csproj">
       <Project>{474ff43b-4580-4032-999b-a717eb7a0cd3}</Project>
       <Name>Fixie</Name>

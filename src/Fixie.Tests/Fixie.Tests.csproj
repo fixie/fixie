@@ -118,6 +118,10 @@
       <Project>{3805c0e0-3817-45ad-964f-cf7dc5715b39}</Project>
       <Name>Fixie.Console</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Fixie.Execution\Fixie.Execution.csproj">
+      <Project>{c0c4dd53-d549-4469-9af5-79187ac9f034}</Project>
+      <Name>Fixie.Execution</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fixie.TestDriven\Fixie.TestDriven.csproj">
       <Project>{C4190A60-2DBA-4C7F-8887-F65CC8194138}</Project>
       <Name>Fixie.TestDriven</Name>

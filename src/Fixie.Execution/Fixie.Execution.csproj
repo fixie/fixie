@@ -35,12 +35,16 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Foreground.cs" />
     <Compile Include="Listeners\AppVeyorListener.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />
+    <Compile Include="Listeners\NUnitXmlReport.cs" />
     <Compile Include="Listeners\TeamCityListener.cs" />
+    <Compile Include="Listeners\XUnitXmlReport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -32,8 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.XML" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
@@ -68,7 +66,6 @@
     <Compile Include="Internal\ClassRunner.cs" />
     <Compile Include="Internal\ExecutionPlan.cs" />
     <Compile Include="Internal\GenericArgumentResolver.cs" />
-    <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="Internal\RedirectedConsole.cs" />
     <Compile Include="ClassBehavior.cs" />
     <Compile Include="Case.cs" />
@@ -88,7 +85,6 @@
     <Compile Include="Internal\ObjectExtensions.cs" />
     <Compile Include="Execution\PassResult.cs" />
     <Compile Include="PreservedException.cs" />
-    <Compile Include="Reports\XUnitXmlReport.cs" />
     <Compile Include="Execution\CaseResult.cs" />
     <Compile Include="Execution\CaseStatus.cs" />
     <Compile Include="Execution\ClassResult.cs" />

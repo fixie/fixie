@@ -7,7 +7,6 @@
     using System.Xml.Linq;
     using Execution;
     using Execution.Listeners;
-    using Reports;
 
     class Program
     {

@@ -1,4 +1,4 @@
-﻿namespace Fixie.Reports
+﻿namespace Fixie.Execution.Listeners
 {
     using System;
     using System.Globalization;

@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.Reports
+﻿namespace Fixie.Tests.Execution.Listeners
 {
     using System;
     using System.IO;
@@ -9,8 +9,8 @@
     using System.Xml.Linq;
     using System.Xml.Schema;
     using Fixie.Execution;
+    using Fixie.Execution.Listeners;
     using Fixie.Internal;
-    using Fixie.Reports;
     using Should;
 
     public class XUnitXmlReportTests
@@ -37,7 +37,7 @@
         static void XsdValidate(XDocument doc)
         {
             var schemaSet = new XmlSchemaSet();
-            using (var xmlReader = XmlReader.Create(Path.Combine("Reports", "XUnitXmlReport.xsd")))
+            using (var xmlReader = XmlReader.Create(Path.Combine("Execution", Path.Combine("Listeners", "XUnitXmlReport.xsd"))))
             {
                 schemaSet.Add(null, xmlReader);
             }
@@ -75,7 +75,7 @@
                 var assemblyLocation = GetType().Assembly.Location;
                 var configLocation = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
                 var fileLocation = PathToThisFile();
-                return XDocument.Parse(File.ReadAllText(Path.Combine("Reports", "XUnitXmlReport.xml")))
+                return XDocument.Parse(File.ReadAllText(Path.Combine("Execution", Path.Combine("Listeners", "XUnitXmlReport.xml"))))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
                                 .Replace("[configLocation]", configLocation)

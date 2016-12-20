@@ -87,8 +87,8 @@
     <Compile Include="Lifecycle\ConstructionTests.cs" />
     <Compile Include="Lifecycle\FixtureLifecycleTests.cs" />
     <Compile Include="OptionsTests.cs" />
-    <Compile Include="Reports\NUnitXmlReportTests.cs" />
-    <Compile Include="Reports\XUnitXmlReportTests.cs" />
+    <Compile Include="Execution\Listeners\NUnitXmlReportTests.cs" />
+    <Compile Include="Execution\Listeners\XUnitXmlReportTests.cs" />
     <Compile Include="Cases\AsyncCaseTests.cs" />
     <Compile Include="Execution\Listeners\ConsoleListenerTests.cs" />
     <Compile Include="Cases\BasicCaseTests.cs" />
@@ -137,18 +137,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Reports\NUnitXmlReport.xml">
+    <None Include="Execution\Listeners\NUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Reports\NUnitXmlReport.xsd">
+    <None Include="Execution\Listeners\NUnitXmlReport.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Reports\XUnitXmlReport.xsd">
+    <None Include="Execution\Listeners\XUnitXmlReport.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Reports\XUnitXmlReport.xml">
+    <None Include="Execution\Listeners\XUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

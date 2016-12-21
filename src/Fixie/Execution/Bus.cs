@@ -1,10 +1,10 @@
 namespace Fixie.Execution
 {
-    public class MarshallingListener : LongLivedMarshalByRefObject, Listener
+    public class Bus : LongLivedMarshalByRefObject, Listener
     {
         readonly Listener listener;
 
-        public MarshallingListener(Listener listener)
+        public Bus(Listener listener)
         {
             this.listener = listener;
         }

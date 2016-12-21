@@ -38,6 +38,7 @@
     <Compile Include="Execution\AssemblyCompleted.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Execution\MarshallingListener.cs" />
+    <Compile Include="Execution\Message.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="Internal\Discoverer.cs" />
     <Compile Include="Internal\ParameterDiscoverer.cs" />

@@ -3,7 +3,7 @@ namespace Fixie.Execution
     using System;
 
     [Serializable]
-    public abstract class CaseCompleted
+    public abstract class CaseCompleted : Message
     {
         protected CaseCompleted(
             CaseStatus status,

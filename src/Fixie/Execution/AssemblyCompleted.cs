@@ -4,7 +4,7 @@ namespace Fixie.Execution
     using System.Reflection;
 
     [Serializable]
-    public class AssemblyCompleted
+    public class AssemblyCompleted : Message
     {
         public AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {

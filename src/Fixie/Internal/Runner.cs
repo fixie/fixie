@@ -104,7 +104,7 @@
         {
             var assemblyResult = new AssemblyResult(assembly.Location);
 
-            bus.Handle(new AssemblyStarted(assembly));
+            bus.Publish(new AssemblyStarted(assembly));
 
             foreach (var convention in conventions)
             {
@@ -113,7 +113,7 @@
                 assemblyResult.Add(conventionResult);
             }
 
-            bus.Handle(new AssemblyCompleted(assembly, assemblyResult));
+            bus.Publish(new AssemblyCompleted(assembly, assemblyResult));
 
             return assemblyResult;
         }

@@ -40,7 +40,7 @@ namespace Fixie.Tests.Execution
             }
         }
 
-        static bool IsSafeForAppDomainCommunication(Type type)
+        public static bool IsSafeForAppDomainCommunication(this Type type)
         {
             return IsSafeForAppDomainCommunication(type, new HashSet<Type>());
         }
@@ -57,13 +57,11 @@ namespace Fixie.Tests.Execution
             //     also not acceptable for AppDomain communication because they can cause
             //     assembly load failures at runtime.
 
-            if (type == typeof(Listener))
+            if (type == typeof(Bus))
             {
-                //Tests use this routine to vet Listener as a safe remoting *interface*,
-                //but it is also used as an *argument* on other remoting interfaces.
-                //Because it is the responsibility of the Listener implementation to be
-                //a valid MarshalByRefObject, there is nothing left to check for here,
-                //so it is assumed to be valid.
+                //Because we check all Message types for AppDomain safety already,
+                //and because Bus has a well-known stable interface that cares only
+                //about Message types, we can assume Bus is safe.
                 return true;
             }
 

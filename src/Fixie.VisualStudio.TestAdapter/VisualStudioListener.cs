@@ -5,7 +5,10 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
-    public class VisualStudioListener : Listener
+    public class VisualStudioListener :
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
@@ -15,8 +18,6 @@
             this.log = log;
             this.assemblyPath = assemblyPath;
         }
-
-        public void Handle(AssemblyStarted message) { }
 
         public void Handle(CaseSkipped message)
         {
@@ -59,10 +60,6 @@
             AttachCapturedConsoleOutput(message.Output, testResult);
 
             log.RecordResult(testResult);
-        }
-
-        public void Handle(AssemblyCompleted message)
-        {
         }
 
         TestCase TestCase(MethodGroup methodGroup)

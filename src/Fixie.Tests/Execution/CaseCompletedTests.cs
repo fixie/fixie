@@ -80,17 +80,16 @@
             }
         }
 
-        public class StubCaseCompletedListener : Listener
+        public class StubCaseCompletedListener :
+            Handler<CaseSkipped>,
+            Handler<CasePassed>,
+            Handler<CaseFailed>
         {
             public List<CaseCompleted> Log { get; set; } = new List<CaseCompleted>();
-
-            public void Handle(AssemblyStarted message) { }
 
             public void Handle(CaseSkipped message) => Log.Add(message);
             public void Handle(CasePassed message) => Log.Add(message);
             public void Handle(CaseFailed message) => Log.Add(message);
-
-            public void Handle(AssemblyCompleted message) { }
         }
 
         static void WhereAmI([CallerMemberName] string member = null)

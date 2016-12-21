@@ -4,7 +4,11 @@
     using System.IO;
     using Execution;
 
-    public class ConsoleListener : Listener
+    public class ConsoleListener :
+        Handler<AssemblyStarted>,
+        Handler<CaseSkipped>,
+        Handler<CaseFailed>,
+        Handler<AssemblyCompleted>
     {
         public void Handle(AssemblyStarted message)
         {
@@ -16,10 +20,6 @@
         {
             using (Foreground.Yellow)
                 Console.WriteLine("Test '{0}' skipped{1}", message.Name, message.SkipReason == null ? null : ": " + message.SkipReason);
-        }
-
-        public void Handle(CasePassed message)
-        {
         }
 
         public void Handle(CaseFailed message)

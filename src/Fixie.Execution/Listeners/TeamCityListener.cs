@@ -6,7 +6,12 @@
     using System.Text;
     using Execution;
 
-    public class TeamCityListener : Listener
+    public class TeamCityListener :
+        Handler<AssemblyStarted>,
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>,
+        Handler<AssemblyCompleted>
     {
         public void Handle(AssemblyStarted message)
         {

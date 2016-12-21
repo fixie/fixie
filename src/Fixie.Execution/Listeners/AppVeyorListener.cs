@@ -8,7 +8,11 @@
     using System.Web.Script.Serialization;
     using Execution;
 
-    public class AppVeyorListener : Listener
+    public class AppVeyorListener :
+        Handler<AssemblyStarted>,
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly string url;
         readonly HttpClient client;
@@ -80,10 +84,6 @@
                 ErrorMessage = caseResult.Exceptions.PrimaryException.DisplayName,
                 ErrorStackTrace = caseResult.Exceptions.CompoundStackTrace
             });
-        }
-
-        public void Handle(AssemblyCompleted message)
-        {
         }
 
         void Post(TestResult result)

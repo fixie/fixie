@@ -4,13 +4,12 @@
     using System.Text;
     using Fixie.Execution;
 
-    public class StubListener : Listener
+    public class StubListener :
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly List<string> log = new List<string>();
-
-        public void Handle(AssemblyStarted message)
-        {
-        }
 
         public void Handle(CaseSkipped message)
         {
@@ -54,10 +53,6 @@
             }
 
             log.Add(entry.ToString());
-        }
-
-        public void Handle(AssemblyCompleted message)
-        {
         }
 
         public IEnumerable<string> Entries

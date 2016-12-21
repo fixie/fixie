@@ -4,17 +4,16 @@ namespace Fixie.TestDriven
 {
     using Execution;
 
-    public class TestDrivenListener : Listener
+    public class TestDrivenListener :
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly ITestListener tdnet;
 
         public TestDrivenListener(ITestListener tdnet)
         {
             this.tdnet = tdnet;
-        }
-
-        public void Handle(AssemblyStarted message)
-        {
         }
 
         public void Handle(CaseSkipped message)
@@ -45,10 +44,6 @@ namespace Fixie.TestDriven
                 Message = message.Exceptions.PrimaryException.DisplayName,
                 StackTrace = message.Exceptions.CompoundStackTrace,
             });
-        }
-
-        public void Handle(AssemblyCompleted message)
-        {
         }
     }
 }

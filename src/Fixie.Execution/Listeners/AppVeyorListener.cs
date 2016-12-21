@@ -8,7 +8,7 @@
     using System.Web.Script.Serialization;
     using Execution;
 
-    public class AppVeyorListener : LongLivedMarshalByRefObject, Listener
+    public class AppVeyorListener : Listener
     {
         readonly string url;
         readonly HttpClient client;

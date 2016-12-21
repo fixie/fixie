@@ -105,18 +105,18 @@
         static AssemblyResult Execute(string assemblyPath, Options options)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
-            {
-                if (ShouldUseTeamCityListener(options))
-                    using (var listener = new TeamCityListener())
-                        return environment.RunAssembly(options, listener);
+                return environment.RunAssembly(options, GetListener(options));
+        }
 
-                if (ShouldUseAppVeyorListener())
-                    using (var listener = new AppVeyorListener())
-                        return environment.RunAssembly(options, listener);
+        static Listener GetListener(Options options)
+        {
+            if (ShouldUseTeamCityListener(options))
+                return new TeamCityListener();
 
-                using (var listener = new ConsoleListener())
-                    return environment.RunAssembly(options, listener);
-            }
+            if (ShouldUseAppVeyorListener())
+                return new AppVeyorListener();
+
+            return new ConsoleListener();
         }
 
         static bool ShouldUseTeamCityListener(Options options)

@@ -5,7 +5,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
-    public class VisualStudioListener : LongLivedMarshalByRefObject, Listener
+    public class VisualStudioListener : Listener
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;

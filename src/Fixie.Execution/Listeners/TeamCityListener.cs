@@ -6,7 +6,7 @@
     using System.Text;
     using Execution;
 
-    public class TeamCityListener : LongLivedMarshalByRefObject, Listener
+    public class TeamCityListener : Listener
     {
         public void AssemblyStarted(AssemblyStarted message)
         {

@@ -4,7 +4,7 @@
     using System.IO;
     using Execution;
 
-    public class ConsoleListener : LongLivedMarshalByRefObject, Listener
+    public class ConsoleListener : Listener
     {
         public void AssemblyStarted(AssemblyStarted message)
         {

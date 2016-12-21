@@ -1,11 +1,11 @@
 ﻿namespace Fixie.Execution
 {
-    public interface Listener
+    public interface Listener :
+        Handler<AssemblyStarted>,
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>,
+        Handler<AssemblyCompleted>
     {
-        void Handle(AssemblyStarted message);
-        void Handle(CaseSkipped message);
-        void Handle(CasePassed message);
-        void Handle(CaseFailed message);
-        void Handle(AssemblyCompleted message);
     }
 }

@@ -16,9 +16,9 @@
             this.assemblyPath = assemblyPath;
         }
 
-        public void AssemblyStarted(AssemblyStarted message) { }
+        public void Handle(AssemblyStarted message) { }
 
-        public void CaseSkipped(CaseSkipped message)
+        public void Handle(CaseSkipped message)
         {
             log.RecordResult(new TestResult(TestCase(message.MethodGroup))
             {
@@ -29,7 +29,7 @@
             });
         }
 
-        public void CasePassed(CasePassed message)
+        public void Handle(CasePassed message)
         {
             var testResult = new TestResult(TestCase(message.MethodGroup))
             {
@@ -44,7 +44,7 @@
             log.RecordResult(testResult);
         }
 
-        public void CaseFailed(CaseFailed message)
+        public void Handle(CaseFailed message)
         {
             var testResult = new TestResult(TestCase(message.MethodGroup))
             {
@@ -61,7 +61,7 @@
             log.RecordResult(testResult);
         }
 
-        public void AssemblyCompleted(AssemblyCompleted message)
+        public void Handle(AssemblyCompleted message)
         {
         }
 

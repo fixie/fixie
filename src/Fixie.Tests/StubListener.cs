@@ -8,22 +8,22 @@
     {
         readonly List<string> log = new List<string>();
 
-        public void AssemblyStarted(AssemblyStarted message)
+        public void Handle(AssemblyStarted message)
         {
         }
 
-        public void CaseSkipped(CaseSkipped message)
+        public void Handle(CaseSkipped message)
         {
             var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
             log.Add($"{message.Name} skipped{optionalReason}");
         }
 
-        public void CasePassed(CasePassed message)
+        public void Handle(CasePassed message)
         {
             log.Add($"{message.Name} passed");
         }
 
-        public void CaseFailed(CaseFailed message)
+        public void Handle(CaseFailed message)
         {
             var entry = new StringBuilder();
 
@@ -56,7 +56,7 @@
             log.Add(entry.ToString());
         }
 
-        public void AssemblyCompleted(AssemblyCompleted message)
+        public void Handle(AssemblyCompleted message)
         {
         }
 

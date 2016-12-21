@@ -8,24 +8,24 @@
 
     public class TeamCityListener : Listener
     {
-        public void AssemblyStarted(AssemblyStarted message)
+        public void Handle(AssemblyStarted message)
         {
             Message("testSuiteStarted name='{0}'", Path.GetFileName(message.Location));
         }
 
-        public void CaseSkipped(CaseSkipped message)
+        public void Handle(CaseSkipped message)
         {
             Message("testIgnored name='{0}' message='{1}'", message.Name, message.SkipReason);
         }
 
-        public void CasePassed(CasePassed message)
+        public void Handle(CasePassed message)
         {
             Message("testStarted name='{0}'", message.Name);
             Output(message.Name, message.Output);
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
-        public void CaseFailed(CaseFailed message)
+        public void Handle(CaseFailed message)
         {
             Message("testStarted name='{0}'", message.Name);
             Output(message.Name, message.Output);
@@ -33,7 +33,7 @@
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
-        public void AssemblyCompleted(AssemblyCompleted message)
+        public void Handle(AssemblyCompleted message)
         {
             Message("testSuiteFinished name='{0}'", Path.GetFileName(message.Location));
         }

@@ -9,19 +9,19 @@ namespace Fixie.Execution
             this.listener = listener;
         }
 
-        public void AssemblyStarted(AssemblyStarted message)
-            => listener.AssemblyStarted(message);
+        public void Handle(AssemblyStarted message)
+            => listener.Handle(message);
 
-        public void CaseSkipped(CaseSkipped message)
-            => listener.CaseSkipped(message);
+        public void Handle(CaseSkipped message)
+            => listener.Handle(message);
 
-        public void CasePassed(CasePassed message)
-            => listener.CasePassed(message);
+        public void Handle(CasePassed message)
+            => listener.Handle(message);
 
-        public void CaseFailed(CaseFailed message)
-            => listener.CaseFailed(message);
+        public void Handle(CaseFailed message)
+            => listener.Handle(message);
 
-        public void AssemblyCompleted(AssemblyCompleted message)
-            => listener.AssemblyCompleted(message);
+        public void Handle(AssemblyCompleted message)
+            => listener.Handle(message);
     }
 }

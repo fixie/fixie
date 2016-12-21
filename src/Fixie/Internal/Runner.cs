@@ -104,7 +104,7 @@
         {
             var assemblyResult = new AssemblyResult(assembly.Location);
 
-            listener.AssemblyStarted(new AssemblyStarted(assembly));
+            listener.Handle(new AssemblyStarted(assembly));
 
             foreach (var convention in conventions)
             {
@@ -113,7 +113,7 @@
                 assemblyResult.Add(conventionResult);
             }
 
-            listener.AssemblyCompleted(new AssemblyCompleted(assembly, assemblyResult));
+            listener.Handle(new AssemblyCompleted(assembly, assemblyResult));
 
             return assemblyResult;
         }

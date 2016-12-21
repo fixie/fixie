@@ -13,11 +13,11 @@ namespace Fixie.TestDriven
             this.tdnet = tdnet;
         }
 
-        public void AssemblyStarted(AssemblyStarted message)
+        public void Handle(AssemblyStarted message)
         {
         }
 
-        public void CaseSkipped(CaseSkipped message)
+        public void Handle(CaseSkipped message)
         {
             tdnet.TestFinished(new TestResult
             {
@@ -27,7 +27,7 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void CasePassed(CasePassed message)
+        public void Handle(CasePassed message)
         {
             tdnet.TestFinished(new TestResult
             {
@@ -36,7 +36,7 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void CaseFailed(CaseFailed message)
+        public void Handle(CaseFailed message)
         {
             tdnet.TestFinished(new TestResult
             {
@@ -47,7 +47,7 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void AssemblyCompleted(AssemblyCompleted message)
+        public void Handle(AssemblyCompleted message)
         {
         }
     }

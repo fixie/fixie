@@ -8,7 +8,7 @@
 
     public class ClassRunner
     {
-        readonly Listener listener;
+        readonly Bus bus;
         readonly ExecutionPlan executionPlan;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
@@ -17,11 +17,11 @@
         readonly IReadOnlyList<SkipBehavior> skipBehaviors;
         readonly Action<Case[]> orderCases;
 
-        public ClassRunner(Listener listener, Convention convention)
+        public ClassRunner(Bus bus, Convention convention)
         {
             var config = convention.Config;
 
-            this.listener = listener;
+            this.bus = bus;
             executionPlan = new ExecutionPlan(convention);
             methodDiscoverer = new MethodDiscoverer(convention);
             parameterDiscoverer = new ParameterDiscoverer(convention);
@@ -178,21 +178,21 @@
         CaseCompleted Skip(Case @case, string reason)
         {
             var result = new CaseSkipped(@case, reason);
-            listener.Handle(result);
+            bus.Handle(result);
             return result;
         }
 
         CaseCompleted Pass(Case @case)
         {
             var result = new CasePassed(@case);
-            listener.Handle(result);
+            bus.Handle(result);
             return result;
         }
 
         CaseCompleted Fail(Case @case)
         {
             var result = new CaseFailed(@case, assertionLibraryFilter);
-            listener.Handle(result);
+            bus.Handle(result);
             return result;
         }
     }

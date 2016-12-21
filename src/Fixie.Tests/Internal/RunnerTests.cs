@@ -4,6 +4,7 @@ namespace Fixie.Tests.Internal
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using Fixie.Execution;
     using Fixie.Internal;
 
     public class RunnerTests
@@ -14,9 +15,12 @@ namespace Fixie.Tests.Internal
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>());
 
-            new Runner(listener).RunTypes(GetType().Assembly, convention,
-                typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
-                typeof(PassFailTestClass), typeof(SkipTestClass));
+            using (var bus = new Bus(listener))
+            {
+                new Runner(bus).RunTypes(GetType().Assembly, convention,
+                    typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
+                    typeof(PassFailTestClass), typeof(SkipTestClass));
+            }
 
             listener.Entries.ShouldEqual(
                 "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassA passed",
@@ -37,9 +41,12 @@ namespace Fixie.Tests.Internal
                 .CreateInstancePerClass()
                 .ShuffleCases(new Random(1));
 
-            new Runner(listener).RunTypes(GetType().Assembly, convention,
-                typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
-                typeof(PassFailTestClass), typeof(SkipTestClass));
+            using (var bus = new Bus(listener))
+            {
+                new Runner(bus).RunTypes(GetType().Assembly, convention,
+                    typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
+                    typeof(PassFailTestClass), typeof(SkipTestClass));
+            }
 
             listener.Entries.ShouldEqual(
                 "Fixie.Tests.Internal.RunnerTests+PassTestClass.PassB passed",
@@ -63,9 +70,12 @@ namespace Fixie.Tests.Internal
             convention.Parameters
                 .Add<BuggyParameterSource>();
 
-            new Runner(listener).RunTypes(GetType().Assembly, convention,
-                typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
-                typeof(PassFailTestClass), typeof(SkipTestClass), typeof(BuggyParameterGenerationTestClass));
+            using (var bus = new Bus(listener))
+            {
+                new Runner(bus).RunTypes(GetType().Assembly, convention,
+                    typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
+                    typeof(PassFailTestClass), typeof(SkipTestClass), typeof(BuggyParameterGenerationTestClass));
+            }
 
             //NOTE: Since the ordering of cases is deliberately failing, and since member order via reflection
             //      is undefined, we explicitly sort the listener Entries here to avoid making a brittle assertion.

@@ -8,15 +8,15 @@
 
     public class Runner
     {
-        readonly Listener listener;
+        readonly Bus bus;
         readonly Options options;
 
-        public Runner(Listener listener)
-            : this(listener, new Options()) { }
+        public Runner(Bus bus)
+            : this(bus, new Options()) { }
 
-        public Runner(Listener listener, Options options)
+        public Runner(Bus bus, Options options)
         {
-            this.listener = listener;
+            this.bus = bus;
             this.options = options;
         }
 
@@ -104,7 +104,7 @@
         {
             var assemblyResult = new AssemblyResult(assembly.Location);
 
-            listener.Handle(new AssemblyStarted(assembly));
+            bus.Handle(new AssemblyStarted(assembly));
 
             foreach (var convention in conventions)
             {
@@ -113,7 +113,7 @@
                 assemblyResult.Add(conventionResult);
             }
 
-            listener.Handle(new AssemblyCompleted(assembly, assemblyResult));
+            bus.Handle(new AssemblyCompleted(assembly, assemblyResult));
 
             return assemblyResult;
         }
@@ -122,7 +122,7 @@
         {
             var classDiscoverer = new ClassDiscoverer(convention);
             var conventionResult = new ConventionResult(convention.GetType().FullName);
-            var classRunner = new ClassRunner(listener, convention);
+            var classRunner = new ClassRunner(bus, convention);
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
             {

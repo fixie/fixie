@@ -6,7 +6,7 @@
 
     public class ConsoleListener : LongLivedMarshalByRefObject, Listener
     {
-        public void AssemblyStarted(AssemblyInfo message)
+        public void AssemblyStarted(AssemblyStarted message)
         {
             Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(message.Location));
             Console.WriteLine();
@@ -30,9 +30,9 @@
             Console.WriteLine();
         }
 
-        public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
-            Console.WriteLine(result.Summary);
+            Console.WriteLine(message.Result.Summary);
             Console.WriteLine();
         }
     }

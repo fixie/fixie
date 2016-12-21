@@ -2,10 +2,10 @@
 {
     public interface Listener
     {
-        void AssemblyStarted(AssemblyInfo message);
+        void AssemblyStarted(AssemblyStarted message);
         void CaseSkipped(CaseSkipped message);
         void CasePassed(CasePassed message);
         void CaseFailed(CaseFailed message);
-        void AssemblyCompleted(AssemblyInfo message, AssemblyResult result);
+        void AssemblyCompleted(AssemblyCompleted message);
     }
 }

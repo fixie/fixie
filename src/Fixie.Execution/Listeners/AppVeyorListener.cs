@@ -26,7 +26,7 @@
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public void AssemblyStarted(AssemblyInfo message)
+        public void AssemblyStarted(AssemblyStarted message)
         {
             fileName = Path.GetFileName(message.Location);
         }
@@ -82,7 +82,7 @@
             });
         }
 
-        public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
         }
 

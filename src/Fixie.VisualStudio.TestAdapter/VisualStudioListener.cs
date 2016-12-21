@@ -16,7 +16,7 @@
             this.assemblyPath = assemblyPath;
         }
 
-        public void AssemblyStarted(AssemblyInfo message) { }
+        public void AssemblyStarted(AssemblyStarted message) { }
 
         public void CaseSkipped(CaseSkipped message)
         {
@@ -61,7 +61,7 @@
             log.RecordResult(testResult);
         }
 
-        public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
         }
 

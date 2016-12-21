@@ -8,9 +8,9 @@
 
     public class TeamCityListener : LongLivedMarshalByRefObject, Listener
     {
-        public void AssemblyStarted(AssemblyInfo message)
+        public void AssemblyStarted(AssemblyStarted message)
         {
-            Message("testSuiteStarted name='{0}'", SuiteName(message));
+            Message("testSuiteStarted name='{0}'", Path.GetFileName(message.Location));
         }
 
         public void CaseSkipped(CaseSkipped message)
@@ -33,9 +33,9 @@
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
-        public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
-            Message("testSuiteFinished name='{0}'", SuiteName(message));
+            Message("testSuiteFinished name='{0}'", Path.GetFileName(message.Location));
         }
 
         static void Message(string format, params string[] args)
@@ -80,11 +80,6 @@
         static string DurationInMilliseconds(TimeSpan duration)
         {
             return ((int)Math.Ceiling(duration.TotalMilliseconds)).ToString();
-        }
-
-        static string SuiteName(AssemblyInfo assembly)
-        {
-            return Path.GetFileName(assembly.Location);
         }
     }
 }

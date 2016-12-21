@@ -84,13 +84,13 @@
         {
             public List<CaseCompleted> Log { get; set; } = new List<CaseCompleted>();
 
-            public void AssemblyStarted(AssemblyInfo message) { }
+            public void AssemblyStarted(AssemblyStarted message) { }
 
             public void CaseSkipped(CaseSkipped message) => Log.Add(message);
             public void CasePassed(CasePassed message) => Log.Add(message);
             public void CaseFailed(CaseFailed message) => Log.Add(message);
 
-            public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result) { }
+            public void AssemblyCompleted(AssemblyCompleted message) { }
         }
 
         static void WhereAmI([CallerMemberName] string member = null)

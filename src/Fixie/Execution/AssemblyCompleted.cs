@@ -4,15 +4,17 @@ namespace Fixie.Execution
     using System.Reflection;
 
     [Serializable]
-    public class AssemblyInfo
+    public class AssemblyCompleted
     {
-        public AssemblyInfo(Assembly assembly)
+        public AssemblyCompleted(Assembly assembly, AssemblyResult result)
         {
             Name = assembly.GetName().Name;
             Location = assembly.Location;
+            Result = result;
         }
 
         public string Name { get; private set; }
         public string Location { get; private set; }
+        public AssemblyResult Result { get; private set; }
     }
 }

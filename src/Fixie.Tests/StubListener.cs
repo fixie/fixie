@@ -8,7 +8,7 @@
     {
         readonly List<string> log = new List<string>();
 
-        public void AssemblyStarted(AssemblyInfo message)
+        public void AssemblyStarted(AssemblyStarted message)
         {
         }
 
@@ -56,7 +56,7 @@
             log.Add(entry.ToString());
         }
 
-        public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
         }
 

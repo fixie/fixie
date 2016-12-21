@@ -35,6 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
+    <Compile Include="Execution\AssemblyCompleted.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="Internal\Discoverer.cs" />
@@ -42,7 +43,7 @@
     <Compile Include="Internal\Behaviors\TimeClassExecution.cs" />
     <Compile Include="MethodGroup.cs" />
     <Compile Include="Internal\ExecutionProxy.cs" />
-    <Compile Include="Execution\AssemblyInfo.cs" />
+    <Compile Include="Execution\AssemblyStarted.cs" />
     <Compile Include="Internal\Behavior.cs" />
     <Compile Include="Internal\BehaviorChain.cs" />
     <Compile Include="Internal\BehaviorContext.cs" />

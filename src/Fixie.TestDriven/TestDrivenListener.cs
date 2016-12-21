@@ -13,7 +13,7 @@ namespace Fixie.TestDriven
             this.tdnet = tdnet;
         }
 
-        public void AssemblyStarted(AssemblyInfo message)
+        public void AssemblyStarted(AssemblyStarted message)
         {
         }
 
@@ -47,7 +47,7 @@ namespace Fixie.TestDriven
             });
         }
 
-        public void AssemblyCompleted(AssemblyInfo message, AssemblyResult result)
+        public void AssemblyCompleted(AssemblyCompleted message)
         {
         }
     }

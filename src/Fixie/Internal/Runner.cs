@@ -103,9 +103,8 @@
         AssemblyResult Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
             var assemblyResult = new AssemblyResult(assembly.Location);
-            var assemblyInfo = new AssemblyInfo(assembly);
 
-            listener.AssemblyStarted(assemblyInfo);
+            listener.AssemblyStarted(new AssemblyStarted(assembly));
 
             foreach (var convention in conventions)
             {
@@ -114,7 +113,7 @@
                 assemblyResult.Add(conventionResult);
             }
 
-            listener.AssemblyCompleted(assemblyInfo, assemblyResult);
+            listener.AssemblyCompleted(new AssemblyCompleted(assembly, assemblyResult));
 
             return assemblyResult;
         }

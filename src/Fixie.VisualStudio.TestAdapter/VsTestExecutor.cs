@@ -39,8 +39,7 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        var listener = new VisualStudioListener(frameworkHandle, assemblyPath);
-
+                        using (var listener = new VisualStudioListener(frameworkHandle, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                             environment.RunAssembly(new Options(), listener);
                     }
@@ -85,8 +84,7 @@
 
                         var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
 
-                        var listener = new VisualStudioListener(frameworkHandle, assemblyPath);
-
+                        using (var listener = new VisualStudioListener(frameworkHandle, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                             environment.RunMethods(new Options(), listener, methodGroups);
                     }

@@ -6,6 +6,7 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
+    using Execution;
     using Fixie.Internal;
     using Fixie.VisualStudio.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -15,14 +16,19 @@
 
     public class VisualStudioListenerTests
     {
+        public void ShouldAllowRunnersInOtherAppDomainsToReportTestDiscoveryAndExecutionToVisualStudio()
+        {
+            typeof(VisualStudioListener).ShouldBeSafeAppDomainCommunicationInterface();
+        }
+
         public void ShouldReportResultsToExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
             using (var console = new RedirectedConsole())
+            using (var listener = new VisualStudioListener(recorder, assemblyPath))
             {
-                var listener = new VisualStudioListener(recorder, assemblyPath);
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
                 convention.Parameters.Add<InputAttributeParameterSource>();

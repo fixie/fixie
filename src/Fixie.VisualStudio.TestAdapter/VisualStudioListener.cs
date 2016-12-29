@@ -6,6 +6,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
     public class VisualStudioListener :
+        LongLivedMarshalByRefObject,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>

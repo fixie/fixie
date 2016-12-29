@@ -39,6 +39,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExecutionEnvironment.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Listeners\AppVeyorListener.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />

@@ -66,7 +66,6 @@
     <Compile Include="Conventions\ClassExpression.cs" />
     <Compile Include="Internal\MethodDiscoverer.cs" />
     <Compile Include="Conventions\AssertionLibraryExpression.cs" />
-    <Compile Include="Execution\ExecutionEnvironment.cs" />
     <Compile Include="Internal\ClassRunner.cs" />
     <Compile Include="Internal\ExecutionPlan.cs" />
     <Compile Include="Internal\GenericArgumentResolver.cs" />

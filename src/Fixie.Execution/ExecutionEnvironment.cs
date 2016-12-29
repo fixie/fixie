@@ -3,9 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Security;
     using System.Security.Permissions;
     using Internal;
+    using Listeners;
 
     public class ExecutionEnvironment : IDisposable
     {
@@ -29,7 +31,17 @@
                 return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
         }
 
-        public AssemblyResult RunAssembly(Options options, Listener listener)
+        public AssemblyResult RunAssembly(Options options)
+        {
+            var listener = GetListener(options);
+
+            using (var executionProxy = Create<ExecutionProxy>())
+            using (var bus = new Bus(listener))
+                return executionProxy.RunAssembly(assemblyFullPath, options, bus);
+        }
+
+        public AssemblyResult RunAssembly<TListener>(Options options, TListener listener)
+            where TListener : LongLivedMarshalByRefObject, Listener
         {
             using (var executionProxy = Create<ExecutionProxy>())
             using (var bus = new Bus(listener))
@@ -71,6 +83,35 @@
             var configFullPath = assemblyFullPath + ".config";
 
             return File.Exists(configFullPath) ? configFullPath : null;
+        }
+
+        static Listener GetListener(Options options)
+        {
+            if (ShouldUseTeamCityListener(options))
+                return new TeamCityListener();
+
+            if (ShouldUseAppVeyorListener())
+                return new AppVeyorListener();
+
+            return new ConsoleListener();
+        }
+
+        static bool ShouldUseTeamCityListener(Options options)
+        {
+            var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
+
+            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
+
+            var useTeamCityListener =
+                (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
+                (!teamCityExplicitlySpecified && runningUnderTeamCity);
+
+            return useTeamCityListener;
+        }
+
+        static bool ShouldUseAppVeyorListener()
+        {
+            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
         }
     }
 }

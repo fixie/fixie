@@ -3,7 +3,6 @@
     using System;
     using System.Diagnostics;
     using System.Text;
-    using System.Linq;
     using System.Xml.Linq;
     using Execution;
     using Execution.Listeners;
@@ -105,36 +104,7 @@
         static AssemblyResult Execute(string assemblyPath, Options options)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
-                return environment.RunAssembly(options, GetListener(options));
-        }
-
-        static Listener GetListener(Options options)
-        {
-            if (ShouldUseTeamCityListener(options))
-                return new TeamCityListener();
-
-            if (ShouldUseAppVeyorListener())
-                return new AppVeyorListener();
-
-            return new ConsoleListener();
-        }
-
-        static bool ShouldUseTeamCityListener(Options options)
-        {
-            var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
-
-            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
-
-            var useTeamCityListener =
-                (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
-                (!teamCityExplicitlySpecified && runningUnderTeamCity);
-
-            return useTeamCityListener;
-        }
-
-        static bool ShouldUseAppVeyorListener()
-        {
-            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
+                return environment.RunAssembly(options);
         }
     }
 }

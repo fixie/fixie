@@ -1,15 +1,25 @@
 namespace Fixie.Execution
 {
+    using System.Collections.Generic;
+
     public class Bus
     {
-        readonly Listener listener;
+        readonly List<Listener> listeners;
 
         public Bus(Listener listener)
+            : this(new[] { listener })
         {
-            this.listener = listener;
+        }
+
+        public Bus(IReadOnlyList<Listener> listeners)
+        {
+            this.listeners = new List<Listener>(listeners);
         }
 
         public void Publish<TMessage>(TMessage message) where TMessage : Message
-            => (listener as Handler<TMessage>)?.Handle(message);
+        {
+            foreach (var listener in listeners)
+                (listener as Handler<TMessage>)?.Handle(message);
+        }
     }
 }

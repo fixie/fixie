@@ -19,8 +19,6 @@
         {
             var now = DateTime.UtcNow;
 
-            var classes = assemblyReport.Conventions.SelectMany(x => x.Classes);
-
             return new XElement("assembly",
                 new XAttribute("name", assemblyReport.Location),
                 new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
@@ -33,10 +31,10 @@
                 new XAttribute("skipped", assemblyReport.Skipped),
                 new XAttribute("environment", String.Format("{0}-bit .NET {1}", IntPtr.Size * 8, Environment.Version)),
                 new XAttribute("test-framework", Framework.Version),
-                classes.Select(Class));
+                assemblyReport.Classes.Select(Class));
         }
 
-        private static XElement Class(ClassReport classReport)
+        static XElement Class(ClassReport classReport)
         {
             return new XElement("class",
                 new XAttribute("time", Seconds(classReport.Duration)),
@@ -48,7 +46,7 @@
                 classReport.Cases.Select(Case));
         }
 
-        private static XElement Case(CaseCompleted message)
+        static XElement Case(CaseCompleted message)
         {
             var @case = new XElement("test",
                 new XAttribute("name", message.Name),

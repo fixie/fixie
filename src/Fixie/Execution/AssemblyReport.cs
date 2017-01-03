@@ -8,25 +8,25 @@
     [Serializable]
     public class AssemblyReport
     {
-        readonly List<ConventionReport> conventions;
+        readonly List<ClassReport> classes;
 
         public AssemblyReport(string location)
         {
-            conventions = new List<ConventionReport>();
+            classes = new List<ClassReport>();
             Location = location;
         }
 
-        public void Add(ConventionReport conventionReport) => conventions.Add(conventionReport);
+        public void Add(ClassReport classReport) => classes.Add(classReport);
 
         public string Location { get; }
 
-        public TimeSpan Duration => new TimeSpan(conventions.Sum(result => result.Duration.Ticks));
+        public TimeSpan Duration => new TimeSpan(classes.Sum(result => result.Duration.Ticks));
 
-        public IReadOnlyList<ConventionReport> Conventions => conventions;
+        public IReadOnlyList<ClassReport> Classes => classes;
 
-        public int Passed => conventions.Sum(@class => @class.Passed);
-        public int Failed => conventions.Sum(@class => @class.Failed);
-        public int Skipped => conventions.Sum(@class => @class.Skipped);
+        public int Passed => classes.Sum(@class => @class.Passed);
+        public int Failed => classes.Sum(@class => @class.Failed);
+        public int Skipped => classes.Sum(@class => @class.Skipped);
         public int Total => Passed + Failed + Skipped;
 
         public string Summary

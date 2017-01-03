@@ -62,19 +62,7 @@
                 new XAttribute("time", Seconds(assemblyReport.Duration)),
                 new XAttribute("executed", true),
                 new XAttribute("result", assemblyReport.Failed > 0 ? "Failure" : "Success"),
-                new XElement("results", assemblyReport.Conventions.Select(Convention)));
-        }
-
-        static XElement Convention(ConventionReport conventionReport)
-        {
-            return new XElement("test-suite",
-                new XAttribute("type", "TestSuite"),
-                new XAttribute("success", conventionReport.Failed == 0),
-                new XAttribute("name", conventionReport.Name),
-                new XAttribute("time", Seconds(conventionReport.Duration)),
-                new XAttribute("executed", true),
-                new XAttribute("result", conventionReport.Failed > 0 ? "Failure" : "Success"),
-                new XElement("results", conventionReport.Classes.Select(Class)));
+                new XElement("results", assemblyReport.Classes.Select(Class)));
         }
 
         static XElement Class(ClassReport classReport)

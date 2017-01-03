@@ -25,8 +25,8 @@
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters.Add<InputAttributeParameterSource>();
-            var assemblyResult = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
-            executionReport.Add(assemblyResult);
+            var assemblyReport = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
+            executionReport.Add(assemblyReport);
 
             var report = new XUnitXmlReport();
             var actual = report.Transform(executionReport);

@@ -41,6 +41,7 @@
     <Compile Include="Execution\Bus.cs" />
     <Compile Include="Execution\Message.cs" />
     <Compile Include="Framework.cs" />
+    <Compile Include="InternalsVisibleTo.cs" />
     <Compile Include="Internal\Discoverer.cs" />
     <Compile Include="Internal\ParameterDiscoverer.cs" />
     <Compile Include="Internal\Behaviors\TimeClassExecution.cs" />
@@ -97,7 +98,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Execution\AssemblyResult.cs" />
-    <Compile Include="Internal\Runner.cs" />
     <Compile Include="Execution\CaseSkipped.cs" />
   </ItemGroup>
   <ItemGroup>

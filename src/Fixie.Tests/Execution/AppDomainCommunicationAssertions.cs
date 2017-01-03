@@ -65,6 +65,16 @@ namespace Fixie.Tests.Execution
                 return true;
             }
 
+            if (type == typeof(object[]))
+            {
+                //Because we cannot fully automate all of these scenarios programmatically,
+                //and because params object[] are quite useful to allow for the sake of
+                //passing Listener constructor arguments across the AppDomain boundary,
+                //we assume these are OK and depend on the caller to pass safe types
+                //from loadable assemblies.
+                return true;
+            }
+
             visitedTypes.Add(type);
 
             if (type == typeof(CaseCompleted))

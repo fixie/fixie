@@ -35,20 +35,20 @@
         public AssemblyResult RunAssembly(Options options)
             => executionProxy.RunAssembly(assemblyFullPath, options);
 
-        public AssemblyResult RunAssembly<TListener>(Options options, TListener listener)
-            where TListener : LongLivedMarshalByRefObject, Listener
+        public AssemblyResult RunAssembly<TListener>(Options options, params object[] listenerArguments)
+            where TListener : Listener
         {
             assemblyResolver.RegisterAssemblyLocation(typeof(TListener).Assembly.Location);
 
-            return executionProxy.RunAssembly(assemblyFullPath, options, listener);
+            return executionProxy.RunAssembly<TListener>(assemblyFullPath, options, listenerArguments);
         }
 
-        public AssemblyResult RunMethods<TListener>(Options options, TListener listener, MethodGroup[] methodGroups)
-            where TListener : LongLivedMarshalByRefObject, Listener
+        public AssemblyResult RunMethods<TListener>(Options options, MethodGroup[] methodGroups, params object[] listenerArguments)
+            where TListener : Listener
         {
             assemblyResolver.RegisterAssemblyLocation(typeof(TListener).Assembly.Location);
 
-            return executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
+            return executionProxy.RunMethods<TListener>(assemblyFullPath, options, methodGroups, listenerArguments);
         }
 
         T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()

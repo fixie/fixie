@@ -18,22 +18,25 @@
         public AssemblyResult RunAssembly(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
-
-            return Runner(options, GetListener(options)).RunAssembly(assembly);
-        }
-
-        public AssemblyResult RunAssembly<TListener>(string assemblyFullPath, Options options, TListener listener)
-            where TListener : LongLivedMarshalByRefObject, Listener
-        {
-            var assembly = LoadAssembly(assemblyFullPath);
+            var listener = GetListener(options);
 
             return Runner(options, listener).RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods<TListener>(string assemblyFullPath, Options options, TListener listener, MethodGroup[] methodGroups)
-            where TListener : LongLivedMarshalByRefObject, Listener
+        public AssemblyResult RunAssembly<TListener>(string assemblyFullPath, Options options, object[] listenerArguments)
+            where TListener : Listener
         {
             var assembly = LoadAssembly(assemblyFullPath);
+            var listener = GetListener<TListener>(listenerArguments);
+
+            return Runner(options, listener).RunAssembly(assembly);
+        }
+
+        public AssemblyResult RunMethods<TListener>(string assemblyFullPath, Options options, MethodGroup[] methodGroups, object[] listenerArguments)
+            where TListener : Listener
+        {
+            var assembly = LoadAssembly(assemblyFullPath);
+            var listener = GetListener<TListener>(listenerArguments);
 
             return Runner(options, listener).RunMethods(assembly, methodGroups);
         }
@@ -47,6 +50,12 @@
         {
             var bus = new Bus(listener);
             return new Runner(bus, options);
+        }
+
+        static Listener GetListener<TListener>(object[] listenerArguments)
+            where TListener : Listener
+        {
+            return (Listener)Activator.CreateInstance(typeof(TListener), listenerArguments);
         }
 
         static Listener GetListener(Options options)

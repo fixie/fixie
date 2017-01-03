@@ -1,92 +1,59 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
-    using System;
     using Execution;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
     public class VisualStudioListener :
-        LongLivedMarshalByRefObject,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>
     {
-        readonly ITestExecutionRecorder log;
-        readonly string assemblyPath;
+        readonly ExecutionRecorder log;
 
-        public VisualStudioListener(ITestExecutionRecorder log, string assemblyPath)
+        public VisualStudioListener(ExecutionRecorder log)
         {
             this.log = log;
-            this.assemblyPath = assemblyPath;
         }
 
         public void Handle(CaseSkipped message)
         {
-            log.RecordResult(new TestResult(TestCase(message.MethodGroup))
+            log.RecordResult(new Result
             {
+                FullyQualifiedName = message.MethodGroup.FullName,
                 DisplayName = message.Name,
-                Outcome = Map(CaseStatus.Skipped),
-                ComputerName = Environment.MachineName,
-                ErrorMessage = message.SkipReason
+                Outcome = message.Status.ToString(),
+                Duration = message.Duration,
+                Output = message.Output,
+                ErrorMessage = message.SkipReason,
+                ErrorStackTrace = null
             });
         }
 
         public void Handle(CasePassed message)
         {
-            var testResult = new TestResult(TestCase(message.MethodGroup))
+            log.RecordResult(new Result
             {
+                FullyQualifiedName = message.MethodGroup.FullName,
                 DisplayName = message.Name,
-                Outcome = Map(CaseStatus.Passed),
+                Outcome = message.Status.ToString(),
                 Duration = message.Duration,
-                ComputerName = Environment.MachineName
-            };
-
-            AttachCapturedConsoleOutput(message.Output, testResult);
-
-            log.RecordResult(testResult);
+                Output = message.Output,
+                ErrorMessage = null,
+                ErrorStackTrace = null
+            });
         }
 
         public void Handle(CaseFailed message)
         {
-            var testResult = new TestResult(TestCase(message.MethodGroup))
+            log.RecordResult(new Result
             {
+                FullyQualifiedName = message.MethodGroup.FullName,
                 DisplayName = message.Name,
-                Outcome = Map(CaseStatus.Failed),
+                Outcome = message.Status.ToString(),
                 Duration = message.Duration,
-                ComputerName = Environment.MachineName,
+                Output = message.Output,
                 ErrorMessage = message.Exceptions.PrimaryException.DisplayName,
                 ErrorStackTrace = message.Exceptions.CompoundStackTrace
-            };
-
-            AttachCapturedConsoleOutput(message.Output, testResult);
-
-            log.RecordResult(testResult);
-        }
-
-        TestCase TestCase(MethodGroup methodGroup)
-        {
-            return new TestCase(methodGroup.FullName, VsTestExecutor.Uri, assemblyPath);
-        }
-
-        static TestOutcome Map(CaseStatus caseStatus)
-        {
-            switch (caseStatus)
-            {
-                case CaseStatus.Passed:
-                    return TestOutcome.Passed;
-                case CaseStatus.Failed:
-                    return TestOutcome.Failed;
-                case CaseStatus.Skipped:
-                    return TestOutcome.Skipped;
-                default:
-                    return TestOutcome.None;
-            }
-        }
-
-        static void AttachCapturedConsoleOutput(string output, TestResult testResult)
-        {
-            if (!String.IsNullOrEmpty(output))
-                testResult.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, output));
+            });
         }
     }
 }

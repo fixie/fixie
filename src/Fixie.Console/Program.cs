@@ -108,10 +108,11 @@
             {
                 if (ShouldUseTeamCityListener(options))
                     environment.RegisterListener<TeamCityListener>();
-                else if (ShouldUseAppVeyorListener())
-                    environment.RegisterListener<AppVeyorListener>();
                 else
                     environment.RegisterListener<ConsoleListener>();
+
+                if (ShouldUseAppVeyorListener())
+                    environment.RegisterListener<AppVeyorListener>();
 
                 return environment.RunAssembly(options);
             }

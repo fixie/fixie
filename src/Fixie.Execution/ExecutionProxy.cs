@@ -20,14 +20,14 @@
             return new Discoverer(options).DiscoverTestMethodGroups(assembly);
         }
 
-        public AssemblyResult RunAssembly(string assemblyFullPath, Options options)
+        public AssemblyReport RunAssembly(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             return Runner(options).RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
+        public AssemblyReport RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 

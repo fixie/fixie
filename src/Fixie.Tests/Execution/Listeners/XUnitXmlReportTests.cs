@@ -21,15 +21,15 @@
             var bus = new Bus(listener);
             var runner = new Runner(bus);
 
-            var executionResult = new ExecutionResult();
+            var executionReport = new ExecutionReport();
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters.Add<InputAttributeParameterSource>();
             var assemblyResult = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
-            executionResult.Add(assemblyResult);
+            executionReport.Add(assemblyResult);
 
             var report = new XUnitXmlReport();
-            var actual = report.Transform(executionResult);
+            var actual = report.Transform(executionReport);
 
             XsdValidate(actual);
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);

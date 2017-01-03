@@ -1,8 +1,8 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Execution
 {
     using System.Collections.Generic;
     using System.Reflection;
-    using Execution;
+    using Internal;
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {

@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Security;
     using System.Security.Permissions;
-    using Internal;
     using Listeners;
 
     public class ExecutionEnvironment : IDisposable
@@ -55,9 +54,9 @@
                 return executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
         }
 
-        T Create<T>() where T : MarshalByRefObject, new()
+        T Create<T>() where T : LongLivedMarshalByRefObject, new()
         {
-            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, null, null, null);
+            return (T)appDomain.CreateInstanceFromAndUnwrap(typeof(T).Assembly.Location, typeof(T).FullName, false, 0, null, null, null, null);
         }
 
         public void Dispose()

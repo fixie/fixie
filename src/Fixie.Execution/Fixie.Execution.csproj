@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="ExecutionEnvironment.cs" />
+    <Compile Include="ExecutionProxy.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Listeners\AppVeyorListener.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />

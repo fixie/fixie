@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Linq;
     using System.Text;
     using System.Xml.Linq;
     using Execution;
@@ -104,7 +105,34 @@
         static AssemblyResult Execute(string assemblyPath, Options options)
         {
             using (var environment = new ExecutionEnvironment(assemblyPath))
+            {
+                if (ShouldUseTeamCityListener(options))
+                    environment.RegisterListener<TeamCityListener>();
+                else if (ShouldUseAppVeyorListener())
+                    environment.RegisterListener<AppVeyorListener>();
+                else
+                    environment.RegisterListener<ConsoleListener>();
+
                 return environment.RunAssembly(options);
+            }
+        }
+
+        static bool ShouldUseTeamCityListener(Options options)
+        {
+            var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
+
+            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
+
+            var useTeamCityListener =
+                (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
+                (!teamCityExplicitlySpecified && runningUnderTeamCity);
+
+            return useTeamCityListener;
+        }
+
+        static bool ShouldUseAppVeyorListener()
+        {
+            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
         }
     }
 }

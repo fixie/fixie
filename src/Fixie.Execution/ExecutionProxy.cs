@@ -2,12 +2,17 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
-    using Listeners;
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
+        readonly List<Listener> listeners = new List<Listener>();
+
+        public void RegisterListener<TListener>(object[] listenerArguments) where TListener : Listener
+        {
+            listeners.Add((Listener)Activator.CreateInstance(typeof(TListener), listenerArguments));
+        }
+
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
@@ -18,27 +23,15 @@
         public AssemblyResult RunAssembly(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
-            var listener = GetListener(options);
 
-            return Runner(options, listener).RunAssembly(assembly);
+            return Runner(options).RunAssembly(assembly);
         }
 
-        public AssemblyResult RunAssembly<TListener>(string assemblyFullPath, Options options, object[] listenerArguments)
-            where TListener : Listener
+        public AssemblyResult RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
-            var listener = GetListener<TListener>(listenerArguments);
 
-            return Runner(options, listener).RunAssembly(assembly);
-        }
-
-        public AssemblyResult RunMethods<TListener>(string assemblyFullPath, Options options, MethodGroup[] methodGroups, object[] listenerArguments)
-            where TListener : Listener
-        {
-            var assembly = LoadAssembly(assemblyFullPath);
-            var listener = GetListener<TListener>(listenerArguments);
-
-            return Runner(options, listener).RunMethods(assembly, methodGroups);
+            return Runner(options).RunMethods(assembly, methodGroups);
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -46,45 +39,10 @@
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        static Runner Runner(Options options, Listener listener)
+        Runner Runner(Options options)
         {
-            var bus = new Bus(listener);
+            var bus = new Bus(listeners);
             return new Runner(bus, options);
-        }
-
-        static Listener GetListener<TListener>(object[] listenerArguments)
-            where TListener : Listener
-        {
-            return (Listener)Activator.CreateInstance(typeof(TListener), listenerArguments);
-        }
-
-        static Listener GetListener(Options options)
-        {
-            if (ShouldUseTeamCityListener(options))
-                return new TeamCityListener();
-
-            if (ShouldUseAppVeyorListener())
-                return new AppVeyorListener();
-
-            return new ConsoleListener();
-        }
-
-        static bool ShouldUseTeamCityListener(Options options)
-        {
-            var teamCityExplicitlySpecified = options.Contains(CommandLineOption.TeamCity);
-
-            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
-
-            var useTeamCityListener =
-                (teamCityExplicitlySpecified && options[CommandLineOption.TeamCity].First() == "on") ||
-                (!teamCityExplicitlySpecified && runningUnderTeamCity);
-
-            return useTeamCityListener;
-        }
-
-        static bool ShouldUseAppVeyorListener()
-        {
-            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
         }
     }
 }

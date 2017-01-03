@@ -41,7 +41,10 @@
 
                         using (var executionRecorder = new ExecutionRecorder(frameworkHandle, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
-                            environment.RunAssembly<VisualStudioListener>(new Options(), executionRecorder);
+                        {
+                            environment.RegisterListener<VisualStudioListener>(executionRecorder);
+                            environment.RunAssembly(new Options());
+                        }
                     }
                     else
                     {
@@ -86,7 +89,10 @@
 
                         using (var executionRecorder = new ExecutionRecorder(frameworkHandle, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
-                            environment.RunMethods<VisualStudioListener>(new Options(), methodGroups, executionRecorder);
+                        {
+                            environment.RegisterListener<VisualStudioListener>(executionRecorder);
+                            environment.RunMethods(new Options(), methodGroups);
+                        }
                     }
                     else
                     {

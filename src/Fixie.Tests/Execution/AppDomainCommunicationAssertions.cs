@@ -57,14 +57,6 @@ namespace Fixie.Tests.Execution
             //     also not acceptable for AppDomain communication because they can cause
             //     assembly load failures at runtime.
 
-            if (type.IsSubclassOf(typeof(LongLivedMarshalByRefObject)) && typeof(Listener).IsAssignableFrom(type))
-            {
-                //Because we cannot fully automate all of these scenarios programmatcially,
-                //and because we attempt to vet such rare cross-AppDomain Listener types
-                //independently as special cases, we can assume this is safe here.
-                return true;
-            }
-
             if (type == typeof(object[]))
             {
                 //Because we cannot fully automate all of these scenarios programmatically,

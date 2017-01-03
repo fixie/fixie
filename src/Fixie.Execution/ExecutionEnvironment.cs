@@ -29,27 +29,20 @@
             executionProxy = Create<ExecutionProxy>();
         }
 
+        public void RegisterListener<TListener>(params object[] listenerArguments) where TListener : Listener
+        {
+            assemblyResolver.RegisterAssemblyLocation(typeof(TListener).Assembly.Location);
+            executionProxy.RegisterListener<TListener>(listenerArguments);
+        }
+
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
             => executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
 
         public AssemblyResult RunAssembly(Options options)
             => executionProxy.RunAssembly(assemblyFullPath, options);
 
-        public AssemblyResult RunAssembly<TListener>(Options options, params object[] listenerArguments)
-            where TListener : Listener
-        {
-            assemblyResolver.RegisterAssemblyLocation(typeof(TListener).Assembly.Location);
-
-            return executionProxy.RunAssembly<TListener>(assemblyFullPath, options, listenerArguments);
-        }
-
-        public AssemblyResult RunMethods<TListener>(Options options, MethodGroup[] methodGroups, params object[] listenerArguments)
-            where TListener : Listener
-        {
-            assemblyResolver.RegisterAssemblyLocation(typeof(TListener).Assembly.Location);
-
-            return executionProxy.RunMethods<TListener>(assemblyFullPath, options, methodGroups, listenerArguments);
-        }
+        public AssemblyResult RunMethods(Options options, MethodGroup[] methodGroups)
+            => executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
 
         T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()
         {

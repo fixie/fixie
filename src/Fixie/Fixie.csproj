@@ -42,8 +42,6 @@
     <Compile Include="Execution\Message.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
-    <Compile Include="Internal\Discoverer.cs" />
-    <Compile Include="Internal\ParameterDiscoverer.cs" />
     <Compile Include="Internal\Behaviors\TimeClassExecution.cs" />
     <Compile Include="MethodGroup.cs" />
     <Compile Include="Execution\AssemblyStarted.cs" />
@@ -53,8 +51,6 @@
     <Compile Include="Internal\Behaviors\CreateInstancePerClass.cs" />
     <Compile Include="Internal\Behaviors\ExecuteCases.cs" />
     <Compile Include="FixtureBehavior.cs" />
-    <Compile Include="Internal\ClassDiscoverer.cs" />
-    <Compile Include="Internal\ConventionDiscoverer.cs" />
     <Compile Include="Internal\AssertionLibraryFilter.cs" />
     <Compile Include="Internal\Configuration.cs" />
     <Compile Include="Internal\ConstructionFrequency.cs" />
@@ -64,9 +60,7 @@
     <Compile Include="SkipBehavior.cs" />
     <Compile Include="TestAssembly.cs" />
     <Compile Include="Conventions\ClassExpression.cs" />
-    <Compile Include="Internal\MethodDiscoverer.cs" />
     <Compile Include="Conventions\AssertionLibraryExpression.cs" />
-    <Compile Include="Internal\ClassRunner.cs" />
     <Compile Include="Internal\ExecutionPlan.cs" />
     <Compile Include="Internal\GenericArgumentResolver.cs" />
     <Compile Include="Internal\RedirectedConsole.cs" />

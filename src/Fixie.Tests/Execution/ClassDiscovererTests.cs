@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests.Execution
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using Conventions;
-    using Fixie.Internal;
+    using Fixie.Execution;
     using Should;
 
     public class ClassDiscovererTests
@@ -238,7 +238,7 @@
     }
 }
 
-namespace Fixie.Tests.Internal.NestedNamespace
+namespace Fixie.Tests.Execution.NestedNamespace
 {
     class InNestedNamespace { }
 }

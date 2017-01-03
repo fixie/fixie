@@ -1,8 +1,8 @@
-﻿namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests.Execution
 {
     using System.Collections.Generic;
     using System.Reflection;
-    using Fixie.Internal;
+    using Fixie.Execution;
     using Should;
 
     public class ParameterDiscovererTests

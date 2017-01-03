@@ -11,6 +11,8 @@
         readonly string assemblyFullPath;
         readonly AppDomain appDomain;
         readonly string previousWorkingDirectory;
+        readonly RemoteAssemblyResolver assemblyResolver;
+        readonly ExecutionProxy executionProxy;
 
         public ExecutionEnvironment(string assemblyPath)
         {
@@ -20,41 +22,49 @@
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
+
+            assemblyResolver = CreateFrom<RemoteAssemblyResolver>();
+            assemblyResolver.RegisterAssemblyLocation(typeof(ExecutionProxy).Assembly.Location);
+
+            executionProxy = Create<ExecutionProxy>();
         }
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
-        {
-            using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
-        }
+            => executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
 
         public AssemblyResult RunAssembly(Options options)
-        {
-            using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunAssembly(assemblyFullPath, options);
-        }
+            => executionProxy.RunAssembly(assemblyFullPath, options);
 
         public AssemblyResult RunAssembly<TListener>(Options options, TListener listener)
             where TListener : LongLivedMarshalByRefObject, Listener
         {
-            using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunAssembly(assemblyFullPath, options, listener);
+            assemblyResolver.RegisterAssemblyLocation(typeof(TListener).Assembly.Location);
+
+            return executionProxy.RunAssembly(assemblyFullPath, options, listener);
         }
 
         public AssemblyResult RunMethods<TListener>(Options options, TListener listener, MethodGroup[] methodGroups)
             where TListener : LongLivedMarshalByRefObject, Listener
         {
-            using (var executionProxy = Create<ExecutionProxy>())
-                return executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
+            assemblyResolver.RegisterAssemblyLocation(typeof(TListener).Assembly.Location);
+
+            return executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
         }
 
-        T Create<T>() where T : LongLivedMarshalByRefObject, new()
+        T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()
         {
             return (T)appDomain.CreateInstanceFromAndUnwrap(typeof(T).Assembly.Location, typeof(T).FullName, false, 0, null, null, null, null);
         }
 
+        T Create<T>() where T : LongLivedMarshalByRefObject, new()
+        {
+            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, null, null, null);
+        }
+
         public void Dispose()
         {
+            executionProxy.Dispose();
+            assemblyResolver.Dispose();
             AppDomain.Unload(appDomain);
             Directory.SetCurrentDirectory(previousWorkingDirectory);
         }

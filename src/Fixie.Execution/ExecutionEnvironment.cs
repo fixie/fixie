@@ -55,9 +55,9 @@
                 return executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
         }
 
-        T Create<T>(params object[] args) where T : MarshalByRefObject
+        T Create<T>() where T : MarshalByRefObject, new()
         {
-            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, args, null, null);
+            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, null, null, null);
         }
 
         public void Dispose()

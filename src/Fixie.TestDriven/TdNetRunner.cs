@@ -44,19 +44,18 @@ namespace Fixie.TestDriven
         static TestRunState Run(ITestListener testListener, Func<Runner, AssemblyResult> run)
         {
             var listener = new TestDrivenListener(testListener);
-            using (var bus = new Bus(listener))
-            {
-                var runner = new Runner(bus);
-                var result = run(runner);
+            var bus = new Bus(listener);
 
-                if (result.Total == 0)
-                    return TestRunState.NoTests;
+            var runner = new Runner(bus);
+            var result = run(runner);
 
-                if (result.Failed > 0)
-                    return TestRunState.Failure;
+            if (result.Total == 0)
+                return TestRunState.NoTests;
 
-                return TestRunState.Success;
-            }
+            if (result.Failed > 0)
+                return TestRunState.Failure;
+
+            return TestRunState.Success;
         }
     }
 }

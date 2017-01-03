@@ -18,25 +18,25 @@
 
         public AssemblyResult RunAssembly(string assemblyFullPath, Options options)
         {
-            var listener = GetListener(options);
             var assembly = LoadAssembly(assemblyFullPath);
 
-            using (var bus = new Bus(listener))
-                return Runner(options, bus).RunAssembly(assembly);
+            return Runner(options, GetListener(options)).RunAssembly(assembly);
         }
 
-        public AssemblyResult RunAssembly(string assemblyFullPath, Options options, Bus bus)
+        public AssemblyResult RunAssembly<TListener>(string assemblyFullPath, Options options, TListener listener)
+            where TListener : LongLivedMarshalByRefObject, Listener
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Runner(options, bus).RunAssembly(assembly);
+            return Runner(options, listener).RunAssembly(assembly);
         }
 
-        public AssemblyResult RunMethods(string assemblyFullPath, Options options, Bus bus, MethodGroup[] methodGroups)
+        public AssemblyResult RunMethods<TListener>(string assemblyFullPath, Options options, TListener listener, MethodGroup[] methodGroups)
+            where TListener : LongLivedMarshalByRefObject, Listener
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Runner(options, bus).RunMethods(assembly, methodGroups);
+            return Runner(options, listener).RunMethods(assembly, methodGroups);
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -44,8 +44,9 @@
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        static Runner Runner(Options options, Bus bus)
+        static Runner Runner(Options options, Listener listener)
         {
+            var bus = new Bus(listener);
             return new Runner(bus, options);
         }
 

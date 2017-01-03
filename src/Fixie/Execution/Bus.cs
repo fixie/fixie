@@ -1,6 +1,6 @@
 namespace Fixie.Execution
 {
-    public class Bus : LongLivedMarshalByRefObject
+    public class Bus
     {
         readonly Listener listener;
 

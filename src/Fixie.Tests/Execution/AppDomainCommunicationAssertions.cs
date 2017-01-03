@@ -57,11 +57,11 @@ namespace Fixie.Tests.Execution
             //     also not acceptable for AppDomain communication because they can cause
             //     assembly load failures at runtime.
 
-            if (type == typeof(Bus))
+            if (type.IsSubclassOf(typeof(LongLivedMarshalByRefObject)) && typeof(Listener).IsAssignableFrom(type))
             {
-                //Because we check all Message types for AppDomain safety already,
-                //and because Bus has a well-known stable interface that cares only
-                //about Message types, we can assume Bus is safe.
+                //Because we cannot fully automate all of these scenarios programmatcially,
+                //and because we attempt to vet such rare cross-AppDomain Listener types
+                //independently as special cases, we can assume this is safe here.
                 return true;
             }
 

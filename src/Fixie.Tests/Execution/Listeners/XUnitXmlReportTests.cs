@@ -18,23 +18,21 @@
         public void ShouldProduceValidXmlDocument()
         {
             var listener = new StubListener();
-            using (var bus = new Bus(listener))
-            {
-                var runner = new Runner(bus);
+            var bus = new Bus(listener);
+            var runner = new Runner(bus);
 
-                var executionResult = new ExecutionResult();
-                var convention = SelfTestConvention.Build();
-                convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
-                convention.Parameters.Add<InputAttributeParameterSource>();
-                var assemblyResult = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
-                executionResult.Add(assemblyResult);
+            var executionResult = new ExecutionResult();
+            var convention = SelfTestConvention.Build();
+            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+            convention.Parameters.Add<InputAttributeParameterSource>();
+            var assemblyResult = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
+            executionResult.Add(assemblyResult);
 
-                var report = new XUnitXmlReport();
-                var actual = report.Transform(executionResult);
+            var report = new XUnitXmlReport();
+            var actual = report.Transform(executionResult);
 
-                XsdValidate(actual);
-                CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
-            }
+            XsdValidate(actual);
+            CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
         }
 
         static void XsdValidate(XDocument doc)

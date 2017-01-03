@@ -38,8 +38,8 @@
 
         public static void Run(this Type sampleTestClass, Listener listener, Convention convention)
         {
-            using (var bus = new Bus(listener))
-                new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
+            var bus = new Bus(listener);
+            new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
         }
     }
 }

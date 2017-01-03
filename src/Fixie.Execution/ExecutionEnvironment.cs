@@ -38,15 +38,14 @@
             where TListener : LongLivedMarshalByRefObject, Listener
         {
             using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listener))
-                return executionProxy.RunAssembly(assemblyFullPath, options, bus);
+                return executionProxy.RunAssembly(assemblyFullPath, options, listener);
         }
 
-        public AssemblyResult RunMethods(Options options, Listener listener, MethodGroup[] methodGroups)
+        public AssemblyResult RunMethods<TListener>(Options options, TListener listener, MethodGroup[] methodGroups)
+            where TListener : LongLivedMarshalByRefObject, Listener
         {
             using (var executionProxy = Create<ExecutionProxy>())
-            using (var bus = new Bus(listener))
-                return executionProxy.RunMethods(assemblyFullPath, options, bus, methodGroups);
+                return executionProxy.RunMethods(assemblyFullPath, options, listener, methodGroups);
         }
 
         T Create<T>() where T : LongLivedMarshalByRefObject, new()

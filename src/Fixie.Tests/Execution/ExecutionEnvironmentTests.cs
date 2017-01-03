@@ -40,5 +40,13 @@ namespace Fixie.Tests.Execution
 
             quirksAreEnabled.ShouldEqual(!targetFramework.Contains("4.5"));
         }
+
+        public void ShouldSetTheEntryAssembly()
+        {
+            var entryAssembly = Assembly.GetEntryAssembly();
+
+            entryAssembly.ShouldNotBeNull();
+            entryAssembly.ShouldEqual(typeof(ExecutionEnvironmentTests).Assembly);
+        }
     }
 }

@@ -2,7 +2,6 @@
 {
     using System;
 
-    [Serializable]
     public class CaseSkipped : CaseCompleted
     {
         public CaseSkipped(Case @case, string skipReason)

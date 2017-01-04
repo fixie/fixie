@@ -3,7 +3,6 @@ namespace Fixie.Execution
     using System;
     using Internal;
 
-    [Serializable]
     public class ExceptionInfo
     {
         public ExceptionInfo(Exception exception, AssertionLibraryFilter filter)

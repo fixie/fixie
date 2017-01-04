@@ -61,24 +61,44 @@
             parser.Errors.ShouldEqual($"Specified assembly {mscorlib} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
         }
 
-        public void ParsesNUnitXmlOutputFile()
+        public void ParsesNUnitXmlReportFormat()
         {
-            var parser = new CommandLineParser(assemblyPath, "--NUnitXml", "TestResult.xml");
+            var parser = new CommandLineParser(assemblyPath, "--ReportFormat", "NUnit");
             parser.AssemblyPath.ShouldEqual(assemblyPath);
-            parser.Options.Keys.ShouldEqual("NUnitXml");
-            parser.Options["NUnitXml"].ShouldEqual("TestResult.xml");
+            parser.Options.Keys.ShouldEqual("ReportFormat");
+            parser.Options["ReportFormat"].ShouldEqual("NUnit");
             parser.HasErrors.ShouldBeFalse();
             parser.Errors.ShouldBeEmpty();
         }
 
-        public void ParsesXUnitXmlOutputFile()
+        public void ParsesXUnitXmlReportFormat()
         {
-            var parser = new CommandLineParser(assemblyPath, "--xUnitXml", "TestResult.xml");
+            var parser = new CommandLineParser(assemblyPath, "--ReportFormat", "xUnit");
             parser.AssemblyPath.ShouldEqual(assemblyPath);
-            parser.Options.Keys.ShouldEqual("xUnitXml");
-            parser.Options["xUnitXml"].ShouldEqual("TestResult.xml");
+            parser.Options.Keys.ShouldEqual("ReportFormat");
+            parser.Options["ReportFormat"].ShouldEqual("xUnit");
             parser.HasErrors.ShouldBeFalse();
             parser.Errors.ShouldBeEmpty();
+        }
+
+        public void DemandsSupportedReportFormat()
+        {
+            var parser = new CommandLineParser(assemblyPath, "--ReportFormat", "unsupported");
+            parser.AssemblyPath.ShouldEqual(assemblyPath);
+            parser.Options.Keys.ShouldEqual("ReportFormat");
+            parser.Options["ReportFormat"].ShouldEqual("unsupported");
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual("The specified report format, 'unsupported', is not supported.");
+        }
+
+        public void DemandsAtMostOneReportFormat()
+        {
+            var parser = new CommandLineParser(assemblyPath, "--ReportFormat", "NUnit", "--ReportFormat", "xUnit");
+            parser.AssemblyPath.ShouldEqual(assemblyPath);
+            parser.Options.Keys.ShouldEqual("ReportFormat");
+            parser.Options["ReportFormat"].ShouldEqual("NUnit", "xUnit");
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual("To avoid writing multiple reports over the same file, only one report format may be specified.");
         }
 
         public void ParsesTeamCityOutputFlag()
@@ -104,8 +124,8 @@
 
         public void DemandsThatOptionsHaveExplicitValues()
         {
-            var parser = new CommandLineParser("--NUnitXml", "TestResult.xml", "--key");
-            parser.AssemblyPath.ShouldBeNull();
+            var parser = new CommandLineParser(assemblyPath, "--NUnitXml", "TestResult.xml", "--key");
+            parser.AssemblyPath.ShouldEqual(assemblyPath);
             parser.Options.Keys.ShouldEqual("NUnitXml");
             parser.Options["NUnitXml"].ShouldEqual("TestResult.xml");
             parser.HasErrors.ShouldBeTrue();
@@ -114,8 +134,8 @@
 
         public void DemandsThatOptionValuesCannotLookLikeKeys()
         {
-            var parser = new CommandLineParser("--NUnitXml", "--anotherKey");
-            parser.AssemblyPath.ShouldBeNull();
+            var parser = new CommandLineParser(assemblyPath, "--NUnitXml", "--anotherKey");
+            parser.AssemblyPath.ShouldEqual(assemblyPath);
             parser.Options.Count.ShouldEqual(0);
             parser.HasErrors.ShouldBeTrue();
             parser.Errors.ShouldEqual("Option --NUnitXml is missing its required value.");

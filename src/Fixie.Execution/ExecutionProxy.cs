@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Xml.Linq;
     using Listeners;
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
@@ -27,14 +27,14 @@
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Run(options, runner => runner.RunAssembly(assembly));
+            return Run(assemblyFullPath, options, runner => runner.RunAssembly(assembly));
         }
 
         public ExecutionSummary RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Run(options, r => r.RunMethods(assembly, methodGroups));
+            return Run(assemblyFullPath, options, r => r.RunMethods(assembly, methodGroups));
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -42,11 +42,11 @@
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        ExecutionSummary Run(Options options, Action<Runner> run)
+        ExecutionSummary Run(string assemblyFullPath, Options options, Action<Runner> run)
         {
             var summaryListener = new SummaryListener();
 
-            var listeners = GetListeners(options, summaryListener);
+            var listeners = GetListeners(assemblyFullPath, options, summaryListener);
             var bus = new Bus(listeners);
             var runner = new Runner(bus, options);
 
@@ -55,16 +55,16 @@
             return summaryListener.Summary;
         }
 
-        List<Listener> GetListeners(Options options, SummaryListener summaryListener)
+        List<Listener> GetListeners(string assemblyFullPath, Options options, SummaryListener summaryListener)
         {
-            var listeners = customListeners.Any() ? customListeners : DefaultListeners(options).ToList();
+            var listeners = customListeners.Any() ? customListeners : DefaultListeners(assemblyFullPath, options).ToList();
 
             listeners.Add(summaryListener);
 
             return listeners;
         }
 
-        static IEnumerable<Listener> DefaultListeners(Options options)
+        static IEnumerable<Listener> DefaultListeners(string assemblyFullPath, Options options)
         {
             if (ShouldUseTeamCityListener(options))
                 yield return new TeamCityListener();
@@ -74,11 +74,16 @@
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
 
-            foreach (var fileName in options[CommandLineOption.NUnitXml])
-                yield return new ReportListener<NUnitXml>(fileName);
+            foreach (var format in options[CommandLineOption.ReportFormat])
+            {
+                var fileName = Path.GetFileName(assemblyFullPath) + ".xml";
 
-            foreach (var fileName in options[CommandLineOption.XUnitXml])
-                yield return new ReportListener<XUnitXml>(fileName);
+                if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
+                    yield return new ReportListener<NUnitXml>(fileName);
+
+                else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
+                    yield return new ReportListener<XUnitXml>(fileName);
+            }
         }
 
         static bool ShouldUseTeamCityListener(Options options)

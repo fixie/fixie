@@ -6,15 +6,16 @@
     {
         public CaseSkipped(Case @case, string skipReason)
             : base(
-                  @class: @case.Class,
-                  method: @case.Method,
-                  status: CaseStatus.Skipped,
-                  name: @case.Name,
-                  output: null,
-                  duration: TimeSpan.Zero,
-                  exceptions: null,
-                  skipReason: skipReason
-                  )
+                @class: @case.Class,
+                method: @case.Method,
+                name: @case.Name,
+                status: CaseStatus.Skipped,
+                duration: TimeSpan.Zero,
+                output: null,
+
+                exceptions: null,
+                skipReason: skipReason
+                )
         {
         }
     }

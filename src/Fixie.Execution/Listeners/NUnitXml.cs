@@ -6,9 +6,9 @@
     using System.Xml.Linq;
     using Execution;
 
-    public class NUnitXmlReport
+    public class NUnitXml : XmlFormat
     {
-        public XDocument Transform(ExecutionResult executionResult)
+        public XDocument Transform(Report report)
         {
             var now = DateTime.UtcNow;
 
@@ -17,9 +17,9 @@
                     new XAttribute("date", now.ToString("yyyy-MM-dd")),
                     new XAttribute("time", now.ToString("HH:mm:ss")),
                     new XAttribute("name", "Results"),
-                    new XAttribute("total", executionResult.Total),
-                    new XAttribute("failures", executionResult.Failed),
-                    new XAttribute("not-run", executionResult.Skipped),
+                    new XAttribute("total", report.Total),
+                    new XAttribute("failures", report.Failed),
+                    new XAttribute("not-run", report.Skipped),
 
                     //Fixie has fewer test states than NUnit, so these counts are always zero.
                     new XAttribute("errors", 0), //Already accounted for by "failures" above.
@@ -30,7 +30,7 @@
 
                     Environment(),
                     CultureInfo(),
-                    executionResult.AssemblyResults.Select(Assembly)));
+                    Assembly(report)));
         }
 
         static XElement CultureInfo()
@@ -53,40 +53,28 @@
                 new XAttribute("user-domain", System.Environment.UserDomainName));
         }
 
-        static XElement Assembly(AssemblyResult assemblyResult)
+        static XElement Assembly(Report report)
         {
             return new XElement("test-suite",
                 new XAttribute("type", "Assembly"),
-                new XAttribute("success", assemblyResult.Failed == 0),
-                new XAttribute("name", assemblyResult.Name),
-                new XAttribute("time", Seconds(assemblyResult.Duration)),
+                new XAttribute("success", report.Failed == 0),
+                new XAttribute("name", report.Location),
+                new XAttribute("time", Seconds(report.Duration)),
                 new XAttribute("executed", true),
-                new XAttribute("result", assemblyResult.Failed > 0 ? "Failure" : "Success"),
-                new XElement("results", assemblyResult.ConventionResults.Select(Convention)));
+                new XAttribute("result", report.Failed > 0 ? "Failure" : "Success"),
+                new XElement("results", report.Classes.Select(Class)));
         }
 
-        static XElement Convention(ConventionResult conventionResult)
-        {
-            return new XElement("test-suite",
-                new XAttribute("type", "TestSuite"),
-                new XAttribute("success", conventionResult.Failed == 0),
-                new XAttribute("name", conventionResult.Name),
-                new XAttribute("time", Seconds(conventionResult.Duration)),
-                new XAttribute("executed", true),
-                new XAttribute("result", conventionResult.Failed > 0 ? "Failure" : "Success"),
-                new XElement("results", conventionResult.ClassResults.Select(Class)));
-        }
-
-        static XElement Class(ClassResult classResult)
+        static XElement Class(ClassReport classReport)
         {
             return new XElement("test-suite",
                 new XAttribute("type", "TestFixture"),
-                new XAttribute("name", classResult.Name),
-                new XAttribute("success", classResult.Failed == 0),
-                new XAttribute("time", Seconds(classResult.Duration)),
+                new XAttribute("name", classReport.Name),
+                new XAttribute("success", classReport.Failed == 0),
+                new XAttribute("time", Seconds(classReport.Duration)),
                 new XAttribute("executed", true),
-                new XAttribute("result", classResult.Failed > 0 ? "Failure" : "Success"),
-                new XElement("results", classResult.CaseResults.Select(Case)));
+                new XAttribute("result", classReport.Failed > 0 ? "Failure" : "Success"),
+                new XElement("results", classReport.Cases.Select(Case)));
         }
 
         static XElement Case(CaseCompleted message)

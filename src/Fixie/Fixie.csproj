@@ -84,14 +84,10 @@
     <Compile Include="PreservedException.cs" />
     <Compile Include="Execution\CaseCompleted.cs" />
     <Compile Include="Execution\CaseStatus.cs" />
-    <Compile Include="Execution\ClassResult.cs" />
-    <Compile Include="Execution\ConventionResult.cs" />
     <Compile Include="Execution\ExceptionInfo.cs" />
-    <Compile Include="Execution\ExecutionResult.cs" />
     <Compile Include="Internal\RunContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
-    <Compile Include="Execution\AssemblyResult.cs" />
     <Compile Include="Execution\CaseSkipped.cs" />
   </ItemGroup>
   <ItemGroup>

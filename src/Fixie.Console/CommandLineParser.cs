@@ -1,12 +1,16 @@
 ﻿namespace Fixie.ConsoleRunner
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
+    using Execution;
 
     public class CommandLineParser
     {
+        static readonly string[] SupportedReportFormats = { "NUnit", "xUnit" };
+
         public CommandLineParser(params string[] args)
         {
             var queue = new Queue<string>(args);
@@ -38,26 +42,28 @@
                 }
             }
 
+            if (assemblyPaths.Count == 0)
+                errors.Add("Missing required test assembly path.");
+            else if (assemblyPaths.Count > 1)
+                errors.Add("Only one test assembly path may be specified.");
+            else
+                AssemblyPath = assemblyPaths.Single();
+
+            var formats = options[CommandLineOption.ReportFormat];
+
+            foreach (var format in formats)
+                if (!SupportedReportFormats.Contains(format, StringComparer.CurrentCultureIgnoreCase))
+                    errors.Add($"The specified report format, '{format}', is not supported.");
+
+            if (formats.Count > 1)
+                errors.Add("To avoid writing multiple reports over the same file, only one report format may be specified.");
+
             if (!errors.Any())
             {
-                if (assemblyPaths.Count == 0)
-                {
-                    errors.Add("Missing required test assembly path.");
-                }
-                else if (assemblyPaths.Count > 1)
-                {
-                    errors.Add("Only one test assembly path may be specified.");
-                }
-                else
-                {
-                    AssemblyPath = assemblyPaths.Single();
-
-                    if (!File.Exists(AssemblyPath))
-                        errors.Add("Specified test assembly does not exist: " + AssemblyPath);
-                    else if (!AssemblyDirectoryContainsFixie(AssemblyPath))
-                        errors.Add(
-                            $"Specified assembly {AssemblyPath} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
-                }
+                if (!File.Exists(AssemblyPath))
+                    errors.Add("Specified test assembly does not exist: " + AssemblyPath);
+                else if (!AssemblyDirectoryContainsFixie(AssemblyPath))
+                    errors.Add($"Specified assembly {AssemblyPath} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
             }
 
             Options = options;
@@ -79,11 +85,11 @@
         public static string Usage()
         {
             return new StringBuilder()
-                .AppendLine("Usage: Fixie.Console [--NUnitXml <output-file>] [--xUnitXml <output-file>] [--TeamCity <on|off>] [--<key> <value>]... assembly-path")
+                .AppendLine("Usage: Fixie.Console [--ReportFormat <NUnit|xUnit>] [--TeamCity <on|off>] [--<key> <value>]... assembly-path")
                 .AppendLine()
                 .AppendLine()
-                .AppendLine("    --NUnitXml <output-file>")
-                .AppendLine("        Write test results to the specified file, using NUnit-style XML.")
+                .AppendLine("    --ReportFormat <NUnit|xUnit>")
+                .AppendLine("        Write test results to a file, using NUnit or xUnit XML format.")
                 .AppendLine()
                 .AppendLine("    --xUnitXml <output-file>")
                 .AppendLine("        Write test results to the specified file, using xUnit-style XML.")

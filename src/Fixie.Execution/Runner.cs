@@ -109,7 +109,7 @@
             foreach (var convention in conventions)
                 Run(assemblyReport, convention, candidateTypes);
 
-            bus.Publish(new AssemblyCompleted(assembly, assemblyReport));
+            bus.Publish(new AssemblyCompleted(assembly));
 
             return assemblyReport;
         }

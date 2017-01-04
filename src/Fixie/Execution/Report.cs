@@ -4,11 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public class AssemblyReport
+    public class Report
     {
         readonly List<ClassReport> classes;
 
-        public AssemblyReport(string location)
+        public Report(string location)
         {
             classes = new List<ClassReport>();
             Location = location;

@@ -8,30 +8,30 @@
 
     public class XUnitXmlReport
     {
-        public XDocument Transform(ExecutionReport executionReport)
+        public XDocument Transform(Report report)
         {
             return new XDocument(
                 new XElement("assemblies",
-                    executionReport.Assemblies.Select(Assembly)));
+                    Assembly(report)));
         }
 
-        static XElement Assembly(AssemblyReport assemblyReport)
+        static XElement Assembly(Report report)
         {
             var now = DateTime.UtcNow;
 
             return new XElement("assembly",
-                new XAttribute("name", assemblyReport.Location),
+                new XAttribute("name", report.Location),
                 new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                 new XAttribute("run-time", now.ToString("HH:mm:ss")),
                 new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
-                new XAttribute("time", Seconds(assemblyReport.Duration)),
-                new XAttribute("total", assemblyReport.Total),
-                new XAttribute("passed", assemblyReport.Passed),
-                new XAttribute("failed", assemblyReport.Failed),
-                new XAttribute("skipped", assemblyReport.Skipped),
+                new XAttribute("time", Seconds(report.Duration)),
+                new XAttribute("total", report.Total),
+                new XAttribute("passed", report.Passed),
+                new XAttribute("failed", report.Failed),
+                new XAttribute("skipped", report.Skipped),
                 new XAttribute("environment", String.Format("{0}-bit .NET {1}", IntPtr.Size * 8, Environment.Version)),
                 new XAttribute("test-framework", Framework.Version),
-                assemblyReport.Classes.Select(Class));
+                report.Classes.Select(Class));
         }
 
         static XElement Class(ClassReport classReport)

@@ -5,19 +5,14 @@ namespace Fixie.Execution.Listeners
         Handler<CaseCompleted>,
         Handler<AssemblyCompleted>
     {
-        AssemblyReport currentAssembly;
         ClassReport currentClass;
 
-        public ReportListener()
-        {
-            Report = new ExecutionReport();
-        }
-
-        public ExecutionReport Report { get; }
+        public Report Report { get; private set; }
 
         public void Handle(AssemblyStarted message)
         {
-            currentAssembly = new AssemblyReport(message.Location);
+            currentClass = null;
+            Report = new Report(message.Location);
         }
 
         public void Handle(CaseCompleted message)
@@ -25,7 +20,7 @@ namespace Fixie.Execution.Listeners
             if (currentClass == null || currentClass.Name != message.MethodGroup.Class)
             {
                 currentClass = new ClassReport(message.MethodGroup.Class);
-                currentAssembly.Add(currentClass);
+                Report.Add(currentClass);
             }
 
             currentClass.Add(message);
@@ -33,9 +28,7 @@ namespace Fixie.Execution.Listeners
 
         public void Handle(AssemblyCompleted message)
         {
-            Report.Add(currentAssembly);
-
-            currentAssembly = null;
+            currentClass = null;
         }
     }
 }

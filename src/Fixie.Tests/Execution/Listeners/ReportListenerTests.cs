@@ -13,7 +13,7 @@ namespace Fixie.Tests.Execution.Listeners
 
     public class ReportListenerTests
     {
-        public void ShouldBuildExecutionReport()
+        public void ShouldBuildReport()
         {
             using (var console = new RedirectedConsole())
             {
@@ -26,23 +26,14 @@ namespace Fixie.Tests.Execution.Listeners
                 var testClass = typeof(PassFailTestClass).FullName;
 
                 var report = listener.Report;
-
+                report.Location.ShouldEqual(typeof(ReportListenerTests).Assembly.Location);
+                report.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 report.Passed.ShouldEqual(3);
                 report.Failed.ShouldEqual(2);
                 report.Skipped.ShouldEqual(2);
                 report.Total.ShouldEqual(7);
 
-                report.Assemblies.Count.ShouldEqual(1);
-
-                var assemblyReport = report.Assemblies.Single();
-                assemblyReport.Location.ShouldEqual(typeof(ReportListenerTests).Assembly.Location);
-                assemblyReport.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-                assemblyReport.Passed.ShouldEqual(3);
-                assemblyReport.Failed.ShouldEqual(2);
-                assemblyReport.Skipped.ShouldEqual(2);
-                assemblyReport.Total.ShouldEqual(7);
-
-                var classReport = assemblyReport.Classes.Single();
+                var classReport = report.Classes.Single();
                 classReport.Name.ShouldEqual(testClass);
                 classReport.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 classReport.Passed.ShouldEqual(3);

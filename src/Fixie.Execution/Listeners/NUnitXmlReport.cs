@@ -8,7 +8,7 @@
 
     public class NUnitXmlReport
     {
-        public XDocument Transform(ExecutionReport executionReport)
+        public XDocument Transform(Report report)
         {
             var now = DateTime.UtcNow;
 
@@ -17,9 +17,9 @@
                     new XAttribute("date", now.ToString("yyyy-MM-dd")),
                     new XAttribute("time", now.ToString("HH:mm:ss")),
                     new XAttribute("name", "Results"),
-                    new XAttribute("total", executionReport.Total),
-                    new XAttribute("failures", executionReport.Failed),
-                    new XAttribute("not-run", executionReport.Skipped),
+                    new XAttribute("total", report.Total),
+                    new XAttribute("failures", report.Failed),
+                    new XAttribute("not-run", report.Skipped),
 
                     //Fixie has fewer test states than NUnit, so these counts are always zero.
                     new XAttribute("errors", 0), //Already accounted for by "failures" above.
@@ -30,7 +30,7 @@
 
                     Environment(),
                     CultureInfo(),
-                    executionReport.Assemblies.Select(Assembly)));
+                    Assembly(report)));
         }
 
         static XElement CultureInfo()
@@ -53,16 +53,16 @@
                 new XAttribute("user-domain", System.Environment.UserDomainName));
         }
 
-        static XElement Assembly(AssemblyReport assemblyReport)
+        static XElement Assembly(Report report)
         {
             return new XElement("test-suite",
                 new XAttribute("type", "Assembly"),
-                new XAttribute("success", assemblyReport.Failed == 0),
-                new XAttribute("name", assemblyReport.Location),
-                new XAttribute("time", Seconds(assemblyReport.Duration)),
+                new XAttribute("success", report.Failed == 0),
+                new XAttribute("name", report.Location),
+                new XAttribute("time", Seconds(report.Duration)),
                 new XAttribute("executed", true),
-                new XAttribute("result", assemblyReport.Failed > 0 ? "Failure" : "Success"),
-                new XElement("results", assemblyReport.Classes.Select(Class)));
+                new XAttribute("result", report.Failed > 0 ? "Failure" : "Success"),
+                new XElement("results", report.Classes.Select(Class)));
         }
 
         static XElement Class(ClassReport classReport)

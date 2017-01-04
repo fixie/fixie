@@ -45,33 +45,26 @@
         ExecutionSummary Run(Options options, Action<Runner> run)
         {
             var summaryListener = new SummaryListener();
-            var reportListener = ShouldProduceReports(options) ? new ReportListener() : null;
 
-            var listeners = GetListeners(options, summaryListener, reportListener);
+            var listeners = GetListeners(options, summaryListener);
             var bus = new Bus(listeners);
             var runner = new Runner(bus, options);
 
             run(runner);
 
-            if (reportListener?.Report != null)
-                SaveReport(options, reportListener.Report);
-
             return summaryListener.Summary;
         }
 
-        List<Listener> GetListeners(Options options, SummaryListener summaryListener, ReportListener reportListener)
+        List<Listener> GetListeners(Options options, SummaryListener summaryListener)
         {
-            var listeners = customListeners.Any() ? customListeners : GetDefaultListeners(options).ToList();
-
-            if (reportListener != null)
-                listeners.Add(reportListener);
+            var listeners = customListeners.Any() ? customListeners : DefaultListeners(options).ToList();
 
             listeners.Add(summaryListener);
 
             return listeners;
         }
 
-        static IEnumerable<Listener> GetDefaultListeners(Options options)
+        static IEnumerable<Listener> DefaultListeners(Options options)
         {
             if (ShouldUseTeamCityListener(options))
                 yield return new TeamCityListener();
@@ -80,6 +73,12 @@
 
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
+
+            foreach (var fileName in options[CommandLineOption.NUnitXml])
+                yield return new ReportListener<NUnitXmlReport>(fileName);
+
+            foreach (var fileName in options[CommandLineOption.XUnitXml])
+                yield return new ReportListener<XUnitXmlReport>(fileName);
         }
 
         static bool ShouldUseTeamCityListener(Options options)
@@ -98,30 +97,6 @@
         static bool ShouldUseAppVeyorListener()
         {
             return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
-        }
-
-        static bool ShouldProduceReports(Options options)
-        {
-            return options.Contains(CommandLineOption.NUnitXml) || options.Contains(CommandLineOption.XUnitXml);
-        }
-
-        static void SaveReport(Options options, Report report)
-        {
-            if (options.Contains(CommandLineOption.NUnitXml))
-            {
-                var xDocument = new NUnitXmlReport().Transform(report);
-
-                foreach (var fileName in options[CommandLineOption.NUnitXml])
-                    xDocument.Save(fileName, SaveOptions.None);
-            }
-
-            if (options.Contains(CommandLineOption.XUnitXml))
-            {
-                var xDocument = new XUnitXmlReport().Transform(report);
-
-                foreach (var fileName in options[CommandLineOption.XUnitXml])
-                    xDocument.Save(fileName, SaveOptions.None);
-            }
         }
     }
 }

@@ -23,26 +23,28 @@
             return new Discoverer(options).DiscoverTestMethodGroups(assembly);
         }
 
-        public ExecutionReport RunAssembly(string assemblyFullPath, Options options)
+        public ExecutionSummary RunAssembly(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
+            var summaryListener = new SummaryListener();
             var reportListener = new ReportListener();
 
-            Runner(options, reportListener).RunAssembly(assembly);
+            Runner(options, summaryListener, reportListener).RunAssembly(assembly);
             SaveReport(options, reportListener.Report);
 
-            return reportListener.Report;
+            return summaryListener.Summary;
         }
 
-        public ExecutionReport RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
+        public ExecutionSummary RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
+            var summaryListener = new SummaryListener();
             var reportListener = new ReportListener();
 
-            Runner(options, reportListener).RunMethods(assembly, methodGroups);
+            Runner(options, summaryListener, reportListener).RunMethods(assembly, methodGroups);
             SaveReport(options, reportListener.Report);
 
-            return reportListener.Report;
+            return summaryListener.Summary;
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -50,20 +52,22 @@
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        Runner Runner(Options options, ReportListener reportListener)
+        Runner Runner(Options options, SummaryListener summaryListener, ReportListener reportListener)
         {
-            var listeners = GetListeners(options, reportListener);
+            var listeners = GetListeners(options, summaryListener, reportListener);
 
             var bus = new Bus(listeners);
             return new Runner(bus, options);
         }
 
-        List<Listener> GetListeners(Options options, ReportListener reportListener)
+        List<Listener> GetListeners(Options options, SummaryListener summaryListener, ReportListener reportListener)
         {
             var listeners = customListeners.Any() ? customListeners : GetDefaultListeners(options).ToList();
 
             if (reportListener != null)
                 listeners.Add(reportListener);
+
+            listeners.Add(summaryListener);
 
             return listeners;
         }

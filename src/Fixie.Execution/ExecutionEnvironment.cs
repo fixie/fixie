@@ -38,10 +38,10 @@
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
             => executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
 
-        public ExecutionReport RunAssembly(Options options)
+        public ExecutionSummary RunAssembly(Options options)
             => executionProxy.RunAssembly(assemblyFullPath, options);
 
-        public ExecutionReport RunMethods(Options options, MethodGroup[] methodGroups)
+        public ExecutionSummary RunMethods(Options options, MethodGroup[] methodGroups)
             => executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
 
         T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()

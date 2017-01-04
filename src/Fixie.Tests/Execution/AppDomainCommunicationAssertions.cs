@@ -12,15 +12,6 @@ namespace Fixie.Tests.Execution
         const BindingFlags AllMembers =
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
-        public static void ShouldSupportReceivingMessagesFromTheChildAppDomain(this Type listenerType)
-        {
-            listenerType
-                .IsSubclassOf(typeof(LongLivedMarshalByRefObject))
-                .ShouldBeTrue(
-                    $"{listenerType.Name} must be a {nameof(LongLivedMarshalByRefObject)} " +
-                    "so that it can successfully receive messages across the AppDomain boundary.");
-        }
-
         public static void ShouldBeSafeAppDomainCommunicationInterface(this Type crossAppDomainInterfaceType)
         {
             foreach (var method in crossAppDomainInterfaceType.GetMethods())
@@ -49,7 +40,7 @@ namespace Fixie.Tests.Execution
             }
         }
 
-        static bool IsSafeForAppDomainCommunication(Type type)
+        public static bool IsSafeForAppDomainCommunication(this Type type)
         {
             return IsSafeForAppDomainCommunication(type, new HashSet<Type>());
         }
@@ -66,21 +57,21 @@ namespace Fixie.Tests.Execution
             //     also not acceptable for AppDomain communication because they can cause
             //     assembly load failures at runtime.
 
-            if (type == typeof(Listener))
+            if (type == typeof(object[]))
             {
-                //Tests use this routine to vet Listener as a safe remoting *interface*,
-                //but it is also used as an *argument* on other remoting interfaces.
-                //Because it is the responsibility of the Listener implementation to be
-                //a valid MarshalByRefObject, there is nothing left to check for here,
-                //so it is assumed to be valid.
+                //Because we cannot fully automate all of these scenarios programmatically,
+                //and because params object[] are quite useful to allow for the sake of
+                //passing Listener constructor arguments across the AppDomain boundary,
+                //we assume these are OK and depend on the caller to pass safe types
+                //from loadable assemblies.
                 return true;
             }
 
             visitedTypes.Add(type);
 
-            if (type == typeof(CaseResult))
+            if (type == typeof(CaseCompleted))
             {
-                return KnownCaseResultImplementations()
+                return KnownCaseCompletedImplementations()
                     .All(implementationType => IsSafeForAppDomainCommunication(implementationType, visitedTypes));
             }
 
@@ -122,12 +113,12 @@ namespace Fixie.Tests.Execution
             return true;
         }
 
-        static IEnumerable<Type> KnownCaseResultImplementations()
+        static IEnumerable<Type> KnownCaseCompletedImplementations()
         {
-            return typeof(CaseResult)
+            return typeof(CaseCompleted)
                 .Assembly
                 .GetTypes()
-                .Where(type => typeof(CaseResult).IsAssignableFrom(type) && type.IsClass);
+                .Where(type => typeof(CaseCompleted).IsAssignableFrom(type) && type.IsClass && !type.IsAbstract);
         }
     }
 }

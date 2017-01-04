@@ -5,7 +5,6 @@ namespace Fixie.TestDriven
     using System;
     using System.Reflection;
     using Execution;
-    using Internal;
 
     public class TdNetRunner : ITestRunner
     {
@@ -27,7 +26,7 @@ namespace Fixie.TestDriven
                 if (method.IsDispose())
                 {
                     var listener = new TestDrivenListener(testListener);
-                    listener.CaseSkipped(new SkipResult(new Case(method), "Dispose() is not a test."));
+                    listener.Handle(new CaseSkipped(new Case(method), "Dispose() is not a test."));
                     return TestRunState.Success;
                 }
 
@@ -44,7 +43,9 @@ namespace Fixie.TestDriven
         static TestRunState Run(ITestListener testListener, Func<Runner, AssemblyResult> run)
         {
             var listener = new TestDrivenListener(testListener);
-            var runner = new Runner(listener);
+            var bus = new Bus(listener);
+
+            var runner = new Runner(bus);
             var result = run(runner);
 
             if (result.Total == 0)

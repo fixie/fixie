@@ -32,27 +32,25 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.XML" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
+    <Compile Include="Execution\AssemblyCompleted.cs" />
+    <Compile Include="Execution\Handler.cs" />
     <Compile Include="Execution\LongLivedMarshalByRefObject.cs" />
+    <Compile Include="Execution\Bus.cs" />
+    <Compile Include="Execution\Message.cs" />
     <Compile Include="Framework.cs" />
-    <Compile Include="Internal\Discoverer.cs" />
-    <Compile Include="Internal\ParameterDiscoverer.cs" />
+    <Compile Include="InternalsVisibleTo.cs" />
     <Compile Include="Internal\Behaviors\TimeClassExecution.cs" />
     <Compile Include="MethodGroup.cs" />
-    <Compile Include="Internal\ExecutionProxy.cs" />
-    <Compile Include="Execution\AssemblyInfo.cs" />
+    <Compile Include="Execution\AssemblyStarted.cs" />
     <Compile Include="Internal\Behavior.cs" />
     <Compile Include="Internal\BehaviorChain.cs" />
     <Compile Include="Internal\BehaviorContext.cs" />
     <Compile Include="Internal\Behaviors\CreateInstancePerClass.cs" />
     <Compile Include="Internal\Behaviors\ExecuteCases.cs" />
     <Compile Include="FixtureBehavior.cs" />
-    <Compile Include="Internal\ClassDiscoverer.cs" />
-    <Compile Include="Internal\ConventionDiscoverer.cs" />
     <Compile Include="Internal\AssertionLibraryFilter.cs" />
     <Compile Include="Internal\Configuration.cs" />
     <Compile Include="Internal\ConstructionFrequency.cs" />
@@ -62,13 +60,9 @@
     <Compile Include="SkipBehavior.cs" />
     <Compile Include="TestAssembly.cs" />
     <Compile Include="Conventions\ClassExpression.cs" />
-    <Compile Include="Internal\MethodDiscoverer.cs" />
     <Compile Include="Conventions\AssertionLibraryExpression.cs" />
-    <Compile Include="Execution\ExecutionEnvironment.cs" />
-    <Compile Include="Internal\ClassRunner.cs" />
     <Compile Include="Internal\ExecutionPlan.cs" />
     <Compile Include="Internal\GenericArgumentResolver.cs" />
-    <Compile Include="Reports\NUnitXmlReport.cs" />
     <Compile Include="Internal\RedirectedConsole.cs" />
     <Compile Include="ClassBehavior.cs" />
     <Compile Include="Case.cs" />
@@ -77,7 +71,7 @@
     <Compile Include="Conventions\FixtureBehaviorExpression.cs" />
     <Compile Include="Conventions\CaseBehaviorExpression.cs" />
     <Compile Include="Conventions\ClassBehaviorExpression.cs" />
-    <Compile Include="Execution\FailResult.cs" />
+    <Compile Include="Execution\CaseFailed.cs" />
     <Compile Include="Class.cs" />
     <Compile Include="Fixture.cs" />
     <Compile Include="Internal\Behaviors\InvokeMethod.cs" />
@@ -86,10 +80,9 @@
     <Compile Include="Execution\Listener.cs" />
     <Compile Include="Conventions\MethodExpression.cs" />
     <Compile Include="Internal\ObjectExtensions.cs" />
-    <Compile Include="Execution\PassResult.cs" />
+    <Compile Include="Execution\CasePassed.cs" />
     <Compile Include="PreservedException.cs" />
-    <Compile Include="Reports\XUnitXmlReport.cs" />
-    <Compile Include="Execution\CaseResult.cs" />
+    <Compile Include="Execution\CaseCompleted.cs" />
     <Compile Include="Execution\CaseStatus.cs" />
     <Compile Include="Execution\ClassResult.cs" />
     <Compile Include="Execution\ConventionResult.cs" />
@@ -99,8 +92,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Execution\AssemblyResult.cs" />
-    <Compile Include="Internal\Runner.cs" />
-    <Compile Include="Execution\SkipResult.cs" />
+    <Compile Include="Execution\CaseSkipped.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixie.nuspec" />

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<assemblies>
+<assembly name="[assemblyLocation]" run-date="YYYY-MM-DD" run-time="HH:MM:SS" configFile="[configLocation]" time="1.234" total="6" passed="2" failed="2" skipped="2" environment="00-bit .NET 1.2.3.4" test-framework="Fixie 1.2.3.4">
+	<class time="1.234" name="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass" total="6" passed="2" failed="2" skipped="2">
+    <test name="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass.SkipWithReason" type="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass" method="SkipWithReason" result="Skip">
+      <reason>
+        <message><![CDATA[reason]]></message>
+      </reason>
+    </test>
+    <test name="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass.SkipWithoutReason" type="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass" method="SkipWithoutReason" result="Skip" />
+    <test name="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass.Fail" type="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass" method="Fail" result="Fail" time="1.234">
+			<failure exception-type="Fixie.Tests.FailureException">
+				<message><![CDATA['Fail' failed!]]></message>
+				<stack-trace>
+          <![CDATA['Fail' failed!
+   at Fixie.Tests.Execution.Listeners.XUnitXmlReportTests.PassFailTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
+			</failure>
+		</test>
+		<test name="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass.Pass" type="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass" method="Pass" result="Pass" time="1.234" />
+		<test name="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass.PassIfTrue(False)" type="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass" method="PassIfTrue" result="Fail" time="1.234">
+			<failure exception-type="Fixie.Tests.FailureException">
+				<message><![CDATA['PassIfTrue' failed!]]></message>
+				<stack-trace>
+          <![CDATA['PassIfTrue' failed!
+   at Fixie.Tests.Execution.Listeners.XUnitXmlReportTests.PassFailTestClass.PassIfTrue(Boolean pass) in [fileLocation]:line #]]></stack-trace>
+			</failure>
+		</test>
+		<test name="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass.PassIfTrue(True)" type="Fixie.Tests.Execution.Listeners.XUnitXmlReportTests+PassFailTestClass" method="PassIfTrue" result="Pass" time="1.234" />
+	</class>
+</assembly>
+</assemblies>

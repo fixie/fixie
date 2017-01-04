@@ -64,14 +64,15 @@
   <ItemGroup>
     <Compile Include="AssertionLibraryFilteringTests.cs" />
     <Compile Include="Assertions.cs" />
+    <Compile Include="Execution\BusTests.cs" />
     <Compile Include="InputAttribute.cs" />
     <Compile Include="InputAttributeParameterSource.cs" />
     <Compile Include="SkipAttribute.cs" />
-    <Compile Include="ConsoleRunner\AppVeyorListenerTests.cs" />
+    <Compile Include="Execution\Listeners\AppVeyorListenerTests.cs" />
     <Compile Include="Execution\ExecutionEnvironmentTests.cs" />
-    <Compile Include="Execution\CaseResultTests.cs" />
+    <Compile Include="Execution\CaseCompletedTests.cs" />
     <Compile Include="MethodGroupTests.cs" />
-    <Compile Include="Internal\ParameterDiscovererTests.cs" />
+    <Compile Include="Execution\ParameterDiscovererTests.cs" />
     <Compile Include="Execution\AppDomainCommunicationAssertions.cs" />
     <Compile Include="Internal\BehaviorChainTests.cs" />
     <Compile Include="Cases\CaseTests.cs" />
@@ -79,7 +80,7 @@
     <Compile Include="ConsoleRunner\CommandLineParserTests.cs" />
     <Compile Include="Internal\AssertionLibraryFilterTests.cs" />
     <Compile Include="Execution\RunnerAppDomainCommunicationTests.cs" />
-    <Compile Include="Internal\RunnerTests.cs" />
+    <Compile Include="Execution\RunnerTests.cs" />
     <Compile Include="Internal\GenericArgumentResolverTests.cs" />
     <Compile Include="Lifecycle\CaseLifecycleTests.cs" />
     <Compile Include="Lifecycle\ClassLifecycleTests.cs" />
@@ -87,15 +88,15 @@
     <Compile Include="Lifecycle\ConstructionTests.cs" />
     <Compile Include="Lifecycle\FixtureLifecycleTests.cs" />
     <Compile Include="OptionsTests.cs" />
-    <Compile Include="Reports\NUnitXmlReportTests.cs" />
-    <Compile Include="Reports\XUnitXmlReportTests.cs" />
+    <Compile Include="Execution\Listeners\NUnitXmlReportTests.cs" />
+    <Compile Include="Execution\Listeners\XUnitXmlReportTests.cs" />
     <Compile Include="Cases\AsyncCaseTests.cs" />
-    <Compile Include="ConsoleRunner\ConsoleListenerTests.cs" />
+    <Compile Include="Execution\Listeners\ConsoleListenerTests.cs" />
     <Compile Include="Cases\BasicCaseTests.cs" />
     <Compile Include="Lifecycle\LifecycleTests.cs" />
     <Compile Include="Lifecycle\DisposalTests.cs" />
     <Compile Include="CaseTests.cs" />
-    <Compile Include="Internal\MethodDiscovererTests.cs" />
+    <Compile Include="Execution\MethodDiscovererTests.cs" />
     <Compile Include="FailureException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Execution\CompoundExceptionTests.cs" />
@@ -105,9 +106,9 @@
     <Compile Include="ReflectionExtensionsTests.cs" />
     <Compile Include="ShouldBeUnreachableException.cs" />
     <Compile Include="StubListener.cs" />
-    <Compile Include="Internal\ClassDiscovererTests.cs" />
+    <Compile Include="Execution\ClassDiscovererTests.cs" />
     <Compile Include="Cases\ParameterizedCaseTests.cs" />
-    <Compile Include="ConsoleRunner\TeamCityListenerTests.cs" />
+    <Compile Include="Execution\Listeners\TeamCityListenerTests.cs" />
     <Compile Include="Cases\SkippedCaseTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationProviderTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationSamples.cs" />
@@ -117,6 +118,10 @@
     <ProjectReference Include="..\Fixie.Console\Fixie.Console.csproj">
       <Project>{3805c0e0-3817-45ad-964f-cf7dc5715b39}</Project>
       <Name>Fixie.Console</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fixie.Execution\Fixie.Execution.csproj">
+      <Project>{c0c4dd53-d549-4469-9af5-79187ac9f034}</Project>
+      <Name>Fixie.Execution</Name>
     </ProjectReference>
     <ProjectReference Include="..\Fixie.TestDriven\Fixie.TestDriven.csproj">
       <Project>{C4190A60-2DBA-4C7F-8887-F65CC8194138}</Project>
@@ -133,18 +138,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Reports\NUnitXmlReport.xml">
+    <None Include="Execution\Listeners\NUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Reports\NUnitXmlReport.xsd">
+    <None Include="Execution\Listeners\NUnitXmlReport.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Reports\XUnitXmlReport.xsd">
+    <None Include="Execution\Listeners\XUnitXmlReport.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Reports\XUnitXmlReport.xml">
+    <None Include="Execution\Listeners\XUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

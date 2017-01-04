@@ -5,7 +5,7 @@
     using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using System.Threading;
-    using Fixie.ConsoleRunner;
+    using Fixie.Execution.Listeners;
     using Fixie.Internal;
 
     public class AssertionLibraryFilteringTests
@@ -13,8 +13,8 @@
         public void ShouldNotAffectOutputByDefault()
         {
             using (var console = new RedirectedConsole())
-            using (var listener = new ConsoleListener())
             {
+                var listener = new ConsoleListener();
                 typeof(SampleTestClass).Run(listener, SelfTestConvention.Build());
 
                 console
@@ -41,8 +41,8 @@
         public void ShouldFilterAssertionLibraryImplementationDetailsWhenLibraryTypesAreSpecified()
         {
             using (var console = new RedirectedConsole())
-            using (var listener = new ConsoleListener())
             {
+                var listener = new ConsoleListener();
                 var convention = SelfTestConvention.Build();
 
                 convention

@@ -7,17 +7,17 @@ namespace Fixie.Execution
     [Serializable]
     public class ClassResult
     {
-        readonly List<CaseResult> caseResults;
+        readonly List<CaseCompleted> caseResults;
 
         public ClassResult(string name)
         {
-            caseResults = new List<CaseResult>();
+            caseResults = new List<CaseCompleted>();
             Name = name;
         }
 
-        public void Add(CaseResult caseResult)
+        public void Add(CaseCompleted caseCompleted)
         {
-            caseResults.Add(caseResult);
+            caseResults.Add(caseCompleted);
         }
 
         public string Name { get; private set; }
@@ -27,7 +27,7 @@ namespace Fixie.Execution
             get { return new TimeSpan(caseResults.Sum(result => result.Duration.Ticks)); }
         }
 
-        public IReadOnlyList<CaseResult> CaseResults
+        public IReadOnlyList<CaseCompleted> CaseResults
         {
             get { return caseResults; }
         }

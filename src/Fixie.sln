@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fixie", "Fixie\Fixie.csproj", "{474FF43B-4580-4032-999B-A717EB7A0CD3}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fixie.Console.x86", "Fixie.Console\Fixie.Console.x86.csproj", "{1628BBDD-635B-4F08-9682-E9EB0F14033F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "Build\Build.csproj", "{CCEABC3F-1366-494D-AA7A-A16CDF366A8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fixie.Execution", "Fixie.Execution\Fixie.Execution.csproj", "{C0C4DD53-D549-4469-9AF5-79187AC9F034}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{1628BBDD-635B-4F08-9682-E9EB0F14033F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CCEABC3F-1366-494D-AA7A-A16CDF366A8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CCEABC3F-1366-494D-AA7A-A16CDF366A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0C4DD53-D549-4469-9AF5-79187AC9F034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0C4DD53-D549-4469-9AF5-79187AC9F034}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0C4DD53-D549-4469-9AF5-79187AC9F034}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0C4DD53-D549-4469-9AF5-79187AC9F034}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

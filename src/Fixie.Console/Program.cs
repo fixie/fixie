@@ -2,11 +2,11 @@
 {
     using System;
     using System.Diagnostics;
-    using System.Text;
     using System.Linq;
+    using System.Text;
     using System.Xml.Linq;
     using Execution;
-    using Reports;
+    using Execution.Listeners;
 
     class Program
     {
@@ -107,15 +107,14 @@
             using (var environment = new ExecutionEnvironment(assemblyPath))
             {
                 if (ShouldUseTeamCityListener(options))
-                    using (var listener = new TeamCityListener())
-                        return environment.RunAssembly(options, listener);
+                    environment.RegisterListener<TeamCityListener>();
+                else
+                    environment.RegisterListener<ConsoleListener>();
 
                 if (ShouldUseAppVeyorListener())
-                    using (var listener = new AppVeyorListener())
-                        return environment.RunAssembly(options, listener);
+                    environment.RegisterListener<AppVeyorListener>();
 
-                using (var listener = new ConsoleListener())
-                    return environment.RunAssembly(options, listener);
+                return environment.RunAssembly(options);
             }
         }
 

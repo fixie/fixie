@@ -89,8 +89,8 @@
     <Compile Include="Lifecycle\ConstructionTests.cs" />
     <Compile Include="Lifecycle\FixtureLifecycleTests.cs" />
     <Compile Include="OptionsTests.cs" />
-    <Compile Include="Execution\Listeners\NUnitXmlReportTests.cs" />
-    <Compile Include="Execution\Listeners\XUnitXmlReportTests.cs" />
+    <Compile Include="Execution\Listeners\NUnitXmlTests.cs" />
+    <Compile Include="Execution\Listeners\XUnitXmlTests.cs" />
     <Compile Include="Cases\AsyncCaseTests.cs" />
     <Compile Include="Execution\Listeners\ConsoleListenerTests.cs" />
     <Compile Include="Cases\BasicCaseTests.cs" />

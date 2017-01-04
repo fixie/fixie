@@ -50,12 +50,12 @@
     <Compile Include="Foreground.cs" />
     <Compile Include="Listeners\AppVeyorListener.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />
-    <Compile Include="Listeners\NUnitXmlReport.cs" />
+    <Compile Include="Listeners\NUnitXml.cs" />
     <Compile Include="Listeners\ReportListener.cs" />
     <Compile Include="Listeners\SummaryListener.cs" />
     <Compile Include="Listeners\TeamCityListener.cs" />
     <Compile Include="Listeners\XmlFormat.cs" />
-    <Compile Include="Listeners\XUnitXmlReport.cs" />
+    <Compile Include="Listeners\XUnitXml.cs" />
     <Compile Include="MethodDiscoverer.cs" />
     <Compile Include="ParameterDiscoverer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -38,23 +38,33 @@
                 }
             }
 
-            if (!errors.Any() && !assemblyPaths.Any())
-                errors.Add("Missing required test assembly path(s).");
-
-            foreach (var assemblyPath in assemblyPaths)
+            if (!errors.Any())
             {
-                if (!File.Exists(assemblyPath))
-                    errors.Add("Specified test assembly does not exist: " + assemblyPath);
-                else if (!AssemblyDirectoryContainsFixie(assemblyPath))
-                    errors.Add($"Specified assembly {assemblyPath} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
+                if (assemblyPaths.Count == 0)
+                {
+                    errors.Add("Missing required test assembly path.");
+                }
+                else if (assemblyPaths.Count > 1)
+                {
+                    errors.Add("Only one test assembly path may be specified.");
+                }
+                else
+                {
+                    AssemblyPath = assemblyPaths.Single();
+
+                    if (!File.Exists(AssemblyPath))
+                        errors.Add("Specified test assembly does not exist: " + AssemblyPath);
+                    else if (!AssemblyDirectoryContainsFixie(AssemblyPath))
+                        errors.Add(
+                            $"Specified assembly {AssemblyPath} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
+                }
             }
 
-            AssemblyPaths = assemblyPaths.ToArray();
             Options = options;
             Errors = errors.ToArray();
         }
 
-        public IEnumerable<string> AssemblyPaths { get; }
+        public string AssemblyPath { get; }
 
         public Options Options { get; }
 
@@ -69,7 +79,7 @@
         public static string Usage()
         {
             return new StringBuilder()
-                .AppendLine("Usage: Fixie.Console [--NUnitXml <output-file>] [--xUnitXml <output-file>] [--TeamCity <on|off>] [--<key> <value>]... assembly-path...")
+                .AppendLine("Usage: Fixie.Console [--NUnitXml <output-file>] [--xUnitXml <output-file>] [--TeamCity <on|off>] [--<key> <value>]... assembly-path")
                 .AppendLine()
                 .AppendLine()
                 .AppendLine("    --NUnitXml <output-file>")
@@ -89,9 +99,9 @@
                 .AppendLine("        same <key>, *all* of the declared <value>s will be")
                 .AppendLine("        available to the convention at runtime under that <key>.")
                 .AppendLine()
-                .AppendLine("    assembly-path...")
-                .AppendLine("        One or more paths indicating test assembly files.  At least one")
-                .AppendLine("        test assembly must be specified.")
+                .AppendLine("    assembly-path")
+                .AppendLine("        A path indicating the test assembly file. Exactly one test")
+                .AppendLine("        assembly must be specified.")
                 .ToString();
         }
 

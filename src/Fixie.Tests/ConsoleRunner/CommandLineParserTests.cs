@@ -6,47 +6,56 @@
 
     public class CommandLineParserTests
     {
-        readonly string assemblyPathA;
-        readonly string assemblyPathB;
+        readonly string assemblyPath;
 
         public CommandLineParserTests()
         {
-            assemblyPathA = typeof(CommandLineParserTests).Assembly.Location;
-            assemblyPathB = typeof(Case).Assembly.Location;
+            assemblyPath = typeof(CommandLineParserTests).Assembly.Location;
         }
 
-        public void DemandsAtLeastOneAssemblyPath()
+        public void ParsesExistingAssemblyPath()
         {
-            var parser = new CommandLineParser();
-            parser.AssemblyPaths.ShouldBeEmpty();
-            parser.Options.Count.ShouldEqual(0);
-            parser.HasErrors.ShouldBeTrue();
-            parser.Errors.ShouldEqual("Missing required test assembly path(s).");
-        }
-
-        public void ParsesExistingAssemblyPaths()
-        {
-            var parser = new CommandLineParser(assemblyPathA, assemblyPathB);
-            parser.AssemblyPaths.ShouldEqual(assemblyPathA, assemblyPathB);
+            var parser = new CommandLineParser(assemblyPath);
+            parser.AssemblyPath.ShouldEqual(assemblyPath);
             parser.Options.Count.ShouldEqual(0);
             parser.HasErrors.ShouldBeFalse();
             parser.Errors.ShouldBeEmpty();
         }
 
-        public void DemandsAssemblyPathsExist()
+        public void DemandsAssemblyPath()
         {
-            var parser = new CommandLineParser("foo.dll", "bar.dll");
-            parser.AssemblyPaths.ShouldEqual("foo.dll", "bar.dll");
+            var parser = new CommandLineParser();
+            parser.AssemblyPath.ShouldBeNull();
             parser.Options.Count.ShouldEqual(0);
             parser.HasErrors.ShouldBeTrue();
-            parser.Errors.ShouldEqual("Specified test assembly does not exist: foo.dll", "Specified test assembly does not exist: bar.dll");
+            parser.Errors.ShouldEqual("Missing required test assembly path.");
+        }
+
+        public void DemandsAtMostOneAssemblyPath()
+        {
+            var secondAssemblyPath = typeof(Case).Assembly.Location;
+
+            var parser = new CommandLineParser(assemblyPath, secondAssemblyPath);
+            parser.AssemblyPath.ShouldBeNull();
+            parser.Options.Count.ShouldEqual(0);
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual("Only one test assembly path may be specified.");
+        }
+
+        public void DemandsAssemblyPathsExist()
+        {
+            var parser = new CommandLineParser("foo.dll");
+            parser.AssemblyPath.ShouldEqual("foo.dll");
+            parser.Options.Count.ShouldEqual(0);
+            parser.HasErrors.ShouldBeTrue();
+            parser.Errors.ShouldEqual("Specified test assembly does not exist: foo.dll");
         }
 
         public void DemandsAssemblyDirectoryContainsFixie()
         {
             var mscorlib = typeof(string).Assembly.Location;
             var parser = new CommandLineParser(mscorlib);
-            parser.AssemblyPaths.ShouldEqual(mscorlib);
+            parser.AssemblyPath.ShouldEqual(mscorlib);
             parser.Options.Count.ShouldEqual(0);
             parser.HasErrors.ShouldBeTrue();
             parser.Errors.ShouldEqual($"Specified assembly {mscorlib} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
@@ -54,8 +63,8 @@
 
         public void ParsesNUnitXmlOutputFile()
         {
-            var parser = new CommandLineParser(assemblyPathA, "--NUnitXml", "TestResult.xml");
-            parser.AssemblyPaths.ShouldEqual(assemblyPathA);
+            var parser = new CommandLineParser(assemblyPath, "--NUnitXml", "TestResult.xml");
+            parser.AssemblyPath.ShouldEqual(assemblyPath);
             parser.Options.Keys.ShouldEqual("NUnitXml");
             parser.Options["NUnitXml"].ShouldEqual("TestResult.xml");
             parser.HasErrors.ShouldBeFalse();
@@ -64,8 +73,8 @@
 
         public void ParsesXUnitXmlOutputFile()
         {
-            var parser = new CommandLineParser(assemblyPathA, "--xUnitXml", "TestResult.xml");
-            parser.AssemblyPaths.ShouldEqual(assemblyPathA);
+            var parser = new CommandLineParser(assemblyPath, "--xUnitXml", "TestResult.xml");
+            parser.AssemblyPath.ShouldEqual(assemblyPath);
             parser.Options.Keys.ShouldEqual("xUnitXml");
             parser.Options["xUnitXml"].ShouldEqual("TestResult.xml");
             parser.HasErrors.ShouldBeFalse();
@@ -74,8 +83,8 @@
 
         public void ParsesTeamCityOutputFlag()
         {
-            var parser = new CommandLineParser(assemblyPathA, "--TeamCity", "off");
-            parser.AssemblyPaths.ShouldEqual(assemblyPathA);
+            var parser = new CommandLineParser(assemblyPath, "--TeamCity", "off");
+            parser.AssemblyPath.ShouldEqual(assemblyPath);
             parser.Options.Keys.ShouldEqual("TeamCity");
             parser.Options["TeamCity"].ShouldEqual("off");
             parser.HasErrors.ShouldBeFalse();
@@ -84,8 +93,8 @@
 
         public void ParsesOptions()
         {
-            var parser = new CommandLineParser(assemblyPathA, "--key", "value", "--otherKey", "otherValue");
-            parser.AssemblyPaths.ShouldEqual(assemblyPathA);
+            var parser = new CommandLineParser(assemblyPath, "--key", "value", "--otherKey", "otherValue");
+            parser.AssemblyPath.ShouldEqual(assemblyPath);
             parser.Options.Keys.ShouldEqual("key", "otherKey");
             parser.Options["key"].ShouldEqual("value");
             parser.Options["otherKey"].ShouldEqual("otherValue");
@@ -96,7 +105,7 @@
         public void DemandsThatOptionsHaveExplicitValues()
         {
             var parser = new CommandLineParser("--NUnitXml", "TestResult.xml", "--key");
-            parser.AssemblyPaths.ShouldBeEmpty();
+            parser.AssemblyPath.ShouldBeNull();
             parser.Options.Keys.ShouldEqual("NUnitXml");
             parser.Options["NUnitXml"].ShouldEqual("TestResult.xml");
             parser.HasErrors.ShouldBeTrue();
@@ -106,7 +115,7 @@
         public void DemandsThatOptionValuesCannotLookLikeKeys()
         {
             var parser = new CommandLineParser("--NUnitXml", "--anotherKey");
-            parser.AssemblyPaths.ShouldBeEmpty();
+            parser.AssemblyPath.ShouldBeNull();
             parser.Options.Count.ShouldEqual(0);
             parser.HasErrors.ShouldBeTrue();
             parser.Errors.ShouldEqual("Option --NUnitXml is missing its required value.");
@@ -114,9 +123,9 @@
 
         public void ParsesAllOptionsValuesProvidedForEachOptionKey()
         {
-            var parser = new CommandLineParser(assemblyPathA, "--a", "1", "--b", "2", "--a", "3");
+            var parser = new CommandLineParser(assemblyPath, "--a", "1", "--b", "2", "--a", "3");
 
-            parser.AssemblyPaths.ShouldEqual(assemblyPathA);
+            parser.AssemblyPath.ShouldEqual(assemblyPath);
             parser.Options.Keys.OrderBy(x => x).ShouldEqual("a", "b");
             parser.Options["a"].ShouldEqual("1", "3");
             parser.Options["b"].ShouldEqual("2");
@@ -124,11 +133,11 @@
             parser.Errors.ShouldBeEmpty();
         }
 
-        public void ParsesAssemblyPathsMixedWithOptionsOptions()
+        public void ParsesAssemblyPathMixedWithOptions()
         {
-            var parser = new CommandLineParser(assemblyPathA, "--include", "CategoryA", assemblyPathB, "--NUnitXml", "TestResult.xml", "--oops", "c.dll", assemblyPathA, "--include", "CategoryB", "--mode", "integration", assemblyPathB);
+            var parser = new CommandLineParser("--include", "CategoryA", "--NUnitXml", "TestResult.xml", "--oops", "c.dll", assemblyPath, "--include", "CategoryB", "--mode", "integration");
 
-            parser.AssemblyPaths.ShouldEqual(assemblyPathA, assemblyPathB, assemblyPathA, assemblyPathB);
+            parser.AssemblyPath.ShouldEqual(assemblyPath);
 
             parser.Options.Keys.OrderBy(x => x).ShouldEqual("include", "mode", "NUnitXml", "oops");
             parser.Options["include"].ShouldEqual("CategoryA", "CategoryB");

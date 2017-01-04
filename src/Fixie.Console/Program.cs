@@ -3,7 +3,6 @@
     using System;
     using System.Diagnostics;
     using System.Linq;
-    using System.Text;
     using System.Xml.Linq;
     using Execution;
     using Execution.Listeners;
@@ -48,39 +47,13 @@
 
             var summary = new ExecutionResult();
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            var result = Execute(commandLineParser.AssemblyPath, options);
 
-            foreach (var assemblyPath in commandLineParser.AssemblyPaths)
-            {
-                var result = Execute(assemblyPath, options);
-
-                summary.Add(result);
-            }
-
-            stopwatch.Stop();
-
-            if (summary.AssemblyResults.Count > 1)
-                Summarize(summary, stopwatch.Elapsed);
+            summary.Add(result);
 
             SaveReport(options, summary);
 
             return summary;
-        }
-
-        static void Summarize(ExecutionResult executionResult, TimeSpan elapsed)
-        {
-            var line = new StringBuilder();
-
-            line.AppendFormat("{0} passed", executionResult.Passed);
-            line.AppendFormat(", {0} failed", executionResult.Failed);
-
-            if (executionResult.Skipped > 0)
-                line.AppendFormat(", {0} skipped", executionResult.Skipped);
-
-            line.AppendFormat(", took {0:N2} seconds", elapsed.TotalSeconds);
-
-            Console.WriteLine("====== " + line + " ======");
         }
 
         static void SaveReport(Options options, ExecutionResult executionResult)

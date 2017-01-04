@@ -34,7 +34,8 @@ task Test32 -depends Compile {
 
 function run-tests($exe) {
     $fixieRunner = resolve-path ".\build\$exe"
-    exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
+    exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll }
+    exec { & $fixieRunner $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
 }
 
 task Compile -depends SanityCheckOutputPaths, AssemblyInfo, License {

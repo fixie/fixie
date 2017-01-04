@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
 
     [Serializable]
     public class AssemblyReport
@@ -28,25 +27,5 @@
         public int Failed => classes.Sum(@class => @class.Failed);
         public int Skipped => classes.Sum(@class => @class.Skipped);
         public int Total => Passed + Failed + Skipped;
-
-        public string Summary
-        {
-            get
-            {
-                var line = new StringBuilder();
-
-                line.AppendFormat("{0} passed", Passed);
-                line.AppendFormat(", {0} failed", Failed);
-
-                if (Skipped > 0)
-                    line.AppendFormat(", {0} skipped", Skipped);
-
-                line.AppendFormat(", took {0:N2} seconds", Duration.TotalSeconds);
-
-                line.AppendFormat(" ({0}).", Framework.Version);
-
-                return line.ToString();
-            }
-        }
     }
 }

@@ -26,7 +26,7 @@
         {
             var entry = new StringBuilder();
 
-            var primaryException = message.Exceptions.PrimaryException;
+            var primaryException = message.Exception.PrimaryException;
 
             entry.AppendFormat("{0} failed: {1}", message.Name, primaryException.Message);
 
@@ -38,7 +38,7 @@
                 entry.AppendFormat("    Inner Exception: {0}", walk.Message);
             }
 
-            foreach (var secondaryException in message.Exceptions.SecondaryExceptions)
+            foreach (var secondaryException in message.Exception.SecondaryExceptions)
             {
                 entry.AppendLine();
                 entry.AppendFormat("    Secondary Failure: {0}", secondaryException.Message);

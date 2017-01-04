@@ -51,8 +51,8 @@
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,
                 Output = message.Output,
-                ErrorMessage = message.Exceptions.PrimaryException.DisplayName,
-                ErrorStackTrace = message.Exceptions.CompoundStackTrace
+                ErrorMessage = message.Exception.PrimaryException.DisplayName,
+                ErrorStackTrace = message.Exception.CompoundStackTrace
             });
         }
     }

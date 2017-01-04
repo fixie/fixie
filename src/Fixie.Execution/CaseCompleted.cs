@@ -6,8 +6,7 @@ namespace Fixie.Execution
     public abstract class CaseCompleted : Message
     {
         protected CaseCompleted(
-            Type @class, MethodInfo method, string name, CaseStatus status, TimeSpan duration, string output,
-            CompoundException exceptions)
+            Type @class, MethodInfo method, string name, CaseStatus status, TimeSpan duration, string output)
         {
             Class = @class;
             Method = method;
@@ -15,8 +14,6 @@ namespace Fixie.Execution
             Status = status;
             Duration = duration;
             Output = output;
-
-            Exceptions = exceptions;
         }
 
         public Type Class { get; }
@@ -25,7 +22,5 @@ namespace Fixie.Execution
         public CaseStatus Status { get; }
         public TimeSpan Duration { get; }
         public string Output { get; }
-
-        public CompoundException Exceptions { get; }
     }
 }

@@ -11,9 +11,7 @@
                 name: @case.Name,
                 status: CaseStatus.Skipped,
                 duration: TimeSpan.Zero,
-                output: null,
-
-                exceptions: null
+                output: null
                 )
         {
             Reason = reason;

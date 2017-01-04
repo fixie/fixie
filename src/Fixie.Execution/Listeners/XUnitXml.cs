@@ -70,11 +70,14 @@
             }
 
             if (message.Status == CaseStatus.Failed)
+            {
+                var exception = ((CaseFailed)message).Exception;
                 @case.Add(
                     new XElement("failure",
-                        new XAttribute("exception-type", message.Exceptions.PrimaryException.Type),
-                        new XElement("message", new XCData(message.Exceptions.PrimaryException.Message)),
-                        new XElement("stack-trace", new XCData(message.Exceptions.CompoundStackTrace))));
+                        new XAttribute("exception-type", exception.PrimaryException.Type),
+                        new XElement("message", new XCData(exception.PrimaryException.Message)),
+                        new XElement("stack-trace", new XCData(exception.CompoundStackTrace))));
+            }
 
             return @case;
         }

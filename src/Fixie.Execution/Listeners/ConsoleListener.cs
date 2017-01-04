@@ -38,8 +38,8 @@
             summary.Add(message);
 
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", message.Name, message.Exceptions.PrimaryException.DisplayName);
-            Console.WriteLine(message.Exceptions.CompoundStackTrace);
+                Console.WriteLine("Test '{0}' failed: {1}", message.Name, message.Exception.PrimaryException.DisplayName);
+            Console.WriteLine(message.Exception.CompoundStackTrace);
             Console.WriteLine();
         }
 

@@ -11,11 +11,12 @@
                 name: @case.Name,
                 status: CaseStatus.Failed,
                 duration: @case.Duration,
-                output: @case.Output,
-
-                exceptions: new CompoundException(@case.Exceptions, filter)
+                output: @case.Output
                 )
         {
+            Exception = new CompoundException(@case.Exceptions, filter);
         }
+
+        public CompoundException Exception { get; }
     }
 }

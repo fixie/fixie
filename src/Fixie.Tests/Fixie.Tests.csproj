@@ -79,7 +79,7 @@
     <Compile Include="Cases\CaseTests.cs" />
     <Compile Include="Cases\NonVoidCaseTests.cs" />
     <Compile Include="ConsoleRunner\CommandLineParserTests.cs" />
-    <Compile Include="Internal\AssertionLibraryFilterTests.cs" />
+    <Compile Include="Execution\AssertionLibraryFilterTests.cs" />
     <Compile Include="Execution\RunnerAppDomainCommunicationTests.cs" />
     <Compile Include="Execution\RunnerTests.cs" />
     <Compile Include="Internal\GenericArgumentResolverTests.cs" />

@@ -1,7 +1,6 @@
 namespace Fixie.Execution
 {
     using System;
-    using Internal;
 
     public class ExceptionInfo
     {

@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="AssemblyCompleted.cs" />
     <Compile Include="AssemblyStarted.cs" />
+    <Compile Include="AssertionLibraryFilter.cs" />
     <Compile Include="Bus.cs" />
     <Compile Include="CaseCompleted.cs" />
     <Compile Include="CaseFailed.cs" />

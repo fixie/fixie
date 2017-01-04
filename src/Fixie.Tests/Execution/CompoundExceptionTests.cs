@@ -5,7 +5,6 @@
     using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using Fixie.Execution;
-    using Fixie.Internal;
     using Should;
 
     public class CompoundExceptionTests

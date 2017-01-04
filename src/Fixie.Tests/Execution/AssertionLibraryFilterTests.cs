@@ -1,8 +1,8 @@
-namespace Fixie.Tests.Internal
+namespace Fixie.Tests.Execution
 {
     using System;
     using System.Text;
-    using Fixie.Internal;
+    using Fixie.Execution;
     using Should;
 
     public class AssertionLibraryFilterTests

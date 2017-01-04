@@ -26,25 +26,15 @@
         public ExecutionSummary RunAssembly(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
-            var summaryListener = new SummaryListener();
-            var reportListener = new ReportListener();
 
-            Runner(options, summaryListener, reportListener).RunAssembly(assembly);
-            SaveReport(options, reportListener.Report);
-
-            return summaryListener.Summary;
+            return Run(options, runner => runner.RunAssembly(assembly));
         }
 
         public ExecutionSummary RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
-            var summaryListener = new SummaryListener();
-            var reportListener = new ReportListener();
 
-            Runner(options, summaryListener, reportListener).RunMethods(assembly, methodGroups);
-            SaveReport(options, reportListener.Report);
-
-            return summaryListener.Summary;
+            return Run(options, r => r.RunMethods(assembly, methodGroups));
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -52,12 +42,21 @@
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        Runner Runner(Options options, SummaryListener summaryListener, ReportListener reportListener)
+        ExecutionSummary Run(Options options, Action<Runner> run)
         {
-            var listeners = GetListeners(options, summaryListener, reportListener);
+            var summaryListener = new SummaryListener();
+            var reportListener = ShouldProduceReports(options) ? new ReportListener() : null;
 
+            var listeners = GetListeners(options, summaryListener, reportListener);
             var bus = new Bus(listeners);
-            return new Runner(bus, options);
+            var runner = new Runner(bus, options);
+
+            run(runner);
+
+            if (reportListener != null)
+                SaveReport(options, reportListener.Report);
+
+            return summaryListener.Summary;
         }
 
         List<Listener> GetListeners(Options options, SummaryListener summaryListener, ReportListener reportListener)

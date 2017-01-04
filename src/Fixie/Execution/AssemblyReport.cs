@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    [Serializable]
     public class AssemblyReport
     {
         readonly List<ClassReport> classes;

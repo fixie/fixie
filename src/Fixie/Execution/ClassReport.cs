@@ -4,7 +4,6 @@ namespace Fixie.Execution
     using System.Collections.Generic;
     using System.Linq;
 
-    [Serializable]
     public class ClassReport
     {
         readonly List<CaseCompleted> cases;

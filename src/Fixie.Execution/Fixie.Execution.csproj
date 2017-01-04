@@ -54,6 +54,7 @@
     <Compile Include="Listeners\ReportListener.cs" />
     <Compile Include="Listeners\SummaryListener.cs" />
     <Compile Include="Listeners\TeamCityListener.cs" />
+    <Compile Include="Listeners\XmlFormat.cs" />
     <Compile Include="Listeners\XUnitXmlReport.cs" />
     <Compile Include="MethodDiscoverer.cs" />
     <Compile Include="ParameterDiscoverer.cs" />

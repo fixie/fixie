@@ -27,7 +27,7 @@ namespace Fixie.TestDriven
             {
                 Name = message.Name,
                 State = TestState.Ignored,
-                Message = message.SkipReason
+                Message = message.Reason
             });
         }
 

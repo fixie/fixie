@@ -20,7 +20,7 @@
 
         public void Handle(CaseSkipped message)
         {
-            Message("testIgnored name='{0}' message='{1}'", message.Name, message.SkipReason);
+            Message("testIgnored name='{0}' message='{1}'", message.Name, message.Reason);
         }
 
         public void Handle(CasePassed message)

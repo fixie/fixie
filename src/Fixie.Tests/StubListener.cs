@@ -13,7 +13,7 @@
 
         public void Handle(CaseSkipped message)
         {
-            var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
+            var optionalReason = message.Reason == null ? null : ": " + message.Reason;
             log.Add($"{message.Name} skipped{optionalReason}");
         }
 

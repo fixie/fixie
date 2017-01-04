@@ -7,8 +7,7 @@ namespace Fixie.Execution
     {
         protected CaseCompleted(
             Type @class, MethodInfo method, string name, CaseStatus status, TimeSpan duration, string output,
-            CompoundException exceptions,
-            string skipReason)
+            CompoundException exceptions)
         {
             Class = @class;
             Method = method;
@@ -18,7 +17,6 @@ namespace Fixie.Execution
             Output = output;
 
             Exceptions = exceptions;
-            SkipReason = skipReason;
         }
 
         public Type Class { get; }
@@ -29,6 +27,5 @@ namespace Fixie.Execution
         public string Output { get; }
 
         public CompoundException Exceptions { get; }
-        public string SkipReason { get; }
     }
 }

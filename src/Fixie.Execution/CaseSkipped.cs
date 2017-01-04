@@ -4,7 +4,7 @@
 
     public class CaseSkipped : CaseCompleted
     {
-        public CaseSkipped(Case @case, string skipReason)
+        public CaseSkipped(Case @case, string reason)
             : base(
                 @class: @case.Class,
                 method: @case.Method,
@@ -13,10 +13,12 @@
                 duration: TimeSpan.Zero,
                 output: null,
 
-                exceptions: null,
-                skipReason: skipReason
+                exceptions: null
                 )
         {
+            Reason = reason;
         }
+
+        public string Reason { get; }
     }
 }

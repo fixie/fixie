@@ -13,8 +13,7 @@
                 duration: @case.Duration,
                 output: @case.Output,
 
-                exceptions: new CompoundException(@case.Exceptions, filter),
-                skipReason: null
+                exceptions: new CompoundException(@case.Exceptions, filter)
                 )
         {
         }

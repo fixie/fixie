@@ -25,7 +25,7 @@
             summary.Add(message);
 
             using (Foreground.Yellow)
-                Console.WriteLine("Test '{0}' skipped{1}", message.Name, message.SkipReason == null ? null : ": " + message.SkipReason);
+                Console.WriteLine("Test '{0}' skipped{1}", message.Name, message.Reason == null ? null : ": " + message.Reason);
         }
 
         public void Handle(CasePassed message)

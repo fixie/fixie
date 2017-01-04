@@ -23,7 +23,7 @@
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,
                 Output = message.Output,
-                ErrorMessage = message.SkipReason,
+                ErrorMessage = message.Reason,
                 ErrorStackTrace = null
             });
         }

@@ -47,7 +47,7 @@
                 outcome = "Skipped",
                 durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
                 StdOut = caseResult.Output,
-                ErrorMessage = caseResult.SkipReason,
+                ErrorMessage = message.Reason,
                 ErrorStackTrace = null
             });
         }

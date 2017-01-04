@@ -29,10 +29,10 @@
             executionProxy = Create<ExecutionProxy>();
         }
 
-        public void RegisterListener<TListener>(params object[] listenerArguments) where TListener : Listener
+        public void Subscribe<TListener>(params object[] listenerArguments) where TListener : Listener
         {
             assemblyResolver.RegisterAssemblyLocation(typeof(TListener).Assembly.Location);
-            executionProxy.RegisterListener<TListener>(listenerArguments);
+            executionProxy.Subscribe<TListener>(listenerArguments);
         }
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)

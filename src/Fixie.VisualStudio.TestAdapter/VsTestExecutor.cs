@@ -42,7 +42,7 @@
                         using (var executionRecorder = new ExecutionRecorder(frameworkHandle, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
-                            environment.RegisterListener<VisualStudioListener>(executionRecorder);
+                            environment.Subscribe<VisualStudioListener>(executionRecorder);
                             environment.RunAssembly(new Options());
                         }
                     }
@@ -90,7 +90,7 @@
                         using (var executionRecorder = new ExecutionRecorder(frameworkHandle, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
-                            environment.RegisterListener<VisualStudioListener>(executionRecorder);
+                            environment.Subscribe<VisualStudioListener>(executionRecorder);
                             environment.RunMethods(new Options(), methodGroups);
                         }
                     }

@@ -16,7 +16,7 @@
         public void Handle(AssemblyStarted message)
         {
             summary = new ExecutionSummary();
-            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(message.Location));
+            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(message.Assembly.Location));
             Console.WriteLine();
         }
 

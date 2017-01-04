@@ -6,11 +6,9 @@ namespace Fixie.Execution
     {
         public AssemblyStarted(Assembly assembly)
         {
-            Name = assembly.GetName().Name;
-            Location = assembly.Location;
+            Assembly = assembly;
         }
 
-        public string Name { get; private set; }
-        public string Location { get; private set; }
+        public Assembly Assembly { get; }
     }
 }

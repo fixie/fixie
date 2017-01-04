@@ -26,7 +26,7 @@ namespace Fixie.Execution.Listeners
 
         public void Handle(AssemblyStarted message)
         {
-            report = new Report(message.Location);
+            report = new Report(message.Assembly.Location);
             currentClass = null;
         }
 

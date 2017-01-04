@@ -15,7 +15,7 @@
     {
         public void Handle(AssemblyStarted message)
         {
-            Message("testSuiteStarted name='{0}'", Path.GetFileName(message.Location));
+            Message("testSuiteStarted name='{0}'", Path.GetFileName(message.Assembly.Location));
         }
 
         public void Handle(CaseSkipped message)
@@ -40,7 +40,7 @@
 
         public void Handle(AssemblyCompleted message)
         {
-            Message("testSuiteFinished name='{0}'", Path.GetFileName(message.Location));
+            Message("testSuiteFinished name='{0}'", Path.GetFileName(message.Assembly.Location));
         }
 
         static void Message(string format, params string[] args)

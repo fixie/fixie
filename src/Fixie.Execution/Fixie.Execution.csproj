@@ -49,8 +49,10 @@
     <Compile Include="ExecutionSummary.cs" />
     <Compile Include="Foreground.cs" />
     <Compile Include="Listeners\AppVeyorListener.cs" />
+    <Compile Include="Listeners\ClassReport.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />
     <Compile Include="Listeners\NUnitXml.cs" />
+    <Compile Include="Listeners\Report.cs" />
     <Compile Include="Listeners\ReportListener.cs" />
     <Compile Include="Listeners\SummaryListener.cs" />
     <Compile Include="Listeners\TeamCityListener.cs" />

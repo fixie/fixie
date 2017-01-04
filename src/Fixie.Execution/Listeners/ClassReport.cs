@@ -1,4 +1,4 @@
-namespace Fixie.Execution
+namespace Fixie.Execution.Listeners
 {
     using System;
     using System.Collections.Generic;

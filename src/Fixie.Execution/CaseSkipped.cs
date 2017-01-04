@@ -6,9 +6,10 @@
     {
         public CaseSkipped(Case @case, string skipReason)
             : base(
+                  @class: @case.Class,
+                  method: @case.Method,
                   status: CaseStatus.Skipped,
                   name: @case.Name,
-                  methodGroup: @case.MethodGroup,
                   output: null,
                   duration: TimeSpan.Zero,
                   exceptions: null,

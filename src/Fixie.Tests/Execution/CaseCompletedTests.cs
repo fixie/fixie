@@ -32,7 +32,8 @@
                 var pass = listener.Log[4];
 
                 pass.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Pass");
-                pass.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Pass");
+                pass.Class.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass");
+                pass.Method.Name.ShouldEqual("Pass");
                 pass.Output.ShouldEqual("Pass" + Environment.NewLine);
                 pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 pass.Status.ShouldEqual(CaseStatus.Passed);
@@ -40,7 +41,8 @@
                 pass.SkipReason.ShouldBeNull();
 
                 fail.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Fail");
-                fail.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Fail");
+                fail.Class.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass");
+                fail.Method.Name.ShouldEqual("Fail");
                 fail.Output.ShouldEqual("Fail" + Environment.NewLine);
                 fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 fail.Status.ShouldEqual(CaseStatus.Failed);
@@ -50,7 +52,8 @@
                 fail.SkipReason.ShouldBeNull();
 
                 failByAssertion.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.FailByAssertion");
-                failByAssertion.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.FailByAssertion");
+                failByAssertion.Class.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass");
+                failByAssertion.Method.Name.ShouldEqual("FailByAssertion");
                 failByAssertion.Output.ShouldEqual("FailByAssertion" + Environment.NewLine);
                 failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
@@ -63,7 +66,8 @@
                 failByAssertion.SkipReason.ShouldBeNull();
 
                 skip.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Skip");
-                skip.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Skip");
+                skip.Class.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass");
+                skip.Method.Name.ShouldEqual("Skip");
                 skip.Output.ShouldBeNull();
                 skip.Duration.ShouldEqual(TimeSpan.Zero);
                 skip.Status.ShouldEqual(CaseStatus.Skipped);
@@ -71,7 +75,8 @@
                 skip.SkipReason.ShouldBeNull();
 
                 skipWithReason.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.SkipWithReason");
-                skipWithReason.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.SkipWithReason");
+                skipWithReason.Class.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass");
+                skipWithReason.Method.Name.ShouldEqual("SkipWithReason");
                 skipWithReason.Output.ShouldBeNull();
                 skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
                 skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);

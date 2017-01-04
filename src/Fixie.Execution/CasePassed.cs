@@ -4,9 +4,10 @@
     {
         public CasePassed(Case @case)
             : base(
+                  @class: @case.Class,
+                  method: @case.Method,
                   status: CaseStatus.Passed,
                   name: @case.Name,
-                  methodGroup: @case.MethodGroup,
                   output: @case.Output,
                   duration: @case.Duration,
                   exceptions: null,

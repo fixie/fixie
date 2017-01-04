@@ -50,8 +50,8 @@
         {
             var @case = new XElement("test",
                 new XAttribute("name", message.Name),
-                new XAttribute("type", message.MethodGroup.Class),
-                new XAttribute("method", message.MethodGroup.Method),
+                 new XAttribute("type", message.Class.FullName),
+                new XAttribute("method", message.Method.Name),
                 new XAttribute("result",
                     message.Status == CaseStatus.Failed
                         ? "Fail"

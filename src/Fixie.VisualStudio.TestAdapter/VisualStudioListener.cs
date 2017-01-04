@@ -18,7 +18,7 @@
         {
             log.RecordResult(new Result
             {
-                FullyQualifiedName = message.MethodGroup.FullName,
+                FullyQualifiedName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,
@@ -32,7 +32,7 @@
         {
             log.RecordResult(new Result
             {
-                FullyQualifiedName = message.MethodGroup.FullName,
+                FullyQualifiedName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,
@@ -46,7 +46,7 @@
         {
             log.RecordResult(new Result
             {
-                FullyQualifiedName = message.MethodGroup.FullName,
+                FullyQualifiedName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,

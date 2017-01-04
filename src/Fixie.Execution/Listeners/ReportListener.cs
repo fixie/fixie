@@ -32,9 +32,9 @@ namespace Fixie.Execution.Listeners
 
         public void Handle(CaseCompleted message)
         {
-            if (currentClass == null || currentClass.Name != message.MethodGroup.Class)
+            if (currentClass == null || currentClass.Name != message.Class.FullName)
             {
-                currentClass = new ClassReport(message.MethodGroup.Class);
+                currentClass = new ClassReport(message.Class.FullName);
                 report.Add(currentClass);
             }
 

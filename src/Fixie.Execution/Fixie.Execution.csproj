@@ -51,6 +51,7 @@
     <Compile Include="Listeners\AppVeyorListener.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />
     <Compile Include="Listeners\NUnitXmlReport.cs" />
+    <Compile Include="Listeners\ReportListener.cs" />
     <Compile Include="Listeners\TeamCityListener.cs" />
     <Compile Include="Listeners\XUnitXmlReport.cs" />
     <Compile Include="MethodDiscoverer.cs" />

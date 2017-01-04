@@ -30,5 +30,22 @@
 
             Duration += message.Duration;
         }
+
+        public override string ToString()
+        {
+            var line = new StringBuilder();
+
+            line.Append($"{Passed} passed");
+            line.Append($", {Failed} failed");
+
+            if (Skipped > 0)
+                line.Append($", {Skipped} skipped");
+
+            line.Append($", took {Duration.TotalSeconds:N2} seconds");
+
+            line.Append($" ({Framework.Version}).");
+
+            return line.ToString();
+        }
     }
 }

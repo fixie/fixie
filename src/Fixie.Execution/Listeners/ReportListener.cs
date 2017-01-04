@@ -1,6 +1,7 @@
 namespace Fixie.Execution.Listeners
 {
     using System;
+    using System.IO;
     using System.Xml.Linq;
 
     public class ReportListener<TXmlFormat> :
@@ -11,17 +12,15 @@ namespace Fixie.Execution.Listeners
     {
         Report report;
         ClassReport currentClass;
-        readonly XmlFormat format;
-        readonly Action<XDocument> save;
+        readonly Action<Report> save;
 
-        public ReportListener(Action<XDocument> save)
+        public ReportListener(Action<Report> save)
         {
-            format = new TXmlFormat();
             this.save = save;
         }
 
-        public ReportListener(string fileName)
-            : this(xDocument => xDocument.Save(fileName, SaveOptions.None))
+        public ReportListener()
+            : this(Save)
         {
         }
 
@@ -44,9 +43,17 @@ namespace Fixie.Execution.Listeners
 
         public void Handle(AssemblyCompleted message)
         {
-            save(format.Transform(report));
+            save(report);
             currentClass = null;
             report = null;
+        }
+
+        static void Save(Report report)
+        {
+            var format = new TXmlFormat();
+            var xDocument = format.Transform(report);
+            var filePath = Path.GetFullPath(report.Location) + ".xml";
+            xDocument.Save(filePath, SaveOptions.None);
         }
     }
 }

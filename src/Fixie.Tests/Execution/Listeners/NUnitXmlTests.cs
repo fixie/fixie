@@ -16,7 +16,7 @@
         {
             XDocument actual = null;
 
-            var listener = new ReportListener<NUnitXml>(xDocument => { actual = xDocument; });
+            var listener = new ReportListener<NUnitXml>(report => actual = new NUnitXml().Transform(report));
 
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);

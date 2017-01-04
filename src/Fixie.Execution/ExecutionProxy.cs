@@ -76,13 +76,11 @@
 
             foreach (var format in options[CommandLineOption.ReportFormat])
             {
-                var fileName = Path.GetFileName(assemblyFullPath) + ".xml";
-
                 if (String.Equals(format, "NUnit", StringComparison.CurrentCultureIgnoreCase))
-                    yield return new ReportListener<NUnitXml>(fileName);
+                    yield return new ReportListener<NUnitXml>();
 
                 else if (String.Equals(format, "xUnit", StringComparison.CurrentCultureIgnoreCase))
-                    yield return new ReportListener<XUnitXml>(fileName);
+                    yield return new ReportListener<XUnitXml>();
             }
         }
 

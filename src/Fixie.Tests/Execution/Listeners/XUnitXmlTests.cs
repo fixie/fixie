@@ -16,7 +16,7 @@
         public void ShouldProduceValidXmlDocument()
         {
             XDocument actual = null;
-            var listener = new ReportListener<XUnitXml>(xDocument => { actual = xDocument; });
+            var listener = new ReportListener<XUnitXml>(report => actual = new XUnitXml().Transform(report));
 
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);

@@ -7,28 +7,22 @@
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Schema;
-    using Fixie.Execution;
     using Fixie.Execution.Listeners;
-    using Fixie.Internal;
     using Should;
 
     public class NUnitXmlReportTests
     {
         public void ShouldProduceValidXmlDocument()
         {
-            var listener = new StubListener();
-            var bus = new Bus(listener);
-            var runner = new Runner(bus);
+            var listener = new ReportListener();
 
-            var executionReport = new ExecutionReport();
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.Parameters.Add<InputAttributeParameterSource>();
-            var assemblyReport = runner.RunTypes(GetType().Assembly, convention, typeof(PassFailTestClass));
-            executionReport.Add(assemblyReport);
+            typeof(PassFailTestClass).Run(listener, convention);
 
             var report = new NUnitXmlReport();
-            var actual = report.Transform(executionReport);
+            var actual = report.Transform(listener.Report);
 
             XsdValidate(actual);
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);

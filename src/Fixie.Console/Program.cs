@@ -1,11 +1,7 @@
 ﻿namespace Fixie.ConsoleRunner
 {
     using System;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Xml.Linq;
     using Execution;
-    using Execution.Listeners;
 
     class Program
     {
@@ -29,9 +25,8 @@
                     return FatalError;
                 }
 
-                var summary = Execute(commandLineParser);
-
-                return summary.Failed;
+                using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
+                    return environment.RunAssembly(commandLineParser.Options).Failed;
             }
             catch (Exception exception)
             {
@@ -39,46 +34,6 @@
                     Console.WriteLine($"Fatal Error: {exception}");
                 return FatalError;
             }
-        }
-
-        static ExecutionReport Execute(CommandLineParser commandLineParser)
-        {
-            var options = commandLineParser.Options;
-
-            var summary = new ExecutionReport();
-
-            var result = Execute(commandLineParser.AssemblyPath, options);
-
-            summary.Add(result);
-
-            SaveReport(options, summary);
-
-            return summary;
-        }
-
-        static void SaveReport(Options options, ExecutionReport executionReport)
-        {
-            if (options.Contains(CommandLineOption.NUnitXml))
-            {
-                var xDocument = new NUnitXmlReport().Transform(executionReport);
-
-                foreach (var fileName in options[CommandLineOption.NUnitXml])
-                    xDocument.Save(fileName, SaveOptions.None);
-            }
-
-            if (options.Contains(CommandLineOption.XUnitXml))
-            {
-                var xDocument = new XUnitXmlReport().Transform(executionReport);
-
-                foreach (var fileName in options[CommandLineOption.XUnitXml])
-                    xDocument.Save(fileName, SaveOptions.None);
-            }
-        }
-
-        static AssemblyReport Execute(string assemblyPath, Options options)
-        {
-            using (var environment = new ExecutionEnvironment(assemblyPath))
-                return environment.RunAssembly(options);
         }
     }
 }

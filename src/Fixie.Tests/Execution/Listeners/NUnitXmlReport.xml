@@ -4,24 +4,24 @@
     <culture-info current-culture="[current-culture]" current-uiculture="[current-uiculture]" />
     <test-suite type="Assembly" success="false" name="[assemblyLocation]" time="1.234" executed="true" result="Failure">
         <results>
-            <test-suite type="TestFixture" name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+PassFailTestClass" success="false" time="1.234" executed="true" result="Failure">
+            <test-suite type="TestFixture" name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+SampleTestClass" success="false" time="1.234" executed="true" result="Failure">
                 <results>
-                  <test-case name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+PassFailTestClass.SkipWithReason" executed="false" success="true" result="Ignored">
+                  <test-case name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+SampleTestClass.SkipWithReason" executed="false" success="true" result="Ignored">
                     <reason>
                       <message><![CDATA[reason]]></message>
                     </reason>
                   </test-case>
-                  <test-case name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+PassFailTestClass.SkipWithoutReason" executed="false" success="true" result="Ignored" />
-                  <test-case name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+PassFailTestClass.Fail" executed="true" success="false" result="Failure" time="1.234">
+                  <test-case name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+SampleTestClass.SkipWithoutReason" executed="false" success="true" result="Ignored" />
+                  <test-case name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+SampleTestClass.Fail" executed="true" success="false" result="Failure" time="1.234">
                     <failure>
                       <message><![CDATA['Fail' failed!]]></message>
                       <stack-trace>
                         <![CDATA[Fixie.Tests.FailureException
 'Fail' failed!
-   at Fixie.Tests.Execution.Listeners.NUnitXmlTests.PassFailTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
+   at Fixie.Tests.Execution.Listeners.NUnitXmlTests.SampleTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
                     </failure>
                   </test-case>
-                  <test-case name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+PassFailTestClass.FailByAssertion" executed="true" success="false" result="Failure" time="1.234">
+                  <test-case name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+SampleTestClass.FailByAssertion" executed="true" success="false" result="Failure" time="1.234">
                     <failure>
                       <message><![CDATA[Assert.Equal() Failure
 Expected: 2
@@ -30,10 +30,10 @@ Actual:   1]]></message>
 Assert.Equal() Failure
 Expected: 2
 Actual:   1
-   at Fixie.Tests.Execution.Listeners.NUnitXmlTests.PassFailTestClass.FailByAssertion() in [fileLocation]:line #]]></stack-trace>
+   at Fixie.Tests.Execution.Listeners.NUnitXmlTests.SampleTestClass.FailByAssertion() in [fileLocation]:line #]]></stack-trace>
                     </failure>
                   </test-case>
-                  <test-case name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+PassFailTestClass.Pass" executed="true" success="true" result="Success" time="1.234" />
+                  <test-case name="Fixie.Tests.Execution.Listeners.NUnitXmlTests+SampleTestClass.Pass" executed="true" success="true" result="Success" time="1.234" />
                 </results>
             </test-suite>
         </results>

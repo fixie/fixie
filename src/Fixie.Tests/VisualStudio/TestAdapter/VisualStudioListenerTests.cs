@@ -35,9 +35,9 @@
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
 
-                typeof(PassFailTestClass).Run(listener, convention);
+                typeof(SampleTestClass).Run(listener, convention);
 
-                var testClass = FullName<PassFailTestClass>();
+                var testClass = FullName<SampleTestClass>();
 
                 console.Lines()
                     .ShouldEqual(
@@ -92,7 +92,7 @@
                     .ShouldEqual(
                         "Fixie.Tests.FailureException",
                         "'Fail' failed!",
-                        At<PassFailTestClass>("Fail()"));
+                        At<SampleTestClass>("Fail()"));
                 results[2].DisplayName.ShouldEqual(testClass + ".Fail");
                 results[2].Messages.Count.ShouldEqual(1);
                 results[2].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
@@ -146,7 +146,7 @@
             }
         }
 
-        class PassFailTestClass
+        class SampleTestClass
         {
             public void Pass()
             {

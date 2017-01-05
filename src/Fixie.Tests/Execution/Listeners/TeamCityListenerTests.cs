@@ -20,9 +20,9 @@
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
 
-                typeof(PassFailTestClass).Run(listener, convention);
+                typeof(SampleTestClass).Run(listener, convention);
 
-                var testClass = FullName<PassFailTestClass>();
+                var testClass = FullName<SampleTestClass>();
 
                 console.Lines()
                        .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
@@ -41,11 +41,11 @@
 
                            "##teamcity[testStarted name='" + testClass + ".Fail']",
                            "##teamcity[testStdOut name='" + testClass + ".Fail' out='Console.Out: Fail|r|nConsole.Error: Fail|r|n']",
-                           "##teamcity[testFailed name='" + testClass + ".Fail' message='|'Fail|' failed!' details='Fixie.Tests.FailureException|r|n|'Fail|' failed!|r|n" + At<PassFailTestClass>("Fail()") + "']",
+                           "##teamcity[testFailed name='" + testClass + ".Fail' message='|'Fail|' failed!' details='Fixie.Tests.FailureException|r|n|'Fail|' failed!|r|n" + At<SampleTestClass>("Fail()") + "']",
                            "##teamcity[testFinished name='" + testClass + ".Fail' duration='#']",
                            "##teamcity[testStarted name='" + testClass + ".FailByAssertion']",
                            "##teamcity[testStdOut name='" + testClass + ".FailByAssertion' out='Console.Out: FailByAssertion|r|nConsole.Error: FailByAssertion|r|n']",
-                           "##teamcity[testFailed name='" + testClass + ".FailByAssertion' message='Assert.Equal() Failure|r|nExpected: 2|r|nActual:   1' details='Should.Core.Exceptions.EqualException|r|nAssert.Equal() Failure|r|nExpected: 2|r|nActual:   1|r|n" + At<PassFailTestClass>("FailByAssertion()") + "']",
+                           "##teamcity[testFailed name='" + testClass + ".FailByAssertion' message='Assert.Equal() Failure|r|nExpected: 2|r|nActual:   1' details='Should.Core.Exceptions.EqualException|r|nAssert.Equal() Failure|r|nExpected: 2|r|nActual:   1|r|n" + At<SampleTestClass>("FailByAssertion()") + "']",
                            "##teamcity[testFinished name='" + testClass + ".FailByAssertion' duration='#']",
                            "##teamcity[testStarted name='" + testClass + ".Pass']",
                            "##teamcity[testStdOut name='" + testClass + ".Pass' out='Console.Out: Pass|r|nConsole.Error: Pass|r|n']",
@@ -54,7 +54,7 @@
             }
         }
 
-        class PassFailTestClass
+        class SampleTestClass
         {
             public void Fail()
             {

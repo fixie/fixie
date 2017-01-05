@@ -98,22 +98,14 @@
 
             if (message.Status == CaseStatus.Failed)
             {
-                var fail = (CaseFailed)message;
+                var exception = ((CaseFailed)message).Exception;
                 @case.Add(
                     new XElement("failure",
-                        new XElement("message", new XCData(fail.Exception.Message)),
-                        new XElement("stack-trace", new XCData(StackTrace(fail)))));
+                        new XElement("message", new XCData(exception.Message)),
+                        new XElement("stack-trace", new XCData(exception.TypedStackTrace()))));
             }
 
             return @case;
-        }
-
-        static string StackTrace(CaseFailed fail)
-        {
-            if (fail.Exception.FailedAssertion)
-                return fail.Exception.StackTrace;
-
-            return fail.Exception.Type + NewLine + fail.Exception.StackTrace;
         }
 
         static string Result(CaseStatus status)

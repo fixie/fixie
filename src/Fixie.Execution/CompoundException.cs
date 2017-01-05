@@ -59,5 +59,13 @@ namespace Fixie.Execution
                 return console.ToString();
             }
         }
+
+        public string TypedStackTrace()
+        {
+            if (FailedAssertion)
+                return StackTrace;
+
+            return Type + Environment.NewLine + StackTrace;
+        }
     }
 }

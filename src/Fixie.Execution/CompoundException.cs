@@ -20,6 +20,7 @@ namespace Fixie.Execution
         public string Type => PrimaryException.Type;
         public string Message => PrimaryException.Message;
 
+        [Obsolete]
         public IReadOnlyList<ExceptionInfo> SecondaryExceptions { get; private set; }
 
         public string CompoundStackTrace { get; private set; }

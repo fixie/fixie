@@ -1,9 +1,6 @@
 ﻿namespace Fixie.Tests.Execution.Listeners
 {
-    using System;
     using System.IO;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using System.Xml;
     using System.Xml.Linq;
@@ -11,7 +8,6 @@
     using Fixie.Execution.Listeners;
     using Fixie.Internal;
     using Should;
-    using static Utility;
 
     public class NUnitXmlTests
     {
@@ -21,8 +17,7 @@
 
             var listener = new ReportListener<NUnitXml>(report => actual = new NUnitXml().Transform(report));
 
-            var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+            var convention = SampleTestClassConvention.Build();
 
             using (var console = new RedirectedConsole())
             {
@@ -88,43 +83,11 @@
             get
             {
                 var assemblyLocation = GetType().Assembly.Location;
-                var fileLocation = PathToThisFile();
+                var fileLocation = SampleTestClass.FilePath();
                 return XDocument.Parse(File.ReadAllText(Path.Combine("Execution", Path.Combine("Listeners", "NUnitXmlReport.xml"))))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
                                 .Replace("[fileLocation]", fileLocation);
-            }
-        }
-
-        class SampleTestClass
-        {
-            public void Fail()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
-
-            public void FailByAssertion()
-            {
-                WhereAmI();
-                1.ShouldEqual(2);
-            }
-
-            public void Pass()
-            {
-                WhereAmI();
-            }
-
-            [Skip]
-            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
-
-            [Skip("reason")]
-            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
-
-            static void WhereAmI([CallerMemberName] string member = null)
-            {
-                Console.Out.WriteLine("Console.Out: " + member);
-                Console.Error.WriteLine("Console.Error: " + member);
             }
         }
     }

@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <assemblies>
 <assembly name="[assemblyLocation]" run-date="YYYY-MM-DD" run-time="HH:MM:SS" configFile="[configLocation]" time="1.234" total="5" passed="1" failed="2" skipped="2" environment="00-bit .NET 1.2.3.4" test-framework="Fixie 1.2.3.4">
-	<class time="1.234" name="Fixie.Tests.Execution.Listeners.XUnitXmlTests+SampleTestClass" total="5" passed="1" failed="2" skipped="2">
-    <test name="Fixie.Tests.Execution.Listeners.XUnitXmlTests+SampleTestClass.SkipWithReason" type="Fixie.Tests.Execution.Listeners.XUnitXmlTests+SampleTestClass" method="SkipWithReason" result="Skip">
+	<class time="1.234" name="Fixie.Tests.SampleTestClass" total="5" passed="1" failed="2" skipped="2">
+    <test name="Fixie.Tests.SampleTestClass.SkipWithReason" type="Fixie.Tests.SampleTestClass" method="SkipWithReason" result="Skip">
       <reason>
-        <message><![CDATA[reason]]></message>
+        <message><![CDATA[Skipped with reason.]]></message>
       </reason>
     </test>
-    <test name="Fixie.Tests.Execution.Listeners.XUnitXmlTests+SampleTestClass.SkipWithoutReason" type="Fixie.Tests.Execution.Listeners.XUnitXmlTests+SampleTestClass" method="SkipWithoutReason" result="Skip" />
-    <test name="Fixie.Tests.Execution.Listeners.XUnitXmlTests+SampleTestClass.Fail" type="Fixie.Tests.Execution.Listeners.XUnitXmlTests+SampleTestClass" method="Fail" result="Fail" time="1.234">
+    <test name="Fixie.Tests.SampleTestClass.SkipWithoutReason" type="Fixie.Tests.SampleTestClass" method="SkipWithoutReason" result="Skip" />
+    <test name="Fixie.Tests.SampleTestClass.Fail" type="Fixie.Tests.SampleTestClass" method="Fail" result="Fail" time="1.234">
 			<failure exception-type="Fixie.Tests.FailureException">
 				<message><![CDATA['Fail' failed!]]></message>
 				<stack-trace>
           <![CDATA['Fail' failed!
-   at Fixie.Tests.Execution.Listeners.XUnitXmlTests.SampleTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
+   at Fixie.Tests.SampleTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
 			</failure>
 		</test>
-    <test name="Fixie.Tests.Execution.Listeners.XUnitXmlTests+SampleTestClass.FailByAssertion" type="Fixie.Tests.Execution.Listeners.XUnitXmlTests+SampleTestClass" method="FailByAssertion" result="Fail" time="1.234">
+    <test name="Fixie.Tests.SampleTestClass.FailByAssertion" type="Fixie.Tests.SampleTestClass" method="FailByAssertion" result="Fail" time="1.234">
       <failure exception-type="Should.Core.Exceptions.EqualException">
         <message><![CDATA[Assert.Equal() Failure
 Expected: 2
@@ -25,11 +25,11 @@ Actual:   1]]></message>
           <![CDATA[Assert.Equal() Failure
 Expected: 2
 Actual:   1
-   at Fixie.Tests.Execution.Listeners.XUnitXmlTests.SampleTestClass.FailByAssertion() in [fileLocation]:line #]]>
+   at Fixie.Tests.SampleTestClass.FailByAssertion() in [fileLocation]:line #]]>
         </stack-trace>
       </failure>
     </test>
-    <test name="Fixie.Tests.Execution.Listeners.XUnitXmlTests+SampleTestClass.Pass" type="Fixie.Tests.Execution.Listeners.XUnitXmlTests+SampleTestClass" method="Pass" result="Pass" time="1.234" />
+    <test name="Fixie.Tests.SampleTestClass.Pass" type="Fixie.Tests.SampleTestClass" method="Pass" result="Pass" time="1.234" />
 	</class>
 </assembly>
 </assemblies>

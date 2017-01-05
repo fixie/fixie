@@ -66,6 +66,8 @@
     <Compile Include="Assertions.cs" />
     <Compile Include="Execution\BusTests.cs" />
     <Compile Include="Execution\ExecutionSummaryTests.cs" />
+    <Compile Include="SampleTestClass.cs" />
+    <Compile Include="SampleTestClassConvention.cs" />
     <Compile Include="SkipAttribute.cs" />
     <Compile Include="Execution\Listeners\AppVeyorListenerTests.cs" />
     <Compile Include="Execution\ExecutionEnvironmentTests.cs" />

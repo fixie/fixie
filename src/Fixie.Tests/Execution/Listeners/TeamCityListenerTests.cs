@@ -1,13 +1,9 @@
 ﻿namespace Fixie.Tests.Execution.Listeners
 {
-    using System;
     using System.Linq;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using Fixie.Execution.Listeners;
     using Fixie.Internal;
-    using Should;
     using static Utility;
 
     public class TeamCityListenerTests
@@ -17,8 +13,7 @@
             using (var console = new RedirectedConsole())
             {
                 var listener = new TeamCityListener();
-                var convention = SelfTestConvention.Build();
-                convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+                var convention = SampleTestClassConvention.Build();
 
                 typeof(SampleTestClass).Run(listener, convention);
 
@@ -51,38 +46,6 @@
                            "##teamcity[testStdOut name='" + testClass + ".Pass' out='Console.Out: Pass|r|nConsole.Error: Pass|r|n']",
                            "##teamcity[testFinished name='" + testClass + ".Pass' duration='#']",
                            "##teamcity[testSuiteFinished name='Fixie.Tests.dll']");
-            }
-        }
-
-        class SampleTestClass
-        {
-            public void Fail()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
-
-            public void FailByAssertion()
-            {
-                WhereAmI();
-                1.ShouldEqual(2);
-            }
-
-            public void Pass()
-            {
-                WhereAmI();
-            }
-
-            [Skip]
-            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
-
-            [Skip("Skipped with reason.")]
-            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
-
-            static void WhereAmI([CallerMemberName] string member = null)
-            {
-                Console.Out.WriteLine("Console.Out: " + member);
-                Console.Error.WriteLine("Console.Error: " + member);
             }
         }
     }

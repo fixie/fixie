@@ -3,8 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using Execution;
     using Fixie.Internal;
@@ -32,8 +30,7 @@
             {
                 var listener = new VisualStudioListener(executionRecorder);
 
-                var convention = SelfTestConvention.Build();
-                convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+                var convention = SampleTestClassConvention.Build();
 
                 typeof(SampleTestClass).Run(listener, convention);
 
@@ -165,38 +162,6 @@
             static void NotImplemented()
             {
                 throw new NotImplementedException();
-            }
-        }
-
-        class SampleTestClass
-        {
-            public void Pass()
-            {
-                WhereAmI();
-            }
-
-            public void Fail()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
-
-            public void FailByAssertion()
-            {
-                WhereAmI();
-                1.ShouldEqual(2);
-            }
-
-            [Skip]
-            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
-
-            [Skip("Skipped with reason.")]
-            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
-
-            static void WhereAmI([CallerMemberName] string member = null)
-            {
-                Console.Out.WriteLine("Console.Out: " + member);
-                Console.Error.WriteLine("Console.Error: " + member);
             }
         }
     }

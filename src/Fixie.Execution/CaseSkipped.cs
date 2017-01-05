@@ -1,7 +1,5 @@
 ﻿namespace Fixie.Execution
 {
-    using System;
-
     public class CaseSkipped : CaseCompleted
     {
         public CaseSkipped(Case @case, string reason)
@@ -10,8 +8,8 @@
                 method: @case.Method,
                 name: @case.Name,
                 status: CaseStatus.Skipped,
-                duration: TimeSpan.Zero,
-                output: null
+                duration: @case.Duration,
+                output: @case.Output
                 )
         {
             Reason = reason;

@@ -44,6 +44,8 @@
 
         public void Handle(CaseFailed message)
         {
+            var exception = message.Exception;
+
             log.RecordResult(new Result
             {
                 FullyQualifiedName = new MethodGroup(message.Method).FullName,
@@ -51,8 +53,8 @@
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,
                 Output = message.Output,
-                ErrorMessage = message.Exception.FailedAssertion ? "" : message.Exception.Type,
-                ErrorStackTrace = message.Exception.StackTrace
+                ErrorMessage = exception.Message,
+                ErrorStackTrace = exception.TypedStackTrace()
             });
         }
     }

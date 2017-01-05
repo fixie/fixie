@@ -1,7 +1,10 @@
 ﻿namespace Fixie.Tests
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
+    using System.Text.RegularExpressions;
     using Fixie.Execution;
 
     public class StubListener :
@@ -13,7 +16,7 @@
 
         public void Handle(CaseSkipped message)
         {
-            var optionalReason = message.SkipReason == null ? null : ": " + message.SkipReason;
+            var optionalReason = message.Reason == null ? null : ": " + message.Reason;
             log.Add($"{message.Name} skipped{optionalReason}");
         }
 
@@ -24,40 +27,33 @@
 
         public void Handle(CaseFailed message)
         {
-            var entry = new StringBuilder();
-
-            var primaryException = message.Exceptions.PrimaryException;
-
-            entry.AppendFormat("{0} failed: {1}", message.Name, primaryException.Message);
-
-            var walk = primaryException;
-            while (walk.InnerException != null)
-            {
-                walk = walk.InnerException;
-                entry.AppendLine();
-                entry.AppendFormat("    Inner Exception: {0}", walk.Message);
-            }
-
-            foreach (var secondaryException in message.Exceptions.SecondaryExceptions)
-            {
-                entry.AppendLine();
-                entry.AppendFormat("    Secondary Failure: {0}", secondaryException.Message);
-
-                walk = secondaryException;
-                while (walk.InnerException != null)
-                {
-                    walk = walk.InnerException;
-                    entry.AppendLine();
-                    entry.AppendFormat("        Inner Exception: {0}", walk.Message);
-                }
-            }
-
-            log.Add(entry.ToString());
+            log.Add($"{message.Name} failed: {SimplifyCompoundStackTrace(message.Exception.StackTrace)}");
         }
 
-        public IEnumerable<string> Entries
+        static string SimplifyCompoundStackTrace(string compoundStackTrace)
         {
-            get { return log; }
+            var stackTrace = compoundStackTrace;
+
+            var newLine = Environment.NewLine;
+            var regexNewLine = Regex.Escape(newLine);
+
+            stackTrace =
+                String.Join(newLine,
+                    stackTrace.Split(new[] { newLine }, StringSplitOptions.RemoveEmptyEntries)
+                        .Where(x => !x.StartsWith("   at "))
+                        .Where(x => x != "--- End of stack trace from previous location where exception was thrown ---"));
+
+            stackTrace = Regex.Replace(stackTrace,
+                @"===== Secondary Exception: [a-zA-Z\.]+ =====" + regexNewLine + "([^" + regexNewLine + "]+)(" + regexNewLine + ")?",
+                "    Secondary Failure: $1" + newLine, RegexOptions.Multiline);
+
+            stackTrace = Regex.Replace(stackTrace,
+                @"------- Inner Exception: [a-zA-Z\.]+ -------" + regexNewLine + "([^" + regexNewLine + "]+)(" + regexNewLine + ")?",
+                "    Inner Exception: $1" + newLine, RegexOptions.Multiline);
+
+            return stackTrace.Trim();
         }
+
+        public IEnumerable<string> Entries => log;
     }
 }

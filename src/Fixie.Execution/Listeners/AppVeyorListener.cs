@@ -32,7 +32,7 @@
 
         public void Handle(AssemblyStarted message)
         {
-            fileName = Path.GetFileName(message.Location);
+            fileName = Path.GetFileName(message.Assembly.Location);
         }
 
         public void Handle(CaseSkipped message)
@@ -47,7 +47,7 @@
                 outcome = "Skipped",
                 durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
                 StdOut = caseResult.Output,
-                ErrorMessage = caseResult.SkipReason,
+                ErrorMessage = message.Reason,
                 ErrorStackTrace = null
             });
         }
@@ -71,6 +71,8 @@
 
         public void Handle(CaseFailed message)
         {
+            var exception = message.Exception;
+
             var caseResult = (CaseCompleted)message;
 
             Post(new TestResult
@@ -81,8 +83,8 @@
                 outcome = "Failed",
                 durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
                 StdOut = caseResult.Output,
-                ErrorMessage = caseResult.Exceptions.PrimaryException.DisplayName,
-                ErrorStackTrace = caseResult.Exceptions.CompoundStackTrace
+                ErrorMessage = exception.Message,
+                ErrorStackTrace = message.Exception.TypedStackTrace()
             });
         }
 

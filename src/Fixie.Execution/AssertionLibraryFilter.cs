@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Execution
 {
     using System;
     using System.Collections.Generic;
@@ -35,11 +35,9 @@
                         .SkipWhile(ContainsTypeToFilter));
         }
 
-        public string DisplayName(Exception exception)
+        public bool IsFailedAssertion(Exception exception)
         {
-            var exceptionType = exception.GetType();
-
-            return exceptionTypes.Contains(exceptionType) ? "" : exceptionType.FullName;
+            return exceptionTypes.Contains(exception.GetType());
         }
 
         bool ContainsTypeToFilter(string line)

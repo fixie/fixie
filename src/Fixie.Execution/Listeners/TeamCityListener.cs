@@ -15,12 +15,12 @@
     {
         public void Handle(AssemblyStarted message)
         {
-            Message("testSuiteStarted name='{0}'", Path.GetFileName(message.Location));
+            Message("testSuiteStarted name='{0}'", Path.GetFileName(message.Assembly.Location));
         }
 
         public void Handle(CaseSkipped message)
         {
-            Message("testIgnored name='{0}' message='{1}'", message.Name, message.SkipReason);
+            Message("testIgnored name='{0}' message='{1}'", message.Name, message.Reason);
         }
 
         public void Handle(CasePassed message)
@@ -32,15 +32,16 @@
 
         public void Handle(CaseFailed message)
         {
+            var exception = message.Exception;
             Message("testStarted name='{0}'", message.Name);
             Output(message.Name, message.Output);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exceptions.PrimaryException.Message, message.Exceptions.CompoundStackTrace);
+            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, exception.Message, exception.TypedStackTrace());
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
         public void Handle(AssemblyCompleted message)
         {
-            Message("testSuiteFinished name='{0}'", Path.GetFileName(message.Location));
+            Message("testSuiteFinished name='{0}'", Path.GetFileName(message.Assembly.Location));
         }
 
         static void Message(string format, params string[] args)

@@ -16,7 +16,7 @@
         public void Handle(AssemblyStarted message)
         {
             summary = new ExecutionSummary();
-            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(message.Location));
+            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(message.Assembly.Location));
             Console.WriteLine();
         }
 
@@ -25,7 +25,7 @@
             summary.Add(message);
 
             using (Foreground.Yellow)
-                Console.WriteLine("Test '{0}' skipped{1}", message.Name, message.SkipReason == null ? null : ": " + message.SkipReason);
+                Console.WriteLine("Test '{0}' skipped{1}", message.Name, message.Reason == null ? null : ": " + message.Reason);
         }
 
         public void Handle(CasePassed message)
@@ -38,8 +38,8 @@
             summary.Add(message);
 
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", message.Name, message.Exceptions.PrimaryException.DisplayName);
-            Console.WriteLine(message.Exceptions.CompoundStackTrace);
+                Console.WriteLine($"Test '{message.Name}' failed: {(message.Exception.FailedAssertion ? "" : message.Exception.Type)}");
+            Console.WriteLine(message.Exception.StackTrace);
             Console.WriteLine();
         }
 

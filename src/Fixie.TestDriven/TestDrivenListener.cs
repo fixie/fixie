@@ -27,7 +27,7 @@ namespace Fixie.TestDriven
             {
                 Name = message.Name,
                 State = TestState.Ignored,
-                Message = message.SkipReason
+                Message = message.Reason
             });
         }
 
@@ -50,8 +50,8 @@ namespace Fixie.TestDriven
             {
                 Name = message.Name,
                 State = TestState.Failed,
-                Message = message.Exceptions.PrimaryException.DisplayName,
-                StackTrace = message.Exceptions.CompoundStackTrace,
+                Message = message.Exception.FailedAssertion ? "" : message.Exception.Type,
+                StackTrace = message.Exception.StackTrace,
             });
         }
     }

@@ -18,12 +18,12 @@
         {
             log.RecordResult(new Result
             {
-                FullyQualifiedName = message.MethodGroup.FullName,
+                FullyQualifiedName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,
                 Output = message.Output,
-                ErrorMessage = message.SkipReason,
+                ErrorMessage = message.Reason,
                 ErrorStackTrace = null
             });
         }
@@ -32,7 +32,7 @@
         {
             log.RecordResult(new Result
             {
-                FullyQualifiedName = message.MethodGroup.FullName,
+                FullyQualifiedName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,
@@ -44,15 +44,17 @@
 
         public void Handle(CaseFailed message)
         {
+            var exception = message.Exception;
+
             log.RecordResult(new Result
             {
-                FullyQualifiedName = message.MethodGroup.FullName,
+                FullyQualifiedName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,
                 Output = message.Output,
-                ErrorMessage = message.Exceptions.PrimaryException.DisplayName,
-                ErrorStackTrace = message.Exceptions.CompoundStackTrace
+                ErrorMessage = exception.Message,
+                ErrorStackTrace = exception.TypedStackTrace()
             });
         }
     }

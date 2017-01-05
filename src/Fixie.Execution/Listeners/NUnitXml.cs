@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Xml.Linq;
     using Execution;
+    using static System.Environment;
 
     public class NUnitXml : XmlFormat
     {
@@ -88,15 +89,20 @@
             if (message.Status != CaseStatus.Skipped)
                 @case.Add(new XAttribute("time", Seconds(message.Duration)));
 
-            if (message.Status == CaseStatus.Skipped && message.SkipReason != null)
-                @case.Add(new XElement("reason", new XElement("message", new XCData(message.SkipReason))));
+            if (message.Status == CaseStatus.Skipped)
+            {
+                var skip = (CaseSkipped)message;
+                if (skip.Reason != null)
+                    @case.Add(new XElement("reason", new XElement("message", new XCData(skip.Reason))));
+            }
 
             if (message.Status == CaseStatus.Failed)
             {
+                var exception = ((CaseFailed)message).Exception;
                 @case.Add(
                     new XElement("failure",
-                        new XElement("message", new XCData(message.Exceptions.PrimaryException.Message)),
-                        new XElement("stack-trace", new XCData(message.Exceptions.CompoundStackTrace))));
+                        new XElement("message", new XCData(exception.Message)),
+                        new XElement("stack-trace", new XCData(exception.TypedStackTrace()))));
             }
 
             return @case;

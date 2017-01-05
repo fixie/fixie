@@ -50,8 +50,8 @@
         {
             var @case = new XElement("test",
                 new XAttribute("name", message.Name),
-                new XAttribute("type", message.MethodGroup.Class),
-                new XAttribute("method", message.MethodGroup.Method),
+                 new XAttribute("type", message.Class.FullName),
+                new XAttribute("method", message.Method.Name),
                 new XAttribute("result",
                     message.Status == CaseStatus.Failed
                         ? "Fail"
@@ -62,15 +62,22 @@
             if (message.Status != CaseStatus.Skipped)
                 @case.Add(new XAttribute("time", Seconds(message.Duration)));
 
-            if (message.Status == CaseStatus.Skipped && message.SkipReason != null)
-                @case.Add(new XElement("reason", new XElement("message", new XCData(message.SkipReason))));
+            if (message.Status == CaseStatus.Skipped)
+            {
+                var skip = (CaseSkipped)message;
+                if (skip.Reason != null)
+                    @case.Add(new XElement("reason", new XElement("message", new XCData(skip.Reason))));
+            }
 
             if (message.Status == CaseStatus.Failed)
+            {
+                var exception = ((CaseFailed)message).Exception;
                 @case.Add(
                     new XElement("failure",
-                        new XAttribute("exception-type", message.Exceptions.PrimaryException.Type),
-                        new XElement("message", new XCData(message.Exceptions.PrimaryException.Message)),
-                        new XElement("stack-trace", new XCData(message.Exceptions.CompoundStackTrace))));
+                        new XAttribute("exception-type", exception.Type),
+                        new XElement("message", new XCData(exception.Message)),
+                        new XElement("stack-trace", new XCData(exception.StackTrace))));
+            }
 
             return @case;
         }

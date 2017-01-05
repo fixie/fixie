@@ -25,58 +25,57 @@
 
                 listener.Log.Count.ShouldEqual(5);
 
-                var skip = listener.Log[0];
-                var skipWithReason = listener.Log[1];
-                var fail = listener.Log[2];
-                var failByAssertion = listener.Log[3];
+                var skip = (CaseSkipped)listener.Log[0];
+                var skipWithReason = (CaseSkipped)listener.Log[1];
+                var fail = (CaseFailed)listener.Log[2];
+                var failByAssertion = (CaseFailed)listener.Log[3];
                 var pass = listener.Log[4];
 
                 pass.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Pass");
-                pass.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Pass");
+                pass.Class.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass");
+                pass.Method.Name.ShouldEqual("Pass");
                 pass.Output.ShouldEqual("Pass" + Environment.NewLine);
                 pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 pass.Status.ShouldEqual(CaseStatus.Passed);
-                pass.Exceptions.ShouldBeNull();
-                pass.SkipReason.ShouldBeNull();
 
                 fail.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Fail");
-                fail.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Fail");
+                fail.Class.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass");
+                fail.Method.Name.ShouldEqual("Fail");
                 fail.Output.ShouldEqual("Fail" + Environment.NewLine);
                 fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 fail.Status.ShouldEqual(CaseStatus.Failed);
-                fail.Exceptions.PrimaryException.Type.ShouldEqual("Fixie.Tests.FailureException");
-                fail.Exceptions.CompoundStackTrace.ShouldNotBeNull();
-                fail.Exceptions.PrimaryException.Message.ShouldEqual("'Fail' failed!");
-                fail.SkipReason.ShouldBeNull();
+                fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
+                fail.Exception.StackTrace.ShouldNotBeNull();
+                fail.Exception.Message.ShouldEqual("'Fail' failed!");
 
                 failByAssertion.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.FailByAssertion");
-                failByAssertion.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.FailByAssertion");
+                failByAssertion.Class.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass");
+                failByAssertion.Method.Name.ShouldEqual("FailByAssertion");
                 failByAssertion.Output.ShouldEqual("FailByAssertion" + Environment.NewLine);
                 failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
-                failByAssertion.Exceptions.PrimaryException.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
-                failByAssertion.Exceptions.CompoundStackTrace.ShouldNotBeNull();
-                failByAssertion.Exceptions.PrimaryException.Message.Lines().ShouldEqual(
+                failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
+                failByAssertion.Exception.StackTrace.ShouldNotBeNull();
+                failByAssertion.Exception.Message.Lines().ShouldEqual(
                     "Assert.Equal() Failure",
                     "Expected: 2",
                     "Actual:   1");
-                failByAssertion.SkipReason.ShouldBeNull();
 
                 skip.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Skip");
-                skip.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.Skip");
+                skip.Class.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass");
+                skip.Method.Name.ShouldEqual("Skip");
                 skip.Output.ShouldBeNull();
                 skip.Duration.ShouldEqual(TimeSpan.Zero);
                 skip.Status.ShouldEqual(CaseStatus.Skipped);
-                skip.Exceptions.ShouldBeNull();
-                skip.SkipReason.ShouldBeNull();
+                skip.Reason.ShouldBeNull();
 
                 skipWithReason.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.SkipWithReason");
-                skipWithReason.MethodGroup.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.SkipWithReason");
+                skipWithReason.Class.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass");
+                skipWithReason.Method.Name.ShouldEqual("SkipWithReason");
                 skipWithReason.Output.ShouldBeNull();
                 skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
                 skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);
-                skipWithReason.Exceptions.ShouldBeNull();
-                skipWithReason.SkipReason.ShouldEqual("Skipped by naming convention.");
+                skipWithReason.Reason.ShouldEqual("Skipped by naming convention.");
             }
         }
 

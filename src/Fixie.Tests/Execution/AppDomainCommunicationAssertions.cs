@@ -4,7 +4,6 @@ namespace Fixie.Tests.Execution
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Fixie.Execution;
     using Should;
 
     public static class AppDomainCommunicationAssertions
@@ -40,7 +39,7 @@ namespace Fixie.Tests.Execution
             }
         }
 
-        public static bool IsSafeForAppDomainCommunication(this Type type)
+        static bool IsSafeForAppDomainCommunication(this Type type)
         {
             return IsSafeForAppDomainCommunication(type, new HashSet<Type>());
         }
@@ -68,12 +67,6 @@ namespace Fixie.Tests.Execution
             }
 
             visitedTypes.Add(type);
-
-            if (type == typeof(CaseCompleted))
-            {
-                return KnownCaseCompletedImplementations()
-                    .All(implementationType => IsSafeForAppDomainCommunication(implementationType, visitedTypes));
-            }
 
             if (type == typeof(object))
                 return false;
@@ -111,14 +104,6 @@ namespace Fixie.Tests.Execution
             }
 
             return true;
-        }
-
-        static IEnumerable<Type> KnownCaseCompletedImplementations()
-        {
-            return typeof(CaseCompleted)
-                .Assembly
-                .GetTypes()
-                .Where(type => typeof(CaseCompleted).IsAssignableFrom(type) && type.IsClass && !type.IsAbstract);
         }
     }
 }

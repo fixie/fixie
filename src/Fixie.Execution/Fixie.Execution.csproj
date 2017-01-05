@@ -39,15 +39,29 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyCompleted.cs" />
+    <Compile Include="AssemblyStarted.cs" />
+    <Compile Include="AssertionLibraryFilter.cs" />
+    <Compile Include="Bus.cs" />
+    <Compile Include="CaseCompleted.cs" />
+    <Compile Include="CaseFailed.cs" />
+    <Compile Include="CasePassed.cs" />
+    <Compile Include="CaseSkipped.cs" />
+    <Compile Include="CaseStatus.cs" />
+    <Compile Include="ClassCompleted.cs" />
     <Compile Include="ClassDiscoverer.cs" />
     <Compile Include="ClassRunner.cs" />
+    <Compile Include="ClassStarted.cs" />
     <Compile Include="CommandLineOption.cs" />
+    <Compile Include="CompoundException.cs" />
     <Compile Include="ConventionDiscoverer.cs" />
     <Compile Include="Discoverer.cs" />
     <Compile Include="ExecutionEnvironment.cs" />
     <Compile Include="ExecutionProxy.cs" />
     <Compile Include="ExecutionSummary.cs" />
     <Compile Include="Foreground.cs" />
+    <Compile Include="Handler.cs" />
+    <Compile Include="Listener.cs" />
     <Compile Include="Listeners\AppVeyorListener.cs" />
     <Compile Include="Listeners\ClassReport.cs" />
     <Compile Include="Listeners\ConsoleListener.cs" />
@@ -58,6 +72,8 @@
     <Compile Include="Listeners\TeamCityListener.cs" />
     <Compile Include="Listeners\XmlFormat.cs" />
     <Compile Include="Listeners\XUnitXml.cs" />
+    <Compile Include="LongLivedMarshalByRefObject.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="MethodDiscoverer.cs" />
     <Compile Include="ParameterDiscoverer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

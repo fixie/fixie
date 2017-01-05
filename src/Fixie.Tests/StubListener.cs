@@ -28,7 +28,7 @@
 
             var primaryException = message.Exception.PrimaryException;
 
-            entry.AppendFormat("{0} failed: {1}", message.Name, primaryException.Message);
+            entry.AppendFormat("{0} failed: {1}", message.Name, message.Exception.Message);
 
             var walk = primaryException;
             while (walk.InnerException != null)

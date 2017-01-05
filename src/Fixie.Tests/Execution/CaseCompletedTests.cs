@@ -46,7 +46,7 @@
                 fail.Status.ShouldEqual(CaseStatus.Failed);
                 fail.Exception.PrimaryException.Type.ShouldEqual("Fixie.Tests.FailureException");
                 fail.Exception.CompoundStackTrace.ShouldNotBeNull();
-                fail.Exception.PrimaryException.Message.ShouldEqual("'Fail' failed!");
+                fail.Exception.Message.ShouldEqual("'Fail' failed!");
 
                 failByAssertion.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.FailByAssertion");
                 failByAssertion.Class.FullName.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass");
@@ -56,7 +56,7 @@
                 failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
                 failByAssertion.Exception.PrimaryException.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
                 failByAssertion.Exception.CompoundStackTrace.ShouldNotBeNull();
-                failByAssertion.Exception.PrimaryException.Message.Lines().ShouldEqual(
+                failByAssertion.Exception.Message.Lines().ShouldEqual(
                     "Assert.Equal() Failure",
                     "Expected: 2",
                     "Actual:   1");

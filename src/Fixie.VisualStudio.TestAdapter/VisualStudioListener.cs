@@ -51,7 +51,7 @@
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,
                 Output = message.Output,
-                ErrorMessage = message.Exception.DisplayName,
+                ErrorMessage = message.Exception.FailedAssertion ? "" : message.Exception.Type,
                 ErrorStackTrace = message.Exception.StackTrace
             });
         }

@@ -81,7 +81,7 @@
                 outcome = "Failed",
                 durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
                 StdOut = caseResult.Output,
-                ErrorMessage = message.Exception.DisplayName,
+                ErrorMessage = message.Exception.FailedAssertion ? "" : message.Exception.Type,
                 ErrorStackTrace = message.Exception.StackTrace
             });
         }

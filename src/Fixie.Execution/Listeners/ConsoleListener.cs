@@ -38,7 +38,7 @@
             summary.Add(message);
 
             using (Foreground.Red)
-                Console.WriteLine("Test '{0}' failed: {1}", message.Name, message.Exception.DisplayName);
+                Console.WriteLine($"Test '{message.Name}' failed: {(message.Exception.FailedAssertion ? "" : message.Exception.Type)}");
             Console.WriteLine(message.Exception.StackTrace);
             Console.WriteLine();
         }

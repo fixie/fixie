@@ -107,7 +107,6 @@
                     "Actual:   1");
                 results[3].ErrorStackTrace.Lines().Select(CleanBrittleValues)
                     .ShouldEqual(
-                        "Should.Core.Exceptions.EqualException",
                         "Assert.Equal() Failure",
                         "Expected: 2",
                         "Actual:   1",

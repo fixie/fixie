@@ -40,7 +40,7 @@
                            "##teamcity[testFinished name='" + testClass + ".Fail' duration='#']",
                            "##teamcity[testStarted name='" + testClass + ".FailByAssertion']",
                            "##teamcity[testStdOut name='" + testClass + ".FailByAssertion' out='Console.Out: FailByAssertion|r|nConsole.Error: FailByAssertion|r|n']",
-                           "##teamcity[testFailed name='" + testClass + ".FailByAssertion' message='Assert.Equal() Failure|r|nExpected: 2|r|nActual:   1' details='Should.Core.Exceptions.EqualException|r|nAssert.Equal() Failure|r|nExpected: 2|r|nActual:   1|r|n" + At<SampleTestClass>("FailByAssertion()") + "']",
+                           "##teamcity[testFailed name='" + testClass + ".FailByAssertion' message='Assert.Equal() Failure|r|nExpected: 2|r|nActual:   1' details='Assert.Equal() Failure|r|nExpected: 2|r|nActual:   1|r|n" + At<SampleTestClass>("FailByAssertion()") + "']",
                            "##teamcity[testFinished name='" + testClass + ".FailByAssertion' duration='#']",
                            "##teamcity[testStarted name='" + testClass + ".Pass']",
                            "##teamcity[testStdOut name='" + testClass + ".Pass' out='Console.Out: Pass|r|nConsole.Error: Pass|r|n']",

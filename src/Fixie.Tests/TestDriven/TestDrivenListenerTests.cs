@@ -73,7 +73,7 @@ namespace Fixie.Tests.TestDriven
 
                 results[3].Name.ShouldEqual(testClass + ".FailByAssertion");
                 results[3].State.ShouldEqual(TestState.Failed);
-                results[3].Message.ShouldEqual("Should.Core.Exceptions.EqualException");
+                results[3].Message.ShouldEqual("");
                 results[3].StackTrace.Lines().Select(CleanBrittleValues).ShouldEqual(
                     "Assert.Equal() Failure",
                     "Expected: 2",

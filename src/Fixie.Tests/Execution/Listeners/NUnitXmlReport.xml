@@ -26,8 +26,7 @@
                       <message><![CDATA[Assert.Equal() Failure
 Expected: 2
 Actual:   1]]></message>
-                      <stack-trace><![CDATA[Should.Core.Exceptions.EqualException
-Assert.Equal() Failure
+                      <stack-trace><![CDATA[Assert.Equal() Failure
 Expected: 2
 Actual:   1
    at Fixie.Tests.SampleTestClass.FailByAssertion() in [fileLocation]:line #]]></stack-trace>

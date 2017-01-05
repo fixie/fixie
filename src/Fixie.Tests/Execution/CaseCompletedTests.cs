@@ -7,7 +7,6 @@
     using Fixie.Execution;
     using Fixie.Internal;
     using Should;
-    using Should.Core.Exceptions;
     using static Utility;
 
     public class CaseCompletedTests
@@ -15,7 +14,6 @@
         public void ShouldDescribeCaseCompletedMessages()
         {
             var convention = SampleTestClassConvention.Build();
-            convention.HideExceptionDetails.For<EqualException>();
 
             var listener = new StubCaseCompletedListener();
 

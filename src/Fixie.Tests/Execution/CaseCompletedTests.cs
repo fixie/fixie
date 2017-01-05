@@ -15,7 +15,7 @@
             var convention = SampleTestClassConvention.Build();
 
             using (new RedirectedConsole())
-                typeof(SampleTestClass).Run(listener, convention);
+                Run<SampleTestClass>(listener, convention);
 
             listener.Log.Count.ShouldEqual(5);
 

@@ -30,7 +30,7 @@
             {
                 var listener = new VisualStudioListener(executionRecorder);
 
-                typeof(SampleTestClass).Run(listener, convention);
+                Run<SampleTestClass>(listener, convention);
 
                 console.Lines()
                     .ShouldEqual(

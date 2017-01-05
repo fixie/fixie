@@ -16,7 +16,7 @@
 
             using (var console = new RedirectedConsole())
             {
-                typeof(SampleTestClass).Run(listener, convention);
+                Run<SampleTestClass>(listener, convention);
 
                 console
                     .Output

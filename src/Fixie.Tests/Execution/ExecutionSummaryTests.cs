@@ -3,6 +3,7 @@ namespace Fixie.Tests.Execution
     using System;
     using Fixie.Execution;
     using Should;
+    using static Utility;
 
     public class ExecutionSummaryTests
     {
@@ -13,7 +14,7 @@ namespace Fixie.Tests.Execution
 
             var listener = new StubExecutionSummaryListener();
 
-            typeof(SampleTestClass).Run(listener, convention);
+            Run<SampleTestClass>(listener, convention);
 
             var summary = listener.Summary;
 
@@ -31,7 +32,7 @@ namespace Fixie.Tests.Execution
 
             var listener = new StubExecutionSummaryListener();
 
-            typeof(SampleTestClass).Run(listener, convention);
+            Run<SampleTestClass>(listener, convention);
 
             listener.Summary
                 .ToString()
@@ -49,7 +50,7 @@ namespace Fixie.Tests.Execution
 
             var listener = new StubExecutionSummaryListener();
 
-            typeof(SampleTestClass).Run(listener, convention);
+            Run<SampleTestClass>(listener, convention);
 
             listener.Summary
                 .ToString()

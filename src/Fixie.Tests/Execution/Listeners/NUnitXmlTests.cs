@@ -8,6 +8,7 @@
     using Fixie.Execution.Listeners;
     using Fixie.Internal;
     using Should;
+    using static Utility;
 
     public class NUnitXmlTests
     {
@@ -21,7 +22,7 @@
 
             using (var console = new RedirectedConsole())
             {
-                typeof(SampleTestClass).Run(listener, convention);
+                Run<SampleTestClass>(listener, convention);
 
                 console.Lines()
                     .ShouldEqual(

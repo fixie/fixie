@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Fixie.Execution;
     using System.Text.RegularExpressions;
     using System.Threading;
     using Fixie.Internal;
@@ -36,12 +35,6 @@
                 lines.RemoveAt(lines.Count-1);
 
             return lines;
-        }
-
-        public static void Run(this Type sampleTestClass, Listener listener, Convention convention)
-        {
-            var bus = new Bus(listener);
-            new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
         }
 
         public static string CleanStackTraceLineNumbers(this string stackTrace)

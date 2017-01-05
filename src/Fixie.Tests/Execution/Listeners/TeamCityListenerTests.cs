@@ -7,6 +7,7 @@
     using System.Text.RegularExpressions;
     using Fixie.Execution.Listeners;
     using Fixie.Internal;
+    using Should;
     using static Utility;
 
     public class TeamCityListenerTests
@@ -31,60 +32,46 @@
                            "##teamcity[testIgnored name='" + testClass + ".SkipWithReason' message='Skipped with reason.']",
                            "##teamcity[testIgnored name='" + testClass + ".SkipWithoutReason' message='']",
 
-                           "Console.Out: FailA",
-                           "Console.Error: FailA",
-                           "Console.Out: FailB",
-                           "Console.Error: FailB",
-                           "Console.Out: PassA",
-                           "Console.Error: PassA",
-                           "Console.Out: PassB",
-                           "Console.Error: PassB",
-                           "Console.Out: PassC",
-                           "Console.Error: PassC",
+                           "Console.Out: Fail",
+                           "Console.Error: Fail",
+                           "Console.Out: FailByAssertion",
+                           "Console.Error: FailByAssertion",
+                           "Console.Out: Pass",
+                           "Console.Error: Pass",
 
-                           "##teamcity[testStarted name='"+testClass+".FailA']",
-                           "##teamcity[testStdOut name='" + testClass + ".FailA' out='Console.Out: FailA|r|nConsole.Error: FailA|r|n']",
-                           "##teamcity[testFailed name='" + testClass + ".FailA' message='|'FailA|' failed!' details='Fixie.Tests.FailureException|r|n|'FailA|' failed!|r|n" + At<PassFailTestClass>("FailA()") + "']",
-                           "##teamcity[testFinished name='" + testClass + ".FailA' duration='#']",
-                           "##teamcity[testStarted name='" + testClass + ".FailB']",
-                           "##teamcity[testStdOut name='" + testClass + ".FailB' out='Console.Out: FailB|r|nConsole.Error: FailB|r|n']",
-                           "##teamcity[testFailed name='" + testClass + ".FailB' message='|'FailB|' failed!' details='Fixie.Tests.FailureException|r|n|'FailB|' failed!|r|n" + At<PassFailTestClass>("FailB()") + "']",
-                           "##teamcity[testFinished name='" + testClass + ".FailB' duration='#']",
-                           "##teamcity[testStarted name='" + testClass + ".PassA']",
-                           "##teamcity[testStdOut name='" + testClass + ".PassA' out='Console.Out: PassA|r|nConsole.Error: PassA|r|n']",
-                           "##teamcity[testFinished name='" + testClass + ".PassA' duration='#']",
-                           "##teamcity[testStarted name='" + testClass + ".PassB']",
-                           "##teamcity[testStdOut name='" + testClass + ".PassB' out='Console.Out: PassB|r|nConsole.Error: PassB|r|n']",
-                           "##teamcity[testFinished name='" + testClass + ".PassB' duration='#']",
-                           "##teamcity[testStarted name='" + testClass + ".PassC']",
-                           "##teamcity[testStdOut name='" + testClass + ".PassC' out='Console.Out: PassC|r|nConsole.Error: PassC|r|n']",
-                           "##teamcity[testFinished name='" + testClass + ".PassC' duration='#']",
+                           "##teamcity[testStarted name='" + testClass + ".Fail']",
+                           "##teamcity[testStdOut name='" + testClass + ".Fail' out='Console.Out: Fail|r|nConsole.Error: Fail|r|n']",
+                           "##teamcity[testFailed name='" + testClass + ".Fail' message='|'Fail|' failed!' details='Fixie.Tests.FailureException|r|n|'Fail|' failed!|r|n" + At<PassFailTestClass>("Fail()") + "']",
+                           "##teamcity[testFinished name='" + testClass + ".Fail' duration='#']",
+                           "##teamcity[testStarted name='" + testClass + ".FailByAssertion']",
+                           "##teamcity[testStdOut name='" + testClass + ".FailByAssertion' out='Console.Out: FailByAssertion|r|nConsole.Error: FailByAssertion|r|n']",
+                           "##teamcity[testFailed name='" + testClass + ".FailByAssertion' message='Assert.Equal() Failure|r|nExpected: 2|r|nActual:   1' details='Should.Core.Exceptions.EqualException|r|nAssert.Equal() Failure|r|nExpected: 2|r|nActual:   1|r|n" + At<PassFailTestClass>("FailByAssertion()") + "']",
+                           "##teamcity[testFinished name='" + testClass + ".FailByAssertion' duration='#']",
+                           "##teamcity[testStarted name='" + testClass + ".Pass']",
+                           "##teamcity[testStdOut name='" + testClass + ".Pass' out='Console.Out: Pass|r|nConsole.Error: Pass|r|n']",
+                           "##teamcity[testFinished name='" + testClass + ".Pass' duration='#']",
                            "##teamcity[testSuiteFinished name='Fixie.Tests.dll']");
             }
         }
 
         class PassFailTestClass
         {
-            public void FailA()
+            public void Fail()
             {
                 WhereAmI();
                 throw new FailureException();
             }
 
-            public void PassA()
+            public void FailByAssertion()
+            {
+                WhereAmI();
+                1.ShouldEqual(2);
+            }
+
+            public void Pass()
             {
                 WhereAmI();
             }
-
-            public void FailB()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
-
-            public void PassB() { WhereAmI(); }
-
-            public void PassC() { WhereAmI(); }
 
             [Skip]
             public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }

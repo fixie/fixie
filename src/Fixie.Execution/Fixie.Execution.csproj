@@ -54,7 +54,6 @@
     <Compile Include="CompoundException.cs" />
     <Compile Include="ConventionDiscoverer.cs" />
     <Compile Include="Discoverer.cs" />
-    <Compile Include="ExceptionInfo.cs" />
     <Compile Include="ExecutionEnvironment.cs" />
     <Compile Include="ExecutionProxy.cs" />
     <Compile Include="ExecutionSummary.cs" />

@@ -7,13 +7,10 @@ namespace Fixie.Execution
     {
         public ExceptionInfo(Exception exception)
         {
-            Type = exception.GetType().FullName;
             Message = exception.Message;
             InnerException = exception.InnerException == null ? null : new ExceptionInfo(exception.InnerException);
         }
 
-        [Obsolete]
-        public string Type { get; private set; }
         [Obsolete]
         public string Message { get; private set; }
         [Obsolete]

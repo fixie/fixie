@@ -16,12 +16,13 @@ namespace Fixie.Execution
             CompoundStackTrace = GetCompoundStackTrace(exceptions, filter);
 
             DisplayName = filter.DisplayName(primary);
+            Type = primary.GetType().FullName;
         }
 
         [Obsolete]
         public ExceptionInfo PrimaryException { get; private set; }
         public string DisplayName { get; }
-        public string Type => PrimaryException.Type;
+        public string Type { get; }
         public string Message => PrimaryException.Message;
 
         [Obsolete]

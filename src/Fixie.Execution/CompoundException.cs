@@ -19,7 +19,15 @@ namespace Fixie.Execution
         public string Type { get; }
         public string Message { get; }
         public bool FailedAssertion { get; }
-        public string StackTrace { get; private set; }
+        public string StackTrace { get; }
+
+        public string TypedStackTrace()
+        {
+            if (FailedAssertion)
+                return StackTrace;
+
+            return Type + Environment.NewLine + StackTrace;
+        }
 
         static string GetCompoundStackTrace(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)
         {
@@ -38,7 +46,7 @@ namespace Fixie.Execution
                     {
                         console.WriteLine();
                         console.WriteLine();
-                        console.WriteLine("===== Secondary Exception: {0} =====", ex.GetType().FullName);
+                        console.WriteLine($"===== Secondary Exception: {ex.GetType().FullName} =====");
                         console.WriteLine(ex.Message);
                         console.Write(filter.FilterStackTrace(ex));
                     }
@@ -49,7 +57,7 @@ namespace Fixie.Execution
                         walk = walk.InnerException;
                         console.WriteLine();
                         console.WriteLine();
-                        console.WriteLine("------- Inner Exception: {0} -------", walk.GetType().FullName);
+                        console.WriteLine($"------- Inner Exception: {walk.GetType().FullName} -------");
                         console.WriteLine(walk.Message);
                         console.Write(filter.FilterStackTrace(walk));
                     }
@@ -58,14 +66,6 @@ namespace Fixie.Execution
                 }
                 return console.ToString();
             }
-        }
-
-        public string TypedStackTrace()
-        {
-            if (FailedAssertion)
-                return StackTrace;
-
-            return Type + Environment.NewLine + StackTrace;
         }
     }
 }

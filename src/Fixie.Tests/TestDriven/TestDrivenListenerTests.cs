@@ -54,36 +54,42 @@ namespace Fixie.Tests.TestDriven
                     result.TestRunnerName.ShouldBeNull();
                 }
 
-                results[0].Name.ShouldEqual(testClass + ".SkipWithReason");
-                results[0].State.ShouldEqual(TestState.Ignored);
-                results[0].Message.ShouldEqual("Skipped with reason.");
-                results[0].StackTrace.ShouldBeNull();
+                var skipWithReason = results[0];
+                var skipWithoutReason = results[1];
+                var fail = results[2];
+                var failByAssertion = results[3];
+                var pass = results[4];
 
-                results[1].Name.ShouldEqual(testClass + ".SkipWithoutReason");
-                results[1].State.ShouldEqual(TestState.Ignored);
-                results[1].Message.ShouldBeNull();
-                results[1].StackTrace.ShouldBeNull();
+                skipWithReason.Name.ShouldEqual(testClass + ".SkipWithReason");
+                skipWithReason.State.ShouldEqual(TestState.Ignored);
+                skipWithReason.Message.ShouldEqual("Skipped with reason.");
+                skipWithReason.StackTrace.ShouldBeNull();
 
-                results[2].Name.ShouldEqual(testClass + ".Fail");
-                results[2].State.ShouldEqual(TestState.Failed);
-                results[2].Message.ShouldEqual("Fixie.Tests.FailureException");
-                results[2].StackTrace.Lines().Select(CleanBrittleValues).ShouldEqual(
+                skipWithoutReason.Name.ShouldEqual(testClass + ".SkipWithoutReason");
+                skipWithoutReason.State.ShouldEqual(TestState.Ignored);
+                skipWithoutReason.Message.ShouldBeNull();
+                skipWithoutReason.StackTrace.ShouldBeNull();
+
+                fail.Name.ShouldEqual(testClass + ".Fail");
+                fail.State.ShouldEqual(TestState.Failed);
+                fail.Message.ShouldEqual("Fixie.Tests.FailureException");
+                fail.StackTrace.Lines().Select(CleanBrittleValues).ShouldEqual(
                     "'Fail' failed!",
                     At<SampleTestClass>("Fail()"));
 
-                results[3].Name.ShouldEqual(testClass + ".FailByAssertion");
-                results[3].State.ShouldEqual(TestState.Failed);
-                results[3].Message.ShouldEqual("");
-                results[3].StackTrace.Lines().Select(CleanBrittleValues).ShouldEqual(
+                failByAssertion.Name.ShouldEqual(testClass + ".FailByAssertion");
+                failByAssertion.State.ShouldEqual(TestState.Failed);
+                failByAssertion.Message.ShouldEqual("");
+                failByAssertion.StackTrace.Lines().Select(CleanBrittleValues).ShouldEqual(
                     "Assert.Equal() Failure",
                     "Expected: 2",
                     "Actual:   1",
                     At<SampleTestClass>("FailByAssertion()"));
 
-                results[4].Name.ShouldEqual(testClass + ".Pass");
-                results[4].State.ShouldEqual(TestState.Passed);
-                results[4].Message.ShouldBeNull();
-                results[4].StackTrace.ShouldBeNull();
+                pass.Name.ShouldEqual(testClass + ".Pass");
+                pass.State.ShouldEqual(TestState.Passed);
+                pass.Message.ShouldBeNull();
+                pass.StackTrace.ShouldBeNull();
             }
         }
 

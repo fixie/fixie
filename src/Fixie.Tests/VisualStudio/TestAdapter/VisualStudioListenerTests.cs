@@ -62,72 +62,78 @@
                     result.TestCase.LineNumber.ShouldEqual(-1);
                 }
 
-                results[0].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".SkipWithReason");
-                results[0].TestCase.DisplayName.ShouldEqual(testClass + ".SkipWithReason");
-                results[0].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-                results[0].Outcome.ShouldEqual(TestOutcome.Skipped);
-                results[0].ErrorMessage.ShouldEqual("Skipped with reason.");
-                results[0].ErrorStackTrace.ShouldBeNull();
-                results[0].DisplayName.ShouldEqual(testClass + ".SkipWithReason");
-                results[0].Messages.ShouldBeEmpty();
-                results[0].Duration.ShouldEqual(TimeSpan.Zero);
+                var skipWithReason = results[0];
+                var skipWithoutReason = results[1];
+                var fail = results[2];
+                var failByAssertion = results[3];
+                var pass = results[4];
 
-                results[1].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".SkipWithoutReason");
-                results[1].TestCase.DisplayName.ShouldEqual(testClass + ".SkipWithoutReason");
-                results[1].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-                results[1].Outcome.ShouldEqual(TestOutcome.Skipped);
-                results[1].ErrorMessage.ShouldBeNull();
-                results[1].ErrorStackTrace.ShouldBeNull();
-                results[1].DisplayName.ShouldEqual(testClass + ".SkipWithoutReason");
-                results[1].Messages.ShouldBeEmpty();
-                results[1].Duration.ShouldEqual(TimeSpan.Zero);
+                skipWithReason.TestCase.FullyQualifiedName.ShouldEqual(testClass + ".SkipWithReason");
+                skipWithReason.TestCase.DisplayName.ShouldEqual(testClass + ".SkipWithReason");
+                skipWithReason.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+                skipWithReason.Outcome.ShouldEqual(TestOutcome.Skipped);
+                skipWithReason.ErrorMessage.ShouldEqual("Skipped with reason.");
+                skipWithReason.ErrorStackTrace.ShouldBeNull();
+                skipWithReason.DisplayName.ShouldEqual(testClass + ".SkipWithReason");
+                skipWithReason.Messages.ShouldBeEmpty();
+                skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
 
-                results[2].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".Fail");
-                results[2].TestCase.DisplayName.ShouldEqual(testClass + ".Fail");
-                results[2].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-                results[2].Outcome.ShouldEqual(TestOutcome.Failed);
-                results[2].ErrorMessage.ShouldEqual("'Fail' failed!");
-                results[2].ErrorStackTrace.Lines().Select(CleanBrittleValues)
+                skipWithoutReason.TestCase.FullyQualifiedName.ShouldEqual(testClass + ".SkipWithoutReason");
+                skipWithoutReason.TestCase.DisplayName.ShouldEqual(testClass + ".SkipWithoutReason");
+                skipWithoutReason.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+                skipWithoutReason.Outcome.ShouldEqual(TestOutcome.Skipped);
+                skipWithoutReason.ErrorMessage.ShouldBeNull();
+                skipWithoutReason.ErrorStackTrace.ShouldBeNull();
+                skipWithoutReason.DisplayName.ShouldEqual(testClass + ".SkipWithoutReason");
+                skipWithoutReason.Messages.ShouldBeEmpty();
+                skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
+
+                fail.TestCase.FullyQualifiedName.ShouldEqual(testClass + ".Fail");
+                fail.TestCase.DisplayName.ShouldEqual(testClass + ".Fail");
+                fail.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+                fail.Outcome.ShouldEqual(TestOutcome.Failed);
+                fail.ErrorMessage.ShouldEqual("'Fail' failed!");
+                fail.ErrorStackTrace.Lines().Select(CleanBrittleValues)
                     .ShouldEqual(
                         "Fixie.Tests.FailureException",
                         "'Fail' failed!",
                         At<SampleTestClass>("Fail()"));
-                results[2].DisplayName.ShouldEqual(testClass + ".Fail");
-                results[2].Messages.Count.ShouldEqual(1);
-                results[2].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
-                results[2].Messages[0].Text.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
-                results[2].Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+                fail.DisplayName.ShouldEqual(testClass + ".Fail");
+                fail.Messages.Count.ShouldEqual(1);
+                fail.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
+                fail.Messages[0].Text.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
+                fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-                results[3].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".FailByAssertion");
-                results[3].TestCase.DisplayName.ShouldEqual(testClass + ".FailByAssertion");
-                results[3].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-                results[3].Outcome.ShouldEqual(TestOutcome.Failed);
-                results[3].ErrorMessage.Lines().ShouldEqual("Assert.Equal() Failure",
+                failByAssertion.TestCase.FullyQualifiedName.ShouldEqual(testClass + ".FailByAssertion");
+                failByAssertion.TestCase.DisplayName.ShouldEqual(testClass + ".FailByAssertion");
+                failByAssertion.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+                failByAssertion.Outcome.ShouldEqual(TestOutcome.Failed);
+                failByAssertion.ErrorMessage.Lines().ShouldEqual("Assert.Equal() Failure",
                     "Expected: 2",
                     "Actual:   1");
-                results[3].ErrorStackTrace.Lines().Select(CleanBrittleValues)
+                failByAssertion.ErrorStackTrace.Lines().Select(CleanBrittleValues)
                     .ShouldEqual(
                         "Assert.Equal() Failure",
                         "Expected: 2",
                         "Actual:   1",
                         At<SampleTestClass>("FailByAssertion()"));
-                results[3].DisplayName.ShouldEqual(testClass + ".FailByAssertion");
-                results[3].Messages.Count.ShouldEqual(1);
-                results[3].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
-                results[3].Messages[0].Text.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
-                results[3].Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+                failByAssertion.DisplayName.ShouldEqual(testClass + ".FailByAssertion");
+                failByAssertion.Messages.Count.ShouldEqual(1);
+                failByAssertion.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
+                failByAssertion.Messages[0].Text.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
+                failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-                results[4].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".Pass");
-                results[4].TestCase.DisplayName.ShouldEqual(testClass + ".Pass");
-                results[4].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-                results[4].Outcome.ShouldEqual(TestOutcome.Passed);
-                results[4].ErrorMessage.ShouldBeNull();
-                results[4].ErrorStackTrace.ShouldBeNull();
-                results[4].DisplayName.ShouldEqual(testClass + ".Pass");
-                results[4].Messages.Count.ShouldEqual(1);
-                results[4].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
-                results[4].Messages[0].Text.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
-                results[4].Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+                pass.TestCase.FullyQualifiedName.ShouldEqual(testClass + ".Pass");
+                pass.TestCase.DisplayName.ShouldEqual(testClass + ".Pass");
+                pass.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+                pass.Outcome.ShouldEqual(TestOutcome.Passed);
+                pass.ErrorMessage.ShouldBeNull();
+                pass.ErrorStackTrace.ShouldBeNull();
+                pass.DisplayName.ShouldEqual(testClass + ".Pass");
+                pass.Messages.Count.ShouldEqual(1);
+                pass.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
+                pass.Messages[0].Text.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
+                pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             }
         }
 

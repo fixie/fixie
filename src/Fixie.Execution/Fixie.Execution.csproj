@@ -48,8 +48,10 @@
     <Compile Include="CasePassed.cs" />
     <Compile Include="CaseSkipped.cs" />
     <Compile Include="CaseStatus.cs" />
+    <Compile Include="ClassCompleted.cs" />
     <Compile Include="ClassDiscoverer.cs" />
     <Compile Include="ClassRunner.cs" />
+    <Compile Include="ClassStarted.cs" />
     <Compile Include="CommandLineOption.cs" />
     <Compile Include="CompoundException.cs" />
     <Compile Include="ConventionDiscoverer.cs" />

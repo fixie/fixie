@@ -6,7 +6,9 @@ namespace Fixie.Execution.Listeners
 
     public class ReportListener<TXmlFormat> :
         Handler<AssemblyStarted>,
+        Handler<ClassStarted>,
         Handler<CaseCompleted>,
+        Handler<ClassCompleted>,
         Handler<AssemblyCompleted>
         where TXmlFormat : XmlFormat, new()
     {
@@ -27,24 +29,27 @@ namespace Fixie.Execution.Listeners
         public void Handle(AssemblyStarted message)
         {
             report = new Report(message.Assembly.Location);
-            currentClass = null;
+        }
+
+        public void Handle(ClassStarted message)
+        {
+            currentClass = new ClassReport(message.Class.FullName);
+            report.Add(currentClass);
         }
 
         public void Handle(CaseCompleted message)
         {
-            if (currentClass == null || currentClass.Name != message.Class.FullName)
-            {
-                currentClass = new ClassReport(message.Class.FullName);
-                report.Add(currentClass);
-            }
-
             currentClass.Add(message);
+        }
+
+        public void Handle(ClassCompleted message)
+        {
+            currentClass = null;
         }
 
         public void Handle(AssemblyCompleted message)
         {
             save(report);
-            currentClass = null;
             report = null;
         }
 

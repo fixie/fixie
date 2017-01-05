@@ -16,7 +16,8 @@
                     <failure>
                       <message><![CDATA['Fail' failed!]]></message>
                       <stack-trace>
-                        <![CDATA['Fail' failed!
+                        <![CDATA[Fixie.Tests.FailureException
+'Fail' failed!
    at Fixie.Tests.Execution.Listeners.NUnitXmlTests.PassFailTestClass.Fail() in [fileLocation]:line #]]></stack-trace>
                     </failure>
                   </test-case>
@@ -25,7 +26,8 @@
                     <failure>
                       <message><![CDATA['PassIfTrue' failed!]]></message>
                       <stack-trace>
-                        <![CDATA['PassIfTrue' failed!
+                        <![CDATA[Fixie.Tests.FailureException
+'PassIfTrue' failed!
    at Fixie.Tests.Execution.Listeners.NUnitXmlTests.PassFailTestClass.PassIfTrue(Boolean pass) in [fileLocation]:line #]]></stack-trace>
                     </failure>
                   </test-case>

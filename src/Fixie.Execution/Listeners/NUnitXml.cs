@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Xml.Linq;
     using Execution;
+    using static System.Environment;
 
     public class NUnitXml : XmlFormat
     {
@@ -97,14 +98,22 @@
 
             if (message.Status == CaseStatus.Failed)
             {
-                var exception = ((CaseFailed)message).Exception;
+                var fail = (CaseFailed)message;
                 @case.Add(
                     new XElement("failure",
-                        new XElement("message", new XCData(exception.Message)),
-                        new XElement("stack-trace", new XCData(exception.StackTrace))));
+                        new XElement("message", new XCData(fail.Exception.Message)),
+                        new XElement("stack-trace", new XCData(StackTrace(fail)))));
             }
 
             return @case;
+        }
+
+        static string StackTrace(CaseFailed fail)
+        {
+            if (fail.Exception.FailedAssertion)
+                return fail.Exception.StackTrace;
+
+            return fail.Exception.Type + NewLine + fail.Exception.StackTrace;
         }
 
         static string Result(CaseStatus status)

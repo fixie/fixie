@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Tests.Execution
 {
     using System;
-    using System.Linq;
     using Fixie.Execution;
     using Should;
     using static Utility;

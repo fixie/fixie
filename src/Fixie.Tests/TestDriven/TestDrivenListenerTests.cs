@@ -7,19 +7,17 @@ namespace Fixie.Tests.TestDriven
     using Fixie.Internal;
     using Fixie.TestDriven;
     using Should;
-    using static Utility;
 
-    public class TestDrivenListenerTests
+    public class TestDrivenListenerTests : MessagingTests
     {
         public void ShouldReportResultsToTestDrivenDotNet()
         {
             var testDriven = new StubTestListener();
             var listener = new TestDrivenListener(testDriven);
-            var convention = SampleTestClassConvention.Build();
 
             using (var console = new RedirectedConsole())
             {
-                Run<SampleTestClass>(listener, convention);
+                Run(listener);
 
                 console.Lines()
                     .ShouldEqual(
@@ -36,8 +34,6 @@ namespace Fixie.Tests.TestDriven
             summary.Failed.ShouldEqual(2);
             summary.Skipped.ShouldEqual(2);
             summary.Total.ShouldEqual(5);
-
-            var testClass = FullName<SampleTestClass>();
 
             var results = testDriven.TestResults;
             results.Count.ShouldEqual(5);
@@ -57,17 +53,17 @@ namespace Fixie.Tests.TestDriven
             var failByAssertion = results[3];
             var pass = results[4];
 
-            skipWithReason.Name.ShouldEqual(testClass + ".SkipWithReason");
+            skipWithReason.Name.ShouldEqual(TestClass + ".SkipWithReason");
             skipWithReason.State.ShouldEqual(TestState.Ignored);
             skipWithReason.Message.ShouldEqual("Skipped with reason.");
             skipWithReason.StackTrace.ShouldBeNull();
 
-            skipWithoutReason.Name.ShouldEqual(testClass + ".SkipWithoutReason");
+            skipWithoutReason.Name.ShouldEqual(TestClass + ".SkipWithoutReason");
             skipWithoutReason.State.ShouldEqual(TestState.Ignored);
             skipWithoutReason.Message.ShouldBeNull();
             skipWithoutReason.StackTrace.ShouldBeNull();
 
-            fail.Name.ShouldEqual(testClass + ".Fail");
+            fail.Name.ShouldEqual(TestClass + ".Fail");
             fail.State.ShouldEqual(TestState.Failed);
             fail.Message.ShouldEqual("Fixie.Tests.FailureException");
             fail.StackTrace
@@ -75,9 +71,9 @@ namespace Fixie.Tests.TestDriven
                 .Lines()
                 .ShouldEqual(
                     "'Fail' failed!",
-                    At<SampleTestClass>("Fail()"));
+                    At("Fail()"));
 
-            failByAssertion.Name.ShouldEqual(testClass + ".FailByAssertion");
+            failByAssertion.Name.ShouldEqual(TestClass + ".FailByAssertion");
             failByAssertion.State.ShouldEqual(TestState.Failed);
             failByAssertion.Message.ShouldEqual("");
             failByAssertion.StackTrace
@@ -87,9 +83,9 @@ namespace Fixie.Tests.TestDriven
                     "Assert.Equal() Failure",
                     "Expected: 2",
                     "Actual:   1",
-                    At<SampleTestClass>("FailByAssertion()"));
+                    At("FailByAssertion()"));
 
-            pass.Name.ShouldEqual(testClass + ".Pass");
+            pass.Name.ShouldEqual(TestClass + ".Pass");
             pass.State.ShouldEqual(TestState.Passed);
             pass.Message.ShouldBeNull();
             pass.StackTrace.ShouldBeNull();

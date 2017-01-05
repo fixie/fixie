@@ -43,11 +43,13 @@
                     .ShouldEqual(
                         "Console.Out: Fail",
                         "Console.Error: Fail",
+                        "Console.Out: FailByAssertion",
+                        "Console.Error: FailByAssertion",
                         "Console.Out: Pass",
                         "Console.Error: Pass");
 
                 var results = recorder.TestResults;
-                results.Count.ShouldEqual(4);
+                results.Count.ShouldEqual(5);
 
                 foreach (var result in results)
                 {
@@ -99,17 +101,37 @@
                 results[2].Messages[0].Text.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
                 results[2].Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-                results[3].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".Pass");
-                results[3].TestCase.DisplayName.ShouldEqual(testClass + ".Pass");
+                results[3].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".FailByAssertion");
+                results[3].TestCase.DisplayName.ShouldEqual(testClass + ".FailByAssertion");
                 results[3].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
-                results[3].Outcome.ShouldEqual(TestOutcome.Passed);
-                results[3].ErrorMessage.ShouldBeNull();
-                results[3].ErrorStackTrace.ShouldBeNull();
-                results[3].DisplayName.ShouldEqual(testClass + ".Pass");
+                results[3].Outcome.ShouldEqual(TestOutcome.Failed);
+                results[3].ErrorMessage.Lines().ShouldEqual("Assert.Equal() Failure",
+                    "Expected: 2",
+                    "Actual:   1");
+                results[3].ErrorStackTrace.Lines().Select(CleanBrittleValues)
+                    .ShouldEqual(
+                        "Should.Core.Exceptions.EqualException",
+                        "Assert.Equal() Failure",
+                        "Expected: 2",
+                        "Actual:   1",
+                        At<SampleTestClass>("FailByAssertion()"));
+                results[3].DisplayName.ShouldEqual(testClass + ".FailByAssertion");
                 results[3].Messages.Count.ShouldEqual(1);
                 results[3].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
-                results[3].Messages[0].Text.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
+                results[3].Messages[0].Text.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
                 results[3].Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+
+                results[4].TestCase.FullyQualifiedName.ShouldEqual(testClass + ".Pass");
+                results[4].TestCase.DisplayName.ShouldEqual(testClass + ".Pass");
+                results[4].TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+                results[4].Outcome.ShouldEqual(TestOutcome.Passed);
+                results[4].ErrorMessage.ShouldBeNull();
+                results[4].ErrorStackTrace.ShouldBeNull();
+                results[4].DisplayName.ShouldEqual(testClass + ".Pass");
+                results[4].Messages.Count.ShouldEqual(1);
+                results[4].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
+                results[4].Messages[0].Text.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
+                results[4].Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             }
         }
 
@@ -157,6 +179,12 @@
             {
                 WhereAmI();
                 throw new FailureException();
+            }
+
+            public void FailByAssertion()
+            {
+                WhereAmI();
+                1.ShouldEqual(2);
             }
 
             [Skip]

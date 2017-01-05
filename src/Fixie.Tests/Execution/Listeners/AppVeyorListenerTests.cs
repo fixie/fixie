@@ -50,10 +50,12 @@
                     .ShouldEqual(
                         "Console.Out: Fail",
                         "Console.Error: Fail",
+                        "Console.Out: FailByAssertion",
+                        "Console.Error: FailByAssertion",
                         "Console.Out: Pass",
                         "Console.Error: Pass");
 
-                results.Count.ShouldEqual(4);
+                results.Count.ShouldEqual(5);
 
                 foreach (var result in results)
                 {
@@ -86,12 +88,28 @@
                          At<SampleTestClass>("Fail()"));
                 results[2].StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
 
-                results[3].testName.ShouldEqual(testClass + ".Pass");
-                results[3].outcome.ShouldEqual("Passed");
+                results[3].testName.ShouldEqual(testClass + ".FailByAssertion");
+                results[3].outcome.ShouldEqual("Failed");
                 int.Parse(results[3].durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-                results[3].ErrorMessage.ShouldBeNull();
-                results[3].ErrorStackTrace.ShouldBeNull();
-                results[3].StdOut.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
+                results[3].ErrorMessage.Lines().ShouldEqual(
+                    "Assert.Equal() Failure",
+                    "Expected: 2",
+                    "Actual:   1");
+                results[3].ErrorStackTrace.Lines().Select(CleanBrittleValues)
+                    .ShouldEqual(
+                         "Should.Core.Exceptions.EqualException",
+                         "Assert.Equal() Failure",
+                         "Expected: 2",
+                         "Actual:   1",
+                         At<SampleTestClass>("FailByAssertion()"));
+                results[3].StdOut.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
+
+                results[4].testName.ShouldEqual(testClass + ".Pass");
+                results[4].outcome.ShouldEqual("Passed");
+                int.Parse(results[4].durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+                results[4].ErrorMessage.ShouldBeNull();
+                results[4].ErrorStackTrace.ShouldBeNull();
+                results[4].StdOut.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
             }
         }
 
@@ -114,6 +132,12 @@
             {
                 WhereAmI();
                 throw new FailureException();
+            }
+
+            public void FailByAssertion()
+            {
+                WhereAmI();
+                1.ShouldEqual(2);
             }
 
             [Skip]

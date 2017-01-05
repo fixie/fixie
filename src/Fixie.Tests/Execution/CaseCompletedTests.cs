@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
     using Fixie.Execution;
     using Fixie.Internal;
@@ -14,8 +15,7 @@
         public void ShouldDescribeCaseCompletedMessages()
         {
             var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Method.Name == "Skip");
-            convention.CaseExecution.Skip(x => x.Method.Name == "SkipWithReason", x => "Skipped by naming convention.");
+            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
             convention.HideExceptionDetails.For<EqualException>();
 
             var listener = new StubCaseCompletedListener();
@@ -26,8 +26,8 @@
 
                 listener.Log.Count.ShouldEqual(5);
 
-                var skip = (CaseSkipped)listener.Log[0];
-                var skipWithReason = (CaseSkipped)listener.Log[1];
+                var skipWithReason = (CaseSkipped)listener.Log[0];
+                var skipWithoutReason = (CaseSkipped)listener.Log[1];
                 var fail = (CaseFailed)listener.Log[2];
                 var failByAssertion = (CaseFailed)listener.Log[3];
                 var pass = listener.Log[4];
@@ -62,21 +62,21 @@
                     "Expected: 2",
                     "Actual:   1");
 
-                skip.Name.ShouldEqual(FullName<SampleTestClass>() + ".Skip");
-                skip.Class.FullName.ShouldEqual(FullName<SampleTestClass>() + "");
-                skip.Method.Name.ShouldEqual("Skip");
-                skip.Output.ShouldBeNull();
-                skip.Duration.ShouldEqual(TimeSpan.Zero);
-                skip.Status.ShouldEqual(CaseStatus.Skipped);
-                skip.Reason.ShouldBeNull();
-
                 skipWithReason.Name.ShouldEqual(FullName<SampleTestClass>() + ".SkipWithReason");
                 skipWithReason.Class.FullName.ShouldEqual(FullName<SampleTestClass>() + "");
                 skipWithReason.Method.Name.ShouldEqual("SkipWithReason");
                 skipWithReason.Output.ShouldBeNull();
                 skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
                 skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);
-                skipWithReason.Reason.ShouldEqual("Skipped by naming convention.");
+                skipWithReason.Reason.ShouldEqual("Skipped with reason.");
+
+                skipWithoutReason.Name.ShouldEqual(FullName<SampleTestClass>() + ".SkipWithoutReason");
+                skipWithoutReason.Class.FullName.ShouldEqual(FullName<SampleTestClass>() + "");
+                skipWithoutReason.Method.Name.ShouldEqual("SkipWithoutReason");
+                skipWithoutReason.Output.ShouldBeNull();
+                skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
+                skipWithoutReason.Status.ShouldEqual(CaseStatus.Skipped);
+                skipWithoutReason.Reason.ShouldBeNull();
             }
         }
 
@@ -116,11 +116,13 @@
                 WhereAmI();
             }
 
-            public void Skip()
+            [Skip]
+            public void SkipWithoutReason()
             {
                 WhereAmI();
             }
 
+            [Skip("Skipped with reason.")]
             public void SkipWithReason()
             {
                 WhereAmI();

@@ -12,11 +12,12 @@ namespace Fixie.Execution
             var primary = exceptions.First();
             StackTrace = GetCompoundStackTrace(exceptions, filter);
 
-            DisplayName = filter.DisplayName(primary);
+            DisplayName = filter.IsFailedAssertion(primary) ? "" : primary.GetType().FullName;
             Type = primary.GetType().FullName;
             Message = primary.Message;
         }
 
+        [Obsolete]
         public string DisplayName { get; }
         public string Type { get; }
         public string Message { get; }

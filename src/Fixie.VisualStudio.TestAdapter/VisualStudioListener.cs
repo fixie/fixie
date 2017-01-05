@@ -52,7 +52,7 @@
                 Duration = message.Duration,
                 Output = message.Output,
                 ErrorMessage = message.Exception.DisplayName,
-                ErrorStackTrace = message.Exception.CompoundStackTrace
+                ErrorStackTrace = message.Exception.StackTrace
             });
         }
     }

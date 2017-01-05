@@ -76,7 +76,7 @@
                     new XElement("failure",
                         new XAttribute("exception-type", exception.Type),
                         new XElement("message", new XCData(exception.Message)),
-                        new XElement("stack-trace", new XCData(exception.CompoundStackTrace))));
+                        new XElement("stack-trace", new XCData(exception.StackTrace))));
             }
 
             return @case;

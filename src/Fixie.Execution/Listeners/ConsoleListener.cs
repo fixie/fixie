@@ -39,7 +39,7 @@
 
             using (Foreground.Red)
                 Console.WriteLine("Test '{0}' failed: {1}", message.Name, message.Exception.DisplayName);
-            Console.WriteLine(message.Exception.CompoundStackTrace);
+            Console.WriteLine(message.Exception.StackTrace);
             Console.WriteLine();
         }
 

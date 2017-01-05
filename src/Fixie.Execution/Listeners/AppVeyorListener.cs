@@ -82,7 +82,7 @@
                 durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
                 StdOut = caseResult.Output,
                 ErrorMessage = message.Exception.DisplayName,
-                ErrorStackTrace = message.Exception.CompoundStackTrace
+                ErrorStackTrace = message.Exception.StackTrace
             });
         }
 

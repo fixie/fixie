@@ -34,7 +34,7 @@
         {
             Message("testStarted name='{0}'", message.Name);
             Output(message.Name, message.Output);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exception.Message, message.Exception.CompoundStackTrace);
+            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exception.Message, message.Exception.StackTrace);
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 

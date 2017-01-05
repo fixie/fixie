@@ -10,7 +10,7 @@ namespace Fixie.Execution
         public CompoundException(IReadOnlyList<Exception> exceptions, AssertionLibraryFilter filter)
         {
             var primary = exceptions.First();
-            CompoundStackTrace = GetCompoundStackTrace(exceptions, filter);
+            StackTrace = GetCompoundStackTrace(exceptions, filter);
 
             DisplayName = filter.DisplayName(primary);
             Type = primary.GetType().FullName;
@@ -21,7 +21,7 @@ namespace Fixie.Execution
         public string Type { get; }
         public string Message { get; }
 
-        public string CompoundStackTrace { get; private set; }
+        public string StackTrace { get; private set; }
 
         static string GetCompoundStackTrace(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)
         {

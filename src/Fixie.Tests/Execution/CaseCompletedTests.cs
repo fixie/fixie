@@ -45,7 +45,7 @@
                 fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 fail.Status.ShouldEqual(CaseStatus.Failed);
                 fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
-                fail.Exception.CompoundStackTrace.ShouldNotBeNull();
+                fail.Exception.StackTrace.ShouldNotBeNull();
                 fail.Exception.Message.ShouldEqual("'Fail' failed!");
 
                 failByAssertion.Name.ShouldEqual("Fixie.Tests.Execution.CaseCompletedTests+SampleTestClass.FailByAssertion");
@@ -55,7 +55,7 @@
                 failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
                 failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
-                failByAssertion.Exception.CompoundStackTrace.ShouldNotBeNull();
+                failByAssertion.Exception.StackTrace.ShouldNotBeNull();
                 failByAssertion.Exception.Message.Lines().ShouldEqual(
                     "Assert.Equal() Failure",
                     "Expected: 2",

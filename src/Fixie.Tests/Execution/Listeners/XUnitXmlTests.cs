@@ -66,7 +66,7 @@
             cleaned = Regex.Replace(cleaned, @"time=""[\d\.]+""", @"time=""1.234""");
 
             //Avoid brittle assertion introduced by stack trace line numbers.
-            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
+            cleaned = cleaned.CleanStackTraceLineNumbers();
 
             return cleaned;
         }

@@ -2,7 +2,6 @@
 {
     using System;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using Fixie.Execution;
     using Should;
     using static Utility;
@@ -28,15 +27,15 @@
             compoundException.FailedAssertion.ShouldEqual(false);
 
             compoundException.StackTrace
-               .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-               .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
-               .ShouldEqual(
-                   "Primary Exception!",
-                   At<CompoundExceptionTests>("GetPrimaryException()"),
-                   "",
-                   "------- Inner Exception: System.DivideByZeroException -------",
-                   "Divide by Zero Exception!",
-                   At<CompoundExceptionTests>("GetPrimaryException()"));
+                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                .Select(x => x.CleanStackTraceLineNumbers()) //Avoid brittle assertion introduced by stack trace line numbers.
+                .ShouldEqual(
+                    "Primary Exception!",
+                    At<CompoundExceptionTests>("GetPrimaryException()"),
+                    "",
+                    "------- Inner Exception: System.DivideByZeroException -------",
+                    "Divide by Zero Exception!",
+                    At<CompoundExceptionTests>("GetPrimaryException()"));
         }
 
         public void ShouldSummarizeCollectionsOfExceptionsComprisedOfPrimaryAndSecondaryExceptions()
@@ -54,7 +53,7 @@
 
             compoundException.StackTrace
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
+                .Select(x => x.CleanStackTraceLineNumbers()) //Avoid brittle assertion introduced by stack trace line numbers.
                 .ShouldEqual(
                     "Primary Exception!",
                     At<CompoundExceptionTests>("GetPrimaryException()"),
@@ -101,7 +100,6 @@
 
             compoundException.StackTrace
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
                 .ShouldEqual(
                     "Primary Exception!",
                     "",

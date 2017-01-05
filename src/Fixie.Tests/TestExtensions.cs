@@ -5,6 +5,8 @@
     using System.Linq;
     using System.Reflection;
     using Fixie.Execution;
+    using System.Text.RegularExpressions;
+    using System.Threading;
     using Fixie.Internal;
 
     public static class TestExtensions
@@ -40,6 +42,22 @@
         {
             var bus = new Bus(listener);
             new Runner(bus).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
+        }
+
+        public static string CleanStackTraceLineNumbers(this string stackTrace)
+        {
+            //Avoid brittle assertion introduced by stack trace line numbers.
+
+            return Regex.Replace(stackTrace, @":line \d+", ":line #");
+        }
+
+        public static string CleanDuration(this string output)
+        {
+            //Avoid brittle assertion introduced by test duration.
+
+            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+            return Regex.Replace(output, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
         }
     }
 }

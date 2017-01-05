@@ -2,8 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
     using Execution;
     using Fixie.Internal;
     using Fixie.VisualStudio.TestAdapter;
@@ -92,7 +90,9 @@
             fail.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
             fail.Outcome.ShouldEqual(TestOutcome.Failed);
             fail.ErrorMessage.ShouldEqual("'Fail' failed!");
-            fail.ErrorStackTrace.Lines().Select(CleanBrittleValues)
+            fail.ErrorStackTrace
+                .CleanStackTraceLineNumbers()
+                .Lines()
                 .ShouldEqual(
                     "Fixie.Tests.FailureException",
                     "'Fail' failed!",
@@ -110,7 +110,9 @@
             failByAssertion.ErrorMessage.Lines().ShouldEqual("Assert.Equal() Failure",
                 "Expected: 2",
                 "Actual:   1");
-            failByAssertion.ErrorStackTrace.Lines().Select(CleanBrittleValues)
+            failByAssertion.ErrorStackTrace
+                .CleanStackTraceLineNumbers()
+                .Lines()
                 .ShouldEqual(
                     "Assert.Equal() Failure",
                     "Expected: 2",
@@ -133,14 +135,6 @@
             pass.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
             pass.Messages[0].Text.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-        }
-
-        static string CleanBrittleValues(string actualRawContent)
-        {
-            //Avoid brittle assertion introduced by stack trace line numbers.
-            var cleaned = Regex.Replace(actualRawContent, @":line \d+", ":line #");
-
-            return cleaned;
         }
 
         class StubExecutionRecorder : ITestExecutionRecorder

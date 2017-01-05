@@ -2,8 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-    using System.Threading;
     using Fixie.Execution;
     using Fixie.Internal;
     using Should;
@@ -41,7 +39,8 @@
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             fail.Status.ShouldEqual(CaseStatus.Failed);
             fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
-            CleanBrittleValues(fail.Exception.StackTrace)
+            fail.Exception.StackTrace
+                .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual("'Fail' failed!", At<SampleTestClass>("Fail()"));
             fail.Exception.Message.ShouldEqual("'Fail' failed!");
@@ -53,7 +52,8 @@
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
             failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
-            CleanBrittleValues(failByAssertion.Exception.StackTrace)
+            failByAssertion.Exception.StackTrace
+                .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
                     "Assert.Equal() Failure",
@@ -92,18 +92,6 @@
             public void Handle(CaseSkipped message) => Log.Add(message);
             public void Handle(CasePassed message) => Log.Add(message);
             public void Handle(CaseFailed message) => Log.Add(message);
-        }
-
-        static string CleanBrittleValues(string actualRawContent)
-        {
-            //Avoid brittle assertion introduced by test duration.
-            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            var cleaned = Regex.Replace(actualRawContent, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
-
-            //Avoid brittle assertion introduced by stack trace line numbers.
-            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
-
-            return cleaned;
         }
     }
 }

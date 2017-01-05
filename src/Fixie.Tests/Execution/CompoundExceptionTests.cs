@@ -27,8 +27,8 @@
             compoundException.FailedAssertion.ShouldEqual(false);
 
             compoundException.StackTrace
-                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                .Select(x => x.CleanStackTraceLineNumbers()) //Avoid brittle assertion introduced by stack trace line numbers.
+                .CleanStackTraceLineNumbers()
+                .Lines()
                 .ShouldEqual(
                     "Primary Exception!",
                     At<CompoundExceptionTests>("GetPrimaryException()"),
@@ -52,8 +52,8 @@
             compoundException.FailedAssertion.ShouldEqual(false);
 
             compoundException.StackTrace
-                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                .Select(x => x.CleanStackTraceLineNumbers()) //Avoid brittle assertion introduced by stack trace line numbers.
+                .CleanStackTraceLineNumbers()
+                .Lines()
                 .ShouldEqual(
                     "Primary Exception!",
                     At<CompoundExceptionTests>("GetPrimaryException()"),
@@ -99,7 +99,7 @@
             compoundException.FailedAssertion.ShouldEqual(true);
 
             compoundException.StackTrace
-                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                .Lines()
                 .ShouldEqual(
                     "Primary Exception!",
                     "",
@@ -121,8 +121,7 @@
                     "",
                     "",
                     "------- Inner Exception: System.NotImplementedException -------",
-                    "Not Implemented Exception!",
-                    "");
+                    "Not Implemented Exception!");
         }
 
         AssertionLibraryFilter AssertionLibraryFilter()

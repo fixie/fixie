@@ -52,13 +52,12 @@ namespace Fixie.Tests.Cases
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleTestClass.Throw failed: 'Throw' failed!"
                     );
 
-                console.Output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-                    .ShouldEqual(
-                        "BoolFalse False",
-                        "BoolThrow null",
-                        "BoolTrue True",
-                        "Pass null",
-                        "Throw null");
+                console.Lines().ShouldEqual(
+                    "BoolFalse False",
+                    "BoolThrow null",
+                    "BoolTrue True",
+                    "Pass null",
+                    "Throw null");
             }
         }
 
@@ -80,13 +79,12 @@ namespace Fixie.Tests.Cases
                     "Fixie.Tests.Cases.NonVoidCaseTests+SampleAsyncTestClass.Throw failed: 'Throw' failed!"
                     );
 
-                console.Output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-                    .ShouldEqual(
-                        "BoolFalse False",
-                        "BoolThrow null",
-                        "BoolTrue True",
-                        "Pass null",
-                        "Throw null");
+                console.Lines().ShouldEqual(
+                    "BoolFalse False",
+                    "BoolThrow null",
+                    "BoolTrue True",
+                    "Pass null",
+                    "Throw null");
             }
         }
 

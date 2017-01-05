@@ -35,14 +35,14 @@
                 pass.Name.ShouldEqual(FullName<SampleTestClass>() + ".Pass");
                 pass.Class.FullName.ShouldEqual(FullName<SampleTestClass>() + "");
                 pass.Method.Name.ShouldEqual("Pass");
-                pass.Output.ShouldEqual("Pass" + Environment.NewLine);
+                pass.Output.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
                 pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 pass.Status.ShouldEqual(CaseStatus.Passed);
 
                 fail.Name.ShouldEqual(FullName<SampleTestClass>() + ".Fail");
                 fail.Class.FullName.ShouldEqual(FullName<SampleTestClass>() + "");
                 fail.Method.Name.ShouldEqual("Fail");
-                fail.Output.ShouldEqual("Fail" + Environment.NewLine);
+                fail.Output.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
                 fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 fail.Status.ShouldEqual(CaseStatus.Failed);
                 fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
@@ -52,7 +52,7 @@
                 failByAssertion.Name.ShouldEqual(FullName<SampleTestClass>() + ".FailByAssertion");
                 failByAssertion.Class.FullName.ShouldEqual(FullName<SampleTestClass>() + "");
                 failByAssertion.Method.Name.ShouldEqual("FailByAssertion");
-                failByAssertion.Output.ShouldEqual("FailByAssertion" + Environment.NewLine);
+                failByAssertion.Output.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
                 failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
                 failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
@@ -92,11 +92,6 @@
             public void Handle(CaseFailed message) => Log.Add(message);
         }
 
-        static void WhereAmI([CallerMemberName] string member = null)
-        {
-            Console.WriteLine(member);
-        }
-
         class SampleTestClass
         {
             public void Fail()
@@ -117,15 +112,15 @@
             }
 
             [Skip]
-            public void SkipWithoutReason()
-            {
-                WhereAmI();
-            }
+            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
 
             [Skip("Skipped with reason.")]
-            public void SkipWithReason()
+            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
+
+            static void WhereAmI([CallerMemberName] string member = null)
             {
-                WhereAmI();
+                Console.Out.WriteLine("Console.Out: " + member);
+                Console.Error.WriteLine("Console.Error: " + member);
             }
         }
     }

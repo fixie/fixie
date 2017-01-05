@@ -44,7 +44,7 @@
                 fail.Output.ShouldEqual("Fail" + Environment.NewLine);
                 fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 fail.Status.ShouldEqual(CaseStatus.Failed);
-                fail.Exception.PrimaryException.Type.ShouldEqual("Fixie.Tests.FailureException");
+                fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
                 fail.Exception.CompoundStackTrace.ShouldNotBeNull();
                 fail.Exception.Message.ShouldEqual("'Fail' failed!");
 
@@ -54,7 +54,7 @@
                 failByAssertion.Output.ShouldEqual("FailByAssertion" + Environment.NewLine);
                 failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
                 failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
-                failByAssertion.Exception.PrimaryException.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
+                failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
                 failByAssertion.Exception.CompoundStackTrace.ShouldNotBeNull();
                 failByAssertion.Exception.Message.Lines().ShouldEqual(
                     "Assert.Equal() Failure",

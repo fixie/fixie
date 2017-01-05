@@ -74,7 +74,7 @@
                 var exception = ((CaseFailed)message).Exception;
                 @case.Add(
                     new XElement("failure",
-                        new XAttribute("exception-type", exception.PrimaryException.Type),
+                        new XAttribute("exception-type", exception.Type),
                         new XElement("message", new XCData(exception.Message)),
                         new XElement("stack-trace", new XCData(exception.CompoundStackTrace))));
             }

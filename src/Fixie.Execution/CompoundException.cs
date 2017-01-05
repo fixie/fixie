@@ -10,18 +10,18 @@ namespace Fixie.Execution
         public CompoundException(IReadOnlyList<Exception> exceptions, AssertionLibraryFilter filter)
         {
             var primary = exceptions.First();
-            StackTrace = GetCompoundStackTrace(exceptions, filter);
-
-            DisplayName = filter.IsFailedAssertion(primary) ? "" : primary.GetType().FullName;
+            FailedAssertion = filter.IsFailedAssertion(primary);
             Type = primary.GetType().FullName;
             Message = primary.Message;
+            DisplayName = FailedAssertion ? "" : Type;
+            StackTrace = GetCompoundStackTrace(exceptions, filter);
         }
 
         [Obsolete]
         public string DisplayName { get; }
         public string Type { get; }
         public string Message { get; }
-
+        public bool FailedAssertion { get; }
         public string StackTrace { get; private set; }
 
         static string GetCompoundStackTrace(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)

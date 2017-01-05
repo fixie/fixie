@@ -17,6 +17,7 @@ namespace Fixie.Execution
 
         [Obsolete]
         public ExceptionInfo PrimaryException { get; private set; }
+        public string DisplayName => PrimaryException.DisplayName;
         public string Type => PrimaryException.Type;
         public string Message => PrimaryException.Message;
 

@@ -28,27 +28,27 @@
 
             var primaryException = message.Exception.PrimaryException;
 
-            entry.AppendFormat("{0} failed: {1}", message.Name, message.Exception.Message);
+            entry.Append($"{message.Name} failed: {message.Exception.Message}");
 
             var walk = primaryException;
             while (walk.InnerException != null)
             {
                 walk = walk.InnerException;
                 entry.AppendLine();
-                entry.AppendFormat("    Inner Exception: {0}", walk.Message);
+                entry.Append($"    Inner Exception: {walk.Message}");
             }
 
             foreach (var secondaryException in message.Exception.SecondaryExceptions)
             {
                 entry.AppendLine();
-                entry.AppendFormat("    Secondary Failure: {0}", secondaryException.Message);
+                entry.Append($"    Secondary Failure: {secondaryException.Message}");
 
                 walk = secondaryException;
                 while (walk.InnerException != null)
                 {
                     walk = walk.InnerException;
                     entry.AppendLine();
-                    entry.AppendFormat("        Inner Exception: {0}", walk.Message);
+                    entry.Append($"        Inner Exception: {walk.Message}");
                 }
             }
 

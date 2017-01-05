@@ -35,11 +35,15 @@
                         .SkipWhile(ContainsTypeToFilter));
         }
 
+        [Obsolete]
         public string DisplayName(Exception exception)
         {
-            var exceptionType = exception.GetType();
+            return IsFailedAssertion(exception) ? "" : exception.GetType().FullName;
+        }
 
-            return exceptionTypes.Contains(exceptionType) ? "" : exceptionType.FullName;
+        public bool IsFailedAssertion(Exception exception)
+        {
+            return exceptionTypes.Contains(exception.GetType());
         }
 
         bool ContainsTypeToFilter(string line)

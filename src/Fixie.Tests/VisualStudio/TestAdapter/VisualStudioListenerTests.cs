@@ -34,7 +34,6 @@
 
                 var convention = SelfTestConvention.Build();
                 convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
-                convention.Parameters.Add<InputAttributeParameterSource>();
 
                 typeof(PassFailTestClass).Run(listener, convention);
 
@@ -106,7 +105,7 @@
                 results[3].Outcome.ShouldEqual(TestOutcome.Passed);
                 results[3].ErrorMessage.ShouldBeNull();
                 results[3].ErrorStackTrace.ShouldBeNull();
-                results[3].DisplayName.ShouldEqual(testClass + ".Pass(123)");
+                results[3].DisplayName.ShouldEqual(testClass + ".Pass");
                 results[3].Messages.Count.ShouldEqual(1);
                 results[3].Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
                 results[3].Messages[0].Text.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
@@ -149,8 +148,7 @@
 
         class PassFailTestClass
         {
-            [Input(123)]
-            public void Pass(int x)
+            public void Pass()
             {
                 WhereAmI();
             }

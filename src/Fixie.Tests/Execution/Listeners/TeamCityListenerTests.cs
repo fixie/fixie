@@ -21,7 +21,7 @@
 
                 typeof(PassFailTestClass).Run(listener, convention);
 
-                var testClass = typeof(PassFailTestClass).FullName;
+                var testClass = FullName<PassFailTestClass>();
 
                 console.Lines()
                        .Select(x => Regex.Replace(x, @":line \d+", ":line #")) //Avoid brittle assertion introduced by stack trace line numbers.
@@ -44,11 +44,11 @@
 
                            "##teamcity[testStarted name='"+testClass+".FailA']",
                            "##teamcity[testStdOut name='" + testClass + ".FailA' out='Console.Out: FailA|r|nConsole.Error: FailA|r|n']",
-                           "##teamcity[testFailed name='" + testClass + ".FailA' message='|'FailA|' failed!' details='Fixie.Tests.FailureException|r|n|'FailA|' failed!|r|n   at Fixie.Tests.Execution.Listeners.TeamCityListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #']",
+                           "##teamcity[testFailed name='" + testClass + ".FailA' message='|'FailA|' failed!' details='Fixie.Tests.FailureException|r|n|'FailA|' failed!|r|n" + At<PassFailTestClass>("FailA()") + "']",
                            "##teamcity[testFinished name='" + testClass + ".FailA' duration='#']",
                            "##teamcity[testStarted name='" + testClass + ".FailB']",
                            "##teamcity[testStdOut name='" + testClass + ".FailB' out='Console.Out: FailB|r|nConsole.Error: FailB|r|n']",
-                           "##teamcity[testFailed name='" + testClass + ".FailB' message='|'FailB|' failed!' details='Fixie.Tests.FailureException|r|n|'FailB|' failed!|r|n   at Fixie.Tests.Execution.Listeners.TeamCityListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #']",
+                           "##teamcity[testFailed name='" + testClass + ".FailB' message='|'FailB|' failed!' details='Fixie.Tests.FailureException|r|n|'FailB|' failed!|r|n" + At<PassFailTestClass>("FailB()") + "']",
                            "##teamcity[testFinished name='" + testClass + ".FailB' duration='#']",
                            "##teamcity[testStarted name='" + testClass + ".PassA']",
                            "##teamcity[testStdOut name='" + testClass + ".PassA' out='Console.Out: PassA|r|nConsole.Error: PassA|r|n']",

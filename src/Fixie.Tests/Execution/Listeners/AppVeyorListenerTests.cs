@@ -45,7 +45,7 @@
 
                 typeof(PassFailTestClass).Run(listener, convention);
 
-                var testClass = typeof(PassFailTestClass).FullName;
+                var testClass = FullName<PassFailTestClass>();
 
                 console.Lines()
                     .ShouldEqual(
@@ -84,7 +84,7 @@
                     .ShouldEqual(
                          "Fixie.Tests.FailureException",
                          "'Fail' failed!",
-                         "   at Fixie.Tests.Execution.Listeners.AppVeyorListenerTests.PassFailTestClass.Fail() in " + PathToThisFile() + ":line #");
+                         At<PassFailTestClass>("Fail()"));
                 results[2].StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
 
                 results[3].testName.ShouldEqual(testClass + ".Pass(123)");

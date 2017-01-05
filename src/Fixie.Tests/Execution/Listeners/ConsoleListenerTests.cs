@@ -8,6 +8,7 @@
     using System.Threading;
     using Fixie.Execution.Listeners;
     using Fixie.Internal;
+    using static Utility;
 
     public class ConsoleListenerTests
     {
@@ -106,11 +107,6 @@
             cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
 
             return cleaned;
-        }
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
         }
 
         class PassFailTestClass

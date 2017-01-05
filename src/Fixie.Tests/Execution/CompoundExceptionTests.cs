@@ -2,10 +2,10 @@
 {
     using System;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using Fixie.Execution;
     using Should;
+    using static Utility;
 
     public class CompoundExceptionTests
     {
@@ -187,11 +187,6 @@
         {
             public SecondaryException(Exception innerException)
                 : base("Secondary Exception!", innerException) { }
-        }
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
         }
     }
 }

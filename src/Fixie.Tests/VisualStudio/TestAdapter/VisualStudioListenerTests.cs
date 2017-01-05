@@ -13,6 +13,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Should;
+    using static Utility;
 
     public class VisualStudioListenerTests
     {
@@ -144,11 +145,6 @@
             {
                 throw new NotImplementedException();
             }
-        }
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
         }
 
         class PassFailTestClass

@@ -11,6 +11,7 @@ namespace Fixie.Tests.TestDriven
     using Fixie.Internal;
     using Fixie.TestDriven;
     using Should;
+    using static Utility;
 
     public class TestDrivenListenerTests
     {
@@ -105,11 +106,6 @@ namespace Fixie.Tests.TestDriven
             {
                 throw new NotImplementedException();
             }
-        }
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
         }
 
         class PassFailTestClass

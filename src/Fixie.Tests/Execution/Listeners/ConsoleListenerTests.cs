@@ -11,14 +11,13 @@
     {
         public void ShouldReportResultsToTheConsole()
         {
+            var listener = new ConsoleListener();
+            var convention = SampleTestClassConvention.Build();
+            var testClass = FullName<SampleTestClass>();
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new ConsoleListener();
-                var convention = SampleTestClassConvention.Build();
-
                 typeof(SampleTestClass).Run(listener, convention);
-
-                var testClass = FullName<SampleTestClass>();
 
                 console.Lines()
                        .Select(CleanBrittleValues)

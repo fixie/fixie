@@ -11,22 +11,15 @@
     <test name="[testClass].Fail" type="[testClass]" method="Fail" result="Fail" time="1.234">
 			<failure exception-type="Fixie.Tests.FailureException">
 				<message><![CDATA['Fail' failed!]]></message>
-				<stack-trace>
-          <![CDATA['Fail' failed!
-   at [testClassForStackTrace].Fail() in [fileLocation]:line #]]></stack-trace>
+				<stack-trace><![CDATA[   at [testClassForStackTrace].Fail() in [fileLocation]:line #]]></stack-trace>
 			</failure>
-		</test>
+    </test>
     <test name="[testClass].FailByAssertion" type="[testClass]" method="FailByAssertion" result="Fail" time="1.234">
       <failure exception-type="Fixie.Assertions.AssertActualExpectedException">
         <message><![CDATA[Assertion Failure
 Expected: 2
 Actual:   1]]></message>
-        <stack-trace>
-          <![CDATA[Assertion Failure
-Expected: 2
-Actual:   1
-   at [testClassForStackTrace].FailByAssertion() in [fileLocation]:line #]]>
-        </stack-trace>
+        <stack-trace><![CDATA[   at [testClassForStackTrace].FailByAssertion() in [fileLocation]:line #]]></stack-trace>
       </failure>
     </test>
     <test name="[testClass].Pass" type="[testClass]" method="Pass" result="Pass" time="1.234" />

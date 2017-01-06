@@ -39,7 +39,6 @@ namespace Fixie.Execution
                 {
                     if (isPrimaryException)
                     {
-                        console.WriteLine(ex.Message);
                         console.Write(filter.FilterStackTrace(ex));
                     }
                     else

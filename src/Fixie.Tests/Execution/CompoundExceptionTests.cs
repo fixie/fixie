@@ -29,7 +29,6 @@
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                    "Primary Exception!",
                     At<CompoundExceptionTests>("GetPrimaryException()"),
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",
@@ -54,7 +53,6 @@
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                    "Primary Exception!",
                     At<CompoundExceptionTests>("GetPrimaryException()"),
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",
@@ -100,7 +98,6 @@
             compoundException.StackTrace
                 .Lines()
                 .ShouldEqual(
-                    "Primary Exception!",
                     "",
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",

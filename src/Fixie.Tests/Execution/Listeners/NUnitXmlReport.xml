@@ -15,9 +15,7 @@
                   <test-case name="[testClass].Fail" executed="true" success="false" result="Failure" time="1.234">
                     <failure>
                       <message><![CDATA['Fail' failed!]]></message>
-                      <stack-trace>
-                        <![CDATA[Fixie.Tests.FailureException
-'Fail' failed!
+                      <stack-trace><![CDATA[Fixie.Tests.FailureException
    at [testClassForStackTrace].Fail() in [fileLocation]:line #]]></stack-trace>
                     </failure>
                   </test-case>
@@ -26,10 +24,7 @@
                       <message><![CDATA[Assertion Failure
 Expected: 2
 Actual:   1]]></message>
-                      <stack-trace><![CDATA[Assertion Failure
-Expected: 2
-Actual:   1
-   at [testClassForStackTrace].FailByAssertion() in [fileLocation]:line #]]></stack-trace>
+                      <stack-trace><![CDATA[   at [testClassForStackTrace].FailByAssertion() in [fileLocation]:line #]]></stack-trace>
                     </failure>
                   </test-case>
                   <test-case name="[testClass].Pass" executed="true" success="true" result="Success" time="1.234" />

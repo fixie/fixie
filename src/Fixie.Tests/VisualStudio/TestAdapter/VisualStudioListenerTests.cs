@@ -92,7 +92,6 @@
                 .Lines()
                 .ShouldEqual(
                     "Fixie.Tests.FailureException",
-                    "'Fail' failed!",
                     At("Fail()"));
             fail.DisplayName.ShouldEqual(TestClass + ".Fail");
             fail.Messages.Count.ShouldEqual(1);
@@ -110,11 +109,7 @@
             failByAssertion.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
                 .Lines()
-                .ShouldEqual(
-                    "Assertion Failure",
-                    "Expected: 2",
-                    "Actual:   1",
-                    At("FailByAssertion()"));
+                .ShouldEqual(At("FailByAssertion()"));
             failByAssertion.DisplayName.ShouldEqual(TestClass + ".FailByAssertion");
             failByAssertion.Messages.Count.ShouldEqual(1);
             failByAssertion.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);

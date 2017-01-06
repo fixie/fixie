@@ -27,7 +27,7 @@
 
         public void Handle(CaseFailed message)
         {
-            log.Add($"{message.Name} failed: {SimplifyCompoundStackTrace(message.Exception.StackTrace)}");
+            log.Add($"{message.Name} failed: {message.Exception.Message}{SimplifyCompoundStackTrace(message.Exception.StackTrace)}");
         }
 
         static string SimplifyCompoundStackTrace(string compoundStackTrace)
@@ -44,13 +44,13 @@
 
             stackTrace = Regex.Replace(stackTrace,
                 @"===== Secondary Exception: [a-zA-Z\.]+ =====" + regexNewLine + "([^" + regexNewLine + "]+)(" + regexNewLine + ")?",
-                "    Secondary Failure: $1" + NewLine, RegexOptions.Multiline);
+                NewLine + "    Secondary Failure: $1", RegexOptions.Multiline);
 
             stackTrace = Regex.Replace(stackTrace,
                 @"------- Inner Exception: [a-zA-Z\.]+ -------" + regexNewLine + "([^" + regexNewLine + "]+)(" + regexNewLine + ")?",
-                "    Inner Exception: $1" + NewLine, RegexOptions.Multiline);
+                NewLine + "    Inner Exception: $1", RegexOptions.Multiline);
 
-            return stackTrace.Trim();
+            return stackTrace;
         }
 
         public IEnumerable<string> Entries => log;

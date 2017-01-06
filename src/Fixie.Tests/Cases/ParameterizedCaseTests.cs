@@ -15,11 +15,12 @@
             Run<ParameterizedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(0) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(1, 1, 2) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(1, 2, 3) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs passed");
+                For<ParameterizedTestClass>(
+                    ".IntArg(0) passed",
+                    ".MultipleCasesFromAttributes(1, 1, 2) passed",
+                    ".MultipleCasesFromAttributes(1, 2, 3) passed",
+                    ".MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
+                    ".ZeroArgs passed"));
         }
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
@@ -27,9 +28,10 @@
             Run<ParameterizedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs passed");
+                For<ParameterizedTestClass>(
+                    ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                    ".MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                    ".ZeroArgs passed"));
         }
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
@@ -39,9 +41,10 @@
             Run<ParameterizedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs passed");
+                For<ParameterizedTestClass>(
+                    ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                    ".MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                    ".ZeroArgs passed"));
         }
 
         public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
@@ -60,23 +63,24 @@
             Run<ParameterizedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(0) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(0, 1) failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(0, 1, 2) failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(0, 1, 2, 3) failed: Parameter count mismatch.",
+                For<ParameterizedTestClass>(
+                    ".IntArg failed: Parameter count mismatch.",
+                    ".IntArg(0) passed",
+                    ".IntArg(0, 1) failed: Parameter count mismatch.",
+                    ".IntArg(0, 1, 2) failed: Parameter count mismatch.",
+                    ".IntArg(0, 1, 2, 3) failed: Parameter count mismatch.",
 
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(0, 1) failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(0, 1, 2) failed: Expected sum of 2 but was 1.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(0, 1, 2, 3) failed: Parameter count mismatch.",
+                    ".MultipleCasesFromAttributes failed: Parameter count mismatch.",
+                    ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
+                    ".MultipleCasesFromAttributes(0, 1) failed: Parameter count mismatch.",
+                    ".MultipleCasesFromAttributes(0, 1, 2) failed: Expected sum of 2 but was 1.",
+                    ".MultipleCasesFromAttributes(0, 1, 2, 3) failed: Parameter count mismatch.",
 
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(0) failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(0, 1) failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(0, 1, 2) failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(0, 1, 2, 3) failed: Parameter count mismatch.");
+                    ".ZeroArgs passed",
+                    ".ZeroArgs(0) failed: Parameter count mismatch.",
+                    ".ZeroArgs(0, 1) failed: Parameter count mismatch.",
+                    ".ZeroArgs(0, 1, 2) failed: Parameter count mismatch.",
+                    ".ZeroArgs(0, 1, 2, 3) failed: Parameter count mismatch."));
         }
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
@@ -86,18 +90,19 @@
             Run<ParameterizedTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs",
+                For<ParameterizedTestClass>(
+                    ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                    ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
+                    ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs",
 
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(0) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.IntArg(1) failed: Expected 0, but was 1",
+                    ".IntArg(0) passed",
+                    ".IntArg(1) failed: Expected 0, but was 1",
 
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
+                    ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
+                    ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
 
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(0) failed: Parameter count mismatch.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ParameterizedTestClass.ZeroArgs(1) failed: Parameter count mismatch.");
+                    ".ZeroArgs(0) failed: Parameter count mismatch.",
+                    ".ZeroArgs(1) failed: Parameter count mismatch."));
         }
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
@@ -107,12 +112,13 @@
             Run<ConstrainedGenericTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.UnconstrainedGeneric<System.Object> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.ConstrainedGeneric<System.Int32>(0) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.ConstrainedGeneric<System.Int32>(1) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.UnconstrainedGeneric<System.Int32>(0) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+ConstrainedGenericTestClass.UnconstrainedGeneric<System.Int32>(1) passed");
+                For<ConstrainedGenericTestClass>(
+                    ".ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
+                    ".UnconstrainedGeneric<System.Object> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric",
+                    ".ConstrainedGeneric<System.Int32>(0) passed",
+                    ".ConstrainedGeneric<System.Int32>(1) passed",
+                    ".UnconstrainedGeneric<System.Int32>(0) passed",
+                    ".UnconstrainedGeneric<System.Int32>(1) passed"));
         }
 
         public void ShouldResolveGenericTypeParameters()
@@ -122,31 +128,32 @@
             Run<GenericTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.ConstrainedGenericMethodWithNoInputsProvided<T> failed: This test case has declared parameters, but no parameter values have been provided to it.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.GenericMethodWithNoInputsProvided<System.Object> failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                For<GenericTestClass>(
+                    ".ConstrainedGenericMethodWithNoInputsProvided<T> failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                    ".GenericMethodWithNoInputsProvided<System.Object> failed: This test case has declared parameters, but no parameter values have been provided to it.",
 
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.ConstrainedGeneric<System.Int32>(1) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic test case.",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.GenericMethodWithIncorrectParameterCountProvided<System.Object>(123, 123) failed: Parameter count mismatch.",
+                    ".ConstrainedGeneric<System.Int32>(1) passed",
+                    ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic test case.",
+                    ".GenericMethodWithIncorrectParameterCountProvided<System.Object>(123, 123) failed: Parameter count mismatch.",
 
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.Int32, System.Object>(123, null, 456, System.Int32, System.Object) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg\", null, null, System.String, System.Object) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.String, System.String>(null, \"stringArg1\", \"stringArg2\", System.String, System.String) passed",
+                    ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.Object>(123, null, 456, System.Int32, System.Object) passed",
+                    ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",
+                    ".MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg\", null, null, System.String, System.Object) passed",
+                    ".MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) passed",
+                    ".MultipleGenericArgumentsMultipleParameters<System.String, System.String>(null, \"stringArg1\", \"stringArg2\", System.String, System.String) passed",
 
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgument<System.Int32>(123, System.Int32) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgument<System.Object>(null, System.Object) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgument<System.String>(\"stringArg\", System.String) passed",
+                    ".SingleGenericArgument<System.Int32>(123, System.Int32) passed",
+                    ".SingleGenericArgument<System.Object>(null, System.Object) passed",
+                    ".SingleGenericArgument<System.String>(\"stringArg\", System.String) passed",
 
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.Int32>(123, 456, System.Int32) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.Object>(\"stringArg\", 123, System.Object) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.Object>(123, \"stringArg\", System.Object) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.Object>(123, null, System.Object) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.Object>(null, null, System.Object) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
-                "Fixie.Tests.Cases.ParameterizedCaseTests+GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed");
+                    ".SingleGenericArgumentMultipleParameters<System.Int32>(123, 456, System.Int32) passed",
+                    ".SingleGenericArgumentMultipleParameters<System.Object>(\"stringArg\", 123, System.Object) passed",
+                    ".SingleGenericArgumentMultipleParameters<System.Object>(123, \"stringArg\", System.Object) passed",
+                    ".SingleGenericArgumentMultipleParameters<System.Object>(123, null, System.Object) passed",
+                    ".SingleGenericArgumentMultipleParameters<System.Object>(null, null, System.Object) passed",
+                    ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
+                    ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
+                    ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed"));
         }
 
         class InputAttributeParameterSource : ParameterSource

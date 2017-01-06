@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Tests.Cases
 {
-    using System;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
@@ -13,7 +12,7 @@
             Run<AwaitThenPassTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.AsyncCaseTests+AwaitThenPassTestClass.Test passed");
+                For<AwaitThenPassTestClass>(".Test passed"));
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
@@ -21,9 +20,9 @@
             Run<AwaitThenFailTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.AsyncCaseTests+AwaitThenFailTestClass.Test failed: Assertion Failure" + NewLine +
-                "Expected: 0" + NewLine +
-                "Actual:   3");
+                For<AwaitThenFailTestClass>(".Test failed: Assertion Failure" + NewLine +
+                    "Expected: 0" + NewLine +
+                    "Actual:   3"));
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
@@ -31,7 +30,7 @@
             Run<AwaitOnTaskThatThrowsTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.AsyncCaseTests+AwaitOnTaskThatThrowsTestClass.Test failed: Attempted to divide by zero.");
+                For<AwaitOnTaskThatThrowsTestClass>(".Test failed: Attempted to divide by zero."));
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
@@ -39,7 +38,7 @@
             Run<FailBeforeAwaitTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.AsyncCaseTests+FailBeforeAwaitTestClass.Test failed: 'Test' failed!");
+                For<FailBeforeAwaitTestClass>(".Test failed: 'Test' failed!"));
         }
 
         public void ShouldFailUnsupportedAsyncVoidCases()
@@ -47,9 +46,9 @@
             Run<UnsupportedAsyncVoidTestTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.AsyncCaseTests+UnsupportedAsyncVoidTestTestClass.Test failed: " +
-                "Async void methods are not supported. Declare async methods with a return type of " +
-                "Task to ensure the task actually runs to completion.");
+                For<UnsupportedAsyncVoidTestTestClass>(".Test failed: " +
+                    "Async void methods are not supported. Declare async methods with a return type of " +
+                    "Task to ensure the task actually runs to completion."));
         }
 
         abstract class SampleTestClassBase

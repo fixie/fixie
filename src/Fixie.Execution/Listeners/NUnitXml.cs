@@ -59,7 +59,7 @@
             return new XElement("test-suite",
                 new XAttribute("type", "Assembly"),
                 new XAttribute("success", report.Failed == 0),
-                new XAttribute("name", report.Location),
+                new XAttribute("name", report.Assembly.Location),
                 new XAttribute("time", Seconds(report.Duration)),
                 new XAttribute("executed", true),
                 new XAttribute("result", report.Failed > 0 ? "Failure" : "Success"),
@@ -70,7 +70,7 @@
         {
             return new XElement("test-suite",
                 new XAttribute("type", "TestFixture"),
-                new XAttribute("name", classReport.Name),
+                new XAttribute("name", classReport.Class.FullName),
                 new XAttribute("success", classReport.Failed == 0),
                 new XAttribute("time", Seconds(classReport.Duration)),
                 new XAttribute("executed", true),

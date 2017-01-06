@@ -4,9 +4,9 @@ namespace Fixie.Execution
 
     public class ClassStarted : Message
     {
-        public ClassStarted(Type testClass)
+        public ClassStarted(Type @class)
         {
-            Class = testClass;
+            Class = @class;
         }
 
         public Type Class { get; }

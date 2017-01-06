@@ -3,22 +3,23 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     public class Report
     {
         readonly List<ClassReport> classes;
 
-        public Report(string location)
+        public Report(Assembly assembly)
         {
+            Assembly = assembly;
             classes = new List<ClassReport>();
-            Location = location;
         }
 
         public void Add(ClassReport classReport) => classes.Add(classReport);
 
-        public string Location { get; }
+        public Assembly Assembly { get; }
 
-        public TimeSpan Duration => new TimeSpan(classes.Sum(result => result.Duration.Ticks));
+        public TimeSpan Duration => new TimeSpan(classes.Sum(@class => @class.Duration.Ticks));
 
         public IReadOnlyList<ClassReport> Classes => classes;
 

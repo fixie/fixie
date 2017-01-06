@@ -20,7 +20,7 @@
             var now = DateTime.UtcNow;
 
             return new XElement("assembly",
-                new XAttribute("name", report.Location),
+                new XAttribute("name", report.Assembly.Location),
                 new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                 new XAttribute("run-time", now.ToString("HH:mm:ss")),
                 new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
@@ -38,7 +38,7 @@
         {
             return new XElement("class",
                 new XAttribute("time", Seconds(classReport.Duration)),
-                new XAttribute("name", classReport.Name),
+                new XAttribute("name", classReport.Class.FullName),
                 new XAttribute("total", classReport.Failed + classReport.Passed + classReport.Skipped),
                 new XAttribute("passed", classReport.Passed),
                 new XAttribute("failed", classReport.Failed),

@@ -8,11 +8,11 @@ namespace Fixie.Execution.Listeners
         readonly List<CaseCompleted> cases;
         readonly ExecutionSummary summary;
 
-        public ClassReport(string name)
+        public ClassReport(Type @class)
         {
             cases = new List<CaseCompleted>();
             summary = new ExecutionSummary();
-            Name = name;
+            Class = @class;
         }
 
         public void Add(CaseCompleted message)
@@ -21,7 +21,7 @@ namespace Fixie.Execution.Listeners
             summary.Add(message);
         }
 
-        public string Name { get; }
+        public Type Class { get; }
 
         public IReadOnlyList<CaseCompleted> Cases => cases;
 

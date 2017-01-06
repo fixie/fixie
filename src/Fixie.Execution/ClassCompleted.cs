@@ -4,9 +4,9 @@ namespace Fixie.Execution
 
     public class ClassCompleted : Message
     {
-        public ClassCompleted(Type testClass)
+        public ClassCompleted(Type @class)
         {
-            Class = testClass;
+            Class = @class;
         }
 
         public Type Class { get; }

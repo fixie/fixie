@@ -28,12 +28,12 @@ namespace Fixie.Execution.Listeners
 
         public void Handle(AssemblyStarted message)
         {
-            report = new Report(message.Assembly.Location);
+            report = new Report(message.Assembly);
         }
 
         public void Handle(ClassStarted message)
         {
-            currentClass = new ClassReport(message.Class.FullName);
+            currentClass = new ClassReport(message.Class);
             report.Add(currentClass);
         }
 
@@ -57,7 +57,7 @@ namespace Fixie.Execution.Listeners
         {
             var format = new TXmlFormat();
             var xDocument = format.Transform(report);
-            var filePath = Path.GetFullPath(report.Location) + ".xml";
+            var filePath = Path.GetFullPath(report.Assembly.Location) + ".xml";
             xDocument.Save(filePath, SaveOptions.None);
         }
     }

@@ -4,7 +4,7 @@ namespace Fixie.Tests.TestDriven
 {
     using System;
     using System.Collections.Generic;
-    using Fixie.Internal;
+    using Fixie.Execution;
     using Fixie.TestDriven;
     using Should;
 

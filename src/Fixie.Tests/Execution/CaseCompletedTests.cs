@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using Fixie.Execution;
-    using Fixie.Internal;
     using Should;
 
     public class CaseCompletedTests : MessagingTests

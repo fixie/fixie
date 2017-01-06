@@ -74,7 +74,7 @@
     <Compile Include="MethodGroupTests.cs" />
     <Compile Include="Execution\ParameterDiscovererTests.cs" />
     <Compile Include="Execution\AppDomainCommunicationAssertions.cs" />
-    <Compile Include="Internal\BehaviorChainTests.cs" />
+    <Compile Include="Execution\BehaviorChainTests.cs" />
     <Compile Include="Cases\CaseTests.cs" />
     <Compile Include="Cases\NonVoidCaseTests.cs" />
     <Compile Include="ConsoleRunner\CommandLineParserTests.cs" />

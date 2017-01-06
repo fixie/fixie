@@ -37,13 +37,9 @@
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
-    <Compile Include="Internal\Behaviors\TimeClassExecution.cs" />
     <Compile Include="MethodGroup.cs" />
     <Compile Include="Internal\Behavior.cs" />
-    <Compile Include="Internal\BehaviorChain.cs" />
     <Compile Include="Internal\BehaviorContext.cs" />
-    <Compile Include="Internal\Behaviors\CreateInstancePerClass.cs" />
-    <Compile Include="Internal\Behaviors\ExecuteCases.cs" />
     <Compile Include="FixtureBehavior.cs" />
     <Compile Include="Internal\Configuration.cs" />
     <Compile Include="Internal\ConstructionFrequency.cs" />
@@ -53,9 +49,7 @@
     <Compile Include="TestAssembly.cs" />
     <Compile Include="Conventions\ClassExpression.cs" />
     <Compile Include="Conventions\AssertionLibraryExpression.cs" />
-    <Compile Include="Internal\ExecutionPlan.cs" />
     <Compile Include="Internal\GenericArgumentResolver.cs" />
-    <Compile Include="Internal\RedirectedConsole.cs" />
     <Compile Include="ClassBehavior.cs" />
     <Compile Include="Case.cs" />
     <Compile Include="Convention.cs" />
@@ -65,9 +59,7 @@
     <Compile Include="Conventions\ClassBehaviorExpression.cs" />
     <Compile Include="Class.cs" />
     <Compile Include="Fixture.cs" />
-    <Compile Include="Internal\Behaviors\InvokeMethod.cs" />
     <Compile Include="CaseBehavior.cs" />
-    <Compile Include="Internal\Behaviors\CreateInstancePerCase.cs" />
     <Compile Include="Conventions\MethodExpression.cs" />
     <Compile Include="Internal\ObjectExtensions.cs" />
     <Compile Include="PreservedException.cs" />

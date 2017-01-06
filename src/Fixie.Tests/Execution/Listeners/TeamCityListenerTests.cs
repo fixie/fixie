@@ -2,8 +2,8 @@
 {
     using System.Linq;
     using System.Text.RegularExpressions;
+    using Fixie.Execution;
     using Fixie.Execution.Listeners;
-    using Fixie.Internal;
 
     public class TeamCityListenerTests : MessagingTests
     {

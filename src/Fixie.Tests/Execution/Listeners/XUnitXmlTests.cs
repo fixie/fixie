@@ -6,8 +6,8 @@
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Schema;
+    using Fixie.Execution;
     using Fixie.Execution.Listeners;
-    using Fixie.Internal;
     using Should;
 
     public class XUnitXmlTests : MessagingTests

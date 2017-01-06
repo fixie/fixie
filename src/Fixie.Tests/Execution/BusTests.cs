@@ -2,7 +2,6 @@
 {
     using System;
     using Fixie.Execution;
-    using Fixie.Internal;
 
     public class BusTests
     {

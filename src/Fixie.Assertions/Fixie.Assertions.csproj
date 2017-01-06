@@ -36,6 +36,13 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assert.cs" />
+    <Compile Include="AssertActualExpectedException.cs" />
+    <Compile Include="AssertComparer.cs" />
+    <Compile Include="AssertEqualityComparer.cs" />
+    <Compile Include="AssertException.cs" />
+    <Compile Include="AssertionExtensions.cs" />
+    <Compile Include="EnumerableEqualityComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

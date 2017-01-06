@@ -2,6 +2,7 @@
 
 namespace Fixie.TestDriven
 {
+    using System;
     using Execution;
     using static System.Environment;
 
@@ -22,40 +23,42 @@ namespace Fixie.TestDriven
 
         public void Handle(CaseSkipped message)
         {
-            Summary.Add(message);
-
-            tdnet.TestFinished(new TestResult
+            Log(message, x =>
             {
-                Name = message.Name,
-                State = TestState.Ignored,
-                Message = message.Reason
+                x.State = TestState.Ignored;
+                x.Message = message.Reason;
             });
         }
 
         public void Handle(CasePassed message)
         {
-            Summary.Add(message);
-
-            tdnet.TestFinished(new TestResult
+            Log(message, x =>
             {
-                Name = message.Name,
-                State = TestState.Passed
+                x.State = TestState.Passed;
             });
         }
 
         public void Handle(CaseFailed message)
         {
-            Summary.Add(message);
-
             var exception = message.Exception;
 
-            tdnet.TestFinished(new TestResult
+            Log(message, x =>
             {
-                Name = message.Name,
-                State = TestState.Failed,
-                Message = exception.FailedAssertion ? "" : exception.Type,
-                StackTrace = exception.Message + NewLine + NewLine + exception.StackTrace,
+                x.State = TestState.Failed;
+                x.Message = exception.FailedAssertion ? "" : exception.Type;
+                x.StackTrace = exception.Message + NewLine + NewLine + exception.StackTrace;
             });
+        }
+
+        void Log(CaseCompleted message, Action<TestResult> customize)
+        {
+            Summary.Add(message);
+
+            var testResult = new TestResult { Name = message.Name };
+
+            customize.Invoke(testResult);
+
+            tdnet.TestFinished(testResult);
         }
     }
 }

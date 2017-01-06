@@ -37,55 +37,43 @@
 
         public void Handle(CaseSkipped message)
         {
-            var caseResult = (CaseCompleted)message;
-
-            Post(new TestResult
+            Post(message, x =>
             {
-                testFramework = "Fixie",
-                fileName = fileName,
-                testName = caseResult.Name,
-                outcome = "Skipped",
-                durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseResult.Output,
-                ErrorMessage = message.Reason,
-                ErrorStackTrace = null
+                x.ErrorMessage = message.Reason;
             });
         }
 
         public void Handle(CasePassed message)
         {
-            var caseResult = (CaseCompleted)message;
-
-            Post(new TestResult
-            {
-                testFramework = "Fixie",
-                fileName = fileName,
-                testName = caseResult.Name,
-                outcome = "Passed",
-                durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseResult.Output,
-                ErrorMessage = null,
-                ErrorStackTrace = null
-            });
+            Post(message);
         }
 
         public void Handle(CaseFailed message)
         {
             var exception = message.Exception;
 
-            var caseResult = (CaseCompleted)message;
+            Post(message, x =>
+            {
+                x.ErrorMessage = exception.Message;
+                x.ErrorStackTrace = exception.TypedStackTrace();
+            });
+        }
 
-            Post(new TestResult
+        void Post(CaseCompleted message, Action<TestResult> customize = null)
+        {
+            var testResult = new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
-                testName = caseResult.Name,
-                outcome = "Failed",
-                durationMilliseconds = caseResult.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = caseResult.Output,
-                ErrorMessage = exception.Message,
-                ErrorStackTrace = message.Exception.TypedStackTrace()
-            });
+                testName = message.Name,
+                outcome = message.Status.ToString(),
+                durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
+                StdOut = message.Output
+            };
+
+            customize?.Invoke(testResult);
+
+            Post(testResult);
         }
 
         void Post(TestResult result)

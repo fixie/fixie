@@ -48,8 +48,9 @@
 
         public void Handle(AssemblyCompleted message)
         {
-            Console.WriteLine(summary);
+            Console.WriteLine($"{summary} ({Framework.Version}).");
             Console.WriteLine();
+            summary = null;
         }
     }
 }

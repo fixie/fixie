@@ -1,4 +1,4 @@
-namespace Fixie.Tests.Execution
+﻿namespace Fixie.Tests.Execution
 {
     using System;
     using Assertions;
@@ -37,7 +37,7 @@ namespace Fixie.Tests.Execution
             listener.Summary
                 .ToString()
                 .CleanDuration()
-                .ShouldEqual("1 passed, 2 failed, 3 skipped, took 1.23 seconds (" + Framework.Version + ").");
+                .ShouldEqual("1 passed, 2 failed, 3 skipped, took 1.23 seconds");
         }
 
         public void ShouldNotReportSkipCountsInUserFacingStringRepresentationWhenZeroTestsHaveBeenSkipped()
@@ -55,7 +55,7 @@ namespace Fixie.Tests.Execution
             listener.Summary
                 .ToString()
                 .CleanDuration()
-                .ShouldEqual("1 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
+                .ShouldEqual("1 passed, 2 failed, took 1.23 seconds");
         }
 
         class StubExecutionSummaryListener : Handler<CaseCompleted>

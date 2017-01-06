@@ -2,8 +2,8 @@ namespace Fixie.Tests.Execution
 {
     using System;
     using System.Text;
-    using Fixie.Execution;
     using Assertions;
+    using Fixie.Execution;
 
     public class AssertionLibraryFilterTests
     {

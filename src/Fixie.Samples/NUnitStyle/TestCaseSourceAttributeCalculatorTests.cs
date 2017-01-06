@@ -54,8 +54,7 @@
         [TestCaseSource("PropertySource", typeof(ExternalSourceOfTestCaseData))]
         public void ShouldAddFromFieldSource(string source, int a, int b, int expectedSum)
         {
-            log.AppendFormat("{0}: ShouldAdd({1}, {2}, {3})", source, a, b, expectedSum);
-            log.AppendLine();
+            log.AppendLine($"{source}: ShouldAdd({a}, {b}, {expectedSum})");
             calculator.Add(a, b).ShouldEqual(expectedSum);
         }
 

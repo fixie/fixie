@@ -6,9 +6,9 @@
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Schema;
+    using Assertions;
     using Fixie.Execution;
     using Fixie.Execution.Listeners;
-    using Assertions;
 
     public class XUnitXmlTests : MessagingTests
     {

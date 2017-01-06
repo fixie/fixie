@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests.Lifecycle
 {
     using System;
+    using static System.Environment;
 
     public class DisposalTests : LifecycleTests
     {
@@ -46,7 +47,7 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
                 "    Secondary Failure: 'Dispose' failed!");
 
             output.ShouldHaveLifecycle(
@@ -65,7 +66,7 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
                 "    Secondary Failure: 'Dispose' failed!");
 
             output.ShouldHaveLifecycle(

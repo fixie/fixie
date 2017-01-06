@@ -1,8 +1,8 @@
 namespace Fixie.Tests.Execution
 {
     using System;
-    using Fixie.Execution;
     using Assertions;
+    using Fixie.Execution;
     using static Utility;
 
     public class ExecutionSummaryTests

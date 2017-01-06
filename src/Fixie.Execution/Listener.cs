@@ -1,6 +1,4 @@
 ﻿namespace Fixie.Execution
 {
-    public interface Listener
-    {
-    }
+    public interface Listener { }
 }

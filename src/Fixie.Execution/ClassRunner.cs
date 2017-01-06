@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Internal;
 
     public class ClassRunner
     {
@@ -176,9 +175,7 @@
         }
 
         IEnumerable<object[]> Parameters(MethodInfo method)
-        {
-            return parameterDiscoverer.GetParameters(method);
-        }
+            => parameterDiscoverer.GetParameters(method);
 
         void Run(Type testClass, IReadOnlyList<Case> casesToExecute)
             => executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));

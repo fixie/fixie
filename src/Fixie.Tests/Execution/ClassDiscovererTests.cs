@@ -5,9 +5,9 @@
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
+    using Assertions;
     using Conventions;
     using Fixie.Execution;
-    using Assertions;
 
     public class ClassDiscovererTests
     {

@@ -3,9 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Text.RegularExpressions;
     using Fixie.Execution;
+    using static System.Environment;
 
     public class StubListener :
         Handler<CaseSkipped>,
@@ -34,22 +34,21 @@
         {
             var stackTrace = compoundStackTrace;
 
-            var newLine = Environment.NewLine;
-            var regexNewLine = Regex.Escape(newLine);
+            var regexNewLine = Regex.Escape(NewLine);
 
             stackTrace =
-                String.Join(newLine,
-                    stackTrace.Split(new[] { newLine }, StringSplitOptions.RemoveEmptyEntries)
+                String.Join(NewLine,
+                    stackTrace.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries)
                         .Where(x => !x.StartsWith("   at "))
                         .Where(x => x != "--- End of stack trace from previous location where exception was thrown ---"));
 
             stackTrace = Regex.Replace(stackTrace,
                 @"===== Secondary Exception: [a-zA-Z\.]+ =====" + regexNewLine + "([^" + regexNewLine + "]+)(" + regexNewLine + ")?",
-                "    Secondary Failure: $1" + newLine, RegexOptions.Multiline);
+                "    Secondary Failure: $1" + NewLine, RegexOptions.Multiline);
 
             stackTrace = Regex.Replace(stackTrace,
                 @"------- Inner Exception: [a-zA-Z\.]+ -------" + regexNewLine + "([^" + regexNewLine + "]+)(" + regexNewLine + ")?",
-                "    Inner Exception: $1" + newLine, RegexOptions.Multiline);
+                "    Inner Exception: $1" + NewLine, RegexOptions.Multiline);
 
             return stackTrace.Trim();
         }

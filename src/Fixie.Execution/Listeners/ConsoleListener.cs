@@ -16,7 +16,7 @@
         public void Handle(AssemblyStarted message)
         {
             summary = new ExecutionSummary();
-            Console.WriteLine("------ Testing Assembly {0} ------", Path.GetFileName(message.Assembly.Location));
+            Console.WriteLine($"------ Testing Assembly {Path.GetFileName(message.Assembly.Location)} ------");
             Console.WriteLine();
         }
 
@@ -24,8 +24,10 @@
         {
             summary.Add(message);
 
+            var optionalReason = message.Reason == null ? null : ": " + message.Reason;
+
             using (Foreground.Yellow)
-                Console.WriteLine("Test '{0}' skipped{1}", message.Name, message.Reason == null ? null : ": " + message.Reason);
+                Console.WriteLine($"Test '{message.Name}' skipped{optionalReason}");
         }
 
         public void Handle(CasePassed message)

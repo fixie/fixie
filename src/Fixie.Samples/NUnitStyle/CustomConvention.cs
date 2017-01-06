@@ -49,7 +49,7 @@
                 var members = sourceType.GetMember(attribute.SourceName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
 
                 if (members.Length != 1)
-                    throw new Exception(String.Format("Found {0} members named '{1}' on type {2}", members.Length, attribute.SourceName, sourceType));
+                    throw new Exception($"Found {members.Length} members named '{attribute.SourceName}' on type {sourceType}");
 
                 var member = members.Single();
 
@@ -73,7 +73,7 @@
             if (m != null && m.IsStatic)
                 return (IEnumerable<object[]>)m.Invoke(null, null);
 
-            throw new Exception(String.Format("Member '{0}' must be static to be used with TestCaseSource", member.Name));
+            throw new Exception($"Member '{member.Name}' must be static to be used with TestCaseSource");
         }
     }
 

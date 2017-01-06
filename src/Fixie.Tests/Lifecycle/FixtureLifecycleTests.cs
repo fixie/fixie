@@ -1,6 +1,7 @@
 namespace Fixie.Tests.Lifecycle
 {
     using System;
+    using static System.Environment;
 
     public class FixtureLifecycleTests : LifecycleTests
     {
@@ -469,7 +470,7 @@ namespace Fixie.Tests.Lifecycle
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'FixtureTearDown' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
                 "    Secondary Failure: 'FixtureTearDown' failed!");
 
             output.ShouldHaveLifecycle(
@@ -499,7 +500,7 @@ namespace Fixie.Tests.Lifecycle
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'FixtureTearDown' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
+                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
                 "    Secondary Failure: 'FixtureTearDown' failed!");
 
             output.ShouldHaveLifecycle(

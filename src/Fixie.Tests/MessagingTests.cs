@@ -3,8 +3,8 @@
     using System;
     using System.Reflection;
     using System.Runtime.CompilerServices;
-    using Fixie.Execution;
     using Assertions;
+    using Fixie.Execution;
     using static Utility;
 
     public abstract class MessagingTests
@@ -30,7 +30,7 @@
                     x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
 
             convention.
-               HideExceptionDetails.For<AssertActualExpectedException>();
+                HideExceptionDetails.For<AssertActualExpectedException>();
 
             TestClass = FullName<SampleTestClass>();
         }

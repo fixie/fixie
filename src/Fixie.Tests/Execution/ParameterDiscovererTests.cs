@@ -2,9 +2,9 @@
 {
     using System.Collections.Generic;
     using System.Reflection;
-    using Fixie.Execution;
     using Assertions;
-
+    using Fixie.Execution;
+    
     public class ParameterDiscovererTests
     {
         readonly MethodInfo method;

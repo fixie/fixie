@@ -112,7 +112,7 @@
             public virtual void NoAttrribute() { }
         }
 
-        [NonInheritedAttribute]
+        [NonInherited]
         class AttributeSample : AttributeSampleBase
         {
             public override void AttributeOnBaseDeclaration() { }

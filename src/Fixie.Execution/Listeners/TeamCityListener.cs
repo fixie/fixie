@@ -73,9 +73,9 @@
                     case ']': builder.Append("|]"); break;
                     case '\n': builder.Append("|n"); break; // Line Feed
                     case '\r': builder.Append("|r"); break; // Carriage Return
-                    case '\u0085': builder.Append("|x"); break;  // Next Line
-                    case '\u2028': builder.Append("|l"); break;  // Line Separator
-                    case '\u2029': builder.Append("|p"); break;  // Paragraph Separator
+                    case '\u0085': builder.Append("|x"); break; // Next Line
+                    case '\u2028': builder.Append("|l"); break; // Line Separator
+                    case '\u2029': builder.Append("|p"); break; // Paragraph Separator
                     default: builder.Append(ch); break;
                 }
             }

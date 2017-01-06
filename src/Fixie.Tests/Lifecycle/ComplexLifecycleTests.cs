@@ -1,6 +1,7 @@
 namespace Fixie.Tests.Lifecycle
 {
     using System;
+    using static System.Environment;
 
     public class ComplexLifecycleTests : LifecycleTests
     {
@@ -97,14 +98,14 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'CaseTearDown' failed!" + Environment.NewLine +
-	            "    Secondary Failure: 'FixtureTearDown' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
+                "SampleTestClass.Pass failed: 'CaseTearDown' failed!" + NewLine +
+	            "    Secondary Failure: 'FixtureTearDown' failed!" + NewLine +
+                "    Secondary Failure: 'Dispose' failed!" + NewLine +
                 "    Secondary Failure: 'ClassTearDown' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
-	            "    Secondary Failure: 'CaseTearDown' failed!" + Environment.NewLine +
-	            "    Secondary Failure: 'FixtureTearDown' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
+                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
+	            "    Secondary Failure: 'CaseTearDown' failed!" + NewLine +
+	            "    Secondary Failure: 'FixtureTearDown' failed!" + NewLine +
+                "    Secondary Failure: 'Dispose' failed!" + NewLine +
                 "    Secondary Failure: 'ClassTearDown' failed!");
 
             output.ShouldHaveLifecycle(
@@ -146,14 +147,14 @@ namespace Fixie.Tests.Lifecycle
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'CaseTearDown' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'FixtureTearDown' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
+                "SampleTestClass.Pass failed: 'CaseTearDown' failed!" + NewLine +
+                "    Secondary Failure: 'FixtureTearDown' failed!" + NewLine +
+                "    Secondary Failure: 'Dispose' failed!" + NewLine +
                 "    Secondary Failure: 'ClassTearDown' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'CaseTearDown' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'FixtureTearDown' failed!" + Environment.NewLine +
-                "    Secondary Failure: 'Dispose' failed!" + Environment.NewLine +
+                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
+                "    Secondary Failure: 'CaseTearDown' failed!" + NewLine +
+                "    Secondary Failure: 'FixtureTearDown' failed!" + NewLine +
+                "    Secondary Failure: 'Dispose' failed!" + NewLine +
                 "    Secondary Failure: 'ClassTearDown' failed!");
 
             output.ShouldHaveLifecycle(

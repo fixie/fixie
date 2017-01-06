@@ -3,9 +3,9 @@ namespace Fixie.Tests.Execution
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Assertions;
     using Fixie.Execution;
     using Fixie.Internal;
-    using Assertions;
 
     public class BehaviorChainTests
     {

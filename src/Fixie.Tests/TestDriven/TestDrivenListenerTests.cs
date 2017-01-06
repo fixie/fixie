@@ -71,6 +71,7 @@ namespace Fixie.Tests.TestDriven
                 .Lines()
                 .ShouldEqual(
                     "'Fail' failed!",
+                    "",
                     At("Fail()"));
 
             failByAssertion.Name.ShouldEqual(TestClass + ".FailByAssertion");
@@ -83,6 +84,7 @@ namespace Fixie.Tests.TestDriven
                     "Assertion Failure",
                     "Expected: 2",
                     "Actual:   1",
+                    "",
                     At("FailByAssertion()"));
 
             pass.Name.ShouldEqual(TestClass + ".Pass");

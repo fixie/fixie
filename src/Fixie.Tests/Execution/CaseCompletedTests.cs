@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Fixie.Execution;
-    using Should;
+    using Assertions;
 
     public class CaseCompletedTests : MessagingTests
     {
@@ -48,17 +48,17 @@
             failByAssertion.Output.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
-            failByAssertion.Exception.Type.ShouldEqual("Should.Core.Exceptions.EqualException");
+            failByAssertion.Exception.Type.ShouldEqual("Fixie.Assertions.AssertActualExpectedException");
             failByAssertion.Exception.StackTrace
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                    "Assert.Equal() Failure",
+                    "Assertion Failure",
                     "Expected: 2",
                     "Actual:   1",
                     At("FailByAssertion()"));
             failByAssertion.Exception.Message.Lines().ShouldEqual(
-                "Assert.Equal() Failure",
+                "Assertion Failure",
                 "Expected: 2",
                 "Actual:   1");
 

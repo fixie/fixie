@@ -7,7 +7,7 @@
     using System.Runtime.CompilerServices;
     using Conventions;
     using Fixie.Execution;
-    using Should;
+    using Assertions;
 
     public class ClassDiscovererTests
     {

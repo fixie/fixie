@@ -3,7 +3,7 @@ namespace Fixie.Tests.Execution
     using System;
     using System.Text;
     using Fixie.Execution;
-    using Should;
+    using Assertions;
 
     public class AssertionLibraryFilterTests
     {

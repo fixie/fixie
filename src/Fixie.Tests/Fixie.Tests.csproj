@@ -46,10 +46,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
-    <Reference Include="Should, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Should.1.1.20\lib\Should.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -63,7 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertionLibraryFilteringTests.cs" />
-    <Compile Include="Assertions.cs" />
+    <Compile Include="AssertionExtensions.cs" />
     <Compile Include="Execution\BusTests.cs" />
     <Compile Include="Execution\ExecutionSummaryTests.cs" />
     <Compile Include="MessagingTests.cs" />
@@ -116,6 +112,10 @@
     <Compile Include="VisualStudio\TestAdapter\VisualStudioListenerTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Fixie.Assertions\Fixie.Assertions.csproj">
+      <Project>{f9a94434-7f62-4bbc-a498-ea83b2529652}</Project>
+      <Name>Fixie.Assertions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fixie.Console\Fixie.Console.csproj">
       <Project>{3805c0e0-3817-45ad-964f-cf7dc5715b39}</Project>
       <Name>Fixie.Console</Name>

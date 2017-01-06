@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Runtime.CompilerServices;
     using Fixie.Execution;
-    using Should;
+    using Assertions;
 
     public abstract class LifecycleTests
     {

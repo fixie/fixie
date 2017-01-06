@@ -66,7 +66,7 @@
     <Compile Include="SkipAttribute.cs" />
     <Compile Include="Execution\Listeners\AppVeyorListenerTests.cs" />
     <Compile Include="Execution\ExecutionEnvironmentTests.cs" />
-    <Compile Include="Execution\CaseCompletedTests.cs" />
+    <Compile Include="Execution\LifecycleMessageTests.cs" />
     <Compile Include="MethodGroupTests.cs" />
     <Compile Include="Execution\ParameterDiscovererTests.cs" />
     <Compile Include="Execution\AppDomainCommunicationAssertions.cs" />

@@ -2,25 +2,32 @@
 {
     using System;
     using System.Collections.Generic;
-    using Fixie.Execution;
+    using System.Linq;
     using Assertions;
+    using Fixie.Execution;
+    using static Utility;
 
-    public class CaseCompletedTests : MessagingTests
+    public class LifecycleMessageTests : MessagingTests
     {
-        public void ShouldDescribeCaseCompletedMessages()
+        public void ShouldDescribeTestLifecycleMessagesEmittedDuringExecution()
         {
             var listener = new StubCaseCompletedListener();
 
             using (new RedirectedConsole())
                 Run(listener);
 
-            listener.Log.Count.ShouldEqual(5);
+            var assembly = typeof(LifecycleMessageTests).Assembly;
 
-            var skipWithReason = (CaseSkipped)listener.Log[0];
-            var skipWithoutReason = (CaseSkipped)listener.Log[1];
-            var fail = (CaseFailed)listener.Log[2];
-            var failByAssertion = (CaseFailed)listener.Log[3];
-            var pass = listener.Log[4];
+            listener.AssemblyStarts.Single().Assembly.ShouldEqual(assembly);
+            listener.ClassStarts.Single().Class.FullName.ShouldEqual(FullName<MessagingTests>() + "+SampleTestClass");
+
+            listener.Cases.Count.ShouldEqual(5);
+
+            var skipWithReason = (CaseSkipped)listener.Cases[0];
+            var skipWithoutReason = (CaseSkipped)listener.Cases[1];
+            var fail = (CaseFailed)listener.Cases[2];
+            var failByAssertion = (CaseFailed)listener.Cases[3];
+            var pass = listener.Cases[4];
 
             pass.Name.ShouldEqual(TestClass + ".Pass");
             pass.Class.FullName.ShouldEqual(TestClass);
@@ -71,18 +78,29 @@
             skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
             skipWithoutReason.Status.ShouldEqual(CaseStatus.Skipped);
             skipWithoutReason.Reason.ShouldBeNull();
+
+            listener.ClassCompletions.Single().Class.FullName.ShouldEqual(FullName<MessagingTests>() + "+SampleTestClass");
+            listener.AssemblyCompletions.Single().Assembly.ShouldEqual(assembly);
         }
 
         public class StubCaseCompletedListener :
-            Handler<CaseSkipped>,
-            Handler<CasePassed>,
-            Handler<CaseFailed>
+            Handler<AssemblyStarted>,
+            Handler<ClassStarted>,
+            Handler<CaseCompleted>,
+            Handler<ClassCompleted>,
+            Handler<AssemblyCompleted>
         {
-            public List<CaseCompleted> Log { get; set; } = new List<CaseCompleted>();
+            public List<AssemblyStarted> AssemblyStarts { get; } = new List<AssemblyStarted>();
+            public List<ClassStarted> ClassStarts { get; } = new List<ClassStarted>();
+            public List<CaseCompleted> Cases { get; } = new List<CaseCompleted>();
+            public List<ClassCompleted> ClassCompletions = new List<ClassCompleted>();
+            public List<AssemblyCompleted> AssemblyCompletions = new List<AssemblyCompleted>();
 
-            public void Handle(CaseSkipped message) => Log.Add(message);
-            public void Handle(CasePassed message) => Log.Add(message);
-            public void Handle(CaseFailed message) => Log.Add(message);
+            public void Handle(AssemblyStarted message) => AssemblyStarts.Add(message);
+            public void Handle(ClassStarted message) => ClassStarts.Add(message);
+            public void Handle(CaseCompleted message) => Cases.Add(message);
+            public void Handle(ClassCompleted message) => ClassCompletions.Add(message);
+            public void Handle(AssemblyCompleted message) => AssemblyCompletions.Add(message);
         }
     }
 }

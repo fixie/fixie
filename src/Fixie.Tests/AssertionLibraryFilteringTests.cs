@@ -1,92 +1,77 @@
 ﻿namespace Fixie.Tests
 {
     using System;
-    using System.Linq;
     using System.Runtime.CompilerServices;
-    using System.Text.RegularExpressions;
-    using System.Threading;
     using Fixie.Execution.Listeners;
     using Fixie.Internal;
+    using static Utility;
 
     public class AssertionLibraryFilteringTests
     {
+        readonly string testClass = FullName<SampleTestClass>();
+
         public void ShouldNotAffectOutputByDefault()
         {
+            var listener = new ConsoleListener();
+            var convention = SelfTestConvention.Build();
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new ConsoleListener();
-                typeof(SampleTestClass).Run(listener, SelfTestConvention.Build());
+                Run<SampleTestClass>(listener, convention);
 
                 console
-                    .Output.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                    .Select(CleanBrittleValues)
+                    .Output
+                    .CleanStackTraceLineNumbers()
+                    .CleanDuration()
+                    .Lines()
                     .ShouldEqual(
                         "------ Testing Assembly Fixie.Tests.dll ------",
                         "",
-                        "Test 'Fixie.Tests.AssertionLibraryFilteringTests+SampleTestClass.DivideByZero' failed: System.DivideByZeroException",
+                        "Test '" + testClass + ".DivideByZero' failed: System.DivideByZeroException",
                         "Attempted to divide by zero.",
-                        "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.DivideByZero() in " + PathToThisFile() + ":line #",
+                        At<SampleTestClass>("DivideByZero()"),
                         "",
-                        "Test 'Fixie.Tests.AssertionLibraryFilteringTests+SampleTestClass.FailedAssertion' failed: Fixie.Tests.SampleAssertionLibrary.AssertionException",
+                        "Test '" + testClass + ".FailedAssertion' failed: Fixie.Tests.SampleAssertionLibrary.AssertionException",
                         "Expected 1, but was 0.",
                         "   at Fixie.Tests.SampleAssertionLibrary.SampleAssert.AreEqual(Int32 expected, Int32 actual) in " + PathToThisFile() + ":line #",
-                        "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.FailedAssertion() in " + PathToThisFile() + ":line #",
+                        At<SampleTestClass>("FailedAssertion()"),
                         "",
-                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").",
-                        "",
-                        "");
+                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
             }
         }
 
         public void ShouldFilterAssertionLibraryImplementationDetailsWhenLibraryTypesAreSpecified()
         {
+            var listener = new ConsoleListener();
+            var convention = SelfTestConvention.Build();
+
+            convention
+                .HideExceptionDetails
+                .For<SampleAssertionLibrary.AssertionException>()
+                .For(typeof(SampleAssertionLibrary.SampleAssert));
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new ConsoleListener();
-                var convention = SelfTestConvention.Build();
-
-                convention
-                    .HideExceptionDetails
-                    .For<SampleAssertionLibrary.AssertionException>()
-                    .For(typeof(SampleAssertionLibrary.SampleAssert));
-
-                typeof(SampleTestClass).Run(listener, convention);
+                Run<SampleTestClass>(listener, convention);
 
                 console
-                    .Output.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                    .Select(CleanBrittleValues)
+                    .Output
+                    .CleanStackTraceLineNumbers()
+                    .CleanDuration()
+                    .Lines()
                     .ShouldEqual(
                         "------ Testing Assembly Fixie.Tests.dll ------",
                         "",
-                        "Test 'Fixie.Tests.AssertionLibraryFilteringTests+SampleTestClass.DivideByZero' failed: System.DivideByZeroException",
+                        "Test '" + testClass + ".DivideByZero' failed: System.DivideByZeroException",
                         "Attempted to divide by zero.",
-                        "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.DivideByZero() in " + PathToThisFile() + ":line #",
+                        At<SampleTestClass>("DivideByZero()"),
                         "",
-                        "Test 'Fixie.Tests.AssertionLibraryFilteringTests+SampleTestClass.FailedAssertion' failed: ",
+                        "Test '" + testClass + ".FailedAssertion' failed:",
                         "Expected 1, but was 0.",
-                        "   at Fixie.Tests.AssertionLibraryFilteringTests.SampleTestClass.FailedAssertion() in " + PathToThisFile() + ":line #",
+                        At<SampleTestClass>("FailedAssertion()"),
                         "",
-                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").",
-                        "",
-                        "");
+                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
             }
-        }
-
-        static string CleanBrittleValues(string actualRawContent)
-        {
-            //Avoid brittle assertion introduced by test duration.
-            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            var cleaned = Regex.Replace(actualRawContent, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
-
-            //Avoid brittle assertion introduced by stack trace line numbers.
-            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
-
-            return cleaned;
-        }
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
         }
 
         class SampleTestClass

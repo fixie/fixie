@@ -1,151 +1,45 @@
 ﻿namespace Fixie.Tests.Execution.Listeners
 {
-    using System;
-    using System.Linq;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
-    using System.Text.RegularExpressions;
-    using System.Threading;
     using Fixie.Execution.Listeners;
     using Fixie.Internal;
 
-    public class ConsoleListenerTests
+    public class ConsoleListenerTests : MessagingTests
     {
         public void ShouldReportResultsToTheConsole()
         {
+            var listener = new ConsoleListener();
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new ConsoleListener();
-                var convention = SelfTestConvention.Build();
-                convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+                Run(listener);
 
-                typeof(PassFailTestClass).Run(listener, convention);
-
-                var testClass = typeof(PassFailTestClass).FullName;
-
-                console.Lines()
-                       .Select(CleanBrittleValues)
+                console.Output
+                       .CleanStackTraceLineNumbers()
+                       .CleanDuration()
+                       .Lines()
                        .ShouldEqual(
                            "------ Testing Assembly Fixie.Tests.dll ------",
                            "",
-                           "Test '" + testClass + ".SkipWithReason' skipped: Skipped with reason.",
-                           "Test '" + testClass + ".SkipWithoutReason' skipped",
-                           "Console.Out: FailA",
-                           "Console.Error: FailA",
-                           "Console.Out: FailB",
-                           "Console.Error: FailB",
-                           "Console.Out: PassA",
-                           "Console.Error: PassA",
-                           "Console.Out: PassB",
-                           "Console.Error: PassB",
-                           "Console.Out: PassC",
-                           "Console.Error: PassC",
+                           "Test '" + TestClass + ".SkipWithReason' skipped: Skipped with reason.",
+                           "Test '" + TestClass + ".SkipWithoutReason' skipped",
+                           "Console.Out: Fail",
+                           "Console.Error: Fail",
+                           "Console.Out: FailByAssertion",
+                           "Console.Error: FailByAssertion",
+                           "Console.Out: Pass",
+                           "Console.Error: Pass",
 
-                           "Test '" + testClass + ".FailA' failed: Fixie.Tests.FailureException",
-                           "'FailA' failed!",
-                           "   at Fixie.Tests.Execution.Listeners.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
+                           "Test '" + TestClass + ".Fail' failed: Fixie.Tests.FailureException",
+                           "'Fail' failed!",
+                           At("Fail()"),
                            "",
-                           "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
-                           "'FailB' failed!",
-                           "   at Fixie.Tests.Execution.Listeners.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
+                           "Test '" + TestClass + ".FailByAssertion' failed:",
+                           "Assert.Equal() Failure",
+                           "Expected: 2",
+                           "Actual:   1",
+                           At("FailByAssertion()"),
                            "",
-                           "3 passed, 2 failed, 2 skipped, took 1.23 seconds (" + Framework.Version + ").");
-            }
-        }
-
-        public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
-        {
-            using (var console = new RedirectedConsole())
-            {
-                var listener = new ConsoleListener();
-                var convention = SelfTestConvention.Build();
-
-                convention
-                    .Methods
-                    .Where(method => !method.Has<SkipAttribute>());
-
-                typeof(PassFailTestClass).Run(listener, convention);
-
-                var testClass = typeof(PassFailTestClass).FullName;
-
-                console.Lines()
-                       .Select(CleanBrittleValues)
-                       .ShouldEqual(
-                           "------ Testing Assembly Fixie.Tests.dll ------",
-                           "",
-                           "Console.Out: FailA",
-                           "Console.Error: FailA",
-                           "Console.Out: FailB",
-                           "Console.Error: FailB",
-                           "Console.Out: PassA",
-                           "Console.Error: PassA",
-                           "Console.Out: PassB",
-                           "Console.Error: PassB",
-                           "Console.Out: PassC",
-                           "Console.Error: PassC",
-
-                           "Test '" + testClass + ".FailA' failed: Fixie.Tests.FailureException",
-                           "'FailA' failed!",
-                           "   at Fixie.Tests.Execution.Listeners.ConsoleListenerTests.PassFailTestClass.FailA() in " + PathToThisFile() + ":line #",
-                           "",
-                           "Test '" + testClass + ".FailB' failed: Fixie.Tests.FailureException",
-                           "'FailB' failed!",
-                           "   at Fixie.Tests.Execution.Listeners.ConsoleListenerTests.PassFailTestClass.FailB() in " + PathToThisFile() + ":line #",
-                           "",
-                           "3 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
-            }
-        }
-
-        static string CleanBrittleValues(string actualRawContent)
-        {
-            //Avoid brittle assertion introduced by test duration.
-            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            var cleaned = Regex.Replace(actualRawContent, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
-
-            //Avoid brittle assertion introduced by stack trace line numbers.
-            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
-
-            return cleaned;
-        }
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
-        }
-
-        class PassFailTestClass
-        {
-            public void FailA()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
-
-            public void PassA()
-            {
-                WhereAmI();
-            }
-
-            public void FailB()
-            {
-                WhereAmI();
-                throw new FailureException();
-            }
-
-            public void PassB() { WhereAmI(); }
-
-            public void PassC() { WhereAmI(); }
-
-            [Skip]
-            public void SkipWithoutReason() { throw new ShouldBeUnreachableException(); }
-
-            [Skip("Skipped with reason.")]
-            public void SkipWithReason() { throw new ShouldBeUnreachableException(); }
-
-            static void WhereAmI([CallerMemberName] string member = null)
-            {
-                Console.Out.WriteLine("Console.Out: " + member);
-                Console.Error.WriteLine("Console.Error: " + member);
+                           "1 passed, 2 failed, 2 skipped, took 1.23 seconds (" + Framework.Version + ").");
             }
         }
     }

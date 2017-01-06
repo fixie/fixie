@@ -18,6 +18,7 @@
             Convention = new Convention();
             Convention.Classes.Where(testClass => testClass == typeof(SampleTestClass));
             Convention.Methods.Where(method => method.Name == "Pass" || method.Name == "Fail");
+            Convention.ClassExecution.SortCases((x, y) => String.Compare(y.Name, x.Name, StringComparison.Ordinal));
         }
 
         protected static void FailDuring(params string[] failingMemberNames)
@@ -27,13 +28,11 @@
 
         protected Output Run()
         {
+            var listener = new StubListener();
+
             using (var console = new RedirectedConsole())
             {
-                var listener = new StubListener();
-
-                Convention.ClassExecution.SortCases((x, y) => String.Compare(y.Name, x.Name, StringComparison.Ordinal));
-
-                typeof(SampleTestClass).Run(listener, Convention);
+                Utility.Run<SampleTestClass>(listener, Convention);
 
                 return new Output(console.Lines().ToArray(), listener.Entries.ToArray());
             }

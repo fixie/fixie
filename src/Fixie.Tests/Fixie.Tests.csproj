@@ -66,8 +66,7 @@
     <Compile Include="Assertions.cs" />
     <Compile Include="Execution\BusTests.cs" />
     <Compile Include="Execution\ExecutionSummaryTests.cs" />
-    <Compile Include="InputAttribute.cs" />
-    <Compile Include="InputAttributeParameterSource.cs" />
+    <Compile Include="MessagingTests.cs" />
     <Compile Include="SkipAttribute.cs" />
     <Compile Include="Execution\Listeners\AppVeyorListenerTests.cs" />
     <Compile Include="Execution\ExecutionEnvironmentTests.cs" />
@@ -111,6 +110,7 @@
     <Compile Include="Cases\ParameterizedCaseTests.cs" />
     <Compile Include="Execution\Listeners\TeamCityListenerTests.cs" />
     <Compile Include="Cases\SkippedCaseTests.cs" />
+    <Compile Include="Utility.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationProviderTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationSamples.cs" />
     <Compile Include="VisualStudio\TestAdapter\VisualStudioListenerTests.cs" />

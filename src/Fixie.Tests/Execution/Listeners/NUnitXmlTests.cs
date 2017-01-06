@@ -1,16 +1,15 @@
 ﻿namespace Fixie.Tests.Execution.Listeners
 {
     using System.IO;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Schema;
     using Fixie.Execution.Listeners;
+    using Fixie.Internal;
     using Should;
 
-    public class NUnitXmlTests
+    public class NUnitXmlTests : MessagingTests
     {
         public void ShouldProduceValidXmlDocument()
         {
@@ -18,10 +17,19 @@
 
             var listener = new ReportListener<NUnitXml>(report => actual = new NUnitXml().Transform(report));
 
-            var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>(), x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
-            convention.Parameters.Add<InputAttributeParameterSource>();
-            typeof(PassFailTestClass).Run(listener, convention);
+            using (var console = new RedirectedConsole())
+            {
+                Run(listener);
+
+                console.Lines()
+                    .ShouldEqual(
+                        "Console.Out: Fail",
+                        "Console.Error: Fail",
+                        "Console.Out: FailByAssertion",
+                        "Console.Error: FailByAssertion",
+                        "Console.Out: Pass",
+                        "Console.Error: Pass");
+            }
 
             XsdValidate(actual);
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
@@ -50,7 +58,7 @@
             cleaned = Regex.Replace(cleaned, @"time=""[\d\.]+""", @"time=""1.234""");
 
             //Avoid brittle assertion introduced by stack trace line numbers.
-            cleaned = Regex.Replace(cleaned, @":line \d+", ":line #");
+            cleaned = cleaned.CleanStackTraceLineNumbers();
 
             //Avoid brittle assertion introduced by environment attributes.
             cleaned = Regex.Replace(cleaned, @"clr-version=""[^""]*""", @"clr-version=""[clr-version]""");
@@ -73,45 +81,13 @@
             get
             {
                 var assemblyLocation = GetType().Assembly.Location;
-                var fileLocation = PathToThisFile();
+                var fileLocation = TestClassPath();
                 return XDocument.Parse(File.ReadAllText(Path.Combine("Execution", Path.Combine("Listeners", "NUnitXmlReport.xml"))))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
-                                .Replace("[fileLocation]", fileLocation);
-            }
-        }
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-        {
-            return path;
-        }
-
-        class PassFailTestClass
-        {
-            public void Fail()
-            {
-                throw new FailureException();
-            }
-
-            public void Pass() { }
-
-            [Input(false)]
-            [Input(true)]
-            public void PassIfTrue(bool pass)
-            {
-                if (!pass) throw new FailureException();
-            }
-
-            [Skip]
-            public void SkipWithoutReason()
-            {
-                throw new ShouldBeUnreachableException();
-            }
-
-            [Skip("reason")]
-            public void SkipWithReason()
-            {
-                throw new ShouldBeUnreachableException();
+                                .Replace("[fileLocation]", fileLocation)
+                                .Replace("[testClass]", TestClass)
+                                .Replace("[testClassForStackTrace]", TestClass.Replace("+", "."));
             }
         }
     }

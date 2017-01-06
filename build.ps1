@@ -9,7 +9,7 @@ properties {
     $tools = resolve-path '.\tools'
     $version = [IO.File]::ReadAllText('.\VERSION.txt')
     $projects = @(gci $src -rec -filter *.csproj)
-    $nonPublishedProjects = "Build","Fixie.Tests","Fixie.Samples"
+    $nonPublishedProjects = "Build","Fixie.Tests","Fixie.Samples","Fixie.Assertions"
 }
 
 task default -depends Test

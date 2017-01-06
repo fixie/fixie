@@ -58,7 +58,6 @@
     <Compile Include="Parameterized\CustomConvention.cs" />
     <Compile Include="Parameterized\InputAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SamplesAssembly.cs" />
     <Compile Include="Shuffle\CustomConvention.cs" />
     <Compile Include="Shuffle\OrderTests.cs" />
     <Compile Include="Skipped\ExplicitAttribute.cs" />

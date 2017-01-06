@@ -46,7 +46,6 @@
     <Compile Include="Options.cs" />
     <Compile Include="ParameterSource.cs" />
     <Compile Include="SkipBehavior.cs" />
-    <Compile Include="TestAssembly.cs" />
     <Compile Include="Conventions\ClassExpression.cs" />
     <Compile Include="Conventions\AssertionLibraryExpression.cs" />
     <Compile Include="Internal\GenericArgumentResolver.cs" />

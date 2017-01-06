@@ -2,7 +2,7 @@
 {
     using System.IO;
     using Fixie.VisualStudio.TestAdapter;
-    using Should;
+    using Assertions;
     using static Utility;
 
     public class SourceLocationProviderTests

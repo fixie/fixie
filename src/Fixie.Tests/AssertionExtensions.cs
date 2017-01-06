@@ -3,10 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Should;
-    using Should.Core.Assertions;
+    using Assertions;
 
-    public static class Assertions
+    public static class AssertionExtensions
     {
         public static void ShouldEqual<T>(this IEnumerable<T> actual, params T[] expected)
         {

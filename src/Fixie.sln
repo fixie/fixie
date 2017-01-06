@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "Build\Build.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fixie.Execution", "Fixie.Execution\Fixie.Execution.csproj", "{C0C4DD53-D549-4469-9AF5-79187AC9F034}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fixie.Assertions", "Fixie.Assertions\Fixie.Assertions.csproj", "{F9A94434-7F62-4BBC-A498-EA83B2529652}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{C0C4DD53-D549-4469-9AF5-79187AC9F034}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0C4DD53-D549-4469-9AF5-79187AC9F034}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0C4DD53-D549-4469-9AF5-79187AC9F034}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9A94434-7F62-4BBC-A498-EA83B2529652}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9A94434-7F62-4BBC-A498-EA83B2529652}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9A94434-7F62-4BBC-A498-EA83B2529652}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9A94434-7F62-4BBC-A498-EA83B2529652}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

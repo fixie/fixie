@@ -8,7 +8,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Should;
+    using Assertions;
 
     public class VisualStudioListenerTests : MessagingTests
     {
@@ -104,14 +104,14 @@
             failByAssertion.TestCase.DisplayName.ShouldEqual(TestClass + ".FailByAssertion");
             failByAssertion.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
             failByAssertion.Outcome.ShouldEqual(TestOutcome.Failed);
-            failByAssertion.ErrorMessage.Lines().ShouldEqual("Assert.Equal() Failure",
+            failByAssertion.ErrorMessage.Lines().ShouldEqual("Assertion Failure",
                 "Expected: 2",
                 "Actual:   1");
             failByAssertion.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                    "Assert.Equal() Failure",
+                    "Assertion Failure",
                     "Expected: 2",
                     "Actual:   1",
                     At("FailByAssertion()"));

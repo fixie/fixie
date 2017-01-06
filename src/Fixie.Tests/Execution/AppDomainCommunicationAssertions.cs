@@ -4,7 +4,7 @@ namespace Fixie.Tests.Execution
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Should;
+    using Assertions;
 
     public static class AppDomainCommunicationAssertions
     {

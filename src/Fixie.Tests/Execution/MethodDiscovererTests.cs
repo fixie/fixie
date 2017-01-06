@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
     using Conventions;
     using Fixie.Execution;
-    using Should;
+    using Assertions;
 
     public class MethodDiscovererTests
     {

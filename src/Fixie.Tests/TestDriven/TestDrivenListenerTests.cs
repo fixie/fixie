@@ -6,7 +6,7 @@ namespace Fixie.Tests.TestDriven
     using System.Collections.Generic;
     using Fixie.Execution;
     using Fixie.TestDriven;
-    using Should;
+    using Assertions;
 
     public class TestDrivenListenerTests : MessagingTests
     {
@@ -80,7 +80,7 @@ namespace Fixie.Tests.TestDriven
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                    "Assert.Equal() Failure",
+                    "Assertion Failure",
                     "Expected: 2",
                     "Actual:   1",
                     At("FailByAssertion()"));

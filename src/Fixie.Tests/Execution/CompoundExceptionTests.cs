@@ -2,7 +2,7 @@
 {
     using System;
     using Fixie.Execution;
-    using Should;
+    using Assertions;
     using static Utility;
 
     public class CompoundExceptionTests

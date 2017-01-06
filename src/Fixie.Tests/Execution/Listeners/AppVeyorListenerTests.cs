@@ -10,7 +10,7 @@
     using System.Web.Script.Serialization;
     using Fixie.Execution;
     using Fixie.Execution.Listeners;
-    using Should;
+    using Assertions;
 
     public class AppVeyorListenerTests : MessagingTests
     {
@@ -92,14 +92,14 @@
             failByAssertion.outcome.ShouldEqual("Failed");
             int.Parse(failByAssertion.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             failByAssertion.ErrorMessage.Lines().ShouldEqual(
-                "Assert.Equal() Failure",
+                "Assertion Failure",
                 "Expected: 2",
                 "Actual:   1");
             failByAssertion.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                        "Assert.Equal() Failure",
+                        "Assertion Failure",
                         "Expected: 2",
                         "Actual:   1",
                         At("FailByAssertion()"));

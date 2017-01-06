@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Should, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Should.1.1.20\lib\Should.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -78,13 +74,14 @@
     <Compile Include="xUnitStyle\IUseFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Fixie.Assertions\Fixie.Assertions.csproj">
+      <Project>{f9a94434-7f62-4bbc-a498-ea83b2529652}</Project>
+      <Name>Fixie.Assertions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fixie\Fixie.csproj">
       <Project>{474ff43b-4580-4032-999b-a717eb7a0cd3}</Project>
       <Name>Fixie</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

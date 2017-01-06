@@ -2,7 +2,7 @@ namespace Fixie.Tests.Execution
 {
     using System;
     using Fixie.Execution;
-    using Should;
+    using Assertions;
     using static Utility;
 
     public class ExecutionSummaryTests

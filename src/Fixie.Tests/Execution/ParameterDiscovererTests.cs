@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Reflection;
     using Fixie.Execution;
-    using Should;
+    using Assertions;
 
     public class ParameterDiscovererTests
     {

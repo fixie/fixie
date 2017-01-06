@@ -1,7 +1,7 @@
 ﻿namespace Fixie.Tests
 {
     using System;
-    using Should;
+    using Assertions;
 
     public class CaseTests
     {

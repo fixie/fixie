@@ -2,7 +2,7 @@
 {
     using System.Linq;
     using Fixie.ConsoleRunner;
-    using Should;
+    using Assertions;
 
     public class CommandLineParserTests
     {

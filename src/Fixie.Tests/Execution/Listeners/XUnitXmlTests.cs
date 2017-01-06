@@ -8,7 +8,7 @@
     using System.Xml.Schema;
     using Fixie.Execution;
     using Fixie.Execution.Listeners;
-    using Should;
+    using Assertions;
 
     public class XUnitXmlTests : MessagingTests
     {

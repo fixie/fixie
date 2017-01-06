@@ -2,11 +2,11 @@
 {
     using System;
     using System.Text;
-    using Should;
+    using Assertions;
 
     public class SkipMethodTests : IDisposable
     {
-        Calculator calculator;
+        readonly Calculator calculator;
         readonly StringBuilder log;
 
         public SkipMethodTests()

@@ -111,7 +111,7 @@
     <Compile Include="VisualStudio\TestAdapter\SourceLocationProviderTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationSamples.cs" />
     <Compile Include="VisualStudio\TestAdapter\VisualStudioDiscoveryListenerTests.cs" />
-    <Compile Include="VisualStudio\TestAdapter\VisualStudioListenerTests.cs" />
+    <Compile Include="VisualStudio\TestAdapter\VisualStudioExecutionListenerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie.Assertions\Fixie.Assertions.csproj">

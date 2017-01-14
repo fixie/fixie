@@ -10,7 +10,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Assertions;
 
-    public class VisualStudioListenerTests : MessagingTests
+    public class VisualStudioExecutionListenerTests : MessagingTests
     {
         public void ShouldAllowRunnersInOtherAppDomainsToReportTestExecutionToVisualStudio()
         {
@@ -25,7 +25,7 @@
             using (var executionRecorder = new ExecutionRecorder(recorder, assemblyPath))
             using (var console = new RedirectedConsole())
             {
-                var listener = new VisualStudioListener(executionRecorder);
+                var listener = new VisualStudioExecutionListener(executionRecorder);
 
                 Run(listener);
 

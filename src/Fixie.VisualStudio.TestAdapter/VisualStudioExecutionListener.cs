@@ -2,14 +2,14 @@
 {
     using Execution;
 
-    public class VisualStudioListener :
+    public class VisualStudioExecutionListener :
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>
     {
         readonly ExecutionRecorder log;
 
-        public VisualStudioListener(ExecutionRecorder log)
+        public VisualStudioExecutionListener(ExecutionRecorder log)
         {
             this.log = log;
         }

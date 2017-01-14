@@ -81,6 +81,7 @@
     <Compile Include="Listeners\XUnitXml.cs" />
     <Compile Include="LongLivedMarshalByRefObject.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="MethodDiscovered.cs" />
     <Compile Include="MethodDiscoverer.cs" />
     <Compile Include="ParameterDiscoverer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

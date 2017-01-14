@@ -6,10 +6,12 @@
 
     public class Discoverer
     {
+        readonly Bus bus;
         readonly Options options;
 
-        public Discoverer(Options options)
+        public Discoverer(Bus bus, Options options)
         {
+            this.bus = bus;
             this.options = options;
         }
 
@@ -33,6 +35,8 @@
 
                     foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
                     {
+                        bus.Publish(new MethodDiscovered(testClass, testMethod));
+
                         var methodGroup = new MethodGroup(testMethod);
 
                         distinctMethodGroups[methodGroup.FullName] = methodGroup;

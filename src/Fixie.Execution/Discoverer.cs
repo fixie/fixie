@@ -31,18 +31,12 @@
                 var methodDiscoverer = new MethodDiscoverer(convention);
                 foreach (var testClass in testClasses)
                 {
-                    var distinctMethodGroups = new Dictionary<string, MethodGroup>();
-
                     foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
                     {
                         bus.Publish(new MethodDiscovered(testClass, testMethod));
 
-                        var methodGroup = new MethodGroup(testMethod);
-
-                        distinctMethodGroups[methodGroup.FullName] = methodGroup;
+                        discoveredTestMethodGroups.Add(new MethodGroup(testMethod));
                     }
-
-                    discoveredTestMethodGroups.AddRange(distinctMethodGroups.Values);
                 }
             }
 

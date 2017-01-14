@@ -12,7 +12,7 @@
 
     public class VisualStudioListenerTests : MessagingTests
     {
-        public void ShouldAllowRunnersInOtherAppDomainsToReportTestDiscoveryAndExecutionToVisualStudio()
+        public void ShouldAllowRunnersInOtherAppDomainsToReportTestExecutionToVisualStudio()
         {
             typeof(ExecutionRecorder).ShouldBeSafeAppDomainCommunicationInterface();
         }
@@ -47,13 +47,6 @@
                 result.Traits.ShouldBeEmpty();
                 result.Attachments.ShouldBeEmpty();
                 result.ComputerName.ShouldEqual(Environment.MachineName);
-                result.TestCase.Traits.ShouldBeEmpty();
-                result.TestCase.LocalExtensionData.ShouldBeNull();
-                result.TestCase.Source.ShouldEqual("assembly.path.dll");
-
-                //Source locations are a discovery-time concern.
-                result.TestCase.CodeFilePath.ShouldBeNull();
-                result.TestCase.LineNumber.ShouldEqual(-1);
             }
 
             var skipWithReason = results[0];
@@ -62,9 +55,7 @@
             var failByAssertion = results[3];
             var pass = results[4];
 
-            skipWithReason.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".SkipWithReason");
-            skipWithReason.TestCase.DisplayName.ShouldEqual(TestClass + ".SkipWithReason");
-            skipWithReason.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+            skipWithReason.TestCase.ShouldBeExecutionTimeTest(TestClass + ".SkipWithReason", assemblyPath);
             skipWithReason.Outcome.ShouldEqual(TestOutcome.Skipped);
             skipWithReason.ErrorMessage.ShouldEqual("Skipped with reason.");
             skipWithReason.ErrorStackTrace.ShouldBeNull();
@@ -72,9 +63,7 @@
             skipWithReason.Messages.ShouldBeEmpty();
             skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
 
-            skipWithoutReason.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.TestCase.DisplayName.ShouldEqual(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+            skipWithoutReason.TestCase.ShouldBeExecutionTimeTest(TestClass + ".SkipWithoutReason", assemblyPath);
             skipWithoutReason.Outcome.ShouldEqual(TestOutcome.Skipped);
             skipWithoutReason.ErrorMessage.ShouldBeNull();
             skipWithoutReason.ErrorStackTrace.ShouldBeNull();
@@ -82,9 +71,7 @@
             skipWithoutReason.Messages.ShouldBeEmpty();
             skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
 
-            fail.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".Fail");
-            fail.TestCase.DisplayName.ShouldEqual(TestClass + ".Fail");
-            fail.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+            fail.TestCase.ShouldBeExecutionTimeTest(TestClass + ".Fail", assemblyPath);
             fail.Outcome.ShouldEqual(TestOutcome.Failed);
             fail.ErrorMessage.ShouldEqual("'Fail' failed!");
             fail.ErrorStackTrace
@@ -99,9 +86,7 @@
             fail.Messages[0].Text.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            failByAssertion.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".FailByAssertion");
-            failByAssertion.TestCase.DisplayName.ShouldEqual(TestClass + ".FailByAssertion");
-            failByAssertion.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+            failByAssertion.TestCase.ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion", assemblyPath);
             failByAssertion.Outcome.ShouldEqual(TestOutcome.Failed);
             failByAssertion.ErrorMessage.Lines().ShouldEqual("Assertion Failure",
                 "Expected: 2",
@@ -116,9 +101,8 @@
             failByAssertion.Messages[0].Text.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            pass.TestCase.FullyQualifiedName.ShouldEqual(TestClass + ".Pass");
+            pass.TestCase.ShouldBeExecutionTimeTest(TestClass + ".Pass", assemblyPath);
             pass.TestCase.DisplayName.ShouldEqual(TestClass + ".Pass");
-            pass.TestCase.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
             pass.Outcome.ShouldEqual(TestOutcome.Passed);
             pass.ErrorMessage.ShouldBeNull();
             pass.ErrorStackTrace.ShouldBeNull();

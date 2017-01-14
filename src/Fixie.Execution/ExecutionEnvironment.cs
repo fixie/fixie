@@ -35,8 +35,8 @@
             executionProxy.Subscribe<TListener>(listenerArguments);
         }
 
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
-            => executionProxy.DiscoverTestMethodGroups(assemblyFullPath, options);
+        public void DiscoverMethods(Options options)
+            => executionProxy.DiscoverMethods(assemblyFullPath, options);
 
         public ExecutionSummary RunAssembly(Options options)
             => executionProxy.RunAssembly(assemblyFullPath, options);

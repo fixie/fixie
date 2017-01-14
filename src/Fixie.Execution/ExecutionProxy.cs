@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Reflection;
     using Listeners;
@@ -16,25 +15,29 @@
             customListeners.Add((Listener)Activator.CreateInstance(typeof(TListener), listenerArguments));
         }
 
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
+        public void DiscoverMethods(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return new Discoverer(options).DiscoverTestMethodGroups(assembly);
+            var listeners = customListeners;
+            var bus = new Bus(listeners);
+            var discoverer = new Discoverer(bus, options);
+
+            discoverer.DiscoverMethods(assembly);
         }
 
         public ExecutionSummary RunAssembly(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Run(assemblyFullPath, options, runner => runner.RunAssembly(assembly));
+            return Run(options, runner => runner.RunAssembly(assembly));
         }
 
         public ExecutionSummary RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Run(assemblyFullPath, options, r => r.RunMethods(assembly, methodGroups));
+            return Run(options, r => r.RunMethods(assembly, methodGroups));
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -42,11 +45,11 @@
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        ExecutionSummary Run(string assemblyFullPath, Options options, Action<Runner> run)
+        ExecutionSummary Run(Options options, Action<Runner> run)
         {
             var summaryListener = new SummaryListener();
 
-            var listeners = GetListeners(assemblyFullPath, options, summaryListener);
+            var listeners = GetExecutionListeners(options, summaryListener);
             var bus = new Bus(listeners);
             var runner = new Runner(bus, options);
 
@@ -55,16 +58,16 @@
             return summaryListener.Summary;
         }
 
-        List<Listener> GetListeners(string assemblyFullPath, Options options, SummaryListener summaryListener)
+        List<Listener> GetExecutionListeners(Options options, SummaryListener summaryListener)
         {
-            var listeners = customListeners.Any() ? customListeners : DefaultListeners(assemblyFullPath, options).ToList();
+            var listeners = customListeners.Any() ? customListeners : DefaultExecutionListeners(options).ToList();
 
             listeners.Add(summaryListener);
 
             return listeners;
         }
 
-        static IEnumerable<Listener> DefaultListeners(string assemblyFullPath, Options options)
+        static IEnumerable<Listener> DefaultExecutionListeners(Options options)
         {
             if (ShouldUseTeamCityListener(options))
                 yield return new TeamCityListener();

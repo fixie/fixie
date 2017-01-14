@@ -37,6 +37,9 @@
 
         protected string TestClass { get; }
 
+        protected void Discover(Listener listener)
+            => Discover<SampleTestClass>(listener, convention);
+
         protected void Run(Listener listener)
             => Run<SampleTestClass>(listener, convention);
 

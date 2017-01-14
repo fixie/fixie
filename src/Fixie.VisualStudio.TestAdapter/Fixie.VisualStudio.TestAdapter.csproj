@@ -50,16 +50,19 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DiscoveryRecorder.cs" />
+    <Compile Include="VisualStudioDiscoveryListener.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="SourceLocation.cs" />
     <Compile Include="SourceLocationProvider.cs" />
     <Compile Include="ExecutionRecorder.cs" />
+    <Compile Include="Test.cs" />
     <Compile Include="VsTestDiscoverer.cs" />
     <Compile Include="VsTestExecutor.cs" />
     <Compile Include="LoggingExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemotingUtility.cs" />
-    <Compile Include="VisualStudioListener.cs" />
+    <Compile Include="VisualStudioExecutionListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fixie.Execution\Fixie.Execution.csproj">

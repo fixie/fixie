@@ -43,9 +43,7 @@
 
         static void ShouldUseDefaultsForUnmappedProperties(TestCase test)
         {
-            test.Id.ShouldEqual(Guid.Empty);
             test.LocalExtensionData.ShouldBeNull();
-            test.Properties.ShouldBeEmpty();
             test.Traits.ShouldBeEmpty();
             test.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
         }

@@ -110,6 +110,7 @@
     <Compile Include="VisualStudio\TestAdapter\TestCaseMappingAssertions.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationProviderTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationSamples.cs" />
+    <Compile Include="VisualStudio\TestAdapter\VisualStudioDiscoveryListenerTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\VisualStudioListenerTests.cs" />
   </ItemGroup>
   <ItemGroup>

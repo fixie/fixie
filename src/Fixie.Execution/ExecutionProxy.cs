@@ -15,7 +15,7 @@
             customListeners.Add((Listener)Activator.CreateInstance(typeof(TListener), listenerArguments));
         }
 
-        public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(string assemblyFullPath, Options options)
+        public void DiscoverMethods(string assemblyFullPath, Options options)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
@@ -23,7 +23,7 @@
             var bus = new Bus(listeners);
             var discoverer = new Discoverer(bus, options);
 
-            return discoverer.DiscoverTestMethodGroups(assembly);
+            discoverer.DiscoverMethods(assembly);
         }
 
         public ExecutionSummary RunAssembly(string assemblyFullPath, Options options)

@@ -11,7 +11,7 @@ namespace Fixie.Execution
 
         public ClassDiscoverer(Convention convention)
         {
-            var conditions = new List<Func<Type, bool>>()
+            var conditions = new List<Func<Type, bool>>
             {
                 ConcreteClasses,
                 NonDiscoveryClasses,

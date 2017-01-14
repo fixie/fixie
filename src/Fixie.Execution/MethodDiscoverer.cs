@@ -7,11 +7,19 @@
 
     public class MethodDiscoverer
     {
-        readonly Func<MethodInfo, bool>[] testMethodConditions;
+        readonly IReadOnlyList<Func<MethodInfo, bool>> testMethodConditions;
 
         public MethodDiscoverer(Convention convention)
         {
-            testMethodConditions = convention.Config.TestMethodConditions.ToArray();
+            var conditions = new List<Func<MethodInfo, bool>>
+            {
+                ExcludeMethodsDefinedOnObject,
+                ExcludeDispose
+            };
+
+            conditions.AddRange(convention.Config.TestMethodConditions);
+
+            testMethodConditions = conditions;
         }
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
@@ -29,8 +37,12 @@
         }
 
         bool IsMatch(MethodInfo candidate)
-        {
-            return testMethodConditions.All(condition => condition(candidate));
-        }
+            => testMethodConditions.All(condition => condition(candidate));
+
+        static bool ExcludeMethodsDefinedOnObject(MethodInfo method)
+            => method.DeclaringType != typeof(object);
+
+        static bool ExcludeDispose(MethodInfo method)
+            => !method.IsDispose();
     }
 }

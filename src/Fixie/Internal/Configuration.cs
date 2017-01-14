@@ -22,13 +22,7 @@
             TestClassFactory = UseDefaultConstructor;
 
             testClassConditions = new List<Func<Type, bool>>();
-
-            testMethodConditions = new List<Func<MethodInfo, bool>>
-            {
-                ExcludeMethodsDefinedOnObject,
-                ExcludeDispose
-            };
-
+            testMethodConditions = new List<Func<MethodInfo, bool>>();
             parameterSources = new List<Func<ParameterSource>>();
             customClassBehaviors = new List<Func<ClassBehavior>>();
             customFixtureBehaviors = new List<Func<FixtureBehavior>>();
@@ -52,12 +46,6 @@
                 throw new PreservedException(exception.InnerException);
             }
         }
-
-        static bool ExcludeMethodsDefinedOnObject(MethodInfo method)
-            => method.DeclaringType != typeof(object);
-
-        static bool ExcludeDispose(MethodInfo method)
-            => !method.IsDispose();
 
         public void AddTestClassCondition(Func<Type, bool> testClassCondition)
             => testClassConditions.Add(testClassCondition);

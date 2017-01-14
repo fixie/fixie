@@ -3,14 +3,24 @@ namespace Fixie.Execution
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.CompilerServices;
 
     public class ClassDiscoverer
     {
-        readonly Func<Type, bool>[] testClassConditions;
+        readonly IReadOnlyList<Func<Type, bool>> testClassConditions;
 
         public ClassDiscoverer(Convention convention)
         {
-            testClassConditions = convention.Config.TestClassConditions.ToArray();
+            var conditions = new List<Func<Type, bool>>()
+            {
+                ConcreteClasses,
+                NonDiscoveryClasses,
+                NonCompilerGeneratedClasses
+            };
+
+            conditions.AddRange(convention.Config.TestClassConditions);
+
+            testClassConditions = conditions;
         }
 
         public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
@@ -28,8 +38,15 @@ namespace Fixie.Execution
         }
 
         bool IsMatch(Type candidate)
-        {
-            return testClassConditions.All(condition => condition(candidate));
-        }
+            => testClassConditions.All(condition => condition(candidate));
+
+        static bool ConcreteClasses(Type type)
+            => type.IsClass && !type.IsAbstract;
+
+        static bool NonDiscoveryClasses(Type type)
+            => !type.IsSubclassOf(typeof(Convention));
+
+        static bool NonCompilerGeneratedClasses(Type type)
+            => !type.Has<CompilerGeneratedAttribute>();
     }
 }

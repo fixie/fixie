@@ -107,6 +107,7 @@
     <Compile Include="Execution\Listeners\TeamCityListenerTests.cs" />
     <Compile Include="Cases\SkippedCaseTests.cs" />
     <Compile Include="Utility.cs" />
+    <Compile Include="VisualStudio\TestAdapter\TestCaseMappingAssertions.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationProviderTests.cs" />
     <Compile Include="VisualStudio\TestAdapter\SourceLocationSamples.cs" />
     <Compile Include="VisualStudio\TestAdapter\VisualStudioListenerTests.cs" />

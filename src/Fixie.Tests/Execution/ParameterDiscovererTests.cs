@@ -4,7 +4,7 @@
     using System.Reflection;
     using Assertions;
     using Fixie.Execution;
-    
+
     public class ParameterDiscovererTests
     {
         readonly MethodInfo method;

@@ -10,9 +10,9 @@ namespace Fixie.Execution.Listeners
 
         public ClassReport(Type @class)
         {
+            Class = @class;
             cases = new List<CaseCompleted>();
             summary = new ExecutionSummary();
-            Class = @class;
         }
 
         public void Add(CaseCompleted message)

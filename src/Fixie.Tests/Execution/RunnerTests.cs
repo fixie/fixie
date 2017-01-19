@@ -81,12 +81,12 @@ namespace Fixie.Tests.Execution
             strings.ShouldEqual(
 
                 Self + "+BuggyParameterGenerationTestClass.ParameterizedA failed: Exception thrown while attempting to yield input parameters for method: ParameterizedA" + Environment.NewLine +
-	            "    Secondary Failure: Failed to compare two elements in the array." + NewLine +
-	            "    Inner Exception: SortCases lambda expression threw!",
+                "    Secondary Failure: Failed to compare two elements in the array." + NewLine +
+                "    Inner Exception: SortCases lambda expression threw!",
 
                 Self + "+BuggyParameterGenerationTestClass.ParameterizedB failed: Exception thrown while attempting to yield input parameters for method: ParameterizedB" + Environment.NewLine +
-	            "    Secondary Failure: Failed to compare two elements in the array." + NewLine +
-	            "    Inner Exception: SortCases lambda expression threw!",
+                "    Secondary Failure: Failed to compare two elements in the array." + NewLine +
+                "    Inner Exception: SortCases lambda expression threw!",
 
                 Self + "+PassFailTestClass.Fail failed: Failed to compare two elements in the array." + NewLine +
                 "    Inner Exception: SortCases lambda expression threw!",

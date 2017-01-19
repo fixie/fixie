@@ -13,9 +13,6 @@
         public void ShouldParseEmptyModels()
         {
             Parse<Empty>().ShouldSucceed(new Empty());
-
-            Parse<Empty>("first", "second", "third", "fourth", "fifth")
-                .ShouldSucceed(new Empty(), "first", "second", "third", "fourth", "fifth");
         }
 
         class TooManyConstructors
@@ -126,6 +123,21 @@
                 .ShouldFail("second must be one of: Information, Warning, Error.");
         }
 
+        public void ShouldCollectExcessArgumentsForLaterInspection()
+        {
+            Parse<Empty>("first", "second", "third", "fourth", "fifth")
+                .ShouldSucceed(new Empty(), "first", "second", "third", "fourth", "fifth");
+
+            Parse<ModelWithConstructor<string>>("first", "second", "third", "fourth", "fifth")
+                .ShouldSucceed(
+                    new ModelWithConstructor<string>("first", "second", "third"),
+                    "fourth", "fifth");
+
+            Parse<ModelWithConstructor<int>>("1", "2", "3", "4", "5")
+                .ShouldSucceed(
+                    new ModelWithConstructor<int>(1, 2, 3),
+                    "4", "5");
+        }
         static Scenario<T> Parse<T>(params string[] arguments) where T : class
         {
             return new Scenario<T>(arguments);

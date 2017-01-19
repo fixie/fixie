@@ -37,10 +37,10 @@
         public void DiscoverMethods(string[] arguments)
             => executionProxy.DiscoverMethods(assemblyFullPath, arguments);
 
-        public ExecutionSummary RunAssembly(string[] arguments)
+        public int RunAssembly(string[] arguments)
             => executionProxy.RunAssembly(assemblyFullPath, arguments);
 
-        public ExecutionSummary RunMethods(string[] arguments, MethodGroup[] methodGroups)
+        public void RunMethods(string[] arguments, MethodGroup[] methodGroups)
             => executionProxy.RunMethods(assemblyFullPath, arguments, methodGroups);
 
         T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()

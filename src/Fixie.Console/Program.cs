@@ -27,7 +27,7 @@
                 }
 
                 using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
-                    return environment.RunAssembly(args).Failed;
+                    return environment.RunAssembly(args);
             }
             catch (Exception exception)
             {

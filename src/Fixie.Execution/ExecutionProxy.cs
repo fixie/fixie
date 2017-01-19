@@ -27,18 +27,20 @@
             discoverer.DiscoverMethods(assembly);
         }
 
-        public ExecutionSummary RunAssembly(string assemblyFullPath, string[] arguments)
+        public int RunAssembly(string assemblyFullPath, string[] arguments)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Run(arguments, runner => runner.RunAssembly(assembly));
+            var summary = Run(arguments, runner => runner.RunAssembly(assembly));
+
+            return summary.Failed;
         }
 
-        public ExecutionSummary RunMethods(string assemblyFullPath, string[] arguments, MethodGroup[] methodGroups)
+        public void RunMethods(string assemblyFullPath, string[] arguments, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Run(arguments, r => r.RunMethods(assembly, methodGroups));
+            Run(arguments, r => r.RunMethods(assembly, methodGroups));
         }
 
         static Options Options(string[] arguments)

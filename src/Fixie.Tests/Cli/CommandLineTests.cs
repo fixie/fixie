@@ -215,6 +215,39 @@
                 });
         }
 
+        public void ShouldParseBoolNamedArgumentsAsFlagsWithoutExplicitValues()
+        {
+            Parse<ModelWithProperties<bool>>("--first", "--third")
+                .ShouldSucceed(new ModelWithProperties<bool>
+                {
+                    First = true,
+                    Second = false,
+                    Third = true
+                });
+        }
+
+        public void ShouldParseNullableBoolNamedArgumentsAsFlagsWithExplicitValues()
+        {
+            Parse<ModelWithProperties<bool?>>("--first", "true", "--third", "false")
+                .ShouldSucceed(new ModelWithProperties<bool?>
+                {
+                    First = true,
+                    Second = null,
+                    Third = false
+                });
+
+            Parse<ModelWithProperties<bool?>>("--first", "on", "--third", "off")
+                .ShouldSucceed(new ModelWithProperties<bool?>
+                {
+                    First = true,
+                    Second = null,
+                    Third = false
+                });
+
+            Parse<ModelWithProperties<bool?>>("--first", "value1", "--third", "value2")
+                .ShouldFail("--first was not in the correct format.");
+        }
+
 
         class ModelWithArrays
         {

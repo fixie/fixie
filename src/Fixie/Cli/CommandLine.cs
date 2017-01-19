@@ -50,10 +50,21 @@
                         var namedArgument = namedArguments[name];
 
                         object value;
-                        if (!queue.Any() || IsNamedArgumentKey(queue.Peek()))
-                            throw new CommandLineException($"{item} is missing its required value.");
 
-                        value = queue.Dequeue();
+                        bool requireValue = namedArgument.ItemType != typeof(bool);
+
+                        if (requireValue)
+                        {
+                            if (!queue.Any() || IsNamedArgumentKey(queue.Peek()))
+                                throw new CommandLineException($"{item} is missing its required value.");
+
+                            value = queue.Dequeue();
+                        }
+                        else
+                        {
+                            value = true;
+                        }
+
                         namedArgument.Values.Add(Convert(namedArgument.ItemType, item, value));
                     }
                     else

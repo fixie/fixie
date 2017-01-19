@@ -28,6 +28,42 @@
                 .ShouldFail("Parsing command line arguments for type TooManyConstructors " +
                             "is ambiguous, because it has more than one constructor.");
         }
+
+        class ModelWithConstructor<T>
+        {
+            public T First { get; }
+            public T Second { get; }
+            public T Third { get; }
+
+            public ModelWithConstructor(T first, T second, T third)
+            {
+                First = first;
+                Second = second;
+                Third = third;
+            }
+        }
+
+        public void ShouldParseArgumentsAsConstructorParameters()
+        {
+            Parse<ModelWithConstructor<string>>("first", "second", "third")
+                .ShouldSucceed(new ModelWithConstructor<string>("first", "second", "third"));
+
+            Parse<ModelWithConstructor<int>>("1", "2", "3")
+                .ShouldSucceed(new ModelWithConstructor<int>(1, 2, 3));
+
+            Parse<ModelWithConstructor<int>>("1", "2", "abc")
+                .ShouldFail("third was not in the correct format.");
+        }
+
+        public void ShouldPassDefaultValuesToMissingConstructorParameters()
+        {
+            Parse<ModelWithConstructor<string>>("first", "second")
+                .ShouldSucceed(new ModelWithConstructor<string>("first", "second", null));
+
+            Parse<ModelWithConstructor<int>>("1", "2")
+                .ShouldSucceed(new ModelWithConstructor<int>(1, 2, 0));
+        }
+
         static Scenario<T> Parse<T>(params string[] arguments) where T : class
         {
             return new Scenario<T>(arguments);

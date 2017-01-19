@@ -7,21 +7,21 @@
     /// </summary>
     static class RunContext
     {
-        public static void Set(string[] arguments)
+        public static void Set(string[] conventionArguments)
         {
-            Set(arguments, null);
+            Set(conventionArguments, null);
         }
 
-        public static void Set(string[] arguments, MemberInfo targetMember)
+        public static void Set(string[] conventionArguments, MemberInfo targetMember)
         {
-            Arguments = arguments;
+            ConventionArguments = conventionArguments;
             TargetMember = targetMember;
         }
 
         /// <summary>
-        /// Gets the command line arguments provided by the test runner at the start of execution.
+        /// Gets the custom convention command line arguments provided by the test runner at the start of execution.
         /// </summary>
-        public static string[] Arguments { get; private set; }
+        public static string[] ConventionArguments { get; private set; }
 
         /// <summary>
         /// Gets the target Type or MethodInfo identified by

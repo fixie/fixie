@@ -6,20 +6,20 @@
     public class Discoverer
     {
         readonly Bus bus;
-        readonly string[] arguments;
+        readonly string[] conventionArguments;
 
         public Discoverer(Bus bus)
             : this(bus, new string[] {}) { }
 
-        public Discoverer(Bus bus, string[] arguments)
+        public Discoverer(Bus bus, string[] conventionArguments)
         {
             this.bus = bus;
-            this.arguments = arguments;
+            this.conventionArguments = conventionArguments;
         }
 
         public void DiscoverMethods(Assembly assembly)
         {
-            RunContext.Set(arguments);
+            RunContext.Set(conventionArguments);
 
             var conventions = new ConventionDiscoverer(assembly).GetConventions();
 
@@ -28,7 +28,7 @@
 
         public void DiscoverMethods(Assembly assembly, Convention convention)
         {
-            RunContext.Set(arguments);
+            RunContext.Set(conventionArguments);
 
             var conventions = new[] { convention };
 

@@ -34,14 +34,14 @@
             executionProxy.Subscribe<TListener>(listenerArguments);
         }
 
-        public void DiscoverMethods(string[] arguments)
-            => executionProxy.DiscoverMethods(assemblyFullPath, arguments);
+        public void DiscoverMethods(string[] runnerArguments, string[] conventionArguments)
+            => executionProxy.DiscoverMethods(assemblyFullPath, runnerArguments, conventionArguments);
 
-        public int RunAssembly(string[] arguments)
-            => executionProxy.RunAssembly(assemblyFullPath, arguments);
+        public int RunAssembly(string[] runnerArguments, string[] conventionArguments)
+            => executionProxy.RunAssembly(assemblyFullPath, runnerArguments, conventionArguments);
 
-        public void RunMethods(string[] arguments, MethodGroup[] methodGroups)
-            => executionProxy.RunMethods(assemblyFullPath, arguments, methodGroups);
+        public void RunMethods(string[] runnerArguments, string[] conventionArguments, MethodGroup[] methodGroups)
+            => executionProxy.RunMethods(assemblyFullPath, runnerArguments, conventionArguments, methodGroups);
 
         T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()
         {

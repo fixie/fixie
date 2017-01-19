@@ -31,7 +31,7 @@
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
                             environment.Subscribe<VisualStudioDiscoveryListener>(discoveryRecorder, assemblyPath);
-                            environment.DiscoverMethods(new string[] {});
+                            environment.DiscoverMethods(new string[] {}, new string[] { });
                         }
                     }
                     else

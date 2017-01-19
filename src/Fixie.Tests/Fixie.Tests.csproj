@@ -63,6 +63,7 @@
     <Compile Include="Cli\CommandLineTests.cs" />
     <Compile Include="Execution\BusTests.cs" />
     <Compile Include="Execution\ExecutionSummaryTests.cs" />
+    <Compile Include="Execution\OptionsTests.cs" />
     <Compile Include="MessagingTests.cs" />
     <Compile Include="SkipAttribute.cs" />
     <Compile Include="Execution\Listeners\AppVeyorListenerTests.cs" />
@@ -74,7 +75,6 @@
     <Compile Include="Execution\BehaviorChainTests.cs" />
     <Compile Include="Cases\CaseTests.cs" />
     <Compile Include="Cases\NonVoidCaseTests.cs" />
-    <Compile Include="Internal\CommandLineParserTests.cs" />
     <Compile Include="Execution\AssertionLibraryFilterTests.cs" />
     <Compile Include="Execution\RunnerAppDomainCommunicationTests.cs" />
     <Compile Include="Execution\RunnerTests.cs" />
@@ -84,7 +84,6 @@
     <Compile Include="Lifecycle\ComplexLifecycleTests.cs" />
     <Compile Include="Lifecycle\ConstructionTests.cs" />
     <Compile Include="Lifecycle\FixtureLifecycleTests.cs" />
-    <Compile Include="OptionsTests.cs" />
     <Compile Include="Execution\Listeners\NUnitXmlTests.cs" />
     <Compile Include="Execution\Listeners\XUnitXmlTests.cs" />
     <Compile Include="Cases\AsyncCaseTests.cs" />

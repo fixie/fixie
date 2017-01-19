@@ -9,34 +9,34 @@
     public class Runner
     {
         readonly Bus bus;
-        readonly string[] arguments;
+        readonly string[] conventionArguments;
 
         public Runner(Bus bus)
             : this(bus, new string[] {}) { }
 
-        public Runner(Bus bus, string[] arguments)
+        public Runner(Bus bus, string[] conventionArguments)
         {
             this.bus = bus;
-            this.arguments = arguments;
+            this.conventionArguments = conventionArguments;
         }
 
         public void RunAssembly(Assembly assembly)
         {
-            RunContext.Set(arguments);
+            RunContext.Set(conventionArguments);
 
             RunTypesInternal(assembly, assembly.GetTypes());
         }
 
         public void RunNamespace(Assembly assembly, string ns)
         {
-            RunContext.Set(arguments);
+            RunContext.Set(conventionArguments);
 
             RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
         public void RunType(Assembly assembly, Type type)
         {
-            RunContext.Set(arguments, type);
+            RunContext.Set(conventionArguments, type);
 
             var types = GetTypeAndNestedTypes(type).ToArray();
             RunTypesInternal(assembly, types);
@@ -44,7 +44,7 @@
 
         public void RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
-            RunContext.Set(arguments);
+            RunContext.Set(conventionArguments);
 
             Run(assembly, new[] { convention }, types);
         }
@@ -52,9 +52,9 @@
         public void RunMethods(Assembly assembly, params MethodInfo[] methods)
         {
             if (methods.Length == 1)
-                RunContext.Set(arguments, methods.Single());
+                RunContext.Set(conventionArguments, methods.Single());
             else
-                RunContext.Set(arguments);
+                RunContext.Set(conventionArguments);
 
             var conventions = GetConventions(assembly);
 

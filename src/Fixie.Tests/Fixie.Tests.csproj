@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="AssertionLibraryFilteringTests.cs" />
     <Compile Include="AssertionExtensions.cs" />
+    <Compile Include="Cli\CommandLineTests.cs" />
     <Compile Include="Execution\BusTests.cs" />
     <Compile Include="Execution\ExecutionSummaryTests.cs" />
     <Compile Include="MessagingTests.cs" />

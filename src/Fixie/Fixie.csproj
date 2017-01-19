@@ -34,6 +34,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cli\CommandLine.cs" />
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="InternalsVisibleTo.cs" />

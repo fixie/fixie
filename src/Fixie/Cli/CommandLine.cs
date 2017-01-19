@@ -46,6 +46,15 @@
                     {
                         var name = NamedArgument.Normalize(item);
 
+                        if (!namedArguments.ContainsKey(name))
+                        {
+                            UnusedArguments.Add(item);
+
+                            if (queue.Any() && !IsNamedArgumentKey(queue.Peek()))
+                                UnusedArguments.Add(queue.Dequeue());
+
+                            continue;
+                        }
 
                         var namedArgument = namedArguments[name];
 

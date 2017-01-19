@@ -273,6 +273,38 @@
                 .ShouldFail("--third must be one of: Information, Warning, Error.");
         }
 
+        public void ShouldCollectExcessNamedArgumentsForLaterInspection()
+        {
+            Parse<ModelWithProperties<string>>(
+                "--first", "value1",
+                "--second", "value2",
+                "--third", "value3",
+                "--fourth", "value4",
+                "--array", "value5",
+                "--array", "--value6")
+                .ShouldSucceed(new ModelWithProperties<string>
+                {
+                    First = "value1",
+                    Second = "value2",
+                    Third = "value3"
+                },
+                    "--fourth", "value4", "--array", "value5", "--array", "--value6");
+
+            Parse<ModelWithProperties<int>>(
+                "--first", "1",
+                "--second", "2",
+                "--third", "3",
+                "--fourth", "4",
+                "--array", "5",
+                "--array", "6")
+                .ShouldSucceed(new ModelWithProperties<int>
+                {
+                    First = 1,
+                    Second = 2,
+                    Third = 3
+                },
+                    "--fourth", "4", "--array", "5", "--array", "6");
+        }
         class ModelWithArrays
         {
             public int[] Integer { get; set; }

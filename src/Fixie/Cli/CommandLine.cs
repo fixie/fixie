@@ -33,6 +33,7 @@
                 UnusedArguments = new List<string>();
 
                 var positionalArguments = ScanPositionalArguments();
+                var namedArguments = ScanNamedArguments();
 
                 var positionalArgumentValues = new List<string>();
 
@@ -41,10 +42,27 @@
                 {
                     var item = queue.Dequeue();
 
+                    if (IsNamedArgumentKey(item))
+                    {
+                        var name = NamedArgument.Normalize(item);
+
+
+                        var namedArgument = namedArguments[name];
+
+                        object value;
+                        if (!queue.Any() || IsNamedArgumentKey(queue.Peek()))
+                            throw new CommandLineException($"{item} is missing its required value.");
+
+                        value = queue.Dequeue();
+                        namedArgument.Values.Add(Convert(namedArgument.ItemType, item, value));
+                    }
+                    else
+                    {
                         if (positionalArgumentValues.Count >= positionalArguments.Count)
                             UnusedArguments.Add(item);
                         else
                             positionalArgumentValues.Add(item);
+                    }
                 }
 
                 //If there are not enough argumentValues, assume default(T) for the missing ones.
@@ -59,7 +77,7 @@
                 foreach (var argument in positionalArguments)
                     argument.Value = Convert(argument.Type, argument.Name, argument.Value);
 
-                Model = Create(positionalArguments);
+                Model = Create(positionalArguments, namedArguments);
             }
 
             static object Convert(Type type, string userFacingName, object value)
@@ -125,9 +143,29 @@
                     .Select(p => new PositionalArgument(p))
                     .ToList();
 
-            static T Create(List<PositionalArgument> arguments)
+            static Dictionary<string, NamedArgument> ScanNamedArguments()
+            {
+                var namedArguments = typeof(T).GetProperties()
+                    .Where(p => p.CanWrite)
+                    .Select(p => new NamedArgument(p))
+                    .ToArray();
+
+                var dictionary = new Dictionary<string, NamedArgument>();
+
+                foreach (var namedArgument in namedArguments)
+                {
+
+                    dictionary.Add(namedArgument.Name, namedArgument);
+                }
+
+                return dictionary;
+            }
+
+            static T Create(List<PositionalArgument> arguments, Dictionary<string, NamedArgument> namedArguments)
             {
                 var model = Construct(arguments);
+
+                Populate(model, namedArguments);
 
                 return model;
             }
@@ -139,11 +177,29 @@
                 return (T)GetConstructor().Invoke(parameters);
             }
 
+            static void Populate(T instance, Dictionary<string, NamedArgument> namedArguments)
+            {
+                foreach (var name in namedArguments.Keys)
+                {
+                    var namedArgument = namedArguments[name];
+
+                    var property = typeof(T).GetProperty(namedArgument.PropertyName);
+
+                    if (namedArgument.IsArray)
+                        property.SetValue(instance, namedArgument.CreateTypedValuesArray());
+                    else if (namedArgument.Values.Count != 0)
+                        property.SetValue(instance, namedArgument.Values.Single());
+                }
+            }
 
             static object Default(Type type)
                 => type.IsValueType ? Activator.CreateInstance(type) : null;
+
             static ConstructorInfo GetConstructor()
                 => typeof(T).GetConstructors().Single();
+
+            static bool IsNamedArgumentKey(string item)
+                => item.StartsWith("--");
         }
 
         class PositionalArgument
@@ -157,6 +213,38 @@
             public Type Type { get; }
             public string Name { get; }
             public object Value { get; set; }
+        }
+
+        class NamedArgument
+        {
+            public NamedArgument(PropertyInfo property)
+            {
+                IsArray = property.PropertyType.IsArray;
+
+                ItemType = IsArray
+                    ? property.PropertyType.GetElementType()
+                    : property.PropertyType;
+
+                PropertyName = property.Name;
+                Name = Normalize(PropertyName);
+                Values = new List<object>();
+            }
+
+            public bool IsArray { get; }
+            public Type ItemType { get; }
+            public string PropertyName { get; }
+            public string Name { get; }
+            public List<object> Values { get; }
+
+            public Array CreateTypedValuesArray()
+            {
+                Array destinationArray = Array.CreateInstance(ItemType, Values.Count);
+                Array.Copy(Values.ToArray(), destinationArray, Values.Count);
+                return destinationArray;
+            }
+
+            public static string Normalize(string namedArgumentKey)
+                => namedArgumentKey.ToLower().Replace("-", "");
         }
     }
 }

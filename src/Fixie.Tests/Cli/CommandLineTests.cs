@@ -138,6 +138,111 @@
                     new ModelWithConstructor<int>(1, 2, 3),
                     "4", "5");
         }
+
+        class ModelWithProperties<T>
+        {
+            public T First { get; set; }
+            public T Second { get; set; }
+            public T Third { get; set; }
+        }
+
+        public void ShouldParseNamedArgumentsAsProperties()
+        {
+            Parse<ModelWithProperties<string>>("--first", "value1", "--second", "value2", "--third", "value3")
+                .ShouldSucceed(new ModelWithProperties<string>
+                {
+                    First = "value1",
+                    Second = "value2",
+                    Third = "value3"
+                });
+
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "2", "--third", "3")
+                .ShouldSucceed(new ModelWithProperties<int>
+                {
+                    First = 1,
+                    Second = 2,
+                    Third = 3
+                });
+
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "2", "--third", "abc")
+                .ShouldFail("--third was not in the correct format.");
+        }
+
+        public void ShouldFailWhenNamedArgumentsAreMissingTheirRequiredValues()
+        {
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "2", "--third")
+                .ShouldFail("--third is missing its required value.");
+
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "--third", "3")
+                .ShouldFail("--second is missing its required value.");
+        }
+
+        public void ShouldLeaveDefaultValuesForMissingNamedArguments()
+        {
+            Parse<ModelWithProperties<string>>("--first", "value1", "--second", "value2")
+                .ShouldSucceed(new ModelWithProperties<string>
+                {
+                    First = "value1",
+                    Second = "value2",
+                    Third = null
+                });
+
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "2")
+                .ShouldSucceed(new ModelWithProperties<int>
+                {
+                    First = 1,
+                    Second = 2,
+                    Third = 0
+                });
+        }
+
+        public void ShouldParseNullableValueTypeNamedArguments()
+        {
+            Parse<ModelWithProperties<int?>>("--first", "1", "--third", "2")
+                .ShouldSucceed(new ModelWithProperties<int?>
+                {
+                    First = 1,
+                    Second = null,
+                    Third = 2
+                });
+
+            Parse<ModelWithProperties<char?>>("--first", "a", "--third", "c")
+                .ShouldSucceed(new ModelWithProperties<char?>
+                {
+                    First = 'a',
+                    Second = null,
+                    Third = 'c'
+                });
+        }
+
+
+        class ModelWithArrays
+        {
+            public int[] Integer { get; set; }
+            public string[] String { get; set; }
+        }
+
+        public void ShouldParseRepeatedNamedArgumentsAsArrayProperties()
+        {
+            Parse<ModelWithArrays>(
+                "--integer", "1", "--integer", "2",
+                "--string", "three", "--string", "four")
+                .ShouldSucceed(new ModelWithArrays
+                {
+                    Integer = new[] { 1, 2 },
+                    String = new[] { "three", "four" }
+                });
+        }
+
+        public void ShouldSetEmptyArraysForMissingArrayNamedArguments()
+        {
+            Parse<ModelWithArrays>()
+                .ShouldSucceed(new ModelWithArrays
+                {
+                    Integer = new int[] { },
+                    String = new string[] { }
+                });
+        }
         static Scenario<T> Parse<T>(params string[] arguments) where T : class
         {
             return new Scenario<T>(arguments);

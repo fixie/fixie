@@ -248,6 +248,30 @@
                 .ShouldFail("--first was not in the correct format.");
         }
 
+        public void ShouldParseEnumNamedArgumentsByTheirCaseInsensitiveStringRepresentation()
+        {
+            Parse<ModelWithProperties<Level>>("--first", "Warning", "--third", "ErRoR")
+                .ShouldSucceed(new ModelWithProperties<Level>
+                {
+                    First = Level.Warning,
+                    Second = Level.Information,
+                    Third = Level.Error
+                });
+
+            Parse<ModelWithProperties<Level>>("--first", "Warning", "--third", "TYPO")
+                .ShouldFail("--third must be one of: Information, Warning, Error.");
+
+            Parse<ModelWithProperties<Level?>>("--first", "Warning", "--third", "eRrOr")
+                .ShouldSucceed(new ModelWithProperties<Level?>
+                {
+                    First = Level.Warning,
+                    Second = null,
+                    Third = Level.Error
+                });
+
+            Parse<ModelWithProperties<Level?>>("--first", "Warning", "--third", "TYPO")
+                .ShouldFail("--third must be one of: Information, Warning, Error.");
+        }
 
         class ModelWithArrays
         {

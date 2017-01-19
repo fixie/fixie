@@ -1,6 +1,9 @@
 ﻿namespace Fixie.ConsoleRunner
 {
     using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using Cli;
     using Execution;
 
     class Program
@@ -8,25 +11,27 @@
         const int FatalError = -1;
 
         [STAThread]
-        static int Main(string[] args)
+        static int Main(string[] arguments)
         {
             try
             {
-                var commandLineParser = new CommandLineParser(args);
+                string[] runnerArguments;
+                string[] conventionArguments;
+                SplitArguments(arguments, out runnerArguments, out conventionArguments);
 
-                if (commandLineParser.HasErrors)
-                {
-                    using (Foreground.Red)
-                        foreach (var error in commandLineParser.Errors)
-                            Console.WriteLine(error);
+                var options = ParseRunnerArguments(runnerArguments);
 
-                    Console.WriteLine();
-                    Console.WriteLine(CommandLineParser.Usage());
-                    return FatalError;
-                }
+                using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                    return environment.RunAssembly(runnerArguments, conventionArguments);
+            }
+            catch (CommandLineException exception)
+            {
+                using (Foreground.Red)
+                    Console.WriteLine(exception.Message);
 
-                using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
-                    return environment.RunAssembly(commandLineParser.Options).Failed;
+                Console.WriteLine();
+                Console.WriteLine(Usage());
+                return FatalError;
             }
             catch (Exception exception)
             {
@@ -34,6 +39,70 @@
                     Console.WriteLine($"Fatal Error: {exception}");
                 return FatalError;
             }
+        }
+
+        static void SplitArguments(string[] arguments, out string[] runnerArguments, out string[] conventionArguments)
+        {
+            var runnerArgumentList = new List<string>();
+            var conventionArgumentList = new List<string>();
+
+            bool separatorFound = false;
+            foreach (var arg in arguments)
+            {
+                if (arg == "--")
+                {
+                    separatorFound = true;
+                    continue;
+                }
+
+                if (separatorFound)
+                    conventionArgumentList.Add(arg);
+                else
+                    runnerArgumentList.Add(arg);
+            }
+
+            runnerArguments = runnerArgumentList.ToArray();
+            conventionArguments = conventionArgumentList.ToArray();
+        }
+
+        static Options ParseRunnerArguments(string[] runnerArguments)
+        {
+            string[] unusedArguments;
+            var options = CommandLine.Parse<Options>(runnerArguments, out unusedArguments);
+
+            using (Foreground.Yellow)
+                foreach (var unusedArgument in unusedArguments)
+                    Console.WriteLine($"The argument '{unusedArgument}' was unexpected and will be ignored.");
+
+            options.Validate();
+            return options;
+        }
+
+        static string Usage()
+        {
+            return new StringBuilder()
+                .AppendLine("Usage: Fixie.Console.exe assembly-path [--report-format <NUnit|xUnit>] [--team-city <on|off>] [--] [convention arguments]...")
+                .AppendLine()
+                .AppendLine()
+                .AppendLine("    assembly-path")
+                .AppendLine("        A path indicating the test assembly file. Exactly one test")
+                .AppendLine("        assembly must be specified.")
+                .AppendLine()
+                .AppendLine("    --report-format <NUnit|xUnit>")
+                .AppendLine("        Write test results to a file, using NUnit or xUnit XML format.")
+                .AppendLine()
+                .AppendLine("    --team-city <on|off>")
+                .AppendLine("        When this option is *not* specified, the need for TeamCity-")
+                .AppendLine("        formatted console output is automatically detected. Use this")
+                .AppendLine("        option to force TeamCity-formatted output on or off.")
+                .AppendLine()
+                .AppendLine("    --")
+                .AppendLine("        When present, all of the following arguments will be passed along")
+                .AppendLine("        for use from within a convention.")
+                .AppendLine()
+                .AppendLine("    convention arguments")
+                .AppendLine("        Arbitrary arguments made available to conventions at runtime.")
+                .ToString();
         }
     }
 }

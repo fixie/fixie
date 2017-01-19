@@ -6,9 +6,14 @@
 
     public class CustomConvention : Convention
     {
+        class CustomOptions
+        {
+            public string[] Include { get; set; }
+        }
+
         public CustomConvention()
         {
-            var desiredCategories = Options["include"].ToArray();
+            var desiredCategories = Options<CustomOptions>().Include;
             var shouldRunAll = !desiredCategories.Any();
 
             Classes

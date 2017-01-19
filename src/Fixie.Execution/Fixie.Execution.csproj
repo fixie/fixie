@@ -58,7 +58,6 @@
     <Compile Include="ClassDiscoverer.cs" />
     <Compile Include="ClassRunner.cs" />
     <Compile Include="ClassStarted.cs" />
-    <Compile Include="CommandLineOption.cs" />
     <Compile Include="CompoundException.cs" />
     <Compile Include="ConventionDiscoverer.cs" />
     <Compile Include="Discoverer.cs" />
@@ -83,10 +82,12 @@
     <Compile Include="Message.cs" />
     <Compile Include="MethodDiscovered.cs" />
     <Compile Include="MethodDiscoverer.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="ParameterDiscoverer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedirectedConsole.cs" />
     <Compile Include="RemoteAssemblyResolver.cs" />
+    <Compile Include="ReportFormat.cs" />
     <Compile Include="Runner.cs" />
   </ItemGroup>
   <ItemGroup>

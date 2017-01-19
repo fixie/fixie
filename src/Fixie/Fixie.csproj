@@ -34,6 +34,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cli\CommandLine.cs" />
+    <Compile Include="Cli\CommandLineException.cs" />
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
@@ -43,7 +45,6 @@
     <Compile Include="FixtureBehavior.cs" />
     <Compile Include="Internal\Configuration.cs" />
     <Compile Include="Internal\ConstructionFrequency.cs" />
-    <Compile Include="Options.cs" />
     <Compile Include="ParameterSource.cs" />
     <Compile Include="SkipBehavior.cs" />
     <Compile Include="Conventions\ClassExpression.cs" />

@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Execution
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Security;
     using System.Security.Permissions;
@@ -35,14 +34,14 @@
             executionProxy.Subscribe<TListener>(listenerArguments);
         }
 
-        public void DiscoverMethods(Options options)
-            => executionProxy.DiscoverMethods(assemblyFullPath, options);
+        public void DiscoverMethods(string[] runnerArguments, string[] conventionArguments)
+            => executionProxy.DiscoverMethods(assemblyFullPath, runnerArguments, conventionArguments);
 
-        public ExecutionSummary RunAssembly(Options options)
-            => executionProxy.RunAssembly(assemblyFullPath, options);
+        public int RunAssembly(string[] runnerArguments, string[] conventionArguments)
+            => executionProxy.RunAssembly(assemblyFullPath, runnerArguments, conventionArguments);
 
-        public ExecutionSummary RunMethods(Options options, MethodGroup[] methodGroups)
-            => executionProxy.RunMethods(assemblyFullPath, options, methodGroups);
+        public void RunMethods(string[] runnerArguments, string[] conventionArguments, MethodGroup[] methodGroups)
+            => executionProxy.RunMethods(assemblyFullPath, runnerArguments, conventionArguments, methodGroups);
 
         T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()
         {

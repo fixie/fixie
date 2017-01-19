@@ -6,6 +6,8 @@
 
     public class CommandLineTests
     {
+        enum Level { Information, Warning, Error }
+
         class Empty { }
 
         public void ShouldParseEmptyModels()
@@ -107,6 +109,21 @@
 
             Parse<ModelWithConstructor<bool?>>("value1", "value2")
                 .ShouldFail("first was not in the correct format.");
+        }
+
+        public void ShouldParseEnumArgumentsByTheirCaseInsensitiveStringRepresentation()
+        {
+            Parse<ModelWithConstructor<Level>>("Warning", "ErRoR")
+                .ShouldSucceed(new ModelWithConstructor<Level>(Level.Warning, Level.Error, Level.Information));
+
+            Parse<ModelWithConstructor<Level>>("Warning", "TYPO")
+                .ShouldFail("second must be one of: Information, Warning, Error.");
+
+            Parse<ModelWithConstructor<Level?>>("Warning", "eRrOr")
+                .ShouldSucceed(new ModelWithConstructor<Level?>(Level.Warning, Level.Error, null));
+
+            Parse<ModelWithConstructor<Level?>>("Warning", "TYPO")
+                .ShouldFail("second must be one of: Information, Warning, Error.");
         }
 
         static Scenario<T> Parse<T>(params string[] arguments) where T : class

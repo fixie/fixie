@@ -83,6 +83,24 @@
 
                 var conversionType = Nullable.GetUnderlyingType(type) ?? type;
 
+                if (conversionType.IsEnum && value is string)
+                {
+                    try
+                    {
+                        return Enum.Parse(conversionType, (string)value, ignoreCase: true);
+                    }
+                    catch (Exception exception)
+                    {
+                        var allowedValues =
+                            String.Join(", ",
+                                Enum.GetValues(conversionType)
+                                    .Cast<object>()
+                                    .Select(x => x.ToString()));
+
+                        throw new CommandLineException($"{userFacingName} must be one of: {allowedValues}.", exception);
+                    }
+                }
+
                 try
                 {
                     return System.Convert.ChangeType(value, conversionType);

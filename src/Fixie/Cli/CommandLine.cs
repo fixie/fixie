@@ -6,6 +6,12 @@
 
     public class CommandLine
     {
+        public static T Parse<T>(IReadOnlyList<string> arguments) where T : class
+        {
+            string[] unusedArguments;
+            return Parse<T>(arguments, out unusedArguments);
+        }
+
         public static T Parse<T>(IReadOnlyList<string> arguments, out string[] unusedArguments) where T : class
         {
             var parser = new Parser<T>(arguments.ToArray());
@@ -22,9 +28,19 @@
 
             public Parser(string[] arguments)
             {
+                DemandSingleConstructor();
                 UnusedArguments = new List<string>();
                 UnusedArguments.AddRange(arguments);
                 Model = Create();
+            }
+
+
+            static void DemandSingleConstructor()
+            {
+                if (typeof(T).GetConstructors().Length > 1)
+                    throw new CommandLineException(
+                        $"Parsing command line arguments for type {typeof(T).Name} " +
+                        "is ambiguous, because it has more than one constructor.");
             }
 
             static T Create()

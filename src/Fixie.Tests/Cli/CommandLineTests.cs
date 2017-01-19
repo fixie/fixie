@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests.Cli
 {
+    using System;
     using Assertions;
     using Fixie.Cli;
 
@@ -15,6 +16,18 @@
                 .ShouldSucceed(new Empty(), "first", "second", "third", "fourth", "fifth");
         }
 
+        class TooManyConstructors
+        {
+            public TooManyConstructors() { }
+            public TooManyConstructors(int x) { }
+        }
+
+        public void ShouldDemandExactlyOneConstructor()
+        {
+            Parse<TooManyConstructors>()
+                .ShouldFail("Parsing command line arguments for type TooManyConstructors " +
+                            "is ambiguous, because it has more than one constructor.");
+        }
         static Scenario<T> Parse<T>(params string[] arguments) where T : class
         {
             return new Scenario<T>(arguments);
@@ -35,6 +48,13 @@
                 var model = CommandLine.Parse<T>(arguments, out unusedArguments);
                 ShouldMatch(model, expectedModel);
                 unusedArguments.ShouldEqual(expectedUnusedArguments);
+            }
+
+            public void ShouldFail(string expectedExceptionMessage)
+            {
+                Action shouldThrow = () => CommandLine.Parse<T>(arguments);
+
+                shouldThrow.ShouldThrow<CommandLineException>(expectedExceptionMessage);
             }
 
             static void ShouldMatch(T actual, T expected)

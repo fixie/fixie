@@ -35,6 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cli\CommandLine.cs" />
+    <Compile Include="Cli\CommandLineException.cs" />
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="InternalsVisibleTo.cs" />

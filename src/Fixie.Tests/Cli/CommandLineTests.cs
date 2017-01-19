@@ -64,6 +64,14 @@
                 .ShouldSucceed(new ModelWithConstructor<int>(1, 2, 0));
         }
 
+        public void ShouldParseNullableValueTypeArguments()
+        {
+            Parse<ModelWithConstructor<int?>>("1", "2")
+                .ShouldSucceed(new ModelWithConstructor<int?>(1, 2, null));
+
+            Parse<ModelWithConstructor<char?>>("a", "b")
+                .ShouldSucceed(new ModelWithConstructor<char?>('a', 'b', null));
+        }
         static Scenario<T> Parse<T>(params string[] arguments) where T : class
         {
             return new Scenario<T>(arguments);

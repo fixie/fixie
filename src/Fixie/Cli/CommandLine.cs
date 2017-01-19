@@ -64,7 +64,10 @@
 
             static object Convert(Type type, string userFacingName, object value)
             {
-            var conversionType = type;
+                if (value == null)
+                    return null;
+
+                var conversionType = Nullable.GetUnderlyingType(type) ?? type;
 
                 try
                 {

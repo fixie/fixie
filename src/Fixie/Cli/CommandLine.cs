@@ -64,6 +64,20 @@
 
             static object Convert(Type type, string userFacingName, object value)
             {
+                if (type == typeof(bool?) || type == typeof(bool))
+                {
+                    var stringValue = value as string;
+                    if (value != null)
+                    {
+                        stringValue = stringValue?.ToLower();
+
+                        if (stringValue == "on" || stringValue == "true")
+                            value = true;
+                        else if (stringValue == "off" || stringValue == "false")
+                            value = false;
+                    }
+                }
+
                 if (value == null)
                     return null;
 

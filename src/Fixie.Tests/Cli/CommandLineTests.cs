@@ -72,6 +72,43 @@
             Parse<ModelWithConstructor<char?>>("a", "b")
                 .ShouldSucceed(new ModelWithConstructor<char?>('a', 'b', null));
         }
+
+        public void ShouldParseBoolArgumentsWithExplicitValues()
+        {
+            Parse<ModelWithConstructor<bool>>("true", "false")
+                .ShouldSucceed(new ModelWithConstructor<bool>(true, false, false));
+
+            Parse<ModelWithConstructor<bool>>("TRUE", "FALSE")
+                .ShouldSucceed(new ModelWithConstructor<bool>(true, false, false));
+
+            Parse<ModelWithConstructor<bool>>("on", "off")
+                .ShouldSucceed(new ModelWithConstructor<bool>(true, false, false));
+
+            Parse<ModelWithConstructor<bool>>("ON", "OFF")
+                .ShouldSucceed(new ModelWithConstructor<bool>(true, false, false));
+
+            Parse<ModelWithConstructor<bool>>("value1", "value2")
+                .ShouldFail("first was not in the correct format.");
+        }
+
+        public void ShouldParseNullableBoolArgumentsWithExplicitValues()
+        {
+            Parse<ModelWithConstructor<bool?>>("true", "false")
+                .ShouldSucceed(new ModelWithConstructor<bool?>(true, false, null));
+
+            Parse<ModelWithConstructor<bool?>>("TRUE", "FALSE")
+                .ShouldSucceed(new ModelWithConstructor<bool?>(true, false, null));
+
+            Parse<ModelWithConstructor<bool?>>("on", "off")
+                .ShouldSucceed(new ModelWithConstructor<bool?>(true, false, null));
+
+            Parse<ModelWithConstructor<bool?>>("ON", "OFF")
+                .ShouldSucceed(new ModelWithConstructor<bool?>(true, false, null));
+
+            Parse<ModelWithConstructor<bool?>>("value1", "value2")
+                .ShouldFail("first was not in the correct format.");
+        }
+
         static Scenario<T> Parse<T>(params string[] arguments) where T : class
         {
             return new Scenario<T>(arguments);

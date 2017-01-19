@@ -305,6 +305,13 @@
                 },
                     "--fourth", "4", "--array", "5", "--array", "6");
         }
+
+        public void ShouldFailWhenNonArrayNamedArgumentsAreRepeated()
+        {
+            Parse<ModelWithProperties<int>>("--first", "1", "--second", "2", "--first", "3")
+                .ShouldFail("--first cannot be specified more than once.");
+        }
+
         class ModelWithArrays
         {
             public int[] Integer { get; set; }

@@ -74,6 +74,9 @@
                             value = true;
                         }
 
+                        if (namedArgument.Values.Count == 1 && !namedArgument.IsArray)
+                            throw new CommandLineException($"{item} cannot be specified more than once.");
+
                         namedArgument.Values.Add(Convert(namedArgument.ItemType, item, value));
                     }
                     else

@@ -332,6 +332,21 @@
                     String = new string[] { }
                 });
         }
+
+        class AmbiguousProperties
+        {
+            public int PROPERTY { get; set; }
+            public int property { get; set; }
+        }
+
+        public void ShouldDemandUnambiguousPropertyNames()
+        {
+            Parse<AmbiguousProperties>()
+                .ShouldFail("Parsing command line arguments for type AmbiguousProperties " +
+                            "is ambiguous, because it has more than one property corresponding " +
+                            "with the --property argument.");
+        }
+
         static Scenario<T> Parse<T>(params string[] arguments) where T : class
         {
             return new Scenario<T>(arguments);

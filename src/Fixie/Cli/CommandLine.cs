@@ -174,6 +174,11 @@
 
                 foreach (var namedArgument in namedArguments)
                 {
+                    if (dictionary.ContainsKey(namedArgument.Name))
+                        throw new CommandLineException(
+                            $"Parsing command line arguments for type {typeof(T).Name} " +
+                            "is ambiguous, because it has more than one property corresponding " +
+                            $"with the --{namedArgument.Name} argument.");
 
                     dictionary.Add(namedArgument.Name, namedArgument);
                 }

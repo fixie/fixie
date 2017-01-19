@@ -2,6 +2,7 @@
 {
     using System;
     using Execution;
+    using Internal;
 
     class Program
     {
@@ -26,7 +27,7 @@
                 }
 
                 using (var environment = new ExecutionEnvironment(commandLineParser.AssemblyPath))
-                    return environment.RunAssembly(commandLineParser.Options).Failed;
+                    return environment.RunAssembly(args).Failed;
             }
             catch (Exception exception)
             {

@@ -1,8 +1,8 @@
-﻿namespace Fixie.Tests.ConsoleRunner
+﻿namespace Fixie.Tests.Internal
 {
     using System.Linq;
-    using Fixie.ConsoleRunner;
     using Assertions;
+    using Fixie.Internal;
 
     public class CommandLineParserTests
     {

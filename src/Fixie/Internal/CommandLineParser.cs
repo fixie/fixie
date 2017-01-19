@@ -1,11 +1,10 @@
-﻿namespace Fixie.ConsoleRunner
+﻿namespace Fixie.Internal
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
-    using Execution;
 
     public class CommandLineParser
     {

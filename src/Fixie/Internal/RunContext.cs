@@ -7,21 +7,21 @@
     /// </summary>
     static class RunContext
     {
-        public static void Set(Options options)
+        public static void Set(string[] arguments)
         {
-            Set(options, null);
+            Set(arguments, null);
         }
 
-        public static void Set(Options options, MemberInfo targetMember)
+        public static void Set(string[] arguments, MemberInfo targetMember)
         {
-            Options = options ?? new Options();
+            Arguments = arguments;
             TargetMember = targetMember;
         }
 
         /// <summary>
-        /// Gets the custom Options set provided by the test runner at the start of execution.
+        /// Gets the command line arguments provided by the test runner at the start of execution.
         /// </summary>
-        public static Options Options { get; private set; }
+        public static string[] Arguments { get; private set; }
 
         /// <summary>
         /// Gets the target Type or MethodInfo identified by

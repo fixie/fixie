@@ -37,6 +37,8 @@
     <Compile Include="Conventions\ParameterSourceExpression.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
+    <Compile Include="Internal\CommandLineOption.cs" />
+    <Compile Include="Internal\CommandLineParser.cs" />
     <Compile Include="MethodGroup.cs" />
     <Compile Include="Internal\Behavior.cs" />
     <Compile Include="Internal\BehaviorContext.cs" />

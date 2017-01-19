@@ -9,34 +9,34 @@
     public class Runner
     {
         readonly Bus bus;
-        readonly Options options;
+        readonly string[] arguments;
 
         public Runner(Bus bus)
-            : this(bus, new Options()) { }
+            : this(bus, new string[] {}) { }
 
-        public Runner(Bus bus, Options options)
+        public Runner(Bus bus, string[] arguments)
         {
             this.bus = bus;
-            this.options = options;
+            this.arguments = arguments;
         }
 
         public void RunAssembly(Assembly assembly)
         {
-            RunContext.Set(options);
+            RunContext.Set(arguments);
 
             RunTypesInternal(assembly, assembly.GetTypes());
         }
 
         public void RunNamespace(Assembly assembly, string ns)
         {
-            RunContext.Set(options);
+            RunContext.Set(arguments);
 
             RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
         public void RunType(Assembly assembly, Type type)
         {
-            RunContext.Set(options, type);
+            RunContext.Set(arguments, type);
 
             var types = GetTypeAndNestedTypes(type).ToArray();
             RunTypesInternal(assembly, types);
@@ -44,7 +44,7 @@
 
         public void RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
-            RunContext.Set(options);
+            RunContext.Set(arguments);
 
             Run(assembly, new[] { convention }, types);
         }
@@ -52,9 +52,9 @@
         public void RunMethods(Assembly assembly, params MethodInfo[] methods)
         {
             if (methods.Length == 1)
-                RunContext.Set(options, methods.Single());
+                RunContext.Set(arguments, methods.Single());
             else
-                RunContext.Set(options);
+                RunContext.Set(arguments);
 
             var conventions = GetConventions(assembly);
 

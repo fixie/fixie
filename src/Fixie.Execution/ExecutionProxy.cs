@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using Internal;
     using Listeners;
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
@@ -15,29 +16,34 @@
             customListeners.Add((Listener)Activator.CreateInstance(typeof(TListener), listenerArguments));
         }
 
-        public void DiscoverMethods(string assemblyFullPath, Options options)
+        public void DiscoverMethods(string assemblyFullPath, string[] arguments)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             var listeners = customListeners;
             var bus = new Bus(listeners);
-            var discoverer = new Discoverer(bus, options);
+            var discoverer = new Discoverer(bus, arguments);
 
             discoverer.DiscoverMethods(assembly);
         }
 
-        public ExecutionSummary RunAssembly(string assemblyFullPath, Options options)
+        public ExecutionSummary RunAssembly(string assemblyFullPath, string[] arguments)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Run(options, runner => runner.RunAssembly(assembly));
+            return Run(arguments, runner => runner.RunAssembly(assembly));
         }
 
-        public ExecutionSummary RunMethods(string assemblyFullPath, Options options, MethodGroup[] methodGroups)
+        public ExecutionSummary RunMethods(string assemblyFullPath, string[] arguments, MethodGroup[] methodGroups)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            return Run(options, r => r.RunMethods(assembly, methodGroups));
+            return Run(arguments, r => r.RunMethods(assembly, methodGroups));
+        }
+
+        static Options Options(string[] arguments)
+        {
+            return new CommandLineParser(arguments).Options;
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -45,13 +51,13 @@
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
 
-        ExecutionSummary Run(Options options, Action<Runner> run)
+        ExecutionSummary Run(string[] arguments, Action<Runner> run)
         {
             var summaryListener = new SummaryListener();
 
-            var listeners = GetExecutionListeners(options, summaryListener);
+            var listeners = GetExecutionListeners(Options(arguments), summaryListener);
             var bus = new Bus(listeners);
-            var runner = new Runner(bus, options);
+            var runner = new Runner(bus, arguments);
 
             run(runner);
 

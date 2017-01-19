@@ -1,4 +1,4 @@
-﻿namespace Fixie.Execution
+﻿namespace Fixie.Internal
 {
     public class CommandLineOption
     {

@@ -31,7 +31,7 @@
         /// <summary>
         /// Gets the custom Options set provided by the test runner at the start of execution.
         /// </summary>
-        public Options Options => RunContext.Options;
+        public Options Options => new CommandLineParser(RunContext.Arguments).Options;
 
         /// <summary>
         /// Gets the target Type or MethodInfo identified by the test runner as the sole item

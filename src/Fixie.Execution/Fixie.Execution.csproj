@@ -58,7 +58,6 @@
     <Compile Include="ClassDiscoverer.cs" />
     <Compile Include="ClassRunner.cs" />
     <Compile Include="ClassStarted.cs" />
-    <Compile Include="CommandLineOption.cs" />
     <Compile Include="CompoundException.cs" />
     <Compile Include="ConventionDiscoverer.cs" />
     <Compile Include="Discoverer.cs" />

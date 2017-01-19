@@ -354,6 +354,66 @@
                             "with the --property argument.");
         }
 
+        class Complex
+        {
+            public Complex(string firstArgument, int secondArgument)
+            {
+                FirstArgument = firstArgument;
+                SecondArgument = secondArgument;
+            }
+
+            public string FirstArgument { get; }
+            public int SecondArgument { get; }
+
+            public string String { get; set; }
+            public int Integer { get; set; }
+            public bool Bool { get; set; }
+            public int? NullableInteger { get; set; }
+            public bool? NullableBoolean { get; set; }
+
+            public string[] Strings { get; set; }
+            public int[] Integers { get; set; }
+        }
+
+        public void ShouldBindCommandLineArgumentsToComplexModels()
+        {
+            Parse<Complex>()
+                .ShouldSucceed(new Complex(null, 0)
+                {
+                    Strings = new string[] { },
+                    Integers = new int[] { }
+                });
+
+            Parse<Complex>("--string", "def", "abc", "12",
+                "--integer", "34",
+                "--bool",
+                "--nullable-integer", "56",
+                "--nullable-boolean", "off",
+                "--strings", "first",
+                "--unexpected-argument",
+                "--strings", "second",
+                "unexpectedArgument",
+                "--integers", "78",
+                "--unexpected-argument-with-value", "unexpectedValue",
+                "--integers", "90")
+                .ShouldSucceed(new Complex("abc", 12)
+                {
+                    String = "def",
+                    Integer = 34,
+                    Bool = true,
+                    NullableInteger = 56,
+                    NullableBoolean = false,
+                    Strings = new[] { "first", "second" },
+                    Integers = new[] { 78, 90 }
+                }, expectedUnusedArguments: new[]
+                    {
+                        "--unexpected-argument",
+                        "unexpectedArgument",
+                        "--unexpected-argument-with-value",
+                        "unexpectedValue"
+                    });
+        }
+
         static Scenario<T> Parse<T>(params string[] arguments) where T : class
         {
             return new Scenario<T>(arguments);

@@ -8,9 +8,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
+    using Assertions;
     using Fixie.Execution;
     using Fixie.Execution.Listeners;
-    using Assertions;
 
     public class AppVeyorListenerTests : MessagingTests
     {
@@ -18,33 +18,23 @@
         {
             var results = new List<AppVeyorListener.TestResult>();
 
-            var httpClient = new HttpClient(new FakeHandler(request =>
+            using (var httpClient = FakeHttpClient(results))
             {
-                request.ShouldNotBeNull();
-                request.RequestUri.AbsoluteUri.ShouldEqual("http://localhost:4567/api/tests");
-                request.Headers.Accept.ShouldContain(new MediaTypeWithQualityHeaderValue("application/json"));
-                request.Content.Headers.ContentType.ToString().ShouldEqual("application/json; charset=utf-8");
+                var listener = new AppVeyorListener("http://localhost:4567", httpClient);
 
-                var requestContent = request.Content.ReadAsStringAsync().Result;
-                results.Add(new JavaScriptSerializer().Deserialize<AppVeyorListener.TestResult>(requestContent));
+                using (var console = new RedirectedConsole())
+                {
+                    Run(listener);
 
-                return new HttpResponseMessage { StatusCode = HttpStatusCode.Accepted };
-            }));
-
-            var listener = new AppVeyorListener("http://localhost:4567", httpClient);
-
-            using (var console = new RedirectedConsole())
-            {
-                Run(listener);
-
-                console.Lines()
-                    .ShouldEqual(
-                        "Console.Out: Fail",
-                        "Console.Error: Fail",
-                        "Console.Out: FailByAssertion",
-                        "Console.Error: FailByAssertion",
-                        "Console.Out: Pass",
-                        "Console.Error: Pass");
+                    console.Lines()
+                        .ShouldEqual(
+                            "Console.Out: Fail",
+                            "Console.Error: Fail",
+                            "Console.Out: FailByAssertion",
+                            "Console.Error: FailByAssertion",
+                            "Console.Out: Pass",
+                            "Console.Error: Pass");
+                }
             }
 
             results.Count.ShouldEqual(5);
@@ -82,9 +72,7 @@
             fail.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
                 .Lines()
-                .ShouldEqual(
-                        "Fixie.Tests.FailureException",
-                        At("Fail()"));
+                .ShouldEqual("Fixie.Tests.FailureException", At("Fail()"));
             fail.StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
 
             failByAssertion.testName.ShouldEqual(TestClass + ".FailByAssertion");
@@ -96,7 +84,6 @@
                 "Actual:   1");
             failByAssertion.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
-                .Lines()
                 .ShouldEqual(At("FailByAssertion()"));
             failByAssertion.StdOut.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
 
@@ -106,6 +93,22 @@
             pass.ErrorMessage.ShouldBeNull();
             pass.ErrorStackTrace.ShouldBeNull();
             pass.StdOut.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
+        }
+
+        static HttpClient FakeHttpClient(List<AppVeyorListener.TestResult> results)
+        {
+            return new HttpClient(new FakeHandler(request =>
+            {
+                request.ShouldNotBeNull();
+                request.RequestUri.AbsoluteUri.ShouldEqual("http://localhost:4567/api/tests");
+                request.Headers.Accept.ShouldContain(new MediaTypeWithQualityHeaderValue("application/json"));
+                request.Content.Headers.ContentType.ToString().ShouldEqual("application/json; charset=utf-8");
+
+                var requestContent = request.Content.ReadAsStringAsync().Result;
+                results.Add(new JavaScriptSerializer().Deserialize<AppVeyorListener.TestResult>(requestContent));
+
+                return new HttpResponseMessage { StatusCode = HttpStatusCode.Accepted };
+            }));
         }
 
         class FakeHandler : DelegatingHandler

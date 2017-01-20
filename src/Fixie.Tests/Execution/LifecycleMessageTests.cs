@@ -18,8 +18,11 @@
 
             var assembly = typeof(LifecycleMessageTests).Assembly;
 
-            listener.AssemblyStarts.Single().Assembly.ShouldEqual(assembly);
-            listener.ClassStarts.Single().Class.FullName.ShouldEqual(FullName<MessagingTests>() + "+SampleTestClass");
+            var assemblyStarted = listener.AssemblyStarts.Single();
+            assemblyStarted.Assembly.ShouldEqual(assembly);
+
+            var classStarted = listener.ClassStarts.Single();
+            classStarted.Class.FullName.ShouldEqual(FullName<MessagingTests>() + "+SampleTestClass");
 
             listener.Cases.Count.ShouldEqual(5);
 
@@ -42,6 +45,7 @@
             fail.Output.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             fail.Status.ShouldEqual(CaseStatus.Failed);
+            fail.Exception.FailedAssertion.ShouldBeFalse();
             fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
             fail.Exception.StackTrace
                 .CleanStackTraceLineNumbers()
@@ -54,6 +58,7 @@
             failByAssertion.Output.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
+            failByAssertion.Exception.FailedAssertion.ShouldBeTrue();
             failByAssertion.Exception.Type.ShouldEqual("Fixie.Assertions.AssertActualExpectedException");
             failByAssertion.Exception.StackTrace
                 .CleanStackTraceLineNumbers()
@@ -79,8 +84,11 @@
             skipWithoutReason.Status.ShouldEqual(CaseStatus.Skipped);
             skipWithoutReason.Reason.ShouldBeNull();
 
-            listener.ClassCompletions.Single().Class.FullName.ShouldEqual(FullName<MessagingTests>() + "+SampleTestClass");
-            listener.AssemblyCompletions.Single().Assembly.ShouldEqual(assembly);
+            var classCompleted = listener.ClassCompletions.Single();
+            classCompleted.Class.FullName.ShouldEqual(FullName<MessagingTests>() + "+SampleTestClass");
+
+            var assemblyCompleted = listener.AssemblyCompletions.Single();
+            assemblyCompleted.Assembly.ShouldEqual(assembly);
         }
 
         public class StubCaseCompletedListener :

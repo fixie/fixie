@@ -121,10 +121,10 @@
                 this.getSkipReason = getSkipReason;
             }
 
-            public override bool SkipCase(Case @case)
+            public bool SkipCase(Case @case)
                 => skipCase(@case);
 
-            public override string GetSkipReason(Case @case)
+            public string GetSkipReason(Case @case)
                 => getSkipReason(@case);
         }
     }

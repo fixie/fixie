@@ -29,7 +29,7 @@
                 new XAttribute("passed", report.Passed),
                 new XAttribute("failed", report.Failed),
                 new XAttribute("skipped", report.Skipped),
-                new XAttribute("environment", String.Format("{0}-bit .NET {1}", IntPtr.Size * 8, Environment.Version)),
+                new XAttribute("environment", $"{IntPtr.Size*8}-bit .NET {Environment.Version}"),
                 new XAttribute("test-framework", Framework.Version),
                 report.Classes.Select(Class));
         }

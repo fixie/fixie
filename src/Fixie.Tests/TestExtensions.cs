@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using System.Text.RegularExpressions;
-    using System.Threading;
     using Fixie.Execution;
 
     public static class TestExtensions
@@ -48,7 +48,7 @@
         {
             //Avoid brittle assertion introduced by test duration.
 
-            var decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            var decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
             return Regex.Replace(output, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
         }

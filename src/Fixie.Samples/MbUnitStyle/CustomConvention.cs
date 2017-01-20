@@ -35,7 +35,21 @@
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
-                return method.GetCustomAttributes<RowAttribute>(true).Select(input => input.Parameters);
+                ParameterInfo[] parameterInfos = method.GetParameters();
+
+                var rowAttributes = method.GetCustomAttributes<RowAttribute>(true);
+
+                foreach (var rowAttribute in rowAttributes)
+                {
+                    object[] parameters = rowAttribute.Parameters;
+
+                    for (int i = 0; i < parameterInfos.Length; i++)
+                    {
+                        parameters[i] = ChangeType(parameters[i], parameterInfos[i].ParameterType);
+                    }
+
+                    yield return parameters;
+                }
             }
         }
 
@@ -48,17 +62,28 @@
 
             static IEnumerable<object[]> Columns(MethodInfo method)
             {
-                ParameterInfo[] parameters = method.GetParameters();
+                ParameterInfo[] parameterInfos = method.GetParameters();
 
-                if (parameters.Length == 0)
+                if (parameterInfos.Length == 0)
                     return null;
 
-                if (parameters[0].GetCustomAttributes<ColumnAttribute>(true).Any() == false)
+                if (parameterInfos[0].GetCustomAttributes<ColumnAttribute>(true).Any() == false)
                     return null;
 
-                return parameters
-                    .Select(parameter =>
-                        parameter.GetCustomAttributes<ColumnAttribute>(true).Single().Parameters);
+                return GetColumnParameters(parameterInfos);
+            }
+
+            private static IEnumerable<object[]> GetColumnParameters(ParameterInfo[] parameterInfos)
+            {
+                foreach (var parameterInfo in parameterInfos)
+                {
+                    yield return parameterInfo
+                        .GetCustomAttributes<ColumnAttribute>(true)
+                        .Single()
+                        .Parameters
+                        .Select(x => ChangeType(x, parameterInfo.ParameterType))
+                        .ToArray();
+                }
             }
 
             static IEnumerable<object[]> CartesianProduct(IEnumerable<object[]> sequences)
@@ -77,6 +102,20 @@
                         from item in sequence
                         select accseq.Concat(new[] { item }).ToArray());
             }
+        }
+
+        private static object ChangeType(object parameter, Type type)
+        {
+            if (parameter != null && parameter.GetType() != type)
+            {
+                try
+                {
+                    parameter = Convert.ChangeType(parameter, type);
+                }
+                catch { }
+            }
+
+            return parameter;
         }
     }
 

@@ -1,7 +1,6 @@
 ﻿namespace Fixie
 {
     using System.Diagnostics;
-    using System.Reflection;
 
     public static class Framework
     {
@@ -9,7 +8,7 @@
         {
             get
             {
-                var framework = Assembly.GetExecutingAssembly();
+                var framework = typeof(Framework).Assembly;
                 var fileName = framework.Location;
 
                 return framework.GetName().Name + " " + FileVersionInfo.GetVersionInfo(fileName).ProductVersion;

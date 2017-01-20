@@ -32,7 +32,8 @@ namespace Fixie.Tests.Execution
             quirksAreEnabled.ShouldBeFalse();
 
             var targetFramework =
-                Assembly.GetExecutingAssembly()
+                typeof(ExecutionEnvironmentTests)
+                    .Assembly
                     .GetCustomAttributes(typeof(TargetFrameworkAttribute), true)
                     .Cast<TargetFrameworkAttribute>()
                     .Single()

@@ -58,7 +58,10 @@ namespace Fixie.Execution.Listeners
             var format = new TXmlFormat();
             var xDocument = format.Transform(report);
             var filePath = Path.GetFullPath(report.Assembly.Location) + ".xml";
-            xDocument.Save(filePath, SaveOptions.None);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var writer = new StreamWriter(stream))
+                xDocument.Save(writer, SaveOptions.None);
         }
     }
 }

@@ -56,7 +56,7 @@ attempt is ambiguous, and Visual Studio cannot meaningfully use this information
 Inherited tests are still correctly discovered and appear in Test Explorer,
 so they can be executed by selecting them in Test Explorer like any other test.
 
-To meet the needs of both overloads and paramterized test methods, Fixie
+To meet the needs of both overloads and parameterized test methods, Fixie
 registers one Visual Studio TestCase instance *per method group*, instead
 of per method.  It does so by setting the `TestCase.FullyQualifiedName` to
 the method group of a test case, and by only reporting each discovered

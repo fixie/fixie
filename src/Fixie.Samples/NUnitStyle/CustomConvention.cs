@@ -41,7 +41,7 @@
 
             foreach (var attribute in testCaseSourceAttributes)
             {
-                var sourceType = attribute.SourceType ?? method.ReflectedType;
+                var sourceType = attribute.SourceType ?? method.DeclaringType;
 
                 if (sourceType == null)
                     throw new Exception("Could not find source type for method " + method.Name);

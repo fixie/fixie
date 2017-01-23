@@ -140,9 +140,11 @@
         {
             var method = @case.Method;
 
-            var target = method.HasOrInherits<SkipAttribute>() ? (MemberInfo)method : method.DeclaringType;
+            var skip = method.HasOrInherits<SkipAttribute>()
+                ? method.GetCustomAttribute<SkipAttribute>(true)
+                : method.DeclaringType.GetCustomAttribute<SkipAttribute>(true);
 
-            return target.GetCustomAttribute<SkipAttribute>(true).Reason;
+            return skip.Reason;
         }
 
         static bool HasSkipAttribute(Case @case)

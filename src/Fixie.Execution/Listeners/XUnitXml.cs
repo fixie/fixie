@@ -10,28 +10,23 @@
     {
         public XDocument Transform(Report report)
         {
-            return new XDocument(
-                new XElement("assemblies",
-                    Assembly(report)));
-        }
-
-        static XElement Assembly(Report report)
-        {
             var now = DateTime.UtcNow;
 
-            return new XElement("assembly",
-                new XAttribute("name", report.Assembly.Location),
-                new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
-                new XAttribute("run-time", now.ToString("HH:mm:ss")),
-                new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
-                new XAttribute("time", Seconds(report.Duration)),
-                new XAttribute("total", report.Total),
-                new XAttribute("passed", report.Passed),
-                new XAttribute("failed", report.Failed),
-                new XAttribute("skipped", report.Skipped),
-                new XAttribute("environment", $"{IntPtr.Size*8}-bit .NET {Environment.Version}"),
-                new XAttribute("test-framework", Framework.Version),
-                report.Classes.Select(Class));
+            return new XDocument(
+                new XElement("assemblies",
+                    new XElement("assembly",
+                        new XAttribute("name", report.Assembly.Location),
+                        new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
+                        new XAttribute("run-time", now.ToString("HH:mm:ss")),
+                        new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
+                        new XAttribute("time", Seconds(report.Duration)),
+                        new XAttribute("total", report.Total),
+                        new XAttribute("passed", report.Passed),
+                        new XAttribute("failed", report.Failed),
+                        new XAttribute("skipped", report.Skipped),
+                        new XAttribute("environment", $"{IntPtr.Size*8}-bit .NET {Environment.Version}"),
+                        new XAttribute("test-framework", Framework.Version),
+                        report.Classes.Select(Class))));
         }
 
         static XElement Class(ClassReport classReport)

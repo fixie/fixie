@@ -101,8 +101,8 @@
             public List<AssemblyStarted> AssemblyStarts { get; } = new List<AssemblyStarted>();
             public List<ClassStarted> ClassStarts { get; } = new List<ClassStarted>();
             public List<CaseCompleted> Cases { get; } = new List<CaseCompleted>();
-            public List<ClassCompleted> ClassCompletions = new List<ClassCompleted>();
-            public List<AssemblyCompleted> AssemblyCompletions = new List<AssemblyCompleted>();
+            public List<ClassCompleted> ClassCompletions { get; } = new List<ClassCompleted>();
+            public List<AssemblyCompleted> AssemblyCompletions { get; } = new List<AssemblyCompleted>();
 
             public void Handle(AssemblyStarted message) => AssemblyStarts.Add(message);
             public void Handle(ClassStarted message) => ClassStarts.Add(message);

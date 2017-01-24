@@ -13,10 +13,10 @@
     {
         readonly List<Exception> exceptions;
 
-        public Case(MethodInfo caseMethod, params object[] parameters)
+        public Case(Type testClass, MethodInfo caseMethod, params object[] parameters)
         {
             Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
-            Class = caseMethod.ReflectedType;
+            Class = testClass;
 
             Method = TryResolveTypeArguments(caseMethod, parameters);
 

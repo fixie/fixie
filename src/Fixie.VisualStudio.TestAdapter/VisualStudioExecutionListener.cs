@@ -1,5 +1,6 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
+    using System;
     using Execution;
 
     public class VisualStudioExecutionListener :
@@ -18,7 +19,7 @@
         {
             log.RecordResult(new Result
             {
-                FullyQualifiedName = new MethodGroup(message.Method).FullName,
+                FullyQualifiedName = new MethodGroup(message.Class, message.Method).FullName,
                 DisplayName = message.Name,
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,
@@ -32,7 +33,7 @@
         {
             log.RecordResult(new Result
             {
-                FullyQualifiedName = new MethodGroup(message.Method).FullName,
+                FullyQualifiedName = new MethodGroup(message.Class, message.Method).FullName,
                 DisplayName = message.Name,
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,
@@ -48,7 +49,7 @@
 
             log.RecordResult(new Result
             {
-                FullyQualifiedName = new MethodGroup(message.Method).FullName,
+                FullyQualifiedName = new MethodGroup(message.Class, message.Method).FullName,
                 DisplayName = message.Name,
                 Outcome = message.Status.ToString(),
                 Duration = message.Duration,

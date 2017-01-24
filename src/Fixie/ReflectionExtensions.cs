@@ -37,15 +37,11 @@
             return method.Has<AsyncStateMachineAttribute>();
         }
 
-        public static bool IsDispose(this MethodInfo method)
-        {
-            var hasDisposeSignature = method.Name == "Dispose" && method.IsVoid() && method.GetParameters().Length == 0;
+        public static bool IsDisposable(this Type type)
+            => type.GetInterfaces().Any(interfaceType => interfaceType == typeof(IDisposable));
 
-            if (!hasDisposeSignature)
-                return false;
-
-            return method.ReflectedType.GetInterfaces().Any(type => type == typeof(IDisposable));
-        }
+        public static bool HasDisposeSignature(this MethodInfo method)
+            => method.Name == "Dispose" && method.IsVoid() && method.GetParameters().Length == 0;
 
         public static bool HasSignature(this MethodInfo method, Type returnType, string name, params Type[] parameterTypes)
         {

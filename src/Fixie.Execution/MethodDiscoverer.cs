@@ -18,10 +18,12 @@
         {
             try
             {
+                bool testClassIsDisposable = testClass.IsDisposable();
+
                 return testClass
                     .GetMethods(BindingFlags.Public | BindingFlags.Instance)
                     .Where(method => method.DeclaringType != typeof(object))
-                    .Where(method => !(testClass.IsDisposable() && method.HasDisposeSignature()))
+                    .Where(method => !(testClassIsDisposable && method.HasDisposeSignature()))
                     .Where(IsMatch)
                     .ToArray();
             }

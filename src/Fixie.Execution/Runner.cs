@@ -64,16 +64,16 @@
             Run(assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
         }
 
-        public void RunMethodsForTestDriven(Assembly assembly, MethodInfo method)
+        public void RunMethods(Assembly assembly, Type type, MethodInfo method)
         {
             RunContext.Set(conventionArguments, method);
 
             var conventions = GetConventions(assembly);
 
             foreach (var convention in conventions)
-                convention.Methods.Where(m => method == m);
+                convention.Methods.Where(m => m == method);
 
-            Run(assembly, conventions, method.ReflectedType);
+            Run(assembly, conventions, type);
         }
 
         public void RunMethods(Assembly assembly, MethodGroup[] methodGroups)

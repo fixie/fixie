@@ -49,8 +49,10 @@
             Run(assembly, new[] { convention }, types);
         }
 
-        public void RunMethods(Assembly assembly, params MethodInfo[] methods)
+        public void RunMethods(Assembly assembly, MethodGroup[] methodGroups)
         {
+            var methods = GetMethods(assembly, methodGroups);
+
             if (methods.Length == 1)
                 RunContext.Set(conventionArguments, methods.Single());
             else
@@ -74,11 +76,6 @@
                 convention.Methods.Where(m => m == method);
 
             Run(assembly, conventions, type);
-        }
-
-        public void RunMethods(Assembly assembly, MethodGroup[] methodGroups)
-        {
-            RunMethods(assembly, GetMethods(assembly, methodGroups));
         }
 
         static IEnumerable<Type> GetTypeAndNestedTypes(Type type)

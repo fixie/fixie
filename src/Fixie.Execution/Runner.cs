@@ -51,7 +51,9 @@
 
         public void RunMethods(Assembly assembly, MethodGroup[] methodGroups)
         {
-            var methods = GetMethods(assembly, methodGroups);
+            var types = GetTypes(assembly, methodGroups);
+
+            var methods = GetMethods(types, methodGroups);
 
             if (methods.Length == 1)
                 RunContext.Set(conventionArguments, methods.Single());
@@ -63,7 +65,7 @@
             foreach (var convention in conventions)
                 convention.Methods.Where(methods.Contains);
 
-            Run(assembly, conventions, methods.Select(m => m.ReflectedType).Distinct().ToArray());
+            Run(assembly, conventions, types.Values.ToArray());
         }
 
         public void RunMethods(Assembly assembly, Type type, MethodInfo method)
@@ -86,17 +88,24 @@
                 yield return nested;
         }
 
-        static MethodInfo[] GetMethods(Assembly assembly, MethodGroup[] methodGroups)
+        static Dictionary<string, Type> GetTypes(Assembly assembly, MethodGroup[] methodGroups)
         {
-            return methodGroups.SelectMany(methodGroup => GetMethods(assembly, methodGroup)).ToArray();
+            var types = new Dictionary<string, Type>();
+
+            foreach (var methodGroup in methodGroups)
+                if (!types.ContainsKey(methodGroup.Class))
+                    types.Add(methodGroup.Class, assembly.GetType(methodGroup.Class));
+
+            return types;
         }
 
-        static IEnumerable<MethodInfo> GetMethods(Assembly assembly, MethodGroup methodGroup)
+        static MethodInfo[] GetMethods(Dictionary<string, Type> classes, MethodGroup[] methodGroups)
         {
-            return assembly
-                .GetType(methodGroup.Class)
-                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Where(m => m.Name == methodGroup.Method);
+            return methodGroups
+                .SelectMany(methodGroup =>
+                    classes[methodGroup.Class]
+                        .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                        .Where(m => m.Name == methodGroup.Method)).ToArray();
         }
 
         void RunTypesInternal(Assembly assembly, params Type[] types)

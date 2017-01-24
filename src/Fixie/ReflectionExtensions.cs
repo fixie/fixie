@@ -37,9 +37,6 @@
             return method.Has<AsyncStateMachineAttribute>();
         }
 
-        public static bool IsDispose(this MethodInfo method)
-            => method.ReflectedType.IsDisposable() && method.HasDisposeSignature();
-
         public static bool IsDisposable(this Type type)
             => type.GetInterfaces().Any(interfaceType => interfaceType == typeof(IDisposable));
 

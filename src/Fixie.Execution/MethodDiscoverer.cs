@@ -43,6 +43,9 @@
             => method.DeclaringType != typeof(object);
 
         static bool ExcludeDispose(MethodInfo method)
-            => !method.IsDispose();
+            => !IsDispose(method);
+
+        static bool IsDispose(MethodInfo method)
+            => method.ReflectedType.IsDisposable() && method.HasDisposeSignature();
     }
 }

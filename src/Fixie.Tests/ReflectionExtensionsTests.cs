@@ -43,16 +43,6 @@
             Method("Async").IsAsync().ShouldBeTrue();
         }
 
-        public void CanDetectWhetherMethodIsDispose()
-        {
-            Method("ReturnsVoid").IsDispose().ShouldBeFalse();
-            Method("ReturnsInt").IsDispose().ShouldBeFalse();
-            Method("Async").IsDispose().ShouldBeFalse();
-            Method<NonDisposableWithDisposeMethod>("Dispose").IsDispose().ShouldBeFalse();
-            MethodBySignature<Disposable>(typeof(void), "Dispose", typeof(bool)).IsDispose().ShouldBeFalse();
-            MethodBySignature<Disposable>(typeof(void), "Dispose").IsDispose().ShouldBeTrue();
-        }
-
         public void CanDetectWhetherTypeIsDisposable()
         {
             typeof(ReflectionExtensionsTests).IsDisposable().ShouldBeFalse();

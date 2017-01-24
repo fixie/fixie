@@ -23,7 +23,7 @@ namespace Fixie.TestDriven
             var method = member as MethodInfo;
             if (method != null)
             {
-                if (method.IsDispose())
+                if (IsDispose(method))
                 {
                     var listener = new TestDrivenListener(testListener);
                     listener.Handle(new CaseSkipped(new Case(method), "Dispose() is not a test."));
@@ -39,6 +39,9 @@ namespace Fixie.TestDriven
 
             return TestRunState.Error;
         }
+
+        static bool IsDispose(MethodInfo method)
+            => method.ReflectedType.IsDisposable() && method.HasDisposeSignature();
 
         static TestRunState Run(ITestListener testListener, Action<Runner> run)
         {

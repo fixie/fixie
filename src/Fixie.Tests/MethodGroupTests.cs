@@ -1,29 +1,32 @@
 ﻿namespace Fixie.Tests
 {
+    using System;
     using Assertions;
 
     public class MethodGroupTests
     {
-        public void CanConstructMethodGroupFromMethodInfoWithRespectToTheReflectedType()
+        public void CanRepresentMethodsDeclaredInChildClasses()
         {
-            var methodDeclaredInChildClass = typeof(ChildClass).GetInstanceMethod("MethodDefinedWithinChildClass");
-            var methodDeclaredInParentClass = typeof(ParentClass).GetInstanceMethod("MethodDefinedWithinParentClass");
-            var parentMethodInheritedByChildClass = typeof(ChildClass).GetInstanceMethod("MethodDefinedWithinParentClass");
-
             AssertMethodGroup(
-                new MethodGroup(methodDeclaredInChildClass),
+                MethodGroup(typeof(ChildClass), "MethodDefinedWithinChildClass"),
                 "Fixie.Tests.MethodGroupTests+ChildClass",
                 "MethodDefinedWithinChildClass",
                 "Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinChildClass");
+        }
 
+        public void CanRepresentMethodsDeclaredInParentClasses()
+        {
             AssertMethodGroup(
-                new MethodGroup(methodDeclaredInParentClass),
+                MethodGroup(typeof(ParentClass), "MethodDefinedWithinParentClass"),
                 "Fixie.Tests.MethodGroupTests+ParentClass",
                 "MethodDefinedWithinParentClass",
                 "Fixie.Tests.MethodGroupTests+ParentClass.MethodDefinedWithinParentClass");
+        }
 
+        public void CanRepresentParentMethodsInheritedByChildClasses()
+        {
             AssertMethodGroup(
-                new MethodGroup(parentMethodInheritedByChildClass),
+                MethodGroup(typeof(ChildClass), "MethodDefinedWithinParentClass"),
                 "Fixie.Tests.MethodGroupTests+ChildClass",
                 "MethodDefinedWithinParentClass",
                 "Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinParentClass");
@@ -56,6 +59,9 @@
             actual.Method.ShouldEqual(expectedMethod);
             actual.FullName.ShouldEqual(expectedFullName);
         }
+
+        static MethodGroup MethodGroup(Type @class, string method)
+            => new MethodGroup(@class, @class.GetInstanceMethod(method));
 
         class ParentClass
         {

@@ -3,7 +3,6 @@ namespace Fixie
     using System;
     using System.Reflection;
 
-    [Serializable]
     public class MethodGroup
     {
         public string Class { get; }

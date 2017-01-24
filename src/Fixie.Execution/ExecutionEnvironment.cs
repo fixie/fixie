@@ -40,8 +40,8 @@
         public int RunAssembly(string[] runnerArguments, string[] conventionArguments)
             => executionProxy.RunAssembly(assemblyFullPath, runnerArguments, conventionArguments);
 
-        public void RunMethods(string[] runnerArguments, string[] conventionArguments, MethodGroup[] methodGroups)
-            => executionProxy.RunMethods(assemblyFullPath, runnerArguments, conventionArguments, methodGroups);
+        public void RunMethods(string[] runnerArguments, string[] conventionArguments, string[] methods)
+            => executionProxy.RunMethods(assemblyFullPath, runnerArguments, conventionArguments, methods);
 
         T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()
         {

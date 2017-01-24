@@ -85,13 +85,13 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
+                        var methods = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray();
 
                         using (var executionRecorder = new ExecutionRecorder(frameworkHandle, assemblyPath))
                         using (var environment = new ExecutionEnvironment(assemblyPath))
                         {
                             environment.Subscribe<VisualStudioExecutionListener>(executionRecorder);
-                            environment.RunMethods(new string[] {}, new string[] {}, methodGroups);
+                            environment.RunMethods(new string[] {}, new string[] {}, methods);
                         }
                     }
                     else

@@ -53,6 +53,23 @@
             MethodBySignature<Disposable>(typeof(void), "Dispose").IsDispose().ShouldBeTrue();
         }
 
+        public void CanDetectWhetherTypeIsDisposable()
+        {
+            typeof(ReflectionExtensionsTests).IsDisposable().ShouldBeFalse();
+            typeof(NonDisposableWithDisposeMethod).IsDisposable().ShouldBeFalse();
+            typeof(Disposable).IsDisposable().ShouldBeTrue();
+        }
+
+        public void CanDetectWhetherMethodHasDisposeSignature()
+        {
+            Method("ReturnsVoid").HasDisposeSignature().ShouldBeFalse();
+            Method("ReturnsInt").HasDisposeSignature().ShouldBeFalse();
+            Method("Async").HasDisposeSignature().ShouldBeFalse();
+            Method<NonDisposableWithDisposeMethod>("Dispose").HasDisposeSignature().ShouldBeTrue();
+            MethodBySignature<Disposable>(typeof(void), "Dispose", typeof(bool)).HasDisposeSignature().ShouldBeFalse();
+            MethodBySignature<Disposable>(typeof(void), "Dispose").HasDisposeSignature().ShouldBeTrue();
+        }
+
         public void CanDetectWhetherMethodHasSignature()
         {
             var trivial = MethodBySignature<Signatures>(typeof(void), "Trivial");

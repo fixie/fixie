@@ -1,4 +1,4 @@
-namespace Fixie.Execution.Listeners
+﻿namespace Fixie.Execution.Listeners
 {
     using System;
     using System.IO;

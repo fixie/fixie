@@ -53,7 +53,6 @@
   <ItemGroup>
     <Compile Include="DiscoveryRecorder.cs" />
     <Compile Include="VisualStudioDiscoveryListener.cs" />
-    <Compile Include="Result.cs" />
     <Compile Include="SourceLocation.cs" />
     <Compile Include="SourceLocationProvider.cs" />
     <Compile Include="ExecutionRecorder.cs" />

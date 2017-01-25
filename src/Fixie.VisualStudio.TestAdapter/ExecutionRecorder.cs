@@ -16,22 +16,29 @@ namespace Fixie.VisualStudio.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public void RecordResult(Result result)
+        public void RecordResult(
+            string fullyQualifiedName,
+            string displayName,
+            string outcome,
+            TimeSpan duration,
+            string output,
+            string errorMessage,
+            string errorStackTrace)
         {
-            var testCase = new TestCase(result.FullyQualifiedName, VsTestExecutor.Uri, assemblyPath);
+            var testCase = new TestCase(fullyQualifiedName, VsTestExecutor.Uri, assemblyPath);
 
             var testResult = new TestResult(testCase)
             {
-                DisplayName = result.DisplayName,
-                Outcome = Parse(result.Outcome),
-                Duration = result.Duration,
+                DisplayName = displayName,
+                Outcome = Parse(outcome),
+                Duration = duration,
                 ComputerName = Environment.MachineName,
 
-                ErrorMessage = result.ErrorMessage,
-                ErrorStackTrace = result.ErrorStackTrace
+                ErrorMessage = errorMessage,
+                ErrorStackTrace = errorStackTrace
             };
 
-            AttachCapturedConsoleOutput(result.Output, testResult);
+            AttachCapturedConsoleOutput(output, testResult);
 
             log.RecordResult(testResult);
         }

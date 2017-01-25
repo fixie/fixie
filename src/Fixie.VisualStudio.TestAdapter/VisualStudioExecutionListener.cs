@@ -17,46 +17,43 @@
 
         public void Handle(CaseSkipped message)
         {
-            log.RecordResult(new Result
-            {
-                FullyQualifiedName = new MethodGroup(message.Class, message.Method).FullName,
-                DisplayName = message.Name,
-                Outcome = message.Status.ToString(),
-                Duration = message.Duration,
-                Output = message.Output,
-                ErrorMessage = message.Reason,
-                ErrorStackTrace = null
-            });
+            log.RecordResult(
+                fullyQualifiedName: new MethodGroup(message.Class, message.Method).FullName,
+                displayName: message.Name,
+                outcome: message.Status.ToString(),
+                duration: message.Duration,
+                output: message.Output,
+                errorMessage: message.Reason,
+                errorStackTrace: null
+            );
         }
 
         public void Handle(CasePassed message)
         {
-            log.RecordResult(new Result
-            {
-                FullyQualifiedName = new MethodGroup(message.Class, message.Method).FullName,
-                DisplayName = message.Name,
-                Outcome = message.Status.ToString(),
-                Duration = message.Duration,
-                Output = message.Output,
-                ErrorMessage = null,
-                ErrorStackTrace = null
-            });
+            log.RecordResult(
+                fullyQualifiedName: new MethodGroup(message.Class, message.Method).FullName,
+                displayName: message.Name,
+                outcome: message.Status.ToString(),
+                duration: message.Duration,
+                output: message.Output,
+                errorMessage: null,
+                errorStackTrace: null
+            );
         }
 
         public void Handle(CaseFailed message)
         {
             var exception = message.Exception;
 
-            log.RecordResult(new Result
-            {
-                FullyQualifiedName = new MethodGroup(message.Class, message.Method).FullName,
-                DisplayName = message.Name,
-                Outcome = message.Status.ToString(),
-                Duration = message.Duration,
-                Output = message.Output,
-                ErrorMessage = exception.Message,
-                ErrorStackTrace = exception.TypedStackTrace()
-            });
+            log.RecordResult(
+                fullyQualifiedName: new MethodGroup(message.Class, message.Method).FullName,
+                displayName: message.Name,
+                outcome: message.Status.ToString(),
+                duration: message.Duration,
+                output: message.Output,
+                errorMessage: exception.Message,
+                errorStackTrace: exception.TypedStackTrace()
+            );
         }
     }
 }

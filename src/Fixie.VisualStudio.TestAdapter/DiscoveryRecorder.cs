@@ -20,18 +20,22 @@
 
         public void Error(string message) => log.Error(message);
 
-        public void SendTestFound(Test test)
+        public void SendTestFound(string fullyQualifiedName, string displayName, string codeFilePath, int lineNumber)
         {
-            var testCase = new TestCase(test.FullyQualifiedName, VsTestExecutor.Uri, assemblyPath)
+            discoverySink.SendTestCase(new TestCase(fullyQualifiedName, VsTestExecutor.Uri, assemblyPath)
             {
-                DisplayName = test.DisplayName,
-                CodeFilePath = test.CodeFilePath
-            };
+                DisplayName = displayName,
+                CodeFilePath = codeFilePath,
+                LineNumber = lineNumber
+            });
+        }
 
-            if (test.LineNumber != null)
-                testCase.LineNumber = test.LineNumber.Value;
-
-            discoverySink.SendTestCase(testCase);
+        public void SendTestFound(string fullyQualifiedName, string displayName)
+        {
+            discoverySink.SendTestCase(new TestCase(fullyQualifiedName, VsTestExecutor.Uri, assemblyPath)
+            {
+                DisplayName = displayName,
+            });
         }
     }
 }

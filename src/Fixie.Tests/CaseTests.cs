@@ -248,7 +248,7 @@
 
         static Case Case(string methodName, params object[] parameters)
         {
-            return new Case(typeof(CaseTests), typeof(CaseTests).GetInstanceMethod(methodName), parameters);
+            return Case<CaseTests>(methodName, parameters);
         }
 
         static Case Case<TTestClass>(string methodName, params object[] parameters)

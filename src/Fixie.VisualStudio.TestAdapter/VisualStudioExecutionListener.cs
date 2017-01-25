@@ -1,6 +1,5 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
-    using System;
     using Execution;
 
     public class VisualStudioExecutionListener :

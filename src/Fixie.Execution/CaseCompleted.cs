@@ -5,15 +5,14 @@ namespace Fixie.Execution
 
     public abstract class CaseCompleted : Message
     {
-        protected CaseCompleted(
-            Type @class, MethodInfo method, string name, CaseStatus status, TimeSpan duration, string output)
+        protected CaseCompleted(Case @case, CaseStatus status)
         {
-            Class = @class;
-            Method = method;
-            Name = name;
+            Class = @case.Class;
+            Method = @case.Method;
+            Name = @case.Name;
             Status = status;
-            Duration = duration;
-            Output = output;
+            Duration = @case.Duration;
+            Output = @case.Output;
         }
 
         public Type Class { get; }

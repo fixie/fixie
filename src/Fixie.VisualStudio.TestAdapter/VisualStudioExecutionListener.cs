@@ -18,12 +18,12 @@
         public void Handle(CaseSkipped message)
         {
             log.RecordResult(
-                fullyQualifiedName: new MethodGroup(message.Class, message.Method).FullName,
-                displayName: message.Name,
-                outcome: message.Status.ToString(),
-                duration: message.Duration,
-                output: message.Output,
-                errorMessage: message.Reason,
+                FullyQualifiedName(message),
+                message.Name,
+                message.Status.ToString(),
+                message.Duration,
+                message.Output,
+                message.Reason,
                 errorStackTrace: null
             );
         }
@@ -31,11 +31,11 @@
         public void Handle(CasePassed message)
         {
             log.RecordResult(
-                fullyQualifiedName: new MethodGroup(message.Class, message.Method).FullName,
-                displayName: message.Name,
-                outcome: message.Status.ToString(),
-                duration: message.Duration,
-                output: message.Output,
+                FullyQualifiedName(message),
+                message.Name,
+                message.Status.ToString(),
+                message.Duration,
+                message.Output,
                 errorMessage: null,
                 errorStackTrace: null
             );
@@ -46,14 +46,17 @@
             var exception = message.Exception;
 
             log.RecordResult(
-                fullyQualifiedName: new MethodGroup(message.Class, message.Method).FullName,
-                displayName: message.Name,
-                outcome: message.Status.ToString(),
-                duration: message.Duration,
-                output: message.Output,
-                errorMessage: exception.Message,
-                errorStackTrace: exception.TypedStackTrace()
+                FullyQualifiedName(message),
+                message.Name,
+                message.Status.ToString(),
+                message.Duration,
+                message.Output,
+                exception.Message,
+                exception.TypedStackTrace()
             );
         }
+
+        static string FullyQualifiedName(CaseCompleted message)
+            => new MethodGroup(message.Class, message.Method).FullName;
     }
 }

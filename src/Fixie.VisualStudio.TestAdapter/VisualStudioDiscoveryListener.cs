@@ -18,27 +18,25 @@
         {
             var methodGroup = new MethodGroup(message.Class, message.Method);
 
-            var test = new Test
-            {
-                FullyQualifiedName = methodGroup.FullName,
-                DisplayName = methodGroup.FullName
-            };
+            var fullyQualifiedName = methodGroup.FullName;
+            var displayName = methodGroup.FullName;
 
             try
             {
                 SourceLocation sourceLocation;
                 if (sourceLocationProvider.TryGetSourceLocation(methodGroup, out sourceLocation))
-                {
-                    test.CodeFilePath = sourceLocation.CodeFilePath;
-                    test.LineNumber = sourceLocation.LineNumber;
-                }
+                    discoveryRecorder.SendTestFound(
+                        fullyQualifiedName,
+                        displayName,
+                        sourceLocation.CodeFilePath,
+                        sourceLocation.LineNumber);
             }
             catch (Exception exception)
             {
                 discoveryRecorder.Error(exception.ToString());
-            }
 
-            discoveryRecorder.SendTestFound(test);
+                discoveryRecorder.SendTestFound(fullyQualifiedName, displayName);
+            }
         }
     }
 }

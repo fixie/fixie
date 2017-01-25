@@ -57,7 +57,6 @@
     <Compile Include="SourceLocation.cs" />
     <Compile Include="SourceLocationProvider.cs" />
     <Compile Include="ExecutionRecorder.cs" />
-    <Compile Include="Test.cs" />
     <Compile Include="VsTestDiscoverer.cs" />
     <Compile Include="VsTestExecutor.cs" />
     <Compile Include="LoggingExtensions.cs" />

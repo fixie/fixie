@@ -56,7 +56,9 @@
         {
             var lifecycleMethod =
                 type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                    .SingleOrDefault(x => x.HasSignature(typeof(void), method));
+                    .SingleOrDefault(x => x.Name == method &&
+                                          x.ReturnType == typeof(void) &&
+                                          x.GetParameters().Length == 0);
 
             if (lifecycleMethod == null)
                 return;

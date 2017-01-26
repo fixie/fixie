@@ -1,8 +1,6 @@
 ﻿namespace Fixie.Tests.Execution
 {
     using System;
-    using System.Linq;
-    using System.Reflection;
     using Assertions;
     using Fixie.Execution;
 
@@ -11,6 +9,7 @@
         public void CanDetectWhetherTypeIsDisposable()
         {
             typeof(WrongReturnType).IsDisposable().ShouldBeFalse();
+            typeof(WrongParameterType).IsDisposable().ShouldBeFalse();
             typeof(NonDisposableWithDisposeMethod).IsDisposable().ShouldBeFalse();
 
             typeof(Disposable).IsDisposable().ShouldBeTrue();
@@ -19,33 +18,23 @@
 
         public void CanDetectWhetherMethodHasDisposeSignature()
         {
-            Method<WrongReturnType>(typeof(int), "Dispose").HasDisposeSignature().ShouldBeFalse();
-            Method<Disposable>(typeof(void), "NotNamedDispose").HasDisposeSignature().ShouldBeFalse();
-            Method<Disposable>(typeof(void), "Dispose", typeof(bool)).HasDisposeSignature().ShouldBeFalse();
+            typeof(WrongReturnType).GetInstanceMethod("Dispose").HasDisposeSignature().ShouldBeFalse();
+            typeof(WrongParameterType).GetInstanceMethod("Dispose").HasDisposeSignature().ShouldBeFalse();
+            typeof(Disposable).GetInstanceMethod("NotNamedDispose").HasDisposeSignature().ShouldBeFalse();
 
-            Method<NonDisposableWithDisposeMethod>(typeof(void), "Dispose").HasDisposeSignature().ShouldBeTrue();
-            Method<Disposable>(typeof(void), "Dispose").HasDisposeSignature().ShouldBeTrue();
+            typeof(NonDisposableWithDisposeMethod).GetInstanceMethod("Dispose").HasDisposeSignature().ShouldBeTrue();
+            typeof(Disposable).GetInstanceMethod("Dispose").HasDisposeSignature().ShouldBeTrue();
+            typeof(ChildOfDisposable).GetInstanceMethod("Dispose").HasDisposeSignature().ShouldBeTrue();
         }
 
-        class WrongReturnType
-        {
-            public int Dispose() => 0;
-        }
+        class WrongReturnType { public int Dispose() => 0; }
 
-        class NonDisposableWithDisposeMethod
-        {
-            public void Dispose() { }
-        }
+        class WrongParameterType { public void Dispose(bool disposing) { } }
 
-        class Disposable : NonDisposableWithDisposeMethod, IDisposable
-        {
-            public void Dispose(bool disposing) { }
-            public void NotNamedDispose() { }
-        }
+        class NonDisposableWithDisposeMethod { public void Dispose() { } }
+
+        class Disposable : NonDisposableWithDisposeMethod, IDisposable { public void NotNamedDispose() { } }
 
         class ChildOfDisposable : Disposable { }
-
-        private static MethodInfo Method<T>(Type returnType, string name, params Type[] parameterTypes)
-            => typeof(T).GetInstanceMethods().Single(m => m.HasSignature(returnType, name, parameterTypes));
     }
 }

@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Tests
 {
     using System;
-    using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
     using Assertions;
@@ -43,25 +42,6 @@
             Method("Async").IsAsync().ShouldBeTrue();
         }
 
-        public void CanDetectWhetherMethodHasSignature()
-        {
-            var trivial = MethodBySignature<Signatures>(typeof(void), "Trivial");
-            trivial.HasSignature(typeof(int), "Trivial").ShouldBeFalse();
-            trivial.HasSignature(typeof(void), "!").ShouldBeFalse();
-            trivial.HasSignature(typeof(void), "Trivial", typeof(int)).ShouldBeFalse();
-            trivial.HasSignature(typeof(void), "Trivial").ShouldBeTrue();
-
-            var singleParam = MethodBySignature<Signatures>(typeof(int), "Params", typeof(string));
-            singleParam.HasSignature(typeof(int), "Params", typeof(int)).ShouldBeFalse();
-            singleParam.HasSignature(typeof(int), "Params", typeof(string), typeof(int)).ShouldBeFalse();
-            singleParam.HasSignature(typeof(int), "Params", typeof(string)).ShouldBeTrue();
-
-            var multipleParam = MethodBySignature<Signatures>(typeof(string), "Params", typeof(string), typeof(int));
-            multipleParam.HasSignature(typeof(string), "Params", typeof(string), typeof(string)).ShouldBeFalse();
-            multipleParam.HasSignature(typeof(string), "Params", typeof(string), typeof(int), typeof(int)).ShouldBeFalse();
-            multipleParam.HasSignature(typeof(string), "Params", typeof(string), typeof(int)).ShouldBeTrue();
-        }
-
         public void CanDetectWhetherTypeIsWithinNamespace()
         {
             var opCode = typeof(System.Reflection.Emit.OpCode);
@@ -81,13 +61,6 @@
         void ReturnsVoid() { }
         int ReturnsInt() { return 0; }
         async Task Async() { await Task.Run(() => { }); }
-
-        class Signatures
-        {
-            void Trivial() { }
-            int Params(string s) { return 0; }
-            string Params(string s, int x) { return ""; }
-        }
 
         class SampleMethodAttribute : Attribute { }
         class InheritedAttribute : Attribute { }
@@ -116,8 +89,5 @@
 
         static MethodInfo Method<T>(string name)
             => typeof(T).GetInstanceMethod(name);
-
-        private static MethodInfo MethodBySignature<T>(Type returnType, string name, params Type[] parameterTypes)
-            => typeof(T).GetInstanceMethods().Single(m => m.HasSignature(returnType, name, parameterTypes));
     }
 }

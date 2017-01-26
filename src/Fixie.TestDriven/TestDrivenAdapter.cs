@@ -6,7 +6,7 @@ namespace Fixie.TestDriven
     using System.Reflection;
     using Execution;
 
-    public class TdNetRunner : ITestRunner
+    public class TestDrivenAdapter : ITestRunner
     {
         public TestRunState RunAssembly(ITestListener testListener, Assembly assembly)
         {

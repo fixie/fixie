@@ -43,23 +43,6 @@
             Method("Async").IsAsync().ShouldBeTrue();
         }
 
-        public void CanDetectWhetherTypeIsDisposable()
-        {
-            typeof(ReflectionExtensionsTests).IsDisposable().ShouldBeFalse();
-            typeof(NonDisposableWithDisposeMethod).IsDisposable().ShouldBeFalse();
-            typeof(Disposable).IsDisposable().ShouldBeTrue();
-        }
-
-        public void CanDetectWhetherMethodHasDisposeSignature()
-        {
-            Method("ReturnsVoid").HasDisposeSignature().ShouldBeFalse();
-            Method("ReturnsInt").HasDisposeSignature().ShouldBeFalse();
-            Method("Async").HasDisposeSignature().ShouldBeFalse();
-            Method<NonDisposableWithDisposeMethod>("Dispose").HasDisposeSignature().ShouldBeTrue();
-            MethodBySignature<Disposable>(typeof(void), "Dispose", typeof(bool)).HasDisposeSignature().ShouldBeFalse();
-            MethodBySignature<Disposable>(typeof(void), "Dispose").HasDisposeSignature().ShouldBeTrue();
-        }
-
         public void CanDetectWhetherMethodHasSignature()
         {
             var trivial = MethodBySignature<Signatures>(typeof(void), "Trivial");
@@ -128,29 +111,13 @@
             public override void NoAttrribute() { }
         }
 
-        class NonDisposableWithDisposeMethod
-        {
-            public void Dispose() { }
-        }
-
-        class Disposable : NonDisposableWithDisposeMethod, IDisposable
-        {
-            public void Dispose(bool disposing) { }
-        }
-
         static MethodInfo Method(string name)
-        {
-            return Method<ReflectionExtensionsTests>(name);
-        }
+            => Method<ReflectionExtensionsTests>(name);
 
         static MethodInfo Method<T>(string name)
-        {
-            return typeof(T).GetInstanceMethod(name);
-        }
+            => typeof(T).GetInstanceMethod(name);
 
         private static MethodInfo MethodBySignature<T>(Type returnType, string name, params Type[] parameterTypes)
-        {
-            return typeof(T).GetInstanceMethods().Single(m => m.HasSignature(returnType, name, parameterTypes));
-        }
+            => typeof(T).GetInstanceMethods().Single(m => m.HasSignature(returnType, name, parameterTypes));
     }
 }

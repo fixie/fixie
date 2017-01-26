@@ -18,12 +18,12 @@
         {
             try
             {
-                bool testClassIsDisposable = testClass.IsDisposable();
+                bool testClassIsDisposable = IsDisposable(testClass);
 
                 return testClass
                     .GetMethods(BindingFlags.Public | BindingFlags.Instance)
                     .Where(method => method.DeclaringType != typeof(object))
-                    .Where(method => !(testClassIsDisposable && method.HasDisposeSignature()))
+                    .Where(method => !(testClassIsDisposable && HasDisposeSignature(method)))
                     .Where(IsMatch)
                     .ToArray();
             }
@@ -37,5 +37,11 @@
 
         bool IsMatch(MethodInfo candidate)
             => testMethodConditions.All(condition => condition(candidate));
+
+        static bool IsDisposable(Type type)
+            => type.GetInterfaces().Any(interfaceType => interfaceType == typeof(IDisposable));
+
+        static bool HasDisposeSignature(MethodInfo method)
+            => method.Name == "Dispose" && method.IsVoid() && method.GetParameters().Length == 0;
     }
 }

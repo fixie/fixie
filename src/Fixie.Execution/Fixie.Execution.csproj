@@ -87,7 +87,6 @@
     <Compile Include="ParameterDiscoverer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedirectedConsole.cs" />
-    <Compile Include="DisposalExtensions.cs" />
     <Compile Include="RemoteAssemblyResolver.cs" />
     <Compile Include="ReportFormat.cs" />
     <Compile Include="Runner.cs" />

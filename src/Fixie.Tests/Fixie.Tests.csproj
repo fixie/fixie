@@ -65,7 +65,6 @@
     <Compile Include="Execution\BusTests.cs" />
     <Compile Include="Execution\ExecutionSummaryTests.cs" />
     <Compile Include="Execution\OptionsTests.cs" />
-    <Compile Include="Execution\DisposalExtensionsTests.cs" />
     <Compile Include="MessagingTests.cs" />
     <Compile Include="SkipAttribute.cs" />
     <Compile Include="Execution\Listeners\AppVeyorListenerTests.cs" />

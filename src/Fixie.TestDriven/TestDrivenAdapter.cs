@@ -25,13 +25,6 @@ namespace Fixie.TestDriven
             {
                 var testClass = method.DeclaringType;
 
-                if (testClass.IsDisposable() && method.HasDisposeSignature())
-                {
-                    var listener = new TestDrivenListener(testListener);
-                    listener.Handle(new CaseSkipped(new Case(testClass, method), "Dispose() is not a test."));
-                    return TestRunState.Success;
-                }
-
                 return Run(testListener, runner => runner.RunMethods(assembly, testClass, method));
             }
 

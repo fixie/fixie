@@ -16,10 +16,32 @@
 
             DiscoveredTestMethods<Sample>(customConvention)
                 .ShouldEqual(
-                    "PublicInstanceNoArgsVoid",
-                    "PublicInstanceNoArgsWithReturn",
-                    "PublicInstanceWithArgsVoid",
-                    "PublicInstanceWithArgsWithReturn");
+                    "PublicInstanceNoArgsVoid()",
+                    "PublicInstanceNoArgsWithReturn()",
+                    "PublicInstanceWithArgsVoid(x)",
+                    "PublicInstanceWithArgsWithReturn(x)");
+        }
+
+        public void ShouldNotConsiderIDisposableDisposeMethod()
+        {
+            var customConvention = new Convention();
+
+            DiscoveredTestMethods<DisposableSample>(customConvention)
+                .ShouldEqual(
+                    "Dispose(disposing)",
+                    "NotNamedDispose()");
+
+            DiscoveredTestMethods<NonDisposableSample>(customConvention)
+                .ShouldEqual(
+                    "Dispose()",
+                    "Dispose(disposing)",
+                    "NotNamedDispose()");
+
+            DiscoveredTestMethods<NonDisposableByReturnTypeSample>(customConvention)
+                .ShouldEqual(
+                    "Dispose()",
+                    "Dispose(disposing)",
+                    "NotNamedDispose()");
         }
 
         public void ShouldDiscoverMethodsSatisfyingAllSpecifiedConditions()
@@ -32,7 +54,7 @@
                 .Where(method => method.Name.Contains("No"));
 
             DiscoveredTestMethods<Sample>(customConvention)
-                .ShouldEqual("PublicInstanceNoArgsVoid");
+                .ShouldEqual("PublicInstanceNoArgsVoid()");
         }
 
         public void CanDiscoverMethodsByNonInheritedAttributes()
@@ -44,7 +66,7 @@
                 .Has<SampleAttribute>();
 
             DiscoveredTestMethods<Sample>(customConvention)
-                .ShouldEqual("PublicInstanceWithArgsWithReturn");
+                .ShouldEqual("PublicInstanceWithArgsWithReturn(x)");
         }
 
         public void CanDiscoverMethodsByInheritedAttributes()
@@ -57,8 +79,8 @@
 
             DiscoveredTestMethods<Sample>(customConvention)
                 .ShouldEqual(
-                    "PublicInstanceNoArgsWithReturn",
-                    "PublicInstanceWithArgsWithReturn");
+                    "PublicInstanceNoArgsWithReturn()",
+                    "PublicInstanceWithArgsWithReturn(x)");
         }
 
         public void TheDefaultConventionShouldDiscoverSynchronousPublicInstanceVoidMethods()
@@ -67,8 +89,8 @@
 
             DiscoveredTestMethods<Sample>(defaultConvention)
                 .ShouldEqual(
-                    "PublicInstanceNoArgsVoid",
-                    "PublicInstanceWithArgsVoid");
+                    "PublicInstanceNoArgsVoid()",
+                    "PublicInstanceWithArgsVoid(x)");
         }
 
         public void TheDefaultConventionShouldDiscoverAsyncPublicInstanceMethods()
@@ -77,10 +99,10 @@
 
             DiscoveredTestMethods<AsyncSample>(defaultConvention)
                 .ShouldEqual(
-                    "PublicInstanceNoArgsVoid",
-                    "PublicInstanceNoArgsWithReturn",
-                    "PublicInstanceWithArgsVoid",
-                    "PublicInstanceWithArgsWithReturn");
+                    "PublicInstanceNoArgsVoid()",
+                    "PublicInstanceNoArgsWithReturn()",
+                    "PublicInstanceWithArgsVoid(x)",
+                    "PublicInstanceWithArgsWithReturn(x)");
         }
 
         public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
@@ -104,8 +126,8 @@
         {
             return new MethodDiscoverer(convention)
                 .TestMethods(typeof(TTestClass))
-                .OrderBy(method => method.Name, StringComparer.Ordinal)
-                .Select(method => method.Name);
+                .Select(method => $"{method.Name}({String.Join(", ", method.GetParameters().Select(x => x.Name))})")
+                .OrderBy(name => name, StringComparer.Ordinal);
         }
 
         class SampleAttribute : Attribute { }
@@ -168,6 +190,27 @@
             {
                 return Task.Run(() => 0);
             }
+        }
+
+        class DisposableSample : IDisposable
+        {
+            public void Dispose(bool disposing) { }
+            public void Dispose() { }
+            public void NotNamedDispose() { }
+        }
+
+        class NonDisposableSample
+        {
+            public void Dispose(bool disposing) { }
+            public void Dispose() { }
+            public void NotNamedDispose() { }
+        }
+
+        class NonDisposableByReturnTypeSample
+        {
+            public void Dispose(bool disposing) { }
+            public int Dispose() => 0;
+            public void NotNamedDispose() { }
         }
     }
 }

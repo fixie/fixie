@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Fixie.Internal;
 
     public class GenericArgumentResolverTests
     {
@@ -110,7 +109,10 @@
 
         static IEnumerable<Type> Resolve(string methodName, object[] parameters)
         {
-            return GenericArgumentResolver.ResolveTypeArguments(typeof(Generic).GetInstanceMethod(methodName), parameters);
+            var testClass = typeof(Generic);
+            var caseMethod = testClass.GetInstanceMethod(methodName);
+
+            return new Case(testClass, caseMethod, parameters).Method.GetGenericArguments();
         }
 
         class Generic

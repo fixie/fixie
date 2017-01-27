@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public class GenericArgumentResolver
+    class GenericArgumentResolver
     {
         public static Type[] ResolveTypeArguments(MethodInfo method, object[] parameters)
         {

@@ -8,21 +8,19 @@
     {
         public static MethodInfo TryResolveTypeArguments(MethodInfo caseMethod, object[] parameters)
         {
-            if (caseMethod.IsGenericMethodDefinition)
+            if (!caseMethod.IsGenericMethodDefinition)
+                return caseMethod;
+
+            var typeArguments = ResolveTypeArguments(caseMethod, parameters);
+
+            try
             {
-                var typeArguments = ResolveTypeArguments(caseMethod, parameters);
-
-                try
-                {
-                    return caseMethod.MakeGenericMethod(typeArguments);
-                }
-                catch (Exception)
-                {
-                    return caseMethod;
-                }
+                return caseMethod.MakeGenericMethod(typeArguments);
             }
-
-            return caseMethod;
+            catch (Exception)
+            {
+                return caseMethod;
+            }
         }
 
         static Type[] ResolveTypeArguments(MethodInfo method, object[] parameters)

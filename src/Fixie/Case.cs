@@ -19,7 +19,7 @@
 
             Method = caseMethod.TryResolveTypeArguments(parameters);
 
-            Name = ObjectExtensions.GetName(Class, Method, Parameters);
+            Name = CaseNameBuilder.GetName(Class, Method, Parameters);
 
             exceptions = new List<Exception>();
         }

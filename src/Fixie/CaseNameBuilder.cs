@@ -6,7 +6,7 @@
     using System.Reflection;
     using System.Text;
 
-    static class ObjectExtensions
+    static class CaseNameBuilder
     {
         public static string GetName(Type testClass, MethodInfo method, object[] parameters)
         {

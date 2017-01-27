@@ -62,7 +62,7 @@
     <Compile Include="Fixture.cs" />
     <Compile Include="CaseBehavior.cs" />
     <Compile Include="Conventions\MethodExpression.cs" />
-    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="CaseNameBuilder.cs" />
     <Compile Include="PreservedException.cs" />
     <Compile Include="Internal\RunContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

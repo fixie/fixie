@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie
 {
     using System;
     using System.Linq;

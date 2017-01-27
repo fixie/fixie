@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests
 {
     using System;
     using System.Collections.Generic;

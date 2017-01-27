@@ -2,9 +2,25 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using Assertions;
 
     public class GenericArgumentResolverTests
     {
+        static readonly Type[] Empty = { };
+
+        public void ShouldResolveNothingWhenThereAreNoInputParameters()
+        {
+            Resolve("NoParameters", new object[] { })
+                .ShouldEqual(Empty);
+        }
+
+        public void ShouldResolveNothingWhenThereAreNoGenericParameters()
+        {
+            Resolve("NoGenericArguments", new object[] {0, ""})
+                .ShouldEqual(Empty);
+        }
+
         public void ShouldResolveToObjectWhenGenericTypeHasNoMatchingParameters()
         {
             Resolve("NoMatchingParameters", new object[] { 0, "" })
@@ -117,6 +133,8 @@
 
         class Generic
         {
+            public void NoParameters() { }
+            public void NoGenericArguments(int i, string s) { }
             public void NoMatchingParameters<T>(int i, string s) { }
             public void OneMatchingParameter<T>(T match) { }
             public void MultipleMatchingParameter<T>(T firstMatch, T secondMatch, T thirdMatch) { }

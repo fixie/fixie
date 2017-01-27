@@ -123,6 +123,22 @@
             Resolve("MultipleGenericArguments", new object[] { 1, true, false, true, false }).ShouldEqual(typeof(object), typeof(object), typeof(object));
         }
 
+        public void ShouldResolveGenericArgumentsWhenGenericConstraintsAreSatisfied()
+        {
+            Resolve("ConstrainedGeneric", new object[] { 1 })
+                .ShouldEqual(typeof(int));
+
+            Resolve("ConstrainedGeneric", new object[] { true })
+                .ShouldEqual(typeof(bool));
+        }
+
+        public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()
+        {
+            var unresolved = Resolve("ConstrainedGeneric", new object[] { "Incompatable" }).Single();
+            unresolved.Name.ShouldEqual("T");
+            unresolved.IsGenericParameter.ShouldBeTrue();
+        }
+
         static IEnumerable<Type> Resolve(string methodName, object[] parameters)
         {
             var testClass = typeof(Generic);
@@ -141,6 +157,7 @@
             public void MultipleGenericArguments<TNoMatch, TOneMatch, TMultipleMatch>(
                 TOneMatch oneMatch,
                 TMultipleMatch firstMultiMatch, TMultipleMatch secondMultiMatch, TMultipleMatch thirdMultiMatch) { }
+            void ConstrainedGeneric<T>(T t) where T : struct { }
         }
     }
 }

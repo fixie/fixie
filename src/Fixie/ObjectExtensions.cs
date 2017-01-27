@@ -2,11 +2,26 @@
 {
     using System;
     using System.Globalization;
+    using System.Linq;
+    using System.Reflection;
     using System.Text;
 
     static class ObjectExtensions
     {
-        public static string ToDisplayString(this object parameter)
+        public static string GetName(Type testClass, MethodInfo method, object[] parameters)
+        {
+            var name = testClass.FullName + "." + method.Name;
+
+            if (method.IsGenericMethod)
+                name += $"<{string.Join(", ", method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";
+
+            if (parameters != null && parameters.Length > 0)
+                name += $"({string.Join(", ", parameters.Select(x => x.ToDisplayString()))})";
+
+            return name;
+        }
+
+        static string ToDisplayString(this object parameter)
         {
             if (parameter == null)
                 return "null";

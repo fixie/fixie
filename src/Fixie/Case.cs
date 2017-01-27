@@ -18,7 +18,7 @@
             Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
             Class = testClass;
 
-            Method = GenericArgumentResolver.TryResolveTypeArguments(caseMethod, parameters);
+            Method = caseMethod.TryResolveTypeArguments(parameters);
 
             Name = Class.FullName + "." + caseMethod.Name;
 

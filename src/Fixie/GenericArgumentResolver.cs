@@ -4,9 +4,9 @@
     using System.Linq;
     using System.Reflection;
 
-    class GenericArgumentResolver
+    static class GenericArgumentResolver
     {
-        public static MethodInfo TryResolveTypeArguments(MethodInfo caseMethod, object[] parameters)
+        public static MethodInfo TryResolveTypeArguments(this MethodInfo caseMethod, object[] parameters)
         {
             if (!caseMethod.IsGenericMethodDefinition)
                 return caseMethod;

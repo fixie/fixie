@@ -1,10 +1,10 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie
 {
     using System;
     using System.Globalization;
     using System.Text;
 
-    public static class ObjectExtensions
+    static class ObjectExtensions
     {
         public static string ToDisplayString(this object parameter)
         {

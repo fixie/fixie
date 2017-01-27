@@ -14,20 +14,29 @@
         Handler<CasePassed>,
         Handler<CaseFailed>
     {
-        readonly string url;
-        readonly HttpClient client;
+        public delegate void PostAction(string uri, string mediaType, string content);
+
+        readonly PostAction postAction;
+        readonly string uri;
         string fileName;
 
+        static readonly HttpClient Client;
+
+        static AppVeyorListener()
+        {
+            Client = new HttpClient();
+            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        }
+
         public AppVeyorListener()
-            : this(Environment.GetEnvironmentVariable("APPVEYOR_API_URL"), new HttpClient())
+            : this(Environment.GetEnvironmentVariable("APPVEYOR_API_URL"), Post)
         {
         }
 
-        public AppVeyorListener(string url, HttpClient client)
+        public AppVeyorListener(string uri, PostAction postAction)
         {
-            this.url = new Uri(new Uri(url), "api/tests").ToString();
-            this.client = client;
-            this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            this.postAction = postAction;
+            this.uri = new Uri(new Uri(uri), "api/tests").ToString();
         }
 
         public void Handle(AssemblyStarted message)
@@ -73,15 +82,14 @@
 
             customize?.Invoke(testResult);
 
-            Post(testResult);
+            postAction(uri, "application/json", new JavaScriptSerializer().Serialize(testResult));
         }
 
-        void Post(TestResult result)
+        static void Post(string uri, string mediaType, string content)
         {
-            var content = new JavaScriptSerializer().Serialize(result);
-            client.PostAsync(url, new StringContent(content, Encoding.UTF8, "application/json"))
-                  .ContinueWith(x => x.Result.EnsureSuccessStatusCode())
-                  .Wait();
+            Client.PostAsync(uri, new StringContent(content, Encoding.UTF8, mediaType))
+                .ContinueWith(x => x.Result.EnsureSuccessStatusCode())
+                .Wait();
         }
 
         public class TestResult

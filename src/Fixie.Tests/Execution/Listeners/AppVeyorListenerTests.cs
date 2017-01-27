@@ -1,12 +1,6 @@
 ﻿namespace Fixie.Tests.Execution.Listeners
 {
-    using System;
     using System.Collections.Generic;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Threading;
-    using System.Threading.Tasks;
     using System.Web.Script.Serialization;
     using Assertions;
     using Fixie.Execution;
@@ -18,23 +12,26 @@
         {
             var results = new List<AppVeyorListener.TestResult>();
 
-            using (var httpClient = FakeHttpClient(results))
+            var listener = new AppVeyorListener("http://localhost:4567", (uri, mediaType, content) =>
             {
-                var listener = new AppVeyorListener("http://localhost:4567", httpClient);
+                uri.ShouldEqual("http://localhost:4567/api/tests");
+                mediaType.ShouldEqual("application/json");
 
-                using (var console = new RedirectedConsole())
-                {
-                    Run(listener);
+                results.Add(new JavaScriptSerializer().Deserialize<AppVeyorListener.TestResult>(content));
+            });
 
-                    console.Lines()
-                        .ShouldEqual(
-                            "Console.Out: Fail",
-                            "Console.Error: Fail",
-                            "Console.Out: FailByAssertion",
-                            "Console.Error: FailByAssertion",
-                            "Console.Out: Pass",
-                            "Console.Error: Pass");
-                }
+            using (var console = new RedirectedConsole())
+            {
+                Run(listener);
+
+                console.Lines()
+                    .ShouldEqual(
+                        "Console.Out: Fail",
+                        "Console.Error: Fail",
+                        "Console.Out: FailByAssertion",
+                        "Console.Error: FailByAssertion",
+                        "Console.Out: Pass",
+                        "Console.Error: Pass");
             }
 
             results.Count.ShouldEqual(5);
@@ -93,37 +90,6 @@
             pass.ErrorMessage.ShouldBeNull();
             pass.ErrorStackTrace.ShouldBeNull();
             pass.StdOut.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
-        }
-
-        static HttpClient FakeHttpClient(List<AppVeyorListener.TestResult> results)
-        {
-            return new HttpClient(new FakeHandler(request =>
-            {
-                request.ShouldNotBeNull();
-                request.RequestUri.AbsoluteUri.ShouldEqual("http://localhost:4567/api/tests");
-                request.Headers.Accept.ShouldContain(new MediaTypeWithQualityHeaderValue("application/json"));
-                request.Content.Headers.ContentType.ToString().ShouldEqual("application/json; charset=utf-8");
-
-                var requestContent = request.Content.ReadAsStringAsync().Result;
-                results.Add(new JavaScriptSerializer().Deserialize<AppVeyorListener.TestResult>(requestContent));
-
-                return new HttpResponseMessage { StatusCode = HttpStatusCode.Accepted };
-            }));
-        }
-
-        class FakeHandler : DelegatingHandler
-        {
-            readonly Func<HttpRequestMessage, HttpResponseMessage> func;
-
-            public FakeHandler(Func<HttpRequestMessage, HttpResponseMessage> func)
-            {
-                this.func = func;
-            }
-
-            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-            {
-                return Task.FromResult(func(request));
-            }
         }
     }
 }

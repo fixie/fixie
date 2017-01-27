@@ -134,8 +134,8 @@
 
         public void ShouldUseGenericTypeParametersInNameWhenGenericTypeParametersCannotBeResolved()
         {
-            Case("ConstrainedGeneric", "Incompatable")
-                .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<T>(\"Incompatable\")");
+            Case("ConstrainedGeneric", "Incompatible")
+                .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<T>(\"Incompatible\")");
         }
 
         public void ShouldHaveConcreteTestClass()
@@ -198,7 +198,7 @@
             resolvedParameterType.Name.ShouldEqual("Boolean");
             resolvedParameterType.IsGenericParameter.ShouldBeFalse();
 
-            method = Case("ConstrainedGeneric", "Incompatable").Method;
+            method = Case("ConstrainedGeneric", "Incompatible").Method;
             method.Name.ShouldEqual("ConstrainedGeneric");
             var unresolvedParameterType = method.GetParameters().Single().ParameterType;
             unresolvedParameterType.Name.ShouldEqual("T");

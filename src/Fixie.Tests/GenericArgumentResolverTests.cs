@@ -134,7 +134,7 @@
 
         public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()
         {
-            var unresolved = Resolve("ConstrainedGeneric", new object[] { "Incompatable" }).Single();
+            var unresolved = Resolve("ConstrainedGeneric", new object[] { "Incompatible" }).Single();
             unresolved.Name.ShouldEqual("T");
             unresolved.IsGenericParameter.ShouldBeTrue();
         }

@@ -6,7 +6,26 @@
 
     class GenericArgumentResolver
     {
-        public static Type[] ResolveTypeArguments(MethodInfo method, object[] parameters)
+        public static MethodInfo TryResolveTypeArguments(MethodInfo caseMethod, object[] parameters)
+        {
+            if (caseMethod.IsGenericMethodDefinition)
+            {
+                var typeArguments = ResolveTypeArguments(caseMethod, parameters);
+
+                try
+                {
+                    return caseMethod.MakeGenericMethod(typeArguments);
+                }
+                catch (Exception)
+                {
+                    return caseMethod;
+                }
+            }
+
+            return caseMethod;
+        }
+
+        static Type[] ResolveTypeArguments(MethodInfo method, object[] parameters)
         {
             var genericArguments = method.GetGenericArguments();
             var parameterTypes = method.GetParameters().Select(p => p.ParameterType).ToArray();

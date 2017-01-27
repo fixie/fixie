@@ -18,7 +18,7 @@
             Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
             Class = testClass;
 
-            Method = TryResolveTypeArguments(caseMethod, parameters);
+            Method = GenericArgumentResolver.TryResolveTypeArguments(caseMethod, parameters);
 
             Name = Class.FullName + "." + caseMethod.Name;
 
@@ -29,25 +29,6 @@
                 Name += $"({string.Join(", ", Parameters.Select(x => x.ToDisplayString()))})";
 
             exceptions = new List<Exception>();
-        }
-
-        private static MethodInfo TryResolveTypeArguments(MethodInfo caseMethod, object[] parameters)
-        {
-            if (caseMethod.IsGenericMethodDefinition)
-            {
-                var typeArguments = GenericArgumentResolver.ResolveTypeArguments(caseMethod, parameters);
-
-                try
-                {
-                    return caseMethod.MakeGenericMethod(typeArguments);
-                }
-                catch (Exception)
-                {
-                    return caseMethod;
-                }
-            }
-
-            return caseMethod;
         }
 
         /// <summary>

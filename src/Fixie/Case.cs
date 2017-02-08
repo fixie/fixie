@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using Internal;
 
@@ -18,36 +17,11 @@
             Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
             Class = testClass;
 
-            Method = TryResolveTypeArguments(caseMethod, parameters);
+            Method = caseMethod.TryResolveTypeArguments(parameters);
 
-            Name = Class.FullName + "." + caseMethod.Name;
-
-            if (Method.IsGenericMethod)
-                Name += $"<{string.Join(", ", Method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";
-
-            if (Parameters != null && Parameters.Length > 0)
-                Name += $"({string.Join(", ", Parameters.Select(x => x.ToDisplayString()))})";
+            Name = CaseNameBuilder.GetName(Class, Method, Parameters);
 
             exceptions = new List<Exception>();
-        }
-
-        private static MethodInfo TryResolveTypeArguments(MethodInfo caseMethod, object[] parameters)
-        {
-            if (caseMethod.IsGenericMethodDefinition)
-            {
-                var typeArguments = GenericArgumentResolver.ResolveTypeArguments(caseMethod, parameters);
-
-                try
-                {
-                    return caseMethod.MakeGenericMethod(typeArguments);
-                }
-                catch (Exception)
-                {
-                    return caseMethod;
-                }
-            }
-
-            return caseMethod;
         }
 
         /// <summary>

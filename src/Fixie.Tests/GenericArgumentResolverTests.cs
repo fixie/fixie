@@ -1,11 +1,26 @@
-﻿namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests
 {
     using System;
     using System.Collections.Generic;
-    using Fixie.Internal;
+    using System.Linq;
+    using Assertions;
 
     public class GenericArgumentResolverTests
     {
+        static readonly Type[] Empty = { };
+
+        public void ShouldResolveNothingWhenThereAreNoInputParameters()
+        {
+            Resolve("NoParameters", new object[] { })
+                .ShouldEqual(Empty);
+        }
+
+        public void ShouldResolveNothingWhenThereAreNoGenericParameters()
+        {
+            Resolve("NoGenericArguments", new object[] {0, ""})
+                .ShouldEqual(Empty);
+        }
+
         public void ShouldResolveToObjectWhenGenericTypeHasNoMatchingParameters()
         {
             Resolve("NoMatchingParameters", new object[] { 0, "" })
@@ -108,19 +123,41 @@
             Resolve("MultipleGenericArguments", new object[] { 1, true, false, true, false }).ShouldEqual(typeof(object), typeof(object), typeof(object));
         }
 
+        public void ShouldResolveGenericArgumentsWhenGenericConstraintsAreSatisfied()
+        {
+            Resolve("ConstrainedGeneric", new object[] { 1 })
+                .ShouldEqual(typeof(int));
+
+            Resolve("ConstrainedGeneric", new object[] { true })
+                .ShouldEqual(typeof(bool));
+        }
+
+        public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()
+        {
+            var unresolved = Resolve("ConstrainedGeneric", new object[] { "Incompatible" }).Single();
+            unresolved.Name.ShouldEqual("T");
+            unresolved.IsGenericParameter.ShouldBeTrue();
+        }
+
         static IEnumerable<Type> Resolve(string methodName, object[] parameters)
         {
-            return GenericArgumentResolver.ResolveTypeArguments(typeof(Generic).GetInstanceMethod(methodName), parameters);
+            var testClass = typeof(Generic);
+            var caseMethod = testClass.GetInstanceMethod(methodName);
+
+            return new Case(testClass, caseMethod, parameters).Method.GetGenericArguments();
         }
 
         class Generic
         {
+            public void NoParameters() { }
+            public void NoGenericArguments(int i, string s) { }
             public void NoMatchingParameters<T>(int i, string s) { }
             public void OneMatchingParameter<T>(T match) { }
             public void MultipleMatchingParameter<T>(T firstMatch, T secondMatch, T thirdMatch) { }
             public void MultipleGenericArguments<TNoMatch, TOneMatch, TMultipleMatch>(
                 TOneMatch oneMatch,
                 TMultipleMatch firstMultiMatch, TMultipleMatch secondMultiMatch, TMultipleMatch thirdMultiMatch) { }
+            void ConstrainedGeneric<T>(T t) where T : struct { }
         }
     }
 }

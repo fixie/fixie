@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Internal;
 
     /// <summary>
     /// A test class being executed.

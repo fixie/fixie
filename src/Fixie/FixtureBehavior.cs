@@ -1,7 +1,6 @@
 ﻿namespace Fixie
 {
     using System;
-    using Internal;
 
     /// <summary>
     /// Defines a behavior that can wrap each test fixture (test class instance).

@@ -41,8 +41,8 @@
     <Compile Include="Framework.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
     <Compile Include="MethodGroup.cs" />
-    <Compile Include="Internal\Behavior.cs" />
-    <Compile Include="Internal\BehaviorContext.cs" />
+    <Compile Include="Behavior.cs" />
+    <Compile Include="BehaviorContext.cs" />
     <Compile Include="FixtureBehavior.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="ConstructionFrequency.cs" />

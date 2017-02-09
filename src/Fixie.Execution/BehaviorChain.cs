@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Internal;
 
     public class BehaviorChain<TContext> where TContext : BehaviorContext
     {

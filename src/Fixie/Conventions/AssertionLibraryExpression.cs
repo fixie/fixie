@@ -1,7 +1,6 @@
 namespace Fixie.Conventions
 {
     using System;
-    using Internal;
 
     public class AssertionLibraryExpression
     {

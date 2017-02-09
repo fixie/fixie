@@ -2,7 +2,6 @@ namespace Fixie.Conventions
 {
     using System;
     using System.Linq;
-    using Internal;
 
     public class ClassExpression
     {

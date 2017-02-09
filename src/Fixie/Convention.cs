@@ -4,7 +4,6 @@
     using System.Reflection;
     using Cli;
     using Conventions;
-    using Internal;
 
     /// <summary>
     /// Base class for all Fixie conventions.  Subclass Convention to customize test discovery and execution.

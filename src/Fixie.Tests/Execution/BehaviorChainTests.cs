@@ -5,7 +5,7 @@ namespace Fixie.Tests.Execution
     using System.Linq;
     using Assertions;
     using Fixie.Execution;
-    using Fixie.Internal;
+    using Internal;
 
     public class BehaviorChainTests
     {

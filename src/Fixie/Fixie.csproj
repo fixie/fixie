@@ -44,8 +44,8 @@
     <Compile Include="Internal\Behavior.cs" />
     <Compile Include="Internal\BehaviorContext.cs" />
     <Compile Include="FixtureBehavior.cs" />
-    <Compile Include="Internal\Configuration.cs" />
-    <Compile Include="Internal\ConstructionFrequency.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="ConstructionFrequency.cs" />
     <Compile Include="ParameterSource.cs" />
     <Compile Include="SkipBehavior.cs" />
     <Compile Include="Conventions\ClassExpression.cs" />
@@ -64,7 +64,7 @@
     <Compile Include="Conventions\MethodExpression.cs" />
     <Compile Include="CaseNameBuilder.cs" />
     <Compile Include="PreservedException.cs" />
-    <Compile Include="Internal\RunContext.cs" />
+    <Compile Include="RunContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionExtensions.cs" />
   </ItemGroup>

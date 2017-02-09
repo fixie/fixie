@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Execution
 {
     using System.Reflection;
-    using Internal;
 
     public class Discoverer
     {

@@ -1,5 +1,7 @@
 *.txt text
 *.md text
 
+*.sln text
+
 *.dll binary
 *.png binary

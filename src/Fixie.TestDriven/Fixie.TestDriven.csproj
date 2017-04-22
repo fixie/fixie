@@ -4,4 +4,10 @@
     <TargetFramework>net452</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="TestDriven.Framework">
+      <HintPath>..\..\lib\TestDriven.Framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

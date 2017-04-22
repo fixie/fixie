@@ -2,6 +2,8 @@
 *.md text
 
 *.sln text
+*.csproj text
+*.cs text diff=csharp
 
 *.dll binary
 *.png binary

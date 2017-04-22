@@ -5,9 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fixie.Execution\Fixie.Execution.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="TestDriven.Framework">
       <HintPath>..\..\lib\TestDriven.Framework.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Fixie.dll.tdnet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

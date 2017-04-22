@@ -5,5 +5,7 @@
 *.csproj text
 *.cs text diff=csharp
 
+*.tdnet text
+
 *.dll binary
 *.png binary

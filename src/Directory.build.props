@@ -1,0 +1,9 @@
+﻿<Project>
+    <PropertyGroup>
+        <Product>Fixie</Product>
+        <VersionPrefix>2.0.0</VersionPrefix>
+        <VersionSuffix>alpha-0000</VersionSuffix>
+        <Authors>Patrick Lioi</Authors>
+        <Copyright>Copyright © 2013-2017 Patrick Lioi</Copyright>
+    </PropertyGroup>
+</Project>

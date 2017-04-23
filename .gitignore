@@ -1,3 +1,4 @@
 /src/.vs/
 /src/**/bin/
 /src/**/obj/
+/packages

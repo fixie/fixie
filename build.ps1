@@ -1,0 +1,117 @@
+﻿param([int]$buildNumber)
+
+. .\build-helpers
+
+$versionPrefix = "2.0.0"
+$prerelease = $true
+
+$authors = "Patrick Lioi"
+$copyright = copyright 2013 $authors
+$configuration = 'Release'
+$versionSuffix = if ($prerelease) { "alpha-{0:D4}" -f $buildNumber } else { "" }
+
+function License {
+    mit-license $copyright
+}
+
+function Assembly-Properties {
+    generate "src\Directory.build.props" @"
+<Project>
+    <PropertyGroup>
+        <Product>Fixie</Product>
+        <VersionPrefix>$versionPrefix</VersionPrefix>
+        <VersionSuffix>$versionSuffix</VersionSuffix>
+        <Authors>$authors</Authors>
+        <Copyright>$copyright</Copyright>
+    </PropertyGroup>
+</Project>
+"@
+}
+
+function Clean {
+    exec { & dotnet clean src -c $configuration }
+}
+
+function Restore {
+    exec { & dotnet restore src -s https://api.nuget.org/v3/index.json }
+}
+
+function Build {
+    exec { & dotnet build src -c $configuration }
+}
+
+function Test {
+    Run-Tests "Fixie.Console"
+}
+
+function Test-32 {
+    Run-Tests "Fixie.Console.x86"
+}
+
+function Run-Tests($runner) {
+    $fixie = resolve-path .\src\Fixie.Console\bin\$configuration\net452\$runner.exe
+    exec { & $fixie .\src\Fixie.Tests\bin\$configuration\net452\Fixie.Tests.dll }
+    exec { & $fixie .\src\Fixie.Samples\bin\$configuration\net452\Fixie.Samples.dll }
+}
+
+function Nuspec {
+    $version = $versionPrefix
+    if ($versionSuffix -ne "") {
+        $version = "$version-$versionSuffix"
+    }
+
+    generate "src\Fixie\Fixie.nuspec" @"
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Fixie</id>
+    <version>$version</version>
+    <title>Fixie</title>
+    <authors>$authors</authors>
+    <owners>$authors</owners>
+    <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://fixie.github.io</projectUrl>
+    <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A convention-based test framework.</description>
+    <references>
+      <reference file="Fixie.dll" />
+    </references>
+  </metadata>
+  <files>
+    <file src="..\Fixie\bin\Release\net452\Fixie.dll" target="lib\net45" />
+    <file src="..\Fixie.Console\bin\Release\net452\Fixie.Console.exe" target="lib\net45" />
+    <file src="..\Fixie.Console\bin\Release\net452\Fixie.Console.x86.exe" target="lib\net45" />
+    <file src="..\Fixie.Execution\bin\Release\net452\Fixie.Execution.dll" target="lib\net45" />
+    <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" target="lib\net45" />
+    <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" target="lib\net45" />
+    <file src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" target="lib\net45"/>
+  </files>
+</package>
+"@
+}
+
+function Package {
+    exec { & dotnet pack src\Fixie `
+                    -c $configuration `
+                    -o ..\..\packages `
+                    --include-symbols `
+                    --no-build `
+                    /p:NuspecFile=Fixie.nuspec }
+}
+
+run-build {
+    step { License }
+    step { Assembly-Properties }
+    step { Clean }
+    step { Restore }
+    step { Build }
+    step { Test }
+    step { Test-32 }
+    step { Nuspec }
+    step { Package }
+}

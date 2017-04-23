@@ -5,6 +5,9 @@
 *.csproj text
 *.cs text diff=csharp
 
+*.config text
+*.xml text
+*.xsd text
 *.tdnet text
 
 *.dll binary

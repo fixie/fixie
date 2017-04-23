@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net452</TargetFramework>
+    <OutputType>exe</OutputType>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
 

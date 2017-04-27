@@ -4,15 +4,17 @@
 *.cmd text
 *.ps1 text
 
-*.sln text eol=crlf merge=union
-*.csproj text merge=union
+*.sln text
+*.csproj text
 *.cs text diff=csharp
-*.tdnet text
+
+*.props text
 *.nuspec text
 
-*.Config text
 *.config text
-*.targets text
+*.xml text
+*.xsd text
+*.tdnet text
 
-*.exe binary
 *.dll binary
+*.png binary

@@ -1,141 +1,117 @@
-Framework '4.5.2'
+ï»¿param([int]$buildNumber)
 
-properties {
-    $birthYear = 2013
-    $maintainers = "Patrick Lioi"
+. .\build-helpers
 
-    $configuration = 'Release'
-    $src = resolve-path '.\src'
-    $tools = resolve-path '.\tools'
-    $version = [IO.File]::ReadAllText('.\VERSION.txt')
-    $projects = @(gci $src -rec -filter *.csproj)
-    $nonPublishedProjects = "Build","Fixie.Tests","Fixie.Samples","Fixie.Assertions"
+$versionPrefix = "2.0.0"
+$prerelease = $true
+
+$authors = "Patrick Lioi"
+$copyright = copyright 2013 $authors
+$configuration = 'Release'
+$versionSuffix = if ($prerelease) { "alpha-{0:D4}" -f $buildNumber } else { "" }
+
+function License {
+    mit-license $copyright
 }
 
-task default -depends Test
-
-task Package -depends Test {
-    rd .\package -recurse -force -ErrorAction SilentlyContinue | out-null
-    mkdir .\package -ErrorAction SilentlyContinue | out-null
-    exec { & $tools\NuGet.exe pack $src\Fixie\Fixie.csproj -Symbols -Prop Configuration=$configuration -OutputDirectory .\package }
-
-    write-host
-    write-host "To publish these packages, issue the following command:"
-    write-host "   tools\NuGet push .\package\Fixie.$version.nupkg"
-}
-
-task Test -depends Compile {
-    run-tests "Fixie.Console.exe"
-}
-
-task Test32 -depends Compile {
-    run-tests "Fixie.Console.x86.exe"
-}
-
-function run-tests($exe) {
-    $fixieRunner = resolve-path ".\build\$exe"
-    exec { & $fixieRunner $src\Fixie.Tests\bin\$configuration\Fixie.Tests.dll }
-    exec { & $fixieRunner $src\Fixie.Samples\bin\$configuration\Fixie.Samples.dll }
-}
-
-task Compile -depends SanityCheckOutputPaths, AssemblyInfo, License {
-  rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
-  exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
-  exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration $src\Fixie.sln }
-}
-
-task SanityCheckOutputPaths {
-    $blankLine = ([System.Environment]::NewLine + [System.Environment]::NewLine)
-    $expected = "..\..\build\"
-
-    foreach ($project in $projects) {
-        $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
-
-        $lines = [System.IO.File]::ReadAllLines($project.FullName, [System.Text.Encoding]::UTF8)
-
-        if (!($nonPublishedProjects -contains $projectName)) {
-            foreach($line in $lines) {
-                if ($line.Contains("<OutputPath>")) {
-
-                    $outputPath = [regex]::Replace($line, '\s*<OutputPath>(.+)</OutputPath>\s*', '$1')
-
-                    if($outputPath -ne $expected){
-                        $summary = "The project '$projectName' has a suspect *.csproj file."
-                        $detail = "Expected OutputPath to be $expected for all configurations."
-
-                        Write-Host -ForegroundColor Yellow "$($blankLine)$($summary)  $($detail)$($blankLine)"
-                        throw $summary
-                    }
-                }
-            }
-        }
-    }
-}
-
-task AssemblyInfo {
-    $assemblyVersion = $version
-    if ($assemblyVersion.Contains("-")) {
-        $assemblyVersion = $assemblyVersion.Substring(0, $assemblyVersion.IndexOf("-"))
-    }
-
-    $copyright = get-copyright
-
-    foreach ($project in $projects) {
-        $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
-
-        if ($projectName.Contains(".x86")) {
-            continue;
-        }
-
-        if ($projectName -eq "Build") {
-            continue;
-        }
-
-        regenerate-file "$($project.DirectoryName)\Properties\AssemblyInfo.cs" @"
-using System.Reflection;
-using System.Runtime.InteropServices;
-
-[assembly: ComVisible(false)]
-[assembly: AssemblyProduct("Fixie")]
-[assembly: AssemblyTitle("$projectName")]
-[assembly: AssemblyVersion("$assemblyVersion")]
-[assembly: AssemblyFileVersion("$assemblyVersion")]
-[assembly: AssemblyInformationalVersion("$version")]
-[assembly: AssemblyCopyright("$copyright")]
-[assembly: AssemblyCompany("$maintainers")]
-[assembly: AssemblyConfiguration("$configuration")]
-"@
-    }
-}
-
-task License {
-    $copyright = get-copyright
-
-    regenerate-file "LICENSE.txt" @"
-The MIT License (MIT)
-$copyright
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+function Assembly-Properties {
+    generate "src\Directory.build.props" @"
+<Project>
+    <PropertyGroup>
+        <Product>Fixie</Product>
+        <VersionPrefix>$versionPrefix</VersionPrefix>
+        <VersionSuffix>$versionSuffix</VersionSuffix>
+        <Authors>$authors</Authors>
+        <Copyright>$copyright</Copyright>
+    </PropertyGroup>
+</Project>
 "@
 }
 
-function get-copyright {
-    $date = Get-Date
-    $year = $date.Year
-    $copyrightSpan = if ($year -eq $birthYear) { $year } else { "$birthYear-$year" }
-    return "Copyright © $copyrightSpan $maintainers"
+function Clean {
+    exec { & dotnet clean src -c $configuration }
 }
 
-function regenerate-file($path, $newContent) {
-    $oldContent = [IO.File]::ReadAllText($path)
+function Restore {
+    exec { & dotnet restore src -s https://api.nuget.org/v3/index.json }
+}
 
-    if ($newContent -ne $oldContent) {
-        $relativePath = Resolve-Path -Relative $path
-        write-host "Generating $relativePath"
-        [System.IO.File]::WriteAllText($path, $newContent, [System.Text.Encoding]::UTF8)
+function Build {
+    exec { & dotnet build src -c $configuration }
+}
+
+function Test {
+    Run-Tests "Fixie.Console"
+}
+
+function Test-32 {
+    Run-Tests "Fixie.Console.x86"
+}
+
+function Run-Tests($runner) {
+    $fixie = resolve-path .\src\Fixie.Console\bin\$configuration\net452\$runner.exe
+    exec { & $fixie .\src\Fixie.Tests\bin\$configuration\net452\Fixie.Tests.dll }
+    exec { & $fixie .\src\Fixie.Samples\bin\$configuration\net452\Fixie.Samples.dll }
+}
+
+function Nuspec {
+    $version = $versionPrefix
+    if ($versionSuffix -ne "") {
+        $version = "$version-$versionSuffix"
     }
+
+    generate "src\Fixie\Fixie.nuspec" @"
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Fixie</id>
+    <version>$version</version>
+    <title>Fixie</title>
+    <authors>$authors</authors>
+    <owners>$authors</owners>
+    <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://fixie.github.io</projectUrl>
+    <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A convention-based test framework.</description>
+    <references>
+      <reference file="Fixie.dll" />
+    </references>
+  </metadata>
+  <files>
+    <file src="..\Fixie\bin\Release\net452\Fixie.dll" target="lib\net45" />
+    <file src="..\Fixie.Console\bin\Release\net452\Fixie.Console.exe" target="lib\net45" />
+    <file src="..\Fixie.Console\bin\Release\net452\Fixie.Console.x86.exe" target="lib\net45" />
+    <file src="..\Fixie.Execution\bin\Release\net452\Fixie.Execution.dll" target="lib\net45" />
+    <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" target="lib\net45" />
+    <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" target="lib\net45" />
+    <file src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" target="lib\net45"/>
+  </files>
+</package>
+"@
+}
+
+function Package {
+    exec { & dotnet pack src\Fixie `
+                    -c $configuration `
+                    -o ..\..\packages `
+                    --include-symbols `
+                    --no-build `
+                    /p:NuspecFile=Fixie.nuspec }
+}
+
+run-build {
+    step { License }
+    step { Assembly-Properties }
+    step { Clean }
+    step { Restore }
+    step { Build }
+    step { Test }
+    step { Test-32 }
+    step { Nuspec }
+    step { Package }
 }

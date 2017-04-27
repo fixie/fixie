@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0"?>
 <package>
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <id>Fixie</id>
+    <version>2.0.0-alpha-0000</version>
+    <title>Fixie</title>
+    <authors>Patrick Lioi</authors>
+    <owners>Patrick Lioi</owners>
     <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://fixie.github.io</projectUrl>
     <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
@@ -16,17 +16,16 @@
     </references>
   </metadata>
   <files>
-    <file src="..\..\build\Fixie.Execution.dll" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.Console.exe" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.Console.exe.config" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.Console.x86.exe" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.Console.x86.exe.config" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.dll.tdnet" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.TestDriven.dll" target="lib/net45"></file>
-    <file src="..\..\build\TestDriven.Framework.dll" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.VisualStudio.TestAdapter.dll" target="lib/net45"></file>
-    <file src="..\..\build\Mono.Cecil.dll" target="lib/net45"></file>
-    <file src="..\..\build\Mono.Cecil.Rocks.dll" target="lib/net45"></file>
-    <file src="..\..\build\Mono.Cecil.Pdb.dll" target="lib/net45"></file>
+    <file src="..\Fixie\bin\Release\net452\Fixie.dll" target="lib\net45" />
+    <file src="..\Fixie.Console\bin\Release\net452\Fixie.Console.exe" target="lib\net45" />
+    <file src="..\Fixie.Console\bin\Release\net452\Fixie.Console.x86.exe" target="lib\net45" />
+    <file src="..\Fixie.Execution\bin\Release\net452\Fixie.Execution.dll" target="lib\net45" />
+    <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" target="lib\net45" />
+    <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" target="lib\net45" />
+    <file src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" target="lib\net45" />
+    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" target="lib\net45"/>
   </files>
 </package>

@@ -19,9 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.TestPlatform.ObjectModel">
-      <HintPath>..\..\lib\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll</HintPath>
-    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="TestDriven.Framework">

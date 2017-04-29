@@ -12,10 +12,4 @@
     <ProjectReference Include="..\Fixie.Execution\Fixie.Execution.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.TestPlatform.ObjectModel">
-      <HintPath>..\..\lib\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

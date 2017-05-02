@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Execution;
     using Fixie.Execution;
     using Fixie.VisualStudio.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -12,11 +11,6 @@
 
     public class VisualStudioExecutionListenerTests : MessagingTests
     {
-        public void ShouldAllowRunnersInOtherAppDomainsToReportTestExecutionToVisualStudio()
-        {
-            typeof(IExecutionRecorder).ShouldBeSafeAppDomainCommunicationInterface();
-        }
-
         public void ShouldReportResultsToExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";

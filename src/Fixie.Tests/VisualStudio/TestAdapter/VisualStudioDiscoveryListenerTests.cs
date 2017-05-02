@@ -3,7 +3,6 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
     using System.Collections.Generic;
     using System.Linq;
     using Assertions;
-    using Execution;
     using Fixie.VisualStudio.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -11,11 +10,6 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
 
     public class VisualStudioDiscoveryListenerTests : MessagingTests
     {
-        public void ShouldAllowRunnersInOtherAppDomainsToReportTestDiscoveryToVisualStudio()
-        {
-            typeof(IDiscoveryRecorder).ShouldBeSafeAppDomainCommunicationInterface();
-        }
-
         public void ShouldReportDiscoveredMethodsToDiscoverySink()
         {
             var assemblyPath = typeof(MessagingTests).Assembly.Location;

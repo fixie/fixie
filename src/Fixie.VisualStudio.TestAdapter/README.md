@@ -29,7 +29,7 @@ with the list of tests found at discovery time.
 4. Visual Studio requires that new versions of the runner be installed by
 installing a NuGet package.  It is not enough to simply have the dlls under
 your packages folder.  As a consequence, the VS runner doesn't run on the Fixie
-solution itself. See https://github.com/fixie/fixie.runners.sandbox for
+solution itself. See https://github.com/fixie/fixie.integration for
 a sample project which can be used to test the Visual Studio Test Adapter.
 5. It is highly likely that misleading errors will be reported in the Tests Output window upon upgrading.
 When users of the Test Adapter upgrade to a new version Fixie, it is recommended that they remove the
@@ -105,11 +105,11 @@ root of your copy of the Fixie repository.
 3. `build package` at the command line to locally produce a new build of the
 NuGet package.
 4. Note the creation of the package file inside the package/ folder.
-5. Open the `fixie.runners.sandbox` solution, uninstall Fixie from all projects,
+5. Open the `fixie.integration` solution, uninstall Fixie from all projects,
 close Test Explorer, and close all instances of Visual Studio.
 6. Delete the contents of `%TEMP%\VisualStudioTestExplorerExtensions` and reopen
-the `fixie.runners.sandbox` solution.
-7. In `fixie.runners.sandbox`, resinstall Fixie but from your local package
+the `fixie.integration` solution.
+7. In `fixie.integration`, resinstall Fixie but from your local package
 source.
-8. Run tests within the `fixie.runners.sandbox` solution to test the effect of
+8. Run tests within the `fixie.integration` solution to test the effect of
 your changes.

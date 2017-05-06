@@ -7,9 +7,9 @@
         Handler<CasePassed>,
         Handler<CaseFailed>
     {
-        readonly ExecutionRecorder log;
+        readonly IExecutionRecorder log;
 
-        public VisualStudioExecutionListener(ExecutionRecorder log)
+        public VisualStudioExecutionListener(IExecutionRecorder log)
         {
             this.log = log;
         }

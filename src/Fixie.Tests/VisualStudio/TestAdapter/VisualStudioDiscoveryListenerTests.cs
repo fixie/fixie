@@ -13,7 +13,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
     {
         public void ShouldAllowRunnersInOtherAppDomainsToReportTestDiscoveryToVisualStudio()
         {
-            typeof(DiscoveryRecorder).ShouldBeSafeAppDomainCommunicationInterface();
+            typeof(IDiscoveryRecorder).ShouldBeSafeAppDomainCommunicationInterface();
         }
 
         public void ShouldReportDiscoveredMethodsToDiscoverySink()

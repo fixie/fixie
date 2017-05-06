@@ -5,10 +5,10 @@
 
     public class VisualStudioDiscoveryListener : Handler<MethodDiscovered>
     {
-        readonly DiscoveryRecorder discoveryRecorder;
+        readonly IDiscoveryRecorder discoveryRecorder;
         readonly SourceLocationProvider sourceLocationProvider;
 
-        public VisualStudioDiscoveryListener(DiscoveryRecorder discoveryRecorder, string assemblyPath)
+        public VisualStudioDiscoveryListener(IDiscoveryRecorder discoveryRecorder, string assemblyPath)
         {
             this.discoveryRecorder = discoveryRecorder;
             this.sourceLocationProvider = new SourceLocationProvider(assemblyPath);

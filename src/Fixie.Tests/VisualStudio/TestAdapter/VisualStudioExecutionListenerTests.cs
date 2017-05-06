@@ -14,7 +14,7 @@
     {
         public void ShouldAllowRunnersInOtherAppDomainsToReportTestExecutionToVisualStudio()
         {
-            typeof(ExecutionRecorder).ShouldBeSafeAppDomainCommunicationInterface();
+            typeof(IExecutionRecorder).ShouldBeSafeAppDomainCommunicationInterface();
         }
 
         public void ShouldReportResultsToExecutionRecorder()

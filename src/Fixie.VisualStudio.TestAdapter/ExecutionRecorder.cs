@@ -5,7 +5,19 @@ namespace Fixie.VisualStudio.TestAdapter
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
-    public class ExecutionRecorder : LongLivedMarshalByRefObject
+    public interface IExecutionRecorder
+    {
+        void RecordResult(
+            string fullyQualifiedName,
+            string displayName,
+            string outcome,
+            TimeSpan duration,
+            string output,
+            string errorMessage,
+            string errorStackTrace);
+    }
+
+    public class ExecutionRecorder : LongLivedMarshalByRefObject, IExecutionRecorder
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;

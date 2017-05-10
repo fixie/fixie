@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using Fixie.Execution;
+using System.Linq;
 
 namespace Fixie.VisualStudio.TestAdapter
 {
@@ -33,26 +34,31 @@ namespace Fixie.VisualStudio.TestAdapter
                         {
                             var methodGroups = environment.DiscoverTestMethodGroups(new Options());
 
-                            foreach (var methodGroup in methodGroups)
+                            var testCases = methodGroups.GroupBy(mg => mg).SelectMany(g =>
                             {
-                                var testCase = new TestCase(methodGroup.FullName, VsTestExecutor.Uri, assemblyPath);
-
-                                try
+                                var fewMethodsWithSameName = g.Count() > 1;
+                                return g.Select(tc =>
                                 {
+                                    var testCase = new TestCase(fewMethodsWithSameName ? tc.FullName : tc.Method, VsTestExecutor.Uri, assemblyPath);
                                     SourceLocation sourceLocation;
-                                    if (sourceLocationProvider.TryGetSourceLocation(methodGroup, out sourceLocation))
+                                    try
                                     {
-                                        testCase.CodeFilePath = sourceLocation.CodeFilePath;
-                                        testCase.LineNumber = sourceLocation.LineNumber;
+                                        if (sourceLocationProvider.TryGetSourceLocation(tc, out sourceLocation))
+                                        {
+                                            testCase.CodeFilePath = sourceLocation.CodeFilePath;
+                                            testCase.LineNumber = sourceLocation.LineNumber;
+                                        }
                                     }
-                                }
-                                catch (Exception exception)
-                                {
-                                    log.Error(exception);
-                                }
-
+                                    catch (Exception exception)
+                                    {
+                                        log.Error(exception);
+                                    }
+                                    return testCase;
+                                });
+                            });
+                            
+                            foreach (var testCase in testCases)
                                 discoverySink.SendTestCase(testCase);
-                            }
                         }
                     }
                     else

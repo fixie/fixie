@@ -4,7 +4,7 @@ using System.Reflection;
 namespace Fixie
 {
     [Serializable]
-    public class MethodGroup
+    public class MethodGroup : IEquatable<MethodGroup>
     {
         public string Class { get; }
         public string Method { get; }
@@ -26,6 +26,11 @@ namespace Fixie
             Class = className;
             Method = methodName;
             FullName = fullName;
+        }
+
+        public bool Equals(MethodGroup other)
+        {
+            return FullName == other?.FullName;
         }
     }
 }

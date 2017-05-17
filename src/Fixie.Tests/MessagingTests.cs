@@ -43,13 +43,22 @@
         protected void Run(Listener listener)
             => Run<SampleTestClass>(listener, convention);
 
-        class SampleTestClass
+        class Base
         {
             public void Pass()
             {
                 WhereAmI();
             }
 
+            protected static void WhereAmI([CallerMemberName] string member = null)
+            {
+                Console.Out.WriteLine("Console.Out: " + member);
+                Console.Error.WriteLine("Console.Error: " + member);
+            }
+        }
+
+        class SampleTestClass : Base
+        {
             public void Fail()
             {
                 WhereAmI();
@@ -72,12 +81,6 @@
             public void SkipWithReason()
             {
                 throw new ShouldBeUnreachableException();
-            }
-
-            static void WhereAmI([CallerMemberName] string member = null)
-            {
-                Console.Out.WriteLine("Console.Out: " + member);
-                Console.Error.WriteLine("Console.Error: " + member);
             }
         }
 

@@ -20,23 +20,25 @@
 
             var fullyQualifiedName = methodGroup.FullName;
             var displayName = methodGroup.FullName;
+            SourceLocation sourceLocation = null;
 
             try
             {
-                SourceLocation sourceLocation;
-                if (sourceLocationProvider.TryGetSourceLocation(methodGroup, out sourceLocation))
-                    discoveryRecorder.SendTestFound(
-                        fullyQualifiedName,
-                        displayName,
-                        sourceLocation.CodeFilePath,
-                        sourceLocation.LineNumber);
+                sourceLocationProvider.TryGetSourceLocation(methodGroup, out sourceLocation);
             }
             catch (Exception exception)
             {
                 discoveryRecorder.Error(exception.ToString());
-
-                discoveryRecorder.SendTestFound(fullyQualifiedName, displayName);
             }
+
+            if (sourceLocation != null)
+                discoveryRecorder.SendTestFound(
+                    fullyQualifiedName,
+                    displayName,
+                    sourceLocation.CodeFilePath,
+                    sourceLocation.LineNumber);
+            else
+                discoveryRecorder.SendTestFound(fullyQualifiedName, displayName);
         }
     }
 }

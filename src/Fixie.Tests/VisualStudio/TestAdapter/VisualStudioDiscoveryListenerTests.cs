@@ -27,7 +27,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
             tests.Length.ShouldEqual(5);
             tests[0].ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath);
             tests[1].ShouldBeDiscoveryTimeTest(TestClass + ".FailByAssertion", assemblyPath);
-            tests[2].ShouldBeDiscoveryTimeTest(TestClass + ".Pass", assemblyPath);
+            tests[2].ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", assemblyPath);
             tests[3].ShouldBeDiscoveryTimeTest(TestClass + ".SkipWithoutReason", assemblyPath);
             tests[4].ShouldBeDiscoveryTimeTest(TestClass + ".SkipWithReason", assemblyPath);
         }

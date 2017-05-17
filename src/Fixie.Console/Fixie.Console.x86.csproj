@@ -4,6 +4,7 @@
     <TargetFramework>net452</TargetFramework>
     <OutputType>exe</OutputType>
     <PlatformTarget>x86</PlatformTarget>
+    <RootNamespace>Fixie.Console</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

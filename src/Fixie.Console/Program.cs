@@ -1,4 +1,4 @@
-﻿namespace Fixie.ConsoleRunner
+﻿namespace Fixie.Console
 {
     using System;
     using System.Collections.Generic;

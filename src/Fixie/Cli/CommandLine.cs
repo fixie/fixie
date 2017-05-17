@@ -9,8 +9,7 @@
     {
         public static T Parse<T>(string[] arguments) where T : class
         {
-            string[] unusedArguments;
-            return Parse<T>(arguments, out unusedArguments);
+            return Parse<T>(arguments, out string[] _);
         }
 
         public static T Parse<T>(string[] arguments, out string[] unusedArguments) where T : class

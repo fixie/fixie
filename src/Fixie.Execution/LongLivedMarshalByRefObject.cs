@@ -16,7 +16,7 @@
     /// </summary>
     public abstract class LongLivedMarshalByRefObject : MarshalByRefObject, IDisposable
     {
-        public override sealed object InitializeLifetimeService()
+        public sealed override object InitializeLifetimeService()
         {
             // MarshalByRefObjects have lifetimes unlike normal objects.
             // The default implementation of InitializeLifetimeService()

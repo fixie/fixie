@@ -15,9 +15,7 @@
         {
             try
             {
-                string[] runnerArguments;
-                string[] conventionArguments;
-                SplitArguments(arguments, out runnerArguments, out conventionArguments);
+                SplitArguments(arguments, out string[] runnerArguments, out string[] conventionArguments);
 
                 var options = ParseRunnerArguments(runnerArguments);
 
@@ -67,8 +65,7 @@
 
         static Options ParseRunnerArguments(string[] runnerArguments)
         {
-            string[] unusedArguments;
-            var options = CommandLine.Parse<Options>(runnerArguments, out unusedArguments);
+            var options = CommandLine.Parse<Options>(runnerArguments, out string[] unusedArguments);
 
             using (Foreground.Yellow)
                 foreach (var unusedArgument in unusedArguments)

@@ -11,7 +11,7 @@
         public VisualStudioDiscoveryListener(IDiscoveryRecorder discoveryRecorder, string assemblyPath)
         {
             this.discoveryRecorder = discoveryRecorder;
-            this.sourceLocationProvider = new SourceLocationProvider(assemblyPath);
+            sourceLocationProvider = new SourceLocationProvider(assemblyPath);
         }
 
         public void Handle(MethodDiscovered message)

@@ -56,14 +56,7 @@ namespace Fixie.VisualStudio.TestAdapter
         }
 
         static TestOutcome Parse(string outcome)
-        {
-            TestOutcome parsed;
-
-            if (Enum.TryParse(outcome, out parsed))
-                return parsed;
-
-            return TestOutcome.None;
-        }
+            => Enum.TryParse(outcome, out TestOutcome parsed) ? parsed : TestOutcome.None;
 
         static void AttachCapturedConsoleOutput(string output, TestResult testResult)
         {

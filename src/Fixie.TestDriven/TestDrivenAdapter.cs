@@ -20,16 +20,14 @@ namespace Fixie.TestDriven
 
         public TestRunState RunMember(ITestListener testListener, Assembly assembly, MemberInfo member)
         {
-            var method = member as MethodInfo;
-            if (method != null)
+            if (member is MethodInfo method)
             {
                 var testClass = method.DeclaringType;
 
                 return Run(testListener, runner => runner.RunMethods(assembly, testClass, method));
             }
 
-            var type = member as Type;
-            if (type != null)
+            if (member is Type type)
                 return Run(testListener, runner => runner.RunType(assembly, type));
 
             return TestRunState.Error;

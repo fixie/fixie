@@ -13,7 +13,7 @@
         /// </summary>
         public static void CleanUpRegisteredChannels()
         {
-            foreach (IChannel chan in ChannelServices.RegisteredChannels)
+            foreach (var chan in ChannelServices.RegisteredChannels)
                 ChannelServices.UnregisterChannel(chan);
         }
     }

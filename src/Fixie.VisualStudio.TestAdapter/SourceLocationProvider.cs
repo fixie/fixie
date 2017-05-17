@@ -51,14 +51,9 @@
         }
 
         IEnumerable<MethodDefinition> GetMethods(string className)
-        {
-            TypeDefinition type;
-
-            if (types.TryGetValue(StandardizeTypeName(className), out type))
-                return type.GetMethods();
-            
-            return Enumerable.Empty<MethodDefinition>();
-        }
+            => types.TryGetValue(StandardizeTypeName(className), out TypeDefinition type)
+                ? type.GetMethods()
+                : Enumerable.Empty<MethodDefinition>();
 
         static SequencePoint FirstOrDefaultSequencePoint(MethodDefinition testMethod)
         {

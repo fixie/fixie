@@ -29,15 +29,15 @@ function Assembly-Properties {
 }
 
 function Clean {
-    exec { & dotnet clean src -c $configuration }
+    exec { dotnet clean src -c $configuration }
 }
 
 function Restore {
-    exec { & dotnet restore src -s https://api.nuget.org/v3/index.json }
+    exec { dotnet restore src -s https://api.nuget.org/v3/index.json }
 }
 
 function Build {
-    exec { & dotnet build src -c $configuration }
+    exec { dotnet build src -c $configuration }
 }
 
 function Test-Console-x64 {
@@ -55,9 +55,9 @@ function Run-Tests($runner) {
 }
 
 function Test-Dotnet {
-    exec { & dotnet test src/Fixie.Tests/Fixie.Tests.csproj -c $configuration --no-build }
+    exec { dotnet test src/Fixie.Tests/Fixie.Tests.csproj -c $configuration --no-build }
 
-    exec { & dotnet test src/Fixie.Samples/Fixie.Samples.csproj -c $configuration --no-build `
+    exec { dotnet test src/Fixie.Samples/Fixie.Samples.csproj -c $configuration --no-build `
         --test-adapter-path ../Fixie.Tests/bin/$configuration/net452 `
     }
 }
@@ -104,7 +104,7 @@ function Nuspec {
 }
 
 function Package {
-    exec { & dotnet pack src\Fixie `
+    exec { dotnet pack src\Fixie `
                     -c $configuration `
                     -o ..\..\packages `
                     --include-symbols `

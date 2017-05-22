@@ -85,9 +85,9 @@
                 yield return new AppVeyorListener();
 
             if (options.ReportFormat == ReportFormat.NUnit)
-                yield return new ReportListener<NUnitXml>();
-            else if (options.ReportFormat == ReportFormat.xUnit)
-                yield return new ReportListener<XUnitXml>();
+                yield return new ReportListener<NUnitXml>(options.Report);
+            else if (options.Report != null || options.ReportFormat == ReportFormat.xUnit)
+                yield return new ReportListener<XUnitXml>(options.Report);
         }
 
         static bool ShouldUseTeamCityListener(Options options)

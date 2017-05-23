@@ -2,6 +2,7 @@ namespace Fixie.Assertions
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
 
     class AssertComparer<T> : IComparer<T>
     {
@@ -10,7 +11,7 @@ namespace Fixie.Assertions
             var type = typeof(T);
 
             // Null?
-            if (!type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Nullable<>))))
+            if (!type.IsValueType() || (type.IsGenericType() && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Nullable<>))))
             {
                 if (Equals(x, default(T)))
                 {

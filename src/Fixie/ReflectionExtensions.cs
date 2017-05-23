@@ -14,12 +14,12 @@
 
         public static bool Has<TAttribute>(this Type type) where TAttribute : Attribute
         {
-            return type.GetCustomAttributes<TAttribute>(false).Any();
+            return type.GetTypeInfo().GetCustomAttributes<TAttribute>(false).Any();
         }
 
         public static bool HasOrInherits<TAttribute>(this Type type) where TAttribute : Attribute
         {
-            return type.GetCustomAttributes<TAttribute>(true).Any();
+            return type.GetTypeInfo().GetCustomAttributes<TAttribute>(true).Any();
         }
 
         public static bool Has<TAttribute>(this MethodInfo method) where TAttribute : Attribute

@@ -123,7 +123,7 @@
 
                 var conversionType = Nullable.GetUnderlyingType(type) ?? type;
 
-                if (conversionType.IsEnum && value is string)
+                if (conversionType.IsEnum() && value is string)
                 {
                     try
                     {
@@ -220,7 +220,7 @@
             }
 
             static object Default(Type type)
-                => type.IsValueType ? Activator.CreateInstance(type) : null;
+                => type.IsValueType() ? Activator.CreateInstance(type) : null;
 
             static ConstructorInfo GetConstructor()
                 => typeof(T).GetConstructors().Single();

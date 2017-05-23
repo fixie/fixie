@@ -57,7 +57,7 @@
             if (resolvedTypeOfNonNullValues == null)
                 return typeof(object);
 
-            return hasNullValue && resolvedTypeOfNonNullValues.IsValueType ? typeof(object) : resolvedTypeOfNonNullValues;
+            return hasNullValue && resolvedTypeOfNonNullValues.IsValueType() ? typeof(object) : resolvedTypeOfNonNullValues;
         }
     }
 }

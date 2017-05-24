@@ -23,6 +23,10 @@
     <Reference Include="System.Web.Extensions" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Update="Execution\Listeners\XUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -1,16 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>net452;netcoreapp1.1</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Fixie.Assertions\Fixie.Assertions.csproj" />
     <ProjectReference Include="..\Fixie\Fixie.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
   </ItemGroup>
 
 </Project>

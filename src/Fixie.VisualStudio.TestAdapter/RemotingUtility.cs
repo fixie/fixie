@@ -1,4 +1,5 @@
-﻿namespace Fixie.VisualStudio.TestAdapter
+﻿#if NET452
+namespace Fixie.VisualStudio.TestAdapter
 {
     using System.Runtime.Remoting.Channels;
 
@@ -18,3 +19,4 @@
         }
     }
 }
+#endif

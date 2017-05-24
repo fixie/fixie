@@ -110,7 +110,9 @@
 
         static void HandlePoorVisualStudioImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
+#if NET452
             RemotingUtility.CleanUpRegisteredChannels();
+#endif
 
             if (runContext.KeepAlive)
                 frameworkHandle.EnableShutdownAfterTestRun = true;

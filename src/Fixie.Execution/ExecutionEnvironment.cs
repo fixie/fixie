@@ -1,4 +1,5 @@
-﻿namespace Fixie.Execution
+﻿#if NET452
+namespace Fixie.Execution
 {
     using System;
     using System.IO;
@@ -81,3 +82,4 @@
         }
     }
 }
+#endif

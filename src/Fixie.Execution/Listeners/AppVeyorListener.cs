@@ -1,4 +1,5 @@
-﻿namespace Fixie.Execution.Listeners
+﻿#if NET452
+namespace Fixie.Execution.Listeners
 {
     using System;
     using System.IO;
@@ -105,3 +106,4 @@
         }
     }
 }
+#endif

@@ -57,10 +57,15 @@
 
         static Assembly LoadAssembly(string assemblyFullPath)
         {
+            return Assembly.Load(GetAssemblyName(assemblyFullPath));
+        }
+
+        static AssemblyName GetAssemblyName(string assemblyFullPath)
+        {
 #if NET452
-            return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+            return AssemblyName.GetAssemblyName(assemblyFullPath);
 #else
-            throw new NotImplementedException("Assembly loading for .NET Core is not implemented.");
+            return new AssemblyName { Name = Path.GetFileNameWithoutExtension(assemblyFullPath) };
 #endif
         }
 

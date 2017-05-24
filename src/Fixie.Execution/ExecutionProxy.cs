@@ -1,5 +1,4 @@
-﻿#if NET452
-namespace Fixie.Execution
+﻿namespace Fixie.Execution
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +8,10 @@ namespace Fixie.Execution
     using Cli;
     using Listeners;
 
-    public class ExecutionProxy : LongLivedMarshalByRefObject
+    public class ExecutionProxy
+#if NET452
+        : LongLivedMarshalByRefObject
+#endif
     {
         readonly string runnerWorkingDirectory;
         readonly List<Listener> customListeners = new List<Listener>();
@@ -55,7 +57,11 @@ namespace Fixie.Execution
 
         static Assembly LoadAssembly(string assemblyFullPath)
         {
+#if NET452
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+#else
+            throw new NotImplementedException("Assembly loading for .NET Core is not implemented.");
+#endif
         }
 
         ExecutionSummary Run(string[] runnerArguments, string[] conventionArguments, Action<Runner> run)
@@ -89,11 +95,13 @@ namespace Fixie.Execution
             else
                 yield return new ConsoleListener();
 
+#if NET452
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
 
             if (options.Report != null)
                 yield return new ReportListener(SaveReport(options));
+#endif
         }
 
         Action<Report> SaveReport(Options options)
@@ -119,4 +127,3 @@ namespace Fixie.Execution
         }
     }
 }
-#endif

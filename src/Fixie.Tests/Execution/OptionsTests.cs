@@ -46,5 +46,21 @@
 
             options.Validate();
         }
+
+        public void DemandsValidReportFileNameWhenProvided()
+        {
+            var assemblyPath = typeof(OptionsTests).Assembly.Location;
+
+            var options = new Options(assemblyPath);
+
+            Action validate = options.Validate;
+
+            options.Report = "Report.xml";
+            validate();
+
+            options.Report = "\t";
+            validate.ShouldThrow<CommandLineException>(
+                "Specified report name is invalid: \t");
+        }
     }
 }

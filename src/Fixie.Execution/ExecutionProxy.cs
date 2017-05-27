@@ -92,7 +92,12 @@
                 yield return new AppVeyorListener();
 
             if (options.Report != null)
-                yield return new ReportListener(FullPath(options.Report));
+                yield return new ReportListener(SaveReport(options));
+        }
+
+        Action<Report> SaveReport(Options options)
+        {
+            return report => XUnitXml.Save(report, FullPath(options.Report));
         }
 
         string FullPath(string absoluteOrRelativePath)

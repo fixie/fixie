@@ -2,13 +2,30 @@
 {
     using System;
     using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Xml.Linq;
     using Execution;
 
-    public class XUnitXml
+    public static class XUnitXml
     {
-        public XDocument Transform(Report report)
+        public static void Save(Report report, string path)
+        {
+            var xDocument = Transform(report);
+
+            var directory = Path.GetDirectoryName(path);
+
+            if (String.IsNullOrEmpty(directory))
+                return;
+
+            Directory.CreateDirectory(directory);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            using (var writer = new StreamWriter(stream))
+                xDocument.Save(writer, SaveOptions.None);
+        }
+
+        public static XDocument Transform(Report report)
         {
             var now = DateTime.UtcNow;
 

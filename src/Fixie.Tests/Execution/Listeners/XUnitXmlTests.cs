@@ -1,12 +1,9 @@
-﻿#if NET452
-namespace Fixie.Tests.Execution.Listeners
+﻿namespace Fixie.Tests.Execution.Listeners
 {
     using System;
     using System.IO;
     using System.Text.RegularExpressions;
-    using System.Xml;
     using System.Xml.Linq;
-    using System.Xml.Schema;
     using Assertions;
     using Fixie.Execution;
     using Fixie.Execution.Listeners;
@@ -32,19 +29,7 @@ namespace Fixie.Tests.Execution.Listeners
                         "Console.Error: Pass");
             }
 
-            XsdValidate(actual);
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
-        }
-
-        static void XsdValidate(XDocument doc)
-        {
-            var schemaSet = new XmlSchemaSet();
-            using (var xmlReader = XmlReader.Create(Path.Combine("Execution", Path.Combine("Listeners", "XUnitXmlReport.xsd"))))
-            {
-                schemaSet.Add(null, xmlReader);
-            }
-
-            doc.Validate(schemaSet, null);
         }
 
         static string CleanBrittleValues(string actualRawContent)
@@ -56,10 +41,10 @@ namespace Fixie.Tests.Execution.Listeners
             cleaned = Regex.Replace(cleaned, @"run-time=""\d\d:\d\d:\d\d""", @"run-time=""HH:MM:SS""");
 
             //Avoid brittle assertion introduced by .NET version.
-            cleaned = Regex.Replace(cleaned, @"environment=""\d+-bit \.NET [\.\d]+""", @"environment=""00-bit .NET 1.2.3.4""");
+            cleaned = Regex.Replace(cleaned, $@"environment=""{IntPtr.Size * 8}-bit \.NET {Framework}""", @"environment=""00-bit .NET 1.2.3.4""");
 
             //Avoid brittle assertion introduced by fixie version.
-            cleaned = Regex.Replace(cleaned, @"test-framework=""Fixie \d+(\.\d+)*(\-[^""]+)?""", @"test-framework=""Fixie 1.2.3.4""");
+            cleaned = Regex.Replace(cleaned, $@"test-framework=""{Fixie.Framework.Version}""", @"test-framework=""Fixie 1.2.3.4""");
 
             //Avoid brittle assertion introduced by test duration.
             cleaned = Regex.Replace(cleaned, @"time=""[\d\.]+""", @"time=""1.234""");
@@ -74,18 +59,24 @@ namespace Fixie.Tests.Execution.Listeners
         {
             get
             {
-                var assemblyLocation = GetType().Assembly.Location;
-                var configLocation = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+                var assemblyLocation = GetType().Assembly().Location;
                 var fileLocation = TestClassPath();
                 return XDocument.Parse(File.ReadAllText(Path.Combine("Execution", Path.Combine("Listeners", "XUnitXmlReport.xml"))))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
-                                .Replace("[configLocation]", configLocation)
+                                .Replace("[configFile]", ConfigFile)
                                 .Replace("[fileLocation]", fileLocation)
                                 .Replace("[testClass]", TestClass)
                                 .Replace("[testClassForStackTrace]", TestClass.Replace("+", "."));
             }
         }
+
+#if NET452
+        static string ConfigFile => AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+        static string Framework => Environment.Version.ToString();
+#else
+        static string ConfigFile => "N/A";
+        static string Framework => "Core";
+#endif
     }
 }
-#endif

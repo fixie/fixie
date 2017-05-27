@@ -58,6 +58,13 @@
             var format = new TXmlFormat();
             var xDocument = format.Transform(report);
 
+            var directory = Path.GetDirectoryName(path);
+
+            if (String.IsNullOrEmpty(directory))
+                return;
+
+            Directory.CreateDirectory(directory);
+
             using (var stream = new FileStream(path, FileMode.Create))
             using (var writer = new StreamWriter(stream))
                 xDocument.Save(writer, SaveOptions.None);

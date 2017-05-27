@@ -11,6 +11,7 @@
         }
 
         public string AssemblyPath { get; }
+        public string Report { get; set; }
         public ReportFormat? ReportFormat { get; set; }
         public bool? TeamCity { get; set; }
 
@@ -24,6 +25,9 @@
 
             if (!AssemblyDirectoryContainsFixie(AssemblyPath))
                 throw new CommandLineException($"Specified assembly {AssemblyPath} does not appear to be a test assembly. Ensure that it references Fixie.dll and try again.");
+
+            if (Report != null && Report.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
+                throw new CommandLineException("Specified report name is invalid: " + Report);
         }
 
         static bool AssemblyDirectoryContainsFixie(string assemblyPath)

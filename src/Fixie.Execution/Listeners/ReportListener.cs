@@ -21,8 +21,8 @@
             this.save = save;
         }
 
-        public ReportListener()
-            : this(Save)
+        public ReportListener(string path)
+            : this(report => Save(report, path))
         {
         }
 
@@ -53,13 +53,19 @@
             report = null;
         }
 
-        static void Save(Report report)
+        static void Save(Report report, string path)
         {
             var format = new TXmlFormat();
             var xDocument = format.Transform(report);
-            var filePath = Path.GetFullPath(report.Assembly.Location) + ".xml";
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            var directory = Path.GetDirectoryName(path);
+
+            if (String.IsNullOrEmpty(directory))
+                return;
+
+            Directory.CreateDirectory(directory);
+
+            using (var stream = new FileStream(path, FileMode.Create))
             using (var writer = new StreamWriter(stream))
                 xDocument.Save(writer, SaveOptions.None);
         }

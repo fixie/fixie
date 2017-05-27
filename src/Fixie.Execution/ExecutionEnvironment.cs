@@ -25,7 +25,7 @@
             assemblyResolver = CreateFrom<RemoteAssemblyResolver>();
             assemblyResolver.RegisterAssemblyLocation(typeof(ExecutionProxy).Assembly.Location);
 
-            executionProxy = Create<ExecutionProxy>();
+            executionProxy = Create<ExecutionProxy>(previousWorkingDirectory);
         }
 
         public void Subscribe<TListener>(params object[] listenerArguments) where TListener : Listener
@@ -48,9 +48,9 @@
             return (T)appDomain.CreateInstanceFromAndUnwrap(typeof(T).Assembly.Location, typeof(T).FullName, false, 0, null, null, null, null);
         }
 
-        T Create<T>() where T : LongLivedMarshalByRefObject, new()
+        T Create<T>(params object[] arguments) where T : LongLivedMarshalByRefObject
         {
-            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, null, null, null);
+            return (T)appDomain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName, false, 0, null, arguments, null, null);
         }
 
         public void Dispose()

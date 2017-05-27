@@ -17,13 +17,7 @@ namespace Fixie.VisualStudio.TestAdapter
             string errorStackTrace);
     }
 
-    public class ExecutionRecorder :
-#if NET452
-        LongLivedMarshalByRefObject,
-#else
-        IDisposable,
-#endif
-        IExecutionRecorder
+    public class ExecutionRecorder : LongLivedMarshalByRefObject, IExecutionRecorder
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
@@ -69,9 +63,5 @@ namespace Fixie.VisualStudio.TestAdapter
             if (!String.IsNullOrEmpty(output))
                 testResult.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, output));
         }
-
-#if !NET452
-        public void Dispose() { }
-#endif
     }
 }

@@ -8,10 +8,7 @@
     using Cli;
     using Listeners;
 
-    public class ExecutionProxy
-#if NET452
-        : LongLivedMarshalByRefObject
-#endif
+    public class ExecutionProxy : LongLivedMarshalByRefObject
     {
         readonly string runnerWorkingDirectory;
         readonly List<Listener> customListeners = new List<Listener>();

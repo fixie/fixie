@@ -1,6 +1,5 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
-    using System;
     using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -13,13 +12,7 @@
         void SendTestFound(string fullyQualifiedName, string displayName);
     }
 
-    public class DiscoveryRecorder :
-#if NET452
-        LongLivedMarshalByRefObject,
-#else
-        IDisposable,
-#endif
-        IDiscoveryRecorder
+    public class DiscoveryRecorder : LongLivedMarshalByRefObject, IDiscoveryRecorder
     {
         readonly IMessageLogger log;
         readonly ITestCaseDiscoverySink discoverySink;
@@ -51,9 +44,5 @@
                 DisplayName = displayName,
             });
         }
-
-#if !NET452
-        public void Dispose() { }
-#endif
     }
 }

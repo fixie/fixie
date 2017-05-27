@@ -92,12 +92,12 @@
                 yield return new AppVeyorListener();
 
             if (options.Report != null)
-                yield return new ReportListener<XUnitXml>(ReportPath(options));
+                yield return new ReportListener<XUnitXml>(FullPath(options.Report));
         }
 
-        string ReportPath(Options options)
+        string FullPath(string absoluteOrRelativePath)
         {
-            return Path.Combine(runnerWorkingDirectory, options.Report ?? "TestResults.xml");
+            return Path.Combine(runnerWorkingDirectory, absoluteOrRelativePath);
         }
 
         static bool ShouldUseTeamCityListener(Options options)

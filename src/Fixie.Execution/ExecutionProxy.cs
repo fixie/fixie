@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
     using Cli;
@@ -9,7 +10,13 @@
 
     public class ExecutionProxy : LongLivedMarshalByRefObject
     {
+        readonly string runnerWorkingDirectory;
         readonly List<Listener> customListeners = new List<Listener>();
+
+        public ExecutionProxy(string runnerWorkingDirectory)
+        {
+            this.runnerWorkingDirectory = runnerWorkingDirectory;
+        }
 
         public void Subscribe<TListener>(object[] listenerArguments) where TListener : Listener
         {
@@ -74,7 +81,7 @@
             return listeners;
         }
 
-        static IEnumerable<Listener> DefaultExecutionListeners(Options options)
+        IEnumerable<Listener> DefaultExecutionListeners(Options options)
         {
             if (ShouldUseTeamCityListener(options))
                 yield return new TeamCityListener();
@@ -85,9 +92,14 @@
                 yield return new AppVeyorListener();
 
             if (options.ReportFormat == ReportFormat.NUnit)
-                yield return new ReportListener<NUnitXml>(options.Report);
+                yield return new ReportListener<NUnitXml>(ReportPath(options));
             else if (options.Report != null || options.ReportFormat == ReportFormat.xUnit)
-                yield return new ReportListener<XUnitXml>(options.Report);
+                yield return new ReportListener<XUnitXml>(ReportPath(options));
+        }
+
+        string ReportPath(Options options)
+        {
+            return Path.Combine(runnerWorkingDirectory, options.Report ?? "TestResults.xml");
         }
 
         static bool ShouldUseTeamCityListener(Options options)

@@ -91,7 +91,7 @@
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
 
-            if (options.Report != null || options.ReportFormat == ReportFormat.xUnit)
+            if (options.Report != null)
                 yield return new ReportListener<XUnitXml>(ReportPath(options));
         }
 

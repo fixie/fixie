@@ -12,7 +12,6 @@
 
         public string AssemblyPath { get; }
         public string Report { get; set; }
-        public ReportFormat? ReportFormat { get; set; }
         public bool? TeamCity { get; set; }
 
         public void Validate()

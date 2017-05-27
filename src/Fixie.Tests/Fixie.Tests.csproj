@@ -27,12 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Execution\Listeners\NUnitXmlReport.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Execution\Listeners\NUnitXmlReport.xsd">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Execution\Listeners\XUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

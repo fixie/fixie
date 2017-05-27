@@ -2,7 +2,6 @@
 {
     public enum ReportFormat
     {
-        NUnit,
         xUnit
     }
 }

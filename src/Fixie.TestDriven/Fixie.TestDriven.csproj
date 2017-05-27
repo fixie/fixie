@@ -9,9 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="TestDriven.Framework">
-      <HintPath>..\..\lib\TestDriven.Framework.dll</HintPath>
-    </Reference>
+    <PackageReference Include="TestDriven.Framework" Version="2.0.0-alpha2" />
   </ItemGroup>
 
   <ItemGroup>

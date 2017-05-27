@@ -91,15 +91,18 @@
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
 
-            if (options.ReportFormat == ReportFormat.NUnit)
-                yield return new ReportListener<NUnitXml>(ReportPath(options));
-            else if (options.Report != null || options.ReportFormat == ReportFormat.xUnit)
-                yield return new ReportListener<XUnitXml>(ReportPath(options));
+            if (options.Report != null)
+                yield return new ReportListener(SaveReport(options));
         }
 
-        string ReportPath(Options options)
+        Action<Report> SaveReport(Options options)
         {
-            return Path.Combine(runnerWorkingDirectory, options.Report ?? "TestResults.xml");
+            return report => XUnitXml.Save(report, FullPath(options.Report));
+        }
+
+        string FullPath(string absoluteOrRelativePath)
+        {
+            return Path.Combine(runnerWorkingDirectory, absoluteOrRelativePath);
         }
 
         static bool ShouldUseTeamCityListener(Options options)

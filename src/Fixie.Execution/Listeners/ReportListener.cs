@@ -1,16 +1,13 @@
 ﻿namespace Fixie.Execution.Listeners
 {
     using System;
-    using System.IO;
-    using System.Xml.Linq;
 
-    public class ReportListener<TXmlFormat> :
+    public class ReportListener :
         Handler<AssemblyStarted>,
         Handler<ClassStarted>,
         Handler<CaseCompleted>,
         Handler<ClassCompleted>,
         Handler<AssemblyCompleted>
-        where TXmlFormat : XmlFormat, new()
     {
         Report report;
         ClassReport currentClass;
@@ -19,11 +16,6 @@
         public ReportListener(Action<Report> save)
         {
             this.save = save;
-        }
-
-        public ReportListener(string path)
-            : this(report => Save(report, path))
-        {
         }
 
         public void Handle(AssemblyStarted message)
@@ -51,23 +43,6 @@
         {
             save(report);
             report = null;
-        }
-
-        static void Save(Report report, string path)
-        {
-            var format = new TXmlFormat();
-            var xDocument = format.Transform(report);
-
-            var directory = Path.GetDirectoryName(path);
-
-            if (String.IsNullOrEmpty(directory))
-                return;
-
-            Directory.CreateDirectory(directory);
-
-            using (var stream = new FileStream(path, FileMode.Create))
-            using (var writer = new StreamWriter(stream))
-                xDocument.Save(writer, SaveOptions.None);
         }
     }
 }

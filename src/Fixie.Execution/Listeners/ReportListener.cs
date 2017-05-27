@@ -4,13 +4,12 @@
     using System.IO;
     using System.Xml.Linq;
 
-    public class ReportListener<TXmlFormat> :
+    public class ReportListener :
         Handler<AssemblyStarted>,
         Handler<ClassStarted>,
         Handler<CaseCompleted>,
         Handler<ClassCompleted>,
         Handler<AssemblyCompleted>
-        where TXmlFormat : XmlFormat, new()
     {
         Report report;
         ClassReport currentClass;
@@ -55,7 +54,7 @@
 
         static void Save(Report report, string path)
         {
-            var format = new TXmlFormat();
+            var format = new XUnitXml();
             var xDocument = format.Transform(report);
 
             var directory = Path.GetDirectoryName(path);

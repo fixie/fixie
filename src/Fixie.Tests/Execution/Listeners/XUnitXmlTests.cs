@@ -15,7 +15,7 @@
         public void ShouldProduceValidXmlDocument()
         {
             XDocument actual = null;
-            var listener = new ReportListener<XUnitXml>(report => actual = new XUnitXml().Transform(report));
+            var listener = new ReportListener(report => actual = new XUnitXml().Transform(report));
 
             using (var console = new RedirectedConsole())
             {

@@ -92,7 +92,7 @@
                 yield return new AppVeyorListener();
 
             if (options.Report != null)
-                yield return new ReportListener<XUnitXml>(FullPath(options.Report));
+                yield return new ReportListener(FullPath(options.Report));
         }
 
         string FullPath(string absoluteOrRelativePath)

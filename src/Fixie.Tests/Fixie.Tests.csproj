@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFrameworks>net452;netcoreapp1.1</TargetFrameworks>
 
     <!-- Override the default DebugType (portable)
          as a temporary workaround for the fact that
@@ -13,17 +13,14 @@
   <ItemGroup>
     <ProjectReference Include="..\Fixie.Assertions\Fixie.Assertions.csproj" />
     <ProjectReference Include="..\Fixie.Execution\Fixie.Execution.csproj" />
-    <ProjectReference Include="..\Fixie.TestDriven\Fixie.TestDriven.csproj" />
     <ProjectReference Include="..\Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.csproj" />
     <ProjectReference Include="..\Fixie\Fixie.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+    <ProjectReference Include="..\Fixie.TestDriven\Fixie.TestDriven.csproj" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="TestDriven.Framework">
-      <HintPath>..\..\lib\TestDriven.Framework.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

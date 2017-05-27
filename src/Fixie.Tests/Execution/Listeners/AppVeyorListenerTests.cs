@@ -1,4 +1,5 @@
-﻿namespace Fixie.Tests.Execution.Listeners
+﻿#if NET452
+namespace Fixie.Tests.Execution.Listeners
 {
     using System.Collections.Generic;
     using System.Web.Script.Serialization;
@@ -93,3 +94,4 @@
         }
     }
 }
+#endif

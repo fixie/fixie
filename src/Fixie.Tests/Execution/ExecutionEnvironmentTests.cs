@@ -1,9 +1,10 @@
+#if NET452
+
 namespace Fixie.Tests.Execution
 {
     using System;
     using System.Configuration;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.Versioning;
     using Assertions;
 
@@ -43,3 +44,4 @@ namespace Fixie.Tests.Execution
         }
     }
 }
+#endif

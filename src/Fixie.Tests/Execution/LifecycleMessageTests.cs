@@ -16,7 +16,7 @@
             using (new RedirectedConsole())
                 Run(listener);
 
-            var assembly = typeof(LifecycleMessageTests).Assembly;
+            var assembly = typeof(LifecycleMessageTests).Assembly();
 
             var assemblyStarted = listener.AssemblyStarts.Single();
             assemblyStarted.Assembly.ShouldEqual(assembly);

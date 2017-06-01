@@ -20,7 +20,6 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
     <ProjectReference Include="..\Fixie.TestDriven\Fixie.TestDriven.csproj" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Web.Extensions" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">

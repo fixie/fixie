@@ -97,10 +97,8 @@
             else
                 yield return new ConsoleListener();
 
-#if NET452
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
-#endif
 
             if (options.Report != null)
                 yield return new ReportListener(SaveReport(options));

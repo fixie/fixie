@@ -1,12 +1,11 @@
-﻿#if NET452
-namespace Fixie.Execution.Listeners
+﻿namespace Fixie.Execution.Listeners
 {
     using System;
     using System.IO;
     using System.Net.Http;
     using System.Net.Http.Headers;
+    using System.Runtime.Serialization.Json;
     using System.Text;
-    using System.Web.Script.Serialization;
     using Execution;
 
     public class AppVeyorListener :
@@ -83,7 +82,18 @@ namespace Fixie.Execution.Listeners
 
             customize?.Invoke(testResult);
 
-            postAction(uri, "application/json", new JavaScriptSerializer().Serialize(testResult));
+            postAction(uri, "application/json", Serialize(testResult));
+        }
+
+        static string Serialize(TestResult testResult)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(TestResult));
+
+            using (var stream = new MemoryStream())
+            {
+                serializer.WriteObject(stream, testResult);
+                return Encoding.UTF8.GetString(stream.ToArray());
+            }
         }
 
         static void Post(string uri, string mediaType, string content)
@@ -106,4 +116,3 @@ namespace Fixie.Execution.Listeners
         }
     }
 }
-#endif

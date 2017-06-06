@@ -1,8 +1,5 @@
-﻿#if NET452
-namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
-    using System.Runtime.Remoting.Channels;
-
     public static class RemotingUtility
     {
         /// <summary>
@@ -14,9 +11,10 @@ namespace Fixie.VisualStudio.TestAdapter
         /// </summary>
         public static void CleanUpRegisteredChannels()
         {
-            foreach (var chan in ChannelServices.RegisteredChannels)
-                ChannelServices.UnregisterChannel(chan);
+#if NET452
+            foreach (var chan in System.Runtime.Remoting.Channels.ChannelServices.RegisteredChannels)
+                System.Runtime.Remoting.Channels.ChannelServices.UnregisterChannel(chan);
+#endif
         }
     }
 }
-#endif

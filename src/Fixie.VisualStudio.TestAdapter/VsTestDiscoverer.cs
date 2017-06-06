@@ -17,9 +17,7 @@
         {
             log.Version();
 
-#if NET452
             RemotingUtility.CleanUpRegisteredChannels();
-#endif
 
             foreach (var assemblyPath in sources)
             {

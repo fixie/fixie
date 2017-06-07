@@ -58,7 +58,11 @@ function Test-Dotnet {
     exec { dotnet test src/Fixie.Tests/Fixie.Tests.csproj -c $configuration --no-build }
 
     exec { dotnet test src/Fixie.Samples/Fixie.Samples.csproj -c $configuration --no-build `
-        --test-adapter-path ../Fixie.Tests/bin/$configuration/net452 `
+        --test-adapter-path ../Fixie.Tests/bin/$configuration/net452 --framework net452 `
+    }
+
+    exec { dotnet test src/Fixie.Samples/Fixie.Samples.csproj -c $configuration --no-build `
+        --test-adapter-path ../Fixie.Tests/bin/$configuration/netcoreapp1.1 --framework netcoreapp1.1 `
     }
 }
 

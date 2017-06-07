@@ -35,16 +35,24 @@
                         new XAttribute("name", report.Assembly.Location),
                         new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                         new XAttribute("run-time", now.ToString("HH:mm:ss")),
-                        new XAttribute("configFile", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile),
+                        new XAttribute("configFile", ConfigFile),
                         new XAttribute("time", Seconds(report.Duration)),
                         new XAttribute("total", report.Total),
                         new XAttribute("passed", report.Passed),
                         new XAttribute("failed", report.Failed),
                         new XAttribute("skipped", report.Skipped),
-                        new XAttribute("environment", $"{IntPtr.Size*8}-bit .NET {Environment.Version}"),
-                        new XAttribute("test-framework", Framework.Version),
+                        new XAttribute("environment", $"{IntPtr.Size * 8}-bit .NET {Framework}"),
+                        new XAttribute("test-framework", Fixie.Framework.Version),
                         report.Classes.Select(Class))));
         }
+
+#if NET452
+        static string ConfigFile => AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+        static string Framework => Environment.Version.ToString();
+#else
+        static string ConfigFile => "N/A";
+        static string Framework => "Core";
+#endif
 
         static XElement Class(ClassReport classReport)
         {

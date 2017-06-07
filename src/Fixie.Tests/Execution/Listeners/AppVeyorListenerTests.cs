@@ -1,7 +1,9 @@
 ﻿namespace Fixie.Tests.Execution.Listeners
 {
     using System.Collections.Generic;
-    using System.Web.Script.Serialization;
+    using System.IO;
+    using System.Runtime.Serialization.Json;
+    using System.Text;
     using Assertions;
     using Fixie.Execution;
     using Fixie.Execution.Listeners;
@@ -17,7 +19,7 @@
                 uri.ShouldEqual("http://localhost:4567/api/tests");
                 mediaType.ShouldEqual("application/json");
 
-                results.Add(new JavaScriptSerializer().Deserialize<AppVeyorListener.TestResult>(content));
+                results.Add(Deserialize(content));
             });
 
             using (var console = new RedirectedConsole())
@@ -90,6 +92,14 @@
             pass.ErrorMessage.ShouldBeNull();
             pass.ErrorStackTrace.ShouldBeNull();
             pass.StdOut.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
+        }
+
+        static AppVeyorListener.TestResult Deserialize(string content)
+        {
+            var deserializer = new DataContractJsonSerializer(typeof(AppVeyorListener.TestResult));
+
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(content)))
+                return (AppVeyorListener.TestResult) deserializer.ReadObject(stream);
         }
     }
 }

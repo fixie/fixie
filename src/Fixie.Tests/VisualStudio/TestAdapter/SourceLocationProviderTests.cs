@@ -11,7 +11,7 @@
         //      Debug: opening curly brace.
         //      Release: first non-comment code line or closing curly brace if the method is empty.
 
-        private static readonly string TestAssemblyPath = typeof(SourceLocationSamples).Assembly.Location;
+        private static readonly string TestAssemblyPath = typeof(SourceLocationSamples).Assembly().Location;
 
         public void ShouldSafelyFailForUnknownMethods()
         {
@@ -78,6 +78,12 @@
 
         static void AssertLineNumber(string className, string methodName, int debugLine, int releaseLine)
         {
+#if !NET452
+            //This assertion can be reversed once .NET Core execution supports source location data.
+            AssertNoLineNumber(className, methodName);
+            return;
+#endif
+
             var sourceLocationProvider = new SourceLocationProvider(TestAssemblyPath);
 
             SourceLocation location;

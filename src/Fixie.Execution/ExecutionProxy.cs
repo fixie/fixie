@@ -54,7 +54,16 @@
 
         static Assembly LoadAssembly(string assemblyFullPath)
         {
-            return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
+            return Assembly.Load(GetAssemblyName(assemblyFullPath));
+        }
+
+        static AssemblyName GetAssemblyName(string assemblyFullPath)
+        {
+#if NET452
+            return AssemblyName.GetAssemblyName(assemblyFullPath);
+#else
+            return new AssemblyName { Name = Path.GetFileNameWithoutExtension(assemblyFullPath) };
+#endif
         }
 
         ExecutionSummary Run(string[] runnerArguments, string[] conventionArguments, Action<Runner> run)

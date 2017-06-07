@@ -19,7 +19,7 @@ namespace Fixie.Tests.Execution
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>());
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, convention,
+            new Runner(bus).RunTypes(GetType().Assembly(), convention,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
@@ -43,7 +43,7 @@ namespace Fixie.Tests.Execution
                 .ShuffleCases(new Random(1));
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, convention,
+            new Runner(bus).RunTypes(GetType().Assembly(), convention,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
@@ -70,7 +70,7 @@ namespace Fixie.Tests.Execution
                 .Add<BuggyParameterSource>();
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, convention,
+            new Runner(bus).RunTypes(GetType().Assembly(), convention,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass), typeof(BuggyParameterGenerationTestClass));
 

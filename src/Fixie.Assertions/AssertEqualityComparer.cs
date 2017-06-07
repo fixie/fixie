@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Reflection;
 
     class AssertEqualityComparer<T> : IEqualityComparer<T>
     {
@@ -11,7 +12,7 @@
             var type = typeof(T);
 
             // Null?
-            if (!type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Nullable<>))))
+            if (!type.IsValueType() || (type.IsGenericType() && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Nullable<>))))
             {
                 if (Object.Equals(x, default(T)))
                     return Object.Equals(y, default(T));

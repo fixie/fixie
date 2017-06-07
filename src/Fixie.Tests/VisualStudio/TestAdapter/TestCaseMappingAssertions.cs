@@ -12,7 +12,12 @@
 
             ShouldUseDefaultsForUnmappedProperties(test);
 
+#if NET452
             ShouldHaveSourceLocation(test);
+#else
+            //This assertion can be reversed once .NET Core execution supports source location data.
+            ShouldNotHaveSourceLocation(test);
+#endif
         }
 
         public static void ShouldBeDiscoveryTimeTestMissingSourceLocation(this TestCase test, string expectedFullyQualifiedName, string expectedSource)
@@ -43,7 +48,6 @@
 
         static void ShouldUseDefaultsForUnmappedProperties(TestCase test)
         {
-            test.LocalExtensionData.ShouldBeNull();
             test.Traits.ShouldBeEmpty();
             test.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
         }

@@ -28,7 +28,7 @@
 
         public void DemandsAssemblyPathDirectoryContainsFixie()
         {
-            var mscorlib = typeof(string).Assembly.Location;
+            var mscorlib = typeof(string).Assembly().Location;
 
             var options = new Options(mscorlib);
 
@@ -40,7 +40,7 @@
 
         public void AcceptsExistingTestAssemblyPath()
         {
-            var assemblyPath = typeof(OptionsTests).Assembly.Location;
+            var assemblyPath = typeof(OptionsTests).Assembly().Location;
 
             var options = new Options(assemblyPath);
 
@@ -49,7 +49,7 @@
 
         public void DemandsValidReportFileNameWhenProvided()
         {
-            var assemblyPath = typeof(OptionsTests).Assembly.Location;
+            var assemblyPath = typeof(OptionsTests).Assembly().Location;
 
             var options = new Options(assemblyPath);
 

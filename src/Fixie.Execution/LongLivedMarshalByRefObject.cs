@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Execution
 {
+#if NET452
     using System;
     using System.Runtime.Remoting;
 
@@ -43,4 +44,12 @@
             RemotingServices.Disconnect(this);
         }
     }
+#else
+    using System;
+
+    public abstract class LongLivedMarshalByRefObject : IDisposable
+    {
+        public void Dispose() { }
+    }
+#endif
 }

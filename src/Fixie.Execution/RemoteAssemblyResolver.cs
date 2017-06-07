@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Execution
 {
+#if NET452
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -55,4 +56,12 @@
             return Assembly.Load(AssemblyName.GetAssemblyName(assemblyFullPath));
         }
     }
+#else
+    public class RemoteAssemblyResolver : LongLivedMarshalByRefObject
+    {
+        public void RegisterAssemblyLocation(string assemblyLocation)
+        {
+        }
+    }
+#endif
 }

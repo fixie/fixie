@@ -9,7 +9,7 @@
 
         static string ProductVersion()
             => typeof(Framework)
-                .Assembly
+                .Assembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                 .InformationalVersion;
     }

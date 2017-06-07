@@ -1,5 +1,6 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
+#if NET452
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
@@ -100,4 +101,20 @@
             return className.Replace("+", "/");
         }
     }
+#else
+    // SourceLocationProvider cannot be implemented for .NET Core until
+    // after upgrading the Mono.Cecil dependencies.
+    public class SourceLocationProvider
+    {
+        public SourceLocationProvider(string assemblyPath)
+        {
+        }
+
+        public bool TryGetSourceLocation(MethodGroup methodGroup, out SourceLocation sourceLocation)
+        {
+            sourceLocation = null;
+            return false;
+        }
+    }
+#endif
 }

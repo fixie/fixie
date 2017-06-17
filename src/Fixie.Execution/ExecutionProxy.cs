@@ -23,33 +23,33 @@
             customListeners.Add((Listener)Activator.CreateInstance(typeof(TListener), listenerArguments));
         }
 
-        public void DiscoverMethods(string assemblyFullPath, string[] runnerArguments, string[] conventionArguments)
+        public void DiscoverMethods(string assemblyFullPath, string[] arguments)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
             var listeners = customListeners;
             var bus = new Bus(listeners);
-            var discoverer = new Discoverer(bus, conventionArguments);
+            var discoverer = new Discoverer(bus, arguments);
 
             discoverer.DiscoverMethods(assembly);
         }
 
-        public int RunAssembly(string assemblyFullPath, string[] runnerArguments, string[] conventionArguments)
+        public int RunAssembly(string assemblyFullPath, string[] arguments)
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
-            var summary = Run(runnerArguments, conventionArguments, runner => runner.RunAssembly(assembly));
+            var summary = Run(arguments, runner => runner.RunAssembly(assembly));
 
             return summary.Failed;
         }
 
-        public void RunMethods(string assemblyFullPath, string[] runnerArguments, string[] conventionArguments, string[] methods)
+        public void RunMethods(string assemblyFullPath, string[] arguments, string[] methods)
         {
             var methodGroups = methods.Select(x => new MethodGroup(x)).ToArray();
 
             var assembly = LoadAssembly(assemblyFullPath);
 
-            Run(runnerArguments, conventionArguments, r => r.RunMethods(assembly, methodGroups));
+            Run(arguments, r => r.RunMethods(assembly, methodGroups));
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -66,15 +66,15 @@
 #endif
         }
 
-        ExecutionSummary Run(string[] runnerArguments, string[] conventionArguments, Action<Runner> run)
+        ExecutionSummary Run(string[] arguments, Action<Runner> run)
         {
             var summaryListener = new SummaryListener();
 
-            var options = CommandLine.Parse<Options>(runnerArguments);
+            var options = CommandLine.Parse<Options>(arguments);
 
             var listeners = GetExecutionListeners(options, summaryListener);
             var bus = new Bus(listeners);
-            var runner = new Runner(bus, conventionArguments);
+            var runner = new Runner(bus, arguments);
 
             run(runner);
 

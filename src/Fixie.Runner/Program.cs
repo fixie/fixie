@@ -1,8 +1,10 @@
 ﻿namespace Fixie.Runner
 {
     using System;
+    using System.Linq;
     using Cli;
     using static System.Console;
+    using static System.IO.Directory;
 
     class Program
     {
@@ -16,24 +18,43 @@
             {
                 var options = CommandLine.Parse<Options>(arguments);
 
-                return Success;
+                if (FindTestProject(out string testProject))
+                {
+                    return Success;
+                }
+
+                return FatalError;
             }
             catch (CommandLineException exception)
             {
-                using (Foreground.Red)
-                    WriteLine(exception.Message);
-
+                Error(exception.Message);
                 Help();
 
                 return FatalError;
             }
             catch (Exception exception)
             {
-                using (Foreground.Red)
-                    WriteLine($"Fatal Error: {exception}");
+                Error($"Fatal Error: {exception}");
 
                 return FatalError;
             }
+        }
+
+        static bool FindTestProject(out string testProject)
+        {
+            var testProjects = EnumerateFiles(GetCurrentDirectory(), "*.*proj").ToArray();
+
+            if (testProjects.Length != 1)
+            {
+                Error($"Expected to find 1 project in the current directory, but found {testProjects.Length}.");
+                testProject = null;
+            }
+            else
+            {
+                testProject = testProjects.Single();
+            }
+
+            return testProject != null;
         }
 
         static void Help()
@@ -68,6 +89,14 @@
             WriteLine("    convention arguments");
             WriteLine("        Arbitrary arguments made available to conventions.");
             WriteLine();
+        }
+
+        static void Error(string message)
+        {
+            var before = ForegroundColor;
+            ForegroundColor = ConsoleColor.Red;
+            WriteLine(message);
+            ForegroundColor = before;
         }
     }
 }

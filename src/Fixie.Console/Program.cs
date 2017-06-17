@@ -1,9 +1,9 @@
 ﻿namespace Fixie.Console
 {
     using System;
-    using System.Text;
     using Cli;
     using Execution;
+    using static System.Console;
 
     class Program
     {
@@ -23,41 +23,42 @@
             catch (CommandLineException exception)
             {
                 using (Foreground.Red)
-                    Console.WriteLine(exception.Message);
+                    WriteLine(exception.Message);
 
-                Console.WriteLine();
-                Console.WriteLine(Usage());
+                Help();
+
                 return FatalError;
             }
             catch (Exception exception)
             {
                 using (Foreground.Red)
-                    Console.WriteLine($"Fatal Error: {exception}");
+                    WriteLine($"Fatal Error: {exception}");
+
                 return FatalError;
             }
         }
 
-        static string Usage()
+        static void Help()
         {
-            return new StringBuilder()
-                .AppendLine("Usage: Fixie.Console.exe assembly-path [--report path] [--team-city <on|off>] [convention arguments]...")
-                .AppendLine()
-                .AppendLine()
-                .AppendLine("    assembly-path")
-                .AppendLine("        A path indicating the test assembly file. Exactly one test")
-                .AppendLine("        assembly must be specified.")
-                .AppendLine()
-                .AppendLine("    --report path")
-                .AppendLine("        Write test results to the specified path, using the xUnit XML format.")
-                .AppendLine()
-                .AppendLine("    --team-city <on|off>")
-                .AppendLine("        When this option is omitted, the runner detects the need for")
-                .AppendLine("        TeamCity-formatted console output. Use this option to force")
-                .AppendLine("        TeamCity output on or off.")
-                .AppendLine()
-                .AppendLine("    convention arguments")
-                .AppendLine("        Arbitrary arguments made available to conventions at runtime.")
-                .ToString();
+            WriteLine();
+            WriteLine("Usage: Fixie.Console.exe assembly-path [--report path] [--team-city <on|off>] [convention arguments]...");
+            WriteLine();
+            WriteLine();
+            WriteLine("    assembly-path");
+            WriteLine("        A path indicating the test assembly file. Exactly one test");
+            WriteLine("        assembly must be specified.");
+            WriteLine();
+            WriteLine("    --report path");
+            WriteLine("        Write test results to the specified path, using the xUnit XML format.");
+            WriteLine();
+            WriteLine("    --team-city <on|off>");
+            WriteLine("        When this option is omitted, the runner detects the need for");
+            WriteLine("        TeamCity-formatted console output. Use this option to force");
+            WriteLine("        TeamCity output on or off.");
+            WriteLine();
+            WriteLine("    convention arguments");
+            WriteLine("        Arbitrary arguments made available to conventions at runtime.");
+            WriteLine();
         }
     }
 }

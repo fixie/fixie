@@ -27,9 +27,11 @@
         {
             var assembly = LoadAssembly(assemblyFullPath);
 
+            var options = CommandLine.Parse<Options>(arguments, out string[] conventionArguments);
+
             var listeners = customListeners;
             var bus = new Bus(listeners);
-            var discoverer = new Discoverer(bus, arguments);
+            var discoverer = new Discoverer(bus, conventionArguments);
 
             discoverer.DiscoverMethods(assembly);
         }
@@ -70,11 +72,11 @@
         {
             var summaryListener = new SummaryListener();
 
-            var options = CommandLine.Parse<Options>(arguments);
+            var options = CommandLine.Parse<Options>(arguments, out string[] conventionArguments);
 
             var listeners = GetExecutionListeners(options, summaryListener);
             var bus = new Bus(listeners);
-            var runner = new Runner(bus, arguments);
+            var runner = new Runner(bus, conventionArguments);
 
             run(runner);
 

@@ -6,4 +6,8 @@
     <AssemblyName>dotnet-fixie</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Fixie\Fixie.csproj" />
+  </ItemGroup>
+
 </Project>

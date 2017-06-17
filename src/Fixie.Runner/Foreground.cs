@@ -1,4 +1,4 @@
-﻿namespace Fixie.Execution
+namespace Fixie.Runner
 {
     using System;
 
@@ -15,7 +15,5 @@
         public void Dispose() => Console.ForegroundColor = before;
 
         public static Foreground Red => new Foreground(ConsoleColor.Red);
-
-        public static Foreground Yellow => new Foreground(ConsoleColor.Yellow);
     }
 }

@@ -28,9 +28,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 "@
 }
 
-function exec($cmd) {
+function exec {
+    $pop = $false
+    if ($args.Length -eq 1) {
+        $cmd = $args[0]
+    } else {
+        $path = $args[0]
+        $cmd = $args[1]
+        Push-Location $path
+        $pop = $true
+    }
     $global:lastexitcode = 0
     & $cmd
+    if ($pop) {
+        Pop-Location
+    }
     if ($lastexitcode -ne 0) {
         throw "Error executing command:$cmd"
     }

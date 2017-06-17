@@ -32,14 +32,14 @@
             executionProxy.Subscribe<TListener>(listenerArguments);
         }
 
-        public void DiscoverMethods(string[] runnerArguments, string[] conventionArguments)
-            => executionProxy.DiscoverMethods(assemblyFullPath, runnerArguments, conventionArguments);
+        public void DiscoverMethods(string[] arguments)
+            => executionProxy.DiscoverMethods(assemblyFullPath, arguments);
 
-        public int RunAssembly(string[] runnerArguments, string[] conventionArguments)
-            => executionProxy.RunAssembly(assemblyFullPath, runnerArguments, conventionArguments);
+        public int RunAssembly(string[] arguments)
+            => executionProxy.RunAssembly(assemblyFullPath, arguments);
 
-        public void RunMethods(string[] runnerArguments, string[] conventionArguments, string[] methods)
-            => executionProxy.RunMethods(assemblyFullPath, runnerArguments, conventionArguments, methods);
+        public void RunMethods(string[] arguments, string[] methods)
+            => executionProxy.RunMethods(assemblyFullPath, arguments, methods);
 
         public void Dispose()
         {

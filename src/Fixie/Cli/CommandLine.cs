@@ -15,5 +15,10 @@
 
             return parser.Model;
         }
+
+        public static string Serialize(string[] arguments)
+        {
+            return Serializer.Serialize(arguments);
+        }
     }
 }

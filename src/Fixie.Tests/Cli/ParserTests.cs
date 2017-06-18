@@ -4,7 +4,7 @@
     using Assertions;
     using Fixie.Cli;
 
-    public class CommandLineTests
+    public class ParserTests
     {
         enum Level { Information, Warning, Error }
 

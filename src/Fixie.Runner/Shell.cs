@@ -23,6 +23,27 @@
             return process.ExitCode;
         }
 
+        public static string[] msbuild(string project, string target)
+        {
+            var path = Path.GetTempFileName();
+
+            try
+            {
+                dotnet(
+                    "msbuild",
+                    project,
+                    "/t:" + target,
+                    "/nologo",
+                    $"/p:_Fixie_OutputFile={path}");
+
+                return File.ReadAllLines(path);
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
         static string FindDotnet()
         {
             var fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "dotnet.exe" : "dotnet";

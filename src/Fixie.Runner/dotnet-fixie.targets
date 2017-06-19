@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project>
+  <Target Name="_Fixie_GetTargetFrameworks">
+
+    <ItemGroup>
+      <_Fixie_Line Include="$(TargetFramework)" />
+      <_Fixie_Line Include="$(TargetFrameworks)" />
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(_Fixie_OutputFile)"
+                      Lines="@(_Fixie_Line)"
+                      Overwrite="true" />
+  </Target>
+</Project>

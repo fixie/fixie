@@ -1,10 +1,13 @@
 ﻿namespace Fixie.Runner
 {
     using System;
+    using System.IO;
     using System.Linq;
+    using System.Reflection;
     using Cli;
     using static System.Console;
     using static System.IO.Directory;
+    using static Shell;
 
     class Program
     {
@@ -20,6 +23,10 @@
 
                 if (FindTestProject(out string testProject))
                 {
+                    InjectTargets(testProject);
+
+                    var targetFrameworks = GetTargetFrameworks(testProject);
+
                     return Success;
                 }
 
@@ -39,6 +46,25 @@
                 return FatalError;
             }
         }
+
+        static string[] GetTargetFrameworks(string testProject)
+            => msbuild(testProject, "_Fixie_GetTargetFrameworks")
+                .SelectMany(line => line.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries))
+                .ToArray();
+
+        static void InjectTargets(string testProject)
+        {
+            File.Copy(
+                Path.Combine(PathToThisAssembly(), "dotnet-fixie.targets"),
+                Path.Combine(
+                    Path.GetDirectoryName(testProject),
+                    "obj",
+                    Path.GetFileName(testProject) + ".dotnet-fixie.targets"),
+                overwrite: true);
+        }
+
+        static string PathToThisAssembly()
+            => Path.GetDirectoryName(typeof(Program).GetTypeInfo().Assembly.Location);
 
         static bool FindTestProject(out string testProject)
         {

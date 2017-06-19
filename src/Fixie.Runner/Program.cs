@@ -21,16 +21,13 @@
             {
                 var options = CommandLine.Parse<Options>(arguments);
 
-                if (FindTestProject(out string testProject))
-                {
-                    InjectTargets(testProject);
+                var testProject = TestProject();
 
-                    var targetFrameworks = GetTargetFrameworks(testProject);
+                InjectTargets(testProject);
 
-                    return Success;
-                }
+                var targetFrameworks = GetTargetFrameworks(testProject);
 
-                return FatalError;
+                return Success;
             }
             catch (CommandLineException exception)
             {
@@ -66,21 +63,14 @@
         static string PathToThisAssembly()
             => Path.GetDirectoryName(typeof(Program).GetTypeInfo().Assembly.Location);
 
-        static bool FindTestProject(out string testProject)
+        static string TestProject()
         {
             var testProjects = EnumerateFiles(GetCurrentDirectory(), "*.*proj").ToArray();
 
             if (testProjects.Length != 1)
-            {
-                Error($"Expected to find 1 project in the current directory, but found {testProjects.Length}.");
-                testProject = null;
-            }
-            else
-            {
-                testProject = testProjects.Single();
-            }
+                throw new CommandLineException($"Expected to find 1 project in the current directory, but found {testProjects.Length}.");
 
-            return testProject != null;
+            return testProjects.Single();
         }
 
         static void Help()

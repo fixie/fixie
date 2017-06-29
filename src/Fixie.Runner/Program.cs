@@ -44,6 +44,27 @@
             }
         }
 
+        static string TestProject()
+        {
+            var testProjects = EnumerateFiles(GetCurrentDirectory(), "*.*proj").ToArray();
+
+            if (testProjects.Length != 1)
+                throw new CommandLineException($"Expected to find 1 project in the current directory, but found {testProjects.Length}.");
+
+            return testProjects.Single();
+        }
+
+        static void InjectTargets(string testProject)
+        {
+            File.Copy(
+                Path.Combine(PathToThisAssembly(), "dotnet-fixie.targets"),
+                Path.Combine(
+                    Path.GetDirectoryName(testProject),
+                    "obj",
+                    Path.GetFileName(testProject) + ".dotnet-fixie.targets"),
+                overwrite: true);
+        }
+
         static string[] GetTargetFrameworks(Options options, string testProject)
         {
             var targetFrameworks =
@@ -64,29 +85,8 @@
                 $"The test project targets the following framework(s): {availableFrameworks}");
         }
 
-        static void InjectTargets(string testProject)
-        {
-            File.Copy(
-                Path.Combine(PathToThisAssembly(), "dotnet-fixie.targets"),
-                Path.Combine(
-                    Path.GetDirectoryName(testProject),
-                    "obj",
-                    Path.GetFileName(testProject) + ".dotnet-fixie.targets"),
-                overwrite: true);
-        }
-
         static string PathToThisAssembly()
             => Path.GetDirectoryName(typeof(Program).GetTypeInfo().Assembly.Location);
-
-        static string TestProject()
-        {
-            var testProjects = EnumerateFiles(GetCurrentDirectory(), "*.*proj").ToArray();
-
-            if (testProjects.Length != 1)
-                throw new CommandLineException($"Expected to find 1 project in the current directory, but found {testProjects.Length}.");
-
-            return testProjects.Single();
-        }
 
         static void Help()
         {

@@ -25,7 +25,7 @@
 
                 InjectTargets(testProject);
 
-                var targetFrameworks = GetTargetFrameworks(testProject);
+                var targetFrameworks = GetTargetFrameworks(options, testProject);
 
                 return Success;
             }
@@ -44,10 +44,25 @@
             }
         }
 
-        static string[] GetTargetFrameworks(string testProject)
-            => msbuild(testProject, "_Fixie_GetTargetFrameworks")
-                .SelectMany(line => line.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries))
-                .ToArray();
+        static string[] GetTargetFrameworks(Options options, string testProject)
+        {
+            var targetFrameworks =
+                msbuild(testProject, "_Fixie_GetTargetFrameworks")
+                    .SelectMany(line => line.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries))
+                    .ToArray();
+
+            if (options.Framework == null)
+                return targetFrameworks;
+
+            if (targetFrameworks.Contains(options.Framework))
+                return new[] {options.Framework};
+
+            var availableFrameworks = string.Join(", ", targetFrameworks.Select(x => $"'{x}'"));
+
+            throw new CommandLineException(
+                $"Cannot target framework '{options.Framework}'. " +
+                $"The test project targets the following framework(s): {availableFrameworks}");
+        }
 
         static void InjectTargets(string testProject)
         {

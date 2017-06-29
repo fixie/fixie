@@ -40,6 +40,22 @@
 
                 var targetFrameworks = GetTargetFrameworks(options, testProject);
 
+                foreach (var targetFramework in targetFrameworks)
+                {
+                    var assemblyMetadata = msbuild(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
+
+                    var outputPath = assemblyMetadata[0];
+                    var assemblyName = assemblyMetadata[1];
+                    var targetFileName = assemblyMetadata[2];
+                    var targetFrameworkIdentifier = assemblyMetadata[3];
+
+                    WriteLine("Assembly:");
+                    WriteLine($"\tOutputPath: {outputPath}");
+                    WriteLine($"\tAssemblyName: {assemblyName}");
+                    WriteLine($"\tTargetFileName: {targetFileName}");
+                    WriteLine($"\tTargetFrameworkIdentifier: {targetFrameworkIdentifier}");
+                }
+
                 return Success;
             }
             catch (CommandLineException exception)

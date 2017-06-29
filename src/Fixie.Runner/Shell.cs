@@ -44,11 +44,35 @@
             }
         }
 
+        public static string[] msbuild(string project, string target, string configuration, string targetFramework)
+        {
+            var path = Path.GetTempFileName();
+
+            try
+            {
+                dotnet(
+                    "msbuild",
+                    project,
+                    "/p:Configuration=" + configuration,
+                    "/p:TargetFramework=" + targetFramework,
+                    "/t:" + target,
+                    "/nologo",
+                    "/verbosity:minimal",
+                    $"/p:_Fixie_OutputFile={path}");
+
+                return File.ReadAllLines(path);
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
         public static int msbuild(string project, string target, string configuration)
             => dotnet(
                 "msbuild",
-                $"\"{project}\"",
-                $"\"/p:Configuration={configuration}\"",
+                project,
+                "/p:Configuration=" + configuration,
                 "/t:" + target,
                 "/nologo",
                 "/verbosity:minimal");

@@ -23,6 +23,19 @@
 
                 var testProject = TestProject();
 
+                if (options.ShouldBuild)
+                {
+                    WriteLine($"Building {Path.GetFileNameWithoutExtension(testProject)}...");
+
+                    var exitCode = msbuild(testProject, "Build", options.Configuration);
+
+                    if (exitCode != 0)
+                    {
+                        Error("Build failed!");
+                        return FatalError;
+                    }
+                }
+
                 InjectTargets(testProject);
 
                 var targetFrameworks = GetTargetFrameworks(options, testProject);

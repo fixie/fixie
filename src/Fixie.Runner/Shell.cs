@@ -44,6 +44,15 @@
             }
         }
 
+        public static int msbuild(string project, string target, string configuration)
+            => dotnet(
+                "msbuild",
+                $"\"{project}\"",
+                $"\"/p:Configuration={configuration}\"",
+                "/t:" + target,
+                "/nologo",
+                "/verbosity:minimal");
+
         static string FindDotnet()
         {
             var fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "dotnet.exe" : "dotnet";

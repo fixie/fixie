@@ -12,7 +12,6 @@
     class Program
     {
         const int FatalError = -1;
-        const int Success = 0;
 
         [STAThread]
         static int Main(string[] arguments)
@@ -40,23 +39,19 @@
 
                 var targetFrameworks = GetTargetFrameworks(options, testProject);
 
+                var failedTests = 0;
+
                 foreach (var targetFramework in targetFrameworks)
                 {
-                    var assemblyMetadata = msbuild(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
+                    int exitCode = Run(options, testProject, targetFramework);
 
-                    var outputPath = assemblyMetadata[0];
-                    var assemblyName = assemblyMetadata[1];
-                    var targetFileName = assemblyMetadata[2];
-                    var targetFrameworkIdentifier = assemblyMetadata[3];
+                    if (exitCode == FatalError)
+                        return FatalError;
 
-                    WriteLine("Assembly:");
-                    WriteLine($"\tOutputPath: {outputPath}");
-                    WriteLine($"\tAssemblyName: {assemblyName}");
-                    WriteLine($"\tTargetFileName: {targetFileName}");
-                    WriteLine($"\tTargetFrameworkIdentifier: {targetFrameworkIdentifier}");
+                    failedTests += exitCode;
                 }
 
-                return Success;
+                return failedTests;
             }
             catch (CommandLineException exception)
             {
@@ -112,6 +107,82 @@
             throw new CommandLineException(
                 $"Cannot target framework '{options.Framework}'. " +
                 $"The test project targets the following framework(s): {availableFrameworks}");
+        }
+
+        static int Run(Options options, string testProject, string targetFramework)
+        {
+            var assemblyMetadata = msbuild(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
+
+            var outputPath = assemblyMetadata[0];
+            var assemblyName = assemblyMetadata[1];
+            var targetFileName = assemblyMetadata[2];
+            var targetFrameworkIdentifier = assemblyMetadata[3];
+
+            WriteLine("Assembly:");
+            WriteLine($"\tOutputPath: {outputPath}");
+            WriteLine($"\tTargetFileName: {targetFileName}");
+            WriteLine($"\tTargetFrameworkIdentifier: {targetFrameworkIdentifier}");
+
+            WriteLine($"Running tests for {targetFramework}...");
+
+            if (targetFrameworkIdentifier == ".NETFramework")
+                return RunDotNetFramework(options, outputPath, targetFileName);
+
+            if (targetFrameworkIdentifier == ".NETCoreApp")
+                return RunDotNetCore(options, outputPath, targetFileName);
+
+            throw new CommandLineException($"Framework '{targetFramework}' has unsupported TargetFrameworkIdentifier '{targetFrameworkIdentifier}'.");
+        }
+
+        static int RunDotNetFramework(Options options, string outputPath, string targetFileName)
+        {
+            var runner = Path.Combine(
+                ConsoleRunnerDirectory(options, "net452"),
+                options.x86
+                    ? "Fixie.Console.x86.exe"
+                    : "Fixie.Console.exe");
+
+            return run(
+                executable: runner,
+                workingDirectory: outputPath,
+                arguments: new[]
+                {
+                    targetFileName,
+                    /* other command line arguments */
+                });
+        }
+
+        static int RunDotNetCore(Options options, string outputPath, string targetFileName)
+        {
+            var runner = Path.Combine(
+                ConsoleRunnerDirectory(options, "netcoreapp1.1"),
+                "Fixie.Console.dll");
+
+            return dotnet(
+                workingDirectory: outputPath,
+                arguments: new[]
+                {
+                    runner,
+                    targetFileName,
+                    /* other command line arguments */
+                });
+        }
+
+        static string ConsoleRunnerDirectory(Options options, string frameworkDirectory)
+        {
+            var thisAssemblyPath = PathToThisAssembly();
+
+            // When running this tool from its NuGet package, navigate
+            // within the package to the console runner's directory.
+            var directory = Path.GetFullPath(Path.Combine(thisAssemblyPath, "..", "..", "tools", frameworkDirectory));
+
+            if (Exists(directory))
+                return directory;
+
+            // When running from the Fixie solution's own build output
+            // directory, navigate within the solution structure to the
+            // console runner's build output directory.
+            return Path.GetFullPath(Path.Combine(thisAssemblyPath, "..", "..", "..", "..", "Fixie.Console", "bin", options.Configuration, frameworkDirectory));
         }
 
         static string PathToThisAssembly()

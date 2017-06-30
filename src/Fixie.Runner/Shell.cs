@@ -10,6 +10,23 @@
     {
         static readonly string DotnetPath = FindDotnet();
 
+        public static int run(string executable, string workingDirectory, string[] arguments)
+        {
+            var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = executable,
+                Arguments = CommandLine.Serialize(arguments),
+                WorkingDirectory = workingDirectory
+            });
+            process.WaitForExit();
+            return process.ExitCode;
+        }
+
+        public static int dotnet(string workingDirectory, string[] arguments)
+        {
+            return run(DotnetPath, workingDirectory, arguments);
+        }
+
         public static int dotnet(params string[] arguments)
         {
             var dotnet = new ProcessStartInfo

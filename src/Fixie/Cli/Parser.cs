@@ -16,9 +16,11 @@
             UnusedArguments = new List<string>();
 
             var positionalArguments = ScanPositionalArguments(type);
+            var hasParamsArray = positionalArguments.Any() && positionalArguments.Last().IsParamsArray;
             var namedArguments = ScanNamedArguments(type);
 
-            var positionalArgumentValues = new List<string>();
+            var scalarPositionalArgumentValues = new List<string>();
+            var paramsPositionalArgumentValues = new List<object>();
 
             var queue = new Queue<string>(arguments);
             while (queue.Any())
@@ -64,24 +66,52 @@
                 }
                 else
                 {
-                    if (positionalArgumentValues.Count >= positionalArguments.Count)
-                        UnusedArguments.Add(item);
+                    if (hasParamsArray)
+                    {
+                        if (scalarPositionalArgumentValues.Count == positionalArguments.Count - 1)
+                            paramsPositionalArgumentValues.Add(item);
+                        else
+                            scalarPositionalArgumentValues.Add(item);
+                    }
                     else
-                        positionalArgumentValues.Add(item);
+                    {
+                        if (scalarPositionalArgumentValues.Count >= positionalArguments.Count)
+                            UnusedArguments.Add(item);
+                        else
+                            scalarPositionalArgumentValues.Add(item);
+                    }
                 }
             }
 
-            //If there are not enough argumentValues, assume default(T) for the missing ones.
             for (int i = 0; i < positionalArguments.Count; i++)
             {
-                positionalArguments[i].Value =
-                    i < positionalArgumentValues.Count
-                        ? positionalArgumentValues[i]
-                        : Default(positionalArguments[i].Type);
-            }
+                var positionalArgument = positionalArguments[i];
 
-            foreach (var argument in positionalArguments)
-                argument.Value = Convert(argument.Type, argument.Name, argument.Value);
+                if (positionalArgument.IsParamsArray)
+                {
+                    //Bind all of paramsPositionalArgumentValues to this argument.
+                    var itemType = positionalArgument.Type.GetElementType();
+
+                    paramsPositionalArgumentValues =
+                        paramsPositionalArgumentValues
+                            .Select(x =>
+                                Convert(itemType, positionalArgument.Name, x)).ToList();
+
+                    positionalArgument.Value = CreateTypedArray(itemType, paramsPositionalArgumentValues);
+                }
+                else
+                {
+                    //If there are not enough arguments, assume default(T) for the missing ones.
+
+                    positionalArgument.Value =
+                        i < scalarPositionalArgumentValues.Count
+                            ? Convert(
+                                positionalArgument.Type,
+                                positionalArgument.Name,
+                                scalarPositionalArgumentValues[i])
+                            : Default(positionalArgument.Type);
+                }
+            }
 
             Model = Create(type, positionalArguments, namedArguments);
         }
@@ -197,7 +227,7 @@
                 var property = type.GetProperty(namedArgument.PropertyName);
 
                 if (namedArgument.IsArray)
-                    property.SetValue(instance, namedArgument.CreateTypedValuesArray());
+                    property.SetValue(instance, CreateTypedArray(namedArgument.ItemType, namedArgument.Values));
                 else if (namedArgument.Values.Count != 0)
                     property.SetValue(instance, namedArgument.Values.Single());
             }
@@ -211,5 +241,12 @@
 
         static bool IsNamedArgumentKey(string item)
             => item.StartsWith("--");
+
+        static Array CreateTypedArray(Type itemType, IReadOnlyList<object> values)
+        {
+            Array destinationArray = Array.CreateInstance(itemType, values.Count);
+            Array.Copy(values.ToArray(), destinationArray, values.Count);
+            return destinationArray;
+        }
     }
 }

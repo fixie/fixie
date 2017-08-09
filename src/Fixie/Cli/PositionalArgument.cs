@@ -9,10 +9,12 @@
         {
             Type = parameter.ParameterType;
             Name = parameter.Name;
+            IsParamsArray = parameter.GetCustomAttribute<ParamArrayAttribute>() != null;
         }
 
         public Type Type { get; }
         public string Name { get; }
         public object Value { get; set; }
+        public bool IsParamsArray { get; set; }
     }
 }

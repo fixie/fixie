@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Reflection;
+    using Cli;
     using Conventions;
 
     public class ConventionDiscoverer
@@ -37,12 +38,21 @@
                 .ToArray();
         }
 
-        static T Construct<T>(Type type)
+        T Construct<T>(Type type)
         {
             var constructor = GetConstructor(type);
 
             try
             {
+                var parameters = constructor.GetParameters();
+
+                if (parameters.Length == 1)
+                {
+                    var options = CommandLine.Parse(parameters.Single().ParameterType, conventionArguments);
+
+                    return (T)constructor.Invoke(new[] {options});
+                }
+
                 return (T)constructor.Invoke(null);
             }
             catch (Exception ex)

@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Xml.Linq;
     using Cli;
     using Listeners;
 
@@ -106,9 +107,9 @@
                 yield return new ReportListener(SaveReport(options));
         }
 
-        Action<Report> SaveReport(Options options)
+        Action<XDocument> SaveReport(Options options)
         {
-            return report => XUnitXml.Save(report, FullPath(options.Report));
+            return report => ReportListener.Save(report, FullPath(options.Report));
         }
 
         string FullPath(string absoluteOrRelativePath)

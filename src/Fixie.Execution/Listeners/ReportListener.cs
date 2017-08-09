@@ -7,7 +7,9 @@
     using System.Xml.Linq;
 
     public class ReportListener :
-        Handler<CaseCompleted>,
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>,
         Handler<ClassCompleted>,
         Handler<AssemblyCompleted>
     {
@@ -21,29 +23,71 @@
             this.save = save;
         }
 
-        public void Handle(CaseCompleted message)
+        public void Handle(CaseSkipped message)
         {
-            currentClass.Add(Case(message));
+            currentClass.Add(
+                new XElement("test",
+                    new XAttribute("name", message.Name),
+                    new XAttribute("type", message.Class.FullName),
+                    new XAttribute("method", message.Method.Name),
+                    new XAttribute("result", "Skip"),
+                    message.Reason != null
+                        ? new XElement("reason", new XElement("message", new XCData(message.Reason)))
+                        : null));
+        }
+
+        public void Handle(CasePassed message)
+        {
+            currentClass.Add(
+                new XElement("test",
+                    new XAttribute("name", message.Name),
+                    new XAttribute("type", message.Class.FullName),
+                    new XAttribute("method", message.Method.Name),
+                    new XAttribute("result", "Pass"),
+                    new XAttribute("time", Seconds(message.Duration))));
+        }
+
+        public void Handle(CaseFailed message)
+        {
+            XElement Failure(CompoundException exception)
+                => new XElement("failure",
+                    new XAttribute("exception-type", exception.Type),
+                    new XElement("message", new XCData(exception.Message)),
+                    new XElement("stack-trace", new XCData(exception.StackTrace)));
+
+            currentClass.Add(
+                new XElement("test",
+                    new XAttribute("name", message.Name),
+                    new XAttribute("type", message.Class.FullName),
+                    new XAttribute("method", message.Method.Name),
+                    new XAttribute("result", "Fail"),
+                    new XAttribute("time", Seconds(message.Duration)),
+                    Failure(message.Exception)));
         }
 
         public void Handle(ClassCompleted message)
         {
-            classes.Add(Class(message, currentClass));
+            var summary = message.Summary;
+
+            classes.Add(
+                new XElement("class",
+                    new XAttribute("time", Seconds(summary.Duration)),
+                    new XAttribute("name", message.Class.FullName),
+                    new XAttribute("total", summary.Total),
+                    new XAttribute("passed", summary.Passed),
+                    new XAttribute("failed", summary.Failed),
+                    new XAttribute("skipped", summary.Skipped),
+                    currentClass));
+
             currentClass = new List<XElement>();
         }
 
         public void Handle(AssemblyCompleted message)
         {
-            save(Report(message, classes));
-            classes = null;
-        }
-
-        static XDocument Report(AssemblyCompleted message, List<XElement> classes)
-        {
             var now = DateTime.UtcNow;
             var summary = message.Summary;
 
-            return new XDocument(
+            save(new XDocument(
                 new XElement("assemblies",
                     new XElement("assembly",
                         new XAttribute("name", message.Assembly.Location),
@@ -57,7 +101,9 @@
                         new XAttribute("skipped", summary.Skipped),
                         new XAttribute("environment", $"{IntPtr.Size * 8}-bit .NET {Framework}"),
                         new XAttribute("test-framework", Fixie.Framework.Version),
-                        classes)));
+                        classes))));
+
+            classes = null;
         }
 
 #if NET452
@@ -67,69 +113,6 @@
         static string ConfigFile => "N/A";
         static string Framework => "Core";
 #endif
-
-        static XElement Class(ClassCompleted message, List<XElement> cases)
-        {
-            var summary = message.Summary;
-
-            return new XElement("class",
-                new XAttribute("time", Seconds(summary.Duration)),
-                new XAttribute("name", message.Class.FullName),
-                new XAttribute("total", summary.Total),
-                new XAttribute("passed", summary.Passed),
-                new XAttribute("failed", summary.Failed),
-                new XAttribute("skipped", summary.Skipped),
-                cases);
-        }
-
-        static XElement Case(CaseCompleted message)
-        {
-            if (message is CaseSkipped skipped)
-                return Case(skipped);
-
-            if (message is CasePassed passed)
-                return Case(passed);
-
-            if (message is CaseFailed failed)
-                return Case(failed);
-
-            return null;
-        }
-
-        static XElement Case(CaseSkipped message)
-            => new XElement("test",
-                new XAttribute("name", message.Name),
-                new XAttribute("type", message.Class.FullName),
-                new XAttribute("method", message.Method.Name),
-                new XAttribute("result", "Skip"),
-                message.Reason != null
-                    ? new XElement("reason", new XElement("message", new XCData(message.Reason)))
-                    : null);
-
-        static XElement Case(CasePassed message)
-            => new XElement("test",
-                new XAttribute("name", message.Name),
-                new XAttribute("type", message.Class.FullName),
-                new XAttribute("method", message.Method.Name),
-                new XAttribute("result", "Pass"),
-                new XAttribute("time", Seconds(message.Duration)));
-
-        static XElement Case(CaseFailed message)
-            => new XElement("test",
-                new XAttribute("name", message.Name),
-                new XAttribute("type", message.Class.FullName),
-                new XAttribute("method", message.Method.Name),
-                new XAttribute("result", "Fail"),
-                new XAttribute("time", Seconds(message.Duration)),
-                Failure(message.Exception));
-
-        static XElement Failure(CompoundException exception)
-        {
-            return new XElement("failure",
-                new XAttribute("exception-type", exception.Type),
-                new XElement("message", new XCData(exception.Message)),
-                new XElement("stack-trace", new XCData(exception.StackTrace)));
-        }
 
         static string Seconds(TimeSpan duration)
         {

@@ -46,13 +46,15 @@
             return summary.Failed;
         }
 
-        public void RunMethods(string assemblyFullPath, string[] arguments, string[] methods)
+        public int RunMethods(string assemblyFullPath, string[] arguments, string[] methods)
         {
             var methodGroups = methods.Select(x => new MethodGroup(x)).ToArray();
 
             var assembly = LoadAssembly(assemblyFullPath);
 
-            Run(arguments, r => r.RunMethods(assembly, methodGroups));
+            var summary = Run(arguments, r => r.RunMethods(assembly, methodGroups));
+
+            return summary.Failed;
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)

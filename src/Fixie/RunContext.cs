@@ -8,19 +8,19 @@
     /// </summary>
     static class RunContext
     {
-        public static void Set()
+        public static void Initialize()
         {
             TargetType = null;
             TargetMethod = null;
         }
 
-        public static void Set(Type targetType)
+        public static void Initialize(Type targetType)
         {
             TargetType = targetType;
             TargetMethod = null;
         }
 
-        public static void Set(MethodInfo targetMethod)
+        public static void Initialize(MethodInfo targetMethod)
         {
             TargetType = null;
             TargetMethod = targetMethod;

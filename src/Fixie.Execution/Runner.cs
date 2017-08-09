@@ -21,21 +21,21 @@
 
         public void RunAssembly(Assembly assembly)
         {
-            RunContext.Set();
+            RunContext.Initialize();
 
             RunTypesInternal(assembly, assembly.GetTypes());
         }
 
         public void RunNamespace(Assembly assembly, string ns)
         {
-            RunContext.Set();
+            RunContext.Initialize();
 
             RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
         public void RunType(Assembly assembly, Type type)
         {
-            RunContext.Set(type);
+            RunContext.Initialize(type);
 
             var types = GetTypeAndNestedTypes(type).ToArray();
             RunTypesInternal(assembly, types);
@@ -43,7 +43,7 @@
 
         public void RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
-            RunContext.Set();
+            RunContext.Initialize();
 
             Run(assembly, new[] { convention }, types);
         }
@@ -55,9 +55,9 @@
             var methods = GetMethods(types, methodGroups);
 
             if (methods.Length == 1)
-                RunContext.Set(methods.Single());
+                RunContext.Initialize(methods.Single());
             else
-                RunContext.Set();
+                RunContext.Initialize();
 
             var conventions = GetConventions(assembly);
 
@@ -69,7 +69,7 @@
 
         public void RunMethods(Assembly assembly, Type type, MethodInfo method)
         {
-            RunContext.Set(method);
+            RunContext.Initialize(method);
 
             var conventions = GetConventions(assembly);
 

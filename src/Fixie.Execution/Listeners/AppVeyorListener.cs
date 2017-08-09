@@ -48,13 +48,17 @@
         {
             Post(message, x =>
             {
+                x.outcome = "Skipped";
                 x.ErrorMessage = message.Reason;
             });
         }
 
         public void Handle(CasePassed message)
         {
-            Post(message);
+            Post(message, x =>
+            {
+                x.outcome = "Passed";
+            });
         }
 
         public void Handle(CaseFailed message)
@@ -63,24 +67,24 @@
 
             Post(message, x =>
             {
+                x.outcome = "Failed";
                 x.ErrorMessage = exception.Message;
                 x.ErrorStackTrace = exception.TypedStackTrace();
             });
         }
 
-        void Post(CaseCompleted message, Action<TestResult> customize = null)
+        void Post(CaseCompleted message, Action<TestResult> customize)
         {
             var testResult = new TestResult
             {
                 testFramework = "Fixie",
                 fileName = fileName,
                 testName = message.Name,
-                outcome = message.Status.ToString(),
                 durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
                 StdOut = message.Output
             };
 
-            customize?.Invoke(testResult);
+            customize(testResult);
 
             postAction(uri, "application/json", Serialize(testResult));
         }

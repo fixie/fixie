@@ -3,7 +3,7 @@
     public class CaseFailed : CaseCompleted
     {
         public CaseFailed(Case @case, AssertionLibraryFilter filter)
-            : base(@case, CaseStatus.Failed)
+            : base(@case)
         {
             Exception = new CompoundException(@case.Exceptions, filter);
         }

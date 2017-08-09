@@ -5,7 +5,6 @@
     using System.IO;
     using System.Linq;
     using System.Xml.Linq;
-    using Execution;
 
     public static class XUnitXml
     {
@@ -63,56 +62,7 @@
                 new XAttribute("passed", classReport.Passed),
                 new XAttribute("failed", classReport.Failed),
                 new XAttribute("skipped", classReport.Skipped),
-                classReport.Cases.Select(Case));
-        }
-
-        static XElement Case(CaseCompleted message)
-        {
-            if (message is CaseSkipped skipped)
-                return Case(skipped);
-
-            if (message is CasePassed passed)
-                return Case(passed);
-
-            if (message is CaseFailed failed)
-                return Case(failed);
-
-            return null;
-        }
-
-        static XElement Case(CaseSkipped message)
-            => new XElement("test",
-                new XAttribute("name", message.Name),
-                new XAttribute("type", message.Class.FullName),
-                new XAttribute("method", message.Method.Name),
-                new XAttribute("result", "Skip"),
-                message.Reason != null
-                    ? new XElement("reason", new XElement("message", new XCData(message.Reason)))
-                    : null);
-
-        static XElement Case(CasePassed message)
-            => new XElement("test",
-                new XAttribute("name", message.Name),
-                new XAttribute("type", message.Class.FullName),
-                new XAttribute("method", message.Method.Name),
-                new XAttribute("result", "Pass"),
-                new XAttribute("time", Seconds(message.Duration)));
-
-        static XElement Case(CaseFailed message)
-            => new XElement("test",
-                new XAttribute("name", message.Name),
-                new XAttribute("type", message.Class.FullName),
-                new XAttribute("method", message.Method.Name),
-                new XAttribute("result", "Fail"),
-                new XAttribute("time", Seconds(message.Duration)),
-                Failure(message.Exception));
-
-        static XElement Failure(CompoundException exception)
-        {
-            return new XElement("failure",
-                new XAttribute("exception-type", exception.Type),
-                new XElement("message", new XCData(exception.Message)),
-                new XElement("stack-trace", new XCData(exception.StackTrace)));
+                classReport.Cases);
         }
 
         static string Seconds(TimeSpan duration)

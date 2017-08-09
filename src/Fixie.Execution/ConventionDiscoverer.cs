@@ -55,6 +55,10 @@
 
                 return (T)constructor.Invoke(null);
             }
+            catch (CommandLineException ex)
+            {
+                throw new Exception($"Command line argument parsing failed while attempting to construct an instance of type '{type.FullName}'. " + ex.Message);
+            }
             catch (Exception ex)
             {
                 throw new Exception($"Could not construct an instance of type '{type.FullName}'.", ex);

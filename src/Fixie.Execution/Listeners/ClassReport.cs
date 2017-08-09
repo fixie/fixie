@@ -7,12 +7,13 @@ namespace Fixie.Execution.Listeners
 
     public class ClassReport
     {
+        readonly Type @class;
         readonly List<XElement> cases;
         readonly ExecutionSummary summary;
 
         public ClassReport(Type @class)
         {
-            Class = @class;
+            this.@class = @class;
             cases = new List<XElement>();
             summary = new ExecutionSummary();
         }
@@ -22,10 +23,6 @@ namespace Fixie.Execution.Listeners
             cases.Add(Case(message));
             summary.Add(message);
         }
-
-        public Type Class { get; }
-
-        public IReadOnlyList<XElement> Cases => cases;
 
         public int Passed => summary.Passed;
         public int Failed => summary.Failed;
@@ -44,6 +41,18 @@ namespace Fixie.Execution.Listeners
                 return Case(failed);
 
             return null;
+        }
+
+        public XElement ToXml()
+        {
+            return new XElement("class",
+                new XAttribute("time", Seconds(Duration)),
+                new XAttribute("name", @class.FullName),
+                new XAttribute("total", Failed + Passed + Skipped),
+                new XAttribute("passed", Passed),
+                new XAttribute("failed", Failed),
+                new XAttribute("skipped", Skipped),
+                cases);
         }
 
         static XElement Case(CaseSkipped message)
@@ -72,7 +81,6 @@ namespace Fixie.Execution.Listeners
                 new XAttribute("result", "Fail"),
                 new XAttribute("time", Seconds(message.Duration)),
                 Failure(message.Exception));
-
 
         static XElement Failure(CompoundException exception)
         {

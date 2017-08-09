@@ -42,7 +42,7 @@
                         new XAttribute("skipped", report.Skipped),
                         new XAttribute("environment", $"{IntPtr.Size * 8}-bit .NET {Framework}"),
                         new XAttribute("test-framework", Fixie.Framework.Version),
-                        report.Classes.Select(Class))));
+                        report.Classes.Select(x => x.ToXml()))));
         }
 
 #if NET452
@@ -52,18 +52,6 @@
         static string ConfigFile => "N/A";
         static string Framework => "Core";
 #endif
-
-        static XElement Class(ClassReport classReport)
-        {
-            return new XElement("class",
-                new XAttribute("time", Seconds(classReport.Duration)),
-                new XAttribute("name", classReport.Class.FullName),
-                new XAttribute("total", classReport.Failed + classReport.Passed + classReport.Skipped),
-                new XAttribute("passed", classReport.Passed),
-                new XAttribute("failed", classReport.Failed),
-                new XAttribute("skipped", classReport.Skipped),
-                classReport.Cases);
-        }
 
         static string Seconds(TimeSpan duration)
         {

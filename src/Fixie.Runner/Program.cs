@@ -197,6 +197,9 @@
 
         static void AddPassThroughArguments(List<string> arguments, Options options, string[] conventionArguments)
         {
+            foreach (var pattern in options.Patterns)
+                arguments.Add(pattern);
+
             if (options.Report != null)
             {
                 arguments.Add("--report");
@@ -215,8 +218,12 @@
         static void Help()
         {
             WriteLine();
-            WriteLine("Usage: dotnet fixie [options] [convention arguments]...");
+            WriteLine("Usage: dotnet fixie [patterns]... [options] [convention arguments]...");
             WriteLine();
+            WriteLine();
+            WriteLine("    patterns");
+            WriteLine("        Zero or more test name patterns. When provided, a test");
+            WriteLine("        will run only if it matches at least one of the patterns.");
             WriteLine();
             WriteLine("    --configuration name");
             WriteLine("        The configuration under which to build. When this option");

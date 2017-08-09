@@ -2,6 +2,13 @@
 {
     public class Options
     {
+        public Options(params string[] patterns)
+        {
+            Patterns = patterns;
+        }
+
+        public string[] Patterns { get; }
+
         string configuration;
         public string Configuration
         {

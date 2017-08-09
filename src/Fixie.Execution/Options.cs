@@ -5,12 +5,14 @@
 
     public class Options
     {
-        public Options(string assemblyPath)
+        public Options(string assemblyPath, params string[] patterns)
         {
             AssemblyPath = assemblyPath;
+            Patterns = patterns;
         }
 
         public string AssemblyPath { get; }
+        public string[] Patterns { get; }
         public string Report { get; set; }
         public bool? TeamCity { get; set; }
 

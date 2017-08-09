@@ -41,12 +41,16 @@
         static void Help()
         {
             WriteLine();
-            WriteLine("Usage: Fixie.Console.exe assembly-path [--report path] [--team-city <on|off>] [convention arguments]...");
+            WriteLine("Usage: Fixie.Console.exe assembly-path [patterns]... [--report path] [--team-city <on|off>] [convention arguments]...");
             WriteLine();
             WriteLine();
             WriteLine("    assembly-path");
             WriteLine("        A path indicating the test assembly file. Exactly one test");
             WriteLine("        assembly must be specified.");
+            WriteLine();
+            WriteLine("    patterns");
+            WriteLine("        Zero or more test name patterns. When provided, a test");
+            WriteLine("        will run only if it matches at least one of the patterns.");
             WriteLine();
             WriteLine("    --report path");
             WriteLine("        Write test results to the specified path, using the xUnit XML format.");

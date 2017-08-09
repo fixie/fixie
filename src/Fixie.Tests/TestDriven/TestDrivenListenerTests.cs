@@ -30,12 +30,6 @@ namespace Fixie.Tests.TestDriven
                         "Console.Error: Pass");
             }
 
-            var summary = listener.Summary;
-            summary.Passed.ShouldEqual(1);
-            summary.Failed.ShouldEqual(2);
-            summary.Skipped.ShouldEqual(2);
-            summary.Total.ShouldEqual(5);
-
             var results = testDriven.TestResults;
             results.Count.ShouldEqual(5);
 

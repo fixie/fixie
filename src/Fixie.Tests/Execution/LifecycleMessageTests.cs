@@ -30,21 +30,19 @@
             var skipWithoutReason = (CaseSkipped)listener.Cases[1];
             var fail = (CaseFailed)listener.Cases[2];
             var failByAssertion = (CaseFailed)listener.Cases[3];
-            var pass = listener.Cases[4];
+            var pass = (CasePassed)listener.Cases[4];
 
             pass.Name.ShouldEqual(TestClass + ".Pass");
             pass.Class.FullName.ShouldEqual(TestClass);
             pass.Method.Name.ShouldEqual("Pass");
             pass.Output.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            pass.Status.ShouldEqual(CaseStatus.Passed);
 
             fail.Name.ShouldEqual(TestClass + ".Fail");
             fail.Class.FullName.ShouldEqual(TestClass);
             fail.Method.Name.ShouldEqual("Fail");
             fail.Output.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            fail.Status.ShouldEqual(CaseStatus.Failed);
             fail.Exception.FailedAssertion.ShouldBeFalse();
             fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
             fail.Exception.StackTrace
@@ -57,7 +55,6 @@
             failByAssertion.Method.Name.ShouldEqual("FailByAssertion");
             failByAssertion.Output.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            failByAssertion.Status.ShouldEqual(CaseStatus.Failed);
             failByAssertion.Exception.FailedAssertion.ShouldBeTrue();
             failByAssertion.Exception.Type.ShouldEqual("Fixie.Assertions.AssertActualExpectedException");
             failByAssertion.Exception.StackTrace
@@ -73,7 +70,6 @@
             skipWithReason.Method.Name.ShouldEqual("SkipWithReason");
             skipWithReason.Output.ShouldBeNull();
             skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
-            skipWithReason.Status.ShouldEqual(CaseStatus.Skipped);
             skipWithReason.Reason.ShouldEqual("Skipped with reason.");
 
             skipWithoutReason.Name.ShouldEqual(TestClass + ".SkipWithoutReason");
@@ -81,7 +77,6 @@
             skipWithoutReason.Method.Name.ShouldEqual("SkipWithoutReason");
             skipWithoutReason.Output.ShouldBeNull();
             skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
-            skipWithoutReason.Status.ShouldEqual(CaseStatus.Skipped);
             skipWithoutReason.Reason.ShouldBeNull();
 
             var classCompleted = listener.ClassCompletions.Single();

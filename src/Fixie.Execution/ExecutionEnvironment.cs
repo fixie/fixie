@@ -38,7 +38,7 @@
         public int RunAssembly(string[] arguments)
             => executionProxy.RunAssembly(assemblyFullPath, arguments);
 
-        public void RunMethods(string[] arguments, string[] methods)
+        public int RunMethods(string[] arguments, string[] methods)
             => executionProxy.RunMethods(assemblyFullPath, arguments, methods);
 
         public void Dispose()

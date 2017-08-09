@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Xml.Linq;
     using Cli;
     using Listeners;
 
@@ -45,13 +46,15 @@
             return summary.Failed;
         }
 
-        public void RunMethods(string assemblyFullPath, string[] arguments, string[] methods)
+        public int RunMethods(string assemblyFullPath, string[] arguments, string[] methods)
         {
             var methodGroups = methods.Select(x => new MethodGroup(x)).ToArray();
 
             var assembly = LoadAssembly(assemblyFullPath);
 
-            Run(arguments, r => r.RunMethods(assembly, methodGroups));
+            var summary = Run(arguments, r => r.RunMethods(assembly, methodGroups));
+
+            return summary.Failed;
         }
 
         static Assembly LoadAssembly(string assemblyFullPath)
@@ -68,28 +71,20 @@
 #endif
         }
 
-        ExecutionSummary Run(string[] arguments, Action<Runner> run)
+        ExecutionSummary Run(string[] arguments, Func<Runner, ExecutionSummary> run)
         {
-            var summaryListener = new SummaryListener();
-
             var options = CommandLine.Parse<Options>(arguments, out string[] conventionArguments);
 
-            var listeners = GetExecutionListeners(options, summaryListener);
+            var listeners = GetExecutionListeners(options);
             var bus = new Bus(listeners);
             var runner = new Runner(bus, conventionArguments);
 
-            run(runner);
-
-            return summaryListener.Summary;
+            return run(runner);
         }
 
-        List<Listener> GetExecutionListeners(Options options, SummaryListener summaryListener)
+        List<Listener> GetExecutionListeners(Options options)
         {
-            var listeners = customListeners.Any() ? customListeners : DefaultExecutionListeners(options).ToList();
-
-            listeners.Add(summaryListener);
-
-            return listeners;
+            return customListeners.Any() ? customListeners : DefaultExecutionListeners(options).ToList();
         }
 
         IEnumerable<Listener> DefaultExecutionListeners(Options options)
@@ -106,9 +101,9 @@
                 yield return new ReportListener(SaveReport(options));
         }
 
-        Action<Report> SaveReport(Options options)
+        Action<XDocument> SaveReport(Options options)
         {
-            return report => XUnitXml.Save(report, FullPath(options.Report));
+            return report => ReportListener.Save(report, FullPath(options.Report));
         }
 
         string FullPath(string absoluteOrRelativePath)

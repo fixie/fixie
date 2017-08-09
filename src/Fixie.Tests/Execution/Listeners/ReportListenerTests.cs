@@ -8,12 +8,12 @@
     using Fixie.Execution;
     using Fixie.Execution.Listeners;
 
-    public class XUnitXmlTests : MessagingTests
+    public class ReportListenerTests : MessagingTests
     {
         public void ShouldProduceValidXmlDocument()
         {
             XDocument actual = null;
-            var listener = new ReportListener(report => actual = XUnitXml.Transform(report));
+            var listener = new ReportListener(report => actual = report);
 
             using (var console = new RedirectedConsole())
             {

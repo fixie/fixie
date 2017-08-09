@@ -16,13 +16,21 @@
 
             Run<SampleTestClass>(listener, convention);
 
-            var summary = listener.Summary;
+            var @class = listener.SummaryOfClass;
 
-            summary.Passed.ShouldEqual(1);
-            summary.Failed.ShouldEqual(2);
-            summary.Skipped.ShouldEqual(3);
-            summary.Total.ShouldEqual(6);
-            summary.Duration.ShouldEqual(listener.ExpectedDuration);
+            @class.Passed.ShouldEqual(1);
+            @class.Failed.ShouldEqual(2);
+            @class.Skipped.ShouldEqual(3);
+            @class.Total.ShouldEqual(6);
+            @class.Duration.ShouldEqual(listener.ExpectedDuration);
+
+            var assembly = listener.SummaryOfAssembly;
+
+            assembly.Passed.ShouldEqual(1);
+            assembly.Failed.ShouldEqual(2);
+            assembly.Skipped.ShouldEqual(3);
+            assembly.Total.ShouldEqual(6);
+            assembly.Duration.ShouldEqual(listener.ExpectedDuration);
         }
 
         public void ShouldProvideUserFacingStringRepresentation()
@@ -34,7 +42,7 @@
 
             Run<SampleTestClass>(listener, convention);
 
-            listener.Summary
+            listener.SummaryOfAssembly
                 .ToString()
                 .CleanDuration()
                 .ShouldEqual("1 passed, 2 failed, 3 skipped, took 1.23 seconds");
@@ -52,21 +60,34 @@
 
             Run<SampleTestClass>(listener, convention);
 
-            listener.Summary
+            listener.SummaryOfAssembly
                 .ToString()
                 .CleanDuration()
                 .ShouldEqual("1 passed, 2 failed, took 1.23 seconds");
         }
 
-        class StubExecutionSummaryListener : Handler<CaseCompleted>
+        class StubExecutionSummaryListener :
+            Handler<CaseCompleted>,
+            Handler<ClassCompleted>,
+            Handler<AssemblyCompleted>
         {
             public TimeSpan ExpectedDuration { get; private set; }
-            public ExecutionSummary Summary { get; } = new ExecutionSummary();
+            public ExecutionSummary SummaryOfClass { get; private set; }
+            public ExecutionSummary SummaryOfAssembly { get; private set; }
 
             public void Handle(CaseCompleted message)
             {
                 ExpectedDuration += message.Duration;
-                Summary.Add(message);
+            }
+
+            public void Handle(ClassCompleted message)
+            {
+                SummaryOfClass = message.Summary;
+            }
+
+            public void Handle(AssemblyCompleted message)
+            {
+                SummaryOfAssembly = message.Summary;
             }
         }
 

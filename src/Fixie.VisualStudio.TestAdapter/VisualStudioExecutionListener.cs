@@ -19,7 +19,7 @@
             log.RecordResult(
                 FullyQualifiedName(message),
                 message.Name,
-                message.Status.ToString(),
+                "Skipped",
                 message.Duration,
                 message.Output,
                 message.Reason,
@@ -32,7 +32,7 @@
             log.RecordResult(
                 FullyQualifiedName(message),
                 message.Name,
-                message.Status.ToString(),
+                "Passed",
                 message.Duration,
                 message.Output,
                 errorMessage: null,
@@ -47,7 +47,7 @@
             log.RecordResult(
                 FullyQualifiedName(message),
                 message.Name,
-                message.Status.ToString(),
+                "Failed",
                 message.Duration,
                 message.Output,
                 exception.Message,

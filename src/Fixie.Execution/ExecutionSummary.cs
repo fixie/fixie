@@ -19,16 +19,30 @@
         public int Total => Passed + Failed + Skipped;
         public TimeSpan Duration { get; private set; }
 
-        public void Add(CaseCompleted message)
+        public void Add(CaseSkipped message)
         {
-            if (message.Status == CaseStatus.Passed)
-                Passed += 1;
-            else if (message.Status == CaseStatus.Failed)
-                Failed += 1;
-            else if (message.Status == CaseStatus.Skipped)
-                Skipped += 1;
-
+            Skipped += 1;
             Duration += message.Duration;
+        }
+
+        public void Add(CasePassed message)
+        {
+            Passed += 1;
+            Duration += message.Duration;
+        }
+
+        public void Add(CaseFailed message)
+        {
+            Failed += 1;
+            Duration += message.Duration;
+        }
+
+        public void Add(ExecutionSummary partial)
+        {
+            Passed += partial.Passed;
+            Failed += partial.Failed;
+            Skipped += partial.Skipped;
+            Duration += partial.Duration;
         }
 
         public override string ToString()

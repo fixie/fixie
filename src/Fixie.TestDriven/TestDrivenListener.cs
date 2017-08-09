@@ -16,10 +16,7 @@ namespace Fixie.TestDriven
         public TestDrivenListener(ITestListener tdnet)
         {
             this.tdnet = tdnet;
-            Summary = new ExecutionSummary();
         }
-
-        public ExecutionSummary Summary { get; }
 
         public void Handle(CaseSkipped message)
         {
@@ -52,11 +49,9 @@ namespace Fixie.TestDriven
 
         void Log(CaseCompleted message, Action<TestResult> customize)
         {
-            Summary.Add(message);
-
             var testResult = new TestResult { Name = message.Name };
 
-            customize.Invoke(testResult);
+            customize(testResult);
 
             tdnet.TestFinished(testResult);
         }

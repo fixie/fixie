@@ -3,7 +3,7 @@
     public class CasePassed : CaseCompleted
     {
         public CasePassed(Case @case)
-            : base(@case, CaseStatus.Passed)
+            : base(@case)
         {
         }
     }

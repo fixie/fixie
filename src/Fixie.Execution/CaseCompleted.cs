@@ -5,12 +5,11 @@ namespace Fixie.Execution
 
     public abstract class CaseCompleted : Message
     {
-        protected CaseCompleted(Case @case, CaseStatus status)
+        protected CaseCompleted(Case @case)
         {
             Class = @case.Class;
             Method = @case.Method;
             Name = @case.Name;
-            Status = status;
             Duration = @case.Duration;
             Output = @case.Output;
         }
@@ -18,7 +17,6 @@ namespace Fixie.Execution
         public Type Class { get; }
         public MethodInfo Method { get; }
         public string Name { get; }
-        public CaseStatus Status { get; }
         public TimeSpan Duration { get; }
         public string Output { get; }
     }

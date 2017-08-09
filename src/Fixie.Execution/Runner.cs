@@ -112,9 +112,9 @@
             Run(assembly, GetConventions(assembly), types);
         }
 
-        static Convention[] GetConventions(Assembly assembly)
+        Convention[] GetConventions(Assembly assembly)
         {
-            return new ConventionDiscoverer(assembly).GetConventions();
+            return new ConventionDiscoverer(assembly, conventionArguments).GetConventions();
         }
 
         void Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)

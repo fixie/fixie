@@ -8,10 +8,12 @@
     public class ConventionDiscoverer
     {
         readonly Assembly assembly;
+        readonly string[] conventionArguments;
 
-        public ConventionDiscoverer(Assembly assembly)
+        public ConventionDiscoverer(Assembly assembly, string[] conventionArguments)
         {
             this.assembly = assembly;
+            this.conventionArguments = conventionArguments;
         }
 
         public Convention[] GetConventions()

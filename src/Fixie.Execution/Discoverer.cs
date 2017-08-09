@@ -20,7 +20,7 @@
         {
             RunContext.Set(conventionArguments);
 
-            var conventions = new ConventionDiscoverer(assembly).GetConventions();
+            var conventions = new ConventionDiscoverer(assembly, conventionArguments).GetConventions();
 
             DiscoverMethods(assembly, conventions);
         }

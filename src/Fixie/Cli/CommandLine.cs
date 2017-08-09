@@ -5,19 +5,13 @@
     class CommandLine
     {
         public static T Parse<T>(string[] arguments) where T : class
-        {
-            return (T)Parse(typeof(T), arguments);
-        }
+            => (T)Parse(typeof(T), arguments);
 
         public static T Parse<T>(string[] arguments, out string[] unusedArguments) where T : class
-        {
-            return (T)Parse(typeof(T), arguments, out unusedArguments);
-        }
+            => (T)Parse(typeof(T), arguments, out unusedArguments);
 
         public static object Parse(Type type, string[] arguments)
-        {
-            return Parse(type, arguments, out string[] _);
-        }
+            => Parse(type, arguments, out string[] _);
 
         public static object Parse(Type type, string[] arguments, out string[] unusedArguments)
         {
@@ -29,8 +23,6 @@
         }
 
         public static string Serialize(string[] arguments)
-        {
-            return Serializer.Serialize(arguments);
-        }
+            => Serializer.Serialize(arguments);
     }
 }

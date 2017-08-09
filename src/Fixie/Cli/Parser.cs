@@ -144,8 +144,9 @@
         }
 
         static List<PositionalArgument> ScanPositionalArguments(Type type)
-            => Enumerable.Select<ParameterInfo, PositionalArgument>(GetConstructor(type)
-                    .GetParameters(), p => new PositionalArgument(p))
+            => GetConstructor(type)
+                .GetParameters()
+                .Select(p => new PositionalArgument(p))
                 .ToList();
 
         static Dictionary<string, NamedArgument> ScanNamedArguments(Type type)

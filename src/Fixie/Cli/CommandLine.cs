@@ -1,6 +1,6 @@
 ﻿namespace Fixie.Cli
 {
-    public class CommandLine
+    class CommandLine
     {
         public static T Parse<T>(string[] arguments) where T : class
         {

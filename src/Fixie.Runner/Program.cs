@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Runner
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -138,14 +139,17 @@
                     ? "Fixie.Console.x86.exe"
                     : "Fixie.Console.exe");
 
+            var arguments = new List<string>
+            {
+                targetFileName
+            };
+
+            AddPassThroughArguments(options, arguments);
+
             return run(
                 executable: runner,
                 workingDirectory: outputPath,
-                arguments: new[]
-                {
-                    targetFileName,
-                    /* other command line arguments */
-                });
+                arguments: arguments.ToArray());
         }
 
         static int RunDotNetCore(Options options, string outputPath, string targetFileName)
@@ -158,14 +162,17 @@
 
             return Success;
 
+            var arguments = new List<string>
+            {
+                runner,
+                targetFileName
+            };
+
+            AddPassThroughArguments(options, arguments);
+
             return dotnet(
                 workingDirectory: outputPath,
-                arguments: new[]
-                {
-                    runner,
-                    targetFileName,
-                    /* other command line arguments */
-                });
+                arguments: arguments.ToArray());
         }
 
         static string ConsoleRunnerDirectory(Options options, string frameworkDirectory)
@@ -187,6 +194,21 @@
 
         static string PathToThisAssembly()
             => Path.GetDirectoryName(typeof(Program).GetTypeInfo().Assembly.Location);
+
+        static void AddPassThroughArguments(Options options, List<string> arguments)
+        {
+            if (options.Report != null)
+            {
+                arguments.Add("--report");
+                arguments.Add(options.Report);
+            }
+
+            if (options.TeamCity != null)
+            {
+                arguments.Add("--team-city");
+                arguments.Add(options.TeamCity.Value ? "on" : "off");
+            }
+        }
 
         static void Help()
         {

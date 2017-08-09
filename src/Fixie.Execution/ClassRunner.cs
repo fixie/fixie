@@ -84,6 +84,7 @@
             if (!orderedCases.Any())
                 return;
 
+            var summary = new ExecutionSummary();
             Start(testClass);
 
             var casesToExecute = new List<Case>();
@@ -91,7 +92,7 @@
             foreach (var @case in orderedCases)
             {
                 if (@case.Exceptions.Any())
-                    Fail(@case);
+                    Fail(@case, summary);
                 else
                 {
                     string reason;
@@ -104,12 +105,12 @@
                     catch (Exception exception)
                     {
                         @case.Fail(exception);
-                        Fail(@case);
+                        Fail(@case, summary);
                         continue;
                     }
 
                     if (skipCase)
-                        Skip(@case, reason);
+                        Skip(@case, reason, summary);
                     else
                         casesToExecute.Add(@case);
                 }
@@ -122,13 +123,13 @@
                 foreach (var @case in casesToExecute)
                 {
                     if (@case.Exceptions.Any())
-                        Fail(@case);
+                        Fail(@case, summary);
                     else
-                        Pass(@case);
+                        Pass(@case, summary);
                 }
             }
 
-            Complete(testClass);
+            Complete(testClass, summary);
         }
 
         bool SkipCase(Case @case, out string reason)
@@ -180,10 +181,35 @@
         void Run(Type testClass, IReadOnlyList<Case> casesToExecute)
             => executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
 
-        void Start(Type testClass) => bus.Publish(new ClassStarted(testClass));
-        void Skip(Case @case, string reason) => bus.Publish(new CaseSkipped(@case, reason));
-        void Pass(Case @case) => bus.Publish(new CasePassed(@case));
-        void Fail(Case @case) => bus.Publish(new CaseFailed(@case, assertionLibraryFilter));
-        void Complete(Type testClass) => bus.Publish(new ClassCompleted(testClass));
+        void Start(Type testClass)
+        {
+            bus.Publish(new ClassStarted(testClass));
+        }
+
+        void Skip(Case @case, string reason, ExecutionSummary summary)
+        {
+            var message = new CaseSkipped(@case, reason);
+            summary.Add(message);
+            bus.Publish(message);
+        }
+
+        void Pass(Case @case, ExecutionSummary summary)
+        {
+            var message = new CasePassed(@case);
+            summary.Add(message);
+            bus.Publish(message);
+        }
+
+        void Fail(Case @case, ExecutionSummary summary)
+        {
+            var message = new CaseFailed(@case, assertionLibraryFilter);
+            summary.Add(message);
+            bus.Publish(message);
+        }
+
+        void Complete(Type testClass, ExecutionSummary summary)
+        {
+            bus.Publish(new ClassCompleted(testClass, summary));
+        }
     }
 }

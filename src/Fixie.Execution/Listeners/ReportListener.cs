@@ -13,7 +13,6 @@
     {
         readonly Action<XDocument> save;
 
-        ExecutionSummary currentClassSummary;
         List<XElement> currentClass;
 
         ExecutionSummary summary;
@@ -23,7 +22,6 @@
         {
             this.save = save;
 
-            currentClassSummary = new ExecutionSummary();
             currentClass = new List<XElement>();
 
             summary = new ExecutionSummary();
@@ -32,16 +30,13 @@
 
         public void Handle(CaseCompleted message)
         {
-            currentClassSummary.Add(message);
             currentClass.Add(Case(message));
             summary.Add(message);
         }
 
         public void Handle(ClassCompleted message)
         {
-            classes.Add(Class(message, currentClassSummary, currentClass));
-
-            currentClassSummary = new ExecutionSummary();
+            classes.Add(Class(message, currentClass));
             currentClass = new List<XElement>();
         }
 
@@ -82,12 +77,14 @@
         static string Framework => "Core";
 #endif
 
-        static XElement Class(ClassCompleted message, ExecutionSummary summary, List<XElement> cases)
+        static XElement Class(ClassCompleted message, List<XElement> cases)
         {
+            var summary = message.Summary;
+
             return new XElement("class",
                 new XAttribute("time", Seconds(summary.Duration)),
                 new XAttribute("name", message.Class.FullName),
-                new XAttribute("total", summary.Failed + summary.Passed + summary.Skipped),
+                new XAttribute("total", summary.Total),
                 new XAttribute("passed", summary.Passed),
                 new XAttribute("failed", summary.Failed),
                 new XAttribute("skipped", summary.Skipped),

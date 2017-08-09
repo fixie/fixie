@@ -119,11 +119,6 @@
             var targetFileName = assemblyMetadata[2];
             var targetFrameworkIdentifier = assemblyMetadata[3];
 
-            WriteLine("Assembly:");
-            WriteLine($"\tOutputPath: {outputPath}");
-            WriteLine($"\tTargetFileName: {targetFileName}");
-            WriteLine($"\tTargetFrameworkIdentifier: {targetFrameworkIdentifier}");
-
             WriteLine($"Running tests for {targetFramework}...");
 
             if (targetFrameworkIdentifier == ".NETFramework")

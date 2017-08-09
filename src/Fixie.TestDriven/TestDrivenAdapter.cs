@@ -33,15 +33,14 @@ namespace Fixie.TestDriven
             return TestRunState.Error;
         }
 
-        static TestRunState Run(ITestListener testListener, Action<Runner> run)
+        static TestRunState Run(ITestListener testListener, Func<Runner, ExecutionSummary> run)
         {
             var listener = new TestDrivenListener(testListener);
             var bus = new Bus(listener);
 
             var runner = new Runner(bus);
-            run(runner);
-
-            var summary = listener.Summary;
+            
+            var summary = run(runner);
 
             if (summary.Total == 0)
                 return TestRunState.NoTests;

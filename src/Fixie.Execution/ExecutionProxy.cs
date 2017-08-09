@@ -69,28 +69,20 @@
 #endif
         }
 
-        ExecutionSummary Run(string[] arguments, Action<Runner> run)
+        ExecutionSummary Run(string[] arguments, Func<Runner, ExecutionSummary> run)
         {
-            var summaryListener = new SummaryListener();
-
             var options = CommandLine.Parse<Options>(arguments, out string[] conventionArguments);
 
-            var listeners = GetExecutionListeners(options, summaryListener);
+            var listeners = GetExecutionListeners(options);
             var bus = new Bus(listeners);
             var runner = new Runner(bus, conventionArguments);
 
-            run(runner);
-
-            return summaryListener.Summary;
+            return run(runner);
         }
 
-        List<Listener> GetExecutionListeners(Options options, SummaryListener summaryListener)
+        List<Listener> GetExecutionListeners(Options options)
         {
-            var listeners = customListeners.Any() ? customListeners : DefaultExecutionListeners(options).ToList();
-
-            listeners.Add(summaryListener);
-
-            return listeners;
+            return customListeners.Any() ? customListeners : DefaultExecutionListeners(options).ToList();
         }
 
         IEnumerable<Listener> DefaultExecutionListeners(Options options)

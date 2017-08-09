@@ -13,25 +13,17 @@
     {
         readonly Action<XDocument> save;
 
-        List<XElement> currentClass;
-
-        ExecutionSummary summary;
-        List<XElement> classes;
+        List<XElement> currentClass = new List<XElement>();
+        List<XElement> classes = new List<XElement>();
 
         public ReportListener(Action<XDocument> save)
         {
             this.save = save;
-
-            currentClass = new List<XElement>();
-
-            summary = new ExecutionSummary();
-            classes = new List<XElement>();
         }
 
         public void Handle(CaseCompleted message)
         {
             currentClass.Add(Case(message));
-            summary.Add(message);
         }
 
         public void Handle(ClassCompleted message)
@@ -42,15 +34,14 @@
 
         public void Handle(AssemblyCompleted message)
         {
-            save(Report(message, summary, classes));
-
-            summary = null;
+            save(Report(message, classes));
             classes = null;
         }
 
-        static XDocument Report(AssemblyCompleted message, ExecutionSummary summary, List<XElement> classes)
+        static XDocument Report(AssemblyCompleted message, List<XElement> classes)
         {
             var now = DateTime.UtcNow;
+            var summary = message.Summary;
 
             return new XDocument(
                 new XElement("assemblies",

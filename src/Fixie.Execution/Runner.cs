@@ -19,36 +19,36 @@
             this.conventionArguments = conventionArguments;
         }
 
-        public void RunAssembly(Assembly assembly)
+        public ExecutionSummary RunAssembly(Assembly assembly)
         {
             RunContext.Initialize();
 
-            RunTypesInternal(assembly, assembly.GetTypes());
+            return RunTypesInternal(assembly, assembly.GetTypes());
         }
 
-        public void RunNamespace(Assembly assembly, string ns)
+        public ExecutionSummary RunNamespace(Assembly assembly, string ns)
         {
             RunContext.Initialize();
 
-            RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
+            return RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
-        public void RunType(Assembly assembly, Type type)
+        public ExecutionSummary RunType(Assembly assembly, Type type)
         {
             RunContext.Initialize(type);
 
             var types = GetTypeAndNestedTypes(type).ToArray();
-            RunTypesInternal(assembly, types);
+            return RunTypesInternal(assembly, types);
         }
 
-        public void RunTypes(Assembly assembly, Convention convention, params Type[] types)
+        public ExecutionSummary RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
             RunContext.Initialize();
 
-            Run(assembly, new[] { convention }, types);
+            return Run(assembly, new[] { convention }, types);
         }
 
-        public void RunMethods(Assembly assembly, MethodGroup[] methodGroups)
+        public ExecutionSummary RunMethods(Assembly assembly, MethodGroup[] methodGroups)
         {
             var types = GetTypes(assembly, methodGroups);
 
@@ -64,10 +64,10 @@
             foreach (var convention in conventions)
                 convention.Methods.Where(methods.Contains);
 
-            Run(assembly, conventions, types.Values.ToArray());
+            return Run(assembly, conventions, types.Values.ToArray());
         }
 
-        public void RunMethods(Assembly assembly, Type type, MethodInfo method)
+        public ExecutionSummary RunMethods(Assembly assembly, Type type, MethodInfo method)
         {
             RunContext.Initialize(method);
 
@@ -76,7 +76,7 @@
             foreach (var convention in conventions)
                 convention.Methods.Where(m => m == method);
 
-            Run(assembly, conventions, type);
+            return Run(assembly, conventions, type);
         }
 
         static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
@@ -107,9 +107,9 @@
                         .Where(m => m.Name == methodGroup.Method)).ToArray();
         }
 
-        void RunTypesInternal(Assembly assembly, params Type[] types)
+        ExecutionSummary RunTypesInternal(Assembly assembly, params Type[] types)
         {
-            Run(assembly, GetConventions(assembly), types);
+            return Run(assembly, GetConventions(assembly), types);
         }
 
         Convention[] GetConventions(Assembly assembly)
@@ -117,7 +117,7 @@
             return new ConventionDiscoverer(assembly, conventionArguments).GetConventions();
         }
 
-        void Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
+        ExecutionSummary Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
             var assemblySummary = new ExecutionSummary();
             bus.Publish(new AssemblyStarted(assembly));
@@ -126,6 +126,8 @@
                 Run(convention, candidateTypes, assemblySummary);
 
             bus.Publish(new AssemblyCompleted(assembly, assemblySummary));
+
+            return assemblySummary;
         }
 
         void Run(Convention convention, Type[] candidateTypes, ExecutionSummary assemblySummary)

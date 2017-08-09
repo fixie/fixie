@@ -4,16 +4,16 @@
     using System.Linq;
     using System.Reflection;
 
+    public class CustomOptions
+    {
+        public string[] Include { get; set; }
+    }
+
     public class CustomConvention : Convention
     {
-        class CustomOptions
+        public CustomConvention(CustomOptions customOptions)
         {
-            public string[] Include { get; set; }
-        }
-
-        public CustomConvention()
-        {
-            var desiredCategories = Options<CustomOptions>().Include;
+            var desiredCategories = customOptions.Include;
             var shouldRunAll = !desiredCategories.Any();
 
             Classes

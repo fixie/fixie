@@ -18,16 +18,16 @@
 
         public void DiscoverMethods(Assembly assembly)
         {
-            RunContext.Set(conventionArguments);
+            RunContext.Initialize();
 
-            var conventions = new ConventionDiscoverer(assembly).GetConventions();
+            var conventions = new ConventionDiscoverer(assembly, conventionArguments).GetConventions();
 
             DiscoverMethods(assembly, conventions);
         }
 
         public void DiscoverMethods(Assembly assembly, Convention convention)
         {
-            RunContext.Set(conventionArguments);
+            RunContext.Initialize();
 
             var conventions = new[] { convention };
 

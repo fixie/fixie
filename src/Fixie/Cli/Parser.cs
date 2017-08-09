@@ -5,18 +5,18 @@
     using System.Linq;
     using System.Reflection;
 
-    class Parser<T> where T : class
+    class Parser
     {
-        public T Model { get; }
+        public object Model { get; }
         public List<string> UnusedArguments { get; }
 
-        public Parser(string[] arguments)
+        public Parser(Type type, string[] arguments)
         {
-            DemandSingleConstructor();
+            DemandSingleConstructor(type);
             UnusedArguments = new List<string>();
 
-            var positionalArguments = ScanPositionalArguments();
-            var namedArguments = ScanNamedArguments();
+            var positionalArguments = ScanPositionalArguments(type);
+            var namedArguments = ScanNamedArguments(type);
 
             var positionalArgumentValues = new List<string>();
 
@@ -83,7 +83,7 @@
             foreach (var argument in positionalArguments)
                 argument.Value = Convert(argument.Type, argument.Name, argument.Value);
 
-            Model = Create(positionalArguments, namedArguments);
+            Model = Create(type, positionalArguments, namedArguments);
         }
 
         static object Convert(Type type, string userFacingName, object value)
@@ -135,22 +135,23 @@
             }
         }
 
-        static void DemandSingleConstructor()
+        static void DemandSingleConstructor(Type type)
         {
-            if (typeof(T).GetConstructors().Length > 1)
+            if (type.GetConstructors().Length > 1)
                 throw new CommandLineException(
-                    $"Parsing command line arguments for type {typeof(T).Name} " +
+                    $"Parsing command line arguments for type {type.Name} " +
                     "is ambiguous, because it has more than one constructor.");
         }
 
-        static List<PositionalArgument> ScanPositionalArguments()
-            => Enumerable.Select<ParameterInfo, PositionalArgument>(GetConstructor()
-                    .GetParameters(), p => new PositionalArgument(p))
+        static List<PositionalArgument> ScanPositionalArguments(Type type)
+            => GetConstructor(type)
+                .GetParameters()
+                .Select(p => new PositionalArgument(p))
                 .ToList();
 
-        static Dictionary<string, NamedArgument> ScanNamedArguments()
+        static Dictionary<string, NamedArgument> ScanNamedArguments(Type type)
         {
-            var namedArguments = typeof(T).GetProperties()
+            var namedArguments = type.GetProperties()
                 .Where(p => p.CanWrite)
                 .Select(p => new NamedArgument(p))
                 .ToArray();
@@ -161,7 +162,7 @@
             {
                 if (dictionary.ContainsKey(namedArgument.Name))
                     throw new CommandLineException(
-                        $"Parsing command line arguments for type {typeof(T).Name} " +
+                        $"Parsing command line arguments for type {type.Name} " +
                         "is ambiguous, because it has more than one property corresponding " +
                         $"with the --{namedArgument.Name} argument.");
 
@@ -171,29 +172,29 @@
             return dictionary;
         }
 
-        static T Create(List<PositionalArgument> arguments, Dictionary<string, NamedArgument> namedArguments)
+        static object Create(Type type, List<PositionalArgument> arguments, Dictionary<string, NamedArgument> namedArguments)
         {
-            var model = Construct(arguments);
+            var model = Construct(type, arguments);
 
-            Populate(model, namedArguments);
+            Populate(type, model, namedArguments);
 
             return model;
         }
 
-        static T Construct(List<PositionalArgument> arguments)
+        static object Construct(Type type, List<PositionalArgument> arguments)
         {
             var parameters = arguments.Select(x => x.Value).ToArray();
 
-            return (T)GetConstructor().Invoke(parameters);
+            return GetConstructor(type).Invoke(parameters);
         }
 
-        static void Populate(T instance, Dictionary<string, NamedArgument> namedArguments)
+        static void Populate(Type type, object instance, Dictionary<string, NamedArgument> namedArguments)
         {
             foreach (var name in namedArguments.Keys)
             {
                 var namedArgument = namedArguments[name];
 
-                var property = typeof(T).GetProperty(namedArgument.PropertyName);
+                var property = type.GetProperty(namedArgument.PropertyName);
 
                 if (namedArgument.IsArray)
                     property.SetValue(instance, namedArgument.CreateTypedValuesArray());
@@ -205,8 +206,8 @@
         static object Default(Type type)
             => type.IsValueType() ? Activator.CreateInstance(type) : null;
 
-        static ConstructorInfo GetConstructor()
-            => typeof(T).GetConstructors().Single();
+        static ConstructorInfo GetConstructor(Type type)
+            => type.GetConstructors().Single();
 
         static bool IsNamedArgumentKey(string item)
             => item.StartsWith("--");

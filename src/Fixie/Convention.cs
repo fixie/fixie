@@ -30,13 +30,6 @@
         internal Configuration Config { get; }
 
         /// <summary>
-        /// Take the custom convention command line arguments provided to the test runner at the
-        /// start of execution, and bind them to the given model.
-        /// </summary>
-        public TModel Options<TModel>() where TModel : class
-            => CommandLine.Parse<TModel>(RunContext.ConventionArguments);
-
-        /// <summary>
         /// Determines whether the given Type was selected as the sole
         /// item to be executed. False under normal test execution.
         /// </summary>

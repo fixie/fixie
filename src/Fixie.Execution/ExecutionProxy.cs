@@ -32,7 +32,7 @@
 
             var listeners = customListeners;
             var bus = new Bus(listeners);
-            var discoverer = new Discoverer(bus, conventionArguments);
+            var discoverer = new Discoverer(bus, Filter(options), conventionArguments);
 
             discoverer.DiscoverMethods(assembly);
         }
@@ -77,9 +77,16 @@
 
             var listeners = GetExecutionListeners(options);
             var bus = new Bus(listeners);
-            var runner = new Runner(bus, conventionArguments);
+            var runner = new Runner(bus, Filter(options), conventionArguments);
 
             return run(runner);
+        }
+
+        static Filter Filter(Options options)
+        {
+            var filter = new Filter();
+            filter.ByPatterns(options.Patterns);
+            return filter;
         }
 
         List<Listener> GetExecutionListeners(Options options)

@@ -20,7 +20,7 @@
         {
             try
             {
-                var options = CommandLine.Parse<Options>(arguments);
+                var options = CommandLine.Parse<Options>(arguments, out string[] conventionArguments);
 
                 var testProject = TestProject();
 
@@ -45,7 +45,7 @@
 
                 foreach (var targetFramework in targetFrameworks)
                 {
-                    int exitCode = Run(options, testProject, targetFramework);
+                    int exitCode = Run(options, testProject, targetFramework, conventionArguments);
 
                     if (exitCode == FatalError)
                         return FatalError;
@@ -111,7 +111,7 @@
                 $"The test project targets the following framework(s): {availableFrameworks}");
         }
 
-        static int Run(Options options, string testProject, string targetFramework)
+        static int Run(Options options, string testProject, string targetFramework, string[] conventionArguments)
         {
             var assemblyMetadata = msbuild(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
 
@@ -123,15 +123,15 @@
             WriteLine($"Running tests for {targetFramework}...");
 
             if (targetFrameworkIdentifier == ".NETFramework")
-                return RunDotNetFramework(options, outputPath, targetFileName);
+                return RunDotNetFramework(options, outputPath, targetFileName, conventionArguments);
 
             if (targetFrameworkIdentifier == ".NETCoreApp")
-                return RunDotNetCore(options, outputPath, targetFileName);
+                return RunDotNetCore(options, outputPath, targetFileName, conventionArguments);
 
             throw new CommandLineException($"Framework '{targetFramework}' has unsupported TargetFrameworkIdentifier '{targetFrameworkIdentifier}'.");
         }
 
-        static int RunDotNetFramework(Options options, string outputPath, string targetFileName)
+        static int RunDotNetFramework(Options options, string outputPath, string targetFileName, string[] conventionArguments)
         {
             var runner = Path.Combine(
                 ConsoleRunnerDirectory(options, "net452"),
@@ -144,7 +144,7 @@
                 targetFileName
             };
 
-            AddPassThroughArguments(options, arguments);
+            AddPassThroughArguments(arguments, options, conventionArguments);
 
             return run(
                 executable: runner,
@@ -152,7 +152,7 @@
                 arguments: arguments.ToArray());
         }
 
-        static int RunDotNetCore(Options options, string outputPath, string targetFileName)
+        static int RunDotNetCore(Options options, string outputPath, string targetFileName, string[] conventionArguments)
         {
             var runner = Path.Combine(
                 ConsoleRunnerDirectory(options, "netcoreapp1.1"),
@@ -168,7 +168,7 @@
                 targetFileName
             };
 
-            AddPassThroughArguments(options, arguments);
+            AddPassThroughArguments(arguments, options, conventionArguments);
 
             return dotnet(
                 workingDirectory: outputPath,
@@ -195,7 +195,7 @@
         static string PathToThisAssembly()
             => Path.GetDirectoryName(typeof(Program).GetTypeInfo().Assembly.Location);
 
-        static void AddPassThroughArguments(Options options, List<string> arguments)
+        static void AddPassThroughArguments(List<string> arguments, Options options, string[] conventionArguments)
         {
             if (options.Report != null)
             {
@@ -208,6 +208,8 @@
                 arguments.Add("--team-city");
                 arguments.Add(options.TeamCity.Value ? "on" : "off");
             }
+
+            arguments.AddRange(conventionArguments);
         }
 
         static void Help()

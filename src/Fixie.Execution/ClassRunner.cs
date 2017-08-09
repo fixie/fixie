@@ -30,7 +30,7 @@
             orderCases = config.OrderCases;
         }
 
-        public void Run(Type testClass)
+        public ExecutionSummary Run(Type testClass)
         {
             var methods = methodDiscoverer.TestMethods(testClass);
 
@@ -81,10 +81,11 @@
                     @case.Fail(exception);
             }
 
-            if (!orderedCases.Any())
-                return;
-
             var summary = new ExecutionSummary();
+
+            if (!orderedCases.Any())
+                return summary;
+
             Start(testClass);
 
             var casesToExecute = new List<Case>();
@@ -130,6 +131,8 @@
             }
 
             Complete(testClass, summary);
+
+            return summary;
         }
 
         bool SkipCase(Case @case, out string reason)

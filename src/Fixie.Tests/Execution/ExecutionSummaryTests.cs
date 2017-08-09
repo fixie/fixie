@@ -16,13 +16,21 @@
 
             Run<SampleTestClass>(listener, convention);
 
-            var summary = listener.Summary;
+            var summary = listener.SummaryOfCases;
 
             summary.Passed.ShouldEqual(1);
             summary.Failed.ShouldEqual(2);
             summary.Skipped.ShouldEqual(3);
             summary.Total.ShouldEqual(6);
             summary.Duration.ShouldEqual(listener.ExpectedDuration);
+
+            var summaryOfAssembly = listener.SummaryOfAssembly;
+
+            summaryOfAssembly.Passed.ShouldEqual(1);
+            summaryOfAssembly.Failed.ShouldEqual(2);
+            summaryOfAssembly.Skipped.ShouldEqual(3);
+            summaryOfAssembly.Total.ShouldEqual(6);
+            summaryOfAssembly.Duration.ShouldEqual(listener.ExpectedDuration);
         }
 
         public void ShouldProvideUserFacingStringRepresentation()
@@ -34,7 +42,7 @@
 
             Run<SampleTestClass>(listener, convention);
 
-            listener.Summary
+            listener.SummaryOfCases
                 .ToString()
                 .CleanDuration()
                 .ShouldEqual("1 passed, 2 failed, 3 skipped, took 1.23 seconds");
@@ -52,21 +60,27 @@
 
             Run<SampleTestClass>(listener, convention);
 
-            listener.Summary
+            listener.SummaryOfCases
                 .ToString()
                 .CleanDuration()
                 .ShouldEqual("1 passed, 2 failed, took 1.23 seconds");
         }
 
-        class StubExecutionSummaryListener : Handler<CaseCompleted>
+        class StubExecutionSummaryListener : Handler<CaseCompleted>, Handler<AssemblyCompleted>
         {
             public TimeSpan ExpectedDuration { get; private set; }
-            public ExecutionSummary Summary { get; } = new ExecutionSummary();
+            public ExecutionSummary SummaryOfCases { get; } = new ExecutionSummary();
+            public ExecutionSummary SummaryOfAssembly { get; private set; }
 
             public void Handle(CaseCompleted message)
             {
                 ExpectedDuration += message.Duration;
-                Summary.Add(message);
+                SummaryOfCases.Add(message);
+            }
+
+            public void Handle(AssemblyCompleted message)
+            {
+                SummaryOfAssembly = message.Summary;
             }
         }
 

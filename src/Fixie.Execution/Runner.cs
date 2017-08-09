@@ -119,21 +119,25 @@
 
         void Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
+            var assemblySummary = new ExecutionSummary();
             bus.Publish(new AssemblyStarted(assembly));
 
             foreach (var convention in conventions)
-                Run(convention, candidateTypes);
+                Run(convention, candidateTypes, assemblySummary);
 
-            bus.Publish(new AssemblyCompleted(assembly));
+            bus.Publish(new AssemblyCompleted(assembly, assemblySummary));
         }
 
-        void Run(Convention convention, Type[] candidateTypes)
+        void Run(Convention convention, Type[] candidateTypes, ExecutionSummary assemblySummary)
         {
             var classDiscoverer = new ClassDiscoverer(convention);
             var classRunner = new ClassRunner(bus, convention);
 
             foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
-                classRunner.Run(testClass);
+            {
+                var classSummary = classRunner.Run(testClass);
+                assemblySummary.Add(classSummary);
+            }
         }
     }
 }

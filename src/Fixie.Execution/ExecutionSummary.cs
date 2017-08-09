@@ -31,6 +31,14 @@
             Duration += message.Duration;
         }
 
+        public void Add(ExecutionSummary partial)
+        {
+            Passed += partial.Passed;
+            Failed += partial.Failed;
+            Skipped += partial.Skipped;
+            Duration += partial.Duration;
+        }
+
         public override string ToString()
         {
             var line = new StringBuilder();

@@ -11,6 +11,7 @@
 
     class Program
     {
+        const int Success = 0;
         const int FatalError = -1;
 
         [STAThread]
@@ -157,6 +158,10 @@
             var runner = Path.Combine(
                 ConsoleRunnerDirectory(options, "netcoreapp1.1"),
                 "Fixie.Console.dll");
+
+            Error(".NET Core support is not implemented.");
+
+            return Success;
 
             return dotnet(
                 workingDirectory: outputPath,

@@ -12,10 +12,7 @@
             Console.ForegroundColor = color;
         }
 
-        public void Dispose()
-        {
-            Console.ForegroundColor = before;
-        }
+        public void Dispose() => Console.ForegroundColor = before;
 
         public static Foreground Red => new Foreground(ConsoleColor.Red);
 

@@ -25,13 +25,6 @@ namespace Fixie.Cli
         public string Name { get; }
         public List<object> Values { get; }
 
-        public Array CreateTypedValuesArray()
-        {
-            Array destinationArray = Array.CreateInstance((Type) ItemType, (int) Values.Count);
-            Array.Copy(Values.ToArray(), destinationArray, Values.Count);
-            return destinationArray;
-        }
-
         public static string Normalize(string namedArgumentKey)
             => namedArgumentKey.ToLower().Replace("-", "");
     }

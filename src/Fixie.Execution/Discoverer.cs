@@ -5,14 +5,16 @@
     public class Discoverer
     {
         readonly Bus bus;
+        readonly Filter filter;
         readonly string[] conventionArguments;
 
         public Discoverer(Bus bus)
-            : this(bus, new string[] {}) { }
+            : this(bus, new Filter(), new string[] {}) { }
 
-        public Discoverer(Bus bus, string[] conventionArguments)
+        public Discoverer(Bus bus, Filter filter, string[] conventionArguments)
         {
             this.bus = bus;
+            this.filter = filter;
             this.conventionArguments = conventionArguments;
         }
 
@@ -42,7 +44,7 @@
                 var candidateTypes = assembly.GetTypes();
                 var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
-                var methodDiscoverer = new MethodDiscoverer(convention);
+                var methodDiscoverer = new MethodDiscoverer(filter, convention);
                 foreach (var testClass in testClasses)
                     foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
                         bus.Publish(new MethodDiscovered(testClass, testMethod));

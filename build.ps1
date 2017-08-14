@@ -98,8 +98,6 @@ function Nuspec {
   </metadata>
   <files>
     <file src="..\Fixie\bin\Release\net452\Fixie.dll" target="lib\net452" />
-    <file src="..\Fixie.Console\bin\Release\net452\Fixie.Console.exe" target="lib\net452" />
-    <file src="..\Fixie.Console\bin\Release\net452\Fixie.Console.x86.exe" target="lib\net452" />
     <file src="..\Fixie.Execution\bin\Release\net452\Fixie.Execution.dll" target="lib\net452" />
     <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" target="lib\net452" />
     <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" target="lib\net452" />

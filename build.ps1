@@ -137,6 +137,8 @@ function Nuspec {
   </metadata>
   <files>
 
+    <file target="prefercliruntime" src="..\Fixie.Runner\prefercliruntime" />
+
     <file target="lib\netcoreapp1.0" src="..\Fixie.Runner\bin\Release\netcoreapp1.0\dotnet-fixie.dll" />
     <file target="lib\netcoreapp1.0" src="..\Fixie.Runner\bin\Release\netcoreapp1.0\dotnet-fixie.runtimeconfig.json" />
     <file target="lib\netcoreapp1.0" src="..\Fixie.Runner\bin\Release\netcoreapp1.0\dotnet-fixie.targets" />

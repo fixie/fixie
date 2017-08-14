@@ -155,7 +155,7 @@
         static int RunDotNetCore(Options options, string outputPath, string targetFileName, string[] conventionArguments)
         {
             var runner = Path.Combine(
-                ConsoleRunnerDirectory(options, "netcoreapp1.1"),
+                ConsoleRunnerDirectory(options, "netcoreapp1.0"),
                 "Fixie.Console.dll");
 
             Error(".NET Core support is not implemented.");

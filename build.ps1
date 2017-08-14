@@ -62,12 +62,12 @@ function dotnet-test {
     }
 
     exec { dotnet test src/Fixie.Samples/Fixie.Samples.csproj -c $configuration --no-build `
-        --test-adapter-path ../Fixie.Tests/bin/$configuration/netcoreapp1.1 --framework netcoreapp1.1 `
+        --test-adapter-path ../Fixie.Tests/bin/$configuration/netcoreapp1.0 --framework netcoreapp1.0 `
     }
 }
 
 function dotnet-fixie {
-    $fixie = resolve-path .\src\Fixie.Runner\bin\$configuration\netcoreapp1.1\dotnet-fixie.dll
+    $fixie = resolve-path .\src\Fixie.Runner\bin\$configuration\netcoreapp1.0\dotnet-fixie.dll
     exec src/Fixie.Tests { dotnet $fixie --configuration $configuration --no-build }
     exec src/Fixie.Samples { dotnet $fixie --configuration $configuration --no-build }
 }

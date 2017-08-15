@@ -97,11 +97,19 @@ function Nuspec {
     </references>
   </metadata>
   <files>
+    <!-- Reference Library -->
+
     <file target="lib\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />
+    <file target="lib\netstandard1.3" src="..\Fixie\bin\Release\netstandard1.3\Fixie.dll" />
+
+    <!-- TestDriven.NET Adapter -->
+
     <file target="lib\net452" src="..\Fixie.Execution\bin\Release\net452\Fixie.Execution.dll" />
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" />
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" />
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" />
+
+    <!-- Visual Studio Adapter -->
 
     <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.dll" />
     <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.Execution.dll" />
@@ -109,6 +117,10 @@ function Nuspec {
     <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" />
     <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" />
     <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" />
+
+    <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.dll" />
+    <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.Execution.dll" />
+    <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll" />
   </files>
 </package>
 "@

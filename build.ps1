@@ -95,6 +95,11 @@ function Nuspec {
     <references>
       <reference file="Fixie.dll" />
     </references>
+    <dependencies>
+      <group targetFramework="netcoreapp1.0">
+        <dependency id="Microsoft.NET.Test.Sdk" version="15.3.0" />
+      </group>
+    </dependencies>
   </metadata>
   <files>
     <!-- Reference Library -->

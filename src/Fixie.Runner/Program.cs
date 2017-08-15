@@ -126,7 +126,7 @@
                 return RunDotNetFramework(options, outputPath, targetFileName, conventionArguments);
 
             if (targetFrameworkIdentifier == ".NETCoreApp")
-                return RunDotNetCore(options, outputPath, targetFileName, conventionArguments);
+                return RunDotNetCore(options, outputPath, assemblyName, targetFileName, conventionArguments);
 
             throw new CommandLineException($"Framework '{targetFramework}' has unsupported TargetFrameworkIdentifier '{targetFrameworkIdentifier}'.");
         }
@@ -152,21 +152,30 @@
                 arguments: arguments.ToArray());
         }
 
-        static int RunDotNetCore(Options options, string outputPath, string targetFileName, string[] conventionArguments)
+        static int RunDotNetCore(Options options, string outputPath, string assemblyName, string targetFileName, string[] conventionArguments)
         {
             var runner = Path.Combine(
                 ConsoleRunnerDirectory(options, "netcoreapp1.0"),
                 "Fixie.Console.dll");
 
-            Error(".NET Core support is not implemented.");
+            var arguments = new List<string> { "exec" };
 
-            return Success;
-
-            var arguments = new List<string>
+            var depsfile = $"{assemblyName}.deps.json";
+            if (File.Exists(Path.Combine(outputPath, depsfile)))
             {
-                runner,
-                targetFileName
-            };
+                arguments.Add("--depsfile");
+                arguments.Add(depsfile);
+            }
+
+            var runtimeconfig = $"{assemblyName}.runtimeconfig.json";
+            if (File.Exists(Path.Combine(outputPath, runtimeconfig)))
+            {
+                arguments.Add("--runtimeconfig");
+                arguments.Add(runtimeconfig);
+            }
+
+            arguments.Add(runner);
+            arguments.Add(targetFileName);
 
             AddPassThroughArguments(arguments, options, conventionArguments);
 

@@ -121,6 +121,10 @@ function Nuspec {
     <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.dll" />
     <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.Execution.dll" />
     <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll" />
+
+    <file target="build\netcoreapp1.0\Fixie.props"               src="..\Fixie.VisualStudio.TestAdapter\Fixie.build.props" />
+    <file target="buildMultiTargeting\netcoreapp1.0\Fixie.props" src="..\Fixie.VisualStudio.TestAdapter\Fixie.buildMultiTargeting.props" />
+
   </files>
 </package>
 "@

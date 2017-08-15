@@ -97,15 +97,15 @@ function Nuspec {
     </references>
   </metadata>
   <files>
-    <file src="..\Fixie\bin\Release\net452\Fixie.dll" target="lib\net452" />
-    <file src="..\Fixie.Execution\bin\Release\net452\Fixie.Execution.dll" target="lib\net452" />
-    <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" target="lib\net452" />
-    <file src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" target="lib\net452" />
-    <file src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" target="lib\net452" />
-    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" target="lib\net452" />
-    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" target="lib\net452" />
-    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" target="lib\net452" />
-    <file src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" target="lib\net452"/>
+    <file target="lib\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />
+    <file target="lib\net452" src="..\Fixie.Execution\bin\Release\net452\Fixie.Execution.dll" />
+    <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" />
+    <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" />
+    <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" />
+    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" />
+    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" />
+    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" />
+    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" />
   </files>
 </package>
 "@

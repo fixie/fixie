@@ -133,7 +133,7 @@ function Nuspec {
     <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.Execution.dll" />
     <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll" />
 
-    <file target="build\netcoreapp1.0\Fixie.props"               src="..\Fixie.VisualStudio.TestAdapter\Fixie.build.props" />
+    <file target="build\netcoreapp1.0\Fixie.props" src="..\Fixie\Fixie.build.props" />
   </files>
 </package>
 "@

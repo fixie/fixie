@@ -23,6 +23,12 @@ function Assembly-Properties {
         <VersionSuffix>$versionSuffix</VersionSuffix>
         <Authors>$authors</Authors>
         <Copyright>$copyright</Copyright>
+        <PackageLicenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</PackageLicenseUrl>
+        <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
+        <PackageIconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <PackageOutputPath>..\..\packages</PackageOutputPath>
     </PropertyGroup>
 </Project>
 "@

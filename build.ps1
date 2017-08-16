@@ -203,6 +203,8 @@ function Package {
                     --include-symbols `
                     --no-build `
                     /p:NuspecFile=Fixie.Runner.nuspec }
+
+    exec { dotnet pack src\Fixie.Execution -c $configuration --no-build /nologo }
 }
 
 run-build {

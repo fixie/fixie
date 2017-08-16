@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net452;netstandard1.5</TargetFrameworks>
+    <Description>Test execution support used by test runners for the Fixie test framework.</Description>
   </PropertyGroup>
 
   <ItemGroup>

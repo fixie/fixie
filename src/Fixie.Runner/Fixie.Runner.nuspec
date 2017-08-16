@@ -3,19 +3,20 @@
   <metadata>
     <id>Fixie.Runner</id>
     <version>2.0.0-alpha-0000</version>
-    <title>Fixie.Runner</title>
     <authors>Patrick Lioi</authors>
     <owners>Patrick Lioi</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://fixie.github.io</projectUrl>
     <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Test runners for the Fixie test framework.</description>
+    <copyright>Copyright © 2013-2017 Patrick Lioi</copyright>
+    <repository url="https://github.com/fixie/fixie" />
     <packageTypes>
       <packageType name="DotNetCliTool" />
     </packageTypes>
     <dependencies>
-      <group targetFramework=".NETCoreApp1.0">
+      <group targetFramework="netcoreapp1.0">
         <dependency id="Microsoft.NETCore.App" version="1.1.2" exclude="Build,Analyzers" />
       </group>
     </dependencies>

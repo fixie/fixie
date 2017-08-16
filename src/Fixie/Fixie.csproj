@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net452;netstandard1.3</TargetFrameworks>
+    <NuspecFile>Fixie.nuspec</NuspecFile>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">

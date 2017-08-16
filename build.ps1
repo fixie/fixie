@@ -23,6 +23,12 @@ function Assembly-Properties {
         <VersionSuffix>$versionSuffix</VersionSuffix>
         <Authors>$authors</Authors>
         <Copyright>$copyright</Copyright>
+        <PackageLicenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</PackageLicenseUrl>
+        <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
+        <PackageIconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
+        <PackageOutputPath>..\..\packages</PackageOutputPath>
+        <IncludeSymbols>true</IncludeSymbols>
     </PropertyGroup>
 </Project>
 "@
@@ -84,14 +90,15 @@ function Nuspec {
   <metadata>
     <id>Fixie</id>
     <version>$version</version>
-    <title>Fixie</title>
     <authors>$authors</authors>
     <owners>$authors</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://fixie.github.io</projectUrl>
     <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A convention-based test framework.</description>
+    <copyright>$copyright</copyright>
+    <repository url="https://github.com/fixie/fixie" />
     <references>
       <reference file="Fixie.dll" />
     </references>
@@ -114,22 +121,51 @@ function Nuspec {
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" />
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" />
 
-    <!-- Visual Studio Adapter -->
+    <!-- Run Time Support -->
 
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.dll" />
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.Execution.dll" />
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" />
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" />
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" />
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" />
+    <file target="build\netcoreapp1.0" src="..\Fixie\bin\Release\netstandard1.3\Fixie.dll" />
+    <file target="build\netcoreapp1.0" src="..\Fixie.Execution\bin\Release\netstandard1.5\Fixie.Execution.dll" />
 
-    <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.dll" />
-    <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.Execution.dll" />
-    <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll" />
+    <file target="build\netcoreapp1.0\Fixie.props" src="Fixie.build.props" />
+  </files>
+</package>
+"@
 
-    <file target="build\netcoreapp1.0\Fixie.props"               src="..\Fixie.VisualStudio.TestAdapter\Fixie.build.props" />
-    <file target="buildMultiTargeting\netcoreapp1.0\Fixie.props" src="..\Fixie.VisualStudio.TestAdapter\Fixie.buildMultiTargeting.props" />
+    generate "src\Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.nuspec" @"
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Fixie.VisualStudio.TestAdapter</id>
+    <version>$version</version>
+    <authors>$authors</authors>
+    <owners>$authors</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://fixie.github.io</projectUrl>
+    <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
+    <description>Visual Studio 'Test Explorer' and 'dotnet test' adapter for the Fixie test framework.</description>
+    <copyright>$copyright</copyright>
+    <repository url="https://github.com/fixie/fixie" />
+    <dependencies>
+      <group targetFramework="netcoreapp1.0">
+        <dependency id="Fixie" version="$version" />
+      </group>
+      <group targetFramework="netcoreapp1.0">
+        <dependency id="Microsoft.NET.Test.Sdk" version="15.3.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file target="build\net452" src="bin\Release\net452\Fixie.dll" />
+    <file target="build\net452" src="bin\Release\net452\Fixie.Execution.dll" />
+    <file target="build\net452" src="bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" />
+    <file target="build\net452" src="bin\Release\net452\Mono.Cecil.dll" />
+    <file target="build\net452" src="bin\Release\net452\Mono.Cecil.Rocks.dll" />
+    <file target="build\net452" src="bin\Release\net452\Mono.Cecil.Pdb.dll" />
 
+    <file target="build\netcoreapp1.0" src="bin\Release\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll" />
+
+    <file target="build\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.props" src="Fixie.VisualStudio.TestAdapter.build.props" />
   </files>
 </package>
 "@
@@ -140,19 +176,20 @@ function Nuspec {
   <metadata>
     <id>Fixie.Runner</id>
     <version>$version</version>
-    <title>Fixie.Runner</title>
     <authors>$authors</authors>
     <owners>$authors</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://fixie.github.io</projectUrl>
     <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Test runners for the Fixie test framework.</description>
+    <copyright>$copyright</copyright>
+    <repository url="https://github.com/fixie/fixie" />
     <packageTypes>
       <packageType name="DotNetCliTool" />
     </packageTypes>
     <dependencies>
-      <group targetFramework=".NETCoreApp1.0">
+      <group targetFramework="netcoreapp1.0">
         <dependency id="Microsoft.NETCore.App" version="1.1.2" exclude="Build,Analyzers" />
       </group>
     </dependencies>
@@ -186,19 +223,11 @@ function Nuspec {
 }
 
 function Package {
-    exec { dotnet pack src\Fixie `
-                    -c $configuration `
-                    -o ..\..\packages `
-                    --include-symbols `
-                    --no-build `
-                    /p:NuspecFile=Fixie.nuspec }
-
-    exec { dotnet pack src\Fixie.Runner `
-                    -c $configuration `
-                    -o ..\..\packages `
-                    --include-symbols `
-                    --no-build `
-                    /p:NuspecFile=Fixie.Runner.nuspec }
+    $pack = { dotnet pack -c $configuration --no-build /nologo }
+    exec src\Fixie $pack
+    exec src\Fixie.Runner $pack
+    exec src\Fixie.Execution $pack
+    exec src\Fixie.VisualStudio.TestAdapter $pack
 }
 
 run-build {

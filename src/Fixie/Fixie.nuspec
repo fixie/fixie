@@ -34,19 +34,11 @@
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" />
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" />
 
-    <!-- Visual Studio Adapter -->
+    <!-- Run Time Support -->
 
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.dll" />
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.Execution.dll" />
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" />
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" />
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" />
-    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" />
+    <file target="build\netcoreapp1.0" src="..\Fixie\bin\Release\netstandard1.3\Fixie.dll" />
+    <file target="build\netcoreapp1.0" src="..\Fixie.Execution\bin\Release\netstandard1.5\Fixie.Execution.dll" />
 
-    <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.dll" />
-    <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.Execution.dll" />
-    <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll" />
-
-    <file target="build\netcoreapp1.0\Fixie.props" src="..\Fixie\Fixie.build.props" />
+    <file target="build\netcoreapp1.0\Fixie.props" src="Fixie.build.props" />
   </files>
 </package>

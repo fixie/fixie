@@ -27,7 +27,6 @@ function Assembly-Properties {
         <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
         <PackageIconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</PackageIconUrl>
         <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
-        <IncludeSymbols>true</IncludeSymbols>
         <PackageOutputPath>..\..\packages</PackageOutputPath>
     </PropertyGroup>
 </Project>
@@ -192,21 +191,10 @@ function Nuspec {
 }
 
 function Package {
-    exec { dotnet pack src\Fixie `
-                    -c $configuration `
-                    -o ..\..\packages `
-                    --include-symbols `
-                    --no-build `
-                    /p:NuspecFile=Fixie.nuspec }
-
-    exec { dotnet pack src\Fixie.Runner `
-                    -c $configuration `
-                    -o ..\..\packages `
-                    --include-symbols `
-                    --no-build `
-                    /p:NuspecFile=Fixie.Runner.nuspec }
-
-    exec { dotnet pack src\Fixie.Execution -c $configuration --no-build /nologo }
+    $pack = { dotnet pack -c $configuration --include-symbols --no-build /nologo }
+    exec src\Fixie $pack
+    exec src\Fixie.Runner $pack
+    exec src\Fixie.Execution $pack
 }
 
 run-build {

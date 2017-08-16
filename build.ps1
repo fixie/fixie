@@ -90,14 +90,15 @@ function Nuspec {
   <metadata>
     <id>Fixie</id>
     <version>$version</version>
-    <title>Fixie</title>
     <authors>$authors</authors>
     <owners>$authors</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://fixie.github.io</projectUrl>
     <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A convention-based test framework.</description>
+    <copyright>$copyright</copyright>
+    <repository url="https://github.com/fixie/fixie" />
     <references>
       <reference file="Fixie.dll" />
     </references>
@@ -144,14 +145,15 @@ function Nuspec {
   <metadata>
     <id>Fixie.Runner</id>
     <version>$version</version>
-    <title>Fixie.Runner</title>
     <authors>$authors</authors>
     <owners>$authors</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://fixie.github.io</projectUrl>
     <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Test runners for the Fixie test framework.</description>
+    <copyright>$copyright</copyright>
+    <repository url="https://github.com/fixie/fixie" />
     <packageTypes>
       <packageType name="DotNetCliTool" />
     </packageTypes>

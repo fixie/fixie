@@ -150,7 +150,7 @@ function Nuspec {
       <packageType name="DotNetCliTool" />
     </packageTypes>
     <dependencies>
-      <group targetFramework=".NETCoreApp1.0">
+      <group targetFramework="netcoreapp1.0">
         <dependency id="Microsoft.NETCore.App" version="1.1.2" exclude="Build,Analyzers" />
       </group>
     </dependencies>

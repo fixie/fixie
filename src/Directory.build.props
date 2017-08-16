@@ -10,5 +10,6 @@
         <PackageIconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</PackageIconUrl>
         <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
         <PackageOutputPath>..\..\packages</PackageOutputPath>
+        <IncludeSymbols>true</IncludeSymbols>
     </PropertyGroup>
 </Project>

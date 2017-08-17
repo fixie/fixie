@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public class Bus
+    class Bus
     {
         readonly List<Listener> listeners;
 

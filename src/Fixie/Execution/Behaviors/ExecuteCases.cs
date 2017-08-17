@@ -3,7 +3,7 @@
     using System;
     using System.Diagnostics;
 
-    public class ExecuteCases : FixtureBehavior
+    class ExecuteCases : FixtureBehavior
     {
         readonly BehaviorChain<Case> caseBehaviors;
 

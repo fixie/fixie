@@ -5,7 +5,7 @@ namespace Fixie.Execution
     using System.Linq;
     using System.Runtime.CompilerServices;
 
-    public class ClassDiscoverer
+    class ClassDiscoverer
     {
         readonly IReadOnlyList<Func<Type, bool>> testClassConditions;
 

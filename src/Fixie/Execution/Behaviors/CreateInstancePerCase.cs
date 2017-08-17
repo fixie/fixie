@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    public class CreateInstancePerCase : ClassBehavior
+    class CreateInstancePerCase : ClassBehavior
     {
         readonly Func<Type, object> testClassFactory;
         readonly BehaviorChain<Fixture> fixtureBehaviors;

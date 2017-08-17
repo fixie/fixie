@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public class ClassRunner
+    class ClassRunner
     {
         readonly Bus bus;
         readonly ExecutionPlan executionPlan;

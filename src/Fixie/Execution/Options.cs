@@ -3,7 +3,7 @@
     using System.IO;
     using Cli;
 
-    public class Options
+    class Options
     {
         public Options(string assemblyPath, params string[] patterns)
         {

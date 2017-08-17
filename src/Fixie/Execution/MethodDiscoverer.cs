@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public class MethodDiscoverer
+    class MethodDiscoverer
     {
         readonly Filter filter;
         readonly IReadOnlyList<Func<MethodInfo, bool>> testMethodConditions;

@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public class ParameterDiscoverer
+    class ParameterDiscoverer
     {
         readonly ParameterSource[] parameterSources;
 

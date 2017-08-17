@@ -46,24 +46,17 @@ function Build {
     exec { dotnet build src -c $configuration /nologo }
 }
 
-function Test-Console-x64 {
-    Run-Tests "Fixie.Console"
-}
-
-function Test-Console-x86 {
-    Run-Tests "Fixie.Console.x86"
-}
-
-function Run-Tests($runner) {
-    $fixie = resolve-path .\src\Fixie.Console\bin\$configuration\net452\$runner.exe
-    exec { & $fixie .\src\Fixie.Tests\bin\$configuration\net452\Fixie.Tests.dll }
-    exec { & $fixie .\src\Fixie.Samples\bin\$configuration\net452\Fixie.Samples.dll }
-}
-
 function dotnet-fixie {
     $fixie = resolve-path .\src\Fixie.Runner\bin\$configuration\netcoreapp1.0\dotnet-fixie.dll
-    exec src/Fixie.Tests { dotnet $fixie --configuration $configuration --no-build }
-    exec src/Fixie.Samples { dotnet $fixie --configuration $configuration --no-build }
+
+    $dotnet_fixie = { dotnet $fixie --configuration $configuration --no-build }
+    $dotnet_fixie_x86 = { dotnet $fixie --configuration $configuration --no-build --x86 --framework net452 }
+
+    exec src/Fixie.Tests $dotnet_fixie
+    exec src/Fixie.Tests $dotnet_fixie_x86
+
+    exec src/Fixie.Samples $dotnet_fixie
+    exec src/Fixie.Samples $dotnet_fixie_x86
 }
 
 function Nuspec {
@@ -224,8 +217,6 @@ run-build {
     step { Clean }
     step { Restore }
     step { Build }
-    step { Test-Console-x64 }
-    step { Test-Console-x86 }
     step { dotnet-fixie }
     step { Nuspec }
     step { Package }

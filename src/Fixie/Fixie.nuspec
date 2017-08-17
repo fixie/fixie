@@ -18,6 +18,8 @@
     <dependencies>
       <group targetFramework="netcoreapp1.0">
         <dependency id="Microsoft.NET.Test.Sdk" version="15.3.0" />
+        <dependency id="System.Reflection.TypeExtensions" version="4.3.0" />
+        <dependency id="System.Runtime.Serialization.Json" version="4.3.0" />
       </group>
     </dependencies>
   </metadata>
@@ -29,7 +31,6 @@
 
     <!-- TestDriven.NET Adapter -->
 
-    <file target="lib\net452" src="..\Fixie.Execution\bin\Release\net452\Fixie.Execution.dll" />
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" />
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" />
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" />
@@ -37,7 +38,6 @@
     <!-- Run Time Support -->
 
     <file target="build\netcoreapp1.0" src="..\Fixie\bin\Release\netstandard1.5\Fixie.dll" />
-    <file target="build\netcoreapp1.0" src="..\Fixie.Execution\bin\Release\netstandard1.5\Fixie.Execution.dll" />
 
     <file target="build\netcoreapp1.0\Fixie.props" src="Fixie.build.props" />
   </files>

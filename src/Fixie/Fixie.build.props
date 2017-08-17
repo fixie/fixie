@@ -1,11 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Fixie.Execution.dll">
-      <Link>Fixie.Execution.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </None>
     <None Include="$(MSBuildThisFileDirectory)Fixie.dll">
       <Link>Fixie.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

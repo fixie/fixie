@@ -99,7 +99,6 @@ function Nuspec {
 
     <!-- TestDriven.NET Adapter -->
 
-    <file target="lib\net452" src="..\Fixie.Execution\bin\Release\net452\Fixie.Execution.dll" />
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" />
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" />
     <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" />
@@ -107,7 +106,6 @@ function Nuspec {
     <!-- Run Time Support -->
 
     <file target="build\netcoreapp1.0" src="..\Fixie\bin\Release\netstandard1.5\Fixie.dll" />
-    <file target="build\netcoreapp1.0" src="..\Fixie.Execution\bin\Release\netstandard1.5\Fixie.Execution.dll" />
 
     <file target="build\netcoreapp1.0\Fixie.props" src="Fixie.build.props" />
   </files>
@@ -140,7 +138,6 @@ function Nuspec {
   </metadata>
   <files>
     <file target="build\net452" src="bin\Release\net452\Fixie.dll" />
-    <file target="build\net452" src="bin\Release\net452\Fixie.Execution.dll" />
     <file target="build\net452" src="bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" />
     <file target="build\net452" src="bin\Release\net452\Mono.Cecil.dll" />
     <file target="build\net452" src="bin\Release\net452\Mono.Cecil.Rocks.dll" />
@@ -190,14 +187,12 @@ function Nuspec {
     <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Console.runtimeconfig.json" />
     <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Console.x86.dll" />
     <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Console.x86.runtimeconfig.json" />
-    <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Execution.dll" />
     <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.dll" />
 
     <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.exe" />
     <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.runtimeconfig.json" />
     <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.x86.exe" />
     <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.x86.runtimeconfig.json" />
-    <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Execution.dll" />
     <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.dll" />
 
   </files>
@@ -209,7 +204,6 @@ function Package {
     $pack = { dotnet pack -c $configuration --no-build /nologo }
     exec src\Fixie $pack
     exec src\Fixie.Runner $pack
-    exec src\Fixie.Execution $pack
     exec src\Fixie.VisualStudio.TestAdapter $pack
 }
 

@@ -23,7 +23,6 @@
   </metadata>
   <files>
     <file target="build\net452" src="bin\Release\net452\Fixie.dll" />
-    <file target="build\net452" src="bin\Release\net452\Fixie.Execution.dll" />
     <file target="build\net452" src="bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" />
     <file target="build\net452" src="bin\Release\net452\Mono.Cecil.dll" />
     <file target="build\net452" src="bin\Release\net452\Mono.Cecil.Rocks.dll" />

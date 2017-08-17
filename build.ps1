@@ -116,7 +116,8 @@ function Nuspec {
 
     <file target="build\netcoreapp1.0" src="..\Fixie\bin\Release\netstandard1.5\Fixie.dll" />
 
-    <file target="build\netcoreapp1.0\Fixie.props" src="Fixie.build.props" />
+    <file target="build\net452\Fixie.props" src="Fixie.build.net452.props" />
+    <file target="build\netcoreapp1.0\Fixie.props" src="Fixie.build.netcoreapp1.0.props" />
 
   </files>
 </package>

@@ -43,9 +43,10 @@
 
                 var failedTests = 0;
 
+                bool runningForMultipleFrameworks = targetFrameworks.Length > 1;
                 foreach (var targetFramework in targetFrameworks)
                 {
-                    int exitCode = Run(options, testProject, targetFramework, conventionArguments);
+                    int exitCode = Run(options, testProject, targetFramework, conventionArguments, runningForMultipleFrameworks);
 
                     if (exitCode == FatalError)
                         return FatalError;
@@ -111,7 +112,7 @@
                 $"The test project targets the following framework(s): {availableFrameworks}");
         }
 
-        static int Run(Options options, string testProject, string targetFramework, string[] conventionArguments)
+        static int Run(Options options, string testProject, string targetFramework, string[] conventionArguments, bool runningForMultipleFrameworks)
         {
             var assemblyMetadata = msbuild(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
 
@@ -120,7 +121,12 @@
             var targetFileName = assemblyMetadata[2];
             var targetFrameworkIdentifier = assemblyMetadata[3];
 
-            Heading($"Running {assemblyName} ({targetFramework}{(options.x86 ? " 32-bit" : "")})");
+            var context =
+                runningForMultipleFrameworks
+                ? $" ({targetFramework}{(options.x86 ? " 32-bit" : "")})"
+                : "";
+
+            Heading($"Running {assemblyName}{context}");
             WriteLine();
 
             if (targetFrameworkIdentifier == ".NETFramework")

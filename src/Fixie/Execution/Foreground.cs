@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class Foreground : IDisposable
+    class Foreground : IDisposable
     {
         readonly ConsoleColor before;
 

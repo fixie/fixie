@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <package>
   <metadata>
-    <id>Fixie.Runner</id>
+    <id>Fixie.Console</id>
     <version>2.0.0-alpha-0000</version>
     <authors>Patrick Lioi</authors>
     <owners>Patrick Lioi</owners>
@@ -9,7 +9,7 @@
     <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://fixie.github.io</projectUrl>
     <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
-    <description>Test runners for the Fixie test framework.</description>
+    <description>dotnet fixie console test runner for the Fixie test framework.</description>
     <copyright>Copyright © 2013-2017 Patrick Lioi</copyright>
     <repository url="https://github.com/fixie/fixie" />
     <packageTypes>
@@ -34,14 +34,12 @@
     <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Console.runtimeconfig.json" />
     <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Console.x86.dll" />
     <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Console.x86.runtimeconfig.json" />
-    <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Execution.dll" />
     <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.dll" />
 
     <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.exe" />
     <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.runtimeconfig.json" />
     <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.x86.exe" />
     <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.x86.runtimeconfig.json" />
-    <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Execution.dll" />
     <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.dll" />
 
   </files>

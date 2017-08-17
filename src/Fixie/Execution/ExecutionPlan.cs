@@ -3,7 +3,7 @@ namespace Fixie.Execution
     using System.Linq;
     using Behaviors;
 
-    public class ExecutionPlan
+    class ExecutionPlan
     {
         readonly BehaviorChain<Class> classBehaviors;
 

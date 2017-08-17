@@ -2,7 +2,7 @@
 {
     using System.Reflection;
 
-    public class Discoverer
+    class Discoverer
     {
         readonly Bus bus;
         readonly Filter filter;

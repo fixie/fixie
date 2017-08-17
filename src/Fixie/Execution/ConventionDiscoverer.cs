@@ -6,7 +6,7 @@
     using Cli;
     using Conventions;
 
-    public class ConventionDiscoverer
+    class ConventionDiscoverer
     {
         readonly Assembly assembly;
         readonly string[] conventionArguments;

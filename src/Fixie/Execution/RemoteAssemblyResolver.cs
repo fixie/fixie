@@ -7,7 +7,7 @@
     using System.IO;
     using System.Reflection;
 
-    public class RemoteAssemblyResolver : LongLivedMarshalByRefObject
+    class RemoteAssemblyResolver : LongLivedMarshalByRefObject
     {
         readonly List<string> allowedAssemblyLocations = new List<string>();
 
@@ -57,7 +57,7 @@
         }
     }
 #else
-    public class RemoteAssemblyResolver : LongLivedMarshalByRefObject
+    class RemoteAssemblyResolver : LongLivedMarshalByRefObject
     {
         public void RegisterAssemblyLocation(string assemblyLocation)
         {

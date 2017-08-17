@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>net452;netcoreapp1.0</TargetFrameworks>
-    <NuspecFile>Fixie.VisualStudio.TestAdapter.nuspec</NuspecFile>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
@@ -15,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fixie.Execution\Fixie.Execution.csproj" />
+    <ProjectReference Include="..\Fixie\Fixie.csproj" />
   </ItemGroup>
 
 </Project>

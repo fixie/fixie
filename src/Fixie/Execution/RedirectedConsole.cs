@@ -3,7 +3,7 @@
     using System;
     using System.IO;
 
-    public class RedirectedConsole : IDisposable
+    class RedirectedConsole : IDisposable
     {
         readonly TextWriter outBefore;
         readonly TextWriter errBefore;

@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public class Runner
+    class Runner
     {
         readonly Bus bus;
         readonly Filter filter;

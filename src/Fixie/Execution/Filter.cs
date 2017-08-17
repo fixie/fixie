@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Text.RegularExpressions;
 
-    public class Filter
+    class Filter
     {
         readonly List<Func<MethodGroup, bool>> filterConditions = new List<Func<MethodGroup, bool>>();
 

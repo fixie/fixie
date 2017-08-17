@@ -3,12 +3,12 @@
     using System;
     using System.Collections.Generic;
 
-    public class CreateInstancePerClass : ClassBehavior
+    class CreateInstancePerCase : ClassBehavior
     {
         readonly Func<Type, object> testClassFactory;
         readonly BehaviorChain<Fixture> fixtureBehaviors;
 
-        public CreateInstancePerClass(Func<Type, object> testClassFactory, BehaviorChain<Fixture> fixtureBehaviors)
+        public CreateInstancePerCase(Func<Type, object> testClassFactory, BehaviorChain<Fixture> fixtureBehaviors)
         {
             this.testClassFactory = testClassFactory;
             this.fixtureBehaviors = fixtureBehaviors;
@@ -16,13 +16,16 @@
 
         public void Execute(Class testClass, Action next)
         {
-            try
+            foreach (var @case in testClass.Cases)
             {
-                PerformClassLifecycle(testClass, testClass.Cases);
-            }
-            catch (Exception exception)
-            {
-                testClass.Fail(exception);
+                try
+                {
+                    PerformClassLifecycle(testClass, new[] { @case });
+                }
+                catch (Exception exception)
+                {
+                    @case.Fail(exception);
+                }
             }
         }
 

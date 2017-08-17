@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fixie.Execution\Fixie.Execution.csproj" />
+    <ProjectReference Include="..\Fixie\Fixie.csproj" />
   </ItemGroup>
 
   <ItemGroup>

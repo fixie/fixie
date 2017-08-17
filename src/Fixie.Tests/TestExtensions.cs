@@ -8,7 +8,7 @@
     using System.Text.RegularExpressions;
     using Fixie.Execution;
 
-    public static class TestExtensions
+    static class TestExtensions
     {
         const BindingFlags InstanceMethods = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 

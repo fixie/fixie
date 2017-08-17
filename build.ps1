@@ -126,7 +126,7 @@ function Nuspec {
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>Fixie.Runner</id>
+    <id>Fixie.Console</id>
     <version>$version</version>
     <authors>$authors</authors>
     <owners>$authors</owners>
@@ -134,7 +134,7 @@ function Nuspec {
     <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://fixie.github.io</projectUrl>
     <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
-    <description>Test runners for the Fixie test framework.</description>
+    <description>`dotnet fixie` console test runner for the Fixie test framework.</description>
     <copyright>$copyright</copyright>
     <repository url="https://github.com/fixie/fixie" />
     <packageTypes>

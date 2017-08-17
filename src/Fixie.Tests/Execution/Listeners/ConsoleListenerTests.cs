@@ -39,7 +39,7 @@
                            "Actual:   1",
                            At("FailByAssertion()"),
                            "",
-                           "1 passed, 2 failed, 2 skipped, took 1.23 seconds (" + Framework.Version + ").");
+                           "1 passed, 2 failed, 2 skipped, took 1.23 seconds");
             }
         }
     }

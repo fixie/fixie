@@ -28,7 +28,7 @@
 
         public void Handle(AssemblyCompleted message)
         {
-            Console.WriteLine($"{message.Summary} ({Framework.Version}).");
+            Console.WriteLine($"{message.Summary}");
             Console.WriteLine();
         }
     }

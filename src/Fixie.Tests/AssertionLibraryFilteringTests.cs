@@ -34,7 +34,7 @@
                         "   at Fixie.Tests.SampleAssertionLibrary.SampleAssert.AreEqual(Int32 expected, Int32 actual) in " + PathToThisFile() + ":line #",
                         At<SampleTestClass>("FailedAssertion()"),
                         "",
-                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
+                        "0 passed, 2 failed, took 1.23 seconds");
             }
         }
 
@@ -66,7 +66,7 @@
                         "Expected 1, but was 0.",
                         At<SampleTestClass>("FailedAssertion()"),
                         "",
-                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
+                        "0 passed, 2 failed, took 1.23 seconds");
             }
         }
 

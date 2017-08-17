@@ -60,18 +60,6 @@ function Run-Tests($runner) {
     exec { & $fixie .\src\Fixie.Samples\bin\$configuration\net452\Fixie.Samples.dll }
 }
 
-function dotnet-test {
-    exec { dotnet test src/Fixie.Tests/Fixie.Tests.csproj -c $configuration --no-build }
-
-    exec { dotnet test src/Fixie.Samples/Fixie.Samples.csproj -c $configuration --no-build `
-        --test-adapter-path ../Fixie.Tests/bin/$configuration/net452 --framework net452 `
-    }
-
-    exec { dotnet test src/Fixie.Samples/Fixie.Samples.csproj -c $configuration --no-build `
-        --test-adapter-path ../Fixie.Tests/bin/$configuration/netcoreapp1.0 --framework netcoreapp1.0 `
-    }
-}
-
 function dotnet-fixie {
     $fixie = resolve-path .\src\Fixie.Runner\bin\$configuration\netcoreapp1.0\dotnet-fixie.dll
     exec src/Fixie.Tests { dotnet $fixie --configuration $configuration --no-build }
@@ -238,7 +226,6 @@ run-build {
     step { Build }
     step { Test-Console-x64 }
     step { Test-Console-x86 }
-    step { dotnet-test }
     step { dotnet-fixie }
     step { Nuspec }
     step { Package }

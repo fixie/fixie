@@ -25,7 +25,7 @@
     <!-- Reference Library -->
 
     <file target="lib\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />
-    <file target="lib\netstandard1.3" src="..\Fixie\bin\Release\netstandard1.3\Fixie.dll" />
+    <file target="lib\netstandard1.5" src="..\Fixie\bin\Release\netstandard1.5\Fixie.dll" />
 
     <!-- TestDriven.NET Adapter -->
 
@@ -36,7 +36,7 @@
 
     <!-- Run Time Support -->
 
-    <file target="build\netcoreapp1.0" src="..\Fixie\bin\Release\netstandard1.3\Fixie.dll" />
+    <file target="build\netcoreapp1.0" src="..\Fixie\bin\Release\netstandard1.5\Fixie.dll" />
     <file target="build\netcoreapp1.0" src="..\Fixie.Execution\bin\Release\netstandard1.5\Fixie.Execution.dll" />
 
     <file target="build\netcoreapp1.0\Fixie.props" src="Fixie.build.props" />

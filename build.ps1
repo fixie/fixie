@@ -105,12 +105,12 @@ function Nuspec {
 
     <!-- Visual Studio Adapter -->
 
-    <file target="build\net452" src="bin\Release\net452\Fixie.dll" />
-    <file target="build\net452" src="bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" />
-    <file target="build\net452" src="bin\Release\net452\Mono.Cecil.dll" />
-    <file target="build\net452" src="bin\Release\net452\Mono.Cecil.Rocks.dll" />
-    <file target="build\net452" src="bin\Release\net452\Mono.Cecil.Pdb.dll" />
-    <file target="build\netcoreapp1.0" src="bin\Release\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll" />
+    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.dll" />
+    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" />
+    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" />
+    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" />
+    <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" />
+    <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll" />
 
     <!-- Run Time Support -->
 

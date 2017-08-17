@@ -25,8 +25,6 @@
                     .CleanDuration()
                     .Lines()
                     .ShouldEqual(
-                        "------ Testing Assembly Fixie.Tests.dll ------",
-                        "",
                         "Test '" + testClass + ".DivideByZero' failed: System.DivideByZeroException",
                         "Attempted to divide by zero.",
                         At<SampleTestClass>("DivideByZero()"),
@@ -60,8 +58,6 @@
                     .CleanDuration()
                     .Lines()
                     .ShouldEqual(
-                        "------ Testing Assembly Fixie.Tests.dll ------",
-                        "",
                         "Test '" + testClass + ".DivideByZero' failed: System.DivideByZeroException",
                         "Attempted to divide by zero.",
                         At<SampleTestClass>("DivideByZero()"),

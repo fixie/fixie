@@ -120,7 +120,8 @@
             var targetFileName = assemblyMetadata[2];
             var targetFrameworkIdentifier = assemblyMetadata[3];
 
-            WriteLine($"Running tests for {targetFramework}...");
+            Heading($"Running {assemblyName} ({targetFramework}{(options.x86 ? " 32-bit" : "")})");
+            WriteLine();
 
             if (targetFrameworkIdentifier == ".NETFramework")
                 return RunDotNetFramework(options, outputPath, targetFileName, conventionArguments);
@@ -260,6 +261,14 @@
             WriteLine("    convention arguments");
             WriteLine("        Arbitrary arguments made available to conventions.");
             WriteLine();
+        }
+
+        static void Heading(string message)
+        {
+            var before = ForegroundColor;
+            ForegroundColor = ConsoleColor.Green;
+            WriteLine(message);
+            ForegroundColor = before;
         }
 
         static void Error(string message)

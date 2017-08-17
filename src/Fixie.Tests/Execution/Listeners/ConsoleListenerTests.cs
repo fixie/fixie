@@ -18,8 +18,6 @@
                        .CleanDuration()
                        .Lines()
                        .ShouldEqual(
-                           "------ Testing Assembly Fixie.Tests.dll ------",
-                           "",
                            "Test '" + TestClass + ".SkipWithReason' skipped: Skipped with reason.",
                            "",
                            "Test '" + TestClass + ".SkipWithoutReason' skipped",

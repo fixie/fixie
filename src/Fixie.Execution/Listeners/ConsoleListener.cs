@@ -1,21 +1,13 @@
 ﻿namespace Fixie.Execution.Listeners
 {
     using System;
-    using System.IO;
     using Execution;
 
     public class ConsoleListener :
-        Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
-        public void Handle(AssemblyStarted message)
-        {
-            Console.WriteLine($"------ Testing Assembly {Path.GetFileName(message.Assembly.Location)} ------");
-            Console.WriteLine();
-        }
-
         public void Handle(CaseSkipped message)
         {
             var optionalReason = message.Reason == null ? null : ": " + message.Reason;

@@ -18,7 +18,8 @@
                        .CleanDuration()
                        .Lines()
                        .ShouldEqual(
-                           "Test '" + TestClass + ".SkipWithReason' skipped: Skipped with reason.",
+                           "Test '" + TestClass + ".SkipWithReason' skipped:",
+                           "Skipped with reason.",
                            "",
                            "Test '" + TestClass + ".SkipWithoutReason' skipped",
                            "",

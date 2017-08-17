@@ -16,7 +16,7 @@
             CaseExecution
                 .Skip(SkipDueToClassLevelExplicitAttribute, @case => "Tests within [Explicit] classes run only when the class is individually selected for execution.")
                 .Skip(SkipDueToMethodLevelExplicitAttribute, @case => "[Explicit] tests run only when they are individually selected for execution.")
-                .Skip(SkipDueToClassLevelSkipAttribute, @case => "whole class skipped")
+                .Skip(SkipDueToClassLevelSkipAttribute, @case => "Whole class skipped")
                 .Skip(SkipDueToMethodLevelSkipAttribute);
 
             ClassExecution

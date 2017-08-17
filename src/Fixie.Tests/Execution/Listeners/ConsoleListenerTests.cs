@@ -18,10 +18,11 @@
                        .CleanDuration()
                        .Lines()
                        .ShouldEqual(
-                           "------ Testing Assembly Fixie.Tests.dll ------",
+                           "Test '" + TestClass + ".SkipWithReason' skipped:",
+                           "Skipped with reason.",
                            "",
-                           "Test '" + TestClass + ".SkipWithReason' skipped: Skipped with reason.",
                            "Test '" + TestClass + ".SkipWithoutReason' skipped",
+                           "",
                            "Console.Out: Fail",
                            "Console.Error: Fail",
                            "Console.Out: FailByAssertion",
@@ -39,7 +40,7 @@
                            "Actual:   1",
                            At("FailByAssertion()"),
                            "",
-                           "1 passed, 2 failed, 2 skipped, took 1.23 seconds (" + Framework.Version + ").");
+                           "1 passed, 2 failed, 2 skipped, took 1.23 seconds");
             }
         }
     }

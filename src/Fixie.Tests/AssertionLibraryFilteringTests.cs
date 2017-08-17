@@ -25,8 +25,6 @@
                     .CleanDuration()
                     .Lines()
                     .ShouldEqual(
-                        "------ Testing Assembly Fixie.Tests.dll ------",
-                        "",
                         "Test '" + testClass + ".DivideByZero' failed: System.DivideByZeroException",
                         "Attempted to divide by zero.",
                         At<SampleTestClass>("DivideByZero()"),
@@ -36,7 +34,7 @@
                         "   at Fixie.Tests.SampleAssertionLibrary.SampleAssert.AreEqual(Int32 expected, Int32 actual) in " + PathToThisFile() + ":line #",
                         At<SampleTestClass>("FailedAssertion()"),
                         "",
-                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
+                        "0 passed, 2 failed, took 1.23 seconds");
             }
         }
 
@@ -60,8 +58,6 @@
                     .CleanDuration()
                     .Lines()
                     .ShouldEqual(
-                        "------ Testing Assembly Fixie.Tests.dll ------",
-                        "",
                         "Test '" + testClass + ".DivideByZero' failed: System.DivideByZeroException",
                         "Attempted to divide by zero.",
                         At<SampleTestClass>("DivideByZero()"),
@@ -70,7 +66,7 @@
                         "Expected 1, but was 0.",
                         At<SampleTestClass>("FailedAssertion()"),
                         "",
-                        "0 passed, 2 failed, took 1.23 seconds (" + Framework.Version + ").");
+                        "0 passed, 2 failed, took 1.23 seconds");
             }
         }
 

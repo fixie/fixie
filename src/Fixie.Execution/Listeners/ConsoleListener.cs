@@ -1,27 +1,24 @@
 ﻿namespace Fixie.Execution.Listeners
 {
     using System;
-    using System.IO;
     using Execution;
 
     public class ConsoleListener :
-        Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
-        public void Handle(AssemblyStarted message)
-        {
-            Console.WriteLine($"------ Testing Assembly {Path.GetFileName(message.Assembly.Location)} ------");
-            Console.WriteLine();
-        }
-
         public void Handle(CaseSkipped message)
         {
-            var optionalReason = message.Reason == null ? null : ": " + message.Reason;
+            var hasReason = message.Reason != null;
 
             using (Foreground.Yellow)
-                Console.WriteLine($"Test '{message.Name}' skipped{optionalReason}");
+                Console.WriteLine($"Test '{message.Name}' skipped{(hasReason ? ":" : null)}");
+
+            if (hasReason)
+                Console.WriteLine($"{message.Reason}");
+
+            Console.WriteLine();
         }
 
         public void Handle(CaseFailed message)
@@ -35,7 +32,7 @@
 
         public void Handle(AssemblyCompleted message)
         {
-            Console.WriteLine($"{message.Summary} ({Framework.Version}).");
+            Console.WriteLine($"{message.Summary}");
             Console.WriteLine();
         }
     }

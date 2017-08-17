@@ -22,6 +22,7 @@
 
             using (Foreground.Yellow)
                 Console.WriteLine($"Test '{message.Name}' skipped{optionalReason}");
+            Console.WriteLine();
         }
 
         public void Handle(CaseFailed message)

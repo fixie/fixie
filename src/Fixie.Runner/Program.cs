@@ -140,21 +140,12 @@
 
         static int RunDotNetFramework(Options options, string outputPath, string targetFileName, string[] conventionArguments)
         {
-            var runner = Path.Combine(
-                ConsoleRunnerDirectory(options, "net452"),
-                options.x86
-                    ? "Fixie.Console.x86.exe"
-                    : "Fixie.Console.exe");
-
-            var arguments = new List<string>
-            {
-                targetFileName
-            };
+            var arguments = new List<string> { targetFileName };
 
             AddPassThroughArguments(arguments, options, conventionArguments);
 
             return run(
-                executable: runner,
+                executable: Path.Combine(outputPath, targetFileName),
                 workingDirectory: outputPath,
                 arguments: arguments.ToArray());
         }
@@ -168,23 +159,6 @@
             return dotnet(
                 workingDirectory: outputPath,
                 arguments: arguments.ToArray());
-        }
-
-        static string ConsoleRunnerDirectory(Options options, string frameworkDirectory)
-        {
-            var thisAssemblyPath = PathToThisAssembly();
-
-            // When running this tool from its NuGet package, navigate
-            // within the package to the console runner's directory.
-            var directory = Path.GetFullPath(Path.Combine(thisAssemblyPath, "..", "..", "tools", frameworkDirectory));
-
-            if (Exists(directory))
-                return directory;
-
-            // When running from the Fixie solution's own build output
-            // directory, navigate within the solution structure to the
-            // console runner's build output directory.
-            return Path.GetFullPath(Path.Combine(thisAssemblyPath, "..", "..", "..", "..", "Fixie.Console", "bin", options.Configuration, frameworkDirectory));
         }
 
         static string PathToThisAssembly()

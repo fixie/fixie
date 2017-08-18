@@ -16,6 +16,7 @@
       <reference file="Fixie.dll" />
     </references>
     <dependencies>
+      <group targetFramework="net452" />
       <group targetFramework="netstandard1.5">
         <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
         <dependency id="Microsoft.TestPlatform.TestHost" version="15.3.0" />

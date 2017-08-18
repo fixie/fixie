@@ -51,6 +51,9 @@
     <file target="build\net452\Fixie.props" src="Fixie.build.net452.props" />
     <file target="build\netcoreapp1.0\Fixie.props" src="Fixie.build.netcoreapp1.0.props" />
 
+    <file target="build\net452\Fixie.targets" src="Fixie.build.targets" />
+    <file target="build\netcoreapp1.0\Fixie.targets" src="Fixie.build.targets" />
+
     <file target="build\" src="Fixie.Program.cs" />
   </files>
 </package>

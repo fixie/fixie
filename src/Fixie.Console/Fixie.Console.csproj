@@ -4,6 +4,8 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <AssemblyName>dotnet-fixie</AssemblyName>
+    <PackageId>Fixie.Console</PackageId>
+    <Description>dotnet fixie console test runner for the Fixie test framework.</Description>
     <NuspecFile>Fixie.Console.nuspec</NuspecFile>
   </PropertyGroup>
 

@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0"?>
 <package>
   <metadata>
-    <id>Fixie</id>
-    <version>2.0.0-alpha-0000</version>
-    <authors>Patrick Lioi</authors>
-    <owners>Patrick Lioi</owners>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>$authors$</authors>
+    <owners>$authors$</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://fixie.github.io</projectUrl>
     <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
-    <description>A convention-based test framework.</description>
-    <copyright>Copyright © 2013-2017 Patrick Lioi</copyright>
+    <description>$description$</description>
+    <copyright>$copyright$</copyright>
     <repository url="https://github.com/fixie/fixie" />
     <references>
       <reference file="Fixie.dll" />

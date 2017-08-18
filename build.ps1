@@ -85,7 +85,7 @@ function Nuspec {
     </references>
     <dependencies>
       <group targetFramework="netcoreapp1.0">
-        <dependency id="Microsoft.NET.Test.Sdk" version="15.3.0" />
+        <dependency id="Microsoft.TestPlatform.TestHost" version="15.3.0" />
         <dependency id="System.Reflection.TypeExtensions" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Json" version="4.3.0" />
       </group>

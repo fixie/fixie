@@ -29,18 +29,5 @@
     <file target="lib\netcoreapp1.0" src="..\Fixie.Runner\bin\Release\netcoreapp1.0\dotnet-fixie.runtimeconfig.json" />
     <file target="lib\netcoreapp1.0" src="..\Fixie.Runner\bin\Release\netcoreapp1.0\dotnet-fixie.targets" />
     <file target="lib\netcoreapp1.0" src="..\Fixie.Runner\bin\Release\netcoreapp1.0\Fixie.dll" />
-
-    <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Console.dll" />
-    <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Console.runtimeconfig.json" />
-    <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Console.x86.dll" />
-    <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.Console.x86.runtimeconfig.json" />
-    <file target="tools\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.dll" />
-
-    <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.exe" />
-    <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.runtimeconfig.json" />
-    <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.x86.exe" />
-    <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.Console.x86.runtimeconfig.json" />
-    <file target="tools\net452" src="..\Fixie.Console\bin\Release\net452\Fixie.dll" />
-
   </files>
 </package>

@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie", "Fixie\Fixie.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Assertions", "Fixie.Assertions\Fixie.Assertions.csproj", "{6B764D6B-5DF3-4247-B43E-57E00F03D14A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Console", "Fixie.Console\Fixie.Console.csproj", "{535C9491-A4A4-43E3-9D05-F875695A3079}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Samples", "Fixie.Samples\Fixie.Samples.csproj", "{D4B70AB4-BED4-490F-A96A-3C5540E5E497}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.TestDriven", "Fixie.TestDriven\Fixie.TestDriven.csproj", "{5F0F22E2-D3A1-4D4E-A138-68F6FB5F2098}"
@@ -16,8 +14,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Tests", "Fixie.Tests\Fixie.Tests.csproj", "{79891344-547E-4F8D-959B-07684D09322D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.VisualStudio.TestAdapter", "Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.csproj", "{50D2B103-EF46-4438-9720-08C93B6EF714}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Console.x86", "Fixie.Console\Fixie.Console.x86.csproj", "{23020319-3D52-4A02-887A-D8F65DC6EE02}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Runner", "Fixie.Runner\Fixie.Runner.csproj", "{98677E18-EE5E-4C41-AA36-9F9EC1138B7F}"
 EndProject
@@ -35,10 +31,6 @@ Global
 		{6B764D6B-5DF3-4247-B43E-57E00F03D14A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B764D6B-5DF3-4247-B43E-57E00F03D14A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B764D6B-5DF3-4247-B43E-57E00F03D14A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{535C9491-A4A4-43E3-9D05-F875695A3079}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{535C9491-A4A4-43E3-9D05-F875695A3079}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{535C9491-A4A4-43E3-9D05-F875695A3079}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{535C9491-A4A4-43E3-9D05-F875695A3079}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D4B70AB4-BED4-490F-A96A-3C5540E5E497}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D4B70AB4-BED4-490F-A96A-3C5540E5E497}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4B70AB4-BED4-490F-A96A-3C5540E5E497}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -55,10 +47,6 @@ Global
 		{50D2B103-EF46-4438-9720-08C93B6EF714}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50D2B103-EF46-4438-9720-08C93B6EF714}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50D2B103-EF46-4438-9720-08C93B6EF714}.Release|Any CPU.Build.0 = Release|Any CPU
-		{23020319-3D52-4A02-887A-D8F65DC6EE02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{23020319-3D52-4A02-887A-D8F65DC6EE02}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{23020319-3D52-4A02-887A-D8F65DC6EE02}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{23020319-3D52-4A02-887A-D8F65DC6EE02}.Release|Any CPU.Build.0 = Release|Any CPU
 		{98677E18-EE5E-4C41-AA36-9F9EC1138B7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{98677E18-EE5E-4C41-AA36-9F9EC1138B7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98677E18-EE5E-4C41-AA36-9F9EC1138B7F}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -149,7 +149,7 @@
 
         static int RunDotNetFramework(Options options, string outputPath, string targetFileName, string[] conventionArguments)
         {
-            var arguments = new List<string> { targetFileName };
+            var arguments = new List<string>();
 
             AddPassThroughArguments(arguments, options, conventionArguments);
 
@@ -161,7 +161,7 @@
 
         static int RunDotNetCore(Options options, string outputPath, string targetFileName, string[] conventionArguments)
         {
-            var arguments = new List<string> { targetFileName, targetFileName };
+            var arguments = new List<string> { targetFileName };
 
             AddPassThroughArguments(arguments, options, conventionArguments);
 

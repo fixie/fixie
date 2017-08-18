@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Execution
 {
     using System;
+    using System.Reflection;
     using Cli;
 
     public class AssemblyRunner
@@ -14,7 +15,9 @@
                 var options = CommandLine.Parse<Options>(arguments);
                 options.Validate();
 
-                using (var environment = new ExecutionEnvironment(options.AssemblyPath))
+                var assemblyPath = Assembly.GetEntryAssembly().Location;
+
+                using (var environment = new ExecutionEnvironment(assemblyPath))
                     return environment.RunAssembly(arguments);
             }
             catch (Exception exception)

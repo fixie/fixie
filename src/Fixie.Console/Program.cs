@@ -1,4 +1,4 @@
-﻿namespace Fixie.Runner
+﻿namespace Fixie.Console
 {
     using System;
     using System.Collections.Generic;
@@ -12,7 +12,6 @@
 
     class Program
     {
-        const int Success = 0;
         const int FatalError = -1;
 
         [STAThread]

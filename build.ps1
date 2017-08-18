@@ -47,7 +47,7 @@ function Build {
 }
 
 function dotnet-fixie {
-    $fixie = resolve-path .\src\Fixie.Runner\bin\$configuration\netcoreapp1.0\dotnet-fixie.dll
+    $fixie = resolve-path .\src\Fixie.Console\bin\$configuration\netcoreapp1.0\dotnet-fixie.dll
 
     exec src/Fixie.Tests { dotnet $fixie --configuration $configuration --no-build }
     exec src/Fixie.Samples { dotnet $fixie --configuration $configuration --no-build }
@@ -117,7 +117,7 @@ function Nuspec {
 </package>
 "@
 
-    generate "src\Fixie.Runner\Fixie.Runner.nuspec" @"
+    generate "src\Fixie.Console\Fixie.Console.nuspec" @"
 <?xml version="1.0"?>
 <package>
   <metadata>
@@ -143,12 +143,12 @@ function Nuspec {
   </metadata>
   <files>
 
-    <file target="prefercliruntime" src="..\Fixie.Runner\prefercliruntime" />
+    <file target="prefercliruntime" src="..\Fixie.Console\prefercliruntime" />
 
-    <file target="lib\netcoreapp1.0" src="..\Fixie.Runner\bin\Release\netcoreapp1.0\dotnet-fixie.dll" />
-    <file target="lib\netcoreapp1.0" src="..\Fixie.Runner\bin\Release\netcoreapp1.0\dotnet-fixie.runtimeconfig.json" />
-    <file target="lib\netcoreapp1.0" src="..\Fixie.Runner\bin\Release\netcoreapp1.0\dotnet-fixie.targets" />
-    <file target="lib\netcoreapp1.0" src="..\Fixie.Runner\bin\Release\netcoreapp1.0\Fixie.dll" />
+    <file target="lib\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\dotnet-fixie.dll" />
+    <file target="lib\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\dotnet-fixie.runtimeconfig.json" />
+    <file target="lib\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\dotnet-fixie.targets" />
+    <file target="lib\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.dll" />
   </files>
 </package>
 "@
@@ -157,7 +157,7 @@ function Nuspec {
 function Package {
     $pack = { dotnet pack -c $configuration --no-build /nologo }
     exec src\Fixie $pack
-    exec src\Fixie.Runner $pack
+    exec src\Fixie.Console $pack
 }
 
 run-build {

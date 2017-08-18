@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <AssemblyName>dotnet-fixie</AssemblyName>
-    <NuspecFile>Fixie.Runner.nuspec</NuspecFile>
+    <NuspecFile>Fixie.Console.nuspec</NuspecFile>
   </PropertyGroup>
 
   <ItemGroup>

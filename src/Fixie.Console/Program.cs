@@ -120,19 +120,9 @@
             var targetFileName = assemblyMetadata[2];
             var targetFrameworkIdentifier = assemblyMetadata[3];
 
-            var x86 = IntPtr.Size * 8 == 32;
-
-            var contextParts = new List<string>();
-
-            if (runningForMultipleFrameworks)
-                contextParts.Add(targetFramework);
-
-            if (x86)
-                contextParts.Add("32-bit");
-
             var context =
-                contextParts.Any()
-                    ? $" ({string.Join(" ", contextParts)})"
+                runningForMultipleFrameworks
+                    ? $" ({targetFramework})"
                     : "";
 
             Heading($"Running {assemblyName}{context}");

@@ -121,10 +121,20 @@
             var targetFileName = assemblyMetadata[2];
             var targetFrameworkIdentifier = assemblyMetadata[3];
 
+            var x86 = IntPtr.Size * 8 == 32;
+
+            var contextParts = new List<string>();
+
+            if (runningForMultipleFrameworks)
+                contextParts.Add(targetFramework);
+
+            if (x86)
+                contextParts.Add("32-bit");
+
             var context =
-                runningForMultipleFrameworks
-                ? $" ({targetFramework}{(options.x86 ? " 32-bit" : "")})"
-                : "";
+                contextParts.Any()
+                    ? $" ({string.Join(" ", contextParts)})"
+                    : "";
 
             Heading($"Running {assemblyName}{context}");
             WriteLine();
@@ -203,10 +213,6 @@
             WriteLine();
             WriteLine("    --framework name");
             WriteLine("        Only run test assemblies targeting a specific framework.");
-            WriteLine();
-            WriteLine("    --x86");
-            WriteLine("        Run tests in 32-bit mode. This is only applicable for");
-            WriteLine("        test assemblies targeting the full .NET Framework.");
             WriteLine();
             WriteLine("    --report path");
             WriteLine("        Write test results to the specified path, using the");

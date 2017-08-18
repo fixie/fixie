@@ -49,14 +49,8 @@ function Build {
 function dotnet-fixie {
     $fixie = resolve-path .\src\Fixie.Runner\bin\$configuration\netcoreapp1.0\dotnet-fixie.dll
 
-    $dotnet_fixie = { dotnet $fixie --configuration $configuration --no-build }
-    $dotnet_fixie_x86 = { dotnet $fixie --configuration $configuration --no-build --x86 --framework net452 }
-
-    exec src/Fixie.Tests $dotnet_fixie
-    exec src/Fixie.Tests $dotnet_fixie_x86
-
-    exec src/Fixie.Samples $dotnet_fixie
-    exec src/Fixie.Samples $dotnet_fixie_x86
+    exec src/Fixie.Tests { dotnet $fixie --configuration $configuration --no-build }
+    exec src/Fixie.Samples { dotnet $fixie --configuration $configuration --no-build }
 }
 
 function Nuspec {

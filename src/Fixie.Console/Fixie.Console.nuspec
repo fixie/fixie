@@ -17,7 +17,7 @@
     </packageTypes>
     <dependencies>
       <group targetFramework="netcoreapp1.0">
-        <dependency id="Microsoft.NETCore.App" version="1.1.2" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.NETCore.App" version="1.0.5" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>

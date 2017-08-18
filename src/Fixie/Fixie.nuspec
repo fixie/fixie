@@ -16,7 +16,8 @@
       <reference file="Fixie.dll" />
     </references>
     <dependencies>
-      <group targetFramework="netcoreapp1.0">
+      <group targetFramework="netstandard1.5">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
         <dependency id="Microsoft.TestPlatform.TestHost" version="15.3.0" />
         <dependency id="System.Reflection.TypeExtensions" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Json" version="4.3.0" />

@@ -1,9 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netcoreapp1.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp1.0;net452</TargetFrameworks>
     <OutputType>Exe</OutputType>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectCapability Include="TestContainer" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Fixie.Assertions\Fixie.Assertions.csproj" />

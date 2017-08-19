@@ -1,4 +1,4 @@
-﻿namespace Fixie.Runner
+﻿namespace Fixie.Console
 {
     public class Options
     {
@@ -19,7 +19,6 @@
         public bool NoBuild { get; set; }
         public bool ShouldBuild => !NoBuild;
         public string Framework { get; set; }
-        public bool x86 { get; set; }
         public string Report { get; set; }
         public bool? TeamCity { get; set; }
     }

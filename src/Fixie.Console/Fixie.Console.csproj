@@ -1,12 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netcoreapp1.0</TargetFrameworks>
-    <OutputType>exe</OutputType>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <AssemblyName>dotnet-fixie</AssemblyName>
+    <PackageId>Fixie.Console</PackageId>
+    <Description>dotnet fixie console test runner for the Fixie test framework.</Description>
+    <NuspecFile>Fixie.Console.nuspec</NuspecFile>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Fixie\Fixie.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="dotnet-fixie.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

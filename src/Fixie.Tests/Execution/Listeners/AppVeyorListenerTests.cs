@@ -41,7 +41,12 @@
             foreach (var result in results)
             {
                 result.testFramework.ShouldEqual("Fixie");
+
+#if NET452
+                result.fileName.ShouldEqual("Fixie.Tests.exe");
+#else
                 result.fileName.ShouldEqual("Fixie.Tests.dll");
+#endif
             }
 
             var skipWithReason = results[0];

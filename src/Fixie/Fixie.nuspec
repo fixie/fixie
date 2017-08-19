@@ -1,23 +1,25 @@
 ﻿<?xml version="1.0"?>
 <package>
   <metadata>
-    <id>Fixie</id>
-    <version>2.0.0-alpha-0000</version>
-    <authors>Patrick Lioi</authors>
-    <owners>Patrick Lioi</owners>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>$authors$</authors>
+    <owners>$authors$</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://fixie.github.io</projectUrl>
     <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
-    <description>A convention-based test framework.</description>
-    <copyright>Copyright © 2013-2017 Patrick Lioi</copyright>
+    <description>$description$</description>
+    <copyright>$copyright$</copyright>
     <repository url="https://github.com/fixie/fixie" />
     <references>
       <reference file="Fixie.dll" />
     </references>
     <dependencies>
-      <group targetFramework="netcoreapp1.0">
-        <dependency id="Microsoft.NET.Test.Sdk" version="15.3.0" />
+      <group targetFramework="net452" />
+      <group targetFramework="netstandard1.5">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.TestPlatform.TestHost" version="15.3.0" />
         <dependency id="System.Reflection.TypeExtensions" version="4.3.0" />
         <dependency id="System.Runtime.Serialization.Json" version="4.3.0" />
       </group>
@@ -48,8 +50,12 @@
 
     <file target="build\netcoreapp1.0" src="..\Fixie\bin\Release\netstandard1.5\Fixie.dll" />
 
-    <file target="build\net452\Fixie.props" src="Fixie.build.net452.props" />
-    <file target="build\netcoreapp1.0\Fixie.props" src="Fixie.build.netcoreapp1.0.props" />
+    <file target="build\net452\Fixie.props" src="..\..\build\Fixie.build.net452.props" />
+    <file target="build\netcoreapp1.0\Fixie.props" src="..\..\build\Fixie.build.netcoreapp1.0.props" />
 
+    <file target="build\net452\Fixie.targets" src="..\..\build\Fixie.build.targets" />
+    <file target="build\netcoreapp1.0\Fixie.targets" src="..\..\build\Fixie.build.targets" />
+
+    <file target="build\" src="..\..\build\Fixie.Program.cs" />
   </files>
 </package>

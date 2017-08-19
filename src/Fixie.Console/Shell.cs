@@ -1,4 +1,4 @@
-﻿namespace Fixie.Runner
+﻿namespace Fixie.Console
 {
     using System;
     using System.Diagnostics;

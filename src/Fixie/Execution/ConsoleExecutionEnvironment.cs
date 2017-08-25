@@ -6,7 +6,7 @@
     public class ConsoleExecutionEnvironment : IDisposable
     {
         readonly string assemblyFullPath;
-        readonly TestAppDomain domain;
+        readonly ConsoleTestAppDomain domain;
         readonly RemoteAssemblyResolver assemblyResolver;
         readonly string previousWorkingDirectory;
         readonly ExecutionProxy executionProxy;
@@ -14,7 +14,7 @@
         public ConsoleExecutionEnvironment(string assemblyPath)
         {
             assemblyFullPath = Path.GetFullPath(assemblyPath);
-            domain = new TestAppDomain(assemblyFullPath);
+            domain = new ConsoleTestAppDomain(assemblyFullPath);
 
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);

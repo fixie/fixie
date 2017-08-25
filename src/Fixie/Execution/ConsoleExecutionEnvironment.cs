@@ -6,7 +6,6 @@
     public class ConsoleExecutionEnvironment : IDisposable
     {
         readonly string assemblyFullPath;
-        readonly RemoteAssemblyResolver assemblyResolver;
         readonly string previousWorkingDirectory;
         readonly ExecutionProxy executionProxy;
 
@@ -18,8 +17,6 @@
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
 
-            assemblyResolver = new RemoteAssemblyResolver();
-
             executionProxy = new ExecutionProxy(previousWorkingDirectory);
         }
 
@@ -29,7 +26,6 @@
         public void Dispose()
         {
             executionProxy.Dispose();
-            assemblyResolver.Dispose();
             Directory.SetCurrentDirectory(previousWorkingDirectory);
         }
     }

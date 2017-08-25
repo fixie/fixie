@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Execution
 {
     using System;
+    using System.IO;
     using System.Reflection;
     using Cli;
 
@@ -15,10 +16,12 @@
                 var options = CommandLine.Parse<Options>(arguments);
                 options.Validate();
 
-                var assemblyPath = Assembly.GetEntryAssembly().Location;
+                var assemblyFullPath = Assembly.GetEntryAssembly().Location;
 
-                using (var environment = new ExecutionEnvironment(assemblyPath))
-                    return environment.RunAssembly(arguments);
+                var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
+
+                using (var executionProxy = new ExecutionProxy(assemblyDirectory))
+                    return executionProxy.RunAssembly(assemblyFullPath, arguments);
             }
             catch (Exception exception)
             {

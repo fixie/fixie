@@ -15,9 +15,9 @@
                 var options = CommandLine.Parse<Options>(arguments);
                 options.Validate();
 
-                var assemblyPath = Assembly.GetEntryAssembly().Location;
+                var assemblyFullPath = Assembly.GetEntryAssembly().Location;
 
-                using (var environment = new ConsoleExecutionEnvironment(assemblyPath))
+                using (var environment = new ConsoleExecutionEnvironment(assemblyFullPath))
                     return environment.RunAssembly(arguments);
             }
             catch (Exception exception)

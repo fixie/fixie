@@ -8,9 +8,9 @@
         readonly string assemblyFullPath;
         readonly ExecutionProxy executionProxy;
 
-        public ConsoleExecutionEnvironment(string assemblyPath)
+        public ConsoleExecutionEnvironment(string assemblyFullPath)
         {
-            assemblyFullPath = Path.GetFullPath(assemblyPath);
+            this.assemblyFullPath = assemblyFullPath;
 
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
 

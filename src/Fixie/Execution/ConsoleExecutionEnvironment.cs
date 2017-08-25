@@ -6,7 +6,6 @@
     public class ConsoleExecutionEnvironment : IDisposable
     {
         readonly string assemblyFullPath;
-        readonly ConsoleTestAppDomain domain;
         readonly RemoteAssemblyResolver assemblyResolver;
         readonly string previousWorkingDirectory;
         readonly ExecutionProxy executionProxy;
@@ -14,16 +13,14 @@
         public ConsoleExecutionEnvironment(string assemblyPath)
         {
             assemblyFullPath = Path.GetFullPath(assemblyPath);
-            domain = new ConsoleTestAppDomain();
 
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
 
-            assemblyResolver = domain.CreateFrom<RemoteAssemblyResolver>();
-            assemblyResolver.RegisterAssemblyLocation(typeof(ExecutionProxy).Assembly().Location);
+            assemblyResolver = new RemoteAssemblyResolver();
 
-            executionProxy = domain.Create<ExecutionProxy>(previousWorkingDirectory);
+            executionProxy = new ExecutionProxy(previousWorkingDirectory);
         }
 
         public void Subscribe<TListener>(params object[] listenerArguments) where TListener : Listener

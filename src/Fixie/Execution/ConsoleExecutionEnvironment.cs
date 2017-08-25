@@ -23,20 +23,8 @@
             executionProxy = new ExecutionProxy(previousWorkingDirectory);
         }
 
-        public void Subscribe<TListener>(params object[] listenerArguments) where TListener : Listener
-        {
-            assemblyResolver.RegisterAssemblyLocation(typeof(TListener).Assembly().Location);
-            executionProxy.Subscribe<TListener>(listenerArguments);
-        }
-
-        public void DiscoverMethods(string[] arguments)
-            => executionProxy.DiscoverMethods(assemblyFullPath, arguments);
-
         public int RunAssembly(string[] arguments)
             => executionProxy.RunAssembly(assemblyFullPath, arguments);
-
-        public int RunMethods(string[] arguments, string[] methods)
-            => executionProxy.RunMethods(assemblyFullPath, arguments, methods);
 
         public void Dispose()
         {

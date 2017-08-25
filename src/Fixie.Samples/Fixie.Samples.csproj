@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\build\Fixie.Program.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Fixie.Assertions\Fixie.Assertions.csproj" />
     <ProjectReference Include="..\Fixie\Fixie.csproj" />
   </ItemGroup>

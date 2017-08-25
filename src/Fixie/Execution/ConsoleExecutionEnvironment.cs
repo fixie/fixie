@@ -45,7 +45,6 @@
         {
             executionProxy.Dispose();
             assemblyResolver.Dispose();
-            domain.Dispose();
             Directory.SetCurrentDirectory(previousWorkingDirectory);
         }
     }

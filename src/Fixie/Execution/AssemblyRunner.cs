@@ -17,7 +17,7 @@
 
                 var assemblyPath = Assembly.GetEntryAssembly().Location;
 
-                using (var environment = new ExecutionEnvironment(assemblyPath))
+                using (var environment = new ConsoleExecutionEnvironment(assemblyPath))
                     return environment.RunAssembly(arguments);
             }
             catch (Exception exception)

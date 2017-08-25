@@ -14,7 +14,7 @@
         public ConsoleExecutionEnvironment(string assemblyPath)
         {
             assemblyFullPath = Path.GetFullPath(assemblyPath);
-            domain = new ConsoleTestAppDomain(assemblyFullPath);
+            domain = new ConsoleTestAppDomain();
 
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);

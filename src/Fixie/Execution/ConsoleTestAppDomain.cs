@@ -4,8 +4,6 @@
 
     class ConsoleTestAppDomain
     {
-        public ConsoleTestAppDomain(string assemblyFullPath) { }
-
         public T CreateFrom<T>() where T : LongLivedMarshalByRefObject, new()
             => new T();
 

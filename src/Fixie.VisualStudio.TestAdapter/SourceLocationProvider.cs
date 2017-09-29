@@ -1,6 +1,5 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
-#if NET452
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
@@ -84,8 +83,13 @@
             const int lineNumberIndicatingHiddenLine = 16707566; //0xfeefee
 
             foreach (var instruction in body.Instructions)
-                if (instruction.SequencePoint != null && instruction.SequencePoint.StartLine != lineNumberIndicatingHiddenLine)
-                    return instruction.SequencePoint;
+            {
+                var sequencePoint = body.Method.DebugInformation.GetSequencePoint(instruction);
+                if (sequencePoint != null && sequencePoint.StartLine != lineNumberIndicatingHiddenLine)
+                {
+                    return sequencePoint;
+                }
+            }
 
             return null;
         }
@@ -101,20 +105,4 @@
             return className.Replace("+", "/");
         }
     }
-#else
-    // SourceLocationProvider cannot be implemented for .NET Core until
-    // after upgrading the Mono.Cecil dependencies.
-    public class SourceLocationProvider
-    {
-        public SourceLocationProvider(string assemblyPath)
-        {
-        }
-
-        public bool TryGetSourceLocation(MethodGroup methodGroup, out SourceLocation sourceLocation)
-        {
-            sourceLocation = null;
-            return false;
-        }
-    }
-#endif
 }

@@ -4,13 +4,15 @@
     <TargetFrameworks>net452;netcoreapp1.0</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+  <ItemGroup>
     <PackageReference Include="Mono.Cecil" Version="0.10.0-beta6" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0'">
-    <PackageReference Include="Mono.Cecil" Version="0.10.0-beta6" />
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="15.3.0" />
   </ItemGroup>
 

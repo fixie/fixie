@@ -78,12 +78,6 @@
 
         static void AssertLineNumber(string className, string methodName, int debugLine, int releaseLine)
         {
-#if !NET452
-            //This assertion can be reversed once .NET Core execution supports source location data.
-            AssertNoLineNumber(className, methodName);
-            return;
-#endif
-
             var sourceLocationProvider = new SourceLocationProvider(TestAssemblyPath);
 
             SourceLocation location;

@@ -42,12 +42,7 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
             using (var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, invalidAssemblyPath))
                 Discover(new VisualStudioDiscoveryListener(discoveryRecorder, invalidAssemblyPath));
 
-#if NET452
             log.Messages.Count.ShouldEqual(5);
-#else
-            //This assertion can be reversed once .NET Core execution supports source location data.
-            log.Messages.Count.ShouldEqual(0);
-#endif
 
             var tests = DiscoveredTests(discoverySink);
 

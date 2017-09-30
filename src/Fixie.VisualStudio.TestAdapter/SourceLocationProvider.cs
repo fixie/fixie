@@ -39,7 +39,7 @@
 
         static IDictionary<string, TypeDefinition> CacheTypes(string assemblyPath)
         {
-            var readerParameters = new ReaderParameters { ReadSymbols = true };
+            var readerParameters = new ReaderParameters { ReadSymbols = true, InMemory = true };
             var module = ModuleDefinition.ReadModule(assemblyPath, readerParameters);
 
             var types = new Dictionary<string, TypeDefinition>();

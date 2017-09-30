@@ -17,8 +17,8 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
             var log = new StubMessageLogger();
             var discoverySink = new StubTestCaseDiscoverySink();
 
-            using (var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath))
-                Discover(new VisualStudioDiscoveryListener(discoveryRecorder, assemblyPath));
+            var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
+            Discover(new VisualStudioDiscoveryListener(discoveryRecorder, assemblyPath));
 
             log.Messages.ShouldBeEmpty();
 
@@ -39,8 +39,8 @@ namespace Fixie.Tests.VisualStudio.TestAdapter
             var log = new StubMessageLogger();
             var discoverySink = new StubTestCaseDiscoverySink();
 
-            using (var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, invalidAssemblyPath))
-                Discover(new VisualStudioDiscoveryListener(discoveryRecorder, invalidAssemblyPath));
+            var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, invalidAssemblyPath);
+            Discover(new VisualStudioDiscoveryListener(discoveryRecorder, invalidAssemblyPath));
 
             log.Messages.Count.ShouldEqual(5);
 

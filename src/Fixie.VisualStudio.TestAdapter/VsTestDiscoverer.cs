@@ -38,20 +38,18 @@
 
                             pipe.SendMessage("DiscoverMethods");
 
-                            using (var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath))
+                            var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
+                            var listener = new VisualStudioDiscoveryListener(discoveryRecorder, assemblyPath);
+
+                            while (true)
                             {
-                                var listener = new VisualStudioDiscoveryListener(discoveryRecorder, assemblyPath);
+                                var message = pipe.ReceiveMessage();
 
-                                while (true)
-                                {
-                                    var message = pipe.ReceiveMessage();
+                                if (message == typeof(TestExplorerListener.Test).FullName)
+                                    listener.Handle(pipe.Receive<TestExplorerListener.Test>());
 
-                                    if (message == typeof(TestExplorerListener.Test).FullName)
-                                        listener.Handle(pipe.Receive<TestExplorerListener.Test>());
-
-                                    if (message == typeof(TestExplorerListener.Completed).FullName)
-                                        break;
-                                }
+                                if (message == typeof(TestExplorerListener.Completed).FullName)
+                                    break;
                             }
                         }
                     }

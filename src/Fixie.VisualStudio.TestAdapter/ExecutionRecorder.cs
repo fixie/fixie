@@ -17,7 +17,7 @@ namespace Fixie.VisualStudio.TestAdapter
             string errorStackTrace);
     }
 
-    public class ExecutionRecorder : LongLivedMarshalByRefObject, IExecutionRecorder
+    public class ExecutionRecorder : IExecutionRecorder
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;

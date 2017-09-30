@@ -96,7 +96,9 @@
 
         IEnumerable<Listener> DefaultExecutionListeners(Options options)
         {
-            if (ShouldUseTeamCityListener(options))
+            if (ShouldUseTestExplorerListener())
+                yield return new TestExplorerListener();
+            else if (ShouldUseTeamCityListener(options))
                 yield return new TeamCityListener();
             else
                 yield return new ConsoleListener();
@@ -128,6 +130,11 @@
         static bool ShouldUseAppVeyorListener()
         {
             return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
+        }
+
+        static bool ShouldUseTestExplorerListener()
+        {
+            return Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE") != null;
         }
     }
 }

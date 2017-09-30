@@ -2,6 +2,7 @@
 {
     using System;
     using Execution;
+    using Execution.Listeners;
 
     public class VisualStudioDiscoveryListener : Handler<MethodDiscovered>
     {
@@ -14,10 +15,18 @@
             sourceLocationProvider = new SourceLocationProvider(assemblyPath);
         }
 
+        public void Handle(TestExplorerListener.Test test)
+        {
+            Handle(new MethodGroup(test.FullyQualifiedName));
+        }
+
         public void Handle(MethodDiscovered message)
         {
-            var methodGroup = new MethodGroup(message.Class, message.Method);
+            Handle(new MethodGroup(message.Class, message.Method));
+        }
 
+        void Handle(MethodGroup methodGroup)
+        {
             var fullyQualifiedName = methodGroup.FullName;
             var displayName = methodGroup.FullName;
             SourceLocation sourceLocation = null;

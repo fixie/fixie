@@ -1,6 +1,7 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
     using Execution;
+    using Execution.Listeners;
 
     public class VisualStudioExecutionListener :
         Handler<CaseSkipped>,
@@ -52,6 +53,19 @@
                 message.Output,
                 exception.Message,
                 exception.TypedStackTrace()
+            );
+        }
+
+        public void Handle(TestExplorerListener.TestResult testResult)
+        {
+            log.RecordResult(
+                fullyQualifiedName: testResult.FullyQualifiedName,
+                displayName: testResult.DisplayName,
+                outcome: testResult.Outcome,
+                duration: testResult.Duration,
+                output: testResult.Output,
+                errorMessage: testResult.ErrorMessage,
+                errorStackTrace: testResult.ErrorStackTrace
             );
         }
 

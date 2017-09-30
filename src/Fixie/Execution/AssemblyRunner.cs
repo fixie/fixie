@@ -30,27 +30,44 @@
                     if (pipeName == null)
                         return executionProxy.RunAssembly(assemblyFullPath, arguments);
 
-                    using (var clientPipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
+                    using (var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
                     {
-                        clientPipe.ReadMode = PipeTransmissionMode.Message;
-                        clientPipe.Connect();
+                        executionProxy.Subscribe(new TestExplorerListener(pipe));
 
-                        var command = clientPipe.ReceiveMessage();
+                        pipe.Connect();
+                        pipe.ReadMode = PipeTransmissionMode.Message;
+
+                        var command = pipe.ReceiveMessage();
 
                         if (command == "DiscoverMethods")
                         {
                             executionProxy.DiscoverMethods(assemblyFullPath, arguments);
+
+                            pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
+                            pipe.Send(new TestExplorerListener.Completed());
+
                             return Success;
                         }
-
-                        if (command == "RunMethods")
+                        else if (command == "RunMethods")
                         {
-                            var runMethods = clientPipe.Receive<RunMethods>();
+                            var runMethods = pipe.Receive<RunMethods>();
 
-                            return executionProxy.RunMethods(assemblyFullPath, arguments, runMethods.Methods);
+                            var failures = executionProxy.RunMethods(assemblyFullPath, arguments, runMethods.Methods);
+
+                            pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
+                            pipe.Send(new TestExplorerListener.Completed());
+
+                            return failures;
                         }
+                        else
+                        {
+                            var failures = executionProxy.RunAssembly(assemblyFullPath, arguments);
 
-                        return executionProxy.RunAssembly(assemblyFullPath, arguments);
+                            pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
+                            pipe.Send(new TestExplorerListener.Completed());
+
+                            return failures;
+                        }
                     }
                 }
             }

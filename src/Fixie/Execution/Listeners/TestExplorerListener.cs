@@ -9,21 +9,13 @@
         Handler<MethodDiscovered>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
-        Handler<CaseFailed>,
-        Handler<AssemblyCompleted>
+        Handler<CaseFailed>
     {
         readonly NamedPipeClientStream pipe;
 
-        public TestExplorerListener()
+        public TestExplorerListener(NamedPipeClientStream pipe)
         {
-            var pipeName = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE");
-
-            pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut)
-            {
-                ReadMode = PipeTransmissionMode.Message
-            };
-
-            pipe.Connect();
+            this.pipe = pipe;
         }
 
         public void Handle(MethodDiscovered message)
@@ -64,12 +56,6 @@
                 x.ErrorMessage = exception.Message;
                 x.ErrorStackTrace = exception.TypedStackTrace();
             });
-        }
-
-        public void Handle(AssemblyCompleted message)
-        {
-            Write(new Completed());
-            pipe.Dispose();
         }
 
         void Write(CaseCompleted message, Action<TestResult> customize)

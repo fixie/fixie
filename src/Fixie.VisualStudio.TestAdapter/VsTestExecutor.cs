@@ -3,8 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.IO.Pipes;
     using System.Linq;
     using Execution;
+    using Execution.Listeners;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
@@ -39,11 +41,31 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        using (var executionRecorder = new ExecutionRecorder(frameworkHandle, assemblyPath))
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
+                        var pipeName = Guid.NewGuid().ToString();
+                        Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
+
+                        using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+                        using (TestAssembly.Start(assemblyPath))
                         {
-                            environment.Subscribe<VisualStudioExecutionListener>(executionRecorder);
-                            environment.RunAssembly(new string[] {});
+                            pipe.WaitForConnection();
+
+                            pipe.SendMessage("RunAssembly");
+
+                            using (var executionRecorder = new ExecutionRecorder(frameworkHandle, assemblyPath))
+                            {
+                                var listener = new VisualStudioExecutionListener(executionRecorder);
+
+                                while (true)
+                                {
+                                    var message = pipe.ReceiveMessage();
+
+                                    if (message == typeof(TestExplorerListener.TestResult).FullName)
+                                        listener.Handle(pipe.Receive<TestExplorerListener.TestResult>());
+
+                                    if (message == typeof(TestExplorerListener.Completed).FullName)
+                                        break;
+                                }
+                            }
                         }
                     }
                     else
@@ -87,11 +109,32 @@
 
                         var methods = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray();
 
-                        using (var executionRecorder = new ExecutionRecorder(frameworkHandle, assemblyPath))
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
+                        var pipeName = Guid.NewGuid().ToString();
+                        Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
+
+                        using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+                        using (TestAssembly.Start(assemblyPath))
                         {
-                            environment.Subscribe<VisualStudioExecutionListener>(executionRecorder);
-                            environment.RunMethods(new string[] {}, methods);
+                            pipe.WaitForConnection();
+
+                            pipe.SendMessage("RunMethods");
+                            pipe.Send(new RunMethods { Methods = methods });
+
+                            using (var executionRecorder = new ExecutionRecorder(frameworkHandle, assemblyPath))
+                            {
+                                var listener = new VisualStudioExecutionListener(executionRecorder);
+
+                                while (true)
+                                {
+                                    var message = pipe.ReceiveMessage();
+
+                                    if (message == typeof(TestExplorerListener.TestResult).FullName)
+                                        listener.Handle(pipe.Receive<TestExplorerListener.TestResult>());
+
+                                    if (message == typeof(TestExplorerListener.Completed).FullName)
+                                        break;
+                                }
+                            }
                         }
                     }
                     else

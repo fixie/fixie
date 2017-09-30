@@ -3,10 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.IO.Pipes;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Execution;
+    using Execution.Listeners;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
@@ -27,11 +28,31 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        using (var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath))
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
+                        var pipeName = Guid.NewGuid().ToString();
+                        Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
+
+                        using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+                        using (TestAssembly.Start(assemblyPath))
                         {
-                            environment.Subscribe<VisualStudioDiscoveryListener>(discoveryRecorder, assemblyPath);
-                            environment.DiscoverMethods(new string[] {});
+                            pipe.WaitForConnection();
+
+                            pipe.SendMessage("DiscoverMethods");
+
+                            using (var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath))
+                            {
+                                var listener = new VisualStudioDiscoveryListener(discoveryRecorder, assemblyPath);
+
+                                while (true)
+                                {
+                                    var message = pipe.ReceiveMessage();
+
+                                    if (message == typeof(TestExplorerListener.Test).FullName)
+                                        listener.Handle(pipe.Receive<TestExplorerListener.Test>());
+
+                                    if (message == typeof(TestExplorerListener.Completed).FullName)
+                                        break;
+                                }
+                            }
                         }
                     }
                     else

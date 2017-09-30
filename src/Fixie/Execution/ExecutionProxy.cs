@@ -9,7 +9,7 @@
     using Cli;
     using Listeners;
 
-    class ExecutionProxy : LongLivedMarshalByRefObject
+    class ExecutionProxy
     {
         readonly string runnerWorkingDirectory;
         readonly List<Listener> customListeners = new List<Listener>();

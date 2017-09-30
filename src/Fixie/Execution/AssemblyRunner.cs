@@ -23,51 +23,50 @@
 
                 var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
 
-                using (var executionProxy = new ExecutionProxy(assemblyDirectory))
+                var executionProxy = new ExecutionProxy(assemblyDirectory);
+
+                var pipeName = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE");
+
+                if (pipeName == null)
+                    return executionProxy.RunAssembly(assemblyFullPath, arguments);
+
+                using (var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
                 {
-                    var pipeName = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE");
+                    executionProxy.Subscribe(new TestExplorerListener(pipe));
 
-                    if (pipeName == null)
-                        return executionProxy.RunAssembly(assemblyFullPath, arguments);
+                    pipe.Connect();
+                    pipe.ReadMode = PipeTransmissionMode.Message;
 
-                    using (var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
+                    var command = pipe.ReceiveMessage();
+
+                    if (command == "DiscoverMethods")
                     {
-                        executionProxy.Subscribe(new TestExplorerListener(pipe));
+                        executionProxy.DiscoverMethods(assemblyFullPath, arguments);
 
-                        pipe.Connect();
-                        pipe.ReadMode = PipeTransmissionMode.Message;
+                        pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
+                        pipe.Send(new TestExplorerListener.Completed());
 
-                        var command = pipe.ReceiveMessage();
+                        return Success;
+                    }
+                    else if (command == "RunMethods")
+                    {
+                        var runMethods = pipe.Receive<RunMethods>();
 
-                        if (command == "DiscoverMethods")
-                        {
-                            executionProxy.DiscoverMethods(assemblyFullPath, arguments);
+                        var failures = executionProxy.RunMethods(assemblyFullPath, arguments, runMethods.Methods);
 
-                            pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
-                            pipe.Send(new TestExplorerListener.Completed());
+                        pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
+                        pipe.Send(new TestExplorerListener.Completed());
 
-                            return Success;
-                        }
-                        else if (command == "RunMethods")
-                        {
-                            var runMethods = pipe.Receive<RunMethods>();
+                        return failures;
+                    }
+                    else
+                    {
+                        var failures = executionProxy.RunAssembly(assemblyFullPath, arguments);
 
-                            var failures = executionProxy.RunMethods(assemblyFullPath, arguments, runMethods.Methods);
+                        pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
+                        pipe.Send(new TestExplorerListener.Completed());
 
-                            pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
-                            pipe.Send(new TestExplorerListener.Completed());
-
-                            return failures;
-                        }
-                        else
-                        {
-                            var failures = executionProxy.RunAssembly(assemblyFullPath, arguments);
-
-                            pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
-                            pipe.Send(new TestExplorerListener.Completed());
-
-                            return failures;
-                        }
+                        return failures;
                     }
                 }
             }

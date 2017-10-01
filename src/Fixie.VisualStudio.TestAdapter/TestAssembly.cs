@@ -24,7 +24,8 @@ namespace Fixie.VisualStudio.TestAdapter
             {
                 WorkingDirectory = workingDirectory,
                 FileName = executable,
-                Arguments = CommandLine.Serialize(arguments)
+                Arguments = CommandLine.Serialize(arguments),
+                UseShellExecute = false
             });
         }
     }

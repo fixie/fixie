@@ -12,7 +12,8 @@
             {
                 FileName = executable,
                 Arguments = CommandLine.Serialize(arguments),
-                WorkingDirectory = workingDirectory
+                WorkingDirectory = workingDirectory,
+                UseShellExecute = false
             });
             process.WaitForExit();
             return process.ExitCode;
@@ -28,7 +29,8 @@
             var dotnet = new ProcessStartInfo
             {
                 FileName = Dotnet.Path,
-                Arguments = CommandLine.Serialize(arguments)
+                Arguments = CommandLine.Serialize(arguments),
+                UseShellExecute = false
             };
 
             var process = Process.Start(dotnet);

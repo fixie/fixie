@@ -39,35 +39,26 @@
 
                     var command = pipe.ReceiveMessage();
 
+                    int exitCode = Success;
+
                     if (command == "DiscoverMethods")
                     {
                         executionProxy.DiscoverMethods(assemblyFullPath, arguments);
-
-                        pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
-                        pipe.Send(new TestExplorerListener.Completed());
-
-                        return Success;
                     }
                     else if (command == "RunMethods")
                     {
-                        var runMethods = pipe.Receive<RunMethods>();
+                        var runMethods = pipe.Receive<TestExplorerListener.RunMethods>();
 
-                        var failures = executionProxy.RunMethods(assemblyFullPath, arguments, runMethods.Methods);
-
-                        pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
-                        pipe.Send(new TestExplorerListener.Completed());
-
-                        return failures;
+                        exitCode = executionProxy.RunMethods(assemblyFullPath, arguments, runMethods.Methods);
                     }
                     else
                     {
-                        var failures = executionProxy.RunAssembly(assemblyFullPath, arguments);
-
-                        pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
-                        pipe.Send(new TestExplorerListener.Completed());
-
-                        return failures;
+                        exitCode = executionProxy.RunAssembly(assemblyFullPath, arguments);
                     }
+
+                    pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
+
+                    return exitCode;
                 }
             }
             catch (Exception exception)
@@ -78,10 +69,5 @@
                 return FatalError;
             }
         }
-    }
-
-    public class RunMethods
-    {
-        public string[] Methods { get; set; }
     }
 }

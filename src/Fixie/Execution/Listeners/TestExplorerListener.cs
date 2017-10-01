@@ -99,6 +99,11 @@
             public string ErrorStackTrace { get; set; }
         }
 
+        public class RunMethods
+        {
+            public string[] Methods { get; set; }
+        }
+
         public class Completed
         {
         }

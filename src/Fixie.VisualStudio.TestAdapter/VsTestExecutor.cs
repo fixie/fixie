@@ -34,47 +34,7 @@
             HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
 
             foreach (var assemblyPath in sources)
-            {
-                try
-                {
-                    if (AssemblyDirectoryContainsFixie(assemblyPath))
-                    {
-                        log.Info("Processing " + assemblyPath);
-
-                        var pipeName = Guid.NewGuid().ToString();
-                        Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
-
-                        using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
-                        using (TestAssembly.Start(assemblyPath))
-                        {
-                            pipe.WaitForConnection();
-
-                            pipe.Send(PipeCommand.RunAssembly);
-
-                            var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
-
-                            while (true)
-                            {
-                                var message = pipe.ReceiveMessage();
-
-                                if (message == typeof(PipeListener.TestResult).FullName)
-                                    recorder.RecordResult(pipe.Receive<PipeListener.TestResult>());
-
-                                if (message == typeof(PipeListener.Completed).FullName)
-                                    break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
-                    }
-                }
-                catch (Exception exception)
-                {
-                    log.Error(exception);
-                }
-            }
+                RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(PipeCommand.RunAssembly));
         }
 
         /// <summary>
@@ -98,52 +58,61 @@
             {
                 var assemblyPath = assemblyGroup.Key;
 
-                try
+                RunTests(log, frameworkHandle, assemblyPath, pipe =>
                 {
-                    if (AssemblyDirectoryContainsFixie(assemblyPath))
+                    pipe.Send(PipeCommand.RunMethods);
+                    pipe.Send(new PipeListener.RunMethods
                     {
-                        log.Info("Processing " + assemblyPath);
-
-                        var methods = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray();
-
-                        var pipeName = Guid.NewGuid().ToString();
-                        Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
-
-                        using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
-                        using (TestAssembly.Start(assemblyPath))
-                        {
-                            pipe.WaitForConnection();
-
-                            pipe.Send(PipeCommand.RunMethods);
-                            pipe.Send(new PipeListener.RunMethods {Methods = methods});
-
-                            var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
-
-                            while (true)
-                            {
-                                var message = pipe.ReceiveMessage();
-
-                                if (message == typeof(PipeListener.TestResult).FullName)
-                                    recorder.RecordResult(pipe.Receive<PipeListener.TestResult>());
-
-                                if (message == typeof(PipeListener.Completed).FullName)
-                                    break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
-                    }
-                }
-                catch (Exception exception)
-                {
-                    log.Error(exception);
-                }
+                        Methods = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
+                    });
+                });
             }
         }
 
         public void Cancel() { }
+
+        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<NamedPipeServerStream> sendCommand)
+        {
+            try
+            {
+                if (AssemblyDirectoryContainsFixie(assemblyPath))
+                {
+                    log.Info("Processing " + assemblyPath);
+
+                    var pipeName = Guid.NewGuid().ToString();
+                    Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
+
+                    using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+                    using (TestAssembly.Start(assemblyPath))
+                    {
+                        pipe.WaitForConnection();
+
+                        sendCommand(pipe);
+
+                        var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
+
+                        while (true)
+                        {
+                            var message = pipe.ReceiveMessage();
+
+                            if (message == typeof(PipeListener.TestResult).FullName)
+                                recorder.RecordResult(pipe.Receive<PipeListener.TestResult>());
+
+                            if (message == typeof(PipeListener.Completed).FullName)
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
+                }
+            }
+            catch (Exception exception)
+            {
+                log.Error(exception);
+            }
+        }
 
         static void HandlePoorVisualStudioImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)
         {

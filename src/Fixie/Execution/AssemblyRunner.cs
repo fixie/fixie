@@ -19,16 +19,15 @@
                 var options = CommandLine.Parse<Options>(arguments);
                 options.Validate();
 
-                var assemblyFullPath = Assembly.GetEntryAssembly().Location;
-
+                var assembly = Assembly.GetEntryAssembly();
+                var assemblyFullPath = assembly.Location;
                 var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
-
                 var executionProxy = new ExecutionProxy(assemblyDirectory);
 
                 var pipeName = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE");
 
                 if (pipeName == null)
-                    return executionProxy.RunAssembly(assemblyFullPath, arguments);
+                    return executionProxy.RunAssembly(assembly, arguments);
 
                 using (var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
                 {
@@ -44,14 +43,14 @@
                     switch (command)
                     {
                         case PipeCommand.DiscoverMethods:
-                            executionProxy.DiscoverMethods(assemblyFullPath, arguments);
+                            executionProxy.DiscoverMethods(assembly, arguments);
                             break;
                         case PipeCommand.RunMethods:
                             var runMethods = pipe.Receive<PipeListener.RunMethods>();
-                            exitCode = executionProxy.RunMethods(assemblyFullPath, arguments, runMethods.Methods);
+                            exitCode = executionProxy.RunMethods(assembly, arguments, runMethods.Methods);
                             break;
                         case PipeCommand.RunAssembly:
-                            exitCode = executionProxy.RunAssembly(assemblyFullPath, arguments);
+                            exitCode = executionProxy.RunAssembly(assembly, arguments);
                             break;
                     }
 

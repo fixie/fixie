@@ -24,10 +24,8 @@
             customListeners.Add(listener);
         }
 
-        public void DiscoverMethods(string assemblyFullPath, string[] arguments)
+        public void DiscoverMethods(Assembly assembly, string[] arguments)
         {
-            var assembly = LoadAssembly(assemblyFullPath);
-
             var options = CommandLine.Parse<Options>(arguments, out string[] conventionArguments);
 
             var listeners = customListeners;
@@ -37,38 +35,20 @@
             discoverer.DiscoverMethods(assembly);
         }
 
-        public int RunAssembly(string assemblyFullPath, string[] arguments)
+        public int RunAssembly(Assembly assembly, string[] arguments)
         {
-            var assembly = LoadAssembly(assemblyFullPath);
-
             var summary = Run(arguments, runner => runner.RunAssembly(assembly));
 
             return summary.Failed;
         }
 
-        public int RunMethods(string assemblyFullPath, string[] arguments, string[] methods)
+        public int RunMethods(Assembly assembly, string[] arguments, string[] methods)
         {
             var methodGroups = methods.Select(x => new MethodGroup(x)).ToArray();
-
-            var assembly = LoadAssembly(assemblyFullPath);
 
             var summary = Run(arguments, r => r.RunMethods(assembly, methodGroups));
 
             return summary.Failed;
-        }
-
-        static Assembly LoadAssembly(string assemblyFullPath)
-        {
-            return Assembly.Load(GetAssemblyName(assemblyFullPath));
-        }
-
-        static AssemblyName GetAssemblyName(string assemblyFullPath)
-        {
-#if NET452
-            return AssemblyName.GetAssemblyName(assemblyFullPath);
-#else
-            return new AssemblyName { Name = Path.GetFileNameWithoutExtension(assemblyFullPath) };
-#endif
         }
 
         ExecutionSummary Run(string[] arguments, Func<Runner, ExecutionSummary> run)

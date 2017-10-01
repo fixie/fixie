@@ -36,15 +36,14 @@
 
                             pipe.SendMessage("DiscoverMethods");
 
-                            var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
-                            var listener = new VisualStudioDiscoveryListener(discoveryRecorder, assemblyPath);
+                            var recorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
 
                             while (true)
                             {
                                 var message = pipe.ReceiveMessage();
 
                                 if (message == typeof(TestExplorerListener.Test).FullName)
-                                    listener.Handle(pipe.Receive<TestExplorerListener.Test>());
+                                    recorder.SendTestCase(pipe.Receive<TestExplorerListener.Test>());
 
                                 if (message == typeof(TestExplorerListener.Completed).FullName)
                                     break;

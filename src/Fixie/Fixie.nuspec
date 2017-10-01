@@ -26,6 +26,7 @@
         <dependency id="System.Runtime.Interopservices.RuntimeInformation" version="4.3.0" />
         <dependency id="System.Diagnostics.Process" version="4.3.0" />
         <dependency id="System.Appcontext" version="4.3.0" />
+        <dependency id="Mono.Cecil" version="0.10.0-beta6" />
       </group>
     </dependencies>
   </metadata>

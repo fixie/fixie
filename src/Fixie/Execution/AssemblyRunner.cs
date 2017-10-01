@@ -20,9 +20,7 @@
                 options.Validate();
 
                 var assembly = Assembly.GetEntryAssembly();
-                var assemblyFullPath = assembly.Location;
-                var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
-                var executionProxy = new ExecutionProxy(assemblyDirectory);
+                var executionProxy = new ExecutionProxy();
 
                 var pipeName = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE");
 

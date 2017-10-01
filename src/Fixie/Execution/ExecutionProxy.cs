@@ -11,13 +11,7 @@
 
     class ExecutionProxy
     {
-        readonly string runnerWorkingDirectory;
         readonly List<Listener> customListeners = new List<Listener>();
-
-        public ExecutionProxy(string runnerWorkingDirectory)
-        {
-            this.runnerWorkingDirectory = runnerWorkingDirectory;
-        }
 
         public void Subscribe<TListener>(TListener listener) where TListener : Listener
         {
@@ -74,7 +68,7 @@
             return customListeners.Any() ? customListeners : DefaultExecutionListeners(options).ToList();
         }
 
-        IEnumerable<Listener> DefaultExecutionListeners(Options options)
+        static IEnumerable<Listener> DefaultExecutionListeners(Options options)
         {
             if (ShouldUseTeamCityListener(options))
                 yield return new TeamCityListener();
@@ -88,14 +82,14 @@
                 yield return new ReportListener(SaveReport(options));
         }
 
-        Action<XDocument> SaveReport(Options options)
+        static Action<XDocument> SaveReport(Options options)
         {
             return report => ReportListener.Save(report, FullPath(options.Report));
         }
 
-        string FullPath(string absoluteOrRelativePath)
+        static string FullPath(string absoluteOrRelativePath)
         {
-            return Path.Combine(runnerWorkingDirectory, absoluteOrRelativePath);
+            return Path.Combine(Directory.GetCurrentDirectory(), absoluteOrRelativePath);
         }
 
         static bool ShouldUseTeamCityListener(Options options)

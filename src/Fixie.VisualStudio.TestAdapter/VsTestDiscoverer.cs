@@ -42,10 +42,10 @@
                             {
                                 var message = pipe.ReceiveMessage();
 
-                                if (message == typeof(TestExplorerListener.Test).FullName)
-                                    recorder.SendTestCase(pipe.Receive<TestExplorerListener.Test>());
+                                if (message == typeof(PipeListener.Test).FullName)
+                                    recorder.SendTestCase(pipe.Receive<PipeListener.Test>());
 
-                                if (message == typeof(TestExplorerListener.Completed).FullName)
+                                if (message == typeof(PipeListener.Completed).FullName)
                                     break;
                             }
                         }

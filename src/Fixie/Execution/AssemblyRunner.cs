@@ -32,7 +32,7 @@
 
                 using (var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
                 {
-                    executionProxy.Subscribe(new TestExplorerListener(pipe));
+                    executionProxy.Subscribe(new PipeListener(pipe));
 
                     pipe.Connect();
                     pipe.ReadMode = PipeTransmissionMode.Message;
@@ -47,7 +47,7 @@
                     }
                     else if (command == "RunMethods")
                     {
-                        var runMethods = pipe.Receive<TestExplorerListener.RunMethods>();
+                        var runMethods = pipe.Receive<PipeListener.RunMethods>();
 
                         exitCode = executionProxy.RunMethods(assemblyFullPath, arguments, runMethods.Methods);
                     }
@@ -56,7 +56,7 @@
                         exitCode = executionProxy.RunAssembly(assemblyFullPath, arguments);
                     }
 
-                    pipe.SendMessage(typeof(TestExplorerListener.Completed).FullName);
+                    pipe.SendMessage(typeof(PipeListener.Completed).FullName);
 
                     return exitCode;
                 }

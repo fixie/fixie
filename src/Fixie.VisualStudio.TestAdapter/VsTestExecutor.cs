@@ -57,10 +57,10 @@
                             {
                                 var message = pipe.ReceiveMessage();
 
-                                if (message == typeof(TestExplorerListener.TestResult).FullName)
-                                    recorder.RecordResult(pipe.Receive<TestExplorerListener.TestResult>());
+                                if (message == typeof(PipeListener.TestResult).FullName)
+                                    recorder.RecordResult(pipe.Receive<PipeListener.TestResult>());
 
-                                if (message == typeof(TestExplorerListener.Completed).FullName)
+                                if (message == typeof(PipeListener.Completed).FullName)
                                     break;
                             }
                         }
@@ -123,10 +123,10 @@
                             {
                                 var message = pipe.ReceiveMessage();
 
-                                if (message == typeof(TestExplorerListener.TestResult).FullName)
-                                    recorder.RecordResult(pipe.Receive<TestExplorerListener.TestResult>());
+                                if (message == typeof(PipeListener.TestResult).FullName)
+                                    recorder.RecordResult(pipe.Receive<PipeListener.TestResult>());
 
-                                if (message == typeof(TestExplorerListener.Completed).FullName)
+                                if (message == typeof(PipeListener.Completed).FullName)
                                     break;
                             }
                         }

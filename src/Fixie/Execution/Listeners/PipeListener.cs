@@ -5,7 +5,7 @@
     using System.Reflection;
     using Execution;
 
-    public class TestExplorerListener :
+    public class PipeListener :
         Handler<MethodDiscovered>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
@@ -13,7 +13,7 @@
     {
         readonly NamedPipeClientStream pipe;
 
-        public TestExplorerListener(NamedPipeClientStream pipe)
+        public PipeListener(NamedPipeClientStream pipe)
         {
             this.pipe = pipe;
         }

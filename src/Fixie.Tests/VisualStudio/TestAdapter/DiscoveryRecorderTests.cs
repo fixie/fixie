@@ -25,7 +25,7 @@
                 typeof(SampleTestClass),
                 typeof(SampleTestClass).GetInstanceMethod("Fail"));
             
-            discoveryRecorder.SendTestCase(new TestExplorerListener.Test
+            discoveryRecorder.SendTestCase(new PipeListener.Test
             {
                 FullyQualifiedName = methodGroup.FullName,
                 DisplayName = methodGroup.FullName
@@ -50,7 +50,7 @@
                 typeof(SampleTestClass),
                 typeof(SampleTestClass).GetInstanceMethod("Fail"));
 
-            discoveryRecorder.SendTestCase(new TestExplorerListener.Test
+            discoveryRecorder.SendTestCase(new PipeListener.Test
             {
                 FullyQualifiedName = methodGroup.FullName,
                 DisplayName = methodGroup.FullName

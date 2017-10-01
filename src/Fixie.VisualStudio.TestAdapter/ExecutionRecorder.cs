@@ -16,7 +16,7 @@
             this.assemblyPath = assemblyPath;
         }
 
-        public void RecordResult(TestExplorerListener.TestResult result)
+        public void RecordResult(PipeListener.TestResult result)
         {
             var testCase = new TestCase(result.FullyQualifiedName, VsTestExecutor.Uri, assemblyPath);
 

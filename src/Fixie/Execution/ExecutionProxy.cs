@@ -24,11 +24,6 @@
             customListeners.Add(listener);
         }
 
-        public void Subscribe<TListener>(object[] listenerArguments) where TListener : Listener
-        {
-            customListeners.Add((Listener)Activator.CreateInstance(typeof(TListener), listenerArguments));
-        }
-
         public void DiscoverMethods(string assemblyFullPath, string[] arguments)
         {
             var assembly = LoadAssembly(assemblyFullPath);

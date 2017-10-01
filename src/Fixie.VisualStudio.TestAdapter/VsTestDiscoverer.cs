@@ -18,8 +18,6 @@
         {
             log.Version();
 
-            RemotingUtility.CleanUpRegisteredChannels();
-
             foreach (var assemblyPath in sources)
             {
                 try

@@ -1,23 +1,10 @@
 namespace Fixie.VisualStudio.TestAdapter
 {
     using System;
-    using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
-    public interface IExecutionRecorder
-    {
-        void RecordResult(
-            string fullyQualifiedName,
-            string displayName,
-            string outcome,
-            TimeSpan duration,
-            string output,
-            string errorMessage,
-            string errorStackTrace);
-    }
-
-    public class ExecutionRecorder : IExecutionRecorder
+    public class ExecutionRecorder
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;

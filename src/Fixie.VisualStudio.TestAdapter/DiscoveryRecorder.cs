@@ -4,14 +4,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
-    public interface IDiscoveryRecorder
-    {
-        void Error(string message);
-        void SendTestFound(string fullyQualifiedName, string displayName, string codeFilePath, int lineNumber);
-        void SendTestFound(string fullyQualifiedName, string displayName);
-    }
-
-    public class DiscoveryRecorder : IDiscoveryRecorder
+    public class DiscoveryRecorder
     {
         readonly IMessageLogger log;
         readonly ITestCaseDiscoverySink discoverySink;

@@ -49,7 +49,7 @@
                         {
                             pipe.WaitForConnection();
 
-                            pipe.SendMessage("RunAssembly");
+                            pipe.Send(PipeCommand.RunAssembly);
 
                             var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
 
@@ -114,8 +114,8 @@
                         {
                             pipe.WaitForConnection();
 
-                            pipe.SendMessage("RunMethods");
-                            pipe.Send(new RunMethods {Methods = methods});
+                            pipe.Send(PipeCommand.RunMethods);
+                            pipe.Send(new PipeListener.RunMethods {Methods = methods});
 
                             var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
 

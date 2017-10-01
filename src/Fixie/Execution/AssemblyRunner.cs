@@ -37,23 +37,22 @@
                     pipe.Connect();
                     pipe.ReadMode = PipeTransmissionMode.Message;
 
-                    var command = pipe.ReceiveMessage();
+                    var command = (PipeCommand)Enum.Parse(typeof(PipeCommand), pipe.ReceiveMessage());
 
                     int exitCode = Success;
 
-                    if (command == "DiscoverMethods")
+                    switch (command)
                     {
-                        executionProxy.DiscoverMethods(assemblyFullPath, arguments);
-                    }
-                    else if (command == "RunMethods")
-                    {
-                        var runMethods = pipe.Receive<PipeListener.RunMethods>();
-
-                        exitCode = executionProxy.RunMethods(assemblyFullPath, arguments, runMethods.Methods);
-                    }
-                    else
-                    {
-                        exitCode = executionProxy.RunAssembly(assemblyFullPath, arguments);
+                        case PipeCommand.DiscoverMethods:
+                            executionProxy.DiscoverMethods(assemblyFullPath, arguments);
+                            break;
+                        case PipeCommand.RunMethods:
+                            var runMethods = pipe.Receive<PipeListener.RunMethods>();
+                            exitCode = executionProxy.RunMethods(assemblyFullPath, arguments, runMethods.Methods);
+                            break;
+                        case PipeCommand.RunAssembly:
+                            exitCode = executionProxy.RunAssembly(assemblyFullPath, arguments);
+                            break;
                     }
 
                     pipe.SendMessage(typeof(PipeListener.Completed).FullName);

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.IO.Pipes;
+    using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
@@ -34,7 +35,7 @@
                         {
                             pipe.WaitForConnection();
 
-                            pipe.SendMessage("DiscoverMethods");
+                            pipe.Send(PipeCommand.DiscoverMethods);
 
                             var recorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
 

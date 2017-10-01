@@ -32,6 +32,11 @@
             return Encoding.UTF8.GetString(ReceiveMessageBytes(pipe));
         }
 
+        public static void Send(this PipeStream pipe, PipeCommand command)
+        {
+            SendMessage(pipe, command.ToString());
+        }
+
         public static void SendMessage(this PipeStream pipe, string message)
         {
             var bytes = Encoding.UTF8.GetBytes(message);

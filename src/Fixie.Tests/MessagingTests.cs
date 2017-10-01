@@ -43,7 +43,7 @@
         protected void Run(Listener listener)
             => Run<SampleTestClass>(listener, convention);
 
-        class Base
+        protected class Base
         {
             public void Pass()
             {
@@ -57,7 +57,7 @@
             }
         }
 
-        class SampleTestClass : Base
+        protected class SampleTestClass : Base
         {
             public void Fail()
             {

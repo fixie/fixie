@@ -1,48 +1,53 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
-    using Execution;
+    using System;
+    using Execution.Listeners;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
-    public interface IDiscoveryRecorder
-    {
-        void Error(string message);
-        void SendTestFound(string fullyQualifiedName, string displayName, string codeFilePath, int lineNumber);
-        void SendTestFound(string fullyQualifiedName, string displayName);
-    }
-
-    public class DiscoveryRecorder : LongLivedMarshalByRefObject, IDiscoveryRecorder
+    public class DiscoveryRecorder
     {
         readonly IMessageLogger log;
         readonly ITestCaseDiscoverySink discoverySink;
         readonly string assemblyPath;
+        readonly SourceLocationProvider sourceLocationProvider;
 
         public DiscoveryRecorder(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)
         {
             this.log = log;
             this.discoverySink = discoverySink;
             this.assemblyPath = assemblyPath;
+
+            sourceLocationProvider = new SourceLocationProvider(assemblyPath);
         }
 
-        public void Error(string message) => log.Error(message);
-
-        public void SendTestFound(string fullyQualifiedName, string displayName, string codeFilePath, int lineNumber)
+        public void SendTestCase(PipeListener.Test test)
         {
-            discoverySink.SendTestCase(new TestCase(fullyQualifiedName, VsTestExecutor.Uri, assemblyPath)
-            {
-                DisplayName = displayName,
-                CodeFilePath = codeFilePath,
-                LineNumber = lineNumber
-            });
-        }
+            SourceLocation sourceLocation = null;
 
-        public void SendTestFound(string fullyQualifiedName, string displayName)
-        {
-            discoverySink.SendTestCase(new TestCase(fullyQualifiedName, VsTestExecutor.Uri, assemblyPath)
+            try
             {
-                DisplayName = displayName,
-            });
+                var methodGroup = new MethodGroup(test.FullyQualifiedName);
+                sourceLocationProvider.TryGetSourceLocation(methodGroup, out sourceLocation);
+            }
+            catch (Exception exception)
+            {
+                log.Error(exception.ToString());
+            }
+
+            var discoveredTest = new TestCase(test.FullyQualifiedName, VsTestExecutor.Uri, assemblyPath)
+            {
+                DisplayName = test.FullyQualifiedName
+            };
+
+            if (sourceLocation != null)
+            {
+                discoveredTest.CodeFilePath = sourceLocation.CodeFilePath;
+                discoveredTest.LineNumber = sourceLocation.LineNumber;
+            }
+
+            discoverySink.SendTestCase(discoveredTest);
         }
     }
 }

@@ -3,10 +3,12 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.IO.Pipes;
+    using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Execution;
+    using Execution.Listeners;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
@@ -17,8 +19,6 @@
         {
             log.Version();
 
-            RemotingUtility.CleanUpRegisteredChannels();
-
             foreach (var assemblyPath in sources)
             {
                 try
@@ -27,11 +27,28 @@
                     {
                         log.Info("Processing " + assemblyPath);
 
-                        using (var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath))
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
+                        var pipeName = Guid.NewGuid().ToString();
+                        Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
+
+                        using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+                        using (TestAssembly.Start(assemblyPath))
                         {
-                            environment.Subscribe<VisualStudioDiscoveryListener>(discoveryRecorder, assemblyPath);
-                            environment.DiscoverMethods(new string[] {});
+                            pipe.WaitForConnection();
+
+                            pipe.Send(PipeCommand.DiscoverMethods);
+
+                            var recorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
+
+                            while (true)
+                            {
+                                var message = pipe.ReceiveMessage();
+
+                                if (message == typeof(PipeListener.Test).FullName)
+                                    recorder.SendTestCase(pipe.Receive<PipeListener.Test>());
+
+                                if (message == typeof(PipeListener.Completed).FullName)
+                                    break;
+                            }
                         }
                     }
                     else

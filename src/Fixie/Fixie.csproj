@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard1.5</TargetFrameworks>
+    <TargetFrameworks>net452;netstandard1.6</TargetFrameworks>
     <Description>A convention-based test framework.</Description>
     <NuspecFile>Fixie.nuspec</NuspecFile>
   </PropertyGroup>
@@ -10,9 +10,13 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.5'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.6'">
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
+    <PackageReference Include="System.IO.Pipes" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Interopservices.RuntimeInformation" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.Process" Version="4.1.0" />
+    <PackageReference Include="System.Appcontext" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

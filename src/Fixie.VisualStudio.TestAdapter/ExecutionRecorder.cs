@@ -1,8 +1,9 @@
-namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
     using System;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+    using Execution.Listeners;
 
     public class ExecutionRecorder
     {
@@ -15,29 +16,22 @@ namespace Fixie.VisualStudio.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public void RecordResult(
-            string fullyQualifiedName,
-            string displayName,
-            string outcome,
-            TimeSpan duration,
-            string output,
-            string errorMessage,
-            string errorStackTrace)
+        public void RecordResult(TestExplorerListener.TestResult result)
         {
-            var testCase = new TestCase(fullyQualifiedName, VsTestExecutor.Uri, assemblyPath);
+            var testCase = new TestCase(result.FullyQualifiedName, VsTestExecutor.Uri, assemblyPath);
 
             var testResult = new TestResult(testCase)
             {
-                DisplayName = displayName,
-                Outcome = Parse(outcome),
-                Duration = duration,
+                DisplayName = result.DisplayName,
+                Outcome = Parse(result.Outcome),
+                Duration = result.Duration,
                 ComputerName = Environment.MachineName,
 
-                ErrorMessage = errorMessage,
-                ErrorStackTrace = errorStackTrace
+                ErrorMessage = result.ErrorMessage,
+                ErrorStackTrace = result.ErrorStackTrace
             };
 
-            AttachCapturedConsoleOutput(output, testResult);
+            AttachCapturedConsoleOutput(result.Output, testResult);
 
             log.RecordResult(testResult);
         }

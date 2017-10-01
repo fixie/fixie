@@ -51,15 +51,14 @@
 
                             pipe.SendMessage("RunAssembly");
 
-                            var executionRecorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
-                            var listener = new VisualStudioExecutionListener(executionRecorder);
+                            var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
 
                             while (true)
                             {
                                 var message = pipe.ReceiveMessage();
 
                                 if (message == typeof(TestExplorerListener.TestResult).FullName)
-                                    listener.Handle(pipe.Receive<TestExplorerListener.TestResult>());
+                                    recorder.RecordResult(pipe.Receive<TestExplorerListener.TestResult>());
 
                                 if (message == typeof(TestExplorerListener.Completed).FullName)
                                     break;
@@ -118,15 +117,14 @@
                             pipe.SendMessage("RunMethods");
                             pipe.Send(new RunMethods {Methods = methods});
 
-                            var executionRecorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
-                            var listener = new VisualStudioExecutionListener(executionRecorder);
+                            var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
 
                             while (true)
                             {
                                 var message = pipe.ReceiveMessage();
 
                                 if (message == typeof(TestExplorerListener.TestResult).FullName)
-                                    listener.Handle(pipe.Receive<TestExplorerListener.TestResult>());
+                                    recorder.RecordResult(pipe.Receive<TestExplorerListener.TestResult>());
 
                                 if (message == typeof(TestExplorerListener.Completed).FullName)
                                     break;

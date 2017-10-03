@@ -39,7 +39,7 @@ namespace Fixie.VisualStudio.TestAdapter
 
         static IDictionary<string, TypeDefinition> CacheTypes(string assemblyPath)
         {
-            var readerParameters = new ReaderParameters { ReadSymbols = true };
+            var readerParameters = new ReaderParameters { ReadSymbols = true, InMemory = true };
             var module = ModuleDefinition.ReadModule(assemblyPath, readerParameters);
 
             var types = new Dictionary<string, TypeDefinition>();
@@ -88,8 +88,13 @@ namespace Fixie.VisualStudio.TestAdapter
             const int lineNumberIndicatingHiddenLine = 16707566; //0xfeefee
 
             foreach (var instruction in body.Instructions)
-                if (instruction.SequencePoint != null && instruction.SequencePoint.StartLine != lineNumberIndicatingHiddenLine)
-                    return instruction.SequencePoint;
+            {
+                var sequencePoint = body.Method.DebugInformation.GetSequencePoint(instruction);
+                if (sequencePoint != null && sequencePoint.StartLine != lineNumberIndicatingHiddenLine)
+                {
+                    return sequencePoint;
+                }
+            }
 
             return null;
         }

@@ -8,15 +8,19 @@
     {
         public static int run(string executable, string workingDirectory, string[] arguments)
         {
-            var process = Process.Start(new ProcessStartInfo
+            var processStartInfo = new ProcessStartInfo
             {
                 FileName = executable,
                 Arguments = CommandLine.Serialize(arguments),
                 WorkingDirectory = workingDirectory,
                 UseShellExecute = false
-            });
-            process.WaitForExit();
-            return process.ExitCode;
+            };
+
+            using (var process = Process.Start(processStartInfo))
+            {
+                process.WaitForExit();
+                return process.ExitCode;
+            }
         }
 
         public static int dotnet(string workingDirectory, string[] arguments)
@@ -33,9 +37,11 @@
                 UseShellExecute = false
             };
 
-            var process = Process.Start(dotnet);
-            process.WaitForExit();
-            return process.ExitCode;
+            using (var process = Process.Start(dotnet))
+            {
+                process.WaitForExit();
+                return process.ExitCode;
+            }
         }
 
         public static string[] msbuild(string project, string target)

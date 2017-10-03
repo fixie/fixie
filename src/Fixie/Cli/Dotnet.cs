@@ -16,7 +16,7 @@ namespace Fixie.Cli
 
             //If `dotnet` is the currently running process, return the full path to that executable.
 
-            var mainModule = Process.GetCurrentProcess().MainModule;
+            var mainModule = GetCurrentProcessMainModule();
 
             var currentProcessIsDotNet =
                 !string.IsNullOrEmpty(mainModule?.FileName) &&
@@ -49,6 +49,12 @@ namespace Fixie.Cli
                 throw new CommandLineException($"Failed to locate `dotnet`. The path does not exist: {dotnetPath}");
 
             return dotnetPath;
+        }
+
+        static ProcessModule GetCurrentProcessMainModule()
+        {
+            using (var currentProcess = Process.GetCurrentProcess())
+                return currentProcess.MainModule;
         }
     }
 }

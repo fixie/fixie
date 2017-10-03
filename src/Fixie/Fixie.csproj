@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net452;netstandard1.6</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
     <Description>A convention-based test framework.</Description>
     <NuspecFile>Fixie.nuspec</NuspecFile>
   </PropertyGroup>

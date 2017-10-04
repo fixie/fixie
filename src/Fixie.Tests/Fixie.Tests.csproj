@@ -29,10 +29,6 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0'">
-    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="15.3.0" />
-  </ItemGroup>
-
   <ItemGroup>
     <None Update="Execution\Listeners\XUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

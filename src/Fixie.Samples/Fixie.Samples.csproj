@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\build\Fixie.Program.cs"/>
+    <Compile Include="..\..\build\Fixie.Program.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +25,6 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0'">
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
-    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="15.3.0" />
     <ProjectReference Include="..\Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.csproj" />
   </ItemGroup>
 

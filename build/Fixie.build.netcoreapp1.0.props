@@ -10,14 +10,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Fixie.Program$(DefaultLanguageSourceExtension)"/>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Fixie.VisualStudio.TestAdapter.dll">
+    <None Include="$(MSBuildThisFileDirectory)..\..\lib\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll">
       <Link>Fixie.VisualStudio.TestAdapter.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>False</Visible>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Fixie.dll">
+    <None Include="$(MSBuildThisFileDirectory)..\..\lib\netcoreapp1.0\Fixie.dll">
       <Link>Fixie.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>False</Visible>

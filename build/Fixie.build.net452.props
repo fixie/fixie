@@ -9,39 +9,4 @@
   <ItemGroup Condition="'$(Language)'=='C#'">
     <Compile Include="$(MSBuildThisFileDirectory)..\Fixie.Program$(DefaultLanguageSourceExtension)"/>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Fixie.VisualStudio.TestAdapter.dll">
-      <Link>Fixie.VisualStudio.TestAdapter.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Mono.Cecil.dll">
-      <Link>Mono.Cecil.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Mono.Cecil.Rocks.dll">
-      <Link>Mono.Cecil.Rocks.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Mono.Cecil.Pdb.dll">
-      <Link>Mono.Cecil.Pdb.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Fixie.dll">
-      <Link>Fixie.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </None>
-  </ItemGroup>
 </Project>

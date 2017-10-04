@@ -17,7 +17,7 @@
     </references>
     <dependencies>
       <group targetFramework="net452" />
-      <group targetFramework="netstandard1.6">
+      <group targetFramework="netcoreapp1.0">
         <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
         <dependency id="Microsoft.TestPlatform.TestHost" version="15.3.0" />
         <dependency id="System.Reflection.TypeExtensions" version="4.3.0" />
@@ -34,7 +34,7 @@
     <!-- Reference Library -->
 
     <file target="lib\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />
-    <file target="lib\netstandard1.6" src="..\Fixie\bin\Release\netstandard1.6\Fixie.dll" />
+    <file target="lib\netcoreapp1.0" src="..\Fixie\bin\Release\netstandard1.6\Fixie.dll" />
 
     <!-- TestDriven.NET Adapter -->
 
@@ -49,11 +49,10 @@
     <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" />
     <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" />
     <file target="build\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" />
-    <file target="build\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll" />
+
+    <file target="lib\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll" />
 
     <!-- Run Time Support -->
-
-    <file target="build\netcoreapp1.0" src="..\Fixie\bin\Release\netstandard1.6\Fixie.dll" />
 
     <file target="build\net452\Fixie.props" src="..\..\build\Fixie.build.net452.props" />
     <file target="build\netcoreapp1.0\Fixie.props" src="..\..\build\Fixie.build.netcoreapp1.0.props" />

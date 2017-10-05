@@ -7,6 +7,8 @@ using System.Security.Permissions;
 
 namespace Fixie.Execution
 {
+    using System.Reflection;
+
     public class ExecutionEnvironment : IDisposable
     {
         readonly string assemblyFullPath;
@@ -21,6 +23,8 @@ namespace Fixie.Execution
             previousWorkingDirectory = Directory.GetCurrentDirectory();
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
             Directory.SetCurrentDirectory(assemblyDirectory);
+            var assembly = Assembly.ReflectionOnlyLoadFrom(assemblyFullPath);
+            Create<AppDomainFixer>(assembly);
         }
 
         public IReadOnlyList<MethodGroup> DiscoverTestMethodGroups(Options options)
@@ -85,5 +89,22 @@ namespace Fixie.Execution
 
             return File.Exists(configFullPath) ? configFullPath : null;
         }
+
+        class AppDomainFixer : MarshalByRefObject
+        {
+            public AppDomainFixer(Assembly entryAssembly)
+            {
+                // See: http://dejanstojanovic.net/aspnet/2015/january/set-entry-assembly-in-unit-testing-methods/
+                AppDomainManager manager = new AppDomainManager();
+                FieldInfo entryAssemblyfield = manager.GetType().GetField("m_entryAssembly", BindingFlags.Instance | BindingFlags.NonPublic);
+                entryAssemblyfield?.SetValue(manager, entryAssembly);
+
+                AppDomain domain = AppDomain.CurrentDomain;
+                FieldInfo domainManagerField = domain.GetType().GetField("_domainManager", BindingFlags.Instance | BindingFlags.NonPublic);
+                domainManagerField?.SetValue(domain, manager);
+                Console.WriteLine($"Assembly full name: {Assembly.GetEntryAssembly()?.FullName}");
+            }
+        }
     }
+
 }

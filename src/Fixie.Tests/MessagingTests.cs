@@ -37,8 +37,8 @@
 
         protected string TestClass { get; }
 
-        protected void Run(Listener listener)
-            => RunMany<SampleTestClass, EmptyTestClass>(listener, convention);
+        protected void Run(Listener listener) 
+            => Utility.Run(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));
 
         protected class Base
         {

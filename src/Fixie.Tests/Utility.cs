@@ -22,7 +22,7 @@
         {
             if (types.Length == 0)
             {
-                throw new InvalidOperationException("RunMany requires at least one type to be specified");
+                throw new InvalidOperationException("Run requires at least one type to be specified");
             }
 
             var bus = new Bus(listener);

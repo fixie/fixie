@@ -16,13 +16,13 @@
             => path;
 
         public static void Run<TSampleTestClass>(Listener listener, Convention convention)
-            => Run(listener, convention, typeof(TSampleTestClass));
+            => RunTypes(listener, convention, typeof(TSampleTestClass));
 
-        public static void Run(Listener listener, Convention convention, params Type[] types)
+        public static void RunTypes(Listener listener, Convention convention, params Type[] types)
         {
             if (types.Length == 0)
             {
-                throw new InvalidOperationException("Run requires at least one type to be specified");
+                throw new InvalidOperationException("RunTypes requires at least one type to be specified");
             }
 
             var bus = new Bus(listener);

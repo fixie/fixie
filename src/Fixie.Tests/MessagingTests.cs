@@ -38,7 +38,7 @@
         protected string TestClass { get; }
 
         protected void Run(Listener listener) 
-            => Utility.Run(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));
+            => RunTypes(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));
 
         protected class Base
         {

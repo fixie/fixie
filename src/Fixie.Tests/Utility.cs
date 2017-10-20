@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests
 {
+    using System;
     using System.Runtime.CompilerServices;
     using Fixie.Execution;
 
@@ -14,20 +15,18 @@
         public static string PathToThisFile([CallerFilePath] string path = null)
             => path;
 
-        public static void Discover<TSampleTestClass>(Listener listener, Convention convention)
-        {
-            var sampleTestClass = typeof(TSampleTestClass);
-
-            var bus = new Bus(listener);
-            new Discoverer(bus).DiscoverMethods(sampleTestClass.Assembly(), convention);
-        }
-
         public static void Run<TSampleTestClass>(Listener listener, Convention convention)
+            => RunTypes(listener, convention, typeof(TSampleTestClass));
+
+        public static void RunTypes(Listener listener, Convention convention, params Type[] types)
         {
-            var sampleTestClass = typeof(TSampleTestClass);
+            if (types.Length == 0)
+            {
+                throw new InvalidOperationException("RunTypes requires at least one type to be specified");
+            }
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(sampleTestClass.Assembly(), convention, sampleTestClass);
+            new Runner(bus).RunTypes(types[0].Assembly(), convention, types);
         }
     }
 }

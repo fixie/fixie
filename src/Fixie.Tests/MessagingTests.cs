@@ -17,7 +17,7 @@
 
             convention
                 .Classes
-                .Where(testClass => testClass == typeof(SampleTestClass));
+                .Where(testClass => testClass == typeof(SampleTestClass) || testClass == typeof(EmptyTestClass));
 
             convention
                 .ClassExecution
@@ -37,11 +37,8 @@
 
         protected string TestClass { get; }
 
-        protected void Discover(Listener listener)
-            => Discover<SampleTestClass>(listener, convention);
-
-        protected void Run(Listener listener)
-            => Run<SampleTestClass>(listener, convention);
+        protected void Run(Listener listener) 
+            => RunTypes(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));
 
         protected class Base
         {
@@ -82,6 +79,10 @@
             {
                 throw new ShouldBeUnreachableException();
             }
+        }
+
+        protected class EmptyTestClass
+        {
         }
 
         protected static string At(string method)

@@ -84,7 +84,7 @@
 
                     using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
                     {
-                        TestAssembly.Start(assemblyPath);
+                        TestAssembly.Start(assemblyPath, frameworkHandle);
 
                         pipe.WaitForConnection();
 

@@ -50,14 +50,13 @@ function Build {
 function Test {
     $fixie = resolve-path .\src\Fixie.Console\bin\$configuration\netcoreapp1.0\dotnet-fixie.dll
 
-    exec src/Fixie.Tests { dotnet $fixie --configuration $configuration --no-build }
-    exec src/Fixie.Samples { dotnet $fixie --configuration $configuration --no-build }
+    exec { dotnet $fixie --configuration $configuration --no-build } src/Fixie.Tests
+    exec { dotnet $fixie --configuration $configuration --no-build } src/Fixie.Samples
 }
 
 function Package {
-    $pack = { dotnet pack -c $configuration --no-build /nologo }
-    exec src\Fixie $pack
-    exec src\Fixie.Console $pack
+    exec { dotnet pack -c $configuration --no-build /nologo } src\Fixie
+    exec { dotnet pack -c $configuration --no-build /nologo } src\Fixie.Console
 }
 
 run-build {

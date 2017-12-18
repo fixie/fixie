@@ -29,6 +29,7 @@ function Assembly-Properties {
         <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
         <PackageOutputPath>..\..\packages</PackageOutputPath>
         <IncludeSymbols>true</IncludeSymbols>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 </Project>
 "@

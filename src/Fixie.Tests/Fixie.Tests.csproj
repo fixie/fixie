@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp1.0;net452</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
     <OutputType>Exe</OutputType>
     <DebugType>Full</DebugType>
   </PropertyGroup>

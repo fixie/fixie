@@ -6,13 +6,6 @@
     <DebugType>Full</DebugType>
   </PropertyGroup>
 
-  <ItemGroup>
-    <!-- This is a temporary workaround, which enables referencing projects like Fixie.Assertions,
-         which exclusively target netstandard2.0. It should be removed once we pin to an SDK
-         version 2.1.2 or higher in global.json. -->
-    <Reference Include="netstandard" />
-  </ItemGroup>
-
   <PropertyGroup>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>

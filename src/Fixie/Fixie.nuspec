@@ -34,7 +34,7 @@
     <!-- Reference Library -->
 
     <file target="lib\net471" src="..\Fixie\bin\Release\net471\Fixie.dll" />
-    <file target="lib\netcoreapp2.0" src="..\Fixie\bin\Release\netstandard1.6\Fixie.dll" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie\bin\Release\netstandard2.0\Fixie.dll" />
 
     <!-- TestDriven.NET Adapter -->
 

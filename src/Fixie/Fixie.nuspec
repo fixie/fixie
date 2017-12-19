@@ -18,7 +18,7 @@
     <dependencies>
       <group targetFramework="net471" />
       <group targetFramework="netcoreapp2.0">
-        <dependency id="Microsoft.TestPlatform.TestHost" version="15.3.0" />
+        <dependency id="Microsoft.TestPlatform.TestHost" version="15.5.0" />
         <dependency id="Mono.Cecil" version="0.10.0-beta7" />
       </group>
     </dependencies>

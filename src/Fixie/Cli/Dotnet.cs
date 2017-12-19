@@ -1,4 +1,4 @@
-﻿#if !NET452
+﻿#if !NET471
 namespace Fixie.Cli
 {
     using System;

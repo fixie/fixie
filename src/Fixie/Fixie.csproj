@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard1.6</TargetFrameworks>
+    <TargetFrameworks>net471;netstandard1.6</TargetFrameworks>
     <Description>A convention-based test framework.</Description>
     <NuspecFile>Fixie.nuspec</NuspecFile>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net471'">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
 

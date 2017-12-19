@@ -71,7 +71,7 @@
             }
         }
 
-#if NET452
+#if NET471
         static string ConfigFile => AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
         static string Framework => Environment.Version.ToString();
 #else

@@ -1,4 +1,4 @@
-﻿#if NET452
+﻿#if NET471
 using TestDriven.Framework;
 
 namespace Fixie.Tests.TestDriven

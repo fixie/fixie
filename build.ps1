@@ -48,7 +48,7 @@ function Build {
 }
 
 function Test {
-    $fixie = resolve-path .\src\Fixie.Console\bin\$configuration\netcoreapp1.0\dotnet-fixie.dll
+    $fixie = resolve-path .\src\Fixie.Console\bin\$configuration\netcoreapp2.0\dotnet-fixie.dll
 
     exec { dotnet $fixie --configuration $configuration --no-build } src/Fixie.Tests
     exec { dotnet $fixie --configuration $configuration --no-build } src/Fixie.Samples

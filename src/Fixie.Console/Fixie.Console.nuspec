@@ -16,9 +16,7 @@
       <packageType name="DotNetCliTool" />
     </packageTypes>
     <dependencies>
-      <group targetFramework="netcoreapp2.0">
-        <dependency id="Microsoft.NETCore.App" version="2.0.4" exclude="Build,Analyzers" />
-      </group>
+      <group targetFramework="netcoreapp2.0" />
     </dependencies>
   </metadata>
   <files>

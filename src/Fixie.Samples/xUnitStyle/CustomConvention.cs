@@ -78,7 +78,7 @@
         static IEnumerable<Type> FixtureInterfaces(Type testClass)
         {
             return testClass.GetInterfaces()
-                            .Where(@interface => @interface.IsGenericType() &&
+                            .Where(@interface => @interface.IsGenericType &&
                                                  @interface.GetGenericTypeDefinition() == typeof(IUseFixture<>));
         }
     }

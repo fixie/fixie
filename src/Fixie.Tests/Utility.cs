@@ -26,7 +26,7 @@
             }
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(types[0].Assembly(), convention, types);
+            new Runner(bus).RunTypes(types[0].Assembly, convention, types);
         }
     }
 }

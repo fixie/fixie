@@ -14,7 +14,7 @@
     {
         public void ShouldMapDiscoveredTestsToVisualStudioDiscoverySink()
         {
-            var assemblyPath = typeof(MessagingTests).Assembly().Location;
+            var assemblyPath = typeof(MessagingTests).Assembly.Location;
 
             var log = new StubMessageLogger();
             var discoverySink = new StubTestCaseDiscoverySink();

@@ -3,11 +3,15 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0;net452</TargetFrameworks>
     <OutputType>Exe</OutputType>
-    <DebugType>Full</DebugType>
+    <DebugType>Portable</DebugType>
   </PropertyGroup>
 
   <PropertyGroup>
     <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp2.0|AnyCPU'">
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <ProjectCapability Include="TestContainer" />

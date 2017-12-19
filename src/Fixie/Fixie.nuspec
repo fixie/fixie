@@ -19,12 +19,6 @@
       <group targetFramework="net471" />
       <group targetFramework="netcoreapp2.0">
         <dependency id="Microsoft.TestPlatform.TestHost" version="15.3.0" />
-        <dependency id="System.Reflection.TypeExtensions" version="4.3.0" />
-        <dependency id="System.Runtime.Serialization.Json" version="4.3.0" />
-        <dependency id="System.IO.Pipes" version="4.3.0" />
-        <dependency id="System.Runtime.Interopservices.RuntimeInformation" version="4.3.0" />
-        <dependency id="System.Diagnostics.Process" version="4.3.0" />
-        <dependency id="System.Appcontext" version="4.3.0" />
         <dependency id="Mono.Cecil" version="0.10.0-beta6" />
       </group>
     </dependencies>

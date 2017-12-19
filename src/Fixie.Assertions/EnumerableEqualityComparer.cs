@@ -3,7 +3,6 @@ namespace Fixie.Assertions
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Reflection;
 
     class EnumerableEqualityComparer : IEqualityComparer<IEnumerable>
     {

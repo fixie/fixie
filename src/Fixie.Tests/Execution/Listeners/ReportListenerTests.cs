@@ -71,12 +71,12 @@
             }
         }
 
+        static string Framework => Environment.Version.ToString();
+
 #if NET471
         static string ConfigFile => AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-        static string Framework => Environment.Version.ToString();
 #else
         static string ConfigFile => "N/A";
-        static string Framework => "Core";
 #endif
     }
 }

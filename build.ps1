@@ -44,7 +44,7 @@ function Restore {
 }
 
 function Build {
-    exec { dotnet build src -c $configuration /nologo }
+    exec { dotnet build src -c $configuration --no-restore /nologo }
 }
 
 function Test {
@@ -55,8 +55,8 @@ function Test {
 }
 
 function Package {
-    exec { dotnet pack -c $configuration --no-build /nologo } src\Fixie
-    exec { dotnet pack -c $configuration --no-build /nologo } src\Fixie.Console
+    exec { dotnet pack -c $configuration --no-restore --no-build /nologo } src\Fixie
+    exec { dotnet pack -c $configuration --no-restore --no-build /nologo } src\Fixie.Console
 }
 
 run-build {

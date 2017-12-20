@@ -34,7 +34,7 @@
         {
             return assembly
                 .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(Convention)) && !t.IsAbstract())
+                .Where(t => t.IsSubclassOf(typeof(Convention)) && !t.IsAbstract)
                 .ToArray();
         }
 

@@ -16,18 +16,16 @@
       <packageType name="DotNetCliTool" />
     </packageTypes>
     <dependencies>
-      <group targetFramework="netcoreapp1.0">
-        <dependency id="Microsoft.NETCore.App" version="1.0.5" exclude="Build,Analyzers" />
-      </group>
+      <group targetFramework="netcoreapp2.0" />
     </dependencies>
   </metadata>
   <files>
 
     <file target="prefercliruntime" src="..\Fixie.Console\prefercliruntime" />
 
-    <file target="lib\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\dotnet-fixie.dll" />
-    <file target="lib\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\dotnet-fixie.runtimeconfig.json" />
-    <file target="lib\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\dotnet-fixie.targets" />
-    <file target="lib\netcoreapp1.0" src="..\Fixie.Console\bin\Release\netcoreapp1.0\Fixie.dll" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\dotnet-fixie.dll" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\dotnet-fixie.runtimeconfig.json" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\dotnet-fixie.targets" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\Fixie.dll" />
   </files>
 </package>

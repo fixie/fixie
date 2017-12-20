@@ -1,5 +1,4 @@
-﻿#if !NET452
-namespace Fixie.Cli
+﻿namespace Fixie.Cli
 {
     using System;
     using System.Diagnostics;
@@ -58,4 +57,3 @@ namespace Fixie.Cli
         }
     }
 }
-#endif

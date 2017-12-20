@@ -218,7 +218,7 @@
 
         static object Default(Type type)
         {
-            return type.IsValueType() ? Activator.CreateInstance(type) : null;
+            return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
 
         class ParameterizedTestClass
@@ -290,7 +290,7 @@
             [Input("Oops")]
             public void ConstrainedGeneric<T>(T input) where T : struct
             {
-                typeof(T).IsValueType().ShouldBeTrue();
+                typeof(T).IsValueType.ShouldBeTrue();
             }
 
             public void ConstrainedGenericMethodWithNoInputsProvided<T>(T input) where T : struct
@@ -312,7 +312,7 @@
 
             public void ConstrainedGeneric<T>(T input) where T : struct
             {
-                typeof(T).IsValueType().ShouldBeTrue();
+                typeof(T).IsValueType.ShouldBeTrue();
             }
         }
 

@@ -11,7 +11,7 @@
         //      Debug: opening curly brace.
         //      Release: first non-comment code line or closing curly brace if the method is empty.
 
-        private static readonly string TestAssemblyPath = typeof(SourceLocationSamples).Assembly().Location;
+        private static readonly string TestAssemblyPath = typeof(SourceLocationSamples).Assembly.Location;
 
         public void ShouldSafelyFailForUnknownMethods()
         {
@@ -88,7 +88,7 @@
 
 #if DEBUG
             location.LineNumber.ShouldEqual(debugLine);
-#else
+#elif NET471
             location.LineNumber.ShouldEqual(releaseLine);
 #endif
         }

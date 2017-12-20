@@ -1,13 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp1.0;net452</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net471</TargetFrameworks>
     <OutputType>Exe</OutputType>
-    <DebugType>Full</DebugType>
+    <DebugType>Portable</DebugType>
   </PropertyGroup>
 
   <PropertyGroup>
     <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp2.0|AnyCPU'">
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <ProjectCapability Include="TestContainer" />
@@ -23,7 +27,7 @@
     <ProjectReference Include="..\Fixie\Fixie.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net471'">
     <ProjectReference Include="..\Fixie.TestDriven\Fixie.TestDriven.csproj" />
     <Reference Include="System.Configuration" />
   </ItemGroup>

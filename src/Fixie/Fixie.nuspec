@@ -16,48 +16,41 @@
       <reference file="Fixie.dll" />
     </references>
     <dependencies>
-      <group targetFramework="net452" />
-      <group targetFramework="netcoreapp1.0">
-        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
-        <dependency id="Microsoft.TestPlatform.TestHost" version="15.3.0" />
-        <dependency id="System.Reflection.TypeExtensions" version="4.3.0" />
-        <dependency id="System.Runtime.Serialization.Json" version="4.3.0" />
-        <dependency id="System.IO.Pipes" version="4.3.0" />
-        <dependency id="System.Runtime.Interopservices.RuntimeInformation" version="4.3.0" />
-        <dependency id="System.Diagnostics.Process" version="4.3.0" />
-        <dependency id="System.Appcontext" version="4.3.0" />
-        <dependency id="Mono.Cecil" version="0.10.0-beta6" />
+      <group targetFramework="net471" />
+      <group targetFramework="netcoreapp2.0">
+        <dependency id="Microsoft.TestPlatform.TestHost" version="15.5.0" />
+        <dependency id="Mono.Cecil" version="0.10.0-beta7" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <!-- Reference Library -->
 
-    <file target="lib\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />
-    <file target="lib\netcoreapp1.0" src="..\Fixie\bin\Release\netstandard1.6\Fixie.dll" />
+    <file target="lib\net471" src="..\Fixie\bin\Release\net471\Fixie.dll" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie\bin\Release\netstandard2.0\Fixie.dll" />
 
     <!-- TestDriven.NET Adapter -->
 
-    <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" />
-    <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" />
-    <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" />
+    <file target="lib\net471" src="..\Fixie.TestDriven\bin\Release\net471\Fixie.dll.tdnet" />
+    <file target="lib\net471" src="..\Fixie.TestDriven\bin\Release\net471\Fixie.TestDriven.dll" />
+    <file target="lib\net471" src="..\Fixie.TestDriven\bin\Release\net471\TestDriven.Framework.dll" />
 
     <!-- Visual Studio Adapter -->
 
-    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" />
-    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" />
-    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" />
-    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" />
+    <file target="lib\net471" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net471\Fixie.VisualStudio.TestAdapter.dll" />
+    <file target="lib\net471" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net471\Mono.Cecil.dll" />
+    <file target="lib\net471" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net471\Mono.Cecil.Rocks.dll" />
+    <file target="lib\net471" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net471\Mono.Cecil.Pdb.dll" />
 
-    <file target="lib\netcoreapp1.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp1.0\Fixie.VisualStudio.TestAdapter.dll" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp2.0\Fixie.VisualStudio.TestAdapter.dll" />
 
     <!-- Run Time Support -->
 
-    <file target="build\net452\Fixie.props" src="..\..\build\Fixie.build.net452.props" />
-    <file target="build\netcoreapp1.0\Fixie.props" src="..\..\build\Fixie.build.netcoreapp1.0.props" />
+    <file target="build\net471\Fixie.props" src="..\..\build\Fixie.build.net471.props" />
+    <file target="build\netcoreapp2.0\Fixie.props" src="..\..\build\Fixie.build.netcoreapp2.0.props" />
 
-    <file target="build\net452\Fixie.targets" src="..\..\build\Fixie.build.targets" />
-    <file target="build\netcoreapp1.0\Fixie.targets" src="..\..\build\Fixie.build.targets" />
+    <file target="build\net471\Fixie.targets" src="..\..\build\Fixie.build.targets" />
+    <file target="build\netcoreapp2.0\Fixie.targets" src="..\..\build\Fixie.build.targets" />
 
     <file target="build\" src="..\..\build\Fixie.Program.cs" />
   </files>

@@ -72,12 +72,12 @@
 
         readonly List<Listener> customListeners = new List<Listener>();
 
-        public void Subscribe<TListener>(TListener listener) where TListener : Listener
+        void Subscribe<TListener>(TListener listener) where TListener : Listener
         {
             customListeners.Add(listener);
         }
 
-        public void DiscoverMethods(Assembly assembly, string[] arguments)
+        void DiscoverMethods(Assembly assembly, string[] arguments)
         {
             var options = CommandLine.Parse<Options>(arguments, out string[] conventionArguments);
 
@@ -88,12 +88,12 @@
             discoverer.DiscoverMethods(assembly);
         }
 
-        public int RunAssembly(Assembly assembly, string[] arguments)
+        int RunAssembly(Assembly assembly, string[] arguments)
         {
             return Run(arguments, runner => runner.RunAssembly(assembly));
         }
 
-        public int RunMethods(Assembly assembly, string[] arguments, string[] methods)
+        int RunMethods(Assembly assembly, string[] arguments, string[] methods)
         {
             var methodGroups = methods.Select(x => new MethodGroup(x)).ToArray();
 

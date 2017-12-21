@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.IO.Pipes;
     using System.Linq;
     using Execution;
@@ -10,6 +9,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using static TestAssembly;
 
     [ExtensionUri(Id)]
     public class VsTestExecutor : ITestExecutor
@@ -75,7 +75,7 @@
         {
             try
             {
-                if (AssemblyDirectoryContainsFixie(assemblyPath))
+                if (IsTestAssembly(assemblyPath))
                 {
                     log.Info("Processing " + assemblyPath);
 
@@ -84,7 +84,7 @@
 
                     using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
                     {
-                        TestAssembly.Start(assemblyPath, frameworkHandle);
+                        Start(assemblyPath, frameworkHandle);
 
                         pipe.WaitForConnection();
 
@@ -119,11 +119,6 @@
         {
             if (runContext.KeepAlive)
                 frameworkHandle.EnableShutdownAfterTestRun = true;
-        }
-
-        static bool AssemblyDirectoryContainsFixie(string assemblyPath)
-        {
-            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
         }
     }
 }

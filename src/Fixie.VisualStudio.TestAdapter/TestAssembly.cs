@@ -4,11 +4,25 @@ namespace Fixie.VisualStudio.TestAdapter
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using Cli;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
     public static class TestAssembly
     {
+        public static bool IsTestAssembly(string assemblyPath)
+        {
+            var fixieAssemblies = new[]
+            {
+                "Fixie.dll", "Fixie.TestDriven.dll", "Fixie.VisualStudio.TestAdapter.dll"
+            };
+
+            if (fixieAssemblies.Contains(Path.GetFileName(assemblyPath)))
+                return false;
+
+            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
+        }
+
         public static void Start(string assemblyPath, IFrameworkHandle frameworkHandle = null)
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);

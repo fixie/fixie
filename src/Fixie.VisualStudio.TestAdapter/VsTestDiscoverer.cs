@@ -2,13 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.IO.Pipes;
     using Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Execution.Listeners;
+    using static TestAssembly;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
@@ -23,7 +23,7 @@
             {
                 try
                 {
-                    if (AssemblyDirectoryContainsFixie(assemblyPath))
+                    if (IsTestAssembly(assemblyPath))
                     {
                         log.Info("Processing " + assemblyPath);
 
@@ -32,7 +32,7 @@
 
                         using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
                         {
-                            TestAssembly.Start(assemblyPath);
+                            Start(assemblyPath);
 
                             pipe.WaitForConnection();
 
@@ -62,11 +62,6 @@
                     log.Error(exception);
                 }
             }
-        }
-
-        static bool AssemblyDirectoryContainsFixie(string assemblyPath)
-        {
-            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
         }
     }
 }

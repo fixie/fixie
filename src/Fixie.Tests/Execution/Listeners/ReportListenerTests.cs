@@ -64,7 +64,6 @@
                 return XDocument.Parse(File.ReadAllText(Path.Combine("Execution", Path.Combine("Listeners", "XUnitXmlReport.xml"))))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
-                                .Replace("[configFile]", ConfigFile)
                                 .Replace("[fileLocation]", fileLocation)
                                 .Replace("[testClass]", TestClass)
                                 .Replace("[testClassForStackTrace]", TestClass.Replace("+", "."));
@@ -72,11 +71,5 @@
         }
 
         static string Framework => Environment.Version.ToString();
-
-#if NET471
-        static string ConfigFile => AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-#else
-        static string ConfigFile => "N/A";
-#endif
     }
 }

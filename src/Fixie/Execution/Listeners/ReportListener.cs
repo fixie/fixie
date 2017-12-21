@@ -93,7 +93,6 @@
                         new XAttribute("name", message.Assembly.Location),
                         new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                         new XAttribute("run-time", now.ToString("HH:mm:ss")),
-                        new XAttribute("configFile", ConfigFile),
                         new XAttribute("time", Seconds(summary.Duration)),
                         new XAttribute("total", summary.Total),
                         new XAttribute("passed", summary.Passed),
@@ -107,12 +106,6 @@
         }
 
         static string Framework => Environment.Version.ToString();
-
-#if NET471
-        static string ConfigFile => AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-#else
-        static string ConfigFile => "N/A";
-#endif
 
         static string Seconds(TimeSpan duration)
         {

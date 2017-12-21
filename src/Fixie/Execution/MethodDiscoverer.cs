@@ -42,7 +42,7 @@
             => testMethodConditions.All(condition => condition(candidate));
 
         static bool IsDisposable(Type type)
-            => type.GetInterfaces().Any(interfaceType => interfaceType == typeof(IDisposable));
+            => type.GetInterfaces().Contains(typeof(IDisposable));
 
         static bool HasDisposeSignature(MethodInfo method)
             => method.Name == "Dispose" && method.IsVoid() && method.GetParameters().Length == 0;

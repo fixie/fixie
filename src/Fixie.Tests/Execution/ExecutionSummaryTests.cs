@@ -9,12 +9,7 @@
     {
         public void ShouldAccumulateCaseStatusCountsAndDurations()
         {
-            var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Method.Name.StartsWith("Skip"));
-
-            var listener = new StubExecutionSummaryListener();
-
-            Run<SampleTestClass>(listener, convention);
+            var listener = Run();
 
             var @class = listener.SummaryOfClass;
 
@@ -35,35 +30,73 @@
 
         public void ShouldProvideUserFacingStringRepresentation()
         {
-            var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Method.Name.StartsWith("Skip"));
-
-            var listener = new StubExecutionSummaryListener();
-
-            Run<SampleTestClass>(listener, convention);
-
-            listener.SummaryOfAssembly
+            Run()
+                .SummaryOfAssembly
                 .ToString()
                 .CleanDuration()
                 .ShouldEqual("1 passed, 2 failed, 3 skipped, took 1.23 seconds");
         }
 
+        public void ShouldNotReportPassCountsInUserFacingStringRepresentationWhenZeroTestsHavePassed()
+        {
+            void ZeroPassed(Convention convention)
+                => convention.Methods.Where(method => !method.Name.StartsWith("Pass"));
+
+            Run(ZeroPassed)
+                .SummaryOfAssembly
+                .ToString()
+                .CleanDuration()
+                .ShouldEqual("2 failed, 3 skipped, took 1.23 seconds");
+        }
+
+        public void ShouldNotReportFailCountsInUserFacingStringRepresentationWhenZeroTestsHaveFailed()
+        {
+            void ZeroFailed(Convention convention)
+                => convention.Methods.Where(method => !method.Name.StartsWith("Fail"));
+
+            Run(ZeroFailed)
+                .SummaryOfAssembly
+                .ToString()
+                .CleanDuration()
+                .ShouldEqual("1 passed, 3 skipped, took 1.23 seconds");
+        }
+
         public void ShouldNotReportSkipCountsInUserFacingStringRepresentationWhenZeroTestsHaveBeenSkipped()
         {
-            var convention = SelfTestConvention.Build();
+            void ZeroSkipped(Convention convention)
+                => convention.Methods.Where(method => !method.Name.StartsWith("Skip"));
 
-            convention
-                .Methods
-                .Where(method => !method.Name.StartsWith("Skip"));
+            Run(ZeroSkipped)
+                .SummaryOfAssembly
+                .ToString()
+                .CleanDuration()
+                .ShouldEqual("1 passed, 2 failed, took 1.23 seconds");
+        }
+
+        public void ShouldProvideDiagnosticUserFacingStringRepresentationWhenNoTestsWereExecuted()
+        {
+            void NoTestsFound(Convention convention)
+                => convention.Methods.Where(method => false);
+
+            Run(NoTestsFound)
+                .SummaryOfAssembly
+                .ToString()
+                .CleanDuration()
+                .ShouldEqual("No tests found.");
+        }
+
+        static StubExecutionSummaryListener Run(Action<Convention> customize = null)
+        {
+            var convention = SelfTestConvention.Build();
+            convention.CaseExecution.Skip(x => x.Method.Name.StartsWith("Skip"));
+
+            customize?.Invoke(convention);
 
             var listener = new StubExecutionSummaryListener();
 
             Run<SampleTestClass>(listener, convention);
 
-            listener.SummaryOfAssembly
-                .ToString()
-                .CleanDuration()
-                .ShouldEqual("1 passed, 2 failed, took 1.23 seconds");
+            return listener;
         }
 
         class StubExecutionSummaryListener :
@@ -75,20 +108,9 @@
             public ExecutionSummary SummaryOfClass { get; private set; }
             public ExecutionSummary SummaryOfAssembly { get; private set; }
 
-            public void Handle(CaseCompleted message)
-            {
-                ExpectedDuration += message.Duration;
-            }
-
-            public void Handle(ClassCompleted message)
-            {
-                SummaryOfClass = message.Summary;
-            }
-
-            public void Handle(AssemblyCompleted message)
-            {
-                SummaryOfAssembly = message.Summary;
-            }
+            public void Handle(CaseCompleted message) => ExpectedDuration += message.Duration;
+            public void Handle(ClassCompleted message) => SummaryOfClass = message.Summary;
+            public void Handle(AssemblyCompleted message) => SummaryOfAssembly = message.Summary;
         }
 
         class SampleTestClass

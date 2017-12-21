@@ -1,7 +1,7 @@
 ﻿namespace Fixie.Execution
 {
     using System;
-    using System.Text;
+    using System.Collections.Generic;
 
     public class ExecutionSummary
     {
@@ -47,17 +47,23 @@
 
         public override string ToString()
         {
-            var line = new StringBuilder();
+            if (Total == 0)
+                return "No tests found.";
 
-            line.Append($"{Passed} passed");
-            line.Append($", {Failed} failed");
+            var parts = new List<string>();
+
+            if (Passed > 0)
+                parts.Add($"{Passed} passed");
+
+            if (Failed > 0)
+                parts.Add($"{Failed} failed");
 
             if (Skipped > 0)
-                line.Append($", {Skipped} skipped");
+                parts.Add($"{Skipped} skipped");
 
-            line.Append($", took {Duration.TotalSeconds:N2} seconds");
+            parts.Add($"took {Duration.TotalSeconds:N2} seconds");
 
-            return line.ToString();
+            return String.Join(", ", parts);
         }
     }
 }

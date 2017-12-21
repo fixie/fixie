@@ -1,5 +1,4 @@
-﻿#if NET471
-using TestDriven.Framework;
+﻿using TestDriven.Framework;
 
 namespace Fixie.Tests.TestDriven
 {
@@ -109,4 +108,3 @@ namespace Fixie.Tests.TestDriven
         }
     }
 }
-#endif

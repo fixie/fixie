@@ -35,6 +35,9 @@
     <file target="lib\net471" src="..\Fixie.TestDriven\bin\Release\net471\Fixie.TestDriven.dll" />
     <file target="lib\net471" src="..\Fixie.TestDriven\bin\Release\net471\TestDriven.Framework.dll" />
 
+    <file target="lib\netcoreapp2.0" src="..\Fixie.TestDriven\bin\Release\netcoreapp2.0\Fixie.dll.tdnet" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie.TestDriven\bin\Release\netcoreapp2.0\Fixie.TestDriven.dll" />
+
     <!-- Visual Studio Adapter -->
 
     <file target="lib\net471" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net471\Fixie.VisualStudio.TestAdapter.dll" />

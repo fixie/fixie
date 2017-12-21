@@ -90,21 +90,17 @@
 
         public int RunAssembly(Assembly assembly, string[] arguments)
         {
-            var summary = Run(arguments, runner => runner.RunAssembly(assembly));
-
-            return summary.Failed;
+            return Run(arguments, runner => runner.RunAssembly(assembly));
         }
 
         public int RunMethods(Assembly assembly, string[] arguments, string[] methods)
         {
             var methodGroups = methods.Select(x => new MethodGroup(x)).ToArray();
 
-            var summary = Run(arguments, r => r.RunMethods(assembly, methodGroups));
-
-            return summary.Failed;
+            return Run(arguments, r => r.RunMethods(assembly, methodGroups));
         }
 
-        ExecutionSummary Run(string[] arguments, Func<Runner, ExecutionSummary> run)
+        int Run(string[] arguments, Func<Runner, ExecutionSummary> run)
         {
             var options = CommandLine.Parse<Options>(arguments, out string[] conventionArguments);
 
@@ -112,7 +108,9 @@
             var bus = new Bus(listeners);
             var runner = new Runner(bus, Filter(options), conventionArguments);
 
-            return run(runner);
+            var summary = run(runner);
+
+            return summary.Total == 0 ? FatalError : summary.Failed;
         }
 
         static Filter Filter(Options options)

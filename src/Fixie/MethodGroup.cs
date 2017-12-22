@@ -9,9 +9,9 @@ namespace Fixie
         public string Method { get; }
         public string FullName { get; }
 
-        public MethodGroup(Type @class, MethodInfo method)
+        public MethodGroup(MethodInfo method)
         {
-            Class = @class.FullName;
+            Class = method.ReflectedType.FullName;
             Method = method.Name;
             FullName = Class + "." + Method;
         }

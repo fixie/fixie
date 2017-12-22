@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Tests
 {
-    using System;
     using Assertions;
 
     public class MethodGroupTests
@@ -8,7 +7,7 @@
         public void CanRepresentMethodsDeclaredInChildClasses()
         {
             AssertMethodGroup(
-                MethodGroup(typeof(ChildClass), "MethodDefinedWithinChildClass"),
+                MethodGroup<ChildClass>("MethodDefinedWithinChildClass"),
                 "Fixie.Tests.MethodGroupTests+ChildClass",
                 "MethodDefinedWithinChildClass",
                 "Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinChildClass");
@@ -17,7 +16,7 @@
         public void CanRepresentMethodsDeclaredInParentClasses()
         {
             AssertMethodGroup(
-                MethodGroup(typeof(ParentClass), "MethodDefinedWithinParentClass"),
+                MethodGroup<ParentClass>("MethodDefinedWithinParentClass"),
                 "Fixie.Tests.MethodGroupTests+ParentClass",
                 "MethodDefinedWithinParentClass",
                 "Fixie.Tests.MethodGroupTests+ParentClass.MethodDefinedWithinParentClass");
@@ -26,7 +25,7 @@
         public void CanRepresentParentMethodsInheritedByChildClasses()
         {
             AssertMethodGroup(
-                MethodGroup(typeof(ChildClass), "MethodDefinedWithinParentClass"),
+                MethodGroup<ChildClass>("MethodDefinedWithinParentClass"),
                 "Fixie.Tests.MethodGroupTests+ChildClass",
                 "MethodDefinedWithinParentClass",
                 "Fixie.Tests.MethodGroupTests+ChildClass.MethodDefinedWithinParentClass");
@@ -60,8 +59,8 @@
             actual.FullName.ShouldEqual(expectedFullName);
         }
 
-        static MethodGroup MethodGroup(Type @class, string method)
-            => new MethodGroup(@class, @class.GetInstanceMethod(method));
+        static MethodGroup MethodGroup<TTestClass>(string method)
+            => new MethodGroup(typeof(TTestClass).GetInstanceMethod(method));
 
         class ParentClass
         {

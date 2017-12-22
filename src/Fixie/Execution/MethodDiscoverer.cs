@@ -27,7 +27,7 @@
                     .Where(method => method.DeclaringType != typeof(object))
                     .Where(method => !(testClassIsDisposable && HasDisposeSignature(method)))
                     .Where(IsMatch)
-                    .Where(method => filter.IsSatisfiedBy(new MethodGroup(testClass, method)))
+                    .Where(method => filter.IsSatisfiedBy(new MethodGroup(method)))
                     .ToArray();
             }
             catch (Exception exception)

@@ -21,9 +21,7 @@
 
             var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
 
-            var methodGroup = new MethodGroup(
-                typeof(SampleTestClass),
-                typeof(SampleTestClass).GetInstanceMethod("Fail"));
+            var methodGroup = new MethodGroup(typeof(SampleTestClass).GetInstanceMethod("Fail"));
             
             discoveryRecorder.SendTestCase(new PipeListener.Test
             {
@@ -46,9 +44,7 @@
 
             var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, invalidAssemblyPath);
 
-            var methodGroup = new MethodGroup(
-                typeof(SampleTestClass),
-                typeof(SampleTestClass).GetInstanceMethod("Fail"));
+            var methodGroup = new MethodGroup(typeof(SampleTestClass).GetInstanceMethod("Fail"));
 
             discoveryRecorder.SendTestCase(new PipeListener.Test
             {

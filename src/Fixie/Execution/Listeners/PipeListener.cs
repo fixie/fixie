@@ -20,7 +20,7 @@
 
         public void Handle(MethodDiscovered message)
         {
-            var methodGroup = new MethodGroup(message.Class, message.Method);
+            var methodGroup = new MethodGroup(message.Method);
 
             Write(new Test
             {
@@ -62,7 +62,7 @@
         {
             var testResult = new TestResult
             {
-                FullyQualifiedName = FullyQualifiedName(message.Class, message.Method),
+                FullyQualifiedName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Duration = message.Duration,
                 Output = message.Output
@@ -72,9 +72,6 @@
 
             Write(testResult);
         }
-
-        static string FullyQualifiedName(Type @class, MethodInfo method)
-            => new MethodGroup(@class, method).FullName;
 
         void Write<T>(T message)
         {

@@ -47,7 +47,7 @@
                 var methodDiscoverer = new MethodDiscoverer(filter, convention);
                 foreach (var testClass in testClasses)
                     foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                        bus.Publish(new MethodDiscovered(testClass, testMethod));
+                        bus.Publish(new MethodDiscovered(testMethod));
             }
         }
     }

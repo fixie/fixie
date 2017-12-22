@@ -2,7 +2,6 @@
 {
     using System;
     using System.IO.Pipes;
-    using System.Reflection;
     using Execution;
 
     public class PipeListener :

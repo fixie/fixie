@@ -69,7 +69,7 @@
             return Run(assembly, conventions, types.Values.ToArray());
         }
 
-        public ExecutionSummary RunMethods(Assembly assembly, Type type, MethodInfo method)
+        public ExecutionSummary RunMethod(Assembly assembly, MethodInfo method)
         {
             RunContext.Initialize(method);
 
@@ -78,7 +78,7 @@
             foreach (var convention in conventions)
                 convention.Methods.Where(m => m == method);
 
-            return Run(assembly, conventions, type);
+            return Run(assembly, conventions, method.ReflectedType);
         }
 
         static IEnumerable<Type> GetTypeAndNestedTypes(Type type)

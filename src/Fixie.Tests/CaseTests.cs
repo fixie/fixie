@@ -138,7 +138,7 @@
                 .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<T>(\"Incompatible\")");
         }
 
-        public void ShouldHaveConcreteTestClass()
+        public void ShouldInferAppropriateClassGivenCaseMethod()
         {
             var methodDeclaredInChildClass =
                 Case<SampleChildTestClass>("TestMethodDefinedWithinChildClass");
@@ -247,17 +247,10 @@
         }
 
         static Case Case(string methodName, params object[] parameters)
-        {
-            return Case<CaseTests>(methodName, parameters);
-        }
+            => Case<CaseTests>(methodName, parameters);
 
         static Case Case<TTestClass>(string methodName, params object[] parameters)
-        {
-            return new Case(
-                typeof(TTestClass),
-                typeof(TTestClass)
-                    .GetInstanceMethod(methodName), parameters);
-        }
+            => new Case(typeof(TTestClass).GetInstanceMethod(methodName), parameters);
 
         void Returns()
         {

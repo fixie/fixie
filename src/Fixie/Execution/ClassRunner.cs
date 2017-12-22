@@ -45,7 +45,7 @@
                     foreach (var parameters in Parameters(method))
                     {
                         generatedInputParameters = true;
-                        cases.Add(new Case(testClass, method, parameters));
+                        cases.Add(new Case(method, parameters));
                     }
 
                     if (!generatedInputParameters)
@@ -53,12 +53,12 @@
                         if (method.GetParameters().Length > 0)
                             throw new Exception("This test case has declared parameters, but no parameter values have been provided to it.");
 
-                        cases.Add(new Case(testClass, method));
+                        cases.Add(new Case(method));
                     }
                 }
                 catch (Exception parameterGenerationException)
                 {
-                    var @case = new Case(testClass, method);
+                    var @case = new Case(method);
                     @case.Fail(parameterGenerationException);
                     cases.Add(@case);
                 }

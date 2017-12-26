@@ -183,7 +183,7 @@
         {
             var namedArguments = type.GetProperties()
                 .Where(p => p.CanWrite)
-                .Select(p => new NamedArgument(p))
+                .Select(p => new NamedArgument(p.PropertyType, p.Name))
                 .ToArray();
 
             var dictionary = new Dictionary<string, NamedArgument>();
@@ -224,7 +224,7 @@
             {
                 var namedArgument = namedArguments[name];
 
-                var property = type.GetProperty(namedArgument.PropertyName);
+                var property = type.GetProperty(namedArgument.Identifier);
 
                 if (namedArgument.IsArray)
                     property.SetValue(instance, CreateTypedArray(namedArgument.ItemType, namedArgument.Values));

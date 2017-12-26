@@ -2,26 +2,25 @@ namespace Fixie.Cli
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
 
     class NamedArgument
     {
-        public NamedArgument(PropertyInfo property)
+        public NamedArgument(Type type, string identifier)
         {
-            IsArray = property.PropertyType.IsArray;
+            IsArray = type.IsArray;
 
             ItemType = IsArray
-                ? property.PropertyType.GetElementType()
-                : property.PropertyType;
+                ? type.GetElementType()
+                : type;
 
-            PropertyName = property.Name;
-            Name = Normalize(PropertyName);
+            Identifier = identifier;
+            Name = Normalize(Identifier);
             Values = new List<object>();
         }
 
         public bool IsArray { get; }
         public Type ItemType { get; }
-        public string PropertyName { get; }
+        public string Identifier { get; }
         public string Name { get; }
         public List<object> Values { get; }
 

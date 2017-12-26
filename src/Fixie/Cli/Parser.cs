@@ -16,10 +16,8 @@
             UnusedArguments = new List<string>();
 
             var positionalArguments = ScanPositionalArguments(type);
-            var hasParamsArray = positionalArguments.Any() && positionalArguments.Last().IsParamsArray;
             var namedArguments = ScanNamedArguments(type);
 
-            var scalarPositionalArgumentValues = new List<string>();
             var paramsPositionalArgumentValues = new List<object>();
 
             var queue = new Queue<string>(arguments);
@@ -66,51 +64,24 @@
                 }
                 else
                 {
-                    if (hasParamsArray)
-                    {
-                        if (scalarPositionalArgumentValues.Count == positionalArguments.Count - 1)
-                            paramsPositionalArgumentValues.Add(item);
-                        else
-                            scalarPositionalArgumentValues.Add(item);
-                    }
+                    if (positionalArguments.Any())
+                        paramsPositionalArgumentValues.Add(item);
                     else
-                    {
-                        if (scalarPositionalArgumentValues.Count >= positionalArguments.Count)
-                            UnusedArguments.Add(item);
-                        else
-                            scalarPositionalArgumentValues.Add(item);
-                    }
+                        UnusedArguments.Add(item);
                 }
             }
 
-            for (int i = 0; i < positionalArguments.Count; i++)
+            foreach (var positionalArgument in positionalArguments)
             {
-                var positionalArgument = positionalArguments[i];
+                //Bind all of paramsPositionalArgumentValues to this argument.
+                var itemType = positionalArgument.Type.GetElementType();
 
-                if (positionalArgument.IsParamsArray)
-                {
-                    //Bind all of paramsPositionalArgumentValues to this argument.
-                    var itemType = positionalArgument.Type.GetElementType();
+                paramsPositionalArgumentValues =
+                    paramsPositionalArgumentValues
+                        .Select(x =>
+                            Convert(itemType, positionalArgument.Name, x)).ToList();
 
-                    paramsPositionalArgumentValues =
-                        paramsPositionalArgumentValues
-                            .Select(x =>
-                                Convert(itemType, positionalArgument.Name, x)).ToList();
-
-                    positionalArgument.Value = CreateTypedArray(itemType, paramsPositionalArgumentValues);
-                }
-                else
-                {
-                    //If there are not enough arguments, assume default(T) for the missing ones.
-
-                    positionalArgument.Value =
-                        i < scalarPositionalArgumentValues.Count
-                            ? Convert(
-                                positionalArgument.Type,
-                                positionalArgument.Name,
-                                scalarPositionalArgumentValues[i])
-                            : Default(positionalArgument.Type);
-                }
+                positionalArgument.Value = CreateTypedArray(itemType, paramsPositionalArgumentValues);
             }
 
             Model = Create(type, positionalArguments, namedArguments);
@@ -167,23 +138,27 @@
 
         static void DemandSingleConstructor(Type type)
         {
-            if (type.GetConstructors().Length > 1)
+            var constructors = type.GetConstructors().Length;
+
+            if (constructors > 1)
                 throw new CommandLineException(
-                    $"Parsing command line arguments for type {type.Name} " +
-                    "is ambiguous, because it has more than one constructor.");
+                    $"Could not construct an instance of type '{type.FullName}'. Expected to find exactly 1 public constructor, but found {constructors}.");
         }
 
         static List<PositionalArgument> ScanPositionalArguments(Type type)
             => GetConstructor(type)
                 .GetParameters()
+                .Where(p => p.GetCustomAttribute<ParamArrayAttribute>() != null)
                 .Select(p => new PositionalArgument(p))
                 .ToList();
 
         static Dictionary<string, NamedArgument> ScanNamedArguments(Type type)
         {
-            var namedArguments = type.GetProperties()
-                .Where(p => p.CanWrite)
-                .Select(p => new NamedArgument(p.PropertyType, p.Name))
+            var namedArguments =
+                GetConstructor(type)
+                .GetParameters()
+                .Where(p => p.GetCustomAttribute<ParamArrayAttribute>() == null)
+                .Select(p => new NamedArgument(p.ParameterType, p.Name))
                 .ToArray();
 
             var dictionary = new Dictionary<string, NamedArgument>();
@@ -193,7 +168,7 @@
                 if (dictionary.ContainsKey(namedArgument.Name))
                     throw new CommandLineException(
                         $"Parsing command line arguments for type {type.Name} " +
-                        "is ambiguous, because it has more than one property corresponding " +
+                        "is ambiguous, because it has more than one parameter corresponding " +
                         $"with the --{namedArgument.Name} argument.");
 
                 dictionary.Add(namedArgument.Name, namedArgument);
@@ -204,33 +179,36 @@
 
         static object Create(Type type, List<PositionalArgument> arguments, Dictionary<string, NamedArgument> namedArguments)
         {
-            var model = Construct(type, arguments);
+            var constructor = GetConstructor(type);
 
-            Populate(type, model, namedArguments);
+            var declaredParameters = constructor.GetParameters();
 
-            return model;
-        }
+            var actualParameters = new List<object>();
 
-        static object Construct(Type type, List<PositionalArgument> arguments)
-        {
-            var parameters = arguments.Select(x => x.Value).ToArray();
-
-            return GetConstructor(type).Invoke(parameters);
-        }
-
-        static void Populate(Type type, object instance, Dictionary<string, NamedArgument> namedArguments)
-        {
-            foreach (var name in namedArguments.Keys)
+            foreach (var declaredParameter in declaredParameters)
             {
-                var namedArgument = namedArguments[name];
+                var named = declaredParameter.GetCustomAttribute<ParamArrayAttribute>() == null;
 
-                var property = type.GetProperty(namedArgument.Identifier);
+                if (named)
+                {
+                    var key = NamedArgument.Normalize(declaredParameter.Name);
 
-                if (namedArgument.IsArray)
-                    property.SetValue(instance, CreateTypedArray(namedArgument.ItemType, namedArgument.Values));
-                else if (namedArgument.Values.Count != 0)
-                    property.SetValue(instance, namedArgument.Values.Single());
+                    var namedArgument = namedArguments[key];
+
+                    if (namedArgument.IsArray)
+                        actualParameters.Add(CreateTypedArray(namedArgument.ItemType, namedArgument.Values));
+                    else if (namedArgument.Values.Count != 0)
+                        actualParameters.Add(namedArgument.Values.Single());
+                    else
+                        actualParameters.Add(Default(declaredParameter.ParameterType));
+                }
+                else
+                {
+                    actualParameters.Add(arguments.Single().Value);
+                }
             }
+
+            return constructor.Invoke(actualParameters.ToArray());
         }
 
         static object Default(Type type)

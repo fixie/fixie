@@ -8,17 +8,14 @@
     {
         public void DemandsValidReportFileNameWhenProvided()
         {
-            var options = new Options();
+            Action noReport = new Options(report: null, teamCity: null, patterns: null).Validate;
+            noReport();
 
-            Action validate = options.Validate;
+            Action validReport = new Options(report: "Report.xml", teamCity: null, patterns: null).Validate;
+            validReport();
 
-            validate();
-
-            options.Report = "Report.xml";
-            validate();
-
-            options.Report = "\t";
-            validate.ShouldThrow<CommandLineException>(
+            Action invalidReport = new Options(report: "\t", teamCity: null, patterns: null).Validate;
+            invalidReport.ShouldThrow<CommandLineException>(
                 "Specified report name is invalid: \t");
         }
     }

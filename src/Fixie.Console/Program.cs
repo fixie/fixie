@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Reflection;
     using Cli;
+    using Execution;
     using static System.Console;
     using static System.IO.Directory;
     using static Shell;
@@ -19,7 +20,9 @@
         {
             try
             {
-                var options = CommandLine.Parse<Options>(arguments, out string[] conventionArguments);
+                CommandLine.Partition(arguments, out var runnerArguments, out var conventionArguments);
+
+                var options = ValidateRunnerArguments(runnerArguments);
 
                 var testProject = TestProject();
 
@@ -68,6 +71,16 @@
 
                 return FatalError;
             }
+        }
+
+        static Options ValidateRunnerArguments(string[] runnerArguments)
+        {
+            var options = CommandLine.Parse<Options>(runnerArguments, out var unusedArguments);
+
+            foreach (var unusedArgument in unusedArguments)
+                throw new CommandLineException($"The argument '{unusedArgument}' was unexpected. Custom convention arguments must appear after the argument separator '--'.");
+
+            return options;
         }
 
         static string TestProject()
@@ -180,13 +193,15 @@
                 arguments.Add(options.TeamCity.Value ? "on" : "off");
             }
 
+            arguments.Add("--");
+
             arguments.AddRange(conventionArguments);
         }
 
         static void Help()
         {
             WriteLine();
-            WriteLine("Usage: dotnet fixie [patterns]... [options] [convention arguments]...");
+            WriteLine("Usage: dotnet fixie [patterns]... [options] [-- [convention arguments]...]");
             WriteLine();
             WriteLine();
             WriteLine("    patterns");
@@ -212,6 +227,10 @@
             WriteLine("        for TeamCity-formatted console output. Use this option");
             WriteLine("        to force TeamCity output on or off.");
             WriteLine();
+            WriteLine("    --");
+            WriteLine("        Signifies the end of built-in arguments and the beginning");
+            WriteLine("        of custom convention arguments.");
+            WriteLine();
             WriteLine("    convention arguments");
             WriteLine("        Arbitrary arguments made available to conventions.");
             WriteLine();
@@ -219,18 +238,14 @@
 
         static void Heading(string message)
         {
-            var before = ForegroundColor;
-            ForegroundColor = ConsoleColor.Green;
-            WriteLine(message);
-            ForegroundColor = before;
+            using (Foreground.Green)
+                WriteLine(message);
         }
 
         static void Error(string message)
         {
-            var before = ForegroundColor;
-            ForegroundColor = ConsoleColor.Red;
-            WriteLine(message);
-            ForegroundColor = before;
+            using (Foreground.Red)
+                WriteLine(message);
         }
     }
 }

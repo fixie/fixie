@@ -19,7 +19,10 @@
         {
             try
             {
-                var options = CommandLine.Parse<Options>(arguments);
+                CommandLine.Partition(arguments, out var runnerArguments, out var conventionArguments);
+
+                var options = CommandLine.Parse<Options>(runnerArguments);
+
                 options.Validate();
 
                 var assembly = Assembly.GetEntryAssembly();
@@ -29,7 +32,7 @@
                 var runner = new AssemblyRunner();
 
                 if (pipeName == null)
-                    return runner.RunAssembly(assembly, arguments);
+                    return runner.RunAssembly(assembly, options, conventionArguments);
 
                 using (var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
                 {
@@ -45,14 +48,14 @@
                     switch (command)
                     {
                         case PipeCommand.DiscoverMethods:
-                            runner.DiscoverMethods(assembly, arguments);
+                            runner.DiscoverMethods(assembly, options, conventionArguments);
                             break;
                         case PipeCommand.RunMethods:
                             var runMethods = pipe.Receive<PipeListener.RunMethods>();
-                            exitCode = runner.RunMethods(assembly, arguments, runMethods.Methods);
+                            exitCode = runner.RunMethods(assembly, options, conventionArguments, runMethods.Methods);
                             break;
                         case PipeCommand.RunAssembly:
-                            exitCode = runner.RunAssembly(assembly, arguments);
+                            exitCode = runner.RunAssembly(assembly, options, conventionArguments);
                             break;
                     }
 
@@ -77,10 +80,8 @@
             customListeners.Add(listener);
         }
 
-        void DiscoverMethods(Assembly assembly, string[] arguments)
+        void DiscoverMethods(Assembly assembly, Options options, string[] conventionArguments)
         {
-            var options = CommandLine.Parse<Options>(arguments, out string[] conventionArguments);
-
             var listeners = customListeners;
             var bus = new Bus(listeners);
             var discoverer = new Discoverer(bus, Filter(options), conventionArguments);
@@ -88,22 +89,20 @@
             discoverer.DiscoverMethods(assembly);
         }
 
-        int RunAssembly(Assembly assembly, string[] arguments)
+        int RunAssembly(Assembly assembly, Options options, string[] conventionArguments)
         {
-            return Run(arguments, runner => runner.RunAssembly(assembly));
+            return Run(options, conventionArguments, runner => runner.RunAssembly(assembly));
         }
 
-        int RunMethods(Assembly assembly, string[] arguments, string[] methods)
+        int RunMethods(Assembly assembly, Options options, string[] conventionArguments, string[] methods)
         {
             var methodGroups = methods.Select(x => new MethodGroup(x)).ToArray();
 
-            return Run(arguments, r => r.RunMethods(assembly, methodGroups));
+            return Run(options, conventionArguments, r => r.RunMethods(assembly, methodGroups));
         }
 
-        int Run(string[] arguments, Func<Runner, ExecutionSummary> run)
+        int Run(Options options, string[] conventionArguments, Func<Runner, ExecutionSummary> run)
         {
-            var options = CommandLine.Parse<Options>(arguments, out string[] conventionArguments);
-
             var listeners = GetExecutionListeners(options);
             var bus = new Bus(listeners);
             var runner = new Runner(bus, Filter(options), conventionArguments);

@@ -58,7 +58,7 @@
             }
         }
 
-        public void ShouldParseNamedArgumentsAsProperties()
+        public void ShouldParseArgumentsAsConstructorParameters()
         {
             Parse<ModelWithConstructor<string>>("--first", "value1", "--second", "value2", "--third", "value3")
                 .ShouldSucceed(new ModelWithConstructor<string>("value1", "value2", "value3"));
@@ -115,7 +115,7 @@
                 .ShouldSucceed(new ModelWithParams<int>(1, 2, 0));
         }
 
-        public void ShouldParseNullableValueTypeNamedArguments()
+        public void ShouldParseNullableValueTypeArguments()
         {
             Parse<ModelWithConstructor<int?>>("--first", "1", "--third", "3")
                 .ShouldSucceed(new ModelWithConstructor<int?>(1, null, 3));
@@ -138,7 +138,7 @@
                 .ShouldSucceed(new ModelWithParams<char?>('a', null, 'c', 'd', 'e'));
         }
 
-        public void ShouldParseBoolNamedArgumentsAsFlagsWithoutExplicitValues()
+        public void ShouldParseBoolArgumentsAsFlagsWithoutExplicitValues()
         {
             Parse<ModelWithConstructor<bool>>("--first", "--third")
                 .ShouldSucceed(new ModelWithConstructor<bool>(true, false, true));
@@ -164,7 +164,7 @@
                 .ShouldFail("rest was not in the correct format.");
         }
 
-        public void ShouldParseNullableBoolNamedArgumentsAsFlagsWithExplicitValues()
+        public void ShouldParseNullableBoolArgumentsAsFlagsWithExplicitValues()
         {
             Parse<ModelWithConstructor<bool?>>("--first", "true", "--third", "false")
                 .ShouldSucceed(new ModelWithConstructor<bool?>(true, null, false));
@@ -214,7 +214,7 @@
                 .ShouldFail("rest was not in the correct format.");
         }
 
-        public void ShouldParseEnumNamedArgumentsByTheirCaseInsensitiveStringRepresentation()
+        public void ShouldParseEnumArgumentsByTheirCaseInsensitiveStringRepresentation()
         {
             Parse<ModelWithConstructor<Level>>("--first", "Warning", "--third", "ErRoR")
                 .ShouldSucceed(new ModelWithConstructor<Level>(Level.Warning, Level.Information, Level.Error));
@@ -317,7 +317,7 @@
                 .ShouldFail("rest was not in the correct format.");
         }
 
-        public void ShouldFailWhenNonArrayNamedArgumentsAreRepeated()
+        public void ShouldFailWhenNonArrayArgumentsAreRepeated()
         {
             Parse<ModelWithConstructor<int>>("--first", "1", "--second", "2", "--first", "3")
                 .ShouldFail("--first cannot be specified more than once.");
@@ -335,7 +335,7 @@
             public string[] String { get; }
         }
 
-        public void ShouldParseRepeatedNamedArgumentsAsArrayProperties()
+        public void ShouldParseRepeatedArgumentsAsArrayItems()
         {
             Parse<ModelWithArrays>(
                 "--integer", "1", "--integer", "2",
@@ -343,7 +343,7 @@
                 .ShouldSucceed(new ModelWithArrays(new[] { 1, 2 }, new[] { "three", "four" }));
         }
 
-        public void ShouldSetEmptyArraysForMissingArrayNamedArguments()
+        public void ShouldSetEmptyArraysForMissingArrayArguments()
         {
             Parse<ModelWithArrays>()
                 .ShouldSucceed(new ModelWithArrays(new int[] { }, new string[] { }));
@@ -419,8 +419,8 @@
                 "--integers", "90")
                 .ShouldSucceed(new Complex(
                         "def", 34, true, 56, false,
-                        new[] {"first", "second"},
-                        new[] {78, 90}),
+                        new[] { "first", "second" },
+                        new[] { 78, 90 }),
                     expectedUnusedArguments: new[]
                     {
                         "--unexpected-argument",
@@ -485,8 +485,8 @@
                 "--integers", "90")
                 .ShouldSucceed(new ComplexWithParams(
                         "def", 34, true, 56, false,
-                        new[] {"first", "second"},
-                        new[] {78, 90},
+                        new[] { "first", "second" },
+                        new[] { 78, 90 },
                         "unexpectedArgument"),
                     expectedUnusedArguments: new[]
                     {

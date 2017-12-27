@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Cli
 {
     using System;
+    using System.Collections.Generic;
 
     class CommandLine
     {
@@ -24,5 +25,29 @@
 
         public static string Serialize(string[] arguments)
             => Serializer.Serialize(arguments);
+
+        public static void Partition(string[] arguments, out string[] runnerArguments, out string[] conventionArguments)
+        {
+            var runnerArgumentsList = new List<string>();
+            var conventionArgumentsList = new List<string>();
+
+            bool separatorFound = false;
+            foreach (var arg in arguments)
+            {
+                if (arg == "--")
+                {
+                    separatorFound = true;
+                    continue;
+                }
+
+                if (separatorFound)
+                    conventionArgumentsList.Add(arg);
+                else
+                    runnerArgumentsList.Add(arg);
+            }
+
+            runnerArguments = runnerArgumentsList.ToArray();
+            conventionArguments = conventionArgumentsList.ToArray();
+        }
     }
 }

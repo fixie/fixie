@@ -17,5 +17,7 @@
         public static Foreground Red => new Foreground(ConsoleColor.Red);
 
         public static Foreground Yellow => new Foreground(ConsoleColor.Yellow);
+
+        public static Foreground Green => new Foreground(ConsoleColor.Green);
     }
 }

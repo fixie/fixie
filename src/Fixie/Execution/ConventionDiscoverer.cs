@@ -21,7 +21,7 @@
         {
             var customConventions =
                 LocallyDeclaredConventionTypes()
-                    .Select(Construct<Convention>)
+                    .Select(ConstructConvention)
                     .ToArray();
 
             if (customConventions.Any())
@@ -38,22 +38,11 @@
                 .ToArray();
         }
 
-        T Construct<T>(Type type)
+        Convention ConstructConvention(Type type)
         {
-            var constructor = GetConstructor(type);
-
             try
             {
-                var parameters = constructor.GetParameters();
-
-                if (parameters.Length == 1)
-                {
-                    var options = CommandLine.Parse(parameters.Single().ParameterType, conventionArguments);
-
-                    return (T)constructor.Invoke(new[] {options});
-                }
-
-                return (T)constructor.Invoke(null);
+                return (Convention)CommandLine.Parse(type, conventionArguments);
             }
             catch (CommandLineException ex)
             {
@@ -63,17 +52,6 @@
             {
                 throw new Exception($"Could not construct an instance of type '{type.FullName}'.", ex);
             }
-        }
-
-        static ConstructorInfo GetConstructor(Type type)
-        {
-            var constructors = type.GetConstructors();
-
-            if (constructors.Length == 1)
-                return constructors.Single();
-
-            throw new Exception(
-                $"Could not construct an instance of type '{type.FullName}'.  Expected to find exactly 1 public constructor, but found {constructors.Length}.");
         }
     }
 }

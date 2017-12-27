@@ -5,14 +5,19 @@
 
     class Options
     {
-        public Options(params string[] patterns)
+        public Options(
+            string report,
+            bool? teamCity,
+            params string[] patterns)
         {
+            Report = report;
+            TeamCity = teamCity;
             Patterns = patterns;
         }
 
         public string[] Patterns { get; }
-        public string Report { get; set; }
-        public bool? TeamCity { get; set; }
+        public string Report { get; }
+        public bool? TeamCity { get; }
 
         public void Validate()
         {

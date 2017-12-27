@@ -23,21 +23,15 @@
         }
 
         [Skip]
-        public void ShouldNotBeCalled()
+        public void ShouldBeSkipped()
         {
-            throw new Exception("This test should be skipped.");
+            throw new Exception(nameof(ShouldBeSkipped) + " was invoked explicitly.");
         }
 
         public void ShouldSubtract()
         {
             log.WhereAmI();
             calculator.Subtract(5, 3).ShouldEqual(2);
-        }
-
-        [Explicit]
-        public void ExplicitTest()
-        {
-            throw new Exception("ExplicitTest was invoked explicitly.");
         }
 
         public void Dispose()

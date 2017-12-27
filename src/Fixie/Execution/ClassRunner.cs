@@ -137,12 +137,17 @@
 
         bool SkipCase(Case @case, out string reason)
         {
-            foreach (var skipBehavior in skipBehaviors)
+            var isTargetMethod = RunContext.TargetMember == @case.Method;
+
+            if (!isTargetMethod)
             {
-                if (SkipCase(skipBehavior, @case))
+                foreach (var skipBehavior in skipBehaviors)
                 {
-                    reason = GetSkipReason(skipBehavior, @case);
-                    return true;
+                    if (SkipCase(skipBehavior, @case))
+                    {
+                        reason = GetSkipReason(skipBehavior, @case);
+                        return true;
+                    }
                 }
             }
 

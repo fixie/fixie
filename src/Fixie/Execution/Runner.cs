@@ -37,7 +37,7 @@
 
         public ExecutionSummary RunType(Assembly assembly, Type type)
         {
-            RunContext.Initialize(type);
+            RunContext.Initialize();
 
             var types = GetTypeAndNestedTypes(type).ToArray();
             return RunTypesInternal(assembly, types);

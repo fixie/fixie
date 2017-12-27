@@ -137,7 +137,7 @@
 
         bool SkipCase(Case @case, out string reason)
         {
-            var isTargetMethod = RunContext.TargetMember == @case.Method;
+            var isTargetMethod = RunContext.TargetMethod == @case.Method;
 
             if (!isTargetMethod)
             {

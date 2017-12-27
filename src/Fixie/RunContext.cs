@@ -8,16 +8,16 @@
     static class RunContext
     {
         public static void Initialize()
-            => TargetMember = null;
+            => TargetMethod = null;
 
-        public static void Initialize(MemberInfo targetMember)
-            => TargetMember = targetMember;
+        public static void Initialize(MethodInfo targetMethod)
+            => TargetMethod = targetMethod;
 
         /// <summary>
-        /// Gets the target Type or MethodInfo identified by
-        /// the test runner as the sole item to be executed.
+        /// Gets the target MethodInfo identified by the
+        /// test runner as the sole item to be executed.
         /// Null under normal test execution.
         /// </summary>
-        public static MemberInfo TargetMember { get; private set; }
+        public static MethodInfo TargetMethod { get; private set; }
     }
 }

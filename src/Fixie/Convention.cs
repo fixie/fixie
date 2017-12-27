@@ -30,10 +30,10 @@
         internal Configuration Config { get; }
 
         /// <summary>
-        /// Gets the target Type or MethodInfo identified by the test runner as the sole item
+        /// Gets the target MethodInfo identified by the test runner as the sole item
         /// to be executed. Null under normal test execution.
         /// </summary>
-        public MemberInfo TargetMember => RunContext.TargetMember;
+        public MethodInfo TargetMethod => RunContext.TargetMethod;
 
         /// <summary>
         /// Defines the set of conditions that describe which classes are test classes.

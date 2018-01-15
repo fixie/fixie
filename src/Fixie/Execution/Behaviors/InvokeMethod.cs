@@ -9,6 +9,11 @@
     {
         public void Execute(Case @case, Action next)
         {
+            Execute(@case, @case.Fixture.Instance);
+        }
+
+        public void Execute(Case @case, object instance)
+        {
             try
             {
                 var method = @case.Method;
@@ -24,7 +29,7 @@
                     if (method.ContainsGenericParameters)
                         throw new Exception("Could not resolve type parameters for generic test case.");
 
-                    returnValue = method.Invoke(@case.Fixture.Instance, @case.Parameters);
+                    returnValue = method.Invoke(instance, @case.Parameters);
                 }
                 catch (TargetInvocationException exception)
                 {

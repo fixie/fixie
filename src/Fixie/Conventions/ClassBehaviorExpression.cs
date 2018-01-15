@@ -11,6 +11,24 @@
             this.config = config;
         }
 
+        public ClassBehaviorExpression Lifecycle<TLifecycle>() where TLifecycle : Lifecycle
+        {
+            config.Lifecycle = (Lifecycle)Activator.CreateInstance(typeof(TLifecycle));
+            return this;
+        }
+
+        public ClassBehaviorExpression Lifecycle(Lifecycle lifecycle)
+        {
+            config.Lifecycle = lifecycle;
+            return this;
+        }
+
+        public ClassBehaviorExpression Lifecycle(LifecycleAction lifecycle)
+        {
+            config.Lifecycle = new LambdaLifecycle(lifecycle);
+            return this;
+        }
+
         /// <summary>
         /// Test classes will have one new instance created for each test case contained within
         /// it, allowing the constructor to perform test case setup. This is the default when no
@@ -139,6 +157,17 @@
             {
                 execute(context, next);
             }
+        }
+
+        class LambdaLifecycle : Lifecycle
+        {
+            readonly LifecycleAction execute;
+
+            public LambdaLifecycle(LifecycleAction execute)
+                => this.execute = execute;
+
+            public void Execute(Type testClass, Action<CaseAction> runCases)
+                => execute(testClass, runCases);
         }
     }
 }

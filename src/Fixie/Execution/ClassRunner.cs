@@ -4,10 +4,12 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using Behaviors;
 
     class ClassRunner
     {
         readonly Bus bus;
+        readonly ExecuteLifecycle executeLifecycle;
         readonly ExecutionPlan executionPlan;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
@@ -21,6 +23,7 @@
             var config = convention.Config;
 
             this.bus = bus;
+            executeLifecycle = convention.Config.Lifecycle == null ? null : new ExecuteLifecycle(convention.Config.Lifecycle);
             executionPlan = new ExecutionPlan(convention);
             methodDiscoverer = new MethodDiscoverer(filter, convention);
             parameterDiscoverer = new ParameterDiscoverer(convention);
@@ -187,7 +190,16 @@
             => parameterDiscoverer.GetParameters(method);
 
         void Run(Type testClass, IReadOnlyList<Case> casesToExecute)
-            => executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
+        {
+            if (executeLifecycle == null)
+            {
+                executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
+            }
+            else
+            {
+                executeLifecycle.Execute(testClass, casesToExecute);
+            }
+        }
 
         void Start(Type testClass)
         {

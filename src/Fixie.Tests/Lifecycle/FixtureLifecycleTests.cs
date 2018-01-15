@@ -3,6 +3,7 @@ namespace Fixie.Tests.Lifecycle
     using System;
     using static System.Environment;
 
+    [Obsolete]
     public class FixtureLifecycleTests : BaseLifecycleTests
     {
         class Inner : FixtureBehavior

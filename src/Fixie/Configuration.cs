@@ -18,6 +18,7 @@
         public Configuration()
         {
             OrderCases = executions => { };
+            Lifecycle = null;
             ConstructionFrequency = ConstructionFrequency.PerCase;
             TestClassFactory = UseDefaultConstructor;
 
@@ -32,6 +33,7 @@
         }
 
         public Action<Case[]> OrderCases { get; set; }
+        public Lifecycle Lifecycle { get; set; }
         public ConstructionFrequency ConstructionFrequency { get; set; }
         public Func<Type, object> TestClassFactory { get; set; }
 

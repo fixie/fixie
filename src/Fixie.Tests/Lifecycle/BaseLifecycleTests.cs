@@ -6,12 +6,12 @@
     using Assertions;
     using Fixie.Execution;
 
-    public abstract class LifecycleTests
+    public abstract class BaseLifecycleTests
     {
         static string[] FailingMembers;
         protected readonly Convention Convention;
 
-        protected LifecycleTests()
+        protected BaseLifecycleTests()
         {
             FailingMembers = null;
 
@@ -56,7 +56,7 @@
 
             public void ShouldHaveResults(params string[] expected)
             {
-                var namespaceQualifiedExpectation = expected.Select(x => "Fixie.Tests.Lifecycle.LifecycleTests+" + x).ToArray();
+                var namespaceQualifiedExpectation = expected.Select(x => "Fixie.Tests.Lifecycle.BaseLifecycleTests+" + x).ToArray();
 
                 results.ShouldEqual(namespaceQualifiedExpectation);
             }

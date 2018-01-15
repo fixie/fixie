@@ -3,7 +3,7 @@ namespace Fixie.Tests.Lifecycle
     using System;
     using static System.Environment;
 
-    public class ComplexLifecycleTests : LifecycleTests
+    public class ComplexLifecycleTests : BaseLifecycleTests
     {
         public void ShouldPerformCompleteLifecyclePerCaseWhenConstructingPerCase()
         {

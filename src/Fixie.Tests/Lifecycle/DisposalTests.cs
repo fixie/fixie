@@ -3,7 +3,7 @@
     using System;
     using static System.Environment;
 
-    public class DisposalTests : LifecycleTests
+    public class DisposalTests : BaseLifecycleTests
     {
         public void ShouldDisposePerCaseWhenConstructingPerCaseAndDisposable()
         {

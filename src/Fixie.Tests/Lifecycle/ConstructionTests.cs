@@ -5,7 +5,7 @@ namespace Fixie.Tests.Lifecycle
     using System.Reflection;
     using Assertions;
 
-    public class ConstructionTests : LifecycleTests
+    public class ConstructionTests : BaseLifecycleTests
     {
         public void ShouldConstructPerCaseByDefault()
         {

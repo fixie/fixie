@@ -2,7 +2,7 @@ namespace Fixie.Tests.Lifecycle
 {
     using System;
 
-    public class ClassLifecycleTests : LifecycleTests
+    public class ClassLifecycleTests : BaseLifecycleTests
     {
         class Inner : ClassBehavior
         {

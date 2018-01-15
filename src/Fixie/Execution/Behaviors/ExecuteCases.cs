@@ -7,12 +7,17 @@
     {
         readonly BehaviorChain<Case> caseBehaviors;
 
-        public ExecuteCases(BehaviorChain<Case> caseBehaviors)
+        public ExecuteCases(BehaviorChain<Case> caseBehaviors = null)
         {
             this.caseBehaviors = caseBehaviors;
         }
 
         public void Execute(Fixture fixture, Action next)
+        {
+            Execute(fixture, caseBehaviors.Execute);
+        }
+
+        public void Execute(Fixture fixture, CaseAction caseLifecycle)
         {
             foreach (var @case in fixture.Cases)
             {
@@ -25,7 +30,7 @@
 
                     try
                     {
-                        caseBehaviors.Execute(@case);
+                        caseLifecycle(@case);
                     }
                     catch (Exception exception)
                     {

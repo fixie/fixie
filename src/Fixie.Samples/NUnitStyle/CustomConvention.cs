@@ -19,15 +19,8 @@
                 .Add<TestCaseSourceAttributeParameterSource>();
 
             ClassExecution
-                    .CreateInstancePerClass()
+                    .Lifecycle<SetUpTearDown>()
                     .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
-
-            FixtureExecution
-                .Wrap<FixtureSetUpTearDown>();
-
-            CaseExecution
-                .Wrap<SupportExpectedExceptions>()
-                .Wrap<SetUpTearDown>();
         }
     }
 
@@ -59,7 +52,7 @@
             return testInvocations;
         }
 
-        private static IEnumerable<object[]> InvocationsForTestCaseSource(MemberInfo member)
+        static IEnumerable<object[]> InvocationsForTestCaseSource(MemberInfo member)
         {
             var field = member as FieldInfo;
             if (field != null && field.IsStatic)
@@ -77,12 +70,30 @@
         }
     }
 
-    class SupportExpectedExceptions : CaseBehavior
+    class SetUpTearDown : Lifecycle
     {
-        public void Execute(Case @case, Action next)
+        public void Execute(Type testClass, Action<CaseAction> runCases)
         {
-            next();
+            var instance = Activator.CreateInstance(testClass);
 
+            testClass.InvokeAll<TestFixtureSetUpAttribute>(instance);
+            runCases(@case =>
+            {
+                @case.Class.InvokeAll<SetUpAttribute>(instance);
+
+                @case.Execute(instance);
+
+                HandleExpectedExceptions(@case);
+
+                @case.Class.InvokeAll<TearDownAttribute>(instance);
+            });
+            testClass.InvokeAll<TestFixtureTearDownAttribute>(instance);
+
+            (instance as IDisposable)?.Dispose();
+        }
+
+        static void HandleExpectedExceptions(Case @case)
+        {
             var attribute = @case.Method.GetCustomAttributes<ExpectedExceptionAttribute>(false).SingleOrDefault();
 
             if (attribute == null)
@@ -96,41 +107,25 @@
             if (exception == null)
                 throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
 
-            if (exception.GetType() != attribute.ExpectedException)
+            if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
             {
                 @case.ClearExceptions();
 
-                throw new Exception("Expected exception of type " + attribute.ExpectedException + " but an exception of type " + exception.GetType() + " was thrown.", exception);
+                throw new Exception(
+                    "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
+                    exception.GetType() + " was thrown.", exception);
             }
 
             if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
             {
                 @case.ClearExceptions();
 
-                throw new Exception("Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.", exception);
+                throw new Exception(
+                    "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
+                    exception);
             }
 
             @case.ClearExceptions();
-        }
-    }
-
-    class SetUpTearDown : CaseBehavior
-    {
-        public void Execute(Case @case, Action next)
-        {
-            @case.Class.InvokeAll<SetUpAttribute>(@case.Fixture.Instance);
-            next();
-            @case.Class.InvokeAll<TearDownAttribute>(@case.Fixture.Instance);
-        }
-    }
-
-    class FixtureSetUpTearDown : FixtureBehavior
-    {
-        public void Execute(Fixture fixture, Action next)
-        {
-            fixture.Class.Type.InvokeAll<TestFixtureSetUpAttribute>(fixture.Instance);
-            next();
-            fixture.Class.Type.InvokeAll<TestFixtureTearDownAttribute>(fixture.Instance);
         }
     }
 

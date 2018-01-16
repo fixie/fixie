@@ -18,8 +18,7 @@
                 .Where(method => method.IsVoid());
 
             ClassExecution
-                .CreateInstancePerClass()
-                .UsingFactory(GetFromContainer)
+                .Lifecycle(GetFromContainer)
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
         }
 
@@ -31,9 +30,13 @@
             return container;
         }
 
-        object GetFromContainer(Type testClass)
+        void GetFromContainer(Type testClass, Action<CaseAction> runCases)
         {
-            return container.Get(testClass);
+            var instance = container.Get(testClass);
+
+            runCases(@case => { @case.Execute(instance); });
+
+            (instance as IDisposable)?.Dispose();
         }
     }
 }

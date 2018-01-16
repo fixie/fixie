@@ -18,12 +18,8 @@
                 .HasOrInherits<FactAttribute>();
 
             ClassExecution
-                .CreateInstancePerCase()
-                .Wrap<PrepareAndDisposeFixtureData>()
+                .Lifecycle<FixtureDataLifecycle>()
                 .ShuffleCases();
-
-            FixtureExecution
-                .Wrap<InjectFixtureData>();
         }
 
         bool HasAnyFactMethods(Type type)
@@ -31,20 +27,30 @@
             return type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Any(x => x.HasOrInherits<FactAttribute>());
         }
 
-        class PrepareAndDisposeFixtureData : ClassBehavior
+        public class FixtureDataLifecycle : Lifecycle
         {
-            public void Execute(Class testClass, Action next)
+            public void Execute(Type testClass, Action<CaseAction> runCases)
             {
-                SetUp(testClass);
-                next();
-                TearDown();
+                PrepareFixtureData(testClass);
+                runCases(@case =>
+                {
+                    var instance = Activator.CreateInstance(@case.Class);
+
+                    foreach (var injectionMethod in fixtures.Keys)
+                        injectionMethod.Invoke(instance, new[] {fixtures[injectionMethod]});
+
+                    @case.Execute(instance);
+
+                    (instance as IDisposable)?.Dispose();
+                });
+                DisposeFixtureData();
             }
 
-            void SetUp(Class testClass)
+            static void PrepareFixtureData(Type testClass)
             {
                 fixtures.Clear();
 
-                foreach (var @interface in FixtureInterfaces(testClass.Type))
+                foreach (var @interface in FixtureInterfaces(testClass))
                 {
                     var fixtureDataType = @interface.GetGenericArguments()[0];
 
@@ -55,23 +61,12 @@
                 }
             }
 
-            void TearDown()
+            static void DisposeFixtureData()
             {
                 foreach (var fixtureInstance in fixtures.Values)
                     (fixtureInstance as IDisposable)?.Dispose();
 
                 fixtures.Clear();
-            }
-        }
-
-        class InjectFixtureData : FixtureBehavior
-        {
-            public void Execute(Fixture fixture, Action next)
-            {
-                foreach (var injectionMethod in fixtures.Keys)
-                    injectionMethod.Invoke(fixture.Instance, new[] { fixtures[injectionMethod] });
-
-                next();
             }
         }
 

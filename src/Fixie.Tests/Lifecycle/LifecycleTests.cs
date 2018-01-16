@@ -1,6 +1,8 @@
 namespace Fixie.Tests.Lifecycle
 {
     using System;
+    using System.Collections.Generic;
+    using System.Reflection;
     using Assertions;
     using Lifecycle = Fixie.Lifecycle;
     using static System.Environment;
@@ -91,6 +93,27 @@ namespace Fixie.Tests.Lifecycle
 
                 ClassTearDown(testClass);
             }
+        }
+
+        class BuggyParameterSource : ParameterSource
+        {
+            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            {
+                throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
+            }
+        }
+
+        public void ShouldConstructPerCaseByDefault()
+        {
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor", "Pass", "Dispose",
+                ".ctor", "Fail", "Dispose");
         }
 
         public void ShouldAllowConstructingPerCaseUsingLifecycleType()
@@ -667,6 +690,66 @@ namespace Fixie.Tests.Lifecycle
                 "InstanceTearDown",
                 "Dispose",
                 "ClassTearDown");
+        }
+
+        public void ShouldSkipConstructingPerCaseWhenAllCasesSkipped()
+        {
+            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
+
+            Convention.CaseExecution.Skip(x => true);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail skipped");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldSkipConstructingPerClassWhenAllCasesSkipped()
+        {
+            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+
+            Convention.CaseExecution.Skip(x => true);
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail skipped");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldSkipConstructingPerCaseWhenAllCasesFailCustomParameterGeneration()
+        {
+            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
+
+            Convention.Parameters.Add<BuggyParameterSource>();
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: Exception thrown while attempting to yield input parameters for method: Pass",
+                "SampleTestClass.Fail failed: Exception thrown while attempting to yield input parameters for method: Fail");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldSkipConstructingPerClassWhenAllCasesFailCustomParameterGeneration()
+        {
+            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+
+            Convention.Parameters.Add<BuggyParameterSource>();
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: Exception thrown while attempting to yield input parameters for method: Pass",
+                "SampleTestClass.Fail failed: Exception thrown while attempting to yield input parameters for method: Fail");
+
+            output.ShouldHaveLifecycle();
         }
     }
 }

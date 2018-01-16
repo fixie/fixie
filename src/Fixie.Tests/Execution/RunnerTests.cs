@@ -7,6 +7,7 @@ namespace Fixie.Tests.Execution
     using Fixie.Execution;
     using static System.Environment;
     using static Utility;
+    using Lifecycle = Fixie.Lifecycle;
 
     public class RunnerTests
     {
@@ -39,7 +40,7 @@ namespace Fixie.Tests.Execution
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>());
 
             convention.ClassExecution
-                .CreateInstancePerClass()
+                .Lifecycle<CreateInstancePerClass>()
                 .ShuffleCases(new Random(1));
 
             var bus = new Bus(listener);
@@ -63,7 +64,7 @@ namespace Fixie.Tests.Execution
             convention.CaseExecution.Skip(x => x.Method.Has<SkipAttribute>());
 
             convention.ClassExecution
-                .CreateInstancePerClass()
+                .Lifecycle<CreateInstancePerClass>()
                 .SortCases((caseA, caseB) => { throw new Exception("SortCases lambda expression threw!"); });
 
             convention.Parameters
@@ -105,6 +106,18 @@ namespace Fixie.Tests.Execution
 
                 Self + "+SkipTestClass.SkipB failed: Failed to compare two elements in the array." + NewLine +
                 "    Inner Exception: SortCases lambda expression threw!");
+        }
+
+        class CreateInstancePerClass : Lifecycle
+        {
+            public void Execute(Type testClass, Action<CaseAction> runCases)
+            {
+                var instance = Activator.CreateInstance(testClass);
+
+                runCases(@case => { @case.Execute(instance); });
+
+                (instance as IDisposable)?.Dispose();
+            }
         }
 
         class SampleIrrelevantClass

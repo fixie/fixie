@@ -55,30 +55,40 @@ namespace Fixie.Tests.Lifecycle
                 {
                     var instance = Activator.CreateInstance(testClass);
 
-                    InstanceSetUp(instance);
-
-                    CaseSetUp(@case);
-                    @case.Execute(instance);
-
                     try
                     {
-                        CaseTearDown(@case);
-                    }
-                    catch (Exception exception)
-                    {
-                        @case.Fail(exception);
-                    }
+                        InstanceSetUp(instance);
 
-                    try
-                    {
-                        InstanceTearDown(instance);
-                    }
-                    catch (Exception exception)
-                    {
-                        @case.Fail(exception);
-                    }
+                        try
+                        {
+                            CaseSetUp(@case);
+                            @case.Execute(instance);
 
-                    (instance as IDisposable)?.Dispose();
+                            try
+                            {
+                                CaseTearDown(@case);
+                            }
+                            catch (Exception exception)
+                            {
+                                @case.Fail(exception);
+                            }
+                        }
+                        finally
+                        {
+                            try
+                            {
+                                InstanceTearDown(instance);
+                            }
+                            catch (Exception exception)
+                            {
+                                @case.Fail(exception);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        (instance as IDisposable)?.Dispose();
+                    }
                 });
 
                 ClassTearDown(testClass);
@@ -394,8 +404,10 @@ namespace Fixie.Tests.Lifecycle
                 "ClassSetUp",
                 ".ctor",
                 "InstanceSetUp",
+                "Dispose",
                 ".ctor",
                 "InstanceSetUp",
+                "Dispose",
                 "ClassTearDown");
         }
 
@@ -645,9 +657,13 @@ namespace Fixie.Tests.Lifecycle
                 ".ctor",
                 "InstanceSetUp",
                 "CaseSetUp",
+                "InstanceTearDown",
+                "Dispose",
                 ".ctor",
                 "InstanceSetUp",
                 "CaseSetUp",
+                "InstanceTearDown",
+                "Dispose",
                 "ClassTearDown");
         }
 

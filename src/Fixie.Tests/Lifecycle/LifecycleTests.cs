@@ -33,13 +33,13 @@ namespace Fixie.Tests.Lifecycle
             WhereAmI();
         }
 
-        new static void CaseSetUp(Case @case)
+        static void CaseSetUp(Case @case)
         {
             @case.Class.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();
         }
 
-        new static void CaseTearDown(Case @case)
+        static void CaseTearDown(Case @case)
         {
             @case.Class.ShouldEqual(typeof(SampleTestClass));
             WhereAmI();

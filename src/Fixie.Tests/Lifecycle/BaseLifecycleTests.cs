@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using Assertions;
     using Fixie.Execution;
 
     public abstract class BaseLifecycleTests
@@ -112,80 +111,12 @@
             }
         }
 
-        protected static void ClassSetUp(Class testClass)
-        {
-            testClass.Type.ShouldEqual(typeof(SampleTestClass));
-            WhereAmI();
-        }
-
-        protected static void ClassTearDown(Class testClass)
-        {
-            testClass.Type.ShouldEqual(typeof(SampleTestClass));
-            WhereAmI();
-        }
-
-        protected static void FixtureSetUp(Fixture fixture)
-        {
-            fixture.Class.Type.ShouldEqual(typeof(SampleTestClass));
-            WhereAmI();
-        }
-
-        protected static void FixtureTearDown(Fixture fixture)
-        {
-            fixture.Class.Type.ShouldEqual(typeof(SampleTestClass));
-            WhereAmI();
-        }
-
-        protected static void CaseSetUp(Case @case)
-        {
-            @case.Class.ShouldEqual(typeof(SampleTestClass));
-            @case.Fixture.Instance.ShouldBeType<SampleTestClass>();
-            WhereAmI();
-        }
-
-        protected static void CaseTearDown(Case @case)
-        {
-            @case.Class.ShouldEqual(typeof(SampleTestClass));
-            @case.Fixture.Instance.ShouldBeType<SampleTestClass>();
-            WhereAmI();
-        }
-
         protected static void WhereAmI([CallerMemberName] string member = null)
         {
             Console.WriteLine(member);
 
             if (FailingMembers != null && FailingMembers.Contains(member))
                 throw new FailureException(member);
-        }
-
-        protected class CaseSetUpTearDown : CaseBehavior
-        {
-            public void Execute(Case @case, Action next)
-            {
-                CaseSetUp(@case);
-                next();
-                CaseTearDown(@case);
-            }
-        }
-
-        protected class FixtureSetUpTearDown : FixtureBehavior
-        {
-            public void Execute(Fixture fixture, Action next)
-            {
-                FixtureSetUp(fixture);
-                next();
-                FixtureTearDown(fixture);
-            }
-        }
-
-        protected class ClassSetUpTearDown : ClassBehavior
-        {
-            public void Execute(Class testClass, Action next)
-            {
-                ClassSetUp(testClass);
-                next();
-                ClassTearDown(testClass);
-            }
         }
     }
 }

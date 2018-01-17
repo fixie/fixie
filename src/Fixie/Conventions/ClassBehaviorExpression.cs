@@ -30,80 +30,6 @@
         }
 
         /// <summary>
-        /// Test classes will have one new instance created for each test case contained within
-        /// it, allowing the constructor to perform test case setup. This is the default when no
-        /// construction frequency is specified.
-        /// </summary>
-        public ClassBehaviorExpression CreateInstancePerCase()
-        {
-            config.ConstructionFrequency = ConstructionFrequency.PerCase;
-            return this;
-        }
-
-        /// <summary>
-        /// Test classes will have only one instance created. The single instance will be used
-        /// for all of the test cases contained within it, allowing the constructor to perform
-        /// test fixture setup.
-        /// </summary>
-        public ClassBehaviorExpression CreateInstancePerClass()
-        {
-            config.ConstructionFrequency = ConstructionFrequency.PerClass;
-            return this;
-        }
-
-        /// <summary>
-        /// Allows a custom test class factory to be used instead of calling the test class's
-        /// default constructor.
-        /// </summary>
-        public ClassBehaviorExpression UsingFactory(Func<Type, object> customFactory)
-        {
-            config.TestClassFactory = customFactory;
-            return this;
-        }
-
-        /// <summary>
-        /// Wraps each test class with the specified behavior.
-        /// 
-        /// <para>
-        /// The behavior may perform custom actions before, after, or instead of
-        /// executing each test class. Invoke next() to proceed with normal execution.
-        /// </para>
-        /// </summary>
-        public ClassBehaviorExpression Wrap<TClassBehavior>() where TClassBehavior : ClassBehavior
-        {
-            config.WrapClasses(() => (ClassBehavior)Activator.CreateInstance(typeof(TClassBehavior)));
-            return this;
-        }
-
-        /// <summary>
-        /// Wraps each test class with the specified behavior.
-        /// 
-        /// <para>
-        /// The behavior may perform custom actions before, after, or instead of
-        /// executing each test class. Invoke next() to proceed with normal execution.
-        /// </para>
-        /// </summary>
-        public ClassBehaviorExpression Wrap(ClassBehavior behavior)
-        {
-            config.WrapClasses(() => behavior);
-            return this;
-        }
-
-        /// <summary>
-        /// Wraps each test class with the specified behavior.
-        /// 
-        /// <para>
-        /// The behavior may perform custom actions before, after, or instead of
-        /// executing each test class. Invoke next() to proceed with normal execution.
-        /// </para>
-        /// </summary>
-        public ClassBehaviorExpression Wrap(ClassBehaviorAction behavior)
-        {
-            config.WrapClasses(() => new LambdaBehavior(behavior));
-            return this;
-        }
-
-        /// <summary>
         /// Randomizes the order of execution of a test class's contained test cases, using the
         /// given pseudo-random number generator.
         /// </summary>
@@ -141,21 +67,6 @@
                 T temp = array[n];
                 array[n] = array[k];
                 array[k] = temp;
-            }
-        }
-
-        class LambdaBehavior : ClassBehavior
-        {
-            readonly ClassBehaviorAction execute;
-
-            public LambdaBehavior(ClassBehaviorAction execute)
-            {
-                this.execute = execute;
-            }
-
-            public void Execute(Class context, Action next)
-            {
-                execute(context, next);
             }
         }
 

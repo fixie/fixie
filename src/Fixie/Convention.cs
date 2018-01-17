@@ -18,7 +18,6 @@
             Methods = new MethodExpression(Config);
             Parameters = new ParameterSourceExpression(Config);
             CaseExecution = new CaseBehaviorExpression(Config);
-            FixtureExecution = new FixtureBehaviorExpression(Config);
             ClassExecution = new ClassBehaviorExpression(Config);
             HideExceptionDetails = new AssertionLibraryExpression(Config);
         }
@@ -54,11 +53,6 @@
         /// Customizes the execution of each test case.
         /// </summary>
         public CaseBehaviorExpression CaseExecution { get; }
-
-        /// <summary>
-        /// Customizes the execution of each test fixture (test class instance).
-        /// </summary>
-        public FixtureBehaviorExpression FixtureExecution { get; }
 
         /// <summary>
         /// Customizes the execution of each test class.

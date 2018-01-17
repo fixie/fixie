@@ -9,9 +9,6 @@
         readonly List<Func<Type, bool>> testClassConditions;
         readonly List<Func<MethodInfo, bool>> testMethodConditions;
         readonly List<Func<ParameterSource>> parameterSources;
-        readonly List<Func<ClassBehavior>> customClassBehaviors;
-        readonly List<Func<FixtureBehavior>> customFixtureBehaviors;
-        readonly List<Func<CaseBehavior>> customCaseBehaviors;
         readonly List<Type> assertionLibraryTypes;
         readonly List<SkipBehavior> skipBehaviors;
 
@@ -25,9 +22,6 @@
             testClassConditions = new List<Func<Type, bool>>();
             testMethodConditions = new List<Func<MethodInfo, bool>>();
             parameterSources = new List<Func<ParameterSource>>();
-            customClassBehaviors = new List<Func<ClassBehavior>>();
-            customFixtureBehaviors = new List<Func<FixtureBehavior>>();
-            customCaseBehaviors = new List<Func<CaseBehavior>>();
             assertionLibraryTypes = new List<Type>();
             skipBehaviors = new List<SkipBehavior>();
         }
@@ -73,15 +67,6 @@
         public void AddParameterSource(Func<ParameterSource> getParameterSource)
             => parameterSources.Add(getParameterSource);
 
-        public void WrapClasses(Func<ClassBehavior> getBehavior)
-            => customClassBehaviors.Insert(0, getBehavior);
-
-        public void WrapFixtures(Func<FixtureBehavior> getBehavior)
-            => customFixtureBehaviors.Insert(0, getBehavior);
-
-        public void WrapCases(Func<CaseBehavior> getBehavior)
-            => customCaseBehaviors.Insert(0, getBehavior);
-
         public void AddAssertionLibraryType(Type libraryInfrastructureType)
             => assertionLibraryTypes.Add(libraryInfrastructureType);
 
@@ -91,9 +76,6 @@
         public IReadOnlyList<Func<Type, bool>> TestClassConditions => testClassConditions;
         public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions => testMethodConditions;
         public IReadOnlyList<Func<ParameterSource>> ParameterSources => parameterSources;
-        public IReadOnlyList<Func<ClassBehavior>> CustomClassBehaviors => customClassBehaviors;
-        public IReadOnlyList<Func<FixtureBehavior>> CustomFixtureBehaviors => customFixtureBehaviors;
-        public IReadOnlyList<Func<CaseBehavior>> CustomCaseBehaviors => customCaseBehaviors;
         public IReadOnlyList<Type> AssertionLibraryTypes => assertionLibraryTypes;
         public IReadOnlyList<SkipBehavior> SkipBehaviors => skipBehaviors;
     }

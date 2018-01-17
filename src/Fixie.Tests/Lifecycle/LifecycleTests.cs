@@ -76,22 +76,27 @@ namespace Fixie.Tests.Lifecycle
             {
                 ClassSetUp(testClass);
 
-                var instance = Activator.CreateInstance(testClass);
-
-                InstanceSetUp(instance);
-
-                runCases(@case =>
+                try
                 {
-                    CaseSetUp(@case);
-                    @case.Execute(instance);
-                    CaseTearDown(@case);
-                });
+                    var instance = Activator.CreateInstance(testClass);
 
-                InstanceTearDown(instance);
+                    InstanceSetUp(instance);
 
-                (instance as IDisposable)?.Dispose();
+                    runCases(@case =>
+                    {
+                        CaseSetUp(@case);
+                        @case.Execute(instance);
+                        CaseTearDown(@case);
+                    });
 
-                ClassTearDown(testClass);
+                    InstanceTearDown(instance);
+
+                    (instance as IDisposable)?.Dispose();
+                }
+                finally
+                {
+                    ClassTearDown(testClass);
+                }
             }
         }
 
@@ -389,7 +394,8 @@ namespace Fixie.Tests.Lifecycle
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 ".ctor",
-                "InstanceSetUp");
+                "InstanceSetUp",
+                "ClassTearDown");
         }
 
         public void ShouldFailCaseWhenConstructingPerCaseAndInstanceTearDownThrows()
@@ -437,7 +443,8 @@ namespace Fixie.Tests.Lifecycle
                 "InstanceSetUp",
                 "CaseSetUp", "Pass", "CaseTearDown",
                 "CaseSetUp", "Fail", "CaseTearDown",
-                "InstanceTearDown");
+                "InstanceTearDown",
+                "ClassTearDown");
         }
 
         public void ShouldFailCaseWhenConstructingPerCaseAndClassTearDownThrows()
@@ -750,6 +757,50 @@ namespace Fixie.Tests.Lifecycle
                 "SampleTestClass.Fail failed: Exception thrown while attempting to yield input parameters for method: Fail");
 
             output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldFailCaseWhenConstructingPerCaseAndDisposeThrows()
+        {
+            FailDuring("Dispose");
+
+            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'Dispose' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
+                "    Secondary Failure: 'Dispose' failed!");
+
+            output.ShouldHaveLifecycle(
+                "ClassSetUp",
+                ".ctor", "InstanceSetUp", "CaseSetUp", "Pass", "CaseTearDown", "InstanceTearDown", "Dispose",
+                ".ctor", "InstanceSetUp", "CaseSetUp", "Fail", "CaseTearDown", "InstanceTearDown", "Dispose",
+                "ClassTearDown");
+        }
+
+        public void ShouldFailAllCasesWhenConstructingPerClassAndDisposeThrows()
+        {
+            FailDuring("Dispose");
+
+            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'Dispose' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
+                "    Secondary Failure: 'Dispose' failed!");
+
+            output.ShouldHaveLifecycle(
+                "ClassSetUp",
+                ".ctor",
+                "InstanceSetUp",
+                "CaseSetUp", "Pass", "CaseTearDown",
+                "CaseSetUp", "Fail", "CaseTearDown",
+                "InstanceTearDown",
+                "Dispose",
+                "ClassTearDown");
         }
     }
 }

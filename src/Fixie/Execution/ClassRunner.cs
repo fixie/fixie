@@ -10,7 +10,6 @@
     {
         readonly Bus bus;
         readonly ExecuteLifecycle executeLifecycle;
-        readonly ExecutionPlan executionPlan;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
@@ -23,8 +22,7 @@
             var config = convention.Config;
 
             this.bus = bus;
-            executeLifecycle = convention.Config.Lifecycle == null ? null : new ExecuteLifecycle(convention.Config.Lifecycle);
-            executionPlan = new ExecutionPlan(convention);
+            executeLifecycle = new ExecuteLifecycle(convention.Config.Lifecycle);
             methodDiscoverer = new MethodDiscoverer(filter, convention);
             parameterDiscoverer = new ParameterDiscoverer(convention);
             assertionLibraryFilter = new AssertionLibraryFilter(convention);
@@ -191,14 +189,7 @@
 
         void Run(Type testClass, IReadOnlyList<Case> casesToExecute)
         {
-            if (executeLifecycle == null)
-            {
-                executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
-            }
-            else
-            {
-                executeLifecycle.Execute(testClass, casesToExecute);
-            }
+            executeLifecycle.Execute(testClass, casesToExecute);
         }
 
         void Start(Type testClass)

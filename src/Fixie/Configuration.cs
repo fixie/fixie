@@ -18,7 +18,7 @@
         public Configuration()
         {
             OrderCases = executions => { };
-            Lifecycle = null;
+            Lifecycle = new DefaultLifecycle();
             ConstructionFrequency = ConstructionFrequency.PerCase;
             TestClassFactory = UseDefaultConstructor;
 
@@ -46,6 +46,21 @@
             catch (TargetInvocationException exception)
             {
                 throw new PreservedException(exception.InnerException);
+            }
+        }
+
+        class DefaultLifecycle : Lifecycle
+        {
+            public void Execute(Type testClass, Action<CaseAction> runCases)
+            {
+                runCases(@case =>
+                {
+                    var instance = UseDefaultConstructor(testClass);
+
+                    @case.Execute(instance);
+
+                    (instance as IDisposable)?.Dispose();
+                });
             }
         }
 

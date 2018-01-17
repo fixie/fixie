@@ -4,7 +4,7 @@ namespace Fixie.Execution.Behaviors
     using System.Diagnostics;
     using System.Linq;
 
-    class TimeClassExecution : ClassBehavior
+    class TimeClassExecution
     {
         public void Execute(Class context, Action next)
         {

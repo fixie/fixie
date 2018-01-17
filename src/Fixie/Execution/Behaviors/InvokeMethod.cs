@@ -5,7 +5,7 @@
     using System.Reflection;
     using System.Threading.Tasks;
 
-    class InvokeMethod : CaseBehavior
+    class InvokeMethod
     {
         public void Execute(Case @case, Action next)
         {

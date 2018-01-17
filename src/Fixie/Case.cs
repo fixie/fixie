@@ -83,11 +83,6 @@
         }
 
         /// <summary>
-        /// The fixture (test class instance) under which the test case is executing.
-        /// </summary>
-        public Fixture Fixture { get; internal set; }
-
-        /// <summary>
         /// The object returned by the invocation of the test case method.
         /// </summary>
         public object ReturnValue { get; internal set; }

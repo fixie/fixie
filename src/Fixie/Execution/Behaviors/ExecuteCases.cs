@@ -11,8 +11,6 @@
             {
                 using (var console = new RedirectedConsole())
                 {
-                    @case.Fixture = fixture;
-
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();
 
@@ -27,7 +25,6 @@
 
                     stopwatch.Stop();
 
-                    @case.Fixture = null;
                     @case.Duration += stopwatch.Elapsed;
                     @case.Output = console.Output;
                 }

@@ -16,9 +16,7 @@ namespace Fixie.Execution.Behaviors
         {
             var timeClassExecution = new TimeClassExecution();
 
-            var @class = new Class(testClass, cases);
-
-            timeClassExecution.Execute(@class, () =>
+            timeClassExecution.Execute(cases, () =>
             {
                 try
                 {

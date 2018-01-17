@@ -6,7 +6,7 @@
     /// <summary>
     /// A test fixture (test class instance) being executed.
     /// </summary>
-    public class Fixture : BehaviorContext
+    public class Fixture
     {
         public Fixture(Class testClass, object instance, IReadOnlyList<Case> cases)
         {

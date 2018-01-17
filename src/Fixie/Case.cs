@@ -7,7 +7,7 @@
     /// <summary>
     /// A test case being executed, representing a single call to a test method.
     /// </summary>
-    public class Case : BehaviorContext
+    public class Case
     {
         readonly List<Exception> exceptions;
 

@@ -6,7 +6,7 @@
     /// <summary>
     /// A test class being executed.
     /// </summary>
-    public class Class : BehaviorContext
+    public class Class
     {
         public Class(Type type, IReadOnlyList<Case> cases)
         {

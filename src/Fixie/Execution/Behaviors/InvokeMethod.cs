@@ -7,11 +7,6 @@
 
     class InvokeMethod
     {
-        public void Execute(Case @case, Action next)
-        {
-            Execute(@case, @case.Fixture.Instance);
-        }
-
         public void Execute(Case @case, object instance)
         {
             try

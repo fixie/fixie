@@ -1,41 +1,9 @@
 ﻿namespace Fixie.Tests.Lifecycle
 {
-    using System;
     using static System.Environment;
 
     public class DisposalTests : BaseLifecycleTests
     {
-        public void ShouldDisposePerCaseWhenConstructingPerCaseAndDisposable()
-        {
-            Convention.ClassExecution
-                      .CreateInstancePerCase();
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor", "Pass", "Dispose",
-                ".ctor", "Fail", "Dispose");
-        }
-
-        public void ShouldDisposePerClassWhenConstructingPerClassAndDisposable()
-        {
-            Convention.ClassExecution
-                      .CreateInstancePerClass();
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor", "Pass", "Fail", "Dispose");
-        }
-
         public void ShouldFailCaseWhenConstructingPerCaseAndDisposeThrows()
         {
             FailDuring("Dispose");

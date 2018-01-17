@@ -1,13 +1,14 @@
 ﻿namespace Fixie.Execution.Behaviors
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
 
     class ExecuteCases
     {
-        public void Execute(Fixture fixture, CaseAction caseLifecycle)
+        public void Execute(CaseAction caseLifecycle, IReadOnlyList<Case> cases)
         {
-            foreach (var @case in fixture.Cases)
+            foreach (var @case in cases)
             {
                 using (var console = new RedirectedConsole())
                 {

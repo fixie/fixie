@@ -24,8 +24,7 @@ namespace Fixie.Execution.Behaviors
                 {
                     lifecycle.Execute(testClass, caseLifecycle =>
                     {
-                            var fixture = new Fixture(@class, null, cases);
-                            new ExecuteCases().Execute(fixture, caseLifecycle);
+                        new ExecuteCases().Execute(caseLifecycle, cases);
                     });
                 }
                 catch (Exception exception)

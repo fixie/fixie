@@ -4,12 +4,8 @@
 
     public class CustomConvention : Convention
     {
-        readonly IoCContainer container;
-
         public CustomConvention()
         {
-            container = InitContainerForIntegrationTests();
-
             Classes
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
@@ -25,18 +21,19 @@
         static IoCContainer InitContainerForIntegrationTests()
         {
             var container = new IoCContainer();
-            container.Add(typeof(IDatabase), new RealDatabase());
-            container.Add(typeof(IThirdPartyService), new FakeThirdPartyService());
+            container.Add(typeof(IDatabase), typeof(RealDatabase));
+            container.Add(typeof(IThirdPartyService), typeof(FakeThirdPartyService));
             return container;
         }
 
-        void GetFromContainer(Type testClass, Action<CaseAction> runCases)
+        static void GetFromContainer(Type testClass, Action<CaseAction> runCases)
         {
-            var instance = container.Get(testClass);
+            using (var container = InitContainerForIntegrationTests())
+            {
+                var instance = container.Get(testClass);
 
-            runCases(@case => @case.Execute(instance));
-
-            (instance as IDisposable)?.Dispose();
+                runCases(@case => @case.Execute(instance));
+            }
         }
     }
 }

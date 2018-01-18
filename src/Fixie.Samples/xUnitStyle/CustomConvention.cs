@@ -7,8 +7,6 @@
 
     public class CustomConvention : Convention
     {
-        static readonly Dictionary<MethodInfo, object> fixtures = new Dictionary<MethodInfo, object>();
-
         public CustomConvention()
         {
             Classes
@@ -31,7 +29,8 @@
         {
             public void Execute(Type testClass, Action<CaseAction> runCases)
             {
-                PrepareFixtureData(testClass);
+                var fixtures = PrepareFixtureData(testClass);
+
                 runCases(@case =>
                 {
                     var instance = Activator.CreateInstance(@case.Class);
@@ -43,12 +42,14 @@
 
                     (instance as IDisposable)?.Dispose();
                 });
-                DisposeFixtureData();
+
+                foreach (var fixtureInstance in fixtures.Values)
+                    (fixtureInstance as IDisposable)?.Dispose();
             }
 
-            static void PrepareFixtureData(Type testClass)
+            static Dictionary<MethodInfo, object> PrepareFixtureData(Type testClass)
             {
-                fixtures.Clear();
+                var fixtures = new Dictionary<MethodInfo, object>();
 
                 foreach (var @interface in FixtureInterfaces(testClass))
                 {
@@ -59,14 +60,8 @@
                     var method = @interface.GetMethod("SetFixture", new[] { fixtureDataType });
                     fixtures[method] = fixtureInstance;
                 }
-            }
 
-            static void DisposeFixtureData()
-            {
-                foreach (var fixtureInstance in fixtures.Values)
-                    (fixtureInstance as IDisposable)?.Dispose();
-
-                fixtures.Clear();
+                return fixtures;
             }
         }
 

@@ -1,4 +1,0 @@
-﻿namespace Fixie.Execution.Behaviors
-{
-    
-}

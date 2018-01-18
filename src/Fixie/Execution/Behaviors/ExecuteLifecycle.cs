@@ -48,14 +48,14 @@
 
             if (classExecutionDuration > totalCaseDuration)
             {
-                var buildChainDuration = classExecutionDuration - totalCaseDuration;
+                var lifecycleOverheadDuration = classExecutionDuration - totalCaseDuration;
 
                 var numberOfCases = cases.Count;
 
-                var buildChainDurationPerCase = TimeSpan.FromTicks(buildChainDuration.Ticks / numberOfCases);
+                var lifecycleOverheadDurationPerCase = TimeSpan.FromTicks(lifecycleOverheadDuration.Ticks / numberOfCases);
 
                 foreach (var @case in cases)
-                    @case.Duration += buildChainDurationPerCase;
+                    @case.Duration += lifecycleOverheadDurationPerCase;
             }
         }
 

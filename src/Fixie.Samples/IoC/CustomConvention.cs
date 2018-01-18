@@ -34,7 +34,7 @@
         {
             var instance = container.Get(testClass);
 
-            runCases(@case => { @case.Execute(instance); });
+            runCases(@case => @case.Execute(instance));
 
             (instance as IDisposable)?.Dispose();
         }

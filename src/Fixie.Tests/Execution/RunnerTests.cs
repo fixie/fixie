@@ -114,7 +114,7 @@ namespace Fixie.Tests.Execution
             {
                 var instance = Activator.CreateInstance(testClass);
 
-                runCases(@case => { @case.Execute(instance); });
+                runCases(@case => @case.Execute(instance));
 
                 (instance as IDisposable)?.Dispose();
             }

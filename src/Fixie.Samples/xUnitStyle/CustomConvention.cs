@@ -27,7 +27,7 @@
             return type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Any(x => x.HasOrInherits<FactAttribute>());
         }
 
-        public class FixtureDataLifecycle : Lifecycle
+        class FixtureDataLifecycle : Lifecycle
         {
             public void Execute(Type testClass, Action<CaseAction> runCases)
             {
@@ -37,7 +37,7 @@
                     var instance = Activator.CreateInstance(@case.Class);
 
                     foreach (var injectionMethod in fixtures.Keys)
-                        injectionMethod.Invoke(instance, new[] {fixtures[injectionMethod]});
+                        injectionMethod.Invoke(instance, new[] { fixtures[injectionMethod] });
 
                     @case.Execute(instance);
 

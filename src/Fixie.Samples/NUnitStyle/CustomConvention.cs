@@ -19,8 +19,8 @@
                 .Add<TestCaseSourceAttributeParameterSource>();
 
             ClassExecution
-                    .Lifecycle<SetUpTearDown>()
-                    .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
+                .Lifecycle<SetUpTearDown>()
+                .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
         }
     }
 

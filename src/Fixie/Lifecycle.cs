@@ -1,4 +1,4 @@
-namespace Fixie
+﻿namespace Fixie
 {
     using System;
 

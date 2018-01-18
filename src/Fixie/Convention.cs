@@ -6,7 +6,7 @@
     using Conventions;
 
     /// <summary>
-    /// Base class for all Fixie conventions.  Subclass Convention to customize test discovery and execution.
+    /// Base class for all Fixie conventions. Subclass Convention to customize test discovery and execution.
     /// </summary>
     public class Convention
     {

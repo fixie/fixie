@@ -16,7 +16,6 @@
         {
             OrderCases = executions => { };
             Lifecycle = new DefaultLifecycle();
-            TestClassFactory = UseDefaultConstructor;
 
             testClassConditions = new List<Func<Type, bool>>();
             testMethodConditions = new List<Func<MethodInfo, bool>>();
@@ -27,7 +26,6 @@
 
         public Action<Case[]> OrderCases { get; set; }
         public Lifecycle Lifecycle { get; set; }
-        public Func<Type, object> TestClassFactory { get; set; }
 
         static object UseDefaultConstructor(Type type)
         {

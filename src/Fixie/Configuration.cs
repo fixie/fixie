@@ -16,7 +16,6 @@
         {
             OrderCases = executions => { };
             Lifecycle = new DefaultLifecycle();
-            ConstructionFrequency = ConstructionFrequency.PerCase;
             TestClassFactory = UseDefaultConstructor;
 
             testClassConditions = new List<Func<Type, bool>>();
@@ -28,7 +27,6 @@
 
         public Action<Case[]> OrderCases { get; set; }
         public Lifecycle Lifecycle { get; set; }
-        public ConstructionFrequency ConstructionFrequency { get; set; }
         public Func<Type, object> TestClassFactory { get; set; }
 
         static object UseDefaultConstructor(Type type)

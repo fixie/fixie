@@ -1,8 +1,6 @@
 ﻿namespace Fixie
 {
-    using System;
     using System.Reflection;
-    using Cli;
     using Conventions;
 
     /// <summary>

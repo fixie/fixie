@@ -1,18 +1,16 @@
-﻿namespace Fixie.Execution.Behaviors
+﻿namespace Fixie.Execution
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
 
-    class ExecuteLifecycle
+    class LifecycleRunner
     {
         readonly Lifecycle lifecycle;
 
-        public ExecuteLifecycle(Lifecycle lifecycle)
-        {
-            this.lifecycle = lifecycle;
-        }
+        public LifecycleRunner(Lifecycle lifecycle)
+            => this.lifecycle = lifecycle;
 
         public void Execute(Type testClass, IReadOnlyList<Case> cases)
         {

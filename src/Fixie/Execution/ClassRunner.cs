@@ -4,12 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Behaviors;
 
     class ClassRunner
     {
         readonly Bus bus;
-        readonly ExecuteLifecycle executeLifecycle;
+        readonly LifecycleRunner lifecycleRunner;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
@@ -22,7 +21,7 @@
             var config = convention.Config;
 
             this.bus = bus;
-            executeLifecycle = new ExecuteLifecycle(convention.Config.Lifecycle);
+            lifecycleRunner = new LifecycleRunner(convention.Config.Lifecycle);
             methodDiscoverer = new MethodDiscoverer(filter, convention);
             parameterDiscoverer = new ParameterDiscoverer(convention);
             assertionLibraryFilter = new AssertionLibraryFilter(convention);
@@ -189,7 +188,7 @@
 
         void Run(Type testClass, IReadOnlyList<Case> casesToExecute)
         {
-            executeLifecycle.Execute(testClass, casesToExecute);
+            lifecycleRunner.Execute(testClass, casesToExecute);
         }
 
         void Start(Type testClass)

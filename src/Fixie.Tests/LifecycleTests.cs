@@ -299,10 +299,9 @@
         {
             Convention.ClassExecution.Lifecycle((testClass, runCases) =>
             {
-                //Behavior chooses not to invoke runCases(...).
-                //Since the test cases never run, they don't have
-                //a chance to throw exceptions, resulting in all
-                //'passing'.
+                //Class lifecycle chooses not to invoke runCases(...).
+                //Since the test cases never run, they don't have a
+                //chance to throw exceptions, resulting in all 'passing'.
             });
 
             var output = Run();
@@ -320,10 +319,9 @@
             {
                 runCases(@case =>
                 {
-                    //Behavior chooses not to invoke @case.Execute(instance).
-                    //Since the test cases never run, they don't have
-                    //a chance to throw exceptions, resulting in all
-                    //'passing'.
+                    //Case lifecycle chooses not to invoke @case.Execute(instance).
+                    //Since the test cases never run, they don't have a
+                    //chance to throw exceptions, resulting in all 'passing'.
                 });
             });
 
@@ -336,140 +334,7 @@
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldFailAllCasesWhenLifecycleThrows()
-        {
-            Convention.ClassExecution.Lifecycle((testClass, runCases) =>
-            {
-                Console.WriteLine("Unsafe class lifecycle");
-                throw new Exception("Unsafe class lifecycle threw!");
-            });
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Unsafe class lifecycle threw!",
-                "SampleTestClass.Fail failed: Unsafe class lifecycle threw!");
-
-            output.ShouldHaveLifecycle("Unsafe class lifecycle");
-        }
-
-        public void ShouldFailAllCasesWithOriginalExceptionWhenLifecycleThrowsPreservedException()
-        {
-            Convention.ClassExecution.Lifecycle((testClass, runCases) =>
-            {
-                Console.WriteLine("Unsafe class lifecycle");
-                try
-                {
-                    throw new Exception("Unsafe class lifecycle threw!");
-                }
-                catch (Exception originalException)
-                {
-                    throw new PreservedException(originalException);
-                }
-            });
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Unsafe class lifecycle threw!",
-                "SampleTestClass.Fail failed: Unsafe class lifecycle threw!");
-
-            output.ShouldHaveLifecycle("Unsafe class lifecycle");
-        }
-
-        public void ShouldFailCaseWhenCaseLifecycleThrows()
-        {
-            Convention.ClassExecution.Lifecycle((testClass, runCases) =>
-            {
-                var instance = Activator.CreateInstance(testClass);
-
-                runCases(@case =>
-                {
-                    Console.WriteLine("Unsafe case lifecycle");
-                    throw new Exception("Unsafe case lifecycle threw!");
-                });
-
-                (instance as IDisposable)?.Dispose();
-            });
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Unsafe case lifecycle threw!",
-                "SampleTestClass.Fail failed: Unsafe case lifecycle threw!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "Unsafe case lifecycle",
-                "Unsafe case lifecycle",
-                "Dispose");
-        }
-
-        public void ShouldFailCaseWithOriginalExceptionWhenConstructingPerCaseAndCaseBehaviorThrowsPreservedException()
-        {
-            Convention.ClassExecution.Lifecycle((testClass, runCases) =>
-            {
-                runCases(@case =>
-                {
-                    Console.WriteLine("Unsafe case lifecycle");
-                    try
-                    {
-                        throw new Exception("Unsafe case lifecycle threw!");
-                    }
-                    catch (Exception originalException)
-                    {
-                        throw new PreservedException(originalException);
-                    }
-                });
-            });
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Unsafe case lifecycle threw!",
-                "SampleTestClass.Fail failed: Unsafe case lifecycle threw!");
-
-            output.ShouldHaveLifecycle(
-                "Unsafe case lifecycle",
-                "Unsafe case lifecycle");
-        }
-
-        public void ShouldFailAllCasesWithOriginalExceptionWhenConstructingPerClassAndCaseBehaviorThrowsPreservedException()
-        {
-            Convention.ClassExecution.Lifecycle((testClass, runCases) =>
-            {
-                var instance = Activator.CreateInstance(testClass);
-
-                runCases(@case =>
-                {
-                    Console.WriteLine("Unsafe case lifecycle");
-                    try
-                    {
-                        throw new Exception("Unsafe case lifecycle threw!");
-                    }
-                    catch (Exception originalException)
-                    {
-                        throw new PreservedException(originalException);
-                    }
-                });
-
-                (instance as IDisposable)?.Dispose();
-            });
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Unsafe case lifecycle threw!",
-                "SampleTestClass.Fail failed: Unsafe case lifecycle threw!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "Unsafe case lifecycle",
-                "Unsafe case lifecycle",
-                "Dispose");
-        }
-
-        public void ShouldFailAllCasesWhenConstructingPerCaseAndConstructorThrows()
+        public void ShouldFailCaseWhenConstructingPerCaseAndConstructorThrows()
         {
             FailDuring(".ctor");
 
@@ -499,7 +364,7 @@
             output.ShouldHaveLifecycle(".ctor");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerClassAndCaseSetUpThrows()
+        public void ShouldFailAllCasesWhenConstructingPerClassAndCaseSetUpThrows()
         {
             FailDuring("CaseSetUp");
 
@@ -536,66 +401,6 @@
                 "CaseSetUp", "Pass", "CaseTearDown",
                 "CaseSetUp", "Fail", "CaseTearDown",
                 "Dispose");
-        }
-
-        public void ShouldSkipConstructingPerCaseWhenAllCasesSkipped()
-        {
-            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
-
-            Convention.CaseExecution.Skip(x => true);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Fail skipped");
-
-            output.ShouldHaveLifecycle();
-        }
-
-        public void ShouldSkipConstructingPerClassWhenAllCasesSkipped()
-        {
-            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
-
-            Convention.CaseExecution.Skip(x => true);
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Fail skipped");
-
-            output.ShouldHaveLifecycle();
-        }
-
-        public void ShouldSkipConstructingPerCaseWhenAllCasesFailCustomParameterGeneration()
-        {
-            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
-
-            Convention.Parameters.Add<BuggyParameterSource>();
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Exception thrown while attempting to yield input parameters for method: Pass",
-                "SampleTestClass.Fail failed: Exception thrown while attempting to yield input parameters for method: Fail");
-
-            output.ShouldHaveLifecycle();
-        }
-
-        public void ShouldSkipConstructingPerClassWhenAllCasesFailCustomParameterGeneration()
-        {
-            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
-
-            Convention.Parameters.Add<BuggyParameterSource>();
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Exception thrown while attempting to yield input parameters for method: Pass",
-                "SampleTestClass.Fail failed: Exception thrown while attempting to yield input parameters for method: Fail");
-
-            output.ShouldHaveLifecycle();
         }
 
         public void ShouldFailCaseWhenConstructingPerCaseAndDisposeThrows()
@@ -636,33 +441,64 @@
                 "Dispose");
         }
 
-        public void ShouldIncludeAllPossibleTearDownExceptionsInResultWhenConstructingPerClass()
+        public void ShouldSkipLifecycleWhenConstructingPerCaseButAllCasesAreSkipped()
         {
-            FailDuring("CaseTearDown", "Dispose");
+            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
 
-            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+            Convention.CaseExecution.Skip(x => true);
 
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'CaseTearDown' failed!" + NewLine +
-                "    Secondary Failure: 'Dispose' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
-                "    Secondary Failure: 'CaseTearDown' failed!" + NewLine +
-                "    Secondary Failure: 'Dispose' failed!");
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail skipped");
 
-            output.ShouldHaveLifecycle(
-                ".ctor",
+            output.ShouldHaveLifecycle();
+        }
 
-                "CaseSetUp",
-                "Pass",
-                "CaseTearDown",
+        public void ShouldSkipLifecycleWhenConstructingPerClassButAllCasesAreSkipped()
+        {
+            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
 
-                "CaseSetUp",
-                "Fail",
-                "CaseTearDown",
+            Convention.CaseExecution.Skip(x => true);
 
-                "Dispose");
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail skipped");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldSkipLifecycleWhenConstructingPerCaseButAllCasesFailCustomParameterGeneration()
+        {
+            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
+
+            Convention.Parameters.Add<BuggyParameterSource>();
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: Exception thrown while attempting to yield input parameters for method: Pass",
+                "SampleTestClass.Fail failed: Exception thrown while attempting to yield input parameters for method: Fail");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldSkipLifecycleWhenConstructingPerClassButAllCasesFailCustomParameterGeneration()
+        {
+            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+
+            Convention.Parameters.Add<BuggyParameterSource>();
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: Exception thrown while attempting to yield input parameters for method: Pass",
+                "SampleTestClass.Fail failed: Exception thrown while attempting to yield input parameters for method: Fail");
+
+            output.ShouldHaveLifecycle();
         }
 
         public void ShouldAllowProcessingTestCaseLifecycleMultipleTimes()

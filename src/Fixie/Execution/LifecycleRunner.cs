@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using Behaviors;
 
     class LifecycleRunner
@@ -25,8 +24,8 @@
                 }
                 catch (Exception exception)
                 {
-                    foreach (var case1 in cases)
-                        case1.Fail(exception);
+                    foreach (var @case in cases)
+                        @case.Fail(exception);
                 }
             });
         }

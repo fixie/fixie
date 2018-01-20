@@ -491,7 +491,7 @@
                 "Dispose");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndConstructionThrows()
+        public void ShouldFailAllCasesWhenConstructingPerCaseAndConstructorThrows()
         {
             FailDuring(".ctor");
 
@@ -503,9 +503,22 @@
                 "SampleTestClass.Pass failed: '.ctor' failed!",
                 "SampleTestClass.Fail failed: '.ctor' failed!");
 
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                ".ctor");
+            output.ShouldHaveLifecycle(".ctor", ".ctor");
+        }
+
+        public void ShouldFailAllCasesWhenConstructingPerClassAndConstructorThrows()
+        {
+            FailDuring(".ctor");
+
+            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: '.ctor' failed!",
+                "SampleTestClass.Fail failed: '.ctor' failed!");
+
+            output.ShouldHaveLifecycle(".ctor");
         }
 
         public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerClassAndCaseSetUpThrows()

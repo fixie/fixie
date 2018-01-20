@@ -1038,5 +1038,43 @@
                 "Dispose",
                 "ClassTearDown");
         }
+
+        public void ShouldAllowProcessingTestCaseLifecycleMultipleTimes()
+        {
+            FailDuring("InstanceTearDown");
+
+            Convention.ClassExecution
+                .Lifecycle((testClass, runCases) =>
+                {
+                    var instance = Activator.CreateInstance(testClass);
+
+                    runCases(@case => @case.Execute(instance));
+
+                    try
+                    {
+                        InstanceTearDown(instance);
+                    }
+                    catch (Exception exception)
+                    {
+                        runCases(@case =>
+                        {
+                            Console.WriteLine($"Failing {@case.Name} due to InstanceTearDown failure.");
+                            @case.Fail(exception);
+                        });
+                    }
+                });
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: 'InstanceTearDown' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
+                "    Secondary Failure: 'InstanceTearDown' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor", "Pass", "Fail", "InstanceTearDown",
+                "Failing Fixie.Tests.LifecycleTests+SampleTestClass.Pass due to InstanceTearDown failure.",
+                "Failing Fixie.Tests.LifecycleTests+SampleTestClass.Fail due to InstanceTearDown failure.");
+        }
     }
 }

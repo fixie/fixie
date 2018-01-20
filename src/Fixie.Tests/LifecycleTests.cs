@@ -103,44 +103,17 @@
                 throw new FailureException(member);
         }
 
-        static void CaseSetUp(Case @case)
-        {
-            @case.Class.ShouldEqual(typeof(SampleTestClass));
-            WhereAmI();
-        }
-
-        static void CaseTearDown(Case @case)
-        {
-            @case.Class.ShouldEqual(typeof(SampleTestClass));
-            WhereAmI();
-        }
-
         class CreateInstancePerCase : Lifecycle
         {
             public void Execute(Type testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {
-                    var instance = Activator.CreateInstance(testClass);
+                    var instance = UseDefaultConstructor(testClass);
 
-                    try
-                    {
-                        CaseSetUp(@case);
-                        @case.Execute(instance);
+                    @case.Execute(instance);
 
-                        try
-                        {
-                            CaseTearDown(@case);
-                        }
-                        catch (Exception exception)
-                        {
-                            @case.Fail(exception);
-                        }
-                    }
-                    finally
-                    {
-                        (instance as IDisposable)?.Dispose();
-                    }
+                    (instance as IDisposable)?.Dispose();
                 });
             }
         }
@@ -149,7 +122,7 @@
         {
             public void Execute(Type testClass, Action<CaseAction> runCases)
             {
-                var instance = Activator.CreateInstance(testClass);
+                var instance = UseDefaultConstructor(testClass);
 
                 runCases(@case =>
                 {
@@ -159,6 +132,30 @@
                 });
 
                 (instance as IDisposable)?.Dispose();
+            }
+
+            static void CaseSetUp(Case @case)
+            {
+                @case.Class.ShouldEqual(typeof(SampleTestClass));
+                WhereAmI();
+            }
+
+            static void CaseTearDown(Case @case)
+            {
+                @case.Class.ShouldEqual(typeof(SampleTestClass));
+                WhereAmI();
+            }
+        }
+
+        static object UseDefaultConstructor(Type type)
+        {
+            try
+            {
+                return Activator.CreateInstance(type);
+            }
+            catch (TargetInvocationException exception)
+            {
+                throw new PreservedException(exception.InnerException);
             }
         }
 
@@ -194,8 +191,8 @@
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "CaseSetUp", "Pass", "CaseTearDown", "Dispose",
-                ".ctor", "CaseSetUp", "Fail", "CaseTearDown", "Dispose");
+                ".ctor", "Pass", "Dispose",
+                ".ctor", "Fail", "Dispose");
         }
 
         public void ShouldAllowConstructingPerClassUsingLifecycleType()
@@ -226,8 +223,8 @@
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "CaseSetUp", "Pass", "CaseTearDown", "Dispose",
-                ".ctor", "CaseSetUp", "Fail", "CaseTearDown", "Dispose");
+                ".ctor", "Pass", "Dispose",
+                ".ctor", "Fail", "Dispose");
         }
 
         public void ShouldAllowConstructingPerClassUsingLifecycleInstance()
@@ -494,25 +491,21 @@
                 "Dispose");
         }
 
-        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndCaseSetUpThrows()
+        public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingCaseWhenConstructingPerCaseAndConstructionThrows()
         {
-            FailDuring("CaseSetUp");
+            FailDuring(".ctor");
 
             Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
 
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Fail failed: 'CaseSetUp' failed!");
+                "SampleTestClass.Pass failed: '.ctor' failed!",
+                "SampleTestClass.Fail failed: '.ctor' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "CaseSetUp",
-                "Dispose",
-                ".ctor",
-                "CaseSetUp",
-                "Dispose");
+                ".ctor");
         }
 
         public void ShouldShortCircuitInnerBehaviorAndTearDownByFailingAllCasesWhenConstructingPerClassAndCaseSetUpThrows()
@@ -531,28 +524,6 @@
                 ".ctor",
                 "CaseSetUp",
                 "CaseSetUp",
-                "Dispose");
-        }
-
-        public void ShouldFailCaseWhenConstructingPerCaseAndCaseTearDownThrows()
-        {
-            FailDuring("CaseTearDown");
-
-            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
-                "    Secondary Failure: 'CaseTearDown' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "CaseSetUp", "Pass", "CaseTearDown",
-                "Dispose",
-                ".ctor",
-                "CaseSetUp", "Fail", "CaseTearDown",
                 "Dispose");
         }
 
@@ -650,8 +621,8 @@
                 "    Secondary Failure: 'Dispose' failed!");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "CaseSetUp", "Pass", "CaseTearDown", "Dispose",
-                ".ctor", "CaseSetUp", "Fail", "CaseTearDown", "Dispose");
+                ".ctor", "Pass", "Dispose",
+                ".ctor", "Fail", "Dispose");
         }
 
         public void ShouldFailAllCasesWhenConstructingPerClassAndDisposeThrows()
@@ -671,35 +642,6 @@
                 ".ctor",
                 "CaseSetUp", "Pass", "CaseTearDown",
                 "CaseSetUp", "Fail", "CaseTearDown",
-                "Dispose");
-        }
-
-        public void ShouldIncludeAllTearDownAndDisposalExceptionsInResultWhenConstructingPerCase()
-        {
-            FailDuring("CaseTearDown", "Dispose");
-
-            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'CaseTearDown' failed!" + NewLine +
-                "    Secondary Failure: 'Dispose' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
-                "    Secondary Failure: 'CaseTearDown' failed!" + NewLine +
-                "    Secondary Failure: 'Dispose' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "CaseSetUp",
-                "Pass",
-                "CaseTearDown",
-                "Dispose",
-
-                ".ctor",
-                "CaseSetUp",
-                "Fail",
-                "CaseTearDown",
                 "Dispose");
         }
 

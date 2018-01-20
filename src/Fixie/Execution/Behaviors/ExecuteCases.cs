@@ -10,6 +10,7 @@
         {
             foreach (var @case in cases)
             {
+                string consoleOutput;
                 using (var console = new RedirectedConsole())
                 {
                     var stopwatch = new Stopwatch();
@@ -27,10 +28,12 @@
                     stopwatch.Stop();
 
                     @case.Duration += stopwatch.Elapsed;
-                    @case.Output = console.Output;
+
+                    consoleOutput = console.Output;
+                    @case.Output += consoleOutput;
                 }
 
-                Console.Write(@case.Output);
+                Console.Write(consoleOutput);
             }
         }
     }

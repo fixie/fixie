@@ -377,29 +377,7 @@
             output.ShouldHaveLifecycle("Unsafe class lifecycle");
         }
 
-        public void ShouldFailCaseWhenConstructingPerCaseAndCaseLifecycleThrows()
-        {
-            Convention.ClassExecution.Lifecycle((testClass, runCases) =>
-            {
-                runCases(@case =>
-                {
-                    Console.WriteLine("Unsafe case lifecycle");
-                    throw new Exception("Unsafe case lifecycle threw!");
-                });
-            });
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Unsafe case lifecycle threw!",
-                "SampleTestClass.Fail failed: Unsafe case lifecycle threw!");
-
-            output.ShouldHaveLifecycle(
-                "Unsafe case lifecycle",
-                "Unsafe case lifecycle");
-        }
-
-        public void ShouldFailAllCasesWhenConstructingPerClassAndCaseLifecycleThrows()
+        public void ShouldFailCaseWhenCaseLifecycleThrows()
         {
             Convention.ClassExecution.Lifecycle((testClass, runCases) =>
             {

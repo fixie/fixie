@@ -14,25 +14,28 @@
                 .Where(method => method.IsVoid());
 
             ClassExecution
-                .Lifecycle(GetFromContainer)
+                .Lifecycle<IocLifecycle>()
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
         }
 
-        static IoCContainer InitContainerForIntegrationTests()
+        public class IocLifecycle : Lifecycle
         {
-            var container = new IoCContainer();
-            container.Add(typeof(IDatabase), typeof(RealDatabase));
-            container.Add(typeof(IThirdPartyService), typeof(FakeThirdPartyService));
-            return container;
-        }
-
-        static void GetFromContainer(Type testClass, Action<CaseAction> runCases)
-        {
-            using (var container = InitContainerForIntegrationTests())
+            public void Execute(Type testClass, Action<CaseAction> runCases)
             {
-                var instance = container.Get(testClass);
+                using (var container = InitContainerForIntegrationTests())
+                {
+                    var instance = container.Get(testClass);
 
-                runCases(@case => @case.Execute(instance));
+                    runCases(@case => @case.Execute(instance));
+                }
+            }
+
+            static IoCContainer InitContainerForIntegrationTests()
+            {
+                var container = new IoCContainer();
+                container.Add(typeof(IDatabase), typeof(RealDatabase));
+                container.Add(typeof(IThirdPartyService), typeof(FakeThirdPartyService));
+                return container;
             }
         }
     }

@@ -12,9 +12,4 @@
         /// </summary>
         void Execute(Type testClass, Action<CaseAction> runCases);
     }
-
-    /// <summary>
-    /// An action to perform a custom test class lifecycle for the given test class.
-    /// </summary>
-    public delegate void LifecycleAction(Type testClass, Action<CaseAction> runCases);
 }

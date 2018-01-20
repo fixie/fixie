@@ -23,12 +23,6 @@
             return this;
         }
 
-        public ClassBehaviorExpression Lifecycle(LifecycleAction lifecycle)
-        {
-            config.Lifecycle = new LambdaLifecycle(lifecycle);
-            return this;
-        }
-
         /// <summary>
         /// Randomizes the order of execution of a test class's contained test cases, using the
         /// given pseudo-random number generator.
@@ -68,17 +62,6 @@
                 array[n] = array[k];
                 array[k] = temp;
             }
-        }
-
-        class LambdaLifecycle : Lifecycle
-        {
-            readonly LifecycleAction execute;
-
-            public LambdaLifecycle(LifecycleAction execute)
-                => this.execute = execute;
-
-            public void Execute(Type testClass, Action<CaseAction> runCases)
-                => execute(testClass, runCases);
         }
     }
 }

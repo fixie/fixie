@@ -147,6 +147,40 @@
             }
         }
 
+        class ShortCircuitClassExecution : Lifecycle
+        {
+            public void Execute(Type testClass, Action<CaseAction> runCases)
+            {
+                //Class lifecycle chooses not to invoke runCases(...).
+                //Since the test cases never run, they don't have a
+                //chance to throw exceptions, resulting in all 'passing'.
+            }
+        }
+
+        class ShortCircuitCaseExection : Lifecycle
+        {
+            public void Execute(Type testClass, Action<CaseAction> runCases)
+            {
+                runCases(@case =>
+                {
+                    //Case lifecycle chooses not to invoke @case.Execute(instance).
+                    //Since the test cases never run, they don't have a
+                    //chance to throw exceptions, resulting in all 'passing'.
+                });
+            }
+        }
+
+        class RunCasesTwice : Lifecycle
+        {
+            public void Execute(Type testClass, Action<CaseAction> runCases)
+            {
+                var instance = Activator.CreateInstance(testClass);
+
+                runCases(@case => @case.Execute(instance));
+                runCases(@case => @case.Execute(instance));
+            }
+        }
+
         static object UseDefaultConstructor(Type type)
         {
             try
@@ -244,65 +278,10 @@
                 "Dispose");
         }
 
-        public void ShouldAllowConstructingPerCaseUsingLifecycleAction()
+        public void ShouldPassAllCasesWhenShortCircuitingClassExecution()
         {
             Convention.ClassExecution
-                .Lifecycle((testClass, runCases) =>
-                {
-                    runCases(@case =>
-                    {
-                        var instance = Activator.CreateInstance(testClass);
-
-                        @case.Execute(instance);
-
-                        (instance as IDisposable)?.Dispose();
-                    });
-                });
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor", "Pass", "Dispose",
-                ".ctor", "Fail", "Dispose");
-        }
-
-        public void ShouldAllowConstructingPerClassUsingLifecycleAction()
-        {
-            Convention.ClassExecution
-                .Lifecycle((testClass, runCases) =>
-                {
-                    var instance = Activator.CreateInstance(testClass);
-
-                    runCases(@case =>
-                    {
-                        @case.Execute(instance);
-                    });
-
-                    (instance as IDisposable)?.Dispose();
-                });
-
-            var output = Run();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor", "Pass", "Fail", "Dispose");
-        }
-
-        public void ShouldAllowShortCircuitingCasesExecution()
-        {
-            Convention.ClassExecution.Lifecycle((testClass, runCases) =>
-            {
-                //Class lifecycle chooses not to invoke runCases(...).
-                //Since the test cases never run, they don't have a
-                //chance to throw exceptions, resulting in all 'passing'.
-            });
+                .Lifecycle<ShortCircuitClassExecution>();
 
             var output = Run();
 
@@ -313,17 +292,10 @@
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldAllowShortCircuitingCaseExecution()
+        public void ShouldPassAllCasesWhenShortCircuitingCaseExecution()
         {
-            Convention.ClassExecution.Lifecycle((testClass, runCases) =>
-            {
-                runCases(@case =>
-                {
-                    //Case lifecycle chooses not to invoke @case.Execute(instance).
-                    //Since the test cases never run, they don't have a
-                    //chance to throw exceptions, resulting in all 'passing'.
-                });
-            });
+            Convention.ClassExecution
+                .Lifecycle<ShortCircuitCaseExection>();
 
             var output = Run();
 
@@ -503,14 +475,7 @@
 
         public void ShouldAllowProcessingTestCaseLifecycleMultipleTimes()
         {
-            Convention.ClassExecution
-                .Lifecycle((testClass, runCases) =>
-                {
-                    var instance = Activator.CreateInstance(testClass);
-
-                    runCases(@case => @case.Execute(instance));
-                    runCases(@case => @case.Execute(instance));
-                });
+            Convention.ClassExecution.Lifecycle<RunCasesTwice>();
 
             var output = Run();
 

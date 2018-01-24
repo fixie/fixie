@@ -32,9 +32,9 @@
                 testClass.TryInvoke("FixtureSetUp", instance);
                 runCases(@case =>
                 {
-                    @case.Class.TryInvoke("SetUp", instance);
+                    testClass.TryInvoke("SetUp", instance);
                     @case.Execute(instance);
-                    @case.Class.TryInvoke("TearDown", instance);
+                    testClass.TryInvoke("TearDown", instance);
                 });
                 testClass.TryInvoke("FixtureTearDown", instance);
 

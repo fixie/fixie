@@ -79,13 +79,13 @@
             testClass.InvokeAll<TestFixtureSetUpAttribute>(instance);
             runCases(@case =>
             {
-                @case.Class.InvokeAll<SetUpAttribute>(instance);
+                testClass.InvokeAll<SetUpAttribute>(instance);
 
                 @case.Execute(instance);
 
                 HandleExpectedExceptions(@case);
 
-                @case.Class.InvokeAll<TearDownAttribute>(instance);
+                testClass.InvokeAll<TearDownAttribute>(instance);
             });
             testClass.InvokeAll<TestFixtureTearDownAttribute>(instance);
 

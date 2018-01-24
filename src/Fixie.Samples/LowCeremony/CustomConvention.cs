@@ -19,33 +19,26 @@
                 .Where(method => LifecycleMethods.All(x => x != method.Name));
 
             ClassExecution
-                .CreateInstancePerClass()
+                .Lifecycle<CallSetUpTearDownMethodsByName>()
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
-
-            FixtureExecution
-                .Wrap<CallFixtureSetUpTearDownMethodsByName>();
-
-            CaseExecution
-                .Wrap<CallSetUpTearDownMethodsByName>();
         }
 
-        class CallSetUpTearDownMethodsByName : CaseBehavior
+        class CallSetUpTearDownMethodsByName : Lifecycle
         {
-            public void Execute(Case @case, Action next)
+            public void Execute(Type testClass, Action<CaseAction> runCases)
             {
-                @case.Class.TryInvoke("SetUp", @case.Fixture.Instance);
-                next();
-                @case.Class.TryInvoke("TearDown", @case.Fixture.Instance);
-            }
-        }
+                var instance = Activator.CreateInstance(testClass);
 
-        class CallFixtureSetUpTearDownMethodsByName : FixtureBehavior
-        {
-            public void Execute(Fixture fixture, Action next)
-            {
-                fixture.Class.Type.TryInvoke("FixtureSetUp", fixture.Instance);
-                next();
-                fixture.Class.Type.TryInvoke("FixtureTearDown", fixture.Instance);
+                testClass.TryInvoke("FixtureSetUp", instance);
+                runCases(@case =>
+                {
+                    testClass.TryInvoke("SetUp", instance);
+                    @case.Execute(instance);
+                    testClass.TryInvoke("TearDown", instance);
+                });
+                testClass.TryInvoke("FixtureTearDown", instance);
+
+                (instance as IDisposable)?.Dispose();
             }
         }
     }

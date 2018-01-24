@@ -7,7 +7,7 @@
     /// <summary>
     /// A test case being executed, representing a single call to a test method.
     /// </summary>
-    public class Case : BehaviorContext
+    public class Case
     {
         readonly List<Exception> exceptions;
 
@@ -81,11 +81,6 @@
         {
             exceptions.Clear();
         }
-
-        /// <summary>
-        /// The fixture (test class instance) under which the test case is executing.
-        /// </summary>
-        public Fixture Fixture { get; internal set; }
 
         /// <summary>
         /// The object returned by the invocation of the test case method.

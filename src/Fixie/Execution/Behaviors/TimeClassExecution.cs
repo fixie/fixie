@@ -1,12 +1,13 @@
-namespace Fixie.Execution.Behaviors
+﻿namespace Fixie.Execution.Behaviors
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
 
-    class TimeClassExecution : ClassBehavior
+    static class TimeClassExecution
     {
-        public void Execute(Class context, Action next)
+        public static void Execute(IReadOnlyList<Case> cases, Action next)
         {
             var stopwatch = Stopwatch.StartNew();
             next();
@@ -14,7 +15,7 @@ namespace Fixie.Execution.Behaviors
 
             var classExecutionDuration = stopwatch.Elapsed;
 
-            var totalCaseDuration = TimeSpan.FromTicks(context.Cases.Sum(x => x.Duration.Ticks));
+            var totalCaseDuration = TimeSpan.FromTicks(cases.Sum(x => x.Duration.Ticks));
 
             // Due to the Stopwatch's precision, it is possible that the sum of multiple
             // imprecise Case measurements will exceed the single imprecise measurement
@@ -22,14 +23,14 @@ namespace Fixie.Execution.Behaviors
 
             if (classExecutionDuration > totalCaseDuration)
             {
-                var buildChainDuration = classExecutionDuration - totalCaseDuration;
+                var lifecycleOverheadDuration = classExecutionDuration - totalCaseDuration;
 
-                var numberOfCases = context.Cases.Count;
+                var numberOfCases = cases.Count;
 
-                var buildChainDurationPerCase = TimeSpan.FromTicks(buildChainDuration.Ticks / numberOfCases);
+                var lifecycleOverheadDurationPerCase = TimeSpan.FromTicks(lifecycleOverheadDuration.Ticks / numberOfCases);
 
-                foreach (var @case in context.Cases)
-                    @case.Duration += buildChainDurationPerCase;
+                foreach (var @case in cases)
+                    @case.Duration += lifecycleOverheadDurationPerCase;
             }
         }
     }

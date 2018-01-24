@@ -1,31 +1,24 @@
 ﻿namespace Fixie.Execution.Behaviors
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
 
-    class ExecuteCases : FixtureBehavior
+    static class ExecuteCases
     {
-        readonly BehaviorChain<Case> caseBehaviors;
-
-        public ExecuteCases(BehaviorChain<Case> caseBehaviors)
+        public static void Execute(IReadOnlyList<Case> cases, CaseAction caseLifecycle)
         {
-            this.caseBehaviors = caseBehaviors;
-        }
-
-        public void Execute(Fixture fixture, Action next)
-        {
-            foreach (var @case in fixture.Cases)
+            foreach (var @case in cases)
             {
+                string consoleOutput;
                 using (var console = new RedirectedConsole())
                 {
-                    @case.Fixture = fixture;
-
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();
 
                     try
                     {
-                        caseBehaviors.Execute(@case);
+                        caseLifecycle(@case);
                     }
                     catch (Exception exception)
                     {
@@ -34,12 +27,13 @@
 
                     stopwatch.Stop();
 
-                    @case.Fixture = null;
                     @case.Duration += stopwatch.Elapsed;
-                    @case.Output = console.Output;
+
+                    consoleOutput = console.Output;
+                    @case.Output += consoleOutput;
                 }
 
-                Console.Write(@case.Output);
+                Console.Write(consoleOutput);
             }
         }
     }

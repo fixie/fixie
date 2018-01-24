@@ -18,7 +18,7 @@
                 .Skip(SkipDueToMethodLevelSkipAttribute);
 
             ClassExecution
-                .CreateInstancePerClass()
+                .Lifecycle<CreateInstancePerClass>()
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
         }
 

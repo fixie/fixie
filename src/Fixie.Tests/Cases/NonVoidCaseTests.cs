@@ -6,6 +6,7 @@ namespace Fixie.Tests.Cases
     using System.Threading.Tasks;
     using Assertions;
     using Fixie.Execution;
+    using Lifecycle = Fixie.Lifecycle;
 
     public class NonVoidCaseTests : CaseTests
     {
@@ -43,8 +44,8 @@ namespace Fixie.Tests.Cases
             using (var console = new RedirectedConsole())
             {
                 Convention
-                    .CaseExecution
-                    .Wrap<TreatBoolReturnValuesAsAssertions>();
+                    .ClassExecution
+                    .Lifecycle<TreatBoolReturnValuesAsAssertions>();
 
                 Run<SampleTestClass>();
 
@@ -70,8 +71,8 @@ namespace Fixie.Tests.Cases
             using (var console = new RedirectedConsole())
             {
                 Convention
-                    .CaseExecution
-                    .Wrap<TreatBoolReturnValuesAsAssertions>();
+                    .ClassExecution
+                    .Lifecycle<TreatBoolReturnValuesAsAssertions>();
 
                 Run<SampleAsyncTestClass>();
 
@@ -128,12 +129,23 @@ namespace Fixie.Tests.Cases
             }
         }
 
-        class TreatBoolReturnValuesAsAssertions : CaseBehavior
+        class TreatBoolReturnValuesAsAssertions : Lifecycle
         {
-            public void Execute(Case @case, Action next)
+            public void Execute(Type testClass, Action<CaseAction> runCases)
             {
-                next();
+                runCases(@case =>
+                {
+                    var instance = Activator.CreateInstance(testClass);
 
+                    @case.Execute(instance);
+                    ProcessReturnValues(@case);
+
+                    (instance as IDisposable)?.Dispose();
+                });
+            }
+
+            static void ProcessReturnValues(Case @case)
+            {
                 Console.WriteLine(@case.Method.Name + " " + (@case.ReturnValue ?? "null"));
 
                 if (@case.Exceptions.Any())

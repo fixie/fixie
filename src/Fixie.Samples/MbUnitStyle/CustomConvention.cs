@@ -16,15 +16,8 @@
                 .HasOrInherits<TestAttribute>();
 
             ClassExecution
-                    .CreateInstancePerClass()
-                    .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
-
-            FixtureExecution
-                .Wrap<FixtureSetUpTearDown>();
-
-            CaseExecution
-                .Wrap<SupportExpectedExceptions>()
-                .Wrap<SetUpTearDown>();
+                .Lifecycle<SetUpTearDown>()
+                .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
 
             Parameters
                 .Add<RowAttributeParameterSource>()
@@ -73,7 +66,7 @@
                 return GetColumnParameters(parameterInfos);
             }
 
-            private static IEnumerable<object[]> GetColumnParameters(ParameterInfo[] parameterInfos)
+            static IEnumerable<object[]> GetColumnParameters(ParameterInfo[] parameterInfos)
             {
                 foreach (var parameterInfo in parameterInfos)
                 {
@@ -104,7 +97,7 @@
             }
         }
 
-        private static object ChangeType(object parameter, Type type)
+        static object ChangeType(object parameter, Type type)
         {
             if (parameter != null && parameter.GetType() != type)
             {
@@ -119,12 +112,30 @@
         }
     }
 
-    class SupportExpectedExceptions : CaseBehavior
+    class SetUpTearDown : Lifecycle
     {
-        public void Execute(Case @case, Action next)
+        public void Execute(Type testClass, Action<CaseAction> runCases)
         {
-            next();
+            var instance = Activator.CreateInstance(testClass);
 
+            testClass.InvokeAll<FixtureSetUpAttribute>(instance);
+            runCases(@case =>
+            {
+                testClass.InvokeAll<SetUpAttribute>(instance);
+
+                @case.Execute(instance);
+
+                HandleExpectedExceptions(@case);
+
+                testClass.InvokeAll<TearDownAttribute>(instance);
+            });
+            testClass.InvokeAll<FixtureTearDownAttribute>(instance);
+
+            (instance as IDisposable)?.Dispose();
+        }
+
+        static void HandleExpectedExceptions(Case @case)
+        {
             var attribute = @case.Method.GetCustomAttributes<ExpectedExceptionAttribute>(false).SingleOrDefault();
 
             if (attribute == null)
@@ -142,37 +153,21 @@
             {
                 @case.ClearExceptions();
 
-                throw new Exception("Expected exception of type " + attribute.ExpectedException + " but an exception of type " + exception.GetType() + " was thrown.", exception);
+                throw new Exception(
+                    "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
+                    exception.GetType() + " was thrown.", exception);
             }
 
             if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
             {
                 @case.ClearExceptions();
 
-                throw new Exception("Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.", exception);
+                throw new Exception(
+                    "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
+                    exception);
             }
 
             @case.ClearExceptions();
-        }
-    }
-
-    class SetUpTearDown : CaseBehavior
-    {
-        public void Execute(Case @case, Action next)
-        {
-            @case.Class.InvokeAll<SetUpAttribute>(@case.Fixture.Instance);
-            next();
-            @case.Class.InvokeAll<TearDownAttribute>(@case.Fixture.Instance);
-        }
-    }
-
-    class FixtureSetUpTearDown : FixtureBehavior
-    {
-        public void Execute(Fixture fixture, Action next)
-        {
-            fixture.Class.Type.InvokeAll<FixtureSetUpAttribute>(fixture.Instance);
-            next();
-            fixture.Class.Type.InvokeAll<FixtureTearDownAttribute>(fixture.Instance);
         }
     }
 

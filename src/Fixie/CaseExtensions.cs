@@ -1,13 +1,13 @@
-﻿namespace Fixie.Execution.Behaviors
+﻿namespace Fixie
 {
     using System;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
 
-    class InvokeMethod : CaseBehavior
+    public static class CaseExtensions
     {
-        public void Execute(Case @case, Action next)
+        public static void Execute(this Case @case, object instance)
         {
             try
             {
@@ -24,7 +24,7 @@
                     if (method.ContainsGenericParameters)
                         throw new Exception("Could not resolve type parameters for generic test case.");
 
-                    returnValue = method.Invoke(@case.Fixture.Instance, @case.Parameters);
+                    returnValue = method.Invoke(instance, @case.Parameters);
                 }
                 catch (TargetInvocationException exception)
                 {

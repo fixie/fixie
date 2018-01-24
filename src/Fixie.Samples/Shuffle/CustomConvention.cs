@@ -16,7 +16,7 @@
                 .Where(method => method.IsVoid());
 
             ClassExecution
-                .CreateInstancePerClass()
+                .Lifecycle<CreateInstancePerClass>()
                 .ShuffleCases(new Random(Seed));
         }
     }

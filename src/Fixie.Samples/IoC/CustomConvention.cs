@@ -4,12 +4,8 @@
 
     public class CustomConvention : Convention
     {
-        readonly IoCContainer container;
-
         public CustomConvention()
         {
-            container = InitContainerForIntegrationTests();
-
             Classes
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
@@ -18,22 +14,29 @@
                 .Where(method => method.IsVoid());
 
             ClassExecution
-                .CreateInstancePerClass()
-                .UsingFactory(GetFromContainer)
+                .Lifecycle<IocLifecycle>()
                 .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
         }
 
-        static IoCContainer InitContainerForIntegrationTests()
+        public class IocLifecycle : Lifecycle
         {
-            var container = new IoCContainer();
-            container.Add(typeof(IDatabase), new RealDatabase());
-            container.Add(typeof(IThirdPartyService), new FakeThirdPartyService());
-            return container;
-        }
+            public void Execute(Type testClass, Action<CaseAction> runCases)
+            {
+                using (var container = InitContainerForIntegrationTests())
+                {
+                    var instance = container.Get(testClass);
 
-        object GetFromContainer(Type testClass)
-        {
-            return container.Get(testClass);
+                    runCases(@case => @case.Execute(instance));
+                }
+            }
+
+            static IoCContainer InitContainerForIntegrationTests()
+            {
+                var container = new IoCContainer();
+                container.Add(typeof(IDatabase), typeof(RealDatabase));
+                container.Add(typeof(IThirdPartyService), typeof(FakeThirdPartyService));
+                return container;
+            }
         }
     }
 }

@@ -12,48 +12,6 @@
         }
 
         /// <summary>
-        /// Wraps each test case with the specified behavior.
-        /// 
-        /// <para>
-        /// The behavior may perform custom actions before, after, or instead of
-        /// executing each test case. Invoke next() to proceed with normal execution.
-        /// </para>
-        /// </summary>
-        public CaseBehaviorExpression Wrap<TCaseBehavior>() where TCaseBehavior : CaseBehavior
-        {
-            config.WrapCases(() => (CaseBehavior)Activator.CreateInstance(typeof(TCaseBehavior)));
-            return this;
-        }
-
-        /// <summary>
-        /// Wraps each test case with the specified behavior.
-        /// 
-        /// <para>
-        /// The behavior may perform custom actions before, after, or instead of
-        /// executing each test case. Invoke next() to proceed with normal execution.
-        /// </para>
-        /// </summary>
-        public CaseBehaviorExpression Wrap(CaseBehavior behavior)
-        {
-            config.WrapCases(() => behavior);
-            return this;
-        }
-
-        /// <summary>
-        /// Wraps each test case with the specified behavior.
-        /// 
-        /// <para>
-        /// The behavior may perform custom actions before, after, or instead of
-        /// executing each test case. Invoke next() to proceed with normal execution.
-        /// </para>
-        /// </summary>
-        public CaseBehaviorExpression Wrap(CaseBehaviorAction behavior)
-        {
-            config.WrapCases(() => new LambdaBehavior(behavior));
-            return this;
-        }
-
-        /// <summary>
         /// Allows the specified predicate to determine whether a given test case should be skipped
         /// during execution. Skipped test cases are never executed, but are counted and identified.
         /// When a test is skipped, the behavior may include an optional explanation in the output.
@@ -94,19 +52,6 @@
         {
             config.AddSkipBehavior(new LambdaSkipBehavior(skipCase, getSkipReason));
             return this;
-        }
-
-        class LambdaBehavior : CaseBehavior
-        {
-            readonly CaseBehaviorAction execute;
-
-            public LambdaBehavior(CaseBehaviorAction execute)
-            {
-                this.execute = execute;
-            }
-
-            public void Execute(Case context, Action next)
-                => execute(context, next);
         }
 
         class LambdaSkipBehavior : SkipBehavior

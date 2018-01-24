@@ -1,12 +1,10 @@
 ﻿namespace Fixie
 {
-    using System;
     using System.Reflection;
-    using Cli;
     using Conventions;
 
     /// <summary>
-    /// Base class for all Fixie conventions.  Subclass Convention to customize test discovery and execution.
+    /// Base class for all Fixie conventions. Subclass Convention to customize test discovery and execution.
     /// </summary>
     public class Convention
     {
@@ -18,7 +16,6 @@
             Methods = new MethodExpression(Config);
             Parameters = new ParameterSourceExpression(Config);
             CaseExecution = new CaseBehaviorExpression(Config);
-            FixtureExecution = new FixtureBehaviorExpression(Config);
             ClassExecution = new ClassBehaviorExpression(Config);
             HideExceptionDetails = new AssertionLibraryExpression(Config);
         }
@@ -54,11 +51,6 @@
         /// Customizes the execution of each test case.
         /// </summary>
         public CaseBehaviorExpression CaseExecution { get; }
-
-        /// <summary>
-        /// Customizes the execution of each test fixture (test class instance).
-        /// </summary>
-        public FixtureBehaviorExpression FixtureExecution { get; }
 
         /// <summary>
         /// Customizes the execution of each test class.

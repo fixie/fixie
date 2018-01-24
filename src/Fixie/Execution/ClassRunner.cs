@@ -8,7 +8,7 @@
     class ClassRunner
     {
         readonly Bus bus;
-        readonly ExecutionPlan executionPlan;
+        readonly LifecycleRunner lifecycleRunner;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
@@ -21,7 +21,7 @@
             var config = convention.Config;
 
             this.bus = bus;
-            executionPlan = new ExecutionPlan(convention);
+            lifecycleRunner = new LifecycleRunner(convention.Config.Lifecycle);
             methodDiscoverer = new MethodDiscoverer(filter, convention);
             parameterDiscoverer = new ParameterDiscoverer(convention);
             assertionLibraryFilter = new AssertionLibraryFilter(convention);
@@ -187,7 +187,9 @@
             => parameterDiscoverer.GetParameters(method);
 
         void Run(Type testClass, IReadOnlyList<Case> casesToExecute)
-            => executionPlan.ExecuteClassBehaviors(new Class(testClass, casesToExecute));
+        {
+            lifecycleRunner.Execute(testClass, casesToExecute);
+        }
 
         void Start(Type testClass)
         {

@@ -4,7 +4,7 @@
         <VersionPrefix>2.0.0</VersionPrefix>
         <VersionSuffix>alpha-0000</VersionSuffix>
         <Authors>Patrick Lioi</Authors>
-        <Copyright>Copyright © 2013-2017 Patrick Lioi</Copyright>
+        <Copyright>Copyright © 2013-2018 Patrick Lioi</Copyright>
         <PackageLicenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</PackageLicenseUrl>
         <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
         <PackageIconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</PackageIconUrl>

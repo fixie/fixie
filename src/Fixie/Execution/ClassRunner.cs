@@ -9,7 +9,7 @@
     class ClassRunner
     {
         readonly Bus bus;
-        readonly LifecycleRunner lifecycleRunner;
+        readonly Lifecycle lifecycle;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
         readonly AssertionLibraryFilter assertionLibraryFilter;
@@ -22,7 +22,7 @@
             var config = convention.Config;
 
             this.bus = bus;
-            lifecycleRunner = new LifecycleRunner(convention.Config.Lifecycle);
+            lifecycle = convention.Config.Lifecycle;
             methodDiscoverer = new MethodDiscoverer(filter, convention);
             parameterDiscoverer = new ParameterDiscoverer(convention);
             assertionLibraryFilter = new AssertionLibraryFilter(convention);
@@ -121,7 +121,7 @@
 
             if (casesToExecute.Any())
             {
-                Run(testClass, casesToExecute);
+                RunLifecycle(testClass, casesToExecute);
 
                 foreach (var @case in casesToExecute)
                 {
@@ -189,11 +189,6 @@
         IEnumerable<object[]> Parameters(MethodInfo method)
             => parameterDiscoverer.GetParameters(method);
 
-        void Run(Type testClass, IReadOnlyList<Case> casesToExecute)
-        {
-            lifecycleRunner.Execute(testClass, casesToExecute);
-        }
-
         void Start(Type testClass)
         {
             bus.Publish(new ClassStarted(testClass));
@@ -223,6 +218,52 @@
         void Complete(Type testClass, ExecutionSummary summary, TimeSpan duration)
         {
             bus.Publish(new ClassCompleted(testClass, summary, duration));
+        }
+
+        void RunLifecycle(Type testClass, IReadOnlyList<Case> cases)
+        {
+            try
+            {
+                lifecycle.Execute(testClass, caseLifecycle =>
+                {
+                    ExecuteCases(cases, caseLifecycle);
+                });
+            }
+            catch (Exception exception)
+            {
+                foreach (var @case in cases)
+                    @case.Fail(exception);
+            }
+        }
+
+        static void ExecuteCases(IReadOnlyList<Case> cases, CaseAction caseLifecycle)
+        {
+            foreach (var @case in cases)
+            {
+                string consoleOutput;
+                using (var console = new RedirectedConsole())
+                {
+                    var stopwatch = Stopwatch.StartNew();
+
+                    try
+                    {
+                        caseLifecycle(@case);
+                    }
+                    catch (Exception exception)
+                    {
+                        @case.Fail(exception);
+                    }
+
+                    stopwatch.Stop();
+
+                    @case.Duration += stopwatch.Elapsed;
+
+                    consoleOutput = console.Output;
+                    @case.Output += consoleOutput;
+                }
+
+                Console.Write(consoleOutput);
+            }
         }
     }
 }

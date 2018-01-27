@@ -4,13 +4,20 @@
 
     public class ClassCompleted : Message
     {
-        public ClassCompleted(Type @class, ExecutionSummary summary)
+        readonly ExecutionSummary summary;
+
+        public ClassCompleted(Type @class, ExecutionSummary summary, TimeSpan duration)
         {
             Class = @class;
-            Summary = summary;
+            Duration = duration;
+            this.summary = summary;
         }
 
         public Type Class { get; }
-        public ExecutionSummary Summary { get; }
+        public int Passed => summary.Passed;
+        public int Failed => summary.Failed;
+        public int Skipped => summary.Skipped;
+        public int Total => summary.Total;
+        public TimeSpan Duration { get; }
     }
 }

@@ -67,16 +67,14 @@
 
         public void Handle(ClassCompleted message)
         {
-            var summary = message.Summary;
-
             classes.Add(
                 new XElement("class",
-                    new XAttribute("time", Seconds(summary.Duration)),
+                    new XAttribute("time", Seconds(message.Duration)),
                     new XAttribute("name", message.Class.FullName),
-                    new XAttribute("total", summary.Total),
-                    new XAttribute("passed", summary.Passed),
-                    new XAttribute("failed", summary.Failed),
-                    new XAttribute("skipped", summary.Skipped),
+                    new XAttribute("total", message.Total),
+                    new XAttribute("passed", message.Passed),
+                    new XAttribute("failed", message.Failed),
+                    new XAttribute("skipped", message.Skipped),
                     currentClass));
 
             currentClass = new List<XElement>();
@@ -85,7 +83,6 @@
         public void Handle(AssemblyCompleted message)
         {
             var now = DateTime.UtcNow;
-            var summary = message.Summary;
 
             save(new XDocument(
                 new XElement("assemblies",
@@ -93,11 +90,11 @@
                         new XAttribute("name", message.Assembly.Location),
                         new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                         new XAttribute("run-time", now.ToString("HH:mm:ss")),
-                        new XAttribute("time", Seconds(summary.Duration)),
-                        new XAttribute("total", summary.Total),
-                        new XAttribute("passed", summary.Passed),
-                        new XAttribute("failed", summary.Failed),
-                        new XAttribute("skipped", summary.Skipped),
+                        new XAttribute("time", Seconds(message.Duration)),
+                        new XAttribute("total", message.Total),
+                        new XAttribute("passed", message.Passed),
+                        new XAttribute("failed", message.Failed),
+                        new XAttribute("skipped", message.Skipped),
                         new XAttribute("environment", $"{IntPtr.Size * 8}-bit .NET {Framework}"),
                         new XAttribute("test-framework", Fixie.Framework.Version),
                         classes))));

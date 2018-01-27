@@ -13,21 +13,18 @@
 
         public void Execute(Type testClass, IReadOnlyList<Case> cases)
         {
-            TimeClassExecution.Execute(cases, () =>
+            try
             {
-                try
+                lifecycle.Execute(testClass, caseLifecycle =>
                 {
-                    lifecycle.Execute(testClass, caseLifecycle =>
-                    {
-                        ExecuteCases.Execute(cases, caseLifecycle);
-                    });
-                }
-                catch (Exception exception)
-                {
-                    foreach (var @case in cases)
-                        @case.Fail(exception);
-                }
-            });
+                    ExecuteCases.Execute(cases, caseLifecycle);
+                });
+            }
+            catch (Exception exception)
+            {
+                foreach (var @case in cases)
+                    @case.Fail(exception);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Execution.Listeners
 {
     using System;
+    using System.Collections.Generic;
     using Execution;
 
     public class ConsoleListener :
@@ -32,8 +33,29 @@
 
         public void Handle(AssemblyCompleted message)
         {
-            Console.WriteLine($"{message.Summary}");
+            Console.WriteLine(Summarize(message));
             Console.WriteLine();
+        }
+
+        static string Summarize(AssemblyCompleted message)
+        {
+            if (message.Total == 0)
+                return "No tests found.";
+
+            var parts = new List<string>();
+
+            if (message.Passed > 0)
+                parts.Add($"{message.Passed} passed");
+
+            if (message.Failed > 0)
+                parts.Add($"{message.Failed} failed");
+
+            if (message.Skipped > 0)
+                parts.Add($"{message.Skipped} skipped");
+
+            parts.Add($"took {message.Duration.TotalSeconds:N2} seconds");
+
+            return String.Join(", ", parts);
         }
     }
 }

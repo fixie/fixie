@@ -1,119 +1,63 @@
 ﻿namespace Fixie.Tests.Execution
 {
-    using System;
+    using System.Collections.Generic;
     using Assertions;
     using Fixie.Execution;
     using static Utility;
 
     public class ExecutionSummaryTests
     {
-        public void ShouldAccumulateCaseStatusCountsAndDurations()
-        {
-            var listener = Run();
-
-            var @class = listener.SummaryOfClass;
-
-            @class.Passed.ShouldEqual(1);
-            @class.Failed.ShouldEqual(2);
-            @class.Skipped.ShouldEqual(3);
-            @class.Total.ShouldEqual(6);
-            @class.Duration.ShouldEqual(listener.ExpectedDuration);
-
-            var assembly = listener.SummaryOfAssembly;
-
-            assembly.Passed.ShouldEqual(1);
-            assembly.Failed.ShouldEqual(2);
-            assembly.Skipped.ShouldEqual(3);
-            assembly.Total.ShouldEqual(6);
-            assembly.Duration.ShouldEqual(listener.ExpectedDuration);
-        }
-
-        public void ShouldProvideUserFacingStringRepresentation()
-        {
-            Run()
-                .SummaryOfAssembly
-                .ToString()
-                .CleanDuration()
-                .ShouldEqual("1 passed, 2 failed, 3 skipped, took 1.23 seconds");
-        }
-
-        public void ShouldNotReportPassCountsInUserFacingStringRepresentationWhenZeroTestsHavePassed()
-        {
-            void ZeroPassed(Convention convention)
-                => convention.Methods.Where(method => !method.Name.StartsWith("Pass"));
-
-            Run(ZeroPassed)
-                .SummaryOfAssembly
-                .ToString()
-                .CleanDuration()
-                .ShouldEqual("2 failed, 3 skipped, took 1.23 seconds");
-        }
-
-        public void ShouldNotReportFailCountsInUserFacingStringRepresentationWhenZeroTestsHaveFailed()
-        {
-            void ZeroFailed(Convention convention)
-                => convention.Methods.Where(method => !method.Name.StartsWith("Fail"));
-
-            Run(ZeroFailed)
-                .SummaryOfAssembly
-                .ToString()
-                .CleanDuration()
-                .ShouldEqual("1 passed, 3 skipped, took 1.23 seconds");
-        }
-
-        public void ShouldNotReportSkipCountsInUserFacingStringRepresentationWhenZeroTestsHaveBeenSkipped()
-        {
-            void ZeroSkipped(Convention convention)
-                => convention.Methods.Where(method => !method.Name.StartsWith("Skip"));
-
-            Run(ZeroSkipped)
-                .SummaryOfAssembly
-                .ToString()
-                .CleanDuration()
-                .ShouldEqual("1 passed, 2 failed, took 1.23 seconds");
-        }
-
-        public void ShouldProvideDiagnosticUserFacingStringRepresentationWhenNoTestsWereExecuted()
-        {
-            void NoTestsFound(Convention convention)
-                => convention.Methods.Where(method => false);
-
-            Run(NoTestsFound)
-                .SummaryOfAssembly
-                .ToString()
-                .CleanDuration()
-                .ShouldEqual("No tests found.");
-        }
-
-        static StubExecutionSummaryListener Run(Action<Convention> customize = null)
+        public void ShouldAccumulateCaseStatusCounts()
         {
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Method.Name.StartsWith("Skip"));
 
-            customize?.Invoke(convention);
-
             var listener = new StubExecutionSummaryListener();
 
-            Run<SampleTestClass>(listener, convention);
+            RunTypes(listener, convention, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
-            return listener;
+            listener.ClassSummaries.Count.ShouldEqual(2);
+            listener.AssemblySummary.Count.ShouldEqual(1);
+
+            var classA = listener.ClassSummaries[0];
+            var classB = listener.ClassSummaries[1];
+            var assembly = listener.AssemblySummary[0];
+
+            classA.Passed.ShouldEqual(1);
+            classA.Failed.ShouldEqual(1);
+            classA.Skipped.ShouldEqual(1);
+            classA.Total.ShouldEqual(3);
+
+            classB.Passed.ShouldEqual(1);
+            classB.Failed.ShouldEqual(2);
+            classB.Skipped.ShouldEqual(3);
+            classB.Total.ShouldEqual(6);
+
+            assembly.Passed.ShouldEqual(2);
+            assembly.Failed.ShouldEqual(3);
+            assembly.Skipped.ShouldEqual(4);
+            assembly.Total.ShouldEqual(9);
         }
 
         class StubExecutionSummaryListener :
-            Handler<CaseCompleted>,
             Handler<ClassCompleted>,
             Handler<AssemblyCompleted>
         {
-            public TimeSpan ExpectedDuration { get; private set; }
-            public ExecutionSummary SummaryOfClass { get; private set; }
-            public ExecutionSummary SummaryOfAssembly { get; private set; }
+            public List<ClassCompleted> ClassSummaries { get; } = new List<ClassCompleted>();
+            public List<AssemblyCompleted> AssemblySummary { get; } = new List<AssemblyCompleted>();
 
-            public void Handle(CaseCompleted message) => ExpectedDuration += message.Duration;
-            public void Handle(ClassCompleted message) => SummaryOfClass = message.Summary;
-            public void Handle(AssemblyCompleted message) => SummaryOfAssembly = message.Summary;
+            public void Handle(ClassCompleted message) => ClassSummaries.Add(message);
+            public void Handle(AssemblyCompleted message) => AssemblySummary.Add(message);
         }
 
-        class SampleTestClass
+        class FirstSampleTestClass
+        {
+            public void Pass() { }
+            public void Fail() { throw new FailureException(); }
+            public void Skip() { }
+        }
+
+        class SecondSampleTestClass
         {
             public void Pass() { }
             public void FailA() { throw new FailureException(); }

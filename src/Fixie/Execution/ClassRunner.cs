@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
 
@@ -87,6 +88,7 @@
                 return summary;
 
             Start(testClass);
+            var stopwatch = Stopwatch.StartNew();
 
             var casesToExecute = new List<Case>();
 
@@ -130,7 +132,8 @@
                 }
             }
 
-            Complete(testClass, summary);
+            stopwatch.Stop();
+            Complete(testClass, summary, stopwatch.Elapsed);
 
             return summary;
         }
@@ -217,9 +220,9 @@
             bus.Publish(message);
         }
 
-        void Complete(Type testClass, ExecutionSummary summary)
+        void Complete(Type testClass, ExecutionSummary summary, TimeSpan duration)
         {
-            bus.Publish(new ClassCompleted(testClass, summary));
+            bus.Publish(new ClassCompleted(testClass, summary, duration));
         }
     }
 }

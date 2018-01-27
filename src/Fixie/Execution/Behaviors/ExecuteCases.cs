@@ -13,8 +13,7 @@
                 string consoleOutput;
                 using (var console = new RedirectedConsole())
                 {
-                    var stopwatch = new Stopwatch();
-                    stopwatch.Start();
+                    var stopwatch = Stopwatch.StartNew();
 
                     try
                     {

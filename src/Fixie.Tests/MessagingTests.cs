@@ -9,11 +9,16 @@
 
     public abstract class MessagingTests
     {
-        readonly Convention convention;
-
         protected MessagingTests()
         {
-            convention = new Convention();
+            TestClass = FullName<SampleTestClass>();
+        }
+
+        protected string TestClass { get; }
+
+        protected void Run(Listener listener, Action<Convention> customize = null)
+        {
+            var convention = new Convention();
 
             convention
                 .Classes
@@ -32,13 +37,10 @@
             convention.
                 HideExceptionDetails.For<AssertActualExpectedException>();
 
-            TestClass = FullName<SampleTestClass>();
+            customize?.Invoke(convention);
+
+            RunTypes(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));
         }
-
-        protected string TestClass { get; }
-
-        protected void Run(Listener listener) 
-            => RunTypes(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));
 
         protected class Base
         {

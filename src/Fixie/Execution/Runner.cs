@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
 
@@ -121,13 +122,16 @@
 
         ExecutionSummary Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
         {
-            var assemblySummary = new ExecutionSummary();
             bus.Publish(new AssemblyStarted(assembly));
+
+            var assemblySummary = new ExecutionSummary();
+            var stopwatch = Stopwatch.StartNew();
 
             foreach (var convention in conventions)
                 Run(convention, candidateTypes, assemblySummary);
 
-            bus.Publish(new AssemblyCompleted(assembly, assemblySummary));
+            stopwatch.Stop();
+            bus.Publish(new AssemblyCompleted(assembly, assemblySummary, stopwatch.Elapsed));
 
             return assemblySummary;
         }

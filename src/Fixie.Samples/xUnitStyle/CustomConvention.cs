@@ -17,7 +17,7 @@
 
             ClassExecution
                 .Lifecycle<FixtureDataLifecycle>()
-                .ShuffleCases();
+                .ShuffleMethods();
         }
 
         bool HasAnyFactMethods(Type type)

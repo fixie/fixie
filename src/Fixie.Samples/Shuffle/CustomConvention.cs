@@ -17,7 +17,7 @@
 
             ClassExecution
                 .Lifecycle<CreateInstancePerClass>()
-                .ShuffleCases(new Random(Seed));
+                .ShuffleMethods(new Random(Seed));
         }
     }
 }

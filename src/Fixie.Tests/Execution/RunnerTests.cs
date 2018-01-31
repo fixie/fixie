@@ -41,7 +41,7 @@ namespace Fixie.Tests.Execution
 
             convention.ClassExecution
                 .Lifecycle<CreateInstancePerClass>()
-                .ShuffleCases(new Random(1));
+                .ShuffleMethods(new Random(1));
 
             var bus = new Bus(listener);
             new Runner(bus).RunTypes(GetType().Assembly, convention,

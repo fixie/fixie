@@ -26,7 +26,7 @@
 
             convention
                 .ClassExecution
-                .SortCases((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
+                .SortMethods((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
 
             convention
                 .CaseExecution

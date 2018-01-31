@@ -14,7 +14,7 @@
 
         public Configuration()
         {
-            OrderCases = executions => { };
+            OrderMethods = executions => { };
             Lifecycle = new DefaultLifecycle();
 
             testClassConditions = new List<Func<Type, bool>>();
@@ -24,7 +24,7 @@
             skipBehaviors = new List<SkipBehavior>();
         }
 
-        public Action<Case[]> OrderCases { get; set; }
+        public Action<MethodInfo[]> OrderMethods { get; set; }
         public Lifecycle Lifecycle { get; set; }
 
         static object UseDefaultConstructor(Type type)

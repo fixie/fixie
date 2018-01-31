@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Conventions
 {
     using System;
+    using System.Reflection;
 
     public class ClassBehaviorExpression
     {
@@ -30,29 +31,29 @@
         }
 
         /// <summary>
-        /// Randomizes the order of execution of a test class's contained test cases, using the
+        /// Randomizes the order of execution of a test class's contained test methods, using the
         /// given pseudo-random number generator.
         /// </summary>
-        public ClassBehaviorExpression ShuffleCases(Random random)
+        public ClassBehaviorExpression ShuffleMethods(Random random)
         {
-            config.OrderCases = cases => Shuffle(cases, random);
+            config.OrderMethods = methods => Shuffle(methods, random);
             return this;
         }
 
         /// <summary>
-        /// Randomizes the order of execution of a test class's contained test cases.
+        /// Randomizes the order of execution of a test class's contained test methods.
         /// </summary>
-        public ClassBehaviorExpression ShuffleCases()
+        public ClassBehaviorExpression ShuffleMethods()
         {
-            return ShuffleCases(new Random());
+            return ShuffleMethods(new Random());
         }
 
         /// <summary>
-        /// Defines the order of execution of a test class's contained test cases.
+        /// Defines the order of execution of a test class's contained test methods.
         /// </summary>
-        public ClassBehaviorExpression SortCases(Comparison<Case> comparison)
+        public ClassBehaviorExpression SortMethods(Comparison<MethodInfo> comparison)
         {
-            config.OrderCases = cases => Array.Sort(cases, comparison);
+            config.OrderMethods = methods => Array.Sort(methods, comparison);
             return this;
         }
 

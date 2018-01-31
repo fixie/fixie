@@ -20,7 +20,7 @@
 
             ClassExecution
                 .Lifecycle<CallSetUpTearDownMethodsByName>()
-                .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
+                .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
         }
 
         class CallSetUpTearDownMethodsByName : Lifecycle

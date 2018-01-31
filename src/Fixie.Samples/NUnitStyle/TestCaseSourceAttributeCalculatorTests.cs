@@ -46,12 +46,12 @@
         }
 
         [Test]
-        [TestCaseSource("FieldSource")]
         [TestCaseSource("FieldSource", typeof(ExternalSourceOfTestCaseData))]
-        [TestCaseSource("MethodSource")]
         [TestCaseSource("MethodSource", typeof(ExternalSourceOfTestCaseData))]
-        [TestCaseSource("PropertySource")]
         [TestCaseSource("PropertySource", typeof(ExternalSourceOfTestCaseData))]
+        [TestCaseSource("FieldSource")]
+        [TestCaseSource("MethodSource")]
+        [TestCaseSource("PropertySource")]
         public void ShouldAddFromFieldSource(string source, int a, int b, int expectedSum)
         {
             log.AppendLine($"{source}: ShouldAdd({a}, {b}, {expectedSum})");

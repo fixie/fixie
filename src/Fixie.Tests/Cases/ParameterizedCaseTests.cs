@@ -243,11 +243,11 @@
 
         class GenericTestClass
         {
-            [Input(null, "stringArg1", "stringArg2", typeof(string), typeof(string))]
-            [Input("stringArg", null, null, typeof(string), typeof(object))]
             [Input(123, null, 456, typeof(int), typeof(object))]
-            [Input("stringArg1", null, "stringArg2", typeof(string), typeof(object))]
             [Input(123, "stringArg1", 456, typeof(int), typeof(string))]
+            [Input("stringArg", null, null, typeof(string), typeof(object))]
+            [Input("stringArg1", null, "stringArg2", typeof(string), typeof(object))]
+            [Input(null, "stringArg1", "stringArg2", typeof(string), typeof(string))]
             public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genericArgument1A, T2 genericArgument2, T1 genericArgument1B, Type expectedT1, Type expectedT2)
             {
                 typeof(T1).ShouldEqual(expectedT1, $"Expected {Format(genericArgument1A)}+{Format(genericArgument1B)} to resolve to type {expectedT1} but found type {typeof(T1)}");
@@ -255,21 +255,21 @@
             }
 
             [Input(123, 456, typeof(int))]
+            [Input("stringArg", 123, typeof(object))]
+            [Input(123, "stringArg", typeof(object))]
             [Input(123, null, typeof(object))]
             [Input(null, null, typeof(object))]
-            [Input("stringArg1", "stringArg2", typeof(string))]
-            [Input(123, "stringArg", typeof(object))]
-            [Input("stringArg", 123, typeof(object))]
-            [Input(null, "stringArg", typeof(string))]
             [Input("stringArg", null, typeof(string))]
+            [Input("stringArg1", "stringArg2", typeof(string))]
+            [Input(null, "stringArg", typeof(string))]
             public void SingleGenericArgumentMultipleParameters<T>(T genericArgument1, T genericArgument2, Type expectedT)
             {
                 typeof(T).ShouldEqual(expectedT, $"Expected {Format(genericArgument1)}+{Format(genericArgument2)} to resolve to type {expectedT} but found type {typeof(T)}");
             }
 
             [Input(123, typeof(int))]
-            [Input("stringArg", typeof(string))]
             [Input(null, typeof(object))]
+            [Input("stringArg", typeof(string))]
             public void SingleGenericArgument<T>(T genericArgument, Type expectedT)
             {
                 typeof(T).ShouldEqual(expectedT, $"Expected {Format(genericArgument)} to resolve to type {expectedT} but found type {typeof(T)}");

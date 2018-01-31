@@ -18,7 +18,7 @@
 
             ClassExecution
                 .Lifecycle<CreateInstancePerClass>()
-                .SortMethods((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
+                .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
 
             Parameters
                 .Add<InputAttributeParameterSource>();

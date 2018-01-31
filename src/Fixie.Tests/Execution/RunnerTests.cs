@@ -65,7 +65,7 @@ namespace Fixie.Tests.Execution
 
             convention.ClassExecution
                 .Lifecycle<CreateInstancePerClass>()
-                .SortMethods((caseA, caseB) => { throw new Exception("SortMethods lambda expression threw!"); });
+                .SortMethods((methodA, methodB) => { throw new Exception("SortMethods lambda expression threw!"); });
 
             convention.Parameters
                 .Add<BuggyParameterSource>();

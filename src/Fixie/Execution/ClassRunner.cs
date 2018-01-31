@@ -15,7 +15,7 @@
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
         readonly IReadOnlyList<SkipBehavior> skipBehaviors;
-        readonly Action<Case[]> orderCases;
+        readonly Action<Case[]> orderMethods;
 
         public ClassRunner(Bus bus, Filter filter, Convention convention)
         {
@@ -28,7 +28,7 @@
             assertionLibraryFilter = new AssertionLibraryFilter(convention);
 
             skipBehaviors = config.SkipBehaviors;
-            orderCases = config.OrderMethods;
+            orderMethods = config.OrderMethods;
         }
 
         public ExecutionSummary Run(Type testClass)
@@ -68,7 +68,7 @@
             var orderedCases = cases.ToArray();
             try
             {
-                orderCases(orderedCases);
+                orderMethods(orderedCases);
             }
             catch (Exception exception)
             {

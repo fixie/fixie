@@ -35,7 +35,7 @@
         /// </summary>
         public ClassBehaviorExpression ShuffleMethods(Random random)
         {
-            config.OrderMethods = cases => Shuffle(cases, random);
+            config.OrderMethods = methods => Shuffle(methods, random);
             return this;
         }
 
@@ -52,7 +52,7 @@
         /// </summary>
         public ClassBehaviorExpression SortMethods(Comparison<Case> comparison)
         {
-            config.OrderMethods = cases => Array.Sort(cases, comparison);
+            config.OrderMethods = methods => Array.Sort(methods, comparison);
             return this;
         }
 

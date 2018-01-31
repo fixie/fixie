@@ -24,7 +24,7 @@
             skipBehaviors = new List<SkipBehavior>();
         }
 
-        public Action<Case[]> OrderMethods { get; set; }
+        public Action<MethodInfo[]> OrderMethods { get; set; }
         public Lifecycle Lifecycle { get; set; }
 
         static object UseDefaultConstructor(Type type)

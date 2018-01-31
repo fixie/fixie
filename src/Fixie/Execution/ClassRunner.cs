@@ -15,7 +15,7 @@
         readonly AssertionLibraryFilter assertionLibraryFilter;
 
         readonly IReadOnlyList<SkipBehavior> skipBehaviors;
-        readonly Action<Case[]> orderMethods;
+        readonly Action<MethodInfo[]> orderMethods;
 
         public ClassRunner(Bus bus, Filter filter, Convention convention)
         {
@@ -35,9 +35,27 @@
         {
             var methods = methodDiscoverer.TestMethods(testClass);
 
+            Exception orderException = null;
+
+            var orderedMethods = methods.ToArray();
+            try
+            {
+                orderMethods(orderedMethods);
+            }
+            catch (Exception exception)
+            {
+                // When an exception is thrown attempting to sort an array,
+                // the behavior is undefined, so at this point orderedMethods
+                // is no longer reliable and needs to be fixed. The best we
+                // can do is go with the original order.
+                orderedMethods = methods.ToArray();
+
+                orderException = exception;
+            }
+
             var cases = new List<Case>();
 
-            foreach (var method in methods)
+            foreach (var method in orderedMethods)
             {
                 try
                 {
@@ -65,26 +83,13 @@
                 }
             }
 
-            var orderedCases = cases.ToArray();
-            try
-            {
-                orderMethods(orderedCases);
-            }
-            catch (Exception exception)
-            {
-                // When an exception is thrown attempting to sort an array,
-                // the behavior is undefined, so at this point orderedCases
-                // is no longer reliable and needs to be fixed. The best we
-                // can do is go with the original order.
-                orderedCases = cases.ToArray();
-
+            if (orderException != null)
                 foreach (var @case in cases)
-                    @case.Fail(exception);
-            }
+                    @case.Fail(orderException);
 
             var summary = new ExecutionSummary();
 
-            if (!orderedCases.Any())
+            if (!cases.Any())
                 return summary;
 
             Start(testClass);
@@ -92,7 +97,7 @@
 
             var casesToExecute = new List<Case>();
 
-            foreach (var @case in orderedCases)
+            foreach (var @case in cases)
             {
                 if (@case.Exceptions.Any())
                     Fail(@case, summary);

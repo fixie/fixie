@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Conventions
 {
     using System;
+    using System.Reflection;
 
     public class ClassBehaviorExpression
     {
@@ -50,7 +51,7 @@
         /// <summary>
         /// Defines the order of execution of a test class's contained test methods.
         /// </summary>
-        public ClassBehaviorExpression SortMethods(Comparison<Case> comparison)
+        public ClassBehaviorExpression SortMethods(Comparison<MethodInfo> comparison)
         {
             config.OrderMethods = methods => Array.Sort(methods, comparison);
             return this;

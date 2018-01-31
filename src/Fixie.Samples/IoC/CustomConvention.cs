@@ -15,7 +15,7 @@
 
             ClassExecution
                 .Lifecycle<IocLifecycle>()
-                .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
+                .SortMethods((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
         }
 
         public class IocLifecycle : Lifecycle

@@ -21,7 +21,7 @@
             Convention = new Convention();
             Convention.Classes.Where(testClass => testClass == typeof(SampleTestClass));
             Convention.Methods.Where(method => method.Name == "Pass" || method.Name == "Fail");
-            Convention.ClassExecution.SortCases((x, y) => String.Compare(y.Name, x.Name, StringComparison.Ordinal));
+            Convention.ClassExecution.SortMethods((x, y) => String.Compare(y.Name, x.Name, StringComparison.Ordinal));
         }
 
         static void FailDuring(params string[] failingMemberNames)

@@ -48,9 +48,9 @@
         }
 
         /// <summary>
-        /// Defines the order of execution of a test class's contained test cases.
+        /// Defines the order of execution of a test class's contained test methods.
         /// </summary>
-        public ClassBehaviorExpression SortCases(Comparison<Case> comparison)
+        public ClassBehaviorExpression SortMethods(Comparison<Case> comparison)
         {
             config.OrderCases = cases => Array.Sort(cases, comparison);
             return this;

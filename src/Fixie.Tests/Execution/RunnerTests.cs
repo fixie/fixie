@@ -65,7 +65,7 @@ namespace Fixie.Tests.Execution
 
             convention.ClassExecution
                 .Lifecycle<CreateInstancePerClass>()
-                .SortCases((caseA, caseB) => { throw new Exception("SortCases lambda expression threw!"); });
+                .SortMethods((caseA, caseB) => { throw new Exception("SortMethods lambda expression threw!"); });
 
             convention.Parameters
                 .Add<BuggyParameterSource>();
@@ -83,29 +83,29 @@ namespace Fixie.Tests.Execution
 
                 Self + "+BuggyParameterGenerationTestClass.ParameterizedA failed: Exception thrown while attempting to yield input parameters for method: ParameterizedA" + NewLine +
                 "    Secondary Failure: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortCases lambda expression threw!",
+                "    Inner Exception: SortMethods lambda expression threw!",
 
                 Self + "+BuggyParameterGenerationTestClass.ParameterizedB failed: Exception thrown while attempting to yield input parameters for method: ParameterizedB" + NewLine +
                 "    Secondary Failure: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortCases lambda expression threw!",
+                "    Inner Exception: SortMethods lambda expression threw!",
 
                 Self + "+PassFailTestClass.Fail failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortCases lambda expression threw!",
+                "    Inner Exception: SortMethods lambda expression threw!",
 
                 Self + "+PassFailTestClass.Pass failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortCases lambda expression threw!",
+                "    Inner Exception: SortMethods lambda expression threw!",
 
                 Self + "+PassTestClass.PassA failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortCases lambda expression threw!",
+                "    Inner Exception: SortMethods lambda expression threw!",
 
                 Self + "+PassTestClass.PassB failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortCases lambda expression threw!",
+                "    Inner Exception: SortMethods lambda expression threw!",
 
                 Self + "+SkipTestClass.SkipA failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortCases lambda expression threw!",
+                "    Inner Exception: SortMethods lambda expression threw!",
 
                 Self + "+SkipTestClass.SkipB failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortCases lambda expression threw!");
+                "    Inner Exception: SortMethods lambda expression threw!");
         }
 
         class CreateInstancePerClass : Lifecycle

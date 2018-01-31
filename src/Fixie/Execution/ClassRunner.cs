@@ -28,7 +28,7 @@
             assertionLibraryFilter = new AssertionLibraryFilter(convention);
 
             skipBehaviors = config.SkipBehaviors;
-            orderCases = config.OrderCases;
+            orderCases = config.OrderMethods;
         }
 
         public ExecutionSummary Run(Type testClass)

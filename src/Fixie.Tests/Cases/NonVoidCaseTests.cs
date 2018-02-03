@@ -151,9 +151,20 @@ namespace Fixie.Tests.Cases
                 if (@case.Exception != null)
                     return;
 
-                if (@case.ReturnValue is bool)
-                    if (!(bool)@case.ReturnValue)
+                if (@case.ReturnValue is bool success)
+                {
+                    if (success)
+                        return;
+
+                    try
+                    {
                         throw new Exception("Boolean test case returned false!");
+                    }
+                    catch (Exception exception)
+                    {
+                        @case.Fail(exception);
+                    }
+                }
             }
         }
     }

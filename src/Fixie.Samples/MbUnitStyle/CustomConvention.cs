@@ -143,28 +143,35 @@
 
             var exception = @case.Exception;
 
-            if (exception == null)
-                throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
-
-            if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
+            try
             {
+                if (exception == null)
+                    throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
+
+                if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
+                {
+                    @case.ClearException();
+
+                    throw new Exception(
+                        "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
+                        exception.GetType() + " was thrown.", exception);
+                }
+
+                if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
+                {
+                    @case.ClearException();
+
+                    throw new Exception(
+                        "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
+                        exception);
+                }
+
                 @case.ClearException();
-
-                throw new Exception(
-                    "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
-                    exception.GetType() + " was thrown.", exception);
             }
-
-            if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
+            catch (Exception failureReason)
             {
-                @case.ClearException();
-
-                throw new Exception(
-                    "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
-                    exception);
+                @case.Fail(failureReason);
             }
-
-            @case.ClearException();
         }
     }
 

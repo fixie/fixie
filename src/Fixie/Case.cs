@@ -20,6 +20,20 @@
             Exception = null;
         }
 
+        internal Case(Case originalCase, Exception secondaryFailureReason)
+        {
+            Parameters = originalCase.Parameters;
+            Class = originalCase.Class;
+            Method = originalCase.Method;
+            Name = originalCase.Name;
+
+            ReturnValue = null;
+            Duration = TimeSpan.Zero;
+            Output = null;
+
+            Fail(secondaryFailureReason);
+        }
+
         /// <summary>
         /// Gets the name of the test case, including any input parameters.
         /// </summary>

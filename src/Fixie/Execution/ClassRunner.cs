@@ -126,7 +126,7 @@
 
             if (casesToExecute.Any())
             {
-                RunLifecycle(testClass, casesToExecute);
+                RunLifecycle(testClass, casesToExecute, summary);
 
                 foreach (var @case in casesToExecute)
                 {
@@ -225,13 +225,13 @@
             bus.Publish(new ClassCompleted(testClass, summary, duration));
         }
 
-        void RunLifecycle(Type testClass, IReadOnlyList<Case> cases)
+        void RunLifecycle(Type testClass, IReadOnlyList<Case> cases, ExecutionSummary summary)
         {
             try
             {
                 lifecycle.Execute(testClass, caseLifecycle =>
                 {
-                    ExecuteCases(cases, caseLifecycle);
+                    ExecuteCases(cases, caseLifecycle, summary);
                 });
             }
             catch (Exception exception)
@@ -241,7 +241,7 @@
             }
         }
 
-        static void ExecuteCases(IReadOnlyList<Case> cases, CaseAction caseLifecycle)
+        void ExecuteCases(IReadOnlyList<Case> cases, CaseAction caseLifecycle, ExecutionSummary summary)
         {
             foreach (var @case in cases)
             {
@@ -256,7 +256,7 @@
                     }
                     catch (Exception exception)
                     {
-                        @case.Fail(exception);
+                        Fail(new Case(@case, exception), summary);
                     }
 
                     stopwatch.Stop();

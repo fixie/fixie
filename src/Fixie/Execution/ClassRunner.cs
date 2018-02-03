@@ -168,8 +168,10 @@
                 {
                     if (@case.Exception != null)
                         Fail(@case, summary);
-                    else
+                    else if (@case.Executed)
                         Pass(@case, summary);
+                    else
+                        Skip(@case, null, summary);
                 }
             }
 

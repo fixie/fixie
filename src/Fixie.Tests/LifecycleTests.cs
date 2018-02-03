@@ -152,8 +152,8 @@
             public void Execute(Type testClass, Action<CaseAction> runCases)
             {
                 //Class lifecycle chooses not to invoke runCases(...).
-                //Since the test cases never run, they don't have a
-                //chance to throw exceptions, resulting in all 'passing'.
+                //Since the test cases never run, they are all considered
+                //'skipped'.
             }
         }
 
@@ -164,8 +164,8 @@
                 runCases(@case =>
                 {
                     //Case lifecycle chooses not to invoke @case.Execute(instance).
-                    //Since the test cases never run, they don't have a
-                    //chance to throw exceptions, resulting in all 'passing'.
+                    //Since the test cases never run, they are all considered
+                    //'skipped'.
                 });
             }
         }
@@ -286,8 +286,8 @@
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail passed");
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail skipped");
 
             output.ShouldHaveLifecycle();
         }
@@ -300,8 +300,8 @@
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail passed");
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail skipped");
 
             output.ShouldHaveLifecycle();
         }
@@ -317,8 +317,8 @@
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: '.ctor' failed!",
                 "SampleTestClass.Fail failed: '.ctor' failed!",
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail passed");
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail skipped");
 
             output.ShouldHaveLifecycle(".ctor", ".ctor");
         }
@@ -334,8 +334,8 @@
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: '.ctor' failed!",
                 "SampleTestClass.Fail failed: '.ctor' failed!",
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail passed");
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail skipped");
 
             output.ShouldHaveLifecycle(".ctor");
         }
@@ -351,8 +351,8 @@
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
                 "SampleTestClass.Fail failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail passed");
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail skipped");
 
             output.ShouldHaveLifecycle(
                 ".ctor",

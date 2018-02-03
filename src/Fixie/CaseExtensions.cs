@@ -61,6 +61,8 @@
             {
                 @case.Fail(exception);
             }
+
+            @case.Executed = true;
         }
 
         static void ThrowForUnsupportedAsyncVoid()

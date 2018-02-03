@@ -15,9 +15,9 @@
 
             Listener.Entries.ShouldEqual(
                 For<SkippedTestClass>(
+                    ".Explicit passed",
                     ".ExplicitAndSkip skipped",
                     ".Fail skipped",
-                    ".Explicit passed",
                     ".Pass passed"));
         }
 
@@ -30,9 +30,9 @@
 
             Listener.Entries.ShouldEqual(
                 For<SkippedTestClass>(
+                    ".Explicit passed",
                     ".ExplicitAndSkip skipped",
                     ".Fail skipped: Troublesome test skipped.",
-                    ".Explicit passed",
                     ".Pass passed"));
         }
 
@@ -115,13 +115,13 @@
 
             Listener.Entries.ShouldEqual(
                 For<SkippedTestClass>(
+                    ".Explicit passed",
+
                     ".ExplicitAndSkip failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + NewLine +
                     "    Inner Exception: Unsafe case-skipped reason generator threw!",
 
                     ".Fail failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + NewLine +
                     "    Inner Exception: Unsafe case-skipped reason generator threw!",
-
-                    ".Explicit passed",
 
                     ".Pass passed"));
         }

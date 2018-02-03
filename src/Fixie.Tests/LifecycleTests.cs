@@ -450,7 +450,7 @@
                 "SampleTestClass.Pass skipped",
                 "SampleTestClass.Fail skipped");
 
-            output.ShouldHaveLifecycle();
+            output.ShouldHaveLifecycle(".ctor", "Dispose");
         }
 
         public void ShouldSkipLifecycleWhenConstructingPerCaseButAllCasesFailCustomParameterGeneration()

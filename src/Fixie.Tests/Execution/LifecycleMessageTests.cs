@@ -26,11 +26,11 @@
 
             listener.Cases.Count.ShouldEqual(5);
 
-            var skipWithReason = (CaseSkipped)listener.Cases[0];
-            var skipWithoutReason = (CaseSkipped)listener.Cases[1];
-            var fail = (CaseFailed)listener.Cases[2];
-            var failByAssertion = (CaseFailed)listener.Cases[3];
-            var pass = (CasePassed)listener.Cases[4];
+            var fail = (CaseFailed)listener.Cases[0];
+            var failByAssertion = (CaseFailed)listener.Cases[1];
+            var pass = (CasePassed)listener.Cases[2];
+            var skipWithReason = (CaseSkipped)listener.Cases[3];
+            var skipWithoutReason = (CaseSkipped)listener.Cases[4];
 
             pass.Name.ShouldEqual(TestClass + ".Pass");
             pass.Class.FullName.ShouldEqual(TestClass);

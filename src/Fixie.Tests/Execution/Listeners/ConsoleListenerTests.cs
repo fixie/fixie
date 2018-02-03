@@ -20,11 +20,6 @@
                        .CleanDuration()
                        .Lines()
                        .ShouldEqual(
-                           "Test '" + TestClass + ".SkipWithReason' skipped:",
-                           "Skipped with reason.",
-                           "",
-                           "Test '" + TestClass + ".SkipWithoutReason' skipped",
-                           "",
                            "Console.Out: Fail",
                            "Console.Error: Fail",
                            "Console.Out: FailByAssertion",
@@ -41,6 +36,11 @@
                            "Expected: 2",
                            "Actual:   1",
                            At("FailByAssertion()"),
+                           "",
+                           "Test '" + TestClass + ".SkipWithReason' skipped:",
+                           "Skipped with reason.",
+                           "",
+                           "Test '" + TestClass + ".SkipWithoutReason' skipped",
                            "",
                            "1 passed, 2 failed, 2 skipped, took 1.23 seconds");
             }

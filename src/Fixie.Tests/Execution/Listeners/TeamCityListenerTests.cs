@@ -22,8 +22,6 @@
                     .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'"))
                     .ShouldEqual(
                         "##teamcity[testSuiteStarted name='Fixie.Tests']",
-                        "##teamcity[testIgnored name='" + TestClass + ".SkipWithReason' message='Skipped with reason.']",
-                        "##teamcity[testIgnored name='" + TestClass + ".SkipWithoutReason' message='']",
 
                         "Console.Out: Fail",
                         "Console.Error: Fail",
@@ -43,6 +41,8 @@
                         "##teamcity[testStarted name='" + TestClass + ".Pass']",
                         "##teamcity[testStdOut name='" + TestClass + ".Pass' out='Console.Out: Pass|r|nConsole.Error: Pass|r|n']",
                         "##teamcity[testFinished name='" + TestClass + ".Pass' duration='#']",
+                        "##teamcity[testIgnored name='" + TestClass + ".SkipWithReason' message='Skipped with reason.']",
+                        "##teamcity[testIgnored name='" + TestClass + ".SkipWithoutReason' message='']",
                         "##teamcity[testSuiteFinished name='Fixie.Tests']");
             }
         }

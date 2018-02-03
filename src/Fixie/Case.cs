@@ -89,5 +89,6 @@
         internal TimeSpan Duration { get; set; }
         internal string Output { get; set; }
         internal bool Executed { get; set; }
+        internal string SkipReason { get; set; }
     }
 }

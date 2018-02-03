@@ -2,10 +2,10 @@
 {
     public class CaseSkipped : CaseCompleted
     {
-        public CaseSkipped(Case @case, string reason)
+        public CaseSkipped(Case @case)
             : base(@case)
         {
-            Reason = reason;
+            Reason = @case.SkipReason;
         }
 
         public string Reason { get; }

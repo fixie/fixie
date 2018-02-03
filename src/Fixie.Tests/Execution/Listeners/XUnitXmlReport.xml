@@ -2,12 +2,6 @@
 <assemblies>
 <assembly name="[assemblyLocation]" run-date="YYYY-MM-DD" run-time="HH:MM:SS" time="1.234" total="5" passed="1" failed="2" skipped="2" environment="00-bit .NET 1.2.3.4" test-framework="Fixie 1.2.3.4">
   <class time="1.234" name="[testClass]" total="5" passed="1" failed="2" skipped="2">
-    <test name="[testClass].SkipWithReason" type="[testClass]" method="SkipWithReason" result="Skip">
-      <reason>
-        <message><![CDATA[Skipped with reason.]]></message>
-      </reason>
-    </test>
-    <test name="[testClass].SkipWithoutReason" type="[testClass]" method="SkipWithoutReason" result="Skip" />
     <test name="[testClass].Fail" type="[testClass]" method="Fail" result="Fail" time="1.234">
       <failure exception-type="Fixie.Tests.FailureException">
         <message><![CDATA['Fail' failed!]]></message>
@@ -23,6 +17,12 @@ Actual:   1]]></message>
       </failure>
     </test>
     <test name="[testClass].Pass" type="[testClass]" method="Pass" result="Pass" time="1.234" />
+    <test name="[testClass].SkipWithReason" type="[testClass]" method="SkipWithReason" result="Skip">
+      <reason>
+        <message><![CDATA[Skipped with reason.]]></message>
+      </reason>
+    </test>
+    <test name="[testClass].SkipWithoutReason" type="[testClass]" method="SkipWithoutReason" result="Skip" />
   </class>
 </assembly>
 </assemblies>

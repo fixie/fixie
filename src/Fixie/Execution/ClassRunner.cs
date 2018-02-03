@@ -102,26 +102,7 @@
                 if (@case.Exception != null)
                     Fail(@case, summary);
                 else
-                {
-                    string reason;
-                    bool skipCase;
-
-                    try
-                    {
-                        skipCase = SkipCase(@case, out reason);
-                    }
-                    catch (Exception exception)
-                    {
-                        @case.Fail(exception);
-                        Fail(@case, summary);
-                        continue;
-                    }
-
-                    if (skipCase)
-                        Skip(@case, reason, summary);
-                    else
-                        casesToExecute.Add(@case);
-                }
+                    casesToExecute.Add(@case);
             }
 
             if (casesToExecute.Any())
@@ -132,6 +113,25 @@
                     {
                         foreach (var @case in casesToExecute)
                         {
+                            string reason;
+                            bool skipCase;
+
+                            try
+                            {
+                                skipCase = SkipCase(@case, out reason);
+                            }
+                            catch (Exception exception)
+                            {
+                                @case.Fail(exception);
+                                continue;
+                            }
+
+                            if (skipCase)
+                            {
+                                @case.SkipReason = reason;
+                                continue;
+                            }
+
                             string consoleOutput;
                             using (var console = new RedirectedConsole())
                             {
@@ -171,7 +171,7 @@
                     else if (@case.Executed)
                         Pass(@case, summary);
                     else
-                        Skip(@case, null, summary);
+                        Skip(@case, summary);
                 }
             }
 
@@ -237,9 +237,9 @@
             bus.Publish(new ClassStarted(testClass));
         }
 
-        void Skip(Case @case, string reason, ExecutionSummary summary)
+        void Skip(Case @case, ExecutionSummary summary)
         {
-            var message = new CaseSkipped(@case, reason);
+            var message = new CaseSkipped(@case);
             summary.Add(message);
             bus.Publish(message);
         }

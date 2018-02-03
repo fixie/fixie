@@ -141,17 +141,14 @@
             if (attribute == null)
                 return;
 
-            if (@case.Exceptions.Count > 1)
-                return;
-
-            var exception = @case.Exceptions.SingleOrDefault();
+            var exception = @case.Exception;
 
             if (exception == null)
                 throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
 
             if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
             {
-                @case.ClearExceptions();
+                @case.ClearException();
 
                 throw new Exception(
                     "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
@@ -160,14 +157,14 @@
 
             if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
             {
-                @case.ClearExceptions();
+                @case.ClearException();
 
                 throw new Exception(
                     "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
                     exception);
             }
 
-            @case.ClearExceptions();
+            @case.ClearException();
         }
     }
 

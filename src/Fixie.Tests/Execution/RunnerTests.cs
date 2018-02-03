@@ -81,12 +81,10 @@ namespace Fixie.Tests.Execution
             var strings = listener.Entries.OrderBy(x => x).ToArray();
             strings.ShouldEqual(
 
-                Self + "+BuggyParameterGenerationTestClass.ParameterizedA failed: Exception thrown while attempting to yield input parameters for method: ParameterizedA" + NewLine +
-                "    Secondary Failure: Failed to compare two elements in the array." + NewLine +
+                Self + "+BuggyParameterGenerationTestClass.ParameterizedA failed: Failed to compare two elements in the array." + NewLine +
                 "    Inner Exception: SortMethods lambda expression threw!",
 
-                Self + "+BuggyParameterGenerationTestClass.ParameterizedB failed: Exception thrown while attempting to yield input parameters for method: ParameterizedB" + NewLine +
-                "    Secondary Failure: Failed to compare two elements in the array." + NewLine +
+                Self + "+BuggyParameterGenerationTestClass.ParameterizedB failed: Failed to compare two elements in the array." + NewLine +
                 "    Inner Exception: SortMethods lambda expression threw!",
 
                 Self + "+PassFailTestClass.Fail failed: Failed to compare two elements in the array." + NewLine +

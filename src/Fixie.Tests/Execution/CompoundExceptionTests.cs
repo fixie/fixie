@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Tests.Execution
 {
     using System;
-    using System.IO;
     using Assertions;
     using Fixie.Execution;
     using static Utility;
@@ -18,33 +17,9 @@
         public void ShouldSummarizeAnyGivenException()
         {
             var assertionLibrary = AssertionLibraryFilter();
-            var exception = GetPrimaryException();
+            var exception = GetException();
 
-            var compoundException = new CompoundException(new[] { exception }, assertionLibrary);
-
-            compoundException.Type.ShouldEqual(FullName<PrimaryException>());
-            compoundException.Message.ShouldEqual("Primary Exception!");
-            compoundException.FailedAssertion.ShouldEqual(false);
-
-            compoundException.StackTrace
-                .CleanStackTraceLineNumbers()
-                .Lines()
-                .ShouldEqual(
-                    At<CompoundExceptionTests>("GetPrimaryException()"),
-                    "",
-                    "------- Inner Exception: System.DivideByZeroException -------",
-                    "Divide by Zero Exception!",
-                    At<CompoundExceptionTests>("GetPrimaryException()"));
-        }
-
-        public void ShouldSummarizeCollectionsOfExceptionsComprisedOfPrimaryAndSecondaryExceptions()
-        {
-            var assertionLibrary = AssertionLibraryFilter();
-            var primaryException = GetPrimaryException();
-            var secondaryExceptionA = new NotImplementedException();
-            var secondaryExceptionB = GetSecondaryException();
-
-            var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
+            var compoundException = new CompoundException(exception, assertionLibrary);
 
             compoundException.Type.ShouldEqual(FullName<PrimaryException>());
             compoundException.Message.ShouldEqual("Primary Exception!");
@@ -54,27 +29,11 @@
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                    At<CompoundExceptionTests>("GetPrimaryException()"),
+                    At<CompoundExceptionTests>("GetException()"),
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",
                     "Divide by Zero Exception!",
-                    At<CompoundExceptionTests>("GetPrimaryException()"),
-                    "",
-                    "===== Secondary Exception: System.NotImplementedException =====",
-                    "The method or operation is not implemented.",
-                    "",
-                    "",
-                    "===== Secondary Exception: " + FullName<SecondaryException>() + " =====",
-                    "Secondary Exception!",
-                    At<CompoundExceptionTests>("GetSecondaryException()"),
-                    "",
-                    "------- Inner Exception: System.IO.IOException -------",
-                    "IO Exception!",
-                    At<CompoundExceptionTests>("GetSecondaryException()"),
-                    "",
-                    "------- Inner Exception: System.NotImplementedException -------",
-                    "Not Implemented Exception!",
-                    At<CompoundExceptionTests>("GetSecondaryException()"));
+                    At<CompoundExceptionTests>("GetException()"));
         }
 
         public void ShouldFilterAssertionLibraryImplementationDetails()
@@ -82,15 +41,12 @@
             convention
                 .HideExceptionDetails
                 .For<PrimaryException>()
-                .For<SecondaryException>()
                 .For<CompoundExceptionTests>();
 
             var assertionLibrary = AssertionLibraryFilter();
-            var primaryException = GetPrimaryException();
-            var secondaryExceptionA = new NotImplementedException();
-            var secondaryExceptionB = GetSecondaryException();
+            var exception = GetException();
 
-            var compoundException = new CompoundException(new[] { primaryException, secondaryExceptionA, secondaryExceptionB }, assertionLibrary);
+            var compoundException = new CompoundException(exception, assertionLibrary);
 
             compoundException.Type.ShouldEqual(FullName<PrimaryException>());
             compoundException.Message.ShouldEqual("Primary Exception!");
@@ -102,23 +58,7 @@
                     "",
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",
-                    "Divide by Zero Exception!",
-                    "",
-                    "",
-                    "===== Secondary Exception: System.NotImplementedException =====",
-                    "The method or operation is not implemented.",
-                    "",
-                    "",
-                    "===== Secondary Exception: " + FullName<SecondaryException>() + " =====",
-                    "Secondary Exception!",
-                    "",
-                    "",
-                    "------- Inner Exception: System.IO.IOException -------",
-                    "IO Exception!",
-                    "",
-                    "",
-                    "------- Inner Exception: System.NotImplementedException -------",
-                    "Not Implemented Exception!");
+                    "Divide by Zero Exception!");
         }
 
         AssertionLibraryFilter AssertionLibraryFilter()
@@ -126,7 +66,7 @@
             return new AssertionLibraryFilter(convention);
         }
 
-        static Exception GetPrimaryException()
+        static Exception GetException()
         {
             try
             {
@@ -145,42 +85,10 @@
             }
         }
 
-        static Exception GetSecondaryException()
-        {
-            try
-            {
-                try
-                {
-                    try
-                    {
-                        throw new NotImplementedException("Not Implemented Exception!");
-                    }
-                    catch (Exception exception)
-                    {
-                        throw new IOException("IO Exception!", exception);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    throw new SecondaryException(exception);
-                }
-            }
-            catch (Exception exception)
-            {
-                return exception;
-            }
-        }
-
         class PrimaryException : Exception
         {
             public PrimaryException(Exception innerException)
                 : base("Primary Exception!", innerException) { }
-        }
-
-        class SecondaryException : Exception
-        {
-            public SecondaryException(Exception innerException)
-                : base("Secondary Exception!", innerException) { }
         }
     }
 }

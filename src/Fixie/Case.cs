@@ -1,7 +1,6 @@
 ﻿namespace Fixie
 {
     using System;
-    using System.Collections.Generic;
     using System.Reflection;
 
     /// <summary>
@@ -9,8 +8,6 @@
     /// </summary>
     public class Case
     {
-        readonly List<Exception> exceptions;
-
         public Case(MethodInfo caseMethod, params object[] parameters)
         {
             Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
@@ -20,7 +17,7 @@
 
             Name = CaseNameBuilder.GetName(Class, Method, Parameters);
 
-            exceptions = new List<Exception>();
+            Exception = null;
         }
 
         /// <summary>
@@ -45,21 +42,9 @@
         public object[] Parameters { get; }
 
         /// <summary>
-        /// Gets all of the exceptions that have contributed to this test case's failure.
-        ///
-        /// <para>
-        /// A single test case could have multiple exceptions, for instance, if the
-        /// test case method throws an exception, and a subsequent behavior such as
-        /// test class Dispose() also throws an exception.
-        /// </para>
-        ///
-        /// <para>
-        /// The first encountered exception is considered the primary cause of the test
-        /// failure, and secondary exceptions are included for diagnosing any subsequent
-        /// complications.
-        /// </para>
+        /// Gets the exception describing this test case's failure.
         /// </summary>
-        public IReadOnlyList<Exception> Exceptions => exceptions;
+        public Exception Exception { get; private set; }
 
         /// <summary>
         /// Include the given exception in the running test case's list of exceptions, indicating test case failure.
@@ -69,17 +54,17 @@
             var wrapped = reason as PreservedException;
 
             if (wrapped != null)
-                exceptions.Add(wrapped.OriginalException);
+                Exception = wrapped.OriginalException;
             else
-                exceptions.Add(reason);
+                Exception = reason;
         }
 
         /// <summary>
-        /// Clear all of the test case's exceptions, indicating test success.
+        /// Clear the test case's exception, indicating test success.
         /// </summary>
-        public void ClearExceptions()
+        public void ClearException()
         {
-            exceptions.Clear();
+            Exception = null;
         }
 
         /// <summary>

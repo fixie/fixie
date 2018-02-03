@@ -205,31 +205,29 @@
             unresolvedParameterType.IsGenericParameter.ShouldBeTrue();
         }
 
-        public void ShouldTrackExceptionsAsFailureReasons()
+        public void ShouldTrackLastExceptionAsFailureReason()
         {
             var exceptionA = new InvalidOperationException();
             var exceptionB = new DivideByZeroException();
 
             var @case = Case("Returns");
 
-            @case.Exceptions.ShouldBeEmpty();
+            @case.Exception.ShouldBeNull();
             @case.Fail(exceptionA);
             @case.Fail(exceptionB);
-            @case.Exceptions.ShouldEqual(exceptionA, exceptionB);
+            @case.Exception.ShouldEqual(exceptionB);
         }
 
-        public void CanSuppressFailuresByClearingExceptionLog()
+        public void CanSuppressFailuresByClearingException()
         {
-            var exceptionA = new InvalidOperationException();
-            var exceptionB = new DivideByZeroException();
+            var exception = new InvalidOperationException();
 
             var @case = Case("Returns");
 
-            @case.Exceptions.ShouldBeEmpty();
-            @case.Fail(exceptionA);
-            @case.Fail(exceptionB);
-            @case.ClearExceptions();
-            @case.Exceptions.ShouldBeEmpty();
+            @case.Exception.ShouldBeNull();
+            @case.Fail(exception);
+            @case.ClearException();
+            @case.Exception.ShouldBeNull();
         }
 
         class SampleParentTestClass

@@ -99,7 +99,7 @@
 
             foreach (var @case in cases)
             {
-                if (@case.Exceptions.Any())
+                if (@case.Exception != null)
                     Fail(@case, summary);
                 else
                 {
@@ -130,7 +130,7 @@
 
                 foreach (var @case in casesToExecute)
                 {
-                    if (@case.Exceptions.Any())
+                    if (@case.Exception != null)
                         Fail(@case, summary);
                     else
                         Pass(@case, summary);

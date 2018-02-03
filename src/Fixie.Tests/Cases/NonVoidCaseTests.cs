@@ -148,7 +148,7 @@ namespace Fixie.Tests.Cases
             {
                 Console.WriteLine(@case.Method.Name + " " + (@case.ReturnValue ?? "null"));
 
-                if (@case.Exceptions.Any())
+                if (@case.Exception != null)
                     return;
 
                 if (@case.ReturnValue is bool)

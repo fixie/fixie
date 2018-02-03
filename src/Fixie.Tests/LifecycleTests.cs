@@ -365,8 +365,7 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
-                "    Secondary Failure: 'CaseTearDown' failed!");
+                "SampleTestClass.Fail failed: 'CaseTearDown' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
@@ -385,8 +384,7 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
-                "    Secondary Failure: 'Dispose' failed!");
+                "SampleTestClass.Fail failed: 'Dispose' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor", "Pass", "Dispose",
@@ -403,8 +401,7 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
-                "    Secondary Failure: 'Dispose' failed!");
+                "SampleTestClass.Fail failed: 'Dispose' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
@@ -481,8 +478,7 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
-                "    Secondary Failure: 'Fail' failed!");
+                "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor", "Pass", "Fail", "Pass", "Fail");

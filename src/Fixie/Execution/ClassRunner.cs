@@ -237,7 +237,7 @@
             catch (Exception exception)
             {
                 foreach (var @case in cases)
-                    @case.Fail(exception);
+                    Fail(new Case(@case, exception), summary);
             }
         }
 

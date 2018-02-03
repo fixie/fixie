@@ -333,7 +333,9 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: '.ctor' failed!",
-                "SampleTestClass.Fail failed: '.ctor' failed!");
+                "SampleTestClass.Fail failed: '.ctor' failed!",
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail passed");
 
             output.ShouldHaveLifecycle(".ctor");
         }
@@ -410,7 +412,9 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Fail failed: 'Dispose' failed!");
+                "SampleTestClass.Fail failed: 'Dispose' failed!",
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",

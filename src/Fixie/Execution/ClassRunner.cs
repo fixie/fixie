@@ -93,7 +93,7 @@
                 return summary;
 
             Start(testClass);
-            var stopwatch = Stopwatch.StartNew();
+            var classStopwatch = Stopwatch.StartNew();
 
             var casesToExecute = new List<Case>();
 
@@ -126,7 +126,43 @@
 
             if (casesToExecute.Any())
             {
-                RunLifecycle(testClass, casesToExecute, summary);
+                try
+                {
+                    lifecycle.Execute(testClass, caseLifecycle =>
+                    {
+                        foreach (var @case in casesToExecute)
+                        {
+                            string consoleOutput;
+                            using (var console = new RedirectedConsole())
+                            {
+                                var caseStopwatch = Stopwatch.StartNew();
+
+                                try
+                                {
+                                    caseLifecycle(@case);
+                                }
+                                catch (Exception exception)
+                                {
+                                    Fail(new Case(@case, exception), summary);
+                                }
+
+                                caseStopwatch.Stop();
+
+                                @case.Duration += caseStopwatch.Elapsed;
+
+                                consoleOutput = console.Output;
+                                @case.Output += consoleOutput;
+                            }
+
+                            Console.Write(consoleOutput);
+                        }
+                    });
+                }
+                catch (Exception exception)
+                {
+                    foreach (var @case in casesToExecute)
+                        Fail(new Case(@case, exception), summary);
+                }
 
                 foreach (var @case in casesToExecute)
                 {
@@ -137,8 +173,8 @@
                 }
             }
 
-            stopwatch.Stop();
-            Complete(testClass, summary, stopwatch.Elapsed);
+            classStopwatch.Stop();
+            Complete(testClass, summary, classStopwatch.Elapsed);
 
             return summary;
         }
@@ -223,52 +259,6 @@
         void Complete(Type testClass, ExecutionSummary summary, TimeSpan duration)
         {
             bus.Publish(new ClassCompleted(testClass, summary, duration));
-        }
-
-        void RunLifecycle(Type testClass, IReadOnlyList<Case> cases, ExecutionSummary summary)
-        {
-            try
-            {
-                lifecycle.Execute(testClass, caseLifecycle =>
-                {
-                    ExecuteCases(cases, caseLifecycle, summary);
-                });
-            }
-            catch (Exception exception)
-            {
-                foreach (var @case in cases)
-                    Fail(new Case(@case, exception), summary);
-            }
-        }
-
-        void ExecuteCases(IReadOnlyList<Case> cases, CaseAction caseLifecycle, ExecutionSummary summary)
-        {
-            foreach (var @case in cases)
-            {
-                string consoleOutput;
-                using (var console = new RedirectedConsole())
-                {
-                    var stopwatch = Stopwatch.StartNew();
-
-                    try
-                    {
-                        caseLifecycle(@case);
-                    }
-                    catch (Exception exception)
-                    {
-                        Fail(new Case(@case, exception), summary);
-                    }
-
-                    stopwatch.Stop();
-
-                    @case.Duration += stopwatch.Elapsed;
-
-                    consoleOutput = console.Output;
-                    @case.Output += consoleOutput;
-                }
-
-                Console.Write(consoleOutput);
-            }
         }
     }
 }

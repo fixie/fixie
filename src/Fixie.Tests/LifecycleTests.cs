@@ -483,18 +483,20 @@
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldAllowProcessingTestCaseLifecycleMultipleTimes()
+        public void ShouldDisallowProcessingTestCaseLifecycleMultipleTimes()
         {
             Convention.ClassExecution.Lifecycle<RunCasesTwice>();
 
             var output = Run();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Pass failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.",
+                "SampleTestClass.Fail failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.",
                 "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Pass", "Fail", "Pass", "Fail");
+                ".ctor", "Pass", "Fail");
         }
     }
 }

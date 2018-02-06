@@ -56,12 +56,19 @@
                     casesToExecute.Add(@case);
             }
 
+            bool runCasesInvokedByLifecycle = false;
+
             if (casesToExecute.Any())
             {
                 try
                 {
                     lifecycle.Execute(testClass, caseLifecycle =>
                     {
+                        if (runCasesInvokedByLifecycle)
+                            throw new Exception($"{lifecycle.GetType()} attempted to run {testClass.FullName}'s test cases multiple times, which is not supported.");
+
+                        runCasesInvokedByLifecycle = true;
+
                         foreach (var @case in casesToExecute)
                         {
                             string reason;

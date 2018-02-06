@@ -44,58 +44,7 @@
 
             var classStopwatch = Stopwatch.StartNew();
 
-            Exception orderException = null;
-
-            var orderedMethods = methods.ToArray();
-            try
-            {
-                if (orderedMethods.Length > 1)
-                    orderMethods(orderedMethods);
-            }
-            catch (Exception exception)
-            {
-                // When an exception is thrown attempting to sort an array,
-                // the behavior is undefined, so at this point orderedMethods
-                // is no longer reliable and needs to be fixed. The best we
-                // can do is go with the original order.
-                orderedMethods = methods.ToArray();
-
-                orderException = exception;
-            }
-
-            var cases = new List<Case>();
-
-            foreach (var method in orderedMethods)
-            {
-                try
-                {
-                    bool generatedInputParameters = false;
-
-                    foreach (var parameters in Parameters(method))
-                    {
-                        generatedInputParameters = true;
-                        cases.Add(new Case(method, parameters));
-                    }
-
-                    if (!generatedInputParameters)
-                    {
-                        if (method.GetParameters().Length > 0)
-                            throw new Exception("This test case has declared parameters, but no parameter values have been provided to it.");
-
-                        cases.Add(new Case(method));
-                    }
-                }
-                catch (Exception parameterGenerationException)
-                {
-                    var @case = new Case(method);
-                    @case.Fail(parameterGenerationException);
-                    cases.Add(@case);
-                }
-            }
-
-            if (orderException != null)
-                foreach (var @case in cases)
-                    @case.Fail(orderException);
+            var cases = BuildCases(methods);
 
             var casesToExecute = new List<Case>();
 
@@ -181,6 +130,65 @@
             Complete(testClass, summary, classStopwatch.Elapsed);
 
             return summary;
+        }
+
+        List<Case> BuildCases(IReadOnlyList<MethodInfo> methods)
+        {
+            Exception orderException = null;
+
+            var orderedMethods = methods.ToArray();
+            try
+            {
+                if (orderedMethods.Length > 1)
+                    orderMethods(orderedMethods);
+            }
+            catch (Exception exception)
+            {
+                // When an exception is thrown attempting to sort an array,
+                // the behavior is undefined, so at this point orderedMethods
+                // is no longer reliable and needs to be fixed. The best we
+                // can do is go with the original order.
+                orderedMethods = methods.ToArray();
+
+                orderException = exception;
+            }
+
+            var cases = new List<Case>();
+
+            foreach (var method in orderedMethods)
+            {
+                try
+                {
+                    bool generatedInputParameters = false;
+
+                    foreach (var parameters in Parameters(method))
+                    {
+                        generatedInputParameters = true;
+                        cases.Add(new Case(method, parameters));
+                    }
+
+                    if (!generatedInputParameters)
+                    {
+                        if (method.GetParameters().Length > 0)
+                            throw new Exception(
+                                "This test case has declared parameters, but no parameter values have been provided to it.");
+
+                        cases.Add(new Case(method));
+                    }
+                }
+                catch (Exception parameterGenerationException)
+                {
+                    var @case = new Case(method);
+                    @case.Fail(parameterGenerationException);
+                    cases.Add(@case);
+                }
+            }
+
+            if (orderException != null)
+                foreach (var @case in cases)
+                    @case.Fail(orderException);
+
+            return cases;
         }
 
         bool SkipCase(Case @case, out string reason)

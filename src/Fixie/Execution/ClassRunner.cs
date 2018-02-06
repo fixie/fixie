@@ -89,7 +89,7 @@
 
             var summary = new ExecutionSummary();
 
-            if (!cases.Any())
+            if (!orderedMethods.Any())
                 return summary;
 
             Start(testClass);

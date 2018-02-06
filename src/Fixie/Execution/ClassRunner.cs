@@ -111,8 +111,12 @@
                 }
                 catch (Exception exception)
                 {
-                    foreach (var @case in casesToExecute)
-                        Fail(new Case(@case, exception), summary);
+                    foreach (var method in methods)
+                    {
+                        var @case = new Case(method);
+                        @case.Fail(exception);
+                        Fail(@case, summary);
+                    }
                 }
 
                 foreach (var @case in casesToExecute)

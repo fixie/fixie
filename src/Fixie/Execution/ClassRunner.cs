@@ -40,6 +40,8 @@
             if (!methods.Any())
                 return summary;
 
+            Start(testClass);
+
             Exception orderException = null;
 
             var orderedMethods = methods.ToArray();
@@ -93,7 +95,6 @@
                 foreach (var @case in cases)
                     @case.Fail(orderException);
 
-            Start(testClass);
             var classStopwatch = Stopwatch.StartNew();
 
             var casesToExecute = new List<Case>();

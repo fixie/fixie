@@ -40,7 +40,8 @@
             var orderedMethods = methods.ToArray();
             try
             {
-                orderMethods(orderedMethods);
+                if (orderedMethods.Length > 1)
+                    orderMethods(orderedMethods);
             }
             catch (Exception exception)
             {

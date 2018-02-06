@@ -46,14 +46,9 @@
 
             var cases = BuildCases(methods);
 
-            var casesToExecute = new List<Case>();
-
-            foreach (var @case in cases)
-                casesToExecute.Add(@case);
-
             bool runCasesInvokedByLifecycle = false;
 
-            if (casesToExecute.Any())
+            if (cases.Any())
             {
                 try
                 {
@@ -64,7 +59,7 @@
 
                         runCasesInvokedByLifecycle = true;
 
-                        foreach (var @case in casesToExecute)
+                        foreach (var @case in cases)
                         {
                             if (@case.Exception != null)
                                 continue;
@@ -124,7 +119,7 @@
                     }
                 }
 
-                foreach (var @case in casesToExecute)
+                foreach (var @case in cases)
                 {
                     if (@case.Exception != null)
                         Fail(@case, summary);

@@ -49,12 +49,7 @@
             var casesToExecute = new List<Case>();
 
             foreach (var @case in cases)
-            {
-                if (@case.Exception != null)
-                    Fail(@case, summary);
-                else
-                    casesToExecute.Add(@case);
-            }
+                casesToExecute.Add(@case);
 
             bool runCasesInvokedByLifecycle = false;
 
@@ -71,6 +66,9 @@
 
                         foreach (var @case in casesToExecute)
                         {
+                            if (@case.Exception != null)
+                                continue;
+
                             string reason;
                             bool skipCase;
 

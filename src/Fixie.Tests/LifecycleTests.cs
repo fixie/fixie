@@ -480,7 +480,7 @@
                 "SampleTestClass.Pass failed: Exception thrown while attempting to yield input parameters for method: Pass",
                 "SampleTestClass.Fail failed: Exception thrown while attempting to yield input parameters for method: Fail");
 
-            output.ShouldHaveLifecycle();
+            output.ShouldHaveLifecycle(".ctor", "Dispose");
         }
 
         public void ShouldDisallowProcessingTestCaseLifecycleMultipleTimes()

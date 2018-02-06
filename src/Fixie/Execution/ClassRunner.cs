@@ -35,6 +35,11 @@
         {
             var methods = methodDiscoverer.TestMethods(testClass);
 
+            var summary = new ExecutionSummary();
+
+            if (!methods.Any())
+                return summary;
+
             Exception orderException = null;
 
             var orderedMethods = methods.ToArray();
@@ -87,11 +92,6 @@
             if (orderException != null)
                 foreach (var @case in cases)
                     @case.Fail(orderException);
-
-            var summary = new ExecutionSummary();
-
-            if (!orderedMethods.Any())
-                return summary;
 
             Start(testClass);
             var classStopwatch = Stopwatch.StartNew();

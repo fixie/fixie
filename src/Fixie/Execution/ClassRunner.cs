@@ -197,23 +197,23 @@
                     }
                 }
 
-                if (!parameterGenerationThrew && !generatedInputParameters)
+                if (parameterGenerationThrew || generatedInputParameters)
+                    continue;
+
+                if (method.GetParameters().Length > 0)
                 {
-                    if (method.GetParameters().Length > 0)
+                    try
                     {
-                        try
-                        {
-                            throw new Exception("This test case has declared parameters, but no parameter values have been provided to it.");
-                        }
-                        catch (Exception exception)
-                        {
-                            Fail(method, exception, summary);
-                        }
+                        throw new Exception("This test case has declared parameters, but no parameter values have been provided to it.");
                     }
-                    else
+                    catch (Exception exception)
                     {
-                        yield return new Case(method);
+                        Fail(method, exception, summary);
                     }
+                }
+                else
+                {
+                    yield return new Case(method);
                 }
             }
         }

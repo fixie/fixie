@@ -118,11 +118,7 @@
             {
                 lifecycleThrew = true;
                 foreach (var method in methods)
-                {
-                    var @case = new Case(method);
-                    @case.Fail(exception);
-                    Fail(@case, summary);
-                }
+                    Fail(method, exception, summary);
             }
 
             if (!runCasesInvokedByLifecycle && !lifecycleThrew)
@@ -161,11 +157,7 @@
                 orderedMethods = methods.ToArray();
 
                 foreach (var method in methods)
-                {
-                    var @case = new Case(method);
-                    @case.Fail(orderException);
-                    Fail(@case, summary);
-                }
+                    Fail(method, orderException, summary);
             }
 
             return orderedMethods;
@@ -195,9 +187,7 @@
                         {
                             parameterGenerationThrew = true;
 
-                            var @case = new Case(method);
-                            @case.Fail(exception);
-                            Fail(@case, summary);
+                            Fail(method, exception, summary);
 
                             break;
                         }
@@ -217,9 +207,7 @@
                         }
                         catch (Exception exception)
                         {
-                            var @case = new Case(method);
-                            @case.Fail(exception);
-                            Fail(@case, summary);
+                            Fail(method, exception, summary);
                         }
                     }
                     else
@@ -305,6 +293,13 @@
             var message = new CaseFailed(@case, assertionLibraryFilter);
             summary.Add(message);
             bus.Publish(message);
+        }
+
+        void Fail(MethodInfo method, Exception exception, ExecutionSummary summary)
+        {
+            var @case = new Case(method);
+            @case.Fail(exception);
+            Fail(@case, summary);
         }
 
         void Complete(Type testClass, ExecutionSummary summary, TimeSpan duration)

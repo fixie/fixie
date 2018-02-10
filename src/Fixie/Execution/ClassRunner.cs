@@ -58,7 +58,7 @@
 
                     runCasesInvokedByLifecycle = true;
 
-                    foreach (var @case in BuildCases(methods))
+                    foreach (var @case in BuildCases(methods, summary))
                     {
                         cases.Add(@case);
 
@@ -152,7 +152,7 @@
             return summary;
         }
 
-        List<Case> BuildCases(IReadOnlyList<MethodInfo> methods)
+        List<Case> BuildCases(IReadOnlyList<MethodInfo> methods, ExecutionSummary summary)
         {
             Exception orderException = null;
 
@@ -205,8 +205,14 @@
             }
 
             if (orderException != null)
-                foreach (var @case in cases)
+            {
+                foreach (var method in methods)
+                {
+                    var @case = new Case(method);
                     @case.Fail(orderException);
+                    Fail(@case, summary);
+                }
+            }
 
             return cases;
         }

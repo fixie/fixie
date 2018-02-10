@@ -37,8 +37,7 @@
 
             Listener.Entries.ShouldEqual(
                 For<CannotInvokeConstructorTestClass>(
-                    ".UnreachableCase failed: No parameterless constructor defined for this object.",
-                    ".UnreachableCase skipped"));
+                    ".UnreachableCase failed: No parameterless constructor defined for this object."));
         }
 
         class PassTestClass

@@ -78,6 +78,8 @@
                             continue;
                         }
 
+                        bool caseLifecycleThrew = false;
+
                         string consoleOutput;
                         using (var console = new RedirectedConsole())
                         {
@@ -89,6 +91,8 @@
                             }
                             catch (Exception exception)
                             {
+                                caseLifecycleThrew = true;
+
                                 Fail(new Case(@case, exception), summary);
                             }
 
@@ -106,7 +110,7 @@
                             Fail(@case, summary);
                         else if (@case.Executed)
                             Pass(@case, summary);
-                        else
+                        else if (!caseLifecycleThrew)
                             Skip(@case, summary);
                     }
                 });

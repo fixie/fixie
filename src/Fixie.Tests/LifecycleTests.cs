@@ -316,9 +316,7 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: '.ctor' failed!",
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Fail failed: '.ctor' failed!",
-                "SampleTestClass.Fail skipped");
+                "SampleTestClass.Fail failed: '.ctor' failed!");
 
             output.ShouldHaveLifecycle(".ctor", ".ctor");
         }
@@ -348,9 +346,7 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Fail failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Fail skipped");
+                "SampleTestClass.Fail failed: 'CaseSetUp' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",

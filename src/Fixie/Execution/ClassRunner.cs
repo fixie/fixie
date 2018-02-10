@@ -58,7 +58,9 @@
 
                     runCasesInvokedByLifecycle = true;
 
-                    foreach (var @case in BuildCases(methods, summary))
+                    var orderedMethods = OrderedMethods(methods, summary);
+
+                    foreach (var @case in BuildCases(orderedMethods))
                     {
                         cases.Add(@case);
 
@@ -152,10 +154,10 @@
             return summary;
         }
 
-        List<Case> BuildCases(IReadOnlyList<MethodInfo> methods, ExecutionSummary summary)
+        MethodInfo[] OrderedMethods(IReadOnlyList<MethodInfo> methods, ExecutionSummary summary)
         {
-
             var orderedMethods = methods.ToArray();
+
             try
             {
                 if (orderedMethods.Length > 1)
@@ -177,6 +179,11 @@
                 }
             }
 
+            return orderedMethods;
+        }
+
+        List<Case> BuildCases(MethodInfo[] orderedMethods)
+        {
             var cases = new List<Case>();
 
             foreach (var method in orderedMethods)

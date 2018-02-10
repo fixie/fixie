@@ -104,14 +104,19 @@
 
                         Console.Write(consoleOutput);
 
+                        var caseHasNormalResult = @case.Exception != null || @case.Executed;
+
+                        if (caseHasNormalResult)
+                        {
+                            if (@case.Exception != null)
+                                Fail(@case, summary);
+                            else
+                                Pass(@case, summary);
+                        }
+
                         if (caseLifecycleException != null)
                             Fail(new Case(@case, caseLifecycleException), summary);
-
-                        if (@case.Exception != null)
-                            Fail(@case, summary);
-                        else if (@case.Executed)
-                            Pass(@case, summary);
-                        else if (caseLifecycleException == null)
+                        else if (!caseHasNormalResult)
                             Skip(@case, summary);
                     }
                 });

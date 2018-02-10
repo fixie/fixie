@@ -154,7 +154,6 @@
 
         List<Case> BuildCases(IReadOnlyList<MethodInfo> methods, ExecutionSummary summary)
         {
-            Exception orderException = null;
 
             var orderedMethods = methods.ToArray();
             try
@@ -162,7 +161,7 @@
                 if (orderedMethods.Length > 1)
                     orderMethods(orderedMethods);
             }
-            catch (Exception exception)
+            catch (Exception orderException)
             {
                 // When an exception is thrown attempting to sort an array,
                 // the behavior is undefined, so at this point orderedMethods
@@ -170,7 +169,12 @@
                 // can do is go with the original order.
                 orderedMethods = methods.ToArray();
 
-                orderException = exception;
+                foreach (var method in methods)
+                {
+                    var @case = new Case(method);
+                    @case.Fail(orderException);
+                    Fail(@case, summary);
+                }
             }
 
             var cases = new List<Case>();
@@ -201,16 +205,6 @@
                     var @case = new Case(method);
                     @case.Fail(parameterGenerationException);
                     cases.Add(@case);
-                }
-            }
-
-            if (orderException != null)
-            {
-                foreach (var method in methods)
-                {
-                    var @case = new Case(method);
-                    @case.Fail(orderException);
-                    Fail(@case, summary);
                 }
             }
 

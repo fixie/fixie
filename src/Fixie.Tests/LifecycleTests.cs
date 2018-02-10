@@ -333,9 +333,7 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: '.ctor' failed!",
-                "SampleTestClass.Fail failed: '.ctor' failed!",
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Fail skipped");
+                "SampleTestClass.Fail failed: '.ctor' failed!");
 
             output.ShouldHaveLifecycle(".ctor");
         }

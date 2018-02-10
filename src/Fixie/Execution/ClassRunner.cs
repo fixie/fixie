@@ -44,9 +44,10 @@
 
             var classStopwatch = Stopwatch.StartNew();
 
-            var cases = BuildCases(methods);
-
+            bool lifecycleThrew = false;
             bool runCasesInvokedByLifecycle = false;
+
+            var cases = new List<Case>();
 
             try
             {
@@ -57,8 +58,10 @@
 
                     runCasesInvokedByLifecycle = true;
 
-                    foreach (var @case in cases)
+                    foreach (var @case in BuildCases(methods))
                     {
+                        cases.Add(@case);
+
                         if (@case.Exception != null)
                             continue;
 
@@ -109,6 +112,7 @@
             }
             catch (Exception exception)
             {
+                lifecycleThrew = true;
                 foreach (var method in methods)
                 {
                     var @case = new Case(method);
@@ -117,14 +121,29 @@
                 }
             }
 
-            foreach (var @case in cases)
+            if (runCasesInvokedByLifecycle)
             {
-                if (@case.Exception != null)
-                    Fail(@case, summary);
-                else if (@case.Executed)
-                    Pass(@case, summary);
-                else
+                //Emit a result for every iteration of the cases foreach.
+                foreach (var @case in cases)
+                {
+                    if (@case.Exception != null)
+                        Fail(@case, summary);
+                    else if (@case.Executed)
+                        Pass(@case, summary);
+                    else
+                        Skip(@case, summary);
+                }
+            }
+            else if (!lifecycleThrew)
+            {
+                //No cases ran, and we didn't already emit a general
+                //failure for each method, so emit a general skip for
+                //each method.
+                foreach (var method in methods)
+                {
+                    var @case = new Case(method);
                     Skip(@case, summary);
+                }
             }
 
             classStopwatch.Stop();

@@ -58,14 +58,8 @@
 
                     runCasesInvokedByLifecycle = true;
 
-                    foreach (var @case in YieldCases(orderedMethods))
+                    foreach (var @case in YieldCases(orderedMethods, summary))
                     {
-                        if (@case.Exception != null)
-                        {
-                            Fail(@case, summary);
-                            continue;
-                        }
-
                         string reason;
                         bool skipCase;
 
@@ -177,12 +171,12 @@
             return orderedMethods;
         }
 
-        IEnumerable<Case> YieldCases(MethodInfo[] orderedMethods)
+        IEnumerable<Case> YieldCases(MethodInfo[] orderedMethods, ExecutionSummary summary)
         {
             foreach (var method in orderedMethods)
             {
                 bool generatedInputParameters = false;
-                Exception parameterGenerationException = null;
+                bool parameterGenerationThrew = false;
 
                 using (var resource = Parameters(method).GetEnumerator())
                 {
@@ -199,7 +193,12 @@
                         }
                         catch (Exception exception)
                         {
-                            parameterGenerationException = exception;
+                            parameterGenerationThrew = true;
+
+                            var @case = new Case(method);
+                            @case.Fail(exception);
+                            Fail(@case, summary);
+
                             break;
                         }
 
@@ -208,31 +207,25 @@
                     }
                 }
 
-                if (parameterGenerationException == null && !generatedInputParameters)
+                if (!parameterGenerationThrew && !generatedInputParameters)
                 {
                     if (method.GetParameters().Length > 0)
                     {
                         try
                         {
-                            throw new Exception(
-                                "This test case has declared parameters, but no parameter values have been provided to it.");
+                            throw new Exception("This test case has declared parameters, but no parameter values have been provided to it.");
                         }
                         catch (Exception exception)
                         {
-                            parameterGenerationException = exception;
+                            var @case = new Case(method);
+                            @case.Fail(exception);
+                            Fail(@case, summary);
                         }
                     }
                     else
                     {
                         yield return new Case(method);
                     }
-                }
-
-                if (parameterGenerationException != null)
-                {
-                    var @case = new Case(method);
-                    @case.Fail(parameterGenerationException);
-                    yield return @case;
                 }
             }
         }

@@ -78,7 +78,7 @@
                             continue;
                         }
 
-                        bool caseLifecycleThrew = false;
+                        Exception caseLifecycleException = null;
 
                         string consoleOutput;
                         using (var console = new RedirectedConsole())
@@ -91,9 +91,7 @@
                             }
                             catch (Exception exception)
                             {
-                                caseLifecycleThrew = true;
-
-                                Fail(new Case(@case, exception), summary);
+                                caseLifecycleException = exception;
                             }
 
                             caseStopwatch.Stop();
@@ -106,11 +104,14 @@
 
                         Console.Write(consoleOutput);
 
+                        if (caseLifecycleException != null)
+                            Fail(new Case(@case, caseLifecycleException), summary);
+
                         if (@case.Exception != null)
                             Fail(@case, summary);
                         else if (@case.Executed)
                             Pass(@case, summary);
-                        else if (!caseLifecycleThrew)
+                        else if (caseLifecycleException == null)
                             Skip(@case, summary);
                     }
                 });

@@ -187,10 +187,15 @@
                 {
                     bool generatedInputParameters = false;
 
-                    foreach (var parameters in Parameters(method))
+                    using (var resource = Parameters(method).GetEnumerator())
                     {
-                        generatedInputParameters = true;
-                        cases.Add(new Case(method, parameters));
+                        while (resource.MoveNext())
+                        {
+                            var parameters = resource.Current;
+
+                            generatedInputParameters = true;
+                            cases.Add(new Case(method, parameters));
+                        }
                     }
 
                     if (!generatedInputParameters)

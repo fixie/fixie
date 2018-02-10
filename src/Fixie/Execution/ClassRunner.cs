@@ -58,7 +58,7 @@
 
                     runCasesInvokedByLifecycle = true;
 
-                    foreach (var @case in BuildCases(orderedMethods))
+                    foreach (var @case in YieldCases(orderedMethods))
                     {
                         if (@case.Exception != null)
                         {
@@ -177,10 +177,8 @@
             return orderedMethods;
         }
 
-        List<Case> BuildCases(MethodInfo[] orderedMethods)
+        IEnumerable<Case> YieldCases(MethodInfo[] orderedMethods)
         {
-            var cases = new List<Case>();
-
             foreach (var method in orderedMethods)
             {
                 bool generatedInputParameters = false;
@@ -206,7 +204,7 @@
                         }
 
                         generatedInputParameters = true;
-                        cases.Add(new Case(method, parameters));
+                        yield return new Case(method, parameters);
                     }
                 }
 
@@ -226,7 +224,7 @@
                     }
                     else
                     {
-                        cases.Add(new Case(method));
+                        yield return new Case(method);
                     }
                 }
 
@@ -234,11 +232,9 @@
                 {
                     var @case = new Case(method);
                     @case.Fail(parameterGenerationException);
-                    cases.Add(@case);
+                    yield return @case;
                 }
             }
-
-            return cases;
         }
 
         bool SkipCase(Case @case, out string reason)

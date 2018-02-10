@@ -183,31 +183,54 @@
 
             foreach (var method in orderedMethods)
             {
-                try
+                bool generatedInputParameters = false;
+                Exception parameterGenerationException = null;
+
+                using (var resource = Parameters(method).GetEnumerator())
                 {
-                    bool generatedInputParameters = false;
-
-                    using (var resource = Parameters(method).GetEnumerator())
+                    while (true)
                     {
-                        while (resource.MoveNext())
+                        object[] parameters;
+
+                        try
                         {
-                            var parameters = resource.Current;
+                            if (!resource.MoveNext())
+                                break;
 
-                            generatedInputParameters = true;
-                            cases.Add(new Case(method, parameters));
+                            parameters = resource.Current;
                         }
-                    }
+                        catch (Exception exception)
+                        {
+                            parameterGenerationException = exception;
+                            break;
+                        }
 
-                    if (!generatedInputParameters)
+                        generatedInputParameters = true;
+                        cases.Add(new Case(method, parameters));
+                    }
+                }
+
+                if (parameterGenerationException == null && !generatedInputParameters)
+                {
+                    if (method.GetParameters().Length > 0)
                     {
-                        if (method.GetParameters().Length > 0)
+                        try
+                        {
                             throw new Exception(
                                 "This test case has declared parameters, but no parameter values have been provided to it.");
-
+                        }
+                        catch (Exception exception)
+                        {
+                            parameterGenerationException = exception;
+                        }
+                    }
+                    else
+                    {
                         cases.Add(new Case(method));
                     }
                 }
-                catch (Exception parameterGenerationException)
+
+                if (parameterGenerationException != null)
                 {
                     var @case = new Case(method);
                     @case.Fail(parameterGenerationException);

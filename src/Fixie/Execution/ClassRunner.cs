@@ -49,8 +49,6 @@
             bool lifecycleThrew = false;
             bool runCasesInvokedByLifecycle = false;
 
-            var cases = new List<Case>();
-
             try
             {
                 lifecycle.Execute(testClass, caseLifecycle =>
@@ -62,10 +60,11 @@
 
                     foreach (var @case in BuildCases(orderedMethods))
                     {
-                        cases.Add(@case);
-
                         if (@case.Exception != null)
+                        {
+                            Fail(@case, summary);
                             continue;
+                        }
 
                         string reason;
                         bool skipCase;
@@ -77,12 +76,14 @@
                         catch (Exception exception)
                         {
                             @case.Fail(exception);
+                            Fail(@case, summary);
                             continue;
                         }
 
                         if (skipCase)
                         {
                             @case.SkipReason = reason;
+                            Skip(@case, summary);
                             continue;
                         }
 
@@ -109,6 +110,13 @@
                         }
 
                         Console.Write(consoleOutput);
+
+                        if (@case.Exception != null)
+                            Fail(@case, summary);
+                        else if (@case.Executed)
+                            Pass(@case, summary);
+                        else
+                            Skip(@case, summary);
                     }
                 });
             }
@@ -123,20 +131,7 @@
                 }
             }
 
-            if (runCasesInvokedByLifecycle)
-            {
-                //Emit a result for every iteration of the cases foreach.
-                foreach (var @case in cases)
-                {
-                    if (@case.Exception != null)
-                        Fail(@case, summary);
-                    else if (@case.Executed)
-                        Pass(@case, summary);
-                    else
-                        Skip(@case, summary);
-                }
-            }
-            else if (!lifecycleThrew)
+            if (!runCasesInvokedByLifecycle && !lifecycleThrew)
             {
                 //No cases ran, and we didn't already emit a general
                 //failure for each method, so emit a general skip for

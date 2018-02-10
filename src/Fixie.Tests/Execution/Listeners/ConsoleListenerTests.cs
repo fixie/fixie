@@ -22,21 +22,23 @@
                        .ShouldEqual(
                            "Console.Out: Fail",
                            "Console.Error: Fail",
-                           "Console.Out: FailByAssertion",
-                           "Console.Error: FailByAssertion",
-                           "Console.Out: Pass",
-                           "Console.Error: Pass",
-
                            "Test '" + TestClass + ".Fail' failed: Fixie.Tests.FailureException",
                            "'Fail' failed!",
                            At("Fail()"),
                            "",
+
+                           "Console.Out: FailByAssertion",
+                           "Console.Error: FailByAssertion",
                            "Test '" + TestClass + ".FailByAssertion' failed:",
                            "Assertion Failure",
                            "Expected: 2",
                            "Actual:   1",
                            At("FailByAssertion()"),
                            "",
+
+                           "Console.Out: Pass",
+                           "Console.Error: Pass",
+
                            "Test '" + TestClass + ".SkipWithReason' skipped:",
                            "Skipped with reason.",
                            "",

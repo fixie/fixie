@@ -316,8 +316,8 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: '.ctor' failed!",
-                "SampleTestClass.Fail failed: '.ctor' failed!",
                 "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail failed: '.ctor' failed!",
                 "SampleTestClass.Fail skipped");
 
             output.ShouldHaveLifecycle(".ctor", ".ctor");
@@ -348,8 +348,8 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Fail failed: 'CaseSetUp' failed!",
                 "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail failed: 'CaseSetUp' failed!",
                 "SampleTestClass.Fail skipped");
 
             output.ShouldHaveLifecycle(
@@ -369,8 +369,8 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Fail failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
@@ -390,9 +390,9 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Fail failed: 'Dispose' failed!",
-
                 "SampleTestClass.Pass passed",
+
+                "SampleTestClass.Fail failed: 'Dispose' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
@@ -409,10 +409,10 @@
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Fail failed: 'Dispose' failed!",
                 "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Pass failed: 'Dispose' failed!",
+                "SampleTestClass.Fail failed: 'Dispose' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
@@ -488,10 +488,10 @@
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.",
-                "SampleTestClass.Fail failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.",
                 "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Pass failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.",
+                "SampleTestClass.Fail failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.");
 
             output.ShouldHaveLifecycle(
                 ".ctor", "Pass", "Fail");

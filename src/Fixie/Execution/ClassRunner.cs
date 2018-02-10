@@ -60,24 +60,21 @@
 
                     foreach (var @case in YieldCases(orderedMethods, summary))
                     {
-                        string reason;
-                        bool skipCase;
-
                         try
                         {
-                            skipCase = SkipCase(@case, out reason);
+                            var skipCase = SkipCase(@case, out var reason);
+
+                            if (skipCase)
+                            {
+                                @case.SkipReason = reason;
+                                Skip(@case, summary);
+                                continue;
+                            }
                         }
                         catch (Exception exception)
                         {
                             @case.Fail(exception);
                             Fail(@case, summary);
-                            continue;
-                        }
-
-                        if (skipCase)
-                        {
-                            @case.SkipReason = reason;
-                            Skip(@case, summary);
                             continue;
                         }
 

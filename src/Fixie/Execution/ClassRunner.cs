@@ -44,6 +44,8 @@
 
             var classStopwatch = Stopwatch.StartNew();
 
+            var orderedMethods = OrderedMethods(methods, summary);
+
             bool lifecycleThrew = false;
             bool runCasesInvokedByLifecycle = false;
 
@@ -57,8 +59,6 @@
                         throw new Exception($"{lifecycle.GetType()} attempted to run {testClass.FullName}'s test cases multiple times, which is not supported.");
 
                     runCasesInvokedByLifecycle = true;
-
-                    var orderedMethods = OrderedMethods(methods, summary);
 
                     foreach (var @case in BuildCases(orderedMethods))
                     {

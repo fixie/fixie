@@ -278,7 +278,7 @@
                 "Dispose");
         }
 
-        public void ShouldPassAllCasesWhenShortCircuitingClassExecution()
+        public void ShouldSkipAllCasesWhenShortCircuitingClassExecution()
         {
             Convention.ClassExecution
                 .Lifecycle<ShortCircuitClassExecution>();
@@ -292,7 +292,7 @@
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldPassAllCasesWhenShortCircuitingCaseExecution()
+        public void ShouldSkipAllCasesWhenShortCircuitingCaseExecution()
         {
             Convention.ClassExecution
                 .Lifecycle<ShortCircuitCaseExection>();

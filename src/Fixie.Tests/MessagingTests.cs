@@ -31,8 +31,8 @@
             convention
                 .CaseExecution
                 .Skip(
-                    x => x.Method.Has<SkipAttribute>(),
-                    x => x.Method.GetCustomAttribute<SkipAttribute>().Reason);
+                    x => x.Has<SkipAttribute>(),
+                    x => x.GetCustomAttribute<SkipAttribute>().Reason);
 
             convention.
                 HideExceptionDetails.For<AssertActualExpectedException>();

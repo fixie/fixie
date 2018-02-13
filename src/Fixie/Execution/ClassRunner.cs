@@ -62,9 +62,7 @@
                     {
                         try
                         {
-                            var skipCase = SkipCase(@case, out var reason);
-
-                            if (skipCase)
+                            if (SkipMethod(@case.Method, out var reason))
                             {
                                 @case.Skip(reason);
                                 Skip(@case, summary);
@@ -226,17 +224,17 @@
             }
         }
 
-        bool SkipCase(Case @case, out string reason)
+        bool SkipMethod(MethodInfo testMethod, out string reason)
         {
-            var isTargetMethod = RunContext.TargetMethod == @case.Method;
+            var isTargetMethod = RunContext.TargetMethod == testMethod;
 
             if (!isTargetMethod)
             {
                 foreach (var skipBehavior in skipBehaviors)
                 {
-                    if (SkipCase(skipBehavior, @case))
+                    if (SkipMethod(skipBehavior, testMethod))
                     {
-                        reason = GetSkipReason(skipBehavior, @case);
+                        reason = GetSkipReason(skipBehavior, testMethod);
                         return true;
                     }
                 }
@@ -246,11 +244,11 @@
             return false;
         }
 
-        static bool SkipCase(SkipBehavior skipBehavior, Case @case)
-            => skipBehavior.SkipCase(@case);
+        static bool SkipMethod(SkipBehavior skipBehavior, MethodInfo testMethod)
+            => skipBehavior.SkipCase(testMethod);
 
-        static string GetSkipReason(SkipBehavior skipBehavior, Case @case)
-            => skipBehavior.GetSkipReason(@case);
+        static string GetSkipReason(SkipBehavior skipBehavior, MethodInfo testMethod)
+            => skipBehavior.GetSkipReason(testMethod);
 
         IEnumerable<object[]> Parameters(MethodInfo method)
             => parameterDiscoverer.GetParameters(method);

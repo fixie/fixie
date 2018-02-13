@@ -2,7 +2,6 @@
 {
     using System;
     using System.Reflection;
-    using static System.Environment;
 
     public class SkippedCaseTests : CaseTests
     {
@@ -114,42 +113,40 @@
                     ".Pass passed"));
         }
 
-        static string ExplicitAttributeReason(Case @case)
+        static string ExplicitAttributeReason(MethodInfo testMethod)
         {
             return "[Explicit] tests run only when they are individually selected for execution.";
         }
 
-        static bool HasExplicitAttribute(Case @case)
+        static bool HasExplicitAttribute(MethodInfo testMethod)
         {
-            return @case.Method.HasOrInherits<ExplicitAttribute>();
+            return testMethod.HasOrInherits<ExplicitAttribute>();
         }
 
-        static string SkipAttributeReason(Case @case)
+        static string SkipAttributeReason(MethodInfo testMethod)
         {
-            var method = @case.Method;
-
-            var skip = method.HasOrInherits<SkipAttribute>()
-                ? method.GetCustomAttribute<SkipAttribute>(true)
-                : method.DeclaringType.GetCustomAttribute<SkipAttribute>(true);
+            var skip = testMethod.HasOrInherits<SkipAttribute>()
+                ? testMethod.GetCustomAttribute<SkipAttribute>(true)
+                : testMethod.DeclaringType.GetCustomAttribute<SkipAttribute>(true);
 
             return skip.Reason;
         }
 
-        static bool HasSkipAttribute(Case @case)
+        static bool HasSkipAttribute(MethodInfo testMethod)
         {
-            return @case.Method.HasOrInherits<SkipAttribute>();
+            return testMethod.HasOrInherits<SkipAttribute>();
         }
 
         class SkipByExplicitAttribute : SkipBehavior
         {
-            public bool SkipCase(Case @case) => HasExplicitAttribute(@case);
-            public string GetSkipReason(Case @case) => ExplicitAttributeReason(@case);
+            public bool SkipCase(MethodInfo testMethod) => HasExplicitAttribute(testMethod);
+            public string GetSkipReason(MethodInfo testMethod) => ExplicitAttributeReason(testMethod);
         }
 
         class SkipBySkipAttribute : SkipBehavior
         {
-            public bool SkipCase(Case @case) => HasSkipAttribute(@case);
-            public string GetSkipReason(Case @case) => SkipAttributeReason(@case);
+            public bool SkipCase(MethodInfo testMethod) => HasSkipAttribute(testMethod);
+            public string GetSkipReason(MethodInfo testMethod) => SkipAttributeReason(testMethod);
         }
 
         class SkippedTestClass

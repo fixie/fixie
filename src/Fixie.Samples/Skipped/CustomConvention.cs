@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Samples.Skipped
 {
     using System;
+    using System.Reflection;
 
     public class CustomConvention : Convention
     {
@@ -22,10 +23,10 @@
                 .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
         }
 
-        static bool SkipDueToClassLevelSkipAttribute(Case @case)
-            => @case.Method.DeclaringType.Has<SkipAttribute>();
+        static bool SkipDueToClassLevelSkipAttribute(MethodInfo testMethod)
+            => testMethod.DeclaringType.Has<SkipAttribute>();
 
-        static bool SkipDueToMethodLevelSkipAttribute(Case @case)
-            => @case.Method.Has<SkipAttribute>();
+        static bool SkipDueToMethodLevelSkipAttribute(MethodInfo testMethod)
+            => testMethod.Has<SkipAttribute>();
     }
 }

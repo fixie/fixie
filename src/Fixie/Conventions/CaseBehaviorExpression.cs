@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Conventions
 {
     using System;
+    using System.Reflection;
 
     public class CaseBehaviorExpression
     {
@@ -12,9 +13,9 @@
         }
 
         /// <summary>
-        /// Allows the specified predicate to determine whether a given test case should be skipped
-        /// during execution. Skipped test cases are never executed, but are counted and identified.
-        /// When a test is skipped, the behavior may include an optional explanation in the output.
+        /// Allows the specified predicate to determine whether a given test method should be skipped
+        /// during execution. Skipped test methods are never executed, but are counted and identified.
+        /// When a test method is skipped, the behavior may include an optional explanation in the output.
         /// </summary>
         public CaseBehaviorExpression Skip<TSkipBehavior>() where TSkipBehavior : SkipBehavior
         {
@@ -23,9 +24,9 @@
         }
 
         /// <summary>
-        /// Allows the specified predicate to determine whether a given test case should be skipped
-        /// during execution. Skipped test cases are never executed, but are counted and identified.
-        /// When a test is skipped, the behavior may include an optional explanation in the output.
+        /// Allows the specified predicate to determine whether a given test method should be skipped
+        /// during execution. Skipped test methods are never executed, but are counted and identified.
+        /// When a test method is skipped, the behavior may include an optional explanation in the output.
         /// </summary>
         public CaseBehaviorExpression Skip(SkipBehavior behavior)
         {
@@ -33,22 +34,22 @@
         }
 
         /// <summary>
-        /// Allows the specified predicate to determine whether a given test case should be skipped
-        /// during execution. Skipped test cases are never executed, but are counted and identified.
-        /// When a test is skipped, this overload will not include an explanation in the output.
+        /// Allows the specified predicate to determine whether a given test method should be skipped
+        /// during execution. Skipped test methods are never executed, but are counted and identified.
+        /// When a test method is skipped, this overload will not include an explanation in the output.
         /// </summary>
-        public CaseBehaviorExpression Skip(Func<Case, bool> skipCase)
+        public CaseBehaviorExpression Skip(Func<MethodInfo, bool> skipCase)
         {
             return Skip(skipCase, @case => null);
         }
 
         /// <summary>
-        /// Allows the specified predicate to determine whether a given test case should be skipped
-        /// during execution. Skipped test cases are never executed, but are counted and identified.
-        /// When a test is skipped, the specified reason generator will be invoked to include an
+        /// Allows the specified predicate to determine whether a given test method should be skipped
+        /// during execution. Skipped test methods are never executed, but are counted and identified.
+        /// When a test method is skipped, the specified reason generator will be invoked to include an
         /// explanation in the output.
         /// </summary>
-        public CaseBehaviorExpression Skip(Func<Case, bool> skipCase, Func<Case, string> getSkipReason)
+        public CaseBehaviorExpression Skip(Func<MethodInfo, bool> skipCase, Func<MethodInfo, string> getSkipReason)
         {
             config.AddSkipBehavior(new LambdaSkipBehavior(skipCase, getSkipReason));
             return this;
@@ -56,20 +57,20 @@
 
         class LambdaSkipBehavior : SkipBehavior
         {
-            readonly Func<Case, bool> skipCase;
-            readonly Func<Case, string> getSkipReason;
+            readonly Func<MethodInfo, bool> skipCase;
+            readonly Func<MethodInfo, string> getSkipReason;
 
-            public LambdaSkipBehavior(Func<Case, bool> skipCase, Func<Case, string> getSkipReason)
+            public LambdaSkipBehavior(Func<MethodInfo, bool> skipCase, Func<MethodInfo, string> getSkipReason)
             {
                 this.skipCase = skipCase;
                 this.getSkipReason = getSkipReason;
             }
 
-            public bool SkipCase(Case @case)
-                => skipCase(@case);
+            public bool SkipCase(MethodInfo testMethod)
+                => skipCase(testMethod);
 
-            public string GetSkipReason(Case @case)
-                => getSkipReason(@case);
+            public string GetSkipReason(MethodInfo testMethod)
+                => getSkipReason(testMethod);
         }
     }
 }

@@ -10,7 +10,7 @@
         public void ShouldAccumulateCaseStatusCounts()
         {
             var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Method.Name.StartsWith("Skip"));
+            convention.CaseExecution.Skip(x => x.Name.StartsWith("Skip"));
 
             var listener = new StubExecutionSummaryListener();
 

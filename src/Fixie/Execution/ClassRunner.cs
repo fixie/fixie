@@ -105,16 +105,17 @@
                         Console.Write(consoleOutput);
 
                         var caseHasNormalResult = @case.Exception != null || @case.Executed;
+                        var caseLifecycleFailed = caseLifecycleException != null;
 
                         if (caseHasNormalResult)
                         {
                             if (@case.Exception != null)
                                 Fail(@case, summary);
-                            else
+                            else if (!caseLifecycleFailed)
                                 Pass(@case, summary);
                         }
 
-                        if (caseLifecycleException != null)
+                        if (caseLifecycleFailed)
                             Fail(new Case(@case, caseLifecycleException), summary);
                         else if (!caseHasNormalResult)
                             Skip(@case, summary);

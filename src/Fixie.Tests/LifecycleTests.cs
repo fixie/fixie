@@ -364,7 +364,6 @@
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed",
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'CaseTearDown' failed!");
@@ -385,9 +384,7 @@
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed",
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
-
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'Dispose' failed!");
 

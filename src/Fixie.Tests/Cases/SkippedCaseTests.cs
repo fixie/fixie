@@ -84,45 +84,33 @@
                     ".Pass passed"));
         }
 
-        public void ShouldFailCaseWithClearExplanationWhenSkipConditionThrows()
+        public void ShouldFailCaseWhenSkipConditionThrows()
         {
             Convention.CaseExecution
-                .Skip(@case => { throw new Exception("Unsafe case-skipping predicate threw!"); });
+                .Skip(@case => throw new Exception("Unsafe case-skipping predicate threw!"));
 
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
                 For<SkippedTestClass>(
-                    ".Explicit failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipping predicate threw!",
-
-                    ".ExplicitAndSkip failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipping predicate threw!",
-
-                    ".Fail failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipping predicate threw!",
-
-                    ".Pass failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipping predicate threw!"));
+                    ".Explicit failed: Unsafe case-skipping predicate threw!",
+                    ".ExplicitAndSkip failed: Unsafe case-skipping predicate threw!",
+                    ".Fail failed: Unsafe case-skipping predicate threw!",
+                    ".Pass failed: Unsafe case-skipping predicate threw!"));
         }
 
-        public void ShouldFailCaseWithClearExplanationWhenSkipReasonThrows()
+        public void ShouldFailCaseWhenSkipReasonThrows()
         {
             Convention.CaseExecution
-                .Skip(HasSkipAttribute, @case => { throw new Exception("Unsafe case-skipped reason generator threw!"); });
+                .Skip(HasSkipAttribute, @case => throw new Exception("Unsafe case-skipped reason generator threw!"));
 
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
                 For<SkippedTestClass>(
                     ".Explicit passed",
-
-                    ".ExplicitAndSkip failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipped reason generator threw!",
-
-                    ".Fail failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipped reason generator threw!",
-
+                    ".ExplicitAndSkip failed: Unsafe case-skipped reason generator threw!",
+                    ".Fail failed: Unsafe case-skipped reason generator threw!",
                     ".Pass passed"));
         }
 

@@ -246,33 +246,11 @@
             return false;
         }
 
-        bool SkipCase(SkipBehavior skipBehavior, Case @case)
-        {
-            try
-            {
-                return skipBehavior.SkipCase(@case);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(
-                    "Exception thrown while attempting to run a custom case-skipping predicate. " +
-                    "Check the inner exception for more details.", exception);
-            }
-        }
+        static bool SkipCase(SkipBehavior skipBehavior, Case @case)
+            => skipBehavior.SkipCase(@case);
 
-        string GetSkipReason(SkipBehavior skipBehavior, Case @case)
-        {
-            try
-            {
-                return skipBehavior.GetSkipReason(@case);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(
-                    "Exception thrown while attempting to get a custom case-skipped reason. " +
-                    "Check the inner exception for more details.", exception);
-            }
-        }
+        static string GetSkipReason(SkipBehavior skipBehavior, Case @case)
+            => skipBehavior.GetSkipReason(@case);
 
         IEnumerable<object[]> Parameters(MethodInfo method)
             => parameterDiscoverer.GetParameters(method);

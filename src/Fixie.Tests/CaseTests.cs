@@ -218,6 +218,17 @@
             @case.Exception.ShouldEqual(exceptionB);
         }
 
+        public void ShouldAllowFailureByReasonStringWithImplicitException()
+        {
+            var @case = Case("Returns");
+
+            @case.Exception.ShouldBeNull();
+            @case.Fail("Failure Reason A");
+            @case.Fail("Failure Reason B");
+            @case.Exception.ShouldBeType<Exception>();
+            @case.Exception.Message.ShouldEqual("Failure Reason B");
+        }
+
         public void CanSuppressFailuresByClearingException()
         {
             var exception = new InvalidOperationException();

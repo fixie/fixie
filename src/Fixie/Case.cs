@@ -61,7 +61,7 @@
         public Exception Exception { get; private set; }
 
         /// <summary>
-        /// Include the given exception in the running test case's list of exceptions, indicating test case failure.
+        /// Indicate a test failure with the given reason.
         /// </summary>
         public void Fail(Exception reason)
         {
@@ -71,6 +71,21 @@
                 Exception = wrapped.OriginalException;
             else
                 Exception = reason;
+        }
+
+        /// <summary>
+        /// Indicate a test failure with the given reason.
+        /// </summary>
+        public void Fail(string reason)
+        {
+            try
+            {
+                throw new Exception(reason);
+            }
+            catch (Exception exception)
+            {
+                Fail(exception);
+            }
         }
 
         /// <summary>

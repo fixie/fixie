@@ -156,14 +156,7 @@ namespace Fixie.Tests.Cases
                     if (success)
                         return;
 
-                    try
-                    {
-                        throw new Exception("Boolean test case returned false!");
-                    }
-                    catch (Exception exception)
-                    {
-                        @case.Fail(exception);
-                    }
+                    @case.Fail("Boolean test case returned false!");
                 }
             }
         }

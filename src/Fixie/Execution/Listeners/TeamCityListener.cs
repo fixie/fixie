@@ -19,28 +19,41 @@
 
         public void Handle(CaseSkipped message)
         {
+            TestStarted(message);
+            Output(message);
             Message("testIgnored name='{0}' message='{1}'", message.Name, message.Reason);
+            TestFinished(message);
         }
 
         public void Handle(CasePassed message)
         {
-            Message("testStarted name='{0}'", message.Name);
+            TestStarted(message);
             Output(message);
-            Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
+            TestFinished(message);
         }
 
         public void Handle(CaseFailed message)
         {
             var exception = message.Exception;
-            Message("testStarted name='{0}'", message.Name);
+            TestStarted(message);
             Output(message);
             Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, exception.Message, exception.TypedStackTrace());
-            Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
+            TestFinished(message);
         }
 
         public void Handle(AssemblyCompleted message)
         {
             Message("testSuiteFinished name='{0}'", message.Assembly.GetName().Name);
+        }
+
+        static void TestStarted(CaseCompleted message)
+        {
+            Message("testStarted name='{0}'", message.Name);
+        }
+
+        static void TestFinished(CaseCompleted message)
+        {
+            Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
         static void Message(string format, params string[] args)

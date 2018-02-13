@@ -66,7 +66,7 @@
 
                             if (skipCase)
                             {
-                                @case.SkipReason = reason;
+                                @case.Skip(reason);
                                 Skip(@case, summary);
                                 continue;
                             }
@@ -104,12 +104,12 @@
 
                         Console.Write(consoleOutput);
 
-                        var caseHasNormalResult = @case.Exception != null || @case.Executed;
+                        var caseHasNormalResult = @case.State == CaseState.Failed || @case.State == CaseState.Passed;
                         var caseLifecycleFailed = caseLifecycleException != null;
 
                         if (caseHasNormalResult)
                         {
-                            if (@case.Exception != null)
+                            if (@case.State == CaseState.Failed)
                                 Fail(@case, summary);
                             else if (!caseLifecycleFailed)
                                 Pass(@case, summary);

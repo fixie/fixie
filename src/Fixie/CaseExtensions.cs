@@ -56,13 +56,12 @@
                 }
 
                 @case.ReturnValue = returnValue;
+                @case.Pass();
             }
             catch (Exception exception)
             {
                 @case.Fail(exception);
             }
-
-            @case.Executed = true;
         }
 
         static void ThrowForUnsupportedAsyncVoid()

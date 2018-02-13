@@ -150,8 +150,6 @@
 
                 if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
                 {
-                    @case.ClearException();
-
                     throw new Exception(
                         "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
                         exception.GetType() + " was thrown.", exception);
@@ -159,14 +157,12 @@
 
                 if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
                 {
-                    @case.ClearException();
-
                     throw new Exception(
                         "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
                         exception);
                 }
 
-                @case.ClearException();
+                @case.Pass();
             }
             catch (Exception failureReason)
             {

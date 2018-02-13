@@ -229,16 +229,56 @@
             @case.Exception.Message.ShouldEqual("Failure Reason B");
         }
 
-        public void CanSuppressFailuresByClearingException()
+        public void CanForceAnyTestProcessingState()
         {
-            var exception = new InvalidOperationException();
-
             var @case = Case("Returns");
 
+            //Assumed skipped.
+            @case.State.ShouldEqual(CaseState.Skipped);
             @case.Exception.ShouldBeNull();
-            @case.Fail(exception);
-            @case.ClearException();
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a skip, including a reason.
+            @case.Skip("Reason");
+            @case.State.ShouldEqual(CaseState.Skipped);
             @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldEqual("Reason");
+
+            //Indicate a failure, replacing the assumed skip.
+            @case.Fail("Failure");
+            @case.State.ShouldEqual(CaseState.Failed);
+            @case.Exception.Message.ShouldEqual("Failure");
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a pass, suppressing the above failure.
+            @case.Pass();
+            @case.State.ShouldEqual(CaseState.Passed);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a skip, suppressing the above pass.
+            @case.Skip("Reason");
+            @case.State.ShouldEqual(CaseState.Skipped);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldEqual("Reason");
+
+            //Indicate a pass, suppressing the above skip.
+            @case.Pass();
+            @case.State.ShouldEqual(CaseState.Passed);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a failure, replacing the assumed pass.
+            @case.Fail("Failure");
+            @case.State.ShouldEqual(CaseState.Failed);
+            @case.Exception.Message.ShouldEqual("Failure");
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a skip, suppressing the above failure.
+            @case.Skip("Reason");
+            @case.State.ShouldEqual(CaseState.Skipped);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldEqual("Reason");
         }
 
         class SampleParentTestClass

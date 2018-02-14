@@ -181,6 +181,22 @@
             }
         }
 
+        class RetryFailingCases : Lifecycle
+        {
+            public void Execute(Type testClass, Action<CaseAction> runCases)
+            {
+                var instance = Activator.CreateInstance(testClass);
+
+                runCases(@case =>
+                {
+                    @case.Execute(instance);
+
+                    if (@case.Exception != null)
+                        @case.Execute(instance);
+                });
+            }
+        }
+
         static object UseDefaultConstructor(Type type)
         {
             try
@@ -488,6 +504,20 @@
 
             output.ShouldHaveLifecycle(
                 ".ctor", "Pass", "Fail");
+        }
+
+        public void ShouldAllowExecutingACaseMultipleTimesBeforeEmittingItsResult()
+        {
+            Convention.ClassExecution.Lifecycle<RetryFailingCases>();
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor", "Pass", "Fail", "Fail");
         }
     }
 }

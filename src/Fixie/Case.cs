@@ -75,9 +75,7 @@
         {
             State = CaseState.Failed;
 
-            var wrapped = reason as PreservedException;
-
-            if (wrapped != null)
+            if (reason is PreservedException wrapped)
                 Exception = wrapped.OriginalException;
             else
                 Exception = reason;

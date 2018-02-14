@@ -83,6 +83,9 @@
                 Exception = reason;
 
             SkipReason = null;
+
+            if (reason == null)
+                Fail("The custom test class lifecycle did not provide an Exception for this test case failure.");
         }
 
         /// <summary>

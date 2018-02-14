@@ -229,6 +229,18 @@
             @case.Exception.Message.ShouldEqual("Failure Reason B");
         }
 
+        public void ShouldProtectAgainstLoggingNullExceptions()
+        {
+            var @case = Case("Returns");
+
+            @case.Exception.ShouldBeNull();
+            @case.Fail((Exception) null);
+            @case.Exception.ShouldBeType<Exception>();
+            @case.Exception.Message.ShouldEqual(
+                "The custom test class lifecycle did not provide " +
+                "an Exception for this test case failure.");
+        }
+
         public void CanForceAnyTestProcessingState()
         {
             var @case = Case("Returns");
@@ -279,6 +291,14 @@
             @case.State.ShouldEqual(CaseState.Skipped);
             @case.Exception.ShouldBeNull();
             @case.SkipReason.ShouldEqual("Reason");
+
+            //Indicate a failure, suppressing the above skip, but with a surprisingly-null Exception.
+            @case.Fail((Exception) null);
+            @case.State.ShouldEqual(CaseState.Failed);
+            @case.Exception.Message.ShouldEqual(
+                "The custom test class lifecycle did not provide " +
+                "an Exception for this test case failure.");
+            @case.SkipReason.ShouldBeNull();
         }
 
         class SampleParentTestClass

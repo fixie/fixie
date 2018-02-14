@@ -245,7 +245,7 @@
         }
 
         static bool SkipMethod(SkipBehavior skipBehavior, MethodInfo testMethod)
-            => skipBehavior.SkipCase(testMethod);
+            => skipBehavior.SkipMethod(testMethod);
 
         static string GetSkipReason(SkipBehavior skipBehavior, MethodInfo testMethod)
             => skipBehavior.GetSkipReason(testMethod);

@@ -30,7 +30,7 @@
         /// </summary>
         public CaseBehaviorExpression Skip(SkipBehavior behavior)
         {
-            return Skip(behavior.SkipCase, behavior.GetSkipReason);
+            return Skip(behavior.SkipMethod, behavior.GetSkipReason);
         }
 
         /// <summary>
@@ -57,17 +57,17 @@
 
         class LambdaSkipBehavior : SkipBehavior
         {
-            readonly Func<MethodInfo, bool> skipCase;
+            readonly Func<MethodInfo, bool> skipMethod;
             readonly Func<MethodInfo, string> getSkipReason;
 
-            public LambdaSkipBehavior(Func<MethodInfo, bool> skipCase, Func<MethodInfo, string> getSkipReason)
+            public LambdaSkipBehavior(Func<MethodInfo, bool> skipMethod, Func<MethodInfo, string> getSkipReason)
             {
-                this.skipCase = skipCase;
+                this.skipMethod = skipMethod;
                 this.getSkipReason = getSkipReason;
             }
 
-            public bool SkipCase(MethodInfo testMethod)
-                => skipCase(testMethod);
+            public bool SkipMethod(MethodInfo testMethod)
+                => skipMethod(testMethod);
 
             public string GetSkipReason(MethodInfo testMethod)
                 => getSkipReason(testMethod);

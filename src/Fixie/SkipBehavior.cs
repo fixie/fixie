@@ -12,7 +12,7 @@
         /// <summary>
         /// Determines whether the given test method should be skipped during execution.
         /// </summary>
-        bool SkipCase(MethodInfo testMethod);
+        bool SkipMethod(MethodInfo testMethod);
 
         /// <summary>
         /// When a test method should be skipped during execution, returns an optional string to explain why.

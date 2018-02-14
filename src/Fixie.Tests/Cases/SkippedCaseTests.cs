@@ -139,13 +139,13 @@
 
         class SkipByExplicitAttribute : SkipBehavior
         {
-            public bool SkipCase(MethodInfo testMethod) => HasExplicitAttribute(testMethod);
+            public bool SkipMethod(MethodInfo testMethod) => HasExplicitAttribute(testMethod);
             public string GetSkipReason(MethodInfo testMethod) => ExplicitAttributeReason(testMethod);
         }
 
         class SkipBySkipAttribute : SkipBehavior
         {
-            public bool SkipCase(MethodInfo testMethod) => HasSkipAttribute(testMethod);
+            public bool SkipMethod(MethodInfo testMethod) => HasSkipAttribute(testMethod);
             public string GetSkipReason(MethodInfo testMethod) => SkipAttributeReason(testMethod);
         }
 

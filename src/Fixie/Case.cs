@@ -54,6 +54,9 @@
         /// </summary>
         public Exception Exception { get; private set; }
 
+        /// <summary>
+        /// Indicate the test case was skipped for the given reason.
+        /// </summary>
         public void Skip(string reason)
         {
             State = CaseState.Skipped;
@@ -61,6 +64,9 @@
             SkipReason = reason;
         }
 
+        /// <summary>
+        /// Indicate the test case passed.
+        /// </summary>
         public void Pass()
         {
             State = CaseState.Passed;
@@ -69,7 +75,7 @@
         }
 
         /// <summary>
-        /// Indicate a test failure with the given reason.
+        /// Indicate the test case failed for the given reason.
         /// </summary>
         public void Fail(Exception reason)
         {
@@ -87,7 +93,7 @@
         }
 
         /// <summary>
-        /// Indicate a test failure with the given reason.
+        /// Indicate the test case failed for the given reason.
         /// </summary>
         public void Fail(string reason)
         {

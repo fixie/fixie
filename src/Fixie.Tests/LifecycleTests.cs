@@ -409,7 +409,7 @@
                 ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerClassAndDisposeThrows()
+        public void ShouldFailAllCasesAfterReportingPrimaryResultsWhenConstructingPerClassAndDisposeThrows()
         {
             FailDuring("Dispose");
 
@@ -430,7 +430,7 @@
                 "Dispose");
         }
 
-        public void ShouldSkipLifecycleWhenConstructingPerCaseButAllCasesAreSkipped()
+        public void ShouldSkipLifecycleWhenConstructingPerCaseAndAllCasesAreSkipped()
         {
             Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
 
@@ -445,7 +445,7 @@
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldSkipLifecycleWhenConstructingPerClassButAllCasesAreSkipped()
+        public void ShouldNotSkipLifecycleWhenConstructingPerClassAndAllCasesAreSkipped()
         {
             Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
 
@@ -475,7 +475,7 @@
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldSkipLifecycleWhenConstructingPerClassButAllCasesFailCustomParameterGeneration()
+        public void ShouldNotSkipLifecycleWhenConstructingPerClassAndAllCasesFailCustomParameterGeneration()
         {
             Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
 

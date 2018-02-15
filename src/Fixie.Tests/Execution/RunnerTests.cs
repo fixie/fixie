@@ -57,7 +57,7 @@ namespace Fixie.Tests.Execution
                 Self + "+SkipTestClass.SkipA skipped");
         }
 
-        public void ShouldShortCircuitTestExecutionByFailingAllCasesWhenCaseOrderingThrows()
+        public void ShouldReportFailuresForAllAffectedCasesWithoutShortCircuitingTestExecutionWhenCaseOrderingThrows()
         {
             var listener = new StubListener();
             var convention = SelfTestConvention.Build();

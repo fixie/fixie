@@ -148,12 +148,16 @@ namespace Fixie.Tests.Cases
             {
                 Console.WriteLine(@case.Method.Name + " " + (@case.ReturnValue ?? "null"));
 
-                if (@case.Exceptions.Any())
+                if (@case.Exception != null)
                     return;
 
-                if (@case.ReturnValue is bool)
-                    if (!(bool)@case.ReturnValue)
-                        throw new Exception("Boolean test case returned false!");
+                if (@case.ReturnValue is bool success)
+                {
+                    if (success)
+                        return;
+
+                    @case.Fail("Boolean test case returned false!");
+                }
             }
         }
     }

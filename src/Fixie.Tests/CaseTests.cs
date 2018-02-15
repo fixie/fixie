@@ -205,31 +205,100 @@
             unresolvedParameterType.IsGenericParameter.ShouldBeTrue();
         }
 
-        public void ShouldTrackExceptionsAsFailureReasons()
+        public void ShouldTrackLastExceptionAsFailureReason()
         {
             var exceptionA = new InvalidOperationException();
             var exceptionB = new DivideByZeroException();
 
             var @case = Case("Returns");
 
-            @case.Exceptions.ShouldBeEmpty();
+            @case.Exception.ShouldBeNull();
             @case.Fail(exceptionA);
             @case.Fail(exceptionB);
-            @case.Exceptions.ShouldEqual(exceptionA, exceptionB);
+            @case.Exception.ShouldEqual(exceptionB);
         }
 
-        public void CanSuppressFailuresByClearingExceptionLog()
+        public void ShouldAllowFailureByReasonStringWithImplicitException()
         {
-            var exceptionA = new InvalidOperationException();
-            var exceptionB = new DivideByZeroException();
-
             var @case = Case("Returns");
 
-            @case.Exceptions.ShouldBeEmpty();
-            @case.Fail(exceptionA);
-            @case.Fail(exceptionB);
-            @case.ClearExceptions();
-            @case.Exceptions.ShouldBeEmpty();
+            @case.Exception.ShouldBeNull();
+            @case.Fail("Failure Reason A");
+            @case.Fail("Failure Reason B");
+            @case.Exception.ShouldBeType<Exception>();
+            @case.Exception.Message.ShouldEqual("Failure Reason B");
+        }
+
+        public void ShouldProtectAgainstLoggingNullExceptions()
+        {
+            var @case = Case("Returns");
+
+            @case.Exception.ShouldBeNull();
+            @case.Fail((Exception) null);
+            @case.Exception.ShouldBeType<Exception>();
+            @case.Exception.Message.ShouldEqual(
+                "The custom test class lifecycle did not provide " +
+                "an Exception for this test case failure.");
+        }
+
+        public void CanForceAnyTestProcessingState()
+        {
+            var @case = Case("Returns");
+
+            //Assumed skipped.
+            @case.State.ShouldEqual(CaseState.Skipped);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a skip, including a reason.
+            @case.Skip("Reason");
+            @case.State.ShouldEqual(CaseState.Skipped);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldEqual("Reason");
+
+            //Indicate a failure, replacing the assumed skip.
+            @case.Fail("Failure");
+            @case.State.ShouldEqual(CaseState.Failed);
+            @case.Exception.Message.ShouldEqual("Failure");
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a pass, suppressing the above failure.
+            @case.Pass();
+            @case.State.ShouldEqual(CaseState.Passed);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a skip, suppressing the above pass.
+            @case.Skip("Reason");
+            @case.State.ShouldEqual(CaseState.Skipped);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldEqual("Reason");
+
+            //Indicate a pass, suppressing the above skip.
+            @case.Pass();
+            @case.State.ShouldEqual(CaseState.Passed);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a failure, replacing the assumed pass.
+            @case.Fail("Failure");
+            @case.State.ShouldEqual(CaseState.Failed);
+            @case.Exception.Message.ShouldEqual("Failure");
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a skip, suppressing the above failure.
+            @case.Skip("Reason");
+            @case.State.ShouldEqual(CaseState.Skipped);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldEqual("Reason");
+
+            //Indicate a failure, suppressing the above skip, but with a surprisingly-null Exception.
+            @case.Fail((Exception) null);
+            @case.State.ShouldEqual(CaseState.Failed);
+            @case.Exception.Message.ShouldEqual(
+                "The custom test class lifecycle did not provide " +
+                "an Exception for this test case failure.");
+            @case.SkipReason.ShouldBeNull();
         }
 
         class SampleParentTestClass

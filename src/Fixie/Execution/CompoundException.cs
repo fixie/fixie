@@ -1,19 +1,17 @@
 namespace Fixie.Execution
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
 
     public class CompoundException
     {
-        public CompoundException(IReadOnlyList<Exception> exceptions, AssertionLibraryFilter filter)
+        public CompoundException(Exception exception, AssertionLibraryFilter filter)
         {
-            var primary = exceptions.First();
+            var primary = exception;
             Type = primary.GetType().FullName;
             Message = primary.Message;
             FailedAssertion = filter.IsFailedAssertion(primary);
-            StackTrace = GetCompoundStackTrace(exceptions, filter);
+            StackTrace = GetCompoundStackTrace(exception, filter);
         }
 
         public string Type { get; }
@@ -29,40 +27,25 @@ namespace Fixie.Execution
             return Type + Environment.NewLine + StackTrace;
         }
 
-        static string GetCompoundStackTrace(IEnumerable<Exception> exceptions, AssertionLibraryFilter filter)
+        static string GetCompoundStackTrace(Exception exception, AssertionLibraryFilter filter)
         {
             using (var console = new StringWriter())
             {
-                bool isPrimaryException = true;
+                var ex = exception;
 
-                foreach (var ex in exceptions)
+                console.Write(filter.FilterStackTrace(ex));
+
+                var walk = ex;
+                while (walk.InnerException != null)
                 {
-                    if (isPrimaryException)
-                    {
-                        console.Write(filter.FilterStackTrace(ex));
-                    }
-                    else
-                    {
-                        console.WriteLine();
-                        console.WriteLine();
-                        console.WriteLine($"===== Secondary Exception: {ex.GetType().FullName} =====");
-                        console.WriteLine(ex.Message);
-                        console.Write(filter.FilterStackTrace(ex));
-                    }
-
-                    var walk = ex;
-                    while (walk.InnerException != null)
-                    {
-                        walk = walk.InnerException;
-                        console.WriteLine();
-                        console.WriteLine();
-                        console.WriteLine($"------- Inner Exception: {walk.GetType().FullName} -------");
-                        console.WriteLine(walk.Message);
-                        console.Write(filter.FilterStackTrace(walk));
-                    }
-
-                    isPrimaryException = false;
+                    walk = walk.InnerException;
+                    console.WriteLine();
+                    console.WriteLine();
+                    console.WriteLine($"------- Inner Exception: {walk.GetType().FullName} -------");
+                    console.WriteLine(walk.Message);
+                    console.Write(filter.FilterStackTrace(walk));
                 }
+
                 return console.ToString();
             }
         }

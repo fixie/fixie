@@ -152,8 +152,8 @@
             public void Execute(Type testClass, Action<CaseAction> runCases)
             {
                 //Class lifecycle chooses not to invoke runCases(...).
-                //Since the test cases never run, they don't have a
-                //chance to throw exceptions, resulting in all 'passing'.
+                //Since the test cases never run, they are all considered
+                //'skipped'.
             }
         }
 
@@ -164,8 +164,8 @@
                 runCases(@case =>
                 {
                     //Case lifecycle chooses not to invoke @case.Execute(instance).
-                    //Since the test cases never run, they don't have a
-                    //chance to throw exceptions, resulting in all 'passing'.
+                    //Since the test cases never run, they are all considered
+                    //'skipped'.
                 });
             }
         }
@@ -178,6 +178,22 @@
 
                 runCases(@case => @case.Execute(instance));
                 runCases(@case => @case.Execute(instance));
+            }
+        }
+
+        class RetryFailingCases : Lifecycle
+        {
+            public void Execute(Type testClass, Action<CaseAction> runCases)
+            {
+                var instance = Activator.CreateInstance(testClass);
+
+                runCases(@case =>
+                {
+                    @case.Execute(instance);
+
+                    if (@case.Exception != null)
+                        @case.Execute(instance);
+                });
             }
         }
 
@@ -278,7 +294,7 @@
                 "Dispose");
         }
 
-        public void ShouldPassAllCasesWhenShortCircuitingClassExecution()
+        public void ShouldSkipAllCasesWhenShortCircuitingClassExecution()
         {
             Convention.ClassExecution
                 .Lifecycle<ShortCircuitClassExecution>();
@@ -286,13 +302,13 @@
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail passed");
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail skipped");
 
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldPassAllCasesWhenShortCircuitingCaseExecution()
+        public void ShouldSkipAllCasesWhenShortCircuitingCaseExecution()
         {
             Convention.ClassExecution
                 .Lifecycle<ShortCircuitCaseExection>();
@@ -300,8 +316,8 @@
             var output = Run();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail passed");
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Fail skipped");
 
             output.ShouldHaveLifecycle();
         }
@@ -365,8 +381,8 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
-                "    Secondary Failure: 'CaseTearDown' failed!");
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Fail failed: 'CaseTearDown' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
@@ -385,15 +401,15 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
-                "    Secondary Failure: 'Dispose' failed!");
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Fail failed: 'Dispose' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor", "Pass", "Dispose",
                 ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerClassAndDisposeThrows()
+        public void ShouldFailAllCasesAfterReportingPrimaryResultsWhenConstructingPerClassAndDisposeThrows()
         {
             FailDuring("Dispose");
 
@@ -402,9 +418,10 @@
             var output = Run();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
-                "    Secondary Failure: 'Dispose' failed!");
+                "SampleTestClass.Fail failed: 'Dispose' failed!");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
@@ -413,7 +430,7 @@
                 "Dispose");
         }
 
-        public void ShouldSkipLifecycleWhenConstructingPerCaseButAllCasesAreSkipped()
+        public void ShouldSkipLifecycleWhenConstructingPerCaseAndAllCasesAreSkipped()
         {
             Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
 
@@ -428,7 +445,7 @@
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldSkipLifecycleWhenConstructingPerClassButAllCasesAreSkipped()
+        public void ShouldNotSkipLifecycleWhenConstructingPerClassAndAllCasesAreSkipped()
         {
             Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
 
@@ -440,7 +457,7 @@
                 "SampleTestClass.Pass skipped",
                 "SampleTestClass.Fail skipped");
 
-            output.ShouldHaveLifecycle();
+            output.ShouldHaveLifecycle(".ctor", "Dispose");
         }
 
         public void ShouldSkipLifecycleWhenConstructingPerCaseButAllCasesFailCustomParameterGeneration()
@@ -458,7 +475,7 @@
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldSkipLifecycleWhenConstructingPerClassButAllCasesFailCustomParameterGeneration()
+        public void ShouldNotSkipLifecycleWhenConstructingPerClassAndAllCasesFailCustomParameterGeneration()
         {
             Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
 
@@ -470,10 +487,10 @@
                 "SampleTestClass.Pass failed: Exception thrown while attempting to yield input parameters for method: Pass",
                 "SampleTestClass.Fail failed: Exception thrown while attempting to yield input parameters for method: Fail");
 
-            output.ShouldHaveLifecycle();
+            output.ShouldHaveLifecycle(".ctor", "Dispose");
         }
 
-        public void ShouldAllowProcessingTestCaseLifecycleMultipleTimes()
+        public void ShouldDisallowProcessingTestCaseLifecycleMultipleTimes()
         {
             Convention.ClassExecution.Lifecycle<RunCasesTwice>();
 
@@ -481,11 +498,26 @@
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail failed: 'Fail' failed!" + NewLine +
-                "    Secondary Failure: 'Fail' failed!");
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Pass failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.",
+                "SampleTestClass.Fail failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Pass", "Fail", "Pass", "Fail");
+                ".ctor", "Pass", "Fail");
+        }
+
+        public void ShouldAllowExecutingACaseMultipleTimesBeforeEmittingItsResult()
+        {
+            Convention.ClassExecution.Lifecycle<RetryFailingCases>();
+
+            var output = Run();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor", "Pass", "Fail", "Fail");
         }
     }
 }

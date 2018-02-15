@@ -31,6 +31,7 @@
                     new XAttribute("type", message.Class.FullName),
                     new XAttribute("method", message.Method.Name),
                     new XAttribute("result", "Skip"),
+                    new XAttribute("time", Seconds(message.Duration)),
                     message.Reason != null
                         ? new XElement("reason", new XElement("message", new XCData(message.Reason)))
                         : null));

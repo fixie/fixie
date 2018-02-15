@@ -1,7 +1,6 @@
 ﻿namespace Fixie
 {
     using System;
-    using System.Collections.Generic;
     using System.Reflection;
 
     /// <summary>
@@ -9,8 +8,6 @@
     /// </summary>
     public class Case
     {
-        readonly List<Exception> exceptions;
-
         public Case(MethodInfo caseMethod, params object[] parameters)
         {
             Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
@@ -19,8 +16,16 @@
             Method = caseMethod.TryResolveTypeArguments(parameters);
 
             Name = CaseNameBuilder.GetName(Class, Method, Parameters);
+        }
 
-            exceptions = new List<Exception>();
+        internal Case(Case originalCase, Exception secondaryFailureReason)
+        {
+            Parameters = originalCase.Parameters;
+            Class = originalCase.Class;
+            Method = originalCase.Method;
+            Name = originalCase.Name;
+
+            Fail(secondaryFailureReason);
         }
 
         /// <summary>
@@ -45,41 +50,61 @@
         public object[] Parameters { get; }
 
         /// <summary>
-        /// Gets all of the exceptions that have contributed to this test case's failure.
-        ///
-        /// <para>
-        /// A single test case could have multiple exceptions, for instance, if the
-        /// test case method throws an exception, and a subsequent behavior such as
-        /// test class Dispose() also throws an exception.
-        /// </para>
-        ///
-        /// <para>
-        /// The first encountered exception is considered the primary cause of the test
-        /// failure, and secondary exceptions are included for diagnosing any subsequent
-        /// complications.
-        /// </para>
+        /// Gets the exception describing this test case's failure.
         /// </summary>
-        public IReadOnlyList<Exception> Exceptions => exceptions;
+        public Exception Exception { get; private set; }
 
         /// <summary>
-        /// Include the given exception in the running test case's list of exceptions, indicating test case failure.
+        /// Indicate the test case was skipped for the given reason.
         /// </summary>
-        public void Fail(Exception reason)
+        public void Skip(string reason)
         {
-            var wrapped = reason as PreservedException;
-
-            if (wrapped != null)
-                exceptions.Add(wrapped.OriginalException);
-            else
-                exceptions.Add(reason);
+            State = CaseState.Skipped;
+            Exception = null;
+            SkipReason = reason;
         }
 
         /// <summary>
-        /// Clear all of the test case's exceptions, indicating test success.
+        /// Indicate the test case passed.
         /// </summary>
-        public void ClearExceptions()
+        public void Pass()
         {
-            exceptions.Clear();
+            State = CaseState.Passed;
+            Exception = null;
+            SkipReason = null;
+        }
+
+        /// <summary>
+        /// Indicate the test case failed for the given reason.
+        /// </summary>
+        public void Fail(Exception reason)
+        {
+            State = CaseState.Failed;
+
+            if (reason is PreservedException wrapped)
+                Exception = wrapped.OriginalException;
+            else
+                Exception = reason;
+
+            SkipReason = null;
+
+            if (reason == null)
+                Fail("The custom test class lifecycle did not provide an Exception for this test case failure.");
+        }
+
+        /// <summary>
+        /// Indicate the test case failed for the given reason.
+        /// </summary>
+        public void Fail(string reason)
+        {
+            try
+            {
+                throw new Exception(reason);
+            }
+            catch (Exception exception)
+            {
+                Fail(exception);
+            }
         }
 
         /// <summary>
@@ -89,5 +114,14 @@
 
         internal TimeSpan Duration { get; set; }
         internal string Output { get; set; }
+        internal string SkipReason { get; private set; }
+        internal CaseState State { get; private set; }
+    }
+
+    enum CaseState
+    {
+        Skipped,
+        Passed,
+        Failed
     }
 }

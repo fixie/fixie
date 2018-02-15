@@ -49,11 +49,11 @@
 #endif
             }
 
-            var skipWithReason = results[0];
-            var skipWithoutReason = results[1];
-            var fail = results[2];
-            var failByAssertion = results[3];
-            var pass = results[4];
+            var fail = results[0];
+            var failByAssertion = results[1];
+            var pass = results[2];
+            var skipWithReason = results[3];
+            var skipWithoutReason = results[4];
 
             skipWithReason.testName.ShouldEqual(TestClass + ".SkipWithReason");
             skipWithReason.outcome.ShouldEqual("Skipped");

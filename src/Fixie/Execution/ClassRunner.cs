@@ -35,14 +35,126 @@
         {
             var methods = methodDiscoverer.TestMethods(testClass);
 
-            Exception orderException = null;
+            var summary = new ExecutionSummary();
 
-            var orderedMethods = methods.ToArray();
+            if (!methods.Any())
+                return summary;
+
+            Start(testClass);
+
+            var classStopwatch = Stopwatch.StartNew();
+
+            var orderedMethods = OrderedMethods(methods, summary);
+
+            bool lifecycleThrew = false;
+            bool runCasesInvokedByLifecycle = false;
+
             try
             {
-                orderMethods(orderedMethods);
+                lifecycle.Execute(testClass, caseLifecycle =>
+                {
+                    if (runCasesInvokedByLifecycle)
+                        throw new Exception($"{lifecycle.GetType()} attempted to run {testClass.FullName}'s test cases multiple times, which is not supported.");
+
+                    runCasesInvokedByLifecycle = true;
+
+                    foreach (var @case in YieldCases(orderedMethods, summary))
+                    {
+                        try
+                        {
+                            if (SkipMethod(@case.Method, out var reason))
+                            {
+                                @case.Skip(reason);
+                                Skip(@case, summary);
+                                continue;
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            @case.Fail(exception);
+                            Fail(@case, summary);
+                            continue;
+                        }
+
+                        Exception caseLifecycleException = null;
+
+                        string consoleOutput;
+                        using (var console = new RedirectedConsole())
+                        {
+                            var caseStopwatch = Stopwatch.StartNew();
+
+                            try
+                            {
+                                caseLifecycle(@case);
+                            }
+                            catch (Exception exception)
+                            {
+                                caseLifecycleException = exception;
+                            }
+
+                            caseStopwatch.Stop();
+
+                            @case.Duration += caseStopwatch.Elapsed;
+
+                            consoleOutput = console.Output;
+                            @case.Output += consoleOutput;
+                        }
+
+                        Console.Write(consoleOutput);
+
+                        var caseHasNormalResult = @case.State == CaseState.Failed || @case.State == CaseState.Passed;
+                        var caseLifecycleFailed = caseLifecycleException != null;
+
+                        if (caseHasNormalResult)
+                        {
+                            if (@case.State == CaseState.Failed)
+                                Fail(@case, summary);
+                            else if (!caseLifecycleFailed)
+                                Pass(@case, summary);
+                        }
+
+                        if (caseLifecycleFailed)
+                            Fail(new Case(@case, caseLifecycleException), summary);
+                        else if (!caseHasNormalResult)
+                            Skip(@case, summary);
+                    }
+                });
             }
             catch (Exception exception)
+            {
+                lifecycleThrew = true;
+                foreach (var method in methods)
+                    Fail(method, exception, summary);
+            }
+
+            if (!runCasesInvokedByLifecycle && !lifecycleThrew)
+            {
+                //No cases ran, and we didn't already emit a general
+                //failure for each method, so emit a general skip for
+                //each method.
+                foreach (var method in methods)
+                {
+                    var @case = new Case(method);
+                    Skip(@case, summary);
+                }
+            }
+
+            classStopwatch.Stop();
+            Complete(testClass, summary, classStopwatch.Elapsed);
+
+            return summary;
+        }
+
+        MethodInfo[] OrderedMethods(IReadOnlyList<MethodInfo> methods, ExecutionSummary summary)
+        {
+            var orderedMethods = methods.ToArray();
+
+            try
+            {
+                if (orderedMethods.Length > 1)
+                    orderMethods(orderedMethods);
+            }
+            catch (Exception orderException)
             {
                 // When an exception is thrown attempting to sort an array,
                 // the behavior is undefined, so at this point orderedMethods
@@ -50,110 +162,79 @@
                 // can do is go with the original order.
                 orderedMethods = methods.ToArray();
 
-                orderException = exception;
+                foreach (var method in methods)
+                    Fail(method, orderException, summary);
             }
 
-            var cases = new List<Case>();
+            return orderedMethods;
+        }
 
+        IEnumerable<Case> YieldCases(MethodInfo[] orderedMethods, ExecutionSummary summary)
+        {
             foreach (var method in orderedMethods)
             {
-                try
-                {
-                    bool generatedInputParameters = false;
+                bool generatedInputParameters = false;
+                bool parameterGenerationThrew = false;
 
-                    foreach (var parameters in Parameters(method))
+                using (var resource = Parameters(method).GetEnumerator())
+                {
+                    while (true)
                     {
+                        object[] parameters;
+
+                        try
+                        {
+                            if (!resource.MoveNext())
+                                break;
+
+                            parameters = resource.Current;
+                        }
+                        catch (Exception exception)
+                        {
+                            parameterGenerationThrew = true;
+
+                            Fail(method, exception, summary);
+
+                            break;
+                        }
+
                         generatedInputParameters = true;
-                        cases.Add(new Case(method, parameters));
-                    }
-
-                    if (!generatedInputParameters)
-                    {
-                        if (method.GetParameters().Length > 0)
-                            throw new Exception("This test case has declared parameters, but no parameter values have been provided to it.");
-
-                        cases.Add(new Case(method));
+                        yield return new Case(method, parameters);
                     }
                 }
-                catch (Exception parameterGenerationException)
+
+                if (parameterGenerationThrew || generatedInputParameters)
+                    continue;
+
+                if (method.GetParameters().Length > 0)
                 {
-                    var @case = new Case(method);
-                    @case.Fail(parameterGenerationException);
-                    cases.Add(@case);
-                }
-            }
-
-            if (orderException != null)
-                foreach (var @case in cases)
-                    @case.Fail(orderException);
-
-            var summary = new ExecutionSummary();
-
-            if (!cases.Any())
-                return summary;
-
-            Start(testClass);
-            var stopwatch = Stopwatch.StartNew();
-
-            var casesToExecute = new List<Case>();
-
-            foreach (var @case in cases)
-            {
-                if (@case.Exceptions.Any())
-                    Fail(@case, summary);
-                else
-                {
-                    string reason;
-                    bool skipCase;
-
                     try
                     {
-                        skipCase = SkipCase(@case, out reason);
+                        throw new Exception("This test case has declared parameters, but no parameter values have been provided to it.");
                     }
                     catch (Exception exception)
                     {
-                        @case.Fail(exception);
-                        Fail(@case, summary);
-                        continue;
+                        Fail(method, exception, summary);
                     }
-
-                    if (skipCase)
-                        Skip(@case, reason, summary);
-                    else
-                        casesToExecute.Add(@case);
                 }
-            }
-
-            if (casesToExecute.Any())
-            {
-                RunLifecycle(testClass, casesToExecute);
-
-                foreach (var @case in casesToExecute)
+                else
                 {
-                    if (@case.Exceptions.Any())
-                        Fail(@case, summary);
-                    else
-                        Pass(@case, summary);
+                    yield return new Case(method);
                 }
             }
-
-            stopwatch.Stop();
-            Complete(testClass, summary, stopwatch.Elapsed);
-
-            return summary;
         }
 
-        bool SkipCase(Case @case, out string reason)
+        bool SkipMethod(MethodInfo testMethod, out string reason)
         {
-            var isTargetMethod = RunContext.TargetMethod == @case.Method;
+            var isTargetMethod = RunContext.TargetMethod == testMethod;
 
             if (!isTargetMethod)
             {
                 foreach (var skipBehavior in skipBehaviors)
                 {
-                    if (SkipCase(skipBehavior, @case))
+                    if (SkipMethod(skipBehavior, testMethod))
                     {
-                        reason = GetSkipReason(skipBehavior, @case);
+                        reason = GetSkipReason(skipBehavior, testMethod);
                         return true;
                     }
                 }
@@ -163,33 +244,11 @@
             return false;
         }
 
-        bool SkipCase(SkipBehavior skipBehavior, Case @case)
-        {
-            try
-            {
-                return skipBehavior.SkipCase(@case);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(
-                    "Exception thrown while attempting to run a custom case-skipping predicate. " +
-                    "Check the inner exception for more details.", exception);
-            }
-        }
+        static bool SkipMethod(SkipBehavior skipBehavior, MethodInfo testMethod)
+            => skipBehavior.SkipMethod(testMethod);
 
-        string GetSkipReason(SkipBehavior skipBehavior, Case @case)
-        {
-            try
-            {
-                return skipBehavior.GetSkipReason(@case);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(
-                    "Exception thrown while attempting to get a custom case-skipped reason. " +
-                    "Check the inner exception for more details.", exception);
-            }
-        }
+        static string GetSkipReason(SkipBehavior skipBehavior, MethodInfo testMethod)
+            => skipBehavior.GetSkipReason(testMethod);
 
         IEnumerable<object[]> Parameters(MethodInfo method)
             => parameterDiscoverer.GetParameters(method);
@@ -199,9 +258,9 @@
             bus.Publish(new ClassStarted(testClass));
         }
 
-        void Skip(Case @case, string reason, ExecutionSummary summary)
+        void Skip(Case @case, ExecutionSummary summary)
         {
-            var message = new CaseSkipped(@case, reason);
+            var message = new CaseSkipped(@case);
             summary.Add(message);
             bus.Publish(message);
         }
@@ -220,55 +279,16 @@
             bus.Publish(message);
         }
 
+        void Fail(MethodInfo method, Exception exception, ExecutionSummary summary)
+        {
+            var @case = new Case(method);
+            @case.Fail(exception);
+            Fail(@case, summary);
+        }
+
         void Complete(Type testClass, ExecutionSummary summary, TimeSpan duration)
         {
             bus.Publish(new ClassCompleted(testClass, summary, duration));
-        }
-
-        void RunLifecycle(Type testClass, IReadOnlyList<Case> cases)
-        {
-            try
-            {
-                lifecycle.Execute(testClass, caseLifecycle =>
-                {
-                    ExecuteCases(cases, caseLifecycle);
-                });
-            }
-            catch (Exception exception)
-            {
-                foreach (var @case in cases)
-                    @case.Fail(exception);
-            }
-        }
-
-        static void ExecuteCases(IReadOnlyList<Case> cases, CaseAction caseLifecycle)
-        {
-            foreach (var @case in cases)
-            {
-                string consoleOutput;
-                using (var console = new RedirectedConsole())
-                {
-                    var stopwatch = Stopwatch.StartNew();
-
-                    try
-                    {
-                        caseLifecycle(@case);
-                    }
-                    catch (Exception exception)
-                    {
-                        @case.Fail(exception);
-                    }
-
-                    stopwatch.Stop();
-
-                    @case.Duration += stopwatch.Elapsed;
-
-                    consoleOutput = console.Output;
-                    @case.Output += consoleOutput;
-                }
-
-                Console.Write(consoleOutput);
-            }
         }
     }
 }

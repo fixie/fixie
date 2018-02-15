@@ -56,6 +56,7 @@
                 }
 
                 @case.ReturnValue = returnValue;
+                @case.Pass();
             }
             catch (Exception exception)
             {

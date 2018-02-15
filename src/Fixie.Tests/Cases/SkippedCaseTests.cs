@@ -2,7 +2,6 @@
 {
     using System;
     using System.Reflection;
-    using static System.Environment;
 
     public class SkippedCaseTests : CaseTests
     {
@@ -15,9 +14,9 @@
 
             Listener.Entries.ShouldEqual(
                 For<SkippedTestClass>(
+                    ".Explicit passed",
                     ".ExplicitAndSkip skipped",
                     ".Fail skipped",
-                    ".Explicit passed",
                     ".Pass passed"));
         }
 
@@ -30,9 +29,9 @@
 
             Listener.Entries.ShouldEqual(
                 For<SkippedTestClass>(
+                    ".Explicit passed",
                     ".ExplicitAndSkip skipped",
                     ".Fail skipped: Troublesome test skipped.",
-                    ".Explicit passed",
                     ".Pass passed"));
         }
 
@@ -84,84 +83,70 @@
                     ".Pass passed"));
         }
 
-        public void ShouldFailCaseWithClearExplanationWhenSkipConditionThrows()
+        public void ShouldFailCaseWhenSkipConditionThrows()
         {
             Convention.CaseExecution
-                .Skip(@case => { throw new Exception("Unsafe case-skipping predicate threw!"); });
+                .Skip(@case => throw new Exception("Unsafe case-skipping predicate threw!"));
 
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
                 For<SkippedTestClass>(
-                    ".Explicit failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipping predicate threw!",
-
-                    ".ExplicitAndSkip failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipping predicate threw!",
-
-                    ".Fail failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipping predicate threw!",
-
-                    ".Pass failed: Exception thrown while attempting to run a custom case-skipping predicate. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipping predicate threw!"));
+                    ".Explicit failed: Unsafe case-skipping predicate threw!",
+                    ".ExplicitAndSkip failed: Unsafe case-skipping predicate threw!",
+                    ".Fail failed: Unsafe case-skipping predicate threw!",
+                    ".Pass failed: Unsafe case-skipping predicate threw!"));
         }
 
-        public void ShouldFailCaseWithClearExplanationWhenSkipReasonThrows()
+        public void ShouldFailCaseWhenSkipReasonThrows()
         {
             Convention.CaseExecution
-                .Skip(HasSkipAttribute, @case => { throw new Exception("Unsafe case-skipped reason generator threw!"); });
+                .Skip(HasSkipAttribute, @case => throw new Exception("Unsafe case-skipped reason generator threw!"));
 
             Run<SkippedTestClass>();
 
             Listener.Entries.ShouldEqual(
                 For<SkippedTestClass>(
-                    ".ExplicitAndSkip failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipped reason generator threw!",
-
-                    ".Fail failed: Exception thrown while attempting to get a custom case-skipped reason. Check the inner exception for more details." + NewLine +
-                    "    Inner Exception: Unsafe case-skipped reason generator threw!",
-
                     ".Explicit passed",
-
+                    ".ExplicitAndSkip failed: Unsafe case-skipped reason generator threw!",
+                    ".Fail failed: Unsafe case-skipped reason generator threw!",
                     ".Pass passed"));
         }
 
-        static string ExplicitAttributeReason(Case @case)
+        static string ExplicitAttributeReason(MethodInfo testMethod)
         {
             return "[Explicit] tests run only when they are individually selected for execution.";
         }
 
-        static bool HasExplicitAttribute(Case @case)
+        static bool HasExplicitAttribute(MethodInfo testMethod)
         {
-            return @case.Method.HasOrInherits<ExplicitAttribute>();
+            return testMethod.HasOrInherits<ExplicitAttribute>();
         }
 
-        static string SkipAttributeReason(Case @case)
+        static string SkipAttributeReason(MethodInfo testMethod)
         {
-            var method = @case.Method;
-
-            var skip = method.HasOrInherits<SkipAttribute>()
-                ? method.GetCustomAttribute<SkipAttribute>(true)
-                : method.DeclaringType.GetCustomAttribute<SkipAttribute>(true);
+            var skip = testMethod.HasOrInherits<SkipAttribute>()
+                ? testMethod.GetCustomAttribute<SkipAttribute>(true)
+                : testMethod.DeclaringType.GetCustomAttribute<SkipAttribute>(true);
 
             return skip.Reason;
         }
 
-        static bool HasSkipAttribute(Case @case)
+        static bool HasSkipAttribute(MethodInfo testMethod)
         {
-            return @case.Method.HasOrInherits<SkipAttribute>();
+            return testMethod.HasOrInherits<SkipAttribute>();
         }
 
         class SkipByExplicitAttribute : SkipBehavior
         {
-            public bool SkipCase(Case @case) => HasExplicitAttribute(@case);
-            public string GetSkipReason(Case @case) => ExplicitAttributeReason(@case);
+            public bool SkipMethod(MethodInfo testMethod) => HasExplicitAttribute(testMethod);
+            public string GetSkipReason(MethodInfo testMethod) => ExplicitAttributeReason(testMethod);
         }
 
         class SkipBySkipAttribute : SkipBehavior
         {
-            public bool SkipCase(Case @case) => HasSkipAttribute(@case);
-            public string GetSkipReason(Case @case) => SkipAttributeReason(@case);
+            public bool SkipMethod(MethodInfo testMethod) => HasSkipAttribute(testMethod);
+            public string GetSkipReason(MethodInfo testMethod) => SkipAttributeReason(testMethod);
         }
 
         class SkippedTestClass

@@ -91,18 +91,17 @@
 
             Listener.Entries.ShouldEqual(
                 For<ParameterizedTestClass>(
-                    ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-                    ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
-                    ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs",
-
                     ".IntArg(0) passed",
                     ".IntArg(1) failed: Expected 0, but was 1",
+                    ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
 
                     ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
                     ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
+                    ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
 
                     ".ZeroArgs(0) failed: Parameter count mismatch.",
-                    ".ZeroArgs(1) failed: Parameter count mismatch."));
+                    ".ZeroArgs(1) failed: Parameter count mismatch.",
+                    ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs"));
         }
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
@@ -113,12 +112,12 @@
 
             Listener.Entries.ShouldEqual(
                 For<ConstrainedGenericTestClass>(
-                    ".ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
-                    ".UnconstrainedGeneric<System.Object> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric",
                     ".ConstrainedGeneric<System.Int32>(0) passed",
                     ".ConstrainedGeneric<System.Int32>(1) passed",
+                    ".ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
                     ".UnconstrainedGeneric<System.Int32>(0) passed",
-                    ".UnconstrainedGeneric<System.Int32>(1) passed"));
+                    ".UnconstrainedGeneric<System.Int32>(1) passed",
+                    ".UnconstrainedGeneric<System.Object> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric"));
         }
 
         public void ShouldResolveGenericTypeParameters()
@@ -129,12 +128,14 @@
 
             Listener.Entries.ShouldEqual(
                 For<GenericTestClass>(
-                    ".ConstrainedGenericMethodWithNoInputsProvided<T> failed: This test case has declared parameters, but no parameter values have been provided to it.",
-                    ".GenericMethodWithNoInputsProvided<System.Object> failed: This test case has declared parameters, but no parameter values have been provided to it.",
-
                     ".ConstrainedGeneric<System.Int32>(1) passed",
                     ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic test case.",
+
+                    ".ConstrainedGenericMethodWithNoInputsProvided<T> failed: This test case has declared parameters, but no parameter values have been provided to it.",
+
                     ".GenericMethodWithIncorrectParameterCountProvided<System.Object>(123, 123) failed: Parameter count mismatch.",
+
+                    ".GenericMethodWithNoInputsProvided<System.Object> failed: This test case has declared parameters, but no parameter values have been provided to it.",
 
                     ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.Object>(123, null, 456, System.Int32, System.Object) passed",
                     ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",

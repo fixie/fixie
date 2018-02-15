@@ -141,33 +141,33 @@
             if (attribute == null)
                 return;
 
-            if (@case.Exceptions.Count > 1)
-                return;
+            var exception = @case.Exception;
 
-            var exception = @case.Exceptions.SingleOrDefault();
-
-            if (exception == null)
-                throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
-
-            if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
+            try
             {
-                @case.ClearExceptions();
+                if (exception == null)
+                    throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
 
-                throw new Exception(
-                    "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
-                    exception.GetType() + " was thrown.", exception);
+                if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
+                {
+                    throw new Exception(
+                        "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
+                        exception.GetType() + " was thrown.", exception);
+                }
+
+                if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
+                {
+                    throw new Exception(
+                        "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
+                        exception);
+                }
+
+                @case.Pass();
             }
-
-            if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
+            catch (Exception failureReason)
             {
-                @case.ClearExceptions();
-
-                throw new Exception(
-                    "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
-                    exception);
+                @case.Fail(failureReason);
             }
-
-            @case.ClearExceptions();
         }
     }
 

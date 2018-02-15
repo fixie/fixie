@@ -137,27 +137,15 @@ namespace Fixie.Tests.Cases
                 {
                     var instance = Activator.CreateInstance(testClass);
 
-                    @case.Execute(instance);
-                    ProcessReturnValues(@case);
+                    var returnValue = @case.Execute(instance);
+
+                    Console.WriteLine(@case.Method.Name + " " + (returnValue ?? "null"));
+
+                    if (@case.Exception == null && returnValue is bool success && !success)
+                        @case.Fail("Boolean test case returned false!");
 
                     (instance as IDisposable)?.Dispose();
                 });
-            }
-
-            static void ProcessReturnValues(Case @case)
-            {
-                Console.WriteLine(@case.Method.Name + " " + (@case.ReturnValue ?? "null"));
-
-                if (@case.Exception != null)
-                    return;
-
-                if (@case.ReturnValue is bool success)
-                {
-                    if (success)
-                        return;
-
-                    @case.Fail("Boolean test case returned false!");
-                }
             }
         }
     }

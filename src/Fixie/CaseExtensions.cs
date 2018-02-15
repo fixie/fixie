@@ -7,7 +7,7 @@
 
     public static class CaseExtensions
     {
-        public static void Execute(this Case @case, object instance)
+        public static object Execute(this Case @case, object instance)
         {
             try
             {
@@ -19,6 +19,7 @@
                     ThrowForUnsupportedAsyncVoid();
 
                 object returnValue;
+
                 try
                 {
                     if (method.ContainsGenericParameters)
@@ -55,12 +56,13 @@
                     }
                 }
 
-                @case.ReturnValue = returnValue;
                 @case.Pass();
+                return returnValue;
             }
             catch (Exception exception)
             {
                 @case.Fail(exception);
+                return null;
             }
         }
 

@@ -107,11 +107,6 @@
             }
         }
 
-        /// <summary>
-        /// The object returned by the invocation of the test case method.
-        /// </summary>
-        public object ReturnValue { get; internal set; }
-
         internal TimeSpan Duration { get; set; }
         internal string Output { get; set; }
         internal string SkipReason { get; private set; }

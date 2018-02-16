@@ -48,7 +48,7 @@
         {
             Post(message, x =>
             {
-                x.outcome = "Skipped";
+                x.Outcome = "Skipped";
                 x.ErrorMessage = message.Reason;
             });
         }
@@ -57,7 +57,7 @@
         {
             Post(message, x =>
             {
-                x.outcome = "Passed";
+                x.Outcome = "Passed";
             });
         }
 
@@ -67,7 +67,7 @@
 
             Post(message, x =>
             {
-                x.outcome = "Failed";
+                x.Outcome = "Failed";
                 x.ErrorMessage = exception.Message;
                 x.ErrorStackTrace = exception.TypedStackTrace();
             });
@@ -77,10 +77,10 @@
         {
             var testResult = new TestResult
             {
-                testFramework = "Fixie",
-                fileName = fileName,
-                testName = message.Name,
-                durationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
+                TestFramework = "Fixie",
+                FileName = fileName,
+                TestName = message.Name,
+                DurationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
                 StdOut = message.Output
             };
 
@@ -109,11 +109,11 @@
 
         public class TestResult
         {
-            public string testFramework { get; set; }
-            public string fileName { get; set; }
-            public string testName { get; set; }
-            public string outcome { get; set; }
-            public string durationMilliseconds { get; set; }
+            public string TestFramework { get; set; }
+            public string FileName { get; set; }
+            public string TestName { get; set; }
+            public string Outcome { get; set; }
+            public string DurationMilliseconds { get; set; }
             public string StdOut { get; set; }
             public string ErrorMessage { get; set; }
             public string ErrorStackTrace { get; set; }

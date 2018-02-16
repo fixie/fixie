@@ -40,12 +40,12 @@
 
             foreach (var result in results)
             {
-                result.testFramework.ShouldEqual("Fixie");
+                result.TestFramework.ShouldEqual("Fixie");
 
 #if NET471
-                result.fileName.ShouldEqual("Fixie.Tests.exe");
+                result.FileName.ShouldEqual("Fixie.Tests.exe");
 #else
-                result.fileName.ShouldEqual("Fixie.Tests.dll");
+                result.FileName.ShouldEqual("Fixie.Tests.dll");
 #endif
             }
 
@@ -55,23 +55,23 @@
             var skipWithReason = results[3];
             var skipWithoutReason = results[4];
 
-            skipWithReason.testName.ShouldEqual(TestClass + ".SkipWithReason");
-            skipWithReason.outcome.ShouldEqual("Skipped");
-            skipWithReason.durationMilliseconds.ShouldEqual("0");
+            skipWithReason.TestName.ShouldEqual(TestClass + ".SkipWithReason");
+            skipWithReason.Outcome.ShouldEqual("Skipped");
+            skipWithReason.DurationMilliseconds.ShouldEqual("0");
             skipWithReason.ErrorMessage.ShouldEqual("Skipped with reason.");
             skipWithReason.ErrorStackTrace.ShouldBeNull();
             skipWithReason.StdOut.ShouldBeNull();
 
-            skipWithoutReason.testName.ShouldEqual(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.outcome.ShouldEqual("Skipped");
-            skipWithoutReason.durationMilliseconds.ShouldEqual("0");
+            skipWithoutReason.TestName.ShouldEqual(TestClass + ".SkipWithoutReason");
+            skipWithoutReason.Outcome.ShouldEqual("Skipped");
+            skipWithoutReason.DurationMilliseconds.ShouldEqual("0");
             skipWithoutReason.ErrorMessage.ShouldBeNull();
             skipWithoutReason.ErrorStackTrace.ShouldBeNull();
             skipWithoutReason.StdOut.ShouldBeNull();
 
-            fail.testName.ShouldEqual(TestClass + ".Fail");
-            fail.outcome.ShouldEqual("Failed");
-            int.Parse(fail.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            fail.TestName.ShouldEqual(TestClass + ".Fail");
+            fail.Outcome.ShouldEqual("Failed");
+            int.Parse(fail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             fail.ErrorMessage.ShouldEqual("'Fail' failed!");
             fail.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
@@ -79,9 +79,9 @@
                 .ShouldEqual("Fixie.Tests.FailureException", At("Fail()"));
             fail.StdOut.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
 
-            failByAssertion.testName.ShouldEqual(TestClass + ".FailByAssertion");
-            failByAssertion.outcome.ShouldEqual("Failed");
-            int.Parse(failByAssertion.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            failByAssertion.TestName.ShouldEqual(TestClass + ".FailByAssertion");
+            failByAssertion.Outcome.ShouldEqual("Failed");
+            int.Parse(failByAssertion.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             failByAssertion.ErrorMessage.Lines().ShouldEqual(
                 "Assertion Failure",
                 "Expected: 2",
@@ -91,9 +91,9 @@
                 .ShouldEqual(At("FailByAssertion()"));
             failByAssertion.StdOut.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
 
-            pass.testName.ShouldEqual(TestClass + ".Pass");
-            pass.outcome.ShouldEqual("Passed");
-            int.Parse(pass.durationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            pass.TestName.ShouldEqual(TestClass + ".Pass");
+            pass.Outcome.ShouldEqual("Passed");
+            int.Parse(pass.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             pass.ErrorMessage.ShouldBeNull();
             pass.ErrorStackTrace.ShouldBeNull();
             pass.StdOut.Lines().ShouldEqual("Console.Out: Pass", "Console.Error: Pass");

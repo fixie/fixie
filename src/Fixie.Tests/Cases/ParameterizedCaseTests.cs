@@ -85,7 +85,7 @@
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
-            Convention.Parameters.Add<BuggyParameterSource>();
+            Convention.Parameters.Add<LazyBuggyParameterSource>();
 
             Run<ParameterizedTestClass>();
 
@@ -104,9 +104,30 @@
                     ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs"));
         }
 
+        public void ShouldIsolateFailureToTheAffectedTestMethodWhenEagerParameterGenerationThrows()
+        {
+            //The EagerBuggyParameterSource attempts to realize a complete set of
+            //parameter arrays before returning, but will first throw an exception
+            //when trying to handle the IntArg test method. Since IntArg runs first,
+            //this test demonstrates how the failure is isolated to that test method.
+
+            Convention.Parameters.Add<EagerBuggyParameterSource>();
+
+            Run<ParameterizedTestClass>();
+
+            Listener.Entries.ToArray().ShouldEqual(
+                For<ParameterizedTestClass>(
+                    ".IntArg failed: Exception thrown while attempting to eagerly build input parameters for method: IntArg",
+
+                    ".MultipleCasesFromAttributes(1, 1, 2) passed",
+                    ".MultipleCasesFromAttributes(1, 2, 3) passed",
+                    ".MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
+                    ".ZeroArgs passed"));
+        }
+
         public void ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
         {
-            Convention.Parameters.Add<BuggyParameterSource>();
+            Convention.Parameters.Add<LazyBuggyParameterSource>();
 
             Run<ConstrainedGenericTestClass>();
 
@@ -171,7 +192,7 @@
 
         class InputAttributeOrDefaultParameterSource : ParameterSource
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            public virtual IEnumerable<object[]> GetParameters(MethodInfo method)
             {
                 var parameters = method.GetParameters();
 
@@ -197,13 +218,24 @@
             }
         }
 
-        class BuggyParameterSource : ParameterSource
+        class LazyBuggyParameterSource : ParameterSource
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
                 yield return new object[] { 0 };
                 yield return new object[] { 1 };
                 throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
+            }
+        }
+
+        class EagerBuggyParameterSource : InputAttributeOrDefaultParameterSource
+        {
+            public override IEnumerable<object[]> GetParameters(MethodInfo method)
+            {
+                if (method.Name == nameof(ParameterizedTestClass.IntArg))
+                    throw new Exception("Exception thrown while attempting to eagerly build input parameters for method: " + method.Name);
+
+                return base.GetParameters(method).ToArray();
             }
         }
 

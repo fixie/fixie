@@ -6,7 +6,7 @@
 
     public class RunnerException : Exception
     {
-        public RunnerException(PipeListener.Exception exception)
+        public RunnerException(PipeMessage.Exception exception)
             : base($"{NewLine}{NewLine}{exception.Details}{NewLine}")
         {
         }

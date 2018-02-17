@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Execution.Listeners
 {
+    using System;
     using System.IO;
     using System.IO.Pipes;
     using System.Runtime.Serialization.Json;
@@ -15,8 +16,24 @@
                 return (TMessage)deserializer.ReadObject(stream);
         }
 
+        public static void Send<TMessage>(this PipeStream pipe) where TMessage: new()
+        {
+           pipe.Send(new TMessage());
+        }
+
+        public static void Send(this PipeStream pipe, Exception exception)
+        {
+            pipe.Send(new PipeMessage.Exception
+            {
+                Details = exception.ToString()
+            });
+        }
+
         public static void Send<TMessage>(this PipeStream pipe, TMessage message)
         {
+            var messageType = typeof(TMessage).FullName;
+            SendMessageBytes(pipe, Encoding.UTF8.GetBytes(messageType));
+
             var serializer = new DataContractJsonSerializer(typeof(TMessage));
 
             using (var stream = new MemoryStream())
@@ -30,17 +47,6 @@
         public static string ReceiveMessage(this PipeStream pipe)
         {
             return Encoding.UTF8.GetString(ReceiveMessageBytes(pipe));
-        }
-
-        public static void Send(this PipeStream pipe, PipeCommand command)
-        {
-            SendMessage(pipe, command.ToString());
-        }
-
-        public static void SendMessage(this PipeStream pipe, string message)
-        {
-            var bytes = Encoding.UTF8.GetBytes(message);
-            SendMessageBytes(pipe, bytes);
         }
 
         static byte[] ReceiveMessageBytes(PipeStream pipe)

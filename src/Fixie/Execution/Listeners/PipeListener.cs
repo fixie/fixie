@@ -21,7 +21,7 @@
         {
             var methodGroup = new MethodGroup(message.Method);
 
-            Write(new Test
+            Write(new PipeMessage.Test
             {
                 FullyQualifiedName = methodGroup.FullName,
                 DisplayName = methodGroup.FullName
@@ -57,9 +57,9 @@
             });
         }
 
-        void Write(CaseCompleted message, Action<TestResult> customize)
+        void Write(CaseCompleted message, Action<PipeMessage.TestResult> customize)
         {
-            var testResult = new TestResult
+            var testResult = new PipeMessage.TestResult
             {
                 FullyQualifiedName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
@@ -72,41 +72,6 @@
             Write(testResult);
         }
 
-        void Write<T>(T message)
-        {
-            pipe.SendMessage(typeof(T).FullName);
-            pipe.Send(message);
-        }
-
-        public class Test
-        {
-            public string FullyQualifiedName { get; set; }
-            public string DisplayName { get; set; }
-        }
-
-        public class TestResult
-        {
-            public string FullyQualifiedName { get; set; }
-            public string DisplayName { get; set; }
-            public string Outcome { get; set; }
-            public TimeSpan Duration { get; set; }
-            public string Output { get; set; }
-            public string ErrorMessage { get; set; }
-            public string ErrorStackTrace { get; set; }
-        }
-
-        public class RunMethods
-        {
-            public string[] Methods { get; set; }
-        }
-
-        public class Exception
-        {
-            public string Details { get; set; }
-        }
-
-        public class Completed
-        {
-        }
+        void Write<T>(T message) => pipe.Send(message);
     }
 }

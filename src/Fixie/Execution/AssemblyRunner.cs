@@ -41,37 +41,40 @@
                     pipe.Connect();
                     pipe.ReadMode = PipeTransmissionMode.Message;
 
-                    var command = (PipeCommand)Enum.Parse(typeof(PipeCommand), pipe.ReceiveMessage());
-
                     int exitCode = Success;
 
                     try
                     {
-                        switch (command)
+                        var messageType = pipe.ReceiveMessage();
+
+                        if (messageType == typeof(PipeMessage.DiscoverMethods).FullName)
                         {
-                            case PipeCommand.DiscoverMethods:
-                                runner.DiscoverMethods(assembly, options, conventionArguments);
-                                break;
-                            case PipeCommand.RunMethods:
-                                var runMethods = pipe.Receive<PipeListener.RunMethods>();
-                                exitCode = runner.RunMethods(assembly, options, conventionArguments, runMethods.Methods);
-                                break;
-                            case PipeCommand.RunAssembly:
-                                exitCode = runner.RunAssembly(assembly, options, conventionArguments);
-                                break;
+                            var discoverMethods = pipe.Receive<PipeMessage.DiscoverMethods>();
+                            runner.DiscoverMethods(assembly, options, conventionArguments);
+                        }
+                        else if (messageType == typeof(PipeMessage.RunMethods).FullName)
+                        {
+                            var runMethods = pipe.Receive<PipeMessage.RunMethods>();
+                            exitCode = runner.RunMethods(assembly, options, conventionArguments, runMethods.Methods);
+                        }
+                        else if (messageType == typeof(PipeMessage.RunAssembly).FullName)
+                        {
+                            var runAssembly = pipe.Receive<PipeMessage.RunAssembly>();
+                            exitCode = runner.RunAssembly(assembly, options, conventionArguments);
+                        }
+                        else
+                        {
+                            var body = pipe.ReceiveMessage();
+                            throw new Exception($"Test assembly received unexpected message of type {messageType}: {body}");
                         }
                     }
                     catch (Exception exception)
                     {
-                        pipe.SendMessage(typeof(PipeListener.Exception).FullName);
-                        pipe.Send(new PipeListener.Exception
-                        {
-                            Details = exception.ToString()
-                        });
+                        pipe.Send(exception);
                     }
                     finally
                     {
-                        pipe.SendMessage(typeof(PipeListener.Completed).FullName);
+                        pipe.Send<PipeMessage.Completed>();
                     }
 
                     return exitCode;

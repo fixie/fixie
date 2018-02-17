@@ -18,7 +18,7 @@
 
             var executionRecorder = new ExecutionRecorder(recorder, assemblyPath);
 
-            executionRecorder.RecordResult(new PipeListener.TestResult
+            executionRecorder.RecordResult(new PipeMessage.TestResult
             {
                 FullyQualifiedName = "Namespace.Class.Pass",
                 DisplayName = "Namespace.Class.Pass",
@@ -29,7 +29,7 @@
                 ErrorStackTrace = null
             });
 
-            executionRecorder.RecordResult(new PipeListener.TestResult
+            executionRecorder.RecordResult(new PipeMessage.TestResult
             {
                 FullyQualifiedName = "Namespace.Class.Fail",
                 DisplayName = "Namespace.Class.Fail",
@@ -40,7 +40,7 @@
                 ErrorStackTrace = "Stack Trace"
             });
 
-            executionRecorder.RecordResult(new PipeListener.TestResult
+            executionRecorder.RecordResult(new PipeMessage.TestResult
             {
                 FullyQualifiedName = "Namespace.Class.Skip",
                 DisplayName = "Namespace.Class.Skip",

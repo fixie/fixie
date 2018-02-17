@@ -34,7 +34,7 @@
             HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
 
             foreach (var assemblyPath in sources)
-                RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(PipeCommand.RunAssembly));
+                RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send<PipeMessage.RunAssembly>());
         }
 
         /// <summary>
@@ -60,8 +60,7 @@
 
                 RunTests(log, frameworkHandle, assemblyPath, pipe =>
                 {
-                    pipe.Send(PipeCommand.RunMethods);
-                    pipe.Send(new PipeListener.RunMethods
+                    pipe.Send(new PipeMessage.RunMethods
                     {
                         Methods = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
                     });
@@ -96,16 +95,28 @@
 
                 while (true)
                 {
-                    var message = pipe.ReceiveMessage();
+                    var messageType = pipe.ReceiveMessage();
 
-                    if (message == typeof(PipeListener.TestResult).FullName)
-                        recorder.RecordResult(pipe.Receive<PipeListener.TestResult>());
-
-                    if (message == typeof(PipeListener.Exception).FullName)
-                        throw new RunnerException(pipe.Receive<PipeListener.Exception>());
-
-                    if (message == typeof(PipeListener.Completed).FullName)
+                    if (messageType == typeof(PipeMessage.TestResult).FullName)
+                    {
+                        var testResult = pipe.Receive<PipeMessage.TestResult>();
+                        recorder.RecordResult(testResult);
+                    }
+                    else if (messageType == typeof(PipeMessage.Exception).FullName)
+                    {
+                        var exception = pipe.Receive<PipeMessage.Exception>();
+                        throw new RunnerException(exception);
+                    }
+                    else if (messageType == typeof(PipeMessage.Completed).FullName)
+                    {
+                        var completed = pipe.Receive<PipeMessage.Completed>();
                         break;
+                    }
+                    else
+                    {
+                        var body = pipe.ReceiveMessage();
+                        throw new Exception($"Test runner received unexpected message of type {messageType}: {body}");
+                    }
                 }
             }
         }

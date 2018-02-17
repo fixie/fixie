@@ -42,22 +42,34 @@
 
                 pipe.WaitForConnection();
 
-                pipe.Send(PipeCommand.DiscoverMethods);
+                pipe.Send<PipeMessage.DiscoverMethods>();
 
                 var recorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
 
                 while (true)
                 {
-                    var message = pipe.ReceiveMessage();
+                    var messageType = pipe.ReceiveMessage();
 
-                    if (message == typeof(PipeListener.Test).FullName)
-                        recorder.SendTestCase(pipe.Receive<PipeListener.Test>());
-
-                    if (message == typeof(PipeListener.Exception).FullName)
-                        throw new RunnerException(pipe.Receive<PipeListener.Exception>());
-
-                    if (message == typeof(PipeListener.Completed).FullName)
+                    if (messageType == typeof(PipeMessage.Test).FullName)
+                    {
+                        var test = pipe.Receive<PipeMessage.Test>();
+                        recorder.SendTestCase(test);
+                    }
+                    else if (messageType == typeof(PipeMessage.Exception).FullName)
+                    {
+                        var exception = pipe.Receive<PipeMessage.Exception>();
+                        throw new RunnerException(exception);
+                    }
+                    else if (messageType == typeof(PipeMessage.Completed).FullName)
+                    {
+                        var exception = pipe.Receive<PipeMessage.Completed>();
                         break;
+                    }
+                    else
+                    {
+                        var body = pipe.ReceiveMessage();
+                        throw new Exception($"Test runner received unexpected message of type {messageType}: {body}");
+                    }
                 }
             }
         }

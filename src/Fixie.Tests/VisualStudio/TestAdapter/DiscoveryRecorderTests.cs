@@ -23,7 +23,7 @@
 
             var methodGroup = new MethodGroup(typeof(SampleTestClass).GetInstanceMethod("Fail"));
             
-            discoveryRecorder.SendTestCase(new PipeListener.Test
+            discoveryRecorder.SendTestCase(new PipeMessage.Test
             {
                 FullyQualifiedName = methodGroup.FullName,
                 DisplayName = methodGroup.FullName
@@ -46,7 +46,7 @@
 
             var methodGroup = new MethodGroup(typeof(SampleTestClass).GetInstanceMethod("Fail"));
 
-            discoveryRecorder.SendTestCase(new PipeListener.Test
+            discoveryRecorder.SendTestCase(new PipeMessage.Test
             {
                 FullyQualifiedName = methodGroup.FullName,
                 DisplayName = methodGroup.FullName

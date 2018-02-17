@@ -22,7 +22,7 @@
             sourceLocationProvider = new SourceLocationProvider(assemblyPath);
         }
 
-        public void SendTestCase(PipeListener.Test test)
+        public void SendTestCase(PipeMessage.Test test)
         {
             SourceLocation sourceLocation = null;
 

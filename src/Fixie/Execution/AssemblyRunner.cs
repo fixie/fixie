@@ -45,21 +45,26 @@
 
                     int exitCode = Success;
 
-                    switch (command)
+                    try
                     {
-                        case PipeCommand.DiscoverMethods:
-                            runner.DiscoverMethods(assembly, options, conventionArguments);
-                            break;
-                        case PipeCommand.RunMethods:
-                            var runMethods = pipe.Receive<PipeListener.RunMethods>();
-                            exitCode = runner.RunMethods(assembly, options, conventionArguments, runMethods.Methods);
-                            break;
-                        case PipeCommand.RunAssembly:
-                            exitCode = runner.RunAssembly(assembly, options, conventionArguments);
-                            break;
+                        switch (command)
+                        {
+                            case PipeCommand.DiscoverMethods:
+                                runner.DiscoverMethods(assembly, options, conventionArguments);
+                                break;
+                            case PipeCommand.RunMethods:
+                                var runMethods = pipe.Receive<PipeListener.RunMethods>();
+                                exitCode = runner.RunMethods(assembly, options, conventionArguments, runMethods.Methods);
+                                break;
+                            case PipeCommand.RunAssembly:
+                                exitCode = runner.RunAssembly(assembly, options, conventionArguments);
+                                break;
+                        }
                     }
-
-                    pipe.SendMessage(typeof(PipeListener.Completed).FullName);
+                    finally
+                    {
+                        pipe.SendMessage(typeof(PipeListener.Completed).FullName);
+                    }
 
                     return exitCode;
                 }

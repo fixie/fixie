@@ -73,45 +73,40 @@
 
         static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<NamedPipeServerStream> sendCommand)
         {
-            try
+            if (!IsTestAssembly(assemblyPath))
             {
-                if (IsTestAssembly(assemblyPath))
-                {
-                    log.Info("Processing " + assemblyPath);
-
-                    var pipeName = Guid.NewGuid().ToString();
-                    Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
-
-                    using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
-                    {
-                        Start(assemblyPath, frameworkHandle);
-
-                        pipe.WaitForConnection();
-
-                        sendCommand(pipe);
-
-                        var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
-
-                        while (true)
-                        {
-                            var message = pipe.ReceiveMessage();
-
-                            if (message == typeof(PipeListener.TestResult).FullName)
-                                recorder.RecordResult(pipe.Receive<PipeListener.TestResult>());
-
-                            if (message == typeof(PipeListener.Completed).FullName)
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-                    log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
-                }
+                log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
+                return;
             }
-            catch (Exception exception)
+
+            log.Info("Processing " + assemblyPath);
+
+            var pipeName = Guid.NewGuid().ToString();
+            Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
+
+            using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
             {
-                log.Error(exception);
+                Start(assemblyPath, frameworkHandle);
+
+                pipe.WaitForConnection();
+
+                sendCommand(pipe);
+
+                var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
+
+                while (true)
+                {
+                    var message = pipe.ReceiveMessage();
+
+                    if (message == typeof(PipeListener.TestResult).FullName)
+                        recorder.RecordResult(pipe.Receive<PipeListener.TestResult>());
+
+                    if (message == typeof(PipeListener.Exception).FullName)
+                        throw new RunnerException(pipe.Receive<PipeListener.Exception>());
+
+                    if (message == typeof(PipeListener.Completed).FullName)
+                        break;
+                }
             }
         }
 

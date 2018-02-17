@@ -20,46 +20,44 @@
             log.Version();
 
             foreach (var assemblyPath in sources)
+                DiscoverTests(log, discoverySink, assemblyPath);
+        }
+
+        static void DiscoverTests(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)
+        {
+            if (!IsTestAssembly(assemblyPath))
             {
-                try
+                log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
+                return;
+            }
+
+            log.Info("Processing " + assemblyPath);
+
+            var pipeName = Guid.NewGuid().ToString();
+            Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
+
+            using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+            {
+                Start(assemblyPath);
+
+                pipe.WaitForConnection();
+
+                pipe.Send(PipeCommand.DiscoverMethods);
+
+                var recorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
+
+                while (true)
                 {
-                    if (IsTestAssembly(assemblyPath))
-                    {
-                        log.Info("Processing " + assemblyPath);
+                    var message = pipe.ReceiveMessage();
 
-                        var pipeName = Guid.NewGuid().ToString();
-                        Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
+                    if (message == typeof(PipeListener.Test).FullName)
+                        recorder.SendTestCase(pipe.Receive<PipeListener.Test>());
 
-                        using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
-                        {
-                            Start(assemblyPath);
+                    if (message == typeof(PipeListener.Exception).FullName)
+                        throw new RunnerException(pipe.Receive<PipeListener.Exception>());
 
-                            pipe.WaitForConnection();
-
-                            pipe.Send(PipeCommand.DiscoverMethods);
-
-                            var recorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
-
-                            while (true)
-                            {
-                                var message = pipe.ReceiveMessage();
-
-                                if (message == typeof(PipeListener.Test).FullName)
-                                    recorder.SendTestCase(pipe.Receive<PipeListener.Test>());
-
-                                if (message == typeof(PipeListener.Completed).FullName)
-                                    break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
-                    }
-                }
-                catch (Exception exception)
-                {
-                    log.Error(exception);
+                    if (message == typeof(PipeListener.Completed).FullName)
+                        break;
                 }
             }
         }

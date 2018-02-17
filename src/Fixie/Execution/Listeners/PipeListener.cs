@@ -100,6 +100,11 @@
             public string[] Methods { get; set; }
         }
 
+        public class Exception
+        {
+            public string Details { get; set; }
+        }
+
         public class Completed
         {
         }

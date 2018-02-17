@@ -61,6 +61,14 @@
                                 break;
                         }
                     }
+                    catch (Exception exception)
+                    {
+                        pipe.SendMessage(typeof(PipeListener.Exception).FullName);
+                        pipe.Send(new PipeListener.Exception
+                        {
+                            Details = exception.ToString()
+                        });
+                    }
                     finally
                     {
                         pipe.SendMessage(typeof(PipeListener.Completed).FullName);

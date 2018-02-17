@@ -12,7 +12,7 @@
             Assert.Equal(expected, actual.ToArray());
         }
 
-        public static Exception ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception
+        public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception
         {
             bool threw = false;
             Exception exception = null;
@@ -30,7 +30,7 @@
             }
 
             threw.ShouldBeTrue();
-            return exception;
+            return (TException)exception;
         }
     }
 }

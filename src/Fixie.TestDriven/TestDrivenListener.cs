@@ -40,8 +40,8 @@ namespace Fixie.TestDriven
             Log(message, x =>
             {
                 x.State = TestState.Failed;
-                x.Message = message.FailedAssertion ? "" : message.Type;
-                x.StackTrace = message.Message + NewLine + NewLine + message.StackTrace;
+                x.Message = message.FailedAssertion ? "" : message.ExceptionType;
+                x.StackTrace = message.ExceptionMessage + NewLine + NewLine + message.StackTrace;
             });
         }
 

@@ -58,8 +58,8 @@
                     new XAttribute("result", "Fail"),
                     new XAttribute("time", Seconds(message.Duration)),
                     new XElement("failure",
-                        new XAttribute("exception-type", message.Type),
-                        new XElement("message", new XCData(message.Message)),
+                        new XAttribute("exception-type", message.ExceptionType),
+                        new XElement("message", new XCData(message.ExceptionMessage)),
                         new XElement("stack-trace", new XCData(message.StackTrace)))));
         }
 

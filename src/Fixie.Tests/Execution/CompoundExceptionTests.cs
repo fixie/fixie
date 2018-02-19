@@ -23,8 +23,8 @@
             @case.Fail(exception);
             var failure = new CaseFailed(@case, assertionLibrary);
 
-            failure.Type.ShouldEqual(FullName<PrimaryException>());
-            failure.Message.ShouldEqual("Primary Exception!");
+            failure.ExceptionType.ShouldEqual(FullName<PrimaryException>());
+            failure.ExceptionMessage.ShouldEqual("Primary Exception!");
             failure.FailedAssertion.ShouldEqual(false);
 
             failure.StackTrace
@@ -52,8 +52,8 @@
             @case.Fail(exception);
             var failure = new CaseFailed(@case, assertionLibrary);
 
-            failure.Type.ShouldEqual(FullName<PrimaryException>());
-            failure.Message.ShouldEqual("Primary Exception!");
+            failure.ExceptionType.ShouldEqual(FullName<PrimaryException>());
+            failure.ExceptionMessage.ShouldEqual("Primary Exception!");
             failure.FailedAssertion.ShouldEqual(true);
 
             failure.StackTrace

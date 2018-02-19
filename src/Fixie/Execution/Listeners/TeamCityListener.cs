@@ -36,7 +36,7 @@
         {
             TestStarted(message);
             Output(message);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Message, message.TypedStackTrace());
+            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.ExceptionMessage, message.TypedStackTrace());
             TestFinished(message);
         }
 

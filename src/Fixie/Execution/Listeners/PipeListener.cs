@@ -50,7 +50,7 @@
             Write(message, x =>
             {
                 x.Outcome = "Failed";
-                x.ErrorMessage = message.Message;
+                x.ErrorMessage = message.ExceptionMessage;
                 x.ErrorStackTrace = message.TypedStackTrace();
             });
         }

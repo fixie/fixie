@@ -5,11 +5,11 @@
     using Fixie.Execution;
     using static Utility;
 
-    public class CompoundExceptionTests
+    public class CaseFailedTests
     {
         readonly Convention convention;
 
-        public CompoundExceptionTests()
+        public CaseFailedTests()
         {
             convention = new Convention();
         }
@@ -31,11 +31,11 @@
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                    At<CompoundExceptionTests>("GetException()"),
+                    At<CaseFailedTests>("GetException()"),
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",
                     "Divide by Zero Exception!",
-                    At<CompoundExceptionTests>("GetException()"));
+                    At<CaseFailedTests>("GetException()"));
         }
 
         public void ShouldFilterAssertionLibraryImplementationDetails()
@@ -43,7 +43,7 @@
             convention
                 .HideExceptionDetails
                 .For<PrimaryException>()
-                .For<CompoundExceptionTests>();
+                .For<CaseFailedTests>();
 
             var assertionLibrary = AssertionLibraryFilter();
             var exception = GetException();

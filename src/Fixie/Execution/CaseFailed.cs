@@ -12,14 +12,12 @@
 
             Exception = exception;
             ExceptionType = exception.GetType().FullName;
-            ExceptionMessage = exception.Message;
             FailedAssertion = filter.IsFailedAssertion(exception);
             StackTrace = GetCompoundStackTrace(exception, filter);
         }
 
         public Exception Exception { get; }
         public string ExceptionType { get; }
-        public string ExceptionMessage { get; }
         public bool FailedAssertion { get; }
         public string StackTrace { get; }
 

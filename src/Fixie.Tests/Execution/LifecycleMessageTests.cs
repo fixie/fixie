@@ -48,7 +48,7 @@
             fail.StackTrace
                 .CleanStackTraceLineNumbers()
                 .ShouldEqual(At("Fail()"));
-            fail.ExceptionMessage.ShouldEqual("'Fail' failed!");
+            fail.Exception.Message.ShouldEqual("'Fail' failed!");
 
             failByAssertion.Name.ShouldEqual(TestClass + ".FailByAssertion");
             failByAssertion.Class.FullName.ShouldEqual(TestClass);
@@ -60,7 +60,7 @@
             failByAssertion.StackTrace
                 .CleanStackTraceLineNumbers()
                 .ShouldEqual(At("FailByAssertion()"));
-            failByAssertion.ExceptionMessage.Lines().ShouldEqual(
+            failByAssertion.Exception.Message.Lines().ShouldEqual(
                 "Assertion Failure",
                 "Expected: 2",
                 "Actual:   1");

@@ -41,7 +41,7 @@ namespace Fixie.TestDriven
             {
                 x.State = TestState.Failed;
                 x.Message = message.FailedAssertion ? "" : message.ExceptionType;
-                x.StackTrace = message.ExceptionMessage + NewLine + NewLine + message.StackTrace;
+                x.StackTrace = message.Exception.Message + NewLine + NewLine + message.StackTrace;
             });
         }
 

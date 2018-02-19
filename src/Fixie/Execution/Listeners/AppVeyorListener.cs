@@ -66,7 +66,7 @@
             Post(message, x =>
             {
                 x.Outcome = "Failed";
-                x.ErrorMessage = message.ExceptionMessage;
+                x.ErrorMessage = message.Exception.Message;
                 x.ErrorStackTrace = message.TypedStackTrace();
             });
         }

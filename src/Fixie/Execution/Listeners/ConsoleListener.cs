@@ -26,7 +26,7 @@
         {
             using (Foreground.Red)
                 Console.WriteLine($"Test '{message.Name}' failed:{(message.FailedAssertion ? "" : " " + message.ExceptionType)}");
-            Console.WriteLine(message.ExceptionMessage);
+            Console.WriteLine(message.Exception.Message);
             Console.WriteLine(message.StackTrace);
             Console.WriteLine();
         }

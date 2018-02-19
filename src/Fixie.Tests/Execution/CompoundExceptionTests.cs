@@ -24,7 +24,7 @@
             @case.Fail(exception);
             var failure = new CaseFailed(@case, assertionLibrary);
 
-            compoundException.Type.ShouldEqual(FullName<PrimaryException>());
+            failure.Type.ShouldEqual(FullName<PrimaryException>());
             failure.Message.ShouldEqual("Primary Exception!");
             compoundException.FailedAssertion.ShouldEqual(false);
 
@@ -54,7 +54,7 @@
             @case.Fail(exception);
             var failure = new CaseFailed(@case, assertionLibrary);
 
-            compoundException.Type.ShouldEqual(FullName<PrimaryException>());
+            failure.Type.ShouldEqual(FullName<PrimaryException>());
             failure.Message.ShouldEqual("Primary Exception!");
             compoundException.FailedAssertion.ShouldEqual(true);
 

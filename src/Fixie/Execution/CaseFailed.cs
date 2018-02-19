@@ -10,8 +10,7 @@
             var exception = @case.Exception;
 
             Exception = new CompoundException(exception, filter);
-
-            Type = Exception.Type;
+            Type = exception.GetType().FullName;
             Message = exception.Message;
             FailedAssertion = Exception.FailedAssertion;
             StackTrace = Exception.StackTrace;

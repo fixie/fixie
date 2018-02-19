@@ -8,12 +8,10 @@ namespace Fixie.Execution
         public CompoundException(Exception exception, AssertionLibraryFilter filter)
         {
             var primary = exception;
-            Type = primary.GetType().FullName;
             FailedAssertion = filter.IsFailedAssertion(primary);
             StackTrace = GetCompoundStackTrace(exception, filter);
         }
 
-        public string Type { get; }
         public bool FailedAssertion { get; }
         public string StackTrace { get; }
 

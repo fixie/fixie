@@ -50,8 +50,7 @@
             lifecycle.Execute(testClass, caseLifecycle =>
             {
                 if (runCasesInvokedByLifecycle)
-                    throw new Exception(
-                        $"{lifecycle.GetType()} attempted to run {testClass.FullName}'s test cases multiple times, which is not supported.");
+                    throw new Exception($"{lifecycle.GetType()} attempted to run {testClass.FullName}'s test cases multiple times, which is not supported.");
 
                 runCasesInvokedByLifecycle = true;
 

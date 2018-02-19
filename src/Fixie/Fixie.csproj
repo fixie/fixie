@@ -10,8 +10,4 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Execution\Pipe\" />
-  </ItemGroup>
-
 </Project>

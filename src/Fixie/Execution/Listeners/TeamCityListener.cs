@@ -34,10 +34,9 @@
 
         public void Handle(CaseFailed message)
         {
-            var exception = message.Exception;
             TestStarted(message);
             Output(message);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, exception.Message, exception.TypedStackTrace());
+            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Message, message.Exception.TypedStackTrace());
             TestFinished(message);
         }
 

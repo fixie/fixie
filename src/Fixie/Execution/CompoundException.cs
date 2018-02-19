@@ -9,13 +9,11 @@ namespace Fixie.Execution
         {
             var primary = exception;
             Type = primary.GetType().FullName;
-            Message = primary.Message;
             FailedAssertion = filter.IsFailedAssertion(primary);
             StackTrace = GetCompoundStackTrace(exception, filter);
         }
 
         public string Type { get; }
-        public string Message { get; }
         public bool FailedAssertion { get; }
         public string StackTrace { get; }
 

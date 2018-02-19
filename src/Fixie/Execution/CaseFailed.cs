@@ -7,10 +7,12 @@
         public CaseFailed(Case @case, AssertionLibraryFilter filter)
             : base(@case)
         {
-            Exception = new CompoundException(@case.Exception, filter);
+            var exception = @case.Exception;
+
+            Exception = new CompoundException(exception, filter);
 
             Type = Exception.Type;
-            Message = Exception.Message;
+            Message = exception.Message;
             FailedAssertion = Exception.FailedAssertion;
             StackTrace = Exception.StackTrace;
         }

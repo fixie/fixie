@@ -76,11 +76,7 @@
                     ".MultipleCasesFromAttributes(0, 1, 2) failed: Expected sum of 2 but was 1.",
                     ".MultipleCasesFromAttributes(0, 1, 2, 3) failed: Parameter count mismatch.",
 
-                    ".ZeroArgs passed",
-                    ".ZeroArgs(0) failed: Parameter count mismatch.",
-                    ".ZeroArgs(0, 1) failed: Parameter count mismatch.",
-                    ".ZeroArgs(0, 1, 2) failed: Parameter count mismatch.",
-                    ".ZeroArgs(0, 1, 2, 3) failed: Parameter count mismatch."));
+                    ".ZeroArgs passed"));
         }
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
@@ -99,9 +95,7 @@
                     ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
                     ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
 
-                    ".ZeroArgs(0) failed: Parameter count mismatch.",
-                    ".ZeroArgs(1) failed: Parameter count mismatch.",
-                    ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs"));
+                    ".ZeroArgs passed"));
         }
 
         public void ShouldIsolateFailureToTheAffectedTestMethodWhenEagerParameterGenerationThrows()

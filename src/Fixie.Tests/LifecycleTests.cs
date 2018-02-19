@@ -18,8 +18,7 @@
             FailingMembers = null;
 
             Convention = new Convention();
-            Convention.Classes.Where(testClass => testClass == typeof(SampleTestClass));
-            Convention.Methods.Where(method => method.Name == "Pass" || method.Name == "Fail");
+            Convention.Classes.Where(testClass => testClass == typeof(SampleTestClass) || testClass == typeof(ParameterizedSampleTestClass));
             Convention.ClassExecution.SortMethods((x, y) => String.Compare(y.Name, x.Name, StringComparison.Ordinal));
         }
 
@@ -28,13 +27,13 @@
             FailingMembers = failingMemberNames;
         }
 
-        Output Run()
+        Output Run<TSampleTestClass>()
         {
             var listener = new StubListener();
 
             using (var console = new RedirectedConsole())
             {
-                Utility.Run<SampleTestClass>(listener, Convention);
+                Utility.Run<TSampleTestClass>(listener, Convention);
 
                 return new Output(console.Lines().ToArray(), listener.Entries.ToArray());
             }
@@ -82,6 +81,39 @@
             {
                 WhereAmI();
                 throw new FailureException();
+            }
+
+            public void Dispose()
+            {
+                if (disposed)
+                    throw new ShouldBeUnreachableException();
+                disposed = true;
+
+                WhereAmI();
+            }
+        }
+
+        class ParameterizedSampleTestClass : IDisposable
+        {
+            bool disposed;
+
+            public ParameterizedSampleTestClass()
+            {
+                WhereAmI();
+            }
+
+            public void IntArg(int i)
+            {
+                WhereAmI();
+                if (i != 0)
+                    throw new Exception("Expected 0, but was " + i);
+            }
+
+            public void BoolArg(bool b)
+            {
+                WhereAmI();
+                if (!b)
+                    throw new Exception("Expected true, but was false");
             }
 
             public void Dispose()
@@ -224,7 +256,7 @@
 
         public void ShouldConstructPerCaseByDefault()
         {
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass passed",
@@ -239,7 +271,7 @@
         {
             Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass passed",
@@ -254,7 +286,7 @@
         {
             Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass passed",
@@ -271,7 +303,7 @@
         {
             Convention.ClassExecution.Lifecycle(new CreateInstancePerCase());
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass passed",
@@ -286,7 +318,7 @@
         {
             Convention.ClassExecution.Lifecycle(new CreateInstancePerClass());
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass passed",
@@ -304,7 +336,7 @@
             Convention.ClassExecution
                 .Lifecycle<ShortCircuitClassExecution>();
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass skipped",
@@ -318,7 +350,7 @@
             Convention.ClassExecution
                 .Lifecycle<ShortCircuitCaseExection>();
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass skipped",
@@ -333,7 +365,7 @@
 
             Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: '.ctor' failed!",
@@ -354,7 +386,7 @@
 
             Convention.ClassExecution.Lifecycle<BuggyLifecycle>();
 
-            Action shouldThrow = () => Run();
+            Action shouldThrow = () => Run<SampleTestClass>();
 
             shouldThrow.ShouldThrow<Exception>("Unsafe lifecycle threw!");
         }
@@ -365,7 +397,7 @@
 
             Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
 
-            Action shouldThrow = () => Run();
+            Action shouldThrow = () => Run<SampleTestClass>();
 
             var exception = shouldThrow.ShouldThrow<PreservedException>("Exception of type 'Fixie.PreservedException' was thrown.");
             exception.OriginalException.Message.ShouldEqual("'.ctor' failed!");
@@ -377,7 +409,7 @@
 
             Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
@@ -396,7 +428,7 @@
 
             Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
@@ -416,7 +448,7 @@
 
             Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
@@ -434,7 +466,7 @@
 
             Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
 
-            Action shouldThrow = () => Run();
+            Action shouldThrow = () => Run<SampleTestClass>();
 
             shouldThrow.ShouldThrow<FailureException>("'Dispose' failed!");
         }
@@ -445,7 +477,7 @@
 
             Convention.CaseExecution.Skip(x => true);
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass skipped",
@@ -460,7 +492,7 @@
 
             Convention.CaseExecution.Skip(x => true);
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass skipped",
@@ -475,11 +507,11 @@
 
             Convention.Parameters.Add<BuggyParameterSource>();
 
-            var output = Run();
+            var output = Run<ParameterizedSampleTestClass>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Exception thrown while attempting to yield input parameters for method: Pass",
-                "SampleTestClass.Fail failed: Exception thrown while attempting to yield input parameters for method: Fail");
+                "ParameterizedSampleTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                "ParameterizedSampleTestClass.BoolArg failed: Exception thrown while attempting to yield input parameters for method: BoolArg");
 
             output.ShouldHaveLifecycle();
         }
@@ -490,11 +522,11 @@
 
             Convention.Parameters.Add<BuggyParameterSource>();
 
-            var output = Run();
+            var output = Run<ParameterizedSampleTestClass>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Pass failed: Exception thrown while attempting to yield input parameters for method: Pass",
-                "SampleTestClass.Fail failed: Exception thrown while attempting to yield input parameters for method: Fail");
+                "ParameterizedSampleTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                "ParameterizedSampleTestClass.BoolArg failed: Exception thrown while attempting to yield input parameters for method: BoolArg");
 
             output.ShouldHaveLifecycle(".ctor", "Dispose");
         }
@@ -503,7 +535,7 @@
         {
             Convention.ClassExecution.Lifecycle<RunCasesTwice>();
 
-            Action shouldThrow = () => Run();
+            Action shouldThrow = () => Run<SampleTestClass>();
 
             shouldThrow.ShouldThrow<Exception>("Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.");
         }
@@ -512,7 +544,7 @@
         {
             Convention.ClassExecution.Lifecycle<RetryFailingCases>();
 
-            var output = Run();
+            var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass passed",

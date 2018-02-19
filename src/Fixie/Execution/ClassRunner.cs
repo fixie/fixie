@@ -162,6 +162,12 @@
         {
             foreach (var method in orderedMethods)
             {
+                if (method.GetParameters().Length == 0)
+                {
+                    yield return new Case(method);
+                    continue;
+                }
+
                 bool generatedInputParameters = false;
                 bool parameterGenerationThrew = false;
 
@@ -195,20 +201,13 @@
                 if (parameterGenerationThrew || generatedInputParameters)
                     continue;
 
-                if (method.GetParameters().Length > 0)
+                try
                 {
-                    try
-                    {
-                        throw new Exception("This test case has declared parameters, but no parameter values have been provided to it.");
-                    }
-                    catch (Exception exception)
-                    {
-                        Fail(method, exception, summary);
-                    }
+                    throw new Exception("This test case has declared parameters, but no parameter values have been provided to it.");
                 }
-                else
+                catch (Exception exception)
                 {
-                    yield return new Case(method);
+                    Fail(method, exception, summary);
                 }
             }
         }

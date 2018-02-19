@@ -24,5 +24,13 @@
         public string Message { get; }
         public bool FailedAssertion { get; }
         public string StackTrace { get; }
+
+        public string TypedStackTrace()
+        {
+            if (FailedAssertion)
+                return StackTrace;
+
+            return Type + Environment.NewLine + StackTrace;
+        }
     }
 }

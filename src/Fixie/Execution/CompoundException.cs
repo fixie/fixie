@@ -17,14 +17,6 @@ namespace Fixie.Execution
         public bool FailedAssertion { get; }
         public string StackTrace { get; }
 
-        public string TypedStackTrace()
-        {
-            if (FailedAssertion)
-                return StackTrace;
-
-            return Type + Environment.NewLine + StackTrace;
-        }
-
         static string GetCompoundStackTrace(Exception exception, AssertionLibraryFilter filter)
         {
             using (var console = new StringWriter())

@@ -67,7 +67,7 @@
             {
                 x.Outcome = "Failed";
                 x.ErrorMessage = message.Message;
-                x.ErrorStackTrace = message.Exception.TypedStackTrace();
+                x.ErrorStackTrace = message.TypedStackTrace();
             });
         }
 

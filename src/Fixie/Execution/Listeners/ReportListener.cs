@@ -50,12 +50,6 @@
 
         public void Handle(CaseFailed message)
         {
-            XElement Failure(CompoundException exception)
-                => new XElement("failure",
-                    new XAttribute("exception-type", exception.Type),
-                    new XElement("message", new XCData(exception.Message)),
-                    new XElement("stack-trace", new XCData(exception.StackTrace)));
-
             currentClass.Add(
                 new XElement("test",
                     new XAttribute("name", message.Name),
@@ -63,7 +57,10 @@
                     new XAttribute("method", message.Method.Name),
                     new XAttribute("result", "Fail"),
                     new XAttribute("time", Seconds(message.Duration)),
-                    Failure(message.Exception)));
+                    new XElement("failure",
+                        new XAttribute("exception-type", message.Type),
+                        new XElement("message", new XCData(message.Message)),
+                        new XElement("stack-trace", new XCData(message.StackTrace)))));
         }
 
         public void Handle(ClassCompleted message)

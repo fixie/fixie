@@ -37,13 +37,11 @@ namespace Fixie.TestDriven
 
         public void Handle(CaseFailed message)
         {
-            var exception = message.Exception;
-
             Log(message, x =>
             {
                 x.State = TestState.Failed;
-                x.Message = exception.FailedAssertion ? "" : exception.Type;
-                x.StackTrace = exception.Message + NewLine + NewLine + exception.StackTrace;
+                x.Message = message.FailedAssertion ? "" : message.Type;
+                x.StackTrace = message.Message + NewLine + NewLine + message.StackTrace;
             });
         }
 

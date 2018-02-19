@@ -27,7 +27,7 @@
 
         public void Handle(CaseFailed message)
         {
-            log.Add($"{message.Name} failed: {message.Message}{SimplifyCompoundStackTrace(message.Exception.StackTrace)}");
+            log.Add($"{message.Name} failed: {message.Message}{SimplifyCompoundStackTrace(message.StackTrace)}");
         }
 
         static string SimplifyCompoundStackTrace(string compoundStackTrace)

@@ -19,7 +19,6 @@
             var assertionLibrary = AssertionLibraryFilter();
             var exception = GetException();
 
-            var compoundException = new CompoundException(exception, assertionLibrary);
             var @case = Case("Test");
             @case.Fail(exception);
             var failure = new CaseFailed(@case, assertionLibrary);
@@ -28,7 +27,7 @@
             failure.Message.ShouldEqual("Primary Exception!");
             failure.FailedAssertion.ShouldEqual(false);
 
-            compoundException.StackTrace
+            failure.StackTrace
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
@@ -49,7 +48,6 @@
             var assertionLibrary = AssertionLibraryFilter();
             var exception = GetException();
 
-            var compoundException = new CompoundException(exception, assertionLibrary);
             var @case = Case("Test");
             @case.Fail(exception);
             var failure = new CaseFailed(@case, assertionLibrary);
@@ -58,7 +56,7 @@
             failure.Message.ShouldEqual("Primary Exception!");
             failure.FailedAssertion.ShouldEqual(true);
 
-            compoundException.StackTrace
+            failure.StackTrace
                 .Lines()
                 .ShouldEqual(
                     "",

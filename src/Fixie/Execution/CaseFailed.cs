@@ -10,15 +10,11 @@
         {
             var exception = @case.Exception;
 
-            Exception = new CompoundException(exception, filter);
             Type = exception.GetType().FullName;
             Message = exception.Message;
             FailedAssertion = filter.IsFailedAssertion(exception);
             StackTrace = GetCompoundStackTrace(exception, filter);
         }
-
-        [Obsolete]
-        public CompoundException Exception { get; }
 
         public string Type { get; }
         public string Message { get; }

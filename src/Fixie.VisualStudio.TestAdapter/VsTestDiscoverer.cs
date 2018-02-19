@@ -62,7 +62,7 @@
                     }
                     else if (messageType == typeof(PipeMessage.Completed).FullName)
                     {
-                        var exception = pipe.Receive<PipeMessage.Completed>();
+                        var completed = pipe.Receive<PipeMessage.Completed>();
                         break;
                     }
                     else

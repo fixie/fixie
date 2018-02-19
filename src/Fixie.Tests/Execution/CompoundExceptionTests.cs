@@ -26,7 +26,7 @@
 
             failure.Type.ShouldEqual(FullName<PrimaryException>());
             failure.Message.ShouldEqual("Primary Exception!");
-            compoundException.FailedAssertion.ShouldEqual(false);
+            failure.FailedAssertion.ShouldEqual(false);
 
             compoundException.StackTrace
                 .CleanStackTraceLineNumbers()
@@ -56,7 +56,7 @@
 
             failure.Type.ShouldEqual(FullName<PrimaryException>());
             failure.Message.ShouldEqual("Primary Exception!");
-            compoundException.FailedAssertion.ShouldEqual(true);
+            failure.FailedAssertion.ShouldEqual(true);
 
             compoundException.StackTrace
                 .Lines()

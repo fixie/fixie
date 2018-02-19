@@ -12,7 +12,7 @@
             Exception = new CompoundException(exception, filter);
             Type = exception.GetType().FullName;
             Message = exception.Message;
-            FailedAssertion = Exception.FailedAssertion;
+            FailedAssertion = filter.IsFailedAssertion(exception);
             StackTrace = Exception.StackTrace;
         }
 

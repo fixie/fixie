@@ -11,13 +11,11 @@
             var exception = @case.Exception;
 
             Exception = exception;
-            ExceptionType = exception.GetType().FullName;
             FailedAssertion = filter.IsFailedAssertion(exception);
             StackTrace = GetCompoundStackTrace(exception, filter);
         }
 
         public Exception Exception { get; }
-        public string ExceptionType { get; }
         public bool FailedAssertion { get; }
         public string StackTrace { get; }
 
@@ -26,7 +24,7 @@
             if (FailedAssertion)
                 return StackTrace;
 
-            return ExceptionType + Environment.NewLine + StackTrace;
+            return Exception.GetType().FullName + Environment.NewLine + StackTrace;
         }
 
         static string GetCompoundStackTrace(Exception exception, AssertionLibraryFilter filter)

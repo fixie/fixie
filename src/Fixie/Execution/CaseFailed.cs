@@ -17,9 +17,6 @@
         public Exception Exception { get; }
         public string StackTrace { get; }
 
-        public string TypedStackTrace()
-            => Exception.GetType().FullName + Environment.NewLine + StackTrace;
-
         static string GetCompoundStackTrace(Exception exception)
         {
             using (var console = new StringWriter())

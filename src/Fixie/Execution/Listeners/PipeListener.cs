@@ -3,6 +3,7 @@
     using System;
     using System.IO.Pipes;
     using Execution;
+    using static System.Environment;
 
     public class PipeListener :
         Handler<MethodDiscovered>,
@@ -51,7 +52,7 @@
             {
                 x.Outcome = "Failed";
                 x.ErrorMessage = message.Exception.Message;
-                x.ErrorStackTrace = message.TypedStackTrace();
+                x.ErrorStackTrace = message.Exception.GetType().FullName + NewLine + message.StackTrace;
             });
         }
 

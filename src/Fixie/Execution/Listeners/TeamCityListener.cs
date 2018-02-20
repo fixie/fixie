@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Text;
     using Execution;
+    using static System.Environment;
 
     public class TeamCityListener :
         Handler<AssemblyStarted>,
@@ -36,7 +37,8 @@
         {
             TestStarted(message);
             Output(message);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exception.Message, message.TypedStackTrace());
+            var details = message.Exception.GetType().FullName + NewLine + message.StackTrace;
+            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exception.Message, details);
             TestFinished(message);
         }
 

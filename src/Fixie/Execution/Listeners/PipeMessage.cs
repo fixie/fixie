@@ -25,11 +25,11 @@
             public string DisplayName { get; set; }
             public TimeSpan Duration { get; set; }
             public string Output { get; set; }
-            public string ErrorMessage { get; set; }
         }
 
         public class SkipResult : TestResult
         {
+            public string ErrorMessage { get; set; }
         }
 
         public class PassResult : TestResult
@@ -38,6 +38,7 @@
 
         public class FailResult : TestResult
         {
+            public string ErrorMessage { get; set; }
             public string ErrorStackTrace { get; set; }
         }
 

@@ -23,8 +23,7 @@
                 FullName = "Namespace.Class.Pass",
                 DisplayName = "Namespace.Class.Pass",
                 Duration = TimeSpan.FromSeconds(1),
-                Output = "Output",
-                ErrorMessage = null
+                Output = "Output"
             });
 
             executionRecorder.RecordResult(new PipeMessage.FailResult

@@ -66,7 +66,7 @@ namespace Fixie.Assertions
                 var valueStrings = new List<string>();
 
                 foreach (object valueObject in valueArray)
-                    valueStrings.Add(valueObject == null ? "(null)" : valueObject.ToString());
+                    valueStrings.Add(valueObject?.ToString() ?? "(null)");
 
                 return value.GetType().FullName + " { " + String.Join(", ", valueStrings.ToArray()) + " }";
             }

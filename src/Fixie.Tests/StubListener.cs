@@ -35,19 +35,13 @@
         {
             var stackTrace = compoundStackTrace;
 
-            var regexNewLine = Regex.Escape(NewLine);
-
             stackTrace =
                 String.Join(NewLine,
                     stackTrace.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries)
                         .Where(x => !x.StartsWith("   at "))
                         .Where(x => x != "--- End of stack trace from previous location where exception was thrown ---"));
 
-            stackTrace = Regex.Replace(stackTrace,
-                @"------- Inner Exception: [a-zA-Z\.]+ -------" + regexNewLine + "([^" + regexNewLine + "]+)(" + regexNewLine + ")?",
-                NewLine + "    Inner Exception: $1", RegexOptions.Multiline);
-
-            return stackTrace;
+            return stackTrace == "" ? stackTrace : NewLine + stackTrace;
         }
 
         public IEnumerable<string> Entries => log;

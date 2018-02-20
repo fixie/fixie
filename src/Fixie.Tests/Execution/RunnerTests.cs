@@ -84,40 +84,48 @@ namespace Fixie.Tests.Execution
                 Self + "+BuggyParameterGenerationTestClass.ParameterizedA failed: Exception thrown while attempting to yield input parameters for method: ParameterizedA",
 
                 Self + "+BuggyParameterGenerationTestClass.ParameterizedA failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortMethods lambda expression threw!",
+                "------- Inner Exception: System.Exception -------" + NewLine +
+                "SortMethods lambda expression threw!",
 
                 Self + "+BuggyParameterGenerationTestClass.ParameterizedB failed: Exception thrown while attempting to yield input parameters for method: ParameterizedB",
 
                 Self + "+BuggyParameterGenerationTestClass.ParameterizedB failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortMethods lambda expression threw!",
+                "------- Inner Exception: System.Exception -------" + NewLine +
+                "SortMethods lambda expression threw!",
 
                 Self + "+PassFailTestClass.Fail failed: 'Fail' failed!",
 
                 Self + "+PassFailTestClass.Fail failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortMethods lambda expression threw!",
+                "------- Inner Exception: System.Exception -------" + NewLine +
+                "SortMethods lambda expression threw!",
 
                 Self + "+PassFailTestClass.Pass failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortMethods lambda expression threw!",
+                "------- Inner Exception: System.Exception -------" + NewLine +
+                "SortMethods lambda expression threw!",
 
                 Self + "+PassFailTestClass.Pass passed",
 
                 Self + "+PassTestClass.PassA failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortMethods lambda expression threw!",
+                "------- Inner Exception: System.Exception -------" + NewLine +
+                "SortMethods lambda expression threw!",
 
                 Self + "+PassTestClass.PassA passed",
 
                 Self + "+PassTestClass.PassB failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortMethods lambda expression threw!",
+                "------- Inner Exception: System.Exception -------" + NewLine +
+                "SortMethods lambda expression threw!",
 
                 Self + "+PassTestClass.PassB passed",
 
                 Self + "+SkipTestClass.SkipA failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortMethods lambda expression threw!",
+                "------- Inner Exception: System.Exception -------" + NewLine +
+                "SortMethods lambda expression threw!",
 
                 Self + "+SkipTestClass.SkipA skipped",
 
                 Self + "+SkipTestClass.SkipB failed: Failed to compare two elements in the array." + NewLine +
-                "    Inner Exception: SortMethods lambda expression threw!",
+                "------- Inner Exception: System.Exception -------" + NewLine +
+                "SortMethods lambda expression threw!",
 
                 Self + "+SkipTestClass.SkipB skipped");
         }

@@ -22,10 +22,7 @@ namespace Fixie.Assertions
         {
             string differencePosition = null;
 
-            var enumerableActual = actual as IEnumerable;
-            var enumerableExpected = expected as IEnumerable;
-
-            if (enumerableActual != null && enumerableExpected != null)
+            if (actual is IEnumerable enumerableActual && expected is IEnumerable enumerableExpected)
             {
                 var comparer = new EnumerableEqualityComparer();
                 comparer.Equals(enumerableActual, enumerableExpected);
@@ -64,16 +61,17 @@ namespace Fixie.Assertions
 
         static string ConvertToString(object value)
         {
-            var valueArray = value as Array;
-            if (valueArray == null)
-                return value.ToString();
+            if (value is Array valueArray)
+            {
+                var valueStrings = new List<string>();
 
-            var valueStrings = new List<string>();
+                foreach (object valueObject in valueArray)
+                    valueStrings.Add(valueObject == null ? "(null)" : valueObject.ToString());
 
-            foreach (object valueObject in valueArray)
-                valueStrings.Add(valueObject == null ? "(null)" : valueObject.ToString());
+                return value.GetType().FullName + " { " + String.Join(", ", valueStrings.ToArray()) + " }";
+            }
 
-            return value.GetType().FullName + " { " + String.Join(", ", valueStrings.ToArray()) + " }";
+            return value.ToString();
         }
 
         static string FormatMultiLine(string value)

@@ -29,7 +29,7 @@
 
         public class SkipResult : TestResult
         {
-            public string ErrorMessage { get; set; }
+            public string Reason { get; set; }
         }
 
         public class PassResult : TestResult

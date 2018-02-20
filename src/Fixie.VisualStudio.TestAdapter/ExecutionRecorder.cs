@@ -27,7 +27,7 @@
                 Duration = result.Duration,
                 ComputerName = Environment.MachineName,
 
-                ErrorMessage = result.ErrorMessage,
+                ErrorMessage = result.Reason,
                 ErrorStackTrace = null
             };
 

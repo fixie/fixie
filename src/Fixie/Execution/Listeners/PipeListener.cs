@@ -36,7 +36,7 @@
                 DisplayName = message.Name,
                 Duration = message.Duration,
                 Output = message.Output,
-                ErrorMessage = message.Reason
+                Reason = message.Reason
             });
         }
 

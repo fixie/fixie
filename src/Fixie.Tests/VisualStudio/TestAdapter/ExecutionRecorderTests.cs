@@ -42,7 +42,7 @@
                 DisplayName = "Namespace.Class.Skip",
                 Duration = TimeSpan.Zero,
                 Output = null,
-                ErrorMessage = "Skip Reason"
+                Reason = "Skip Reason"
             });
 
             var results = recorder.TestResults;

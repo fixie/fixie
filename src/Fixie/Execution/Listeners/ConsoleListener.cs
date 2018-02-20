@@ -25,8 +25,11 @@
         public void Handle(CaseFailed message)
         {
             using (Foreground.Red)
-                Console.WriteLine($"Test '{message.Name}' failed: {message.Exception.TypeName()}");
+                Console.WriteLine($"Test '{message.Name}' failed:");
+            Console.WriteLine();
             Console.WriteLine(message.Exception.Message);
+            Console.WriteLine();
+            Console.WriteLine(message.Exception.TypeName());
             Console.WriteLine(message.Exception.CompoundStackTrace());
             Console.WriteLine();
         }

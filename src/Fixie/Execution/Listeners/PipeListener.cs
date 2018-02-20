@@ -36,7 +36,6 @@
                 DisplayName = message.Name,
                 Duration = message.Duration,
                 Output = message.Output,
-                Outcome = "Skipped",
                 ErrorMessage = message.Reason
             });
         }
@@ -48,8 +47,7 @@
                 FullName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Duration = message.Duration,
-                Output = message.Output,
-                Outcome = "Passed"
+                Output = message.Output
             });
         }
 
@@ -61,7 +59,6 @@
                 DisplayName = message.Name,
                 Duration = message.Duration,
                 Output = message.Output,
-                Outcome = "Failed",
                 ErrorMessage = message.Exception.Message,
                 ErrorStackTrace = message.Exception.TypeName() +
                                   NewLine +

@@ -22,7 +22,6 @@
             {
                 FullName = "Namespace.Class.Pass",
                 DisplayName = "Namespace.Class.Pass",
-                Outcome = "Passed",
                 Duration = TimeSpan.FromSeconds(1),
                 Output = "Output",
                 ErrorMessage = null,
@@ -33,7 +32,6 @@
             {
                 FullName = "Namespace.Class.Fail",
                 DisplayName = "Namespace.Class.Fail",
-                Outcome = "Failed",
                 Duration = TimeSpan.FromSeconds(2),
                 Output = "Output",
                 ErrorMessage = "Error Message",
@@ -44,7 +42,6 @@
             {
                 FullName = "Namespace.Class.Skip",
                 DisplayName = "Namespace.Class.Skip",
-                Outcome = "Skipped",
                 Duration = TimeSpan.Zero,
                 Output = null,
                 ErrorMessage = "Skip Reason",

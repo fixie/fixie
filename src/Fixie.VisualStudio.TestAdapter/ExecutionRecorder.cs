@@ -23,7 +23,7 @@
             var testResult = new TestResult(testCase)
             {
                 DisplayName = result.DisplayName,
-                Outcome = Parse(result.Outcome),
+                Outcome = Parse("Skipped"),
                 Duration = result.Duration,
                 ComputerName = Environment.MachineName,
 
@@ -43,7 +43,7 @@
             var testResult = new TestResult(testCase)
             {
                 DisplayName = result.DisplayName,
-                Outcome = Parse(result.Outcome),
+                Outcome = Parse("Passed"),
                 Duration = result.Duration,
                 ComputerName = Environment.MachineName,
 
@@ -63,7 +63,7 @@
             var testResult = new TestResult(testCase)
             {
                 DisplayName = result.DisplayName,
-                Outcome = Parse(result.Outcome),
+                Outcome = Parse("Failed"),
                 Duration = result.Duration,
                 ComputerName = Environment.MachineName,
 

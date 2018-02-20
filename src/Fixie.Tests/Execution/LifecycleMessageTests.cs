@@ -43,9 +43,9 @@
             fail.Method.Name.ShouldEqual("Fail");
             fail.Output.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            fail.Exception.FailedAssertion.ShouldBeFalse();
-            fail.Exception.Type.ShouldEqual("Fixie.Tests.FailureException");
-            fail.Exception.StackTrace
+            fail.FailedAssertion.ShouldBeFalse();
+            fail.Exception.ShouldBeType<FailureException>();
+            fail.StackTrace
                 .CleanStackTraceLineNumbers()
                 .ShouldEqual(At("Fail()"));
             fail.Exception.Message.ShouldEqual("'Fail' failed!");
@@ -55,9 +55,9 @@
             failByAssertion.Method.Name.ShouldEqual("FailByAssertion");
             failByAssertion.Output.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            failByAssertion.Exception.FailedAssertion.ShouldBeTrue();
-            failByAssertion.Exception.Type.ShouldEqual("Fixie.Assertions.AssertActualExpectedException");
-            failByAssertion.Exception.StackTrace
+            failByAssertion.FailedAssertion.ShouldBeTrue();
+            failByAssertion.Exception.ShouldBeType<AssertActualExpectedException>();
+            failByAssertion.StackTrace
                 .CleanStackTraceLineNumbers()
                 .ShouldEqual(At("FailByAssertion()"));
             failByAssertion.Exception.Message.Lines().ShouldEqual(

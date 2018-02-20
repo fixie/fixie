@@ -63,13 +63,11 @@
 
         public void Handle(CaseFailed message)
         {
-            var exception = message.Exception;
-
             Post(message, x =>
             {
                 x.Outcome = "Failed";
-                x.ErrorMessage = exception.Message;
-                x.ErrorStackTrace = exception.TypedStackTrace();
+                x.ErrorMessage = message.Exception.Message;
+                x.ErrorStackTrace = message.TypedStackTrace();
             });
         }
 

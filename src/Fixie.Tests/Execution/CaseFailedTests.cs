@@ -5,11 +5,11 @@
     using Fixie.Execution;
     using static Utility;
 
-    public class CompoundExceptionTests
+    public class CaseFailedTests
     {
         readonly Convention convention;
 
-        public CompoundExceptionTests()
+        public CaseFailedTests()
         {
             convention = new Convention();
         }
@@ -19,21 +19,23 @@
             var assertionLibrary = AssertionLibraryFilter();
             var exception = GetException();
 
-            var compoundException = new CompoundException(exception, assertionLibrary);
+            var @case = Case("Test");
+            @case.Fail(exception);
+            var failure = new CaseFailed(@case, assertionLibrary);
 
-            compoundException.Type.ShouldEqual(FullName<PrimaryException>());
-            compoundException.Message.ShouldEqual("Primary Exception!");
-            compoundException.FailedAssertion.ShouldEqual(false);
+            failure.Exception.ShouldBeType<PrimaryException>();
+            failure.Exception.Message.ShouldEqual("Primary Exception!");
+            failure.FailedAssertion.ShouldEqual(false);
 
-            compoundException.StackTrace
+            failure.StackTrace
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                    At<CompoundExceptionTests>("GetException()"),
+                    At<CaseFailedTests>("GetException()"),
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",
                     "Divide by Zero Exception!",
-                    At<CompoundExceptionTests>("GetException()"));
+                    At<CaseFailedTests>("GetException()"));
         }
 
         public void ShouldFilterAssertionLibraryImplementationDetails()
@@ -41,18 +43,20 @@
             convention
                 .HideExceptionDetails
                 .For<PrimaryException>()
-                .For<CompoundExceptionTests>();
+                .For<CaseFailedTests>();
 
             var assertionLibrary = AssertionLibraryFilter();
             var exception = GetException();
 
-            var compoundException = new CompoundException(exception, assertionLibrary);
+            var @case = Case("Test");
+            @case.Fail(exception);
+            var failure = new CaseFailed(@case, assertionLibrary);
 
-            compoundException.Type.ShouldEqual(FullName<PrimaryException>());
-            compoundException.Message.ShouldEqual("Primary Exception!");
-            compoundException.FailedAssertion.ShouldEqual(true);
+            failure.Exception.ShouldBeType<PrimaryException>();
+            failure.Exception.Message.ShouldEqual("Primary Exception!");
+            failure.FailedAssertion.ShouldEqual(true);
 
-            compoundException.StackTrace
+            failure.StackTrace
                 .Lines()
                 .ShouldEqual(
                     "",
@@ -60,6 +64,17 @@
                     "------- Inner Exception: System.DivideByZeroException -------",
                     "Divide by Zero Exception!");
         }
+
+        class SampleTestClass
+        {
+            public void Test() { }
+        }
+
+        static Case Case(string methodName, params object[] parameters)
+            => Case<SampleTestClass>(methodName, parameters);
+
+        static Case Case<TTestClass>(string methodName, params object[] parameters)
+            => new Case(typeof(TTestClass).GetInstanceMethod(methodName), parameters);
 
         AssertionLibraryFilter AssertionLibraryFilter()
         {

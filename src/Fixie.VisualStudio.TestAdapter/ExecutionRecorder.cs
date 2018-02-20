@@ -25,10 +25,10 @@
                 DisplayName = result.DisplayName,
                 Outcome = TestOutcome.Skipped,
                 Duration = result.Duration,
-                ComputerName = Environment.MachineName,
-
-                ErrorMessage = result.Reason
+                ComputerName = Environment.MachineName
             };
+
+            testResult.ErrorMessage = result.Reason;
 
             AttachCapturedConsoleOutput(result.Output, testResult);
 
@@ -61,11 +61,11 @@
                 DisplayName = result.DisplayName,
                 Outcome = TestOutcome.Failed,
                 Duration = result.Duration,
-                ComputerName = Environment.MachineName,
-
-                ErrorMessage = result.ErrorMessage,
-                ErrorStackTrace = result.ErrorStackTrace
+                ComputerName = Environment.MachineName
             };
+
+            testResult.ErrorMessage = result.ErrorMessage;
+            testResult.ErrorStackTrace = result.ErrorStackTrace;
 
             AttachCapturedConsoleOutput(result.Output, testResult);
 

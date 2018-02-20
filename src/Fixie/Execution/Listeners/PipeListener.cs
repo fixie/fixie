@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Execution.Listeners
 {
-    using System;
     using System.IO.Pipes;
     using Execution;
     using static System.Environment;
@@ -22,7 +21,7 @@
         {
             var methodGroup = new MethodGroup(message.Method);
 
-            Write(new PipeMessage.Test
+            pipe.Send(new PipeMessage.Test
             {
                 FullName = methodGroup.FullName,
                 DisplayName = methodGroup.FullName
@@ -31,49 +30,43 @@
 
         public void Handle(CaseSkipped message)
         {
-            Write(message, x =>
+            pipe.Send(new PipeMessage.TestResult
             {
-                x.Outcome = "Skipped";
-                x.ErrorMessage = message.Reason;
+                FullName = new MethodGroup(message.Method).FullName,
+                DisplayName = message.Name,
+                Duration = message.Duration,
+                Output = message.Output,
+                Outcome = "Skipped",
+                ErrorMessage = message.Reason
             });
         }
 
         public void Handle(CasePassed message)
         {
-            Write(message, x =>
+            pipe.Send(new PipeMessage.TestResult
             {
-                x.Outcome = "Passed";
+                FullName = new MethodGroup(message.Method).FullName,
+                DisplayName = message.Name,
+                Duration = message.Duration,
+                Output = message.Output,
+                Outcome = "Passed"
             });
         }
 
         public void Handle(CaseFailed message)
         {
-            Write(message, x =>
-            {
-                x.Outcome = "Failed";
-                x.ErrorMessage = message.Exception.Message;
-                x.ErrorStackTrace =
-                    message.Exception.TypeName() +
-                    NewLine +
-                    message.Exception.CompoundStackTrace();
-            });
-        }
-
-        void Write(CaseCompleted message, Action<PipeMessage.TestResult> customize)
-        {
-            var testResult = new PipeMessage.TestResult
+            pipe.Send(new PipeMessage.TestResult
             {
                 FullName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Duration = message.Duration,
-                Output = message.Output
-            };
-
-            customize(testResult);
-
-            Write(testResult);
+                Output = message.Output,
+                Outcome = "Failed",
+                ErrorMessage = message.Exception.Message,
+                ErrorStackTrace = message.Exception.TypeName() +
+                                  NewLine +
+                                  message.Exception.CompoundStackTrace()
+            });
         }
-
-        void Write<T>(T message) => pipe.Send(message);
     }
 }

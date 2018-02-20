@@ -52,7 +52,7 @@
             {
                 x.Outcome = "Failed";
                 x.ErrorMessage = message.Exception.Message;
-                x.ErrorStackTrace = message.Exception.GetType().FullName + NewLine + message.StackTrace;
+                x.ErrorStackTrace = message.Exception.TypeName() + NewLine + message.StackTrace;
             });
         }
 

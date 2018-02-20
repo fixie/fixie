@@ -37,7 +37,7 @@
         {
             TestStarted(message);
             Output(message);
-            var details = message.Exception.GetType().FullName + NewLine + message.StackTrace;
+            var details = message.Exception.TypeName() + NewLine + message.StackTrace;
             Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exception.Message, details);
             TestFinished(message);
         }

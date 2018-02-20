@@ -31,7 +31,7 @@
                     walk = walk.InnerException;
                     console.WriteLine();
                     console.WriteLine();
-                    console.WriteLine($"------- Inner Exception: {walk.GetType().FullName} -------");
+                    console.WriteLine($"------- Inner Exception: {walk.TypeName()} -------");
                     console.WriteLine(walk.Message);
                     console.Write(walk.StackTrace);
                 }

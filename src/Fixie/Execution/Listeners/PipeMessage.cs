@@ -19,7 +19,7 @@
             public string DisplayName { get; set; }
         }
 
-        public class TestResult
+        public abstract class TestResult
         {
             public string FullName { get; set; }
             public string DisplayName { get; set; }
@@ -28,6 +28,18 @@
             public string Output { get; set; }
             public string ErrorMessage { get; set; }
             public string ErrorStackTrace { get; set; }
+        }
+
+        public class SkipResult : TestResult
+        {
+        }
+
+        public class PassResult : TestResult
+        {
+        }
+
+        public class FailResult : TestResult
+        {
         }
 
         public class Exception

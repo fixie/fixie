@@ -30,7 +30,7 @@
 
         public void Handle(CaseSkipped message)
         {
-            pipe.Send(new PipeMessage.TestResult
+            pipe.Send(new PipeMessage.SkipResult
             {
                 FullName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
@@ -43,7 +43,7 @@
 
         public void Handle(CasePassed message)
         {
-            pipe.Send(new PipeMessage.TestResult
+            pipe.Send(new PipeMessage.PassResult
             {
                 FullName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
@@ -55,7 +55,7 @@
 
         public void Handle(CaseFailed message)
         {
-            pipe.Send(new PipeMessage.TestResult
+            pipe.Send(new PipeMessage.FailResult
             {
                 FullName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,

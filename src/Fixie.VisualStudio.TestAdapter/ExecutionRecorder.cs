@@ -27,8 +27,7 @@
                 Duration = result.Duration,
                 ComputerName = Environment.MachineName,
 
-                ErrorMessage = result.Reason,
-                ErrorStackTrace = null
+                ErrorMessage = result.Reason
             };
 
             AttachCapturedConsoleOutput(result.Output, testResult);
@@ -46,9 +45,6 @@
                 Outcome = TestOutcome.Passed,
                 Duration = result.Duration,
                 ComputerName = Environment.MachineName,
-
-                ErrorMessage = null,
-                ErrorStackTrace = null
             };
 
             AttachCapturedConsoleOutput(result.Output, testResult);

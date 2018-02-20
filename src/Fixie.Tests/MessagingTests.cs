@@ -34,9 +34,6 @@
                     x => x.Has<SkipAttribute>(),
                     x => x.GetCustomAttribute<SkipAttribute>().Reason);
 
-            convention.
-                HideExceptionDetails.For<AssertActualExpectedException>();
-
             customize?.Invoke(convention);
 
             RunTypes(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));

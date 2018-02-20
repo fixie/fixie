@@ -5,35 +5,25 @@
 
     public class CaseFailed : CaseCompleted
     {
-        public CaseFailed(Case @case, AssertionLibraryFilter filter)
+        public CaseFailed(Case @case)
             : base(@case)
         {
             var exception = @case.Exception;
 
             Exception = exception;
-            FailedAssertion = filter.IsFailedAssertion(exception);
-            StackTrace = GetCompoundStackTrace(exception, filter);
+            StackTrace = GetCompoundStackTrace(exception);
         }
 
         public Exception Exception { get; }
-        public bool FailedAssertion { get; }
         public string StackTrace { get; }
 
-        public string TypedStackTrace()
-        {
-            if (FailedAssertion)
-                return StackTrace;
-
-            return Exception.GetType().FullName + Environment.NewLine + StackTrace;
-        }
-
-        static string GetCompoundStackTrace(Exception exception, AssertionLibraryFilter filter)
+        static string GetCompoundStackTrace(Exception exception)
         {
             using (var console = new StringWriter())
             {
                 var ex = exception;
 
-                console.Write(filter.FilterStackTrace(ex));
+                console.Write(ex.StackTrace);
 
                 var walk = ex;
                 while (walk.InnerException != null)
@@ -41,9 +31,9 @@
                     walk = walk.InnerException;
                     console.WriteLine();
                     console.WriteLine();
-                    console.WriteLine($"------- Inner Exception: {walk.GetType().FullName} -------");
+                    console.WriteLine($"------- Inner Exception: {walk.TypeName()} -------");
                     console.WriteLine(walk.Message);
-                    console.Write(filter.FilterStackTrace(walk));
+                    console.Write(walk.StackTrace);
                 }
 
                 return console.ToString();

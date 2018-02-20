@@ -7,6 +7,13 @@
 
     public class ReflectionExtensionsTests
     {
+        public void CanDetermineTheTypeNameOfAnyObject()
+        {
+            5.TypeName().ShouldEqual("System.Int32");
+            "".TypeName().ShouldEqual("System.String");
+            ((string) null).TypeName().ShouldBeNull();
+        }
+
         public void CanDetectVoidReturnType()
         {
             Method("ReturnsVoid").IsVoid().ShouldBeTrue();

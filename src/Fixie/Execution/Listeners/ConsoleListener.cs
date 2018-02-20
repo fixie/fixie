@@ -25,7 +25,7 @@
         public void Handle(CaseFailed message)
         {
             using (Foreground.Red)
-                Console.WriteLine($"Test '{message.Name}' failed:{(message.FailedAssertion ? "" : " " + message.Exception.GetType().FullName)}");
+                Console.WriteLine($"Test '{message.Name}' failed: {message.Exception.TypeName()}");
             Console.WriteLine(message.Exception.Message);
             Console.WriteLine(message.StackTrace);
             Console.WriteLine();

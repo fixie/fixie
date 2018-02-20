@@ -88,7 +88,8 @@
                 "Actual:   1");
             failByAssertion.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
-                .ShouldEqual(At("FailByAssertion()"));
+                .Lines()
+                .ShouldEqual("Fixie.Assertions.AssertActualExpectedException", At("FailByAssertion()"));
             failByAssertion.StdOut.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
 
             pass.TestName.ShouldEqual(TestClass + ".Pass");

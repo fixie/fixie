@@ -7,6 +7,7 @@
     using System.Runtime.Serialization.Json;
     using System.Text;
     using Execution;
+    using static System.Environment;
 
     public class AppVeyorListener :
         Handler<AssemblyStarted>,
@@ -29,7 +30,7 @@
         }
 
         public AppVeyorListener()
-            : this(Environment.GetEnvironmentVariable("APPVEYOR_API_URL"), Post)
+            : this(GetEnvironmentVariable("APPVEYOR_API_URL"), Post)
         {
         }
 
@@ -67,7 +68,7 @@
             {
                 x.Outcome = "Failed";
                 x.ErrorMessage = message.Exception.Message;
-                x.ErrorStackTrace = message.TypedStackTrace();
+                x.ErrorStackTrace = message.Exception.TypeName() + NewLine + message.StackTrace;
             });
         }
 

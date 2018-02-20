@@ -17,7 +17,6 @@
             Parameters = new ParameterSourceExpression(Config);
             CaseExecution = new CaseBehaviorExpression(Config);
             ClassExecution = new ClassBehaviorExpression(Config);
-            HideExceptionDetails = new AssertionLibraryExpression(Config);
         }
 
         /// <summary>
@@ -56,11 +55,5 @@
         /// Customizes the execution of each test class.
         /// </summary>
         public ClassBehaviorExpression ClassExecution { get; }
-
-        /// <summary>
-        /// Defines the set of types which make up an assertion library, so that test case failure stack
-        /// traces can be simplified for readability.
-        /// </summary>
-        public AssertionLibraryExpression HideExceptionDetails { get; }
     }
 }

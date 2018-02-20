@@ -60,10 +60,11 @@ namespace Fixie.Assertions
             {
                 var valueStrings = new List<string>();
 
-                foreach (object valueObject in valueArray)
+                foreach (var valueObject in valueArray)
                     valueStrings.Add(valueObject?.ToString() ?? "(null)");
 
-                return value.GetType().FullName + " { " + String.Join(", ", valueStrings.ToArray()) + " }";
+                return value.GetType().FullName +
+                       $" {{{NewLine}{String.Join("," + NewLine, valueStrings.ToArray())}{NewLine}}}";
             }
 
             return value.ToString();

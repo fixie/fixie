@@ -20,7 +20,7 @@
         {
             Run<AwaitThenFailTestClass>();
 
-            Listener.Entries.ToArray().ShouldEqual(
+            Listener.Entries.ShouldEqual(
                 For<AwaitThenFailTestClass>(
                     ".Test failed: Expected: 0" + NewLine +
                     "Actual:   3"));

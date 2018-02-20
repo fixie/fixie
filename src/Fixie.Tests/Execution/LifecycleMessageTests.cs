@@ -60,7 +60,6 @@
                 .CleanStackTraceLineNumbers()
                 .ShouldEqual(At("FailByAssertion()"));
             failByAssertion.Exception.Message.Lines().ShouldEqual(
-                "Assertion Failure",
                 "Expected: 2",
                 "Actual:   1");
 

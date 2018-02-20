@@ -34,7 +34,6 @@
                            "Console.Error: FailByAssertion",
                            "Test '" + TestClass + ".FailByAssertion' failed:",
                            "",
-                           "Assertion Failure",
                            "Expected: 2",
                            "Actual:   1",
                            "",

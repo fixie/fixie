@@ -34,7 +34,7 @@
                         "Console.Error: FailByAssertion",
                         "##teamcity[testStarted name='" + TestClass + ".FailByAssertion']",
                         "##teamcity[testStdOut name='" + TestClass + ".FailByAssertion' out='Console.Out: FailByAssertion|r|nConsole.Error: FailByAssertion|r|n']",
-                        "##teamcity[testFailed name='" + TestClass + ".FailByAssertion' message='Assertion Failure|r|nExpected: 2|r|nActual:   1' details='Fixie.Assertions.AssertActualExpectedException|r|n" + At("FailByAssertion()") + "']",
+                        "##teamcity[testFailed name='" + TestClass + ".FailByAssertion' message='Expected: 2|r|nActual:   1' details='Fixie.Assertions.AssertActualExpectedException|r|n" + At("FailByAssertion()") + "']",
                         "##teamcity[testFinished name='" + TestClass + ".FailByAssertion' duration='#']",
 
                         "Console.Out: Pass",

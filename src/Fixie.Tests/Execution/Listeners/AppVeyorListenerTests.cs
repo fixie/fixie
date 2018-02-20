@@ -83,7 +83,6 @@
             failByAssertion.Outcome.ShouldEqual("Failed");
             int.Parse(failByAssertion.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             failByAssertion.ErrorMessage.Lines().ShouldEqual(
-                "Assertion Failure",
                 "Expected: 2",
                 "Actual:   1");
             failByAssertion.ErrorStackTrace

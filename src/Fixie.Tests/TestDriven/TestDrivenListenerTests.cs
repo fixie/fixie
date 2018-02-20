@@ -75,7 +75,6 @@ namespace Fixie.Tests.TestDriven
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                    "Assertion Failure",
                     "Expected: 2",
                     "Actual:   1",
                     "",

@@ -3,23 +3,25 @@ namespace Fixie.Assertions
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Text;
+    using static System.Environment;
 
     public class AssertActualExpectedException : AssertException
     {
-        readonly string expected;
-        readonly string actual;
-        readonly string differencePosition = "";
-
         public AssertActualExpectedException(object expected, object actual)
-            : this(expected, actual, "Assertion Failure")
+            : base(BuildMessage(expected, actual))
         {
         }
 
-        public AssertActualExpectedException(object expected,
-                                             object actual,
-                                             string userMessage)
-            : base(userMessage)
+        public AssertActualExpectedException(object expected, object actual, string userMessage)
+            : base(BuildMessage(expected, actual, userMessage))
         {
+        }
+
+        static string BuildMessage(object expected, object actual, string userMessage = null)
+        {
+            string differencePosition = null;
+
             var enumerableActual = actual as IEnumerable;
             var enumerableExpected = expected as IEnumerable;
 
@@ -28,33 +30,36 @@ namespace Fixie.Assertions
                 var comparer = new EnumerableEqualityComparer();
                 comparer.Equals(enumerableActual, enumerableExpected);
 
-                differencePosition = "Position: First difference is at position " + comparer.Position + Environment.NewLine;
+                differencePosition = "First difference is at position " + comparer.Position;
             }
 
-            this.actual = actual == null ? null : ConvertToString(actual);
-            this.expected = expected == null ? null : ConvertToString(expected);
+            var actualStr = actual == null ? null : ConvertToString(actual);
+            var expectedStr = expected == null ? null : ConvertToString(expected);
 
             if (actual != null &&
                 expected != null &&
                 actual.ToString() == expected.ToString() &&
                 actual.GetType() != expected.GetType())
             {
-                this.actual += $" ({actual.GetType().FullName})";
-                this.expected += $" ({expected.GetType().FullName})";
+                actualStr += $" ({actual.GetType().FullName})";
+                expectedStr += $" ({expected.GetType().FullName})";
             }
-        }
 
-        public override string Message
-        {
-            get
+            var message = new StringBuilder();
+
+            if (userMessage != null)
             {
-                return string.Format("{0}{4}{1}Expected: {2}{4}Actual:   {3}",
-                                     base.Message,
-                                     differencePosition,
-                                     FormatMultiLine(expected ?? "(null)"),
-                                     FormatMultiLine(actual ?? "(null)"),
-                                     Environment.NewLine);
+                message.AppendLine(userMessage);
+                message.AppendLine();
             }
+
+            if (differencePosition != null)
+                message.AppendLine(differencePosition);
+
+            message.AppendLine($"Expected: {FormatMultiLine(expectedStr ?? "(null)")}");
+            message.Append($"Actual:   {FormatMultiLine(actualStr ?? "(null)")}");
+
+            return message.ToString();
         }
 
         static string ConvertToString(object value)
@@ -72,8 +77,6 @@ namespace Fixie.Assertions
         }
 
         static string FormatMultiLine(string value)
-        {
-            return value.Replace(Environment.NewLine, Environment.NewLine + "          ");
-        }
+            => value.Replace(NewLine, NewLine + "          ");
     }
 }

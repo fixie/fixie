@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests.Cases
 {
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
@@ -19,9 +20,9 @@
         {
             Run<AwaitThenFailTestClass>();
 
-            Listener.Entries.ShouldEqual(
-                For<AwaitThenFailTestClass>(".Test failed: Assertion Failure" + NewLine +
-                    "Expected: 0" + NewLine +
+            Listener.Entries.ToArray().ShouldEqual(
+                For<AwaitThenFailTestClass>(
+                    ".Test failed: Expected: 0" + NewLine +
                     "Actual:   3"));
         }
 

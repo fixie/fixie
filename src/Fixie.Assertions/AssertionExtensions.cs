@@ -37,7 +37,7 @@ namespace Fixie.Assertions
 
         static string ComparisonFailure(object left, object right, string operation)
         {
-            return $"Assertion Failure:{NewLine}Expected: {Format(left)} {operation} {Format(right)}{NewLine}but it was not";
+            return $"Expected: {Format(left)} {operation} {Format(right)}{NewLine}but it was not";
         }
 
         public static void ShouldBeNull(this object actual)
@@ -71,7 +71,7 @@ namespace Fixie.Assertions
         {
             var comparer = new AssertEqualityComparer<T>();
             if (comparer.Equals(expected, actual))
-                throw new AssertException($"Assertion Failure{NewLine}Unexpected: {Format(expected)}");
+                throw new AssertException($"Unexpected: {Format(expected)}");
         }
 
         public static void ShouldBeEmpty(this string actual)
@@ -82,13 +82,13 @@ namespace Fixie.Assertions
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
         {
             if (collection.Any())
-                throw new AssertException($"Assertion Failure{NewLine}Collection was not empty.");
+                throw new AssertException("Collection was not empty.");
         }
 
         public static void ShouldContain<T>(this IEnumerable<T> collection, T expected)
         {
             if (!collection.Contains(expected))
-                throw new AssertException($"Assertion Failure{NewLine}Collection does not contain expected item: {Format(expected)}");
+                throw new AssertException($"Collection does not contain expected item: {Format(expected)}");
         }
 
         static string Format(object value)

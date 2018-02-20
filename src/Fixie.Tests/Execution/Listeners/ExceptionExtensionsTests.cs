@@ -1,44 +1,24 @@
-﻿namespace Fixie.Tests.Execution
+﻿namespace Fixie.Tests.Execution.Listeners
 {
     using System;
-    using Assertions;
-    using Fixie.Execution;
-    using static Utility;
+    using Fixie.Execution.Listeners;
 
-    public class CaseFailedTests
+    public class ExceptionExtensionsTests
     {
-        public void ShouldSummarizeAnyGivenException()
+        public void ShouldGetCompoundStackTraceIncludingAllNestedExceptions()
         {
             var exception = GetException();
 
-            var @case = Case("Test");
-            @case.Fail(exception);
-            var failure = new CaseFailed(@case);
-
-            failure.Exception.ShouldBeType<PrimaryException>();
-            failure.Exception.Message.ShouldEqual("Primary Exception!");
-
-            failure.StackTrace
+            exception.CompoundStackTrace()
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                    At<CaseFailedTests>("GetException()"),
+                    Utility.At<ExceptionExtensionsTests>("GetException()"),
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",
                     "Divide by Zero Exception!",
-                    At<CaseFailedTests>("GetException()"));
+                    Utility.At<ExceptionExtensionsTests>("GetException()"));
         }
-
-        class SampleTestClass
-        {
-            public void Test() { }
-        }
-
-        static Case Case(string methodName, params object[] parameters)
-            => Case<SampleTestClass>(methodName, parameters);
-
-        static Case Case<TTestClass>(string methodName, params object[] parameters)
-            => new Case(typeof(TTestClass).GetInstanceMethod(methodName), parameters);
 
         static Exception GetException()
         {

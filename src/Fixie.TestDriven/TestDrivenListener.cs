@@ -4,6 +4,7 @@ namespace Fixie.TestDriven
 {
     using System;
     using Execution;
+    using Execution.Listeners;
     using static System.Environment;
 
     public class TestDrivenListener :
@@ -41,7 +42,11 @@ namespace Fixie.TestDriven
             {
                 x.State = TestState.Failed;
                 x.Message = message.Exception.TypeName();
-                x.StackTrace = message.Exception.Message + NewLine + NewLine + message.StackTrace;
+                x.StackTrace =
+                    message.Exception.Message +
+                    NewLine +
+                    NewLine +
+                    message.Exception.CompoundStackTrace();
             });
         }
 

@@ -27,7 +27,7 @@
             using (Foreground.Red)
                 Console.WriteLine($"Test '{message.Name}' failed: {message.Exception.TypeName()}");
             Console.WriteLine(message.Exception.Message);
-            Console.WriteLine(message.StackTrace);
+            Console.WriteLine(message.Exception.CompoundStackTrace());
             Console.WriteLine();
         }
 

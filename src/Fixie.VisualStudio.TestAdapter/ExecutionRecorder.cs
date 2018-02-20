@@ -18,54 +18,43 @@
 
         public void RecordResult(PipeMessage.SkipResult result)
         {
-            var testCase = new TestCase(result.FullName, VsTestExecutor.Uri, assemblyPath);
-
-            var testResult = new TestResult(testCase)
+            RecordResult(result, x =>
             {
-                DisplayName = result.DisplayName,
-                Outcome = TestOutcome.Skipped,
-                Duration = result.Duration,
-                ComputerName = Environment.MachineName
-            };
-
-            testResult.ErrorMessage = result.Reason;
-
-            AttachCapturedConsoleOutput(result.Output, testResult);
-
-            log.RecordResult(testResult);
+                x.Outcome = TestOutcome.Skipped;
+                x.ErrorMessage = result.Reason;
+            });
         }
 
         public void RecordResult(PipeMessage.PassResult result)
         {
-            var testCase = new TestCase(result.FullName, VsTestExecutor.Uri, assemblyPath);
-
-            var testResult = new TestResult(testCase)
+            RecordResult(result, x =>
             {
-                DisplayName = result.DisplayName,
-                Outcome = TestOutcome.Passed,
-                Duration = result.Duration,
-                ComputerName = Environment.MachineName,
-            };
-
-            AttachCapturedConsoleOutput(result.Output, testResult);
-
-            log.RecordResult(testResult);
+                x.Outcome = TestOutcome.Passed;
+            });
         }
 
         public void RecordResult(PipeMessage.FailResult result)
+        {
+            RecordResult(result, x =>
+            {
+                x.Outcome = TestOutcome.Failed;
+                x.ErrorMessage = result.ErrorMessage;
+                x.ErrorStackTrace = result.ErrorStackTrace;
+            });
+        }
+
+        void RecordResult(PipeMessage.TestResult result, Action<TestResult> customize = null)
         {
             var testCase = new TestCase(result.FullName, VsTestExecutor.Uri, assemblyPath);
 
             var testResult = new TestResult(testCase)
             {
                 DisplayName = result.DisplayName,
-                Outcome = TestOutcome.Failed,
                 Duration = result.Duration,
                 ComputerName = Environment.MachineName
             };
 
-            testResult.ErrorMessage = result.ErrorMessage;
-            testResult.ErrorStackTrace = result.ErrorStackTrace;
+            customize?.Invoke(testResult);
 
             AttachCapturedConsoleOutput(result.Output, testResult);
 

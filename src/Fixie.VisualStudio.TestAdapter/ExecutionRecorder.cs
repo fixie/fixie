@@ -4,6 +4,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Execution.Listeners;
+    using static System.Environment;
 
     public class ExecutionRecorder
     {
@@ -38,8 +39,10 @@
             RecordResult(result, x =>
             {
                 x.Outcome = TestOutcome.Failed;
-                x.ErrorMessage = result.ErrorMessage;
-                x.ErrorStackTrace = result.ErrorStackTrace;
+                x.ErrorMessage = result.Exception.Message;
+                x.ErrorStackTrace = result.Exception.TypeName +
+                                    NewLine +
+                                    result.Exception.StackTrace;
             });
         }
 

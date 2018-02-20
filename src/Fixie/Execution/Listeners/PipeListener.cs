@@ -59,10 +59,7 @@
                 DisplayName = message.Name,
                 Duration = message.Duration,
                 Output = message.Output,
-                ErrorMessage = message.Exception.Message,
-                ErrorStackTrace = message.Exception.TypeName() +
-                                  NewLine +
-                                  message.Exception.CompoundStackTrace()
+                Exception = new PipeMessage.Exception(message.Exception)
             });
         }
     }

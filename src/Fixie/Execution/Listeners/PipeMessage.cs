@@ -38,8 +38,7 @@
 
         public class FailResult : TestResult
         {
-            public string ErrorMessage { get; set; }
-            public string ErrorStackTrace { get; set; }
+            public Exception Exception { get; set; }
         }
 
         public class Exception

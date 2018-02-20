@@ -8,6 +8,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Assertions;
     using Fixie.Execution.Listeners;
+    using static System.Environment;
 
     public class ExecutionRecorderTests
     {
@@ -32,8 +33,12 @@
                 DisplayName = "Namespace.Class.Fail",
                 Duration = TimeSpan.FromSeconds(2),
                 Output = "Output",
-                ErrorMessage = "Error Message",
-                ErrorStackTrace = "Stack Trace"
+                Exception = new PipeMessage.Exception
+                {
+                    TypeName = "Exception Type Name",
+                    Message = "Exception Message",
+                    StackTrace = "Exception Stack Trace"
+                }
             });
 
             executionRecorder.RecordResult(new PipeMessage.SkipResult
@@ -52,7 +57,7 @@
             {
                 result.Traits.ShouldBeEmpty();
                 result.Attachments.ShouldBeEmpty();
-                result.ComputerName.ShouldEqual(Environment.MachineName);
+                result.ComputerName.ShouldEqual(MachineName);
             }
 
             var pass = results[0];
@@ -73,8 +78,8 @@
             fail.TestCase.ShouldBeExecutionTimeTest("Namespace.Class.Fail", assemblyPath);
             fail.TestCase.DisplayName.ShouldEqual("Namespace.Class.Fail");
             fail.Outcome.ShouldEqual(TestOutcome.Failed);
-            fail.ErrorMessage.ShouldEqual("Error Message");
-            fail.ErrorStackTrace.ShouldEqual("Stack Trace");
+            fail.ErrorMessage.ShouldEqual("Exception Message");
+            fail.ErrorStackTrace.ShouldEqual("Exception Type Name" + NewLine + "Exception Stack Trace");
             fail.DisplayName.ShouldEqual("Namespace.Class.Fail");
             fail.Messages.Count.ShouldEqual(1);
             fail.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);

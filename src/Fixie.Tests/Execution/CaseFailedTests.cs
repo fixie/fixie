@@ -17,7 +17,6 @@
 
             failure.Exception.ShouldBeType<PrimaryException>();
             failure.Exception.Message.ShouldEqual("Primary Exception!");
-            failure.FailedAssertion.ShouldEqual(false);
 
             failure.StackTrace
                 .CleanStackTraceLineNumbers()

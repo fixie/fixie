@@ -6,11 +6,5 @@
     {
         [Obsolete]
         public string FilterStackTrace(Exception exception) => exception.StackTrace;
-
-        [Obsolete]
-        public bool IsFailedAssertion(Exception exception)
-        {
-            return false;
-        }
     }
 }

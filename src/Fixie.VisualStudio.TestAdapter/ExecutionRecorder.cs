@@ -23,7 +23,7 @@
             var testResult = new TestResult(testCase)
             {
                 DisplayName = result.DisplayName,
-                Outcome = Parse("Skipped"),
+                Outcome = TestOutcome.Skipped,
                 Duration = result.Duration,
                 ComputerName = Environment.MachineName,
 
@@ -43,7 +43,7 @@
             var testResult = new TestResult(testCase)
             {
                 DisplayName = result.DisplayName,
-                Outcome = Parse("Passed"),
+                Outcome = TestOutcome.Passed,
                 Duration = result.Duration,
                 ComputerName = Environment.MachineName,
 
@@ -63,7 +63,7 @@
             var testResult = new TestResult(testCase)
             {
                 DisplayName = result.DisplayName,
-                Outcome = Parse("Failed"),
+                Outcome = TestOutcome.Failed,
                 Duration = result.Duration,
                 ComputerName = Environment.MachineName,
 
@@ -75,9 +75,6 @@
 
             log.RecordResult(testResult);
         }
-
-        static TestOutcome Parse(string outcome)
-            => Enum.TryParse(outcome, out TestOutcome parsed) ? parsed : TestOutcome.None;
 
         static void AttachCapturedConsoleOutput(string output, TestResult testResult)
         {

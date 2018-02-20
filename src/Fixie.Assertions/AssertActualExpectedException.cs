@@ -20,14 +20,20 @@ namespace Fixie.Assertions
 
         static string BuildMessage(object expected, object actual, string userMessage = null)
         {
-            string differencePosition = null;
+            var message = new StringBuilder();
+
+            if (userMessage != null)
+            {
+                message.AppendLine(userMessage);
+                message.AppendLine();
+            }
 
             if (actual is IEnumerable enumerableActual && expected is IEnumerable enumerableExpected)
             {
                 var comparer = new EnumerableEqualityComparer();
                 comparer.Equals(enumerableActual, enumerableExpected);
 
-                differencePosition = "First difference is at position " + comparer.Position;
+                message.AppendLine("First difference is at position " + comparer.Position);
             }
 
             var actualStr = actual == null ? null : ConvertToString(actual);
@@ -41,18 +47,7 @@ namespace Fixie.Assertions
                 actualStr += $" ({actual.GetType().FullName})";
                 expectedStr += $" ({expected.GetType().FullName})";
             }
-
-            var message = new StringBuilder();
-
-            if (userMessage != null)
-            {
-                message.AppendLine(userMessage);
-                message.AppendLine();
-            }
-
-            if (differencePosition != null)
-                message.AppendLine(differencePosition);
-
+            
             message.AppendLine($"Expected: {FormatMultiLine(expectedStr ?? "(null)")}");
             message.Append($"Actual:   {FormatMultiLine(actualStr ?? "(null)")}");
 

@@ -2,6 +2,7 @@
 {
     using System;
     using Fixie.Execution.Listeners;
+    using static Utility;
 
     public class ExceptionExtensionsTests
     {
@@ -13,11 +14,11 @@
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(
-                    Utility.At<ExceptionExtensionsTests>("GetException()"),
+                    At<ExceptionExtensionsTests>("GetException()"),
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",
                     "Divide by Zero Exception!",
-                    Utility.At<ExceptionExtensionsTests>("GetException()"));
+                    At<ExceptionExtensionsTests>("GetException()"));
         }
 
         static Exception GetException()

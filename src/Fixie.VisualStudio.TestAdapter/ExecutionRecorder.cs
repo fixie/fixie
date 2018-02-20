@@ -16,7 +16,47 @@
             this.assemblyPath = assemblyPath;
         }
 
-        public void RecordResult(PipeMessage.TestResult result)
+        public void RecordResult(PipeMessage.SkipResult result)
+        {
+            var testCase = new TestCase(result.FullName, VsTestExecutor.Uri, assemblyPath);
+
+            var testResult = new TestResult(testCase)
+            {
+                DisplayName = result.DisplayName,
+                Outcome = Parse(result.Outcome),
+                Duration = result.Duration,
+                ComputerName = Environment.MachineName,
+
+                ErrorMessage = result.ErrorMessage,
+                ErrorStackTrace = result.ErrorStackTrace
+            };
+
+            AttachCapturedConsoleOutput(result.Output, testResult);
+
+            log.RecordResult(testResult);
+        }
+
+        public void RecordResult(PipeMessage.PassResult result)
+        {
+            var testCase = new TestCase(result.FullName, VsTestExecutor.Uri, assemblyPath);
+
+            var testResult = new TestResult(testCase)
+            {
+                DisplayName = result.DisplayName,
+                Outcome = Parse(result.Outcome),
+                Duration = result.Duration,
+                ComputerName = Environment.MachineName,
+
+                ErrorMessage = result.ErrorMessage,
+                ErrorStackTrace = result.ErrorStackTrace
+            };
+
+            AttachCapturedConsoleOutput(result.Output, testResult);
+
+            log.RecordResult(testResult);
+        }
+
+        public void RecordResult(PipeMessage.FailResult result)
         {
             var testCase = new TestCase(result.FullName, VsTestExecutor.Uri, assemblyPath);
 

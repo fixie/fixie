@@ -12,7 +12,6 @@
         readonly Lifecycle lifecycle;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
-        readonly AssertionLibraryFilter assertionLibraryFilter;
 
         readonly IReadOnlyList<SkipBehavior> skipBehaviors;
         readonly Action<MethodInfo[]> orderMethods;
@@ -25,7 +24,6 @@
             lifecycle = convention.Config.Lifecycle;
             methodDiscoverer = new MethodDiscoverer(filter, convention);
             parameterDiscoverer = new ParameterDiscoverer(convention);
-            assertionLibraryFilter = new AssertionLibraryFilter(convention);
 
             skipBehaviors = config.SkipBehaviors;
             orderMethods = config.OrderMethods;
@@ -262,7 +260,7 @@
 
         void Fail(Case @case, ExecutionSummary summary)
         {
-            var message = new CaseFailed(@case, assertionLibraryFilter);
+            var message = new CaseFailed(@case);
             summary.Add(message);
             bus.Publish(message);
         }

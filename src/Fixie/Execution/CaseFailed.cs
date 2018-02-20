@@ -5,9 +5,11 @@
 
     public class CaseFailed : CaseCompleted
     {
-        public CaseFailed(Case @case, AssertionLibraryFilter filter)
+        public CaseFailed(Case @case)
             : base(@case)
         {
+            var filter = new AssertionLibraryFilter();
+
             var exception = @case.Exception;
 
             Exception = exception;

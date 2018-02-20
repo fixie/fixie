@@ -29,7 +29,7 @@
 
                            "Console.Out: FailByAssertion",
                            "Console.Error: FailByAssertion",
-                           "Test '" + TestClass + ".FailByAssertion' failed:",
+                           "Test '" + TestClass + ".FailByAssertion' failed: Fixie.Assertions.AssertActualExpectedException",
                            "Assertion Failure",
                            "Expected: 2",
                            "Actual:   1",

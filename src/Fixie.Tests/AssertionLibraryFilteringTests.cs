@@ -6,6 +6,7 @@
     using Fixie.Execution.Listeners;
     using static Utility;
 
+    [Obsolete]
     public class AssertionLibraryFilteringTests
     {
         readonly string testClass = FullName<SampleTestClass>();
@@ -32,38 +33,6 @@
                         "Test '" + testClass + ".FailedAssertion' failed: Fixie.Tests.SampleAssertionLibrary.AssertionException",
                         "Expected 1, but was 0.",
                         "   at Fixie.Tests.SampleAssertionLibrary.SampleAssert.AreEqual(Int32 expected, Int32 actual) in " + PathToThisFile() + ":line #",
-                        At<SampleTestClass>("FailedAssertion()"),
-                        "",
-                        "2 failed, took 1.23 seconds");
-            }
-        }
-
-        public void ShouldFilterAssertionLibraryImplementationDetailsWhenLibraryTypesAreSpecified()
-        {
-            var listener = new ConsoleListener();
-            var convention = SelfTestConvention.Build();
-
-            convention
-                .HideExceptionDetails
-                .For<SampleAssertionLibrary.AssertionException>()
-                .For(typeof(SampleAssertionLibrary.SampleAssert));
-
-            using (var console = new RedirectedConsole())
-            {
-                Run<SampleTestClass>(listener, convention);
-
-                console
-                    .Output
-                    .CleanStackTraceLineNumbers()
-                    .CleanDuration()
-                    .Lines()
-                    .ShouldEqual(
-                        "Test '" + testClass + ".DivideByZero' failed: System.DivideByZeroException",
-                        "Attempted to divide by zero.",
-                        At<SampleTestClass>("DivideByZero()"),
-                        "",
-                        "Test '" + testClass + ".FailedAssertion' failed:",
-                        "Expected 1, but was 0.",
                         At<SampleTestClass>("FailedAssertion()"),
                         "",
                         "2 failed, took 1.23 seconds");

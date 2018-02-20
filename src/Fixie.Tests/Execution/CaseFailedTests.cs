@@ -7,21 +7,13 @@
 
     public class CaseFailedTests
     {
-        readonly Convention convention;
-
-        public CaseFailedTests()
-        {
-            convention = new Convention();
-        }
-
         public void ShouldSummarizeAnyGivenException()
         {
-            var assertionLibrary = AssertionLibraryFilter();
             var exception = GetException();
 
             var @case = Case("Test");
             @case.Fail(exception);
-            var failure = new CaseFailed(@case, assertionLibrary);
+            var failure = new CaseFailed(@case);
 
             failure.Exception.ShouldBeType<PrimaryException>();
             failure.Exception.Message.ShouldEqual("Primary Exception!");
@@ -38,33 +30,6 @@
                     At<CaseFailedTests>("GetException()"));
         }
 
-        public void ShouldFilterAssertionLibraryImplementationDetails()
-        {
-            convention
-                .HideExceptionDetails
-                .For<PrimaryException>()
-                .For<CaseFailedTests>();
-
-            var assertionLibrary = AssertionLibraryFilter();
-            var exception = GetException();
-
-            var @case = Case("Test");
-            @case.Fail(exception);
-            var failure = new CaseFailed(@case, assertionLibrary);
-
-            failure.Exception.ShouldBeType<PrimaryException>();
-            failure.Exception.Message.ShouldEqual("Primary Exception!");
-            failure.FailedAssertion.ShouldEqual(true);
-
-            failure.StackTrace
-                .Lines()
-                .ShouldEqual(
-                    "",
-                    "",
-                    "------- Inner Exception: System.DivideByZeroException -------",
-                    "Divide by Zero Exception!");
-        }
-
         class SampleTestClass
         {
             public void Test() { }
@@ -75,11 +40,6 @@
 
         static Case Case<TTestClass>(string methodName, params object[] parameters)
             => new Case(typeof(TTestClass).GetInstanceMethod(methodName), parameters);
-
-        AssertionLibraryFilter AssertionLibraryFilter()
-        {
-            return new AssertionLibraryFilter(convention);
-        }
 
         static Exception GetException()
         {

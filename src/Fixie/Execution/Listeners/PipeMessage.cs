@@ -26,7 +26,6 @@
             public TimeSpan Duration { get; set; }
             public string Output { get; set; }
             public string ErrorMessage { get; set; }
-            public string ErrorStackTrace { get; set; }
         }
 
         public class SkipResult : TestResult
@@ -39,6 +38,7 @@
 
         public class FailResult : TestResult
         {
+            public string ErrorStackTrace { get; set; }
         }
 
         public class Exception

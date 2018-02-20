@@ -24,8 +24,7 @@
                 DisplayName = "Namespace.Class.Pass",
                 Duration = TimeSpan.FromSeconds(1),
                 Output = "Output",
-                ErrorMessage = null,
-                ErrorStackTrace = null
+                ErrorMessage = null
             });
 
             executionRecorder.RecordResult(new PipeMessage.FailResult
@@ -44,8 +43,7 @@
                 DisplayName = "Namespace.Class.Skip",
                 Duration = TimeSpan.Zero,
                 Output = null,
-                ErrorMessage = "Skip Reason",
-                ErrorStackTrace = null
+                ErrorMessage = "Skip Reason"
             });
 
             var results = recorder.TestResults;

@@ -28,7 +28,7 @@
                 ComputerName = Environment.MachineName,
 
                 ErrorMessage = result.ErrorMessage,
-                ErrorStackTrace = result.ErrorStackTrace
+                ErrorStackTrace = null
             };
 
             AttachCapturedConsoleOutput(result.Output, testResult);
@@ -48,7 +48,7 @@
                 ComputerName = Environment.MachineName,
 
                 ErrorMessage = result.ErrorMessage,
-                ErrorStackTrace = result.ErrorStackTrace
+                ErrorStackTrace = null
             };
 
             AttachCapturedConsoleOutput(result.Output, testResult);

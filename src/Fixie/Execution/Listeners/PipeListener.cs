@@ -24,7 +24,7 @@
 
             Write(new PipeMessage.Test
             {
-                FullyQualifiedName = methodGroup.FullName,
+                FullName = methodGroup.FullName,
                 DisplayName = methodGroup.FullName
             });
         }
@@ -63,7 +63,7 @@
         {
             var testResult = new PipeMessage.TestResult
             {
-                FullyQualifiedName = new MethodGroup(message.Method).FullName,
+                FullName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Duration = message.Duration,
                 Output = message.Output

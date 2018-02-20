@@ -18,7 +18,7 @@
 
         public void RecordResult(PipeMessage.TestResult result)
         {
-            var testCase = new TestCase(result.FullyQualifiedName, VsTestExecutor.Uri, assemblyPath);
+            var testCase = new TestCase(result.FullName, VsTestExecutor.Uri, assemblyPath);
 
             var testResult = new TestResult(testCase)
             {

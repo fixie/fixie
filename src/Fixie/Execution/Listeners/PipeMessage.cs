@@ -15,13 +15,13 @@
 
         public class Test
         {
-            public string FullyQualifiedName { get; set; }
+            public string FullName { get; set; }
             public string DisplayName { get; set; }
         }
 
         public class TestResult
         {
-            public string FullyQualifiedName { get; set; }
+            public string FullName { get; set; }
             public string DisplayName { get; set; }
             public string Outcome { get; set; }
             public TimeSpan Duration { get; set; }

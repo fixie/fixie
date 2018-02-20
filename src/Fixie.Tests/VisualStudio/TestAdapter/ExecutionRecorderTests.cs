@@ -20,7 +20,7 @@
 
             executionRecorder.RecordResult(new PipeMessage.TestResult
             {
-                FullyQualifiedName = "Namespace.Class.Pass",
+                FullName = "Namespace.Class.Pass",
                 DisplayName = "Namespace.Class.Pass",
                 Outcome = "Passed",
                 Duration = TimeSpan.FromSeconds(1),
@@ -31,7 +31,7 @@
 
             executionRecorder.RecordResult(new PipeMessage.TestResult
             {
-                FullyQualifiedName = "Namespace.Class.Fail",
+                FullName = "Namespace.Class.Fail",
                 DisplayName = "Namespace.Class.Fail",
                 Outcome = "Failed",
                 Duration = TimeSpan.FromSeconds(2),
@@ -42,7 +42,7 @@
 
             executionRecorder.RecordResult(new PipeMessage.TestResult
             {
-                FullyQualifiedName = "Namespace.Class.Skip",
+                FullName = "Namespace.Class.Skip",
                 DisplayName = "Namespace.Class.Skip",
                 Outcome = "Skipped",
                 Duration = TimeSpan.Zero,

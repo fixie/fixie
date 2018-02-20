@@ -44,7 +44,20 @@
 
         public class Exception
         {
-            public string Details { get; set; }
+            public Exception()
+            {
+            }
+
+            public Exception(System.Exception exception)
+            {
+                TypeName = exception.TypeName();
+                Message = exception.Message;
+                StackTrace = exception.CompoundStackTrace();
+            }
+
+            public string TypeName { get; set; }
+            public string Message { get; set; }
+            public string StackTrace { get; set; }
         }
 
         public class Completed { }

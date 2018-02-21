@@ -54,7 +54,7 @@
             {
                 DisplayName = result.DisplayName,
                 Duration = result.Duration,
-                ComputerName = Environment.MachineName
+                ComputerName = MachineName
             };
 
             customize?.Invoke(testResult);

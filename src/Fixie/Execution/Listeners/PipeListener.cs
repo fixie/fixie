@@ -3,7 +3,6 @@
     using System;
     using System.IO.Pipes;
     using Execution;
-    using static System.Environment;
 
     public class PipeListener :
         Handler<MethodDiscovered>,
@@ -24,54 +23,46 @@
 
             Write(new PipeMessage.Test
             {
-                FullyQualifiedName = methodGroup.FullName,
+                FullName = methodGroup.FullName,
                 DisplayName = methodGroup.FullName
             });
         }
 
         public void Handle(CaseSkipped message)
         {
-            Write(message, x =>
+            Write<PipeMessage.SkipResult>(message, x =>
             {
-                x.Outcome = "Skipped";
-                x.ErrorMessage = message.Reason;
+                x.Reason = message.Reason;
             });
         }
 
         public void Handle(CasePassed message)
         {
-            Write(message, x =>
-            {
-                x.Outcome = "Passed";
-            });
+            Write<PipeMessage.PassResult>(message);
         }
 
         public void Handle(CaseFailed message)
         {
-            Write(message, x =>
+            Write<PipeMessage.FailResult>(message, x =>
             {
-                x.Outcome = "Failed";
-                x.ErrorMessage = message.Exception.Message;
-                x.ErrorStackTrace =
-                    message.Exception.TypeName() +
-                    NewLine +
-                    message.Exception.CompoundStackTrace();
+                x.Exception = new PipeMessage.Exception(message.Exception);
             });
         }
 
-        void Write(CaseCompleted message, Action<PipeMessage.TestResult> customize)
+        void Write<TTestResult>(CaseCompleted message, Action<TTestResult> customize = null)
+            where TTestResult : PipeMessage.TestResult, new()
         {
-            var testResult = new PipeMessage.TestResult
+            var result = new TTestResult
             {
-                FullyQualifiedName = new MethodGroup(message.Method).FullName,
+                FullName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Duration = message.Duration,
                 Output = message.Output
             };
 
-            customize(testResult);
+            customize?.Invoke(result);
 
-            Write(testResult);
+            Write(result);
         }
 
         void Write<T>(T message) => pipe.Send(message);

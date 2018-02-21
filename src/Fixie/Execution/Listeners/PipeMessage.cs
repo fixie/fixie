@@ -15,24 +15,48 @@
 
         public class Test
         {
-            public string FullyQualifiedName { get; set; }
+            public string FullName { get; set; }
             public string DisplayName { get; set; }
         }
 
-        public class TestResult
+        public abstract class TestResult
         {
-            public string FullyQualifiedName { get; set; }
+            public string FullName { get; set; }
             public string DisplayName { get; set; }
-            public string Outcome { get; set; }
             public TimeSpan Duration { get; set; }
             public string Output { get; set; }
-            public string ErrorMessage { get; set; }
-            public string ErrorStackTrace { get; set; }
+        }
+
+        public class SkipResult : TestResult
+        {
+            public string Reason { get; set; }
+        }
+
+        public class PassResult : TestResult
+        {
+        }
+
+        public class FailResult : TestResult
+        {
+            public Exception Exception { get; set; }
         }
 
         public class Exception
         {
-            public string Details { get; set; }
+            public Exception()
+            {
+            }
+
+            public Exception(System.Exception exception)
+            {
+                TypeName = exception.TypeName();
+                Message = exception.Message;
+                StackTrace = exception.CompoundStackTrace();
+            }
+
+            public string TypeName { get; set; }
+            public string Message { get; set; }
+            public string StackTrace { get; set; }
         }
 
         public class Completed { }

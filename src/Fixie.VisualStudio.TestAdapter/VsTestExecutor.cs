@@ -97,9 +97,19 @@
                 {
                     var messageType = pipe.ReceiveMessage();
 
-                    if (messageType == typeof(PipeMessage.TestResult).FullName)
+                    if (messageType == typeof(PipeMessage.SkipResult).FullName)
                     {
-                        var testResult = pipe.Receive<PipeMessage.TestResult>();
+                        var testResult = pipe.Receive<PipeMessage.SkipResult>();
+                        recorder.RecordResult(testResult);
+                    }
+                    else if (messageType == typeof(PipeMessage.PassResult).FullName)
+                    {
+                        var testResult = pipe.Receive<PipeMessage.PassResult>();
+                        recorder.RecordResult(testResult);
+                    }
+                    else if (messageType == typeof(PipeMessage.FailResult).FullName)
+                    {
+                        var testResult = pipe.Receive<PipeMessage.FailResult>();
                         recorder.RecordResult(testResult);
                     }
                     else if (messageType == typeof(PipeMessage.Exception).FullName)

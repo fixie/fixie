@@ -4,6 +4,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Execution.Listeners;
+    using static System.Environment;
 
     public class ExecutionRecorder
     {
@@ -16,28 +17,52 @@
             this.assemblyPath = assemblyPath;
         }
 
-        public void RecordResult(PipeMessage.TestResult result)
+        public void RecordResult(PipeMessage.SkipResult result)
         {
-            var testCase = new TestCase(result.FullyQualifiedName, VsTestExecutor.Uri, assemblyPath);
+            RecordResult(result, x =>
+            {
+                x.Outcome = TestOutcome.Skipped;
+                x.ErrorMessage = result.Reason;
+            });
+        }
+
+        public void RecordResult(PipeMessage.PassResult result)
+        {
+            RecordResult(result, x =>
+            {
+                x.Outcome = TestOutcome.Passed;
+            });
+        }
+
+        public void RecordResult(PipeMessage.FailResult result)
+        {
+            RecordResult(result, x =>
+            {
+                x.Outcome = TestOutcome.Failed;
+                x.ErrorMessage = result.Exception.Message;
+                x.ErrorStackTrace = result.Exception.TypeName +
+                                    NewLine +
+                                    result.Exception.StackTrace;
+            });
+        }
+
+        void RecordResult(PipeMessage.TestResult result, Action<TestResult> customize = null)
+        {
+            var testCase = new TestCase(result.FullName, VsTestExecutor.Uri, assemblyPath);
 
             var testResult = new TestResult(testCase)
             {
                 DisplayName = result.DisplayName,
-                Outcome = Parse(result.Outcome),
                 Duration = result.Duration,
-                ComputerName = Environment.MachineName,
-
-                ErrorMessage = result.ErrorMessage,
-                ErrorStackTrace = result.ErrorStackTrace
+                ComputerName = MachineName
             };
+
+            customize?.Invoke(testResult);
 
             AttachCapturedConsoleOutput(result.Output, testResult);
 
             log.RecordResult(testResult);
         }
-
-        static TestOutcome Parse(string outcome)
-            => Enum.TryParse(outcome, out TestOutcome parsed) ? parsed : TestOutcome.None;
 
         static void AttachCapturedConsoleOutput(string output, TestResult testResult)
         {

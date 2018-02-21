@@ -1,13 +1,20 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
     using System;
+    using System.Text;
     using Execution.Listeners;
-    using static System.Environment;
 
     public class RunnerException : Exception
     {
         public RunnerException(PipeMessage.Exception exception)
-            : base($"{NewLine}{NewLine}{exception.Details}{NewLine}")
+            : base(new StringBuilder()
+                .AppendLine()
+                .AppendLine()
+                .AppendLine(exception.Message)
+                .AppendLine()
+                .AppendLine(exception.TypeName)
+                .AppendLine(exception.StackTrace)
+                .ToString())
         {
         }
     }

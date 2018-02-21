@@ -19,7 +19,7 @@
         /// </summary>
         public ParameterSourceExpression Add<TParameterSource>() where TParameterSource : ParameterSource
         {
-            config.AddParameterSource(() => (ParameterSource)Activator.CreateInstance(typeof(TParameterSource)));
+            config.AddParameterSource((ParameterSource)Activator.CreateInstance(typeof(TParameterSource)));
             return this;
         }
 
@@ -29,7 +29,7 @@
         /// </summary>
         public ParameterSourceExpression Add(ParameterSource parameterSource)
         {
-            config.AddParameterSource(() => parameterSource);
+            config.AddParameterSource(parameterSource);
             return this;
         }
 
@@ -46,7 +46,7 @@
         /// </summary>
         public ParameterSourceExpression Add(ParameterSourceFunc getParameters)
         {
-            config.AddParameterSource(() => new LambdaParameterSource(getParameters));
+            config.AddParameterSource(new LambdaParameterSource(getParameters));
             return this;
         }
 

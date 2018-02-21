@@ -8,7 +8,7 @@
     {
         readonly List<Func<Type, bool>> testClassConditions;
         readonly List<Func<MethodInfo, bool>> testMethodConditions;
-        readonly List<Func<ParameterSource>> parameterSources;
+        readonly List<ParameterSource> parameterSources;
         readonly List<SkipBehavior> skipBehaviors;
 
         public Configuration()
@@ -18,7 +18,7 @@
 
             testClassConditions = new List<Func<Type, bool>>();
             testMethodConditions = new List<Func<MethodInfo, bool>>();
-            parameterSources = new List<Func<ParameterSource>>();
+            parameterSources = new List<ParameterSource>();
             skipBehaviors = new List<SkipBehavior>();
         }
 
@@ -58,15 +58,15 @@
         public void AddTestMethodCondition(Func<MethodInfo, bool> testMethodCondition)
             => testMethodConditions.Add(testMethodCondition);
 
-        public void AddParameterSource(Func<ParameterSource> getParameterSource)
-            => parameterSources.Add(getParameterSource);
+        public void AddParameterSource(ParameterSource parameterSource)
+            => parameterSources.Add(parameterSource);
 
         public void AddSkipBehavior(SkipBehavior skipBehavior)
             => skipBehaviors.Add(skipBehavior);
 
         public IReadOnlyList<Func<Type, bool>> TestClassConditions => testClassConditions;
         public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions => testMethodConditions;
-        public IReadOnlyList<Func<ParameterSource>> ParameterSources => parameterSources;
+        public IReadOnlyList<ParameterSource> ParameterSources => parameterSources;
         public IReadOnlyList<SkipBehavior> SkipBehaviors => skipBehaviors;
     }
 }

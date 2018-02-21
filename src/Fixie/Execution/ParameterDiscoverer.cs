@@ -6,18 +6,12 @@
 
     class ParameterDiscoverer
     {
-        readonly ParameterSource[] parameterSources;
+        readonly IReadOnlyList<ParameterSource> parameterSources;
 
         public ParameterDiscoverer(Convention convention)
-        {
-            parameterSources = convention.Config.ParameterSources
-                .Select(sourceType => sourceType())
-                .ToArray();
-        }
+            => parameterSources = convention.Config.ParameterSources;
 
         public IEnumerable<object[]> GetParameters(MethodInfo method)
-        {
-            return parameterSources.SelectMany(source => source.GetParameters(method));
-        }
+            => parameterSources.SelectMany(source => source.GetParameters(method));
     }
 }

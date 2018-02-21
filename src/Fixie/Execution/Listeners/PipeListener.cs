@@ -1,8 +1,8 @@
 ﻿namespace Fixie.Execution.Listeners
 {
+    using System;
     using System.IO.Pipes;
     using Execution;
-    using static System.Environment;
 
     public class PipeListener :
         Handler<MethodDiscovered>,
@@ -21,7 +21,7 @@
         {
             var methodGroup = new MethodGroup(message.Method);
 
-            pipe.Send(new PipeMessage.Test
+            Write(new PipeMessage.Test
             {
                 FullName = methodGroup.FullName,
                 DisplayName = methodGroup.FullName
@@ -30,37 +30,41 @@
 
         public void Handle(CaseSkipped message)
         {
-            pipe.Send(new PipeMessage.SkipResult
+            Write<PipeMessage.SkipResult>(message, x =>
             {
-                FullName = new MethodGroup(message.Method).FullName,
-                DisplayName = message.Name,
-                Duration = message.Duration,
-                Output = message.Output,
-                Reason = message.Reason
+                x.Reason = message.Reason;
             });
         }
 
         public void Handle(CasePassed message)
         {
-            pipe.Send(new PipeMessage.PassResult
+            Write<PipeMessage.PassResult>(message);
+        }
+
+        public void Handle(CaseFailed message)
+        {
+            Write<PipeMessage.FailResult>(message, x =>
+            {
+                x.Exception = new PipeMessage.Exception(message.Exception);
+            });
+        }
+
+        void Write<TTestResult>(CaseCompleted message, Action<TTestResult> customize = null)
+            where TTestResult : PipeMessage.TestResult, new()
+        {
+            var result = new TTestResult
             {
                 FullName = new MethodGroup(message.Method).FullName,
                 DisplayName = message.Name,
                 Duration = message.Duration,
                 Output = message.Output
-            });
+            };
+
+            customize?.Invoke(result);
+
+            Write(result);
         }
 
-        public void Handle(CaseFailed message)
-        {
-            pipe.Send(new PipeMessage.FailResult
-            {
-                FullName = new MethodGroup(message.Method).FullName,
-                DisplayName = message.Name,
-                Duration = message.Duration,
-                Output = message.Output,
-                Exception = new PipeMessage.Exception(message.Exception)
-            });
-        }
+        void Write<T>(T message) => pipe.Send(message);
     }
 }

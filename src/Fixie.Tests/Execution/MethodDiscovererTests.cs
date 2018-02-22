@@ -20,6 +20,13 @@
                     "PublicInstanceNoArgsWithReturn()",
                     "PublicInstanceWithArgsVoid(x)",
                     "PublicInstanceWithArgsWithReturn(x)");
+
+            DiscoveredTestMethods<AsyncSample>(customConvention)
+                .ShouldEqual(
+                    "PublicInstanceNoArgsVoid()",
+                    "PublicInstanceNoArgsWithReturn()",
+                    "PublicInstanceWithArgsVoid(x)",
+                    "PublicInstanceWithArgsWithReturn(x)");
         }
 
         public void ShouldNotConsiderIDisposableDisposeMethod()
@@ -119,19 +126,16 @@
                     "PublicInstanceWithArgsWithReturn(x)");
         }
 
-        public void TheDefaultConventionShouldDiscoverSynchronousPublicInstanceVoidMethods()
+        public void TheDefaultConventionShouldDiscoverPublicInstanceMethods()
         {
             var defaultConvention = new DefaultConvention();
 
             DiscoveredTestMethods<Sample>(defaultConvention)
                 .ShouldEqual(
                     "PublicInstanceNoArgsVoid()",
-                    "PublicInstanceWithArgsVoid(x)");
-        }
-
-        public void TheDefaultConventionShouldDiscoverAsyncPublicInstanceMethods()
-        {
-            var defaultConvention = new DefaultConvention();
+                    "PublicInstanceNoArgsWithReturn()",
+                    "PublicInstanceWithArgsVoid(x)",
+                    "PublicInstanceWithArgsWithReturn(x)");
 
             DiscoveredTestMethods<AsyncSample>(defaultConvention)
                 .ShouldEqual(

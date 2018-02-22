@@ -68,6 +68,10 @@
                             throw new Exception($"Test assembly received unexpected message of type {messageType}: {body}");
                         }
                     }
+                    catch (PreservedException exception)
+                    {
+                        pipe.Send(exception.OriginalException);
+                    }
                     catch (Exception exception)
                     {
                         pipe.Send(exception);

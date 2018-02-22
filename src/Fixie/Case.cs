@@ -111,6 +111,31 @@
         internal string Output { get; set; }
         internal string SkipReason { get; private set; }
         internal CaseState State { get; private set; }
+
+        /// <summary>
+        /// Execute the test case against the given instance of the test class,
+        /// causing the case state to become either passing or failing.
+        /// </summary>
+        /// <returns>
+        /// For void methods, returns null.
+        /// For synchronous methods, returns the value returned by the test method.
+        /// For async Task methods, returns null after awaiting the Task.
+        /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
+        /// </returns>
+        public object Execute(object instance)
+        {
+            try
+            {
+                var result = Method.Execute(instance, Parameters);
+                Pass();
+                return result;
+            }
+            catch (Exception exception)
+            {
+                Fail(exception);
+                return null;
+            }
+        }
     }
 
     enum CaseState

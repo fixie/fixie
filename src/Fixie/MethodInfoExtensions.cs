@@ -5,24 +5,18 @@
     using System.Reflection;
     using System.Threading.Tasks;
 
-    public static class CaseExtensions
+    static class MethodInfoExtensions
     {
-        public static object Execute(this Case @case, object instance)
-        {
-            try
-            {
-                var result = @case.Method.Execute(instance, @case.Parameters);
-                @case.Pass();
-                return result;
-            }
-            catch (Exception exception)
-            {
-                @case.Fail(exception);
-                return null;
-            }
-        }
-
-        static object Execute(this MethodInfo method, object instance, object[] parameters)
+        /// <summary>
+        /// Execute the given method against the given instance of its class.
+        /// </summary>
+        /// <returns>
+        /// For void methods, returns null.
+        /// For synchronous methods, returns the value returned by the test method.
+        /// For async Task methods, returns null after awaiting the Task.
+        /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
+        /// </returns>
+        internal static object Execute(this MethodInfo method, object instance, object[] parameters)
         {
             bool isDeclaredAsync = method.IsAsync();
 

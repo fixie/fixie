@@ -84,6 +84,13 @@
                     return exitCode;
                 }
             }
+            catch (PreservedException exception)
+            {
+                using (Foreground.Red)
+                    Console.WriteLine($"Fatal Error: {exception.OriginalException}");
+
+                return FatalError;
+            }
             catch (Exception exception)
             {
                 using (Foreground.Red)

@@ -21,7 +21,7 @@
                         "return type of Task to ensure the task actually runs to completion.");
 
                 if (method.ContainsGenericParameters)
-                    throw new Exception("Could not resolve type parameters for generic test case.");
+                    throw new Exception("Could not resolve type parameters for generic method.");
 
                 object returnValue;
 

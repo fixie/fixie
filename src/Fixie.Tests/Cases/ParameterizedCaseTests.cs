@@ -144,7 +144,7 @@
             Listener.Entries.ShouldEqual(
                 For<GenericTestClass>(
                     ".ConstrainedGeneric<System.Int32>(1) passed",
-                    ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic test case.",
+                    ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",
 
                     ".ConstrainedGenericMethodWithNoInputsProvided<T> failed: This test case has declared parameters, but no parameter values have been provided to it.",
 

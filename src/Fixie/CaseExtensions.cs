@@ -45,31 +45,27 @@
                 throw new PreservedException(exception.InnerException);
             }
 
-            if (isDeclaredAsync)
+            if (!isDeclaredAsync)
+                return result;
+
+            var task = (Task) result;
+            try
             {
-                var task = (Task) result;
-                try
-                {
-                    task.Wait();
-                }
-                catch (AggregateException exception)
-                {
-                    throw new PreservedException(exception.InnerExceptions.First());
-                }
-
-                if (method.ReturnType.IsGenericType)
-                {
-                    var property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public);
-
-                    result = property.GetValue(task, null);
-                }
-                else
-                {
-                    result = null;
-                }
+                task.Wait();
+            }
+            catch (AggregateException exception)
+            {
+                throw new PreservedException(exception.InnerExceptions.First());
             }
 
-            return result;
+            if (method.ReturnType.IsGenericType)
+            {
+                var property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public);
+
+                return property.GetValue(task, null);
+            }
+
+            return null;
         }
     }
 }

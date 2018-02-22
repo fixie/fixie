@@ -34,11 +34,11 @@
             if (method.ContainsGenericParameters)
                 throw new Exception("Could not resolve type parameters for generic method.");
 
-            object returnValue;
+            object result;
 
             try
             {
-                returnValue = method.Invoke(instance, parameters);
+                result = method.Invoke(instance, parameters);
             }
             catch (TargetInvocationException exception)
             {
@@ -47,7 +47,7 @@
 
             if (isDeclaredAsync)
             {
-                var task = (Task) returnValue;
+                var task = (Task) result;
                 try
                 {
                     task.Wait();
@@ -61,15 +61,15 @@
                 {
                     var property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public);
 
-                    returnValue = property.GetValue(task, null);
+                    result = property.GetValue(task, null);
                 }
                 else
                 {
-                    returnValue = null;
+                    result = null;
                 }
             }
 
-            return returnValue;
+            return result;
         }
     }
 }

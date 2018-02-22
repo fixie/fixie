@@ -16,15 +16,17 @@
                 bool isDeclaredAsync = method.IsAsync();
 
                 if (isDeclaredAsync && method.IsVoid())
-                    ThrowForUnsupportedAsyncVoid();
+                    throw new NotSupportedException(
+                        "Async void methods are not supported. Declare async methods with a " +
+                        "return type of Task to ensure the task actually runs to completion.");
+
+                if (method.ContainsGenericParameters)
+                    throw new Exception("Could not resolve type parameters for generic test case.");
 
                 object returnValue;
 
                 try
                 {
-                    if (method.ContainsGenericParameters)
-                        throw new Exception("Could not resolve type parameters for generic test case.");
-
                     returnValue = method.Invoke(instance, @case.Parameters);
                 }
                 catch (TargetInvocationException exception)
@@ -64,13 +66,6 @@
                 @case.Fail(exception);
                 return null;
             }
-        }
-
-        static void ThrowForUnsupportedAsyncVoid()
-        {
-            throw new NotSupportedException(
-                "Async void methods are not supported. Declare async methods with a " +
-                "return type of Task to ensure the task actually runs to completion.");
         }
     }
 }

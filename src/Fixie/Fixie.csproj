@@ -6,6 +6,11 @@
     <NuspecFile>Fixie.nuspec</NuspecFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net471'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net471'">
     <Reference Include="System.Net.Http" />
   </ItemGroup>

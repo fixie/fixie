@@ -15,7 +15,6 @@
                 .NameEndsWith("Tests");
 
             Methods
-                .Where(method => method.IsVoid())
                 .Where(method => LifecycleMethods.All(x => x != method.Name));
 
             ClassExecution

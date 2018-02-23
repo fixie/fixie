@@ -11,9 +11,6 @@
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
 
-            Methods
-                .Where(method => method.IsVoid());
-
             CaseExecution
                 .Skip(SkipDueToClassLevelSkipAttribute, @case => "Whole class skipped")
                 .Skip(SkipDueToMethodLevelSkipAttribute);

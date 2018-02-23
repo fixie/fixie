@@ -12,9 +12,6 @@
 
             Classes
                 .InTheSameNamespaceAs(typeof(CustomConvention));
-
-            Methods
-                .Where(method => method.IsVoid());
         }
 
         public void ShouldNotBeCalled()

@@ -13,9 +13,6 @@
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
 
-            Methods
-                .Where(method => method.IsVoid());
-
             ClassExecution
                 .Lifecycle<CreateInstancePerClass>()
                 .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));

@@ -16,7 +16,6 @@
                 .NameEndsWith("Tests");
 
             Methods
-                .Where(method => method.IsVoid())
                 .Where(method => shouldRunAll || MethodHasAnyDesiredCategory(method, desiredCategories));
 
             if (!shouldRunAll)

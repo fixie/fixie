@@ -12,9 +12,6 @@
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
 
-            Methods
-                .Where(method => method.IsVoid());
-
             ClassExecution
                 .Lifecycle<CreateInstancePerClass>()
                 .ShuffleMethods(new Random(Seed));

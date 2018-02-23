@@ -7,9 +7,6 @@
             Classes
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
-
-            Methods
-                .Where(method => method.IsVoid());
         }
     }
 }

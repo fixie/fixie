@@ -2,7 +2,6 @@
 {
     using System;
     using System.Linq;
-    using System.Reflection;
 
     public class CustomConvention : Convention
     {
@@ -28,40 +27,19 @@
             {
                 var instance = Activator.CreateInstance(testClass);
 
-                testClass.TryInvoke("FixtureSetUp", instance);
+                void Execute(string method)
+                    => testClass.Execute(instance, method);
+
+                Execute("FixtureSetUp");
                 runCases(@case =>
                 {
-                    testClass.TryInvoke("SetUp", instance);
+                    Execute("SetUp");
                     @case.Execute(instance);
-                    testClass.TryInvoke("TearDown", instance);
+                    Execute("TearDown");
                 });
-                testClass.TryInvoke("FixtureTearDown", instance);
+                Execute("FixtureTearDown");
 
                 (instance as IDisposable)?.Dispose();
-            }
-        }
-    }
-
-    public static class BehaviorBuilderExtensions
-    {
-        public static void TryInvoke(this Type type, string method, object instance)
-        {
-            var lifecycleMethod =
-                type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                    .SingleOrDefault(x => x.Name == method &&
-                                          x.ReturnType == typeof(void) &&
-                                          x.GetParameters().Length == 0);
-
-            if (lifecycleMethod == null)
-                return;
-
-            try
-            {
-                lifecycleMethod.Invoke(instance, null);
-            }
-            catch (TargetInvocationException exception)
-            {
-                throw new PreservedException(exception.InnerException);
             }
         }
     }

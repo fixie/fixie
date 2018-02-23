@@ -6,7 +6,7 @@
 
     public static class TypeExtensions
     {
-        public static void Execute(this Type testClass, Func<MethodInfo, bool> condition, object instance)
+        public static void Execute(this Type testClass, object instance, Func<MethodInfo, bool> condition)
         {
             var query = testClass
                 .GetMethods(BindingFlags.Public | BindingFlags.Instance)
@@ -15,5 +15,11 @@
             foreach (var q in query)
                 q.Execute(instance);
         }
+
+        public static void Execute(this Type testClass, object instance, string methodName)
+            => testClass.Execute(instance, x => x.Name == methodName);
+
+        public static void Execute<TAttribute>(this Type testClass, object instance) where TAttribute : Attribute
+            => testClass.Execute(instance, x => x.HasOrInherits<TAttribute>());
     }
 }

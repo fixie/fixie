@@ -26,7 +26,7 @@
                 {
                     var instance = Activator.CreateInstance(testClass);
 
-                    testClass.Execute(x => x.Name == "SetUp", instance);
+                    testClass.Execute(instance, "SetUp");
                     @case.Execute(instance);
 
                     (instance as IDisposable)?.Dispose();

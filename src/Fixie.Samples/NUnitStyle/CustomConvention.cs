@@ -10,10 +10,10 @@
         public CustomConvention()
         {
             Classes
-                .HasOrInherits<TestFixtureAttribute>();
+                .HasOrInherits<TestFixture>();
 
             Methods
-                .HasOrInherits<TestAttribute>();
+                .HasOrInherits<Test>();
 
             Parameters
                 .Add<TestCaseSourceAttributeParameterSource>();
@@ -76,18 +76,18 @@
         {
             var instance = Activator.CreateInstance(testClass);
 
-            testClass.InvokeAll<TestFixtureSetUpAttribute>(instance);
+            testClass.Execute<TestFixtureSetUp>(instance);
             runCases(@case =>
             {
-                testClass.InvokeAll<SetUpAttribute>(instance);
+                testClass.Execute<SetUp>(instance);
 
                 @case.Execute(instance);
 
                 HandleExpectedExceptions(@case);
 
-                testClass.InvokeAll<TearDownAttribute>(instance);
+                testClass.Execute<TearDown>(instance);
             });
-            testClass.InvokeAll<TestFixtureTearDownAttribute>(instance);
+            testClass.Execute<TestFixtureTearDown>(instance);
 
             (instance as IDisposable)?.Dispose();
         }
@@ -126,31 +126,6 @@
             {
                 @case.Fail(failureException);
             }
-        }
-    }
-
-    public static class BehaviorBuilderExtensions
-    {
-        public static void InvokeAll<TAttribute>(this Type type, object instance)
-            where TAttribute : Attribute
-        {
-            foreach (var method in Has<TAttribute>(type))
-            {
-                try
-                {
-                    method.Invoke(instance, null);
-                }
-                catch (TargetInvocationException exception)
-                {
-                    throw new PreservedException(exception.InnerException);
-                }
-            }
-        }
-
-        static IEnumerable<MethodInfo> Has<TAttribute>(Type type) where TAttribute : Attribute
-        {
-            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => x.HasOrInherits<TAttribute>());
         }
     }
 }

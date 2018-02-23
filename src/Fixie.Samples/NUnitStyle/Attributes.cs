@@ -3,22 +3,22 @@
     using System;
 
     [AttributeUsage(AttributeTargets.Class)]
-    public class TestFixtureAttribute : Attribute { }
+    public class TestFixture : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class TestFixtureSetUpAttribute : Attribute { }
+    public class TestFixtureSetUp : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class SetUpAttribute : Attribute { }
+    public class SetUp : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class TestAttribute : Attribute { }
+    public class Test : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class TearDownAttribute : Attribute { }
+    public class TearDown : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class TestFixtureTearDownAttribute : Attribute { }
+    public class TestFixtureTearDown : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class ExpectedExceptionAttribute : Attribute

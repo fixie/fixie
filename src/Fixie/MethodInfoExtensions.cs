@@ -5,7 +5,7 @@
     using System.Reflection;
     using System.Threading.Tasks;
 
-    static class MethodInfoExtensions
+    public static class MethodInfoExtensions
     {
         /// <summary>
         /// Execute the given method against the given instance of its class.
@@ -16,7 +16,7 @@
         /// For async Task methods, returns null after awaiting the Task.
         /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
         /// </returns>
-        internal static object Execute(this MethodInfo method, object instance, object[] parameters)
+        public static object Execute(this MethodInfo method, object instance, params object[] parameters)
         {
             bool isDeclaredAsync = method.IsAsync();
 

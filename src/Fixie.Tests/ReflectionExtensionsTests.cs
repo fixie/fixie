@@ -70,6 +70,7 @@
             var disposeable = new Disposable();
             var disposeButNotDisposable = new DisposeButNotDisposable();
             var notDisposable = new NotDisposable();
+            object nullObject = null;
 
             disposeable.Invoked.ShouldBeFalse();
             disposeButNotDisposable.Invoked.ShouldBeFalse();
@@ -78,6 +79,7 @@
             ((object)disposeable).Dispose();
             ((object)disposeButNotDisposable).Dispose();
             notDisposable.Dispose();
+            nullObject.Dispose();
 
             disposeable.Invoked.ShouldBeTrue();
             disposeButNotDisposable.Invoked.ShouldBeFalse();

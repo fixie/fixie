@@ -26,7 +26,7 @@
 
             convention
                 .Methods
-                .OrderBy((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             convention
                 .CaseExecution

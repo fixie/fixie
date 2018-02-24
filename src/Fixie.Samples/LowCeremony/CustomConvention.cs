@@ -15,7 +15,7 @@
 
             Methods
                 .Where(method => LifecycleMethods.All(x => x != method.Name))
-                .OrderBy((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             ClassExecution
                 .Lifecycle<CallSetUpTearDownMethodsByName>();

@@ -12,7 +12,7 @@
 
             Methods
                 .Where(method => method.Name != "SetUp")
-                .OrderBy((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             ClassExecution
                 .Lifecycle<SetUpLifecycle>();

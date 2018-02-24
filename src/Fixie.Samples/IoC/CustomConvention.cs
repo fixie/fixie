@@ -7,7 +7,7 @@
         public CustomConvention()
         {
             Methods
-                .OrderBy((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             Classes
                 .InTheSameNamespaceAs(typeof(CustomConvention))

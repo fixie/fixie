@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Conventions
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
@@ -68,16 +69,36 @@
         /// <summary>
         /// Defines the order of execution of a test class's contained test methods.
         /// </summary>
-        public MethodExpression OrderBy(Comparison<MethodInfo> comparison)
+        public MethodExpression OrderBy<TKey>(Func<MethodInfo, TKey> keySelector)
         {
-            config.OrderMethods = methods =>
-            {
-                var array = methods.ToArray();
+            config.OrderMethods = methods => methods.OrderBy(keySelector).ToList();
+            return this;
+        }
 
-                Array.Sort(array, comparison);
+        /// <summary>
+        /// Defines the order of execution of a test class's contained test methods.
+        /// </summary>
+        public MethodExpression OrderBy<TKey>(Func<MethodInfo, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            config.OrderMethods = methods => methods.OrderBy(keySelector, comparer).ToList();
+            return this;
+        }
 
-                return array;
-            };
+        /// <summary>
+        /// Defines the order of execution of a test class's contained test methods.
+        /// </summary>
+        public MethodExpression OrderByDescending<TKey>(Func<MethodInfo, TKey> keySelector)
+        {
+            config.OrderMethods = methods => methods.OrderByDescending(keySelector).ToList();
+            return this;
+        }
+
+        /// <summary>
+        /// Defines the order of execution of a test class's contained test methods.
+        /// </summary>
+        public MethodExpression OrderByDescending<TKey>(Func<MethodInfo, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            config.OrderMethods = methods => methods.OrderByDescending(keySelector, comparer).ToList();
             return this;
         }
 

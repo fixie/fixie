@@ -25,8 +25,8 @@
                 .Where(testClass => testClass == typeof(SampleTestClass) || testClass == typeof(EmptyTestClass));
 
             convention
-                .ClassExecution
-                .SortMethods((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
+                .Methods
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             convention
                 .CaseExecution

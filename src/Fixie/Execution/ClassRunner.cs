@@ -14,7 +14,7 @@
         readonly ParameterDiscoverer parameterDiscoverer;
 
         readonly IReadOnlyList<SkipBehavior> skipBehaviors;
-        readonly Action<MethodInfo[]> orderMethods;
+        readonly Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> orderMethods;
 
         public ClassRunner(Bus bus, Filter filter, Convention convention)
         {
@@ -132,31 +132,22 @@
             return summary;
         }
 
-        MethodInfo[] OrderedMethods(IReadOnlyList<MethodInfo> methods, ExecutionSummary summary)
+        IReadOnlyList<MethodInfo> OrderedMethods(IReadOnlyList<MethodInfo> methods, ExecutionSummary summary)
         {
-            var orderedMethods = methods.ToArray();
-
             try
             {
-                if (orderedMethods.Length > 1)
-                    orderMethods(orderedMethods);
+                return orderMethods(methods);
             }
             catch (Exception orderException)
             {
-                // When an exception is thrown attempting to sort an array,
-                // the behavior is undefined, so at this point orderedMethods
-                // is no longer reliable and needs to be fixed. The best we
-                // can do is go with the original order.
-                orderedMethods = methods.ToArray();
-
                 foreach (var method in methods)
                     Fail(method, orderException, summary);
-            }
 
-            return orderedMethods;
+                return methods;
+            }
         }
 
-        IEnumerable<Case> YieldCases(MethodInfo[] orderedMethods, ExecutionSummary summary)
+        IEnumerable<Case> YieldCases(IReadOnlyList<MethodInfo> orderedMethods, ExecutionSummary summary)
         {
             foreach (var method in orderedMethods)
             {

@@ -9,13 +9,15 @@
     {
         public CustomConvention()
         {
+            Methods
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
+
             Classes
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
 
             ClassExecution
-                .Lifecycle<CreateInstancePerClass>()
-                .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
+                .Lifecycle<CreateInstancePerClass>();
 
             Parameters
                 .Add<InputAttributeParameterSource>();

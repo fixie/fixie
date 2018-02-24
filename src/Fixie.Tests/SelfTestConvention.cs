@@ -10,12 +10,12 @@
 
             selfTestConvention
                 .Classes
-                    .Where(testClass => testClass.IsNestedPrivate)
-                    .NameEndsWith("TestClass");
+                .Where(testClass => testClass.IsNestedPrivate)
+                .NameEndsWith("TestClass");
 
             selfTestConvention
-                .ClassExecution
-                    .SortMethods((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
+                .Methods
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             return selfTestConvention;
         }

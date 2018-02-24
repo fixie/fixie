@@ -11,11 +11,11 @@
                 .NameEndsWith("Tests");
 
             Methods
-                .Where(method => method.Name != "SetUp");
+                .Where(method => method.Name != "SetUp")
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             ClassExecution
-                .Lifecycle<SetUpLifecycle>()
-                .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
+                .Lifecycle<SetUpLifecycle>();
         }
 
         class SetUpLifecycle : Lifecycle

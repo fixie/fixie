@@ -13,11 +13,11 @@
                 .HasOrInherits<TestFixture>();
 
             Methods
-                .HasOrInherits<Test>();
+                .HasOrInherits<Test>()
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             ClassExecution
-                .Lifecycle<SetUpTearDown>()
-                .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
+                .Lifecycle<SetUpTearDown>();
 
             Parameters
                 .Add<RowAttributeParameterSource>()

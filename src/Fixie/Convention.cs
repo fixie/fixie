@@ -37,7 +37,8 @@
         public ClassExpression Classes { get; }
 
         /// <summary>
-        /// Defines the set of conditions that describe which test class methods are test methods.
+        /// Defines the set of conditions that describe which test class methods are test methods,
+        /// and what order to run them in.
         /// </summary>
         public MethodExpression Methods { get; }
 

@@ -11,13 +11,15 @@
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
 
+            Methods
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
+
             CaseExecution
                 .Skip(SkipDueToClassLevelSkipAttribute, @case => "Whole class skipped")
                 .Skip(SkipDueToMethodLevelSkipAttribute);
 
             ClassExecution
-                .Lifecycle<CreateInstancePerClass>()
-                .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
+                .Lifecycle<CreateInstancePerClass>();
         }
 
         static bool SkipDueToClassLevelSkipAttribute(MethodInfo testMethod)

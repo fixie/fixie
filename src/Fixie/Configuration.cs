@@ -13,7 +13,7 @@
 
         public Configuration()
         {
-            OrderMethods = executions => { };
+            OrderMethods = methods => methods;
             Lifecycle = new DefaultLifecycle();
 
             testClassConditions = new List<Func<Type, bool>>();
@@ -22,7 +22,7 @@
             skipBehaviors = new List<SkipBehavior>();
         }
 
-        public Action<MethodInfo[]> OrderMethods { get; set; }
+        public Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> OrderMethods { get; set; }
         public Lifecycle Lifecycle { get; set; }
 
         static object UseDefaultConstructor(Type type)

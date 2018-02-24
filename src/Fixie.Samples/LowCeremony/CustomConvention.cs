@@ -14,11 +14,11 @@
                 .NameEndsWith("Tests");
 
             Methods
-                .Where(method => LifecycleMethods.All(x => x != method.Name));
+                .Where(method => LifecycleMethods.All(x => x != method.Name))
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             ClassExecution
-                .Lifecycle<CallSetUpTearDownMethodsByName>()
-                .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
+                .Lifecycle<CallSetUpTearDownMethodsByName>();
         }
 
         class CallSetUpTearDownMethodsByName : Lifecycle

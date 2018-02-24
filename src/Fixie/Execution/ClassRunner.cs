@@ -29,7 +29,7 @@
             orderMethods = config.OrderMethods;
         }
 
-        public ExecutionSummary Run(Type testClass)
+        public ExecutionSummary Run(Type testClass, bool isOnlyTestClass)
         {
             var methods = methodDiscoverer.TestMethods(testClass);
 
@@ -37,6 +37,10 @@
 
             if (!methods.Any())
                 return summary;
+
+            var runContext = isOnlyTestClass && methods.Count == 1
+                ? new RunContext(methods.Single())
+                : new RunContext();
 
             Start(testClass);
 

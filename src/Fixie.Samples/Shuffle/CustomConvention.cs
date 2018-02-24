@@ -8,13 +8,15 @@
 
         public CustomConvention()
         {
+            Methods
+                .ShuffleMethods(new Random(Seed));
+
             Classes
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
 
             ClassExecution
-                .Lifecycle<CreateInstancePerClass>()
-                .ShuffleMethods(new Random(Seed));
+                .Lifecycle<CreateInstancePerClass>();
         }
     }
 }

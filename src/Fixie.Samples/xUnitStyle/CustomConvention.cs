@@ -13,11 +13,11 @@
                 .Where(HasAnyFactMethods);
 
             Methods
-                .HasOrInherits<FactAttribute>();
+                .HasOrInherits<FactAttribute>()
+                .ShuffleMethods();
 
             ClassExecution
-                .Lifecycle<FixtureDataLifecycle>()
-                .ShuffleMethods();
+                .Lifecycle<FixtureDataLifecycle>();
         }
 
         bool HasAnyFactMethods(Type type)

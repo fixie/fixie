@@ -14,7 +14,7 @@
                     .NameEndsWith("TestClass");
 
             selfTestConvention
-                .ClassExecution
+                .Methods
                     .SortMethods((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
 
             return selfTestConvention;

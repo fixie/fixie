@@ -37,7 +37,8 @@
         public ClassExpression Classes { get; }
 
         /// <summary>
-        /// Defines the set of conditions that describe which test class methods are test methods.
+        /// Defines the set of conditions that describe which test class methods are test methods,
+        /// and what order to run them in.
         /// </summary>
         public MethodExpression Methods { get; }
 
@@ -49,11 +50,11 @@
         /// <summary>
         /// Customizes the execution of each test case.
         /// </summary>
-        public CaseBehaviorExpression CaseExecution { get; }
+        public CaseBehaviorExpression CaseExecution { get; } //just skips now
 
         /// <summary>
         /// Customizes the execution of each test class.
         /// </summary>
-        public ClassBehaviorExpression ClassExecution { get; }
+        public ClassBehaviorExpression ClassExecution { get; } //lifecycle
     }
 }

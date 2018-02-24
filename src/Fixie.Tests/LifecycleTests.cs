@@ -19,7 +19,7 @@
 
             Convention = new Convention();
             Convention.Classes.Where(testClass => testClass == typeof(SampleTestClass) || testClass == typeof(ParameterizedSampleTestClass));
-            Convention.ClassExecution.SortMethods((x, y) => String.Compare(y.Name, x.Name, StringComparison.Ordinal));
+            Convention.Methods.SortMethods((x, y) => String.Compare(y.Name, x.Name, StringComparison.Ordinal));
         }
 
         static void FailDuring(params string[] failingMemberNames)

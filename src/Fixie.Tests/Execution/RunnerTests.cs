@@ -39,9 +39,11 @@ namespace Fixie.Tests.Execution
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Has<SkipAttribute>());
 
-            convention.ClassExecution
-                .Lifecycle<CreateInstancePerClass>()
+            convention.Methods
                 .ShuffleMethods(new Random(1));
+
+            convention.ClassExecution
+                .Lifecycle<CreateInstancePerClass>();
 
             var bus = new Bus(listener);
             new Runner(bus).RunTypes(GetType().Assembly, convention,
@@ -63,9 +65,11 @@ namespace Fixie.Tests.Execution
             var convention = SelfTestConvention.Build();
             convention.CaseExecution.Skip(x => x.Has<SkipAttribute>());
 
-            convention.ClassExecution
-                .Lifecycle<CreateInstancePerClass>()
+            convention.Methods
                 .SortMethods((methodA, methodB) => throw new Exception("SortMethods lambda expression threw!"));
+
+            convention.ClassExecution
+                .Lifecycle<CreateInstancePerClass>();
 
             convention.Parameters
                 .Add<BuggyParameterSource>();

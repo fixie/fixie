@@ -13,14 +13,14 @@
                 .HasOrInherits<TestFixture>();
 
             Methods
-                .HasOrInherits<Test>();
+                .HasOrInherits<Test>()
+                .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
 
             Parameters
                 .Add<TestCaseSourceAttributeParameterSource>();
 
             ClassExecution
-                .Lifecycle<SetUpTearDown>()
-                .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
+                .Lifecycle<SetUpTearDown>();
         }
     }
 

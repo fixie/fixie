@@ -10,6 +10,6 @@
         /// <summary>
         /// Executes a test class lifecycle for the single test class.
         /// </summary>
-        void Execute(RunContext runContext, Action<CaseAction> runCases);
+        void Execute(TestClass testClass, Action<CaseAction> runCases);
     }
 }

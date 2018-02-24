@@ -39,8 +39,8 @@
                 return summary;
 
             var runContext = isOnlyTestClass && methods.Count == 1
-                ? new RunContext(testClass, methods.Single())
-                : new RunContext(testClass);
+                ? new TestClass(testClass, methods.Single())
+                : new TestClass(testClass);
 
             Start(testClass);
 

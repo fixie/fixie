@@ -4,22 +4,22 @@
     using System.Reflection;
 
     /// <summary>
-    /// Describes the context in which a test class is running.
+    /// The context in which a test class is running.
     /// </summary>
-    public class RunContext
+    public class TestClass
     {
-        internal RunContext(Type testClass) : this(testClass, null) { }
+        internal TestClass(Type type) : this(type, null) { }
 
-        internal RunContext(Type testClass, MethodInfo targetMethod)
+        internal TestClass(Type type, MethodInfo targetMethod)
         {
-            TestClass = testClass;
+            Type = type;
             TargetMethod = targetMethod;
         }
 
         /// <summary>
         /// The test class to execute.
         /// </summary>
-        public Type TestClass { get; }
+        public Type Type { get; }
 
         /// <summary>
         /// Gets the target MethodInfo identified by the

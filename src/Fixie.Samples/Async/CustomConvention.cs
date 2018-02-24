@@ -20,13 +20,13 @@
 
         class SetUpLifecycle : Lifecycle
         {
-            public void Execute(RunContext runContext, Action<CaseAction> runCases)
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {
-                    var instance = Activator.CreateInstance(runContext.TestClass);
+                    var instance = Activator.CreateInstance(testClass.Type);
 
-                    runContext.Execute(instance, "SetUp");
+                    testClass.Execute(instance, "SetUp");
                     @case.Execute(instance);
 
                     (instance as IDisposable)?.Dispose();

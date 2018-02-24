@@ -4,9 +4,9 @@
 
     class CreateInstancePerClass : Lifecycle
     {
-        public void Execute(RunContext runContext, Action<CaseAction> runCases)
+        public void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
-            var instance = Activator.CreateInstance(runContext.TestClass);
+            var instance = Activator.CreateInstance(testClass.Type);
 
             runCases(@case => @case.Execute(instance));
 

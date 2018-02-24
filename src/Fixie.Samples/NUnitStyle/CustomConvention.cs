@@ -72,22 +72,22 @@
 
     class SetUpTearDown : Lifecycle
     {
-        public void Execute(RunContext runContext, Action<CaseAction> runCases)
+        public void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
-            var instance = Activator.CreateInstance(runContext.TestClass);
+            var instance = Activator.CreateInstance(testClass.Type);
 
-            runContext.Execute<TestFixtureSetUp>(instance);
+            testClass.Execute<TestFixtureSetUp>(instance);
             runCases(@case =>
             {
-                runContext.Execute<SetUp>(instance);
+                testClass.Execute<SetUp>(instance);
 
                 @case.Execute(instance);
 
                 HandleExpectedExceptions(@case);
 
-                runContext.Execute<TearDown>(instance);
+                testClass.Execute<TearDown>(instance);
             });
-            runContext.Execute<TestFixtureTearDown>(instance);
+            testClass.Execute<TestFixtureTearDown>(instance);
 
             (instance as IDisposable)?.Dispose();
         }

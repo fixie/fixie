@@ -8,8 +8,8 @@
     public interface Lifecycle
     {
         /// <summary>
-        /// Executes a test class lifecycle for the given test class.
+        /// Executes a test class lifecycle for the single test class.
         /// </summary>
-        void Execute(Type testClass, Action<CaseAction> runCases);
+        void Execute(RunContext runContext, Action<CaseAction> runCases);
     }
 }

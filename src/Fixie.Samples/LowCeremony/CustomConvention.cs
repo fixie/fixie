@@ -23,12 +23,12 @@
 
         class CallSetUpTearDownMethodsByName : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(RunContext runContext, Action<CaseAction> runCases)
             {
-                var instance = Activator.CreateInstance(testClass);
+                var instance = Activator.CreateInstance(runContext.TestClass);
 
                 void Execute(string method)
-                    => testClass.Execute(instance, method);
+                    => runContext.Execute(instance, method);
 
                 Execute("FixtureSetUp");
                 runCases(@case =>

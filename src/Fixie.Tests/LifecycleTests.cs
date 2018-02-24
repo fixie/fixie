@@ -136,11 +136,11 @@
 
         class CreateInstancePerCase : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(RunContext runContext, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {
-                    var instance = UseDefaultConstructor(testClass);
+                    var instance = UseDefaultConstructor(runContext.TestClass);
 
                     @case.Execute(instance);
 
@@ -151,9 +151,9 @@
 
         class CreateInstancePerClass : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(RunContext runContext, Action<CaseAction> runCases)
             {
-                var instance = UseDefaultConstructor(testClass);
+                var instance = UseDefaultConstructor(runContext.TestClass);
 
                 runCases(@case =>
                 {
@@ -180,13 +180,13 @@
 
         class BuggyLifecycle : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(RunContext runContext, Action<CaseAction> runCases)
                 => throw new Exception("Unsafe lifecycle threw!");
         }
 
         class ShortCircuitClassExecution : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(RunContext runContext, Action<CaseAction> runCases)
             {
                 //Class lifecycle chooses not to invoke runCases(...).
                 //Since the test cases never run, they are all considered
@@ -196,7 +196,7 @@
 
         class ShortCircuitCaseExection : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(RunContext runContext, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {
@@ -209,9 +209,9 @@
 
         class RunCasesTwice : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(RunContext runContext, Action<CaseAction> runCases)
             {
-                var instance = Activator.CreateInstance(testClass);
+                var instance = Activator.CreateInstance(runContext.TestClass);
 
                 runCases(@case => @case.Execute(instance));
                 runCases(@case => @case.Execute(instance));
@@ -220,9 +220,9 @@
 
         class RetryFailingCases : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(RunContext runContext, Action<CaseAction> runCases)
             {
-                var instance = Activator.CreateInstance(testClass);
+                var instance = Activator.CreateInstance(runContext.TestClass);
 
                 runCases(@case =>
                 {

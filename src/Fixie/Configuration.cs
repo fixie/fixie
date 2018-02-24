@@ -39,11 +39,11 @@
 
         class DefaultLifecycle : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(RunContext runContext, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {
-                    var instance = UseDefaultConstructor(testClass);
+                    var instance = UseDefaultConstructor(runContext.TestClass);
 
                     @case.Execute(instance);
 

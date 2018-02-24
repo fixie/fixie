@@ -27,13 +27,13 @@
 
         class FixtureDataLifecycle : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(RunContext runContext, Action<CaseAction> runCases)
             {
-                var fixtures = PrepareFixtureData(testClass);
+                var fixtures = PrepareFixtureData(runContext.TestClass);
 
                 runCases(@case =>
                 {
-                    var instance = Activator.CreateInstance(testClass);
+                    var instance = Activator.CreateInstance(runContext.TestClass);
 
                     foreach (var injectionMethod in fixtures.Keys)
                         injectionMethod.Invoke(instance, new[] { fixtures[injectionMethod] });

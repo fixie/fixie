@@ -16,10 +16,10 @@
                 q.Execute(instance);
         }
 
-        public static void Execute(this Type testClass, object instance, string methodName)
-            => testClass.Execute(instance, x => x.Name == methodName);
+        public static void Execute(this RunContext runContext, object instance, string methodName)
+            => runContext.TestClass.Execute(instance, x => x.Name == methodName);
 
-        public static void Execute<TAttribute>(this Type testClass, object instance) where TAttribute : Attribute
-            => testClass.Execute(instance, x => x.HasOrInherits<TAttribute>());
+        public static void Execute<TAttribute>(this RunContext runContext, object instance) where TAttribute : Attribute
+            => runContext.TestClass.Execute(instance, x => x.HasOrInherits<TAttribute>());
     }
 }

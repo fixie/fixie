@@ -39,8 +39,8 @@
                 return summary;
 
             var runContext = isOnlyTestClass && methods.Count == 1
-                ? new RunContext(methods.Single())
-                : new RunContext();
+                ? new RunContext(testClass, methods.Single())
+                : new RunContext(testClass);
 
             Start(testClass);
 
@@ -49,7 +49,7 @@
             var orderedMethods = OrderedMethods(methods, summary);
 
             bool runCasesInvokedByLifecycle = false;
-            lifecycle.Execute(testClass, caseLifecycle =>
+            lifecycle.Execute(runContext, caseLifecycle =>
             {
                 if (runCasesInvokedByLifecycle)
                     throw new Exception($"{lifecycle.GetType()} attempted to run {testClass.FullName}'s test cases multiple times, which is not supported.");

@@ -1,16 +1,25 @@
 ﻿namespace Fixie
 {
+    using System;
     using System.Reflection;
 
     /// <summary>
-    /// Describes the context in which a test run was initiated.
+    /// Describes the context in which a test class is running.
     /// </summary>
     public class RunContext
     {
-        internal RunContext() : this(null) { }
+        internal RunContext(Type testClass) : this(testClass, null) { }
 
-        internal RunContext(MethodInfo targetMethod)
-            => TargetMethod = targetMethod;
+        internal RunContext(Type testClass, MethodInfo targetMethod)
+        {
+            TestClass = testClass;
+            TargetMethod = targetMethod;
+        }
+
+        /// <summary>
+        /// The test class to execute.
+        /// </summary>
+        public Type TestClass { get; }
 
         /// <summary>
         /// Gets the target MethodInfo identified by the

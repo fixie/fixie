@@ -203,17 +203,12 @@
 
         bool SkipMethod(MethodInfo testMethod, out string reason)
         {
-            var isTargetMethod = RunContext.TargetMethod == testMethod;
-
-            if (!isTargetMethod)
+            foreach (var skipBehavior in skipBehaviors)
             {
-                foreach (var skipBehavior in skipBehaviors)
+                if (SkipMethod(skipBehavior, testMethod))
                 {
-                    if (SkipMethod(skipBehavior, testMethod))
-                    {
-                        reason = GetSkipReason(skipBehavior, testMethod);
-                        return true;
-                    }
+                    reason = GetSkipReason(skipBehavior, testMethod);
+                    return true;
                 }
             }
 

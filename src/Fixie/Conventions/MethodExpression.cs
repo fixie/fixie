@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Conventions
 {
     using System;
+    using System.Linq;
     using System.Reflection;
 
     public class MethodExpression
@@ -45,7 +46,14 @@
         /// </summary>
         public MethodExpression Shuffle(Random random)
         {
-            config.OrderMethods = methods => Shuffle(methods, random);
+            config.OrderMethods = methods =>
+            {
+                var array = methods.ToArray();
+
+                Shuffle(array, random);
+
+                return array;
+            };
             return this;
         }
 
@@ -62,7 +70,14 @@
         /// </summary>
         public MethodExpression OrderBy(Comparison<MethodInfo> comparison)
         {
-            config.OrderMethods = methods => Array.Sort(methods, comparison);
+            config.OrderMethods = methods =>
+            {
+                var array = methods.ToArray();
+
+                Array.Sort(array, comparison);
+
+                return array;
+            };
             return this;
         }
 

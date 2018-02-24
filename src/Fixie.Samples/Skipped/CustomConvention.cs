@@ -21,13 +21,15 @@
         {
             public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
-                var skipClass = testClass.Type.Has<SkipAttribute>();
+                var methodWasExplicitlyRequested = testClass.TargetMethod != null;
+
+                var skipClass = testClass.Type.Has<SkipAttribute>() && !methodWasExplicitlyRequested;
 
                 var instance = skipClass ? null : testClass.Construct();
 
                 runCases(@case =>
                 {
-                    var skipMethod = @case.Method.Has<SkipAttribute>();
+                    var skipMethod = @case.Method.Has<SkipAttribute>() && !methodWasExplicitlyRequested;
 
                     if (skipClass)
                         @case.Skip("Whole class skipped");

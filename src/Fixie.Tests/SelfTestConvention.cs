@@ -15,7 +15,7 @@
 
             selfTestConvention
                 .Methods
-                    .SortMethods((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
+                    .OrderBy((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
 
             return selfTestConvention;
         }

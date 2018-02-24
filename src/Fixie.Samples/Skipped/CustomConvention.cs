@@ -12,7 +12,7 @@
                 .NameEndsWith("Tests");
 
             Methods
-                .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
+                .OrderBy((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
 
             CaseExecution
                 .Skip(SkipDueToClassLevelSkipAttribute, @case => "Whole class skipped")

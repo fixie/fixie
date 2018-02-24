@@ -60,7 +60,7 @@
         /// <summary>
         /// Defines the order of execution of a test class's contained test methods.
         /// </summary>
-        public MethodExpression SortMethods(Comparison<MethodInfo> comparison)
+        public MethodExpression OrderBy(Comparison<MethodInfo> comparison)
         {
             config.OrderMethods = methods => Array.Sort(methods, comparison);
             return this;

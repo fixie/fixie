@@ -14,7 +14,7 @@
 
             Methods
                 .HasOrInherits<Test>()
-                .SortMethods((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
+                .OrderBy((methodA, methodB) => String.Compare(methodA.Name, methodB.Name, StringComparison.Ordinal));
 
             ClassExecution
                 .Lifecycle<SetUpTearDown>();

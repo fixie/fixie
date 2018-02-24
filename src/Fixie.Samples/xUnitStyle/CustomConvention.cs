@@ -14,7 +14,7 @@
 
             Methods
                 .HasOrInherits<FactAttribute>()
-                .ShuffleMethods();
+                .Shuffle();
 
             ClassExecution
                 .Lifecycle<FixtureDataLifecycle>();

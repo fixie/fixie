@@ -43,7 +43,7 @@
         /// Randomizes the order of execution of a test class's contained test methods, using the
         /// given pseudo-random number generator.
         /// </summary>
-        public MethodExpression ShuffleMethods(Random random)
+        public MethodExpression Shuffle(Random random)
         {
             config.OrderMethods = methods => Shuffle(methods, random);
             return this;
@@ -52,9 +52,9 @@
         /// <summary>
         /// Randomizes the order of execution of a test class's contained test methods.
         /// </summary>
-        public MethodExpression ShuffleMethods()
+        public MethodExpression Shuffle()
         {
-            return ShuffleMethods(new Random());
+            return Shuffle(new Random());
         }
 
         /// <summary>

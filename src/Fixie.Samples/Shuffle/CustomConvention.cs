@@ -9,7 +9,7 @@
         public CustomConvention()
         {
             Methods
-                .ShuffleMethods(new Random(Seed));
+                .Shuffle(new Random(Seed));
 
             Classes
                 .InTheSameNamespaceAs(typeof(CustomConvention))

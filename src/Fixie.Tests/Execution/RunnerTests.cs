@@ -40,7 +40,7 @@ namespace Fixie.Tests.Execution
             convention.CaseExecution.Skip(x => x.Has<SkipAttribute>());
 
             convention.Methods
-                .ShuffleMethods(new Random(1));
+                .Shuffle(new Random(1));
 
             convention.ClassExecution
                 .Lifecycle<CreateInstancePerClass>();

@@ -132,7 +132,7 @@
             return summary;
         }
 
-        MethodInfo[] OrderedMethods(IReadOnlyList<MethodInfo> methods, ExecutionSummary summary)
+        IReadOnlyList<MethodInfo> OrderedMethods(IReadOnlyList<MethodInfo> methods, ExecutionSummary summary)
         {
             var orderedMethods = methods.ToArray();
 
@@ -156,7 +156,7 @@
             return orderedMethods;
         }
 
-        IEnumerable<Case> YieldCases(MethodInfo[] orderedMethods, ExecutionSummary summary)
+        IEnumerable<Case> YieldCases(IReadOnlyList<MethodInfo> orderedMethods, ExecutionSummary summary)
         {
             foreach (var method in orderedMethods)
             {

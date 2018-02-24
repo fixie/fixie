@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Samples.Skipped
 {
     using System;
-    using System.Reflection;
 
     public class CustomConvention : Convention
     {
@@ -14,18 +13,30 @@
             Methods
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
-            CaseExecution
-                .Skip(SkipDueToClassLevelSkipAttribute, @case => "Whole class skipped")
-                .Skip(SkipDueToMethodLevelSkipAttribute);
-
             ClassExecution
-                .Lifecycle<CreateInstancePerClass>();
+                .Lifecycle<SkipLifecycle>();
         }
 
-        static bool SkipDueToClassLevelSkipAttribute(MethodInfo testMethod)
-            => testMethod.DeclaringType.Has<SkipAttribute>();
+        class SkipLifecycle : Lifecycle
+        {
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            {
+                var skipClass = testClass.Type.Has<SkipAttribute>();
 
-        static bool SkipDueToMethodLevelSkipAttribute(MethodInfo testMethod)
-            => testMethod.Has<SkipAttribute>();
+                var instance = skipClass ? null : testClass.Construct();
+
+                runCases(@case =>
+                {
+                    var skipMethod = @case.Method.Has<SkipAttribute>();
+
+                    if (skipClass)
+                        @case.Skip("Whole class skipped");
+                    else if (!skipMethod)
+                        @case.Execute(instance);
+                });
+
+                instance.Dispose();
+            }
+        }
     }
 }

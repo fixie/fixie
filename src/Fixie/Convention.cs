@@ -50,11 +50,11 @@
         /// <summary>
         /// Customizes the execution of each test case.
         /// </summary>
-        public CaseBehaviorExpression CaseExecution { get; } //just skips now
+        public CaseBehaviorExpression CaseExecution { get; }
 
         /// <summary>
         /// Customizes the execution of each test class.
         /// </summary>
-        public ClassBehaviorExpression ClassExecution { get; } //lifecycle
+        public ClassBehaviorExpression ClassExecution { get; }
     }
 }

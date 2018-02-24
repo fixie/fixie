@@ -65,6 +65,25 @@
             opCode.IsInNamespace("System.Reflection.Typo").ShouldBeFalse();
         }
 
+        public void CanDisposeDisposables()
+        {
+            var disposeable = new Disposable();
+            var disposeButNotDisposable = new DisposeButNotDisposable();
+            var notDisposable = new NotDisposable();
+
+            disposeable.Invoked.ShouldBeFalse();
+            disposeButNotDisposable.Invoked.ShouldBeFalse();
+            notDisposable.Invoked.ShouldBeFalse();
+
+            ((object)disposeable).Dispose();
+            ((object)disposeButNotDisposable).Dispose();
+            notDisposable.Dispose();
+
+            disposeable.Invoked.ShouldBeTrue();
+            disposeButNotDisposable.Invoked.ShouldBeFalse();
+            notDisposable.Invoked.ShouldBeFalse();
+        }
+
         void ReturnsVoid() { }
         int ReturnsInt() { return 0; }
         async Task Async() { await Task.Run(() => { }); }
@@ -96,5 +115,22 @@
 
         static MethodInfo Method<T>(string name)
             => typeof(T).GetInstanceMethod(name);
+
+        class Disposable : IDisposable
+        {
+            public bool Invoked { get; private set; }
+            public void Dispose() => Invoked = true;
+        }
+
+        class DisposeButNotDisposable
+        {
+            public bool Invoked { get; private set; }
+            public void Dispose() => Invoked = true;
+        }
+
+        class NotDisposable
+        {
+            public bool Invoked { get; private set; }
+        }
     }
 }

@@ -40,11 +40,11 @@
 
                     @case.Execute(instance);
 
-                    (instance as IDisposable)?.Dispose();
+                    instance.Dispose();
                 });
 
                 foreach (var fixtureInstance in fixtures.Values)
-                    (fixtureInstance as IDisposable)?.Dispose();
+                    fixtureInstance.Dispose();
             }
 
             static Dictionary<MethodInfo, object> PrepareFixtureData(Type testClass)

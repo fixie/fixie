@@ -39,7 +39,7 @@
                 });
                 Execute("FixtureTearDown");
 
-                (instance as IDisposable)?.Dispose();
+                instance.Dispose();
             }
         }
     }

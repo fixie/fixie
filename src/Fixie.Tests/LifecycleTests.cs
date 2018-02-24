@@ -144,7 +144,7 @@
 
                     @case.Execute(instance);
 
-                    (instance as IDisposable)?.Dispose();
+                    instance.Dispose();
                 });
             }
         }
@@ -162,7 +162,7 @@
                     CaseTearDown(@case);
                 });
 
-                (instance as IDisposable)?.Dispose();
+                instance.Dispose();
             }
 
             static void CaseSetUp(Case @case)

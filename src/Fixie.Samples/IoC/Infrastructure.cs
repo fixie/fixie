@@ -65,7 +65,7 @@
         public void Dispose()
         {
             foreach (var instance in instances)
-                (instance as IDisposable)?.Dispose();
+                instance.Dispose();
         }
     }
 }

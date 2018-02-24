@@ -54,5 +54,10 @@
 
             return actual == ns || actual.StartsWith(ns + ".");
         }
+
+        public static void Dispose(this object o)
+        {
+            (o as IDisposable)?.Dispose();
+        }
     }
 }

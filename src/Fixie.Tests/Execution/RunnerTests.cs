@@ -110,7 +110,7 @@ namespace Fixie.Tests.Execution
 
                 runCases(@case => @case.Execute(instance));
 
-                (instance as IDisposable)?.Dispose();
+                instance.Dispose();
             }
         }
 

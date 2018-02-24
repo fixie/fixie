@@ -29,7 +29,7 @@
                     testClass.Execute(instance, "SetUp");
                     @case.Execute(instance);
 
-                    (instance as IDisposable)?.Dispose();
+                    instance.Dispose();
                 });
             }
         }

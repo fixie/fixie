@@ -89,7 +89,7 @@
             });
             testClass.Execute<TestFixtureTearDown>(instance);
 
-            (instance as IDisposable)?.Dispose();
+            instance.Dispose();
         }
 
         static void HandleExpectedExceptions(Case @case)

@@ -144,7 +144,7 @@ namespace Fixie.Tests.Cases
                     if (@case.Exception == null && returnValue is bool success && !success)
                         @case.Fail("Boolean test case returned false!");
 
-                    (instance as IDisposable)?.Dispose();
+                    instance.Dispose();
                 });
             }
         }

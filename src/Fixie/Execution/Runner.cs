@@ -24,30 +24,22 @@
 
         public ExecutionSummary RunAssembly(Assembly assembly)
         {
-            RunContext.Initialize();
-
             return RunTypesInternal(assembly, assembly.GetTypes());
         }
 
         public ExecutionSummary RunNamespace(Assembly assembly, string ns)
         {
-            RunContext.Initialize();
-
             return RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
         public ExecutionSummary RunType(Assembly assembly, Type type)
         {
-            RunContext.Initialize();
-
             var types = GetTypeAndNestedTypes(type).ToArray();
             return RunTypesInternal(assembly, types);
         }
 
         public ExecutionSummary RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
-            RunContext.Initialize();
-
             return Run(assembly, new[] { convention }, types);
         }
 
@@ -56,11 +48,6 @@
             var types = GetTypes(assembly, methodGroups);
 
             var methods = GetMethods(types, methodGroups);
-
-            if (methods.Length == 1)
-                RunContext.Initialize(methods.Single());
-            else
-                RunContext.Initialize();
 
             var conventions = GetConventions(assembly);
 
@@ -72,8 +59,6 @@
 
         public ExecutionSummary RunMethod(Assembly assembly, MethodInfo method)
         {
-            RunContext.Initialize(method);
-
             var conventions = GetConventions(assembly);
 
             foreach (var convention in conventions)
@@ -141,9 +126,13 @@
             var classDiscoverer = new ClassDiscoverer(convention);
             var classRunner = new ClassRunner(bus, filter, convention);
 
-            foreach (var testClass in classDiscoverer.TestClasses(candidateTypes))
+            var testClasses = classDiscoverer.TestClasses(candidateTypes);
+
+            bool isOnlyTestClass = testClasses.Count == 1;
+
+            foreach (var testClass in testClasses)
             {
-                var classSummary = classRunner.Run(testClass);
+                var classSummary = classRunner.Run(testClass, isOnlyTestClass);
                 assemblySummary.Add(classSummary);
             }
         }

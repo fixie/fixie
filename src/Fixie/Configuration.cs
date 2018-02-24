@@ -25,29 +25,17 @@
         public Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> OrderMethods { get; set; }
         public Lifecycle Lifecycle { get; set; }
 
-        static object UseDefaultConstructor(Type type)
-        {
-            try
-            {
-                return Activator.CreateInstance(type);
-            }
-            catch (TargetInvocationException exception)
-            {
-                throw new PreservedException(exception.InnerException);
-            }
-        }
-
         class DefaultLifecycle : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {
-                    var instance = UseDefaultConstructor(testClass);
+                    var instance = testClass.Construct();
 
                     @case.Execute(instance);
 
-                    (instance as IDisposable)?.Dispose();
+                    instance.Dispose();
                 });
             }
         }

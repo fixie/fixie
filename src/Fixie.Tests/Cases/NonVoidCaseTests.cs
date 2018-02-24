@@ -131,11 +131,11 @@ namespace Fixie.Tests.Cases
 
         class TreatBoolReturnValuesAsAssertions : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {
-                    var instance = Activator.CreateInstance(testClass);
+                    var instance = testClass.Construct();
 
                     var returnValue = @case.Execute(instance);
 
@@ -144,7 +144,7 @@ namespace Fixie.Tests.Cases
                     if (@case.Exception == null && returnValue is bool success && !success)
                         @case.Fail("Boolean test case returned false!");
 
-                    (instance as IDisposable)?.Dispose();
+                    instance.Dispose();
                 });
             }
         }

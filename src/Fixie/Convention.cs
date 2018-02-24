@@ -26,12 +26,6 @@
         internal Configuration Config { get; }
 
         /// <summary>
-        /// Gets the target MethodInfo identified by the test runner as the sole item
-        /// to be executed. Null under normal test execution.
-        /// </summary>
-        public MethodInfo TargetMethod => RunContext.TargetMethod;
-
-        /// <summary>
         /// Defines the set of conditions that describe which classes are test classes.
         /// </summary>
         public ClassExpression Classes { get; }

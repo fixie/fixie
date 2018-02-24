@@ -27,24 +27,24 @@
 
         class FixtureDataLifecycle : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
-                var fixtures = PrepareFixtureData(testClass);
+                var fixtures = PrepareFixtureData(testClass.Type);
 
                 runCases(@case =>
                 {
-                    var instance = Activator.CreateInstance(testClass);
+                    var instance = testClass.Construct();
 
                     foreach (var injectionMethod in fixtures.Keys)
                         injectionMethod.Invoke(instance, new[] { fixtures[injectionMethod] });
 
                     @case.Execute(instance);
 
-                    (instance as IDisposable)?.Dispose();
+                    instance.Dispose();
                 });
 
                 foreach (var fixtureInstance in fixtures.Values)
-                    (fixtureInstance as IDisposable)?.Dispose();
+                    fixtureInstance.Dispose();
             }
 
             static Dictionary<MethodInfo, object> PrepareFixtureData(Type testClass)

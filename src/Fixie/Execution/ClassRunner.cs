@@ -29,7 +29,7 @@
             orderMethods = config.OrderMethods;
         }
 
-        public ExecutionSummary Run(Type testClass)
+        public ExecutionSummary Run(Type testClass, bool isOnlyTestClass)
         {
             var methods = methodDiscoverer.TestMethods(testClass);
 
@@ -38,6 +38,10 @@
             if (!methods.Any())
                 return summary;
 
+            var runContext = isOnlyTestClass && methods.Count == 1
+                ? new TestClass(testClass, methods.Single())
+                : new TestClass(testClass);
+
             Start(testClass);
 
             var classStopwatch = Stopwatch.StartNew();
@@ -45,7 +49,7 @@
             var orderedMethods = OrderedMethods(methods, summary);
 
             bool runCasesInvokedByLifecycle = false;
-            lifecycle.Execute(testClass, caseLifecycle =>
+            lifecycle.Execute(runContext, caseLifecycle =>
             {
                 if (runCasesInvokedByLifecycle)
                     throw new Exception($"{lifecycle.GetType()} attempted to run {testClass.FullName}'s test cases multiple times, which is not supported.");
@@ -203,17 +207,12 @@
 
         bool SkipMethod(MethodInfo testMethod, out string reason)
         {
-            var isTargetMethod = RunContext.TargetMethod == testMethod;
-
-            if (!isTargetMethod)
+            foreach (var skipBehavior in skipBehaviors)
             {
-                foreach (var skipBehavior in skipBehaviors)
+                if (SkipMethod(skipBehavior, testMethod))
                 {
-                    if (SkipMethod(skipBehavior, testMethod))
-                    {
-                        reason = GetSkipReason(skipBehavior, testMethod);
-                        return true;
-                    }
+                    reason = GetSkipReason(skipBehavior, testMethod);
+                    return true;
                 }
             }
 

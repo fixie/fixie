@@ -19,11 +19,11 @@
 
         public class IocLifecycle : Lifecycle
         {
-            public void Execute(Type testClass, Action<CaseAction> runCases)
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 using (var container = InitContainerForIntegrationTests())
                 {
-                    var instance = container.Get(testClass);
+                    var instance = container.Get(testClass.Type);
 
                     runCases(@case => @case.Execute(instance));
                 }

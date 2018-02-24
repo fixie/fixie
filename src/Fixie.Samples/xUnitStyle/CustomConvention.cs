@@ -33,7 +33,7 @@
 
                 runCases(@case =>
                 {
-                    var instance = Activator.CreateInstance(testClass.Type);
+                    var instance = testClass.Construct();
 
                     foreach (var injectionMethod in fixtures.Keys)
                         injectionMethod.Invoke(instance, new[] { fixtures[injectionMethod] });

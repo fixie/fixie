@@ -27,5 +27,20 @@
         /// Null under normal test execution.
         /// </summary>
         public MethodInfo TargetMethod { get; }
+
+        /// <summary>
+        /// Constructs an instance of the test class type, using its default constructor.
+        /// </summary>
+        public object Construct()
+        {
+            try
+            {
+                return Activator.CreateInstance(Type);
+            }
+            catch (TargetInvocationException exception)
+            {
+                throw new PreservedException(exception.InnerException);
+            }
+        }
     }
 }

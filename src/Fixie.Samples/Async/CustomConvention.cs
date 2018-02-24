@@ -24,7 +24,7 @@
             {
                 runCases(@case =>
                 {
-                    var instance = Activator.CreateInstance(testClass.Type);
+                    var instance = testClass.Construct();
 
                     testClass.Execute(instance, "SetUp");
                     @case.Execute(instance);

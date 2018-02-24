@@ -140,7 +140,7 @@
             {
                 runCases(@case =>
                 {
-                    var instance = UseDefaultConstructor(testClass.Type);
+                    var instance = testClass.Construct();
 
                     @case.Execute(instance);
 
@@ -153,7 +153,7 @@
         {
             public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
-                var instance = UseDefaultConstructor(testClass.Type);
+                var instance = testClass.Construct();
 
                 runCases(@case =>
                 {
@@ -211,7 +211,7 @@
         {
             public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
-                var instance = Activator.CreateInstance(testClass.Type);
+                var instance = testClass.Construct();
 
                 runCases(@case => @case.Execute(instance));
                 runCases(@case => @case.Execute(instance));
@@ -222,7 +222,7 @@
         {
             public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
-                var instance = Activator.CreateInstance(testClass.Type);
+                var instance = testClass.Construct();
 
                 runCases(@case =>
                 {
@@ -231,18 +231,6 @@
                     if (@case.Exception != null)
                         @case.Execute(instance);
                 });
-            }
-        }
-
-        static object UseDefaultConstructor(Type type)
-        {
-            try
-            {
-                return Activator.CreateInstance(type);
-            }
-            catch (TargetInvocationException exception)
-            {
-                throw new PreservedException(exception.InnerException);
             }
         }
 

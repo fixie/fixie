@@ -25,7 +25,7 @@
         {
             public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
-                var instance = Activator.CreateInstance(testClass.Type);
+                var instance = testClass.Construct();
 
                 void Execute(string method)
                     => testClass.Execute(instance, method);

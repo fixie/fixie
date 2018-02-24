@@ -6,7 +6,7 @@
     {
         public void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
-            var instance = Activator.CreateInstance(testClass.Type);
+            var instance = testClass.Construct();
 
             runCases(@case => @case.Execute(instance));
 

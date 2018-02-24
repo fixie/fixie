@@ -135,7 +135,7 @@ namespace Fixie.Tests.Cases
             {
                 runCases(@case =>
                 {
-                    var instance = Activator.CreateInstance(testClass.Type);
+                    var instance = testClass.Construct();
 
                     var returnValue = @case.Execute(instance);
 

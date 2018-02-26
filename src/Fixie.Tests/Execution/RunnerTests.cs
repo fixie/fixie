@@ -5,9 +5,7 @@ namespace Fixie.Tests.Execution
     using System.Linq;
     using System.Reflection;
     using Fixie.Execution;
-    using static System.Environment;
     using static Utility;
-    using Lifecycle = Fixie.Lifecycle;
 
     public class RunnerTests
     {

@@ -14,7 +14,7 @@
                 .Where(x => x.Name.EndsWith("Tests"));
 
             Methods
-                .Where(x => LifecycleMethods.All(lifecycleMethod => lifecycleMethod != x.Name))
+                .Where(x => !LifecycleMethods.Contains(x.Name))
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             Lifecycle<CallSetUpTearDownMethodsByName>();

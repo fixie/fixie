@@ -10,8 +10,8 @@
 
             selfTestConvention
                 .Classes
-                .Where(testClass => testClass.IsNestedPrivate)
-                .NameEndsWith("TestClass");
+                .Where(x => x.IsNestedPrivate)
+                .Where(x => x.Name.EndsWith("TestClass"));
 
             selfTestConvention
                 .Methods

@@ -11,7 +11,7 @@
             //automatically excluded, though, ShouldNotBeCalled() will not be called.
 
             Classes
-                .InTheSameNamespaceAs(typeof(CustomConvention));
+                .Where(x => x.IsInNamespace(GetType().Namespace));
         }
 
         public void ShouldNotBeCalled()

@@ -13,8 +13,8 @@
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             Classes
-                .InTheSameNamespaceAs(typeof(CustomConvention))
-                .NameEndsWith("Tests");
+                .Where(x => x.IsInNamespace(GetType().Namespace))
+                .Where(x => x.Name.EndsWith("Tests"));
 
             Parameters
                 .Add<InputAttributeParameterSource>();

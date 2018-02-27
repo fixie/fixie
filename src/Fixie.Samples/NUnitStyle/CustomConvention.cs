@@ -10,7 +10,7 @@
         public CustomConvention()
         {
             Classes
-                .HasOrInherits<TestFixture>();
+                .Where(x => x.HasOrInherits<TestFixture>());
 
             Methods
                 .HasOrInherits<Test>()

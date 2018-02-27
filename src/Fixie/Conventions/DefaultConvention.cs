@@ -10,6 +10,6 @@
     public class DefaultConvention : Convention
     {
         public DefaultConvention()
-            => Classes.NameEndsWith("Tests");
+            => Classes.Where(x => x.Name.EndsWith("Tests"));
     }
 }

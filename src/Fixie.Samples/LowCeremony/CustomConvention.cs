@@ -10,8 +10,8 @@
         public CustomConvention()
         {
             Classes
-                .InTheSameNamespaceAs(typeof(CustomConvention))
-                .NameEndsWith("Tests");
+                .Where(x => x.IsInNamespace(GetType().Namespace))
+                .Where(x => x.Name.EndsWith("Tests"));
 
             Methods
                 .Where(method => LifecycleMethods.All(x => x != method.Name))

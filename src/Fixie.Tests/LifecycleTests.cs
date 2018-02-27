@@ -18,8 +18,14 @@
             FailingMembers = null;
 
             Convention = new Convention();
-            Convention.Classes.Where(testClass => testClass == typeof(SampleTestClass) || testClass == typeof(ParameterizedSampleTestClass));
-            Convention.Methods.OrderByDescending(x => x.Name, StringComparer.Ordinal);
+
+            Convention
+                .Classes
+                .Where(testClass => testClass.Name.EndsWith("TestClass"));
+
+            Convention
+                .Methods
+                .OrderByDescending(x => x.Name, StringComparer.Ordinal);
         }
 
         static void FailDuring(params string[] failingMemberNames)
@@ -99,6 +105,43 @@
             }
         }
 
+        class AllSkippedTestClass : IDisposable
+        {
+            bool disposed;
+
+            public AllSkippedTestClass()
+            {
+                WhereAmI();
+            }
+
+            public void SkipA()
+            {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
+
+            public void SkipB()
+            {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
+
+            public void SkipC()
+            {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
+
+            public void Dispose()
+            {
+                if (disposed)
+                    throw new ShouldBeUnreachableException();
+                disposed = true;
+
+                WhereAmI();
+            }
+        }
+
         class ParameterizedSampleTestClass : IDisposable
         {
             bool disposed;
@@ -146,7 +189,7 @@
             {
                 runCases(@case =>
                 {
-                    if (@case.Method.Name == "Skip")
+                    if (@case.Method.Name.Contains("Skip"))
                         return;
 
                     var instance = testClass.Construct();
@@ -166,7 +209,7 @@
 
                 runCases(@case =>
                 {
-                    if (@case.Method.Name == "Skip")
+                    if (@case.Method.Name.Contains("Skip"))
                     {
                         @case.Skip("skipped by naming convention");
                         return;
@@ -241,7 +284,7 @@
 
                 runCases(@case =>
                 {
-                    if (@case.Method.Name == "Skip")
+                    if (@case.Method.Name.Contains("Skip"))
                         return;
 
                     @case.Execute(instance);
@@ -493,14 +536,12 @@
         {
             Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
 
-            Convention.CaseExecution.Skip(x => true);
-
-            var output = Run<SampleTestClass>();
+            var output = Run<AllSkippedTestClass>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Skip skipped",
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Fail skipped");
+                "AllSkippedTestClass.SkipC skipped",
+                "AllSkippedTestClass.SkipB skipped",
+                "AllSkippedTestClass.SkipA skipped");
 
             output.ShouldHaveLifecycle();
         }
@@ -509,14 +550,12 @@
         {
             Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
 
-            Convention.CaseExecution.Skip(x => true);
-
-            var output = Run<SampleTestClass>();
+            var output = Run<AllSkippedTestClass>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Skip skipped",
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Fail skipped");
+                "AllSkippedTestClass.SkipC skipped: skipped by naming convention",
+                "AllSkippedTestClass.SkipB skipped: skipped by naming convention",
+                "AllSkippedTestClass.SkipA skipped: skipped by naming convention");
 
             output.ShouldHaveLifecycle(".ctor", "Dispose");
         }

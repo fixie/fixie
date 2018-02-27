@@ -66,15 +66,15 @@
             skipWithReason.Name.ShouldEqual(TestClass + ".SkipWithReason");
             skipWithReason.Class.FullName.ShouldEqual(TestClass);
             skipWithReason.Method.Name.ShouldEqual("SkipWithReason");
-            skipWithReason.Output.ShouldBeNull();
-            skipWithReason.Duration.ShouldEqual(TimeSpan.Zero);
+            skipWithReason.Output.ShouldBeEmpty();
+            skipWithReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             skipWithReason.Reason.ShouldEqual("Skipped with reason.");
 
             skipWithoutReason.Name.ShouldEqual(TestClass + ".SkipWithoutReason");
             skipWithoutReason.Class.FullName.ShouldEqual(TestClass);
             skipWithoutReason.Method.Name.ShouldEqual("SkipWithoutReason");
-            skipWithoutReason.Output.ShouldBeNull();
-            skipWithoutReason.Duration.ShouldEqual(TimeSpan.Zero);
+            skipWithoutReason.Output.ShouldBeEmpty();
+            skipWithoutReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             skipWithoutReason.Reason.ShouldBeNull();
 
             var classCompleted = listener.ClassCompletions.Single();

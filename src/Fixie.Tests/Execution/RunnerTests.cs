@@ -15,7 +15,9 @@ namespace Fixie.Tests.Execution
         {
             var listener = new StubListener();
             var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Has<SkipAttribute>());
+
+            convention.ClassExecution
+                .Lifecycle<CreateInstancePerClass>();
 
             var bus = new Bus(listener);
             new Runner(bus).RunTypes(GetType().Assembly, convention,
@@ -35,7 +37,6 @@ namespace Fixie.Tests.Execution
         {
             var listener = new StubListener();
             var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Has<SkipAttribute>());
 
             convention.Methods
                 .Shuffle(new Random(1));
@@ -61,7 +62,6 @@ namespace Fixie.Tests.Execution
         {
             var listener = new StubListener();
             var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Has<SkipAttribute>());
 
             convention.Methods
                 .OrderBy((Func<MethodInfo, string>)(x => throw new Exception("OrderBy lambda expression threw!")));
@@ -106,7 +106,13 @@ namespace Fixie.Tests.Execution
             {
                 var instance = testClass.Construct();
 
-                runCases(@case => @case.Execute(instance));
+                runCases(@case =>
+                {
+                    if (@case.Method.Name.Contains("Skip"))
+                        return;
+
+                    @case.Execute(instance);
+                });
 
                 instance.Dispose();
             }
@@ -132,9 +138,7 @@ namespace Fixie.Tests.Execution
 
         class SkipTestClass
         {
-            [Skip]
             public void SkipA() { throw new ShouldBeUnreachableException(); }
-            [Skip]
             public void SkipB() { throw new ShouldBeUnreachableException(); }
         }
 

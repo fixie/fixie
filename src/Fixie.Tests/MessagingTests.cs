@@ -29,14 +29,33 @@
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             convention
-                .CaseExecution
-                .Skip(
-                    x => x.Has<SkipAttribute>(),
-                    x => x.GetCustomAttribute<SkipAttribute>().Reason);
+                .ClassExecution
+                .Lifecycle<CreateInstancePerCase>();
 
             customize?.Invoke(convention);
 
             RunTypes(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));
+        }
+
+        class CreateInstancePerCase : Lifecycle
+        {
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            {
+                runCases(@case =>
+                {
+                    if (@case.Method.Has<SkipAttribute>())
+                    {
+                        @case.Skip(@case.Method.GetCustomAttribute<SkipAttribute>().Reason);
+                        return;
+                    }
+
+                    var instance = testClass.Construct();
+
+                    @case.Execute(instance);
+
+                    instance.Dispose();
+                });
+            }
         }
 
         protected class Base

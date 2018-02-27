@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests.Execution
 {
+    using System;
     using System.Collections.Generic;
     using Assertions;
     using Fixie.Execution;
@@ -10,7 +11,7 @@
         public void ShouldAccumulateCaseStatusCounts()
         {
             var convention = SelfTestConvention.Build();
-            convention.CaseExecution.Skip(x => x.Name.StartsWith("Skip"));
+            convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
 
             var listener = new StubExecutionSummaryListener();
 
@@ -65,6 +66,20 @@
             public void SkipA() { }
             public void SkipB() { }
             public void SkipC() { }
+        }
+
+        class CreateInstancePerCase : Lifecycle
+        {
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            {
+                runCases(@case =>
+                {
+                    if (@case.Method.Name.Contains("Skip"))
+                        return;
+
+                    @case.Execute(testClass.Construct());
+                });
+            }
         }
     }
 }

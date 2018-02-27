@@ -13,7 +13,6 @@
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
 
-        readonly IReadOnlyList<SkipBehavior> skipBehaviors;
         readonly Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> orderMethods;
 
         public ClassRunner(Bus bus, Filter filter, Convention convention)
@@ -25,7 +24,6 @@
             methodDiscoverer = new MethodDiscoverer(filter, convention);
             parameterDiscoverer = new ParameterDiscoverer(convention);
 
-            skipBehaviors = config.SkipBehaviors;
             orderMethods = config.OrderMethods;
         }
 
@@ -58,22 +56,6 @@
 
                 foreach (var @case in YieldCases(orderedMethods, summary))
                 {
-                    try
-                    {
-                        if (SkipMethod(@case.Method, out var reason))
-                        {
-                            @case.Skip(reason);
-                            Skip(@case, summary);
-                            continue;
-                        }
-                    }
-                    catch (Exception exception)
-                    {
-                        @case.Fail(exception);
-                        Fail(@case, summary);
-                        continue;
-                    }
-
                     Exception caseLifecycleException = null;
 
                     string consoleOutput;
@@ -95,6 +77,7 @@
                         @case.Duration += caseStopwatch.Elapsed;
 
                         consoleOutput = console.Output;
+
                         @case.Output += consoleOutput;
                     }
 
@@ -123,7 +106,7 @@
                 //No cases ran, and we didn't already emit a general
                 //failure for each method, so emit a general skip for
                 //each method.
-                foreach (var method in methods)
+                foreach (var method in orderedMethods)
                 {
                     var @case = new Case(method);
                     Skip(@case, summary);
@@ -204,27 +187,6 @@
                 }
             }
         }
-
-        bool SkipMethod(MethodInfo testMethod, out string reason)
-        {
-            foreach (var skipBehavior in skipBehaviors)
-            {
-                if (SkipMethod(skipBehavior, testMethod))
-                {
-                    reason = GetSkipReason(skipBehavior, testMethod);
-                    return true;
-                }
-            }
-
-            reason = null;
-            return false;
-        }
-
-        static bool SkipMethod(SkipBehavior skipBehavior, MethodInfo testMethod)
-            => skipBehavior.SkipMethod(testMethod);
-
-        static string GetSkipReason(SkipBehavior skipBehavior, MethodInfo testMethod)
-            => skipBehavior.GetSkipReason(testMethod);
 
         IEnumerable<object[]> Parameters(MethodInfo method)
             => parameterDiscoverer.GetParameters(method);

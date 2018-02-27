@@ -57,17 +57,17 @@
 
             skipWithReason.TestName.ShouldEqual(TestClass + ".SkipWithReason");
             skipWithReason.Outcome.ShouldEqual("Skipped");
-            skipWithReason.DurationMilliseconds.ShouldEqual("0");
+            int.Parse(skipWithReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             skipWithReason.ErrorMessage.ShouldEqual("Skipped with reason.");
             skipWithReason.ErrorStackTrace.ShouldBeNull();
-            skipWithReason.StdOut.ShouldBeNull();
+            skipWithReason.StdOut.ShouldBeEmpty();
 
             skipWithoutReason.TestName.ShouldEqual(TestClass + ".SkipWithoutReason");
             skipWithoutReason.Outcome.ShouldEqual("Skipped");
-            skipWithoutReason.DurationMilliseconds.ShouldEqual("0");
+            int.Parse(skipWithoutReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             skipWithoutReason.ErrorMessage.ShouldBeNull();
             skipWithoutReason.ErrorStackTrace.ShouldBeNull();
-            skipWithoutReason.StdOut.ShouldBeNull();
+            skipWithoutReason.StdOut.ShouldBeEmpty();
 
             fail.TestName.ShouldEqual(TestClass + ".Fail");
             fail.Outcome.ShouldEqual("Failed");

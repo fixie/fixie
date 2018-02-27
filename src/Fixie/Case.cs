@@ -16,6 +16,8 @@
             Method = caseMethod.TryResolveTypeArguments(parameters);
 
             Name = CaseNameBuilder.GetName(Class, Method, Parameters);
+
+            Output = "";
         }
 
         internal Case(Case originalCase, Exception secondaryFailureReason)
@@ -24,6 +26,7 @@
             Class = originalCase.Class;
             Method = originalCase.Method;
             Name = originalCase.Name;
+            Output = "";
 
             Fail(secondaryFailureReason);
         }

@@ -44,7 +44,6 @@ namespace Fixie.Tests.Cases
             using (var console = new RedirectedConsole())
             {
                 Convention
-                    .ClassExecution
                     .Lifecycle<TreatBoolReturnValuesAsAssertions>();
 
                 Run<SampleTestClass>();
@@ -71,7 +70,6 @@ namespace Fixie.Tests.Cases
             using (var console = new RedirectedConsole())
             {
                 Convention
-                    .ClassExecution
                     .Lifecycle<TreatBoolReturnValuesAsAssertions>();
 
                 Run<SampleAsyncTestClass>();

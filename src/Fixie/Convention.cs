@@ -1,5 +1,6 @@
 ﻿namespace Fixie
 {
+    using System;
     using Conventions;
 
     /// <summary>
@@ -14,7 +15,6 @@
             Classes = new ClassExpression(Config);
             Methods = new MethodExpression(Config);
             Parameters = new ParameterSourceExpression(Config);
-            ClassExecution = new ClassBehaviorExpression(Config);
         }
 
         /// <summary>
@@ -40,8 +40,15 @@
         public ParameterSourceExpression Parameters { get; }
 
         /// <summary>
-        /// Customizes the execution of each test class.
+        /// Overrides the default test class lifecycle.
         /// </summary>
-        public ClassBehaviorExpression ClassExecution { get; }
+        public void Lifecycle<TLifecycle>() where TLifecycle : Lifecycle
+            => Config.Lifecycle = (Lifecycle)Activator.CreateInstance(typeof(TLifecycle));
+
+        /// <summary>
+        /// Overrides the default test class lifecycle.
+        /// </summary>
+        public void Lifecycle(Lifecycle lifecycle)
+            => Config.Lifecycle = lifecycle;
     }
 }

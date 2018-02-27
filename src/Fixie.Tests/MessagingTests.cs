@@ -29,7 +29,6 @@
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             convention
-                .ClassExecution
                 .Lifecycle<CreateInstancePerCase>();
 
             customize?.Invoke(convention);

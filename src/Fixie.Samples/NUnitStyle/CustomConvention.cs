@@ -19,8 +19,7 @@
             Parameters
                 .Add<TestCaseSourceAttributeParameterSource>();
 
-            ClassExecution
-                .Lifecycle<SetUpTearDown>();
+            Lifecycle<SetUpTearDown>();
         }
     }
 

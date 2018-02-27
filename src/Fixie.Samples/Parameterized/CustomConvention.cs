@@ -16,11 +16,10 @@
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
 
-            ClassExecution
-                .Lifecycle<CreateInstancePerClass>();
-
             Parameters
                 .Add<InputAttributeParameterSource>();
+
+            Lifecycle<CreateInstancePerClass>();
         }
 
         class InputAttributeParameterSource : ParameterSource

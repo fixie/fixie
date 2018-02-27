@@ -16,8 +16,7 @@
                 .HasOrInherits<FactAttribute>()
                 .Shuffle();
 
-            ClassExecution
-                .Lifecycle<FixtureDataLifecycle>();
+            Lifecycle<FixtureDataLifecycle>();
         }
 
         bool HasAnyFactMethods(Type type)

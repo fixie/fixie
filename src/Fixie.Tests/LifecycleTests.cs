@@ -320,7 +320,7 @@
 
         public void ShouldAllowConstructingPerCaseUsingLifecycleType()
         {
-            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
+            Convention.Lifecycle<CreateInstancePerCase>();
 
             var output = Run<SampleTestClass>();
 
@@ -336,7 +336,7 @@
 
         public void ShouldAllowConstructingPerClassUsingLifecycleType()
         {
-            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+            Convention.Lifecycle<CreateInstancePerClass>();
 
             var output = Run<SampleTestClass>();
 
@@ -354,7 +354,7 @@
 
         public void ShouldAllowConstructingPerCaseUsingLifecycleInstance()
         {
-            Convention.ClassExecution.Lifecycle(new CreateInstancePerCase());
+            Convention.Lifecycle(new CreateInstancePerCase());
 
             var output = Run<SampleTestClass>();
 
@@ -370,7 +370,7 @@
 
         public void ShouldAllowConstructingPerClassUsingLifecycleInstance()
         {
-            Convention.ClassExecution.Lifecycle(new CreateInstancePerClass());
+            Convention.Lifecycle(new CreateInstancePerClass());
 
             var output = Run<SampleTestClass>();
 
@@ -388,8 +388,7 @@
 
         public void ShouldSkipAllCasesWhenShortCircuitingClassExecution()
         {
-            Convention.ClassExecution
-                .Lifecycle<ShortCircuitClassExecution>();
+            Convention.Lifecycle<ShortCircuitClassExecution>();
 
             var output = Run<SampleTestClass>();
 
@@ -403,8 +402,7 @@
 
         public void ShouldSkipAllCasesWhenShortCircuitingCaseExecution()
         {
-            Convention.ClassExecution
-                .Lifecycle<ShortCircuitCaseExection>();
+            Convention.Lifecycle<ShortCircuitCaseExection>();
 
             var output = Run<SampleTestClass>();
 
@@ -420,7 +418,7 @@
         {
             FailDuring(".ctor");
 
-            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
+            Convention.Lifecycle<CreateInstancePerCase>();
 
             var output = Run<SampleTestClass>();
 
@@ -442,7 +440,7 @@
             // whole run in order to ensure the problem is reported
             // to the user.
 
-            Convention.ClassExecution.Lifecycle<BuggyLifecycle>();
+            Convention.Lifecycle<BuggyLifecycle>();
 
             Action shouldThrow = () => Run<SampleTestClass>();
 
@@ -453,7 +451,7 @@
         {
             FailDuring(".ctor");
 
-            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+            Convention.Lifecycle<CreateInstancePerClass>();
 
             Action shouldThrow = () => Run<SampleTestClass>();
 
@@ -465,7 +463,7 @@
         {
             FailDuring("CaseSetUp");
 
-            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+            Convention.Lifecycle<CreateInstancePerClass>();
 
             var output = Run<SampleTestClass>();
 
@@ -485,7 +483,7 @@
         {
             FailDuring("CaseTearDown");
 
-            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+            Convention.Lifecycle<CreateInstancePerClass>();
 
             var output = Run<SampleTestClass>();
 
@@ -506,7 +504,7 @@
         {
             FailDuring("Dispose");
 
-            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
+            Convention.Lifecycle<CreateInstancePerCase>();
 
             var output = Run<SampleTestClass>();
 
@@ -525,7 +523,7 @@
         {
             FailDuring("Dispose");
 
-            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+            Convention.Lifecycle<CreateInstancePerClass>();
 
             Action shouldThrow = () => Run<SampleTestClass>();
 
@@ -534,7 +532,7 @@
 
         public void ShouldSkipLifecycleWhenConstructingPerCaseAndAllCasesAreSkipped()
         {
-            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
+            Convention.Lifecycle<CreateInstancePerCase>();
 
             var output = Run<AllSkippedTestClass>();
 
@@ -548,7 +546,7 @@
 
         public void ShouldNotSkipLifecycleWhenConstructingPerClassAndAllCasesAreSkipped()
         {
-            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+            Convention.Lifecycle<CreateInstancePerClass>();
 
             var output = Run<AllSkippedTestClass>();
 
@@ -562,7 +560,7 @@
 
         public void ShouldSkipLifecycleWhenConstructingPerCaseButAllCasesFailCustomParameterGeneration()
         {
-            Convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
+            Convention.Lifecycle<CreateInstancePerCase>();
 
             Convention.Parameters.Add<BuggyParameterSource>();
 
@@ -577,7 +575,7 @@
 
         public void ShouldNotSkipLifecycleWhenConstructingPerClassAndAllCasesFailCustomParameterGeneration()
         {
-            Convention.ClassExecution.Lifecycle<CreateInstancePerClass>();
+            Convention.Lifecycle<CreateInstancePerClass>();
 
             Convention.Parameters.Add<BuggyParameterSource>();
 
@@ -592,7 +590,7 @@
 
         public void ShouldFailTestRunWhenLifecycleAttemptsToProcessTestCaseLifecycleMultipleTimes()
         {
-            Convention.ClassExecution.Lifecycle<RunCasesTwice>();
+            Convention.Lifecycle<RunCasesTwice>();
 
             Action shouldThrow = () => Run<SampleTestClass>();
 
@@ -601,7 +599,7 @@
 
         public void ShouldAllowExecutingACaseMultipleTimesBeforeEmittingItsResult()
         {
-            Convention.ClassExecution.Lifecycle<RetryFailingCases>();
+            Convention.Lifecycle<RetryFailingCases>();
 
             var output = Run<SampleTestClass>();
 

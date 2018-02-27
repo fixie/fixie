@@ -13,8 +13,7 @@
             Methods
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
-            ClassExecution
-                .Lifecycle<SkipLifecycle>();
+            Lifecycle<SkipLifecycle>();
         }
 
         class SkipLifecycle : Lifecycle

@@ -16,8 +16,7 @@ namespace Fixie.Tests.Execution
             var listener = new StubListener();
             var convention = SelfTestConvention.Build();
 
-            convention.ClassExecution
-                .Lifecycle<CreateInstancePerClass>();
+            convention.Lifecycle<CreateInstancePerClass>();
 
             var bus = new Bus(listener);
             new Runner(bus).RunTypes(GetType().Assembly, convention,
@@ -41,8 +40,7 @@ namespace Fixie.Tests.Execution
             convention.Methods
                 .Shuffle(new Random(1));
 
-            convention.ClassExecution
-                .Lifecycle<CreateInstancePerClass>();
+            convention.Lifecycle<CreateInstancePerClass>();
 
             var bus = new Bus(listener);
             new Runner(bus).RunTypes(GetType().Assembly, convention,
@@ -66,8 +64,7 @@ namespace Fixie.Tests.Execution
             convention.Methods
                 .OrderBy((Func<MethodInfo, string>)(x => throw new Exception("OrderBy lambda expression threw!")));
 
-            convention.ClassExecution
-                .Lifecycle<CreateInstancePerClass>();
+            convention.Lifecycle<CreateInstancePerClass>();
 
             convention.Parameters
                 .Add<BuggyParameterSource>();

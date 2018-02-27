@@ -16,12 +16,11 @@
                 .HasOrInherits<Test>()
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
-            ClassExecution
-                .Lifecycle<SetUpTearDown>();
-
             Parameters
                 .Add<RowAttributeParameterSource>()
                 .Add<ColumnAttributeParameterSource>();
+
+            Lifecycle<SetUpTearDown>();
         }
 
         class RowAttributeParameterSource : ParameterSource

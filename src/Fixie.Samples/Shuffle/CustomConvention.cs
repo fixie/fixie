@@ -15,8 +15,7 @@
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
 
-            ClassExecution
-                .Lifecycle<CreateInstancePerClass>();
+            Lifecycle<CreateInstancePerClass>();
         }
     }
 }

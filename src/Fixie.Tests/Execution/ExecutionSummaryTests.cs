@@ -11,7 +11,7 @@
         public void ShouldAccumulateCaseStatusCounts()
         {
             var convention = SelfTestConvention.Build();
-            convention.ClassExecution.Lifecycle<CreateInstancePerCase>();
+            convention.Lifecycle<CreateInstancePerCase>();
 
             var listener = new StubExecutionSummaryListener();
 

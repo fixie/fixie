@@ -14,8 +14,7 @@
                 .Where(method => method.Name != "SetUp")
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
-            ClassExecution
-                .Lifecycle<SetUpLifecycle>();
+            Lifecycle<SetUpLifecycle>();
         }
 
         class SetUpLifecycle : Lifecycle

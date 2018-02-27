@@ -13,8 +13,7 @@
                 .InTheSameNamespaceAs(typeof(CustomConvention))
                 .NameEndsWith("Tests");
 
-            ClassExecution
-                .Lifecycle<IocLifecycle>();
+            Lifecycle<IocLifecycle>();
         }
 
         public class IocLifecycle : Lifecycle

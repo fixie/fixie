@@ -17,9 +17,9 @@
         /// Includes the given type as an generator of test method parameters.
         /// All such registered parameter sources will be asked to contribute parameters to test methods.
         /// </summary>
-        public ParameterSourceExpression Add<TParameterSource>() where TParameterSource : ParameterSource
+        public ParameterSourceExpression Add<TParameterSource>() where TParameterSource : ParameterSource, new()
         {
-            config.AddParameterSource((ParameterSource)Activator.CreateInstance(typeof(TParameterSource)));
+            config.AddParameterSource(new TParameterSource());
             return this;
         }
 

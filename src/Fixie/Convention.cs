@@ -42,8 +42,8 @@
         /// <summary>
         /// Overrides the default test class lifecycle.
         /// </summary>
-        public void Lifecycle<TLifecycle>() where TLifecycle : Lifecycle
-            => Config.Lifecycle = (Lifecycle)Activator.CreateInstance(typeof(TLifecycle));
+        public void Lifecycle<TLifecycle>() where TLifecycle : Lifecycle, new()
+            => Config.Lifecycle = new TLifecycle();
 
         /// <summary>
         /// Overrides the default test class lifecycle.

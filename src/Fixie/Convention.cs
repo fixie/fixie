@@ -1,6 +1,5 @@
 ﻿namespace Fixie
 {
-    using System.Reflection;
     using Conventions;
 
     /// <summary>
@@ -15,7 +14,6 @@
             Classes = new ClassExpression(Config);
             Methods = new MethodExpression(Config);
             Parameters = new ParameterSourceExpression(Config);
-            CaseExecution = new CaseBehaviorExpression(Config);
             ClassExecution = new ClassBehaviorExpression(Config);
         }
 
@@ -40,11 +38,6 @@
         /// Defines the set of parameter sources, which provide inputs to parameterized test methods.
         /// </summary>
         public ParameterSourceExpression Parameters { get; }
-
-        /// <summary>
-        /// Customizes the execution of each test case.
-        /// </summary>
-        public CaseBehaviorExpression CaseExecution { get; }
 
         /// <summary>
         /// Customizes the execution of each test class.

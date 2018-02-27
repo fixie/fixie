@@ -21,8 +21,8 @@
             typeof(NameEndsWithTests),
             typeof(String),
             typeof(Interface),
-            typeof(AttributeSampleBase),
-            typeof(AttributeSample)
+            typeof(InheritanceSampleBase),
+            typeof(InheritanceSample)
         };
         
         public void ShouldConsiderOnlyConcreteClasses()
@@ -35,8 +35,8 @@
                     typeof(NoDefaultConstructor),
                     typeof(NameEndsWithTests),
                     typeof(String),
-                    typeof(AttributeSampleBase),
-                    typeof(AttributeSample));
+                    typeof(InheritanceSampleBase),
+                    typeof(InheritanceSample));
         }
 
         public void ShouldNotConsiderCompilerGeneratedClosureClasses()
@@ -57,8 +57,8 @@
                     typeof(NoDefaultConstructor),
                     typeof(NameEndsWithTests),
                     typeof(String),
-                    typeof(AttributeSampleBase),
-                    typeof(AttributeSample));
+                    typeof(InheritanceSampleBase),
+                    typeof(InheritanceSample));
         }
 
         public void ShouldDiscoverClassesSatisfyingAllSpecifiedConditions()
@@ -68,106 +68,14 @@
             customConvention
                 .Classes
                 .Where(type => type.IsInNamespace("Fixie.Tests"))
-                .Where(type => type.Name.StartsWith("No"));
+                .Where(type => type.Name.Contains("i"));
 
-            DiscoveredTestClasses(customConvention)
-                .ShouldEqual(typeof(NoDefaultConstructor));
-        }
-
-        public void CanDiscoverClassesByNonInheritedAttributes()
-        {
-            var customConvention = new Convention();
-
-            customConvention
-                .Classes
-                .Has<NonInheritedAttribute>();
-
-            DiscoveredTestClasses(customConvention)
-                .ShouldEqual(typeof(AttributeSample));
-        }
-
-        public void CanDiscoverClassesByInheritedAttributes()
-        {
-            var customConvention = new Convention();
-
-            customConvention
-                .Classes
-                .HasOrInherits<InheritedAttribute>();
-
+                ;
             DiscoveredTestClasses(customConvention)
                 .ShouldEqual(
-                    typeof(AttributeSampleBase),
-                    typeof(AttributeSample));
-        }
-
-        public void CanDiscoverClassesByTypeNameSuffixes()
-        {
-            var convention = new Convention();
-
-            convention
-                .Classes
-                .NameEndsWith("Constructor", "Sample");
-
-            DiscoveredTestClasses(convention)
-                .ShouldEqual(
-                    typeof(DefaultConstructor),
-                    typeof(NoDefaultConstructor),
-                    typeof(AttributeSample));
-        }
-
-        public void CanDiscoverClassesInTheSameNamespaceAsSpecifiedType()
-        {
-            var convention = new Convention();
-
-            convention
-                .Classes
-                .InTheSameNamespaceAs(typeof(DefaultConstructor));
-
-            DiscoveredTestClasses(convention, typeof(NestedNamespace.InNestedNamespace))
-                .ShouldEqual(
-                    typeof(DefaultConstructor),
-                    typeof(NoDefaultConstructor),
                     typeof(NameEndsWithTests),
-                    typeof(AttributeSampleBase),
-                    typeof(AttributeSample),
-                    typeof(NestedNamespace.InNestedNamespace));
-        }
-
-        public void CanDiscoverClassesInAnyOfTheSpecifiedNamespaces()
-        {
-            var convention = new Convention();
-
-            convention
-                .Classes
-                .InTheSameNamespaceAs(typeof(DefaultConstructor), typeof(DateTime));
-
-            DiscoveredTestClasses(convention, typeof(NestedNamespace.InNestedNamespace))
-                .ShouldEqual(
-                    typeof(DefaultConstructor),
-                    typeof(NoDefaultConstructor),
-                    typeof(NameEndsWithTests),
-                    typeof(String),
-                    typeof(AttributeSampleBase),
-                    typeof(AttributeSample),
-                    typeof(NestedNamespace.InNestedNamespace));
-        }
-
-        public void DoesNotMindIfMultipleTypesPointToSameNamespace()
-        {
-            var convention = new Convention();
-
-            convention
-                .Classes
-                .InTheSameNamespaceAs(typeof(DefaultConstructor), typeof(NestedNamespace.InNestedNamespace), typeof(NoDefaultConstructor));
-
-            DiscoveredTestClasses(convention, typeof(NestedNamespace.InNestedNamespace))
-                .ShouldEqual(
-                    typeof(DefaultConstructor),
-                    typeof(NoDefaultConstructor),
-                    typeof(NameEndsWithTests),
-                    typeof(AttributeSampleBase),
-                    typeof(AttributeSample),
-                    typeof(NestedNamespace.InNestedNamespace));
+                    typeof(InheritanceSampleBase),
+                    typeof(InheritanceSample));
         }
 
         public void TheDefaultConventionShouldDiscoverClassesWhoseNameEndsWithTests()
@@ -185,7 +93,7 @@
 
             customConvention
                 .Classes
-                .Where(type => { throw new Exception("Unsafe class-discovery predicate threw!"); });
+                .Where(type => throw new Exception("Unsafe class-discovery predicate threw!"));
 
             Action attemptFaultyDiscovery = () => DiscoveredTestClasses(customConvention);
 
@@ -214,14 +122,9 @@
         class NameEndsWithTests { }
         interface Interface { }
 
-        class InheritedAttribute : Attribute { }
-        class NonInheritedAttribute : Attribute { }
+        class InheritanceSampleBase { }
 
-        [Inherited]
-        class AttributeSampleBase { }
-
-        [NonInherited]
-        class AttributeSample : AttributeSampleBase { }
+        class InheritanceSample : InheritanceSampleBase { }
 
         class ClassThatCausesCompilerGeneratedNestedClosureClass
         {
@@ -236,9 +139,4 @@
             }
         }
     }
-}
-
-namespace Fixie.Tests.Execution.NestedNamespace
-{
-    class InNestedNamespace { }
 }

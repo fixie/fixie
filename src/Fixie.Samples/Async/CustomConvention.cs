@@ -11,7 +11,7 @@
                 .Where(x => x.Name.EndsWith("Tests"));
 
             Methods
-                .Where(method => method.Name != "SetUp")
+                .Where(x => x.Name != "SetUp")
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             Lifecycle<SetUpLifecycle>();

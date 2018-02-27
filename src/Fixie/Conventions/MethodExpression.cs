@@ -26,22 +26,6 @@
         }
 
         /// <summary>
-        /// Limits discovered test methods to those methods which have the specified attribute.
-        /// </summary>
-        public MethodExpression Has<TAttribute>() where TAttribute : Attribute
-        {
-            return Where(method => method.Has<TAttribute>());
-        }
-
-        /// <summary>
-        /// Limits discovered test methods to those methods which have or inherit the specified attribute.
-        /// </summary>
-        public MethodExpression HasOrInherits<TAttribute>() where TAttribute : Attribute
-        {
-            return Where(method => method.HasOrInherits<TAttribute>());
-        }
-
-        /// <summary>
         /// Randomizes the order of execution of a test class's contained test methods, using the
         /// given pseudo-random number generator.
         /// </summary>

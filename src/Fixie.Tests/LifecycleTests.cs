@@ -21,7 +21,7 @@
 
             Convention
                 .Classes
-                .Where(testClass => testClass.Name.EndsWith("TestClass"));
+                .Where(x => x.Name.EndsWith("TestClass"));
 
             Convention
                 .Methods

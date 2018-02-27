@@ -16,7 +16,7 @@
                 .Where(x => x.Name.EndsWith("Tests"));
 
             Methods
-                .Where(method => shouldRunAll || MethodHasAnyDesiredCategory(method, desiredCategories));
+                .Where(x => shouldRunAll || MethodHasAnyDesiredCategory(x, desiredCategories));
 
             if (!shouldRunAll)
             {

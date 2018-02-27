@@ -22,7 +22,7 @@
 
             convention
                 .Classes
-                .Where(testClass => testClass == typeof(SampleTestClass) || testClass == typeof(EmptyTestClass));
+                .Where(x => x == typeof(SampleTestClass) || x == typeof(EmptyTestClass));
 
             convention
                 .Methods

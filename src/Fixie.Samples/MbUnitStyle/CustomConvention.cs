@@ -13,7 +13,7 @@
                 .Where(x => x.HasOrInherits<TestFixture>());
 
             Methods
-                .HasOrInherits<Test>()
+                .Where(x => x.HasOrInherits<Test>())
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             Parameters

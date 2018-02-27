@@ -13,7 +13,7 @@
                 .Where(HasAnyFactMethods);
 
             Methods
-                .HasOrInherits<FactAttribute>()
+                .Where(x => x.HasOrInherits<FactAttribute>())
                 .Shuffle();
 
             Lifecycle<FixtureDataLifecycle>();

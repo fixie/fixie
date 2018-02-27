@@ -67,10 +67,9 @@
 
             customConvention
                 .Classes
-                .Where(type => type.IsInNamespace("Fixie.Tests"))
-                .Where(type => type.Name.Contains("i"));
+                .Where(x => x.IsInNamespace("Fixie.Tests"))
+                .Where(x => x.Name.Contains("i"));
 
-                ;
             DiscoveredTestClasses(customConvention)
                 .ShouldEqual(
                     typeof(NameEndsWithTests),
@@ -93,7 +92,7 @@
 
             customConvention
                 .Classes
-                .Where(type => throw new Exception("Unsafe class-discovery predicate threw!"));
+                .Where(x => throw new Exception("Unsafe class-discovery predicate threw!"));
 
             Action attemptFaultyDiscovery = () => DiscoveredTestClasses(customConvention);
 

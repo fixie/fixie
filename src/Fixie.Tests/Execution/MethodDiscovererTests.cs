@@ -57,8 +57,8 @@
 
             customConvention
                 .Methods
-                .Where(method => method.Name.Contains("Void"))
-                .Where(method => method.Name.Contains("No"));
+                .Where(x => x.Name.Contains("Void"))
+                .Where(x => x.Name.Contains("No"));
 
             DiscoveredTestMethods<Sample>(customConvention)
                 .ShouldEqual("PublicInstanceNoArgsVoid()");
@@ -100,32 +100,6 @@
                     "PublicInstanceWithArgsWithReturn(x)");
         }
 
-        public void CanDiscoverMethodsByNonInheritedAttributes()
-        {
-            var customConvention = new Convention();
-
-            customConvention
-                .Methods
-                .Has<SampleAttribute>();
-
-            DiscoveredTestMethods<Sample>(customConvention)
-                .ShouldEqual("PublicInstanceWithArgsWithReturn(x)");
-        }
-
-        public void CanDiscoverMethodsByInheritedAttributes()
-        {
-            var customConvention = new Convention();
-
-            customConvention
-                .Methods
-                .HasOrInherits<SampleAttribute>();
-
-            DiscoveredTestMethods<Sample>(customConvention)
-                .ShouldEqual(
-                    "PublicInstanceNoArgsWithReturn()",
-                    "PublicInstanceWithArgsWithReturn(x)");
-        }
-
         public void TheDefaultConventionShouldDiscoverPublicInstanceMethods()
         {
             var defaultConvention = new DefaultConvention();
@@ -151,7 +125,7 @@
 
             customConvention
                 .Methods
-                .Where(method => { throw new Exception("Unsafe method-discovery predicate threw!"); });
+                .Where(x => throw new Exception("Unsafe method-discovery predicate threw!"));
 
             Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(customConvention);
 
@@ -172,11 +146,8 @@
                 .OrderBy(name => name, StringComparer.Ordinal);
         }
 
-        class SampleAttribute : Attribute { }
-
         class SampleBase
         {
-            [Sample]
             public virtual int PublicInstanceNoArgsWithReturn() { return 0; }
         }
 
@@ -187,7 +158,6 @@
             public static void PublicStaticWithArgsVoid(int x) { }
             public static void PublicStaticNoArgsVoid() { }
 
-            [Sample]
             public int PublicInstanceWithArgsWithReturn(int x) { return 0; }
             public override int PublicInstanceNoArgsWithReturn() { return 0; }
             public void PublicInstanceWithArgsVoid(int x) { }

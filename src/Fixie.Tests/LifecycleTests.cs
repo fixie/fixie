@@ -167,7 +167,10 @@
                 runCases(@case =>
                 {
                     if (@case.Method.Name == "Skip")
+                    {
+                        @case.Skip("skipped by naming convention");
                         return;
+                    }
 
                     CaseSetUp(@case);
                     @case.Execute(instance);
@@ -295,7 +298,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Skip skipped",
+                "SampleTestClass.Skip skipped: skipped by naming convention",
                 "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
@@ -329,7 +332,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Skip skipped",
+                "SampleTestClass.Skip skipped: skipped by naming convention",
                 "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
@@ -424,7 +427,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Skip skipped",
+                "SampleTestClass.Skip skipped: skipped by naming convention",
                 "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
                 "SampleTestClass.Fail failed: 'CaseSetUp' failed!");
 
@@ -444,7 +447,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Skip skipped",
+                "SampleTestClass.Skip skipped: skipped by naming convention",
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'CaseTearDown' failed!");

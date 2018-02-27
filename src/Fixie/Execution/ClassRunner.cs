@@ -78,8 +78,7 @@
 
                         consoleOutput = console.Output;
 
-                        if (consoleOutput.Length > 0)
-                            @case.Output += consoleOutput;
+                        @case.Output += consoleOutput;
                     }
 
                     Console.Write(consoleOutput);

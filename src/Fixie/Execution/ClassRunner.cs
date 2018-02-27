@@ -95,7 +95,9 @@
                         @case.Duration += caseStopwatch.Elapsed;
 
                         consoleOutput = console.Output;
-                        @case.Output += consoleOutput;
+
+                        if (consoleOutput.Length > 0)
+                            @case.Output += consoleOutput;
                     }
 
                     Console.Write(consoleOutput);

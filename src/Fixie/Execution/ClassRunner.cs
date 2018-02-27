@@ -123,7 +123,7 @@
                 //No cases ran, and we didn't already emit a general
                 //failure for each method, so emit a general skip for
                 //each method.
-                foreach (var method in methods)
+                foreach (var method in orderedMethods)
                 {
                     var @case = new Case(method);
                     Skip(@case, summary);

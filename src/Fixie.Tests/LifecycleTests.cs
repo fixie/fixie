@@ -83,6 +83,12 @@
                 throw new FailureException();
             }
 
+            public void Skip()
+            {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
+
             public void Dispose()
             {
                 if (disposed)
@@ -140,6 +146,9 @@
             {
                 runCases(@case =>
                 {
+                    if (@case.Method.Name == "Skip")
+                        return;
+
                     var instance = testClass.Construct();
 
                     @case.Execute(instance);
@@ -157,6 +166,9 @@
 
                 runCases(@case =>
                 {
+                    if (@case.Method.Name == "Skip")
+                        return;
+
                     CaseSetUp(@case);
                     @case.Execute(instance);
                     CaseTearDown(@case);
@@ -226,6 +238,9 @@
 
                 runCases(@case =>
                 {
+                    if (@case.Method.Name == "Skip")
+                        return;
+
                     @case.Execute(instance);
 
                     if (@case.Exception != null)
@@ -244,6 +259,8 @@
 
         public void ShouldConstructPerCaseByDefault()
         {
+            Convention.Methods.Where(x => x.Name != "Skip");
+
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
@@ -262,6 +279,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
@@ -277,6 +295,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
@@ -294,6 +313,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
@@ -309,6 +329,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
@@ -327,6 +348,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass skipped",
                 "SampleTestClass.Fail skipped");
 
@@ -341,6 +363,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass skipped",
                 "SampleTestClass.Fail skipped");
 
@@ -356,6 +379,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass failed: '.ctor' failed!",
                 "SampleTestClass.Fail failed: '.ctor' failed!");
 
@@ -391,7 +415,7 @@
             exception.OriginalException.Message.ShouldEqual("'.ctor' failed!");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerClassAndCaseSetUpThrows()
+        public void ShouldFailCasesWhenConstructingPerClassAndCaseSetUpThrows()
         {
             FailDuring("CaseSetUp");
 
@@ -400,6 +424,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
                 "SampleTestClass.Fail failed: 'CaseSetUp' failed!");
 
@@ -410,7 +435,7 @@
                 "Dispose");
         }
 
-        public void ShouldFailAllCasesWhenConstructingPerClassAndCaseTearDownThrows()
+        public void ShouldFailCasesWhenConstructingPerClassAndCaseTearDownThrows()
         {
             FailDuring("CaseTearDown");
 
@@ -419,6 +444,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'CaseTearDown' failed!");
@@ -439,6 +465,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'Dispose' failed!");
@@ -468,6 +495,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass skipped",
                 "SampleTestClass.Fail skipped");
 
@@ -483,6 +511,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass skipped",
                 "SampleTestClass.Fail skipped");
 
@@ -535,6 +564,7 @@
             var output = Run<SampleTestClass>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
                 "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 

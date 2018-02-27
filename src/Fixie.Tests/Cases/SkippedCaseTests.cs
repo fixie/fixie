@@ -51,38 +51,6 @@
                     ".Pass passed"));
         }
 
-        public void ShouldAllowSkippingViaBehaviorTypes()
-        {
-            Convention.CaseExecution
-                .Skip<SkipByExplicitAttribute>()
-                .Skip<SkipBySkipAttribute>();
-
-            Run<SkippedTestClass>();
-
-            Listener.Entries.ShouldEqual(
-                For<SkippedTestClass>(
-                    ".Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
-                    ".ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
-                    ".Fail skipped: Troublesome test skipped.",
-                    ".Pass passed"));
-        }
-
-        public void ShouldAllowSkippingViaBehaviorInstances()
-        {
-            Convention.CaseExecution
-                .Skip(new SkipByExplicitAttribute())
-                .Skip(new SkipBySkipAttribute());
-
-            Run<SkippedTestClass>();
-
-            Listener.Entries.ShouldEqual(
-                For<SkippedTestClass>(
-                    ".Explicit skipped: [Explicit] tests run only when they are individually selected for execution.",
-                    ".ExplicitAndSkip skipped: [Explicit] tests run only when they are individually selected for execution.",
-                    ".Fail skipped: Troublesome test skipped.",
-                    ".Pass passed"));
-        }
-
         public void ShouldFailCaseWhenSkipConditionThrows()
         {
             Convention.CaseExecution
@@ -135,18 +103,6 @@
         static bool HasSkipAttribute(MethodInfo testMethod)
         {
             return testMethod.HasOrInherits<SkipAttribute>();
-        }
-
-        class SkipByExplicitAttribute : SkipBehavior
-        {
-            public bool SkipMethod(MethodInfo testMethod) => HasExplicitAttribute(testMethod);
-            public string GetSkipReason(MethodInfo testMethod) => ExplicitAttributeReason(testMethod);
-        }
-
-        class SkipBySkipAttribute : SkipBehavior
-        {
-            public bool SkipMethod(MethodInfo testMethod) => HasSkipAttribute(testMethod);
-            public string GetSkipReason(MethodInfo testMethod) => SkipAttributeReason(testMethod);
         }
 
         class SkippedTestClass

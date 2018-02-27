@@ -1,22 +1,23 @@
 ﻿namespace Fixie
 {
+    using System;
     using System.Reflection;
 
-    /// <summary>
-    /// Defines a behavior to determine whether a given test method should be skipped during execution.
-    /// Skipped test methods are never executed, but are counted and identified. When a test method is
-    /// skipped, an optional reason string can be included in the test results.
-    /// </summary>
-    public interface SkipBehavior
+    public class SkipBehavior
     {
-        /// <summary>
-        /// Determines whether the given test method should be skipped during execution.
-        /// </summary>
-        bool SkipMethod(MethodInfo testMethod);
+        readonly Func<MethodInfo, bool> skipMethod;
+        readonly Func<MethodInfo, string> getSkipReason;
 
-        /// <summary>
-        /// When a test method should be skipped during execution, returns an optional string to explain why.
-        /// </summary>
-        string GetSkipReason(MethodInfo testMethod);
+        public SkipBehavior(Func<MethodInfo, bool> skipMethod, Func<MethodInfo, string> getSkipReason)
+        {
+            this.skipMethod = skipMethod;
+            this.getSkipReason = getSkipReason;
+        }
+
+        public bool SkipMethod(MethodInfo testMethod)
+            => skipMethod(testMethod);
+
+        public string GetSkipReason(MethodInfo testMethod)
+            => getSkipReason(testMethod);
     }
 }

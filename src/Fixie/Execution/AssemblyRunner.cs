@@ -57,7 +57,7 @@
                             var runTests = pipe.Receive<PipeMessage.RunTests>();
 
                             exitCode = runTests.Filter.Length > 0
-                                ? runner.RunMethods(assembly, options, conventionArguments, runTests.Filter)
+                                ? runner.RunTests(assembly, options, conventionArguments, runTests.Filter)
                                 : runner.RunAssembly(assembly, options, conventionArguments);
                         }
                         else
@@ -119,9 +119,9 @@
             return Run(options, conventionArguments, runner => runner.RunAssembly(assembly));
         }
 
-        int RunMethods(Assembly assembly, Options options, string[] conventionArguments, PipeMessage.Test[] tests)
+        int RunTests(Assembly assembly, Options options, string[] conventionArguments, PipeMessage.Test[] tests)
         {
-            return Run(options, conventionArguments, r => r.RunMethods(assembly, tests));
+            return Run(options, conventionArguments, r => r.RunTests(assembly, tests));
         }
 
         int Run(Options options, string[] conventionArguments, Func<Runner, ExecutionSummary> run)

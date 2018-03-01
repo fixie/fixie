@@ -44,7 +44,7 @@
             return Run(assembly, new[] { convention }, types);
         }
 
-        public ExecutionSummary RunMethods(Assembly assembly, PipeMessage.Test[] tests)
+        public ExecutionSummary RunTests(Assembly assembly, PipeMessage.Test[] tests)
         {
             var types = GetTypes(assembly, tests);
 

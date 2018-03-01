@@ -49,18 +49,16 @@
 
                         if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
                         {
-                            var discoverMethods = pipe.Receive<PipeMessage.DiscoverTests>();
+                            var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
                             runner.DiscoverMethods(assembly, options, conventionArguments);
                         }
                         else if (messageType == typeof(PipeMessage.RunTests).FullName)
                         {
-                            var runMethods = pipe.Receive<PipeMessage.RunTests>();
-                            exitCode = runner.RunMethods(assembly, options, conventionArguments, runMethods.Filter);
-                        }
-                        else if (messageType == typeof(PipeMessage.RunAssembly).FullName)
-                        {
-                            var runAssembly = pipe.Receive<PipeMessage.RunAssembly>();
-                            exitCode = runner.RunAssembly(assembly, options, conventionArguments);
+                            var runTests = pipe.Receive<PipeMessage.RunTests>();
+
+                            exitCode = runTests.Filter.Length > 0
+                                ? runner.RunMethods(assembly, options, conventionArguments, runTests.Filter)
+                                : runner.RunAssembly(assembly, options, conventionArguments);
                         }
                         else
                         {

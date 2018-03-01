@@ -33,8 +33,13 @@
 
             HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
 
+            var runAllTests = new PipeMessage.RunTests
+            {
+                Filter = new PipeMessage.Test[] { }
+            };
+
             foreach (var assemblyPath in sources)
-                RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send<PipeMessage.RunAssembly>());
+                RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
         }
 
         /// <summary>

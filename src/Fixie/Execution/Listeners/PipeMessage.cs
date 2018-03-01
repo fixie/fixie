@@ -6,8 +6,6 @@
     {
         public class DiscoverTests { }
 
-        public class RunAssembly { }
-
         public class RunTests
         {
             public Test[] Filter { get; set; }

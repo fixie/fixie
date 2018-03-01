@@ -27,7 +27,7 @@
             {
                 Class = methodGroup.Class,
                 Method = methodGroup.Method,
-                DisplayName = methodGroup.FullName
+                Name = methodGroup.FullName
             });
 
             log.Messages.ShouldBeEmpty();
@@ -51,7 +51,7 @@
             {
                 Class = methodGroup.Class,
                 Method = methodGroup.Method,
-                DisplayName = methodGroup.FullName
+                Name = methodGroup.FullName
             });
 
             log.Messages.Single().Contains(nameof(FileNotFoundException)).ShouldBeTrue();

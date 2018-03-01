@@ -23,7 +23,7 @@
             {
                 Class = "Namespace.Class",
                 Method = "Pass",
-                DisplayName = "Namespace.Class.Pass",
+                Name = "Namespace.Class.Pass",
                 Duration = TimeSpan.FromSeconds(1),
                 Output = "Output"
             });
@@ -32,7 +32,7 @@
             {
                 Class = "Namespace.Class",
                 Method = "Fail",
-                DisplayName = "Namespace.Class.Fail",
+                Name = "Namespace.Class.Fail",
                 Duration = TimeSpan.FromSeconds(2),
                 Output = "Output",
                 Exception = new PipeMessage.Exception
@@ -47,7 +47,7 @@
             {
                 Class = "Namespace.Class",
                 Method = "Skip",
-                DisplayName = "Namespace.Class.Skip",
+                Name = "Namespace.Class.Skip",
                 Duration = TimeSpan.Zero,
                 Output = null,
                 Reason = "Skip Reason"

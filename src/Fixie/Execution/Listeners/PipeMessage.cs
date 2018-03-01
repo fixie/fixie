@@ -17,14 +17,14 @@
         {
             public string Class { get; set; }
             public string Method { get; set; }
-            public string DisplayName { get; set; }
+            public string Name { get; set; }
         }
 
         public abstract class TestResult
         {
             public string Class { get; set; }
             public string Method { get; set; }
-            public string DisplayName { get; set; }
+            public string Name { get; set; }
             public TimeSpan Duration { get; set; }
             public string Output { get; set; }
         }

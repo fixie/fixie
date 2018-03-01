@@ -25,7 +25,7 @@
             {
                 Class = methodGroup.Class,
                 Method = methodGroup.Method,
-                DisplayName = methodGroup.FullName
+                Name = methodGroup.FullName
             });
         }
 
@@ -59,7 +59,7 @@
             {
                 Class = methodGroup.Class,
                 Method = methodGroup.Method,
-                DisplayName = message.Name,
+                Name = message.Name,
                 Duration = message.Duration,
                 Output = message.Output
             };

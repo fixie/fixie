@@ -49,12 +49,12 @@
 
             public Exception(System.Exception exception)
             {
-                TypeName = exception.TypeName();
+                Type = exception.TypeName();
                 Message = exception.Message;
                 StackTrace = exception.CompoundStackTrace();
             }
 
-            public string TypeName { get; set; }
+            public string Type { get; set; }
             public string Message { get; set; }
             public string StackTrace { get; set; }
         }

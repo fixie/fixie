@@ -40,7 +40,7 @@
             {
                 x.Outcome = TestOutcome.Failed;
                 x.ErrorMessage = result.Exception.Message;
-                x.ErrorStackTrace = result.Exception.TypeName +
+                x.ErrorStackTrace = result.Exception.Type +
                                     NewLine +
                                     result.Exception.StackTrace;
             });

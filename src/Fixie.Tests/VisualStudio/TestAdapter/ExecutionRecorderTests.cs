@@ -37,7 +37,7 @@
                 Output = "Output",
                 Exception = new PipeMessage.Exception
                 {
-                    TypeName = "Exception Type Name",
+                    Type = "Exception Type",
                     Message = "Exception Message",
                     StackTrace = "Exception Stack Trace"
                 }
@@ -82,7 +82,7 @@
             fail.TestCase.DisplayName.ShouldEqual("Namespace.Class.Fail");
             fail.Outcome.ShouldEqual(TestOutcome.Failed);
             fail.ErrorMessage.ShouldEqual("Exception Message");
-            fail.ErrorStackTrace.ShouldEqual("Exception Type Name" + NewLine + "Exception Stack Trace");
+            fail.ErrorStackTrace.ShouldEqual("Exception Type" + NewLine + "Exception Stack Trace");
             fail.DisplayName.ShouldEqual("Namespace.Class.Fail");
             fail.Messages.Count.ShouldEqual(1);
             fail.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);

@@ -10,7 +10,7 @@
 
         public class RunTests
         {
-            public Test[] Tests { get; set; }
+            public Test[] Filter { get; set; }
         }
 
         public class Test

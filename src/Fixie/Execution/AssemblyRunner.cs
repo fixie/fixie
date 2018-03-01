@@ -55,7 +55,7 @@
                         else if (messageType == typeof(PipeMessage.RunTests).FullName)
                         {
                             var runMethods = pipe.Receive<PipeMessage.RunTests>();
-                            exitCode = runner.RunMethods(assembly, options, conventionArguments, runMethods.Tests);
+                            exitCode = runner.RunMethods(assembly, options, conventionArguments, runMethods.Filter);
                         }
                         else if (messageType == typeof(PipeMessage.RunAssembly).FullName)
                         {

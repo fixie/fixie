@@ -62,7 +62,7 @@
                 {
                     pipe.Send(new PipeMessage.RunTests
                     {
-                        Tests = assemblyGroup.Select(x =>
+                        Filter = assemblyGroup.Select(x =>
                         {
                             var methodGroup = new MethodGroup(x.FullyQualifiedName);
 

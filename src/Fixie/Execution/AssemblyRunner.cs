@@ -47,15 +47,15 @@
                     {
                         var messageType = pipe.ReceiveMessage();
 
-                        if (messageType == typeof(PipeMessage.DiscoverMethods).FullName)
+                        if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
                         {
-                            var discoverMethods = pipe.Receive<PipeMessage.DiscoverMethods>();
+                            var discoverMethods = pipe.Receive<PipeMessage.DiscoverTests>();
                             runner.DiscoverMethods(assembly, options, conventionArguments);
                         }
-                        else if (messageType == typeof(PipeMessage.RunMethods).FullName)
+                        else if (messageType == typeof(PipeMessage.RunTests).FullName)
                         {
-                            var runMethods = pipe.Receive<PipeMessage.RunMethods>();
-                            exitCode = runner.RunMethods(assembly, options, conventionArguments, runMethods.Methods);
+                            var runMethods = pipe.Receive<PipeMessage.RunTests>();
+                            exitCode = runner.RunMethods(assembly, options, conventionArguments, runMethods.Tests);
                         }
                         else if (messageType == typeof(PipeMessage.RunAssembly).FullName)
                         {
@@ -121,11 +121,9 @@
             return Run(options, conventionArguments, runner => runner.RunAssembly(assembly));
         }
 
-        int RunMethods(Assembly assembly, Options options, string[] conventionArguments, string[] methods)
+        int RunMethods(Assembly assembly, Options options, string[] conventionArguments, PipeMessage.Test[] tests)
         {
-            var methodGroups = methods.Select(x => new MethodGroup(x)).ToArray();
-
-            return Run(options, conventionArguments, r => r.RunMethods(assembly, methodGroups));
+            return Run(options, conventionArguments, r => r.RunMethods(assembly, tests));
         }
 
         int Run(Options options, string[] conventionArguments, Func<Runner, ExecutionSummary> run)

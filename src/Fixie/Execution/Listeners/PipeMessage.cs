@@ -4,13 +4,13 @@
 
     public static class PipeMessage
     {
-        public class DiscoverMethods { }
+        public class DiscoverTests { }
 
         public class RunAssembly { }
 
-        public class RunMethods
+        public class RunTests
         {
-            public string[] Methods { get; set; }
+            public Test[] Tests { get; set; }
         }
 
         public class Test

@@ -60,9 +60,19 @@
 
                 RunTests(log, frameworkHandle, assemblyPath, pipe =>
                 {
-                    pipe.Send(new PipeMessage.RunMethods
+                    pipe.Send(new PipeMessage.RunTests
                     {
-                        Methods = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
+                        Tests = assemblyGroup.Select(x =>
+                        {
+                            var methodGroup = new MethodGroup(x.FullyQualifiedName);
+
+                            return new PipeMessage.Test
+                            {
+                                Class = methodGroup.Class,
+                                Method = methodGroup.Method,
+                                Name = methodGroup.FullName
+                            };
+                        }).ToArray()
                     });
                 });
             }

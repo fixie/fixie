@@ -42,7 +42,7 @@
 
                 pipe.WaitForConnection();
 
-                pipe.Send<PipeMessage.DiscoverMethods>();
+                pipe.Send<PipeMessage.DiscoverTests>();
 
                 var recorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
 

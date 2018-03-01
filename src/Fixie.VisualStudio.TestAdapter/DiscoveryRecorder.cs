@@ -26,9 +26,11 @@
         {
             SourceLocation sourceLocation = null;
 
+            var fullName = test.Class + "." + test.Method;
+
             try
             {
-                var methodGroup = new MethodGroup(test.FullName);
+                var methodGroup = new MethodGroup(fullName);
                 sourceLocationProvider.TryGetSourceLocation(methodGroup, out sourceLocation);
             }
             catch (Exception exception)
@@ -36,9 +38,9 @@
                 log.Error(exception.ToString());
             }
 
-            var discoveredTest = new TestCase(test.FullName, VsTestExecutor.Uri, assemblyPath)
+            var discoveredTest = new TestCase(fullName, VsTestExecutor.Uri, assemblyPath)
             {
-                DisplayName = test.FullName
+                DisplayName = fullName
             };
 
             if (sourceLocation != null)

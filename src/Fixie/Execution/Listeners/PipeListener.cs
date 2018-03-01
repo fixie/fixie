@@ -23,7 +23,8 @@
 
             Write(new PipeMessage.Test
             {
-                FullName = methodGroup.FullName,
+                Class = methodGroup.Class,
+                Method = methodGroup.Method,
                 DisplayName = methodGroup.FullName
             });
         }
@@ -52,9 +53,12 @@
         void Write<TTestResult>(CaseCompleted message, Action<TTestResult> customize = null)
             where TTestResult : PipeMessage.TestResult, new()
         {
+            var methodGroup = new MethodGroup(message.Method);
+
             var result = new TTestResult
             {
-                FullName = new MethodGroup(message.Method).FullName,
+                Class = methodGroup.Class,
+                Method = methodGroup.Method,
                 DisplayName = message.Name,
                 Duration = message.Duration,
                 Output = message.Output

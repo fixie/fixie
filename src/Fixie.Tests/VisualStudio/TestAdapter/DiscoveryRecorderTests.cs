@@ -25,7 +25,8 @@
             
             discoveryRecorder.SendTestCase(new PipeMessage.Test
             {
-                FullName = methodGroup.FullName,
+                Class = methodGroup.Class,
+                Method = methodGroup.Method,
                 DisplayName = methodGroup.FullName
             });
 
@@ -48,7 +49,8 @@
 
             discoveryRecorder.SendTestCase(new PipeMessage.Test
             {
-                FullName = methodGroup.FullName,
+                Class = methodGroup.Class,
+                Method = methodGroup.Method,
                 DisplayName = methodGroup.FullName
             });
 

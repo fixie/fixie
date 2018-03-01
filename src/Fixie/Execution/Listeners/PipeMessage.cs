@@ -15,13 +15,15 @@
 
         public class Test
         {
-            public string FullName { get; set; }
+            public string Class { get; set; }
+            public string Method { get; set; }
             public string DisplayName { get; set; }
         }
 
         public abstract class TestResult
         {
-            public string FullName { get; set; }
+            public string Class { get; set; }
+            public string Method { get; set; }
             public string DisplayName { get; set; }
             public TimeSpan Duration { get; set; }
             public string Output { get; set; }

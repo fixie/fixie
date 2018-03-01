@@ -48,7 +48,8 @@
 
         void RecordResult(PipeMessage.TestResult result, Action<TestResult> customize = null)
         {
-            var testCase = new TestCase(result.FullName, VsTestExecutor.Uri, assemblyPath);
+            var fullName = result.Class + "." + result.Method;
+            var testCase = new TestCase(fullName, VsTestExecutor.Uri, assemblyPath);
 
             var testResult = new TestResult(testCase)
             {

@@ -33,7 +33,7 @@
 
             HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
 
-            var runAllTests = new PipeMessage.RunTests
+            var runAllTests = new PipeMessage.ExecuteTests
             {
                 Filter = new PipeMessage.Test[] { }
             };
@@ -65,7 +65,7 @@
 
                 RunTests(log, frameworkHandle, assemblyPath, pipe =>
                 {
-                    pipe.Send(new PipeMessage.RunTests
+                    pipe.Send(new PipeMessage.ExecuteTests
                     {
                         Filter = assemblyGroup.Select(x =>
                         {

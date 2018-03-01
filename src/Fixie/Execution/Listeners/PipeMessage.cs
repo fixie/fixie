@@ -6,7 +6,7 @@
     {
         public class DiscoverTests { }
 
-        public class RunTests
+        public class ExecuteTests
         {
             public Test[] Filter { get; set; }
         }

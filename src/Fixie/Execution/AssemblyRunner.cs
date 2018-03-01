@@ -52,12 +52,12 @@
                             var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
                             runner.DiscoverMethods(assembly, options, conventionArguments);
                         }
-                        else if (messageType == typeof(PipeMessage.RunTests).FullName)
+                        else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
                         {
-                            var runTests = pipe.Receive<PipeMessage.RunTests>();
+                            var executeTests = pipe.Receive<PipeMessage.ExecuteTests>();
 
-                            exitCode = runTests.Filter.Length > 0
-                                ? runner.RunTests(assembly, options, conventionArguments, runTests.Filter)
+                            exitCode = executeTests.Filter.Length > 0
+                                ? runner.RunTests(assembly, options, conventionArguments, executeTests.Filter)
                                 : runner.RunAssembly(assembly, options, conventionArguments);
                         }
                         else

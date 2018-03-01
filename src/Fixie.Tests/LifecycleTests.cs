@@ -271,7 +271,13 @@
             {
                 var instance = testClass.Construct();
 
-                runCases(@case => @case.Execute(instance));
+                runCases(@case =>
+                {
+                    if (@case.Method.Name.Contains("Skip"))
+                        return;
+
+                    @case.Execute(instance);
+                });
                 runCases(@case => @case.Execute(instance));
             }
         }
@@ -430,33 +436,34 @@
             output.ShouldHaveLifecycle(".ctor", ".ctor");
         }
 
-        public void ShouldFailTestRunWhenLifecycleThrows()
+        public void ShouldFailAllMethodsWhenLifecycleThrows()
         {
-            // When a lifecycle throws an exception, either a custom
-            // lifecycle directly threw an exception, the test runner
-            // encountered an unexpected error, or a listener failed
-            // to safely report an event. In all such cases, we're
-            // facing a catastrophic failure and need to fail the
-            // whole run in order to ensure the problem is reported
-            // to the user.
-
             Convention.Lifecycle<BuggyLifecycle>();
 
-            Action shouldThrow = () => Run<SampleTestClass>();
+            var output = Run<SampleTestClass>();
 
-            shouldThrow.ShouldThrow<Exception>("Unsafe lifecycle threw!");
+            output.ShouldHaveResults(
+                "SampleTestClass.Skip failed: Unsafe lifecycle threw!",
+                "SampleTestClass.Pass failed: Unsafe lifecycle threw!",
+                "SampleTestClass.Fail failed: Unsafe lifecycle threw!");
+
+            output.ShouldHaveLifecycle();
         }
 
-        public void ShouldFailTestRunWhenConstructingPerClassAndConstructorThrows()
+        public void ShouldFailAllMethodsWhenConstructingPerClassAndConstructorThrows()
         {
             FailDuring(".ctor");
 
             Convention.Lifecycle<CreateInstancePerClass>();
 
-            Action shouldThrow = () => Run<SampleTestClass>();
+            var output = Run<SampleTestClass>();
 
-            var exception = shouldThrow.ShouldThrow<PreservedException>("Exception of type 'Fixie.PreservedException' was thrown.");
-            exception.OriginalException.Message.ShouldEqual("'.ctor' failed!");
+            output.ShouldHaveResults(
+                "SampleTestClass.Skip failed: '.ctor' failed!",
+                "SampleTestClass.Pass failed: '.ctor' failed!",
+                "SampleTestClass.Fail failed: '.ctor' failed!");
+
+            output.ShouldHaveLifecycle(".ctor");
         }
 
         public void ShouldFailCasesWhenConstructingPerClassAndCaseSetUpThrows()
@@ -519,15 +526,28 @@
                 ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldFailTestRunWhenConstructingPerClassAndDisposeThrows()
+        public void ShouldFailAllMethodsAfterReportingPrimaryResultsWhenConstructingPerClassAndDisposeThrows()
         {
             FailDuring("Dispose");
 
             Convention.Lifecycle<CreateInstancePerClass>();
 
-            Action shouldThrow = () => Run<SampleTestClass>();
+            var output = Run<SampleTestClass>();
 
-            shouldThrow.ShouldThrow<FailureException>("'Dispose' failed!");
+            output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped: skipped by naming convention",
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+
+                "SampleTestClass.Skip failed: 'Dispose' failed!",
+                "SampleTestClass.Pass failed: 'Dispose' failed!",
+                "SampleTestClass.Fail failed: 'Dispose' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "CaseSetUp", "Pass", "CaseTearDown",
+                "CaseSetUp", "Fail", "CaseTearDown",
+                "Dispose");
         }
 
         public void ShouldSkipLifecycleWhenConstructingPerCaseAndAllCasesAreSkipped()
@@ -588,13 +608,23 @@
             output.ShouldHaveLifecycle(".ctor", "Dispose");
         }
 
-        public void ShouldFailTestRunWhenLifecycleAttemptsToProcessTestCaseLifecycleMultipleTimes()
+        public void ShouldFailAllMethodsAfterReportingPrimaryResultsWhenLifecycleAttemptsToProcessTestCaseLifecycleMultipleTimes()
         {
             Convention.Lifecycle<RunCasesTwice>();
 
-            Action shouldThrow = () => Run<SampleTestClass>();
+            var output = Run<SampleTestClass>();
 
-            shouldThrow.ShouldThrow<Exception>("Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.");
+            output.ShouldHaveResults(
+                "SampleTestClass.Skip skipped",
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+
+                "SampleTestClass.Skip failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.",
+                "SampleTestClass.Pass failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.",
+                "SampleTestClass.Fail failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.");
+
+            output.ShouldHaveLifecycle(
+                ".ctor", "Pass", "Fail");
         }
 
         public void ShouldAllowExecutingACaseMultipleTimesBeforeEmittingItsResult()

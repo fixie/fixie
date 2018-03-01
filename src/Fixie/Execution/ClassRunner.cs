@@ -46,62 +46,73 @@
 
             var orderedMethods = OrderedMethods(methods, summary);
 
+            bool classLifecycleFailed = false;
             bool runCasesInvokedByLifecycle = false;
-            lifecycle.Execute(runContext, caseLifecycle =>
+
+            try
             {
-                if (runCasesInvokedByLifecycle)
-                    throw new Exception($"{lifecycle.GetType()} attempted to run {testClass.FullName}'s test cases multiple times, which is not supported.");
-
-                runCasesInvokedByLifecycle = true;
-
-                foreach (var @case in YieldCases(orderedMethods, summary))
+                lifecycle.Execute(runContext, caseLifecycle =>
                 {
-                    Exception caseLifecycleException = null;
+                    if (runCasesInvokedByLifecycle)
+                        throw new Exception($"{lifecycle.GetType()} attempted to run {testClass.FullName}'s test cases multiple times, which is not supported.");
 
-                    string consoleOutput;
-                    using (var console = new RedirectedConsole())
+                    runCasesInvokedByLifecycle = true;
+
+                    foreach (var @case in YieldCases(orderedMethods, summary))
                     {
-                        var caseStopwatch = Stopwatch.StartNew();
+                        Exception caseLifecycleException = null;
 
-                        try
+                        string consoleOutput;
+                        using (var console = new RedirectedConsole())
                         {
-                            caseLifecycle(@case);
+                            var caseStopwatch = Stopwatch.StartNew();
+
+                            try
+                            {
+                                caseLifecycle(@case);
+                            }
+                            catch (Exception exception)
+                            {
+                                caseLifecycleException = exception;
+                            }
+
+                            caseStopwatch.Stop();
+
+                            @case.Duration += caseStopwatch.Elapsed;
+
+                            consoleOutput = console.Output;
+
+                            @case.Output += consoleOutput;
                         }
-                        catch (Exception exception)
+
+                        Console.Write(consoleOutput);
+
+                        var caseHasNormalResult = @case.State == CaseState.Failed || @case.State == CaseState.Passed;
+                        var caseLifecycleFailed = caseLifecycleException != null;
+
+                        if (caseHasNormalResult)
                         {
-                            caseLifecycleException = exception;
+                            if (@case.State == CaseState.Failed)
+                                Fail(@case, summary);
+                            else if (!caseLifecycleFailed)
+                                Pass(@case, summary);
                         }
 
-                        caseStopwatch.Stop();
-
-                        @case.Duration += caseStopwatch.Elapsed;
-
-                        consoleOutput = console.Output;
-
-                        @case.Output += consoleOutput;
+                        if (caseLifecycleFailed)
+                            Fail(new Case(@case, caseLifecycleException), summary);
+                        else if (!caseHasNormalResult)
+                            Skip(@case, summary);
                     }
+                });
+            }
+            catch (Exception exception)
+            {
+                classLifecycleFailed = true;
+                foreach (var method in orderedMethods)
+                    Fail(method, exception, summary);
+            }
 
-                    Console.Write(consoleOutput);
-
-                    var caseHasNormalResult = @case.State == CaseState.Failed || @case.State == CaseState.Passed;
-                    var caseLifecycleFailed = caseLifecycleException != null;
-
-                    if (caseHasNormalResult)
-                    {
-                        if (@case.State == CaseState.Failed)
-                            Fail(@case, summary);
-                        else if (!caseLifecycleFailed)
-                            Pass(@case, summary);
-                    }
-
-                    if (caseLifecycleFailed)
-                        Fail(new Case(@case, caseLifecycleException), summary);
-                    else if (!caseHasNormalResult)
-                        Skip(@case, summary);
-                }
-            });
-
-            if (!runCasesInvokedByLifecycle)
+            if (!runCasesInvokedByLifecycle && !classLifecycleFailed)
             {
                 //No cases ran, and we didn't already emit a general
                 //failure for each method, so emit a general skip for

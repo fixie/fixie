@@ -47,20 +47,18 @@
                     {
                         var messageType = pipe.ReceiveMessage();
 
-                        if (messageType == typeof(PipeMessage.DiscoverMethods).FullName)
+                        if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
                         {
-                            var discoverMethods = pipe.Receive<PipeMessage.DiscoverMethods>();
+                            var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
                             runner.DiscoverMethods(assembly, options, conventionArguments);
                         }
-                        else if (messageType == typeof(PipeMessage.RunMethods).FullName)
+                        else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
                         {
-                            var runMethods = pipe.Receive<PipeMessage.RunMethods>();
-                            exitCode = runner.RunMethods(assembly, options, conventionArguments, runMethods.Methods);
-                        }
-                        else if (messageType == typeof(PipeMessage.RunAssembly).FullName)
-                        {
-                            var runAssembly = pipe.Receive<PipeMessage.RunAssembly>();
-                            exitCode = runner.RunAssembly(assembly, options, conventionArguments);
+                            var executeTests = pipe.Receive<PipeMessage.ExecuteTests>();
+
+                            exitCode = executeTests.Filter.Length > 0
+                                ? runner.RunTests(assembly, options, conventionArguments, executeTests.Filter)
+                                : runner.RunAssembly(assembly, options, conventionArguments);
                         }
                         else
                         {
@@ -121,11 +119,9 @@
             return Run(options, conventionArguments, runner => runner.RunAssembly(assembly));
         }
 
-        int RunMethods(Assembly assembly, Options options, string[] conventionArguments, string[] methods)
+        int RunTests(Assembly assembly, Options options, string[] conventionArguments, PipeMessage.Test[] tests)
         {
-            var methodGroups = methods.Select(x => new MethodGroup(x)).ToArray();
-
-            return Run(options, conventionArguments, r => r.RunMethods(assembly, methodGroups));
+            return Run(options, conventionArguments, r => r.RunTests(assembly, tests));
         }
 
         int Run(Options options, string[] conventionArguments, Func<Runner, ExecutionSummary> run)

@@ -4,25 +4,25 @@
 
     public static class PipeMessage
     {
-        public class DiscoverMethods { }
+        public class DiscoverTests { }
 
-        public class RunAssembly { }
-
-        public class RunMethods
+        public class ExecuteTests
         {
-            public string[] Methods { get; set; }
+            public Test[] Filter { get; set; }
         }
 
         public class Test
         {
-            public string FullName { get; set; }
-            public string DisplayName { get; set; }
+            public string Class { get; set; }
+            public string Method { get; set; }
+            public string Name { get; set; }
         }
 
         public abstract class TestResult
         {
-            public string FullName { get; set; }
-            public string DisplayName { get; set; }
+            public string Class { get; set; }
+            public string Method { get; set; }
+            public string Name { get; set; }
             public TimeSpan Duration { get; set; }
             public string Output { get; set; }
         }
@@ -49,12 +49,12 @@
 
             public Exception(System.Exception exception)
             {
-                TypeName = exception.TypeName();
+                Type = exception.TypeName();
                 Message = exception.Message;
                 StackTrace = exception.CompoundStackTrace();
             }
 
-            public string TypeName { get; set; }
+            public string Type { get; set; }
             public string Message { get; set; }
             public string StackTrace { get; set; }
         }

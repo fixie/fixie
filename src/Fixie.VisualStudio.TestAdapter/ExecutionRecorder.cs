@@ -40,7 +40,7 @@
             {
                 x.Outcome = TestOutcome.Failed;
                 x.ErrorMessage = result.Exception.Message;
-                x.ErrorStackTrace = result.Exception.TypeName +
+                x.ErrorStackTrace = result.Exception.Type +
                                     NewLine +
                                     result.Exception.StackTrace;
             });
@@ -48,11 +48,12 @@
 
         void RecordResult(PipeMessage.TestResult result, Action<TestResult> customize = null)
         {
-            var testCase = new TestCase(result.FullName, VsTestExecutor.Uri, assemblyPath);
+            var fullName = result.Class + "." + result.Method;
+            var testCase = new TestCase(fullName, VsTestExecutor.Uri, assemblyPath);
 
             var testResult = new TestResult(testCase)
             {
-                DisplayName = result.DisplayName,
+                DisplayName = result.Name,
                 Duration = result.Duration,
                 ComputerName = MachineName
             };

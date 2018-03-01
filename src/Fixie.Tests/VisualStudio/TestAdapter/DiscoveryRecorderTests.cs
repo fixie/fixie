@@ -25,8 +25,9 @@
             
             discoveryRecorder.SendTestCase(new PipeMessage.Test
             {
-                FullName = methodGroup.FullName,
-                DisplayName = methodGroup.FullName
+                Class = methodGroup.Class,
+                Method = methodGroup.Method,
+                Name = methodGroup.FullName
             });
 
             log.Messages.ShouldBeEmpty();
@@ -48,8 +49,9 @@
 
             discoveryRecorder.SendTestCase(new PipeMessage.Test
             {
-                FullName = methodGroup.FullName,
-                DisplayName = methodGroup.FullName
+                Class = methodGroup.Class,
+                Method = methodGroup.Method,
+                Name = methodGroup.FullName
             });
 
             log.Messages.Single().Contains(nameof(FileNotFoundException)).ShouldBeTrue();

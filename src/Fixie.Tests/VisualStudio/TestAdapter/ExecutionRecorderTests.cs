@@ -21,21 +21,23 @@
 
             executionRecorder.RecordResult(new PipeMessage.PassResult
             {
-                FullName = "Namespace.Class.Pass",
-                DisplayName = "Namespace.Class.Pass",
+                Class = "Namespace.Class",
+                Method = "Pass",
+                Name = "Namespace.Class.Pass",
                 Duration = TimeSpan.FromSeconds(1),
                 Output = "Output"
             });
 
             executionRecorder.RecordResult(new PipeMessage.FailResult
             {
-                FullName = "Namespace.Class.Fail",
-                DisplayName = "Namespace.Class.Fail",
+                Class = "Namespace.Class",
+                Method = "Fail",
+                Name = "Namespace.Class.Fail",
                 Duration = TimeSpan.FromSeconds(2),
                 Output = "Output",
                 Exception = new PipeMessage.Exception
                 {
-                    TypeName = "Exception Type Name",
+                    Type = "Exception Type",
                     Message = "Exception Message",
                     StackTrace = "Exception Stack Trace"
                 }
@@ -43,8 +45,9 @@
 
             executionRecorder.RecordResult(new PipeMessage.SkipResult
             {
-                FullName = "Namespace.Class.Skip",
-                DisplayName = "Namespace.Class.Skip",
+                Class = "Namespace.Class",
+                Method = "Skip",
+                Name = "Namespace.Class.Skip",
                 Duration = TimeSpan.Zero,
                 Output = null,
                 Reason = "Skip Reason"
@@ -79,7 +82,7 @@
             fail.TestCase.DisplayName.ShouldEqual("Namespace.Class.Fail");
             fail.Outcome.ShouldEqual(TestOutcome.Failed);
             fail.ErrorMessage.ShouldEqual("Exception Message");
-            fail.ErrorStackTrace.ShouldEqual("Exception Type Name" + NewLine + "Exception Stack Trace");
+            fail.ErrorStackTrace.ShouldEqual("Exception Type" + NewLine + "Exception Stack Trace");
             fail.DisplayName.ShouldEqual("Namespace.Class.Fail");
             fail.Messages.Count.ShouldEqual(1);
             fail.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);

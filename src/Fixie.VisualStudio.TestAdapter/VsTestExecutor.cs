@@ -33,8 +33,13 @@
 
             HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
 
+            var runAllTests = new PipeMessage.ExecuteTests
+            {
+                Filter = new PipeMessage.Test[] { }
+            };
+
             foreach (var assemblyPath in sources)
-                RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send<PipeMessage.RunAssembly>());
+                RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
         }
 
         /// <summary>
@@ -60,9 +65,19 @@
 
                 RunTests(log, frameworkHandle, assemblyPath, pipe =>
                 {
-                    pipe.Send(new PipeMessage.RunMethods
+                    pipe.Send(new PipeMessage.ExecuteTests
                     {
-                        Methods = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
+                        Filter = assemblyGroup.Select(x =>
+                        {
+                            var methodGroup = new MethodGroup(x.FullyQualifiedName);
+
+                            return new PipeMessage.Test
+                            {
+                                Class = methodGroup.Class,
+                                Method = methodGroup.Method,
+                                Name = methodGroup.FullName
+                            };
+                        }).ToArray()
                     });
                 });
             }

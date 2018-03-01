@@ -12,7 +12,7 @@
                 .AppendLine()
                 .AppendLine(exception.Message)
                 .AppendLine()
-                .AppendLine(exception.TypeName)
+                .AppendLine(exception.Type)
                 .AppendLine(exception.StackTrace)
                 .ToString())
         {

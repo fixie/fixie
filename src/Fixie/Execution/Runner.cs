@@ -5,6 +5,7 @@
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
+    using Listeners;
 
     class Runner
     {
@@ -43,11 +44,11 @@
             return Run(assembly, new[] { convention }, types);
         }
 
-        public ExecutionSummary RunMethods(Assembly assembly, MethodGroup[] methodGroups)
+        public ExecutionSummary RunTests(Assembly assembly, PipeMessage.Test[] tests)
         {
-            var types = GetTypes(assembly, methodGroups);
+            var types = GetTypes(assembly, tests);
 
-            var methods = GetMethods(types, methodGroups);
+            var methods = GetMethods(types, tests);
 
             var conventions = GetConventions(assembly);
 
@@ -75,20 +76,20 @@
                 yield return nested;
         }
 
-        static Dictionary<string, Type> GetTypes(Assembly assembly, MethodGroup[] methodGroups)
+        static Dictionary<string, Type> GetTypes(Assembly assembly, PipeMessage.Test[] tests)
         {
             var types = new Dictionary<string, Type>();
 
-            foreach (var methodGroup in methodGroups)
-                if (!types.ContainsKey(methodGroup.Class))
-                    types.Add(methodGroup.Class, assembly.GetType(methodGroup.Class));
+            foreach (var test in tests)
+                if (!types.ContainsKey(test.Class))
+                    types.Add(test.Class, assembly.GetType(test.Class));
 
             return types;
         }
 
-        static MethodInfo[] GetMethods(Dictionary<string, Type> classes, MethodGroup[] methodGroups)
+        static MethodInfo[] GetMethods(Dictionary<string, Type> classes, PipeMessage.Test[] tests)
         {
-            return methodGroups
+            return tests
                 .SelectMany(methodGroup =>
                     classes[methodGroup.Class]
                         .GetMethods(BindingFlags.Public | BindingFlags.Instance)

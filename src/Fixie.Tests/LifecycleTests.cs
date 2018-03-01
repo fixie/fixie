@@ -279,6 +279,8 @@
                     @case.Execute(instance);
                 });
                 runCases(@case => @case.Execute(instance));
+
+                instance.Dispose();
             }
         }
 
@@ -298,6 +300,8 @@
                     if (@case.Exception != null)
                         @case.Execute(instance);
                 });
+
+                instance.Dispose();
             }
         }
 
@@ -639,7 +643,7 @@
                 "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Pass", "Fail", "Fail");
+                ".ctor", "Pass", "Fail", "Fail", "Dispose");
         }
     }
 }

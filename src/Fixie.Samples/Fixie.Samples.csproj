@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\build\Fixie.Program.cs" />
+    <Compile Include="..\..\build\Fixie.Program.cs" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Language)'=='C#'">
-    <Compile Include="$(MSBuildThisFileDirectory)Fixie.Program$(DefaultLanguageSourceExtension)" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fixie.Program$(DefaultLanguageSourceExtension)" Visible="false" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(MSBuildRuntimeType)' == 'Core'">

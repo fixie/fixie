@@ -13,7 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Fixie.Program$(DefaultLanguageSourceExtension)" Visible="false" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(MSBuildRuntimeType)' == 'Core'">
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
     <None Include="$(MSBuildThisFileDirectory)..\lib\netcoreapp2.0\Fixie.VisualStudio.TestAdapter.dll">
       <Link>Fixie.VisualStudio.TestAdapter.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -21,7 +21,7 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(MSBuildRuntimeType)' == 'Core'">
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
     <None Include="$(MSBuildThisFileDirectory)..\lib\netcoreapp2.0\Fixie.dll">
       <Link>Fixie.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

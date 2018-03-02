@@ -49,12 +49,8 @@
 
     <!-- Run Time Support -->
 
-    <file target="build\net471\Fixie.props" src="..\..\build\Fixie.props" />
-    <file target="build\netcoreapp2.0\Fixie.props" src="..\..\build\Fixie.props" />
-
-    <file target="build\net471\Fixie.targets" src="..\..\build\Fixie.targets" />
-    <file target="build\netcoreapp2.0\Fixie.targets" src="..\..\build\Fixie.targets" />
-
+    <file target="build\" src="..\..\build\Fixie.props" />
+    <file target="build\" src="..\..\build\Fixie.targets" />
     <file target="build\" src="..\..\build\Fixie.Program.cs" />
   </files>
 </package>

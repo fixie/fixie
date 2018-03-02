@@ -52,5 +52,8 @@
     <file target="build\" src="..\..\build\Fixie.props" />
     <file target="build\" src="..\..\build\Fixie.targets" />
     <file target="build\" src="..\..\build\Fixie.Program.cs" />
+
+    <file target="buildMultiTargeting\" src="..\..\buildMultiTargeting\Fixie.props" />
+    <file target="buildMultiTargeting\" src="..\..\buildMultiTargeting\Fixie.targets" />
   </files>
 </package>

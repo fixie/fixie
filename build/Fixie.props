@@ -1,26 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
+
   <PropertyGroup>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
+
   <ItemGroup>
     <ProjectCapability Include="TestContainer" />
   </ItemGroup>
+
   <ItemGroup Condition="'$(Language)'=='C#'">
     <Compile Include="$(MSBuildThisFileDirectory)..\Fixie.Program$(DefaultLanguageSourceExtension)"/>
   </ItemGroup>
-  <ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildRuntimeType)' == 'Core'">
     <None Include="$(MSBuildThisFileDirectory)..\..\lib\netcoreapp2.0\Fixie.VisualStudio.TestAdapter.dll">
       <Link>Fixie.VisualStudio.TestAdapter.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>False</Visible>
     </None>
   </ItemGroup>
-  <ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildRuntimeType)' == 'Core'">
     <None Include="$(MSBuildThisFileDirectory)..\..\lib\netcoreapp2.0\Fixie.dll">
       <Link>Fixie.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>False</Visible>
     </None>
   </ItemGroup>
+
 </Project>

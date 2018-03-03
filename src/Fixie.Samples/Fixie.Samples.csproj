@@ -1,97 +1,33 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C7032636-BD20-479B-8A2B-E488B020517F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Fixie.Samples</RootNamespace>
-    <AssemblyName>Fixie.Samples</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <TargetFrameworks>netcoreapp2.0;net471</TargetFrameworks>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net471'">
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Should, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Should.1.1.20\lib\Should.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <ProjectCapability Include="TestContainer" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Calculator.cs" />
-    <Compile Include="Categories\CalculatorTests.cs" />
-    <Compile Include="Categories\CustomConvention.cs" />
-    <Compile Include="Categories\Attributes.cs" />
-    <Compile Include="Inclusive\CustomConvention.cs" />
-    <Compile Include="IoC\CustomConvention.cs" />
-    <Compile Include="IoC\Infrastructure.cs" />
-    <Compile Include="IoC\IoCTests.cs" />
-    <Compile Include="LowCeremony\CalculatorTests.cs" />
-    <Compile Include="LowCeremony\CustomConvention.cs" />
-    <Compile Include="MbUnitStyle\Attributes.cs" />
-    <Compile Include="MbUnitStyle\CalculatorTests.cs" />
-    <Compile Include="MbUnitStyle\CustomConvention.cs" />
-    <Compile Include="Nested\CalculatorTests.cs" />
-    <Compile Include="Nested\CustomConvention.cs" />
-    <Compile Include="NUnitStyle\CalculatorTests.cs" />
-    <Compile Include="NUnitStyle\CustomConvention.cs" />
-    <Compile Include="NUnitStyle\Attributes.cs" />
-    <Compile Include="NUnitStyle\TestCaseSourceAttributeCalculatorTests.cs" />
-    <Compile Include="Parameterized\CalculatorTests.cs" />
-    <Compile Include="Parameterized\CustomConvention.cs" />
-    <Compile Include="Parameterized\InputAttribute.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SamplesAssembly.cs" />
-    <Compile Include="Shuffle\CustomConvention.cs" />
-    <Compile Include="Shuffle\OrderTests.cs" />
-    <Compile Include="Skipped\ExplicitAttribute.cs" />
-    <Compile Include="Skipped\ExplicitClassTests.cs" />
-    <Compile Include="Skipped\SkipAttribute.cs" />
-    <Compile Include="Skipped\SkipClassTests.cs" />
-    <Compile Include="Skipped\CustomConvention.cs" />
-    <Compile Include="Skipped\SkipMethodTests.cs" />
-    <Compile Include="StringBuilderExtensions.cs" />
-    <Compile Include="xUnitStyle\CalculatorTests.cs" />
-    <Compile Include="xUnitStyle\CustomConvention.cs" />
-    <Compile Include="xUnitStyle\FactAttribute.cs" />
-    <Compile Include="xUnitStyle\IUseFixture.cs" />
+    <Compile Include="..\..\build\Fixie.Program.cs" Visible="false" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Fixie\Fixie.csproj">
-      <Project>{474ff43b-4580-4032-999b-a717eb7a0cd3}</Project>
-      <Name>Fixie</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Fixie.Assertions\Fixie.Assertions.csproj" />
+    <ProjectReference Include="..\Fixie\Fixie.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <ProjectReference Include="..\Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

@@ -1,9 +1,7 @@
-using System;
-using System.Linq;
-using Fixie.Internal;
-
 namespace Fixie.Conventions
 {
+    using System;
+
     public class ClassExpression
     {
         readonly Configuration config;
@@ -22,38 +20,6 @@ namespace Fixie.Conventions
         {
             config.AddTestClassCondition(condition);
             return this;
-        }
-
-        /// <summary>
-        /// Limits discovered test classes to those classes which have the specified attribute.
-        /// </summary>
-        public ClassExpression Has<TAttribute>() where TAttribute : Attribute
-        {
-            return Where(type => type.Has<TAttribute>());
-        }
-
-        /// <summary>
-        /// Limits discovered test classes to those classes which have or inherit the specified attribute.
-        /// </summary>
-        public ClassExpression HasOrInherits<TAttribute>() where TAttribute : Attribute
-        {
-            return Where(type => type.HasOrInherits<TAttribute>());
-        }
-
-        /// <summary>
-        /// Limits discovered test classes to those whose names end with any of the given suffixes.
-        /// </summary>
-        public ClassExpression NameEndsWith(params string[] suffixes)
-        {
-            return Where(type => suffixes.Any(suffix => type.Name.EndsWith(suffix)));
-        }
-
-        /// <summary>
-        /// Limits discovered test classes to those in the same namespace (and below) as any of the specified types.
-        /// </summary>
-        public ClassExpression InTheSameNamespaceAs(params Type[] targetTypes)
-        {
-            return Where(type => targetTypes.Any(targetType => type.IsInNamespace(targetType.Namespace)));
         }
     }
 }

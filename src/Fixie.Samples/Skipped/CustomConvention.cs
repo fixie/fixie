@@ -1,55 +1,43 @@
-﻿using System;
-
-namespace Fixie.Samples.Skipped
+﻿namespace Fixie.Samples.Skipped
 {
+    using System;
+
     public class CustomConvention : Convention
     {
         public CustomConvention()
         {
             Classes
-                .InTheSameNamespaceAs(typeof(CustomConvention))
-                .NameEndsWith("Tests");
+                .Where(x => x.IsInNamespace(GetType().Namespace))
+                .Where(x => x.Name.EndsWith("Tests"));
 
             Methods
-                .Where(method => method.IsVoid());
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
-            CaseExecution
-                .Skip(SkipDueToClassLevelExplicitAttribute, @case => "Tests within [Explicit] classes run only when the class is individually selected for execution.")
-                .Skip(SkipDueToMethodLevelExplicitAttribute, @case => "[Explicit] tests run only when they are individually selected for execution.")
-                .Skip(SkipDueToClassLevelSkipAttribute, @case => "whole class skipped")
-                .Skip(SkipDueToMethodLevelSkipAttribute);
-
-            ClassExecution
-                .CreateInstancePerClass()
-                .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
+            Lifecycle<SkipLifecycle>();
         }
 
-        bool SkipDueToClassLevelExplicitAttribute(Case @case)
+        class SkipLifecycle : Lifecycle
         {
-            var method = @case.Method;
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            {
+                var methodWasExplicitlyRequested = testClass.TargetMethod != null;
 
-            var isMarkedExplicit = method.DeclaringType.Has<ExplicitAttribute>();
+                var skipClass = testClass.Type.Has<SkipAttribute>() && !methodWasExplicitlyRequested;
 
-            return isMarkedExplicit && TargetMember != method.DeclaringType && TargetMember != method;
-        }
+                var instance = skipClass ? null : testClass.Construct();
 
-        bool SkipDueToMethodLevelExplicitAttribute(Case @case)
-        {
-            var method = @case.Method;
+                runCases(@case =>
+                {
+                    var skipMethod = @case.Method.Has<SkipAttribute>() && !methodWasExplicitlyRequested;
 
-            var isMarkedExplicit = method.Has<ExplicitAttribute>();
+                    if (skipClass)
+                        @case.Skip("Whole class skipped");
+                    else if (!skipMethod)
+                        @case.Execute(instance);
+                });
 
-            return isMarkedExplicit && TargetMember != method;
-        }
-
-        static bool SkipDueToClassLevelSkipAttribute(Case @case)
-        {
-            return @case.Method.DeclaringType.Has<SkipAttribute>();
-        }
-
-        static bool SkipDueToMethodLevelSkipAttribute(Case @case)
-        {
-            return @case.Method.Has<SkipAttribute>();
+                instance.Dispose();
+            }
         }
     }
 }

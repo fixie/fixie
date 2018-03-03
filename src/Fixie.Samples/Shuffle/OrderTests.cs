@@ -1,8 +1,8 @@
-﻿using System;
-using System.Text;
-
-namespace Fixie.Samples.Shuffle
+﻿namespace Fixie.Samples.Shuffle
 {
+    using System;
+    using System.Text;
+
     public class OrderTests : IDisposable
     {
         readonly StringBuilder log;

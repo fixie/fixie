@@ -5,11 +5,8 @@
         public CustomConvention()
         {
             Classes
-                .InTheSameNamespaceAs(typeof(CustomConvention))
-                .NameEndsWith("Tests");
-
-            Methods
-                .Where(method => method.IsVoid());
+                .Where(x => x.IsInNamespace(GetType().Namespace))
+                .Where(x => x.Name.EndsWith("Tests"));
         }
     }
 }

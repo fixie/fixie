@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.MbUnitStyle
+﻿namespace Fixie.Samples.MbUnitStyle
 {
+    using System;
+    using System.Text;
+    using Assertions;
+
     [TestFixture]
     public class CalculatorTests : IDisposable
     {
@@ -31,7 +31,7 @@ namespace Fixie.Samples.MbUnitStyle
 
         [Test]
         [Row(2, 3, 5)]
-        [Row(3, 5, 8)]
+        [Row(3, "5", 8)]
         public void ShouldAdd(int a, int b, int expectedSum)
         {
             log.AppendLine($"ShouldAdd({a}, {b}, {expectedSum})");
@@ -40,7 +40,7 @@ namespace Fixie.Samples.MbUnitStyle
 
         [Test]
         public void ShouldSubtract([Column(7, 8, 9)] int a,
-                                   [Column(5, 6)] int b)
+                                   [Column("5", 6)] int b)
         {
             log.AppendLine($"ShouldSubtract({a}, {b})");
             calculator.Subtract(a, b).ShouldEqual(a - b);

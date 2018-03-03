@@ -1,24 +1,24 @@
-﻿using System;
-
-namespace Fixie.Samples.MbUnitStyle
+﻿namespace Fixie.Samples.MbUnitStyle
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Class)]
-    public class TestFixtureAttribute : Attribute { }
+    public class TestFixture : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class FixtureSetUpAttribute : Attribute { }
+    public class FixtureSetUp : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class SetUpAttribute : Attribute { }
+    public class SetUp : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class TestAttribute : Attribute { }
+    public class Test : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class TearDownAttribute : Attribute { }
+    public class TearDown : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class FixtureTearDownAttribute : Attribute { }
+    public class FixtureTearDown : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class ExpectedExceptionAttribute : Attribute

@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
-
-namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using Mono.Cecil;
+    using Mono.Cecil.Cil;
+    using Mono.Cecil.Rocks;
+
     public class SourceLocationProvider
     {
         readonly string assemblyPath;
@@ -51,14 +51,9 @@ namespace Fixie.VisualStudio.TestAdapter
         }
 
         IEnumerable<MethodDefinition> GetMethods(string className)
-        {
-            TypeDefinition type;
-
-            if (types.TryGetValue(StandardizeTypeName(className), out type))
-                return type.GetMethods();
-            
-            return Enumerable.Empty<MethodDefinition>();
-        }
+            => types.TryGetValue(StandardizeTypeName(className), out TypeDefinition type)
+                ? type.GetMethods()
+                : Enumerable.Empty<MethodDefinition>();
 
         static SequencePoint FirstOrDefaultSequencePoint(MethodDefinition testMethod)
         {

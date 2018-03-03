@@ -3,29 +3,57 @@
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <authors>$authors$</authors>
+    <owners>$authors$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://fixie.github.io</projectUrl>
     <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A convention-based test framework.</description>
+    <description>$description$</description>
+    <copyright>$copyright$</copyright>
+    <repository url="https://github.com/fixie/fixie" />
     <references>
       <reference file="Fixie.dll" />
     </references>
+    <dependencies>
+      <group targetFramework="net471" />
+      <group targetFramework="netcoreapp2.0">
+        <dependency id="Microsoft.TestPlatform.TestHost" version="15.5.0" />
+        <dependency id="Mono.Cecil" version="0.10.0-beta7" />
+      </group>
+    </dependencies>
   </metadata>
   <files>
-    <file src="..\..\build\Fixie.Console.exe" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.Console.exe.config" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.Console.x86.exe" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.Console.x86.exe.config" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.dll.tdnet" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.TestDriven.dll" target="lib/net45"></file>
-    <file src="..\..\build\TestDriven.Framework.dll" target="lib/net45"></file>
-    <file src="..\..\build\Fixie.VisualStudio.TestAdapter.dll" target="lib/net45"></file>
-    <file src="..\..\build\Mono.Cecil.dll" target="lib/net45"></file>
-    <file src="..\..\build\Mono.Cecil.Rocks.dll" target="lib/net45"></file>
-    <file src="..\..\build\Mono.Cecil.Pdb.dll" target="lib/net45"></file>
+    <!-- Reference Library -->
+
+    <file target="lib\net471" src="..\Fixie\bin\Release\net471\Fixie.dll" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie\bin\Release\netstandard2.0\Fixie.dll" />
+
+    <!-- TestDriven.NET Adapter -->
+
+    <file target="lib\net471" src="..\Fixie.TestDriven\bin\Release\net471\Fixie.dll.tdnet" />
+    <file target="lib\net471" src="..\Fixie.TestDriven\bin\Release\net471\Fixie.TestDriven.dll" />
+    <file target="lib\net471" src="..\Fixie.TestDriven\bin\Release\net471\TestDriven.Framework.dll" />
+
+    <file target="lib\netcoreapp2.0" src="..\Fixie.TestDriven\bin\Release\netcoreapp2.0\Fixie.dll.tdnet" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie.TestDriven\bin\Release\netcoreapp2.0\Fixie.TestDriven.dll" />
+
+    <!-- Visual Studio Adapter -->
+
+    <file target="lib\net471" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net471\Fixie.VisualStudio.TestAdapter.dll" />
+    <file target="lib\net471" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net471\Mono.Cecil.dll" />
+    <file target="lib\net471" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net471\Mono.Cecil.Rocks.dll" />
+    <file target="lib\net471" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net471\Mono.Cecil.Pdb.dll" />
+
+    <file target="lib\netcoreapp2.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp2.0\Fixie.VisualStudio.TestAdapter.dll" />
+
+    <!-- Run Time Support -->
+
+    <file target="build\" src="..\..\build\Fixie.props" />
+    <file target="build\" src="..\..\build\Fixie.targets" />
+    <file target="build\" src="..\..\build\Fixie.Program.cs" />
+
+    <file target="buildMultiTargeting\" src="..\..\buildMultiTargeting\Fixie.props" />
+    <file target="buildMultiTargeting\" src="..\..\buildMultiTargeting\Fixie.targets" />
   </files>
 </package>

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.Skipped
+﻿namespace Fixie.Samples.Skipped
 {
+    using System;
+    using System.Text;
+    using Assertions;
+
     public class SkipMethodTests : IDisposable
     {
-        Calculator calculator;
+        readonly Calculator calculator;
         readonly StringBuilder log;
 
         public SkipMethodTests()
@@ -23,21 +23,15 @@ namespace Fixie.Samples.Skipped
         }
 
         [Skip]
-        public void ShouldNotBeCalled()
+        public void ShouldBeSkipped()
         {
-            throw new Exception("This test should be skipped.");
+            throw new Exception(nameof(ShouldBeSkipped) + " was invoked explicitly.");
         }
 
         public void ShouldSubtract()
         {
             log.WhereAmI();
             calculator.Subtract(5, 3).ShouldEqual(2);
-        }
-
-        [Explicit]
-        public void ExplicitTest()
-        {
-            throw new Exception("ExplicitTest was invoked explicitly.");
         }
 
         public void Dispose()

@@ -1,9 +1,16 @@
-﻿using Fixie.Execution;
-using TestDriven.Framework;
+﻿using TestDriven.Framework;
 
 namespace Fixie.TestDriven
 {
-    public class TestDrivenListener : Listener
+    using System;
+    using Execution;
+    using Execution.Listeners;
+    using static System.Environment;
+
+    public class TestDrivenListener :
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly ITestListener tdnet;
 
@@ -12,42 +19,44 @@ namespace Fixie.TestDriven
             this.tdnet = tdnet;
         }
 
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void Handle(CaseSkipped message)
         {
-        }
-
-        public void CaseSkipped(SkipResult result)
-        {
-            tdnet.TestFinished(new TestResult
+            Log(message, x =>
             {
-                Name = result.Name,
-                State = TestState.Ignored,
-                Message = result.SkipReason
+                x.State = TestState.Ignored;
+                x.Message = message.Reason;
             });
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(CasePassed message)
         {
-            tdnet.TestFinished(new TestResult
+            Log(message, x =>
             {
-                Name = result.Name,
-                State = TestState.Passed
+                x.State = TestState.Passed;
             });
         }
 
-        public void CaseFailed(FailResult result)
+        public void Handle(CaseFailed message)
         {
-            tdnet.TestFinished(new TestResult
+            Log(message, x =>
             {
-                Name = result.Name,
-                State = TestState.Failed,
-                Message = result.Exceptions.PrimaryException.DisplayName,
-                StackTrace = result.Exceptions.CompoundStackTrace,
+                x.State = TestState.Failed;
+                x.Message = message.Exception.TypeName();
+                x.StackTrace =
+                    message.Exception.Message +
+                    NewLine +
+                    NewLine +
+                    message.Exception.CompoundStackTrace();
             });
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
+        void Log(CaseCompleted message, Action<TestResult> customize)
         {
+            var testResult = new TestResult { Name = message.Name };
+
+            customize(testResult);
+
+            tdnet.TestFinished(testResult);
         }
     }
 }

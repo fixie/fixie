@@ -1,41 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace Fixie.Samples.MbUnitStyle
+﻿namespace Fixie.Samples.MbUnitStyle
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public class CustomConvention : Convention
     {
         public CustomConvention()
         {
             Classes
-                .HasOrInherits<TestFixtureAttribute>();
+                .Where(x => x.HasOrInherits<TestFixture>());
 
             Methods
-                .HasOrInherits<TestAttribute>();
-
-            ClassExecution
-                    .CreateInstancePerClass()
-                    .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
-
-            FixtureExecution
-                .Wrap<FixtureSetUpTearDown>();
-
-            CaseExecution
-                .Wrap<SupportExpectedExceptions>()
-                .Wrap<SetUpTearDown>();
+                .Where(x => x.HasOrInherits<Test>())
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             Parameters
                 .Add<RowAttributeParameterSource>()
                 .Add<ColumnAttributeParameterSource>();
+
+            Lifecycle<SetUpTearDown>();
         }
 
         class RowAttributeParameterSource : ParameterSource
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
-                return method.GetCustomAttributes<RowAttribute>(true).Select(input => input.Parameters);
+                ParameterInfo[] parameterInfos = method.GetParameters();
+
+                var rowAttributes = method.GetCustomAttributes<RowAttribute>(true);
+
+                foreach (var rowAttribute in rowAttributes)
+                {
+                    object[] parameters = rowAttribute.Parameters;
+
+                    for (int i = 0; i < parameterInfos.Length; i++)
+                    {
+                        parameters[i] = ChangeType(parameters[i], parameterInfos[i].ParameterType);
+                    }
+
+                    yield return parameters;
+                }
             }
         }
 
@@ -48,17 +54,28 @@ namespace Fixie.Samples.MbUnitStyle
 
             static IEnumerable<object[]> Columns(MethodInfo method)
             {
-                ParameterInfo[] parameters = method.GetParameters();
+                ParameterInfo[] parameterInfos = method.GetParameters();
 
-                if (parameters.Length == 0)
+                if (parameterInfos.Length == 0)
                     return null;
 
-                if (parameters[0].GetCustomAttributes<ColumnAttribute>(true).Any() == false)
+                if (parameterInfos[0].GetCustomAttributes<ColumnAttribute>(true).Any() == false)
                     return null;
 
-                return parameters
-                    .Select(parameter =>
-                        parameter.GetCustomAttributes<ColumnAttribute>(true).Single().Parameters);
+                return GetColumnParameters(parameterInfos);
+            }
+
+            static IEnumerable<object[]> GetColumnParameters(ParameterInfo[] parameterInfos)
+            {
+                foreach (var parameterInfo in parameterInfos)
+                {
+                    yield return parameterInfo
+                        .GetCustomAttributes<ColumnAttribute>(true)
+                        .Single()
+                        .Parameters
+                        .Select(x => ChangeType(x, parameterInfo.ParameterType))
+                        .ToArray();
+                }
             }
 
             static IEnumerable<object[]> CartesianProduct(IEnumerable<object[]> sequences)
@@ -78,87 +95,78 @@ namespace Fixie.Samples.MbUnitStyle
                         select accseq.Concat(new[] { item }).ToArray());
             }
         }
+
+        static object ChangeType(object parameter, Type type)
+        {
+            if (parameter != null && parameter.GetType() != type)
+            {
+                try
+                {
+                    parameter = Convert.ChangeType(parameter, type);
+                }
+                catch { }
+            }
+
+            return parameter;
+        }
     }
 
-    class SupportExpectedExceptions : CaseBehavior
+    class SetUpTearDown : Lifecycle
     {
-        public void Execute(Case @case, Action next)
+        public void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
-            next();
+            var instance = testClass.Construct();
 
+            testClass.Execute<FixtureSetUp>(instance);
+            runCases(@case =>
+            {
+                testClass.Execute<SetUp>(instance);
+
+                @case.Execute(instance);
+
+                HandleExpectedExceptions(@case);
+
+                testClass.Execute<TearDown>(instance);
+            });
+            testClass.Execute<FixtureTearDown>(instance);
+
+            instance.Dispose();
+        }
+
+        static void HandleExpectedExceptions(Case @case)
+        {
             var attribute = @case.Method.GetCustomAttributes<ExpectedExceptionAttribute>(false).SingleOrDefault();
 
             if (attribute == null)
                 return;
 
-            if (@case.Exceptions.Count > 1)
-                return;
+            var exception = @case.Exception;
 
-            var exception = @case.Exceptions.SingleOrDefault();
-
-            if (exception == null)
-                throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
-
-            if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
+            try
             {
-                @case.ClearExceptions();
+                if (exception == null)
+                    throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
 
-                throw new Exception("Expected exception of type " + attribute.ExpectedException + " but an exception of type " + exception.GetType() + " was thrown.", exception);
-            }
-
-            if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
-            {
-                @case.ClearExceptions();
-
-                throw new Exception("Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.", exception);
-            }
-
-            @case.ClearExceptions();
-        }
-    }
-
-    class SetUpTearDown : CaseBehavior
-    {
-        public void Execute(Case @case, Action next)
-        {
-            @case.Class.InvokeAll<SetUpAttribute>(@case.Fixture.Instance);
-            next();
-            @case.Class.InvokeAll<TearDownAttribute>(@case.Fixture.Instance);
-        }
-    }
-
-    class FixtureSetUpTearDown : FixtureBehavior
-    {
-        public void Execute(Fixture fixture, Action next)
-        {
-            fixture.Class.Type.InvokeAll<FixtureSetUpAttribute>(fixture.Instance);
-            next();
-            fixture.Class.Type.InvokeAll<FixtureTearDownAttribute>(fixture.Instance);
-        }
-    }
-
-    public static class BehaviorBuilderExtensions
-    {
-        public static void InvokeAll<TAttribute>(this Type type, object instance)
-            where TAttribute : Attribute
-        {
-            foreach (var method in Has<TAttribute>(type))
-            {
-                try
+                if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
                 {
-                    method.Invoke(instance, null);
+                    throw new Exception(
+                        "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
+                        exception.GetType() + " was thrown.", exception);
                 }
-                catch (TargetInvocationException exception)
-                {
-                    throw new PreservedException(exception.InnerException);
-                }
-            }
-        }
 
-        static IEnumerable<MethodInfo> Has<TAttribute>(Type type) where TAttribute : Attribute
-        {
-            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => x.HasOrInherits<TAttribute>());
+                if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
+                {
+                    throw new Exception(
+                        "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
+                        exception);
+                }
+
+                @case.Pass();
+            }
+            catch (Exception failureReason)
+            {
+                @case.Fail(failureReason);
+            }
         }
     }
 }

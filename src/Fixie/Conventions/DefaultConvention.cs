@@ -5,17 +5,11 @@
     ///
     /// <para>A class is a test class if its name ends with "Tests".</para>
     ///
-    /// <para>A public instance method in a test class is a test method if it is declared void or async.</para>
+    /// <para>All public instance methods in a test class are test methods.</para>
     /// </summary>
     public class DefaultConvention : Convention
     {
         public DefaultConvention()
-        {
-            Classes
-                .NameEndsWith("Tests");
-
-            Methods
-                .Where(method => method.IsVoid() || method.IsAsync());
-        }
+            => Classes.Where(x => x.Name.EndsWith("Tests"));
     }
 }

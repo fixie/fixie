@@ -1,10 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.NUnitStyle
+﻿namespace Fixie.Samples.NUnitStyle
 {
+    using System;
     using System.Collections.Generic;
+    using System.Text;
+    using Assertions;
 
     [TestFixture]
     public class TestCaseSourceAttributeCalculatorTests : IDisposable
@@ -47,16 +46,15 @@ namespace Fixie.Samples.NUnitStyle
         }
 
         [Test]
-        [TestCaseSource("FieldSource")]
         [TestCaseSource("FieldSource", typeof(ExternalSourceOfTestCaseData))]
-        [TestCaseSource("MethodSource")]
         [TestCaseSource("MethodSource", typeof(ExternalSourceOfTestCaseData))]
-        [TestCaseSource("PropertySource")]
         [TestCaseSource("PropertySource", typeof(ExternalSourceOfTestCaseData))]
+        [TestCaseSource("FieldSource")]
+        [TestCaseSource("MethodSource")]
+        [TestCaseSource("PropertySource")]
         public void ShouldAddFromFieldSource(string source, int a, int b, int expectedSum)
         {
-            log.AppendFormat("{0}: ShouldAdd({1}, {2}, {3})", source, a, b, expectedSum);
-            log.AppendLine();
+            log.AppendLine($"{source}: ShouldAdd({a}, {b}, {expectedSum})");
             calculator.Add(a, b).ShouldEqual(expectedSum);
         }
 

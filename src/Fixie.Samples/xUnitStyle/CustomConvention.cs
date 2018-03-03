@@ -1,29 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace Fixie.Samples.xUnitStyle
+﻿namespace Fixie.Samples.xUnitStyle
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public class CustomConvention : Convention
     {
-        static readonly Dictionary<MethodInfo, object> fixtures = new Dictionary<MethodInfo, object>();
-
         public CustomConvention()
         {
             Classes
                 .Where(HasAnyFactMethods);
 
             Methods
-                .HasOrInherits<FactAttribute>();
+                .Where(x => x.HasOrInherits<FactAttribute>())
+                .Shuffle();
 
-            ClassExecution
-                .CreateInstancePerCase()
-                .Wrap<PrepareAndDisposeFixtureData>()
-                .ShuffleCases();
-
-            FixtureExecution
-                .Wrap<InjectFixtureData>();
+            Lifecycle<FixtureDataLifecycle>();
         }
 
         bool HasAnyFactMethods(Type type)
@@ -31,20 +24,33 @@ namespace Fixie.Samples.xUnitStyle
             return type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Any(x => x.HasOrInherits<FactAttribute>());
         }
 
-        class PrepareAndDisposeFixtureData : ClassBehavior
+        class FixtureDataLifecycle : Lifecycle
         {
-            public void Execute(Class testClass, Action next)
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
-                SetUp(testClass);
-                next();
-                TearDown();
+                var fixtures = PrepareFixtureData(testClass.Type);
+
+                runCases(@case =>
+                {
+                    var instance = testClass.Construct();
+
+                    foreach (var injectionMethod in fixtures.Keys)
+                        injectionMethod.Invoke(instance, new[] { fixtures[injectionMethod] });
+
+                    @case.Execute(instance);
+
+                    instance.Dispose();
+                });
+
+                foreach (var fixtureInstance in fixtures.Values)
+                    fixtureInstance.Dispose();
             }
 
-            void SetUp(Class testClass)
+            static Dictionary<MethodInfo, object> PrepareFixtureData(Type testClass)
             {
-                fixtures.Clear();
+                var fixtures = new Dictionary<MethodInfo, object>();
 
-                foreach (var @interface in FixtureInterfaces(testClass.Type))
+                foreach (var @interface in FixtureInterfaces(testClass))
                 {
                     var fixtureDataType = @interface.GetGenericArguments()[0];
 
@@ -53,25 +59,8 @@ namespace Fixie.Samples.xUnitStyle
                     var method = @interface.GetMethod("SetFixture", new[] { fixtureDataType });
                     fixtures[method] = fixtureInstance;
                 }
-            }
 
-            void TearDown()
-            {
-                foreach (var fixtureInstance in fixtures.Values)
-                    (fixtureInstance as IDisposable)?.Dispose();
-
-                fixtures.Clear();
-            }
-        }
-
-        class InjectFixtureData : FixtureBehavior
-        {
-            public void Execute(Fixture fixture, Action next)
-            {
-                foreach (var injectionMethod in fixtures.Keys)
-                    injectionMethod.Invoke(fixture.Instance, new[] { fixtures[injectionMethod] });
-
-                next();
+                return fixtures;
             }
         }
 

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Samples.Inclusive
+﻿namespace Fixie.Samples.Inclusive
 {
+    using System;
+
     public class CustomConvention : Convention
     {
         public CustomConvention()
@@ -11,10 +11,7 @@ namespace Fixie.Samples.Inclusive
             //automatically excluded, though, ShouldNotBeCalled() will not be called.
 
             Classes
-                .InTheSameNamespaceAs(typeof(CustomConvention));
-
-            Methods
-                .Where(method => method.IsVoid());
+                .Where(x => x.IsInNamespace(GetType().Namespace));
         }
 
         public void ShouldNotBeCalled()

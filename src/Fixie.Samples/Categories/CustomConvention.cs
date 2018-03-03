@@ -1,23 +1,22 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-
-namespace Fixie.Samples.Categories
+﻿namespace Fixie.Samples.Categories
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+
     public class CustomConvention : Convention
     {
-        public CustomConvention()
+        public CustomConvention(string[] include)
         {
-            var desiredCategories = Options["include"].ToArray();
+            var desiredCategories = include;
             var shouldRunAll = !desiredCategories.Any();
 
             Classes
-                .InTheSameNamespaceAs(typeof(CustomConvention))
-                .NameEndsWith("Tests");
+                .Where(x => x.IsInNamespace(GetType().Namespace))
+                .Where(x => x.Name.EndsWith("Tests"));
 
             Methods
-                .Where(method => method.IsVoid())
-                .Where(method => shouldRunAll || MethodHasAnyDesiredCategory(method, desiredCategories));
+                .Where(x => shouldRunAll || MethodHasAnyDesiredCategory(x, desiredCategories));
 
             if (!shouldRunAll)
             {

@@ -1,9 +1,7 @@
-using System;
-using System.Reflection;
-
 namespace Fixie
 {
-    [Serializable]
+    using System.Reflection;
+
     public class MethodGroup
     {
         public string Class { get; }

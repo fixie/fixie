@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Fixie.Samples.IoC
+﻿namespace Fixie.Samples.IoC
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public interface IThirdPartyService
     {
         string Invoke();
@@ -34,19 +34,20 @@ namespace Fixie.Samples.IoC
         public string Query() => nameof(FakeDatabase);
     }
 
-    public class IoCContainer
+    public class IoCContainer : IDisposable
     {
-        readonly Dictionary<Type, object> instances = new Dictionary<Type, object>();
+        readonly Dictionary<Type, Type> typeMappings = new Dictionary<Type, Type>();
+        readonly List<object> instances = new List<object>();
 
-        public void Add(Type type, object instance)
+        public void Add(Type requestedType, Type concreteType)
         {
-            instances[type] = instance;
+            typeMappings[requestedType] = concreteType;
         }
 
         public object Get(Type type)
         {
-            if (instances.ContainsKey(type))
-                return instances[type];
+            if (typeMappings.ContainsKey(type))
+                type = typeMappings[type];
 
             var constructor = type.GetConstructors().Single();
 
@@ -54,7 +55,17 @@ namespace Fixie.Samples.IoC
 
             var arguments = parameters.Select(p => Get(p.ParameterType)).ToArray();
 
-            return Activator.CreateInstance(type, arguments);
+            var instance = Activator.CreateInstance(type, arguments);
+
+            instances.Add(instance);
+
+            return instance;
+        }
+
+        public void Dispose()
+        {
+            foreach (var instance in instances)
+                instance.Dispose();
         }
     }
 }

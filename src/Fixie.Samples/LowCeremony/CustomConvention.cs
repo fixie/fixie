@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-
-namespace Fixie.Samples.LowCeremony
+﻿namespace Fixie.Samples.LowCeremony
 {
+    using System;
+    using System.Linq;
+
     public class CustomConvention : Convention
     {
         static readonly string[] LifecycleMethods = { "FixtureSetUp", "FixtureTearDown", "SetUp", "TearDown" };
@@ -11,63 +10,35 @@ namespace Fixie.Samples.LowCeremony
         public CustomConvention()
         {
             Classes
-                .InTheSameNamespaceAs(typeof(CustomConvention))
-                .NameEndsWith("Tests");
+                .Where(x => x.IsInNamespace(GetType().Namespace))
+                .Where(x => x.Name.EndsWith("Tests"));
 
             Methods
-                .Where(method => method.IsVoid())
-                .Where(method => LifecycleMethods.All(x => x != method.Name));
+                .Where(x => !LifecycleMethods.Contains(x.Name))
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
-            ClassExecution
-                .CreateInstancePerClass()
-                .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
-
-            FixtureExecution
-                .Wrap<CallFixtureSetUpTearDownMethodsByName>();
-
-            CaseExecution
-                .Wrap<CallSetUpTearDownMethodsByName>();
+            Lifecycle<CallSetUpTearDownMethodsByName>();
         }
 
-        class CallSetUpTearDownMethodsByName : CaseBehavior
+        class CallSetUpTearDownMethodsByName : Lifecycle
         {
-            public void Execute(Case @case, Action next)
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
-                @case.Class.TryInvoke("SetUp", @case.Fixture.Instance);
-                next();
-                @case.Class.TryInvoke("TearDown", @case.Fixture.Instance);
-            }
-        }
+                var instance = testClass.Construct();
 
-        class CallFixtureSetUpTearDownMethodsByName : FixtureBehavior
-        {
-            public void Execute(Fixture fixture, Action next)
-            {
-                fixture.Class.Type.TryInvoke("FixtureSetUp", fixture.Instance);
-                next();
-                fixture.Class.Type.TryInvoke("FixtureTearDown", fixture.Instance);
-            }
-        }
-    }
+                void Execute(string method)
+                    => testClass.Execute(instance, method);
 
-    public static class BehaviorBuilderExtensions
-    {
-        public static void TryInvoke(this Type type, string method, object instance)
-        {
-            var lifecycleMethod =
-                type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                    .SingleOrDefault(x => x.HasSignature(typeof(void), method));
+                Execute("FixtureSetUp");
+                runCases(@case =>
+                {
+                    Execute("SetUp");
+                    @case.Execute(instance);
+                    Execute("TearDown");
+                });
+                Execute("FixtureTearDown");
 
-            if (lifecycleMethod == null)
-                return;
-
-            try
-            {
-                lifecycleMethod.Invoke(instance, null);
-            }
-            catch (TargetInvocationException exception)
-            {
-                throw new PreservedException(exception.InnerException);
+                instance.Dispose();
             }
         }
     }

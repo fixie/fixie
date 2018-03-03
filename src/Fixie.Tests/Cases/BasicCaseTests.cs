@@ -7,7 +7,7 @@
             Run<PassTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.BasicCaseTests+PassTestClass.Pass passed");
+                For<PassTestClass>(".Pass passed"));
         }
 
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
@@ -15,7 +15,7 @@
             Run<FailTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.BasicCaseTests+FailTestClass.Fail failed: 'Fail' failed!");
+                For<FailTestClass>(".Fail failed: 'Fail' failed!"));
         }
 
         public void ShouldPassOrFailCasesIndividually()
@@ -23,11 +23,12 @@
             Run<PassFailTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.FailA failed: 'FailA' failed!",
-                "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.FailB failed: 'FailB' failed!",
-                "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.PassA passed",
-                "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.PassB passed",
-                "Fixie.Tests.Cases.BasicCaseTests+PassFailTestClass.PassC passed");
+                For<PassFailTestClass>(
+                    ".FailA failed: 'FailA' failed!",
+                    ".FailB failed: 'FailB' failed!",
+                    ".PassA passed",
+                    ".PassB passed",
+                    ".PassC passed"));
         }
 
         public void ShouldFailWhenTestClassConstructorCannotBeInvoked()
@@ -35,7 +36,8 @@
             Run<CannotInvokeConstructorTestClass>();
 
             Listener.Entries.ShouldEqual(
-                "Fixie.Tests.Cases.BasicCaseTests+CannotInvokeConstructorTestClass.UnreachableCase failed: No parameterless constructor defined for this object.");
+                For<CannotInvokeConstructorTestClass>(
+                    ".UnreachableCase failed: No parameterless constructor defined for this object."));
         }
 
         class PassTestClass

@@ -1,68 +1,49 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using Fixie.Execution;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
-    public class StubListener : Listener
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using Fixie.Execution;
+    using Fixie.Execution.Listeners;
+    using static System.Environment;
+
+    public class StubListener :
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly List<string> log = new List<string>();
 
-        public void AssemblyStarted(AssemblyInfo assembly)
+        public void Handle(CaseSkipped message)
         {
+            var optionalReason = message.Reason == null ? null : ": " + message.Reason;
+            log.Add($"{message.Name} skipped{optionalReason}");
         }
 
-        public void CaseSkipped(SkipResult result)
+        public void Handle(CasePassed message)
         {
-            var optionalReason = result.SkipReason == null ? null : ": " + result.SkipReason;
-            log.Add($"{result.Name} skipped{optionalReason}");
+            log.Add($"{message.Name} passed");
         }
 
-        public void CasePassed(PassResult result)
+        public void Handle(CaseFailed message)
         {
-            log.Add($"{result.Name} passed");
+            log.Add($"{message.Name} failed: {message.Exception.Message}{SimplifyCompoundStackTrace(message.Exception.CompoundStackTrace())}");
         }
 
-        public void CaseFailed(FailResult result)
+        static string SimplifyCompoundStackTrace(string compoundStackTrace)
         {
-            var entry = new StringBuilder();
+            var stackTrace = compoundStackTrace;
 
-            var primaryException = result.Exceptions.PrimaryException;
+            stackTrace =
+                String.Join(NewLine,
+                    stackTrace.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                        .Where(x => !x.StartsWith("   at "))
+                        .Where(x => x != "--- End of stack trace from previous location where exception was thrown ---"));
 
-            entry.AppendFormat("{0} failed: {1}", result.Name, primaryException.Message);
-
-            var walk = primaryException;
-            while (walk.InnerException != null)
-            {
-                walk = walk.InnerException;
-                entry.AppendLine();
-                entry.AppendFormat("    Inner Exception: {0}", walk.Message);
-            }
-
-            foreach (var secondaryException in result.Exceptions.SecondaryExceptions)
-            {
-                entry.AppendLine();
-                entry.AppendFormat("    Secondary Failure: {0}", secondaryException.Message);
-
-                walk = secondaryException;
-                while (walk.InnerException != null)
-                {
-                    walk = walk.InnerException;
-                    entry.AppendLine();
-                    entry.AppendFormat("        Inner Exception: {0}", walk.Message);
-                }
-            }
-
-            log.Add(entry.ToString());
+            return stackTrace == "" ? stackTrace : NewLine + stackTrace;
         }
 
-        public void AssemblyCompleted(AssemblyInfo assembly, AssemblyResult result)
-        {
-        }
-
-        public IEnumerable<string> Entries
-        {
-            get { return log; }
-        }
+        public IEnumerable<string> Entries => log;
     }
 }

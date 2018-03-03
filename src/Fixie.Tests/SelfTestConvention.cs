@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System;
+
     public static class SelfTestConvention
     {
         public static Convention Build()
@@ -10,12 +10,12 @@ namespace Fixie.Tests
 
             selfTestConvention
                 .Classes
-                    .Where(testClass => testClass.IsNestedPrivate)
-                    .NameEndsWith("TestClass");
+                .Where(x => x.IsNestedPrivate)
+                .Where(x => x.Name.EndsWith("TestClass"));
 
             selfTestConvention
-                .ClassExecution
-                    .SortCases((x, y) => String.Compare(x.Name, y.Name, StringComparison.Ordinal));
+                .Methods
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             return selfTestConvention;
         }

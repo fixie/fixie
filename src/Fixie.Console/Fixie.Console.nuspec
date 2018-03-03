@@ -1,0 +1,31 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>$authors$</authors>
+    <owners>$authors$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://fixie.github.io</projectUrl>
+    <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
+    <description>$description$</description>
+    <copyright>$copyright$</copyright>
+    <repository url="https://github.com/fixie/fixie" />
+    <packageTypes>
+      <packageType name="DotNetCliTool" />
+    </packageTypes>
+    <dependencies>
+      <group targetFramework="netcoreapp2.0" />
+    </dependencies>
+  </metadata>
+  <files>
+
+    <file target="prefercliruntime" src="..\Fixie.Console\prefercliruntime" />
+
+    <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\dotnet-fixie.dll" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\dotnet-fixie.runtimeconfig.json" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\dotnet-fixie.targets" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\Fixie.dll" />
+  </files>
+</package>

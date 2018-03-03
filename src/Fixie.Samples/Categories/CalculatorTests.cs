@@ -1,7 +1,7 @@
-﻿using Should;
-
-namespace Fixie.Samples.Categories
+﻿namespace Fixie.Samples.Categories
 {
+    using Assertions;
+
     public class CalculatorTests
     {
         readonly Calculator calculator;

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fixie
+﻿namespace Fixie
 {
+    using System;
+
     /// <summary>
     /// Represents an original exception that has surfaced via a reflection call such as calling MethodInfo.Invoke.
     /// The reflection API wraps the root cause of a failed method invocation by wrapping it in a type such as TargetInvocationException.

@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Fixie.Execution;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-
-namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO.Pipes;
+    using System.Linq;
+    using Execution;
+    using Execution.Listeners;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using static TestAssembly;
+
     [ExtensionUri(Id)]
     public class VsTestExecutor : ITestExecutor
     {
@@ -31,30 +33,13 @@ namespace Fixie.VisualStudio.TestAdapter
 
             HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
 
-            foreach (var assemblyPath in sources)
+            var runAllTests = new PipeMessage.ExecuteTests
             {
-                try
-                {
-                    if (AssemblyDirectoryContainsFixie(assemblyPath))
-                    {
-                        log.Info("Processing " + assemblyPath);
+                Filter = new PipeMessage.Test[] { }
+            };
 
-                        using (var listener = new VisualStudioListener(frameworkHandle, assemblyPath))
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
-                        {
-                            environment.RunAssembly(new Options(), listener);
-                        }
-                    }
-                    else
-                    {
-                        log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
-                    }
-                }
-                catch (Exception exception)
-                {
-                    log.Error(exception);
-                }
-            }
+            foreach (var assemblyPath in sources)
+                RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
         }
 
         /// <summary>
@@ -78,45 +63,93 @@ namespace Fixie.VisualStudio.TestAdapter
             {
                 var assemblyPath = assemblyGroup.Key;
 
-                try
+                RunTests(log, frameworkHandle, assemblyPath, pipe =>
                 {
-                    if (AssemblyDirectoryContainsFixie(assemblyPath))
+                    pipe.Send(new PipeMessage.ExecuteTests
                     {
-                        log.Info("Processing " + assemblyPath);
-
-                        var methodGroups = assemblyGroup.Select(x => new MethodGroup(x.FullyQualifiedName)).ToArray();
-
-                        using (var listener = new VisualStudioListener(frameworkHandle, assemblyPath))
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
+                        Filter = assemblyGroup.Select(x =>
                         {
-                            environment.RunMethods(new Options(), listener, methodGroups);
-                        }
-                    }
-                    else
-                    {
-                        log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
-                    }
-                }
-                catch (Exception exception)
-                {
-                    log.Error(exception);
-                }
+                            var methodGroup = new MethodGroup(x.FullyQualifiedName);
+
+                            return new PipeMessage.Test
+                            {
+                                Class = methodGroup.Class,
+                                Method = methodGroup.Method,
+                                Name = methodGroup.FullName
+                            };
+                        }).ToArray()
+                    });
+                });
             }
         }
 
         public void Cancel() { }
 
-        static void HandlePoorVisualStudioImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)
+        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<NamedPipeServerStream> sendCommand)
         {
-            RemotingUtility.CleanUpRegisteredChannels();
+            if (!IsTestAssembly(assemblyPath))
+            {
+                log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
+                return;
+            }
 
-            if (runContext.KeepAlive)
-                frameworkHandle.EnableShutdownAfterTestRun = true;
+            log.Info("Processing " + assemblyPath);
+
+            var pipeName = Guid.NewGuid().ToString();
+            Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
+
+            using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+            {
+                Start(assemblyPath, frameworkHandle);
+
+                pipe.WaitForConnection();
+
+                sendCommand(pipe);
+
+                var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
+
+                while (true)
+                {
+                    var messageType = pipe.ReceiveMessage();
+
+                    if (messageType == typeof(PipeMessage.SkipResult).FullName)
+                    {
+                        var testResult = pipe.Receive<PipeMessage.SkipResult>();
+                        recorder.RecordResult(testResult);
+                    }
+                    else if (messageType == typeof(PipeMessage.PassResult).FullName)
+                    {
+                        var testResult = pipe.Receive<PipeMessage.PassResult>();
+                        recorder.RecordResult(testResult);
+                    }
+                    else if (messageType == typeof(PipeMessage.FailResult).FullName)
+                    {
+                        var testResult = pipe.Receive<PipeMessage.FailResult>();
+                        recorder.RecordResult(testResult);
+                    }
+                    else if (messageType == typeof(PipeMessage.Exception).FullName)
+                    {
+                        var exception = pipe.Receive<PipeMessage.Exception>();
+                        throw new RunnerException(exception);
+                    }
+                    else if (messageType == typeof(PipeMessage.Completed).FullName)
+                    {
+                        var completed = pipe.Receive<PipeMessage.Completed>();
+                        break;
+                    }
+                    else
+                    {
+                        var body = pipe.ReceiveMessage();
+                        throw new Exception($"Test runner received unexpected message of type {messageType}: {body}");
+                    }
+                }
+            }
         }
 
-        static bool AssemblyDirectoryContainsFixie(string assemblyPath)
+        static void HandlePoorVisualStudioImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
-            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
+            if (runContext.KeepAlive)
+                frameworkHandle.EnableShutdownAfterTestRun = true;
         }
     }
 }

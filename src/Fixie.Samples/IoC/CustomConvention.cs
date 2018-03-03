@@ -1,39 +1,40 @@
-﻿using System;
-
-namespace Fixie.Samples.IoC
+﻿namespace Fixie.Samples.IoC
 {
+    using System;
+
     public class CustomConvention : Convention
     {
-        readonly IoCContainer container;
-
         public CustomConvention()
         {
-            container = InitContainerForIntegrationTests();
+            Methods
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             Classes
-                .InTheSameNamespaceAs(typeof(CustomConvention))
-                .NameEndsWith("Tests");
+                .Where(x => x.IsInNamespace(GetType().Namespace))
+                .Where(x => x.Name.EndsWith("Tests"));
 
-            Methods
-                .Where(method => method.IsVoid());
-
-            ClassExecution
-                .CreateInstancePerClass()
-                .UsingFactory(GetFromContainer)
-                .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
+            Lifecycle<IocLifecycle>();
         }
 
-        static IoCContainer InitContainerForIntegrationTests()
+        public class IocLifecycle : Lifecycle
         {
-            var container = new IoCContainer();
-            container.Add(typeof(IDatabase), new RealDatabase());
-            container.Add(typeof(IThirdPartyService), new FakeThirdPartyService());
-            return container;
-        }
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            {
+                using (var container = InitContainerForIntegrationTests())
+                {
+                    var instance = container.Get(testClass.Type);
 
-        object GetFromContainer(Type testClass)
-        {
-            return container.Get(testClass);
+                    runCases(@case => @case.Execute(instance));
+                }
+            }
+
+            static IoCContainer InitContainerForIntegrationTests()
+            {
+                var container = new IoCContainer();
+                container.Add(typeof(IDatabase), typeof(RealDatabase));
+                container.Add(typeof(IThirdPartyService), typeof(FakeThirdPartyService));
+                return container;
+            }
         }
     }
 }

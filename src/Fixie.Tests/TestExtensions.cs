@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Fixie.Execution;
-using Fixie.Internal;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
-    public static class TestExtensions
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text.RegularExpressions;
+    using Fixie.Execution;
+
+    static class TestExtensions
     {
         const BindingFlags InstanceMethods = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 
@@ -36,9 +37,20 @@ namespace Fixie.Tests
             return lines;
         }
 
-        public static void Run(this Type sampleTestClass, Listener listener, Convention convention)
+        public static string CleanStackTraceLineNumbers(this string stackTrace)
         {
-            new Runner(listener).RunTypes(sampleTestClass.Assembly, convention, sampleTestClass);
+            //Avoid brittle assertion introduced by stack trace line numbers.
+
+            return Regex.Replace(stackTrace, @":line \d+", ":line #");
+        }
+
+        public static string CleanDuration(this string output)
+        {
+            //Avoid brittle assertion introduced by test duration.
+
+            var decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+            return Regex.Replace(output, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds");
         }
     }
 }

@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace Fixie.Samples.Parameterized
+﻿namespace Fixie.Samples.Parameterized
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public class CustomConvention : Convention
     {
         public CustomConvention()
         {
-            Classes
-                .InTheSameNamespaceAs(typeof(CustomConvention))
-                .NameEndsWith("Tests");
-
             Methods
-                .Where(method => method.IsVoid());
+                .OrderBy(x => x.Name, StringComparer.Ordinal);
 
-            ClassExecution
-                .CreateInstancePerClass()
-                .SortCases((caseA, caseB) => String.Compare(caseA.Name, caseB.Name, StringComparison.Ordinal));
+            Classes
+                .Where(x => x.IsInNamespace(GetType().Namespace))
+                .Where(x => x.Name.EndsWith("Tests"));
 
             Parameters
                 .Add<InputAttributeParameterSource>();
+
+            Lifecycle<CreateInstancePerClass>();
         }
 
         class InputAttributeParameterSource : ParameterSource

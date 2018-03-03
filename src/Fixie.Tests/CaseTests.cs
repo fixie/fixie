@@ -1,8 +1,9 @@
-﻿using System;
-using Should;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System;
+    using System.Linq;
+    using Assertions;
+
     public class CaseTests
     {
         public void ShouldBeNamedAfterTheUnderlyingMethod()
@@ -131,61 +132,173 @@ namespace Fixie.Tests
                 .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<System.Boolean>(True)");
         }
 
-        public void ShouldUseGenericTypeParametersInNameWhenGenericTypeParamtersCannotBeResolved()
+        public void ShouldUseGenericTypeParametersInNameWhenGenericTypeParametersCannotBeResolved()
         {
-            Case("ConstrainedGeneric", "Incompatable")
-                .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<T>(\"Incompatable\")");
-        }
-
-        public void ShouldHaveMethodGroupComposedOfClassNameAndMethodNameWithNoSignature()
-        {
-            Case("Returns").MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Returns");
-            Case("Parameterized", 123, true, 'a', "s", null, this).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Parameterized");
-            Case("Generic", 123, true, "a", "b").MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
-            Case("Generic", 123, true, 1, null).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
-            Case("Generic", 123, 1.23m, "a", null).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.Generic");
-            Case("ConstrainedGeneric", 1).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric");
-            Case("ConstrainedGeneric", true).MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric");
-            Case("ConstrainedGeneric", "Incompatable").MethodGroup.FullName.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric");
+            Case("ConstrainedGeneric", "Incompatible")
+                .Name.ShouldEqual("Fixie.Tests.CaseTests.ConstrainedGeneric<T>(\"Incompatible\")");
         }
 
         public void ShouldInferAppropriateClassGivenCaseMethod()
         {
-            var methodDeclaredInChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinChildClass"));
+            var methodDeclaredInChildClass =
+                Case<SampleChildTestClass>("TestMethodDefinedWithinChildClass");
             methodDeclaredInChildClass.Class.ShouldEqual(typeof(SampleChildTestClass));
 
-            var methodDeclaredInParentClass = new Case(typeof(SampleParentTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"));
+            var methodDeclaredInParentClass =
+                Case<SampleParentTestClass>("TestMethodDefinedWithinParentClass");
             methodDeclaredInParentClass.Class.ShouldEqual(typeof(SampleParentTestClass));
 
-            var parentMethodInheritedByChildClass = new Case(typeof(SampleChildTestClass).GetInstanceMethod("TestMethodDefinedWithinParentClass"));
+            var parentMethodInheritedByChildClass =
+                Case<SampleChildTestClass>("TestMethodDefinedWithinParentClass");
             parentMethodInheritedByChildClass.Class.ShouldEqual(typeof(SampleChildTestClass));
         }
 
-        public void ShouldTrackExceptionsAsFailureReasons()
+        public void ShouldHaveMethodInfoIncludingResolvedGenericArguments()
         {
-            var exceptionA = new InvalidOperationException();
-            var exceptionB = new DivideByZeroException();
+            var method = Case("Returns").Method;
+            method.Name.ShouldEqual("Returns");
+            method.GetParameters().ShouldBeEmpty();
 
-            var @case = Case("Returns");
+            method = Case("Parameterized", 123, true, 'a', "s", null, this).Method;
+            method.Name.ShouldEqual("Parameterized");
+            method.GetParameters()
+                .Select(x => x.ParameterType)
+                .ShouldEqual(
+                    typeof(int), typeof(bool),
+                    typeof(char), typeof(string),
+                    typeof(string), typeof(object),
+                    typeof(CaseTests));
 
-            @case.Exceptions.ShouldBeEmpty();
-            @case.Fail(exceptionA);
-            @case.Fail(exceptionB);
-            @case.Exceptions.ShouldEqual(exceptionA, exceptionB);
+            method = Case("Generic", 123, true, "a", "b").Method;
+            method.Name.ShouldEqual("Generic");
+            method.GetParameters()
+                .Select(x => x.ParameterType)
+                .ShouldEqual(typeof(int), typeof(bool), typeof(string), typeof(string));
+
+            method = Case("Generic", 123, true, 1, null).Method;
+            method.Name.ShouldEqual("Generic");
+            method.GetParameters()
+                .Select(x => x.ParameterType)
+                .ShouldEqual(typeof(int), typeof(bool), typeof(object), typeof(object));
+
+            method = Case("Generic", 123, 1.23m, "a", null).Method;
+            method.Name.ShouldEqual("Generic");
+            method.GetParameters()
+                .Select(x => x.ParameterType)
+                .ShouldEqual(typeof(int), typeof(decimal), typeof(string), typeof(string));
+
+            method = Case("ConstrainedGeneric", 1).Method;
+            method.Name.ShouldEqual("ConstrainedGeneric");
+            method.GetParameters().Single().ParameterType.ShouldEqual(typeof(int));
+
+            method = Case("ConstrainedGeneric", true).Method;
+            method.Name.ShouldEqual("ConstrainedGeneric");
+            method.GetParameters().Single().ParameterType.ShouldEqual(typeof(bool));
+            var resolvedParameterType = method.GetParameters().Single().ParameterType;
+            resolvedParameterType.Name.ShouldEqual("Boolean");
+            resolvedParameterType.IsGenericParameter.ShouldBeFalse();
+
+            method = Case("ConstrainedGeneric", "Incompatible").Method;
+            method.Name.ShouldEqual("ConstrainedGeneric");
+            var unresolvedParameterType = method.GetParameters().Single().ParameterType;
+            unresolvedParameterType.Name.ShouldEqual("T");
+            unresolvedParameterType.IsGenericParameter.ShouldBeTrue();
         }
 
-        public void CanSuppressFailuresByClearingExceptionLog()
+        public void ShouldTrackLastExceptionAsFailureReason()
         {
             var exceptionA = new InvalidOperationException();
             var exceptionB = new DivideByZeroException();
 
             var @case = Case("Returns");
 
-            @case.Exceptions.ShouldBeEmpty();
+            @case.Exception.ShouldBeNull();
             @case.Fail(exceptionA);
             @case.Fail(exceptionB);
-            @case.ClearExceptions();
-            @case.Exceptions.ShouldBeEmpty();
+            @case.Exception.ShouldEqual(exceptionB);
+        }
+
+        public void ShouldAllowFailureByReasonStringWithImplicitException()
+        {
+            var @case = Case("Returns");
+
+            @case.Exception.ShouldBeNull();
+            @case.Fail("Failure Reason A");
+            @case.Fail("Failure Reason B");
+            @case.Exception.ShouldBeType<Exception>();
+            @case.Exception.Message.ShouldEqual("Failure Reason B");
+        }
+
+        public void ShouldProtectAgainstLoggingNullExceptions()
+        {
+            var @case = Case("Returns");
+
+            @case.Exception.ShouldBeNull();
+            @case.Fail((Exception) null);
+            @case.Exception.ShouldBeType<Exception>();
+            @case.Exception.Message.ShouldEqual(
+                "The custom test class lifecycle did not provide " +
+                "an Exception for this test case failure.");
+        }
+
+        public void CanForceAnyTestProcessingState()
+        {
+            var @case = Case("Returns");
+
+            //Assumed skipped.
+            @case.State.ShouldEqual(CaseState.Skipped);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a skip, including a reason.
+            @case.Skip("Reason");
+            @case.State.ShouldEqual(CaseState.Skipped);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldEqual("Reason");
+
+            //Indicate a failure, replacing the assumed skip.
+            @case.Fail("Failure");
+            @case.State.ShouldEqual(CaseState.Failed);
+            @case.Exception.Message.ShouldEqual("Failure");
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a pass, suppressing the above failure.
+            @case.Pass();
+            @case.State.ShouldEqual(CaseState.Passed);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a skip, suppressing the above pass.
+            @case.Skip("Reason");
+            @case.State.ShouldEqual(CaseState.Skipped);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldEqual("Reason");
+
+            //Indicate a pass, suppressing the above skip.
+            @case.Pass();
+            @case.State.ShouldEqual(CaseState.Passed);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a failure, replacing the assumed pass.
+            @case.Fail("Failure");
+            @case.State.ShouldEqual(CaseState.Failed);
+            @case.Exception.Message.ShouldEqual("Failure");
+            @case.SkipReason.ShouldBeNull();
+
+            //Indicate a skip, suppressing the above failure.
+            @case.Skip("Reason");
+            @case.State.ShouldEqual(CaseState.Skipped);
+            @case.Exception.ShouldBeNull();
+            @case.SkipReason.ShouldEqual("Reason");
+
+            //Indicate a failure, suppressing the above skip, but with a surprisingly-null Exception.
+            @case.Fail((Exception) null);
+            @case.State.ShouldEqual(CaseState.Failed);
+            @case.Exception.Message.ShouldEqual(
+                "The custom test class lifecycle did not provide " +
+                "an Exception for this test case failure.");
+            @case.SkipReason.ShouldBeNull();
         }
 
         class SampleParentTestClass
@@ -203,9 +316,10 @@ namespace Fixie.Tests
         }
 
         static Case Case(string methodName, params object[] parameters)
-        {
-            return new Case(typeof(CaseTests).GetInstanceMethod(methodName), parameters);
-        }
+            => Case<CaseTests>(methodName, parameters);
+
+        static Case Case<TTestClass>(string methodName, params object[] parameters)
+            => new Case(typeof(TTestClass).GetInstanceMethod(methodName), parameters);
 
         void Returns()
         {

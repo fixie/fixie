@@ -1,13 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Should;
-
-namespace Fixie.Tests
+﻿namespace Fixie.Tests
 {
+    using System;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using Assertions;
+
     public class ReflectionExtensionsTests
     {
+        public void CanDetermineTheTypeNameOfAnyObject()
+        {
+            5.TypeName().ShouldEqual("System.Int32");
+            "".TypeName().ShouldEqual("System.String");
+            ((string) null).TypeName().ShouldBeNull();
+        }
+
         public void CanDetectVoidReturnType()
         {
             Method("ReturnsVoid").IsVoid().ShouldBeTrue();
@@ -18,11 +24,11 @@ namespace Fixie.Tests
         {
             typeof(AttributeSample).Has<InheritedAttribute>().ShouldBeFalse();
             typeof(AttributeSample).Has<NonInheritedAttribute>().ShouldBeTrue();
-            typeof(AttributeSample).Has<SerializableAttribute>().ShouldBeFalse();
+            typeof(AttributeSample).Has<AttributeUsageAttribute>().ShouldBeFalse();
 
             typeof(AttributeSample).HasOrInherits<InheritedAttribute>().ShouldBeTrue();
             typeof(AttributeSample).HasOrInherits<NonInheritedAttribute>().ShouldBeTrue();
-            typeof(AttributeSample).HasOrInherits<SerializableAttribute>().ShouldBeFalse();
+            typeof(AttributeSample).HasOrInherits<AttributeUsageAttribute>().ShouldBeFalse();
         }
 
         public void CanDetectMethodAttributes()
@@ -43,35 +49,6 @@ namespace Fixie.Tests
             Method("Async").IsAsync().ShouldBeTrue();
         }
 
-        public void CanDetectWhetherMethodIsDispose()
-        {
-            Method("ReturnsVoid").IsDispose().ShouldBeFalse();
-            Method("ReturnsInt").IsDispose().ShouldBeFalse();
-            Method("Async").IsDispose().ShouldBeFalse();
-            Method<NonDisposableWithDisposeMethod>("Dispose").IsDispose().ShouldBeFalse();
-            MethodBySignature<Disposable>(typeof(void), "Dispose", typeof(bool)).IsDispose().ShouldBeFalse();
-            MethodBySignature<Disposable>(typeof(void), "Dispose").IsDispose().ShouldBeTrue();
-        }
-
-        public void CanDetectWhetherMethodHasSignature()
-        {
-            var trivial = MethodBySignature<Signatures>(typeof(void), "Trivial");
-            trivial.HasSignature(typeof(int), "Trivial").ShouldBeFalse();
-            trivial.HasSignature(typeof(void), "!").ShouldBeFalse();
-            trivial.HasSignature(typeof(void), "Trivial", typeof(int)).ShouldBeFalse();
-            trivial.HasSignature(typeof(void), "Trivial").ShouldBeTrue();
-
-            var singleParam = MethodBySignature<Signatures>(typeof(int), "Params", typeof(string));
-            singleParam.HasSignature(typeof(int), "Params", typeof(int)).ShouldBeFalse();
-            singleParam.HasSignature(typeof(int), "Params", typeof(string), typeof(int)).ShouldBeFalse();
-            singleParam.HasSignature(typeof(int), "Params", typeof(string)).ShouldBeTrue();
-
-            var multipleParam = MethodBySignature<Signatures>(typeof(string), "Params", typeof(string), typeof(int));
-            multipleParam.HasSignature(typeof(string), "Params", typeof(string), typeof(string)).ShouldBeFalse();
-            multipleParam.HasSignature(typeof(string), "Params", typeof(string), typeof(int), typeof(int)).ShouldBeFalse();
-            multipleParam.HasSignature(typeof(string), "Params", typeof(string), typeof(int)).ShouldBeTrue();
-        }
-
         public void CanDetectWhetherTypeIsWithinNamespace()
         {
             var opCode = typeof(System.Reflection.Emit.OpCode);
@@ -88,16 +65,30 @@ namespace Fixie.Tests
             opCode.IsInNamespace("System.Reflection.Typo").ShouldBeFalse();
         }
 
+        public void CanDisposeDisposables()
+        {
+            var disposeable = new Disposable();
+            var disposeButNotDisposable = new DisposeButNotDisposable();
+            var notDisposable = new NotDisposable();
+            object nullObject = null;
+
+            disposeable.Invoked.ShouldBeFalse();
+            disposeButNotDisposable.Invoked.ShouldBeFalse();
+            notDisposable.Invoked.ShouldBeFalse();
+
+            ((object)disposeable).Dispose();
+            ((object)disposeButNotDisposable).Dispose();
+            notDisposable.Dispose();
+            nullObject.Dispose();
+
+            disposeable.Invoked.ShouldBeTrue();
+            disposeButNotDisposable.Invoked.ShouldBeFalse();
+            notDisposable.Invoked.ShouldBeFalse();
+        }
+
         void ReturnsVoid() { }
         int ReturnsInt() { return 0; }
         async Task Async() { await Task.Run(() => { }); }
-
-        class Signatures
-        {
-            void Trivial() { }
-            int Params(string s) { return 0; }
-            string Params(string s, int x) { return ""; }
-        }
 
         class SampleMethodAttribute : Attribute { }
         class InheritedAttribute : Attribute { }
@@ -112,7 +103,7 @@ namespace Fixie.Tests
             public virtual void NoAttrribute() { }
         }
 
-        [NonInheritedAttribute]
+        [NonInherited]
         class AttributeSample : AttributeSampleBase
         {
             public override void AttributeOnBaseDeclaration() { }
@@ -121,29 +112,27 @@ namespace Fixie.Tests
             public override void NoAttrribute() { }
         }
 
-        class NonDisposableWithDisposeMethod
-        {
-            public void Dispose() { }
-        }
-
-        class Disposable : NonDisposableWithDisposeMethod, IDisposable
-        {
-            public void Dispose(bool disposing) { }
-        }
-
         static MethodInfo Method(string name)
-        {
-            return Method<ReflectionExtensionsTests>(name);
-        }
+            => Method<ReflectionExtensionsTests>(name);
 
         static MethodInfo Method<T>(string name)
+            => typeof(T).GetInstanceMethod(name);
+
+        class Disposable : IDisposable
         {
-            return typeof(T).GetInstanceMethod(name);
+            public bool Invoked { get; private set; }
+            public void Dispose() => Invoked = true;
         }
 
-        private static MethodInfo MethodBySignature<T>(Type returnType, string name, params Type[] parameterTypes)
+        class DisposeButNotDisposable
         {
-            return typeof(T).GetInstanceMethods().Single(m => m.HasSignature(returnType, name, parameterTypes));
+            public bool Invoked { get; private set; }
+            public void Dispose() => Invoked = true;
+        }
+
+        class NotDisposable
+        {
+            public bool Invoked { get; private set; }
         }
     }
 }

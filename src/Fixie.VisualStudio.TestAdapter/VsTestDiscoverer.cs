@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-using Fixie.Execution;
-
-namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.VisualStudio.TestAdapter
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO.Pipes;
+    using Execution;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using Execution.Listeners;
+    using static TestAssembly;
+
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
     [FileExtension(".dll")]
@@ -17,59 +19,59 @@ namespace Fixie.VisualStudio.TestAdapter
         {
             log.Version();
 
-            RemotingUtility.CleanUpRegisteredChannels();
-
             foreach (var assemblyPath in sources)
+                DiscoverTests(log, discoverySink, assemblyPath);
+        }
+
+        static void DiscoverTests(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)
+        {
+            if (!IsTestAssembly(assemblyPath))
             {
-                try
+                log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
+                return;
+            }
+
+            log.Info("Processing " + assemblyPath);
+
+            var pipeName = Guid.NewGuid().ToString();
+            Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
+
+            using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+            {
+                Start(assemblyPath);
+
+                pipe.WaitForConnection();
+
+                pipe.Send<PipeMessage.DiscoverTests>();
+
+                var recorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
+
+                while (true)
                 {
-                    if (AssemblyDirectoryContainsFixie(assemblyPath))
+                    var messageType = pipe.ReceiveMessage();
+
+                    if (messageType == typeof(PipeMessage.Test).FullName)
                     {
-                        log.Info("Processing " + assemblyPath);
-
-                        var sourceLocationProvider = new SourceLocationProvider(assemblyPath);
-
-                        using (var environment = new ExecutionEnvironment(assemblyPath))
-                        {
-                            var methodGroups = environment.DiscoverTestMethodGroups(new Options());
-
-                            foreach (var methodGroup in methodGroups)
-                            {
-                                var testCase = new TestCase(methodGroup.FullName, VsTestExecutor.Uri, assemblyPath);
-
-                                try
-                                {
-                                    SourceLocation sourceLocation;
-                                    if (sourceLocationProvider.TryGetSourceLocation(methodGroup, out sourceLocation))
-                                    {
-                                        testCase.CodeFilePath = sourceLocation.CodeFilePath;
-                                        testCase.LineNumber = sourceLocation.LineNumber;
-                                    }
-                                }
-                                catch (Exception exception)
-                                {
-                                    log.Error(exception);
-                                }
-
-                                discoverySink.SendTestCase(testCase);
-                            }
-                        }
+                        var test = pipe.Receive<PipeMessage.Test>();
+                        recorder.SendTestCase(test);
+                    }
+                    else if (messageType == typeof(PipeMessage.Exception).FullName)
+                    {
+                        var exception = pipe.Receive<PipeMessage.Exception>();
+                        throw new RunnerException(exception);
+                    }
+                    else if (messageType == typeof(PipeMessage.Completed).FullName)
+                    {
+                        var completed = pipe.Receive<PipeMessage.Completed>();
+                        break;
                     }
                     else
                     {
-                        log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
+                        var body = pipe.ReceiveMessage();
+                        throw new Exception($"Test runner received unexpected message of type {messageType}: {body}");
                     }
                 }
-                catch (Exception exception)
-                {
-                    log.Error(exception);
-                }
             }
-        }
-
-        static bool AssemblyDirectoryContainsFixie(string assemblyPath)
-        {
-            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
         }
     }
 }

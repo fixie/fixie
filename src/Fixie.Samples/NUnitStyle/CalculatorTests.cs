@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.NUnitStyle
+﻿namespace Fixie.Samples.NUnitStyle
 {
+    using System;
+    using System.Text;
+    using Assertions;
+
     [TestFixture]
     public class CalculatorTests : IDisposable
     {

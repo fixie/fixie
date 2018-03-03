@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples.Parameterized
+﻿namespace Fixie.Samples.Parameterized
 {
+    using System;
+    using System.Text;
+    using Assertions;
+
     public class CalculatorTests : IDisposable
     {
         readonly Calculator calculator;
@@ -26,7 +26,6 @@ namespace Fixie.Samples.Parameterized
 
         [Input(5, 3, 2)]
         [Input(8, 5, 3)]
-        [Input(10, 5, 5)]
         public void ShouldSubtract(int a, int b, int expectedDifference)
         {
             log.AppendLine($"ShouldSubtract({a}, {b}, {expectedDifference})");
@@ -40,7 +39,6 @@ namespace Fixie.Samples.Parameterized
                 ".ctor",
                 "ShouldAdd(2, 3, 5)",
                 "ShouldAdd(3, 5, 8)",
-                "ShouldSubtract(10, 5, 5)",
                 "ShouldSubtract(5, 3, 2)",
                 "ShouldSubtract(8, 5, 3)",
                 "Dispose");

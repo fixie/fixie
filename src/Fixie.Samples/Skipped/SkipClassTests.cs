@@ -1,13 +1,14 @@
-﻿using System;
-
-namespace Fixie.Samples.Skipped
+﻿namespace Fixie.Samples.Skipped
 {
+    using System;
+
     [Skip]
     public class SkipClassTests
     {
-        public void ShouldNotBeCalled()
-        {
-            throw new Exception("This test should be skipped.");
-        }
+        public void FirstSkip()
+            => throw new Exception(nameof(FirstSkip) + " was invoked explicitly.");
+
+        public void SecondSkip()
+            => throw new Exception(nameof(SecondSkip) + " was invoked explicitly.");
     }
 }

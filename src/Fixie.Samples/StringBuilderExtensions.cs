@@ -1,9 +1,9 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text;
-using Should;
-
-namespace Fixie.Samples
+﻿namespace Fixie.Samples
 {
+    using System.Runtime.CompilerServices;
+    using System.Text;
+    using Assertions;
+
     public static class StringBuilderExtensions
     {
         public static void WhereAmI(this StringBuilder log, [CallerMemberName] string method = null)

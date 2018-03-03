@@ -8,7 +8,7 @@ $prerelease = $true
 $authors = "Patrick Lioi"
 $copyright = copyright 2013 $authors
 $configuration = 'Release'
-$versionSuffix = if ($prerelease) { "alpha-{0:D4}" -f $buildNumber } else { "" }
+$versionSuffix = if ($prerelease) { "beta-{0:D4}" -f $buildNumber } else { "" }
 
 function License {
     mit-license $copyright

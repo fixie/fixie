@@ -4,4 +4,8 @@
     <OutputType>Exe</OutputType>
     <DebugType>Full</DebugType>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+    <AutoGenerateBindingRedirects Condition="'$(AutoGenerateBindingRedirects)' == ''">true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType Condition="'$(GenerateBindingRedirectsOutputType)' == ''">true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
 </Project>

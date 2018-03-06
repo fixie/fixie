@@ -30,7 +30,7 @@
             Console.WriteLine(message.Exception.Message);
             Console.WriteLine();
             Console.WriteLine(message.Exception.TypeName());
-            Console.WriteLine(message.Exception.CompoundStackTrace());
+            Console.WriteLine(message.Exception.LiterateStackTrace());
             Console.WriteLine();
         }
 

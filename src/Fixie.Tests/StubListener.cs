@@ -28,12 +28,12 @@
 
         public void Handle(CaseFailed message)
         {
-            log.Add($"{message.Name} failed: {message.Exception.Message}{SimplifyCompoundStackTrace(message.Exception.CompoundStackTrace())}");
+            log.Add($"{message.Name} failed: {message.Exception.Message}{SimplifyLiterateStackTrace(message.Exception.LiterateStackTrace())}");
         }
 
-        static string SimplifyCompoundStackTrace(string compoundStackTrace)
+        static string SimplifyLiterateStackTrace(string literateStackTrace)
         {
-            var stackTrace = compoundStackTrace;
+            var stackTrace = literateStackTrace;
 
             stackTrace =
                 String.Join(NewLine,

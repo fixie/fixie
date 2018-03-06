@@ -38,7 +38,7 @@
             var details =
                 message.Exception.TypeName() +
                 NewLine +
-                message.Exception.CompoundStackTrace();
+                message.Exception.LiterateStackTrace();
 
             TestStarted(message);
             Output(message);

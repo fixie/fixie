@@ -5,7 +5,7 @@
 
     static class ExceptionExtensions
     {
-        public static string CompoundStackTrace(this Exception exception)
+        public static string LiterateStackTrace(this Exception exception)
         {
             using (var console = new StringWriter())
             {

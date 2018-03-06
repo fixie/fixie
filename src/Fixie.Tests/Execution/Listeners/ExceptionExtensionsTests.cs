@@ -6,11 +6,11 @@
 
     public class ExceptionExtensionsTests
     {
-        public void ShouldGetCompoundStackTraceIncludingAllNestedExceptions()
+        public void ShouldGetLiterateStackTraceIncludingAllNestedExceptions()
         {
             var exception = GetException();
 
-            exception.CompoundStackTrace()
+            exception.LiterateStackTrace()
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldEqual(

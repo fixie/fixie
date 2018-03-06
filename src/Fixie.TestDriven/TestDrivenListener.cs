@@ -46,7 +46,7 @@ namespace Fixie.TestDriven
                     message.Exception.Message +
                     NewLine +
                     NewLine +
-                    message.Exception.CompoundStackTrace();
+                    message.Exception.LiterateStackTrace();
             });
         }
 

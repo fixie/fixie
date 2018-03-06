@@ -71,7 +71,7 @@
                 x.ErrorStackTrace =
                     message.Exception.TypeName() +
                     NewLine +
-                    message.Exception.CompoundStackTrace();
+                    message.Exception.LiterateStackTrace();
             });
         }
 

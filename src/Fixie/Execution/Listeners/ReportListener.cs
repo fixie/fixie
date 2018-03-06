@@ -60,7 +60,7 @@
                     new XElement("failure",
                         new XAttribute("exception-type", message.Exception.TypeName()),
                         new XElement("message", new XCData(message.Exception.Message)),
-                        new XElement("stack-trace", new XCData(message.Exception.CompoundStackTrace())))));
+                        new XElement("stack-trace", new XCData(message.Exception.LiterateStackTrace())))));
         }
 
         public void Handle(ClassCompleted message)

@@ -51,7 +51,7 @@
             {
                 Type = exception.TypeName();
                 Message = exception.Message;
-                StackTrace = exception.CompoundStackTrace();
+                StackTrace = exception.LiterateStackTrace();
             }
 
             public string Type { get; set; }

@@ -45,7 +45,7 @@
             fail.Output.Lines().ShouldEqual("Console.Out: Fail", "Console.Error: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             fail.Exception.ShouldBeType<FailureException>();
-            fail.Exception.CompoundStackTrace()
+            fail.Exception.LiterateStackTrace()
                 .CleanStackTraceLineNumbers()
                 .ShouldEqual(At("Fail()"));
             fail.Exception.Message.ShouldEqual("'Fail' failed!");
@@ -56,7 +56,7 @@
             failByAssertion.Output.Lines().ShouldEqual("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             failByAssertion.Exception.ShouldBeType<AssertActualExpectedException>();
-            failByAssertion.Exception.CompoundStackTrace()
+            failByAssertion.Exception.LiterateStackTrace()
                 .CleanStackTraceLineNumbers()
                 .ShouldEqual(At("FailByAssertion()"));
             failByAssertion.Exception.Message.Lines().ShouldEqual(

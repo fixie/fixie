@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using Cli;
     using Execution;
     using static System.Console;
@@ -159,9 +158,6 @@
                 workingDirectory: outputPath,
                 arguments: arguments.ToArray());
         }
-
-        static string PathToThisAssembly()
-            => Path.GetDirectoryName(typeof(Program).GetTypeInfo().Assembly.Location);
 
         static void AddPassThroughArguments(List<string> arguments, Options options, string[] conventionArguments)
         {

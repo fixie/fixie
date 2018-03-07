@@ -39,8 +39,6 @@
                     }
                 }
 
-                InjectTargets(testProject);
-
                 var targetFrameworks = GetTargetFrameworks(options, testProject);
 
                 var failedTests = 0;
@@ -91,17 +89,6 @@
                 throw new CommandLineException($"Expected to find 1 project in the current directory, but found {testProjects.Length}.");
 
             return testProjects.Single();
-        }
-
-        static void InjectTargets(string testProject)
-        {
-            File.Copy(
-                Path.Combine(PathToThisAssembly(), "dotnet-fixie.targets"),
-                Path.Combine(
-                    Path.GetDirectoryName(testProject),
-                    "obj",
-                    Path.GetFileName(testProject) + ".dotnet-fixie.targets"),
-                overwrite: true);
         }
 
         static string[] GetTargetFrameworks(Options options, string testProject)

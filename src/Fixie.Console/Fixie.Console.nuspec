@@ -25,7 +25,6 @@
 
     <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\dotnet-fixie.dll" />
     <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\dotnet-fixie.runtimeconfig.json" />
-    <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\dotnet-fixie.targets" />
     <file target="lib\netcoreapp2.0" src="..\Fixie.Console\bin\Release\netcoreapp2.0\Fixie.dll" />
   </files>
 </package>

@@ -10,4 +10,28 @@
     <GenerateBindingRedirectsOutputType Condition="'$(GenerateBindingRedirectsOutputType)' == ''">true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
+  <Target Name="_Fixie_GetTargetFrameworks">
+    <ItemGroup>
+      <_Fixie_Line Include="$(TargetFramework)" />
+      <_Fixie_Line Include="$(TargetFrameworks)" />
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(_Fixie_OutputFile)"
+                      Lines="@(_Fixie_Line)"
+                      Overwrite="true" />
+  </Target>
+  <Target Name="_Fixie_GetAssemblyMetadata">
+
+    <ItemGroup>
+      <_Fixie_Line Include="$(OutputPath)" />
+      <_Fixie_Line Include="$(AssemblyName)" />
+      <_Fixie_Line Include="$(TargetFileName)" />
+      <_Fixie_Line Include="$(TargetFrameworkIdentifier)" />
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(_Fixie_OutputFile)"
+                      Lines="@(_Fixie_Line)"
+                      Overwrite="true" />
+  </Target>
+
 </Project>

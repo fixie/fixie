@@ -9,6 +9,7 @@
     <NuspecFile>Fixie.Console.nuspec</NuspecFile>
   </PropertyGroup>
 
+  <Import Project="..\Fixie.Cli\Fixie.Cli.projitems" Label="Shared" />
   <ItemGroup>
     <ProjectReference Include="..\Fixie\Fixie.csproj" />
   </ItemGroup>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.3
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie", "Fixie\Fixie.csproj", "{54B62C1C-3C2A-41A6-9D19-008F814D1791}"
 EndProject
@@ -15,9 +15,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Tests", "Fixie.Tests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.VisualStudio.TestAdapter", "Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.csproj", "{50D2B103-EF46-4438-9720-08C93B6EF714}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fixie.Console", "Fixie.Console\Fixie.Console.csproj", "{04605B99-6D68-4BC5-8239-DC2EF4498B6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Console", "Fixie.Console\Fixie.Console.csproj", "{04605B99-6D68-4BC5-8239-DC2EF4498B6F}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Fixie.Cli", "Fixie.Cli\Fixie.Cli.shproj", "{0170EC69-6AC5-4240-8307-F316CD219363}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Fixie.Cli\Fixie.Cli.projitems*{0170ec69-6ac5-4240-8307-f316cd219363}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

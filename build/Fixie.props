@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
 
-  <PropertyGroup>
-    <IsTestProject>true</IsTestProject>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectCapability Include="TestContainer" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
 
   <ItemGroup Condition="'$(Language)'=='C#'">
     <Compile Include="$(MSBuildThisFileDirectory)Fixie.Program$(DefaultLanguageSourceExtension)" Visible="false" />

@@ -30,8 +30,7 @@
 
             try
             {
-                var methodGroup = new MethodGroup(fullName);
-                sourceLocationProvider.TryGetSourceLocation(methodGroup, out sourceLocation);
+                sourceLocationProvider.TryGetSourceLocation(test.Class, test.Method, out sourceLocation);
             }
             catch (Exception exception)
             {

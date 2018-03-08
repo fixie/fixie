@@ -18,13 +18,10 @@
             types = null;
         }
 
-        public bool TryGetSourceLocation(MethodGroup methodGroup, out SourceLocation sourceLocation)
+        public bool TryGetSourceLocation(string className, string methodName, out SourceLocation sourceLocation)
         {
             if (types == null)
                 types = CacheTypes(assemblyPath);
-
-            var className = methodGroup.Class;
-            var methodName = methodGroup.Method;
 
             sourceLocation = GetMethods(className)
                 .Where(m => m.Name == methodName)
@@ -57,9 +54,7 @@
 
         static SequencePoint FirstOrDefaultSequencePoint(MethodDefinition testMethod)
         {
-            CustomAttribute asyncStateMachineAttribute;
-
-            if (TryGetAsyncStateMachineAttribute(testMethod, out asyncStateMachineAttribute))
+            if (TryGetAsyncStateMachineAttribute(testMethod, out var asyncStateMachineAttribute))
                 testMethod = GetStateMachineMoveNextMethod(asyncStateMachineAttribute);
 
             return FirstOrDefaultUnhiddenSequencePoint(testMethod.Body);

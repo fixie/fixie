@@ -11,7 +11,7 @@
         //      Debug: opening curly brace.
         //      Release: first non-comment code line or closing curly brace if the method is empty.
 
-        private static readonly string TestAssemblyPath = typeof(SourceLocationSamples).Assembly.Location;
+        static readonly string TestAssemblyPath = typeof(SourceLocationSamples).Assembly.Location;
 
         public void ShouldSafelyFailForUnknownMethods()
         {
@@ -69,8 +69,7 @@
         {
             var sourceLocationProvider = new SourceLocationProvider(TestAssemblyPath);
 
-            SourceLocation location;
-            var success = sourceLocationProvider.TryGetSourceLocation(new MethodGroup(className + "." + methodName), out location);
+            var success = sourceLocationProvider.TryGetSourceLocation(className, methodName, out var location);
 
             success.ShouldBeFalse();
             location.ShouldBeNull();
@@ -80,8 +79,7 @@
         {
             var sourceLocationProvider = new SourceLocationProvider(TestAssemblyPath);
 
-            SourceLocation location;
-            var success = sourceLocationProvider.TryGetSourceLocation(new MethodGroup(className + "." + methodName), out location);
+            var success = sourceLocationProvider.TryGetSourceLocation(className, methodName, out var location);
 
             success.ShouldBeTrue();
             location.CodeFilePath.EndsWith("SourceLocationSamples.cs").ShouldBeTrue();

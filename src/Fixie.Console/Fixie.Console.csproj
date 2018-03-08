@@ -5,12 +5,14 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>dotnet-fixie</AssemblyName>
     <PackageId>Fixie.Console</PackageId>
-    <Description>dotnet fixie console test runner for the Fixie test framework.</Description>
-    <NuspecFile>Fixie.Console.nuspec</NuspecFile>
+    <PackageType>DotnetCliTool</PackageType>
+    <Description>`dotnet fixie` console test runner for the Fixie test framework.</Description>
   </PropertyGroup>
 
+  <Import Project="..\Fixie.Cli\Fixie.Cli.projitems" Label="Shared" />
+
   <ItemGroup>
-    <ProjectReference Include="..\Fixie\Fixie.csproj" />
+    <Content Include="prefercliruntime" PackagePath="" />
   </ItemGroup>
 
 </Project>

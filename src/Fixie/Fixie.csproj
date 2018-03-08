@@ -15,4 +15,6 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
 
+  <Import Project="..\Fixie.Cli\Fixie.Cli.projitems" Label="Shared" />
+
 </Project>

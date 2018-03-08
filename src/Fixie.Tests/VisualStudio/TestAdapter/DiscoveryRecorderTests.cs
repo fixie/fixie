@@ -21,19 +21,17 @@
 
             var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
 
-            var methodGroup = new MethodGroup(typeof(SampleTestClass).GetInstanceMethod("Fail"));
-            
             discoveryRecorder.SendTestCase(new PipeMessage.Test
             {
-                Class = methodGroup.Class,
-                Method = methodGroup.Method,
-                Name = methodGroup.FullName
+                Class = TestClass,
+                Method = "Fail",
+                Name = TestClass + ".Fail"
             });
 
             log.Messages.ShouldBeEmpty();
 
             discoverySink.TestCases.Single()
-                .ShouldBeDiscoveryTimeTest(methodGroup.FullName, assemblyPath);
+                .ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath);
         }
 
         public void ShouldDefaultSourceLocationPropertiesWhenSourceInspectionThrows()
@@ -45,19 +43,17 @@
 
             var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, invalidAssemblyPath);
 
-            var methodGroup = new MethodGroup(typeof(SampleTestClass).GetInstanceMethod("Fail"));
-
             discoveryRecorder.SendTestCase(new PipeMessage.Test
             {
-                Class = methodGroup.Class,
-                Method = methodGroup.Method,
-                Name = methodGroup.FullName
+                Class = TestClass,
+                Method = "Fail",
+                Name = TestClass + ".Fail"
             });
 
             log.Messages.Single().Contains(nameof(FileNotFoundException)).ShouldBeTrue();
 
             discoverySink.TestCases.Single()
-                .ShouldBeDiscoveryTimeTestMissingSourceLocation(methodGroup.FullName, invalidAssemblyPath);
+                .ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail", invalidAssemblyPath);
         }
 
         class StubMessageLogger : IMessageLogger

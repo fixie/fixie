@@ -5,7 +5,6 @@
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
-    using Listeners;
 
     class Runner
     {
@@ -42,7 +41,7 @@
             return Run(assembly, new[] { convention }, types);
         }
 
-        public ExecutionSummary RunTests(Assembly assembly, PipeMessage.Test[] tests)
+        public ExecutionSummary RunTests(Assembly assembly, TestName[] tests)
         {
             var types = GetTypes(assembly, tests);
 
@@ -74,7 +73,7 @@
                 yield return nested;
         }
 
-        static Dictionary<string, Type> GetTypes(Assembly assembly, PipeMessage.Test[] tests)
+        static Dictionary<string, Type> GetTypes(Assembly assembly, TestName[] tests)
         {
             var types = new Dictionary<string, Type>();
 
@@ -85,7 +84,7 @@
             return types;
         }
 
-        static MethodInfo[] GetMethods(Dictionary<string, Type> classes, PipeMessage.Test[] tests)
+        static MethodInfo[] GetMethods(Dictionary<string, Type> classes, TestName[] tests)
         {
             return tests
                 .SelectMany(test =>

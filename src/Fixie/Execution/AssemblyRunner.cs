@@ -121,7 +121,8 @@
 
         int RunTests(Assembly assembly, Options options, string[] conventionArguments, PipeMessage.Test[] tests)
         {
-            return Run(options, conventionArguments, r => r.RunTests(assembly, tests));
+            return Run(options, conventionArguments,
+                r => r.RunTests(assembly, tests.Select(x => new TestName(x.Class, x.Method)).ToArray()));
         }
 
         int Run(Options options, string[] conventionArguments, Func<Runner, ExecutionSummary> run)

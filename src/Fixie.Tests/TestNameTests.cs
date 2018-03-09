@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests
 {
     using Assertions;
+    using static Utility;
 
     public class TestNameTests
     {
@@ -47,6 +48,27 @@
 
             AssertTestName(
                 new TestName("Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinParentClass"),
+                "Fixie.Tests.TestNameTests+ChildClass",
+                "MethodDefinedWithinParentClass",
+                "Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinParentClass");
+        }
+
+        public void CanBeConstructedFromTrustedClassNameAndMethodName()
+        {
+            AssertTestName(
+                new TestName(FullName<ChildClass>(), "MethodDefinedWithinChildClass"),
+                "Fixie.Tests.TestNameTests+ChildClass",
+                "MethodDefinedWithinChildClass",
+                "Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinChildClass");
+
+            AssertTestName(
+                new TestName(FullName<ParentClass>(), "MethodDefinedWithinParentClass"),
+                "Fixie.Tests.TestNameTests+ParentClass",
+                "MethodDefinedWithinParentClass",
+                "Fixie.Tests.TestNameTests+ParentClass.MethodDefinedWithinParentClass");
+
+            AssertTestName(
+                new TestName(FullName<ChildClass>(), "MethodDefinedWithinParentClass"),
                 "Fixie.Tests.TestNameTests+ChildClass",
                 "MethodDefinedWithinParentClass",
                 "Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinParentClass");

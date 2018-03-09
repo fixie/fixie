@@ -15,6 +15,13 @@ namespace Fixie
             FullName = Class + "." + Method;
         }
 
+        public TestName(string @class, string method)
+        {
+            Class = @class;
+            Method = method;
+            FullName = Class + "." + Method;
+        }
+
         public TestName(string fullName)
         {
             var indexOfMemberSeparator = fullName.LastIndexOf(".");

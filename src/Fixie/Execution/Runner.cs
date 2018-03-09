@@ -88,10 +88,10 @@
         static MethodInfo[] GetMethods(Dictionary<string, Type> classes, PipeMessage.Test[] tests)
         {
             return tests
-                .SelectMany(methodGroup =>
-                    classes[methodGroup.Class]
+                .SelectMany(test =>
+                    classes[test.Class]
                         .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                        .Where(m => m.Name == methodGroup.Method)).ToArray();
+                        .Where(m => m.Name == test.Method)).ToArray();
         }
 
         ExecutionSummary RunTypesInternal(Assembly assembly, params Type[] types)

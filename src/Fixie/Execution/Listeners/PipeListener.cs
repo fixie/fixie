@@ -19,13 +19,13 @@
 
         public void Handle(MethodDiscovered message)
         {
-            var methodGroup = new MethodGroup(message.Method);
+            var testName = new TestName(message.Method);
 
             Write(new PipeMessage.Test
             {
-                Class = methodGroup.Class,
-                Method = methodGroup.Method,
-                Name = methodGroup.FullName
+                Class = testName.Class,
+                Method = testName.Method,
+                Name = testName.FullName
             });
         }
 
@@ -53,12 +53,12 @@
         void Write<TTestResult>(CaseCompleted message, Action<TTestResult> customize = null)
             where TTestResult : PipeMessage.TestResult, new()
         {
-            var methodGroup = new MethodGroup(message.Method);
+            var testName = new TestName(message.Method);
 
             var result = new TTestResult
             {
-                Class = methodGroup.Class,
-                Method = methodGroup.Method,
+                Class = testName.Class,
+                Method = testName.Method,
                 Name = message.Name,
                 Duration = message.Duration,
                 Output = message.Output

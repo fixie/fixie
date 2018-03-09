@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.IO.Pipes;
     using System.Linq;
-    using Execution;
     using Execution.Listeners;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -69,13 +68,13 @@
                     {
                         Filter = assemblyGroup.Select(x =>
                         {
-                            var methodGroup = new MethodGroup(x.FullyQualifiedName);
+                            var testName = new TestName(x.FullyQualifiedName);
 
                             return new PipeMessage.Test
                             {
-                                Class = methodGroup.Class,
-                                Method = methodGroup.Method,
-                                Name = methodGroup.FullName
+                                Class = testName.Class,
+                                Method = testName.Method,
+                                Name = testName.FullName
                             };
                         }).ToArray()
                     });

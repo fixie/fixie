@@ -271,14 +271,16 @@
             {
                 var instance = testClass.Construct();
 
-                runCases(@case =>
+                for (int i = 1; i <= 2; i++)
                 {
-                    if (@case.Method.Name.Contains("Skip"))
-                        return;
+                    runCases(@case =>
+                    {
+                        if (@case.Method.Name.Contains("Skip"))
+                            return;
 
-                    @case.Execute(instance);
-                });
-                runCases(@case => @case.Execute(instance));
+                        @case.Execute(instance);
+                    });
+                }
 
                 instance.Dispose();
             }
@@ -612,7 +614,7 @@
             output.ShouldHaveLifecycle(".ctor", "Dispose");
         }
 
-        public void ShouldFailAllMethodsAfterReportingPrimaryResultsWhenLifecycleAttemptsToProcessTestCaseLifecycleMultipleTimes()
+        public void ShouldAllowRunningAllCasesMultipleTimes()
         {
             Convention.Lifecycle<RunCasesTwice>();
 
@@ -623,12 +625,12 @@
                 "SampleTestClass.Pass passed",
                 "SampleTestClass.Fail failed: 'Fail' failed!",
 
-                "SampleTestClass.Skip failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.",
-                "SampleTestClass.Pass failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.",
-                "SampleTestClass.Fail failed: Fixie.Tests.LifecycleTests+RunCasesTwice attempted to run Fixie.Tests.LifecycleTests+SampleTestClass's test cases multiple times, which is not supported.");
+                "SampleTestClass.Skip skipped",
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Fail failed: 'Fail' failed!");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Pass", "Fail");
+                ".ctor", "Pass", "Fail", "Pass", "Fail", "Dispose");
         }
 
         public void ShouldAllowExecutingACaseMultipleTimesBeforeEmittingItsResult()

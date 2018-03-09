@@ -7,14 +7,10 @@
 
     class MethodDiscoverer
     {
-        readonly Filter filter;
         readonly IReadOnlyList<Func<MethodInfo, bool>> testMethodConditions;
 
-        public MethodDiscoverer(Filter filter, Convention convention)
-        {
-            this.filter = filter;
-            testMethodConditions = convention.Config.TestMethodConditions;
-        }
+        public MethodDiscoverer(Convention convention)
+            => testMethodConditions = convention.Config.TestMethodConditions;
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
         {
@@ -27,7 +23,6 @@
                     .Where(method => method.DeclaringType != typeof(object))
                     .Where(method => !(testClassIsDisposable && HasDisposeSignature(method)))
                     .Where(IsMatch)
-                    .Where(method => filter.IsSatisfiedBy(new MethodGroup(method)))
                     .ToArray();
             }
             catch (Exception exception)

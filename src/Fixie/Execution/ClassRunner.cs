@@ -15,13 +15,13 @@
 
         readonly Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> orderMethods;
 
-        public ClassRunner(Bus bus, Filter filter, Convention convention)
+        public ClassRunner(Bus bus, Convention convention)
         {
             var config = convention.Config;
 
             this.bus = bus;
             lifecycle = convention.Config.Lifecycle;
-            methodDiscoverer = new MethodDiscoverer(filter, convention);
+            methodDiscoverer = new MethodDiscoverer(convention);
             parameterDiscoverer = new ParameterDiscoverer(convention);
 
             orderMethods = config.OrderMethods;

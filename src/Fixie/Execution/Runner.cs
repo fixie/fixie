@@ -10,16 +10,14 @@
     class Runner
     {
         readonly Bus bus;
-        readonly Filter filter;
         readonly string[] conventionArguments;
 
         public Runner(Bus bus)
-            : this(bus, new Filter(), new string[] {}) { }
+            : this(bus, new string[] {}) { }
 
-        public Runner(Bus bus, Filter filter, string[] conventionArguments)
+        public Runner(Bus bus, string[] conventionArguments)
         {
             this.bus = bus;
-            this.filter = filter;
             this.conventionArguments = conventionArguments;
         }
 
@@ -125,7 +123,7 @@
         void Run(Convention convention, Type[] candidateTypes, ExecutionSummary assemblySummary)
         {
             var classDiscoverer = new ClassDiscoverer(convention);
-            var classRunner = new ClassRunner(bus, filter, convention);
+            var classRunner = new ClassRunner(bus, convention);
 
             var testClasses = classDiscoverer.TestClasses(candidateTypes);
 

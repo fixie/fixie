@@ -7,15 +7,12 @@
     {
         public Options(
             string report,
-            bool? teamCity,
-            params string[] patterns)
+            bool? teamCity)
         {
             Report = report;
             TeamCity = teamCity;
-            Patterns = patterns;
         }
 
-        public string[] Patterns { get; }
         public string Report { get; }
         public bool? TeamCity { get; }
 

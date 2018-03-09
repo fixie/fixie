@@ -7,15 +7,13 @@
             bool noBuild,
             string framework,
             string report,
-            bool? teamCity,
-            params string[] patterns)
+            bool? teamCity)
         {
             Configuration = configuration ?? "Debug";
             NoBuild = noBuild;
             Framework = framework;
             Report = report;
             TeamCity = teamCity;
-            Patterns = patterns;
         }
 
         public string Configuration { get; }
@@ -24,6 +22,5 @@
         public string Framework { get; }
         public string Report { get; }
         public bool? TeamCity { get; }
-        public string[] Patterns { get; }
     }
 }

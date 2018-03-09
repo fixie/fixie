@@ -50,7 +50,7 @@
                         if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
                         {
                             var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
-                            runner.DiscoverMethods(assembly, options, conventionArguments);
+                            runner.DiscoverMethods(assembly, conventionArguments);
                         }
                         else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
                         {
@@ -105,11 +105,11 @@
             customListeners.Add(listener);
         }
 
-        void DiscoverMethods(Assembly assembly, Options options, string[] conventionArguments)
+        void DiscoverMethods(Assembly assembly, string[] conventionArguments)
         {
             var listeners = customListeners;
             var bus = new Bus(listeners);
-            var discoverer = new Discoverer(bus, Filter(options), conventionArguments);
+            var discoverer = new Discoverer(bus, conventionArguments);
 
             discoverer.DiscoverMethods(assembly);
         }
@@ -128,18 +128,11 @@
         {
             var listeners = GetExecutionListeners(options);
             var bus = new Bus(listeners);
-            var runner = new Runner(bus, Filter(options), conventionArguments);
+            var runner = new Runner(bus, conventionArguments);
 
             var summary = run(runner);
 
             return summary.Total == 0 ? FatalError : summary.Failed;
-        }
-
-        static Filter Filter(Options options)
-        {
-            var filter = new Filter();
-            filter.ByPatterns(options.Patterns);
-            return filter;
         }
 
         List<Listener> GetExecutionListeners(Options options)

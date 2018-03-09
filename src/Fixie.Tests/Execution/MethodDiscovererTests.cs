@@ -64,42 +64,6 @@
                 .ShouldEqual("PublicInstanceNoArgsVoid()");
         }
 
-        public void ShouldDiscoverMethodsSatisfyingAnyPatternWhenPatternsAreProvided()
-        {
-            var customConvention = new Convention();
-
-            DiscoveredTestMethods<Sample>(customConvention,
-                "NOMATCH")
-                .ShouldBeEmpty();
-
-            DiscoveredTestMethods<Sample>(customConvention,
-                typeof(Sample).FullName + ".Public")
-                .ShouldEqual(
-                    "PublicInstanceNoArgsVoid()",
-                    "PublicInstanceNoArgsWithReturn()",
-                    "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)");
-
-            DiscoveredTestMethods<Sample>(customConvention,
-                    "PublicInstanceWith")
-                .ShouldEqual(
-                    "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)");
-
-            DiscoveredTestMethods<Sample>(customConvention,
-                    "Void")
-                .ShouldEqual(
-                    "PublicInstanceNoArgsVoid()",
-                    "PublicInstanceWithArgsVoid(x)");
-
-            DiscoveredTestMethods<Sample>(customConvention,
-                    "Public*With")
-                .ShouldEqual(
-                    "PublicInstanceNoArgsWithReturn()",
-                    "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)");
-        }
-
         public void TheDefaultConventionShouldDiscoverPublicInstanceMethods()
         {
             var defaultConvention = new DefaultConvention();
@@ -136,11 +100,9 @@
             exception.InnerException.Message.ShouldEqual("Unsafe method-discovery predicate threw!");
         }
 
-        static IEnumerable<string> DiscoveredTestMethods<TTestClass>(Convention convention, params string[] patterns)
+        static IEnumerable<string> DiscoveredTestMethods<TTestClass>(Convention convention)
         {
-            var filter = new Filter();
-            filter.ByPatterns(patterns);
-            return new MethodDiscoverer(filter, convention)
+            return new MethodDiscoverer(convention)
                 .TestMethods(typeof(TTestClass))
                 .Select(method => $"{method.Name}({String.Join(", ", method.GetParameters().Select(x => x.Name))})")
                 .OrderBy(name => name, StringComparer.Ordinal);

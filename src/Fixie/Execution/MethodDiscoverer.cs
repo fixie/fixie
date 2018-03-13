@@ -19,7 +19,7 @@
                 bool testClassIsDisposable = IsDisposable(testClass);
 
                 return testClass
-                    .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                    .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
                     .Where(method => method.DeclaringType != typeof(object))
                     .Where(method => !(testClassIsDisposable && HasDisposeSignature(method)))
                     .Where(IsMatch)

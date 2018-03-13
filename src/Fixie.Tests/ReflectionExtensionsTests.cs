@@ -20,6 +20,14 @@
             Method("ReturnsInt").IsVoid().ShouldBeFalse();
         }
 
+        public void CanDetectStaticTypes()
+        {
+            typeof(StaticClass).IsStatic().ShouldBeTrue();
+            typeof(AbstractClass).IsStatic().ShouldBeFalse();
+            typeof(ConcreteClass).IsStatic().ShouldBeFalse();
+            typeof(SealedConcreteClass).IsStatic().ShouldBeFalse();
+        }
+
         public void CanDetectClassAttributes()
         {
             typeof(AttributeSample).Has<InheritedAttribute>().ShouldBeFalse();
@@ -93,6 +101,11 @@
         class SampleMethodAttribute : Attribute { }
         class InheritedAttribute : Attribute { }
         class NonInheritedAttribute : Attribute { }
+
+        static class StaticClass { }
+        abstract class AbstractClass { }
+        class ConcreteClass { }
+        sealed class SealedConcreteClass { }
 
         [Inherited]
         abstract class AttributeSampleBase

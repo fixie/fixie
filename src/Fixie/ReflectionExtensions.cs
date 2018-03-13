@@ -17,6 +17,11 @@
             return method.ReturnType == typeof(void);
         }
 
+        public static bool IsStatic(this Type type)
+        {
+            return type.IsAbstract && type.IsSealed;
+        }
+
         public static bool Has<TAttribute>(this Type type) where TAttribute : Attribute
         {
             return type.GetTypeInfo().GetCustomAttributes<TAttribute>(false).Any();

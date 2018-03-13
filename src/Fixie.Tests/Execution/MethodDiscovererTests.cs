@@ -161,9 +161,9 @@
 
         class AsyncSample
         {
-            public async static Task<int> PublicStaticWithArgsWithReturn(int x) { return await Zero(); }
-            public async static Task<int> PublicStaticNoArgsWithReturn() { return await Zero(); }
-            public async static void PublicStaticWithArgsVoid(int x) { await Zero(); }
+            public static async Task<int> PublicStaticWithArgsWithReturn(int x) { return await Zero(); }
+            public static async Task<int> PublicStaticNoArgsWithReturn() { return await Zero(); }
+            public static async void PublicStaticWithArgsVoid(int x) { await Zero(); }
             public static async void PublicStaticNoArgsVoid() { await Zero(); }
 
             public async Task<int> PublicInstanceWithArgsWithReturn(int x) { return await Zero(); }
@@ -171,10 +171,10 @@
             public async void PublicInstanceWithArgsVoid(int x) { await Zero(); }
             public async void PublicInstanceNoArgsVoid() { await Zero(); }
 
-            private async static Task<int> PrivateStaticWithArgsWithReturn(int x) { return await Zero(); }
-            private async static Task<int> PrivateStaticNoArgsWithReturn() { return await Zero(); }
-            private async static void PrivateStaticWithArgsVoid(int x) { await Zero(); }
-            private async static void PrivateStaticNoArgsVoid() { await Zero(); }
+            private static async Task<int> PrivateStaticWithArgsWithReturn(int x) { return await Zero(); }
+            private static async Task<int> PrivateStaticNoArgsWithReturn() { return await Zero(); }
+            private static async void PrivateStaticWithArgsVoid(int x) { await Zero(); }
+            private static async void PrivateStaticNoArgsVoid() { await Zero(); }
 
             private async Task<int> PrivateInstanceWithArgsWithReturn(int x) { return await Zero(); }
             private async Task<int> PrivateInstanceNoArgsWithReturn() { return await Zero(); }

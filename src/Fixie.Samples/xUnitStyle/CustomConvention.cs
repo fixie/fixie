@@ -21,7 +21,7 @@
 
         bool HasAnyFactMethods(Type type)
         {
-            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Any(x => x.HasOrInherits<FactAttribute>());
+            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static).Any(x => x.HasOrInherits<FactAttribute>());
         }
 
         class FixtureDataLifecycle : Lifecycle

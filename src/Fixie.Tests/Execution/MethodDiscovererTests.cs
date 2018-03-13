@@ -10,7 +10,7 @@
 
     public class MethodDiscovererTests
     {
-        public void ShouldConsiderOnlyPublicInstanceMethods()
+        public void ShouldConsiderOnlyPublicMethods()
         {
             var customConvention = new Convention();
 
@@ -19,14 +19,24 @@
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
                     "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)");
+                    "PublicInstanceWithArgsWithReturn(x)",
+
+                    "PublicStaticNoArgsVoid()",
+                    "PublicStaticNoArgsWithReturn()",
+                    "PublicStaticWithArgsVoid(x)",
+                    "PublicStaticWithArgsWithReturn(x)");
 
             DiscoveredTestMethods<AsyncSample>(customConvention)
                 .ShouldEqual(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
                     "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)");
+                    "PublicInstanceWithArgsWithReturn(x)",
+
+                    "PublicStaticNoArgsVoid()",
+                    "PublicStaticNoArgsWithReturn()",
+                    "PublicStaticWithArgsVoid(x)",
+                    "PublicStaticWithArgsWithReturn(x)");
         }
 
         public void ShouldNotConsiderIDisposableDisposeMethod()
@@ -58,13 +68,14 @@
             customConvention
                 .Methods
                 .Where(x => x.Name.Contains("Void"))
-                .Where(x => x.Name.Contains("No"));
+                .Where(x => x.Name.Contains("No"))
+                .Where(x => !x.IsStatic);
 
             DiscoveredTestMethods<Sample>(customConvention)
                 .ShouldEqual("PublicInstanceNoArgsVoid()");
         }
 
-        public void TheDefaultConventionShouldDiscoverPublicInstanceMethods()
+        public void TheDefaultConventionShouldDiscoverPublicMethods()
         {
             var defaultConvention = new DefaultConvention();
 
@@ -73,14 +84,24 @@
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
                     "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)");
+                    "PublicInstanceWithArgsWithReturn(x)",
+
+                    "PublicStaticNoArgsVoid()",
+                    "PublicStaticNoArgsWithReturn()",
+                    "PublicStaticWithArgsVoid(x)",
+                    "PublicStaticWithArgsWithReturn(x)");
 
             DiscoveredTestMethods<AsyncSample>(defaultConvention)
                 .ShouldEqual(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
                     "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)");
+                    "PublicInstanceWithArgsWithReturn(x)",
+
+                    "PublicStaticNoArgsVoid()",
+                    "PublicStaticNoArgsWithReturn()",
+                    "PublicStaticWithArgsVoid(x)",
+                    "PublicStaticWithArgsWithReturn(x)");
         }
 
         public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
@@ -140,20 +161,20 @@
 
         class AsyncSample
         {
-            public async static Task<int> PublicStaticWithArgsWithReturn(int x) { return await Zero(); }
-            public async static Task<int> PublicStaticNoArgsWithReturn() { return await Zero(); }
-            public async static void PublicStaticWithArgsVoid(int x) { await Zero(); }
-            public async static void PublicStaticNoArgsVoid() { await Zero(); }
+            public static async Task<int> PublicStaticWithArgsWithReturn(int x) { return await Zero(); }
+            public static async Task<int> PublicStaticNoArgsWithReturn() { return await Zero(); }
+            public static async void PublicStaticWithArgsVoid(int x) { await Zero(); }
+            public static async void PublicStaticNoArgsVoid() { await Zero(); }
 
             public async Task<int> PublicInstanceWithArgsWithReturn(int x) { return await Zero(); }
             public async Task<int> PublicInstanceNoArgsWithReturn() { return await Zero(); }
             public async void PublicInstanceWithArgsVoid(int x) { await Zero(); }
             public async void PublicInstanceNoArgsVoid() { await Zero(); }
 
-            private async static Task<int> PrivateStaticWithArgsWithReturn(int x) { return await Zero(); }
-            private async static Task<int> PrivateStaticNoArgsWithReturn() { return await Zero(); }
-            private async static void PrivateStaticWithArgsVoid(int x) { await Zero(); }
-            private async static void PrivateStaticNoArgsVoid() { await Zero(); }
+            private static async Task<int> PrivateStaticWithArgsWithReturn(int x) { return await Zero(); }
+            private static async Task<int> PrivateStaticNoArgsWithReturn() { return await Zero(); }
+            private static async void PrivateStaticWithArgsVoid(int x) { await Zero(); }
+            private static async void PrivateStaticNoArgsVoid() { await Zero(); }
 
             private async Task<int> PrivateInstanceWithArgsWithReturn(int x) { return await Zero(); }
             private async Task<int> PrivateInstanceNoArgsWithReturn() { return await Zero(); }

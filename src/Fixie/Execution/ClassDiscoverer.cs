@@ -41,7 +41,7 @@ namespace Fixie.Execution
             => testClassConditions.All(condition => condition(candidate));
 
         static bool ConcreteClasses(Type type)
-            => type.IsClass && !type.IsAbstract;
+            => type.IsClass && (!type.IsAbstract || type.IsStatic());
 
         static bool NonDiscoveryClasses(Type type)
             => !type.IsSubclassOf(typeof(Convention));

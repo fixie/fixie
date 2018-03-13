@@ -89,7 +89,7 @@
             return testNames
                 .SelectMany(testName =>
                     classes[testName.Class]
-                        .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                        .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
                         .Where(m => m.Name == testName.Method)).ToArray();
         }
 

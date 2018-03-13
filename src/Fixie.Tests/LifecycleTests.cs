@@ -35,11 +35,16 @@
 
         Output Run<TSampleTestClass>()
         {
+            return Run(typeof(TSampleTestClass));
+        }
+
+        Output Run(Type testClass)
+        {
             var listener = new StubListener();
 
             using (var console = new RedirectedConsole())
             {
-                Utility.Run<TSampleTestClass>(listener, Convention);
+                Utility.RunTypes(listener, Convention, testClass);
 
                 return new Output(console.Lines().ToArray(), listener.Entries.ToArray());
             }
@@ -172,6 +177,26 @@
                 disposed = true;
 
                 WhereAmI();
+            }
+        }
+
+        static class StaticTestClass
+        {
+            public static void Pass()
+            {
+                WhereAmI();
+            }
+
+            public static void Fail()
+            {
+                WhereAmI();
+                throw new FailureException();
+            }
+
+            public static void Skip()
+            {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
             }
         }
 
@@ -646,6 +671,21 @@
 
             output.ShouldHaveLifecycle(
                 ".ctor", "Pass", "Fail", "Fail", "Dispose");
+        }
+
+        public void ShouldAllowStaticTestClassesAndMethodsBypassingConstructionAttempts()
+        {
+            Convention.Lifecycle<CreateInstancePerCase>();
+
+            var output = Run(typeof(StaticTestClass));
+
+            output.ShouldHaveResults(
+                "StaticTestClass.Skip skipped",
+                "StaticTestClass.Pass passed",
+                "StaticTestClass.Fail failed: 'Fail' failed!");
+
+            output.ShouldHaveLifecycle(
+                "Pass", "Fail");
         }
     }
 }

@@ -14,6 +14,7 @@
         static readonly Type[] CandidateTypes =
         {
             typeof(Decimal),
+            typeof(StaticClass),
             typeof(AbstractClass),
             typeof(DateTime),
             typeof(DefaultConstructor),
@@ -31,6 +32,7 @@
 
             DiscoveredTestClasses(customConvention)
                 .ShouldEqual(
+                    typeof(StaticClass),
                     typeof(DefaultConstructor),
                     typeof(NoDefaultConstructor),
                     typeof(NameEndsWithTests),
@@ -53,6 +55,7 @@
 
             DiscoveredTestClasses(customConvention, nested)
                 .ShouldEqual(
+                    typeof(StaticClass),
                     typeof(DefaultConstructor),
                     typeof(NoDefaultConstructor),
                     typeof(NameEndsWithTests),
@@ -68,7 +71,8 @@
             customConvention
                 .Classes
                 .Where(x => x.IsInNamespace("Fixie.Tests"))
-                .Where(x => x.Name.Contains("i"));
+                .Where(x => x.Name.Contains("i"))
+                .Where(x => !x.IsStatic());
 
             DiscoveredTestClasses(customConvention)
                 .ShouldEqual(
@@ -115,6 +119,7 @@
                 .TestClasses(CandidateTypes.Concat(additionalCandidates));
         }
 
+        static class StaticClass { }
         abstract class AbstractClass { }
         class DefaultConstructor { }
         class NoDefaultConstructor { public NoDefaultConstructor(int arg) { } }

@@ -9,7 +9,7 @@
         public static void Execute(this Type testClass, object instance, Func<MethodInfo, bool> condition)
         {
             var query = testClass
-                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
                 .Where(condition);
 
             foreach (var q in query)

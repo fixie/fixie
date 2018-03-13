@@ -8,12 +8,14 @@
     /// </summary>
     public class TestClass
     {
+        readonly bool isStatic;
         internal TestClass(Type type) : this(type, null) { }
 
         internal TestClass(Type type, MethodInfo targetMethod)
         {
             Type = type;
             TargetMethod = targetMethod;
+            isStatic = Type.IsStatic();
         }
 
         /// <summary>
@@ -30,9 +32,13 @@
 
         /// <summary>
         /// Constructs an instance of the test class type, using its default constructor.
+        /// If the class is static, no action is taken and null is returned.
         /// </summary>
         public object Construct()
         {
+            if (isStatic)
+                return null;
+
             try
             {
                 return Activator.CreateInstance(Type);

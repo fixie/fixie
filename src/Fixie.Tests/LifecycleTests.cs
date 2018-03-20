@@ -17,15 +17,19 @@
         {
             FailingMembers = null;
 
-            Convention = new Convention();
+            Convention = new SampleConvention();
+        }
 
-            Convention
-                .Classes
-                .Where(x => x.Name.EndsWith("TestClass"));
+        class SampleConvention : Convention
+        {
+            public SampleConvention()
+            {
+                Classes
+                    .Where(x => x.Name.EndsWith("TestClass"));
 
-            Convention
-                .Methods
-                .OrderByDescending(x => x.Name, StringComparer.Ordinal);
+                Methods
+                    .OrderByDescending(x => x.Name, StringComparer.Ordinal);
+            }
         }
 
         static void FailDuring(params string[] failingMemberNames)

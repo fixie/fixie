@@ -19,6 +19,11 @@
 
         public Convention[] GetConventions()
         {
+            if (assembly.GetName().Name == "Fixie.Tests")
+            {
+                return new[] { (Convention)new DefaultConvention() };
+            }
+
             var customConventions =
                 LocallyDeclaredConventionTypes()
                     .Select(ConstructConvention)

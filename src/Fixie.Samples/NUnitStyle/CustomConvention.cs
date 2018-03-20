@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public class CustomConvention : Convention
+    public class CustomConvention : Convention, Lifecycle
     {
         public CustomConvention()
         {
@@ -19,65 +19,62 @@
             Parameters
                 .Add<TestCaseSourceAttributeParameterSource>();
 
-            Lifecycle<SetUpTearDown>();
+            Lifecycle(this);
         }
 
-        class SetUpTearDown : Lifecycle
+        public void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            var instance = testClass.Construct();
+
+            testClass.Execute<TestFixtureSetUp>(instance);
+            runCases(@case =>
             {
-                var instance = testClass.Construct();
+                testClass.Execute<SetUp>(instance);
 
-                testClass.Execute<TestFixtureSetUp>(instance);
-                runCases(@case =>
+                @case.Execute(instance);
+
+                HandleExpectedExceptions(@case);
+
+                testClass.Execute<TearDown>(instance);
+            });
+            testClass.Execute<TestFixtureTearDown>(instance);
+
+            instance.Dispose();
+        }
+
+        static void HandleExpectedExceptions(Case @case)
+        {
+            var attribute = @case.Method.GetCustomAttributes<ExpectedExceptionAttribute>(false).SingleOrDefault();
+
+            if (attribute == null)
+                return;
+
+            var exception = @case.Exception;
+
+            try
+            {
+                if (exception == null)
+                    throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
+
+                if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
                 {
-                    testClass.Execute<SetUp>(instance);
+                    throw new Exception(
+                        "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
+                        exception.GetType() + " was thrown.", exception);
+                }
 
-                    @case.Execute(instance);
+                if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
+                {
+                    throw new Exception(
+                        "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
+                        exception);
+                }
 
-                    HandleExpectedExceptions(@case);
-
-                    testClass.Execute<TearDown>(instance);
-                });
-                testClass.Execute<TestFixtureTearDown>(instance);
-
-                instance.Dispose();
+                @case.Pass();
             }
-
-            static void HandleExpectedExceptions(Case @case)
+            catch (Exception failureException)
             {
-                var attribute = @case.Method.GetCustomAttributes<ExpectedExceptionAttribute>(false).SingleOrDefault();
-
-                if (attribute == null)
-                    return;
-
-                var exception = @case.Exception;
-
-                try
-                {
-                    if (exception == null)
-                        throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
-
-                    if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
-                    {
-                        throw new Exception(
-                            "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
-                            exception.GetType() + " was thrown.", exception);
-                    }
-
-                    if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
-                    {
-                        throw new Exception(
-                            "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
-                            exception);
-                    }
-
-                    @case.Pass();
-                }
-                catch (Exception failureException)
-                {
-                    @case.Fail(failureException);
-                }
+                @case.Fail(failureException);
             }
         }
     }

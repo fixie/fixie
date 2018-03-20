@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public class CustomConvention : Convention
+    public class CustomConvention : Convention, Lifecycle
     {
         public CustomConvention()
         {
@@ -16,47 +16,44 @@
                 .Where(x => x.HasOrInherits<FactAttribute>())
                 .Shuffle();
 
-            Lifecycle<FixtureDataLifecycle>();
+            Lifecycle(this);
         }
 
-        class FixtureDataLifecycle : Lifecycle
+        public void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            var fixtures = PrepareFixtureData(testClass.Type);
+
+            runCases(@case =>
             {
-                var fixtures = PrepareFixtureData(testClass.Type);
+                var instance = testClass.Construct();
 
-                runCases(@case =>
-                {
-                    var instance = testClass.Construct();
+                foreach (var injectionMethod in fixtures.Keys)
+                    injectionMethod.Invoke(instance, new[] { fixtures[injectionMethod] });
 
-                    foreach (var injectionMethod in fixtures.Keys)
-                        injectionMethod.Invoke(instance, new[] { fixtures[injectionMethod] });
+                @case.Execute(instance);
 
-                    @case.Execute(instance);
+                instance.Dispose();
+            });
 
-                    instance.Dispose();
-                });
+            foreach (var fixtureInstance in fixtures.Values)
+                fixtureInstance.Dispose();
+        }
 
-                foreach (var fixtureInstance in fixtures.Values)
-                    fixtureInstance.Dispose();
+        static Dictionary<MethodInfo, object> PrepareFixtureData(Type testClass)
+        {
+            var fixtures = new Dictionary<MethodInfo, object>();
+
+            foreach (var @interface in FixtureInterfaces(testClass))
+            {
+                var fixtureDataType = @interface.GetGenericArguments()[0];
+
+                var fixtureInstance = Activator.CreateInstance(fixtureDataType);
+
+                var method = @interface.GetMethod("SetFixture", new[] { fixtureDataType });
+                fixtures[method] = fixtureInstance;
             }
 
-            static Dictionary<MethodInfo, object> PrepareFixtureData(Type testClass)
-            {
-                var fixtures = new Dictionary<MethodInfo, object>();
-
-                foreach (var @interface in FixtureInterfaces(testClass))
-                {
-                    var fixtureDataType = @interface.GetGenericArguments()[0];
-
-                    var fixtureInstance = Activator.CreateInstance(fixtureDataType);
-
-                    var method = @interface.GetMethod("SetFixture", new[] { fixtureDataType });
-                    fixtures[method] = fixtureInstance;
-                }
-
-                return fixtures;
-            }
+            return fixtures;
         }
 
         bool HasAnyFactMethods(Type type)

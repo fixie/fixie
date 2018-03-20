@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class CustomConvention : Convention
+    public class CustomConvention : Convention, Lifecycle
     {
         public CustomConvention()
         {
@@ -13,28 +13,25 @@
                 .Where(x => x.IsInNamespace(GetType().Namespace))
                 .Where(x => x.Name.EndsWith("Tests"));
 
-            Lifecycle<IocLifecycle>();
+            Lifecycle(this);
         }
 
-        public class IocLifecycle : Lifecycle
+        public void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            using (var container = InitContainerForIntegrationTests())
             {
-                using (var container = InitContainerForIntegrationTests())
-                {
-                    var instance = container.Get(testClass.Type);
+                var instance = container.Get(testClass.Type);
 
-                    runCases(@case => @case.Execute(instance));
-                }
+                runCases(@case => @case.Execute(instance));
             }
+        }
 
-            static IoCContainer InitContainerForIntegrationTests()
-            {
-                var container = new IoCContainer();
-                container.Add(typeof(IDatabase), typeof(RealDatabase));
-                container.Add(typeof(IThirdPartyService), typeof(FakeThirdPartyService));
-                return container;
-            }
+        static IoCContainer InitContainerForIntegrationTests()
+        {
+            var container = new IoCContainer();
+            container.Add(typeof(IDatabase), typeof(RealDatabase));
+            container.Add(typeof(IThirdPartyService), typeof(FakeThirdPartyService));
+            return container;
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class CustomConvention : Convention
+    public class CustomConvention : Convention, Lifecycle
     {
         public CustomConvention()
         {
@@ -14,23 +14,20 @@
                 .Where(x => x.Name != "SetUp")
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
-            Lifecycle<SetUpLifecycle>();
+            Lifecycle(this);
         }
 
-        class SetUpLifecycle : Lifecycle
+        public void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            runCases(@case =>
             {
-                runCases(@case =>
-                {
-                    var instance = testClass.Construct();
+                var instance = testClass.Construct();
 
-                    testClass.Execute(instance, "SetUp");
-                    @case.Execute(instance);
+                testClass.Execute(instance, "SetUp");
+                @case.Execute(instance);
 
-                    instance.Dispose();
-                });
-            }
+                instance.Dispose();
+            });
         }
     }
 }

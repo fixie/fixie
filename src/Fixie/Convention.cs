@@ -42,12 +42,14 @@
         /// <summary>
         /// Overrides the default test class lifecycle.
         /// </summary>
+        [Obsolete]
         public void Lifecycle<TLifecycle>() where TLifecycle : Lifecycle, new()
             => Config.Lifecycle = new TLifecycle();
 
         /// <summary>
         /// Overrides the default test class lifecycle.
         /// </summary>
+        [Obsolete]
         public void Lifecycle(Lifecycle lifecycle)
             => Config.Lifecycle = lifecycle;
     }

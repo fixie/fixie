@@ -17,5 +17,17 @@
 
             Lifecycle<CreateInstancePerClass>();
         }
+
+        class CreateInstancePerClass : Lifecycle
+        {
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            {
+                var instance = testClass.Construct();
+
+                runCases(@case => @case.Execute(instance));
+
+                instance.Dispose();
+            }
+        }
     }
 }

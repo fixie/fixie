@@ -14,7 +14,7 @@ namespace Fixie.Tests.Execution
         public void ShouldExecuteAllCasesInAllDiscoveredTestClasses()
         {
             var listener = new StubListener();
-            var convention = SelfTestConvention.Build();
+            var convention = new SelfTestConvention();
 
             convention.Lifecycle<CreateInstancePerClass>();
 
@@ -35,7 +35,7 @@ namespace Fixie.Tests.Execution
         public void ShouldAllowRandomShufflingOfCaseExecutionOrder()
         {
             var listener = new StubListener();
-            var convention = SelfTestConvention.Build();
+            var convention = new SelfTestConvention();
 
             convention.Methods
                 .Shuffle(new Random(1));
@@ -59,7 +59,7 @@ namespace Fixie.Tests.Execution
         public void ShouldReportFailuresForAllAffectedCasesWithoutShortCircuitingTestExecutionWhenCaseOrderingThrows()
         {
             var listener = new StubListener();
-            var convention = SelfTestConvention.Build();
+            var convention = new SelfTestConvention();
 
             convention.Methods
                 .OrderBy((Func<MethodInfo, string>)(x => throw new Exception("OrderBy lambda expression threw!")));

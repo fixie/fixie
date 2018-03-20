@@ -10,7 +10,7 @@
     {
         public void ShouldAccumulateCaseStatusCounts()
         {
-            var convention = SelfTestConvention.Build();
+            var convention = new SelfTestConvention();
             convention.Lifecycle<CreateInstancePerCase>();
 
             var listener = new StubExecutionSummaryListener();

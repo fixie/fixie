@@ -8,7 +8,7 @@
         protected CaseTests()
         {
             Listener = new StubListener();
-            Convention = SelfTestConvention.Build();
+            Convention = new SelfTestConvention();
         }
 
         protected Convention Convention { get; }

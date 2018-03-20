@@ -21,6 +21,65 @@
 
             Lifecycle<SetUpTearDown>();
         }
+
+        class SetUpTearDown : Lifecycle
+        {
+            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            {
+                var instance = testClass.Construct();
+
+                testClass.Execute<TestFixtureSetUp>(instance);
+                runCases(@case =>
+                {
+                    testClass.Execute<SetUp>(instance);
+
+                    @case.Execute(instance);
+
+                    HandleExpectedExceptions(@case);
+
+                    testClass.Execute<TearDown>(instance);
+                });
+                testClass.Execute<TestFixtureTearDown>(instance);
+
+                instance.Dispose();
+            }
+
+            static void HandleExpectedExceptions(Case @case)
+            {
+                var attribute = @case.Method.GetCustomAttributes<ExpectedExceptionAttribute>(false).SingleOrDefault();
+
+                if (attribute == null)
+                    return;
+
+                var exception = @case.Exception;
+
+                try
+                {
+                    if (exception == null)
+                        throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
+
+                    if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
+                    {
+                        throw new Exception(
+                            "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
+                            exception.GetType() + " was thrown.", exception);
+                    }
+
+                    if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
+                    {
+                        throw new Exception(
+                            "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
+                            exception);
+                    }
+
+                    @case.Pass();
+                }
+                catch (Exception failureException)
+                {
+                    @case.Fail(failureException);
+                }
+            }
+        }
     }
 
     class TestCaseSourceAttributeParameterSource : ParameterSource
@@ -66,65 +125,6 @@
                 return (IEnumerable<object[]>)m.Invoke(null, null);
 
             throw new Exception($"Member '{member.Name}' must be static to be used with TestCaseSource");
-        }
-    }
-
-    class SetUpTearDown : Lifecycle
-    {
-        public void Execute(TestClass testClass, Action<CaseAction> runCases)
-        {
-            var instance = testClass.Construct();
-
-            testClass.Execute<TestFixtureSetUp>(instance);
-            runCases(@case =>
-            {
-                testClass.Execute<SetUp>(instance);
-
-                @case.Execute(instance);
-
-                HandleExpectedExceptions(@case);
-
-                testClass.Execute<TearDown>(instance);
-            });
-            testClass.Execute<TestFixtureTearDown>(instance);
-
-            instance.Dispose();
-        }
-
-        static void HandleExpectedExceptions(Case @case)
-        {
-            var attribute = @case.Method.GetCustomAttributes<ExpectedExceptionAttribute>(false).SingleOrDefault();
-
-            if (attribute == null)
-                return;
-
-            var exception = @case.Exception;
-
-            try
-            {
-                if (exception == null)
-                    throw new Exception("Expected exception of type " + attribute.ExpectedException + ".");
-
-                if (!attribute.ExpectedException.IsAssignableFrom(exception.GetType()))
-                {
-                    throw new Exception(
-                        "Expected exception of type " + attribute.ExpectedException + " but an exception of type " +
-                        exception.GetType() + " was thrown.", exception);
-                }
-
-                if (attribute.ExpectedMessage != null && exception.Message != attribute.ExpectedMessage)
-                {
-                    throw new Exception(
-                        "Expected exception message '" + attribute.ExpectedMessage + "'" + " but was '" + exception.Message + "'.",
-                        exception);
-                }
-
-                @case.Pass();
-            }
-            catch (Exception failureException)
-            {
-                @case.Fail(failureException);
-            }
         }
     }
 }

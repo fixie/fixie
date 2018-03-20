@@ -19,11 +19,6 @@
             Lifecycle<FixtureDataLifecycle>();
         }
 
-        bool HasAnyFactMethods(Type type)
-        {
-            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static).Any(x => x.HasOrInherits<FactAttribute>());
-        }
-
         class FixtureDataLifecycle : Lifecycle
         {
             public void Execute(TestClass testClass, Action<CaseAction> runCases)
@@ -62,6 +57,11 @@
 
                 return fixtures;
             }
+        }
+
+        bool HasAnyFactMethods(Type type)
+        {
+            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static).Any(x => x.HasOrInherits<FactAttribute>());
         }
 
         static IEnumerable<Type> FixtureInterfaces(Type testClass)

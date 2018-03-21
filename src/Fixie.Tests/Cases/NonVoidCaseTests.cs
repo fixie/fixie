@@ -37,12 +37,9 @@ namespace Fixie.Tests.Cases
 
         public void ShouldProvideCaseReturnValuesToCustomBehaviors()
         {
-            var convention = new SelfTestConvention();
-
             using (var console = new RedirectedConsole())
             {
-                convention
-                    .Lifecycle<TreatBoolReturnValuesAsAssertions>();
+                var convention = new TreatBoolReturnValuesAsAssertions();
 
                 Run<SampleTestClass>(convention)
                     .ShouldEqual(
@@ -64,12 +61,9 @@ namespace Fixie.Tests.Cases
 
         public void ShouldUnpackResultValuesFromStronglyTypedTaskObjectsForAsyncCases()
         {
-            var convention = new SelfTestConvention();
-
             using (var console = new RedirectedConsole())
             {
-                convention
-                    .Lifecycle<TreatBoolReturnValuesAsAssertions>();
+                var convention = new TreatBoolReturnValuesAsAssertions();
 
                 Run<SampleAsyncTestClass>(convention)
                     .ShouldEqual(
@@ -125,8 +119,11 @@ namespace Fixie.Tests.Cases
             }
         }
 
-        class TreatBoolReturnValuesAsAssertions : Lifecycle
+        class TreatBoolReturnValuesAsAssertions : SelfTestConvention, Lifecycle
         {
+            public TreatBoolReturnValuesAsAssertions()
+                => Lifecycle(this);
+
             public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>

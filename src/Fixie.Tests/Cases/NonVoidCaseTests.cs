@@ -1,7 +1,6 @@
 namespace Fixie.Tests.Cases
 {
     using System;
-    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
@@ -12,31 +11,25 @@ namespace Fixie.Tests.Cases
     {
         public void ShouldIgnoreCaseReturnValuesByDefault()
         {
-            var listener = new StubListener();
-            var convention = new SelfTestConvention();
-
             using (var console = new RedirectedConsole())
             {
-                Run<SampleTestClass>(listener, convention);
-                Run<SampleAsyncTestClass>(listener, convention);
+                Run<SampleTestClass>()
+                    .ShouldEqual(
+                        For<SampleTestClass>(
+                            ".BoolFalse passed",
+                            ".BoolThrow failed: 'BoolThrow' failed!",
+                            ".BoolTrue passed",
+                            ".Pass passed",
+                            ".Throw failed: 'Throw' failed!"));
 
-                var expectedSyncEntries = For<SampleTestClass>(
-                    ".BoolFalse passed",
-                    ".BoolThrow failed: 'BoolThrow' failed!",
-                    ".BoolTrue passed",
-                    ".Pass passed",
-                    ".Throw failed: 'Throw' failed!");
-
-                var expectedAsyncEntries = For<SampleAsyncTestClass>(
-                    ".BoolFalse passed",
-                    ".BoolThrow failed: 'BoolThrow' failed!",
-                    ".BoolTrue passed",
-                    ".Pass passed",
-                    ".Throw failed: 'Throw' failed!");
-
-                listener.Entries.ShouldEqual(
-                    expectedSyncEntries.Concat(
-                        expectedAsyncEntries).ToArray());
+                Run<SampleAsyncTestClass>()
+                    .ShouldEqual(
+                        For<SampleAsyncTestClass>(
+                            ".BoolFalse passed",
+                            ".BoolThrow failed: 'BoolThrow' failed!",
+                            ".BoolTrue passed",
+                            ".Pass passed",
+                            ".Throw failed: 'Throw' failed!"));
 
                 console.Output.ShouldBeEmpty();
             }
@@ -44,7 +37,6 @@ namespace Fixie.Tests.Cases
 
         public void ShouldProvideCaseReturnValuesToCustomBehaviors()
         {
-            var listener = new StubListener();
             var convention = new SelfTestConvention();
 
             using (var console = new RedirectedConsole())
@@ -52,15 +44,14 @@ namespace Fixie.Tests.Cases
                 convention
                     .Lifecycle<TreatBoolReturnValuesAsAssertions>();
 
-                Run<SampleTestClass>(listener, convention);
-
-                listener.Entries.ShouldEqual(
-                    For<SampleTestClass>(
-                        ".BoolFalse failed: Boolean test case returned false!",
-                        ".BoolThrow failed: 'BoolThrow' failed!",
-                        ".BoolTrue passed",
-                        ".Pass passed",
-                        ".Throw failed: 'Throw' failed!"));
+                Run<SampleTestClass>(convention)
+                    .ShouldEqual(
+                        For<SampleTestClass>(
+                            ".BoolFalse failed: Boolean test case returned false!",
+                            ".BoolThrow failed: 'BoolThrow' failed!",
+                            ".BoolTrue passed",
+                            ".Pass passed",
+                            ".Throw failed: 'Throw' failed!"));
 
                 console.Lines().ShouldEqual(
                     "BoolFalse False",
@@ -73,7 +64,6 @@ namespace Fixie.Tests.Cases
 
         public void ShouldUnpackResultValuesFromStronglyTypedTaskObjectsForAsyncCases()
         {
-            var listener = new StubListener();
             var convention = new SelfTestConvention();
 
             using (var console = new RedirectedConsole())
@@ -81,15 +71,14 @@ namespace Fixie.Tests.Cases
                 convention
                     .Lifecycle<TreatBoolReturnValuesAsAssertions>();
 
-                Run<SampleAsyncTestClass>(listener, convention);
-
-                listener.Entries.ShouldEqual(
-                    For<SampleAsyncTestClass>(
-                        ".BoolFalse failed: Boolean test case returned false!",
-                        ".BoolThrow failed: 'BoolThrow' failed!",
-                        ".BoolTrue passed",
-                        ".Pass passed",
-                        ".Throw failed: 'Throw' failed!"));
+                Run<SampleAsyncTestClass>(convention)
+                    .ShouldEqual(
+                        For<SampleAsyncTestClass>(
+                            ".BoolFalse failed: Boolean test case returned false!",
+                            ".BoolThrow failed: 'BoolThrow' failed!",
+                            ".BoolTrue passed",
+                            ".Pass passed",
+                            ".Throw failed: 'Throw' failed!"));
 
                 console.Lines().ShouldEqual(
                     "BoolFalse False",

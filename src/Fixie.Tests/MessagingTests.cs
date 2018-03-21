@@ -18,26 +18,26 @@
 
         protected void Run(Listener listener, Action<Convention> customize = null)
         {
-            var convention = new Convention();
-
-            convention
-                .Classes
-                .Where(x => x == typeof(SampleTestClass) || x == typeof(EmptyTestClass));
-
-            convention
-                .Methods
-                .OrderBy(x => x.Name, StringComparer.Ordinal);
-
-            convention
-                .Lifecycle<CreateInstancePerCase>();
+            var convention = new CreateInstancePerCase();
 
             customize?.Invoke(convention);
 
             RunTypes(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));
         }
 
-        class CreateInstancePerCase : Lifecycle
+        class CreateInstancePerCase : Convention, Lifecycle
         {
+            public CreateInstancePerCase()
+            {
+                Classes
+                    .Where(x => x == typeof(SampleTestClass) || x == typeof(EmptyTestClass));
+
+                Methods
+                    .OrderBy(x => x.Name, StringComparer.Ordinal);
+
+                Lifecycle(this);
+            }
+
             public void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>

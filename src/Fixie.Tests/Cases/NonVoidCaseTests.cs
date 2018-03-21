@@ -119,12 +119,9 @@ namespace Fixie.Tests.Cases
             }
         }
 
-        class TreatBoolReturnValuesAsAssertions : SelfTestConvention, Lifecycle
+        class TreatBoolReturnValuesAsAssertions : SelfTestConvention
         {
-            public TreatBoolReturnValuesAsAssertions()
-                => Lifecycle(this);
-
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {

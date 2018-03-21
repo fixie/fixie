@@ -3,7 +3,7 @@
     using System;
     using System.Linq;
 
-    public class CustomConvention : Convention, Lifecycle
+    public class CustomConvention : Convention
     {
         static readonly string[] LifecycleMethods = { "FixtureSetUp", "FixtureTearDown", "SetUp", "TearDown" };
 
@@ -16,11 +16,9 @@
             Methods
                 .Where(x => !LifecycleMethods.Contains(x.Name))
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
-
-            Lifecycle(this);
         }
 
-        public void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
             var instance = testClass.Construct();
 

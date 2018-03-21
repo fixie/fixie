@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class CustomConvention : Convention, Lifecycle
+    public class CustomConvention : Convention
     {
         public CustomConvention()
         {
@@ -12,11 +12,9 @@
             Classes
                 .Where(x => x.IsInNamespace(GetType().Namespace))
                 .Where(x => x.Name.EndsWith("Tests"));
-
-            Lifecycle(this);
         }
 
-        public void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
             using (var container = InitContainerForIntegrationTests())
             {

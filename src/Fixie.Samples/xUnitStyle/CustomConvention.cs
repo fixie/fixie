@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public class CustomConvention : Convention, Lifecycle
+    public class CustomConvention : Convention
     {
         public CustomConvention()
         {
@@ -15,11 +15,9 @@
             Methods
                 .Where(x => x.HasOrInherits<FactAttribute>())
                 .Shuffle();
-
-            Lifecycle(this);
         }
 
-        public void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
             var fixtures = PrepareFixtureData(testClass.Type);
 

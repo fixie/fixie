@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public class CustomConvention : Convention, Lifecycle
+    public class CustomConvention : Convention
     {
         public CustomConvention()
         {
@@ -18,11 +18,9 @@
 
             Parameters
                 .Add<InputAttributeParameterSource>();
-
-            Lifecycle(this);
         }
 
-        public void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
             var instance = testClass.Construct();
 

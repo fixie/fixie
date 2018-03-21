@@ -25,7 +25,7 @@
             RunTypes(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));
         }
 
-        class CreateInstancePerCase : Convention, Lifecycle
+        class CreateInstancePerCase : Convention
         {
             public CreateInstancePerCase()
             {
@@ -34,11 +34,9 @@
 
                 Methods
                     .OrderBy(x => x.Name, StringComparer.Ordinal);
-
-                Lifecycle(this);
             }
 
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {

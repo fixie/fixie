@@ -209,12 +209,9 @@
                 throw new FailureException(member);
         }
 
-        class CreateInstancePerCase : SampleConvention, Lifecycle
+        class CreateInstancePerCase : SampleConvention
         {
-            public CreateInstancePerCase()
-                => Lifecycle(this);
-
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {
@@ -230,12 +227,9 @@
             }
         }
 
-        class CreateInstancePerClass : SampleConvention, Lifecycle
+        class CreateInstancePerClass : SampleConvention
         {
-            public CreateInstancePerClass()
-                => Lifecycle(this);
-
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 var instance = testClass.Construct();
 
@@ -268,21 +262,15 @@
             }
         }
 
-        class BuggyLifecycle : SampleConvention, Lifecycle
+        class BuggyLifecycle : SampleConvention
         {
-            public BuggyLifecycle()
-                => Lifecycle(this);
-
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
                 => throw new Exception("Unsafe lifecycle threw!");
         }
 
-        class ShortCircuitClassExecution : SampleConvention, Lifecycle
+        class ShortCircuitClassExecution : SampleConvention
         {
-            public ShortCircuitClassExecution()
-                => Lifecycle(this);
-
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 //Class lifecycle chooses not to invoke runCases(...).
                 //Since the test cases never run, they are all considered
@@ -290,12 +278,9 @@
             }
         }
 
-        class ShortCircuitCaseExection : SampleConvention, Lifecycle
+        class ShortCircuitCaseExection : SampleConvention
         {
-            public ShortCircuitCaseExection()
-                => Lifecycle(this);
-
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {
@@ -306,12 +291,9 @@
             }
         }
 
-        class RunCasesTwice : SampleConvention, Lifecycle
+        class RunCasesTwice : SampleConvention
         {
-            public RunCasesTwice()
-                => Lifecycle(this);
-
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 var instance = testClass.Construct();
 
@@ -330,12 +312,9 @@
             }
         }
 
-        class RetryFailingCases : SampleConvention, Lifecycle
+        class RetryFailingCases : SampleConvention
         {
-            public RetryFailingCases()
-                => Lifecycle(this);
-
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 var instance = testClass.Construct();
 

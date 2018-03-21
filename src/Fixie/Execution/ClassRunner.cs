@@ -9,7 +9,7 @@
     class ClassRunner
     {
         readonly Bus bus;
-        readonly Lifecycle lifecycle;
+        readonly Convention convention;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
 
@@ -20,7 +20,7 @@
             var config = convention.Config;
 
             this.bus = bus;
-            lifecycle = convention.Config.Lifecycle;
+            this.convention = convention;
             methodDiscoverer = new MethodDiscoverer(convention);
             parameterDiscoverer = new ParameterDiscoverer(convention);
 
@@ -51,7 +51,7 @@
 
             try
             {
-                lifecycle.Execute(runContext, caseLifecycle =>
+                convention.Execute(runContext, caseLifecycle =>
                 {
                     runCasesInvokedByLifecycle = true;
 

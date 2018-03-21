@@ -13,7 +13,6 @@
         public Configuration()
         {
             OrderMethods = methods => methods;
-            Lifecycle = new DefaultLifecycle();
 
             testClassConditions = new List<Func<Type, bool>>();
             testMethodConditions = new List<Func<MethodInfo, bool>>();
@@ -21,22 +20,6 @@
         }
 
         public Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> OrderMethods { get; set; }
-        public Lifecycle Lifecycle { get; set; }
-
-        class DefaultLifecycle : Lifecycle
-        {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
-            {
-                runCases(@case =>
-                {
-                    var instance = testClass.Construct();
-
-                    @case.Execute(instance);
-
-                    instance.Dispose();
-                });
-            }
-        }
 
         public void AddTestClassCondition(Func<Type, bool> testClassCondition)
             => testClassConditions.Add(testClassCondition);

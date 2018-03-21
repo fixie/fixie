@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class CustomConvention : Convention, Lifecycle
+    public class CustomConvention : Convention
     {
         public CustomConvention()
         {
@@ -12,11 +12,9 @@
 
             Methods
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
-
-            Lifecycle(this);
         }
 
-        public void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
             var methodWasExplicitlyRequested = testClass.TargetMethod != null;
 

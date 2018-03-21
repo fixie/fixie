@@ -67,12 +67,9 @@
             public void SkipC() { }
         }
 
-        class CreateInstancePerCase : SelfTestConvention, Lifecycle
+        class CreateInstancePerCase : SelfTestConvention
         {
-            public CreateInstancePerCase()
-                => Lifecycle(this);
-
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {

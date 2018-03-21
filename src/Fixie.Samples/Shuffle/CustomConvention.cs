@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class CustomConvention : Convention, Lifecycle
+    public class CustomConvention : Convention
     {
         const int Seed = 8675309;
 
@@ -14,11 +14,9 @@
             Classes
                 .Where(x => x.IsInNamespace(GetType().Namespace))
                 .Where(x => x.Name.EndsWith("Tests"));
-
-            Lifecycle(this);
         }
 
-        public void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
             var instance = testClass.Construct();
 

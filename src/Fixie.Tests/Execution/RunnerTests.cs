@@ -91,12 +91,9 @@ namespace Fixie.Tests.Execution
                 Self + "+SkipTestClass.SkipB skipped");
         }
 
-        class CreateInstancePerClass : SelfTestConvention, Lifecycle
+        class CreateInstancePerClass : SelfTestConvention
         {
-            public CreateInstancePerClass()
-                => Lifecycle(this);
-
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 var instance = testClass.Construct();
 

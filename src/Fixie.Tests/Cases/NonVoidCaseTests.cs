@@ -6,16 +6,19 @@ namespace Fixie.Tests.Cases
     using System.Threading.Tasks;
     using Assertions;
     using Fixie.Execution;
-    using Lifecycle = Fixie.Lifecycle;
+    using static Utility;
 
-    public class NonVoidCaseTests : CaseTests
+    public class NonVoidCaseTests
     {
         public void ShouldIgnoreCaseReturnValuesByDefault()
         {
+            var listener = new StubListener();
+            var convention = new SelfTestConvention();
+
             using (var console = new RedirectedConsole())
             {
-                Run<SampleTestClass>();
-                Run<SampleAsyncTestClass>();
+                Run<SampleTestClass>(listener, convention);
+                Run<SampleAsyncTestClass>(listener, convention);
 
                 var expectedSyncEntries = For<SampleTestClass>(
                     ".BoolFalse passed",
@@ -31,7 +34,7 @@ namespace Fixie.Tests.Cases
                     ".Pass passed",
                     ".Throw failed: 'Throw' failed!");
 
-                Listener.Entries.ShouldEqual(
+                listener.Entries.ShouldEqual(
                     expectedSyncEntries.Concat(
                         expectedAsyncEntries).ToArray());
 
@@ -41,14 +44,17 @@ namespace Fixie.Tests.Cases
 
         public void ShouldProvideCaseReturnValuesToCustomBehaviors()
         {
+            var listener = new StubListener();
+            var convention = new SelfTestConvention();
+
             using (var console = new RedirectedConsole())
             {
-                Convention
+                convention
                     .Lifecycle<TreatBoolReturnValuesAsAssertions>();
 
-                Run<SampleTestClass>();
+                Run<SampleTestClass>(listener, convention);
 
-                Listener.Entries.ShouldEqual(
+                listener.Entries.ShouldEqual(
                     For<SampleTestClass>(
                         ".BoolFalse failed: Boolean test case returned false!",
                         ".BoolThrow failed: 'BoolThrow' failed!",
@@ -67,14 +73,17 @@ namespace Fixie.Tests.Cases
 
         public void ShouldUnpackResultValuesFromStronglyTypedTaskObjectsForAsyncCases()
         {
+            var listener = new StubListener();
+            var convention = new SelfTestConvention();
+
             using (var console = new RedirectedConsole())
             {
-                Convention
+                convention
                     .Lifecycle<TreatBoolReturnValuesAsAssertions>();
 
-                Run<SampleAsyncTestClass>();
+                Run<SampleAsyncTestClass>(listener, convention);
 
-                Listener.Entries.ShouldEqual(
+                listener.Entries.ShouldEqual(
                     For<SampleAsyncTestClass>(
                         ".BoolFalse failed: Boolean test case returned false!",
                         ".BoolThrow failed: 'BoolThrow' failed!",

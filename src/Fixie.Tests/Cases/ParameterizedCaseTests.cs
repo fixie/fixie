@@ -5,16 +5,26 @@
     using System.Linq;
     using System.Reflection;
     using Assertions;
+    using static Utility;
 
-    public class ParameterizedCaseTests : CaseTests
+    public class ParameterizedCaseTests
     {
+        readonly StubListener listener;
+        readonly Convention convention;
+
+        public ParameterizedCaseTests()
+        {
+            listener = new StubListener();
+            convention = new SelfTestConvention();
+        }
+
         public void ShouldAllowConventionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
-            Convention.Parameters.Add<InputAttributeOrDefaultParameterSource>();
+            convention.Parameters.Add<InputAttributeOrDefaultParameterSource>();
 
-            Run<ParameterizedTestClass>();
+            Run<ParameterizedTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<ParameterizedTestClass>(
                     ".IntArg(0) passed",
                     ".MultipleCasesFromAttributes(1, 1, 2) passed",
@@ -25,9 +35,9 @@
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
         {
-            Run<ParameterizedTestClass>();
+            Run<ParameterizedTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<ParameterizedTestClass>(
                     ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
                     ".MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
@@ -36,11 +46,11 @@
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
         {
-            Convention.Parameters.Add<EmptyParameterSource>();
+            convention.Parameters.Add<EmptyParameterSource>();
 
-            Run<ParameterizedTestClass>();
+            Run<ParameterizedTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<ParameterizedTestClass>(
                     ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
                     ".MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
@@ -58,11 +68,11 @@
                 new object[] { 0, 1, 2, 3 }
             };
 
-            Convention.Parameters.Add<FixedParameterSource>();
+            convention.Parameters.Add<FixedParameterSource>();
 
-            Run<ParameterizedTestClass>();
+            Run<ParameterizedTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<ParameterizedTestClass>(
                     ".IntArg failed: Parameter count mismatch.",
                     ".IntArg(0) passed",
@@ -81,11 +91,11 @@
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
-            Convention.Parameters.Add<LazyBuggyParameterSource>();
+            convention.Parameters.Add<LazyBuggyParameterSource>();
 
-            Run<ParameterizedTestClass>();
+            Run<ParameterizedTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<ParameterizedTestClass>(
                     ".IntArg(0) passed",
                     ".IntArg(1) failed: Expected 0, but was 1",
@@ -105,11 +115,11 @@
             //when trying to handle the IntArg test method. Since IntArg runs first,
             //this test demonstrates how the failure is isolated to that test method.
 
-            Convention.Parameters.Add<EagerBuggyParameterSource>();
+            convention.Parameters.Add<EagerBuggyParameterSource>();
 
-            Run<ParameterizedTestClass>();
+            Run<ParameterizedTestClass>(listener, convention);
 
-            Listener.Entries.ToArray().ShouldEqual(
+            listener.Entries.ToArray().ShouldEqual(
                 For<ParameterizedTestClass>(
                     ".IntArg failed: Exception thrown while attempting to eagerly build input parameters for method: IntArg",
 
@@ -121,11 +131,11 @@
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
         {
-            Convention.Parameters.Add<LazyBuggyParameterSource>();
+            convention.Parameters.Add<LazyBuggyParameterSource>();
 
-            Run<ConstrainedGenericTestClass>();
+            Run<ConstrainedGenericTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<ConstrainedGenericTestClass>(
                     ".ConstrainedGeneric<System.Int32>(0) passed",
                     ".ConstrainedGeneric<System.Int32>(1) passed",
@@ -137,11 +147,11 @@
 
         public void ShouldResolveGenericTypeParameters()
         {
-            Convention.Parameters.Add<InputAttributeParameterSource>();
+            convention.Parameters.Add<InputAttributeParameterSource>();
 
-            Run<GenericTestClass>();
+            Run<GenericTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<GenericTestClass>(
                     ".ConstrainedGeneric<System.Int32>(1) passed",
                     ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",

@@ -1,28 +1,39 @@
 ﻿namespace Fixie.Tests.Cases
 {
-    public class BasicCaseTests : CaseTests
+    using static Utility;
+
+    public class BasicCaseTests
     {
+        readonly StubListener listener;
+        readonly Convention convention;
+
+        public BasicCaseTests()
+        {
+            listener = new StubListener();
+            convention = new SelfTestConvention();
+        }
+
         public void ShouldPassUponSuccessfulExecution()
         {
-            Run<PassTestClass>();
+            Run<PassTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<PassTestClass>(".Pass passed"));
         }
 
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
         {
-            Run<FailTestClass>();
+            Run<FailTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<FailTestClass>(".Fail failed: 'Fail' failed!"));
         }
 
         public void ShouldPassOrFailCasesIndividually()
         {
-            Run<PassFailTestClass>();
+            Run<PassFailTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<PassFailTestClass>(
                     ".FailA failed: 'FailA' failed!",
                     ".FailB failed: 'FailB' failed!",
@@ -33,9 +44,9 @@
 
         public void ShouldFailWhenTestClassConstructorCannotBeInvoked()
         {
-            Run<CannotInvokeConstructorTestClass>();
+            Run<CannotInvokeConstructorTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<CannotInvokeConstructorTestClass>(
                     ".UnreachableCase failed: No parameterless constructor defined for this object."));
         }

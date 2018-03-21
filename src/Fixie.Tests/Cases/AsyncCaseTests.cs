@@ -1,26 +1,35 @@
 ﻿namespace Fixie.Tests.Cases
 {
-    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
     using static System.Environment;
+    using static Utility;
 
-    public class AsyncCaseTests : CaseTests
+    public class AsyncCaseTests
     {
+        readonly StubListener listener;
+        readonly Convention convention;
+
+        public AsyncCaseTests()
+        {
+            listener = new StubListener();
+            convention = new SelfTestConvention();
+        }
+
         public void ShouldPassUponSuccessfulAsyncExecution()
         {
-            Run<AwaitThenPassTestClass>();
+            Run<AwaitThenPassTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<AwaitThenPassTestClass>(".Test passed"));
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
-            Run<AwaitThenFailTestClass>();
+            Run<AwaitThenFailTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<AwaitThenFailTestClass>(
                     ".Test failed: Expected: 0" + NewLine +
                     "Actual:   3"));
@@ -28,25 +37,25 @@
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
         {
-            Run<AwaitOnTaskThatThrowsTestClass>();
+            Run<AwaitOnTaskThatThrowsTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<AwaitOnTaskThatThrowsTestClass>(".Test failed: Attempted to divide by zero."));
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
         {
-            Run<FailBeforeAwaitTestClass>();
+            Run<FailBeforeAwaitTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<FailBeforeAwaitTestClass>(".Test failed: 'Test' failed!"));
         }
 
         public void ShouldFailUnsupportedAsyncVoidCases()
         {
-            Run<UnsupportedAsyncVoidTestTestClass>();
+            Run<UnsupportedAsyncVoidTestTestClass>(listener, convention);
 
-            Listener.Entries.ShouldEqual(
+            listener.Entries.ShouldEqual(
                 For<UnsupportedAsyncVoidTestTestClass>(".Test failed: " +
                     "Async void methods are not supported. Declare async methods with a return type of " +
                     "Task to ensure the task actually runs to completion."));

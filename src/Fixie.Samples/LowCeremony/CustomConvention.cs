@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Reflection;
 
     public class CustomConvention : Convention
     {
@@ -23,7 +24,14 @@
             var instance = testClass.Construct();
 
             void Execute(string method)
-                => testClass.Execute(instance, method);
+            {
+                var query = testClass.Type
+                    .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
+                    .Where(x => x.Name == method);
+
+                foreach (var q in query)
+                    q.Execute(instance);
+            }
 
             Execute("FixtureSetUp");
             runCases(@case =>

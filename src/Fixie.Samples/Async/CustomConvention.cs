@@ -1,6 +1,8 @@
 ﻿namespace Fixie.Samples.Async
 {
     using System;
+    using System.Linq;
+    using System.Reflection;
 
     public class CustomConvention : Convention
     {
@@ -21,11 +23,22 @@
             {
                 var instance = testClass.Construct();
 
-                testClass.Execute(instance, "SetUp");
+                SetUp(instance);
+
                 @case.Execute(instance);
 
                 instance.Dispose();
             });
+        }
+
+        static void SetUp(object instance)
+        {
+            var query = instance.GetType()
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
+                .Where(x => x.Name == "SetUp");
+
+            foreach (var q in query)
+                q.Execute(instance);
         }
     }
 }

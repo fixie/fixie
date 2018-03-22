@@ -25,18 +25,28 @@
         {
             var instance = testClass.Construct();
 
-            testClass.Execute<FixtureSetUp>(instance);
+            void Execute<TAttribute>() where TAttribute : Attribute
+            {
+                var query = testClass.Type
+                    .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
+                    .Where(x => x.HasOrInherits<TAttribute>());
+
+                foreach (var q in query)
+                    q.Execute(instance);
+            }
+
+            Execute<FixtureSetUp>();
             runCases(@case =>
             {
-                testClass.Execute<SetUp>(instance);
+                Execute<SetUp>();
 
                 @case.Execute(instance);
 
                 HandleExpectedExceptions(@case);
 
-                testClass.Execute<TearDown>(instance);
+                Execute<TearDown>();
             });
-            testClass.Execute<FixtureTearDown>(instance);
+            Execute<FixtureTearDown>();
 
             instance.Dispose();
         }

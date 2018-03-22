@@ -25,10 +25,14 @@
             typeof(InheritanceSampleBase),
             typeof(InheritanceSample)
         };
+
+        class SampleConvention : Convention
+        {
+        }
         
         public void ShouldConsiderOnlyConcreteClasses()
         {
-            var customConvention = new Convention();
+            var customConvention = new SampleConvention();
 
             DiscoveredTestClasses(customConvention)
                 .ShouldEqual(
@@ -51,7 +55,7 @@
             nested.Has<CompilerGeneratedAttribute>().ShouldBeTrue();
 
             //Confirm that the nested closure class is omitted from test class discovery.
-            var customConvention = new Convention();
+            var customConvention = new SampleConvention();
 
             DiscoveredTestClasses(customConvention, nested)
                 .ShouldEqual(
@@ -66,7 +70,7 @@
 
         public void ShouldDiscoverClassesSatisfyingAllSpecifiedConditions()
         {
-            var customConvention = new Convention();
+            var customConvention = new SampleConvention();
 
             customConvention
                 .Classes
@@ -92,7 +96,7 @@
 
         public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
         {
-            var customConvention = new Convention();
+            var customConvention = new SampleConvention();
 
             customConvention
                 .Classes

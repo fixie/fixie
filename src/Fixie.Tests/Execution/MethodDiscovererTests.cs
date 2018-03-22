@@ -10,9 +10,13 @@
 
     public class MethodDiscovererTests
     {
+        class SampleConvention : Convention
+        {
+        }
+
         public void ShouldConsiderOnlyPublicMethods()
         {
-            var customConvention = new Convention();
+            var customConvention = new SampleConvention();
 
             DiscoveredTestMethods<Sample>(customConvention)
                 .ShouldEqual(
@@ -41,7 +45,7 @@
 
         public void ShouldNotConsiderIDisposableDisposeMethod()
         {
-            var customConvention = new Convention();
+            var customConvention = new SampleConvention();
 
             DiscoveredTestMethods<DisposableSample>(customConvention)
                 .ShouldEqual(
@@ -63,7 +67,7 @@
 
         public void ShouldDiscoverMethodsSatisfyingAllSpecifiedConditions()
         {
-            var customConvention = new Convention();
+            var customConvention = new SampleConvention();
 
             customConvention
                 .Methods
@@ -106,7 +110,7 @@
 
         public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
         {
-            var customConvention = new Convention();
+            var customConvention = new SampleConvention();
 
             customConvention
                 .Methods

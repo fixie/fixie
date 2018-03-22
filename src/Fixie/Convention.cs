@@ -6,9 +6,9 @@
     /// <summary>
     /// Base class for all Fixie conventions. Subclass Convention to customize test discovery and execution.
     /// </summary>
-    public class Convention
+    public abstract class Convention
     {
-        public Convention()
+        protected Convention()
         {
             Config = new Configuration();
 

@@ -7,6 +7,10 @@
 
     public class ParameterDiscovererTests
     {
+        class SampleConvention : Convention
+        {
+        }
+
         readonly MethodInfo method;
 
         public ParameterDiscovererTests()
@@ -16,14 +20,14 @@
 
         public void ShouldProvideZeroSetsOfInputParametersByDefault()
         {
-            var customConvention = new Convention();
+            var customConvention = new SampleConvention();
 
             DiscoveredParameters(customConvention).ShouldBeEmpty();
         }
 
         public void ShouldProvideSetsOfInputsGeneratedByNamedParameterSources()
         {
-            var customConvention = new Convention();
+            var customConvention = new SampleConvention();
 
             customConvention
                 .Parameters
@@ -42,7 +46,7 @@
 
         public void ShouldProvideSetsOfInputsGeneratedByInstantiatedParameterSources()
         {
-            var customConvention = new Convention();
+            var customConvention = new SampleConvention();
 
             customConvention
                 .Parameters

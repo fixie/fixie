@@ -11,21 +11,22 @@
     public class LifecycleTests
     {
         static string[] FailingMembers;
-        readonly Convention Convention;
 
         public LifecycleTests()
         {
             FailingMembers = null;
+        }
 
-            Convention = new Convention();
+        class SampleConvention : Convention
+        {
+            public SampleConvention()
+            {
+                Classes
+                    .Where(x => x.Name.EndsWith("TestClass"));
 
-            Convention
-                .Classes
-                .Where(x => x.Name.EndsWith("TestClass"));
-
-            Convention
-                .Methods
-                .OrderByDescending(x => x.Name, StringComparer.Ordinal);
+                Methods
+                    .OrderByDescending(x => x.Name, StringComparer.Ordinal);
+            }
         }
 
         static void FailDuring(params string[] failingMemberNames)
@@ -33,18 +34,18 @@
             FailingMembers = failingMemberNames;
         }
 
-        Output Run<TSampleTestClass>()
+        static Output Run<TSampleTestClass>(Convention convention)
         {
-            return Run(typeof(TSampleTestClass));
+            return Run(typeof(TSampleTestClass), convention);
         }
 
-        Output Run(Type testClass)
+        static Output Run(Type testClass, Convention convention)
         {
             var listener = new StubListener();
 
             using (var console = new RedirectedConsole())
             {
-                Utility.RunTypes(listener, Convention, testClass);
+                Utility.RunTypes(listener, convention, testClass);
 
                 return new Output(console.Lines().ToArray(), listener.Entries.ToArray());
             }
@@ -208,9 +209,9 @@
                 throw new FailureException(member);
         }
 
-        class CreateInstancePerCase : Lifecycle
+        class CreateInstancePerCase : SampleConvention
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {
@@ -226,9 +227,9 @@
             }
         }
 
-        class CreateInstancePerClass : Lifecycle
+        class CreateInstancePerClass : SampleConvention
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 var instance = testClass.Construct();
 
@@ -261,15 +262,15 @@
             }
         }
 
-        class BuggyLifecycle : Lifecycle
+        class BuggyLifecycle : SampleConvention
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
                 => throw new Exception("Unsafe lifecycle threw!");
         }
 
-        class ShortCircuitClassExecution : Lifecycle
+        class ShortCircuitClassExecution : SampleConvention
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 //Class lifecycle chooses not to invoke runCases(...).
                 //Since the test cases never run, they are all considered
@@ -277,9 +278,9 @@
             }
         }
 
-        class ShortCircuitCaseExection : Lifecycle
+        class ShortCircuitCaseExection : SampleConvention
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {
@@ -290,9 +291,9 @@
             }
         }
 
-        class RunCasesTwice : Lifecycle
+        class RunCasesTwice : SampleConvention
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 var instance = testClass.Construct();
 
@@ -311,9 +312,9 @@
             }
         }
 
-        class RetryFailingCases : Lifecycle
+        class RetryFailingCases : SampleConvention
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 var instance = testClass.Construct();
 
@@ -342,9 +343,10 @@
 
         public void ShouldConstructPerCaseByDefault()
         {
-            Convention.Methods.Where(x => x.Name != "Skip");
+            var convention = new SampleConvention();
+            convention.Methods.Where(x => x.Name != "Skip");
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Pass passed",
@@ -355,11 +357,11 @@
                 ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldAllowConstructingPerCaseUsingLifecycleType()
+        public void ShouldAllowConstructingPerCase()
         {
-            Convention.Lifecycle<CreateInstancePerCase>();
+            var convention = new CreateInstancePerCase();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip skipped",
@@ -371,45 +373,11 @@
                 ".ctor", "Fail", "Dispose");
         }
 
-        public void ShouldAllowConstructingPerClassUsingLifecycleType()
+        public void ShouldAllowConstructingPerClass()
         {
-            Convention.Lifecycle<CreateInstancePerClass>();
+            var convention = new CreateInstancePerClass();
 
-            var output = Run<SampleTestClass>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Skip skipped: skipped by naming convention",
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "CaseSetUp", "Pass", "CaseTearDown",
-                "CaseSetUp", "Fail", "CaseTearDown",
-                "Dispose");
-        }
-
-        public void ShouldAllowConstructingPerCaseUsingLifecycleInstance()
-        {
-            Convention.Lifecycle(new CreateInstancePerCase());
-
-            var output = Run<SampleTestClass>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Skip skipped",
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Fail failed: 'Fail' failed!");
-
-            output.ShouldHaveLifecycle(
-                ".ctor", "Pass", "Dispose",
-                ".ctor", "Fail", "Dispose");
-        }
-
-        public void ShouldAllowConstructingPerClassUsingLifecycleInstance()
-        {
-            Convention.Lifecycle(new CreateInstancePerClass());
-
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip skipped: skipped by naming convention",
@@ -425,9 +393,9 @@
 
         public void ShouldSkipAllCasesWhenShortCircuitingClassExecution()
         {
-            Convention.Lifecycle<ShortCircuitClassExecution>();
+            var convention = new ShortCircuitClassExecution();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip skipped",
@@ -439,9 +407,9 @@
 
         public void ShouldSkipAllCasesWhenShortCircuitingCaseExecution()
         {
-            Convention.Lifecycle<ShortCircuitCaseExection>();
+            var convention = new ShortCircuitCaseExection();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip skipped",
@@ -455,9 +423,9 @@
         {
             FailDuring(".ctor");
 
-            Convention.Lifecycle<CreateInstancePerCase>();
+            var convention = new CreateInstancePerCase();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip skipped",
@@ -469,9 +437,9 @@
 
         public void ShouldFailAllMethodsWhenLifecycleThrows()
         {
-            Convention.Lifecycle<BuggyLifecycle>();
+            var convention = new BuggyLifecycle();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip failed: Unsafe lifecycle threw!",
@@ -485,9 +453,9 @@
         {
             FailDuring(".ctor");
 
-            Convention.Lifecycle<CreateInstancePerClass>();
+            var convention = new CreateInstancePerClass();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip failed: '.ctor' failed!",
@@ -501,9 +469,9 @@
         {
             FailDuring("CaseSetUp");
 
-            Convention.Lifecycle<CreateInstancePerClass>();
+            var convention = new CreateInstancePerClass();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip skipped: skipped by naming convention",
@@ -521,9 +489,9 @@
         {
             FailDuring("CaseTearDown");
 
-            Convention.Lifecycle<CreateInstancePerClass>();
+            var convention = new CreateInstancePerClass();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip skipped: skipped by naming convention",
@@ -542,9 +510,9 @@
         {
             FailDuring("Dispose");
 
-            Convention.Lifecycle<CreateInstancePerCase>();
+            var convention = new CreateInstancePerCase();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip skipped",
@@ -561,9 +529,9 @@
         {
             FailDuring("Dispose");
 
-            Convention.Lifecycle<CreateInstancePerClass>();
+            var convention = new CreateInstancePerClass();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip skipped: skipped by naming convention",
@@ -583,9 +551,9 @@
 
         public void ShouldSkipLifecycleWhenConstructingPerCaseAndAllCasesAreSkipped()
         {
-            Convention.Lifecycle<CreateInstancePerCase>();
+            var convention = new CreateInstancePerCase();
 
-            var output = Run<AllSkippedTestClass>();
+            var output = Run<AllSkippedTestClass>(convention);
 
             output.ShouldHaveResults(
                 "AllSkippedTestClass.SkipC skipped",
@@ -597,9 +565,9 @@
 
         public void ShouldNotSkipLifecycleWhenConstructingPerClassAndAllCasesAreSkipped()
         {
-            Convention.Lifecycle<CreateInstancePerClass>();
+            var convention = new CreateInstancePerClass();
 
-            var output = Run<AllSkippedTestClass>();
+            var output = Run<AllSkippedTestClass>(convention);
 
             output.ShouldHaveResults(
                 "AllSkippedTestClass.SkipC skipped: skipped by naming convention",
@@ -611,11 +579,11 @@
 
         public void ShouldSkipLifecycleWhenConstructingPerCaseButAllCasesFailCustomParameterGeneration()
         {
-            Convention.Lifecycle<CreateInstancePerCase>();
+            var convention = new CreateInstancePerCase();
 
-            Convention.Parameters.Add<BuggyParameterSource>();
+            convention.Parameters.Add<BuggyParameterSource>();
 
-            var output = Run<ParameterizedSampleTestClass>();
+            var output = Run<ParameterizedSampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "ParameterizedSampleTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
@@ -626,11 +594,11 @@
 
         public void ShouldNotSkipLifecycleWhenConstructingPerClassAndAllCasesFailCustomParameterGeneration()
         {
-            Convention.Lifecycle<CreateInstancePerClass>();
+            var convention = new CreateInstancePerClass();
 
-            Convention.Parameters.Add<BuggyParameterSource>();
+            convention.Parameters.Add<BuggyParameterSource>();
 
-            var output = Run<ParameterizedSampleTestClass>();
+            var output = Run<ParameterizedSampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "ParameterizedSampleTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
@@ -641,9 +609,9 @@
 
         public void ShouldAllowRunningAllCasesMultipleTimes()
         {
-            Convention.Lifecycle<RunCasesTwice>();
+            var convention = new RunCasesTwice();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip skipped",
@@ -660,9 +628,9 @@
 
         public void ShouldAllowExecutingACaseMultipleTimesBeforeEmittingItsResult()
         {
-            Convention.Lifecycle<RetryFailingCases>();
+            var convention = new RetryFailingCases();
 
-            var output = Run<SampleTestClass>();
+            var output = Run<SampleTestClass>(convention);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Skip skipped",
@@ -675,9 +643,9 @@
 
         public void ShouldAllowStaticTestClassesAndMethodsBypassingConstructionAttempts()
         {
-            Convention.Lifecycle<CreateInstancePerCase>();
+            var convention = new CreateInstancePerCase();
 
-            var output = Run(typeof(StaticTestClass));
+            var output = Run(typeof(StaticTestClass), convention);
 
             output.ShouldHaveResults(
                 "StaticTestClass.Skip skipped",

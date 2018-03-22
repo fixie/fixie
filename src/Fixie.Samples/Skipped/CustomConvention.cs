@@ -12,32 +12,27 @@
 
             Methods
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
-
-            Lifecycle<SkipLifecycle>();
         }
 
-        class SkipLifecycle : Lifecycle
+        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            var methodWasExplicitlyRequested = testClass.TargetMethod != null;
+
+            var skipClass = testClass.Type.Has<SkipAttribute>() && !methodWasExplicitlyRequested;
+
+            var instance = skipClass ? null : testClass.Construct();
+
+            runCases(@case =>
             {
-                var methodWasExplicitlyRequested = testClass.TargetMethod != null;
+                var skipMethod = @case.Method.Has<SkipAttribute>() && !methodWasExplicitlyRequested;
 
-                var skipClass = testClass.Type.Has<SkipAttribute>() && !methodWasExplicitlyRequested;
+                if (skipClass)
+                    @case.Skip("Whole class skipped");
+                else if (!skipMethod)
+                    @case.Execute(instance);
+            });
 
-                var instance = skipClass ? null : testClass.Construct();
-
-                runCases(@case =>
-                {
-                    var skipMethod = @case.Method.Has<SkipAttribute>() && !methodWasExplicitlyRequested;
-
-                    if (skipClass)
-                        @case.Skip("Whole class skipped");
-                    else if (!skipMethod)
-                        @case.Execute(instance);
-                });
-
-                instance.Dispose();
-            }
+            instance.Dispose();
         }
     }
 }

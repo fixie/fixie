@@ -5,46 +5,46 @@
     using System.Linq;
     using System.Reflection;
     using Assertions;
+    using static Utility;
 
-    public class ParameterizedCaseTests : CaseTests
+    public class ParameterizedCaseTests
     {
+        readonly Convention convention = new SelfTestConvention();
+
         public void ShouldAllowConventionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
-            Convention.Parameters.Add<InputAttributeOrDefaultParameterSource>();
+            convention.Parameters.Add<InputAttributeOrDefaultParameterSource>();
 
-            Run<ParameterizedTestClass>();
-
-            Listener.Entries.ShouldEqual(
-                For<ParameterizedTestClass>(
-                    ".IntArg(0) passed",
-                    ".MultipleCasesFromAttributes(1, 1, 2) passed",
-                    ".MultipleCasesFromAttributes(1, 2, 3) passed",
-                    ".MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
-                    ".ZeroArgs passed"));
+            Run<ParameterizedTestClass>(convention)
+                .ShouldEqual(
+                    For<ParameterizedTestClass>(
+                        ".IntArg(0) passed",
+                        ".MultipleCasesFromAttributes(1, 1, 2) passed",
+                        ".MultipleCasesFromAttributes(1, 2, 3) passed",
+                        ".MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
+                        ".ZeroArgs passed"));
         }
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
         {
-            Run<ParameterizedTestClass>();
-
-            Listener.Entries.ShouldEqual(
-                For<ParameterizedTestClass>(
-                    ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
-                    ".MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
-                    ".ZeroArgs passed"));
+            Run<ParameterizedTestClass>(convention)
+                .ShouldEqual(
+                    For<ParameterizedTestClass>(
+                        ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                        ".MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                        ".ZeroArgs passed"));
         }
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
         {
-            Convention.Parameters.Add<EmptyParameterSource>();
+            convention.Parameters.Add<EmptyParameterSource>();
 
-            Run<ParameterizedTestClass>();
-
-            Listener.Entries.ShouldEqual(
-                For<ParameterizedTestClass>(
-                    ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
-                    ".MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
-                    ".ZeroArgs passed"));
+            Run<ParameterizedTestClass>(convention)
+                .ShouldEqual(
+                    For<ParameterizedTestClass>(
+                        ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                        ".MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                        ".ZeroArgs passed"));
         }
 
         public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
@@ -58,44 +58,42 @@
                 new object[] { 0, 1, 2, 3 }
             };
 
-            Convention.Parameters.Add<FixedParameterSource>();
+            convention.Parameters.Add<FixedParameterSource>();
 
-            Run<ParameterizedTestClass>();
+            Run<ParameterizedTestClass>(convention)
+                .ShouldEqual(
+                    For<ParameterizedTestClass>(
+                        ".IntArg failed: Parameter count mismatch.",
+                        ".IntArg(0) passed",
+                        ".IntArg(0, 1) failed: Parameter count mismatch.",
+                        ".IntArg(0, 1, 2) failed: Parameter count mismatch.",
+                        ".IntArg(0, 1, 2, 3) failed: Parameter count mismatch.",
 
-            Listener.Entries.ShouldEqual(
-                For<ParameterizedTestClass>(
-                    ".IntArg failed: Parameter count mismatch.",
-                    ".IntArg(0) passed",
-                    ".IntArg(0, 1) failed: Parameter count mismatch.",
-                    ".IntArg(0, 1, 2) failed: Parameter count mismatch.",
-                    ".IntArg(0, 1, 2, 3) failed: Parameter count mismatch.",
+                        ".MultipleCasesFromAttributes failed: Parameter count mismatch.",
+                        ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
+                        ".MultipleCasesFromAttributes(0, 1) failed: Parameter count mismatch.",
+                        ".MultipleCasesFromAttributes(0, 1, 2) failed: Expected sum of 2 but was 1.",
+                        ".MultipleCasesFromAttributes(0, 1, 2, 3) failed: Parameter count mismatch.",
 
-                    ".MultipleCasesFromAttributes failed: Parameter count mismatch.",
-                    ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
-                    ".MultipleCasesFromAttributes(0, 1) failed: Parameter count mismatch.",
-                    ".MultipleCasesFromAttributes(0, 1, 2) failed: Expected sum of 2 but was 1.",
-                    ".MultipleCasesFromAttributes(0, 1, 2, 3) failed: Parameter count mismatch.",
-
-                    ".ZeroArgs passed"));
+                        ".ZeroArgs passed"));
         }
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
-            Convention.Parameters.Add<LazyBuggyParameterSource>();
+            convention.Parameters.Add<LazyBuggyParameterSource>();
 
-            Run<ParameterizedTestClass>();
+            Run<ParameterizedTestClass>(convention)
+                .ShouldEqual(
+                    For<ParameterizedTestClass>(
+                        ".IntArg(0) passed",
+                        ".IntArg(1) failed: Expected 0, but was 1",
+                        ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
 
-            Listener.Entries.ShouldEqual(
-                For<ParameterizedTestClass>(
-                    ".IntArg(0) passed",
-                    ".IntArg(1) failed: Expected 0, but was 1",
-                    ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                        ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
+                        ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
+                        ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
 
-                    ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
-                    ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
-                    ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
-
-                    ".ZeroArgs passed"));
+                        ".ZeroArgs passed"));
         }
 
         public void ShouldIsolateFailureToTheAffectedTestMethodWhenEagerParameterGenerationThrows()
@@ -105,71 +103,68 @@
             //when trying to handle the IntArg test method. Since IntArg runs first,
             //this test demonstrates how the failure is isolated to that test method.
 
-            Convention.Parameters.Add<EagerBuggyParameterSource>();
+            convention.Parameters.Add<EagerBuggyParameterSource>();
 
-            Run<ParameterizedTestClass>();
+            Run<ParameterizedTestClass>(convention)
+                .ShouldEqual(
+                    For<ParameterizedTestClass>(
+                        ".IntArg failed: Exception thrown while attempting to eagerly build input parameters for method: IntArg",
 
-            Listener.Entries.ToArray().ShouldEqual(
-                For<ParameterizedTestClass>(
-                    ".IntArg failed: Exception thrown while attempting to eagerly build input parameters for method: IntArg",
-
-                    ".MultipleCasesFromAttributes(1, 1, 2) passed",
-                    ".MultipleCasesFromAttributes(1, 2, 3) passed",
-                    ".MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
-                    ".ZeroArgs passed"));
+                        ".MultipleCasesFromAttributes(1, 1, 2) passed",
+                        ".MultipleCasesFromAttributes(1, 2, 3) passed",
+                        ".MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
+                        ".ZeroArgs passed"));
         }
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
         {
-            Convention.Parameters.Add<LazyBuggyParameterSource>();
+            convention.Parameters.Add<LazyBuggyParameterSource>();
 
-            Run<ConstrainedGenericTestClass>();
-
-            Listener.Entries.ShouldEqual(
-                For<ConstrainedGenericTestClass>(
-                    ".ConstrainedGeneric<System.Int32>(0) passed",
-                    ".ConstrainedGeneric<System.Int32>(1) passed",
-                    ".ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
-                    ".UnconstrainedGeneric<System.Int32>(0) passed",
-                    ".UnconstrainedGeneric<System.Int32>(1) passed",
-                    ".UnconstrainedGeneric<System.Object> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric"));
+            Run<ConstrainedGenericTestClass>(convention)
+                .ShouldEqual(
+                    For<ConstrainedGenericTestClass>(
+                        ".ConstrainedGeneric<System.Int32>(0) passed",
+                        ".ConstrainedGeneric<System.Int32>(1) passed",
+                        ".ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
+                        ".UnconstrainedGeneric<System.Int32>(0) passed",
+                        ".UnconstrainedGeneric<System.Int32>(1) passed",
+                        ".UnconstrainedGeneric<System.Object> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric"));
         }
 
         public void ShouldResolveGenericTypeParameters()
         {
-            Convention.Parameters.Add<InputAttributeParameterSource>();
+            convention.Parameters.Add<InputAttributeParameterSource>();
 
-            Run<GenericTestClass>();
+            Run<GenericTestClass>(convention)
+                .ShouldEqual(
+                    For<GenericTestClass>(
+                        ".ConstrainedGeneric<System.Int32>(1) passed",
+                        ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",
 
-            Listener.Entries.ShouldEqual(
-                For<GenericTestClass>(
-                    ".ConstrainedGeneric<System.Int32>(1) passed",
-                    ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",
+                        ".ConstrainedGenericMethodWithNoInputsProvided<T> failed: This test case has declared parameters, but no parameter values have been provided to it.",
 
-                    ".ConstrainedGenericMethodWithNoInputsProvided<T> failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                        ".GenericMethodWithIncorrectParameterCountProvided<System.Object>(123, 123) failed: Parameter count mismatch.",
 
-                    ".GenericMethodWithIncorrectParameterCountProvided<System.Object>(123, 123) failed: Parameter count mismatch.",
+                        ".GenericMethodWithNoInputsProvided<System.Object> failed: This test case has declared parameters, but no parameter values have been provided to it.",
 
-                    ".GenericMethodWithNoInputsProvided<System.Object> failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                        ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.Object>(123, null, 456, System.Int32, System.Object) passed",
+                        ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",
+                        ".MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg\", null, null, System.String, System.Object) passed",
+                        ".MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) passed",
+                        ".MultipleGenericArgumentsMultipleParameters<System.String, System.String>(null, \"stringArg1\", \"stringArg2\", System.String, System.String) passed",
 
-                    ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.Object>(123, null, 456, System.Int32, System.Object) passed",
-                    ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",
-                    ".MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg\", null, null, System.String, System.Object) passed",
-                    ".MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) passed",
-                    ".MultipleGenericArgumentsMultipleParameters<System.String, System.String>(null, \"stringArg1\", \"stringArg2\", System.String, System.String) passed",
+                        ".SingleGenericArgument<System.Int32>(123, System.Int32) passed",
+                        ".SingleGenericArgument<System.Object>(null, System.Object) passed",
+                        ".SingleGenericArgument<System.String>(\"stringArg\", System.String) passed",
 
-                    ".SingleGenericArgument<System.Int32>(123, System.Int32) passed",
-                    ".SingleGenericArgument<System.Object>(null, System.Object) passed",
-                    ".SingleGenericArgument<System.String>(\"stringArg\", System.String) passed",
-
-                    ".SingleGenericArgumentMultipleParameters<System.Int32>(123, 456, System.Int32) passed",
-                    ".SingleGenericArgumentMultipleParameters<System.Object>(\"stringArg\", 123, System.Object) passed",
-                    ".SingleGenericArgumentMultipleParameters<System.Object>(123, \"stringArg\", System.Object) passed",
-                    ".SingleGenericArgumentMultipleParameters<System.Object>(123, null, System.Object) passed",
-                    ".SingleGenericArgumentMultipleParameters<System.Object>(null, null, System.Object) passed",
-                    ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
-                    ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
-                    ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed"));
+                        ".SingleGenericArgumentMultipleParameters<System.Int32>(123, 456, System.Int32) passed",
+                        ".SingleGenericArgumentMultipleParameters<System.Object>(\"stringArg\", 123, System.Object) passed",
+                        ".SingleGenericArgumentMultipleParameters<System.Object>(123, \"stringArg\", System.Object) passed",
+                        ".SingleGenericArgumentMultipleParameters<System.Object>(123, null, System.Object) passed",
+                        ".SingleGenericArgumentMultipleParameters<System.Object>(null, null, System.Object) passed",
+                        ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
+                        ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
+                        ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed"));
         }
 
         class InputAttributeParameterSource : ParameterSource

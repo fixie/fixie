@@ -13,24 +13,19 @@
             Methods
                 .Where(x => x.Name != "SetUp")
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
-
-            Lifecycle<SetUpLifecycle>();
         }
 
-        class SetUpLifecycle : Lifecycle
+        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            runCases(@case =>
             {
-                runCases(@case =>
-                {
-                    var instance = testClass.Construct();
+                var instance = testClass.Construct();
 
-                    testClass.Execute(instance, "SetUp");
-                    @case.Execute(instance);
+                testClass.Execute(instance, "SetUp");
+                @case.Execute(instance);
 
-                    instance.Dispose();
-                });
-            }
+                instance.Dispose();
+            });
         }
     }
 }

@@ -18,8 +18,15 @@
 
             Parameters
                 .Add<InputAttributeParameterSource>();
+        }
 
-            Lifecycle<CreateInstancePerClass>();
+        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+        {
+            var instance = testClass.Construct();
+
+            runCases(@case => @case.Execute(instance));
+
+            instance.Dispose();
         }
 
         class InputAttributeParameterSource : ParameterSource

@@ -40,15 +40,18 @@
         public ParameterSourceExpression Parameters { get; }
 
         /// <summary>
-        /// Overrides the default test class lifecycle.
+        /// Defines a test class lifecycle, to be executed once per test class.
         /// </summary>
-        public void Lifecycle<TLifecycle>() where TLifecycle : Lifecycle, new()
-            => Config.Lifecycle = new TLifecycle();
+        public virtual void Execute(TestClass testClass, Action<CaseAction> runCases)
+        {
+            runCases(@case =>
+            {
+                var instance = testClass.Construct();
 
-        /// <summary>
-        /// Overrides the default test class lifecycle.
-        /// </summary>
-        public void Lifecycle(Lifecycle lifecycle)
-            => Config.Lifecycle = lifecycle;
+                @case.Execute(instance);
+
+                instance.Dispose();
+            });
+        }
     }
 }

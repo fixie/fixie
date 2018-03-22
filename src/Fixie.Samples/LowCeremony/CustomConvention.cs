@@ -16,30 +16,25 @@
             Methods
                 .Where(x => !LifecycleMethods.Contains(x.Name))
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
-
-            Lifecycle<CallSetUpTearDownMethodsByName>();
         }
 
-        class CallSetUpTearDownMethodsByName : Lifecycle
+        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            var instance = testClass.Construct();
+
+            void Execute(string method)
+                => testClass.Execute(instance, method);
+
+            Execute("FixtureSetUp");
+            runCases(@case =>
             {
-                var instance = testClass.Construct();
+                Execute("SetUp");
+                @case.Execute(instance);
+                Execute("TearDown");
+            });
+            Execute("FixtureTearDown");
 
-                void Execute(string method)
-                    => testClass.Execute(instance, method);
-
-                Execute("FixtureSetUp");
-                runCases(@case =>
-                {
-                    Execute("SetUp");
-                    @case.Execute(instance);
-                    Execute("TearDown");
-                });
-                Execute("FixtureTearDown");
-
-                instance.Dispose();
-            }
+            instance.Dispose();
         }
     }
 }

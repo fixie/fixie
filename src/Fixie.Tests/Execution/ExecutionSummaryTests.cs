@@ -10,8 +10,7 @@
     {
         public void ShouldAccumulateCaseStatusCounts()
         {
-            var convention = SelfTestConvention.Build();
-            convention.Lifecycle<CreateInstancePerCase>();
+            var convention = new CreateInstancePerCase();
 
             var listener = new StubExecutionSummaryListener();
 
@@ -68,9 +67,9 @@
             public void SkipC() { }
         }
 
-        class CreateInstancePerCase : Lifecycle
+        class CreateInstancePerCase : SelfTestConvention
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 runCases(@case =>
                 {

@@ -2,22 +2,16 @@
 {
     using System;
 
-    public static class SelfTestConvention
+    public class SelfTestConvention : Convention
     {
-        public static Convention Build()
+        public SelfTestConvention()
         {
-            var selfTestConvention = new Convention();
-
-            selfTestConvention
-                .Classes
+            Classes
                 .Where(x => x.IsNestedPrivate)
                 .Where(x => x.Name.EndsWith("TestClass"));
 
-            selfTestConvention
-                .Methods
+            Methods
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
-
-            return selfTestConvention;
         }
     }
 }

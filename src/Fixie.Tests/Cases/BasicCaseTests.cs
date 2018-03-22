@@ -1,43 +1,41 @@
 ﻿namespace Fixie.Tests.Cases
 {
-    public class BasicCaseTests : CaseTests
+    using static Utility;
+
+    public class BasicCaseTests
     {
         public void ShouldPassUponSuccessfulExecution()
         {
-            Run<PassTestClass>();
-
-            Listener.Entries.ShouldEqual(
-                For<PassTestClass>(".Pass passed"));
+            Run<PassTestClass>()
+                .ShouldEqual(
+                    For<PassTestClass>(".Pass passed"));
         }
 
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
         {
-            Run<FailTestClass>();
-
-            Listener.Entries.ShouldEqual(
-                For<FailTestClass>(".Fail failed: 'Fail' failed!"));
+            Run<FailTestClass>()
+                .ShouldEqual(
+                    For<FailTestClass>(".Fail failed: 'Fail' failed!"));
         }
 
         public void ShouldPassOrFailCasesIndividually()
         {
-            Run<PassFailTestClass>();
-
-            Listener.Entries.ShouldEqual(
-                For<PassFailTestClass>(
-                    ".FailA failed: 'FailA' failed!",
-                    ".FailB failed: 'FailB' failed!",
-                    ".PassA passed",
-                    ".PassB passed",
-                    ".PassC passed"));
+            Run<PassFailTestClass>()
+                .ShouldEqual(
+                    For<PassFailTestClass>(
+                        ".FailA failed: 'FailA' failed!",
+                        ".FailB failed: 'FailB' failed!",
+                        ".PassA passed",
+                        ".PassB passed",
+                        ".PassC passed"));
         }
 
         public void ShouldFailWhenTestClassConstructorCannotBeInvoked()
         {
-            Run<CannotInvokeConstructorTestClass>();
-
-            Listener.Entries.ShouldEqual(
-                For<CannotInvokeConstructorTestClass>(
-                    ".UnreachableCase failed: No parameterless constructor defined for this object."));
+            Run<CannotInvokeConstructorTestClass>()
+                .ShouldEqual(
+                    For<CannotInvokeConstructorTestClass>(
+                        ".UnreachableCase failed: No parameterless constructor defined for this object."));
         }
 
         class PassTestClass

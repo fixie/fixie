@@ -14,9 +14,7 @@ namespace Fixie.Tests.Execution
         public void ShouldExecuteAllCasesInAllDiscoveredTestClasses()
         {
             var listener = new StubListener();
-            var convention = SelfTestConvention.Build();
-
-            convention.Lifecycle<CreateInstancePerClass>();
+            var convention = new CreateInstancePerClass();
 
             var bus = new Bus(listener);
             new Runner(bus).RunTypes(GetType().Assembly, convention,
@@ -35,12 +33,10 @@ namespace Fixie.Tests.Execution
         public void ShouldAllowRandomShufflingOfCaseExecutionOrder()
         {
             var listener = new StubListener();
-            var convention = SelfTestConvention.Build();
+            var convention = new CreateInstancePerClass();
 
             convention.Methods
                 .Shuffle(new Random(1));
-
-            convention.Lifecycle<CreateInstancePerClass>();
 
             var bus = new Bus(listener);
             new Runner(bus).RunTypes(GetType().Assembly, convention,
@@ -59,12 +55,10 @@ namespace Fixie.Tests.Execution
         public void ShouldReportFailuresForAllAffectedCasesWithoutShortCircuitingTestExecutionWhenCaseOrderingThrows()
         {
             var listener = new StubListener();
-            var convention = SelfTestConvention.Build();
+            var convention = new CreateInstancePerClass();
 
             convention.Methods
                 .OrderBy((Func<MethodInfo, string>)(x => throw new Exception("OrderBy lambda expression threw!")));
-
-            convention.Lifecycle<CreateInstancePerClass>();
 
             convention.Parameters
                 .Add<BuggyParameterSource>();
@@ -97,9 +91,9 @@ namespace Fixie.Tests.Execution
                 Self + "+SkipTestClass.SkipB skipped");
         }
 
-        class CreateInstancePerClass : Lifecycle
+        class CreateInstancePerClass : SelfTestConvention
         {
-            public void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
             {
                 var instance = testClass.Construct();
 

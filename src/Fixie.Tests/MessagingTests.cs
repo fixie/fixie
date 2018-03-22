@@ -105,8 +105,5 @@
 
         protected static string TestClassPath()
             => PathToThisFile();
-
-        static string PathToThisFile([CallerFilePath] string path = null)
-            => path;
     }
 }

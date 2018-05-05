@@ -30,24 +30,16 @@
 
         public void CanDetectClassAttributes()
         {
-            typeof(AttributeSample).Has<InheritedAttribute>().ShouldBeFalse();
+            typeof(AttributeSample).Has<InheritedAttribute>().ShouldBeTrue();
             typeof(AttributeSample).Has<NonInheritedAttribute>().ShouldBeTrue();
             typeof(AttributeSample).Has<AttributeUsageAttribute>().ShouldBeFalse();
-
-            typeof(AttributeSample).HasOrInherits<InheritedAttribute>().ShouldBeTrue();
-            typeof(AttributeSample).HasOrInherits<NonInheritedAttribute>().ShouldBeTrue();
-            typeof(AttributeSample).HasOrInherits<AttributeUsageAttribute>().ShouldBeFalse();
         }
 
         public void CanDetectMethodAttributes()
         {
-            Method<AttributeSample>("AttributeOnBaseDeclaration").Has<SampleMethodAttribute>().ShouldBeFalse();
+            Method<AttributeSample>("AttributeOnBaseDeclaration").Has<SampleMethodAttribute>().ShouldBeTrue();
             Method<AttributeSample>("AttributeOnOverrideDeclaration").Has<SampleMethodAttribute>().ShouldBeTrue();
             Method<AttributeSample>("NoAttrribute").Has<SampleMethodAttribute>().ShouldBeFalse();
-
-            Method<AttributeSample>("AttributeOnBaseDeclaration").HasOrInherits<SampleMethodAttribute>().ShouldBeTrue();
-            Method<AttributeSample>("AttributeOnOverrideDeclaration").HasOrInherits<SampleMethodAttribute>().ShouldBeTrue();
-            Method<AttributeSample>("NoAttrribute").HasOrInherits<SampleMethodAttribute>().ShouldBeFalse();
         }
 
         public void CanDetectAsyncDeclarations()

@@ -10,10 +10,10 @@
         public CustomConvention()
         {
             Classes
-                .Where(x => x.HasOrInherits<TestFixture>());
+                .Where(x => x.Has<TestFixture>());
 
             Methods
-                .Where(x => x.HasOrInherits<Test>())
+                .Where(x => x.Has<Test>())
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
 
             Parameters
@@ -28,7 +28,7 @@
             {
                 var query = testClass.Type
                     .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-                    .Where(x => x.HasOrInherits<TAttribute>());
+                    .Where(x => x.Has<TAttribute>());
 
                 foreach (var q in query)
                     q.Execute(instance);

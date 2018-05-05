@@ -13,7 +13,7 @@
                 .Where(HasAnyFactMethods);
 
             Methods
-                .Where(x => x.HasOrInherits<FactAttribute>())
+                .Where(x => x.Has<FactAttribute>())
                 .Shuffle();
         }
 
@@ -56,7 +56,10 @@
 
         bool HasAnyFactMethods(Type type)
         {
-            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static).Any(x => x.HasOrInherits<FactAttribute>());
+            const BindingFlags publicMethods =
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
+
+            return type.GetMethods(publicMethods).Any(x => x.Has<FactAttribute>());
         }
 
         static IEnumerable<Type> FixtureInterfaces(Type testClass)

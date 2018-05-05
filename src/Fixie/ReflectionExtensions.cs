@@ -24,20 +24,10 @@
 
         public static bool Has<TAttribute>(this Type type) where TAttribute : Attribute
         {
-            return type.GetCustomAttributes<TAttribute>(false).Any();
-        }
-
-        public static bool HasOrInherits<TAttribute>(this Type type) where TAttribute : Attribute
-        {
             return type.GetCustomAttributes<TAttribute>(true).Any();
         }
 
         public static bool Has<TAttribute>(this MethodInfo method) where TAttribute : Attribute
-        {
-            return method.GetCustomAttributes<TAttribute>(false).Any();
-        }
-
-        public static bool HasOrInherits<TAttribute>(this MethodInfo method) where TAttribute : Attribute
         {
             return method.GetCustomAttributes<TAttribute>(true).Any();
         }

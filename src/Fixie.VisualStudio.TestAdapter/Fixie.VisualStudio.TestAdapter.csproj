@@ -11,8 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="Mono.Cecil" Version="0.10.0" />
-    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="15.5.0" />
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="15.5.0" />
+    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="15.7.0" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="15.7.0" />
   </ItemGroup>
 
   <ItemGroup>

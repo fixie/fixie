@@ -36,9 +36,9 @@
                     .OrderBy(x => x.Name, StringComparer.Ordinal);
             }
 
-            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass)
             {
-                runCases(@case =>
+                testClass.RunCases(@case =>
                 {
                     if (@case.Method.Has<SkipAttribute>())
                     {

@@ -93,11 +93,11 @@ namespace Fixie.Tests.Execution
 
         class CreateInstancePerClass : SelfTestConvention
         {
-            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass)
             {
                 var instance = testClass.Construct();
 
-                runCases(@case =>
+                testClass.RunCases(@case =>
                 {
                     if (@case.Method.Name.Contains("Skip"))
                         return;

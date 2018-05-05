@@ -17,11 +17,11 @@
                 .Shuffle();
         }
 
-        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public override void Execute(TestClass testClass)
         {
             var fixtures = PrepareFixtureData(testClass.Type);
 
-            runCases(@case =>
+            testClass.RunCases(@case =>
             {
                 var instance = testClass.Construct();
 

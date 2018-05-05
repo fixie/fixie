@@ -8,11 +8,13 @@
     /// </summary>
     public class TestClass
     {
+        readonly Action<CaseAction> runCases;
         readonly bool isStatic;
-        internal TestClass(Type type) : this(type, null) { }
+        internal TestClass(Type type, Action<CaseAction> runCases) : this(type, runCases, null) { }
 
-        internal TestClass(Type type, MethodInfo targetMethod)
+        internal TestClass(Type type, Action<CaseAction> runCases, MethodInfo targetMethod)
         {
+            this.runCases = runCases;
             Type = type;
             TargetMethod = targetMethod;
             isStatic = Type.IsStatic();
@@ -47,6 +49,11 @@
             {
                 throw new PreservedException(exception.InnerException);
             }
+        }
+
+        public void RunCases(CaseAction caseLifecycle)
+        {
+            runCases(caseLifecycle);
         }
     }
 }

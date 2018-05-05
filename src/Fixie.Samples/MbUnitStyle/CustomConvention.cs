@@ -21,7 +21,7 @@
                 .Add<ColumnAttributeParameterSource>();
         }
 
-        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public override void Execute(TestClass testClass)
         {
             var instance = testClass.Construct();
 
@@ -36,7 +36,7 @@
             }
 
             Execute<FixtureSetUp>();
-            runCases(@case =>
+            testClass.RunCases(@case =>
             {
                 Execute<SetUp>();
 

@@ -16,11 +16,11 @@
                 .Where(x => x.Name.EndsWith("Tests"));
         }
 
-        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public override void Execute(TestClass testClass)
         {
             var instance = testClass.Construct();
 
-            runCases(@case => @case.Execute(instance));
+            testClass.RunCases(@case => @case.Execute(instance));
 
             instance.Dispose();
         }

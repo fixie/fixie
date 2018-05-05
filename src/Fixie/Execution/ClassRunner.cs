@@ -36,10 +36,6 @@
             if (!methods.Any())
                 return summary;
 
-            var runContext = isOnlyTestClass && methods.Count == 1
-                ? new TestClass(testClass, methods.Single())
-                : new TestClass(testClass);
-
             Start(testClass);
 
             var classStopwatch = Stopwatch.StartNew();
@@ -51,7 +47,7 @@
 
             try
             {
-                convention.Execute(runContext, caseLifecycle =>
+                Action<CaseAction> runCases = caseLifecycle =>
                 {
                     runCasesInvokedByLifecycle = true;
 
@@ -102,7 +98,13 @@
                         else if (!caseHasNormalResult)
                             Skip(@case, summary);
                     }
-                });
+                };
+
+                var runContext = isOnlyTestClass && methods.Count == 1
+                    ? new TestClass(testClass, runCases, methods.Single())
+                    : new TestClass(testClass, runCases);
+
+                convention.Execute(runContext);
             }
             catch (Exception exception)
             {

@@ -14,7 +14,7 @@
                 .OrderBy(x => x.Name, StringComparer.Ordinal);
         }
 
-        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public override void Execute(TestClass testClass)
         {
             var methodWasExplicitlyRequested = testClass.TargetMethod != null;
 
@@ -22,7 +22,7 @@
 
             var instance = skipClass ? null : testClass.Construct();
 
-            runCases(@case =>
+            testClass.RunCases(@case =>
             {
                 var skipMethod = @case.Method.Has<SkipAttribute>() && !methodWasExplicitlyRequested;
 

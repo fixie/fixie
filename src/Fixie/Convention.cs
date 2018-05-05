@@ -42,9 +42,9 @@
         /// <summary>
         /// Defines a test class lifecycle, to be executed once per test class.
         /// </summary>
-        public virtual void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public virtual void Execute(TestClass testClass)
         {
-            runCases(@case =>
+            testClass.RunCases(@case =>
             {
                 var instance = testClass.Construct();
 

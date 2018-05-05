@@ -14,13 +14,13 @@
                 .Where(x => x.Name.EndsWith("Tests"));
         }
 
-        public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+        public override void Execute(TestClass testClass)
         {
             using (var container = InitContainerForIntegrationTests())
             {
                 var instance = container.Get(testClass.Type);
 
-                runCases(@case => @case.Execute(instance));
+                testClass.RunCases(@case => @case.Execute(instance));
             }
         }
 

@@ -211,9 +211,9 @@
 
         class CreateInstancePerCase : SampleConvention
         {
-            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass)
             {
-                runCases(@case =>
+                testClass.RunCases(@case =>
                 {
                     if (@case.Method.Name.Contains("Skip"))
                         return;
@@ -229,11 +229,11 @@
 
         class CreateInstancePerClass : SampleConvention
         {
-            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass)
             {
                 var instance = testClass.Construct();
 
-                runCases(@case =>
+                testClass.RunCases(@case =>
                 {
                     if (@case.Method.Name.Contains("Skip"))
                     {
@@ -264,15 +264,15 @@
 
         class BuggyLifecycle : SampleConvention
         {
-            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass)
                 => throw new Exception("Unsafe lifecycle threw!");
         }
 
         class ShortCircuitClassExecution : SampleConvention
         {
-            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass)
             {
-                //Class lifecycle chooses not to invoke runCases(...).
+                //Class lifecycle chooses not to invoke testClass.RunCases(...).
                 //Since the test cases never run, they are all considered
                 //'skipped'.
             }
@@ -280,9 +280,9 @@
 
         class ShortCircuitCaseExection : SampleConvention
         {
-            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass)
             {
-                runCases(@case =>
+                testClass.RunCases(@case =>
                 {
                     //Case lifecycle chooses not to invoke @case.Execute(instance).
                     //Since the test cases never run, they are all considered
@@ -293,13 +293,13 @@
 
         class RunCasesTwice : SampleConvention
         {
-            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass)
             {
                 var instance = testClass.Construct();
 
                 for (int i = 1; i <= 2; i++)
                 {
-                    runCases(@case =>
+                    testClass.RunCases(@case =>
                     {
                         if (@case.Method.Name.Contains("Skip"))
                             return;
@@ -314,11 +314,11 @@
 
         class RetryFailingCases : SampleConvention
         {
-            public override void Execute(TestClass testClass, Action<CaseAction> runCases)
+            public override void Execute(TestClass testClass)
             {
                 var instance = testClass.Construct();
 
-                runCases(@case =>
+                testClass.RunCases(@case =>
                 {
                     if (@case.Method.Name.Contains("Skip"))
                         return;

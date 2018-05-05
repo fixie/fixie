@@ -17,16 +17,4 @@
     {
         IEnumerable<object[]> GetParameters(MethodInfo method);
     }
-
-    /// <summary>
-    /// Defines a source of test case input parameters.
-    /// 
-    /// <para>
-    /// Given a test method, yields zero or more sets
-    /// of method parameters to be passed into the test method.
-    /// Each object array returned represents a distinct
-    /// invocation of the test method.
-    /// </para>
-    /// </summary>
-    public delegate IEnumerable<object[]> ParameterSourceFunc(MethodInfo method);
 }

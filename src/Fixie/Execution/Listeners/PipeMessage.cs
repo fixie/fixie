@@ -18,6 +18,13 @@
             public string Name { get; set; }
         }
 
+        public class TestStarted
+        {
+            public string Class { get; set; }
+            public string Method { get; set; }
+            public string Name { get; set; }
+        }
+
         public abstract class TestResult
         {
             public string Class { get; set; }

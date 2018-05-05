@@ -17,6 +17,13 @@
             this.assemblyPath = assemblyPath;
         }
 
+        public void RecordStart(PipeMessage.TestStarted testStarted)
+        {
+            var fullName = testStarted.Class + "." + testStarted.Method;
+            var testCase = new TestCase(fullName, VsTestExecutor.Uri, assemblyPath);
+            log.RecordStart(testCase);
+        }
+
         public void RecordResult(PipeMessage.SkipResult result)
         {
             RecordResult(result, x =>

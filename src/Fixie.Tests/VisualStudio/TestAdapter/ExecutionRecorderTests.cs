@@ -12,6 +12,54 @@
 
     public class ExecutionRecorderTests
     {
+        public void ShouldMapStartsToVisualStudioExecutionRecorder()
+        {
+            const string assemblyPath = "assembly.path.dll";
+            var recorder = new StubExecutionRecorder();
+
+            var executionRecorder = new ExecutionRecorder(recorder, assemblyPath);
+
+            executionRecorder.RecordStart(new PipeMessage.TestStarted
+            {
+                Class = "Namespace.Class",
+                Method = "Pass",
+                Name = "Namespace.Class.Pass",
+            });
+
+            executionRecorder.RecordStart(new PipeMessage.TestStarted
+            {
+                Class = "Namespace.Class",
+                Method = "Fail",
+                Name = "Namespace.Class.Fail",
+            });
+
+            executionRecorder.RecordStart(new PipeMessage.TestStarted
+            {
+                Class = "Namespace.Class",
+                Method = "Skip",
+                Name = "Namespace.Class.Skip",
+            });
+
+            var starts = recorder.TestStarts;
+            starts.Count.ShouldEqual(3);
+
+            foreach (var start in starts)
+                start.Traits.ShouldBeEmpty();
+
+            var passStart = starts[0];
+            var failStart = starts[1];
+            var skipStart = starts[2];
+
+            passStart.ShouldBeExecutionTimeTest("Namespace.Class.Pass", assemblyPath);
+            passStart.DisplayName.ShouldEqual("Namespace.Class.Pass");
+
+            failStart.ShouldBeExecutionTimeTest("Namespace.Class.Fail", assemblyPath);
+            failStart.DisplayName.ShouldEqual("Namespace.Class.Fail");
+
+            skipStart.ShouldBeExecutionTimeTest("Namespace.Class.Skip", assemblyPath);
+            skipStart.DisplayName.ShouldEqual("Namespace.Class.Skip");
+        }
+
         public void ShouldMapResultsToVisualStudioExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
@@ -101,6 +149,7 @@
 
         class StubExecutionRecorder : ITestExecutionRecorder
         {
+            public List<TestCase> TestStarts { get; } = new List<TestCase>();
             public List<TestResult> TestResults { get; } = new List<TestResult>();
 
             public void RecordResult(TestResult testResult)
@@ -110,7 +159,7 @@
                 => NotImplemented();
 
             public void RecordStart(TestCase testCase)
-                => NotImplemented();
+                => TestStarts.Add(testCase);
 
             public void RecordEnd(TestCase testCase, TestOutcome outcome)
                 => NotImplemented();

@@ -17,33 +17,31 @@
             this.assemblyPath = assemblyPath;
         }
 
-        public void RecordStart(PipeMessage.TestStarted testStarted)
+        public void Record(PipeMessage.TestStarted testStarted)
         {
-            var fullName = testStarted.Class + "." + testStarted.Method;
-            var testCase = new TestCase(fullName, VsTestExecutor.Uri, assemblyPath);
-            log.RecordStart(testCase);
+            log.RecordStart(ToVsTestCase(testStarted.Test));
         }
 
-        public void RecordResult(PipeMessage.SkipResult result)
+        public void Record(PipeMessage.CaseSkipped result)
         {
-            RecordResult(result, x =>
+            Record(result, x =>
             {
                 x.Outcome = TestOutcome.Skipped;
                 x.ErrorMessage = result.Reason;
             });
         }
 
-        public void RecordResult(PipeMessage.PassResult result)
+        public void Record(PipeMessage.CasePassed result)
         {
-            RecordResult(result, x =>
+            Record(result, x =>
             {
                 x.Outcome = TestOutcome.Passed;
             });
         }
 
-        public void RecordResult(PipeMessage.FailResult result)
+        public void Record(PipeMessage.CaseFailed result)
         {
-            RecordResult(result, x =>
+            Record(result, x =>
             {
                 x.Outcome = TestOutcome.Failed;
                 x.ErrorMessage = result.Exception.Message;
@@ -53,10 +51,9 @@
             });
         }
 
-        void RecordResult(PipeMessage.TestResult result, Action<TestResult> customize = null)
+        void Record(PipeMessage.CaseCompleted result, Action<TestResult> customize = null)
         {
-            var fullName = result.Class + "." + result.Method;
-            var testCase = new TestCase(fullName, VsTestExecutor.Uri, assemblyPath);
+            var testCase = ToVsTestCase(result.Test);
 
             var testResult = new TestResult(testCase)
             {
@@ -70,6 +67,11 @@
             AttachCapturedConsoleOutput(result.Output, testResult);
 
             log.RecordResult(testResult);
+        }
+
+        TestCase ToVsTestCase(PipeMessage.Test test)
+        {
+            return new TestCase(test.Name, VsTestExecutor.Uri, assemblyPath);
         }
 
         static void AttachCapturedConsoleOutput(string output, TestResult testResult)

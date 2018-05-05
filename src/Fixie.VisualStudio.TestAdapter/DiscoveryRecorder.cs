@@ -22,11 +22,11 @@
             sourceLocationProvider = new SourceLocationProvider(assemblyPath);
         }
 
-        public void SendTestCase(PipeMessage.Test test)
+        public void Record(PipeMessage.TestDiscovered testDiscovered)
         {
-            SourceLocation sourceLocation = null;
+            var test = testDiscovered.Test;
 
-            var fullName = test.Class + "." + test.Method;
+            SourceLocation sourceLocation = null;
 
             try
             {
@@ -37,9 +37,9 @@
                 log.Error(exception.ToString());
             }
 
-            var discoveredTest = new TestCase(fullName, VsTestExecutor.Uri, assemblyPath)
+            var discoveredTest = new TestCase(test.Name, VsTestExecutor.Uri, assemblyPath)
             {
-                DisplayName = fullName
+                DisplayName = test.Name
             };
 
             if (sourceLocation != null)

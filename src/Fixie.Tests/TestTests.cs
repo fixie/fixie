@@ -74,11 +74,11 @@
                 "Fixie.Tests.TestTests+ChildClass.MethodDefinedWithinParentClass");
         }
 
-        static void AssertTest(Test actual, string expectedClass, string expectedMethod, string expectedFullName)
+        static void AssertTest(Test actual, string expectedClass, string expectedMethod, string expectedName)
         {
             actual.Class.ShouldEqual(expectedClass);
             actual.Method.ShouldEqual(expectedMethod);
-            actual.FullName.ShouldEqual(expectedFullName);
+            actual.Name.ShouldEqual(expectedName);
         }
 
         static Test Test<TTestClass>(string method)

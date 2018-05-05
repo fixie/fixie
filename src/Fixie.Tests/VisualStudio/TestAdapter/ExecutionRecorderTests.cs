@@ -19,25 +19,34 @@
 
             var executionRecorder = new ExecutionRecorder(recorder, assemblyPath);
 
-            executionRecorder.RecordStart(new PipeMessage.TestStarted
+            executionRecorder.Record(new PipeMessage.TestStarted
             {
-                Class = "Namespace.Class",
-                Method = "Pass",
-                Name = "Namespace.Class.Pass",
+                Test = new PipeMessage.Test
+                {
+                    Class = "Namespace.Class",
+                    Method = "Pass",
+                    Name = "Namespace.Class.Pass",
+                }
             });
 
-            executionRecorder.RecordStart(new PipeMessage.TestStarted
+            executionRecorder.Record(new PipeMessage.TestStarted
             {
-                Class = "Namespace.Class",
-                Method = "Fail",
-                Name = "Namespace.Class.Fail",
+                Test = new PipeMessage.Test
+                {
+                    Class = "Namespace.Class",
+                    Method = "Fail",
+                    Name = "Namespace.Class.Fail",
+                }
             });
 
-            executionRecorder.RecordStart(new PipeMessage.TestStarted
+            executionRecorder.Record(new PipeMessage.TestStarted
             {
-                Class = "Namespace.Class",
-                Method = "Skip",
-                Name = "Namespace.Class.Skip",
+                Test = new PipeMessage.Test
+                {
+                    Class = "Namespace.Class",
+                    Method = "Skip",
+                    Name = "Namespace.Class.Skip",
+                }
             });
 
             var starts = recorder.TestStarts;
@@ -67,19 +76,27 @@
 
             var executionRecorder = new ExecutionRecorder(recorder, assemblyPath);
 
-            executionRecorder.RecordResult(new PipeMessage.PassResult
+            executionRecorder.Record(new PipeMessage.CasePassed
             {
-                Class = "Namespace.Class",
-                Method = "Pass",
-                Name = "Namespace.Class.Pass",
+                Test = new PipeMessage.Test
+                {
+                    Class = "Namespace.Class",
+                    Method = "Pass",
+                    Name = "Namespace.Class.Pass",
+                },
+                Name = "Namespace.Class.Pass(1)",
                 Duration = TimeSpan.FromSeconds(1),
                 Output = "Output"
             });
 
-            executionRecorder.RecordResult(new PipeMessage.FailResult
+            executionRecorder.Record(new PipeMessage.CaseFailed
             {
-                Class = "Namespace.Class",
-                Method = "Fail",
+                Test = new PipeMessage.Test
+                {
+                    Class = "Namespace.Class",
+                    Method = "Fail",
+                    Name = "Namespace.Class.Fail",
+                },
                 Name = "Namespace.Class.Fail",
                 Duration = TimeSpan.FromSeconds(2),
                 Output = "Output",
@@ -91,10 +108,14 @@
                 }
             });
 
-            executionRecorder.RecordResult(new PipeMessage.SkipResult
+            executionRecorder.Record(new PipeMessage.CaseSkipped
             {
-                Class = "Namespace.Class",
-                Method = "Skip",
+                Test = new PipeMessage.Test
+                {
+                    Class = "Namespace.Class",
+                    Method = "Skip",
+                    Name = "Namespace.Class.Skip",
+                },
                 Name = "Namespace.Class.Skip",
                 Duration = TimeSpan.Zero,
                 Output = null,
@@ -120,7 +141,7 @@
             pass.Outcome.ShouldEqual(TestOutcome.Passed);
             pass.ErrorMessage.ShouldBeNull();
             pass.ErrorStackTrace.ShouldBeNull();
-            pass.DisplayName.ShouldEqual("Namespace.Class.Pass");
+            pass.DisplayName.ShouldEqual("Namespace.Class.Pass(1)");
             pass.Messages.Count.ShouldEqual(1);
             pass.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
             pass.Messages[0].Text.ShouldEqual("Output");

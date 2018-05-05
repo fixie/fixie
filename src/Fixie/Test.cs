@@ -6,31 +6,31 @@ namespace Fixie
     {
         public string Class { get; }
         public string Method { get; }
-        public string FullName { get; }
+        public string Name { get; }
 
         public Test(MethodInfo method)
         {
             Class = method.ReflectedType.FullName;
             Method = method.Name;
-            FullName = Class + "." + Method;
+            Name = Class + "." + Method;
         }
 
         public Test(string @class, string method)
         {
             Class = @class;
             Method = method;
-            FullName = Class + "." + Method;
+            Name = Class + "." + Method;
         }
 
-        public Test(string fullName)
+        public Test(string name)
         {
-            var indexOfMemberSeparator = fullName.LastIndexOf(".");
-            var className = fullName.Substring(0, indexOfMemberSeparator);
-            var methodName = fullName.Substring(indexOfMemberSeparator + 1);
+            var indexOfMemberSeparator = name.LastIndexOf(".");
+            var className = name.Substring(0, indexOfMemberSeparator);
+            var methodName = name.Substring(indexOfMemberSeparator + 1);
 
             Class = className;
             Method = methodName;
-            FullName = fullName;
+            Name = name;
         }
     }
 }

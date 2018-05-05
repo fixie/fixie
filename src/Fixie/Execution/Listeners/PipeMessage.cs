@@ -4,13 +4,6 @@
 
     public static class PipeMessage
     {
-        public class DiscoverTests { }
-
-        public class ExecuteTests
-        {
-            public Test[] Filter { get; set; }
-        }
-
         public class Test
         {
             public string Class { get; set; }
@@ -18,32 +11,41 @@
             public string Name { get; set; }
         }
 
-        public class TestStarted
+        public class DiscoverTests { }
+
+        public class ExecuteTests
         {
-            public string Class { get; set; }
-            public string Method { get; set; }
-            public string Name { get; set; }
+            public Test[] Filter { get; set; }
         }
 
-        public abstract class TestResult
+        public class TestDiscovered
         {
-            public string Class { get; set; }
-            public string Method { get; set; }
+            public Test Test { get; set; }
+        }
+
+        public class TestStarted
+        {
+            public Test Test { get; set; }
+        }
+
+        public abstract class CaseCompleted
+        {
+            public Test Test { get; set; }
             public string Name { get; set; }
             public TimeSpan Duration { get; set; }
             public string Output { get; set; }
         }
 
-        public class SkipResult : TestResult
+        public class CaseSkipped : CaseCompleted
         {
             public string Reason { get; set; }
         }
 
-        public class PassResult : TestResult
+        public class CasePassed : CaseCompleted
         {
         }
 
-        public class FailResult : TestResult
+        public class CaseFailed : CaseCompleted
         {
             public Exception Exception { get; set; }
         }

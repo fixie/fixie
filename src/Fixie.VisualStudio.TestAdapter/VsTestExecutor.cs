@@ -74,7 +74,7 @@
                             {
                                 Class = test.Class,
                                 Method = test.Method,
-                                Name = test.FullName
+                                Name = test.Name
                             };
                         }).ToArray()
                     });
@@ -114,22 +114,22 @@
                     if (messageType == typeof(PipeMessage.TestStarted).FullName)
                     {
                         var testStarted = pipe.Receive<PipeMessage.TestStarted>();
-                        recorder.RecordStart(testStarted);
+                        recorder.Record(testStarted);
                     }
-                    else if (messageType == typeof(PipeMessage.SkipResult).FullName)
+                    else if (messageType == typeof(PipeMessage.CaseSkipped).FullName)
                     {
-                        var testResult = pipe.Receive<PipeMessage.SkipResult>();
-                        recorder.RecordResult(testResult);
+                        var testResult = pipe.Receive<PipeMessage.CaseSkipped>();
+                        recorder.Record(testResult);
                     }
-                    else if (messageType == typeof(PipeMessage.PassResult).FullName)
+                    else if (messageType == typeof(PipeMessage.CasePassed).FullName)
                     {
-                        var testResult = pipe.Receive<PipeMessage.PassResult>();
-                        recorder.RecordResult(testResult);
+                        var testResult = pipe.Receive<PipeMessage.CasePassed>();
+                        recorder.Record(testResult);
                     }
-                    else if (messageType == typeof(PipeMessage.FailResult).FullName)
+                    else if (messageType == typeof(PipeMessage.CaseFailed).FullName)
                     {
-                        var testResult = pipe.Receive<PipeMessage.FailResult>();
-                        recorder.RecordResult(testResult);
+                        var testResult = pipe.Receive<PipeMessage.CaseFailed>();
+                        recorder.Record(testResult);
                     }
                     else if (messageType == typeof(PipeMessage.Exception).FullName)
                     {

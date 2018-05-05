@@ -21,11 +21,14 @@
 
             var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
 
-            discoveryRecorder.SendTestCase(new PipeMessage.Test
+            discoveryRecorder.Record(new PipeMessage.TestDiscovered
             {
-                Class = TestClass,
-                Method = "Fail",
-                Name = TestClass + ".Fail"
+                Test = new PipeMessage.Test
+                {
+                    Class = TestClass,
+                    Method = "Fail",
+                    Name = TestClass + ".Fail"
+                }
             });
 
             log.Messages.ShouldBeEmpty();
@@ -43,11 +46,14 @@
 
             var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, invalidAssemblyPath);
 
-            discoveryRecorder.SendTestCase(new PipeMessage.Test
+            discoveryRecorder.Record(new PipeMessage.TestDiscovered
             {
-                Class = TestClass,
-                Method = "Fail",
-                Name = TestClass + ".Fail"
+                Test = new PipeMessage.Test
+                {
+                    Class = TestClass,
+                    Method = "Fail",
+                    Name = TestClass + ".Fail"
+                }
             });
 
             log.Messages.Single().Contains(nameof(FileNotFoundException)).ShouldBeTrue();

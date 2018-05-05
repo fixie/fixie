@@ -22,11 +22,14 @@
         {
             var test = new Test(message.Method);
 
-            Write(new PipeMessage.Test
+            Write(new PipeMessage.TestDiscovered
             {
-                Class = test.Class,
-                Method = test.Method,
-                Name = test.FullName
+                Test = new PipeMessage.Test
+                {
+                    Class = test.Class,
+                    Method = test.Method,
+                    Name = test.Name
+                }
             });
         }
 
@@ -36,15 +39,18 @@
 
             Write(new PipeMessage.TestStarted
             {
-                Class = test.Class,
-                Method = test.Method,
-                Name = test.FullName
+                Test = new PipeMessage.Test
+                {
+                    Class = test.Class,
+                    Method = test.Method,
+                    Name = test.Name
+                }
             });
         }
 
         public void Handle(CaseSkipped message)
         {
-            Write<PipeMessage.SkipResult>(message, x =>
+            Write<PipeMessage.CaseSkipped>(message, x =>
             {
                 x.Reason = message.Reason;
             });
@@ -52,26 +58,31 @@
 
         public void Handle(CasePassed message)
         {
-            Write<PipeMessage.PassResult>(message);
+            Write<PipeMessage.CasePassed>(message);
         }
 
         public void Handle(CaseFailed message)
         {
-            Write<PipeMessage.FailResult>(message, x =>
+            Write<PipeMessage.CaseFailed>(message, x =>
             {
                 x.Exception = new PipeMessage.Exception(message.Exception);
             });
         }
 
         void Write<TTestResult>(CaseCompleted message, Action<TTestResult> customize = null)
-            where TTestResult : PipeMessage.TestResult, new()
+            where TTestResult : PipeMessage.CaseCompleted, new()
         {
             var test = new Test(message.Method);
 
             var result = new TTestResult
             {
-                Class = test.Class,
-                Method = test.Method,
+                Test = new PipeMessage.Test
+                {
+                    Class = test.Class,
+                    Method = test.Method,
+                    Name = test.Name
+                },
+
                 Name = message.Name,
                 Duration = message.Duration,
                 Output = message.Output

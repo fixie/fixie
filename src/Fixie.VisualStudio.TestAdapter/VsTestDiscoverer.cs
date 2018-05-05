@@ -50,10 +50,10 @@
                 {
                     var messageType = pipe.ReceiveMessage();
 
-                    if (messageType == typeof(PipeMessage.Test).FullName)
+                    if (messageType == typeof(PipeMessage.TestDiscovered).FullName)
                     {
-                        var test = pipe.Receive<PipeMessage.Test>();
-                        recorder.SendTestCase(test);
+                        var testDiscovered = pipe.Receive<PipeMessage.TestDiscovered>();
+                        recorder.Record(testDiscovered);
                     }
                     else if (messageType == typeof(PipeMessage.Exception).FullName)
                     {

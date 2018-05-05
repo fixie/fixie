@@ -32,7 +32,7 @@
 
             try
             {
-                result = method.Invoke(instance, parameters);
+                result = method.Invoke(instance, parameters != null && parameters.Length == 0 ? null : parameters);
             }
             catch (TargetInvocationException exception)
             {

@@ -2,7 +2,6 @@
 {
     using System;
     using System.Reflection;
-    using Execution;
 
     /// <summary>
     /// The context in which a test class is running.

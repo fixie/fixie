@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Tests.Execution
 {
-    using System;
     using System.Collections.Generic;
     using Assertions;
     using Fixie.Execution;

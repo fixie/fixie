@@ -1,6 +1,5 @@
 ﻿namespace Fixie
 {
-    using System;
     using Conventions;
 
     /// <summary>

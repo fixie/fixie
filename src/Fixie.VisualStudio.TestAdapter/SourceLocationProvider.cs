@@ -92,7 +92,7 @@
         static string StandardizeTypeName(string className)
         {
             //Mono.Cecil respects ECMA-335 for the FullName of a type, which can differ from Type.FullName.
-            //In order to make reliable comparisons between the class part of a TestName, the class part
+            //In order to make reliable comparisons between the class part of a test name, the class part
             //must be standardized to the ECMA-335 format.
             //
             //ECMA-335 specifies "/" instead of "+" to indicate a nested type.

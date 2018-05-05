@@ -20,25 +20,25 @@
 
         public void Handle(MethodDiscovered message)
         {
-            var testName = new TestName(message.Method);
+            var test = new Test(message.Method);
 
             Write(new PipeMessage.Test
             {
-                Class = testName.Class,
-                Method = testName.Method,
-                Name = testName.FullName
+                Class = test.Class,
+                Method = test.Method,
+                Name = test.FullName
             });
         }
 
         public void Handle(CaseStarted message)
         {
-            var testName = new TestName(message.Method);
+            var test = new Test(message.Method);
 
             Write(new PipeMessage.TestStarted
             {
-                Class = testName.Class,
-                Method = testName.Method,
-                Name = testName.FullName
+                Class = test.Class,
+                Method = test.Method,
+                Name = test.FullName
             });
         }
 
@@ -66,12 +66,12 @@
         void Write<TTestResult>(CaseCompleted message, Action<TTestResult> customize = null)
             where TTestResult : PipeMessage.TestResult, new()
         {
-            var testName = new TestName(message.Method);
+            var test = new Test(message.Method);
 
             var result = new TTestResult
             {
-                Class = testName.Class,
-                Method = testName.Method,
+                Class = test.Class,
+                Method = test.Method,
                 Name = message.Name,
                 Duration = message.Duration,
                 Output = message.Output

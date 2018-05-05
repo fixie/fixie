@@ -68,13 +68,13 @@
                     {
                         Filter = assemblyGroup.Select(x =>
                         {
-                            var testName = new TestName(x.FullyQualifiedName);
+                            var test = new Test(x.FullyQualifiedName);
 
                             return new PipeMessage.Test
                             {
-                                Class = testName.Class,
-                                Method = testName.Method,
-                                Name = testName.FullName
+                                Class = test.Class,
+                                Method = test.Method,
+                                Name = test.FullName
                             };
                         }).ToArray()
                     });

@@ -41,11 +41,11 @@
             return Run(assembly, new[] { convention }, types);
         }
 
-        public ExecutionSummary RunTests(Assembly assembly, TestName[] testNames)
+        public ExecutionSummary RunTests(Assembly assembly, Test[] tests)
         {
-            var types = GetTypes(assembly, testNames);
+            var types = GetTypes(assembly, tests);
 
-            var methods = GetMethods(types, testNames);
+            var methods = GetMethods(types, tests);
 
             var conventions = GetConventions(assembly);
 
@@ -73,24 +73,24 @@
                 yield return nested;
         }
 
-        static Dictionary<string, Type> GetTypes(Assembly assembly, TestName[] testNames)
+        static Dictionary<string, Type> GetTypes(Assembly assembly, Test[] tests)
         {
             var types = new Dictionary<string, Type>();
 
-            foreach (var testName in testNames)
-                if (!types.ContainsKey(testName.Class))
-                    types.Add(testName.Class, assembly.GetType(testName.Class));
+            foreach (var test in tests)
+                if (!types.ContainsKey(test.Class))
+                    types.Add(test.Class, assembly.GetType(test.Class));
 
             return types;
         }
 
-        static MethodInfo[] GetMethods(Dictionary<string, Type> classes, TestName[] testNames)
+        static MethodInfo[] GetMethods(Dictionary<string, Type> classes, Test[] tests)
         {
-            return testNames
-                .SelectMany(testName =>
-                    classes[testName.Class]
+            return tests
+                .SelectMany(test =>
+                    classes[test.Class]
                         .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-                        .Where(m => m.Name == testName.Method)).ToArray();
+                        .Where(m => m.Name == test.Method)).ToArray();
         }
 
         ExecutionSummary RunTypesInternal(Assembly assembly, params Type[] types)

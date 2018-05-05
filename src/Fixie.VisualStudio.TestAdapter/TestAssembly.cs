@@ -28,7 +28,7 @@ namespace Fixie.VisualStudio.TestAdapter
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
 
-#if NET471
+#if NET452
             Start(frameworkHandle, assemblyDirectory, assemblyPath);
 #else
             Start(frameworkHandle, assemblyDirectory, Dotnet.Path, assemblyPath);

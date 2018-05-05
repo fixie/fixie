@@ -30,7 +30,7 @@
             calculator.Add(2, 3).ShouldEqual(5);
         }
 
-        static Task Awaited() => Task.CompletedTask;
+        static Task Awaited() => Task.FromResult(0);
 
         public void Dispose()
         {

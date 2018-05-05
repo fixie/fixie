@@ -42,7 +42,7 @@
             {
                 result.TestFramework.ShouldEqual("Fixie");
 
-#if NET471
+#if NET452
                 result.FileName.ShouldEqual("Fixie.Tests.exe");
 #else
                 result.FileName.ShouldEqual("Fixie.Tests.dll");

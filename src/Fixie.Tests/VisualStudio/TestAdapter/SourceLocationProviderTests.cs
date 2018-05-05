@@ -86,7 +86,7 @@
 
 #if DEBUG
             location.LineNumber.ShouldEqual(debugLine);
-#elif NET471
+#elif NET452
             location.LineNumber.ShouldEqual(releaseLine);
 #endif
         }

@@ -47,7 +47,7 @@
 
             try
             {
-                Action<CaseAction> runCases = caseLifecycle =>
+                Action<Action<Case>> runCases = caseLifecycle =>
                 {
                     runCasesInvokedByLifecycle = true;
 

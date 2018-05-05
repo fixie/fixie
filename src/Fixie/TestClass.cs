@@ -2,17 +2,18 @@
 {
     using System;
     using System.Reflection;
+    using Execution;
 
     /// <summary>
     /// The context in which a test class is running.
     /// </summary>
     public class TestClass
     {
-        readonly Action<CaseAction> runCases;
+        readonly Action<Action<Case>> runCases;
         readonly bool isStatic;
-        internal TestClass(Type type, Action<CaseAction> runCases) : this(type, runCases, null) { }
+        internal TestClass(Type type, Action<Action<Case>> runCases) : this(type, runCases, null) { }
 
-        internal TestClass(Type type, Action<CaseAction> runCases, MethodInfo targetMethod)
+        internal TestClass(Type type, Action<Action<Case>> runCases, MethodInfo targetMethod)
         {
             this.runCases = runCases;
             Type = type;
@@ -51,7 +52,7 @@
             }
         }
 
-        public void RunCases(CaseAction caseLifecycle)
+        public void RunCases(Action<Case> caseLifecycle)
         {
             runCases(caseLifecycle);
         }

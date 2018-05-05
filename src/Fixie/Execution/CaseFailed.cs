@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Execution
 {
     using System;
-    using Listeners;
 
     public class CaseFailed : CaseCompleted
     {

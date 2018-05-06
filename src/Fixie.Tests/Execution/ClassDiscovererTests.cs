@@ -45,6 +45,21 @@
                     typeof(InheritanceSample));
         }
 
+        public void ShouldNotConsiderDiscoveryAndExecutionCustomizations()
+        {
+            var customConvention = new SampleConvention();
+
+            DiscoveredTestClasses(customConvention, typeof(SampleConvention))
+                .ShouldEqual(
+                    typeof(StaticClass),
+                    typeof(DefaultConstructor),
+                    typeof(NoDefaultConstructor),
+                    typeof(NameEndsWithTests),
+                    typeof(String),
+                    typeof(InheritanceSampleBase),
+                    typeof(InheritanceSample));
+        }
+
         public void ShouldNotConsiderCompilerGeneratedClosureClasses()
         {
             var nested = typeof(ClassThatCausesCompilerGeneratedNestedClosureClass)

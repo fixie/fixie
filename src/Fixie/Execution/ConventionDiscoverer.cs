@@ -22,33 +22,33 @@
             if (assembly.GetName().Name == "Fixie.Tests")
                 return new DefaultConvention();
 
-            var locallyDeclaredConventionTypes = LocallyDeclaredConventionTypes();
+            return Construct(ConventionType());
+        }
 
-            if (locallyDeclaredConventionTypes.Length > 1)
+        Type ConventionType()
+        {
+            var customConventionTypes = assembly
+                .GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(Convention)) && !t.IsAbstract)
+                .ToArray();
+
+            if (customConventionTypes.Length > 1)
             {
                 throw new Exception(
                     "A test assembly should have at most one convention, " +
                     "but the following conventions were discovered:" + Environment.NewLine +
                     String.Join(Environment.NewLine,
-                        locallyDeclaredConventionTypes
+                        customConventionTypes
                             .Select(x => $"\t{x.FullName}")));
             }
 
-            if (!locallyDeclaredConventionTypes.Any())
-                return new DefaultConvention();
+            if (customConventionTypes.Any())
+                return customConventionTypes.Single();
 
-            return ConstructConvention(locallyDeclaredConventionTypes.Single());
+            return typeof(DefaultConvention);
         }
 
-        Type[] LocallyDeclaredConventionTypes()
-        {
-            return assembly
-                .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(Convention)) && !t.IsAbstract)
-                .ToArray();
-        }
-
-        Convention ConstructConvention(Type type)
+        Convention Construct(Type type)
         {
             try
             {

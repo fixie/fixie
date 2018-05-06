@@ -14,10 +14,12 @@ namespace Fixie.Tests.Execution
         public void ShouldExecuteAllCasesInAllDiscoveredTestClasses()
         {
             var listener = new StubListener();
-            var convention = new CreateInstancePerClass();
+
+            var discovery = new SelfTestDiscovery();
+            var lifecycle = new CreateInstancePerClass();
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, convention,
+            new Runner(bus).RunTypes(GetType().Assembly, discovery, lifecycle,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
@@ -33,13 +35,15 @@ namespace Fixie.Tests.Execution
         public void ShouldAllowRandomShufflingOfCaseExecutionOrder()
         {
             var listener = new StubListener();
-            var convention = new CreateInstancePerClass();
 
-            convention.Methods
+            var discovery = new SelfTestDiscovery();
+            var lifecycle = new CreateInstancePerClass();
+
+            discovery.Methods
                 .Shuffle(new Random(1));
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, convention,
+            new Runner(bus).RunTypes(GetType().Assembly, discovery, lifecycle,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
@@ -55,16 +59,18 @@ namespace Fixie.Tests.Execution
         public void ShouldReportFailuresForAllAffectedCasesWithoutShortCircuitingTestExecutionWhenCaseOrderingThrows()
         {
             var listener = new StubListener();
-            var convention = new CreateInstancePerClass();
 
-            convention.Methods
+            var discovery = new SelfTestDiscovery();
+            var lifecycle = new CreateInstancePerClass();
+
+            discovery.Methods
                 .OrderBy((Func<MethodInfo, string>)(x => throw new Exception("OrderBy lambda expression threw!")));
 
-            convention.Parameters
+            discovery.Parameters
                 .Add<BuggyParameterSource>();
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, convention,
+            new Runner(bus).RunTypes(GetType().Assembly, discovery, lifecycle,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass), typeof(BuggyParameterGenerationTestClass));
 
@@ -91,9 +97,9 @@ namespace Fixie.Tests.Execution
                 Self + "+SkipTestClass.SkipB skipped");
         }
 
-        class CreateInstancePerClass : SelfTestConvention
+        class CreateInstancePerClass : Lifecycle
         {
-            public override void Execute(TestClass testClass)
+            public void Execute(TestClass testClass)
             {
                 var instance = testClass.Construct();
 

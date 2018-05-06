@@ -36,10 +36,8 @@
             return RunTypesInternal(assembly, types);
         }
 
-        public ExecutionSummary RunTypes(Assembly assembly, Convention convention, params Type[] types)
+        public ExecutionSummary RunTypes(Assembly assembly, Discovery discovery, Lifecycle lifecycle, params Type[] types)
         {
-            var discovery = convention;
-            var lifecycle = convention;
             return Run(assembly, discovery, lifecycle, types);
         }
 

@@ -32,13 +32,16 @@
 
         public static void RunTypes(Listener listener, Convention convention, params Type[] types)
         {
+            var discovery = convention;
+            var lifecycle = convention;
+
             if (types.Length == 0)
             {
                 throw new InvalidOperationException("RunTypes requires at least one type to be specified");
             }
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(types[0].Assembly, convention, types);
+            new Runner(bus).RunTypes(types[0].Assembly, discovery, lifecycle, types);
         }
     }
 }

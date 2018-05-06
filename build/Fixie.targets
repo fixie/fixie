@@ -32,4 +32,8 @@
                       Overwrite="true" />
   </Target>
 
+  <ItemGroup Condition="'$(Language)'=='C#' or '$(Language)'=='F#'">
+    <Compile Include="$(MSBuildThisFileDirectory)Fixie.Program$(DefaultLanguageSourceExtension)" Visible="false" />
+  </ItemGroup>
+
 </Project>

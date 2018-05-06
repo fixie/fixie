@@ -9,10 +9,6 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(Language)'=='C#' or '$(Language)'=='F#'">
-    <Compile Include="$(MSBuildThisFileDirectory)Fixie.Program$(DefaultLanguageSourceExtension)" Visible="false" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
     <None Include="$(MSBuildThisFileDirectory)..\lib\netcoreapp2.0\Fixie.VisualStudio.TestAdapter.dll">
       <Link>Fixie.VisualStudio.TestAdapter.dll</Link>

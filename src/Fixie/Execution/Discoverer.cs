@@ -23,13 +23,13 @@
             DiscoverMethods(assembly, convention);
         }
 
-        public void DiscoverMethods(Assembly assembly, Convention convention)
+        public void DiscoverMethods(Assembly assembly, Discovery discovery)
         {
-            var classDiscoverer = new ClassDiscoverer(convention);
+            var classDiscoverer = new ClassDiscoverer(discovery);
             var candidateTypes = assembly.GetTypes();
             var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
-            var methodDiscoverer = new MethodDiscoverer(convention);
+            var methodDiscoverer = new MethodDiscoverer(discovery);
             foreach (var testClass in testClasses)
             foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
                 bus.Publish(new MethodDiscovered(testMethod));

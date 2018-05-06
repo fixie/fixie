@@ -26,10 +26,6 @@
             typeof(InheritanceSample)
         };
 
-        class SampleConvention : Convention
-        {
-        }
-
         class SampleDiscovery : Discovery
         {
         }
@@ -56,12 +52,11 @@
                     typeof(InheritanceSample));
         }
 
-        public void ShouldNotConsiderDiscoveryAndExecutionCustomizationClasses()
+        public void ShouldNotConsiderDiscoveryAndLifecycleCustomizationClasses()
         {
             var customDiscovery = new SampleDiscovery();
 
             DiscoveredTestClasses(customDiscovery,
-                    typeof(SampleConvention),
                     typeof(SampleDiscovery),
                     typeof(SampleLifecycle))
                 .ShouldEqual(

@@ -17,42 +17,85 @@
             this.conventionArguments = conventionArguments;
         }
 
-        public Convention GetConvention()
+        public Discovery GetDiscovery()
         {
-            if (assembly.GetName().Name == "Fixie.Tests")
-                return new DefaultConvention();
-
-            return Construct(ConventionType());
+            return (Discovery) Construct(DiscoveryType());
         }
 
-        Type ConventionType()
+        public void GetConvention(out Discovery discovery, out Lifecycle lifecycle)
         {
-            var customConventionTypes = assembly
+            var discoveryType = DiscoveryType();
+            var lifecycleType = LifecycleType();
+
+            discovery = (Discovery) Construct(discoveryType);
+            lifecycle = discoveryType == lifecycleType
+                ? (Lifecycle) discovery
+                : (Lifecycle) Construct(lifecycleType);
+        }
+
+        Type DiscoveryType()
+        {
+            if (assembly.GetName().Name == "Fixie.Tests")
+                return typeof(DefaultDiscovery);
+
+            var customDiscoveryTypes = assembly
                 .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(Convention)) && !t.IsAbstract)
+                .Where(type => IsDiscovery(type) && !type.IsAbstract)
                 .ToArray();
 
-            if (customConventionTypes.Length > 1)
+            if (customDiscoveryTypes.Length > 1)
             {
                 throw new Exception(
-                    "A test assembly should have at most one convention, " +
-                    "but the following conventions were discovered:" + Environment.NewLine +
+                    "A test assembly can have at most one Discovery implementation, " +
+                    "but the following implementations were discovered:" + Environment.NewLine +
                     String.Join(Environment.NewLine,
-                        customConventionTypes
+                        customDiscoveryTypes
                             .Select(x => $"\t{x.FullName}")));
             }
 
-            if (customConventionTypes.Any())
-                return customConventionTypes.Single();
+            if (customDiscoveryTypes.Any())
+                return customDiscoveryTypes.Single();
 
-            return typeof(DefaultConvention);
+            return typeof(DefaultDiscovery);
         }
 
-        Convention Construct(Type type)
+        Type LifecycleType()
+        {
+            if (assembly.GetName().Name == "Fixie.Tests")
+                return typeof(DefaultLifecycle);
+
+            var customLifecycleTypes = assembly
+                .GetTypes()
+                .Where(type => IsLifecycle(type) && !type.IsAbstract)
+                .ToArray();
+
+            if (customLifecycleTypes.Length > 1)
+            {
+                throw new Exception(
+                    "A test assembly can have at most one Lifecycle implementation, " +
+                    "but the following implementations were discovered:" + Environment.NewLine +
+                    String.Join(Environment.NewLine,
+                        customLifecycleTypes
+                            .Select(x => $"\t{x.FullName}")));
+            }
+
+            if (customLifecycleTypes.Any())
+                return customLifecycleTypes.Single();
+
+            return typeof(DefaultLifecycle);
+        }
+
+        static bool IsDiscovery(Type type)
+            => type.IsSubclassOf(typeof(Discovery));
+
+        static bool IsLifecycle(Type type)
+            => type.GetInterfaces().Contains(typeof(Lifecycle));
+
+        object Construct(Type type)
         {
             try
             {
-                return (Convention)CommandLine.Parse(type, conventionArguments);
+                return CommandLine.Parse(type, conventionArguments);
             }
             catch (CommandLineException ex)
             {

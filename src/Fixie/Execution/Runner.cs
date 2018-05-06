@@ -100,10 +100,8 @@
 
         void GetConvention(Assembly assembly, out Discovery discovery, out Lifecycle lifecycle)
         {
-            var convention = new ConventionDiscoverer(assembly, conventionArguments).GetConvention();
-
-            discovery = convention;
-            lifecycle = convention;
+            new ConventionDiscoverer(assembly, conventionArguments)
+                .GetConvention(out discovery, out lifecycle);
         }
 
         ExecutionSummary Run(Assembly assembly, Discovery discovery, Lifecycle lifecycle, params Type[] candidateTypes)

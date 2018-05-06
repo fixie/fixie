@@ -9,12 +9,12 @@
     class ConventionDiscoverer
     {
         readonly Assembly assembly;
-        readonly string[] conventionArguments;
+        readonly string[] customArguments;
 
-        public ConventionDiscoverer(Assembly assembly, string[] conventionArguments)
+        public ConventionDiscoverer(Assembly assembly, string[] customArguments)
         {
             this.assembly = assembly;
-            this.conventionArguments = conventionArguments;
+            this.customArguments = customArguments;
         }
 
         public Discovery GetDiscovery()
@@ -95,7 +95,7 @@
         {
             try
             {
-                return CommandLine.Parse(type, conventionArguments);
+                return CommandLine.Parse(type, customArguments);
             }
             catch (CommandLineException ex)
             {

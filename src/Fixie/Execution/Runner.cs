@@ -9,15 +9,15 @@
     class Runner
     {
         readonly Bus bus;
-        readonly string[] conventionArguments;
+        readonly string[] customArguments;
 
         public Runner(Bus bus)
             : this(bus, new string[] {}) { }
 
-        public Runner(Bus bus, string[] conventionArguments)
+        public Runner(Bus bus, string[] customArguments)
         {
             this.bus = bus;
-            this.conventionArguments = conventionArguments;
+            this.customArguments = customArguments;
         }
 
         public ExecutionSummary RunAssembly(Assembly assembly)
@@ -100,7 +100,7 @@
 
         void GetConvention(Assembly assembly, out Discovery discovery, out Lifecycle lifecycle)
         {
-            new ConventionDiscoverer(assembly, conventionArguments)
+            new ConventionDiscoverer(assembly, customArguments)
                 .GetConvention(out discovery, out lifecycle);
         }
 

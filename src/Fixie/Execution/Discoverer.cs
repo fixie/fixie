@@ -5,20 +5,20 @@
     class Discoverer
     {
         readonly Bus bus;
-        readonly string[] conventionArguments;
+        readonly string[] customArguments;
 
         public Discoverer(Bus bus)
             : this(bus, new string[] {}) { }
 
-        public Discoverer(Bus bus, string[] conventionArguments)
+        public Discoverer(Bus bus, string[] customArguments)
         {
             this.bus = bus;
-            this.conventionArguments = conventionArguments;
+            this.customArguments = customArguments;
         }
 
         public void DiscoverMethods(Assembly assembly)
         {
-            var discovery = new ConventionDiscoverer(assembly, conventionArguments).GetDiscovery();
+            var discovery = new ConventionDiscoverer(assembly, customArguments).GetDiscovery();
 
             DiscoverMethods(assembly, discovery);
         }

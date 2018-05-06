@@ -19,7 +19,7 @@
         {
             try
             {
-                CommandLine.Partition(arguments, out var runnerArguments, out var conventionArguments);
+                CommandLine.Partition(arguments, out var runnerArguments, out var customArguments);
 
                 var options = CommandLine.Parse<Options>(runnerArguments);
 
@@ -32,7 +32,7 @@
                 var runner = new AssemblyRunner();
 
                 if (pipeName == null)
-                    return runner.RunAssembly(assembly, options, conventionArguments);
+                    return runner.RunAssembly(assembly, options, customArguments);
 
                 using (var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
                 {
@@ -50,15 +50,15 @@
                         if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
                         {
                             var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
-                            runner.DiscoverMethods(assembly, conventionArguments);
+                            runner.DiscoverMethods(assembly, customArguments);
                         }
                         else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
                         {
                             var executeTests = pipe.Receive<PipeMessage.ExecuteTests>();
 
                             exitCode = executeTests.Filter.Length > 0
-                                ? runner.RunTests(assembly, options, conventionArguments, executeTests.Filter)
-                                : runner.RunAssembly(assembly, options, conventionArguments);
+                                ? runner.RunTests(assembly, options, customArguments, executeTests.Filter)
+                                : runner.RunAssembly(assembly, options, customArguments);
                         }
                         else
                         {
@@ -105,31 +105,31 @@
             customListeners.Add(listener);
         }
 
-        void DiscoverMethods(Assembly assembly, string[] conventionArguments)
+        void DiscoverMethods(Assembly assembly, string[] customArguments)
         {
             var listeners = customListeners;
             var bus = new Bus(listeners);
-            var discoverer = new Discoverer(bus, conventionArguments);
+            var discoverer = new Discoverer(bus, customArguments);
 
             discoverer.DiscoverMethods(assembly);
         }
 
-        int RunAssembly(Assembly assembly, Options options, string[] conventionArguments)
+        int RunAssembly(Assembly assembly, Options options, string[] customArguments)
         {
-            return Run(options, conventionArguments, runner => runner.RunAssembly(assembly));
+            return Run(options, customArguments, runner => runner.RunAssembly(assembly));
         }
 
-        int RunTests(Assembly assembly, Options options, string[] conventionArguments, PipeMessage.Test[] tests)
+        int RunTests(Assembly assembly, Options options, string[] customArguments, PipeMessage.Test[] tests)
         {
-            return Run(options, conventionArguments,
+            return Run(options, customArguments,
                 r => r.RunTests(assembly, tests.Select(x => new Test(x.Class, x.Method)).ToArray()));
         }
 
-        int Run(Options options, string[] conventionArguments, Func<Runner, ExecutionSummary> run)
+        int Run(Options options, string[] customArguments, Func<Runner, ExecutionSummary> run)
         {
             var listeners = GetExecutionListeners(options);
             var bus = new Bus(listeners);
-            var runner = new Runner(bus, conventionArguments);
+            var runner = new Runner(bus, customArguments);
 
             var summary = run(runner);
 

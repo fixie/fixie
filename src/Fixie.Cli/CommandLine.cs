@@ -26,10 +26,10 @@
         public static string Serialize(string[] arguments)
             => Serializer.Serialize(arguments);
 
-        public static void Partition(string[] arguments, out string[] runnerArguments, out string[] conventionArguments)
+        public static void Partition(string[] arguments, out string[] runnerArguments, out string[] customArguments)
         {
             var runnerArgumentsList = new List<string>();
-            var conventionArgumentsList = new List<string>();
+            var customArgumentsList = new List<string>();
 
             bool separatorFound = false;
             foreach (var arg in arguments)
@@ -41,13 +41,13 @@
                 }
 
                 if (separatorFound)
-                    conventionArgumentsList.Add(arg);
+                    customArgumentsList.Add(arg);
                 else
                     runnerArgumentsList.Add(arg);
             }
 
             runnerArguments = runnerArgumentsList.ToArray();
-            conventionArguments = conventionArgumentsList.ToArray();
+            customArguments = customArgumentsList.ToArray();
         }
     }
 }

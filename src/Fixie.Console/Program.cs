@@ -18,7 +18,7 @@
         {
             try
             {
-                CommandLine.Partition(arguments, out var runnerArguments, out var conventionArguments);
+                CommandLine.Partition(arguments, out var runnerArguments, out var customArguments);
 
                 var options = ValidateRunnerArguments(runnerArguments);
 
@@ -44,7 +44,7 @@
                 bool runningForMultipleFrameworks = targetFrameworks.Length > 1;
                 foreach (var targetFramework in targetFrameworks)
                 {
-                    int exitCode = Run(options, testProject, targetFramework, conventionArguments, runningForMultipleFrameworks);
+                    int exitCode = Run(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
 
                     if (exitCode == FatalError)
                         return FatalError;
@@ -74,7 +74,7 @@
             var options = CommandLine.Parse<Options>(runnerArguments, out var unusedArguments);
 
             foreach (var unusedArgument in unusedArguments)
-                throw new CommandLineException($"The argument '{unusedArgument}' was unexpected. Custom convention arguments must appear after the argument separator '--'.");
+                throw new CommandLineException($"The argument '{unusedArgument}' was unexpected. Custom arguments must appear after the argument separator '--'.");
 
             return options;
         }
@@ -109,7 +109,7 @@
                 $"The test project targets the following framework(s): {availableFrameworks}");
         }
 
-        static int Run(Options options, string testProject, string targetFramework, string[] conventionArguments, bool runningForMultipleFrameworks)
+        static int Run(Options options, string testProject, string targetFramework, string[] customArguments, bool runningForMultipleFrameworks)
         {
             var assemblyMetadata = msbuild(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
 
@@ -127,19 +127,19 @@
             WriteLine();
 
             if (targetFrameworkIdentifier == ".NETFramework")
-                return RunDotNetFramework(options, outputPath, targetFileName, conventionArguments);
+                return RunDotNetFramework(options, outputPath, targetFileName, customArguments);
 
             if (targetFrameworkIdentifier == ".NETCoreApp")
-                return RunDotNetCore(options, outputPath, targetFileName, conventionArguments);
+                return RunDotNetCore(options, outputPath, targetFileName, customArguments);
 
             throw new CommandLineException($"Framework '{targetFramework}' has unsupported TargetFrameworkIdentifier '{targetFrameworkIdentifier}'.");
         }
 
-        static int RunDotNetFramework(Options options, string outputPath, string targetFileName, string[] conventionArguments)
+        static int RunDotNetFramework(Options options, string outputPath, string targetFileName, string[] customArguments)
         {
             var arguments = new List<string>();
 
-            AddPassThroughArguments(arguments, options, conventionArguments);
+            AddPassThroughArguments(arguments, options, customArguments);
 
             return run(
                 executable: Path.Combine(outputPath, targetFileName),
@@ -147,18 +147,18 @@
                 arguments: arguments.ToArray());
         }
 
-        static int RunDotNetCore(Options options, string outputPath, string targetFileName, string[] conventionArguments)
+        static int RunDotNetCore(Options options, string outputPath, string targetFileName, string[] customArguments)
         {
             var arguments = new List<string> { targetFileName };
 
-            AddPassThroughArguments(arguments, options, conventionArguments);
+            AddPassThroughArguments(arguments, options, customArguments);
 
             return dotnet(
                 workingDirectory: outputPath,
                 arguments: arguments.ToArray());
         }
 
-        static void AddPassThroughArguments(List<string> arguments, Options options, string[] conventionArguments)
+        static void AddPassThroughArguments(List<string> arguments, Options options, string[] customArguments)
         {
             if (options.Report != null)
             {
@@ -174,13 +174,13 @@
 
             arguments.Add("--");
 
-            arguments.AddRange(conventionArguments);
+            arguments.AddRange(customArguments);
         }
 
         static void Help()
         {
             WriteLine();
-            WriteLine("Usage: dotnet fixie [options] [-- [convention arguments]...]");
+            WriteLine("Usage: dotnet fixie [options] [-- [custom arguments]...]");
             WriteLine();
             WriteLine();
             WriteLine("    --configuration name");
@@ -204,10 +204,10 @@
             WriteLine();
             WriteLine("    --");
             WriteLine("        Signifies the end of built-in arguments and the beginning");
-            WriteLine("        of custom convention arguments.");
+            WriteLine("        of custom arguments.");
             WriteLine();
-            WriteLine("    convention arguments");
-            WriteLine("        Arbitrary arguments made available to conventions.");
+            WriteLine("    custom arguments");
+            WriteLine("        Arbitrary arguments made available to custom discovery/lifecycle classes.");
             WriteLine();
         }
 

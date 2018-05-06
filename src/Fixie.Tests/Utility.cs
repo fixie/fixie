@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using Fixie.Execution;
+    using Fixie.Internal;
 
     public static class Utility
     {

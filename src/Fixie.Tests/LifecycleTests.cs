@@ -6,7 +6,7 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using Assertions;
-    using Fixie.Execution;
+    using Fixie.Internal;
 
     public class LifecycleTests
     {

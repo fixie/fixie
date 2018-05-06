@@ -4,7 +4,7 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using Assertions;
-    using Fixie.Execution;
+    using Fixie.Internal;
     using static Utility;
 
     public abstract class MessagingTests

@@ -4,7 +4,7 @@ namespace Fixie.Tests.Cases
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
-    using Fixie.Execution;
+    using Fixie.Internal;
     using static Utility;
 
     public class NonVoidCaseTests

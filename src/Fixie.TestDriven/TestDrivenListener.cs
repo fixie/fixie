@@ -3,8 +3,8 @@
 namespace Fixie.TestDriven
 {
     using System;
-    using Execution;
-    using Execution.Listeners;
+    using Internal;
+    using Internal.Listeners;
     using static System.Environment;
 
     public class TestDrivenListener :

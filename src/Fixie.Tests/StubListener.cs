@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fixie.Execution;
-    using Fixie.Execution.Listeners;
+    using Fixie.Internal;
+    using Fixie.Internal.Listeners;
     using static System.Environment;
 
     public class StubListener :

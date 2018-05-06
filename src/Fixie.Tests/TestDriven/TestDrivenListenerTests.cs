@@ -5,7 +5,7 @@ namespace Fixie.Tests.TestDriven
     using System;
     using System.Collections.Generic;
     using Assertions;
-    using Fixie.Execution;
+    using Fixie.Internal;
     using Fixie.TestDriven;
 
     public class TestDrivenListenerTests : MessagingTests

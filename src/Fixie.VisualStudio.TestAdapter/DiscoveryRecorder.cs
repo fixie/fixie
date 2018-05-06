@@ -1,7 +1,7 @@
 ﻿namespace Fixie.VisualStudio.TestAdapter
 {
     using System;
-    using Execution.Listeners;
+    using Internal.Listeners;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;

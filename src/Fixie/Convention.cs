@@ -5,7 +5,7 @@
     /// <summary>
     /// Base class for all Fixie conventions. Subclass Convention to customize test discovery and execution.
     /// </summary>
-    public abstract class Convention
+    public abstract class Convention : Lifecycle
     {
         protected Convention()
         {

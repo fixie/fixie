@@ -18,7 +18,7 @@
 
         public void DiscoverMethods(Assembly assembly)
         {
-            var discovery = new ConventionDiscoverer(assembly, customArguments).GetDiscovery();
+            var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
 
             DiscoverMethods(assembly, discovery);
         }

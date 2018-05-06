@@ -17,8 +17,8 @@
         }
 
         /// <summary>
-        /// The current state describing the convention. This state can be manipulated through
-        /// the other properties on Convention.
+        /// The current state describing the discovery rules. This state can be manipulated through
+        /// the other properties on Discovery.
         /// </summary>
         internal Configuration Config { get; }
 

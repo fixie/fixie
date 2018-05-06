@@ -6,12 +6,12 @@
     using Cli;
     using Conventions;
 
-    class ConventionDiscoverer
+    class BehaviorDiscoverer
     {
         readonly Assembly assembly;
         readonly string[] customArguments;
 
-        public ConventionDiscoverer(Assembly assembly, string[] customArguments)
+        public BehaviorDiscoverer(Assembly assembly, string[] customArguments)
         {
             this.assembly = assembly;
             this.customArguments = customArguments;
@@ -22,7 +22,7 @@
             return (Discovery) Construct(DiscoveryType());
         }
 
-        public void GetConvention(out Discovery discovery, out Lifecycle lifecycle)
+        public void GetBehaviors(out Discovery discovery, out Lifecycle lifecycle)
         {
             var discoveryType = DiscoveryType();
             var lifecycleType = LifecycleType();

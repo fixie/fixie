@@ -12,7 +12,7 @@
         readonly Discovery discovery = new SelfTestDiscovery();
         readonly Lifecycle lifecycle = new DefaultLifecycle();
 
-        public void ShouldAllowConventionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
+        public void ShouldAllowDiscoveryToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
             discovery.Parameters.Add<InputAttributeOrDefaultParameterSource>();
 

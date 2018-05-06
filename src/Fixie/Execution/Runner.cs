@@ -47,7 +47,7 @@
 
             var methods = GetMethods(types, tests);
 
-            GetConvention(assembly, out var discovery, out var lifecycle);
+            GetBehaviors(assembly, out var discovery, out var lifecycle);
 
             discovery.Methods.Where(methods.Contains);
 
@@ -56,7 +56,7 @@
 
         public ExecutionSummary RunMethod(Assembly assembly, MethodInfo method)
         {
-            GetConvention(assembly, out var discovery, out var lifecycle);
+            GetBehaviors(assembly, out var discovery, out var lifecycle);
 
             discovery.Methods.Where(m => m == method);
 
@@ -93,15 +93,15 @@
 
         ExecutionSummary RunTypesInternal(Assembly assembly, params Type[] types)
         {
-            GetConvention(assembly, out var discovery, out var lifecycle);
+            GetBehaviors(assembly, out var discovery, out var lifecycle);
 
             return Run(assembly, discovery, lifecycle, types);
         }
 
-        void GetConvention(Assembly assembly, out Discovery discovery, out Lifecycle lifecycle)
+        void GetBehaviors(Assembly assembly, out Discovery discovery, out Lifecycle lifecycle)
         {
-            new ConventionDiscoverer(assembly, customArguments)
-                .GetConvention(out discovery, out lifecycle);
+            new BehaviorDiscoverer(assembly, customArguments)
+                .GetBehaviors(out discovery, out lifecycle);
         }
 
         ExecutionSummary Run(Assembly assembly, Discovery discovery, Lifecycle lifecycle, params Type[] candidateTypes)

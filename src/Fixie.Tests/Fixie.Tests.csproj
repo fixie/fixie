@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\build\Fixie.Program.cs" Visible="false" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Fixie.Assertions\Fixie.Assertions.csproj" />
     <ProjectReference Include="..\Fixie.TestDriven\Fixie.TestDriven.csproj" />
     <ProjectReference Include="..\Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.csproj" />

@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a test class lifecycle, to be executed once per test class.
     /// </summary>
-    public interface Lifecycle
+    public interface Execution
     {
         void Execute(TestClass testClass);
     }

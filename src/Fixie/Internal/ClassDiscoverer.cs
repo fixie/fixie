@@ -44,13 +44,13 @@ namespace Fixie.Internal
             => type.IsClass && (!type.IsAbstract || type.IsStatic());
 
         static bool NonCustomizationClasses(Type type)
-            => !IsDiscovery(type) && !IsLifecycle(type);
+            => !IsDiscovery(type) && !IsExecution(type);
 
         static bool IsDiscovery(Type type)
             => type.IsSubclassOf(typeof(Discovery));
 
-        static bool IsLifecycle(Type type)
-            => type.GetInterfaces().Contains(typeof(Lifecycle));
+        static bool IsExecution(Type type)
+            => type.GetInterfaces().Contains(typeof(Execution));
 
         static bool NonCompilerGeneratedClasses(Type type)
             => !type.Has<CompilerGeneratedAttribute>();

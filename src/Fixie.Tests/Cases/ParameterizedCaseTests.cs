@@ -10,13 +10,13 @@
     public class ParameterizedCaseTests
     {
         readonly Discovery discovery = new SelfTestDiscovery();
-        readonly Lifecycle lifecycle = new DefaultLifecycle();
+        readonly Execution execution = new DefaultExecution();
 
         public void ShouldAllowDiscoveryToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
             discovery.Parameters.Add<InputAttributeOrDefaultParameterSource>();
 
-            Run<ParameterizedTestClass>(discovery, lifecycle)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -28,7 +28,7 @@
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
         {
-            Run<ParameterizedTestClass>(discovery, lifecycle)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
@@ -40,7 +40,7 @@
         {
             discovery.Parameters.Add<EmptyParameterSource>();
 
-            Run<ParameterizedTestClass>(discovery, lifecycle)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
@@ -61,7 +61,7 @@
 
             discovery.Parameters.Add<FixedParameterSource>();
 
-            Run<ParameterizedTestClass>(discovery, lifecycle)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Parameter count mismatch.",
@@ -83,7 +83,7 @@
         {
             discovery.Parameters.Add<LazyBuggyParameterSource>();
 
-            Run<ParameterizedTestClass>(discovery, lifecycle)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -106,7 +106,7 @@
 
             discovery.Parameters.Add<EagerBuggyParameterSource>();
 
-            Run<ParameterizedTestClass>(discovery, lifecycle)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Exception thrown while attempting to eagerly build input parameters for method: IntArg",
@@ -121,7 +121,7 @@
         {
             discovery.Parameters.Add<LazyBuggyParameterSource>();
 
-            Run<ConstrainedGenericTestClass>(discovery, lifecycle)
+            Run<ConstrainedGenericTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ConstrainedGenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(0) passed",
@@ -136,7 +136,7 @@
         {
             discovery.Parameters.Add<InputAttributeParameterSource>();
 
-            Run<GenericTestClass>(discovery, lifecycle)
+            Run<GenericTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<GenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(1) passed",

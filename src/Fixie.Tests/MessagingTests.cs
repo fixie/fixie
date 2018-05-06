@@ -22,11 +22,11 @@
 
             customize?.Invoke(discovery);
 
-            var lifecycle = new CreateInstancePerCase();
-            RunTypes(listener, discovery, lifecycle, typeof(SampleTestClass), typeof(EmptyTestClass));
+            var execution = new CreateInstancePerCase();
+            RunTypes(listener, discovery, execution, typeof(SampleTestClass), typeof(EmptyTestClass));
         }
 
-        class CreateInstancePerCase : Lifecycle
+        class CreateInstancePerCase : Execution
         {
             public void Execute(TestClass testClass)
             {

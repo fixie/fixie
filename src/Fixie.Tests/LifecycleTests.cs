@@ -25,19 +25,19 @@
             FailingMembers = failingMemberNames;
         }
 
-        Output Run<TSampleTestClass, TLifecycle>() where TLifecycle : Lifecycle, new()
+        Output Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
         {
-            return Run<TLifecycle>(typeof(TSampleTestClass));
+            return Run<TExecution>(typeof(TSampleTestClass));
         }
 
-        Output Run<TLifecycle>(Type testClass) where TLifecycle : Lifecycle, new()
+        Output Run<TExecution>(Type testClass) where TExecution : Execution, new()
         {
             var listener = new StubListener();
-            var lifecycle = new TLifecycle();
+            var execution = new TExecution();
 
             using (var console = new RedirectedConsole())
             {
-                Utility.RunTypes(listener, discovery, lifecycle, testClass);
+                Utility.RunTypes(listener, discovery, execution, testClass);
 
                 return new Output(console.Lines().ToArray(), listener.Entries.ToArray());
             }
@@ -201,7 +201,7 @@
                 throw new FailureException(member);
         }
 
-        class CreateInstancePerCase : Lifecycle
+        class CreateInstancePerCase : Execution
         {
             public void Execute(TestClass testClass)
             {
@@ -219,7 +219,7 @@
             }
         }
 
-        class CreateInstancePerClass : Lifecycle
+        class CreateInstancePerClass : Execution
         {
             public void Execute(TestClass testClass)
             {
@@ -254,13 +254,13 @@
             }
         }
 
-        class BuggyLifecycle : Lifecycle
+        class BuggyExecution : Execution
         {
             public void Execute(TestClass testClass)
-                => throw new Exception("Unsafe lifecycle threw!");
+                => throw new Exception("Unsafe custom execution threw!");
         }
 
-        class ShortCircuitClassExecution : Lifecycle
+        class ShortCircuitClassExecution : Execution
         {
             public void Execute(TestClass testClass)
             {
@@ -270,7 +270,7 @@
             }
         }
 
-        class ShortCircuitCaseExection : Lifecycle
+        class ShortCircuitCaseExection : Execution
         {
             public void Execute(TestClass testClass)
             {
@@ -283,7 +283,7 @@
             }
         }
 
-        class RunCasesTwice : Lifecycle
+        class RunCasesTwice : Execution
         {
             public void Execute(TestClass testClass)
             {
@@ -304,7 +304,7 @@
             }
         }
 
-        class RetryFailingCases : Lifecycle
+        class RetryFailingCases : Execution
         {
             public void Execute(TestClass testClass)
             {
@@ -337,7 +337,7 @@
         {
             discovery.Methods.Where(x => x.Name != "Skip");
 
-            var output = Run<SampleTestClass, DefaultLifecycle>();
+            var output = Run<SampleTestClass, DefaultExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -416,14 +416,14 @@
             output.ShouldHaveLifecycle(".ctor", ".ctor");
         }
 
-        public void ShouldFailAllMethodsWhenLifecycleThrows()
+        public void ShouldFailAllMethodsWhenCustomExecutionThrows()
         {
-            var output = Run<SampleTestClass, BuggyLifecycle>();
+            var output = Run<SampleTestClass, BuggyExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: Unsafe lifecycle threw!",
-                "SampleTestClass.Pass failed: Unsafe lifecycle threw!",
-                "SampleTestClass.Skip failed: Unsafe lifecycle threw!");
+                "SampleTestClass.Fail failed: Unsafe custom execution threw!",
+                "SampleTestClass.Pass failed: Unsafe custom execution threw!",
+                "SampleTestClass.Skip failed: Unsafe custom execution threw!");
 
             output.ShouldHaveLifecycle();
         }

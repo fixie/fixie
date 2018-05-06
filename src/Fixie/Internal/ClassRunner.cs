@@ -9,18 +9,18 @@
     class ClassRunner
     {
         readonly Bus bus;
-        readonly Lifecycle lifecycle;
+        readonly Execution execution;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
 
         readonly Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> orderMethods;
 
-        public ClassRunner(Bus bus, Discovery discovery, Lifecycle lifecycle)
+        public ClassRunner(Bus bus, Discovery discovery, Execution execution)
         {
             var config = discovery.Config;
 
             this.bus = bus;
-            this.lifecycle = lifecycle;
+            this.execution = execution;
             methodDiscoverer = new MethodDiscoverer(discovery);
             parameterDiscoverer = new ParameterDiscoverer(discovery);
 
@@ -102,7 +102,7 @@
                     ? new TestClass(testClass, runCases, methods.Single())
                     : new TestClass(testClass, runCases);
 
-                lifecycle.Execute(runContext);
+                execution.Execute(runContext);
             }
             catch (Exception exception)
             {

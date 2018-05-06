@@ -35,7 +35,7 @@
             }
         }
 
-        class SampleLifecycle : Lifecycle
+        class SampleExecution : Execution
         {
             public void Execute(TestClass testClass)
             {
@@ -57,13 +57,13 @@
                     typeof(InheritanceSample));
         }
 
-        public void ShouldNotConsiderDiscoveryAndLifecycleCustomizationClasses()
+        public void ShouldNotConsiderDiscoveryAndExecutionCustomizationClasses()
         {
             var customDiscovery = new SampleDiscovery();
 
             DiscoveredTestClasses(customDiscovery,
                     typeof(SampleDiscovery),
-                    typeof(SampleLifecycle))
+                    typeof(SampleExecution))
                 .ShouldEqual(
                     typeof(StaticClass),
                     typeof(DefaultConstructor),

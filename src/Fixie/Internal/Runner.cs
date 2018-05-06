@@ -36,9 +36,9 @@
             return RunTypesInternal(assembly, types);
         }
 
-        public ExecutionSummary RunTypes(Assembly assembly, Discovery discovery, Lifecycle lifecycle, params Type[] types)
+        public ExecutionSummary RunTypes(Assembly assembly, Discovery discovery, Execution execution, params Type[] types)
         {
-            return Run(assembly, discovery, lifecycle, types);
+            return Run(assembly, discovery, execution, types);
         }
 
         public ExecutionSummary RunTests(Assembly assembly, Test[] tests)
@@ -47,20 +47,20 @@
 
             var methods = GetMethods(types, tests);
 
-            GetBehaviors(assembly, out var discovery, out var lifecycle);
+            GetBehaviors(assembly, out var discovery, out var execution);
 
             discovery.Methods.Where(methods.Contains);
 
-            return Run(assembly, discovery, lifecycle, types.Values.ToArray());
+            return Run(assembly, discovery, execution, types.Values.ToArray());
         }
 
         public ExecutionSummary RunMethod(Assembly assembly, MethodInfo method)
         {
-            GetBehaviors(assembly, out var discovery, out var lifecycle);
+            GetBehaviors(assembly, out var discovery, out var execution);
 
             discovery.Methods.Where(m => m == method);
 
-            return Run(assembly, discovery, lifecycle, method.ReflectedType);
+            return Run(assembly, discovery, execution, method.ReflectedType);
         }
 
         static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
@@ -93,25 +93,25 @@
 
         ExecutionSummary RunTypesInternal(Assembly assembly, params Type[] types)
         {
-            GetBehaviors(assembly, out var discovery, out var lifecycle);
+            GetBehaviors(assembly, out var discovery, out var execution);
 
-            return Run(assembly, discovery, lifecycle, types);
+            return Run(assembly, discovery, execution, types);
         }
 
-        void GetBehaviors(Assembly assembly, out Discovery discovery, out Lifecycle lifecycle)
+        void GetBehaviors(Assembly assembly, out Discovery discovery, out Execution execution)
         {
             new BehaviorDiscoverer(assembly, customArguments)
-                .GetBehaviors(out discovery, out lifecycle);
+                .GetBehaviors(out discovery, out execution);
         }
 
-        ExecutionSummary Run(Assembly assembly, Discovery discovery, Lifecycle lifecycle, params Type[] candidateTypes)
+        ExecutionSummary Run(Assembly assembly, Discovery discovery, Execution execution, params Type[] candidateTypes)
         {
             bus.Publish(new AssemblyStarted(assembly));
 
             var assemblySummary = new ExecutionSummary();
             var stopwatch = Stopwatch.StartNew();
 
-            Run(discovery, lifecycle, candidateTypes, assemblySummary);
+            Run(discovery, execution, candidateTypes, assemblySummary);
 
             stopwatch.Stop();
             bus.Publish(new AssemblyCompleted(assembly, assemblySummary, stopwatch.Elapsed));
@@ -119,10 +119,10 @@
             return assemblySummary;
         }
 
-        void Run(Discovery discovery, Lifecycle lifecycle, Type[] candidateTypes, ExecutionSummary assemblySummary)
+        void Run(Discovery discovery, Execution execution, Type[] candidateTypes, ExecutionSummary assemblySummary)
         {
             var classDiscoverer = new ClassDiscoverer(discovery);
-            var classRunner = new ClassRunner(bus, discovery, lifecycle);
+            var classRunner = new ClassRunner(bus, discovery, execution);
 
             var testClasses = classDiscoverer.TestClasses(candidateTypes);
 

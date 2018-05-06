@@ -207,7 +207,7 @@
             WriteLine("        of custom arguments.");
             WriteLine();
             WriteLine("    custom arguments");
-            WriteLine("        Arbitrary arguments made available to custom discovery/lifecycle classes.");
+            WriteLine("        Arbitrary arguments made available to custom discovery/execution classes.");
             WriteLine();
         }
 

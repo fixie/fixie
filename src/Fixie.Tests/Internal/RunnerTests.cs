@@ -16,10 +16,10 @@ namespace Fixie.Tests.Internal
             var listener = new StubListener();
 
             var discovery = new SelfTestDiscovery();
-            var lifecycle = new CreateInstancePerClass();
+            var execution = new CreateInstancePerClass();
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, discovery, lifecycle,
+            new Runner(bus).RunTypes(GetType().Assembly, discovery, execution,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
@@ -37,13 +37,13 @@ namespace Fixie.Tests.Internal
             var listener = new StubListener();
 
             var discovery = new SelfTestDiscovery();
-            var lifecycle = new CreateInstancePerClass();
+            var execution = new CreateInstancePerClass();
 
             discovery.Methods
                 .Shuffle(new Random(1));
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, discovery, lifecycle,
+            new Runner(bus).RunTypes(GetType().Assembly, discovery, execution,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
@@ -61,7 +61,7 @@ namespace Fixie.Tests.Internal
             var listener = new StubListener();
 
             var discovery = new SelfTestDiscovery();
-            var lifecycle = new CreateInstancePerClass();
+            var execution = new CreateInstancePerClass();
 
             discovery.Methods
                 .OrderBy((Func<MethodInfo, string>)(x => throw new Exception("OrderBy lambda expression threw!")));
@@ -70,7 +70,7 @@ namespace Fixie.Tests.Internal
                 .Add<BuggyParameterSource>();
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, discovery, lifecycle,
+            new Runner(bus).RunTypes(GetType().Assembly, discovery, execution,
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass), typeof(BuggyParameterGenerationTestClass));
 
@@ -97,7 +97,7 @@ namespace Fixie.Tests.Internal
                 Self + "+SkipTestClass.SkipB skipped");
         }
 
-        class CreateInstancePerClass : Lifecycle
+        class CreateInstancePerClass : Execution
         {
             public void Execute(TestClass testClass)
             {

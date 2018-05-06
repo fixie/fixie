@@ -40,9 +40,9 @@ namespace Fixie.Tests.Cases
             using (var console = new RedirectedConsole())
             {
                 var discovery = new SelfTestDiscovery();
-                var lifecycle = new TreatBoolReturnValuesAsAssertions();
+                var execution = new TreatBoolReturnValuesAsAssertions();
 
-                Run<SampleTestClass>(discovery, lifecycle)
+                Run<SampleTestClass>(discovery, execution)
                     .ShouldEqual(
                         For<SampleTestClass>(
                             ".BoolFalse failed: Boolean test case returned false!",
@@ -65,9 +65,9 @@ namespace Fixie.Tests.Cases
             using (var console = new RedirectedConsole())
             {
                 var discovery = new SelfTestDiscovery();
-                var lifecycle = new TreatBoolReturnValuesAsAssertions();
+                var execution = new TreatBoolReturnValuesAsAssertions();
 
-                Run<SampleAsyncTestClass>(discovery, lifecycle)
+                Run<SampleAsyncTestClass>(discovery, execution)
                     .ShouldEqual(
                         For<SampleAsyncTestClass>(
                             ".BoolFalse failed: Boolean test case returned false!",
@@ -121,7 +121,7 @@ namespace Fixie.Tests.Cases
             }
         }
 
-        class TreatBoolReturnValuesAsAssertions : Lifecycle
+        class TreatBoolReturnValuesAsAssertions : Execution
         {
             public void Execute(TestClass testClass)
             {

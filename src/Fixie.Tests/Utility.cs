@@ -20,17 +20,17 @@
         public static string PathToThisFile([CallerFilePath] string path = null)
             => path;
 
-        public static IEnumerable<string> Run<TSampleTestClass>(Discovery discovery, Lifecycle lifecycle)
+        public static IEnumerable<string> Run<TSampleTestClass>(Discovery discovery, Execution execution)
         {
             var listener = new StubListener();
-            RunTypes(listener, discovery, lifecycle, typeof(TSampleTestClass));
+            RunTypes(listener, discovery, execution, typeof(TSampleTestClass));
             return listener.Entries;
         }
 
         public static IEnumerable<string> Run<TSampleTestClass>()
-            => Run<TSampleTestClass>(new SelfTestDiscovery(), new DefaultLifecycle());
+            => Run<TSampleTestClass>(new SelfTestDiscovery(), new DefaultExecution());
 
-        public static void RunTypes(Listener listener, Discovery discovery, Lifecycle lifecycle, params Type[] types)
+        public static void RunTypes(Listener listener, Discovery discovery, Execution execution, params Type[] types)
         {
             if (types.Length == 0)
             {
@@ -38,7 +38,7 @@
             }
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(types[0].Assembly, discovery, lifecycle, types);
+            new Runner(bus).RunTypes(types[0].Assembly, discovery, execution, types);
         }
     }
 }

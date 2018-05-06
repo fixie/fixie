@@ -1,6 +1,6 @@
 ﻿namespace Fixie
 {
-    public class DefaultLifecycle : Lifecycle
+    public class DefaultExecution : Execution
     {
         public void Execute(TestClass testClass)
         {

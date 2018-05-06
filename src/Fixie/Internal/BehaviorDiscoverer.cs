@@ -21,15 +21,15 @@
             return (Discovery) Construct(DiscoveryType());
         }
 
-        public void GetBehaviors(out Discovery discovery, out Lifecycle lifecycle)
+        public void GetBehaviors(out Discovery discovery, out Execution execution)
         {
             var discoveryType = DiscoveryType();
-            var lifecycleType = LifecycleType();
+            var executionType = ExecutionType();
 
             discovery = (Discovery) Construct(discoveryType);
-            lifecycle = discoveryType == lifecycleType
-                ? (Lifecycle) discovery
-                : (Lifecycle) Construct(lifecycleType);
+            execution = discoveryType == executionType
+                ? (Execution) discovery
+                : (Execution) Construct(executionType);
         }
 
         Type DiscoveryType()
@@ -58,37 +58,37 @@
             return typeof(Discovery);
         }
 
-        Type LifecycleType()
+        Type ExecutionType()
         {
             if (assembly.GetName().Name == "Fixie.Tests")
-                return typeof(DefaultLifecycle);
+                return typeof(DefaultExecution);
 
-            var customLifecycleTypes = assembly
+            var customExecutionTypes = assembly
                 .GetTypes()
-                .Where(type => IsLifecycle(type) && !type.IsAbstract)
+                .Where(type => IsExecution(type) && !type.IsAbstract)
                 .ToArray();
 
-            if (customLifecycleTypes.Length > 1)
+            if (customExecutionTypes.Length > 1)
             {
                 throw new Exception(
-                    "A test assembly can have at most one Lifecycle implementation, " +
+                    "A test assembly can have at most one Execution implementation, " +
                     "but the following implementations were discovered:" + Environment.NewLine +
                     String.Join(Environment.NewLine,
-                        customLifecycleTypes
+                        customExecutionTypes
                             .Select(x => $"\t{x.FullName}")));
             }
 
-            if (customLifecycleTypes.Any())
-                return customLifecycleTypes.Single();
+            if (customExecutionTypes.Any())
+                return customExecutionTypes.Single();
 
-            return typeof(DefaultLifecycle);
+            return typeof(DefaultExecution);
         }
 
         static bool IsDiscovery(Type type)
             => type.IsSubclassOf(typeof(Discovery));
 
-        static bool IsLifecycle(Type type)
-            => type.GetInterfaces().Contains(typeof(Lifecycle));
+        static bool IsExecution(Type type)
+            => type.GetInterfaces().Contains(typeof(Execution));
 
         object Construct(Type type)
         {

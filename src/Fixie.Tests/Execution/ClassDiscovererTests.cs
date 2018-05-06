@@ -36,14 +36,16 @@
 
         class SampleLifecycle : Lifecycle
         {
-            public void Execute(TestClass testClass) => throw new NotImplementedException();
+            public void Execute(TestClass testClass)
+            {
+            }
         }
         
         public void ShouldConsiderOnlyConcreteClasses()
         {
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            DiscoveredTestClasses(customConvention)
+            DiscoveredTestClasses(customDiscovery)
                 .ShouldEqual(
                     typeof(StaticClass),
                     typeof(DefaultConstructor),
@@ -56,9 +58,9 @@
 
         public void ShouldNotConsiderDiscoveryAndExecutionCustomizationClasses()
         {
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            DiscoveredTestClasses(customConvention,
+            DiscoveredTestClasses(customDiscovery,
                     typeof(SampleConvention),
                     typeof(SampleDiscovery),
                     typeof(SampleLifecycle))
@@ -82,9 +84,9 @@
             nested.Has<CompilerGeneratedAttribute>().ShouldBeTrue();
 
             //Confirm that the nested closure class is omitted from test class discovery.
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            DiscoveredTestClasses(customConvention, nested)
+            DiscoveredTestClasses(customDiscovery, nested)
                 .ShouldEqual(
                     typeof(StaticClass),
                     typeof(DefaultConstructor),
@@ -97,15 +99,15 @@
 
         public void ShouldDiscoverClassesSatisfyingAllSpecifiedConditions()
         {
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            customConvention
+            customDiscovery
                 .Classes
                 .Where(x => x.IsInNamespace("Fixie.Tests"))
                 .Where(x => x.Name.Contains("i"))
                 .Where(x => !x.IsStatic());
 
-            DiscoveredTestClasses(customConvention)
+            DiscoveredTestClasses(customDiscovery)
                 .ShouldEqual(
                     typeof(NameEndsWithTests),
                     typeof(InheritanceSampleBase),
@@ -123,13 +125,13 @@
 
         public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
         {
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            customConvention
+            customDiscovery
                 .Classes
                 .Where(x => throw new Exception("Unsafe class-discovery predicate threw!"));
 
-            Action attemptFaultyDiscovery = () => DiscoveredTestClasses(customConvention);
+            Action attemptFaultyDiscovery = () => DiscoveredTestClasses(customDiscovery);
 
             var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
                 "Exception thrown while attempting to run a custom class-discovery predicate. " +
@@ -138,15 +140,15 @@
             exception.InnerException.Message.ShouldEqual("Unsafe class-discovery predicate threw!");
         }
 
-        static IEnumerable<Type> DiscoveredTestClasses(Convention convention)
+        static IEnumerable<Type> DiscoveredTestClasses(Discovery discovery)
         {
-            return new ClassDiscoverer(convention)
+            return new ClassDiscoverer(discovery)
                 .TestClasses(CandidateTypes);
         }
 
-        static IEnumerable<Type> DiscoveredTestClasses(Convention convention, params Type[] additionalCandidates)
+        static IEnumerable<Type> DiscoveredTestClasses(Discovery discovery, params Type[] additionalCandidates)
         {
-            return new ClassDiscoverer(convention)
+            return new ClassDiscoverer(discovery)
                 .TestClasses(CandidateTypes.Concat(additionalCandidates));
         }
 

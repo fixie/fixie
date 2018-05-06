@@ -9,7 +9,7 @@ namespace Fixie.Execution
     {
         readonly IReadOnlyList<Func<Type, bool>> testClassConditions;
 
-        public ClassDiscoverer(Convention convention)
+        public ClassDiscoverer(Discovery discovery)
         {
             var conditions = new List<Func<Type, bool>>
             {
@@ -18,7 +18,7 @@ namespace Fixie.Execution
                 NonCompilerGeneratedClasses
             };
 
-            conditions.AddRange(convention.Config.TestClassConditions);
+            conditions.AddRange(discovery.Config.TestClassConditions);
 
             testClassConditions = conditions;
         }

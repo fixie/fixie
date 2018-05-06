@@ -9,11 +9,12 @@
     {
         public void ShouldAccumulateCaseStatusCounts()
         {
-            var convention = new CreateInstancePerCase();
+            var discovery = new SelfTestDiscovery();
+            var lifecycle = new CreateInstancePerCase();
 
             var listener = new StubExecutionSummaryListener();
 
-            RunTypes(listener, convention, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
+            RunTypes(listener, discovery, lifecycle, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
             listener.ClassSummaries.Count.ShouldEqual(2);
             listener.AssemblySummary.Count.ShouldEqual(1);
@@ -66,9 +67,9 @@
             public void SkipC() { }
         }
 
-        class CreateInstancePerCase : SelfTestConvention
+        class CreateInstancePerCase : Lifecycle
         {
-            public override void Execute(TestClass testClass)
+            public void Execute(TestClass testClass)
             {
                 testClass.RunCases(@case =>
                 {

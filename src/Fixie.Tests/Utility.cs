@@ -20,21 +20,18 @@
         public static string PathToThisFile([CallerFilePath] string path = null)
             => path;
 
-        public static IEnumerable<string> Run<TSampleTestClass>(Convention convention)
+        public static IEnumerable<string> Run<TSampleTestClass>(Discovery discovery, Lifecycle lifecycle)
         {
             var listener = new StubListener();
-            RunTypes(listener, convention, typeof(TSampleTestClass));
+            RunTypes(listener, discovery, lifecycle, typeof(TSampleTestClass));
             return listener.Entries;
         }
 
         public static IEnumerable<string> Run<TSampleTestClass>()
-            => Run<TSampleTestClass>(new SelfTestConvention());
+            => Run<TSampleTestClass>(new SelfTestDiscovery(), new DefaultLifecycle());
 
-        public static void RunTypes(Listener listener, Convention convention, params Type[] types)
+        public static void RunTypes(Listener listener, Discovery discovery, Lifecycle lifecycle, params Type[] types)
         {
-            var discovery = convention;
-            var lifecycle = convention;
-
             if (types.Length == 0)
             {
                 throw new InvalidOperationException("RunTypes requires at least one type to be specified");

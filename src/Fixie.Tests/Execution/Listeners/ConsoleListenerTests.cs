@@ -55,8 +55,8 @@
 
         public void ShouldNotReportPassCountsWhenZeroTestsHavePassed()
         {
-            void ZeroPassed(Convention convention)
-                => convention.Methods.Where(x => !x.Name.StartsWith("Pass"));
+            void ZeroPassed(Discovery discovery)
+                => discovery.Methods.Where(x => !x.Name.StartsWith("Pass"));
 
             var listener = new ConsoleListener();
 
@@ -74,8 +74,8 @@
 
         public void ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
         {
-            void ZeroFailed(Convention convention)
-                => convention.Methods.Where(x => !x.Name.StartsWith("Fail"));
+            void ZeroFailed(Discovery discovery)
+                => discovery.Methods.Where(x => !x.Name.StartsWith("Fail"));
 
             var listener = new ConsoleListener();
 
@@ -93,8 +93,8 @@
 
         public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
         {
-            void ZeroSkipped(Convention convention)
-                => convention.Methods.Where(x => !x.Name.StartsWith("Skip"));
+            void ZeroSkipped(Discovery discovery)
+                => discovery.Methods.Where(x => !x.Name.StartsWith("Skip"));
 
             var listener = new ConsoleListener();
 
@@ -112,8 +112,8 @@
 
         public void ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
         {
-            void NoTestsFound(Convention convention)
-                => convention.Methods.Where(x => false);
+            void NoTestsFound(Discovery discovery)
+                => discovery.Methods.Where(x => false);
 
             var listener = new ConsoleListener();
 

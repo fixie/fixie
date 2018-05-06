@@ -16,18 +16,19 @@
 
         protected string TestClass { get; }
 
-        protected void Run(Listener listener, Action<Convention> customize = null)
+        protected void Run(Listener listener, Action<Discovery> customize = null)
         {
-            var convention = new CreateInstancePerCase();
+            var discovery = new MessagingTestsDiscovery();
 
-            customize?.Invoke(convention);
+            customize?.Invoke(discovery);
 
-            RunTypes(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));
+            var lifecycle = new CreateInstancePerCase();
+            RunTypes(listener, discovery, lifecycle, typeof(SampleTestClass), typeof(EmptyTestClass));
         }
 
-        class CreateInstancePerCase : Convention
+        class MessagingTestsDiscovery : Discovery
         {
-            public CreateInstancePerCase()
+            public MessagingTestsDiscovery()
             {
                 Classes
                     .Where(x => x == typeof(SampleTestClass) || x == typeof(EmptyTestClass));
@@ -35,8 +36,11 @@
                 Methods
                     .OrderBy(x => x.Name, StringComparer.Ordinal);
             }
+        }
 
-            public override void Execute(TestClass testClass)
+        class CreateInstancePerCase : Lifecycle
+        {
+            public void Execute(TestClass testClass)
             {
                 testClass.RunCases(@case =>
                 {

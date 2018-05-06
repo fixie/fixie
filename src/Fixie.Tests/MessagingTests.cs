@@ -18,24 +18,12 @@
 
         protected void Run(Listener listener, Action<Discovery> customize = null)
         {
-            var discovery = new MessagingTestsDiscovery();
+            var discovery = new SelfTestDiscovery();
 
             customize?.Invoke(discovery);
 
             var lifecycle = new CreateInstancePerCase();
             RunTypes(listener, discovery, lifecycle, typeof(SampleTestClass), typeof(EmptyTestClass));
-        }
-
-        class MessagingTestsDiscovery : Discovery
-        {
-            public MessagingTestsDiscovery()
-            {
-                Classes
-                    .Where(x => x == typeof(SampleTestClass) || x == typeof(EmptyTestClass));
-
-                Methods
-                    .OrderBy(x => x.Name, StringComparer.Ordinal);
-            }
         }
 
         class CreateInstancePerCase : Lifecycle
@@ -73,7 +61,7 @@
             }
         }
 
-        protected class SampleTestClass : Base
+        class SampleTestClass : Base
         {
             public void Fail()
             {
@@ -100,7 +88,7 @@
             }
         }
 
-        protected class EmptyTestClass
+        class EmptyTestClass
         {
         }
 

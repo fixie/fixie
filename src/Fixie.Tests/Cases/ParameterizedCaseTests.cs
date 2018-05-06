@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using Assertions;
+    using Fixie.Internal;
     using static Utility;
 
     public class ParameterizedCaseTests

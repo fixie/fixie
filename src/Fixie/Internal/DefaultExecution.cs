@@ -1,6 +1,6 @@
-﻿namespace Fixie
+﻿namespace Fixie.Internal
 {
-    public class DefaultExecution : Execution
+    class DefaultExecution : Execution
     {
         public void Execute(TestClass testClass)
         {

@@ -7,7 +7,7 @@
 
     public class ParameterDiscovererTests
     {
-        class SampleConvention : Convention
+        class SampleDiscovery : Discovery
         {
         }
 
@@ -20,21 +20,21 @@
 
         public void ShouldProvideZeroSetsOfInputParametersByDefault()
         {
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            DiscoveredParameters(customConvention).ShouldBeEmpty();
+            DiscoveredParameters(customDiscovery).ShouldBeEmpty();
         }
 
         public void ShouldProvideSetsOfInputsGeneratedByNamedParameterSources()
         {
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            customConvention
+            customDiscovery
                 .Parameters
                 .Add<FirstParameterSource>()
                 .Add<SecondParameterSource>();
 
-            DiscoveredParameters(customConvention)
+            DiscoveredParameters(customDiscovery)
                 .ShouldEqual(new[]
                 {
                     new object[] { "ParameterizedMethod", 0, false },
@@ -46,14 +46,14 @@
 
         public void ShouldProvideSetsOfInputsGeneratedByInstantiatedParameterSources()
         {
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            customConvention
+            customDiscovery
                 .Parameters
                 .Add(new FirstParameterSource())
                 .Add(new SecondParameterSource());
 
-            DiscoveredParameters(customConvention)
+            DiscoveredParameters(customDiscovery)
                 .ShouldEqual(new[]
                 {
                     new object[] { "ParameterizedMethod", 0, false },
@@ -63,9 +63,9 @@
                 });
         }
 
-        IEnumerable<object[]> DiscoveredParameters(Convention convention)
+        IEnumerable<object[]> DiscoveredParameters(Discovery discovery)
         {
-            return new ParameterDiscoverer(convention).GetParameters(method);
+            return new ParameterDiscoverer(discovery).GetParameters(method);
         }
 
         class SampleTestClass

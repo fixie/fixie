@@ -8,8 +8,8 @@
     {
         readonly IReadOnlyList<ParameterSource> parameterSources;
 
-        public ParameterDiscoverer(Convention convention)
-            => parameterSources = convention.Config.ParameterSources;
+        public ParameterDiscoverer(Discovery discovery)
+            => parameterSources = discovery.Config.ParameterSources;
 
         public IEnumerable<object[]> GetParameters(MethodInfo method)
             => parameterSources.SelectMany(source => source.GetParameters(method));

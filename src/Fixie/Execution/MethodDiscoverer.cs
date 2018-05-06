@@ -9,8 +9,8 @@
     {
         readonly IReadOnlyList<Func<MethodInfo, bool>> testMethodConditions;
 
-        public MethodDiscoverer(Convention convention)
-            => testMethodConditions = convention.Config.TestMethodConditions;
+        public MethodDiscoverer(Discovery discovery)
+            => testMethodConditions = discovery.Config.TestMethodConditions;
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
         {

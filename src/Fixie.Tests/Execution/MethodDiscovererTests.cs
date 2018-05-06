@@ -10,15 +10,15 @@
 
     public class MethodDiscovererTests
     {
-        class SampleConvention : Convention
+        class SampleDiscovery : Discovery
         {
         }
 
         public void ShouldConsiderOnlyPublicMethods()
         {
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            DiscoveredTestMethods<Sample>(customConvention)
+            DiscoveredTestMethods<Sample>(customDiscovery)
                 .ShouldEqual(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
@@ -30,7 +30,7 @@
                     "PublicStaticWithArgsVoid(x)",
                     "PublicStaticWithArgsWithReturn(x)");
 
-            DiscoveredTestMethods<AsyncSample>(customConvention)
+            DiscoveredTestMethods<AsyncSample>(customDiscovery)
                 .ShouldEqual(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
@@ -45,20 +45,20 @@
 
         public void ShouldNotConsiderIDisposableDisposeMethod()
         {
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            DiscoveredTestMethods<DisposableSample>(customConvention)
+            DiscoveredTestMethods<DisposableSample>(customDiscovery)
                 .ShouldEqual(
                     "Dispose(disposing)",
                     "NotNamedDispose()");
 
-            DiscoveredTestMethods<NonDisposableSample>(customConvention)
+            DiscoveredTestMethods<NonDisposableSample>(customDiscovery)
                 .ShouldEqual(
                     "Dispose()",
                     "Dispose(disposing)",
                     "NotNamedDispose()");
 
-            DiscoveredTestMethods<NonDisposableByReturnTypeSample>(customConvention)
+            DiscoveredTestMethods<NonDisposableByReturnTypeSample>(customDiscovery)
                 .ShouldEqual(
                     "Dispose()",
                     "Dispose(disposing)",
@@ -67,15 +67,15 @@
 
         public void ShouldDiscoverMethodsSatisfyingAllSpecifiedConditions()
         {
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            customConvention
+            customDiscovery
                 .Methods
                 .Where(x => x.Name.Contains("Void"))
                 .Where(x => x.Name.Contains("No"))
                 .Where(x => !x.IsStatic);
 
-            DiscoveredTestMethods<Sample>(customConvention)
+            DiscoveredTestMethods<Sample>(customDiscovery)
                 .ShouldEqual("PublicInstanceNoArgsVoid()");
         }
 
@@ -110,13 +110,13 @@
 
         public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
         {
-            var customConvention = new SampleConvention();
+            var customDiscovery = new SampleDiscovery();
 
-            customConvention
+            customDiscovery
                 .Methods
                 .Where(x => throw new Exception("Unsafe method-discovery predicate threw!"));
 
-            Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(customConvention);
+            Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(customDiscovery);
 
             var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
                 "Exception thrown while attempting to run a custom method-discovery predicate. " +
@@ -125,9 +125,9 @@
             exception.InnerException.Message.ShouldEqual("Unsafe method-discovery predicate threw!");
         }
 
-        static IEnumerable<string> DiscoveredTestMethods<TTestClass>(Convention convention)
+        static IEnumerable<string> DiscoveredTestMethods<TTestClass>(Discovery discovery)
         {
-            return new MethodDiscoverer(convention)
+            return new MethodDiscoverer(discovery)
                 .TestMethods(typeof(TTestClass))
                 .Select(method => $"{method.Name}({String.Join(", ", method.GetParameters().Select(x => x.Name))})")
                 .OrderBy(name => name, StringComparer.Ordinal);

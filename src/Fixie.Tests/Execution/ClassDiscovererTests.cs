@@ -114,11 +114,11 @@
                     typeof(InheritanceSample));
         }
 
-        public void TheDefaultConventionShouldDiscoverClassesWhoseNameEndsWithTests()
+        public void TheDefaultDiscoveryShouldDiscoverClassesWhoseNameEndsWithTests()
         {
-            var defaultConvention = new DefaultConvention();
+            var defaultDiscovery = new DefaultDiscovery();
 
-            DiscoveredTestClasses(defaultConvention)
+            DiscoveredTestClasses(defaultDiscovery)
                 .ShouldEqual(
                     typeof(NameEndsWithTests));
         }

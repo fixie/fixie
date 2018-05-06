@@ -79,11 +79,11 @@
                 .ShouldEqual("PublicInstanceNoArgsVoid()");
         }
 
-        public void TheDefaultConventionShouldDiscoverPublicMethods()
+        public void TheDefaultDiscoveryShouldDiscoverPublicMethods()
         {
-            var defaultConvention = new DefaultConvention();
+            var defaultDiscovery = new DefaultDiscovery();
 
-            DiscoveredTestMethods<Sample>(defaultConvention)
+            DiscoveredTestMethods<Sample>(defaultDiscovery)
                 .ShouldEqual(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
@@ -95,7 +95,7 @@
                     "PublicStaticWithArgsVoid(x)",
                     "PublicStaticWithArgsWithReturn(x)");
 
-            DiscoveredTestMethods<AsyncSample>(defaultConvention)
+            DiscoveredTestMethods<AsyncSample>(defaultDiscovery)
                 .ShouldEqual(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",

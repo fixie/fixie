@@ -9,20 +9,20 @@
     class ClassRunner
     {
         readonly Bus bus;
-        readonly Convention convention;
+        readonly Lifecycle lifecycle;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
 
         readonly Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> orderMethods;
 
-        public ClassRunner(Bus bus, Convention convention)
+        public ClassRunner(Bus bus, Discovery discovery, Lifecycle lifecycle)
         {
-            var config = convention.Config;
+            var config = discovery.Config;
 
             this.bus = bus;
-            this.convention = convention;
-            methodDiscoverer = new MethodDiscoverer(convention);
-            parameterDiscoverer = new ParameterDiscoverer(convention);
+            this.lifecycle = lifecycle;
+            methodDiscoverer = new MethodDiscoverer(discovery);
+            parameterDiscoverer = new ParameterDiscoverer(discovery);
 
             orderMethods = config.OrderMethods;
         }
@@ -102,7 +102,7 @@
                     ? new TestClass(testClass, runCases, methods.Single())
                     : new TestClass(testClass, runCases);
 
-                convention.Execute(runContext);
+                lifecycle.Execute(runContext);
             }
             catch (Exception exception)
             {

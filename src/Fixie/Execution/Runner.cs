@@ -38,7 +38,9 @@
 
         public ExecutionSummary RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
-            return Run(assembly, convention, types);
+            var discovery = convention;
+            var lifecycle = convention;
+            return Run(assembly, discovery, lifecycle, types);
         }
 
         public ExecutionSummary RunTests(Assembly assembly, Test[] tests)
@@ -47,20 +49,20 @@
 
             var methods = GetMethods(types, tests);
 
-            var convention = GetConvention(assembly);
+            GetConvention(assembly, out var discovery, out var lifecycle);
 
-            convention.Methods.Where(methods.Contains);
+            discovery.Methods.Where(methods.Contains);
 
-            return Run(assembly, convention, types.Values.ToArray());
+            return Run(assembly, discovery, lifecycle, types.Values.ToArray());
         }
 
         public ExecutionSummary RunMethod(Assembly assembly, MethodInfo method)
         {
-            var convention = GetConvention(assembly);
+            GetConvention(assembly, out var discovery, out var lifecycle);
 
-            convention.Methods.Where(m => m == method);
+            discovery.Methods.Where(m => m == method);
 
-            return Run(assembly, convention, method.ReflectedType);
+            return Run(assembly, discovery, lifecycle, method.ReflectedType);
         }
 
         static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
@@ -93,22 +95,27 @@
 
         ExecutionSummary RunTypesInternal(Assembly assembly, params Type[] types)
         {
-            return Run(assembly, GetConvention(assembly), types);
+            GetConvention(assembly, out var discovery, out var lifecycle);
+
+            return Run(assembly, discovery, lifecycle, types);
         }
 
-        Convention GetConvention(Assembly assembly)
+        void GetConvention(Assembly assembly, out Discovery discovery, out Lifecycle lifecycle)
         {
-            return new ConventionDiscoverer(assembly, conventionArguments).GetConvention();
+            var convention = new ConventionDiscoverer(assembly, conventionArguments).GetConvention();
+
+            discovery = convention;
+            lifecycle = convention;
         }
 
-        ExecutionSummary Run(Assembly assembly, Convention convention, params Type[] candidateTypes)
+        ExecutionSummary Run(Assembly assembly, Discovery discovery, Lifecycle lifecycle, params Type[] candidateTypes)
         {
             bus.Publish(new AssemblyStarted(assembly));
 
             var assemblySummary = new ExecutionSummary();
             var stopwatch = Stopwatch.StartNew();
 
-            Run(convention, candidateTypes, assemblySummary);
+            Run(discovery, lifecycle, candidateTypes, assemblySummary);
 
             stopwatch.Stop();
             bus.Publish(new AssemblyCompleted(assembly, assemblySummary, stopwatch.Elapsed));
@@ -116,10 +123,10 @@
             return assemblySummary;
         }
 
-        void Run(Convention convention, Type[] candidateTypes, ExecutionSummary assemblySummary)
+        void Run(Discovery discovery, Lifecycle lifecycle, Type[] candidateTypes, ExecutionSummary assemblySummary)
         {
-            var classDiscoverer = new ClassDiscoverer(convention);
-            var classRunner = new ClassRunner(bus, convention);
+            var classDiscoverer = new ClassDiscoverer(discovery);
+            var classRunner = new ClassRunner(bus, discovery, lifecycle);
 
             var testClasses = classDiscoverer.TestClasses(candidateTypes);
 

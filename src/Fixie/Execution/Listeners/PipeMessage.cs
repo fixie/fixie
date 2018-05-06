@@ -23,11 +23,6 @@
             public Test Test { get; set; }
         }
 
-        public class TestStarted
-        {
-            public Test Test { get; set; }
-        }
-
         public abstract class CaseCompleted
         {
             public Test Test { get; set; }

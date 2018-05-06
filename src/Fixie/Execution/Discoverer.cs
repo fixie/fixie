@@ -18,31 +18,21 @@
 
         public void DiscoverMethods(Assembly assembly)
         {
-            var conventions = new ConventionDiscoverer(assembly, conventionArguments).GetConventions();
+            var convention = new ConventionDiscoverer(assembly, conventionArguments).GetConvention();
 
-            DiscoverMethods(assembly, conventions);
+            DiscoverMethods(assembly, convention);
         }
 
         public void DiscoverMethods(Assembly assembly, Convention convention)
         {
-            var conventions = new[] { convention };
+            var classDiscoverer = new ClassDiscoverer(convention);
+            var candidateTypes = assembly.GetTypes();
+            var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
-            DiscoverMethods(assembly, conventions);
-        }
-
-        void DiscoverMethods(Assembly assembly, Convention[] conventions)
-        {
-            foreach (var convention in conventions)
-            {
-                var classDiscoverer = new ClassDiscoverer(convention);
-                var candidateTypes = assembly.GetTypes();
-                var testClasses = classDiscoverer.TestClasses(candidateTypes);
-
-                var methodDiscoverer = new MethodDiscoverer(convention);
-                foreach (var testClass in testClasses)
-                    foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                        bus.Publish(new MethodDiscovered(testMethod));
-            }
+            var methodDiscoverer = new MethodDiscoverer(convention);
+            foreach (var testClass in testClasses)
+            foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
+                bus.Publish(new MethodDiscovered(testMethod));
         }
     }
 }

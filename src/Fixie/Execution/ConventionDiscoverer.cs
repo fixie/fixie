@@ -17,22 +17,27 @@
             this.conventionArguments = conventionArguments;
         }
 
-        public Convention[] GetConventions()
+        public Convention GetConvention()
         {
             if (assembly.GetName().Name == "Fixie.Tests")
+                return new DefaultConvention();
+
+            var locallyDeclaredConventionTypes = LocallyDeclaredConventionTypes();
+
+            if (locallyDeclaredConventionTypes.Length > 1)
             {
-                return new[] { (Convention)new DefaultConvention() };
+                throw new Exception(
+                    "A test assembly should have at most one convention, " +
+                    "but the following conventions were discovered:" + Environment.NewLine +
+                    String.Join(Environment.NewLine,
+                        locallyDeclaredConventionTypes
+                            .Select(x => $"\t{x.FullName}")));
             }
 
-            var customConventions =
-                LocallyDeclaredConventionTypes()
-                    .Select(ConstructConvention)
-                    .ToArray();
+            if (!locallyDeclaredConventionTypes.Any())
+                return new DefaultConvention();
 
-            if (customConventions.Any())
-                return customConventions;
-
-            return new[] { (Convention)new DefaultConvention() };
+            return ConstructConvention(locallyDeclaredConventionTypes.Single());
         }
 
         Type[] LocallyDeclaredConventionTypes()

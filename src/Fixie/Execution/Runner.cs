@@ -38,7 +38,7 @@
 
         public ExecutionSummary RunTypes(Assembly assembly, Convention convention, params Type[] types)
         {
-            return Run(assembly, new[] { convention }, types);
+            return Run(assembly, convention, types);
         }
 
         public ExecutionSummary RunTests(Assembly assembly, Test[] tests)
@@ -47,22 +47,20 @@
 
             var methods = GetMethods(types, tests);
 
-            var conventions = GetConventions(assembly);
+            var convention = GetConvention(assembly);
 
-            foreach (var convention in conventions)
-                convention.Methods.Where(methods.Contains);
+            convention.Methods.Where(methods.Contains);
 
-            return Run(assembly, conventions, types.Values.ToArray());
+            return Run(assembly, convention, types.Values.ToArray());
         }
 
         public ExecutionSummary RunMethod(Assembly assembly, MethodInfo method)
         {
-            var conventions = GetConventions(assembly);
+            var convention = GetConvention(assembly);
 
-            foreach (var convention in conventions)
-                convention.Methods.Where(m => m == method);
+            convention.Methods.Where(m => m == method);
 
-            return Run(assembly, conventions, method.ReflectedType);
+            return Run(assembly, convention, method.ReflectedType);
         }
 
         static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
@@ -95,23 +93,22 @@
 
         ExecutionSummary RunTypesInternal(Assembly assembly, params Type[] types)
         {
-            return Run(assembly, GetConventions(assembly), types);
+            return Run(assembly, GetConvention(assembly), types);
         }
 
-        Convention[] GetConventions(Assembly assembly)
+        Convention GetConvention(Assembly assembly)
         {
-            return new ConventionDiscoverer(assembly, conventionArguments).GetConventions();
+            return new ConventionDiscoverer(assembly, conventionArguments).GetConvention();
         }
 
-        ExecutionSummary Run(Assembly assembly, IEnumerable<Convention> conventions, params Type[] candidateTypes)
+        ExecutionSummary Run(Assembly assembly, Convention convention, params Type[] candidateTypes)
         {
             bus.Publish(new AssemblyStarted(assembly));
 
             var assemblySummary = new ExecutionSummary();
             var stopwatch = Stopwatch.StartNew();
 
-            foreach (var convention in conventions)
-                Run(convention, candidateTypes, assemblySummary);
+            Run(convention, candidateTypes, assemblySummary);
 
             stopwatch.Stop();
             bus.Publish(new AssemblyCompleted(assembly, assemblySummary, stopwatch.Elapsed));

@@ -1,6 +1,6 @@
 ﻿namespace Fixie
 {
-    using Expressions;
+    using Internal.Expressions;
 
     /// <summary>
     /// Subclass Discovery to customize test discovery rules.

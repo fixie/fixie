@@ -1,4 +1,4 @@
-namespace Fixie.Expressions
+namespace Fixie.Internal.Expressions
 {
     using System;
 

@@ -1,6 +1,6 @@
 ﻿namespace Fixie
 {
-    using Conventions;
+    using Expressions;
 
     /// <summary>
     /// Subclass Discovery to customize test discovery rules.

@@ -1,4 +1,4 @@
-﻿namespace Fixie.Conventions
+﻿namespace Fixie.Expressions
 {
     using System;
     using System.Collections.Generic;

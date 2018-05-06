@@ -6,7 +6,6 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using Assertions;
-    using Conventions;
     using Fixie.Execution;
 
     public class ClassDiscovererTests
@@ -28,6 +27,12 @@
 
         class SampleDiscovery : Discovery
         {
+            public SampleDiscovery()
+            {
+                //Include a trivial condition, causing the default "name ends with 'Tests'" rule
+                //to be suppressed in favor of only the rules specified here in ClassDiscovererTests.
+                Classes.Where(x => true);
+            }
         }
 
         class SampleLifecycle : Lifecycle
@@ -111,7 +116,7 @@
 
         public void TheDefaultDiscoveryShouldDiscoverClassesWhoseNameEndsWithTests()
         {
-            var defaultDiscovery = new DefaultDiscovery();
+            var defaultDiscovery = new Discovery();
 
             DiscoveredTestClasses(defaultDiscovery)
                 .ShouldEqual(

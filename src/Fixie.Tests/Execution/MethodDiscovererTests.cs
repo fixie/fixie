@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Assertions;
-    using Conventions;
     using Fixie.Execution;
 
     public class MethodDiscovererTests
@@ -81,7 +80,7 @@
 
         public void TheDefaultDiscoveryShouldDiscoverPublicMethods()
         {
-            var defaultDiscovery = new DefaultDiscovery();
+            var defaultDiscovery = new Discovery();
 
             DiscoveredTestMethods<Sample>(defaultDiscovery)
                 .ShouldEqual(

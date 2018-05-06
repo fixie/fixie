@@ -4,7 +4,6 @@
     using System.Linq;
     using System.Reflection;
     using Cli;
-    using Conventions;
 
     class BehaviorDiscoverer
     {
@@ -36,7 +35,7 @@
         Type DiscoveryType()
         {
             if (assembly.GetName().Name == "Fixie.Tests")
-                return typeof(DefaultDiscovery);
+                return typeof(Discovery);
 
             var customDiscoveryTypes = assembly
                 .GetTypes()
@@ -56,7 +55,7 @@
             if (customDiscoveryTypes.Any())
                 return customDiscoveryTypes.Single();
 
-            return typeof(DefaultDiscovery);
+            return typeof(Discovery);
         }
 
         Type LifecycleType()

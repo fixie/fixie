@@ -3,11 +3,20 @@
     using Conventions;
 
     /// <summary>
-    /// Subclass Discovery to customize test discovery and execution.
+    /// Subclass Discovery to customize test discovery rules.
+    /// 
+    /// The default discovery rules are applied to a test assembly whenever the test
+    /// assembly includes no such subclass.
+    ///
+    /// By defualt,
+    /// 
+    /// <para>A class is a test class if its name ends with "Tests".</para>
+    ///
+    /// <para>All public methods in a test class are test methods.</para>
     /// </summary>
-    public abstract class Discovery
+    public class Discovery
     {
-        protected Discovery()
+        public Discovery()
         {
             Config = new Configuration();
 

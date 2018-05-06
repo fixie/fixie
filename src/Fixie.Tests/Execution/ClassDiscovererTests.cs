@@ -29,6 +29,15 @@
         class SampleConvention : Convention
         {
         }
+
+        class SampleDiscovery : Discovery
+        {
+        }
+
+        class SampleLifecycle : Lifecycle
+        {
+            public void Execute(TestClass testClass) => throw new NotImplementedException();
+        }
         
         public void ShouldConsiderOnlyConcreteClasses()
         {
@@ -45,11 +54,14 @@
                     typeof(InheritanceSample));
         }
 
-        public void ShouldNotConsiderDiscoveryAndExecutionCustomizations()
+        public void ShouldNotConsiderDiscoveryAndExecutionCustomizationClasses()
         {
             var customConvention = new SampleConvention();
 
-            DiscoveredTestClasses(customConvention, typeof(SampleConvention))
+            DiscoveredTestClasses(customConvention,
+                    typeof(SampleConvention),
+                    typeof(SampleDiscovery),
+                    typeof(SampleLifecycle))
                 .ShouldEqual(
                     typeof(StaticClass),
                     typeof(DefaultConstructor),

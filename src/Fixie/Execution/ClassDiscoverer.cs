@@ -14,7 +14,7 @@ namespace Fixie.Execution
             var conditions = new List<Func<Type, bool>>
             {
                 ConcreteClasses,
-                NonDiscoveryClasses,
+                NonCustomizationClasses,
                 NonCompilerGeneratedClasses
             };
 
@@ -43,8 +43,14 @@ namespace Fixie.Execution
         static bool ConcreteClasses(Type type)
             => type.IsClass && (!type.IsAbstract || type.IsStatic());
 
-        static bool NonDiscoveryClasses(Type type)
-            => !type.IsSubclassOf(typeof(Convention));
+        static bool NonCustomizationClasses(Type type)
+            => !IsDiscovery(type) && !IsLifecycle(type);
+
+        static bool IsDiscovery(Type type)
+            => type.IsSubclassOf(typeof(Discovery));
+
+        static bool IsLifecycle(Type type)
+            => type.GetInterfaces().Contains(typeof(Lifecycle));
 
         static bool NonCompilerGeneratedClasses(Type type)
             => !type.Has<CompilerGeneratedAttribute>();

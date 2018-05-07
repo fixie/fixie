@@ -52,10 +52,7 @@
                             .Select(x => $"\t{x.FullName}")));
             }
 
-            if (customDiscoveryTypes.Any())
-                return customDiscoveryTypes.Single();
-
-            return typeof(Discovery);
+            return customDiscoveryTypes.SingleOrDefault() ?? typeof(Discovery);
         }
 
         Type ExecutionType()
@@ -78,10 +75,7 @@
                             .Select(x => $"\t{x.FullName}")));
             }
 
-            if (customExecutionTypes.Any())
-                return customExecutionTypes.Single();
-
-            return typeof(DefaultExecution);
+            return customExecutionTypes.SingleOrDefault() ?? typeof(DefaultExecution);
         }
 
         static bool IsDiscovery(Type type)

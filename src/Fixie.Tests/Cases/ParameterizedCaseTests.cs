@@ -5,17 +5,19 @@
     using System.Linq;
     using System.Reflection;
     using Assertions;
+    using Fixie.Internal;
     using static Utility;
 
     public class ParameterizedCaseTests
     {
-        readonly Convention convention = new SelfTestConvention();
+        readonly Discovery discovery = new SelfTestDiscovery();
+        readonly Execution execution = new DefaultExecution();
 
-        public void ShouldAllowConventionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
+        public void ShouldAllowDiscoveryToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
-            convention.Parameters.Add<InputAttributeOrDefaultParameterSource>();
+            discovery.Parameters.Add<InputAttributeOrDefaultParameterSource>();
 
-            Run<ParameterizedTestClass>(convention)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -27,7 +29,7 @@
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
         {
-            Run<ParameterizedTestClass>(convention)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
@@ -37,9 +39,9 @@
 
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
         {
-            convention.Parameters.Add<EmptyParameterSource>();
+            discovery.Parameters.Add<EmptyParameterSource>();
 
-            Run<ParameterizedTestClass>(convention)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
@@ -58,9 +60,9 @@
                 new object[] { 0, 1, 2, 3 }
             };
 
-            convention.Parameters.Add<FixedParameterSource>();
+            discovery.Parameters.Add<FixedParameterSource>();
 
-            Run<ParameterizedTestClass>(convention)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Parameter count mismatch.",
@@ -80,9 +82,9 @@
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
-            convention.Parameters.Add<LazyBuggyParameterSource>();
+            discovery.Parameters.Add<LazyBuggyParameterSource>();
 
-            Run<ParameterizedTestClass>(convention)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -103,9 +105,9 @@
             //when trying to handle the IntArg test method. Since IntArg runs first,
             //this test demonstrates how the failure is isolated to that test method.
 
-            convention.Parameters.Add<EagerBuggyParameterSource>();
+            discovery.Parameters.Add<EagerBuggyParameterSource>();
 
-            Run<ParameterizedTestClass>(convention)
+            Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Exception thrown while attempting to eagerly build input parameters for method: IntArg",
@@ -118,9 +120,9 @@
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
         {
-            convention.Parameters.Add<LazyBuggyParameterSource>();
+            discovery.Parameters.Add<LazyBuggyParameterSource>();
 
-            Run<ConstrainedGenericTestClass>(convention)
+            Run<ConstrainedGenericTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<ConstrainedGenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(0) passed",
@@ -133,9 +135,9 @@
 
         public void ShouldResolveGenericTypeParameters()
         {
-            convention.Parameters.Add<InputAttributeParameterSource>();
+            discovery.Parameters.Add<InputAttributeParameterSource>();
 
-            Run<GenericTestClass>(convention)
+            Run<GenericTestClass>(discovery, execution)
                 .ShouldEqual(
                     For<GenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(1) passed",

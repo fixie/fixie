@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using Fixie.Execution;
+    using Fixie.Internal;
 
     public static class Utility
     {
@@ -20,17 +20,17 @@
         public static string PathToThisFile([CallerFilePath] string path = null)
             => path;
 
-        public static IEnumerable<string> Run<TSampleTestClass>(Convention convention)
+        public static IEnumerable<string> Run<TSampleTestClass>(Discovery discovery, Execution execution)
         {
             var listener = new StubListener();
-            RunTypes(listener, convention, typeof(TSampleTestClass));
+            RunTypes(listener, discovery, execution, typeof(TSampleTestClass));
             return listener.Entries;
         }
 
         public static IEnumerable<string> Run<TSampleTestClass>()
-            => Run<TSampleTestClass>(new SelfTestConvention());
+            => Run<TSampleTestClass>(new SelfTestDiscovery(), new DefaultExecution());
 
-        public static void RunTypes(Listener listener, Convention convention, params Type[] types)
+        public static void RunTypes(Listener listener, Discovery discovery, Execution execution, params Type[] types)
         {
             if (types.Length == 0)
             {
@@ -38,7 +38,7 @@
             }
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(types[0].Assembly, convention, types);
+            new Runner(bus).RunTypes(types[0].Assembly, discovery, execution, types);
         }
     }
 }

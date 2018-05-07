@@ -1,7 +1,7 @@
 ﻿namespace Fixie.EntryPoint
 {
     using System;
-    using Execution;
+    using Internal;
 
     class Program
     {

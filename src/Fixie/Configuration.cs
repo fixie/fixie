@@ -9,12 +9,17 @@
         readonly List<Func<Type, bool>> testClassConditions;
         readonly List<Func<MethodInfo, bool>> testMethodConditions;
         readonly List<ParameterSource> parameterSources;
+        bool usingDefaultTestClassCondition;
 
         public Configuration()
         {
             OrderMethods = methods => methods;
 
-            testClassConditions = new List<Func<Type, bool>>();
+            usingDefaultTestClassCondition = true;
+            testClassConditions = new List<Func<Type, bool>>
+            {
+                x => x.Name.EndsWith("Tests")
+            };
             testMethodConditions = new List<Func<MethodInfo, bool>>();
             parameterSources = new List<ParameterSource>();
         }
@@ -22,7 +27,20 @@
         public Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> OrderMethods { get; set; }
 
         public void AddTestClassCondition(Func<Type, bool> testClassCondition)
-            => testClassConditions.Add(testClassCondition);
+        {
+            if (usingDefaultTestClassCondition)
+            {
+                //The default test class condition is useful, but too restrictive
+                //in the case that a customization is defining their own test class
+                //discovery rules. Upon the first such customization, we start over
+                //from an empty list of conditions.
+
+                testClassConditions.Clear();
+            }
+
+            testClassConditions.Add(testClassCondition);
+            usingDefaultTestClassCondition = false;
+        }
 
         public void AddTestMethodCondition(Func<MethodInfo, bool> testMethodCondition)
             => testMethodConditions.Add(testMethodCondition);

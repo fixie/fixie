@@ -4,7 +4,7 @@ namespace Fixie.Tests.Cases
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
-    using Fixie.Execution;
+    using Fixie.Internal;
     using static Utility;
 
     public class NonVoidCaseTests
@@ -39,9 +39,10 @@ namespace Fixie.Tests.Cases
         {
             using (var console = new RedirectedConsole())
             {
-                var convention = new TreatBoolReturnValuesAsAssertions();
+                var discovery = new SelfTestDiscovery();
+                var execution = new TreatBoolReturnValuesAsAssertions();
 
-                Run<SampleTestClass>(convention)
+                Run<SampleTestClass>(discovery, execution)
                     .ShouldEqual(
                         For<SampleTestClass>(
                             ".BoolFalse failed: Boolean test case returned false!",
@@ -63,9 +64,10 @@ namespace Fixie.Tests.Cases
         {
             using (var console = new RedirectedConsole())
             {
-                var convention = new TreatBoolReturnValuesAsAssertions();
+                var discovery = new SelfTestDiscovery();
+                var execution = new TreatBoolReturnValuesAsAssertions();
 
-                Run<SampleAsyncTestClass>(convention)
+                Run<SampleAsyncTestClass>(discovery, execution)
                     .ShouldEqual(
                         For<SampleAsyncTestClass>(
                             ".BoolFalse failed: Boolean test case returned false!",
@@ -119,9 +121,9 @@ namespace Fixie.Tests.Cases
             }
         }
 
-        class TreatBoolReturnValuesAsAssertions : SelfTestConvention
+        class TreatBoolReturnValuesAsAssertions : Execution
         {
-            public override void Execute(TestClass testClass)
+            public void Execute(TestClass testClass)
             {
                 testClass.RunCases(@case =>
                 {

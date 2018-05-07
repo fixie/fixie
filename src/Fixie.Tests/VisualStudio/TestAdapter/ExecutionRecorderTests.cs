@@ -7,7 +7,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Assertions;
-    using Fixie.Execution.Listeners;
+    using Fixie.Internal.Listeners;
     using static System.Environment;
 
     public class ExecutionRecorderTests

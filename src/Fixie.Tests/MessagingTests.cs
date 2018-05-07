@@ -4,7 +4,7 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using Assertions;
-    using Fixie.Execution;
+    using Fixie.Internal;
     using static Utility;
 
     public abstract class MessagingTests
@@ -16,27 +16,19 @@
 
         protected string TestClass { get; }
 
-        protected void Run(Listener listener, Action<Convention> customize = null)
+        protected void Run(Listener listener, Action<Discovery> customize = null)
         {
-            var convention = new CreateInstancePerCase();
+            var discovery = new SelfTestDiscovery();
 
-            customize?.Invoke(convention);
+            customize?.Invoke(discovery);
 
-            RunTypes(listener, convention, typeof(SampleTestClass), typeof(EmptyTestClass));
+            var execution = new CreateInstancePerCase();
+            RunTypes(listener, discovery, execution, typeof(SampleTestClass), typeof(EmptyTestClass));
         }
 
-        class CreateInstancePerCase : Convention
+        class CreateInstancePerCase : Execution
         {
-            public CreateInstancePerCase()
-            {
-                Classes
-                    .Where(x => x == typeof(SampleTestClass) || x == typeof(EmptyTestClass));
-
-                Methods
-                    .OrderBy(x => x.Name, StringComparer.Ordinal);
-            }
-
-            public override void Execute(TestClass testClass)
+            public void Execute(TestClass testClass)
             {
                 testClass.RunCases(@case =>
                 {
@@ -69,7 +61,7 @@
             }
         }
 
-        protected class SampleTestClass : Base
+        class SampleTestClass : Base
         {
             public void Fail()
             {
@@ -96,7 +88,7 @@
             }
         }
 
-        protected class EmptyTestClass
+        class EmptyTestClass
         {
         }
 

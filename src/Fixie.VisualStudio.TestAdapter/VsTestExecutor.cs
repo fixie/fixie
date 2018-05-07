@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.IO.Pipes;
     using System.Linq;
-    using Execution.Listeners;
+    using Internal.Listeners;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;

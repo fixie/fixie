@@ -3,7 +3,7 @@
     using System;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-    using Execution.Listeners;
+    using Internal.Listeners;
     using static System.Environment;
 
     public class ExecutionRecorder

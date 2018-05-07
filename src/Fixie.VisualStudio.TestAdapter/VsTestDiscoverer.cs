@@ -6,7 +6,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Execution.Listeners;
+    using Internal.Listeners;
     using static TestAssembly;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]

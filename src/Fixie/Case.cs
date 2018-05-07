@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using Internal;
 
     /// <summary>
     /// A test case being executed, representing a single call to a test method.

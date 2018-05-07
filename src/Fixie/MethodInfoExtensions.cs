@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
+    using Internal;
 
     public static class MethodInfoExtensions
     {

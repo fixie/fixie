@@ -1,5 +1,6 @@
 ﻿namespace Fixie
 {
+    using Internal;
     using Internal.Expressions;
 
     /// <summary>

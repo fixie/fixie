@@ -10,7 +10,7 @@
     /// InnerException in a PreservedException and throw it.  When a PreservedException is reported to Fixie as the reason
     /// for a test failure, the original exception will be unpacked and reported as the actual cause of the test case failure.
     /// </summary>
-    public class PreservedException : Exception
+    class PreservedException : Exception
     {
         public PreservedException(Exception originalException)
         {

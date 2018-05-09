@@ -5,16 +5,12 @@
 
     class Options
     {
-        public Options(
-            string report,
-            bool? teamCity)
+        public Options(string report)
         {
             Report = report;
-            TeamCity = teamCity;
         }
 
         public string Report { get; }
-        public bool? TeamCity { get; }
 
         public void Validate()
         {

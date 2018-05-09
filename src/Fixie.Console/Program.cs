@@ -166,12 +166,6 @@
                 arguments.Add(options.Report);
             }
 
-            if (options.TeamCity != null)
-            {
-                arguments.Add("--team-city");
-                arguments.Add(options.TeamCity.Value ? "on" : "off");
-            }
-
             arguments.Add("--");
 
             arguments.AddRange(customArguments);
@@ -196,11 +190,6 @@
             WriteLine("    --report path");
             WriteLine("        Write test results to the specified path, using the");
             WriteLine("        xUnit XML format.");
-            WriteLine();
-            WriteLine("    --team-city <on|off>");
-            WriteLine("        When this option is omitted, the runner detects the need");
-            WriteLine("        for TeamCity-formatted console output. Use this option");
-            WriteLine("        to force TeamCity output on or off.");
             WriteLine();
             WriteLine("    --");
             WriteLine("        Signifies the end of built-in arguments and the beginning");

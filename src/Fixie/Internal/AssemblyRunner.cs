@@ -143,7 +143,7 @@
 
         static IEnumerable<Listener> DefaultExecutionListeners(Options options)
         {
-            if (ShouldUseTeamCityListener(options))
+            if (ShouldUseTeamCityListener())
                 yield return new TeamCityListener();
             else
                 yield return new ConsoleListener();
@@ -165,11 +165,9 @@
             return Path.Combine(Directory.GetCurrentDirectory(), absoluteOrRelativePath);
         }
 
-        static bool ShouldUseTeamCityListener(Options options)
+        static bool ShouldUseTeamCityListener()
         {
-            var runningUnderTeamCity = Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
-
-            return options.TeamCity ?? runningUnderTeamCity;
+            return Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
         }
 
         static bool ShouldUseAppVeyorListener()

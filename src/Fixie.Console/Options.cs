@@ -6,14 +6,12 @@
             string configuration,
             bool noBuild,
             string framework,
-            string report,
-            bool? teamCity)
+            string report)
         {
             Configuration = configuration ?? "Debug";
             NoBuild = noBuild;
             Framework = framework;
             Report = report;
-            TeamCity = teamCity;
         }
 
         public string Configuration { get; }
@@ -21,6 +19,5 @@
         public bool ShouldBuild => !NoBuild;
         public string Framework { get; }
         public string Report { get; }
-        public bool? TeamCity { get; }
     }
 }

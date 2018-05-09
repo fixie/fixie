@@ -47,20 +47,12 @@
 
             var methods = GetMethods(types, tests);
 
-            GetBehaviors(assembly, out var discovery, out var execution);
-
-            discovery.Methods.Where(methods.Contains);
-
-            return Run(assembly, discovery, execution, types.Values.ToArray());
+            return Run(assembly, types.Values.ToArray(), methods.Contains);
         }
 
         public ExecutionSummary RunMethod(Assembly assembly, MethodInfo method)
         {
-            GetBehaviors(assembly, out var discovery, out var execution);
-
-            discovery.Methods.Where(m => m == method);
-
-            return Run(assembly, discovery, execution, method.ReflectedType);
+            return Run(assembly, new[] { method.ReflectedType }, m => m == method);
         }
 
         static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
@@ -93,9 +85,7 @@
 
         ExecutionSummary RunTypesInternal(Assembly assembly, params Type[] types)
         {
-            GetBehaviors(assembly, out var discovery, out var execution);
-
-            return Run(assembly, discovery, execution, types);
+            return Run(assembly, types);
         }
 
         void GetBehaviors(Assembly assembly, out Discovery discovery, out Execution execution)
@@ -104,7 +94,17 @@
                 .GetBehaviors(out discovery, out execution);
         }
 
-        ExecutionSummary Run(Assembly assembly, Discovery discovery, Execution execution, params Type[] candidateTypes)
+        ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)
+        {
+            GetBehaviors(assembly, out var discovery, out var execution);
+
+            if (methodCondition != null)
+                discovery.Methods.Where(methodCondition);
+
+            return Run(assembly, discovery, execution, candidateTypes);
+        }
+
+        ExecutionSummary Run(Assembly assembly, Discovery discovery, Execution execution, Type[] candidateTypes)
         {
             bus.Publish(new AssemblyStarted(assembly));
 

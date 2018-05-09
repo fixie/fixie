@@ -22,18 +22,17 @@
 
         public ExecutionSummary RunAssembly(Assembly assembly)
         {
-            return RunTypesInternal(assembly, assembly.GetTypes());
+            return Run(assembly, assembly.GetTypes());
         }
 
         public ExecutionSummary RunNamespace(Assembly assembly, string ns)
         {
-            return RunTypesInternal(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
+            return Run(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
         }
 
         public ExecutionSummary RunType(Assembly assembly, Type type)
         {
-            var types = GetTypeAndNestedTypes(type).ToArray();
-            return RunTypesInternal(assembly, types);
+            return Run(assembly, GetTypeAndNestedTypes(type).ToArray());
         }
 
         public ExecutionSummary RunTypes(Assembly assembly, Discovery discovery, Execution execution, params Type[] types)
@@ -81,11 +80,6 @@
                     classes[test.Class]
                         .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
                         .Where(m => m.Name == test.Method)).ToArray();
-        }
-
-        ExecutionSummary RunTypesInternal(Assembly assembly, params Type[] types)
-        {
-            return Run(assembly, types);
         }
 
         ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)

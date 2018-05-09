@@ -20,14 +20,21 @@
         {
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
 
-            var classDiscoverer = new ClassDiscoverer(discovery);
-            var candidateTypes = assembly.GetTypes();
-            var testClasses = classDiscoverer.TestClasses(candidateTypes);
+            try
+            {
+                var classDiscoverer = new ClassDiscoverer(discovery);
+                var candidateTypes = assembly.GetTypes();
+                var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
-            var methodDiscoverer = new MethodDiscoverer(discovery);
-            foreach (var testClass in testClasses)
-            foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                bus.Publish(new MethodDiscovered(testMethod));
+                var methodDiscoverer = new MethodDiscoverer(discovery);
+                foreach (var testClass in testClasses)
+                foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
+                    bus.Publish(new MethodDiscovered(testMethod));
+            }
+            finally
+            {
+                discovery.Dispose();
+            }
         }
     }
 }

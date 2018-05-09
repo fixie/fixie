@@ -2,7 +2,7 @@
     <PropertyGroup>
         <Product>Fixie</Product>
         <VersionPrefix>2.0.0</VersionPrefix>
-        <VersionSuffix>beta-0000</VersionSuffix>
+        <VersionSuffix></VersionSuffix>
         <Authors>Patrick Lioi</Authors>
         <Copyright>Copyright © 2013-2018 Patrick Lioi</Copyright>
         <PackageLicenseUrl>https://github.com/fixie/fixie/blob/master/LICENSE.txt</PackageLicenseUrl>

@@ -88,20 +88,25 @@
             return Run(assembly, types);
         }
 
-        void GetBehaviors(Assembly assembly, out Discovery discovery, out Execution execution)
-        {
-            new BehaviorDiscoverer(assembly, customArguments)
-                .GetBehaviors(out discovery, out execution);
-        }
-
         ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)
         {
-            GetBehaviors(assembly, out var discovery, out var execution);
+            new BehaviorDiscoverer(assembly, customArguments)
+                .GetBehaviors(out var discovery, out var execution);
 
-            if (methodCondition != null)
-                discovery.Methods.Where(methodCondition);
+            try
+            {
+                if (methodCondition != null)
+                    discovery.Methods.Where(methodCondition);
 
-            return Run(assembly, discovery, execution, candidateTypes);
+                return Run(assembly, discovery, execution, candidateTypes);
+            }
+            finally
+            {
+                discovery.Dispose();
+
+                if (execution != discovery)
+                    execution.Dispose();
+            }
         }
 
         ExecutionSummary Run(Assembly assembly, Discovery discovery, Execution execution, Type[] candidateTypes)

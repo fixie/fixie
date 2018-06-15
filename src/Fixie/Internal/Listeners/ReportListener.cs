@@ -33,7 +33,7 @@
                     new XAttribute("result", "Skip"),
                     new XAttribute("time", Seconds(message.Duration)),
                     message.Reason != null
-                        ? new XElement("reason", new XElement("message", new XCData(message.Reason)))
+                        ? new XElement("reason", new XCData(message.Reason))
                         : null));
         }
 

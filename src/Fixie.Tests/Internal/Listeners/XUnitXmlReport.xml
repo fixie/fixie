@@ -17,9 +17,7 @@ Actual:   1]]></message>
     </test>
     <test name="[testClass].Pass" type="[testClass]" method="Pass" result="Pass" time="1.234" />
     <test name="[testClass].SkipWithReason" type="[testClass]" method="SkipWithReason" result="Skip" time="1.234">
-      <reason>
-        <message><![CDATA[Skipped with reason.]]></message>
-      </reason>
+      <reason><![CDATA[Skipped with reason.]]></reason>
     </test>
     <test name="[testClass].SkipWithoutReason" type="[testClass]" method="SkipWithoutReason" result="Skip" time="1.234"/>
   </collection>

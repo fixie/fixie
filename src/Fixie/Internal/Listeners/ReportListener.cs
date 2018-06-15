@@ -66,7 +66,7 @@
         public void Handle(ClassCompleted message)
         {
             classes.Add(
-                new XElement("class",
+                new XElement("collection",
                     new XAttribute("time", Seconds(message.Duration)),
                     new XAttribute("name", message.Class.FullName),
                     new XAttribute("total", message.Total),

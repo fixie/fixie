@@ -26,19 +26,10 @@ the arguments are not known ahead of execution time. It assumes that
 phase and the execution phase. Otherwise, you get a glitchy experience as
 Visual Studio tries and fails to match up actual execution results
 with the list of tests found at discovery time.
-4. Visual Studio requires that new versions of the runner be installed by
-installing a NuGet package.  It is not enough to simply have the dlls under
-your packages folder.  As a consequence, the VS runner doesn't run on the Fixie
-solution itself. See https://github.com/fixie/fixie.integration for
-a sample project which can be used to test the Visual Studio Test Adapter.
-5. It is highly likely that misleading errors will be reported in the Tests Output window upon upgrading.
+4. It is highly likely that misleading errors will be reported in the Tests Output window upon upgrading.
 When users of the Test Adapter upgrade to a new version Fixie, it is recommended that they remove the
 old version, close Visual Studio, reopen Visual Studio, and install the new version
-of Fixie.  
-6. If you're having problems discovering or running tests, you may need to reset
-Visual Studio's cache of runner assemblies. Shut down all instances of Visual Studio,
-delete the folder `%TEMP%\VisualStudioTestExplorerExtensions`, and be sure that
-your project is only linked against a single version of Fixie.
+of Fixie.
 
 ## Fixie's Compromises
 
@@ -94,22 +85,3 @@ the intended test, since the request is ambiguous.
 There are likely other scenarios in which right clicking on test methods will
 fail to successfully execute the intended test.  In all cases, the Test Explorer
 window does report the truth about what actually executed.
-
-## Development on the Test Adapter
-
-Recommended Workflow:
-
-1. Set up a local NuGet package source pointing at the package/ folder in the
-root of your copy of the Fixie repository.
-2. Implement a change within the Fixie solution.
-3. `build package` at the command line to locally produce a new build of the
-NuGet package.
-4. Note the creation of the package file inside the package/ folder.
-5. Open the `fixie.integration` solution, uninstall Fixie from all projects,
-close Test Explorer, and close all instances of Visual Studio.
-6. Delete the contents of `%TEMP%\VisualStudioTestExplorerExtensions` and reopen
-the `fixie.integration` solution.
-7. In `fixie.integration`, resinstall Fixie but from your local package
-source.
-8. Run tests within the `fixie.integration` solution to test the effect of
-your changes.

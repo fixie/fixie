@@ -9,6 +9,14 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+    <None Include="$(MSBuildThisFileDirectory)..\lib\net452\Fixie.VisualStudio.TestAdapter.dll">
+      <Link>Fixie.VisualStudio.TestAdapter.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+    </None>
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
     <None Include="$(MSBuildThisFileDirectory)..\lib\netcoreapp2.0\Fixie.VisualStudio.TestAdapter.dll">
       <Link>Fixie.VisualStudio.TestAdapter.dll</Link>

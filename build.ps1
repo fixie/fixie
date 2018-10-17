@@ -10,11 +10,9 @@ $copyright = copyright 2013 $authors
 $configuration = 'Release'
 $versionSuffix = if ($prerelease) { "beta-{0:D4}" -f $buildNumber } else { "" }
 
-function License {
+function Build {
     mit-license $copyright
-}
 
-function Assembly-Properties {
     generate "src\Directory.build.props" @"
 <Project>
     <PropertyGroup>
@@ -33,13 +31,8 @@ function Assembly-Properties {
     </PropertyGroup>
 </Project>
 "@
-}
 
-function Clean {
     exec { dotnet clean src -c $configuration /nologo }
-}
-
-function Build {
     exec { dotnet build src -c $configuration /nologo }
 }
 
@@ -55,9 +48,6 @@ function Pack {
 }
 
 run-build {
-    step { License }
-    step { Assembly-Properties }
-    step { Clean }
     step { Build }
     step { Test }
     step { Pack }

@@ -47,13 +47,11 @@ function exec($command, $path) {
 
 function step($block) {
     $command = $block.ToString().Trim()
-    heading $command
-    &$block
-}
 
-function heading($title) {
     write-host
-    write-host $title.Replace("-", " ") -fore CYAN
+    write-host $command -fore CYAN
+
+    &$block
 }
 
 function run-build($mainBlock) {

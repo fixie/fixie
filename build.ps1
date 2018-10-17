@@ -53,7 +53,7 @@ function Test {
     exec { dotnet $fixie --configuration $configuration --no-build } src/Fixie.Tests
 }
 
-function Package {
+function Pack {
     exec { dotnet pack -c $configuration --no-restore --no-build /nologo } src\Fixie
     exec { dotnet pack -c $configuration --no-restore --no-build /nologo } src\Fixie.Console
 }
@@ -65,5 +65,5 @@ run-build {
     step { Restore }
     step { Build }
     step { Test }
-    step { Package }
+    step { Pack }
 }

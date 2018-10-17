@@ -10,11 +10,9 @@ $copyright = copyright 2013 $authors
 $configuration = 'Release'
 $versionSuffix = if ($prerelease) { "beta-{0:D4}" -f $buildNumber } else { "" }
 
-function License {
+function Build {
     mit-license $copyright
-}
 
-function Assembly-Properties {
     generate "src\Directory.build.props" @"
 <Project>
     <PropertyGroup>
@@ -33,18 +31,9 @@ function Assembly-Properties {
     </PropertyGroup>
 </Project>
 "@
-}
 
-function Clean {
     exec { dotnet clean src -c $configuration /nologo }
-}
-
-function Restore {
-    exec { dotnet restore src -s https://api.nuget.org/v3/index.json }
-}
-
-function Build {
-    exec { dotnet build src -c $configuration --no-restore /nologo }
+    exec { dotnet build src -c $configuration /nologo }
 }
 
 function Test {
@@ -53,17 +42,13 @@ function Test {
     exec { dotnet $fixie --configuration $configuration --no-build } src/Fixie.Tests
 }
 
-function Package {
+function Pack {
     exec { dotnet pack -c $configuration --no-restore --no-build /nologo } src\Fixie
     exec { dotnet pack -c $configuration --no-restore --no-build /nologo } src\Fixie.Console
 }
 
-run-build {
-    step { License }
-    step { Assembly-Properties }
-    step { Clean }
-    step { Restore }
+main {
     step { Build }
     step { Test }
-    step { Package }
+    step { Pack }
 }

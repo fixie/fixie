@@ -29,8 +29,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 }
 
 function exec($command, $path) {
-
-    if ($path -eq $null) {
+    if ($null -eq $path) {
         $global:lastexitcode = 0
         & $command
     } else {
@@ -47,16 +46,14 @@ function exec($command, $path) {
 
 function step($block) {
     $command = $block.ToString().Trim()
-    heading $command
+
+    write-host
+    write-host $command -fore CYAN
+
     &$block
 }
 
-function heading($title) {
-    write-host
-    write-host $title.Replace("-", " ") -fore CYAN
-}
-
-function run-build($mainBlock) {
+function main($mainBlock) {
     try {
         &$mainBlock
         write-host

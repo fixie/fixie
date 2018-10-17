@@ -53,7 +53,7 @@ function step($block) {
     &$block
 }
 
-function run-build($mainBlock) {
+function main($mainBlock) {
     try {
         &$mainBlock
         write-host

@@ -47,7 +47,7 @@ function Pack {
     exec { dotnet pack -c $configuration --no-restore --no-build /nologo } src\Fixie.Console
 }
 
-run-build {
+main {
     step { Build }
     step { Test }
     step { Pack }

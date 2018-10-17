@@ -32,7 +32,7 @@ function Build {
 </Project>
 "@
 
-    exec { dotnet clean src -c $configuration /nologo }
+    exec { dotnet clean src -c $configuration /nologo -v minimal }
     exec { dotnet build src -c $configuration /nologo }
 }
 

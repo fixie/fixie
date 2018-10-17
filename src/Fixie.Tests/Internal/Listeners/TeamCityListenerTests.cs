@@ -44,8 +44,9 @@
                         "##teamcity[testFinished name='" + TestClass + ".Pass' duration='#']",
 
                         "##teamcity[testStarted name='" + TestClass + ".SkipWithReason']",
-                        "##teamcity[testIgnored name='" + TestClass + ".SkipWithReason' message='Skipped with reason.']",
+                        "##teamcity[testIgnored name='" + TestClass + ".SkipWithReason' message='|0x26a0 Skipped with reason.']",
                         "##teamcity[testFinished name='" + TestClass + ".SkipWithReason' duration='#']",
+
 
                         "##teamcity[testStarted name='" + TestClass + ".SkipWithoutReason']",
                         "##teamcity[testIgnored name='" + TestClass + ".SkipWithoutReason' message='']",

@@ -49,7 +49,7 @@ namespace Fixie.Tests.TestDriven
 
             skipWithReason.Name.ShouldEqual(TestClass + ".SkipWithReason");
             skipWithReason.State.ShouldEqual(TestState.Ignored);
-            skipWithReason.Message.ShouldEqual("Skipped with reason.");
+            skipWithReason.Message.ShouldEqual("⚠ Skipped with reason.");
             skipWithReason.StackTrace.ShouldBeNull();
 
             skipWithoutReason.Name.ShouldEqual(TestClass + ".SkipWithoutReason");

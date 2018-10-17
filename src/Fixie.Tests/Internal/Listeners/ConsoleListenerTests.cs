@@ -45,7 +45,7 @@
                            "Console.Error: Pass",
 
                            "Test '" + TestClass + ".SkipWithReason' skipped:",
-                           "Skipped with reason.",
+                           "⚠ Skipped with reason.",
                            "",
                            "Test '" + TestClass + ".SkipWithoutReason' skipped",
                            "",

@@ -81,7 +81,8 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            [Skip("Skipped with reason.")]
+            const string alert = "\x26A0";
+            [Skip(alert + " Skipped with reason.")]
             public void SkipWithReason()
             {
                 throw new ShouldBeUnreachableException();

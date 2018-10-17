@@ -88,21 +88,30 @@
                     case '\'': builder.Append("|'"); break;
                     case '[': builder.Append("|["); break;
                     case ']': builder.Append("|]"); break;
-                    case '\n': builder.Append("|n"); break; // Line Feed
-                    case '\r': builder.Append("|r"); break; // Carriage Return
-                    case '\u0085': builder.Append("|x"); break; // Next Line
-                    case '\u2028': builder.Append("|l"); break; // Line Separator
-                    case '\u2029': builder.Append("|p"); break; // Paragraph Separator
-                    default: builder.Append(ch); break;
+                    case '\n': builder.Append("|n"); break;
+                    case '\r': builder.Append("|r"); break;
+                    default:
+                        if (RequiresHexEscape(ch))
+                        {
+                            builder.Append("|0x");
+                            builder.Append(((int) ch).ToString("x4"));
+                        }
+                        else
+                        {
+                            builder.Append(ch);
+                        }
+
+                        break;
                 }
             }
 
             return builder.ToString();
         }
 
+        static bool RequiresHexEscape(char ch)
+            => ch > '\x007f';
+
         static string DurationInMilliseconds(TimeSpan duration)
-        {
-            return ((int)Math.Ceiling(duration.TotalMilliseconds)).ToString();
-        }
+            => ((int)Math.Ceiling(duration.TotalMilliseconds)).ToString();
     }
 }

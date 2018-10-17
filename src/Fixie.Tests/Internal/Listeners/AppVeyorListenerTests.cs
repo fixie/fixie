@@ -58,7 +58,7 @@
             skipWithReason.TestName.ShouldEqual(TestClass + ".SkipWithReason");
             skipWithReason.Outcome.ShouldEqual("Skipped");
             int.Parse(skipWithReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-            skipWithReason.ErrorMessage.ShouldEqual("Skipped with reason.");
+            skipWithReason.ErrorMessage.ShouldEqual("⚠ Skipped with reason.");
             skipWithReason.ErrorStackTrace.ShouldBeNull();
             skipWithReason.StdOut.ShouldBeEmpty();
 

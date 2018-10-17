@@ -39,12 +39,8 @@ function Clean {
     exec { dotnet clean src -c $configuration /nologo }
 }
 
-function Restore {
-    exec { dotnet restore src -s https://api.nuget.org/v3/index.json }
-}
-
 function Build {
-    exec { dotnet build src -c $configuration --no-restore /nologo }
+    exec { dotnet build src -c $configuration /nologo }
 }
 
 function Test {
@@ -62,7 +58,6 @@ run-build {
     step { License }
     step { Assembly-Properties }
     step { Clean }
-    step { Restore }
     step { Build }
     step { Test }
     step { Pack }

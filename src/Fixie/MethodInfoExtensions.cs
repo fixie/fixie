@@ -43,7 +43,7 @@
             if (!isDeclaredAsync)
                 return result;
 
-            var task = (Task) result;
+            var task = GetTaskResult(result);
             try
             {
                 task.Wait();
@@ -58,6 +58,42 @@
                 var property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public);
 
                 return property.GetValue(task, null);
+            }
+
+            return null;
+        }
+
+        private static Task GetTaskResult(object result)
+        {
+            var task = result as Task;
+
+            if (task != null)
+            {
+                return task;
+            }
+
+            var resultType = result.GetType();
+
+            if (resultType.IsFSharpAsync()) {
+                var startAsTask =
+                    resultType
+                    .Assembly
+                    .GetType("Microsoft.FSharp.Control.FSharpAsync")
+                    .GetRuntimeMethods()
+                    .FirstOrDefault(mi => mi.Name == "StartAsTask");
+
+                if (startAsTask == null)
+                {
+                    throw new InvalidOperationException("Unable to locate F# Control.Async.StartAsTask method");
+                }
+
+                return
+                    (Task)startAsTask.MakeGenericMethod(resultType.GetGenericArguments())
+                    .Invoke(null,
+                            BindingFlags.Public | BindingFlags.Static,
+                            null,
+                            new object[] { result, null, null },
+                            null);
             }
 
             return null;

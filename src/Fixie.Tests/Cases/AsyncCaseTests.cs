@@ -8,32 +8,32 @@
 
     public class AsyncCaseTests
     {
-        public void ShouldPassUponSuccessfulAsyncExecution()
+        public void ShouldAwaitThenPassUponSuccessfulAsyncExecution()
         {
             Run<AwaitThenPassTestClass>()
                 .ShouldEqual(
                     For<AwaitThenPassTestClass>(".Test passed"));
         }
 
-        public void ShouldPassUponSuccessfulAsyncTaskTExecution()
+        public void ShouldAwaitResultThenPassUponSuccessfulAsyncExecution()
         {
-            Run<AwaitThenPassAndReturnValueTestClass>()
+            Run<AwaitResultThenPassTestClass>()
                 .ShouldEqual(
-                    For<AwaitThenPassAndReturnValueTestClass>(".Test passed"));
+                    For<AwaitResultThenPassTestClass>(".Test passed"));
         }
 
-        public void ShouldPassUponSuccessfulTaskReturnExecution()
+        public void ShouldGetTaskResultThenPassUponSuccessfulTaskExecution()
         {
-            Run<TaskReturnValueTestClass>()
+            Run<CompleteTaskWithResultThenPassTestClass>()
                 .ShouldEqual(
-                    For<TaskReturnValueTestClass>(".Test passed"));
+                    For<CompleteTaskWithResultThenPassTestClass>(".Test passed"));
         }
 
-        public void ShouldPassUponSuccessfulTaskExecution()
+        public void ShouldCompleteTaskThenPassUponSuccessfulTaskExecution()
         {
-            Run<TaskNoReturnValueTestClass>()
+            Run<CompleteTaskThenPassTestClass>()
                 .ShouldEqual(
-                    For<TaskNoReturnValueTestClass>(".Test passed"));
+                    For<CompleteTaskThenPassTestClass>(".Test passed"));
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
@@ -91,7 +91,7 @@
             }
         }
 
-        class AwaitThenPassAndReturnValueTestClass : SampleTestClassBase
+        class AwaitResultThenPassTestClass : SampleTestClassBase
         {
             public async Task<bool> Test()
             {
@@ -103,7 +103,7 @@
             }
         }
 
-        class TaskReturnValueTestClass : SampleTestClassBase
+        class CompleteTaskWithResultThenPassTestClass : SampleTestClassBase
         {
             public Task<bool> Test()
             {
@@ -118,7 +118,7 @@
             }
         }
 
-        class TaskNoReturnValueTestClass : SampleTestClassBase
+        class CompleteTaskThenPassTestClass : SampleTestClassBase
         {
             public Task Test()
             {

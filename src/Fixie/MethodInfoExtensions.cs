@@ -65,12 +65,8 @@
 
         private static Task GetTaskResult(object result)
         {
-            var task = result as Task;
-
-            if (task != null)
-            {
+            if (result is Task task)
                 return task;
-            }
 
             var resultType = result.GetType();
 

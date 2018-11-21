@@ -15,6 +15,27 @@
                     For<AwaitThenPassTestClass>(".Test passed"));
         }
 
+        public void ShouldPassUponSuccessfulAsyncTaskTExecution()
+        {
+            Run<AwaitThenPassAndReturnValueTestClass>()
+                .ShouldEqual(
+                    For<AwaitThenPassAndReturnValueTestClass>(".Test passed"));
+        }
+
+        public void ShouldPassUponSuccessfulTaskReturnExecution()
+        {
+            Run<TaskReturnValueTestClass>()
+                .ShouldEqual(
+                    For<TaskReturnValueTestClass>(".Test passed"));
+        }
+
+        public void ShouldPassUponSuccessfulTaskExecution()
+        {
+            Run<TaskNoReturnValueTestClass>()
+                .ShouldEqual(
+                    For<TaskNoReturnValueTestClass>(".Test passed"));
+        }
+
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
             Run<AwaitThenFailTestClass>()
@@ -67,6 +88,38 @@
                 var result = await Divide(15, 5);
 
                 result.ShouldEqual(3);
+            }
+        }
+
+        class AwaitThenPassAndReturnValueTestClass : SampleTestClassBase
+        {
+            public async Task<bool> Test()
+            {
+                var result = await Divide(15, 5);
+
+                result.ShouldEqual(3);
+
+                return true;
+            }
+        }
+
+        class TaskReturnValueTestClass : SampleTestClassBase
+        {
+            public Task<bool> Test()
+            {
+                3.ShouldEqual(3);
+
+                return Task.Run(() => true);
+            }
+        }
+
+        class TaskNoReturnValueTestClass : SampleTestClassBase
+        {
+            public Task Test()
+            {
+                3.ShouldEqual(3);
+
+                return Task.Run(() => {});
             }
         }
 

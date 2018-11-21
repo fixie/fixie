@@ -37,6 +37,7 @@
             var returnType = method.ReturnType;
             return method.Has<AsyncStateMachineAttribute>() ||
                 returnType == typeof(System.Threading.Tasks.Task) ||
+                (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(System.Threading.Tasks.Task<>)) ||
                 returnType.IsFSharpAsync();
         }
 

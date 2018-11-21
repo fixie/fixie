@@ -89,11 +89,7 @@
 
                 return
                     (Task)startAsTask.MakeGenericMethod(resultType.GetGenericArguments())
-                    .Invoke(null,
-                            BindingFlags.Public | BindingFlags.Static,
-                            null,
-                            new object[] { result, null, null },
-                            null);
+                    .Invoke(null, new object[] { result, null, null });
             }
 
             return null;

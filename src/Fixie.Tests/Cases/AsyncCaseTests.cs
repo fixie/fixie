@@ -36,6 +36,13 @@
                     For<CompleteTaskWithResultThenPassTestClass>(".Test passed"));
         }
 
+        public void ShouldPassForNullTask()
+        {
+            Run<NullTaskTestClass>()
+                .ShouldEqual(
+                    For<NullTaskTestClass>(".Test passed"));
+        }
+
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
             Run<AwaitThenFailTestClass>()
@@ -128,6 +135,17 @@
 
                     return true;
                 });
+            }
+        }
+
+        class NullTaskTestClass : SampleTestClassBase
+        {
+            public Task Test()
+            {
+                // Although unlikely, we must ensure that
+                // we don't attempt to wait on a Task that
+                // is in fact null.
+                return null;
             }
         }
 

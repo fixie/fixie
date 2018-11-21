@@ -40,6 +40,9 @@
                 throw new PreservedException(exception.InnerException);
             }
 
+            if (result == null)
+                return null;
+
             if (!isDeclaredAsync)
                 return result;
 

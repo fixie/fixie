@@ -43,7 +43,9 @@
             if (result == null)
                 return null;
 
-            if (!isDeclaredAsync)
+            var hasAsyncReturnType = IsAsyncType(method.ReturnType);
+
+            if (!hasAsyncReturnType)
                 return result;
 
             var task = GetTaskResult(result);
@@ -73,7 +75,7 @@
 
             var resultType = result.GetType();
 
-            if (resultType.IsFSharpAsync()) {
+            if (IsFSharpAsync(resultType)) {
                 var startAsTask =
                     resultType
                     .Assembly
@@ -92,6 +94,18 @@
             }
 
             return null;
+        }
+
+        static bool IsAsyncType(Type returnType)
+        {
+            return returnType == typeof(Task) ||
+                   (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Task<>)) ||
+                   IsFSharpAsync(returnType);
+        }
+
+        static bool IsFSharpAsync(Type returnType) {
+            return returnType.IsGenericType &&
+                   returnType.GetGenericTypeDefinition().FullName == "Microsoft.FSharp.Control.FSharpAsync`1";
         }
     }
 }

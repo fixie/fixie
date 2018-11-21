@@ -34,16 +34,7 @@
 
         public static bool IsAsync(this MethodInfo method)
         {
-            var returnType = method.ReturnType;
-            return method.Has<AsyncStateMachineAttribute>() ||
-                returnType == typeof(System.Threading.Tasks.Task) ||
-                (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(System.Threading.Tasks.Task<>)) ||
-                returnType.IsFSharpAsync();
-        }
-
-        internal static bool IsFSharpAsync(this Type returnType) {
-            return returnType.IsGenericType &&
-                returnType.GetGenericTypeDefinition().FullName == "Microsoft.FSharp.Control.FSharpAsync`1";
+            return method.Has<AsyncStateMachineAttribute>();
         }
 
         public static bool IsInNamespace(this Type type, string ns)

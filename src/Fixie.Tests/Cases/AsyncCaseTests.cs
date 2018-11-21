@@ -107,9 +107,14 @@
         {
             public Task<bool> Test()
             {
-                3.ShouldEqual(3);
+                var divide = Divide(15, 5);
 
-                return Task.Run(() => true);
+                return divide.ContinueWith(division =>
+                {
+                    division.Result.ShouldEqual(3);
+
+                    return true;
+                });
             }
         }
 
@@ -117,9 +122,12 @@
         {
             public Task Test()
             {
-                3.ShouldEqual(3);
+                var divide = Divide(15, 5);
 
-                return Task.Run(() => {});
+                return divide.ContinueWith(division =>
+                {
+                    division.Result.ShouldEqual(3);
+                });
             }
         }
 

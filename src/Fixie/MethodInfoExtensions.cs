@@ -43,12 +43,9 @@
             if (result == null)
                 return null;
 
-            var hasAsyncReturnType = IsAsyncType(method.ReturnType);
-
-            if (!hasAsyncReturnType)
+            if (!ConvertibleToTask(result, out var task))
                 return result;
 
-            var task = GetTaskResult(result);
             try
             {
                 task.Wait();
@@ -68,44 +65,46 @@
             return null;
         }
 
-        static Task GetTaskResult(object result)
+        static bool ConvertibleToTask(object result, out Task task)
         {
-            if (result is Task task)
-                return task;
+            if (result is Task t)
+            {
+                task = t;
+                return true;
+            }
 
             var resultType = result.GetType();
 
-            if (IsFSharpAsync(resultType)) {
-                var startAsTask =
-                    resultType
+            if (IsFSharpAsync(resultType))
+            {
+                task = ConvertFSharpAsyncToTask(result, resultType);
+                return true;
+            }
+
+            task = null;
+            return false;
+        }
+
+        static bool IsFSharpAsync(Type returnType)
+        {
+            return returnType.IsGenericType &&
+                   returnType.GetGenericTypeDefinition().FullName == "Microsoft.FSharp.Control.FSharpAsync`1";
+        }
+
+        static Task ConvertFSharpAsyncToTask(object result, Type resultType)
+        {
+            var startAsTask =
+                resultType
                     .Assembly
                     .GetType("Microsoft.FSharp.Control.FSharpAsync")
                     .GetRuntimeMethods()
                     .FirstOrDefault(mi => mi.Name == "StartAsTask");
 
-                if (startAsTask == null)
-                {
-                    throw new InvalidOperationException("Unable to locate F# Control.Async.StartAsTask method");
-                }
+            if (startAsTask == null)
+                throw new InvalidOperationException("Unable to locate F# Control.Async.StartAsTask method");
 
-                return
-                    (Task)startAsTask.MakeGenericMethod(resultType.GetGenericArguments())
-                    .Invoke(null, new[] { result, null, null });
-            }
-
-            return null;
-        }
-
-        static bool IsAsyncType(Type returnType)
-        {
-            return returnType == typeof(Task) ||
-                   (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Task<>)) ||
-                   IsFSharpAsync(returnType);
-        }
-
-        static bool IsFSharpAsync(Type returnType) {
-            return returnType.IsGenericType &&
-                   returnType.GetGenericTypeDefinition().FullName == "Microsoft.FSharp.Control.FSharpAsync`1";
+            return (Task) startAsTask.MakeGenericMethod(resultType.GetGenericArguments())
+                .Invoke(null, new[] {result, null, null});
         }
     }
 }

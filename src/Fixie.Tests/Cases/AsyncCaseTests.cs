@@ -66,6 +66,15 @@
                     For<FailBeforeAwaitTestClass>(".Test failed: 'Test' failed!"));
         }
 
+        public void ShouldExecuteReturnedTaskDeclaredAsObject()
+        {
+            Run<CompleteTaskDeclaredAsObjectThenPassTestClass>()
+                .ShouldEqual(
+                    For<CompleteTaskDeclaredAsObjectThenPassTestClass>(
+                        ".Test failed: Expected: 0" + NewLine +
+                        "Actual:   3"));
+        }
+
         public void ShouldFailUnsupportedAsyncVoidCases()
         {
             Run<UnsupportedAsyncVoidTestTestClass>()
@@ -176,6 +185,21 @@
                 ThrowException();
 
                 await Divide(15, 5);
+            }
+        }
+
+        class CompleteTaskDeclaredAsObjectThenPassTestClass : SampleTestClassBase
+        {
+            public object Test()
+            {
+                var divide = Divide(15, 5);
+
+                return divide.ContinueWith(division =>
+                {
+                    // Fail within the continuation, so that we can prove
+                    // that the task object was fully executed.
+                    division.Result.ShouldEqual(0);
+                });
             }
         }
 

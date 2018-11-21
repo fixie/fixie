@@ -22,18 +22,18 @@
                     For<AwaitResultThenPassTestClass>(".Test passed"));
         }
 
-        public void ShouldGetTaskResultThenPassUponSuccessfulTaskExecution()
-        {
-            Run<CompleteTaskWithResultThenPassTestClass>()
-                .ShouldEqual(
-                    For<CompleteTaskWithResultThenPassTestClass>(".Test passed"));
-        }
-
         public void ShouldCompleteTaskThenPassUponSuccessfulTaskExecution()
         {
             Run<CompleteTaskThenPassTestClass>()
                 .ShouldEqual(
                     For<CompleteTaskThenPassTestClass>(".Test passed"));
+        }
+
+        public void ShouldGetTaskResultThenPassUponSuccessfulTaskExecution()
+        {
+            Run<CompleteTaskWithResultThenPassTestClass>()
+                .ShouldEqual(
+                    For<CompleteTaskWithResultThenPassTestClass>(".Test passed"));
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
@@ -103,6 +103,19 @@
             }
         }
 
+        class CompleteTaskThenPassTestClass : SampleTestClassBase
+        {
+            public Task Test()
+            {
+                var divide = Divide(15, 5);
+
+                return divide.ContinueWith(division =>
+                {
+                    division.Result.ShouldEqual(3);
+                });
+            }
+        }
+
         class CompleteTaskWithResultThenPassTestClass : SampleTestClassBase
         {
             public Task<bool> Test()
@@ -114,19 +127,6 @@
                     division.Result.ShouldEqual(3);
 
                     return true;
-                });
-            }
-        }
-
-        class CompleteTaskThenPassTestClass : SampleTestClassBase
-        {
-            public Task Test()
-            {
-                var divide = Divide(15, 5);
-
-                return divide.ContinueWith(division =>
-                {
-                    division.Result.ShouldEqual(3);
                 });
             }
         }

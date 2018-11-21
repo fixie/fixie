@@ -63,7 +63,7 @@
             return null;
         }
 
-        private static Task GetTaskResult(object result)
+        static Task GetTaskResult(object result)
         {
             if (result is Task task)
                 return task;
@@ -85,7 +85,7 @@
 
                 return
                     (Task)startAsTask.MakeGenericMethod(resultType.GetGenericArguments())
-                    .Invoke(null, new object[] { result, null, null });
+                    .Invoke(null, new[] { result, null, null });
             }
 
             return null;

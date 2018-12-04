@@ -8,6 +8,8 @@
 
     public static class MethodInfoExtensions
     {
+        static MethodInfo startAsTask;
+
         /// <summary>
         /// Execute the given method against the given instance of its class.
         /// </summary>
@@ -94,15 +96,14 @@
 
         static Task ConvertFSharpAsyncToTask(object result, Type resultType)
         {
-            MethodInfo startAsTask;
-
             try
             {
-                startAsTask = resultType
-                    .Assembly
-                    .GetType("Microsoft.FSharp.Control.FSharpAsync")
-                    .GetRuntimeMethods()
-                    .Single(x => x.Name == "StartAsTask");
+                if (startAsTask == null)
+                    startAsTask = resultType
+                        .Assembly
+                        .GetType("Microsoft.FSharp.Control.FSharpAsync")
+                        .GetRuntimeMethods()
+                        .Single(x => x.Name == "StartAsTask");
             }
             catch (Exception exception)
             {

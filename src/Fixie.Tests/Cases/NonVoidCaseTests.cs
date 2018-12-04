@@ -20,6 +20,8 @@ namespace Fixie.Tests.Cases
                             ".BoolThrow failed: 'BoolThrow' failed!",
                             ".BoolTrue passed",
                             ".Pass passed",
+                            ".String passed",
+                            ".StringNull passed",
                             ".Throw failed: 'Throw' failed!"));
 
                 Run<SampleAsyncTestClass>()
@@ -29,6 +31,8 @@ namespace Fixie.Tests.Cases
                             ".BoolThrow failed: 'BoolThrow' failed!",
                             ".BoolTrue passed",
                             ".Pass passed",
+                            ".String passed",
+                            ".StringNull passed",
                             ".Throw failed: 'Throw' failed!"));
 
                 console.Output.ShouldBeEmpty();
@@ -49,6 +53,8 @@ namespace Fixie.Tests.Cases
                             ".BoolThrow failed: 'BoolThrow' failed!",
                             ".BoolTrue passed",
                             ".Pass passed",
+                            ".String passed",
+                            ".StringNull passed",
                             ".Throw failed: 'Throw' failed!"));
 
                 console.Lines().ShouldEqual(
@@ -56,6 +62,8 @@ namespace Fixie.Tests.Cases
                     "BoolThrow null",
                     "BoolTrue True",
                     "Pass null",
+                    "String ABC",
+                    "StringNull null",
                     "Throw null");
             }
         }
@@ -74,6 +82,8 @@ namespace Fixie.Tests.Cases
                             ".BoolThrow failed: 'BoolThrow' failed!",
                             ".BoolTrue passed",
                             ".Pass passed",
+                            ".String passed",
+                            ".StringNull passed",
                             ".Throw failed: 'Throw' failed!"));
 
                 console.Lines().ShouldEqual(
@@ -81,6 +91,8 @@ namespace Fixie.Tests.Cases
                     "BoolThrow null",
                     "BoolTrue True",
                     "Pass null",
+                    "String ABC",
+                    "StringNull null",
                     "Throw null");
             }
         }
@@ -96,29 +108,33 @@ namespace Fixie.Tests.Cases
             public bool BoolTrue() => true;
 
             public bool BoolFalse() => false;
+
+            public string String() => "ABC";
+
+            public string StringNull() => null;
         }
 
         class SampleAsyncTestClass
         {
-            public async Task Throw() { ThrowException(); await Bool(true); }
+            public async Task Throw() { ThrowException(); await Awaitable(true); }
             
-            public async Task Pass() { await Bool(true); }
-            
-            public async Task<bool> BoolThrow() { ThrowException(); return await Bool(true); }
-            
-            public async Task<bool> BoolTrue() { return await Bool(true); }
+            public async Task Pass() => await Awaitable(true);
 
-            public async Task<bool> BoolFalse() { return await Bool(false); }
+            public async Task<bool> BoolThrow() { ThrowException(); return await Awaitable(true); }
+            
+            public async Task<bool> BoolTrue() => await Awaitable(true);
 
-            static Task<bool> Bool(bool value)
-            {
-                return Task.Run(() => value);
-            }
+            public async Task<bool> BoolFalse() => await Awaitable(false);
+
+            public async Task<string> String()=> await Awaitable("ABC");
+
+            public async Task<string> StringNull() => await Awaitable<string>(null);
+
+            static Task<T> Awaitable<T>(T value)
+                => Task.Run(() => value);
 
             static void ThrowException([CallerMemberName] string member = null)
-            {
-                throw new FailureException(member);
-            }
+                => throw new FailureException(member);
         }
 
         class TreatBoolReturnValuesAsAssertions : Execution

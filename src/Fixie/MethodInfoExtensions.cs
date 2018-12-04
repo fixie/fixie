@@ -1,6 +1,7 @@
 ﻿namespace Fixie
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
@@ -93,18 +94,24 @@
 
         static Task ConvertFSharpAsyncToTask(object result, Type resultType)
         {
-            var startAsTask =
-                resultType
+            MethodInfo startAsTask;
+
+            try
+            {
+                startAsTask = resultType
                     .Assembly
                     .GetType("Microsoft.FSharp.Control.FSharpAsync")
                     .GetRuntimeMethods()
-                    .FirstOrDefault(mi => mi.Name == "StartAsTask");
+                    .Single(x => x.Name == "StartAsTask");
+            }
+            catch (Exception exception)
+            {
+                throw new InvalidOperationException("Unable to locate F# Control.Async.StartAsTask method.", exception);
+            }
 
-            if (startAsTask == null)
-                throw new InvalidOperationException("Unable to locate F# Control.Async.StartAsTask method");
+            var genericStartAsTask = startAsTask.MakeGenericMethod(resultType.GetGenericArguments());
 
-            return (Task) startAsTask.MakeGenericMethod(resultType.GetGenericArguments())
-                .Invoke(null, new[] {result, null, null});
+            return (Task) genericStartAsTask.Invoke(null, new[] { result, null, null });
         }
     }
 }

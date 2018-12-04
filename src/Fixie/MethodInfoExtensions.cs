@@ -47,6 +47,9 @@
             if (!ConvertibleToTask(result, out var task))
                 return result;
 
+            if (task.Status == TaskStatus.Created)
+                throw new InvalidOperationException("The test returned a non-started task, which cannot be awaited. Consider using Task.Run or Task.Factory.StartNew.");
+
             try
             {
                 task.Wait();

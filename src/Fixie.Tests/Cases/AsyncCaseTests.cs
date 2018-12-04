@@ -66,6 +66,15 @@
                     For<FailBeforeAwaitTestClass>(".Test failed: 'Test' failed!"));
         }
 
+        public void ShouldFailWithClearExplanationWhenAsyncCaseMethodReturnsNonStartedTask()
+        {
+            Run<FailDueToNonStartedTaskTestClass>()
+                .ShouldEqual(
+                    For<FailDueToNonStartedTaskTestClass>(
+                        ".Test failed: The test returned a non-started task, which cannot " +
+                        "be awaited. Consider using Task.Run or Task.Factory.StartNew."));
+        }
+
         public void ShouldExecuteReturnedTaskDeclaredAsObject()
         {
             Run<CompleteTaskDeclaredAsObjectThenPassTestClass>()
@@ -147,7 +156,7 @@
             }
         }
 
-        class NullTaskTestClass : SampleTestClassBase
+        class NullTaskTestClass
         {
             public Task Test()
             {
@@ -185,6 +194,14 @@
                 ThrowException();
 
                 await Divide(15, 5);
+            }
+        }
+
+        class FailDueToNonStartedTaskTestClass
+        {
+            public Task Test()
+            {
+                return new Task(() => throw new ShouldBeUnreachableException());
             }
         }
 

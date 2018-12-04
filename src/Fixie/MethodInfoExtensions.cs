@@ -20,9 +20,7 @@
         /// </returns>
         public static object Execute(this MethodInfo method, object instance, params object[] parameters)
         {
-            bool isDeclaredAsync = method.IsAsync();
-
-            if (isDeclaredAsync && method.IsVoid())
+            if (method.IsVoid() && method.IsAsync())
                 throw new NotSupportedException(
                     "Async void methods are not supported. Declare async methods with a " +
                     "return type of Task to ensure the task actually runs to completion.");

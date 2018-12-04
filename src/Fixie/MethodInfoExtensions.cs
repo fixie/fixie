@@ -85,10 +85,10 @@
             return false;
         }
 
-        static bool IsFSharpAsync(Type returnType)
+        static bool IsFSharpAsync(Type resultType)
         {
-            return returnType.IsGenericType &&
-                   returnType.GetGenericTypeDefinition().FullName == "Microsoft.FSharp.Control.FSharpAsync`1";
+            return resultType.IsGenericType &&
+                   resultType.GetGenericTypeDefinition().FullName == "Microsoft.FSharp.Control.FSharpAsync`1";
         }
 
         static Task ConvertFSharpAsyncToTask(object result, Type resultType)

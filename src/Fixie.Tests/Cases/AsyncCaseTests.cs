@@ -77,9 +77,9 @@
 
         public void ShouldExecuteReturnedTaskDeclaredAsObject()
         {
-            Run<CompleteTaskDeclaredAsObjectThenPassTestClass>()
+            Run<CompleteTaskDeclaredAsObjectTestClass>()
                 .ShouldEqual(
-                    For<CompleteTaskDeclaredAsObjectThenPassTestClass>(
+                    For<CompleteTaskDeclaredAsObjectTestClass>(
                         ".Test failed: Expected: 0" + NewLine +
                         "Actual:   3"));
         }
@@ -205,7 +205,7 @@
             }
         }
 
-        class CompleteTaskDeclaredAsObjectThenPassTestClass : SampleTestClassBase
+        class CompleteTaskDeclaredAsObjectTestClass : SampleTestClassBase
         {
             public object Test()
             {

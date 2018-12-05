@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests.Internal
 {
     using System;
+    using Assertions;
     using Fixie.Cli;
     using Fixie.Internal;
 

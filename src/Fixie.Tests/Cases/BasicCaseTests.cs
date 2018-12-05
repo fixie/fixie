@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests.Cases
 {
+    using Assertions;
     using static Utility;
 
     public class BasicCaseTests

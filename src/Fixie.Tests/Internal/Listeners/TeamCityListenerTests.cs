@@ -2,6 +2,7 @@
 {
     using System.Linq;
     using System.Text.RegularExpressions;
+    using Assertions;
     using Fixie.Internal;
     using Fixie.Internal.Listeners;
 

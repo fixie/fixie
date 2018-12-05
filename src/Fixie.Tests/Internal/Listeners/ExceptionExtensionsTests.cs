@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests.Internal.Listeners
 {
     using System;
+    using Assertions;
     using Fixie.Internal.Listeners;
     using static Utility;
 

@@ -7,11 +7,6 @@
 
     public static class AssertionExtensions
     {
-        public static void ShouldEqual<T>(this IEnumerable<T> actual, params T[] expected)
-        {
-            Assert.Equal(expected, actual.ToArray());
-        }
-
         public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception
         {
             bool threw = false;

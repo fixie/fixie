@@ -49,14 +49,7 @@
             if (task.Status == TaskStatus.Created)
                 throw new InvalidOperationException("The test returned a non-started task, which cannot be awaited. Consider using Task.Run or Task.Factory.StartNew.");
 
-            try
-            {
-                task.Wait();
-            }
-            catch (AggregateException exception)
-            {
-                throw new PreservedException(exception.InnerExceptions.First());
-            }
+            task.GetAwaiter().GetResult();
 
             if (method.ReturnType.IsGenericType)
             {

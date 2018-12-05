@@ -42,11 +42,37 @@
 
         public ExecutionSummary RunTests(Assembly assembly, Test[] tests)
         {
-            var types = GetTypes(assembly, tests);
+            var request = new Dictionary<string, HashSet<string>>();
 
-            var methods = GetMethods(types, tests);
+            foreach (var test in tests)
+            {
+                if (!request.ContainsKey(test.Class))
+                    request.Add(test.Class, new HashSet<string>());
 
-            return Run(assembly, types.Values.ToArray(), methods.Contains);
+                request[test.Class].Add(test.Method);
+            }
+
+            var types = new List<Type>();
+            var methods = new List<MethodInfo>();
+
+            foreach (var testClass in request.Keys)
+            {
+                var type = assembly.GetType(testClass);
+
+                if (type != null)
+                {
+                    types.Add(type);
+
+                    var methodsToInclude = request[testClass];
+
+                    methods.AddRange(type
+                        .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
+                        .Where(m => methodsToInclude.Contains(m.Name))
+                        .ToArray());
+                }
+            }
+
+            return Run(assembly, types.ToArray(), methods.Contains);
         }
 
         public ExecutionSummary RunMethod(Assembly assembly, MethodInfo method)
@@ -60,26 +86,6 @@
 
             foreach (var nested in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).SelectMany(GetTypeAndNestedTypes))
                 yield return nested;
-        }
-
-        static Dictionary<string, Type> GetTypes(Assembly assembly, Test[] tests)
-        {
-            var types = new Dictionary<string, Type>();
-
-            foreach (var test in tests)
-                if (!types.ContainsKey(test.Class))
-                    types.Add(test.Class, assembly.GetType(test.Class));
-
-            return types;
-        }
-
-        static MethodInfo[] GetMethods(Dictionary<string, Type> classes, Test[] tests)
-        {
-            return tests
-                .SelectMany(test =>
-                    classes[test.Class]
-                        .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-                        .Where(m => m.Name == test.Method)).ToArray();
         }
 
         ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)

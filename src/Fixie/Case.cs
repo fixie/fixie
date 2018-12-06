@@ -85,10 +85,7 @@
         {
             State = CaseState.Failed;
 
-            if (reason is PreservedException wrapped)
-                Exception = wrapped.OriginalException;
-            else
-                Exception = reason;
+            Exception = reason;
 
             SkipReason = null;
 

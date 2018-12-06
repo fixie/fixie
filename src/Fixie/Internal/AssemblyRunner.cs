@@ -66,10 +66,6 @@
                             throw new Exception($"Test assembly received unexpected message of type {messageType}: {body}");
                         }
                     }
-                    catch (PreservedException exception)
-                    {
-                        pipe.Send(exception.OriginalException);
-                    }
                     catch (Exception exception)
                     {
                         pipe.Send(exception);
@@ -81,13 +77,6 @@
 
                     return exitCode;
                 }
-            }
-            catch (PreservedException exception)
-            {
-                using (Foreground.Red)
-                    Console.WriteLine($"Fatal Error: {exception.OriginalException}");
-
-                return FatalError;
             }
             catch (Exception exception)
             {

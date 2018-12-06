@@ -5,7 +5,6 @@
     using System.Reflection;
     using System.Runtime.ExceptionServices;
     using System.Threading.Tasks;
-    using Internal;
 
     public static class MethodInfoExtensions
     {

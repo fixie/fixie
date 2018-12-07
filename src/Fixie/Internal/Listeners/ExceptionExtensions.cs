@@ -82,20 +82,23 @@
 
                 var lines = exception.StackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
-                if (lines.Count >= numberOfTrailingStackFramesToRemove + 1)
+                if (lines.Count < numberOfTrailingStackFramesToRemove + 1)
                 {
-                    for (int i = 1; i <= numberOfTrailingStackFramesToRemove; i++)
+                    //Unexpected. Fail safe.
+                    return exception.StackTrace;
+                }
+
+                for (int i = 1; i <= numberOfTrailingStackFramesToRemove; i++)
+                {
+                    var lastLine = lines.Last();
+
+                    if (lastLine.Contains("---"))
                     {
-                        var lastLine = lines.Last();
-
-                        if (lastLine.Contains("---"))
-                        {
-                            // Expected an " at ..." line. Fail safe.
-                            return exception.StackTrace;
-                        }
-
-                        lines.RemoveAt(lines.Count - 1);
+                        // Expected an " at ..." line. Fail safe.
+                        return exception.StackTrace;
                     }
+
+                    lines.RemoveAt(lines.Count - 1);
                 }
 
                 var rethrowMarker = lines.Last().Trim();

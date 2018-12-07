@@ -3,8 +3,8 @@
     using System;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.ExceptionServices;
     using System.Threading.Tasks;
-    using Internal;
 
     public static class MethodInfoExtensions
     {
@@ -37,7 +37,8 @@
             }
             catch (TargetInvocationException exception)
             {
-                throw new PreservedException(exception.InnerException);
+                ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
+                throw; //Unreachable.
             }
 
             if (result == null)
@@ -49,14 +50,7 @@
             if (task.Status == TaskStatus.Created)
                 throw new InvalidOperationException("The test returned a non-started task, which cannot be awaited. Consider using Task.Run or Task.Factory.StartNew.");
 
-            try
-            {
-                task.Wait();
-            }
-            catch (AggregateException exception)
-            {
-                throw new PreservedException(exception.InnerExceptions.First());
-            }
+            task.GetAwaiter().GetResult();
 
             if (method.ReturnType.IsGenericType)
             {

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using System.Runtime.ExceptionServices;
     using Internal;
 
     /// <summary>
@@ -48,7 +49,8 @@
             }
             catch (TargetInvocationException exception)
             {
-                throw new PreservedException(exception.InnerException);
+                ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
+                throw; //Unreachable.
             }
         }
 

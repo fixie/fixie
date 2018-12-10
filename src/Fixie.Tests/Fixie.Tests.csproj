@@ -27,10 +27,6 @@
     <ProjectReference Include="..\Fixie\Fixie.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
-    <Reference Include="System.Configuration" />
-  </ItemGroup>
-
   <ItemGroup>
     <None Update="Internal\Listeners\XUnitXmlReport.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

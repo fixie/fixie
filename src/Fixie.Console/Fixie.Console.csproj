@@ -9,6 +9,11 @@
     <Description>`dotnet fixie` console test runner for the Fixie test framework.</Description>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <Import Project="..\Fixie.Cli\Fixie.Cli.projitems" Label="Shared" />
 
   <ItemGroup>

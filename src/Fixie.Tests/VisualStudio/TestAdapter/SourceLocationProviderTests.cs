@@ -75,7 +75,7 @@
             location.ShouldBeNull();
         }
 
-        static void AssertLineNumber(string className, string methodName, int debugLine, int releaseLine)
+        static void AssertLineNumber(string className, string methodName, int debugOrCoreLine, int releaseFrameworkLine)
         {
             var sourceLocationProvider = new SourceLocationProvider(TestAssemblyPath);
 
@@ -84,10 +84,10 @@
             success.ShouldBeTrue();
             location.CodeFilePath.EndsWith("SourceLocationSamples.cs").ShouldBeTrue();
 
-#if DEBUG
-            location.LineNumber.ShouldEqual(debugLine);
-#elif NET452
-            location.LineNumber.ShouldEqual(releaseLine);
+#if DEBUG || NETCOREAPP2_0
+            location.LineNumber.ShouldEqual(debugOrCoreLine);
+#else
+            location.LineNumber.ShouldEqual(releaseFrameworkLine);
 #endif
         }
     }

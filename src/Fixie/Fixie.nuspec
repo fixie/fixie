@@ -16,7 +16,9 @@
       <reference file="Fixie.dll" />
     </references>
     <dependencies>
-      <group targetFramework="net452" />
+      <group targetFramework="net452">
+        <dependency id="Mono.Cecil" version="0.10.0" />
+      </group>
       <group targetFramework="netcoreapp2.0">
         <dependency id="Microsoft.TestPlatform.TestHost" version="15.7.0" />
         <dependency id="Mono.Cecil" version="0.10.0" />

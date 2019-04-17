@@ -59,7 +59,7 @@
 
             parts.Add($"took {message.Duration.TotalSeconds:N2} seconds");
 
-            return String.Join(", ", parts);
+            return string.Join(", ", parts);
         }
     }
 }

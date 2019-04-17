@@ -117,7 +117,7 @@
                 catch (Exception exception)
                 {
                     var allowedValues =
-                        String.Join(", ",
+                        string.Join(", ",
                             Enum.GetValues(conversionType)
                                 .Cast<object>()
                                 .Select(x => x.ToString()));

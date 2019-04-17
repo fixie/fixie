@@ -112,7 +112,7 @@
         {
             var directory = Path.GetDirectoryName(path);
 
-            if (String.IsNullOrEmpty(directory))
+            if (string.IsNullOrEmpty(directory))
                 return;
 
             Directory.CreateDirectory(directory);

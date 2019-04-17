@@ -111,7 +111,7 @@
 
                 lines.RemoveAt(lines.Count - 1);
 
-                return String.Join(Environment.NewLine, lines);
+                return string.Join(Environment.NewLine, lines);
             }
 
             return exception.StackTrace;

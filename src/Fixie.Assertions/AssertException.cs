@@ -31,7 +31,7 @@ namespace Fixie.Assertions
             return string.Join(Environment.NewLine, results.ToArray());
         }
 
-        // Our own custom String.Split because Silverlight/CoreCLR doesn't support the version we were using
+        // Our own custom string.Split because Silverlight/CoreCLR doesn't support the version we were using
         static IEnumerable<string> SplitLines(string input)
         {
             while (true)

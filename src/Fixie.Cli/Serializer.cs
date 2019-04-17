@@ -14,7 +14,7 @@
         /// See https://stackoverflow.com/a/6040946 for the regex approach used here.
         /// </summary>
         public static string Serialize(string[] arguments)
-            => String.Join(" ", arguments.Select(Quote));
+            => string.Join(" ", arguments.Select(Quote));
 
         static string Quote(string argument)
         {

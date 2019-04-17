@@ -128,7 +128,7 @@
         {
             return new MethodDiscoverer(discovery)
                 .TestMethods(typeof(TTestClass))
-                .Select(method => $"{method.Name}({String.Join(", ", method.GetParameters().Select(x => x.Name))})")
+                .Select(method => $"{method.Name}({string.Join(", ", method.GetParameters().Select(x => x.Name))})")
                 .OrderBy(name => name, StringComparer.Ordinal);
         }
 

@@ -13,10 +13,10 @@
             // Null?
             if (!type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Nullable<>))))
             {
-                if (Object.Equals(x, default(T)))
-                    return Object.Equals(y, default(T));
+                if (object.Equals(x, default(T)))
+                    return object.Equals(y, default(T));
 
-                if (Object.Equals(y, default(T)))
+                if (object.Equals(y, default(T)))
                     return false;
             }
 
@@ -39,8 +39,8 @@
                 return new EnumerableEqualityComparer().Equals(enumerableX, enumerableY);
             }
 
-            // Last case, rely on Object.Equals
-            return Object.Equals(x, y);
+            // Last case, rely on object.Equals
+            return object.Equals(x, y);
         }
 
         public int GetHashCode(T obj)

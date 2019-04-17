@@ -21,8 +21,8 @@ namespace Fixie.Assertions
                     return -1;
             }
 
-            var xIsAssignableFromY = x.GetType().IsAssignableFrom(y.GetType());
-            var yIsAssignableFromX = y.GetType().IsAssignableFrom(x.GetType());
+            bool xIsAssignableFromY = x.GetType().IsInstanceOfType(y);
+            bool yIsAssignableFromX = y.GetType().IsInstanceOfType(x);
 
             if (!xIsAssignableFromY && !yIsAssignableFromX)
                 throw new InvalidOperationException($"Cannot compare objects of type {x.GetType().Name} and {y.GetType().Name} because neither is assignable from the other.");

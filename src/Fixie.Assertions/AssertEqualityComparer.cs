@@ -21,12 +21,12 @@
             }
 
             //x implements IEquitable<T> and is assignable from y?
-            var xIsAssignableFromY = x.GetType().IsAssignableFrom(y.GetType());
+            var xIsAssignableFromY = x.GetType().IsInstanceOfType(y);
             if (xIsAssignableFromY && x is IEquatable<T>)
                 return ((IEquatable<T>)x).Equals(y);
 
             //y implements IEquitable<T> and is assignable from x?
-            var yIsAssignableFromX = y.GetType().IsAssignableFrom(x.GetType());
+            var yIsAssignableFromX = y.GetType().IsInstanceOfType(x);
             if (yIsAssignableFromX && y is IEquatable<T>)
                 return ((IEquatable<T>)y).Equals(x);
 

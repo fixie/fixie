@@ -3,7 +3,6 @@
     using System;
     using System.Reflection;
     using System.Runtime.ExceptionServices;
-    using Internal;
 
     /// <summary>
     /// The context in which a test class is running.

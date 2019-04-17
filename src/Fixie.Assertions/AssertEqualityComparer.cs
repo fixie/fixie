@@ -22,22 +22,17 @@
 
             //x implements IEquitable<T> and is assignable from y?
             var xIsAssignableFromY = x.GetType().IsInstanceOfType(y);
-            if (xIsAssignableFromY && x is IEquatable<T>)
-                return ((IEquatable<T>)x).Equals(y);
+            if (xIsAssignableFromY && x is IEquatable<T> equatable1)
+                return equatable1.Equals(y);
 
             //y implements IEquitable<T> and is assignable from x?
             var yIsAssignableFromX = y.GetType().IsInstanceOfType(x);
-            if (yIsAssignableFromX && y is IEquatable<T>)
-                return ((IEquatable<T>)y).Equals(x);
+            if (yIsAssignableFromX && y is IEquatable<T> equatable2)
+                return equatable2.Equals(x);
 
             // Enumerable?
-            var enumerableX = x as IEnumerable;
-            var enumerableY = y as IEnumerable;
-
-            if (enumerableX != null && enumerableY != null)
-            {
+            if (x is IEnumerable enumerableX && y is IEnumerable enumerableY)
                 return new EnumerableEqualityComparer().Equals(enumerableX, enumerableY);
-            }
 
             // Last case, rely on object.Equals
             return object.Equals(x, y);

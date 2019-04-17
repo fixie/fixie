@@ -9,7 +9,7 @@
     /// The default discovery rules are applied to a test assembly whenever the test
     /// assembly includes no such subclass.
     ///
-    /// By defualt,
+    /// By default,
     /// 
     /// <para>A class is a test class if its name ends with "Tests".</para>
     ///

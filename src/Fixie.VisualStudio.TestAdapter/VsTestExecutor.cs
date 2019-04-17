@@ -14,7 +14,7 @@
     public class VsTestExecutor : ITestExecutor
     {
         public const string Id = "executor://Fixie.VisualStudio";
-        public static Uri Uri = new Uri(Id);
+        public static readonly Uri Uri = new Uri(Id);
 
         /// <summary>
         /// Called by Visual Studio, when running all tests.

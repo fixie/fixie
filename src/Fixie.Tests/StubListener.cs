@@ -35,7 +35,7 @@
             var stackTrace = literateStackTrace;
 
             stackTrace =
-                String.Join(NewLine,
+                string.Join(NewLine,
                     stackTrace.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries)
                         .Where(x => !x.StartsWith("   at "))
                         .Where(x => x != "--- End of stack trace from previous location where exception was thrown ---"));

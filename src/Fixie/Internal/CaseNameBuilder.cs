@@ -26,11 +26,10 @@
             if (parameter == null)
                 return "null";
 
-            if (parameter is char)
-                return CharacterLiteral((char)parameter);
+            if (parameter is char ch)
+                return CharacterLiteral(ch);
 
-            var s = parameter as string;
-            if (s != null)
+            if (parameter is string s)
                 return ShortStringLiteral(s);
 
             return Convert.ToString(parameter, CultureInfo.InvariantCulture);
@@ -80,7 +79,7 @@
                     return $"\\u{digits:X4}";
 
                 default:
-                    return Char.ToString(ch);
+                    return char.ToString(ch);
             }
         }
 

@@ -69,7 +69,7 @@
 
         static void Output(CaseCompleted message)
         {
-            if (!String.IsNullOrEmpty(message.Output))
+            if (!string.IsNullOrEmpty(message.Output))
                 Message("testStdOut name='{0}' out='{1}'", message.Name, message.Output);
         }
 

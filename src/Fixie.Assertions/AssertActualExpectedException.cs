@@ -64,7 +64,7 @@ namespace Fixie.Assertions
                     valueStrings.Add(valueObject?.ToString() ?? "(null)");
 
                 return value.GetType().FullName +
-                       $" {{{NewLine}{String.Join("," + NewLine, valueStrings.ToArray())}{NewLine}}}";
+                       $" {{{NewLine}{string.Join("," + NewLine, valueStrings.ToArray())}{NewLine}}}";
             }
 
             return value.ToString();

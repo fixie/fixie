@@ -21,63 +21,49 @@ namespace Fixie.Assertions
                     return -1;
             }
 
-            var xIsAssignableFromY = x.GetType().IsAssignableFrom(y.GetType());
-            var yIsAssignableFromX = y.GetType().IsAssignableFrom(x.GetType());
+            bool xIsAssignableFromY = x.GetType().IsInstanceOfType(y);
+            bool yIsAssignableFromX = y.GetType().IsInstanceOfType(x);
 
             if (!xIsAssignableFromY && !yIsAssignableFromX)
                 throw new InvalidOperationException($"Cannot compare objects of type {x.GetType().Name} and {y.GetType().Name} because neither is assignable from the other.");
 
             // x Implements IComparable<T>?
-            var comparable1 = x as IComparable<T>;
-
-            if (comparable1 != null && xIsAssignableFromY)
+            if (x is IComparable<T> comparable1 && xIsAssignableFromY)
                 return comparable1.CompareTo(y);
 
             // y Implements IComparable<T>?
-            var comparable2 = y as IComparable<T>;
-
-            if (comparable2 != null && yIsAssignableFromX)
+            if (y is IComparable<T> comparable2 && yIsAssignableFromX)
                 return comparable2.CompareTo(x) * -1;
 
             // x Implements IComparable?
-            IComparable comparable3 = x as IComparable;
-
-            if (comparable3 != null && xIsAssignableFromY)
+            if (x is IComparable comparable3 && xIsAssignableFromY)
                 return comparable3.CompareTo(y);
 
             // y Implements IComparable?
-            var comparable4 = y as IComparable;
-
-            if (comparable4 != null && yIsAssignableFromX)
+            if (y is IComparable comparable4 && yIsAssignableFromX)
                 return comparable4.CompareTo(x) *-1;
 
             if (new AssertEqualityComparer<T>().Equals(x, y))
-            {
                 return 0;
-            }
 
             if (xIsAssignableFromY)
             {
                 var result = CompareUsingOperators(x, y, x.GetType());
                 if (result.HasValue)
-                {
                     return result.Value;
-                }
             }
 
             if (yIsAssignableFromX)
             {
                 var result = CompareUsingOperators(x, y, y.GetType());
                 if (result.HasValue)
-                {
                     return result.Value;
-                }
             }
 
             throw new InvalidOperationException($"Cannot compare objects of type {x.GetType().Name} and {y.GetType().Name} because neither implements IComparable or IComparable<T> nor overloads comparaison operators.");
         }
 
-        //Note: Handles edge case of a class where operators are overloaded but niether IComparable or IComparable<T> are implemented
+        //Note: Handles edge case of a class where operators are overloaded but neither IComparable or IComparable<T> are implemented.
         static int? CompareUsingOperators(T x, T y, Type type)
         {
             var greaterThan = type.GetMethod("op_GreaterThan");

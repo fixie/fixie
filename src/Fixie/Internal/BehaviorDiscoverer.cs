@@ -47,7 +47,7 @@
                 throw new Exception(
                     "A test assembly can have at most one Discovery implementation, " +
                     "but the following implementations were discovered:" + Environment.NewLine +
-                    String.Join(Environment.NewLine,
+                    string.Join(Environment.NewLine,
                         customDiscoveryTypes
                             .Select(x => $"\t{x.FullName}")));
             }
@@ -70,7 +70,7 @@
                 throw new Exception(
                     "A test assembly can have at most one Execution implementation, " +
                     "but the following implementations were discovered:" + Environment.NewLine +
-                    String.Join(Environment.NewLine,
+                    string.Join(Environment.NewLine,
                         customExecutionTypes
                             .Select(x => $"\t{x.FullName}")));
             }

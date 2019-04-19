@@ -40,7 +40,7 @@
             // If the stack trace ends with a well-known internal segment caused by
             // ExceptionDispatchInfo.Throw(), attempt to omit that section.
             //
-            // Example: Synchronous test failures end with the lines to omit:
+            // Example: Synchronous test failures end with the following lines to omit:
             //
             //  --- End of stack trace from previous location where exception was thrown ---
             //    at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
@@ -111,7 +111,7 @@
 
                 lines.RemoveAt(lines.Count - 1);
 
-                return String.Join(Environment.NewLine, lines);
+                return string.Join(Environment.NewLine, lines);
             }
 
             return exception.StackTrace;

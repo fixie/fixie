@@ -71,7 +71,7 @@
 
         static void AttachCapturedConsoleOutput(string output, TestResult testResult)
         {
-            if (!String.IsNullOrEmpty(output))
+            if (!string.IsNullOrEmpty(output))
                 testResult.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, output));
         }
     }

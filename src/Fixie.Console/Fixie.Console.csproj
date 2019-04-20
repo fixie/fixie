@@ -17,7 +17,8 @@
   <Import Project="..\Fixie.Cli\Fixie.Cli.projitems" Label="Shared" />
 
   <ItemGroup>
-    <Content Include="prefercliruntime" PackagePath="" />
+    <None Include="prefercliruntime" Pack="true" PackagePath="" />
+    <None Include="..\..\LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
   </ItemGroup>
 
 </Project>

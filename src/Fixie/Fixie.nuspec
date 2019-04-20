@@ -26,6 +26,8 @@
     </dependencies>
   </metadata>
   <files>
+    <file target="" src="..\..\LICENSE.md" />
+
     <!-- Reference Library -->
 
     <file target="lib\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />

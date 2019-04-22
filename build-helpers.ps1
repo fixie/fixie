@@ -41,6 +41,10 @@ SOFTWARE.
 "@
 }
 
+function remove-folder($path) {
+    remove-item $path -Recurse -Force -ErrorAction SilentlyContinue | out-null
+}
+
 function exec($command, $path) {
     if ($null -eq $path) {
         $global:lastexitcode = 0

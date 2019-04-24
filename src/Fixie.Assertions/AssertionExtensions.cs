@@ -59,10 +59,10 @@ namespace Fixie.Assertions
 
         public static void ShouldNotBeNull<T>(this T @object) where T : class
         {
-            @object.ShouldNotEqual(null);
+            @object.ShouldNotBe(null);
         }
 
-        public static void ShouldNotEqual<T>(this T actual, T expected)
+        public static void ShouldNotBe<T>(this T actual, T expected)
         {
             if (Assert.Equal(expected, actual))
                 throw new AssertException($"Unexpected: {Format(expected)}");

@@ -196,13 +196,13 @@
             method.GetParameters().Single().ParameterType.ShouldEqual(typeof(bool));
             var resolvedParameterType = method.GetParameters().Single().ParameterType;
             resolvedParameterType.Name.ShouldEqual("Boolean");
-            resolvedParameterType.IsGenericParameter.ShouldBeFalse();
+            resolvedParameterType.IsGenericParameter.ShouldBe(false);
 
             method = Case("ConstrainedGeneric", "Incompatible").Method;
             method.Name.ShouldEqual("ConstrainedGeneric");
             var unresolvedParameterType = method.GetParameters().Single().ParameterType;
             unresolvedParameterType.Name.ShouldEqual("T");
-            unresolvedParameterType.IsGenericParameter.ShouldBeTrue();
+            unresolvedParameterType.IsGenericParameter.ShouldBe(true);
         }
 
         public void ShouldTrackLastExceptionAsFailureReason()

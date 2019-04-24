@@ -136,7 +136,7 @@
         {
             var unresolved = Resolve("ConstrainedGeneric", new object[] { "Incompatible" }).Single();
             unresolved.Name.ShouldEqual("T");
-            unresolved.IsGenericParameter.ShouldBeTrue();
+            unresolved.IsGenericParameter.ShouldBe(true);
         }
 
         static IEnumerable<Type> Resolve(string methodName, object[] parameters)

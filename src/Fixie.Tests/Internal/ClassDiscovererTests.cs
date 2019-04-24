@@ -81,7 +81,7 @@
                 .Single();
 
             //Confirm that a nested closure class has actually been generated.
-            nested.Has<CompilerGeneratedAttribute>().ShouldBeTrue();
+            nested.Has<CompilerGeneratedAttribute>().ShouldBe(true);
 
             //Confirm that the nested closure class is omitted from test class discovery.
             var customDiscovery = new SampleDiscovery();

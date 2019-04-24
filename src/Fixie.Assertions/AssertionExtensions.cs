@@ -7,14 +7,9 @@ namespace Fixie.Assertions
 
     public static class AssertionExtensions
     {
-        public static void ShouldBeFalse(this bool condition)
+        public static void ShouldBe(this bool actual, bool expected)
         {
-            condition.ShouldEqual(false);
-        }
-
-        public static void ShouldBeTrue(this bool condition)
-        {
-            condition.ShouldEqual(true);
+            actual.ShouldEqual(expected);
         }
 
         public static void ShouldBeGreaterThan(this int actual, int minimum)
@@ -111,7 +106,7 @@ namespace Fixie.Assertions
                 exception = actual;
             }
 
-            threw.ShouldBeTrue();
+            threw.ShouldBe(true);
             return (TException)exception;
         }
     }

@@ -71,7 +71,7 @@
 
             var success = sourceLocationProvider.TryGetSourceLocation(className, methodName, out var location);
 
-            success.ShouldBeFalse();
+            success.ShouldBe(false);
             location.ShouldBeNull();
         }
 
@@ -81,8 +81,8 @@
 
             var success = sourceLocationProvider.TryGetSourceLocation(className, methodName, out var location);
 
-            success.ShouldBeTrue();
-            location.CodeFilePath.EndsWith("SourceLocationSamples.cs").ShouldBeTrue();
+            success.ShouldBe(true);
+            location.CodeFilePath.EndsWith("SourceLocationSamples.cs").ShouldBe(true);
 
             location.LineNumber.ShouldEqual(expectedLine);
         }

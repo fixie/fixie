@@ -314,7 +314,7 @@
             [Input("Oops")]
             public void ConstrainedGeneric<T>(T input) where T : struct
             {
-                typeof(T).IsValueType.ShouldBeTrue();
+                typeof(T).IsValueType.ShouldBe(true);
             }
 
             public void ConstrainedGenericMethodWithNoInputsProvided<T>(T input) where T : struct
@@ -336,7 +336,7 @@
 
             public void ConstrainedGeneric<T>(T input) where T : struct
             {
-                typeof(T).IsValueType.ShouldBeTrue();
+                typeof(T).IsValueType.ShouldBe(true);
             }
         }
 

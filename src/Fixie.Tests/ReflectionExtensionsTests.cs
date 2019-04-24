@@ -16,53 +16,53 @@
 
         public void CanDetectVoidReturnType()
         {
-            Method("ReturnsVoid").IsVoid().ShouldBeTrue();
-            Method("ReturnsInt").IsVoid().ShouldBeFalse();
+            Method("ReturnsVoid").IsVoid().ShouldBe(true);
+            Method("ReturnsInt").IsVoid().ShouldBe(false);
         }
 
         public void CanDetectStaticTypes()
         {
-            typeof(StaticClass).IsStatic().ShouldBeTrue();
-            typeof(AbstractClass).IsStatic().ShouldBeFalse();
-            typeof(ConcreteClass).IsStatic().ShouldBeFalse();
-            typeof(SealedConcreteClass).IsStatic().ShouldBeFalse();
+            typeof(StaticClass).IsStatic().ShouldBe(true);
+            typeof(AbstractClass).IsStatic().ShouldBe(false);
+            typeof(ConcreteClass).IsStatic().ShouldBe(false);
+            typeof(SealedConcreteClass).IsStatic().ShouldBe(false);
         }
 
         public void CanDetectClassAttributes()
         {
-            typeof(AttributeSample).Has<InheritedAttribute>().ShouldBeTrue();
-            typeof(AttributeSample).Has<NonInheritedAttribute>().ShouldBeTrue();
-            typeof(AttributeSample).Has<AttributeUsageAttribute>().ShouldBeFalse();
+            typeof(AttributeSample).Has<InheritedAttribute>().ShouldBe(true);
+            typeof(AttributeSample).Has<NonInheritedAttribute>().ShouldBe(true);
+            typeof(AttributeSample).Has<AttributeUsageAttribute>().ShouldBe(false);
         }
 
         public void CanDetectMethodAttributes()
         {
-            Method<AttributeSample>("AttributeOnBaseDeclaration").Has<SampleMethodAttribute>().ShouldBeTrue();
-            Method<AttributeSample>("AttributeOnOverrideDeclaration").Has<SampleMethodAttribute>().ShouldBeTrue();
-            Method<AttributeSample>("NoAttrribute").Has<SampleMethodAttribute>().ShouldBeFalse();
+            Method<AttributeSample>("AttributeOnBaseDeclaration").Has<SampleMethodAttribute>().ShouldBe(true);
+            Method<AttributeSample>("AttributeOnOverrideDeclaration").Has<SampleMethodAttribute>().ShouldBe(true);
+            Method<AttributeSample>("NoAttrribute").Has<SampleMethodAttribute>().ShouldBe(false);
         }
 
         public void CanDetectAsyncDeclarations()
         {
-            Method("ReturnsVoid").IsAsync().ShouldBeFalse();
-            Method("ReturnsInt").IsAsync().ShouldBeFalse();
-            Method("Async").IsAsync().ShouldBeTrue();
+            Method("ReturnsVoid").IsAsync().ShouldBe(false);
+            Method("ReturnsInt").IsAsync().ShouldBe(false);
+            Method("Async").IsAsync().ShouldBe(true);
         }
 
         public void CanDetectWhetherTypeIsWithinNamespace()
         {
             var opCode = typeof(System.Reflection.Emit.OpCode);
 
-            opCode.IsInNamespace(null).ShouldBeFalse();
-            opCode.IsInNamespace("").ShouldBeFalse();
-            opCode.IsInNamespace("System").ShouldBeTrue();
-            opCode.IsInNamespace("Sys").ShouldBeFalse();
-            opCode.IsInNamespace("System.").ShouldBeFalse();
+            opCode.IsInNamespace(null).ShouldBe(false);
+            opCode.IsInNamespace("").ShouldBe(false);
+            opCode.IsInNamespace("System").ShouldBe(true);
+            opCode.IsInNamespace("Sys").ShouldBe(false);
+            opCode.IsInNamespace("System.").ShouldBe(false);
 
-            opCode.IsInNamespace("System.Reflection").ShouldBeTrue();
-            opCode.IsInNamespace("System.Reflection.Emit").ShouldBeTrue();
-            opCode.IsInNamespace("System.Reflection.Emit.OpCode").ShouldBeFalse();
-            opCode.IsInNamespace("System.Reflection.Typo").ShouldBeFalse();
+            opCode.IsInNamespace("System.Reflection").ShouldBe(true);
+            opCode.IsInNamespace("System.Reflection.Emit").ShouldBe(true);
+            opCode.IsInNamespace("System.Reflection.Emit.OpCode").ShouldBe(false);
+            opCode.IsInNamespace("System.Reflection.Typo").ShouldBe(false);
         }
 
         public void CanDisposeDisposables()
@@ -72,18 +72,18 @@
             var notDisposable = new NotDisposable();
             object nullObject = null;
 
-            disposeable.Invoked.ShouldBeFalse();
-            disposeButNotDisposable.Invoked.ShouldBeFalse();
-            notDisposable.Invoked.ShouldBeFalse();
+            disposeable.Invoked.ShouldBe(false);
+            disposeButNotDisposable.Invoked.ShouldBe(false);
+            notDisposable.Invoked.ShouldBe(false);
 
             ((object)disposeable).Dispose();
             ((object)disposeButNotDisposable).Dispose();
             notDisposable.Dispose();
             nullObject.Dispose();
 
-            disposeable.Invoked.ShouldBeTrue();
-            disposeButNotDisposable.Invoked.ShouldBeFalse();
-            notDisposable.Invoked.ShouldBeFalse();
+            disposeable.Invoked.ShouldBe(true);
+            disposeButNotDisposable.Invoked.ShouldBe(false);
+            notDisposable.Invoked.ShouldBe(false);
         }
 
         void ReturnsVoid() { }

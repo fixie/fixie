@@ -58,7 +58,7 @@ namespace Fixie.Assertions
         public static void ShouldEqual<T>(this T actual, T expected)
         {
             if (!Assert.Equal(expected, actual))
-                throw new AssertActualExpectedException(expected, actual);
+                throw new ExpectedException(expected, actual);
         }
 
         public static void ShouldEqual<T>(this IEnumerable<T> actual, params T[] expected)
@@ -69,7 +69,7 @@ namespace Fixie.Assertions
         public static void ShouldEqual<T>(this T actual, T expected, string userMessage)
         {
             if (!Assert.Equal(expected, actual))
-                throw new AssertActualExpectedException(expected, actual, userMessage);
+                throw new ExpectedException(expected, actual, userMessage);
         }
 
         public static void ShouldNotBeNull<T>(this T @object) where T : class

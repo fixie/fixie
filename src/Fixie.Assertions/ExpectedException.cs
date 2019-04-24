@@ -5,14 +5,14 @@ namespace Fixie.Assertions
     using System.Text;
     using static System.Environment;
 
-    public class AssertActualExpectedException : AssertException
+    public class ExpectedException : AssertException
     {
-        public AssertActualExpectedException(object expected, object actual)
+        public ExpectedException(object expected, object actual)
             : base(BuildMessage(expected, actual))
         {
         }
 
-        public AssertActualExpectedException(object expected, object actual, string userMessage)
+        public ExpectedException(object expected, object actual, string userMessage)
             : base(BuildMessage(expected, actual, userMessage))
         {
         }

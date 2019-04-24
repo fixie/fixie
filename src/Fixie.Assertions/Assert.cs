@@ -9,8 +9,7 @@
         {
             var type = typeof(T);
 
-            // Null?
-            if (!type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Nullable<>))))
+            if (IsReferenceType(type) || IsNullableValueType(type))
             {
                 if (Equals(x, default(T)))
                     return Equals(y, default(T));
@@ -34,6 +33,16 @@
                 return EnumerableEqual(enumerableX, enumerableY);
 
             return Equals(x, y);
+        }
+
+        static bool IsNullableValueType(Type type)
+        {
+            return Nullable.GetUnderlyingType(type) != null;
+        }
+
+        static bool IsReferenceType(Type type)
+        {
+            return !type.IsValueType;
         }
 
         static bool EnumerableEqual(IEnumerable x, IEnumerable y)

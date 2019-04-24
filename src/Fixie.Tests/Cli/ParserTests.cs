@@ -527,8 +527,8 @@
 
             static void ShouldMatch(T actual, T expected)
             {
-                expected.ShouldNotBeNull();
-                actual.ShouldNotBeNull();
+                expected.ShouldNotBe(null);
+                actual.ShouldNotBe(null);
 
                 foreach (var property in typeof(T).GetProperties())
                 {

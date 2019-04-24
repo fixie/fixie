@@ -46,11 +46,6 @@ namespace Fixie.Assertions
                 throw new ExpectedException(expected, actual, userMessage);
         }
 
-        public static void ShouldNotBeNull<T>(this T @object) where T : class
-        {
-            @object.ShouldNotBe(null);
-        }
-
         public static void ShouldNotBe<T>(this T actual, T expected)
         {
             if (Assert.Equal(expected, actual))

@@ -40,6 +40,24 @@ namespace Fixie.Assertions
             actual.ToArray().ShouldBe(expected);
         }
 
+        public static void ShouldBe(this bool actual, bool expected, string userMessage = null)
+        {
+            if (actual != expected)
+                throw new ExpectedException(expected, actual, userMessage);
+        }
+
+        public static void ShouldBe(this int actual, int expected, string userMessage = null)
+        {
+            if (actual != expected)
+                throw new ExpectedException(expected, actual, userMessage);
+        }
+
+        public static void ShouldBe(this string actual, string expected, string userMessage = null)
+        {
+            if (actual != expected)
+                throw new ExpectedException(expected, actual, userMessage);
+        }
+
         public static void ShouldBe<T>(this T actual, T expected, string userMessage = null)
         {
             if (!Assert.Equal(expected, actual))

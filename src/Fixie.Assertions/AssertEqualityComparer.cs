@@ -3,9 +3,9 @@
     using System;
     using System.Collections;
 
-    static class AssertEqualityComparer<T>
+    static class AssertEqualityComparer
     {
-        public static bool Equal(T x, T y)
+        public static bool Equal<T>(T x, T y)
         {
             var type = typeof(T);
 

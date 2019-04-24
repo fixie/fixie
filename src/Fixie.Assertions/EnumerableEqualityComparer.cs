@@ -49,10 +49,10 @@ namespace Fixie.Assertions
 
         static bool Equals(object a, object b, Type baseType)
         {
-            var assertComparerType = typeof(AssertEqualityComparer<>).MakeGenericType(baseType);
-            var assertComparer = Activator.CreateInstance(assertComparerType);
-            var compareMethod = assertComparerType.GetMethod("Equals", new [] { baseType, baseType });
-            return (bool)compareMethod.Invoke(assertComparer, new[] { a, b });
+            var assertComparerType = typeof(AssertEqualityComparer);
+            var equal = assertComparerType.GetMethod("Equal");
+            var specificEqual = equal.MakeGenericMethod(baseType);
+            return (bool)specificEqual.Invoke(null, new[] { a, b });
         }
     }
 }

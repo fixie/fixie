@@ -57,8 +57,7 @@ namespace Fixie.Assertions
 
         public static void ShouldEqual<T>(this T actual, T expected)
         {
-            var comparer = new AssertEqualityComparer<T>();
-            if (!comparer.Equals(expected, actual))
+            if (!AssertEqualityComparer<T>.Equals(expected, actual))
                 throw new AssertActualExpectedException(expected, actual);
         }
 
@@ -69,8 +68,7 @@ namespace Fixie.Assertions
 
         public static void ShouldEqual<T>(this T actual, T expected, string userMessage)
         {
-            var comparer = new AssertEqualityComparer<T>();
-            if (!comparer.Equals(expected, actual))
+            if (!AssertEqualityComparer<T>.Equals(expected, actual))
                 throw new AssertActualExpectedException(expected, actual, userMessage);
         }
 
@@ -81,8 +79,7 @@ namespace Fixie.Assertions
 
         public static void ShouldNotEqual<T>(this T actual, T expected)
         {
-            var comparer = new AssertEqualityComparer<T>();
-            if (comparer.Equals(expected, actual))
+            if (AssertEqualityComparer<T>.Equals(expected, actual))
                 throw new AssertException($"Unexpected: {Format(expected)}");
         }
 

@@ -31,7 +31,7 @@
 
             // Enumerable?
             if (x is IEnumerable enumerableX && y is IEnumerable enumerableY)
-                return new EnumerableEqualityComparer().Equals(enumerableX, enumerableY);
+                return new EnumerableEqualityComparer().EnumerableEqual(enumerableX, enumerableY);
 
             // Last case, rely on object.Equals
             return object.Equals(x, y);

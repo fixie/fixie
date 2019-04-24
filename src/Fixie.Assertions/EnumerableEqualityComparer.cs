@@ -5,7 +5,7 @@ namespace Fixie.Assertions
 
     class EnumerableEqualityComparer
     {
-        public bool Equals(IEnumerable x, IEnumerable y)
+        public bool EnumerableEqual(IEnumerable x, IEnumerable y)
         {
             var enumeratorX = x.GetEnumerator();
             var enumeratorY = y.GetEnumerator();

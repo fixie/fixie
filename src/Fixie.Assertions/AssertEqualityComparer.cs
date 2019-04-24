@@ -5,7 +5,7 @@
 
     static class AssertEqualityComparer<T>
     {
-        public static bool Equals(T x, T y)
+        public static bool Equal(T x, T y)
         {
             var type = typeof(T);
 

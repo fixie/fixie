@@ -40,18 +40,12 @@ namespace Fixie.Assertions
             (actual?.GetType()).ShouldBe(typeof(T));
         }
 
-        public static void ShouldBe<T>(this T actual, T expected)
-        {
-            if (!Assert.Equal(expected, actual))
-                throw new ExpectedException(expected, actual);
-        }
-
         public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
         {
             actual.ToArray().ShouldBe(expected);
         }
 
-        public static void ShouldBe<T>(this T actual, T expected, string userMessage)
+        public static void ShouldBe<T>(this T actual, T expected, string userMessage = null)
         {
             if (!Assert.Equal(expected, actual))
                 throw new ExpectedException(expected, actual, userMessage);

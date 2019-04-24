@@ -7,12 +7,7 @@ namespace Fixie.Assertions
 
     public class ExpectedException : AssertException
     {
-        public ExpectedException(object expected, object actual)
-            : base(BuildMessage(expected, actual))
-        {
-        }
-
-        public ExpectedException(object expected, object actual, string userMessage)
+        public ExpectedException(object expected, object actual, string userMessage = null)
             : base(BuildMessage(expected, actual, userMessage))
         {
         }

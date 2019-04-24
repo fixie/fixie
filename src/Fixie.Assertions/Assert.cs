@@ -50,27 +50,9 @@
                 if (!hasNextX || !hasNextY)
                     return hasNextX == hasNextY;
 
-                if (enumeratorX.Current != null || enumeratorY.Current != null)
-                {
-                    if (enumeratorX.Current != null && enumeratorY.Current == null)
-                        return false;
-
-                    if (enumeratorX.Current == null)
-                        return false;
-
-                    var xType = enumeratorX.Current.GetType();
-
-                    if (!ItemsEqual(enumeratorX.Current, enumeratorY.Current, xType))
-                        return false;
-                }
+                if (!Equal(enumeratorX.Current, enumeratorY.Current))
+                    return false;
             }
-        }
-
-        static bool ItemsEqual(object a, object b, Type baseType)
-        {
-            var equal = typeof(Assert).GetMethod("Equal");
-            var specificEqual = equal.MakeGenericMethod(baseType);
-            return (bool)specificEqual.Invoke(null, new[] { a, b });
         }
     }
 }

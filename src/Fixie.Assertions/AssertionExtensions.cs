@@ -57,7 +57,9 @@ namespace Fixie.Assertions
 
         public static void ShouldEqual<T>(this T actual, T expected)
         {
-            Assert.Equal(expected, actual);
+            var comparer = new AssertEqualityComparer<T>();
+            if (!comparer.Equals(expected, actual))
+                throw new AssertActualExpectedException(expected, actual);
         }
 
         public static void ShouldEqual<T>(this IEnumerable<T> actual, params T[] expected)

@@ -66,13 +66,13 @@
             });
 
             var results = recorder.TestResults;
-            results.Count.ShouldEqual(3);
+            results.Count.ShouldBe(3);
 
             foreach (var result in results)
             {
                 result.Traits.ShouldBeEmpty();
                 result.Attachments.ShouldBeEmpty();
-                result.ComputerName.ShouldEqual(MachineName);
+                result.ComputerName.ShouldBe(MachineName);
             }
 
             var pass = results[0];
@@ -80,35 +80,35 @@
             var skip = results[2];
 
             pass.TestCase.ShouldBeExecutionTimeTest("Namespace.Class.Pass", assemblyPath);
-            pass.TestCase.DisplayName.ShouldEqual("Namespace.Class.Pass");
-            pass.Outcome.ShouldEqual(TestOutcome.Passed);
+            pass.TestCase.DisplayName.ShouldBe("Namespace.Class.Pass");
+            pass.Outcome.ShouldBe(TestOutcome.Passed);
             pass.ErrorMessage.ShouldBeNull();
             pass.ErrorStackTrace.ShouldBeNull();
-            pass.DisplayName.ShouldEqual("Namespace.Class.Pass(1)");
-            pass.Messages.Count.ShouldEqual(1);
-            pass.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
-            pass.Messages[0].Text.ShouldEqual("Output");
+            pass.DisplayName.ShouldBe("Namespace.Class.Pass(1)");
+            pass.Messages.Count.ShouldBe(1);
+            pass.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
+            pass.Messages[0].Text.ShouldBe("Output");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             fail.TestCase.ShouldBeExecutionTimeTest("Namespace.Class.Fail", assemblyPath);
-            fail.TestCase.DisplayName.ShouldEqual("Namespace.Class.Fail");
-            fail.Outcome.ShouldEqual(TestOutcome.Failed);
-            fail.ErrorMessage.ShouldEqual("Exception Message");
-            fail.ErrorStackTrace.ShouldEqual("Exception Type" + NewLine + "Exception Stack Trace");
-            fail.DisplayName.ShouldEqual("Namespace.Class.Fail");
-            fail.Messages.Count.ShouldEqual(1);
-            fail.Messages[0].Category.ShouldEqual(TestResultMessage.StandardOutCategory);
-            fail.Messages[0].Text.ShouldEqual("Output");
+            fail.TestCase.DisplayName.ShouldBe("Namespace.Class.Fail");
+            fail.Outcome.ShouldBe(TestOutcome.Failed);
+            fail.ErrorMessage.ShouldBe("Exception Message");
+            fail.ErrorStackTrace.ShouldBe("Exception Type" + NewLine + "Exception Stack Trace");
+            fail.DisplayName.ShouldBe("Namespace.Class.Fail");
+            fail.Messages.Count.ShouldBe(1);
+            fail.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
+            fail.Messages[0].Text.ShouldBe("Output");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             skip.TestCase.ShouldBeExecutionTimeTest("Namespace.Class.Skip", assemblyPath);
-            skip.TestCase.DisplayName.ShouldEqual("Namespace.Class.Skip");
-            skip.Outcome.ShouldEqual(TestOutcome.Skipped);
-            skip.ErrorMessage.ShouldEqual("Skip Reason");
+            skip.TestCase.DisplayName.ShouldBe("Namespace.Class.Skip");
+            skip.Outcome.ShouldBe(TestOutcome.Skipped);
+            skip.ErrorMessage.ShouldBe("Skip Reason");
             skip.ErrorStackTrace.ShouldBeNull();
-            skip.DisplayName.ShouldEqual("Namespace.Class.Skip");
+            skip.DisplayName.ShouldBe("Namespace.Class.Skip");
             skip.Messages.ShouldBeEmpty();
-            skip.Duration.ShouldEqual(TimeSpan.Zero);
+            skip.Duration.ShouldBe(TimeSpan.Zero);
         }
 
         class StubExecutionRecorder : ITestExecutionRecorder

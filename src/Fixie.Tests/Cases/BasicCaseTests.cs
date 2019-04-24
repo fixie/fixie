@@ -8,21 +8,21 @@
         public void ShouldPassUponSuccessfulExecution()
         {
             Run<PassTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<PassTestClass>(".Pass passed"));
         }
 
         public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
         {
             Run<FailTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<FailTestClass>(".Fail failed: 'Fail' failed!"));
         }
 
         public void ShouldPassOrFailCasesIndividually()
         {
             Run<PassFailTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<PassFailTestClass>(
                         ".FailA failed: 'FailA' failed!",
                         ".FailB failed: 'FailB' failed!",
@@ -34,7 +34,7 @@
         public void ShouldFailWhenTestClassConstructorCannotBeInvoked()
         {
             Run<CannotInvokeConstructorTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<CannotInvokeConstructorTestClass>(
                         ".UnreachableCase failed: No parameterless constructor defined for this object."));
         }

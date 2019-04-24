@@ -12,130 +12,130 @@
         public void ShouldResolveNothingWhenThereAreNoInputParameters()
         {
             Resolve("NoParameters", new object[] { })
-                .ShouldEqual(Empty);
+                .ShouldBe(Empty);
         }
 
         public void ShouldResolveNothingWhenThereAreNoGenericParameters()
         {
             Resolve("NoGenericArguments", new object[] {0, ""})
-                .ShouldEqual(Empty);
+                .ShouldBe(Empty);
         }
 
         public void ShouldResolveToObjectWhenGenericTypeHasNoMatchingParameters()
         {
             Resolve("NoMatchingParameters", new object[] { 0, "" })
-                .ShouldEqual(typeof(object));
+                .ShouldBe(typeof(object));
         }
 
         public void ShouldResolveToObjectWhenGenericTypeHasOneNullMatchingParameter()
         {
             Resolve("OneMatchingParameter", new object[] { null })
-                .ShouldEqual(typeof(object));
+                .ShouldBe(typeof(object));
         }
 
         public void ShouldResolveToConcreteTypeOfValueWhenGenericTypeHasOneNonNullMatchingParameter()
         {
             Resolve("OneMatchingParameter", new object[] { 1.2m })
-                .ShouldEqual(typeof(decimal));
+                .ShouldBe(typeof(decimal));
 
             Resolve("OneMatchingParameter", new object[] { "string" })
-                .ShouldEqual(typeof(string));
+                .ShouldBe(typeof(string));
         }
 
         public void ShouldResolveToObjectWhenGenericTypeHasMultipleMatchingParametersOfInconsistentConcreteTypes()
         {
             Resolve("MultipleMatchingParameter", new object[] { 1.2m, "string", 0 })
-                .ShouldEqual(typeof(object));
+                .ShouldBe(typeof(object));
             
             Resolve("MultipleMatchingParameter", new object[] { 1.2m, "string a", "string b" })
-                .ShouldEqual(typeof(object));
+                .ShouldBe(typeof(object));
         }
 
         public void ShouldResolveToConcreteTypeOfValuesWhenGenericTypeHasMultipleMatchingParametersOfTheExactSameConcreteType()
         {
             Resolve("MultipleMatchingParameter", new object[] { 1.2m, 2.3m, 3.4m })
-                .ShouldEqual(typeof(decimal));
+                .ShouldBe(typeof(decimal));
 
             Resolve("MultipleMatchingParameter", new object[] { "string a", "string b", "string c" })
-                .ShouldEqual(typeof(string));
+                .ShouldBe(typeof(string));
         }
 
         public void ShouldResolveToObjectWhenGenericTypeHasMultipleMatchingParametersButAllAreNull()
         {
             Resolve("MultipleMatchingParameter", new object[] { null, null, null })
-                .ShouldEqual(typeof(object));
+                .ShouldBe(typeof(object));
         }
 
         public void ShouldTreatNullsAsTypeCompatibleWithReferenceTypes()
         {
             Resolve("MultipleMatchingParameter", new object[] { null, "string b", "string c" })
-                .ShouldEqual(typeof(string));
+                .ShouldBe(typeof(string));
 
             Resolve("MultipleMatchingParameter", new object[] { "string a", null, "string c" })
-                .ShouldEqual(typeof(string));
+                .ShouldBe(typeof(string));
 
             Resolve("MultipleMatchingParameter", new object[] { "string a", "string b", null })
-                .ShouldEqual(typeof(string));
+                .ShouldBe(typeof(string));
         }
 
         public void ShouldTreatNullAsTypeIncompatibleWithValueTypes()
         {
             Resolve("MultipleMatchingParameter", new object[] { null, 2.3m, 3.4m })
-                .ShouldEqual(typeof(object));
+                .ShouldBe(typeof(object));
 
             Resolve("MultipleMatchingParameter", new object[] { 1.2m, null, 3.4m })
-                .ShouldEqual(typeof(object));
+                .ShouldBe(typeof(object));
 
             Resolve("MultipleMatchingParameter", new object[] { 1.2m, 2.3m, null })
-                .ShouldEqual(typeof(object));
+                .ShouldBe(typeof(object));
         }
 
         public void ShouldResolveAllGenericArguments()
         {
             Resolve("MultipleGenericArguments", new object[] { null, 1.2m, "string", 0 })
-                .ShouldEqual(typeof(object), typeof(object), typeof(object));
+                .ShouldBe(typeof(object), typeof(object), typeof(object));
 
             Resolve("MultipleGenericArguments", new object[] {false, 1.2m, "string", 0 })
-                .ShouldEqual(typeof(object), typeof(bool), typeof(object));
+                .ShouldBe(typeof(object), typeof(bool), typeof(object));
 
             Resolve("MultipleGenericArguments", new object[] { false, 1.2m, "string a", "string b" })
-                .ShouldEqual(typeof(object), typeof(bool), typeof(object));
+                .ShouldBe(typeof(object), typeof(bool), typeof(object));
 
             Resolve("MultipleGenericArguments", new object[] {false, 1.2m, 2.3m, 3.4m })
-                .ShouldEqual(typeof(object), typeof(bool), typeof(decimal));
+                .ShouldBe(typeof(object), typeof(bool), typeof(decimal));
 
             Resolve("MultipleGenericArguments", new object[] {false, "string a", "string b", "string c" })
-                .ShouldEqual(typeof(object), typeof(bool), typeof(string));
+                .ShouldBe(typeof(object), typeof(bool), typeof(string));
 
             Resolve("MultipleGenericArguments", new object[] { false, null, null, null })
-                .ShouldEqual(typeof(object), typeof(bool), typeof(object));
+                .ShouldBe(typeof(object), typeof(bool), typeof(object));
             
             Resolve("MultipleGenericArguments", new object[] { false, "string a", "string b", null })
-                .ShouldEqual(typeof(object), typeof(bool), typeof(string));
+                .ShouldBe(typeof(object), typeof(bool), typeof(string));
 
             Resolve("MultipleGenericArguments", new object[] { false, 1.2m, 2.3m, null })
-                .ShouldEqual(typeof(object), typeof(bool), typeof(object));
+                .ShouldBe(typeof(object), typeof(bool), typeof(object));
         }
 
         public void ShouldResolveToObjectWhenInputParameterCountDoesNotMatchDeclaredParameterCount()
         {
-            Resolve("MultipleGenericArguments", new object[] { 1 }).ShouldEqual(typeof(object), typeof(object), typeof(object));
-            Resolve("MultipleGenericArguments", new object[] { 1, true, false, true, false }).ShouldEqual(typeof(object), typeof(object), typeof(object));
+            Resolve("MultipleGenericArguments", new object[] { 1 }).ShouldBe(typeof(object), typeof(object), typeof(object));
+            Resolve("MultipleGenericArguments", new object[] { 1, true, false, true, false }).ShouldBe(typeof(object), typeof(object), typeof(object));
         }
 
         public void ShouldResolveGenericArgumentsWhenGenericConstraintsAreSatisfied()
         {
             Resolve("ConstrainedGeneric", new object[] { 1 })
-                .ShouldEqual(typeof(int));
+                .ShouldBe(typeof(int));
 
             Resolve("ConstrainedGeneric", new object[] { true })
-                .ShouldEqual(typeof(bool));
+                .ShouldBe(typeof(bool));
         }
 
         public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()
         {
             var unresolved = Resolve("ConstrainedGeneric", new object[] { "Incompatible" }).Single();
-            unresolved.Name.ShouldEqual("T");
+            unresolved.Name.ShouldBe("T");
             unresolved.IsGenericParameter.ShouldBe(true);
         }
 

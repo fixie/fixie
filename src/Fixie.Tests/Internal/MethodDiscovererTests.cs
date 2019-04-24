@@ -18,7 +18,7 @@
             var customDiscovery = new SampleDiscovery();
 
             DiscoveredTestMethods<Sample>(customDiscovery)
-                .ShouldEqual(
+                .ShouldBe(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
                     "PublicInstanceWithArgsVoid(x)",
@@ -30,7 +30,7 @@
                     "PublicStaticWithArgsWithReturn(x)");
 
             DiscoveredTestMethods<AsyncSample>(customDiscovery)
-                .ShouldEqual(
+                .ShouldBe(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
                     "PublicInstanceWithArgsVoid(x)",
@@ -47,18 +47,18 @@
             var customDiscovery = new SampleDiscovery();
 
             DiscoveredTestMethods<DisposableSample>(customDiscovery)
-                .ShouldEqual(
+                .ShouldBe(
                     "Dispose(disposing)",
                     "NotNamedDispose()");
 
             DiscoveredTestMethods<NonDisposableSample>(customDiscovery)
-                .ShouldEqual(
+                .ShouldBe(
                     "Dispose()",
                     "Dispose(disposing)",
                     "NotNamedDispose()");
 
             DiscoveredTestMethods<NonDisposableByReturnTypeSample>(customDiscovery)
-                .ShouldEqual(
+                .ShouldBe(
                     "Dispose()",
                     "Dispose(disposing)",
                     "NotNamedDispose()");
@@ -75,7 +75,7 @@
                 .Where(x => !x.IsStatic);
 
             DiscoveredTestMethods<Sample>(customDiscovery)
-                .ShouldEqual("PublicInstanceNoArgsVoid()");
+                .ShouldBe("PublicInstanceNoArgsVoid()");
         }
 
         public void TheDefaultDiscoveryShouldDiscoverPublicMethods()
@@ -83,7 +83,7 @@
             var defaultDiscovery = new Discovery();
 
             DiscoveredTestMethods<Sample>(defaultDiscovery)
-                .ShouldEqual(
+                .ShouldBe(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
                     "PublicInstanceWithArgsVoid(x)",
@@ -95,7 +95,7 @@
                     "PublicStaticWithArgsWithReturn(x)");
 
             DiscoveredTestMethods<AsyncSample>(defaultDiscovery)
-                .ShouldEqual(
+                .ShouldBe(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
                     "PublicInstanceWithArgsVoid(x)",
@@ -121,7 +121,7 @@
                 "Exception thrown while attempting to run a custom method-discovery predicate. " +
                 "Check the inner exception for more details.");
 
-            exception.InnerException.Message.ShouldEqual("Unsafe method-discovery predicate threw!");
+            exception.InnerException.Message.ShouldBe("Unsafe method-discovery predicate threw!");
         }
 
         static IEnumerable<string> DiscoveredTestMethods<TTestClass>(Discovery discovery)

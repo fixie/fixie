@@ -35,15 +35,15 @@
 
         static void ShouldHaveIdentity(TestCase test, string expectedFullyQualifiedName, string expectedSource)
         {
-            test.FullyQualifiedName.ShouldEqual(expectedFullyQualifiedName);
-            test.DisplayName.ShouldEqual(test.FullyQualifiedName);
-            test.Source.ShouldEqual(expectedSource);
+            test.FullyQualifiedName.ShouldBe(expectedFullyQualifiedName);
+            test.DisplayName.ShouldBe(test.FullyQualifiedName);
+            test.Source.ShouldBe(expectedSource);
         }
 
         static void ShouldUseDefaultsForUnmappedProperties(TestCase test)
         {
             test.Traits.ShouldBeEmpty();
-            test.ExecutorUri.ToString().ShouldEqual("executor://fixie.visualstudio/");
+            test.ExecutorUri.ToString().ShouldBe("executor://fixie.visualstudio/");
         }
 
         static void ShouldHaveSourceLocation(TestCase test)
@@ -55,7 +55,7 @@
         static void ShouldNotHaveSourceLocation(TestCase test)
         {
             test.CodeFilePath.ShouldBeNull();
-            test.LineNumber.ShouldEqual(-1);
+            test.LineNumber.ShouldBe(-1);
         }
     }
 }

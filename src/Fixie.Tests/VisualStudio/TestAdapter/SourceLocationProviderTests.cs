@@ -84,7 +84,7 @@
             success.ShouldBe(true);
             location.CodeFilePath.EndsWith("SourceLocationSamples.cs").ShouldBe(true);
 
-            location.LineNumber.ShouldEqual(expectedLine);
+            location.LineNumber.ShouldBe(expectedLine);
         }
     }
 }

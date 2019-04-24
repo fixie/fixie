@@ -19,7 +19,7 @@
                        .CleanStackTraceLineNumbers()
                        .CleanDuration()
                        .Lines()
-                       .ShouldEqual(
+                       .ShouldBe(
                            "Console.Out: Fail",
                            "Console.Error: Fail",
                            "Test '" + TestClass + ".Fail' failed:",
@@ -68,7 +68,7 @@
                     .Lines()
                     .Last()
                     .CleanDuration()
-                    .ShouldEqual("2 failed, 2 skipped, took 1.23 seconds");
+                    .ShouldBe("2 failed, 2 skipped, took 1.23 seconds");
             }
         }
 
@@ -87,7 +87,7 @@
                     .Lines()
                     .Last()
                     .CleanDuration()
-                    .ShouldEqual("1 passed, 2 skipped, took 1.23 seconds");
+                    .ShouldBe("1 passed, 2 skipped, took 1.23 seconds");
             }
         }
 
@@ -106,7 +106,7 @@
                     .Lines()
                     .Last()
                     .CleanDuration()
-                    .ShouldEqual("1 passed, 2 failed, took 1.23 seconds");
+                    .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
             }
         }
 
@@ -124,7 +124,7 @@
                 console.Output
                     .Lines()
                     .Last()
-                    .ShouldEqual("No tests found.");
+                    .ShouldBe("No tests found.");
             }
         }
     }

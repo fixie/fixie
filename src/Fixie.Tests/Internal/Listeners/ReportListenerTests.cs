@@ -20,7 +20,7 @@
                 Run(listener);
 
                 console.Lines()
-                    .ShouldEqual(
+                    .ShouldBe(
                         "Console.Out: Fail",
                         "Console.Error: Fail",
                         "Console.Out: FailByAssertion",
@@ -29,7 +29,7 @@
                         "Console.Error: Pass");
             }
 
-            CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldEqual(ExpectedReport);
+            CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldBe(ExpectedReport);
         }
 
         static string CleanBrittleValues(string actualRawContent)

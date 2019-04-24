@@ -56,14 +56,14 @@
 
             public void ShouldHaveLifecycle(params string[] expected)
             {
-                lifecycle.ShouldEqual(expected);
+                lifecycle.ShouldBe(expected);
             }
 
             public void ShouldHaveResults(params string[] expected)
             {
                 var namespaceQualifiedExpectation = expected.Select(x => "Fixie.Tests.LifecycleTests+" + x).ToArray();
 
-                results.ShouldEqual(namespaceQualifiedExpectation);
+                results.ShouldBe(namespaceQualifiedExpectation);
             }
         }
 
@@ -243,13 +243,13 @@
 
             static void CaseSetUp(Case @case)
             {
-                @case.Class.ShouldEqual(typeof(SampleTestClass));
+                @case.Class.ShouldBe(typeof(SampleTestClass));
                 WhereAmI();
             }
 
             static void CaseTearDown(Case @case)
             {
-                @case.Class.ShouldEqual(typeof(SampleTestClass));
+                @case.Class.ShouldBe(typeof(SampleTestClass));
                 WhereAmI();
             }
         }

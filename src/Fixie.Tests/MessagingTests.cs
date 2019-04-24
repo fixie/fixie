@@ -72,7 +72,7 @@
             public void FailByAssertion()
             {
                 WhereAmI();
-                1.ShouldEqual(2);
+                1.ShouldBe(2);
             }
 
             [Skip]

@@ -7,11 +7,6 @@ namespace Fixie.Assertions
 
     public static class AssertionExtensions
     {
-        public static void ShouldBe(this bool actual, bool expected)
-        {
-            actual.ShouldEqual(expected);
-        }
-
         public static void ShouldBeGreaterThan(this int actual, int minimum)
         {
             if (actual <= minimum)
@@ -37,26 +32,26 @@ namespace Fixie.Assertions
 
         public static void ShouldBeNull(this object actual)
         {
-            actual.ShouldEqual(null);
+            actual.ShouldBe(null);
         }
 
         public static void ShouldBeType<T>(this object actual)
         {
-            (actual?.GetType()).ShouldEqual(typeof(T));
+            (actual?.GetType()).ShouldBe(typeof(T));
         }
 
-        public static void ShouldEqual<T>(this T actual, T expected)
+        public static void ShouldBe<T>(this T actual, T expected)
         {
             if (!Assert.Equal(expected, actual))
                 throw new ExpectedException(expected, actual);
         }
 
-        public static void ShouldEqual<T>(this IEnumerable<T> actual, params T[] expected)
+        public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
         {
-            actual.ToArray().ShouldEqual(expected);
+            actual.ToArray().ShouldBe(expected);
         }
 
-        public static void ShouldEqual<T>(this T actual, T expected, string userMessage)
+        public static void ShouldBe<T>(this T actual, T expected, string userMessage)
         {
             if (!Assert.Equal(expected, actual))
                 throw new ExpectedException(expected, actual, userMessage);
@@ -75,7 +70,7 @@ namespace Fixie.Assertions
 
         public static void ShouldBeEmpty(this string actual)
         {
-            actual.ShouldEqual("");
+            actual.ShouldBe("");
         }
 
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
@@ -102,7 +97,7 @@ namespace Fixie.Assertions
             {
                 threw = true;
                 actual.ShouldBeType<TException>();
-                actual.Message.ShouldEqual(expectedMessage);
+                actual.Message.ShouldBe(expectedMessage);
                 exception = actual;
             }
 

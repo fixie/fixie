@@ -515,7 +515,7 @@
                 string[] unusedArguments;
                 var model = CommandLine.Parse<T>(arguments, out unusedArguments);
                 ShouldMatch(model, expectedModel);
-                unusedArguments.ShouldEqual(expectedUnusedArguments);
+                unusedArguments.ShouldBe(expectedUnusedArguments);
             }
 
             public void ShouldFail(string expectedExceptionMessage)
@@ -535,7 +535,7 @@
                     var actualValue = property.GetValue(actual);
                     var expectedValue = property.GetValue(expected);
 
-                    actualValue.ShouldEqual(expectedValue);
+                    actualValue.ShouldBe(expectedValue);
                 }
             }
         }

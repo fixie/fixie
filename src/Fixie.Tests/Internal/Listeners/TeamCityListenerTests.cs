@@ -21,7 +21,7 @@
                     .CleanStackTraceLineNumbers()
                     .Lines()
                     .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'"))
-                    .ShouldEqual(
+                    .ShouldBe(
                         "##teamcity[testSuiteStarted name='Fixie.Tests']",
 
                         "Console.Out: Fail",

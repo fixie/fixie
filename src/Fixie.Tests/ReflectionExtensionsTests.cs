@@ -9,8 +9,8 @@
     {
         public void CanDetermineTheTypeNameOfAnyObject()
         {
-            5.TypeName().ShouldEqual("System.Int32");
-            "".TypeName().ShouldEqual("System.String");
+            5.TypeName().ShouldBe("System.Int32");
+            "".TypeName().ShouldBe("System.String");
             ((string) null).TypeName().ShouldBeNull();
         }
 

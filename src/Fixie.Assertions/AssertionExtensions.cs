@@ -30,11 +30,6 @@ namespace Fixie.Assertions
             return $"Expected: {Format(left)} {operation} {Format(right)}{NewLine}but it was not";
         }
 
-        public static void ShouldBeNull(this object actual)
-        {
-            actual.ShouldBe(null);
-        }
-
         public static void ShouldBeType<T>(this object actual)
         {
             (actual?.GetType()).ShouldBe(typeof(T));

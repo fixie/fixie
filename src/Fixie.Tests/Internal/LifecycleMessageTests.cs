@@ -75,7 +75,7 @@
             skipWithoutReason.Method.Name.ShouldBe("SkipWithoutReason");
             skipWithoutReason.Output.ShouldBe("");
             skipWithoutReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            skipWithoutReason.Reason.ShouldBeNull();
+            skipWithoutReason.Reason.ShouldBe(null);
 
             var classCompleted = listener.ClassCompletions.Single();
             classCompleted.Class.FullName.ShouldBe(FullName<MessagingTests>() + "+SampleTestClass");

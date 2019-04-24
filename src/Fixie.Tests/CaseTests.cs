@@ -212,7 +212,7 @@
 
             var @case = Case("Returns");
 
-            @case.Exception.ShouldBeNull();
+            @case.Exception.ShouldBe(null);
             @case.Fail(exceptionA);
             @case.Fail(exceptionB);
             @case.Exception.ShouldBe(exceptionB);
@@ -222,7 +222,7 @@
         {
             var @case = Case("Returns");
 
-            @case.Exception.ShouldBeNull();
+            @case.Exception.ShouldBe(null);
             @case.Fail("Failure Reason A");
             @case.Fail("Failure Reason B");
             @case.Exception.ShouldBeType<Exception>();
@@ -233,7 +233,7 @@
         {
             var @case = Case("Returns");
 
-            @case.Exception.ShouldBeNull();
+            @case.Exception.ShouldBe(null);
             @case.Fail((Exception) null);
             @case.Exception.ShouldBeType<Exception>();
             @case.Exception.Message.ShouldBe(
@@ -247,49 +247,49 @@
 
             //Assumed skipped.
             @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBeNull();
-            @case.SkipReason.ShouldBeNull();
+            @case.Exception.ShouldBe(null);
+            @case.SkipReason.ShouldBe(null);
 
             //Indicate a skip, including a reason.
             @case.Skip("Reason");
             @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBeNull();
+            @case.Exception.ShouldBe(null);
             @case.SkipReason.ShouldBe("Reason");
 
             //Indicate a failure, replacing the assumed skip.
             @case.Fail("Failure");
             @case.State.ShouldBe(CaseState.Failed);
             @case.Exception.Message.ShouldBe("Failure");
-            @case.SkipReason.ShouldBeNull();
+            @case.SkipReason.ShouldBe(null);
 
             //Indicate a pass, suppressing the above failure.
             @case.Pass();
             @case.State.ShouldBe(CaseState.Passed);
-            @case.Exception.ShouldBeNull();
-            @case.SkipReason.ShouldBeNull();
+            @case.Exception.ShouldBe(null);
+            @case.SkipReason.ShouldBe(null);
 
             //Indicate a skip, suppressing the above pass.
             @case.Skip("Reason");
             @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBeNull();
+            @case.Exception.ShouldBe(null);
             @case.SkipReason.ShouldBe("Reason");
 
             //Indicate a pass, suppressing the above skip.
             @case.Pass();
             @case.State.ShouldBe(CaseState.Passed);
-            @case.Exception.ShouldBeNull();
-            @case.SkipReason.ShouldBeNull();
+            @case.Exception.ShouldBe(null);
+            @case.SkipReason.ShouldBe(null);
 
             //Indicate a failure, replacing the assumed pass.
             @case.Fail("Failure");
             @case.State.ShouldBe(CaseState.Failed);
             @case.Exception.Message.ShouldBe("Failure");
-            @case.SkipReason.ShouldBeNull();
+            @case.SkipReason.ShouldBe(null);
 
             //Indicate a skip, suppressing the above failure.
             @case.Skip("Reason");
             @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBeNull();
+            @case.Exception.ShouldBe(null);
             @case.SkipReason.ShouldBe("Reason");
 
             //Indicate a failure, suppressing the above skip, but with a surprisingly-null Exception.
@@ -298,7 +298,7 @@
             @case.Exception.Message.ShouldBe(
                 "The custom test class lifecycle did not provide " +
                 "an Exception for this test case failure.");
-            @case.SkipReason.ShouldBeNull();
+            @case.SkipReason.ShouldBe(null);
         }
 
         class SampleParentTestClass

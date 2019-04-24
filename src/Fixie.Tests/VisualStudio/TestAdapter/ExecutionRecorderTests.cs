@@ -82,8 +82,8 @@
             pass.TestCase.ShouldBeExecutionTimeTest("Namespace.Class.Pass", assemblyPath);
             pass.TestCase.DisplayName.ShouldBe("Namespace.Class.Pass");
             pass.Outcome.ShouldBe(TestOutcome.Passed);
-            pass.ErrorMessage.ShouldBeNull();
-            pass.ErrorStackTrace.ShouldBeNull();
+            pass.ErrorMessage.ShouldBe(null);
+            pass.ErrorStackTrace.ShouldBe(null);
             pass.DisplayName.ShouldBe("Namespace.Class.Pass(1)");
             pass.Messages.Count.ShouldBe(1);
             pass.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
@@ -105,7 +105,7 @@
             skip.TestCase.DisplayName.ShouldBe("Namespace.Class.Skip");
             skip.Outcome.ShouldBe(TestOutcome.Skipped);
             skip.ErrorMessage.ShouldBe("Skip Reason");
-            skip.ErrorStackTrace.ShouldBeNull();
+            skip.ErrorStackTrace.ShouldBe(null);
             skip.DisplayName.ShouldBe("Namespace.Class.Skip");
             skip.Messages.ShouldBeEmpty();
             skip.Duration.ShouldBe(TimeSpan.Zero);

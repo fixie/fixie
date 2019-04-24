@@ -38,7 +38,7 @@ namespace Fixie.Tests.TestDriven
                 result.Method.ShouldBe(null);
                 result.TimeSpan.ShouldBe(TimeSpan.Zero);
                 result.TotalTests.ShouldBe(0);
-                result.TestRunnerName.ShouldBeNull();
+                result.TestRunnerName.ShouldBe(null);
             }
 
             var fail = results[0];
@@ -50,12 +50,12 @@ namespace Fixie.Tests.TestDriven
             skipWithReason.Name.ShouldBe(TestClass + ".SkipWithReason");
             skipWithReason.State.ShouldBe(TestState.Ignored);
             skipWithReason.Message.ShouldBe("⚠ Skipped with reason.");
-            skipWithReason.StackTrace.ShouldBeNull();
+            skipWithReason.StackTrace.ShouldBe(null);
 
             skipWithoutReason.Name.ShouldBe(TestClass + ".SkipWithoutReason");
             skipWithoutReason.State.ShouldBe(TestState.Ignored);
-            skipWithoutReason.Message.ShouldBeNull();
-            skipWithoutReason.StackTrace.ShouldBeNull();
+            skipWithoutReason.Message.ShouldBe(null);
+            skipWithoutReason.StackTrace.ShouldBe(null);
 
             fail.Name.ShouldBe(TestClass + ".Fail");
             fail.State.ShouldBe(TestState.Failed);
@@ -82,8 +82,8 @@ namespace Fixie.Tests.TestDriven
 
             pass.Name.ShouldBe(TestClass + ".Pass");
             pass.State.ShouldBe(TestState.Passed);
-            pass.Message.ShouldBeNull();
-            pass.StackTrace.ShouldBeNull();
+            pass.Message.ShouldBe(null);
+            pass.StackTrace.ShouldBe(null);
         }
 
         class StubTestListener : ITestListener

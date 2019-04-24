@@ -11,7 +11,7 @@
         {
             5.TypeName().ShouldBe("System.Int32");
             "".TypeName().ShouldBe("System.String");
-            ((string) null).TypeName().ShouldBeNull();
+            ((string) null).TypeName().ShouldBe(null);
         }
 
         public void CanDetectVoidReturnType()

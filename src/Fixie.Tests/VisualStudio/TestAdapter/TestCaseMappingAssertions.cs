@@ -54,7 +54,7 @@
 
         static void ShouldNotHaveSourceLocation(TestCase test)
         {
-            test.CodeFilePath.ShouldBeNull();
+            test.CodeFilePath.ShouldBe(null);
             test.LineNumber.ShouldBe(-1);
         }
     }

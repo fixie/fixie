@@ -72,7 +72,7 @@
             var success = sourceLocationProvider.TryGetSourceLocation(className, methodName, out var location);
 
             success.ShouldBe(false);
-            location.ShouldBeNull();
+            location.ShouldBe(null);
         }
 
         static void AssertLineNumber(string className, string methodName, int expectedLine)

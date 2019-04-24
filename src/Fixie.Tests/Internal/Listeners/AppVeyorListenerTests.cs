@@ -59,14 +59,14 @@
             skipWithReason.Outcome.ShouldBe("Skipped");
             int.Parse(skipWithReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             skipWithReason.ErrorMessage.ShouldBe("⚠ Skipped with reason.");
-            skipWithReason.ErrorStackTrace.ShouldBeNull();
+            skipWithReason.ErrorStackTrace.ShouldBe(null);
             skipWithReason.StdOut.ShouldBe("");
 
             skipWithoutReason.TestName.ShouldBe(TestClass + ".SkipWithoutReason");
             skipWithoutReason.Outcome.ShouldBe("Skipped");
             int.Parse(skipWithoutReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-            skipWithoutReason.ErrorMessage.ShouldBeNull();
-            skipWithoutReason.ErrorStackTrace.ShouldBeNull();
+            skipWithoutReason.ErrorMessage.ShouldBe(null);
+            skipWithoutReason.ErrorStackTrace.ShouldBe(null);
             skipWithoutReason.StdOut.ShouldBe("");
 
             fail.TestName.ShouldBe(TestClass + ".Fail");
@@ -94,8 +94,8 @@
             pass.TestName.ShouldBe(TestClass + ".Pass");
             pass.Outcome.ShouldBe("Passed");
             int.Parse(pass.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-            pass.ErrorMessage.ShouldBeNull();
-            pass.ErrorStackTrace.ShouldBeNull();
+            pass.ErrorMessage.ShouldBe(null);
+            pass.ErrorStackTrace.ShouldBe(null);
             pass.StdOut.Lines().ShouldBe("Console.Out: Pass", "Console.Error: Pass");
         }
 

@@ -67,13 +67,13 @@ namespace Fixie.Assertions
 
         public static void ShouldBe<T>(this T actual, T expected, string userMessage = null)
         {
-            if (!Equal(expected, actual))
+            if (!Is(expected, actual))
                 throw new ExpectedException(expected, actual, userMessage);
         }
 
         public static void ShouldNotBe<T>(this T actual, T expected)
         {
-            if (Equal(expected, actual))
+            if (Is(expected, actual))
                 throw new AssertException($"Unexpected: {Format(expected)}");
         }
 
@@ -109,7 +109,7 @@ namespace Fixie.Assertions
             return (TException)exception;
         }
 
-        static bool Equal<T>(T x, T y)
+        static bool Is<T>(T x, T y)
         {
             var type = typeof(T);
 
@@ -154,7 +154,7 @@ namespace Fixie.Assertions
                 if (!hasNextX || !hasNextY)
                     return hasNextX == hasNextY;
 
-                if (!Equal(enumeratorX.Current, enumeratorY.Current))
+                if (!Is(enumeratorX.Current, enumeratorY.Current))
                     return false;
             }
         }

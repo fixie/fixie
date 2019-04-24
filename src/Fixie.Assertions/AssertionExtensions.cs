@@ -22,18 +22,22 @@ namespace Fixie.Assertions
             condition.ShouldEqual(true, userMessage);
         }
 
-        public static void ShouldBeGreaterThan<T>(this T @object, T value)
+        public static void ShouldBeGreaterThan(this int actual, int minimum)
         {
-            var comparer = new AssertComparer<T>();
-            if (comparer.Compare(@object, value) <= 0)
-                throw new AssertException(ComparisonFailure(@object, value, ">"));
+            if (actual <= minimum)
+                throw new AssertException(ComparisonFailure(actual, minimum, ">"));
         }
 
-        public static void ShouldBeGreaterThanOrEqualTo<T>(this T @object, T value)
+        public static void ShouldBeGreaterThanOrEqualTo(this int actual, int minimum)
         {
-            var comparer = new AssertComparer<T>();
-            if (comparer.Compare(@object, value) < 0)
-                throw new AssertException(ComparisonFailure(@object, value, ">="));
+            if (actual < minimum)
+                throw new AssertException(ComparisonFailure(actual, minimum, ">="));
+        }
+
+        public static void ShouldBeGreaterThanOrEqualTo(this TimeSpan actual, TimeSpan minimum)
+        {
+            if (actual < minimum)
+                throw new AssertException(ComparisonFailure(actual, minimum, ">="));
         }
 
         static string ComparisonFailure(object left, object right, string operation)

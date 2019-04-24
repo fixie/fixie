@@ -62,7 +62,7 @@ namespace Fixie.Assertions
 
         public static void ShouldEqual<T>(this IEnumerable<T> actual, params T[] expected)
         {
-            Assert.Equal(expected, actual.ToArray());
+            actual.ToArray().ShouldEqual(expected);
         }
 
         public static void ShouldEqual<T>(this T actual, T expected, string userMessage)

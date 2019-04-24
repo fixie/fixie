@@ -18,17 +18,9 @@
                     return false;
             }
 
-            //x implements IEquatable<T> and is assignable from y?
-            var xIsAssignableFromY = x.GetType().IsInstanceOfType(y);
-            if (xIsAssignableFromY && x is IEquatable<T> equatable1)
-                return equatable1.Equals(y);
+            if (x is IEquatable<T> equatable)
+                return equatable.Equals(y);
 
-            //y implements IEquatable<T> and is assignable from x?
-            var yIsAssignableFromX = y.GetType().IsInstanceOfType(x);
-            if (yIsAssignableFromX && y is IEquatable<T> equatable2)
-                return equatable2.Equals(x);
-
-            // Enumerable?
             if (x is IEnumerable enumerableX && y is IEnumerable enumerableY)
                 return EnumerableEqual(enumerableX, enumerableY);
 

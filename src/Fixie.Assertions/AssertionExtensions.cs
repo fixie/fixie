@@ -58,6 +58,12 @@ namespace Fixie.Assertions
                 throw new ExpectedException(expected, actual, userMessage);
         }
 
+        public static void ShouldBe<T>(this T? actual, T? expected, string userMessage = null) where T : struct
+        {
+            if (!Nullable.Equals(actual, expected))
+                throw new ExpectedException(expected, actual, userMessage);
+        }
+
         public static void ShouldBe<T>(this T actual, T expected, string userMessage = null)
         {
             if (!Assert.Equal(expected, actual))

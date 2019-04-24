@@ -17,11 +17,6 @@ namespace Fixie.Assertions
             condition.ShouldEqual(true);
         }
 
-        public static void ShouldBeTrue(this bool condition, string userMessage)
-        {
-            condition.ShouldEqual(true, userMessage);
-        }
-
         public static void ShouldBeGreaterThan(this int actual, int minimum)
         {
             if (actual <= minimum)
@@ -92,12 +87,6 @@ namespace Fixie.Assertions
         {
             if (collection.Any())
                 throw new AssertException("Collection was not empty.");
-        }
-
-        public static void ShouldContain<T>(this IEnumerable<T> collection, T expected)
-        {
-            if (!collection.Contains(expected))
-                throw new AssertException($"Collection does not contain expected item: {Format(expected)}");
         }
 
         static string Format(object value)

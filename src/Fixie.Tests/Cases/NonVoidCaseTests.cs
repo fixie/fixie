@@ -35,7 +35,7 @@ namespace Fixie.Tests.Cases
                             ".StringNull passed",
                             ".Throw failed: 'Throw' failed!"));
 
-                console.Output.ShouldBeEmpty();
+                console.Output.ShouldBe("");
             }
         }
 

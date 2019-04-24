@@ -68,11 +68,6 @@ namespace Fixie.Assertions
                 throw new AssertException($"Unexpected: {Format(expected)}");
         }
 
-        public static void ShouldBeEmpty(this string actual)
-        {
-            actual.ShouldBe("");
-        }
-
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
         {
             if (collection.Any())

@@ -60,14 +60,14 @@
             int.Parse(skipWithReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             skipWithReason.ErrorMessage.ShouldBe("⚠ Skipped with reason.");
             skipWithReason.ErrorStackTrace.ShouldBeNull();
-            skipWithReason.StdOut.ShouldBeEmpty();
+            skipWithReason.StdOut.ShouldBe("");
 
             skipWithoutReason.TestName.ShouldBe(TestClass + ".SkipWithoutReason");
             skipWithoutReason.Outcome.ShouldBe("Skipped");
             int.Parse(skipWithoutReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             skipWithoutReason.ErrorMessage.ShouldBeNull();
             skipWithoutReason.ErrorStackTrace.ShouldBeNull();
-            skipWithoutReason.StdOut.ShouldBeEmpty();
+            skipWithoutReason.StdOut.ShouldBe("");
 
             fail.TestName.ShouldBe(TestClass + ".Fail");
             fail.Outcome.ShouldBe("Failed");

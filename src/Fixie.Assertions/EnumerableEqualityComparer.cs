@@ -31,12 +31,12 @@ namespace Fixie.Assertions
 
                     if (xType.IsAssignableFrom(yType))
                     {
-                        if (!Equals(enumeratorX.Current, enumeratorY.Current, xType))
+                        if (!ItemsEqual(enumeratorX.Current, enumeratorY.Current, xType))
                             return false;
                     }
                     else if (yType.IsAssignableFrom(xType))
                     {
-                        if (!Equals(enumeratorY.Current, enumeratorX.Current, yType))
+                        if (!ItemsEqual(enumeratorY.Current, enumeratorX.Current, yType))
                             return false;
                     }
                     else
@@ -47,7 +47,7 @@ namespace Fixie.Assertions
             }
         }
 
-        static bool Equals(object a, object b, Type baseType)
+        static bool ItemsEqual(object a, object b, Type baseType)
         {
             var assertComparerType = typeof(AssertEqualityComparer);
             var equal = assertComparerType.GetMethod("Equal");

@@ -126,7 +126,22 @@ namespace Fixie.Assertions
                 return equatable.Equals(y);
 
             if (x is IEnumerable enumerableX && y is IEnumerable enumerableY)
-                return EnumerableEqual(enumerableX, enumerableY);
+            {
+                var enumeratorX = enumerableX.GetEnumerator();
+                var enumeratorY = enumerableY.GetEnumerator();
+
+                while (true)
+                {
+                    bool hasNextX = enumeratorX.MoveNext();
+                    bool hasNextY = enumeratorY.MoveNext();
+
+                    if (!hasNextX || !hasNextY)
+                        return hasNextX == hasNextY;
+
+                    if (!Is(enumeratorX.Current, enumeratorY.Current))
+                        return false;
+                }
+            }
 
             return Equals(x, y);
         }
@@ -139,24 +154,6 @@ namespace Fixie.Assertions
         static bool IsReferenceType(Type type)
         {
             return !type.IsValueType;
-        }
-
-        static bool EnumerableEqual(IEnumerable x, IEnumerable y)
-        {
-            var enumeratorX = x.GetEnumerator();
-            var enumeratorY = y.GetEnumerator();
-
-            while (true)
-            {
-                bool hasNextX = enumeratorX.MoveNext();
-                bool hasNextY = enumeratorY.MoveNext();
-
-                if (!hasNextX || !hasNextY)
-                    return hasNextX == hasNextY;
-
-                if (!Is(enumeratorX.Current, enumeratorY.Current))
-                    return false;
-            }
         }
     }
 }

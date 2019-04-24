@@ -3,7 +3,7 @@
     using System;
     using System.Collections;
 
-    static class AssertEqualityComparer
+    static class Assert
     {
         public static bool Equal<T>(T x, T y)
         {
@@ -81,8 +81,7 @@
 
         static bool ItemsEqual(object a, object b, Type baseType)
         {
-            var assertComparerType = typeof(AssertEqualityComparer);
-            var equal = assertComparerType.GetMethod("Equal");
+            var equal = typeof(Assert).GetMethod("Equal");
             var specificEqual = equal.MakeGenericMethod(baseType);
             return (bool)specificEqual.Invoke(null, new[] { a, b });
         }

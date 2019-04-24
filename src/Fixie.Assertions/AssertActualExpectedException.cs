@@ -1,7 +1,6 @@
 namespace Fixie.Assertions
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Text;
     using static System.Environment;
@@ -26,14 +25,6 @@ namespace Fixie.Assertions
             {
                 message.AppendLine(userMessage);
                 message.AppendLine();
-            }
-
-            if (actual is IEnumerable enumerableActual && expected is IEnumerable enumerableExpected)
-            {
-                var comparer = new EnumerableEqualityComparer();
-                comparer.Equals(enumerableActual, enumerableExpected);
-
-                message.AppendLine("First difference is at position " + comparer.Position);
             }
 
             var actualStr = actual == null ? null : ConvertToString(actual);

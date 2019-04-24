@@ -5,14 +5,10 @@ namespace Fixie.Assertions
 
     class EnumerableEqualityComparer
     {
-        public int Position { get; set; }
-
         public bool Equals(IEnumerable x, IEnumerable y)
         {
             var enumeratorX = x.GetEnumerator();
             var enumeratorY = y.GetEnumerator();
-
-            Position = 0;
 
             while (true)
             {
@@ -48,7 +44,6 @@ namespace Fixie.Assertions
                         return false;
                     }
                 }
-                Position++;
             }
         }
 

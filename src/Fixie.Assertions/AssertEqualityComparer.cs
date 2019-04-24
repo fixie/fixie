@@ -2,9 +2,8 @@
 {
     using System;
     using System.Collections;
-    using System.Collections.Generic;
 
-    class AssertEqualityComparer<T> : IEqualityComparer<T>
+    class AssertEqualityComparer<T>
     {
         public bool Equals(T x, T y)
         {
@@ -36,11 +35,6 @@
 
             // Last case, rely on object.Equals
             return object.Equals(x, y);
-        }
-
-        public int GetHashCode(T obj)
-        {
-            throw new NotImplementedException();
         }
     }
 }

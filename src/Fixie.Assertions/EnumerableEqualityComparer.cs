@@ -2,9 +2,8 @@ namespace Fixie.Assertions
 {
     using System;
     using System.Collections;
-    using System.Collections.Generic;
 
-    class EnumerableEqualityComparer : IEqualityComparer<IEnumerable>
+    class EnumerableEqualityComparer
     {
         public int Position { get; set; }
 
@@ -51,11 +50,6 @@ namespace Fixie.Assertions
                 }
                 Position++;
             }
-        }
-
-        public int GetHashCode(IEnumerable obj)
-        {
-            throw new NotImplementedException();
         }
 
         static bool Equals(object a, object b, Type baseType)

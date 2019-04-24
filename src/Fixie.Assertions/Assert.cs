@@ -59,22 +59,9 @@
                         return false;
 
                     var xType = enumeratorX.Current.GetType();
-                    var yType = enumeratorY.Current.GetType();
 
-                    if (xType.IsAssignableFrom(yType))
-                    {
-                        if (!ItemsEqual(enumeratorX.Current, enumeratorY.Current, xType))
-                            return false;
-                    }
-                    else if (yType.IsAssignableFrom(xType))
-                    {
-                        if (!ItemsEqual(enumeratorY.Current, enumeratorX.Current, yType))
-                            return false;
-                    }
-                    else
-                    {
+                    if (!ItemsEqual(enumeratorX.Current, enumeratorY.Current, xType))
                         return false;
-                    }
                 }
             }
         }

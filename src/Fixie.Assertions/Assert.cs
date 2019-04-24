@@ -12,10 +12,10 @@
             // Null?
             if (!type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Nullable<>))))
             {
-                if (object.Equals(x, default(T)))
-                    return object.Equals(y, default(T));
+                if (Equals(x, default(T)))
+                    return Equals(y, default(T));
 
-                if (object.Equals(y, default(T)))
+                if (Equals(y, default(T)))
                     return false;
             }
 
@@ -33,8 +33,7 @@
             if (x is IEnumerable enumerableX && y is IEnumerable enumerableY)
                 return EnumerableEqual(enumerableX, enumerableY);
 
-            // Last case, rely on object.Equals
-            return object.Equals(x, y);
+            return Equals(x, y);
         }
 
         static bool EnumerableEqual(IEnumerable x, IEnumerable y)

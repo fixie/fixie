@@ -21,32 +21,19 @@ namespace Fixie.Assertions
 
             var results = new List<string>();
 
-            foreach (var line in SplitLines(stackTrace))
+            foreach (var line in Lines(stackTrace))
             {
                 var trimmedLine = line.TrimStart();
-                if (!trimmedLine.StartsWith( "at " + FilterStackTraceAssemblyPrefix) )
+                if (!trimmedLine.StartsWith("at " + FilterStackTraceAssemblyPrefix))
                     results.Add(line);
             }
 
             return string.Join(Environment.NewLine, results.ToArray());
         }
 
-        // Our own custom string.Split because Silverlight/CoreCLR doesn't support the version we were using
-        static IEnumerable<string> SplitLines(string input)
+        static string[] Lines(string input)
         {
-            while (true)
-            {
-                int idx = input.IndexOf(Environment.NewLine);
-
-                if (idx < 0)
-                {
-                    yield return input;
-                    break;
-                }
-
-                yield return input.Substring(0, idx);
-                input = input.Substring(idx + Environment.NewLine.Length);
-            }
+            return input.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
         }
     }
 }

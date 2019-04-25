@@ -55,7 +55,7 @@
             failByAssertion.Method.Name.ShouldBe("FailByAssertion");
             failByAssertion.Output.Lines().ShouldBe("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            failByAssertion.Exception.ShouldBeType<ExpectedException>();
+            failByAssertion.Exception.ShouldBeType<AssertException>();
             failByAssertion.Exception.LiterateStackTrace()
                 .CleanStackTraceLineNumbers()
                 .ShouldBe(At("FailByAssertion()"));

@@ -70,7 +70,7 @@ namespace Fixie.Tests.TestDriven
 
             failByAssertion.Name.ShouldBe(TestClass + ".FailByAssertion");
             failByAssertion.State.ShouldBe(TestState.Failed);
-            failByAssertion.Message.ShouldBe("Fixie.Assertions.ExpectedException");
+            failByAssertion.Message.ShouldBe("Fixie.Assertions.AssertException");
             failByAssertion.StackTrace
                 .CleanStackTraceLineNumbers()
                 .Lines()

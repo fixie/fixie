@@ -4,7 +4,7 @@
         <VersionPrefix>2.0.4</VersionPrefix>
         <VersionSuffix></VersionSuffix>
         <Authors>Patrick Lioi</Authors>
-        <Copyright>Copyright © 2013-2019 Patrick Lioi</Copyright>
+        <Copyright>Copyright (c) 2013-2019 Patrick Lioi</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
         <PackageIconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</PackageIconUrl>

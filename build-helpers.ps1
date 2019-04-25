@@ -2,7 +2,7 @@
     $date = Get-Date
     $currentYear = $date.Year
     $copyrightSpan = if ($currentYear -eq $startYear) { $currentYear } else { "$startYear-$currentYear" }
-    return "Copyright © $copyrightSpan $authors"
+    return "Copyright (c) $copyrightSpan $authors"
 }
 
 function generate($path, $content) {
@@ -17,7 +17,7 @@ function generate($path, $content) {
 
 function mit-license($copyright) {
     generate "LICENSE.md" @"
-The MIT License (MIT)
+MIT License
 
 $copyright
 

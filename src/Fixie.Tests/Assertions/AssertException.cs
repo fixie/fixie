@@ -1,4 +1,4 @@
-namespace Fixie.Assertions
+namespace Fixie.Tests.Assertions
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@ namespace Fixie.Assertions
 
     public class AssertException : Exception
     {
-        public static string FilterStackTraceAssemblyPrefix = "Fixie.Assertions.";
+        public static string FilterStackTraceAssemblyPrefix = typeof(AssertException).Namespace + ".";
 
         public AssertException(string message)
             : base(message)

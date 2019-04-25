@@ -37,7 +37,7 @@
                            "Expected: 2",
                            "Actual:   1",
                            "",
-                           "Fixie.Assertions.AssertException",
+                           "Fixie.Tests.Assertions.AssertException",
                            At("FailByAssertion()"),
                            "",
 

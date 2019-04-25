@@ -88,7 +88,7 @@
             failByAssertion.ErrorStackTrace
                 .CleanStackTraceLineNumbers()
                 .Lines()
-                .ShouldBe("Fixie.Assertions.AssertException", At("FailByAssertion()"));
+                .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
             failByAssertion.StdOut.Lines().ShouldBe("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
 
             pass.TestName.ShouldBe(TestClass + ".Pass");

@@ -76,9 +76,9 @@
 
         static void AssertTest(Test actual, string expectedClass, string expectedMethod, string expectedName)
         {
-            actual.Class.ShouldEqual(expectedClass);
-            actual.Method.ShouldEqual(expectedMethod);
-            actual.Name.ShouldEqual(expectedName);
+            actual.Class.ShouldBe(expectedClass);
+            actual.Method.ShouldBe(expectedMethod);
+            actual.Name.ShouldBe(expectedName);
         }
 
         static Test Test<TTestClass>(string method)

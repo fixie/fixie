@@ -14,7 +14,7 @@
             exception.LiterateStackTrace()
                 .CleanStackTraceLineNumbers()
                 .Lines()
-                .ShouldEqual(
+                .ShouldBe(
                     At<ExceptionExtensionsTests>("GetException()"),
                     "",
                     "------- Inner Exception: System.DivideByZeroException -------",

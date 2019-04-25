@@ -23,7 +23,7 @@
                 bus.Publish(new Event(3));
 
                 console.Output.Lines()
-                    .ShouldEqual(
+                    .ShouldBe(
                         "EventHandler handled Event 1",
                         "CombinationEventHandler handled Event 1",
                         "AnotherEventHandler handled AnotherEvent 2",

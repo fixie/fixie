@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie", "Fixie\Fixie.csproj", "{54B62C1C-3C2A-41A6-9D19-008F814D1791}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Assertions", "Fixie.Assertions\Fixie.Assertions.csproj", "{6B764D6B-5DF3-4247-B43E-57E00F03D14A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.TestDriven", "Fixie.TestDriven\Fixie.TestDriven.csproj", "{5F0F22E2-D3A1-4D4E-A138-68F6FB5F2098}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Tests", "Fixie.Tests\Fixie.Tests.csproj", "{79891344-547E-4F8D-959B-07684D09322D}"
@@ -30,10 +28,6 @@ Global
 		{54B62C1C-3C2A-41A6-9D19-008F814D1791}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54B62C1C-3C2A-41A6-9D19-008F814D1791}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54B62C1C-3C2A-41A6-9D19-008F814D1791}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6B764D6B-5DF3-4247-B43E-57E00F03D14A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B764D6B-5DF3-4247-B43E-57E00F03D14A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6B764D6B-5DF3-4247-B43E-57E00F03D14A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B764D6B-5DF3-4247-B43E-57E00F03D14A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5F0F22E2-D3A1-4D4E-A138-68F6FB5F2098}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5F0F22E2-D3A1-4D4E-A138-68F6FB5F2098}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F0F22E2-D3A1-4D4E-A138-68F6FB5F2098}.Release|Any CPU.ActiveCfg = Release|Any CPU

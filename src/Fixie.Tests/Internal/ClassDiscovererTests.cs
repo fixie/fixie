@@ -47,7 +47,7 @@
             var customDiscovery = new SampleDiscovery();
 
             DiscoveredTestClasses(customDiscovery)
-                .ShouldEqual(
+                .ShouldBe(
                     typeof(StaticClass),
                     typeof(DefaultConstructor),
                     typeof(NoDefaultConstructor),
@@ -64,7 +64,7 @@
             DiscoveredTestClasses(customDiscovery,
                     typeof(SampleDiscovery),
                     typeof(SampleExecution))
-                .ShouldEqual(
+                .ShouldBe(
                     typeof(StaticClass),
                     typeof(DefaultConstructor),
                     typeof(NoDefaultConstructor),
@@ -81,13 +81,13 @@
                 .Single();
 
             //Confirm that a nested closure class has actually been generated.
-            nested.Has<CompilerGeneratedAttribute>().ShouldBeTrue();
+            nested.Has<CompilerGeneratedAttribute>().ShouldBe(true);
 
             //Confirm that the nested closure class is omitted from test class discovery.
             var customDiscovery = new SampleDiscovery();
 
             DiscoveredTestClasses(customDiscovery, nested)
-                .ShouldEqual(
+                .ShouldBe(
                     typeof(StaticClass),
                     typeof(DefaultConstructor),
                     typeof(NoDefaultConstructor),
@@ -108,7 +108,7 @@
                 .Where(x => !x.IsStatic());
 
             DiscoveredTestClasses(customDiscovery)
-                .ShouldEqual(
+                .ShouldBe(
                     typeof(NameEndsWithTests),
                     typeof(InheritanceSampleBase),
                     typeof(InheritanceSample));
@@ -119,7 +119,7 @@
             var defaultDiscovery = new Discovery();
 
             DiscoveredTestClasses(defaultDiscovery)
-                .ShouldEqual(
+                .ShouldBe(
                     typeof(NameEndsWithTests));
         }
 
@@ -137,7 +137,7 @@
                 "Exception thrown while attempting to run a custom class-discovery predicate. " +
                 "Check the inner exception for more details.");
 
-            exception.InnerException.Message.ShouldEqual("Unsafe class-discovery predicate threw!");
+            exception.InnerException.Message.ShouldBe("Unsafe class-discovery predicate threw!");
         }
 
         static IEnumerable<Type> DiscoveredTestClasses(Discovery discovery)

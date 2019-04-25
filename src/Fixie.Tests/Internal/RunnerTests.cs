@@ -24,7 +24,7 @@ namespace Fixie.Tests.Internal
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
-            listener.Entries.ShouldEqual(
+            listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",
                 Self + "+PassTestClass.PassB passed",
                 Self + "+PassFailTestClass.Fail failed: 'Fail' failed!",
@@ -48,7 +48,7 @@ namespace Fixie.Tests.Internal
                 typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
                 typeof(PassFailTestClass), typeof(SkipTestClass));
 
-            listener.Entries.ShouldEqual(
+            listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassB passed",
                 Self + "+PassTestClass.PassA passed",
                 Self + "+PassFailTestClass.Fail failed: 'Fail' failed!",
@@ -79,7 +79,7 @@ namespace Fixie.Tests.Internal
             //      is undefined, we explicitly sort the listener Entries here to avoid making a brittle assertion.
 
             var strings = listener.Entries.OrderBy(x => x).ToArray();
-            strings.ShouldEqual(
+            strings.ShouldBe(
                 Self + "+BuggyParameterGenerationTestClass.ParameterizedA failed: Exception thrown while attempting to yield input parameters for method: ParameterizedA",
                 Self + "+BuggyParameterGenerationTestClass.ParameterizedA failed: OrderBy lambda expression threw!",
                 Self + "+BuggyParameterGenerationTestClass.ParameterizedB failed: Exception thrown while attempting to yield input parameters for method: ParameterizedB",

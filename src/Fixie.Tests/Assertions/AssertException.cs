@@ -1,24 +1,25 @@
-namespace Fixie.Assertions
+namespace Fixie.Tests.Assertions
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Text;
     using static System.Environment;
 
-    public class AssertActualExpectedException : AssertException
+    public class AssertException : Exception
     {
-        public AssertActualExpectedException(object expected, object actual)
-            : base(BuildMessage(expected, actual))
+        public static string FilterStackTraceAssemblyPrefix = typeof(AssertException).Namespace + ".";
+
+        public AssertException(string message)
+            : base(message)
         {
         }
 
-        public AssertActualExpectedException(object expected, object actual, string userMessage)
-            : base(BuildMessage(expected, actual, userMessage))
+        public AssertException(object expected, object actual, string userMessage = null)
+            : base(ExpectationMessage(expected, actual, userMessage))
         {
         }
 
-        static string BuildMessage(object expected, object actual, string userMessage = null)
+        static string ExpectationMessage(object expected, object actual, string userMessage)
         {
             var message = new StringBuilder();
 
@@ -26,14 +27,6 @@ namespace Fixie.Assertions
             {
                 message.AppendLine(userMessage);
                 message.AppendLine();
-            }
-
-            if (actual is IEnumerable enumerableActual && expected is IEnumerable enumerableExpected)
-            {
-                var comparer = new EnumerableEqualityComparer();
-                comparer.Equals(enumerableActual, enumerableExpected);
-
-                message.AppendLine("First difference is at position " + comparer.Position);
             }
 
             var actualStr = actual == null ? null : ConvertToString(actual);
@@ -47,7 +40,7 @@ namespace Fixie.Assertions
                 actualStr += $" ({actual.GetType().FullName})";
                 expectedStr += $" ({expected.GetType().FullName})";
             }
-            
+
             message.AppendLine($"Expected: {FormatMultiLine(expectedStr ?? "(null)")}");
             message.Append($"Actual:   {FormatMultiLine(actualStr ?? "(null)")}");
 
@@ -72,5 +65,29 @@ namespace Fixie.Assertions
 
         static string FormatMultiLine(string value)
             => value.Replace(NewLine, NewLine + "          ");
+
+        public override string StackTrace => FilterStackTrace(base.StackTrace);
+
+        static string FilterStackTrace(string stackTrace)
+        {
+            if (stackTrace == null)
+                return null;
+
+            var results = new List<string>();
+
+            foreach (var line in Lines(stackTrace))
+            {
+                var trimmedLine = line.TrimStart();
+                if (!trimmedLine.StartsWith("at " + FilterStackTraceAssemblyPrefix))
+                    results.Add(line);
+            }
+
+            return string.Join(Environment.NewLine, results.ToArray());
+        }
+
+        static string[] Lines(string input)
+        {
+            return input.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+        }
     }
 }

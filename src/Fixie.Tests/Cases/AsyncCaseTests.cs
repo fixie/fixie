@@ -11,42 +11,42 @@
         public void ShouldAwaitThenPassUponSuccessfulAsyncExecution()
         {
             Run<AwaitThenPassTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<AwaitThenPassTestClass>(".Test passed"));
         }
 
         public void ShouldAwaitResultThenPassUponSuccessfulAsyncExecution()
         {
             Run<AwaitResultThenPassTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<AwaitResultThenPassTestClass>(".Test passed"));
         }
 
         public void ShouldCompleteTaskThenPassUponSuccessfulTaskExecution()
         {
             Run<CompleteTaskThenPassTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<CompleteTaskThenPassTestClass>(".Test passed"));
         }
 
         public void ShouldGetTaskResultThenPassUponSuccessfulTaskExecution()
         {
             Run<CompleteTaskWithResultThenPassTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<CompleteTaskWithResultThenPassTestClass>(".Test passed"));
         }
 
         public void ShouldPassForNullTask()
         {
             Run<NullTaskTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<NullTaskTestClass>(".Test passed"));
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
             Run<AwaitThenFailTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<AwaitThenFailTestClass>(
                         ".Test failed: Expected: 0" + NewLine +
                         "Actual:   3"));
@@ -55,21 +55,21 @@
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
         {
             Run<AwaitOnTaskThatThrowsTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<AwaitOnTaskThatThrowsTestClass>(".Test failed: Attempted to divide by zero."));
         }
 
         public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
         {
             Run<FailBeforeAwaitTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<FailBeforeAwaitTestClass>(".Test failed: 'Test' failed!"));
         }
 
         public void ShouldFailWithClearExplanationWhenAsyncCaseMethodReturnsNonStartedTask()
         {
             Run<FailDueToNonStartedTaskTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<FailDueToNonStartedTaskTestClass>(
                         ".Test failed: The test returned a non-started task, which cannot " +
                         "be awaited. Consider using Task.Run or Task.Factory.StartNew."));
@@ -78,7 +78,7 @@
         public void ShouldExecuteReturnedTaskDeclaredAsObject()
         {
             Run<CompleteTaskDeclaredAsObjectTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<CompleteTaskDeclaredAsObjectTestClass>(
                         ".Test failed: Expected: 0" + NewLine +
                         "Actual:   3"));
@@ -87,7 +87,7 @@
         public void ShouldFailUnsupportedAsyncVoidCases()
         {
             Run<UnsupportedAsyncVoidTestTestClass>()
-                .ShouldEqual(
+                .ShouldBe(
                     For<UnsupportedAsyncVoidTestTestClass>(".Test failed: " +
                         "Async void methods are not supported. Declare async methods with a return type of " +
                         "Task to ensure the task actually runs to completion."));
@@ -112,7 +112,7 @@
             {
                 var result = await Divide(15, 5);
 
-                result.ShouldEqual(3);
+                result.ShouldBe(3);
             }
         }
 
@@ -122,7 +122,7 @@
             {
                 var result = await Divide(15, 5);
 
-                result.ShouldEqual(3);
+                result.ShouldBe(3);
 
                 return true;
             }
@@ -136,7 +136,7 @@
 
                 return divide.ContinueWith(division =>
                 {
-                    division.Result.ShouldEqual(3);
+                    division.Result.ShouldBe(3);
                 });
             }
         }
@@ -149,7 +149,7 @@
 
                 return divide.ContinueWith(division =>
                 {
-                    division.Result.ShouldEqual(3);
+                    division.Result.ShouldBe(3);
 
                     return true;
                 });
@@ -173,7 +173,7 @@
             {
                 var result = await Divide(15, 5);
 
-                result.ShouldEqual(0);
+                result.ShouldBe(0);
             }
         }
 
@@ -215,7 +215,7 @@
                 {
                     // Fail within the continuation, so that we can prove
                     // that the task object was fully executed.
-                    division.Result.ShouldEqual(0);
+                    division.Result.ShouldBe(0);
                 });
             }
         }

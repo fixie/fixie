@@ -16,27 +16,27 @@
 
             RunTypes(listener, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
-            listener.ClassSummaries.Count.ShouldEqual(2);
-            listener.AssemblySummary.Count.ShouldEqual(1);
+            listener.ClassSummaries.Count.ShouldBe(2);
+            listener.AssemblySummary.Count.ShouldBe(1);
 
             var classA = listener.ClassSummaries[0];
             var classB = listener.ClassSummaries[1];
             var assembly = listener.AssemblySummary[0];
 
-            classA.Passed.ShouldEqual(1);
-            classA.Failed.ShouldEqual(1);
-            classA.Skipped.ShouldEqual(1);
-            classA.Total.ShouldEqual(3);
+            classA.Passed.ShouldBe(1);
+            classA.Failed.ShouldBe(1);
+            classA.Skipped.ShouldBe(1);
+            classA.Total.ShouldBe(3);
 
-            classB.Passed.ShouldEqual(1);
-            classB.Failed.ShouldEqual(2);
-            classB.Skipped.ShouldEqual(3);
-            classB.Total.ShouldEqual(6);
+            classB.Passed.ShouldBe(1);
+            classB.Failed.ShouldBe(2);
+            classB.Skipped.ShouldBe(3);
+            classB.Total.ShouldBe(6);
 
-            assembly.Passed.ShouldEqual(2);
-            assembly.Failed.ShouldEqual(3);
-            assembly.Skipped.ShouldEqual(4);
-            assembly.Total.ShouldEqual(9);
+            assembly.Passed.ShouldBe(2);
+            assembly.Failed.ShouldBe(3);
+            assembly.Skipped.ShouldBe(4);
+            assembly.Total.ShouldBe(9);
         }
 
         class StubExecutionSummaryListener :

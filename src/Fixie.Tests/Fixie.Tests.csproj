@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fixie.Assertions\Fixie.Assertions.csproj" />
     <ProjectReference Include="..\Fixie.TestDriven\Fixie.TestDriven.csproj" />
     <ProjectReference Include="..\Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.csproj" />
     <ProjectReference Include="..\Fixie\Fixie.csproj" />

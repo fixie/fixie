@@ -20,7 +20,7 @@ namespace Fixie.Tests.TestDriven
                 Run(listener);
 
                 console.Lines()
-                    .ShouldEqual(
+                    .ShouldBe(
                         "Console.Out: Fail",
                         "Console.Error: Fail",
                         "Console.Out: FailByAssertion",
@@ -30,15 +30,15 @@ namespace Fixie.Tests.TestDriven
             }
 
             var results = testDriven.TestResults;
-            results.Count.ShouldEqual(5);
+            results.Count.ShouldBe(5);
 
             foreach (var result in results)
             {
-                result.FixtureType.ShouldEqual(null);
-                result.Method.ShouldEqual(null);
-                result.TimeSpan.ShouldEqual(TimeSpan.Zero);
-                result.TotalTests.ShouldEqual(0);
-                result.TestRunnerName.ShouldBeNull();
+                result.FixtureType.ShouldBe(null);
+                result.Method.ShouldBe(null);
+                result.TimeSpan.ShouldBe(TimeSpan.Zero);
+                result.TotalTests.ShouldBe(0);
+                result.TestRunnerName.ShouldBe(null);
             }
 
             var fail = results[0];
@@ -47,43 +47,43 @@ namespace Fixie.Tests.TestDriven
             var skipWithReason = results[3];
             var skipWithoutReason = results[4];
 
-            skipWithReason.Name.ShouldEqual(TestClass + ".SkipWithReason");
-            skipWithReason.State.ShouldEqual(TestState.Ignored);
-            skipWithReason.Message.ShouldEqual("⚠ Skipped with reason.");
-            skipWithReason.StackTrace.ShouldBeNull();
+            skipWithReason.Name.ShouldBe(TestClass + ".SkipWithReason");
+            skipWithReason.State.ShouldBe(TestState.Ignored);
+            skipWithReason.Message.ShouldBe("⚠ Skipped with reason.");
+            skipWithReason.StackTrace.ShouldBe(null);
 
-            skipWithoutReason.Name.ShouldEqual(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.State.ShouldEqual(TestState.Ignored);
-            skipWithoutReason.Message.ShouldBeNull();
-            skipWithoutReason.StackTrace.ShouldBeNull();
+            skipWithoutReason.Name.ShouldBe(TestClass + ".SkipWithoutReason");
+            skipWithoutReason.State.ShouldBe(TestState.Ignored);
+            skipWithoutReason.Message.ShouldBe(null);
+            skipWithoutReason.StackTrace.ShouldBe(null);
 
-            fail.Name.ShouldEqual(TestClass + ".Fail");
-            fail.State.ShouldEqual(TestState.Failed);
-            fail.Message.ShouldEqual("Fixie.Tests.FailureException");
+            fail.Name.ShouldBe(TestClass + ".Fail");
+            fail.State.ShouldBe(TestState.Failed);
+            fail.Message.ShouldBe("Fixie.Tests.FailureException");
             fail.StackTrace
                 .CleanStackTraceLineNumbers()
                 .Lines()
-                .ShouldEqual(
+                .ShouldBe(
                     "'Fail' failed!",
                     "",
                     At("Fail()"));
 
-            failByAssertion.Name.ShouldEqual(TestClass + ".FailByAssertion");
-            failByAssertion.State.ShouldEqual(TestState.Failed);
-            failByAssertion.Message.ShouldEqual("Fixie.Assertions.AssertActualExpectedException");
+            failByAssertion.Name.ShouldBe(TestClass + ".FailByAssertion");
+            failByAssertion.State.ShouldBe(TestState.Failed);
+            failByAssertion.Message.ShouldBe("Fixie.Tests.Assertions.AssertException");
             failByAssertion.StackTrace
                 .CleanStackTraceLineNumbers()
                 .Lines()
-                .ShouldEqual(
+                .ShouldBe(
                     "Expected: 2",
                     "Actual:   1",
                     "",
                     At("FailByAssertion()"));
 
-            pass.Name.ShouldEqual(TestClass + ".Pass");
-            pass.State.ShouldEqual(TestState.Passed);
-            pass.Message.ShouldBeNull();
-            pass.StackTrace.ShouldBeNull();
+            pass.Name.ShouldBe(TestClass + ".Pass");
+            pass.State.ShouldBe(TestState.Passed);
+            pass.Message.ShouldBe(null);
+            pass.StackTrace.ShouldBe(null);
         }
 
         class StubTestListener : ITestListener

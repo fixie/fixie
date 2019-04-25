@@ -18,7 +18,7 @@
             discovery.Parameters.Add<InputAttributeOrDefaultParameterSource>();
 
             Run<ParameterizedTestClass>(discovery, execution)
-                .ShouldEqual(
+                .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
                         ".MultipleCasesFromAttributes(1, 1, 2) passed",
@@ -30,7 +30,7 @@
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
         {
             Run<ParameterizedTestClass>(discovery, execution)
-                .ShouldEqual(
+                .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
                         ".MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
@@ -42,7 +42,7 @@
             discovery.Parameters.Add<EmptyParameterSource>();
 
             Run<ParameterizedTestClass>(discovery, execution)
-                .ShouldEqual(
+                .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: This test case has declared parameters, but no parameter values have been provided to it.",
                         ".MultipleCasesFromAttributes failed: This test case has declared parameters, but no parameter values have been provided to it.",
@@ -63,7 +63,7 @@
             discovery.Parameters.Add<FixedParameterSource>();
 
             Run<ParameterizedTestClass>(discovery, execution)
-                .ShouldEqual(
+                .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Parameter count mismatch.",
                         ".IntArg(0) passed",
@@ -85,7 +85,7 @@
             discovery.Parameters.Add<LazyBuggyParameterSource>();
 
             Run<ParameterizedTestClass>(discovery, execution)
-                .ShouldEqual(
+                .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
                         ".IntArg(1) failed: Expected 0, but was 1",
@@ -108,7 +108,7 @@
             discovery.Parameters.Add<EagerBuggyParameterSource>();
 
             Run<ParameterizedTestClass>(discovery, execution)
-                .ShouldEqual(
+                .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Exception thrown while attempting to eagerly build input parameters for method: IntArg",
 
@@ -123,7 +123,7 @@
             discovery.Parameters.Add<LazyBuggyParameterSource>();
 
             Run<ConstrainedGenericTestClass>(discovery, execution)
-                .ShouldEqual(
+                .ShouldBe(
                     For<ConstrainedGenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(0) passed",
                         ".ConstrainedGeneric<System.Int32>(1) passed",
@@ -138,7 +138,7 @@
             discovery.Parameters.Add<InputAttributeParameterSource>();
 
             Run<GenericTestClass>(discovery, execution)
-                .ShouldEqual(
+                .ShouldBe(
                     For<GenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(1) passed",
                         ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",
@@ -274,8 +274,8 @@
             [Input(null, "stringArg1", "stringArg2", typeof(string), typeof(string))]
             public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genericArgument1A, T2 genericArgument2, T1 genericArgument1B, Type expectedT1, Type expectedT2)
             {
-                typeof(T1).ShouldEqual(expectedT1, $"Expected {Format(genericArgument1A)}+{Format(genericArgument1B)} to resolve to type {expectedT1} but found type {typeof(T1)}");
-                typeof(T2).ShouldEqual(expectedT2, $"Expected {Format(genericArgument2)} to resolve to type {expectedT2} but found type {typeof(T2)}");
+                typeof(T1).ShouldBe(expectedT1, $"Expected {Format(genericArgument1A)}+{Format(genericArgument1B)} to resolve to type {expectedT1} but found type {typeof(T1)}");
+                typeof(T2).ShouldBe(expectedT2, $"Expected {Format(genericArgument2)} to resolve to type {expectedT2} but found type {typeof(T2)}");
             }
 
             [Input(123, 456, typeof(int))]
@@ -288,7 +288,7 @@
             [Input(null, "stringArg", typeof(string))]
             public void SingleGenericArgumentMultipleParameters<T>(T genericArgument1, T genericArgument2, Type expectedT)
             {
-                typeof(T).ShouldEqual(expectedT, $"Expected {Format(genericArgument1)}+{Format(genericArgument2)} to resolve to type {expectedT} but found type {typeof(T)}");
+                typeof(T).ShouldBe(expectedT, $"Expected {Format(genericArgument1)}+{Format(genericArgument2)} to resolve to type {expectedT} but found type {typeof(T)}");
             }
 
             [Input(123, typeof(int))]
@@ -296,7 +296,7 @@
             [Input("stringArg", typeof(string))]
             public void SingleGenericArgument<T>(T genericArgument, Type expectedT)
             {
-                typeof(T).ShouldEqual(expectedT, $"Expected {Format(genericArgument)} to resolve to type {expectedT} but found type {typeof(T)}");
+                typeof(T).ShouldBe(expectedT, $"Expected {Format(genericArgument)} to resolve to type {expectedT} but found type {typeof(T)}");
             }
 
             [Input(123, 123)]
@@ -314,7 +314,7 @@
             [Input("Oops")]
             public void ConstrainedGeneric<T>(T input) where T : struct
             {
-                typeof(T).IsValueType.ShouldBeTrue();
+                typeof(T).IsValueType.ShouldBe(true);
             }
 
             public void ConstrainedGenericMethodWithNoInputsProvided<T>(T input) where T : struct
@@ -336,7 +336,7 @@
 
             public void ConstrainedGeneric<T>(T input) where T : struct
             {
-                typeof(T).IsValueType.ShouldBeTrue();
+                typeof(T).IsValueType.ShouldBe(true);
             }
         }
 

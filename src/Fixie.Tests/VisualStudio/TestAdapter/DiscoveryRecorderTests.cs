@@ -56,7 +56,7 @@
                 }
             });
 
-            log.Messages.Single().Contains(nameof(FileNotFoundException)).ShouldBeTrue();
+            log.Messages.Single().Contains(nameof(FileNotFoundException)).ShouldBe(true);
 
             discoverySink.TestCases.Single()
                 .ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail", invalidAssemblyPath);

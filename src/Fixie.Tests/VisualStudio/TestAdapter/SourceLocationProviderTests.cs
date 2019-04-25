@@ -71,8 +71,8 @@
 
             var success = sourceLocationProvider.TryGetSourceLocation(className, methodName, out var location);
 
-            success.ShouldBeFalse();
-            location.ShouldBeNull();
+            success.ShouldBe(false);
+            location.ShouldBe(null);
         }
 
         static void AssertLineNumber(string className, string methodName, int expectedLine)
@@ -81,10 +81,10 @@
 
             var success = sourceLocationProvider.TryGetSourceLocation(className, methodName, out var location);
 
-            success.ShouldBeTrue();
-            location.CodeFilePath.EndsWith("SourceLocationSamples.cs").ShouldBeTrue();
+            success.ShouldBe(true);
+            location.CodeFilePath.EndsWith("SourceLocationSamples.cs").ShouldBe(true);
 
-            location.LineNumber.ShouldEqual(expectedLine);
+            location.LineNumber.ShouldBe(expectedLine);
         }
     }
 }

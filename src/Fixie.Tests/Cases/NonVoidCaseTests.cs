@@ -14,7 +14,7 @@ namespace Fixie.Tests.Cases
             using (var console = new RedirectedConsole())
             {
                 Run<SampleTestClass>()
-                    .ShouldEqual(
+                    .ShouldBe(
                         For<SampleTestClass>(
                             ".BoolFalse passed",
                             ".BoolThrow failed: 'BoolThrow' failed!",
@@ -25,7 +25,7 @@ namespace Fixie.Tests.Cases
                             ".Throw failed: 'Throw' failed!"));
 
                 Run<SampleAsyncTestClass>()
-                    .ShouldEqual(
+                    .ShouldBe(
                         For<SampleAsyncTestClass>(
                             ".BoolFalse passed",
                             ".BoolThrow failed: 'BoolThrow' failed!",
@@ -35,7 +35,7 @@ namespace Fixie.Tests.Cases
                             ".StringNull passed",
                             ".Throw failed: 'Throw' failed!"));
 
-                console.Output.ShouldBeEmpty();
+                console.Output.ShouldBe("");
             }
         }
 
@@ -47,7 +47,7 @@ namespace Fixie.Tests.Cases
                 var execution = new TreatBoolReturnValuesAsAssertions();
 
                 Run<SampleTestClass>(discovery, execution)
-                    .ShouldEqual(
+                    .ShouldBe(
                         For<SampleTestClass>(
                             ".BoolFalse failed: Boolean test case returned false!",
                             ".BoolThrow failed: 'BoolThrow' failed!",
@@ -57,7 +57,7 @@ namespace Fixie.Tests.Cases
                             ".StringNull passed",
                             ".Throw failed: 'Throw' failed!"));
 
-                console.Lines().ShouldEqual(
+                console.Lines().ShouldBe(
                     "BoolFalse False",
                     "BoolThrow null",
                     "BoolTrue True",
@@ -76,7 +76,7 @@ namespace Fixie.Tests.Cases
                 var execution = new TreatBoolReturnValuesAsAssertions();
 
                 Run<SampleAsyncTestClass>(discovery, execution)
-                    .ShouldEqual(
+                    .ShouldBe(
                         For<SampleAsyncTestClass>(
                             ".BoolFalse failed: Boolean test case returned false!",
                             ".BoolThrow failed: 'BoolThrow' failed!",
@@ -86,7 +86,7 @@ namespace Fixie.Tests.Cases
                             ".StringNull passed",
                             ".Throw failed: 'Throw' failed!"));
 
-                console.Lines().ShouldEqual(
+                console.Lines().ShouldBe(
                     "BoolFalse False",
                     "BoolThrow null",
                     "BoolTrue True",

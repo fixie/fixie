@@ -1,4 +1,4 @@
-﻿namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.TestAdapter
 {
     using System;
     using System.Text;

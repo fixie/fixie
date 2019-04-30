@@ -1,4 +1,4 @@
-namespace Fixie.VisualStudio.TestAdapter
+namespace Fixie.TestAdapter
 {
     using System;
     using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace Fixie.VisualStudio.TestAdapter
         {
             var fixieAssemblies = new[]
             {
-                "Fixie.dll", "Fixie.TestDriven.dll", "Fixie.VisualStudio.TestAdapter.dll"
+                "Fixie.dll", "Fixie.TestDriven.dll", "Fixie.TestAdapter.dll"
             };
 
             if (fixieAssemblies.Contains(Path.GetFileName(assemblyPath)))

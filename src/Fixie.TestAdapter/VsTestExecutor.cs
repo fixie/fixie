@@ -1,4 +1,4 @@
-﻿namespace Fixie.VisualStudio.TestAdapter
+﻿namespace Fixie.TestAdapter
 {
     using System;
     using System.Collections.Generic;
@@ -13,11 +13,11 @@
     [ExtensionUri(Id)]
     public class VsTestExecutor : ITestExecutor
     {
-        public const string Id = "executor://Fixie.VisualStudio";
+        public const string Id = "executor://fixie.testadapter/";
         public static readonly Uri Uri = new Uri(Id);
 
         /// <summary>
-        /// Called by Visual Studio, when running all tests.
+        /// Called by the IDE, when running all tests.
         /// Called by TFS Build, when running all tests.
         /// Called by TFS Build, with a filter within the run context, when running selected tests.
         /// </summary>
@@ -30,7 +30,7 @@
 
             log.Version();
 
-            HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
+            HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
             var runAllTests = new PipeMessage.ExecuteTests
             {
@@ -42,7 +42,7 @@
         }
 
         /// <summary>
-        /// Called by Visual Studio, when running selected tests.
+        /// Called by the IDE, when running selected tests.
         /// Never called from TFS Build.
         /// </summary>
         /// <param name="tests"></param>
@@ -54,7 +54,7 @@
 
             log.Version();
 
-            HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
+            HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
             var assemblyGroups = tests.GroupBy(tc => tc.Source);
 
@@ -145,7 +145,7 @@
             }
         }
 
-        static void HandlePoorVisualStudioImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)
+        static void HandlePoorVsTestImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             if (runContext.KeepAlive)
                 frameworkHandle.EnableShutdownAfterTestRun = true;

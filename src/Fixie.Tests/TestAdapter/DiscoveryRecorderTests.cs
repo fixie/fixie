@@ -1,18 +1,18 @@
-﻿namespace Fixie.Tests.VisualStudio.TestAdapter
+﻿namespace Fixie.Tests.TestAdapter
 {
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using Assertions;
     using Fixie.Internal.Listeners;
-    using Fixie.VisualStudio.TestAdapter;
+    using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
     public class DiscoveryRecorderTests : MessagingTests
     {
-        public void ShouldMapDiscoveredTestsToVisualStudioDiscoverySink()
+        public void ShouldMapDiscoveredTestsToVsTestDiscoverySink()
         {
             var assemblyPath = typeof(MessagingTests).Assembly.Location;
 

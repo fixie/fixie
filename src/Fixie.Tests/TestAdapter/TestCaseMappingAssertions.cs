@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.VisualStudio.TestAdapter
+﻿namespace Fixie.Tests.TestAdapter
 {
     using Assertions;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -43,7 +43,7 @@
         static void ShouldUseDefaultsForUnmappedProperties(TestCase test)
         {
             test.Traits.ShouldBeEmpty();
-            test.ExecutorUri.ToString().ShouldBe("executor://fixie.visualstudio/");
+            test.ExecutorUri.ToString().ShouldBe("executor://fixie.testadapter/");
         }
 
         static void ShouldHaveSourceLocation(TestCase test)

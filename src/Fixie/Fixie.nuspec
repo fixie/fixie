@@ -42,14 +42,14 @@
     <file target="lib\netcoreapp2.0" src="..\Fixie.TestDriven\bin\Release\netcoreapp2.0\Fixie.dll.tdnet" />
     <file target="lib\netcoreapp2.0" src="..\Fixie.TestDriven\bin\Release\netcoreapp2.0\Fixie.TestDriven.dll" />
 
-    <!-- Visual Studio Adapter -->
+    <!-- VsTest Adapter -->
 
-    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Fixie.VisualStudio.TestAdapter.dll" />
-    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.dll" />
-    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" />
-    <file target="lib\net452" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" />
+    <file target="lib\net452" src="..\Fixie.TestAdapter\bin\Release\net452\Fixie.TestAdapter.dll" />
+    <file target="lib\net452" src="..\Fixie.TestAdapter\bin\Release\net452\Mono.Cecil.dll" />
+    <file target="lib\net452" src="..\Fixie.TestAdapter\bin\Release\net452\Mono.Cecil.Rocks.dll" />
+    <file target="lib\net452" src="..\Fixie.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" />
 
-    <file target="lib\netcoreapp2.0" src="..\Fixie.VisualStudio.TestAdapter\bin\Release\netcoreapp2.0\Fixie.VisualStudio.TestAdapter.dll" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie.TestAdapter\bin\Release\netcoreapp2.0\Fixie.TestAdapter.dll" />
 
     <!-- Run Time Support -->
 

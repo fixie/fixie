@@ -1,6 +1,6 @@
-﻿namespace Fixie.Tests.VisualStudio.TestAdapter
+﻿namespace Fixie.Tests.TestAdapter
 {
-    using Fixie.VisualStudio.TestAdapter;
+    using Fixie.TestAdapter;
     using Assertions;
     using static Utility;
 
@@ -51,7 +51,7 @@
 
         public void ShouldDetectLineNumberOfFirstOccurrenceOfOverloadedMethods()
         {
-            // Visual Studio's test running infrastructure is incapable of distinguishing
+            // VsTest's test running infrastructure is incapable of distinguishing
             // overloads, even if we were to report accurate line numbers for each individually.
             // The compromise that all major .NET test frameworks have to make is to report
             // the line number of *one* of the overload occurrences.

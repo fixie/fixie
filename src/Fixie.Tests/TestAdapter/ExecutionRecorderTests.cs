@@ -1,8 +1,8 @@
-﻿namespace Fixie.Tests.VisualStudio.TestAdapter
+﻿namespace Fixie.Tests.TestAdapter
 {
     using System;
     using System.Collections.Generic;
-    using Fixie.VisualStudio.TestAdapter;
+    using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
@@ -12,7 +12,7 @@
 
     public class ExecutionRecorderTests
     {
-        public void ShouldMapResultsToVisualStudioExecutionRecorder()
+        public void ShouldMapResultsToVsTestExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();

@@ -5,7 +5,7 @@
     using System.Linq;
     using Assertions;
     using Fixie.Internal.Listeners;
-    using Fixie.VisualStudio.TestAdapter;
+    using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;

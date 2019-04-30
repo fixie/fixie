@@ -1,6 +1,6 @@
 ﻿namespace Fixie.Tests.VisualStudio.TestAdapter
 {
-    using Fixie.VisualStudio.TestAdapter;
+    using Fixie.TestAdapter;
     using Assertions;
     using static Utility;
 

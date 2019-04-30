@@ -12,7 +12,7 @@
 
     public class DiscoveryRecorderTests : MessagingTests
     {
-        public void ShouldMapDiscoveredTestsToVisualStudioDiscoverySink()
+        public void ShouldMapDiscoveredTestsToVsTestDiscoverySink()
         {
             var assemblyPath = typeof(MessagingTests).Assembly.Location;
 

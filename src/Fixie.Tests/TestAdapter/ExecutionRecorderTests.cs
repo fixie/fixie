@@ -12,7 +12,7 @@
 
     public class ExecutionRecorderTests
     {
-        public void ShouldMapResultsToVisualStudioExecutionRecorder()
+        public void ShouldMapResultsToVsTestExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();

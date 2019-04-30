@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.VisualStudio.TestAdapter
+﻿namespace Fixie.Tests.TestAdapter
 {
     using Fixie.TestAdapter;
     using Assertions;

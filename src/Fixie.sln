@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.TestDriven", "Fixie.T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Tests", "Fixie.Tests\Fixie.Tests.csproj", "{79891344-547E-4F8D-959B-07684D09322D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.VisualStudio.TestAdapter", "Fixie.VisualStudio.TestAdapter\Fixie.VisualStudio.TestAdapter.csproj", "{50D2B103-EF46-4438-9720-08C93B6EF714}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.TestAdapter", "Fixie.TestAdapter\Fixie.TestAdapter.csproj", "{50D2B103-EF46-4438-9720-08C93B6EF714}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie.Console", "Fixie.Console\Fixie.Console.csproj", "{04605B99-6D68-4BC5-8239-DC2EF4498B6F}"
 EndProject

@@ -17,7 +17,7 @@
         public static readonly Uri Uri = new Uri(Id);
 
         /// <summary>
-        /// Called by Visual Studio, when running all tests.
+        /// Called by the IDE, when running all tests.
         /// Called by TFS Build, when running all tests.
         /// Called by TFS Build, with a filter within the run context, when running selected tests.
         /// </summary>
@@ -42,7 +42,7 @@
         }
 
         /// <summary>
-        /// Called by Visual Studio, when running selected tests.
+        /// Called by the IDE, when running selected tests.
         /// Never called from TFS Build.
         /// </summary>
         /// <param name="tests"></param>

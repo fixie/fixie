@@ -30,7 +30,7 @@
 
             log.Version();
 
-            HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
+            HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
             var runAllTests = new PipeMessage.ExecuteTests
             {
@@ -54,7 +54,7 @@
 
             log.Version();
 
-            HandlePoorVisualStudioImplementationDetails(runContext, frameworkHandle);
+            HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
             var assemblyGroups = tests.GroupBy(tc => tc.Source);
 
@@ -145,7 +145,7 @@
             }
         }
 
-        static void HandlePoorVisualStudioImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)
+        static void HandlePoorVsTestImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             if (runContext.KeepAlive)
                 frameworkHandle.EnableShutdownAfterTestRun = true;

@@ -26,10 +26,6 @@ the arguments are not known ahead of execution time. It assumes that
 phase and the execution phase. Otherwise, you get a glitchy experience as
 VsTest tries and fails to match up actual execution results
 with the list of tests found at discovery time.
-4. It is highly likely that misleading errors will be reported in the Tests Output window upon upgrading.
-When users of the Test Adapter upgrade to a new version Fixie, it is recommended that they remove the
-old version, close Visual Studio, reopen Visual Studio, and install the new version
-of Fixie.
 
 ## Fixie's Compromises
 

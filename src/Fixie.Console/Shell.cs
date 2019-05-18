@@ -25,12 +25,7 @@
 
         public static int dotnet(params string[] arguments)
         {
-            return Run(new ProcessStartInfo
-            {
-                FileName = Dotnet.Path,
-                Arguments = CommandLine.Serialize(arguments),
-                UseShellExecute = false
-            });
+            return run(Dotnet.Path, workingDirectory: "", arguments);
         }
 
         public static string[] msbuild(string project, string target)

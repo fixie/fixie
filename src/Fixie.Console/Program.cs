@@ -153,9 +153,7 @@
 
             AddPassThroughArguments(arguments, options, customArguments);
 
-            return dotnet(
-                workingDirectory: outputPath,
-                arguments: arguments.ToArray());
+            return Run(Dotnet.Path, outputPath, arguments.ToArray());
         }
 
         static void AddPassThroughArguments(List<string> arguments, Options options, string[] customArguments)

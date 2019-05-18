@@ -19,11 +19,6 @@
             });
         }
 
-        public static int dotnet(string workingDirectory, string[] arguments)
-        {
-            return Run(Dotnet.Path, workingDirectory, arguments);
-        }
-
         public static string[] RunTarget(string project, string target)
         {
             var path = Path.GetTempFileName();

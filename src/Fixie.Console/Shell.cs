@@ -16,7 +16,7 @@
                 UseShellExecute = false
             };
 
-            using (var process = Process.Start(processStartInfo))
+            using (var process = Start(processStartInfo))
             {
                 process.WaitForExit();
                 return process.ExitCode;
@@ -37,7 +37,7 @@
                 UseShellExecute = false
             };
 
-            using (var process = Process.Start(dotnet))
+            using (var process = Start(dotnet))
             {
                 process.WaitForExit();
                 return process.ExitCode;
@@ -97,5 +97,14 @@
                 "/t:" + target,
                 "/nologo",
                 "/verbosity:minimal");
+
+        static Process Start(ProcessStartInfo startInfo)
+        {
+            Process process = new Process();
+            process.StartInfo = startInfo;
+            if (!process.Start())
+                return (Process)null;
+            return process;
+        }
     }
 }

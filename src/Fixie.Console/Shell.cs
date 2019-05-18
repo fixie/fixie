@@ -29,6 +29,7 @@
                     project,
                     "/t:" + target,
                     "/nologo",
+                    "/verbosity:minimal",
                     $"/p:_Fixie_OutputFile={path}");
 
                 return File.ReadAllLines(path);

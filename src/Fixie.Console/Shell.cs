@@ -9,19 +9,13 @@
     {
         public static int run(string executable, string workingDirectory, string[] arguments)
         {
-            var processStartInfo = new ProcessStartInfo
+            return Run(new ProcessStartInfo
             {
                 FileName = executable,
                 Arguments = CommandLine.Serialize(arguments),
                 WorkingDirectory = workingDirectory,
                 UseShellExecute = false
-            };
-
-            using (var process = Start(processStartInfo))
-            {
-                process.WaitForExit();
-                return process.ExitCode;
-            }
+            });
         }
 
         public static int dotnet(string workingDirectory, string[] arguments)
@@ -31,18 +25,12 @@
 
         public static int dotnet(params string[] arguments)
         {
-            var dotnet = new ProcessStartInfo
+            return Run(new ProcessStartInfo
             {
                 FileName = Dotnet.Path,
                 Arguments = CommandLine.Serialize(arguments),
                 UseShellExecute = false
-            };
-
-            using (var process = Start(dotnet))
-            {
-                process.WaitForExit();
-                return process.ExitCode;
-            }
+            });
         }
 
         public static string[] msbuild(string project, string target)
@@ -98,6 +86,15 @@
                 "/t:" + target,
                 "/nologo",
                 "/verbosity:minimal");
+
+        static int Run(ProcessStartInfo startInfo)
+        {
+            using (var process = Start(startInfo))
+            {
+                process.WaitForExit();
+                return process.ExitCode;
+            }
+        }
 
         static Process Start(ProcessStartInfo startInfo)
         {

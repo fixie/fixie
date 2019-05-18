@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using Cli;
 
     static class Shell
@@ -23,19 +24,13 @@
             return run(Dotnet.Path, workingDirectory, arguments);
         }
 
-        public static int dotnet(params string[] arguments)
-        {
-            return run(Dotnet.Path, workingDirectory: "", arguments);
-        }
-
         public static string[] msbuild(string project, string target)
         {
             var path = Path.GetTempFileName();
 
             try
             {
-                dotnet(
-                    "msbuild",
+                dotnet_msbuild(
                     project,
                     "/t:" + target,
                     "/nologo",
@@ -55,8 +50,7 @@
 
             try
             {
-                dotnet(
-                    "msbuild",
+                dotnet_msbuild(
                     project,
                     "/p:Configuration=" + configuration,
                     "/p:TargetFramework=" + targetFramework,
@@ -74,13 +68,17 @@
         }
 
         public static int msbuild(string project, string target, string configuration)
-            => dotnet(
-                "msbuild",
+            => dotnet_msbuild(
                 project,
                 "/p:Configuration=" + configuration,
                 "/t:" + target,
                 "/nologo",
                 "/verbosity:minimal");
+
+        static int dotnet_msbuild(params string[] arguments)
+        {
+            return run(Dotnet.Path, workingDirectory: "", arguments.Prepend("msbuild").ToArray());
+        }
 
         static int Run(ProcessStartInfo startInfo)
         {

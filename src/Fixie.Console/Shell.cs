@@ -8,7 +8,7 @@
 
     static class Shell
     {
-        public static int run(string executable, string workingDirectory, string[] arguments)
+        public static int Run(string executable, string workingDirectory, string[] arguments)
         {
             return Run(new ProcessStartInfo
             {
@@ -21,16 +21,16 @@
 
         public static int dotnet(string workingDirectory, string[] arguments)
         {
-            return run(Dotnet.Path, workingDirectory, arguments);
+            return Run(Dotnet.Path, workingDirectory, arguments);
         }
 
-        public static string[] msbuild(string project, string target)
+        public static string[] RunTarget(string project, string target)
         {
             var path = Path.GetTempFileName();
 
             try
             {
-                dotnet_msbuild(
+                MsBuild(
                     project,
                     "/t:" + target,
                     "/nologo",
@@ -44,13 +44,13 @@
             }
         }
 
-        public static string[] msbuild(string project, string target, string configuration, string targetFramework)
+        public static string[] RunTarget(string project, string target, string configuration, string targetFramework)
         {
             var path = Path.GetTempFileName();
 
             try
             {
-                dotnet_msbuild(
+                MsBuild(
                     project,
                     "/p:Configuration=" + configuration,
                     "/p:TargetFramework=" + targetFramework,
@@ -67,17 +67,17 @@
             }
         }
 
-        public static int msbuild(string project, string target, string configuration)
-            => dotnet_msbuild(
+        public static int RunTarget(string project, string target, string configuration)
+            => MsBuild(
                 project,
                 "/p:Configuration=" + configuration,
                 "/t:" + target,
                 "/nologo",
                 "/verbosity:minimal");
 
-        static int dotnet_msbuild(params string[] arguments)
+        static int MsBuild(params string[] arguments)
         {
-            return run(Dotnet.Path, workingDirectory: "", arguments.Prepend("msbuild").ToArray());
+            return Run(Dotnet.Path, workingDirectory: "", arguments.Prepend("msbuild").ToArray());
         }
 
         static int Run(ProcessStartInfo startInfo)

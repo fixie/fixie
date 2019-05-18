@@ -28,7 +28,7 @@
                 {
                     WriteLine($"Building {Path.GetFileNameWithoutExtension(testProject)}...");
 
-                    var exitCode = msbuild(testProject, "Build", options.Configuration);
+                    var exitCode = RunTarget(testProject, "Build", options.Configuration);
 
                     if (exitCode != 0)
                     {
@@ -92,7 +92,7 @@
         static string[] GetTargetFrameworks(Options options, string testProject)
         {
             var targetFrameworks =
-                msbuild(testProject, "_Fixie_GetTargetFrameworks")
+                RunTarget(testProject, "_Fixie_GetTargetFrameworks")
                     .SelectMany(line => line.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries))
                     .ToArray();
 
@@ -111,7 +111,7 @@
 
         static int RunTests(Options options, string testProject, string targetFramework, string[] customArguments, bool runningForMultipleFrameworks)
         {
-            var assemblyMetadata = msbuild(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
+            var assemblyMetadata = RunTarget(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
 
             var outputPath = assemblyMetadata[0];
             var assemblyName = assemblyMetadata[1];
@@ -141,7 +141,7 @@
 
             AddPassThroughArguments(arguments, options, customArguments);
 
-            return run(
+            return Run(
                 executable: Path.Combine(outputPath, targetFileName),
                 workingDirectory: outputPath,
                 arguments: arguments.ToArray());

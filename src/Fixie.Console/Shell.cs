@@ -27,9 +27,9 @@
             {
                 MsBuild(
                     project,
-                    "/t:" + target,
                     "/nologo",
                     "/verbosity:minimal",
+                    "/t:" + target,
                     $"/p:_Fixie_OutputFile={path}");
 
                 return File.ReadAllLines(path);
@@ -48,11 +48,11 @@
             {
                 MsBuild(
                     project,
-                    "/p:Configuration=" + configuration,
-                    "/p:TargetFramework=" + targetFramework,
-                    "/t:" + target,
                     "/nologo",
                     "/verbosity:minimal",
+                    "/t:" + target,
+                    "/p:Configuration=" + configuration,
+                    "/p:TargetFramework=" + targetFramework,
                     $"/p:_Fixie_OutputFile={path}");
 
                 return File.ReadAllLines(path);
@@ -66,10 +66,10 @@
         public static int RunTarget(string project, string target, string configuration)
             => MsBuild(
                 project,
-                "/p:Configuration=" + configuration,
-                "/t:" + target,
                 "/nologo",
-                "/verbosity:minimal");
+                "/verbosity:minimal",
+                "/t:" + target,
+                "/p:Configuration=" + configuration);
 
         static int MsBuild(params string[] arguments)
         {

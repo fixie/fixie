@@ -44,7 +44,7 @@
                 bool runningForMultipleFrameworks = targetFrameworks.Length > 1;
                 foreach (var targetFramework in targetFrameworks)
                 {
-                    int exitCode = Run(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
+                    int exitCode = RunTests(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
 
                     if (exitCode == FatalError)
                         return FatalError;
@@ -109,7 +109,7 @@
                 $"The test project targets the following framework(s): {availableFrameworks}");
         }
 
-        static int Run(Options options, string testProject, string targetFramework, string[] customArguments, bool runningForMultipleFrameworks)
+        static int RunTests(Options options, string testProject, string targetFramework, string[] customArguments, bool runningForMultipleFrameworks)
         {
             var assemblyMetadata = msbuild(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
 

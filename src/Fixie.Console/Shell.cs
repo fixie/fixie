@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Console
 {
+    using System;
     using System.Diagnostics;
     using System.IO;
     using Cli;
@@ -100,11 +101,15 @@
 
         static Process Start(ProcessStartInfo startInfo)
         {
-            Process process = new Process();
-            process.StartInfo = startInfo;
-            if (!process.Start())
-                return (Process)null;
-            return process;
+            var process = new Process
+            {
+                StartInfo = startInfo
+            };
+
+            if (process.Start())
+                return process;
+
+            throw new Exception("Failed to start process: " + startInfo.FileName);
         }
     }
 }

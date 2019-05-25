@@ -1,101 +1,95 @@
 ﻿namespace Fixie.Console
 {
+    using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using Cli;
 
     static class Shell
     {
-        public static int run(string executable, string workingDirectory, string[] arguments)
+        public static int Run(string executable, string workingDirectory, string[] arguments)
         {
-            var processStartInfo = new ProcessStartInfo
+            return Run(new ProcessStartInfo
             {
                 FileName = executable,
                 Arguments = CommandLine.Serialize(arguments),
                 WorkingDirectory = workingDirectory,
                 UseShellExecute = false
-            };
-
-            using (var process = Process.Start(processStartInfo))
-            {
-                process.WaitForExit();
-                return process.ExitCode;
-            }
+            });
         }
 
-        public static int dotnet(string workingDirectory, string[] arguments)
-        {
-            return run(Dotnet.Path, workingDirectory, arguments);
-        }
+        public static int RunTarget(string project, string target, string configuration)
+            => MsBuild(project, target, configuration);
 
-        public static int dotnet(params string[] arguments)
-        {
-            var dotnet = new ProcessStartInfo
-            {
-                FileName = Dotnet.Path,
-                Arguments = CommandLine.Serialize(arguments),
-                UseShellExecute = false
-            };
+        public static string[] QueryTarget(string project, string target)
+            => QueryTarget(project, target, outputPath => MsBuild(project, target, outputPath: outputPath));
 
-            using (var process = Process.Start(dotnet))
-            {
-                process.WaitForExit();
-                return process.ExitCode;
-            }
-        }
+        public static string[] QueryTarget(string project, string target, string configuration, string targetFramework)
+            => QueryTarget(project, target, outputPath => MsBuild(project, target, configuration, targetFramework, outputPath));
 
-        public static string[] msbuild(string project, string target)
+        static string[] QueryTarget(string project, string target, Func<string, int> msbuild)
         {
-            var path = Path.GetTempFileName();
+            var outputPath = Path.GetTempFileName();
 
             try
             {
-                dotnet(
-                    "msbuild",
-                    project,
-                    "/t:" + target,
-                    "/nologo",
-                    $"/p:_Fixie_OutputFile={path}");
+                var exitCode = msbuild(outputPath);
 
-                return File.ReadAllLines(path);
+                if (exitCode != 0)
+                    throw new Exception($"msbuild failed while trying to run target '{target}' in project '{project}'.");
+
+                return File.ReadAllLines(outputPath);
             }
             finally
             {
-                File.Delete(path);
+                File.Delete(outputPath);
             }
         }
 
-        public static string[] msbuild(string project, string target, string configuration, string targetFramework)
+        static int MsBuild(string project, string target, string configuration = null, string targetFramework = null, string outputPath = null)
         {
-            var path = Path.GetTempFileName();
-
-            try
+            var arguments = new List<string>
             {
-                dotnet(
-                    "msbuild",
-                    project,
-                    "/p:Configuration=" + configuration,
-                    "/p:TargetFramework=" + targetFramework,
-                    "/t:" + target,
-                    "/nologo",
-                    "/verbosity:minimal",
-                    $"/p:_Fixie_OutputFile={path}");
-
-                return File.ReadAllLines(path);
-            }
-            finally
-            {
-                File.Delete(path);
-            }
-        }
-
-        public static int msbuild(string project, string target, string configuration)
-            => dotnet(
                 "msbuild",
                 project,
-                "/p:Configuration=" + configuration,
-                "/t:" + target,
                 "/nologo",
-                "/verbosity:minimal");
+                "/verbosity:minimal",
+                "/t:" + target
+            };
+
+            if (configuration != null)
+                arguments.Add($"/p:Configuration={configuration}");
+
+            if (targetFramework != null)
+                arguments.Add($"/p:TargetFramework={targetFramework}");
+
+            if (outputPath != null)
+                arguments.Add($"/p:_Fixie_OutputFile={outputPath}");
+
+            return Run(Dotnet.Path, workingDirectory: "", arguments.ToArray());
+        }
+
+        static int Run(ProcessStartInfo startInfo)
+        {
+            using (var process = Start(startInfo))
+            {
+                process.WaitForExit();
+                return process.ExitCode;
+            }
+        }
+
+        static Process Start(ProcessStartInfo startInfo)
+        {
+            var process = new Process
+            {
+                StartInfo = startInfo
+            };
+
+            if (process.Start())
+                return process;
+
+            throw new Exception("Failed to start process: " + startInfo.FileName);
+        }
     }
 }

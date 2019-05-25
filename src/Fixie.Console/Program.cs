@@ -28,7 +28,7 @@
                 {
                     WriteLine($"Building {Path.GetFileNameWithoutExtension(testProject)}...");
 
-                    var exitCode = msbuild(testProject, "Build", options.Configuration);
+                    var exitCode = RunTarget(testProject, "Build", options.Configuration);
 
                     if (exitCode != 0)
                     {
@@ -44,7 +44,7 @@
                 bool runningForMultipleFrameworks = targetFrameworks.Length > 1;
                 foreach (var targetFramework in targetFrameworks)
                 {
-                    int exitCode = Run(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
+                    int exitCode = RunTests(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
 
                     if (exitCode == FatalError)
                         return FatalError;
@@ -92,7 +92,7 @@
         static string[] GetTargetFrameworks(Options options, string testProject)
         {
             var targetFrameworks =
-                msbuild(testProject, "_Fixie_GetTargetFrameworks")
+                QueryTarget(testProject, "_Fixie_GetTargetFrameworks")
                     .SelectMany(line => line.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries))
                     .ToArray();
 
@@ -109,9 +109,9 @@
                 $"The test project targets the following framework(s): {availableFrameworks}");
         }
 
-        static int Run(Options options, string testProject, string targetFramework, string[] customArguments, bool runningForMultipleFrameworks)
+        static int RunTests(Options options, string testProject, string targetFramework, string[] customArguments, bool runningForMultipleFrameworks)
         {
-            var assemblyMetadata = msbuild(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
+            var assemblyMetadata = QueryTarget(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
 
             var outputPath = assemblyMetadata[0];
             var assemblyName = assemblyMetadata[1];
@@ -132,7 +132,7 @@
             if (targetFrameworkIdentifier == ".NETCoreApp")
                 return RunDotNetCore(options, outputPath, targetFileName, customArguments);
 
-            throw new CommandLineException($"Framework '{targetFramework}' has unsupported TargetFrameworkIdentifier '{targetFrameworkIdentifier}'.");
+            throw new Exception($"Framework '{targetFramework}' has unsupported TargetFrameworkIdentifier '{targetFrameworkIdentifier}'.");
         }
 
         static int RunDotNetFramework(Options options, string outputPath, string targetFileName, string[] customArguments)
@@ -141,7 +141,7 @@
 
             AddPassThroughArguments(arguments, options, customArguments);
 
-            return run(
+            return Run(
                 executable: Path.Combine(outputPath, targetFileName),
                 workingDirectory: outputPath,
                 arguments: arguments.ToArray());
@@ -153,9 +153,7 @@
 
             AddPassThroughArguments(arguments, options, customArguments);
 
-            return dotnet(
-                workingDirectory: outputPath,
-                arguments: arguments.ToArray());
+            return Run(Dotnet.Path, outputPath, arguments.ToArray());
         }
 
         static void AddPassThroughArguments(List<string> arguments, Options options, string[] customArguments)
@@ -208,6 +206,7 @@
 
         static void Error(string message)
         {
+            WriteLine();
             using (Foreground.Red)
                 WriteLine(message);
         }

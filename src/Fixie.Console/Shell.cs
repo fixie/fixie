@@ -19,32 +19,19 @@
             });
         }
 
-        public static string[] RunTarget(string project, string target)
+        public static string[] QueryTarget(string project, string target)
+            => QueryTarget(project, target, outputPath => MsBuild(project, target, outputPath: outputPath));
+
+        public static string[] QueryTarget(string project, string target, string configuration, string targetFramework)
+            => QueryTarget(project, target, outputPath => MsBuild(project, target, configuration, targetFramework, outputPath));
+
+        static string[] QueryTarget(string project, string target, Func<string, int> msbuild)
         {
             var outputPath = Path.GetTempFileName();
 
             try
             {
-                var exitCode = MsBuild(project, target, outputPath: outputPath);
-
-                if (exitCode != 0)
-                    throw new Exception($"msbuild failed while trying to run target '{target}' in project '{project}'.");
-
-                return File.ReadAllLines(outputPath);
-            }
-            finally
-            {
-                File.Delete(outputPath);
-            }
-        }
-
-        public static string[] RunTarget(string project, string target, string configuration, string targetFramework)
-        {
-            var outputPath = Path.GetTempFileName();
-
-            try
-            {
-                var exitCode = MsBuild(project, target, configuration, targetFramework, outputPath);
+                var exitCode = msbuild(outputPath);
 
                 if (exitCode != 0)
                     throw new Exception($"msbuild failed while trying to run target '{target}' in project '{project}'.");

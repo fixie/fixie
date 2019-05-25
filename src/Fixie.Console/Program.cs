@@ -92,7 +92,7 @@
         static string[] GetTargetFrameworks(Options options, string testProject)
         {
             var targetFrameworks =
-                RunTarget(testProject, "_Fixie_GetTargetFrameworks")
+                QueryTarget(testProject, "_Fixie_GetTargetFrameworks")
                     .SelectMany(line => line.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries))
                     .ToArray();
 
@@ -111,7 +111,7 @@
 
         static int RunTests(Options options, string testProject, string targetFramework, string[] customArguments, bool runningForMultipleFrameworks)
         {
-            var assemblyMetadata = RunTarget(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
+            var assemblyMetadata = QueryTarget(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
 
             var outputPath = assemblyMetadata[0];
             var assemblyName = assemblyMetadata[1];

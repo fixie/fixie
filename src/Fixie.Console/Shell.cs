@@ -22,23 +22,17 @@
 
         public static string[] RunTarget(string project, string target)
         {
-            var path = Path.GetTempFileName();
+            var outputPath = Path.GetTempFileName();
 
             try
             {
-                MsBuild(new[]
-                {
-                    project,
-                    "/nologo",
-                    "/verbosity:minimal",
-                    "/t:" + target,
-                    $"/p:_Fixie_OutputFile={path}"});
+                MsBuild(project, target, outputPath);
 
-                return File.ReadAllLines(path);
+                return File.ReadAllLines(outputPath);
             }
             finally
             {
-                File.Delete(path);
+                File.Delete(outputPath);
             }
         }
 
@@ -48,15 +42,7 @@
 
             try
             {
-                MsBuild(new[]
-                {
-                    project,
-                    "/nologo",
-                    "/verbosity:minimal",
-                    "/t:" + target,
-                    "/p:Configuration=" + configuration,
-                    "/p:TargetFramework=" + targetFramework,
-                    $"/p:_Fixie_OutputFile={path}"});
+                MsBuild(project, target, configuration, targetFramework, path);
 
                 return File.ReadAllLines(path);
             }
@@ -67,17 +53,29 @@
         }
 
         public static int RunTarget(string project, string target, string configuration)
-            => MsBuild(new[]
+            => MsBuild(project, target, configuration);
+
+        static int MsBuild(string project, string target, string configuration = null, string targetFramework = null, string outputPath = null)
+        {
+            var arguments = new List<string>
             {
+                "msbuild",
                 project,
                 "/nologo",
                 "/verbosity:minimal",
-                "/t:" + target,
-                "/p:Configuration=" + configuration});
+                "/t:" + target
+            };
 
-        static int MsBuild(IReadOnlyList<string> arguments)
-        {
-            return Run(Dotnet.Path, workingDirectory: "", arguments.Prepend("msbuild").ToArray());
+            if (configuration != null)
+                arguments.Add($"/p:Configuration={configuration}");
+
+            if (targetFramework != null)
+                arguments.Add($"/p:TargetFramework={targetFramework}");
+
+            if (outputPath != null)
+                arguments.Add($"/p:_Fixie_OutputFile={outputPath}");
+
+            return Run(Dotnet.Path, workingDirectory: "", arguments.ToArray());
         }
 
         static int Run(ProcessStartInfo startInfo)

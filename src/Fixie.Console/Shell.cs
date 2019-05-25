@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
-    using System.Linq;
     using Cli;
 
     static class Shell
@@ -26,7 +25,10 @@
 
             try
             {
-                MsBuild(project, target, outputPath);
+                var exitCode = MsBuild(project, target, outputPath: outputPath);
+
+                if (exitCode != 0)
+                    throw new Exception($"msbuild failed while trying to run target '{target}' in project '{project}'.");
 
                 return File.ReadAllLines(outputPath);
             }
@@ -38,17 +40,20 @@
 
         public static string[] RunTarget(string project, string target, string configuration, string targetFramework)
         {
-            var path = Path.GetTempFileName();
+            var outputPath = Path.GetTempFileName();
 
             try
             {
-                MsBuild(project, target, configuration, targetFramework, path);
+                var exitCode = MsBuild(project, target, configuration, targetFramework, outputPath);
 
-                return File.ReadAllLines(path);
+                if (exitCode != 0)
+                    throw new Exception($"msbuild failed while trying to run target '{target}' in project '{project}'.");
+
+                return File.ReadAllLines(outputPath);
             }
             finally
             {
-                File.Delete(path);
+                File.Delete(outputPath);
             }
         }
 

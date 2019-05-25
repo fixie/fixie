@@ -206,6 +206,7 @@
 
         static void Error(string message)
         {
+            WriteLine();
             using (Foreground.Red)
                 WriteLine(message);
         }

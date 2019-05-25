@@ -19,6 +19,9 @@
             });
         }
 
+        public static int RunTarget(string project, string target, string configuration)
+            => MsBuild(project, target, configuration);
+
         public static string[] QueryTarget(string project, string target)
             => QueryTarget(project, target, outputPath => MsBuild(project, target, outputPath: outputPath));
 
@@ -43,9 +46,6 @@
                 File.Delete(outputPath);
             }
         }
-
-        public static int RunTarget(string project, string target, string configuration)
-            => MsBuild(project, target, configuration);
 
         static int MsBuild(string project, string target, string configuration = null, string targetFramework = null, string outputPath = null)
         {

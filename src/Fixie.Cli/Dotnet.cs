@@ -1,4 +1,5 @@
 ﻿#if !NET452
+
 namespace Fixie.Cli
 {
     using System;
@@ -6,7 +7,7 @@ namespace Fixie.Cli
     using System.IO;
     using System.Runtime.InteropServices;
 
-    class Dotnet
+    static class Dotnet
     {
         public static readonly string Path = FindDotnet();
 
@@ -19,16 +20,14 @@ namespace Fixie.Cli
             using (var currentProcess = Process.GetCurrentProcess())
             {
                 var mainModule = currentProcess.MainModule;
-
                 var currentProcessIsDotNet =
                     !string.IsNullOrEmpty(mainModule?.FileName) &&
                     System.IO.Path.GetFileName(mainModule.FileName)
                         .Equals(fileName, StringComparison.OrdinalIgnoreCase);
-
                 if (currentProcessIsDotNet)
                     return mainModule.FileName;
 
-                throw new CommandLineException($"Failed to locate `dotnet`.");
+                return "dotnet";
             }
         }
     }

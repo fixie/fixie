@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Console
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -25,12 +26,13 @@
 
             try
             {
-                MsBuild(
+                MsBuild(new[]
+                {
                     project,
                     "/nologo",
                     "/verbosity:minimal",
                     "/t:" + target,
-                    $"/p:_Fixie_OutputFile={path}");
+                    $"/p:_Fixie_OutputFile={path}"});
 
                 return File.ReadAllLines(path);
             }
@@ -46,14 +48,15 @@
 
             try
             {
-                MsBuild(
+                MsBuild(new[]
+                {
                     project,
                     "/nologo",
                     "/verbosity:minimal",
                     "/t:" + target,
                     "/p:Configuration=" + configuration,
                     "/p:TargetFramework=" + targetFramework,
-                    $"/p:_Fixie_OutputFile={path}");
+                    $"/p:_Fixie_OutputFile={path}"});
 
                 return File.ReadAllLines(path);
             }
@@ -64,14 +67,15 @@
         }
 
         public static int RunTarget(string project, string target, string configuration)
-            => MsBuild(
+            => MsBuild(new[]
+            {
                 project,
                 "/nologo",
                 "/verbosity:minimal",
                 "/t:" + target,
-                "/p:Configuration=" + configuration);
+                "/p:Configuration=" + configuration});
 
-        static int MsBuild(params string[] arguments)
+        static int MsBuild(IReadOnlyList<string> arguments)
         {
             return Run(Dotnet.Path, workingDirectory: "", arguments.Prepend("msbuild").ToArray());
         }

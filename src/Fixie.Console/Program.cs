@@ -132,7 +132,7 @@
             if (targetFrameworkIdentifier == ".NETCoreApp")
                 return RunDotNetCore(options, outputPath, targetFileName, customArguments);
 
-            throw new CommandLineException($"Framework '{targetFramework}' has unsupported TargetFrameworkIdentifier '{targetFrameworkIdentifier}'.");
+            throw new Exception($"Framework '{targetFramework}' has unsupported TargetFrameworkIdentifier '{targetFrameworkIdentifier}'.");
         }
 
         static int RunDotNetFramework(Options options, string outputPath, string targetFileName, string[] customArguments)

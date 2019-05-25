@@ -60,7 +60,7 @@ namespace Fixie.TestAdapter
             }
             else
             {
-                using (Process.Start(new ProcessStartInfo
+                using (Start(new ProcessStartInfo
                 {
                     WorkingDirectory = workingDirectory,
                     FileName = executable,
@@ -68,6 +68,19 @@ namespace Fixie.TestAdapter
                     UseShellExecute = false
                 })) { }
             }
+        }
+
+        static Process Start(ProcessStartInfo startInfo)
+        {
+            var process = new Process
+            {
+                StartInfo = startInfo
+            };
+
+            if (process.Start())
+                return process;
+
+            throw new Exception("Failed to start process: " + startInfo.FileName);
         }
     }
 }

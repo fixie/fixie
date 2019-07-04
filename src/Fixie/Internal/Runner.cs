@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
     using System.Reflection;
 
     class Runner
@@ -48,36 +47,24 @@
         public ExecutionSummary RunTests(Assembly assembly, Test[] tests)
         {
             var request = new Dictionary<string, HashSet<string>>();
+            var types = new List<Type>();
 
             foreach (var test in tests)
             {
                 if (!request.ContainsKey(test.Class))
+                {
                     request.Add(test.Class, new HashSet<string>());
+
+                    var type = assembly.GetType(test.Class);
+
+                    if (type != null)
+                        types.Add(type);
+                }
 
                 request[test.Class].Add(test.Method);
             }
 
-            var types = new List<Type>();
-            var methods = new List<MethodInfo>();
-
-            foreach (var testClass in request.Keys)
-            {
-                var type = assembly.GetType(testClass);
-
-                if (type != null)
-                {
-                    types.Add(type);
-
-                    var methodsToInclude = request[testClass];
-
-                    methods.AddRange(type
-                        .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-                        .Where(m => methodsToInclude.Contains(m.Name))
-                        .ToArray());
-                }
-            }
-
-            return Run(assembly, types.ToArray(), methods.Contains);
+            return Run(assembly, types.ToArray(), method => request[method.ReflectedType.FullName].Contains(method.Name));
         }
 
         ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)

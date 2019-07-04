@@ -105,20 +105,20 @@
 
         int RunAssembly(Assembly assembly, Options options, string[] customArguments)
         {
-            return Run(options, customArguments, runner => runner.Run(assembly));
+            return Run(assembly, options, customArguments, runner => runner.Run());
         }
 
         int RunTests(Assembly assembly, Options options, string[] customArguments, PipeMessage.Test[] tests)
         {
-            return Run(options, customArguments,
-                r => r.Run(assembly, tests.Select(x => new Test(x.Class, x.Method)).ToList()));
+            return Run(assembly, options, customArguments,
+                r => r.Run(tests.Select(x => new Test(x.Class, x.Method)).ToList()));
         }
 
-        int Run(Options options, string[] customArguments, Func<Runner, ExecutionSummary> run)
+        int Run(Assembly assembly, Options options, string[] customArguments, Func<Runner, ExecutionSummary> run)
         {
             var listeners = GetExecutionListeners(options);
             var bus = new Bus(listeners);
-            var runner = new Runner(bus, customArguments);
+            var runner = new Runner(assembly, bus, customArguments);
 
             var summary = run(runner);
 

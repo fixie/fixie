@@ -8,24 +8,26 @@
 
     class Runner
     {
+        readonly Assembly assembly;
         readonly Bus bus;
         readonly string[] customArguments;
 
-        public Runner(Bus bus)
-            : this(bus, new string[] {}) { }
+        public Runner(Assembly assembly, Bus bus)
+            : this(assembly, bus, new string[] {}) { }
 
-        public Runner(Bus bus, string[] customArguments)
+        public Runner(Assembly assembly, Bus bus, string[] customArguments)
         {
+            this.assembly = assembly;
             this.bus = bus;
             this.customArguments = customArguments;
         }
 
-        public ExecutionSummary Run(Assembly assembly)
+        public ExecutionSummary Run()
         {
-            return Run(assembly, assembly.GetTypes());
+            return Run(assembly.GetTypes());
         }
 
-        public ExecutionSummary Run(Assembly assembly, IReadOnlyList<Test> tests)
+        public ExecutionSummary Run(IReadOnlyList<Test> tests)
         {
             var request = new Dictionary<string, HashSet<string>>();
             var types = new List<Type>();
@@ -45,16 +47,16 @@
                 request[test.Class].Add(test.Method);
             }
 
-            return Run(assembly, types, method => request[method.ReflectedType.FullName].Contains(method.Name));
+            return Run(types, method => request[method.ReflectedType.FullName].Contains(method.Name));
         }
 
-        public ExecutionSummary Run(Assembly assembly, Func<Type, bool> classCondition)
+        public ExecutionSummary Run(Func<Type, bool> classCondition)
         {
             var candidateTypes = assembly.GetTypes().Where(classCondition).ToList();
-            return Run(assembly, candidateTypes);
+            return Run(candidateTypes);
         }
 
-        ExecutionSummary Run(Assembly assembly, IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool> methodCondition = null)
+        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool> methodCondition = null)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);
@@ -64,7 +66,7 @@
                 if (methodCondition != null)
                     discovery.Methods.Where(methodCondition);
 
-                return Run(assembly, candidateTypes, discovery, execution);
+                return Run(candidateTypes, discovery, execution);
             }
             finally
             {
@@ -75,7 +77,7 @@
             }
         }
 
-        internal ExecutionSummary Run(Assembly assembly, IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution)
+        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution)
         {
             bus.Publish(new AssemblyStarted(assembly));
 

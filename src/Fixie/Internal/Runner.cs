@@ -25,9 +25,9 @@
             return RunTypes(assembly, assembly.GetTypes());
         }
 
-        public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes)
+        public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)
         {
-            return Run(assembly, candidateTypes);
+            return Run(assembly, candidateTypes, methodCondition);
         }
 
         public ExecutionSummary RunTypes(Assembly assembly, Discovery discovery, Execution execution, params Type[] types)
@@ -68,11 +68,6 @@
             }
 
             return Run(assembly, types.ToArray(), methods.Contains);
-        }
-
-        public ExecutionSummary RunMethod(Assembly assembly, MethodInfo method)
-        {
-            return Run(assembly, new[] { method.ReflectedType }, m => m == method);
         }
 
         ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)

@@ -32,11 +32,6 @@
 
         public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
         {
-            return Run(assembly, candidateTypes, discovery, execution);
-        }
-
-        ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
-        {
             bus.Publish(new AssemblyStarted(assembly));
 
             var assemblySummary = new ExecutionSummary();
@@ -95,7 +90,7 @@
                 if (methodCondition != null)
                     discovery.Methods.Where(methodCondition);
 
-                return Run(assembly, candidateTypes, discovery, execution);
+                return RunTypes(assembly, candidateTypes, discovery, execution);
             }
             finally
             {

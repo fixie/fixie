@@ -52,7 +52,18 @@
             var assemblySummary = new ExecutionSummary();
             var stopwatch = Stopwatch.StartNew();
 
-            Run(discovery, execution, candidateTypes, assemblySummary);
+            var classDiscoverer = new ClassDiscoverer(discovery);
+            var classRunner = new ClassRunner(bus, discovery, execution);
+
+            var testClasses = classDiscoverer.TestClasses(candidateTypes);
+
+            bool isOnlyTestClass = testClasses.Count == 1;
+
+            foreach (var testClass in testClasses)
+            {
+                var classSummary = classRunner.Run(testClass, isOnlyTestClass);
+                assemblySummary.Add(classSummary);
+            }
 
             stopwatch.Stop();
             bus.Publish(new AssemblyCompleted(assembly, assemblySummary, stopwatch.Elapsed));
@@ -81,22 +92,6 @@
             }
 
             return Run(assembly, types.ToArray(), method => request[method.ReflectedType.FullName].Contains(method.Name));
-        }
-
-        void Run(Discovery discovery, Execution execution, Type[] candidateTypes, ExecutionSummary assemblySummary)
-        {
-            var classDiscoverer = new ClassDiscoverer(discovery);
-            var classRunner = new ClassRunner(bus, discovery, execution);
-
-            var testClasses = classDiscoverer.TestClasses(candidateTypes);
-
-            bool isOnlyTestClass = testClasses.Count == 1;
-
-            foreach (var testClass in testClasses)
-            {
-                var classSummary = classRunner.Run(testClass, isOnlyTestClass);
-                assemblySummary.Add(classSummary);
-            }
         }
     }
 }

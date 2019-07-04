@@ -25,30 +25,12 @@ namespace Fixie.TestDriven
         public TestRunState RunMember(ITestListener testListener, Assembly assembly, MemberInfo member)
         {
             if (member is MethodInfo method)
-            {
-                return Run(testListener, runner =>
-                {
-                    var tests = new[] { new Test(method) };
-
-                    return runner.Run(assembly, tests);
-                });
-            }
+                return Run(testListener, runner => runner.Run(assembly, new[] {new Test(method)}));
 
             if (member is Type type)
-            {
-                var candidateTypes = GetTypeAndNestedTypes(type).ToArray();
-                return Run(testListener, runner => runner.Run(assembly, candidateTypes));
-            }
+                return Run(testListener, runner => runner.Run(assembly, new[] {type}));
 
             return TestRunState.Error;
-        }
-
-        static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
-        {
-            yield return type;
-
-            foreach (var nested in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).SelectMany(GetTypeAndNestedTypes))
-                yield return nested;
         }
 
         static TestRunState Run(ITestListener testListener, Func<Runner, ExecutionSummary> run)

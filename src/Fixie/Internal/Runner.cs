@@ -47,7 +47,12 @@
             return Run(assembly, types.ToArray(), method => request[method.ReflectedType.FullName].Contains(method.Name));
         }
 
-        public ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)
+        public ExecutionSummary Run(Assembly assembly, Type[] candidateTypes)
+        {
+            return Run(assembly, candidateTypes, methodCondition: null);
+        }
+
+        ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);

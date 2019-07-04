@@ -25,7 +25,7 @@
             return Run(assembly, assembly.GetTypes(), methodCondition: null);
         }
 
-        public ExecutionSummary Run(Assembly assembly, Test[] tests)
+        public ExecutionSummary Run(Assembly assembly, IReadOnlyList<Test> tests)
         {
             var request = new Dictionary<string, HashSet<string>>();
             var types = new List<Type>();
@@ -45,16 +45,16 @@
                 request[test.Class].Add(test.Method);
             }
 
-            return Run(assembly, types.ToArray(), method => request[method.ReflectedType.FullName].Contains(method.Name));
+            return Run(assembly, types, method => request[method.ReflectedType.FullName].Contains(method.Name));
         }
 
         public ExecutionSummary Run(Assembly assembly, Func<Type, bool> classCondition)
         {
-            var candidateTypes = assembly.GetTypes().Where(classCondition).ToArray();
+            var candidateTypes = assembly.GetTypes().Where(classCondition).ToList();
             return Run(assembly, candidateTypes, methodCondition: null);
         }
 
-        ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition)
+        ExecutionSummary Run(Assembly assembly, IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool> methodCondition)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);
@@ -75,7 +75,7 @@
             }
         }
 
-        internal ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
+        internal ExecutionSummary Run(Assembly assembly, IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution)
         {
             bus.Publish(new AssemblyStarted(assembly));
 

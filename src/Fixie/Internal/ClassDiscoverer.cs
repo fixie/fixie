@@ -27,7 +27,7 @@ namespace Fixie.Internal
         {
             try
             {
-                return candidates.Where(IsMatch).ToArray();
+                return candidates.Where(IsMatch).ToList();
             }
             catch (Exception exception)
             {

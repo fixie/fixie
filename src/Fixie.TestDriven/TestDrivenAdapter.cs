@@ -12,7 +12,7 @@ namespace Fixie.TestDriven
     {
         public TestRunState RunAssembly(ITestListener testListener, Assembly assembly)
         {
-            return Run(testListener, runner => runner.RunAssembly(assembly));
+            return Run(testListener, runner => runner.Run(assembly));
         }
 
         public TestRunState RunNamespace(ITestListener testListener, Assembly assembly, string ns)

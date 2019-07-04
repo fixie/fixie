@@ -20,7 +20,7 @@
             this.customArguments = customArguments;
         }
 
-        public ExecutionSummary RunAssembly(Assembly assembly)
+        public ExecutionSummary Run(Assembly assembly)
         {
             return RunTypes(assembly, assembly.GetTypes());
         }

@@ -105,7 +105,7 @@
 
         int RunAssembly(Assembly assembly, Options options, string[] customArguments)
         {
-            return Run(options, customArguments, runner => runner.RunAssembly(assembly));
+            return Run(options, customArguments, runner => runner.Run(assembly));
         }
 
         int RunTests(Assembly assembly, Options options, string[] customArguments, PipeMessage.Test[] tests)

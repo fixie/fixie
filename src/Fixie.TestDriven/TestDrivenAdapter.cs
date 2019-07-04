@@ -24,7 +24,7 @@ namespace Fixie.TestDriven
                 return Run(testListener, assembly, runner => runner.Run(new[] {new Test(method)}));
 
             if (member is Type type)
-                return Run(testListener, assembly, runner => runner.Run(@class => @class == type));
+                return Run(testListener, assembly, runner => runner.Run(type));
 
             return TestRunState.Error;
         }

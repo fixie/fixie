@@ -56,6 +56,16 @@
             return Run(candidateTypes);
         }
 
+        public ExecutionSummary Run(Type candidateType)
+        {
+            if (candidateType.Assembly != assembly)
+                throw new Exception(
+                    $"Candidate test class '{candidateType.FullName}' cannot be executed for assembly " +
+                    $"'{assembly.GetName().Name}', because it is not defined in that assembly.");
+
+            return Run(new[] { candidateType });
+        }
+
         ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool> methodCondition = null)
         {
             new BehaviorDiscoverer(assembly, customArguments)

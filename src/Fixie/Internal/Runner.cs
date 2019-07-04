@@ -25,9 +25,9 @@
             return RunTypes(assembly, assembly.GetTypes());
         }
 
-        public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)
+        public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes)
         {
-            return Run(assembly, candidateTypes, methodCondition);
+            return Run(assembly, candidateTypes);
         }
 
         public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)

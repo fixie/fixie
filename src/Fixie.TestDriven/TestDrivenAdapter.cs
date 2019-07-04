@@ -26,8 +26,12 @@ namespace Fixie.TestDriven
         {
             if (member is MethodInfo method)
             {
-                var candidateTypes = new[] { method.ReflectedType };
-                return Run(testListener, runner => runner.RunTypes(assembly, candidateTypes, m => m == method));
+                return Run(testListener, runner =>
+                {
+                    var tests = new[] { new Test(method) };
+
+                    return runner.RunTests(assembly, tests);
+                });
             }
 
             if (member is Type type)

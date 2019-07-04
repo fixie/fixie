@@ -24,12 +24,7 @@
             return Run(assembly, assembly.GetTypes());
         }
 
-        public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes)
-        {
-            return Run(assembly, candidateTypes);
-        }
-
-        ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)
+        public ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);

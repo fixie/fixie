@@ -19,7 +19,7 @@ namespace Fixie.TestDriven
         {
             var candidateTypes = assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray();
 
-            return Run(testListener, runner => runner.RunTypes(assembly, candidateTypes));
+            return Run(testListener, runner => runner.Run(assembly, candidateTypes));
         }
 
         public TestRunState RunMember(ITestListener testListener, Assembly assembly, MemberInfo member)
@@ -37,7 +37,7 @@ namespace Fixie.TestDriven
             if (member is Type type)
             {
                 var candidateTypes = GetTypeAndNestedTypes(type).ToArray();
-                return Run(testListener, runner => runner.RunTypes(assembly, candidateTypes));
+                return Run(testListener, runner => runner.Run(assembly, candidateTypes));
             }
 
             return TestRunState.Error;

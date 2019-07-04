@@ -22,7 +22,12 @@
 
         public ExecutionSummary RunAssembly(Assembly assembly)
         {
-            return Run(assembly, assembly.GetTypes());
+            return RunTypes(assembly, assembly.GetTypes());
+        }
+
+        public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes)
+        {
+            return Run(assembly, candidateTypes);
         }
 
         public ExecutionSummary RunNamespace(Assembly assembly, string ns)

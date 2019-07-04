@@ -60,7 +60,7 @@
             return assemblySummary;
         }
 
-        public ExecutionSummary RunTests(Assembly assembly, Test[] tests)
+        public ExecutionSummary Run(Assembly assembly, Test[] tests)
         {
             var request = new Dictionary<string, HashSet<string>>();
             var types = new List<Type>();

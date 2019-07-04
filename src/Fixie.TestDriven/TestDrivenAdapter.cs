@@ -30,7 +30,7 @@ namespace Fixie.TestDriven
                 {
                     var tests = new[] { new Test(method) };
 
-                    return runner.RunTests(assembly, tests);
+                    return runner.Run(assembly, tests);
                 });
             }
 

@@ -29,6 +29,27 @@
             return Run(assembly, candidateTypes);
         }
 
+        ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)
+        {
+            new BehaviorDiscoverer(assembly, customArguments)
+                .GetBehaviors(out var discovery, out var execution);
+
+            try
+            {
+                if (methodCondition != null)
+                    discovery.Methods.Where(methodCondition);
+
+                return RunTypes(assembly, candidateTypes, discovery, execution);
+            }
+            finally
+            {
+                discovery.Dispose();
+
+                if (execution != discovery)
+                    execution.Dispose();
+            }
+        }
+
         public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
         {
             bus.Publish(new AssemblyStarted(assembly));
@@ -65,27 +86,6 @@
             }
 
             return Run(assembly, types.ToArray(), method => request[method.ReflectedType.FullName].Contains(method.Name));
-        }
-
-        ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)
-        {
-            new BehaviorDiscoverer(assembly, customArguments)
-                .GetBehaviors(out var discovery, out var execution);
-
-            try
-            {
-                if (methodCondition != null)
-                    discovery.Methods.Where(methodCondition);
-
-                return RunTypes(assembly, candidateTypes, discovery, execution);
-            }
-            finally
-            {
-                discovery.Dispose();
-
-                if (execution != discovery)
-                    execution.Dispose();
-            }
         }
 
         void Run(Discovery discovery, Execution execution, Type[] candidateTypes, ExecutionSummary assemblySummary)

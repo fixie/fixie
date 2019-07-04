@@ -34,7 +34,7 @@
                 if (methodCondition != null)
                     discovery.Methods.Where(methodCondition);
 
-                return RunTypes(assembly, candidateTypes, discovery, execution);
+                return Run(assembly, candidateTypes, discovery, execution);
             }
             finally
             {
@@ -45,7 +45,7 @@
             }
         }
 
-        public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
+        public ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
         {
             bus.Publish(new AssemblyStarted(assembly));
 

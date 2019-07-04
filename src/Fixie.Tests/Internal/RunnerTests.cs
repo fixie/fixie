@@ -25,7 +25,7 @@ namespace Fixie.Tests.Internal
             var execution = new CreateInstancePerClass();
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, candidateTypes, discovery, execution);
+            new Runner(bus).Run(GetType().Assembly, candidateTypes, discovery, execution);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",
@@ -52,7 +52,7 @@ namespace Fixie.Tests.Internal
                 .Shuffle(new Random(1));
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, candidateTypes, discovery, execution);
+            new Runner(bus).Run(GetType().Assembly, candidateTypes, discovery, execution);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassB passed",
@@ -82,7 +82,7 @@ namespace Fixie.Tests.Internal
                 .Add<BuggyParameterSource>();
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(GetType().Assembly, candidateTypes, discovery, execution);
+            new Runner(bus).Run(GetType().Assembly, candidateTypes, discovery, execution);
 
             //NOTE: Since the ordering of cases is deliberately failing, and since member order via reflection
             //      is undefined, we explicitly sort the listener Entries here to avoid making a brittle assertion.

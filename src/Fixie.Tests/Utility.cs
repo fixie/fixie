@@ -36,7 +36,7 @@
                 throw new InvalidOperationException("At least one type must be specified.");
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(candidateTypes[0].Assembly, candidateTypes, discovery, execution);
+            new Runner(bus).Run(candidateTypes[0].Assembly, candidateTypes, discovery, execution);
         }
     }
 }

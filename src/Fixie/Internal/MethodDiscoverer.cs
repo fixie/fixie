@@ -23,7 +23,7 @@
                     .Where(method => method.DeclaringType != typeof(object))
                     .Where(method => !(testClassIsDisposable && HasDisposeSignature(method)))
                     .Where(IsMatch)
-                    .ToArray();
+                    .ToList();
             }
             catch (Exception exception)
             {

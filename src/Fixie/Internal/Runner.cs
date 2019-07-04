@@ -8,87 +8,65 @@
 
     class Runner
     {
+        readonly Assembly assembly;
         readonly Bus bus;
         readonly string[] customArguments;
 
-        public Runner(Bus bus)
-            : this(bus, new string[] {}) { }
+        public Runner(Assembly assembly, Bus bus)
+            : this(assembly, bus, new string[] {}) { }
 
-        public Runner(Bus bus, string[] customArguments)
+        public Runner(Assembly assembly, Bus bus, string[] customArguments)
         {
+            this.assembly = assembly;
             this.bus = bus;
             this.customArguments = customArguments;
         }
 
-        public ExecutionSummary RunAssembly(Assembly assembly)
+        public ExecutionSummary Run()
         {
-            return Run(assembly, assembly.GetTypes());
+            return Run(assembly.GetTypes());
         }
 
-        public ExecutionSummary RunNamespace(Assembly assembly, string ns)
-        {
-            return Run(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
-        }
-
-        public ExecutionSummary RunType(Assembly assembly, Type type)
-        {
-            return Run(assembly, GetTypeAndNestedTypes(type).ToArray());
-        }
-
-        public ExecutionSummary RunTypes(Assembly assembly, Discovery discovery, Execution execution, params Type[] types)
-        {
-            return Run(assembly, discovery, execution, types);
-        }
-
-        public ExecutionSummary RunTests(Assembly assembly, Test[] tests)
+        public ExecutionSummary Run(IReadOnlyList<Test> tests)
         {
             var request = new Dictionary<string, HashSet<string>>();
+            var types = new List<Type>();
 
             foreach (var test in tests)
             {
                 if (!request.ContainsKey(test.Class))
+                {
                     request.Add(test.Class, new HashSet<string>());
+
+                    var type = assembly.GetType(test.Class);
+
+                    if (type != null)
+                        types.Add(type);
+                }
 
                 request[test.Class].Add(test.Method);
             }
 
-            var types = new List<Type>();
-            var methods = new List<MethodInfo>();
-
-            foreach (var testClass in request.Keys)
-            {
-                var type = assembly.GetType(testClass);
-
-                if (type != null)
-                {
-                    types.Add(type);
-
-                    var methodsToInclude = request[testClass];
-
-                    methods.AddRange(type
-                        .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-                        .Where(m => methodsToInclude.Contains(m.Name))
-                        .ToArray());
-                }
-            }
-
-            return Run(assembly, types.ToArray(), methods.Contains);
+            return Run(types, method => request[method.ReflectedType.FullName].Contains(method.Name));
         }
 
-        public ExecutionSummary RunMethod(Assembly assembly, MethodInfo method)
+        public ExecutionSummary Run(Func<Type, bool> classCondition)
         {
-            return Run(assembly, new[] { method.ReflectedType }, m => m == method);
+            var candidateTypes = assembly.GetTypes().Where(classCondition).ToList();
+            return Run(candidateTypes);
         }
 
-        static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
+        public ExecutionSummary Run(Type candidateType)
         {
-            yield return type;
+            if (candidateType.Assembly != assembly)
+                throw new Exception(
+                    $"Candidate test class '{candidateType.FullName}' cannot be executed for assembly " +
+                    $"'{assembly.GetName().Name}', because it is not defined in that assembly.");
 
-            foreach (var nested in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).SelectMany(GetTypeAndNestedTypes))
-                yield return nested;
+            return Run(new[] { candidateType });
         }
 
-        ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)
+        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool> methodCondition = null)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);
@@ -98,7 +76,7 @@
                 if (methodCondition != null)
                     discovery.Methods.Where(methodCondition);
 
-                return Run(assembly, discovery, execution, candidateTypes);
+                return Run(candidateTypes, discovery, execution);
             }
             finally
             {
@@ -109,23 +87,13 @@
             }
         }
 
-        ExecutionSummary Run(Assembly assembly, Discovery discovery, Execution execution, Type[] candidateTypes)
+        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution)
         {
             bus.Publish(new AssemblyStarted(assembly));
 
             var assemblySummary = new ExecutionSummary();
             var stopwatch = Stopwatch.StartNew();
 
-            Run(discovery, execution, candidateTypes, assemblySummary);
-
-            stopwatch.Stop();
-            bus.Publish(new AssemblyCompleted(assembly, assemblySummary, stopwatch.Elapsed));
-
-            return assemblySummary;
-        }
-
-        void Run(Discovery discovery, Execution execution, Type[] candidateTypes, ExecutionSummary assemblySummary)
-        {
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classRunner = new ClassRunner(bus, discovery, execution);
 
@@ -138,6 +106,11 @@
                 var classSummary = classRunner.Run(testClass, isOnlyTestClass);
                 assemblySummary.Add(classSummary);
             }
+
+            stopwatch.Stop();
+            bus.Publish(new AssemblyCompleted(assembly, assemblySummary, stopwatch.Elapsed));
+
+            return assemblySummary;
         }
     }
 }

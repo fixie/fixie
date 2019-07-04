@@ -14,7 +14,7 @@
 
             var listener = new StubExecutionSummaryListener();
 
-            RunTypes(listener, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
+            Run(listener, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
             listener.ClassSummaries.Count.ShouldBe(2);
             listener.AssemblySummary.Count.ShouldBe(1);

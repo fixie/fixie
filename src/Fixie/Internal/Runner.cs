@@ -35,6 +35,21 @@
             return Run(assembly, candidateTypes, discovery, execution);
         }
 
+        ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
+        {
+            bus.Publish(new AssemblyStarted(assembly));
+
+            var assemblySummary = new ExecutionSummary();
+            var stopwatch = Stopwatch.StartNew();
+
+            Run(discovery, execution, candidateTypes, assemblySummary);
+
+            stopwatch.Stop();
+            bus.Publish(new AssemblyCompleted(assembly, assemblySummary, stopwatch.Elapsed));
+
+            return assemblySummary;
+        }
+
         public ExecutionSummary RunTests(Assembly assembly, Test[] tests)
         {
             var request = new Dictionary<string, HashSet<string>>();
@@ -89,21 +104,6 @@
                 if (execution != discovery)
                     execution.Dispose();
             }
-        }
-
-        ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
-        {
-            bus.Publish(new AssemblyStarted(assembly));
-
-            var assemblySummary = new ExecutionSummary();
-            var stopwatch = Stopwatch.StartNew();
-
-            Run(discovery, execution, candidateTypes, assemblySummary);
-
-            stopwatch.Stop();
-            bus.Publish(new AssemblyCompleted(assembly, assemblySummary, stopwatch.Elapsed));
-
-            return assemblySummary;
         }
 
         void Run(Discovery discovery, Execution execution, Type[] candidateTypes, ExecutionSummary assemblySummary)

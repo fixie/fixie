@@ -32,7 +32,7 @@
 
         public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
         {
-            return Run(assembly, discovery, execution, candidateTypes);
+            return Run(assembly, candidateTypes, discovery, execution);
         }
 
         public ExecutionSummary RunTests(Assembly assembly, Test[] tests)
@@ -80,7 +80,7 @@
                 if (methodCondition != null)
                     discovery.Methods.Where(methodCondition);
 
-                return Run(assembly, discovery, execution, candidateTypes);
+                return Run(assembly, candidateTypes, discovery, execution);
             }
             finally
             {
@@ -91,7 +91,7 @@
             }
         }
 
-        ExecutionSummary Run(Assembly assembly, Discovery discovery, Execution execution, Type[] candidateTypes)
+        ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
         {
             bus.Publish(new AssemblyStarted(assembly));
 

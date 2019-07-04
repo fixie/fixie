@@ -30,11 +30,6 @@
             return Run(assembly, candidateTypes);
         }
 
-        public ExecutionSummary RunType(Assembly assembly, Type type)
-        {
-            return Run(assembly, GetTypeAndNestedTypes(type).ToArray());
-        }
-
         public ExecutionSummary RunTypes(Assembly assembly, Discovery discovery, Execution execution, params Type[] types)
         {
             return Run(assembly, discovery, execution, types);
@@ -78,14 +73,6 @@
         public ExecutionSummary RunMethod(Assembly assembly, MethodInfo method)
         {
             return Run(assembly, new[] { method.ReflectedType }, m => m == method);
-        }
-
-        static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
-        {
-            yield return type;
-
-            foreach (var nested in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).SelectMany(GetTypeAndNestedTypes))
-                yield return nested;
         }
 
         ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Func<MethodInfo, bool> methodCondition = null)

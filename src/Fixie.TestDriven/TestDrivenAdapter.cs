@@ -3,6 +3,7 @@
 namespace Fixie.TestDriven
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using Internal;
@@ -27,9 +28,20 @@ namespace Fixie.TestDriven
                 return Run(testListener, runner => runner.RunMethod(assembly, method));
 
             if (member is Type type)
-                return Run(testListener, runner => runner.RunType(assembly, type));
+            {
+                var candidateTypes = GetTypeAndNestedTypes(type).ToArray();
+                return Run(testListener, runner => runner.RunTypes(assembly, candidateTypes));
+            }
 
             return TestRunState.Error;
+        }
+
+        static IEnumerable<Type> GetTypeAndNestedTypes(Type type)
+        {
+            yield return type;
+
+            foreach (var nested in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).SelectMany(GetTypeAndNestedTypes))
+                yield return nested;
         }
 
         static TestRunState Run(ITestListener testListener, Func<Runner, ExecutionSummary> run)

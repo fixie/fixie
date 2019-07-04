@@ -73,7 +73,7 @@
             }
         }
 
-        public ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
+        internal ExecutionSummary Run(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
         {
             bus.Publish(new AssemblyStarted(assembly));
 

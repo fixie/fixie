@@ -23,7 +23,7 @@
             customize?.Invoke(discovery);
 
             var execution = new CreateInstancePerCase();
-            RunTypes(listener, discovery, execution, typeof(SampleTestClass), typeof(EmptyTestClass));
+            Utility.Run(listener, discovery, execution, typeof(SampleTestClass), typeof(EmptyTestClass));
         }
 
         class CreateInstancePerCase : Execution

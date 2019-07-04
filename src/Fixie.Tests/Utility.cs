@@ -23,19 +23,17 @@
         public static IEnumerable<string> Run<TSampleTestClass>(Discovery discovery, Execution execution)
         {
             var listener = new StubListener();
-            RunTypes(listener, discovery, execution, typeof(TSampleTestClass));
+            Run(listener, discovery, execution, typeof(TSampleTestClass));
             return listener.Entries;
         }
 
         public static IEnumerable<string> Run<TSampleTestClass>()
             => Run<TSampleTestClass>(new SelfTestDiscovery(), new DefaultExecution());
 
-        public static void RunTypes(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)
+        public static void Run(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
-            {
-                throw new InvalidOperationException("RunTypes requires at least one type to be specified");
-            }
+                throw new InvalidOperationException("At least one type must be specified.");
 
             var bus = new Bus(listener);
             new Runner(bus).RunTypes(candidateTypes[0].Assembly, candidateTypes, discovery, execution);

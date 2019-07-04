@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Reflection;
 
     class Runner
@@ -21,7 +22,7 @@
 
         public ExecutionSummary Run(Assembly assembly)
         {
-            return Run(assembly, assembly.GetTypes());
+            return Run(assembly, assembly.GetTypes(), methodCondition: null);
         }
 
         public ExecutionSummary Run(Assembly assembly, Test[] tests)
@@ -47,8 +48,9 @@
             return Run(assembly, types.ToArray(), method => request[method.ReflectedType.FullName].Contains(method.Name));
         }
 
-        public ExecutionSummary Run(Assembly assembly, Type[] candidateTypes)
+        public ExecutionSummary Run(Assembly assembly, Func<Type, bool> classCondition)
         {
+            var candidateTypes = assembly.GetTypes().Where(classCondition).ToArray();
             return Run(assembly, candidateTypes, methodCondition: null);
         }
 

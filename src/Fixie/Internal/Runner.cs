@@ -21,7 +21,7 @@
 
         public ExecutionSummary Run(Assembly assembly)
         {
-            return RunTypes(assembly, assembly.GetTypes());
+            return Run(assembly, assembly.GetTypes());
         }
 
         public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes)

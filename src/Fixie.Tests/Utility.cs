@@ -30,15 +30,15 @@
         public static IEnumerable<string> Run<TSampleTestClass>()
             => Run<TSampleTestClass>(new SelfTestDiscovery(), new DefaultExecution());
 
-        public static void RunTypes(Listener listener, Discovery discovery, Execution execution, params Type[] types)
+        public static void RunTypes(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)
         {
-            if (types.Length == 0)
+            if (candidateTypes.Length == 0)
             {
                 throw new InvalidOperationException("RunTypes requires at least one type to be specified");
             }
 
             var bus = new Bus(listener);
-            new Runner(bus).RunTypes(types[0].Assembly, discovery, execution, types);
+            new Runner(bus).RunTypes(candidateTypes[0].Assembly, candidateTypes, discovery, execution);
         }
     }
 }

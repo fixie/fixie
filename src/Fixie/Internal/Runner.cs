@@ -30,9 +30,9 @@
             return Run(assembly, candidateTypes, methodCondition);
         }
 
-        public ExecutionSummary RunTypes(Assembly assembly, Discovery discovery, Execution execution, params Type[] types)
+        public ExecutionSummary RunTypes(Assembly assembly, Type[] candidateTypes, Discovery discovery, Execution execution)
         {
-            return Run(assembly, discovery, execution, types);
+            return Run(assembly, discovery, execution, candidateTypes);
         }
 
         public ExecutionSummary RunTests(Assembly assembly, Test[] tests)

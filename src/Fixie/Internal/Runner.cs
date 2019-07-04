@@ -22,7 +22,7 @@
 
         public ExecutionSummary Run(Assembly assembly)
         {
-            return Run(assembly, assembly.GetTypes(), methodCondition: null);
+            return Run(assembly, assembly.GetTypes());
         }
 
         public ExecutionSummary Run(Assembly assembly, IReadOnlyList<Test> tests)
@@ -51,10 +51,10 @@
         public ExecutionSummary Run(Assembly assembly, Func<Type, bool> classCondition)
         {
             var candidateTypes = assembly.GetTypes().Where(classCondition).ToList();
-            return Run(assembly, candidateTypes, methodCondition: null);
+            return Run(assembly, candidateTypes);
         }
 
-        ExecutionSummary Run(Assembly assembly, IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool> methodCondition)
+        ExecutionSummary Run(Assembly assembly, IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool> methodCondition = null)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);

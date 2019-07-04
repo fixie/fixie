@@ -30,11 +30,6 @@
             return Run(assembly, candidateTypes);
         }
 
-        public ExecutionSummary RunNamespace(Assembly assembly, string ns)
-        {
-            return Run(assembly, assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray());
-        }
-
         public ExecutionSummary RunType(Assembly assembly, Type type)
         {
             return Run(assembly, GetTypeAndNestedTypes(type).ToArray());

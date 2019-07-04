@@ -3,6 +3,7 @@
 namespace Fixie.TestDriven
 {
     using System;
+    using System.Linq;
     using System.Reflection;
     using Internal;
 
@@ -15,7 +16,9 @@ namespace Fixie.TestDriven
 
         public TestRunState RunNamespace(ITestListener testListener, Assembly assembly, string ns)
         {
-            return Run(testListener, runner => runner.RunNamespace(assembly, ns));
+            var candidateTypes = assembly.GetTypes().Where(type => type.IsInNamespace(ns)).ToArray();
+
+            return Run(testListener, runner => runner.RunTypes(assembly, candidateTypes));
         }
 
         public TestRunState RunMember(ITestListener testListener, Assembly assembly, MemberInfo member)

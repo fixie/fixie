@@ -12,12 +12,23 @@
 
     public class ExecutionRecorderTests
     {
-        public void ShouldMapResultsToVsTestExecutionRecorder()
+        public void ShouldMapMessagesToVsTestExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
             var executionRecorder = new ExecutionRecorder(recorder, assemblyPath);
+
+            executionRecorder.Record(new PipeMessage.CaseStarted
+            {
+                Test = new PipeMessage.Test
+                {
+                    Class = "Namespace.Class",
+                    Method = "Pass",
+                    Name = "Namespace.Class.Pass",
+                },
+                Name = "Namespace.Class.Pass(1)"
+            });
 
             executionRecorder.Record(new PipeMessage.CasePassed
             {
@@ -30,6 +41,17 @@
                 Name = "Namespace.Class.Pass(1)",
                 Duration = TimeSpan.FromSeconds(1),
                 Output = "Output"
+            });
+
+            executionRecorder.Record(new PipeMessage.CaseStarted
+            {
+                Test = new PipeMessage.Test
+                {
+                    Class = "Namespace.Class",
+                    Method = "Fail",
+                    Name = "Namespace.Class.Fail",
+                },
+                Name = "Namespace.Class.Fail"
             });
 
             executionRecorder.Record(new PipeMessage.CaseFailed
@@ -51,6 +73,17 @@
                 }
             });
 
+            executionRecorder.Record(new PipeMessage.CaseStarted
+            {
+                Test = new PipeMessage.Test
+                {
+                    Class = "Namespace.Class",
+                    Method = "Skip",
+                    Name = "Namespace.Class.Skip",
+                },
+                Name = "Namespace.Class.Skip"
+            });
+
             executionRecorder.Record(new PipeMessage.CaseSkipped
             {
                 Test = new PipeMessage.Test
@@ -64,6 +97,12 @@
                 Output = null,
                 Reason = "Skip Reason"
             });
+
+            var starts = recorder.TestStarts;
+            starts.Count.ShouldBe(3);
+            starts[0].ShouldBeExecutionTimeTest("Namespace.Class.Pass", assemblyPath);
+            starts[1].ShouldBeExecutionTimeTest("Namespace.Class.Fail", assemblyPath);
+            starts[2].ShouldBeExecutionTimeTest("Namespace.Class.Skip", assemblyPath);
 
             var results = recorder.TestResults;
             results.Count.ShouldBe(3);
@@ -113,6 +152,7 @@
 
         class StubExecutionRecorder : ITestExecutionRecorder
         {
+            public List<TestCase> TestStarts { get; } = new List<TestCase>();
             public List<TestResult> TestResults { get; } = new List<TestResult>();
 
             public void RecordResult(TestResult testResult)
@@ -122,7 +162,7 @@
                 => throw new NotImplementedException();
 
             public void RecordStart(TestCase testCase)
-                => throw new NotImplementedException();
+                => TestStarts.Add(testCase);
 
             public void RecordEnd(TestCase testCase, TestOutcome outcome)
                 => throw new NotImplementedException();

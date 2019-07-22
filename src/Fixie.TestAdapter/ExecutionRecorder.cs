@@ -17,6 +17,13 @@
             this.assemblyPath = assemblyPath;
         }
 
+        public void Record(PipeMessage.CaseStarted message)
+        {
+            var testCase = ToVsTestCase(message.Test);
+
+            log.RecordStart(testCase);
+        }
+
         public void Record(PipeMessage.CaseSkipped result)
         {
             Record(result, x =>

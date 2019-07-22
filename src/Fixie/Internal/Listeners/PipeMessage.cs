@@ -23,6 +23,12 @@
             public Test Test { get; set; }
         }
 
+        public class CaseStarted
+        {
+            public Test Test { get; set; }
+            public string Name { get; set; }
+        }
+
         public abstract class CaseCompleted
         {
             public Test Test { get; set; }

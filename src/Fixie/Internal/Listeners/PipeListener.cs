@@ -6,6 +6,7 @@
 
     public class PipeListener :
         Handler<MethodDiscovered>,
+        Handler<CaseStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>
@@ -29,6 +30,23 @@
                     Method = test.Method,
                     Name = test.Name
                 }
+            });
+        }
+
+        public void Handle(CaseStarted message)
+        {
+            var test = new Test(message.Method);
+
+            Write(new PipeMessage.CaseStarted
+            {
+                Test = new PipeMessage.Test
+                {
+                    Class = test.Class,
+                    Method = test.Method,
+                    Name = test.Name
+                },
+
+                Name = message.Name,
             });
         }
 

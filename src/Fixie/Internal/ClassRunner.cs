@@ -53,6 +53,8 @@
 
                     foreach (var @case in YieldCases(orderedMethods, summary))
                     {
+                        Start(@case);
+
                         Exception caseLifecycleException = null;
 
                         string consoleOutput;
@@ -204,6 +206,11 @@
         void Start(Type testClass)
         {
             bus.Publish(new ClassStarted(testClass));
+        }
+
+        void Start(Case @case)
+        {
+            bus.Publish(new CaseStarted(@case));
         }
 
         void Skip(Case @case, ExecutionSummary summary)

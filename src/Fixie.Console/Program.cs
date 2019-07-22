@@ -48,6 +48,9 @@
                 {
                     int exitCode = RunTests(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
 
+                    if (exitCode != Success && exitCode != Failure)
+                        Error("Unexpected exit code: " + exitCode);
+
                     if (exitCode != Success)
                         overallExitCode = Failure;
                 }

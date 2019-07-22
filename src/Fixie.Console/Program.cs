@@ -11,6 +11,8 @@
 
     class Program
     {
+        const int Success = 0;
+        const int Failure = 1;
         const int FatalError = -1;
 
         [STAThread]
@@ -39,20 +41,18 @@
 
                 var targetFrameworks = GetTargetFrameworks(options, testProject);
 
-                var failedTests = 0;
+                var overallExitCode = Success;
 
                 bool runningForMultipleFrameworks = targetFrameworks.Length > 1;
                 foreach (var targetFramework in targetFrameworks)
                 {
                     int exitCode = RunTests(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
 
-                    if (exitCode == FatalError)
-                        return FatalError;
-
-                    failedTests += exitCode;
+                    if (exitCode != Success)
+                        overallExitCode = Failure;
                 }
 
-                return failedTests;
+                return overallExitCode;
             }
             catch (CommandLineException exception)
             {

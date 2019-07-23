@@ -63,40 +63,23 @@ namespace Fixie.TestAdapter
                     ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
                 };
 
-                var processId = frameworkHandle?
+                frameworkHandle?
                     .LaunchProcessWithDebuggerAttached(
                         executable,
                         workingDirectory,
                         serializedArguments,
                         environmentVariables);
 
-                return TryGetProcess(processId);
-            }
-            else
-            {
-                return Start(new ProcessStartInfo
-                {
-                    WorkingDirectory = workingDirectory,
-                    FileName = executable,
-                    Arguments = serializedArguments,
-                    UseShellExecute = false
-                });
-            }
-        }
-
-        static Process TryGetProcess(int? processId)
-        {
-            if (processId == null)
-                return null;
-
-            try
-            {
-                return Process.GetProcessById(processId.Value);
-            }
-            catch (Exception)
-            {
                 return null;
             }
+
+            return Start(new ProcessStartInfo
+            {
+                WorkingDirectory = workingDirectory,
+                FileName = executable,
+                Arguments = serializedArguments,
+                UseShellExecute = false
+            });
         }
 
         static Process Start(ProcessStartInfo startInfo)

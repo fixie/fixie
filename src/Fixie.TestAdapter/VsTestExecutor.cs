@@ -15,6 +15,7 @@
     {
         public const string Id = "executor://fixie.testadapter/";
         public static readonly Uri Uri = new Uri(Id);
+        const int StackOverflowExitCode = -1073741571;
 
         /// <summary>
         /// Called by the IDE, when running all tests.
@@ -147,7 +148,21 @@
                     }
                     else
                     {
-                        throw new Exception("The test assembly process exited unexpectedly.");
+                        var errorMessage = "The test assembly process exited unexpectedly.";
+
+                        if (process.TryGetExitCode(out int exitCode))
+                        {
+                            if (exitCode == StackOverflowExitCode)
+                            {
+                                errorMessage = $"The test assembly process exited unexpectedly with exit code {exitCode}, indicating a test threw a StackOverflowException.";
+                            }
+                            else
+                            {
+                                errorMessage = $"The test assembly process exited unexpectedly with exit code {exitCode}.";
+                            }
+                        }
+
+                        throw new Exception(errorMessage);
                     }
                 }
             }

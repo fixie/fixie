@@ -35,6 +35,18 @@ namespace Fixie.TestAdapter
 #endif
         }
 
+        public static bool TryGetExitCode(this Process process, out int exitCode)
+        {
+            if (process != null && process.WaitForExit(5000))
+            {
+                exitCode = process.ExitCode;
+                return true;
+            }
+
+            exitCode = 0;
+            return false;
+        }
+
         static Process Start(IFrameworkHandle frameworkHandle, string workingDirectory, string executable, params string[] arguments)
         {
             var serializedArguments = CommandLine.Serialize(arguments);

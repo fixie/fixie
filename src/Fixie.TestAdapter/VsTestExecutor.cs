@@ -107,6 +107,8 @@
 
                 var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
 
+                PipeMessage.CaseStarted lastCaseStarted = null;
+
                 while (true)
                 {
                     var messageType = pipe.ReceiveMessage();
@@ -114,6 +116,7 @@
                     if (messageType == typeof(PipeMessage.CaseStarted).FullName)
                     {
                         var message = pipe.Receive<PipeMessage.CaseStarted>();
+                        lastCaseStarted = message;
                         recorder.Record(message);
                     }
                     else if (messageType == typeof(PipeMessage.CaseSkipped).FullName)
@@ -155,6 +158,16 @@
                             if (exitCode == StackOverflowExitCode)
                             {
                                 errorMessage = $"The test assembly process exited unexpectedly with exit code {exitCode}, indicating a test threw a StackOverflowException.";
+
+                                if (lastCaseStarted != null)
+                                {
+                                    recorder.Record(new PipeMessage.CaseFailed
+                                    {
+                                        Test = lastCaseStarted.Test,
+                                        Name = lastCaseStarted.Name,
+                                        Exception = new PipeMessage.Exception(new StackOverflowException())
+                                    });
+                                }
                             }
                             else
                             {

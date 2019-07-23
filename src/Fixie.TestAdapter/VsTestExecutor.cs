@@ -27,19 +27,26 @@
         /// <param name="frameworkHandle"></param>
         public void RunTests(IEnumerable<string> sources, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
-            IMessageLogger log = frameworkHandle;
-
-            log.Version();
-
-            HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
-
-            var runAllTests = new PipeMessage.ExecuteTests
+            try
             {
-                Filter = new PipeMessage.Test[] { }
-            };
+                IMessageLogger log = frameworkHandle;
 
-            foreach (var assemblyPath in sources)
-                RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
+                log.Version();
+
+                HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
+
+                var runAllTests = new PipeMessage.ExecuteTests
+                {
+                    Filter = new PipeMessage.Test[] { }
+                };
+
+                foreach (var assemblyPath in sources)
+                    RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
+            }
+            catch (Exception exception)
+            {
+                throw new RunnerException(exception);
+            }
         }
 
         /// <summary>
@@ -51,35 +58,42 @@
         /// <param name="frameworkHandle"></param>
         public void RunTests(IEnumerable<TestCase> tests, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
-            IMessageLogger log = frameworkHandle;
-
-            log.Version();
-
-            HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
-
-            var assemblyGroups = tests.GroupBy(tc => tc.Source);
-
-            foreach (var assemblyGroup in assemblyGroups)
+            try
             {
-                var assemblyPath = assemblyGroup.Key;
+                IMessageLogger log = frameworkHandle;
 
-                RunTests(log, frameworkHandle, assemblyPath, pipe =>
+                log.Version();
+
+                HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
+
+                var assemblyGroups = tests.GroupBy(tc => tc.Source);
+
+                foreach (var assemblyGroup in assemblyGroups)
                 {
-                    pipe.Send(new PipeMessage.ExecuteTests
-                    {
-                        Filter = assemblyGroup.Select(x =>
-                        {
-                            var test = new Test(x.FullyQualifiedName);
+                    var assemblyPath = assemblyGroup.Key;
 
-                            return new PipeMessage.Test
+                    RunTests(log, frameworkHandle, assemblyPath, pipe =>
+                    {
+                        pipe.Send(new PipeMessage.ExecuteTests
+                        {
+                            Filter = assemblyGroup.Select(x =>
                             {
-                                Class = test.Class,
-                                Method = test.Method,
-                                Name = test.Name
-                            };
-                        }).ToArray()
+                                var test = new Test(x.FullyQualifiedName);
+
+                                return new PipeMessage.Test
+                                {
+                                    Class = test.Class,
+                                    Method = test.Method,
+                                    Name = test.Name
+                                };
+                            }).ToArray()
+                        });
                     });
-                });
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new RunnerException(exception);
             }
         }
 

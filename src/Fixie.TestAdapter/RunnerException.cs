@@ -17,5 +17,17 @@
                 .ToString())
         {
         }
+
+        public RunnerException(Exception exception)
+            : base(new StringBuilder()
+                .AppendLine()
+                .AppendLine()
+                .AppendLine(exception.Message)
+                .AppendLine()
+                .AppendLine(exception.TypeName())
+                .AppendLine(exception.StackTrace)
+                .ToString())
+        {
+        }
     }
 }

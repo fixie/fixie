@@ -16,10 +16,17 @@
     {
         public void DiscoverTests(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger log, ITestCaseDiscoverySink discoverySink)
         {
-            log.Version();
+            try
+            {
+                log.Version();
 
-            foreach (var assemblyPath in sources)
-                DiscoverTests(log, discoverySink, assemblyPath);
+                foreach (var assemblyPath in sources)
+                    DiscoverTests(log, discoverySink, assemblyPath);
+            }
+            catch (Exception exception)
+            {
+                throw new RunnerException(exception);
+            }
         }
 
         static void DiscoverTests(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)

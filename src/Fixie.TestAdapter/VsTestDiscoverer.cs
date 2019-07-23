@@ -63,10 +63,14 @@
                         var completed = pipe.Receive<PipeMessage.Completed>();
                         break;
                     }
-                    else
+                    else if (!string.IsNullOrEmpty(messageType))
                     {
                         var body = pipe.ReceiveMessage();
-                        throw new Exception($"Test runner received unexpected message of type {messageType}: {body}");
+                        log.Error($"The test runner received an unexpected message of type {messageType}: {body}");
+                    }
+                    else
+                    {
+                        throw new Exception("The test assembly process exited unexpectedly.");
                     }
                 }
             }

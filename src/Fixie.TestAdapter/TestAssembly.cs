@@ -23,19 +23,31 @@ namespace Fixie.TestAdapter
             return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
         }
 
-        public static void Start(string assemblyPath, IFrameworkHandle frameworkHandle = null)
+        public static Process Start(string assemblyPath, IFrameworkHandle frameworkHandle = null)
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
 
 #if NET452
-            Start(frameworkHandle, assemblyDirectory, assemblyPath);
+            return Start(frameworkHandle, assemblyDirectory, assemblyPath);
 #else
-            Start(frameworkHandle, assemblyDirectory, Dotnet.Path, assemblyPath);
+            return Start(frameworkHandle, assemblyDirectory, Dotnet.Path, assemblyPath);
 #endif
         }
 
-        static void Start(IFrameworkHandle frameworkHandle, string workingDirectory, string executable, params string[] arguments)
+        public static bool TryGetExitCode(this Process process, out int exitCode)
+        {
+            if (process != null && process.WaitForExit(5000))
+            {
+                exitCode = process.ExitCode;
+                return true;
+            }
+
+            exitCode = 0;
+            return false;
+        }
+
+        static Process Start(IFrameworkHandle frameworkHandle, string workingDirectory, string executable, params string[] arguments)
         {
             var serializedArguments = CommandLine.Serialize(arguments);
 
@@ -57,17 +69,17 @@ namespace Fixie.TestAdapter
                         workingDirectory,
                         serializedArguments,
                         environmentVariables);
+
+                return null;
             }
-            else
+
+            return Start(new ProcessStartInfo
             {
-                using (Start(new ProcessStartInfo
-                {
-                    WorkingDirectory = workingDirectory,
-                    FileName = executable,
-                    Arguments = serializedArguments,
-                    UseShellExecute = false
-                })) { }
-            }
+                WorkingDirectory = workingDirectory,
+                FileName = executable,
+                Arguments = serializedArguments,
+                UseShellExecute = false
+            });
         }
 
         static Process Start(ProcessStartInfo startInfo)

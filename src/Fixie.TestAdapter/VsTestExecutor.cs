@@ -15,6 +15,7 @@
     {
         public const string Id = "executor://fixie.testadapter/";
         public static readonly Uri Uri = new Uri(Id);
+        const int StackOverflowExitCode = -1073741571;
 
         /// <summary>
         /// Called by the IDE, when running all tests.
@@ -98,14 +99,15 @@
             Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
 
             using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+            using (var process = Start(assemblyPath, frameworkHandle))
             {
-                Start(assemblyPath, frameworkHandle);
-
                 pipe.WaitForConnection();
 
                 sendCommand(pipe);
 
                 var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
+
+                PipeMessage.CaseStarted lastCaseStarted = null;
 
                 while (true)
                 {
@@ -113,8 +115,9 @@
 
                     if (messageType == typeof(PipeMessage.CaseStarted).FullName)
                     {
-                        var testResult = pipe.Receive<PipeMessage.CaseStarted>();
-                        recorder.Record(testResult);
+                        var message = pipe.Receive<PipeMessage.CaseStarted>();
+                        lastCaseStarted = message;
+                        recorder.Record(message);
                     }
                     else if (messageType == typeof(PipeMessage.CaseSkipped).FullName)
                     {
@@ -141,10 +144,38 @@
                         var completed = pipe.Receive<PipeMessage.Completed>();
                         break;
                     }
-                    else
+                    else if (!string.IsNullOrEmpty(messageType))
                     {
                         var body = pipe.ReceiveMessage();
-                        throw new Exception($"Test runner received unexpected message of type {messageType}: {body}");
+                        log.Error($"The test runner received an unexpected message of type {messageType}: {body}");
+                    }
+                    else
+                    {
+                        var errorMessage = "The test assembly process exited unexpectedly.";
+
+                        if (process.TryGetExitCode(out int exitCode))
+                        {
+                            if (exitCode == StackOverflowExitCode)
+                            {
+                                errorMessage = $"The test assembly process exited unexpectedly with exit code {exitCode}, indicating a test threw a StackOverflowException.";
+
+                                if (lastCaseStarted != null)
+                                {
+                                    recorder.Record(new PipeMessage.CaseFailed
+                                    {
+                                        Test = lastCaseStarted.Test,
+                                        Name = lastCaseStarted.Name,
+                                        Exception = new PipeMessage.Exception(new StackOverflowException())
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                errorMessage = $"The test assembly process exited unexpectedly with exit code {exitCode}.";
+                            }
+                        }
+
+                        throw new Exception(errorMessage);
                     }
                 }
             }

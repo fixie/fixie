@@ -12,8 +12,12 @@
 
     public class AssemblyRunner
     {
-        const int Success = 0;
-        const int FatalError = -1;
+        enum ExitCode
+        {
+            Success = 0,
+            Failure = 1,
+            FatalError = -1
+        }
 
         public static int Main(string[] arguments)
         {
@@ -32,7 +36,7 @@
                 var runner = new AssemblyRunner();
 
                 if (pipeName == null)
-                    return runner.RunAssembly(assembly, options, customArguments);
+                    return (int)runner.RunAssembly(assembly, options, customArguments);
 
                 using (var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
                 {
@@ -41,7 +45,7 @@
                     pipe.Connect();
                     pipe.ReadMode = PipeTransmissionMode.Message;
 
-                    int exitCode = Success;
+                    var exitCode = ExitCode.Success;
 
                     try
                     {
@@ -75,7 +79,7 @@
                         pipe.Send<PipeMessage.Completed>();
                     }
 
-                    return exitCode;
+                    return (int)exitCode;
                 }
             }
             catch (Exception exception)
@@ -83,7 +87,7 @@
                 using (Foreground.Red)
                     Console.WriteLine($"Fatal Error: {exception}");
 
-                return FatalError;
+                return (int)ExitCode.FatalError;
             }
         }
 
@@ -103,18 +107,18 @@
             discoverer.DiscoverMethods(assembly);
         }
 
-        int RunAssembly(Assembly assembly, Options options, string[] customArguments)
+        ExitCode RunAssembly(Assembly assembly, Options options, string[] customArguments)
         {
             return Run(assembly, options, customArguments, runner => runner.Run());
         }
 
-        int RunTests(Assembly assembly, Options options, string[] customArguments, PipeMessage.Test[] tests)
+        ExitCode RunTests(Assembly assembly, Options options, string[] customArguments, PipeMessage.Test[] tests)
         {
             return Run(assembly, options, customArguments,
                 r => r.Run(tests.Select(x => new Test(x.Class, x.Method)).ToList()));
         }
 
-        int Run(Assembly assembly, Options options, string[] customArguments, Func<Runner, ExecutionSummary> run)
+        ExitCode Run(Assembly assembly, Options options, string[] customArguments, Func<Runner, ExecutionSummary> run)
         {
             var listeners = GetExecutionListeners(options);
             var bus = new Bus(listeners);
@@ -122,7 +126,13 @@
 
             var summary = run(runner);
 
-            return summary.Total == 0 ? FatalError : summary.Failed;
+            if (summary.Total == 0)
+                return ExitCode.FatalError;
+
+            if (summary.Failed > 0)
+                return ExitCode.Failure;
+
+            return ExitCode.Success;
         }
 
         List<Listener> GetExecutionListeners(Options options)

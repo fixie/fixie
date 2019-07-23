@@ -36,9 +36,8 @@
             Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
 
             using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+            using (var process = Start(assemblyPath))
             {
-                Start(assemblyPath);
-
                 pipe.WaitForConnection();
 
                 pipe.Send<PipeMessage.DiscoverTests>();
@@ -64,10 +63,19 @@
                         var completed = pipe.Receive<PipeMessage.Completed>();
                         break;
                     }
-                    else
+                    else if (!string.IsNullOrEmpty(messageType))
                     {
                         var body = pipe.ReceiveMessage();
-                        throw new Exception($"Test runner received unexpected message of type {messageType}: {body}");
+                        log.Error($"The test runner received an unexpected message of type {messageType}: {body}");
+                    }
+                    else
+                    {
+                        var errorMessage = "The test assembly process exited unexpectedly.";
+
+                        if (process.TryGetExitCode(out int exitCode))
+                            errorMessage = $"The test assembly process exited unexpectedly with exit code {exitCode}.";
+
+                        throw new Exception(errorMessage);
                     }
                 }
             }

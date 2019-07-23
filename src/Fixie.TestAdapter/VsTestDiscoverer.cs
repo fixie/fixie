@@ -77,12 +77,7 @@
                     }
                     else
                     {
-                        var errorMessage = "The test assembly process exited unexpectedly.";
-
-                        if (process.TryGetExitCode(out int exitCode))
-                            errorMessage = $"The test assembly process exited unexpectedly with exit code {exitCode}.";
-
-                        throw new Exception(errorMessage);
+                        throw new TestProcessExitException(process.TryGetExitCode());
                     }
                 }
             }

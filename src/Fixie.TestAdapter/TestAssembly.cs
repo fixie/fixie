@@ -35,16 +35,12 @@ namespace Fixie.TestAdapter
 #endif
         }
 
-        public static bool TryGetExitCode(this Process process, out int exitCode)
+        public static int? TryGetExitCode(this Process process)
         {
             if (process != null && process.WaitForExit(5000))
-            {
-                exitCode = process.ExitCode;
-                return true;
-            }
+                return process.ExitCode;
 
-            exitCode = 0;
-            return false;
+            return null;
         }
 
         static Process Start(IFrameworkHandle frameworkHandle, string workingDirectory, string executable, params string[] arguments)

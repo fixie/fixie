@@ -15,7 +15,6 @@
     {
         public const string Id = "executor://fixie.testadapter/";
         public static readonly Uri Uri = new Uri(Id);
-        const int StackOverflowExitCode = -1073741571;
 
         /// <summary>
         /// Called by the IDE, when running all tests.
@@ -165,31 +164,19 @@
                     }
                     else
                     {
-                        var errorMessage = "The test assembly process exited unexpectedly.";
+                        var exception = new TestProcessExitException(process.TryGetExitCode());
 
-                        if (process.TryGetExitCode(out int exitCode))
+                        if (lastCaseStarted != null)
                         {
-                            if (exitCode == StackOverflowExitCode)
+                            recorder.Record(new PipeMessage.CaseFailed
                             {
-                                errorMessage = $"The test assembly process exited unexpectedly with exit code {exitCode}, indicating a test threw a StackOverflowException.";
-
-                                if (lastCaseStarted != null)
-                                {
-                                    recorder.Record(new PipeMessage.CaseFailed
-                                    {
-                                        Test = lastCaseStarted.Test,
-                                        Name = lastCaseStarted.Name,
-                                        Exception = new PipeMessage.Exception(new StackOverflowException())
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                errorMessage = $"The test assembly process exited unexpectedly with exit code {exitCode}.";
-                            }
+                                Test = lastCaseStarted.Test,
+                                Name = lastCaseStarted.Name,
+                                Exception = new PipeMessage.Exception(exception)
+                            });
                         }
 
-                        throw new Exception(errorMessage);
+                        throw exception;
                     }
                 }
             }

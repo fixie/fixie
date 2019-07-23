@@ -112,8 +112,8 @@
 
                     if (messageType == typeof(PipeMessage.CaseStarted).FullName)
                     {
-                        var testResult = pipe.Receive<PipeMessage.CaseStarted>();
-                        recorder.Record(testResult);
+                        var message = pipe.Receive<PipeMessage.CaseStarted>();
+                        recorder.Record(message);
                     }
                     else if (messageType == typeof(PipeMessage.CaseSkipped).FullName)
                     {

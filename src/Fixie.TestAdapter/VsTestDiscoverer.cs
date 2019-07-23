@@ -36,9 +36,8 @@
             Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
 
             using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+            using (var process = Start(assemblyPath))
             {
-                Start(assemblyPath);
-
                 pipe.WaitForConnection();
 
                 pipe.Send<PipeMessage.DiscoverTests>();

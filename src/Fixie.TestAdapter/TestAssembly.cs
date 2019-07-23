@@ -23,19 +23,19 @@ namespace Fixie.TestAdapter
             return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
         }
 
-        public static void Start(string assemblyPath, IFrameworkHandle frameworkHandle = null)
+        public static Process Start(string assemblyPath, IFrameworkHandle frameworkHandle = null)
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
 
 #if NET452
-            Start(frameworkHandle, assemblyDirectory, assemblyPath);
+            return Start(frameworkHandle, assemblyDirectory, assemblyPath);
 #else
-            Start(frameworkHandle, assemblyDirectory, Dotnet.Path, assemblyPath);
+            return Start(frameworkHandle, assemblyDirectory, Dotnet.Path, assemblyPath);
 #endif
         }
 
-        static void Start(IFrameworkHandle frameworkHandle, string workingDirectory, string executable, params string[] arguments)
+        static Process Start(IFrameworkHandle frameworkHandle, string workingDirectory, string executable, params string[] arguments)
         {
             var serializedArguments = CommandLine.Serialize(arguments);
 
@@ -51,22 +51,39 @@ namespace Fixie.TestAdapter
                     ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
                 };
 
-                frameworkHandle?
+                var processId = frameworkHandle?
                     .LaunchProcessWithDebuggerAttached(
                         executable,
                         workingDirectory,
                         serializedArguments,
                         environmentVariables);
+
+                return TryGetProcess(processId);
             }
             else
             {
-                using (Start(new ProcessStartInfo
+                return Start(new ProcessStartInfo
                 {
                     WorkingDirectory = workingDirectory,
                     FileName = executable,
                     Arguments = serializedArguments,
                     UseShellExecute = false
-                })) { }
+                });
+            }
+        }
+
+        static Process TryGetProcess(int? processId)
+        {
+            if (processId == null)
+                return null;
+
+            try
+            {
+                return Process.GetProcessById(processId.Value);
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 

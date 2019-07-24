@@ -1,7 +1,7 @@
 ﻿<Project>
     <PropertyGroup>
         <Product>Fixie</Product>
-        <VersionPrefix>2.0.4</VersionPrefix>
+        <VersionPrefix>2.1.0</VersionPrefix>
         <VersionSuffix></VersionSuffix>
         <Authors>Patrick Lioi</Authors>
         <Copyright>Copyright (c) 2013-2019 Patrick Lioi</Copyright>

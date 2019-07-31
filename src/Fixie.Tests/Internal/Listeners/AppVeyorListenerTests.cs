@@ -1,12 +1,10 @@
 ﻿namespace Fixie.Tests.Internal.Listeners
 {
     using System.Collections.Generic;
-    using System.IO;
-    using System.Runtime.Serialization.Json;
-    using System.Text;
     using Assertions;
     using Fixie.Internal;
     using Fixie.Internal.Listeners;
+    using static Fixie.Internal.Serialization;
 
     public class AppVeyorListenerTests : MessagingTests
     {
@@ -97,14 +95,6 @@
             pass.ErrorMessage.ShouldBe(null);
             pass.ErrorStackTrace.ShouldBe(null);
             pass.StdOut.Lines().ShouldBe("Console.Out: Pass", "Console.Error: Pass");
-        }
-
-        static T Deserialize<T>(string content)
-        {
-            var deserializer = new DataContractJsonSerializer(typeof(T));
-
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(content)))
-                return (T) deserializer.ReadObject(stream);
         }
     }
 }

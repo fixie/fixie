@@ -91,13 +91,13 @@
             postAction(uri, "application/json", Serialize(testResult));
         }
 
-        static string Serialize(TestResult testResult)
+        static string Serialize<T>(T message)
         {
-            var serializer = new DataContractJsonSerializer(typeof(TestResult));
+            var serializer = new DataContractJsonSerializer(typeof(T));
 
             using (var stream = new MemoryStream())
             {
-                serializer.WriteObject(stream, testResult);
+                serializer.WriteObject(stream, message);
                 return Encoding.UTF8.GetString(stream.ToArray());
             }
         }

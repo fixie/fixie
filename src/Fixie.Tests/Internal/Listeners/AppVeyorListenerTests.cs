@@ -19,7 +19,7 @@
                 uri.ShouldBe("http://localhost:4567/api/tests");
                 mediaType.ShouldBe("application/json");
 
-                results.Add(Deserialize(content));
+                results.Add(Deserialize<AppVeyorListener.TestResult>(content));
             });
 
             using (var console = new RedirectedConsole())
@@ -99,12 +99,12 @@
             pass.StdOut.Lines().ShouldBe("Console.Out: Pass", "Console.Error: Pass");
         }
 
-        static AppVeyorListener.TestResult Deserialize(string content)
+        static T Deserialize<T>(string content)
         {
-            var deserializer = new DataContractJsonSerializer(typeof(AppVeyorListener.TestResult));
+            var deserializer = new DataContractJsonSerializer(typeof(T));
 
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(content)))
-                return (AppVeyorListener.TestResult) deserializer.ReadObject(stream);
+                return (T) deserializer.ReadObject(stream);
         }
     }
 }

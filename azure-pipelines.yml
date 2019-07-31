@@ -5,3 +5,5 @@ steps:
 - task: CmdLine@2
   inputs:
     script: 'build'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)

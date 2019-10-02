@@ -20,6 +20,12 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(ComparisonFailure(actual, minimum, ">="));
         }
 
+        public static void ShouldBeGreaterThanOrEqualTo(this double actual, double minimum)
+        {
+            if (actual < minimum)
+                throw new AssertException(ComparisonFailure(actual, minimum, ">="));
+        }
+
         public static void ShouldBeGreaterThanOrEqualTo(this TimeSpan actual, TimeSpan minimum)
         {
             if (actual < minimum)

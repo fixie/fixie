@@ -4,10 +4,10 @@
     using System.IO;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using System.Runtime.Serialization.Json;
     using System.Text;
     using Internal;
     using static System.Environment;
+    using static Serialization;
 
     public class AppVeyorListener :
         Handler<AssemblyStarted>,
@@ -89,17 +89,6 @@
             customize(testResult);
 
             postAction(uri, "application/json", Serialize(testResult));
-        }
-
-        static string Serialize(TestResult testResult)
-        {
-            var serializer = new DataContractJsonSerializer(typeof(TestResult));
-
-            using (var stream = new MemoryStream())
-            {
-                serializer.WriteObject(stream, testResult);
-                return Encoding.UTF8.GetString(stream.ToArray());
-            }
         }
 
         static void Post(string uri, string mediaType, string content)

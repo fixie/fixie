@@ -32,8 +32,8 @@ function Build {
 </Project>
 "@
 
-    exec { dotnet clean src -c $configuration /nologo -v minimal }
-    exec { dotnet build src -c $configuration /nologo }
+    exec { dotnet clean src -c $configuration --nologo -v minimal }
+    exec { dotnet build src -c $configuration --nologo }
 }
 
 function Test {
@@ -44,8 +44,8 @@ function Test {
 
 function Pack {
     remove-folder packages
-    exec { dotnet pack -c $configuration --no-restore --no-build /nologo } src\Fixie
-    exec { dotnet pack -c $configuration --no-restore --no-build /nologo } src\Fixie.Console
+    exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src\Fixie
+    exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src\Fixie.Console
 }
 
 main {

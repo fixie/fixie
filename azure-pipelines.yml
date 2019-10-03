@@ -1,9 +1,7 @@
 pool:
-  vmImage: 'windows-latest'
+  vmImage: windows-latest
 
 steps:
-- task: CmdLine@2
-  inputs:
-    script: 'build'
+- script: build
   env:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)

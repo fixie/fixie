@@ -2,7 +2,7 @@
 
 . .\build-helpers
 
-$versionPrefix = "2.1.1"
+$versionPrefix = "2.2.0"
 $prerelease = $false
 
 $authors = "Patrick Lioi"

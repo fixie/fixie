@@ -10,7 +10,6 @@
     static class ExceptionExtensions
     {
         static readonly MethodInfo CaseExecuteMethod = typeof(Case).GetMethod("Execute");
-
         static readonly MethodInfo ExceptionRethrowMethod = typeof(ExceptionDispatchInfo).GetMethod("Throw", new Type[] { });
 
         public static string LiterateStackTrace(this Exception exception)

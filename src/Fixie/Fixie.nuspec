@@ -8,7 +8,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
     <projectUrl>https://fixie.github.io</projectUrl>
-    <iconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</iconUrl>
+    <icon>icon.png</icon>
     <description>$description$</description>
     <copyright>$copyright$</copyright>
     <repository url="https://github.com/fixie/fixie" />
@@ -27,6 +27,7 @@
   </metadata>
   <files>
     <file target="" src="..\..\LICENSE.md" />
+    <file target="icon.png" src="..\..\img\fixie_256.png" />
 
     <!-- Reference Library -->
 

@@ -23,7 +23,7 @@ function Build {
         <Copyright>$copyright</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
-        <PackageIconUrl>https://raw.github.com/fixie/fixie/master/img/fixie_256.png</PackageIconUrl>
+        <PackageIcon>icon.png</PackageIcon>
         <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
         <PackageOutputPath>..\..\packages</PackageOutputPath>
         <IncludeSymbols>true</IncludeSymbols>

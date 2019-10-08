@@ -59,6 +59,9 @@
             // This assumes that stack trace lines use the "---" formatting of the rethrow hint
             // across cultures, and that the stack frame lines do *not* contain "---" across cultures.
             //
+            // Starting in .NET Core 2.1, although the stack frames do still include ExceptionDispatchInfo.Throw()
+            // for completeness, the corresponding line is omitted from the stack trace text.
+            //
             // When in doubt, return the original stack trace.
 
             if (exception.StackTrace == null)
@@ -123,10 +126,19 @@
 
             for (int i = frames.Length - 1; i >= 0; i--)
             {
-                numberOfTrailingStackFramesToRemove++;
-
                 if (frames[i].GetMethod() == ExceptionRethrowMethod)
+                {
+                    #if NET452
+                        // .NET Framework 4.x includes an extra line in the stack
+                        // trace, for the call to ExceptionDispatchInfo.Throw() itself.
+
+                        numberOfTrailingStackFramesToRemove++;
+                    #endif
+
                     return true;
+                }
+
+                numberOfTrailingStackFramesToRemove++;
             }
 
             return false;

@@ -13,7 +13,12 @@
     <copyright>$copyright$</copyright>
     <repository url="https://github.com/fixie/fixie" />
     <references>
-      <reference file="Fixie.dll" />
+      <group targetFramework="net452">
+        <reference file="Fixie.dll" />
+      </group>
+      <group targetFramework="netcoreapp2.0">
+        <reference file="Fixie.dll" />
+      </group>
     </references>
     <dependencies>
       <group targetFramework="net452">
@@ -29,7 +34,12 @@
     <file target="" src="..\..\LICENSE.md" />
     <file target="icon.png" src="..\..\img\fixie_256.png" />
 
-    <!-- Reference Library -->
+    <!-- Library - Compile-Time Assets -->
+
+    <file target="ref\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />
+    <file target="ref\netcoreapp2.0" src="..\Fixie\bin\Release\netstandard2.0\Fixie.dll" />
+
+    <!-- Library - Run-Time Assets -->
 
     <file target="lib\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />
     <file target="lib\netcoreapp2.0" src="..\Fixie\bin\Release\netstandard2.0\Fixie.dll" />

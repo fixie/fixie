@@ -67,6 +67,8 @@
 
 #if NET452
             start.name.ShouldBe("Fixie.Tests (.NETFramework,Version=v4.5.2)");
+#elif NETCOREAPP3_0
+            start.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.0)");
 #else
             start.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v2.1)");
 #endif

@@ -33,10 +33,16 @@
 
         public void ShouldFailWhenTestClassConstructorCannotBeInvoked()
         {
+            var expectedFailure =
+#if NETCOREAPP3_0
+                $".UnreachableCase failed: No parameterless constructor defined for type '{FullName<CannotInvokeConstructorTestClass>()}'.";
+#else
+                ".UnreachableCase failed: No parameterless constructor defined for this object.";
+#endif
+
             Run<CannotInvokeConstructorTestClass>()
                 .ShouldBe(
-                    For<CannotInvokeConstructorTestClass>(
-                        ".UnreachableCase failed: No parameterless constructor defined for this object."));
+                    For<CannotInvokeConstructorTestClass>(expectedFailure));
         }
 
         class PassTestClass

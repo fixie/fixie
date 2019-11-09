@@ -15,6 +15,6 @@
     /// </summary>
     public interface ParameterSource
     {
-        IEnumerable<object[]> GetParameters(MethodInfo method);
+        IEnumerable<object[]> GetParameters(MethodBase method);
     }
 }

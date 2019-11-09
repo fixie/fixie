@@ -144,7 +144,7 @@
             var testClass = typeof(Generic);
             var caseMethod = testClass.GetInstanceMethod(methodName);
 
-            return new Case(caseMethod, parameters).Method.GetGenericArguments();
+            return new Case(caseMethod, parameters, null).Method.GetGenericArguments();
         }
 
         class Generic

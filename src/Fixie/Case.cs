@@ -9,14 +9,15 @@
     /// </summary>
     public class Case
     {
-        public Case(MethodInfo caseMethod, params object[] parameters)
+        public Case(MethodInfo caseMethod, object[] parameters, object[] classParameters)
         {
+            ClassParameters = classParameters;
             Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
             Class = caseMethod.ReflectedType;
 
             Method = caseMethod.TryResolveTypeArguments(parameters);
 
-            Name = CaseNameBuilder.GetName(Class, Method, Parameters);
+            Name = CaseNameBuilder.GetName(Class, Method, Parameters, ClassParameters);
 
             Output = "";
         }
@@ -52,6 +53,12 @@
         /// For zero-argument test methods, this property is null.
         /// </summary>
         public object[] Parameters { get; }
+
+        /// <summary>
+        /// For parameterized test classes, gets the set of parameters used in the constructor.
+        /// For zero-argument constructors, this property is null.
+        /// </summary>
+        public object[] ClassParameters { get; }
 
         /// <summary>
         /// Gets the exception describing this test case's failure.

@@ -11,20 +11,29 @@
     {
         readonly Action<Action<Case>> runCases;
         readonly bool isStatic;
-        internal TestClass(Type type, Action<Action<Case>> runCases) : this(type, runCases, null) { }
-
-        internal TestClass(Type type, Action<Action<Case>> runCases, MethodInfo targetMethod)
+        internal TestClass(Type type, Action<Action<Case>> runCases, ConstructorInfo constructorInfo, object[] constructorParameters) : this(type, runCases, constructorInfo, constructorParameters, null) { }
+        internal TestClass(Type type, Action<Action<Case>> runCases, ConstructorInfo constructorInfo, object[] constructorParameters, MethodInfo targetMethod)
         {
             this.runCases = runCases;
             Type = type;
+            ConstructorInfo = constructorInfo;
             TargetMethod = targetMethod;
             isStatic = Type.IsStatic();
+            ConstructorParameters = constructorParameters;
         }
 
         /// <summary>
         /// The test class to execute.
         /// </summary>
         public Type Type { get; }
+
+        public ConstructorInfo ConstructorInfo { get; }
+
+        /// <summary>
+        /// For parameterized test cases, gets the set of parameters to be passed into the test class.
+        /// For zero-argument test classes, this property is null.
+        /// </summary>
+        public object[] ConstructorParameters { get; }
 
         /// <summary>
         /// Gets the target MethodInfo identified by the
@@ -44,7 +53,12 @@
 
             try
             {
-                return Activator.CreateInstance(Type);
+                if (ConstructorParameters.Length == 0)
+                {
+                    return Activator.CreateInstance(Type);
+                }
+
+                return Activator.CreateInstance(Type, ConstructorParameters);
             }
             catch (TargetInvocationException exception)
             {

@@ -75,7 +75,7 @@
 
         class FirstParameterSource : ParameterSource
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            public IEnumerable<object[]> GetParameters(MethodBase method)
             {
                 yield return new object[] { method.Name, 0, false };
                 yield return new object[] { method.Name, 1, true };
@@ -84,7 +84,7 @@
 
         class SecondParameterSource : ParameterSource
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            public IEnumerable<object[]> GetParameters(MethodBase method)
             {
                 yield return new object[] { method.Name, 2, false };
                 yield return new object[] { method.Name, 3, true };

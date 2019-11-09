@@ -176,4 +176,8 @@
             }
         }
     }
+
+    class CtorParameterSourceAttribute : Attribute
+    {
+    }
 }

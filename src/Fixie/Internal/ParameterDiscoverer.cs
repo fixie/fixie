@@ -11,7 +11,7 @@
         public ParameterDiscoverer(Discovery discovery)
             => parameterSources = discovery.Config.ParameterSources;
 
-        public IEnumerable<object[]> GetParameters(MethodInfo method)
+        public IEnumerable<object[]> GetParameters(MethodBase method)
             => parameterSources.SelectMany(source => source.GetParameters(method));
     }
 }

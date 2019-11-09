@@ -327,8 +327,13 @@
 
         class BuggyParameterSource : ParameterSource
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            public IEnumerable<object[]> GetParameters(MethodBase method)
             {
+                if (method is ConstructorInfo)
+                {
+                    return new object[0][];
+                }
+
                 throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
             }
         }

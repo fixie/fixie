@@ -45,72 +45,27 @@
             bool classLifecycleFailed = false;
             bool runCasesInvokedByLifecycle = false;
 
-            try
+            var testClassConstructors = testClass.GetConstructors().ToArray();
+            foreach (var constructorInfo in testClassConstructors)
             {
-                Action<Action<Case>> runCases = caseLifecycle =>
+                var dataSets = parameterDiscoverer.GetParameters(constructorInfo).ToArray();
+                if (!dataSets.Any())
                 {
-                    runCasesInvokedByLifecycle = true;
-
-                    foreach (var @case in YieldCases(orderedMethods, summary))
+                    dataSets = new []
                     {
-                        Start(@case);
+                        new object[0]
+                    };
+                }
 
-                        Exception caseLifecycleException = null;
-
-                        string consoleOutput;
-                        using (var console = new RedirectedConsole())
-                        {
-                            var caseStopwatch = Stopwatch.StartNew();
-
-                            try
-                            {
-                                caseLifecycle(@case);
-                            }
-                            catch (Exception exception)
-                            {
-                                caseLifecycleException = exception;
-                            }
-
-                            caseStopwatch.Stop();
-
-                            @case.Duration += caseStopwatch.Elapsed;
-
-                            consoleOutput = console.Output;
-
-                            @case.Output += consoleOutput;
-                        }
-
-                        Console.Write(consoleOutput);
-
-                        var caseHasNormalResult = @case.State == CaseState.Failed || @case.State == CaseState.Passed;
-                        var caseLifecycleFailed = caseLifecycleException != null;
-
-                        if (caseHasNormalResult)
-                        {
-                            if (@case.State == CaseState.Failed)
-                                Fail(@case, summary);
-                            else if (!caseLifecycleFailed)
-                                Pass(@case, summary);
-                        }
-
-                        if (caseLifecycleFailed)
-                            Fail(new Case(@case, caseLifecycleException), summary);
-                        else if (!caseHasNormalResult)
-                            Skip(@case, summary);
-                    }
-                };
-
-                var runContext = isOnlyTestClass && methods.Count == 1
-                    ? new TestClass(testClass, runCases, methods.Single())
-                    : new TestClass(testClass, runCases);
-
-                execution.Execute(runContext);
+                foreach (var constructorParameters in dataSets)
+                {
+                    runCasesInvokedByLifecycle = RunCasesInvokedByLifecycle(constructorInfo, constructorParameters);
+                }
             }
-            catch (Exception exception)
+
+            if (!testClassConstructors.Any())
             {
-                classLifecycleFailed = true;
-                foreach (var method in orderedMethods)
-                    Fail(method, exception, summary);
+                runCasesInvokedByLifecycle = RunCasesInvokedByLifecycle(null, new object[0][]);
             }
 
             if (!runCasesInvokedByLifecycle && !classLifecycleFailed)
@@ -120,7 +75,7 @@
                 //each method.
                 foreach (var method in orderedMethods)
                 {
-                    var @case = new Case(method);
+                    var @case = new Case(method, null, null);
                     Skip(@case, summary);
                 }
             }
@@ -129,6 +84,80 @@
             Complete(testClass, summary, classStopwatch.Elapsed);
 
             return summary;
+
+            bool RunCasesInvokedByLifecycle(ConstructorInfo constructorInfo, object[] constructorParameters)
+            {
+                try
+                {
+                    Action<Action<Case>> runCases = caseLifecycle =>
+                    {
+                        runCasesInvokedByLifecycle = true;
+
+                        foreach (var @case in YieldCases(orderedMethods, summary, constructorParameters))
+                        {
+                            Start(@case);
+
+                            Exception caseLifecycleException = null;
+
+                            string consoleOutput;
+                            using (var console = new RedirectedConsole())
+                            {
+                                var caseStopwatch = Stopwatch.StartNew();
+
+                                try
+                                {
+                                    caseLifecycle(@case);
+                                }
+                                catch (Exception exception)
+                                {
+                                    caseLifecycleException = exception;
+                                }
+
+                                caseStopwatch.Stop();
+
+                                @case.Duration += caseStopwatch.Elapsed;
+
+                                consoleOutput = console.Output;
+
+                                @case.Output += consoleOutput;
+                            }
+
+                            Console.Write(consoleOutput);
+
+                            var caseHasNormalResult =
+                                @case.State == CaseState.Failed || @case.State == CaseState.Passed;
+                            var caseLifecycleFailed = caseLifecycleException != null;
+
+                            if (caseHasNormalResult)
+                            {
+                                if (@case.State == CaseState.Failed)
+                                    Fail(@case, summary);
+                                else if (!caseLifecycleFailed)
+                                    Pass(@case, summary);
+                            }
+
+                            if (caseLifecycleFailed)
+                                Fail(new Case(@case, caseLifecycleException), summary);
+                            else if (!caseHasNormalResult)
+                                Skip(@case, summary);
+                        }
+                    };
+
+                    var runContext = isOnlyTestClass && methods.Count == 1
+                        ? new TestClass(testClass, runCases, constructorInfo, constructorParameters, methods.Single())
+                        : new TestClass(testClass, runCases, constructorInfo, constructorParameters);
+
+                    execution.Execute(runContext);
+                }
+                catch (Exception exception)
+                {
+                    classLifecycleFailed = true;
+                    foreach (var method in orderedMethods)
+                        Fail(method, exception, summary, constructorParameters);
+                }
+
+                return runCasesInvokedByLifecycle;
+            }
         }
 
         IReadOnlyList<MethodInfo> OrderedMethods(IReadOnlyList<MethodInfo> methods, ExecutionSummary summary)
@@ -140,19 +169,19 @@
             catch (Exception orderException)
             {
                 foreach (var method in methods)
-                    Fail(method, orderException, summary);
+                    Fail(method, orderException, summary, null);
 
                 return methods;
             }
         }
 
-        IEnumerable<Case> YieldCases(IReadOnlyList<MethodInfo> orderedMethods, ExecutionSummary summary)
+        IEnumerable<Case> YieldCases(IReadOnlyList<MethodInfo> orderedMethods, ExecutionSummary summary, object[] ctorParameters)
         {
             foreach (var method in orderedMethods)
             {
                 if (method.GetParameters().Length == 0)
                 {
-                    yield return new Case(method);
+                    yield return new Case(method, new object[0], ctorParameters);
                     continue;
                 }
 
@@ -176,13 +205,13 @@
                         {
                             parameterGenerationThrew = true;
 
-                            Fail(method, exception, summary);
+                            Fail(method, exception, summary, ctorParameters);
 
                             break;
                         }
 
                         generatedInputParameters = true;
-                        yield return new Case(method, parameters);
+                        yield return new Case(method, parameters, ctorParameters);
                     }
                 }
 
@@ -195,7 +224,7 @@
                 }
                 catch (Exception exception)
                 {
-                    Fail(method, exception, summary);
+                    Fail(method, exception, summary, ctorParameters);
                 }
             }
         }
@@ -234,9 +263,9 @@
             bus.Publish(message);
         }
 
-        void Fail(MethodInfo method, Exception exception, ExecutionSummary summary)
+        void Fail(MethodInfo method, Exception exception, ExecutionSummary summary, object[] ctorParameters)
         {
-            var @case = new Case(method);
+            var @case = new Case(method, new object[0], ctorParameters);
             @case.Fail(exception);
             Fail(@case, summary);
         }

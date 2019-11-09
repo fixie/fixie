@@ -5,6 +5,7 @@ namespace Fixie.Tests.Internal
     using System.Linq;
     using System.Reflection;
     using Assertions;
+    using Cases;
     using Fixie.Internal;
     using static Utility;
 
@@ -34,6 +35,33 @@ namespace Fixie.Tests.Internal
                 Self + "+PassFailTestClass.Pass passed",
                 Self + "+SkipTestClass.SkipA skipped",
                 Self + "+SkipTestClass.SkipB skipped");
+        }
+
+        public void ShouldExecuteAllCasesInAllDiscoveredTestClassesByConstructorsParameters()
+        {
+            var listener = new StubListener();
+
+            var candidateTypes = new[]
+            {
+                typeof(MultiConstructorWithDataTestClass)
+            };
+            var discovery = new SelfTestDiscovery();
+            discovery.Parameters.Add<ParameterizedCaseTests.InputAttributeParameterSource>();
+            var execution = new CreateInstancePerClass();
+
+            var bus = new Bus(listener);
+            new Runner(GetType().Assembly, bus).Run(candidateTypes, discovery, execution);
+
+            listener.Entries.ShouldBe(
+                Self + "+MultiConstructorWithDataTestClass(1, 1).StringArg(\"abc\") passed",
+                Self + "+MultiConstructorWithDataTestClass(1, 1).StringArg(\"def\") passed",
+                Self + "+MultiConstructorWithDataTestClass(1, 1).ZeroArg passed",
+                Self + "+MultiConstructorWithDataTestClass(2, 1).StringArg(\"abc\") passed",
+                Self + "+MultiConstructorWithDataTestClass(2, 1).StringArg(\"def\") passed",
+                Self + "+MultiConstructorWithDataTestClass(2, 1).ZeroArg passed",
+                Self + "+MultiConstructorWithDataTestClass(3, 1).StringArg(\"abc\") passed",
+                Self + "+MultiConstructorWithDataTestClass(3, 1).StringArg(\"def\") passed",
+                Self + "+MultiConstructorWithDataTestClass(3, 1).ZeroArg passed");
         }
 
         public void ShouldAllowRandomShufflingOfCaseExecutionOrder()
@@ -157,13 +185,29 @@ namespace Fixie.Tests.Internal
 
         class BuggyParameterSource : ParameterSource
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            public IEnumerable<object[]> GetParameters(MethodBase method)
             {
                 if (method.GetParameters().Length == 0)
                     yield break;
 
                 throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
             }
+        }
+
+        class MultiConstructorWithDataTestClass
+        {
+            [ParameterizedCaseTests.Input(1, 1)]
+            [ParameterizedCaseTests.Input(2, 1)]
+            [ParameterizedCaseTests.Input(3, 1)]
+            public MultiConstructorWithDataTestClass(int a, int b)
+            {
+            }
+
+            public void ZeroArg() { }
+
+            [ParameterizedCaseTests.Input("abc")]
+            [ParameterizedCaseTests.Input("def")]
+            public void StringArg(string c) { }
         }
     }
 }

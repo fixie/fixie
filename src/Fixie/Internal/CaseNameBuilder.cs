@@ -8,9 +8,15 @@
 
     static class CaseNameBuilder
     {
-        public static string GetName(Type testClass, MethodInfo method, object[] parameters)
+        public static string GetName(Type testClass, MethodInfo method, object[] parameters, object[] classParameters)
         {
-            var name = testClass.FullName + "." + method.Name;
+            var name = testClass.FullName;
+            if (classParameters != null && classParameters.Any())
+            {
+                name += $"({string.Join(", ", classParameters.Select(x => x.ToDisplayString()))})";
+            }
+
+            name += "." + method.Name;
 
             if (method.IsGenericMethod)
                 name += $"<{string.Join(", ", method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";

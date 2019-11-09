@@ -27,6 +27,25 @@
                         ".ZeroArgs passed"));
         }
 
+        public void ShouldAllowDiscoveryToGeneratePotentiallyManySetsOfInputParametersPerMethodMultipliedByConstructorArgs()
+        {
+            discovery.Parameters.Add<InputAttributeOrDefaultParameterSource>();
+
+            Run<ParameterizedTestClassWithParameterizedConstructorTestClass>(discovery, execution)
+                .ShouldBe(
+                    For<ParameterizedTestClassWithParameterizedConstructorTestClass>(
+                        "(50, \"abc\").IntArg(0) passed",
+                        "(50, \"abc\").MultipleCasesFromAttributes(1, 1, 2) passed",
+                        "(50, \"abc\").MultipleCasesFromAttributes(1, 2, 3) passed",
+                        "(50, \"abc\").MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
+                        "(50, \"abc\").ZeroArgs passed",
+                        "(100, \"def\").IntArg(0) passed",
+                        "(100, \"def\").MultipleCasesFromAttributes(1, 1, 2) passed",
+                        "(100, \"def\").MultipleCasesFromAttributes(1, 2, 3) passed",
+                        "(100, \"def\").MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
+                        "(100, \"def\").ZeroArgs passed"));
+        }
+
         public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
         {
             Run<ParameterizedTestClass>(discovery, execution)
@@ -169,9 +188,9 @@
                         ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed"));
         }
 
-        class InputAttributeParameterSource : ParameterSource
+        public class InputAttributeParameterSource : ParameterSource
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            public IEnumerable<object[]> GetParameters(MethodBase method)
             {
                 var inputAttributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
 
@@ -183,7 +202,7 @@
 
         class InputAttributeOrDefaultParameterSource : ParameterSource
         {
-            public virtual IEnumerable<object[]> GetParameters(MethodInfo method)
+            public virtual IEnumerable<object[]> GetParameters(MethodBase method)
             {
                 var parameters = method.GetParameters();
 
@@ -203,7 +222,7 @@
 
         class EmptyParameterSource : ParameterSource
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            public IEnumerable<object[]> GetParameters(MethodBase method)
             {
                 yield break;
             }
@@ -211,18 +230,28 @@
 
         class LazyBuggyParameterSource : ParameterSource
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            public IEnumerable<object[]> GetParameters(MethodBase method)
             {
-                yield return new object[] { 0 };
-                yield return new object[] { 1 };
+                if (method is ConstructorInfo)
+                {
+                    yield break;
+                }
+                
+                yield return new object[] {0};
+                yield return new object[] {1};
                 throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
             }
         }
 
         class EagerBuggyParameterSource : InputAttributeOrDefaultParameterSource
         {
-            public override IEnumerable<object[]> GetParameters(MethodInfo method)
+            public override IEnumerable<object[]> GetParameters(MethodBase method)
             {
+                if (method is ConstructorInfo)
+                {
+                    return new object[0][];
+                }
+
                 if (method.Name == nameof(ParameterizedTestClass.IntArg))
                     throw new Exception("Exception thrown while attempting to eagerly build input parameters for method: " + method.Name);
 
@@ -234,9 +263,14 @@
         {
             public static object[][] Parameters { get; set; }
 
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            public IEnumerable<object[]> GetParameters(MethodBase method)
             {
-                return Parameters;
+                if (method is MethodInfo)
+                {
+                    return Parameters;
+                }
+
+                return new object[0][];
             }
         }
 
@@ -247,6 +281,32 @@
 
         class ParameterizedTestClass
         {
+            public void ZeroArgs() { }
+
+            public void IntArg(int i)
+            {
+                if (i != 0)
+                    throw new Exception("Expected 0, but was " + i);
+            }
+
+            [Input(1, 1, 2)]
+            [Input(1, 2, 3)]
+            [Input(5, 5, 11)]
+            public void MultipleCasesFromAttributes(int a, int b, int expectedSum)
+            {
+                if (a + b != expectedSum)
+                    throw new Exception($"Expected sum of {expectedSum} but was {a + b}.");
+            }
+        }
+
+        class ParameterizedTestClassWithParameterizedConstructorTestClass
+        {
+            [Input(50, "abc")]
+            [Input(100, "def")]
+            public ParameterizedTestClassWithParameterizedConstructorTestClass(int a, string b)
+            {
+            }
+
             public void ZeroArgs() { }
 
             public void IntArg(int i)
@@ -340,8 +400,8 @@
             }
         }
 
-        [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-        class InputAttribute : Attribute
+        [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor, AllowMultiple = true)]
+        public class InputAttribute : Attribute
         {
             public InputAttribute(params object[] parameters)
             {

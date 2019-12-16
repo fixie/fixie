@@ -3,17 +3,14 @@
     using System;
     using System.IO;
     using System.IO.Pipes;
-    using System.Runtime.Serialization.Json;
     using System.Text;
+    using static Serialization;
 
     static class PipeStreamExtensions
     {
         public static TMessage Receive<TMessage>(this PipeStream pipe)
         {
-            var deserializer = new DataContractJsonSerializer(typeof(TMessage));
-
-            using (var stream = new MemoryStream(ReceiveMessageBytes(pipe)))
-                return (TMessage)deserializer.ReadObject(stream);
+            return Deserialize<TMessage>(ReceiveMessageBytes(pipe));
         }
 
         public static void Send<TMessage>(this PipeStream pipe) where TMessage: new()
@@ -31,14 +28,7 @@
             var messageType = typeof(TMessage).FullName;
             SendMessageBytes(pipe, Encoding.UTF8.GetBytes(messageType));
 
-            var serializer = new DataContractJsonSerializer(typeof(TMessage));
-
-            using (var stream = new MemoryStream())
-            {
-                serializer.WriteObject(stream, message);
-
-                SendMessageBytes(pipe, stream.ToArray());
-            }
+            SendMessageBytes(pipe, SerializeToBytes(message));
         }
 
         public static string ReceiveMessage(this PipeStream pipe)

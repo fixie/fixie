@@ -1,23 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>net452;netcoreapp2.0;netcoreapp3.0</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net452'">
     <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' != 'net452'">
     <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mono.Cecil" Version="0.10.0" />
-    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="15.7.0" />
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="15.7.0" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.1" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="15.7.0" Condition="'$(TargetFramework)' == 'net452'" />
+    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="16.2.0" Condition="'$(TargetFramework)' == 'netcoreapp2.0'" />
+    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="16.4.0" Condition="'$(TargetFramework)' == 'netcoreapp3.0'" />
   </ItemGroup>
 
   <ItemGroup>

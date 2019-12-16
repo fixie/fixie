@@ -13,15 +13,27 @@
     <copyright>$copyright$</copyright>
     <repository url="https://github.com/fixie/fixie" />
     <references>
-      <reference file="Fixie.dll" />
+      <group targetFramework="net452">
+        <reference file="Fixie.dll" />
+      </group>
+      <group targetFramework="netcoreapp2.0">
+        <reference file="Fixie.dll" />
+      </group>
+      <group targetFramework="netcoreapp3.0">
+        <reference file="Fixie.dll" />
+      </group>
     </references>
     <dependencies>
       <group targetFramework="net452">
-        <dependency id="Mono.Cecil" version="0.10.0" />
+        <dependency id="Mono.Cecil" version="0.11.1" />
       </group>
       <group targetFramework="netcoreapp2.0">
-        <dependency id="Microsoft.TestPlatform.TestHost" version="15.7.0" />
-        <dependency id="Mono.Cecil" version="0.10.0" />
+        <dependency id="Microsoft.TestPlatform.TestHost" version="16.2.0" />
+        <dependency id="Mono.Cecil" version="0.11.1" />
+      </group>
+      <group targetFramework="netcoreapp3.0">
+        <dependency id="Microsoft.TestPlatform.TestHost" version="16.4.0" />
+        <dependency id="Mono.Cecil" version="0.11.1" />
       </group>
     </dependencies>
   </metadata>
@@ -29,10 +41,17 @@
     <file target="" src="..\..\LICENSE.md" />
     <file target="icon.png" src="..\..\img\fixie_256.png" />
 
-    <!-- Reference Library -->
+    <!-- Library - Compile-Time Assets -->
+
+    <file target="ref\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />
+    <file target="ref\netcoreapp2.0" src="..\Fixie\bin\Release\netcoreapp2.0\Fixie.dll" />
+    <file target="ref\netcoreapp3.0" src="..\Fixie\bin\Release\netcoreapp3.0\Fixie.dll" />
+
+    <!-- Library - Run-Time Assets -->
 
     <file target="lib\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />
-    <file target="lib\netcoreapp2.0" src="..\Fixie\bin\Release\netstandard2.0\Fixie.dll" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie\bin\Release\netcoreapp2.0\Fixie.dll" />
+    <file target="lib\netcoreapp3.0" src="..\Fixie\bin\Release\netcoreapp3.0\Fixie.dll" />
 
     <!-- TestDriven.NET Adapter -->
 
@@ -51,6 +70,7 @@
     <file target="lib\net452" src="..\Fixie.TestAdapter\bin\Release\net452\Mono.Cecil.Pdb.dll" />
 
     <file target="lib\netcoreapp2.0" src="..\Fixie.TestAdapter\bin\Release\netcoreapp2.0\Fixie.TestAdapter.dll" />
+    <file target="lib\netcoreapp3.0" src="..\Fixie.TestAdapter\bin\Release\netcoreapp3.0\Fixie.TestAdapter.dll" />
 
     <!-- Run Time Support -->
 

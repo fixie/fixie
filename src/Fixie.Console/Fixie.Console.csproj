@@ -11,7 +11,6 @@
 
   <PropertyGroup>
     <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <Import Project="..\Fixie.Cli\Fixie.Cli.projitems" Label="Shared" />

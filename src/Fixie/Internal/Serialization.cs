@@ -1,28 +1,60 @@
 ﻿namespace Fixie.Internal
 {
+    using System.Text;
+
+    #if NETCOREAPP3_0
+    using System;
+    using System.Text.Json;
+    #else
     using System.IO;
     using System.Runtime.Serialization.Json;
-    using System.Text;
+    #endif
 
     static class Serialization
     {
-        public static string Serialize<T>(T message)
+        public static string Serialize<TMessage>(TMessage message)
         {
-            var serializer = new DataContractJsonSerializer(typeof(T));
+            return Encoding.UTF8.GetString(SerializeToBytes(message));
+        }
+
+        public static byte[] SerializeToBytes<TMessage>(TMessage message)
+        {
+            #if NETCOREAPP3_0
+
+            return JsonSerializer.SerializeToUtf8Bytes(message);
+
+            #else
+
+            var serializer = new DataContractJsonSerializer(typeof(TMessage));
 
             using (var stream = new MemoryStream())
             {
                 serializer.WriteObject(stream, message);
-                return Encoding.UTF8.GetString(stream.ToArray());
+                return stream.ToArray();
             }
+
+            #endif
         }
 
-        public static T Deserialize<T>(string message)
+        public static TMessage Deserialize<TMessage>(string message)
         {
-            var deserializer = new DataContractJsonSerializer(typeof(T));
+            return Deserialize<TMessage>(Encoding.UTF8.GetBytes(message));
+        }
 
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(message)))
-                return (T)deserializer.ReadObject(stream);
+        public static TMessage Deserialize<TMessage>(byte[] bytes)
+        {
+            #if NETCOREAPP3_0
+
+            return JsonSerializer.Deserialize<TMessage>(new ReadOnlySpan<byte>(bytes));
+
+            #else
+
+            var deserializer = new DataContractJsonSerializer(typeof(TMessage));
+
+            using (var stream = new MemoryStream(bytes))
+                return (TMessage) deserializer.ReadObject(stream);
+
+            #endif
         }
     }
 }

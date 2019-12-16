@@ -3,7 +3,6 @@
     using System;
     using System.IO;
     using System.IO.Pipes;
-    using System.Runtime.Serialization.Json;
     using System.Text;
     using static Serialization;
 
@@ -29,16 +28,7 @@
             var messageType = typeof(TMessage).FullName;
             SendMessageBytes(pipe, Encoding.UTF8.GetBytes(messageType));
 
-            var serializer = new DataContractJsonSerializer(typeof(TMessage));
-
-            byte[] bytes;
-            using (var stream = new MemoryStream())
-            {
-                serializer.WriteObject(stream, message);
-                bytes = stream.ToArray();
-            }
-
-            SendMessageBytes(pipe, bytes);
+            SendMessageBytes(pipe, SerializeToBytes(message));
         }
 
         public static string ReceiveMessage(this PipeStream pipe)

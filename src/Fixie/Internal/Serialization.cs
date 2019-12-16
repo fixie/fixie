@@ -10,11 +10,14 @@
         {
             var serializer = new DataContractJsonSerializer(typeof(TMessage));
 
+            byte[] bytes;
             using (var stream = new MemoryStream())
             {
                 serializer.WriteObject(stream, message);
-                return Encoding.UTF8.GetString(stream.ToArray());
+                bytes = stream.ToArray();
             }
+
+            return Encoding.UTF8.GetString(bytes);
         }
 
         public static TMessage Deserialize<TMessage>(string message)

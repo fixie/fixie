@@ -31,12 +31,14 @@
 
             var serializer = new DataContractJsonSerializer(typeof(TMessage));
 
+            byte[] bytes;
             using (var stream = new MemoryStream())
             {
                 serializer.WriteObject(stream, message);
-
-                SendMessageBytes(pipe, stream.ToArray());
+                bytes = stream.ToArray();
             }
+
+            SendMessageBytes(pipe, bytes);
         }
 
         public static string ReceiveMessage(this PipeStream pipe)

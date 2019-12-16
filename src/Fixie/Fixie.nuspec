@@ -44,14 +44,14 @@
     <!-- Library - Compile-Time Assets -->
 
     <file target="ref\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />
-    <file target="ref\netcoreapp2.0" src="..\Fixie\bin\Release\netstandard2.0\Fixie.dll" />
-    <file target="ref\netcoreapp3.0" src="..\Fixie\bin\Release\netstandard2.1\Fixie.dll" />
+    <file target="ref\netcoreapp2.0" src="..\Fixie\bin\Release\netcoreapp2.0\Fixie.dll" />
+    <file target="ref\netcoreapp3.0" src="..\Fixie\bin\Release\netcoreapp3.0\Fixie.dll" />
 
     <!-- Library - Run-Time Assets -->
 
     <file target="lib\net452" src="..\Fixie\bin\Release\net452\Fixie.dll" />
-    <file target="lib\netcoreapp2.0" src="..\Fixie\bin\Release\netstandard2.0\Fixie.dll" />
-    <file target="lib\netcoreapp3.0" src="..\Fixie\bin\Release\netstandard2.1\Fixie.dll" />
+    <file target="lib\netcoreapp2.0" src="..\Fixie\bin\Release\netcoreapp2.0\Fixie.dll" />
+    <file target="lib\netcoreapp3.0" src="..\Fixie\bin\Release\netcoreapp3.0\Fixie.dll" />
 
     <!-- TestDriven.NET Adapter -->
 

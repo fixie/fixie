@@ -19,9 +19,11 @@
 
         public static TMessage Deserialize<TMessage>(string message)
         {
+            var bytes = Encoding.UTF8.GetBytes(message);
+
             var deserializer = new DataContractJsonSerializer(typeof(TMessage));
 
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(message)))
+            using (var stream = new MemoryStream(bytes))
                 return (TMessage)deserializer.ReadObject(stream);
         }
     }

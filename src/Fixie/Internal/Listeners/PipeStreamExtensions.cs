@@ -10,9 +10,11 @@
     {
         public static TMessage Receive<TMessage>(this PipeStream pipe)
         {
+            var bytes = ReceiveMessageBytes(pipe);
+
             var deserializer = new DataContractJsonSerializer(typeof(TMessage));
 
-            using (var stream = new MemoryStream(ReceiveMessageBytes(pipe)))
+            using (var stream = new MemoryStream(bytes))
                 return (TMessage)deserializer.ReadObject(stream);
         }
 

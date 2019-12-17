@@ -1,12 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
 
-  <ItemGroup>
-    <ProjectCapability Include="TestContainer" />
-  </ItemGroup>
-
+  <!-- Suppress Microsoft.NET.Test.Sdk's attempt to introduce an empty Main() method. -->
   <PropertyGroup>
-    <IsTestProject>true</IsTestProject>
+    <GenerateProgramFile Condition="'$(GenerateProgramFile)' == ''">false</GenerateProgramFile>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">

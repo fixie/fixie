@@ -1,13 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
 
+  <!-- Augment Microsoft.NET.Test.Sdk's attempt to make test assemblies
+       executable by doing so for ALL target frameworks. -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
-    <AutoGenerateBindingRedirects Condition="'$(AutoGenerateBindingRedirects)' == ''">true</AutoGenerateBindingRedirects>
-    <GenerateBindingRedirectsOutputType Condition="'$(GenerateBindingRedirectsOutputType)' == ''">true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
   <Target Name="_Fixie_GetTargetFrameworks">

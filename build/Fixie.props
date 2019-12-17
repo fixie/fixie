@@ -9,6 +9,11 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <!-- Suppress Microsoft.NET.Test.Sdk's attempt to introduce an empty Main() method. -->
+  <PropertyGroup>
+    <GenerateProgramFile Condition="'$(GenerateProgramFile)' == ''">false</GenerateProgramFile>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
     <None Include="$(MSBuildThisFileDirectory)..\lib\net452\Fixie.TestAdapter.dll">
       <Link>Fixie.TestAdapter.dll</Link>

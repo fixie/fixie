@@ -18,8 +18,8 @@
 
         /// <summary>
         /// Called by the IDE, when running all tests.
-        /// Called by TFS Build, when running all tests.
-        /// Called by TFS Build, with a filter within the run context, when running selected tests.
+        /// Called by Azure DevOps, when running all tests.
+        /// Called by Azure DevOps, with a filter within the run context, when running selected tests.
         /// </summary>
         /// <param name="sources"></param>
         /// <param name="runContext"></param>
@@ -50,7 +50,7 @@
 
         /// <summary>
         /// Called by the IDE, when running selected tests.
-        /// Never called from TFS Build.
+        /// Never called from Azure DevOps.
         /// </summary>
         /// <param name="tests"></param>
         /// <param name="runContext"></param>

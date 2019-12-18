@@ -98,14 +98,14 @@
 
             skipWithReason.automatedTestName.ShouldBe(TestClass + ".SkipWithReason");
             skipWithReason.testCaseTitle.ShouldBe(TestClass + ".SkipWithReason");
-            skipWithReason.outcome.ShouldBe("None");
+            skipWithReason.outcome.ShouldBe("Warning");
             skipWithReason.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
             skipWithReason.errorMessage.ShouldBe("⚠ Skipped with reason.");
             skipWithReason.stackTrace.ShouldBe(null);
 
             skipWithoutReason.automatedTestName.ShouldBe(TestClass + ".SkipWithoutReason");
             skipWithoutReason.testCaseTitle.ShouldBe(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.outcome.ShouldBe("None");
+            skipWithoutReason.outcome.ShouldBe("Warning");
             skipWithoutReason.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
             skipWithoutReason.errorMessage.ShouldBe(null);
             skipWithoutReason.stackTrace.ShouldBe(null);

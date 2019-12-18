@@ -80,10 +80,10 @@
             }
             finally
             {
-                discovery.Dispose();
-
                 if (execution != discovery)
                     execution.Dispose();
+
+                discovery.Dispose();
             }
         }
 

@@ -84,7 +84,7 @@
         {
             Post(message, x =>
             {
-                x.outcome = "None";
+                x.outcome = "Warning";
                 x.errorMessage = message.Reason;
             });
         }

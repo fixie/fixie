@@ -76,6 +76,9 @@
 
             var response = postAction(client, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(start));
 
+            Console.WriteLine("Create Run Response:");
+            Console.WriteLine(response);
+
             runUrl = Deserialize<TestRun>(response).url;
         }
 

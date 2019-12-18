@@ -15,16 +15,17 @@
         Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
-        Handler<CaseFailed>
+        Handler<CaseFailed>,
+        Handler<AssemblyCompleted>
     {
         const string AzureDevOpsRestApiVersion = "5.0";
 
-        public delegate string ApiAction(HttpClient client, string uri, string mediaType, string content);
+        public delegate string ApiAction(HttpClient client, HttpMethod method, string uri, string mediaType, string content);
 
         readonly string collectionUri;
         readonly string project;
         readonly string buildId;
-        readonly ApiAction postAction;
+        readonly ApiAction send;
         readonly HttpClient client;
 
         string runUrl;
@@ -35,16 +36,16 @@
                 GetEnvironmentVariable("SYSTEM_TEAMPROJECT"),
                 GetEnvironmentVariable("SYSTEM_ACCESSTOKEN"),
                 GetEnvironmentVariable("BUILD_BUILDID"),
-                Post)
+                Send)
         {
         }
 
-        public AzureListener(string collectionUri, string project, string accessToken, string buildId, ApiAction postAction)
+        public AzureListener(string collectionUri, string project, string accessToken, string buildId, ApiAction send)
         {
             this.collectionUri = collectionUri;
             this.project = project;
             this.buildId = buildId;
-            this.postAction = postAction;
+            this.send = send;
             
             client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -74,7 +75,7 @@
 
             var runsUri = new Uri(new Uri(collectionUri), $"{project}/_apis/test/runs").ToString();
 
-            var response = postAction(client, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(start));
+            var response = send(client, HttpMethod.Post, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(start));
 
             runUrl = Deserialize<TestRun>(response).url;
         }
@@ -109,6 +110,16 @@
             });
         }
 
+        public void Handle(AssemblyCompleted message)
+        {
+            var finish = new UpdateRun
+            {
+                state = "Completed"
+            };
+
+            send(client, new HttpMethod("PATCH"), $"{runUrl}?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(finish));
+        }
+
         void Post(CaseCompleted message, Action<Result> customize)
         {
             var result = new Result
@@ -120,13 +131,17 @@
 
             customize(result);
 
-            postAction(client, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(new[]{result}));
+            send(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(new[]{result}));
         }
 
-        static string Post(HttpClient client, string uri, string mediaType, string content)
+        static string Send(HttpClient client, HttpMethod method, string uri, string mediaType, string content)
         {
-            var task = client.PostAsync(uri, new StringContent(content, Encoding.UTF8, mediaType));
-            
+            var task = client.SendAsync(
+                new HttpRequestMessage(method, new Uri(uri, UriKind.RelativeOrAbsolute))
+                {
+                    Content = new StringContent(content, Encoding.UTF8, mediaType)
+                });
+
             task.Wait();
 
             using (var httpResponse = task.Result)
@@ -135,7 +150,7 @@
 
                 if (!httpResponse.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"{typeof(AzureListener).FullName} failed to POST a result: {(int)httpResponse.StatusCode} {httpResponse.ReasonPhrase}");
+                    Console.WriteLine($"{typeof(AzureListener).FullName} failed to {method} a result: {(int)httpResponse.StatusCode} {httpResponse.ReasonPhrase}");
                     Console.WriteLine(body);
                 }
 
@@ -153,6 +168,11 @@
             {
                 public string id { get; set; }
             }
+        }
+
+        public class UpdateRun
+        {
+            public string state { get; set; }
         }
 
         public class TestRun

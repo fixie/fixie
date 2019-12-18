@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
     using Assertions;
     using Fixie.Internal;
     using Fixie.Internal.Listeners;
@@ -10,17 +11,23 @@
 
     public class AzureListenerTests : MessagingTests
     {
+        class Request
+        {
+            public HttpMethod Method { get; set; }
+            public string Uri { get; set; }
+            public string Content { get; set; }
+        }
+
         public void ShouldReportResultsToAzureDevOpsApi()
         {
-            AzureListener.CreateRun start = null;
-            var results = new List<AzureListener.Result>();
             var project = Guid.NewGuid().ToString();
             var accessToken = Guid.NewGuid().ToString();
             var buildId = Guid.NewGuid().ToString();
             var runUrl = "http://localhost:4567/run/" + Guid.NewGuid();
+            var requests = new List<Request>();
 
             bool first = true;
-            var listener = new AzureListener("http://localhost:4567", project, accessToken, buildId, (client, uri, mediaType, content) =>
+            var listener = new AzureListener("http://localhost:4567", project, accessToken, buildId, (client, method, uri, mediaType, content) =>
             {
                 var actualHeader = client.DefaultRequestHeaders.Accept.Single();
                 actualHeader.MediaType.ShouldBe("application/json");
@@ -31,20 +38,13 @@
 
                 mediaType.ShouldBe("application/json");
 
+                requests.Add(new Request { Method = method, Uri = uri, Content = content });
+
                 if (first)
                 {
                     first = false;
-
-                    uri.ShouldBe($"http://localhost:4567/{project}/_apis/test/runs?api-version=5.0");
-
-                    start = Deserialize<AzureListener.CreateRun>(content);
-
                     return Serialize(new AzureListener.TestRun { url = runUrl });
                 }
-
-                uri.ShouldBe($"{runUrl}/results?api-version=5.0");
-
-                results.Add(Deserialize<AzureListener.Result[]>(content).Single());
 
                 return null;
             });
@@ -63,18 +63,30 @@
                         "Console.Error: Pass");
             }
 
-            
+            var firstRequest = requests.First();
+            firstRequest.Method.ShouldBe(HttpMethod.Post);
+            firstRequest.Uri.ShouldBe($"http://localhost:4567/{project}/_apis/test/runs?api-version=5.0");
+
+            var createRun = Deserialize<AzureListener.CreateRun>(firstRequest.Content);
 
 #if NET452
-            start.name.ShouldBe("Fixie.Tests (.NETFramework,Version=v4.5.2)");
+            createRun.name.ShouldBe("Fixie.Tests (.NETFramework,Version=v4.5.2)");
 #elif NETCOREAPP3_0
-            start.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.0)");
+            createRun.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.0)");
 #else
-            start.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v2.1)");
+            createRun.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v2.1)");
 #endif
 
-            start.build.id.ShouldBe(buildId);
-            start.isAutomated.ShouldBe(true);
+            createRun.build.id.ShouldBe(buildId);
+            createRun.isAutomated.ShouldBe(true);
+
+            var results = requests.Skip(1).Take(requests.Count - 2).Select(request =>
+            {
+                request.Method.ShouldBe(HttpMethod.Post);
+                request.Uri.ShouldBe($"{runUrl}/results?api-version=5.0");
+
+                return Deserialize<AzureListener.Result[]>(request.Content).Single();
+            }).ToList();
 
             results.Count.ShouldBe(5);
 
@@ -126,6 +138,13 @@
             pass.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
             pass.errorMessage.ShouldBe(null);
             pass.stackTrace.ShouldBe(null);
+
+            var lastRequest = requests.Last();
+            lastRequest.Method.ShouldBe(new HttpMethod("PATCH"));
+            lastRequest.Uri.ShouldBe($"{runUrl}?api-version=5.0");
+
+            var updateRun = Deserialize<AzureListener.UpdateRun>(lastRequest.Content);
+            updateRun.state.ShouldBe("Completed");
         }
     }
 }

@@ -41,9 +41,11 @@
                 result.TestFramework.ShouldBe("Fixie");
 
 #if NET452
-                result.FileName.ShouldBe("Fixie.Tests.exe");
+                result.FileName.ShouldBe("Fixie.Tests (.NETFramework,Version=v4.5.2)");
+#elif NETCOREAPP3_0
+                result.FileName.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.0)");
 #else
-                result.FileName.ShouldBe("Fixie.Tests.dll");
+                result.FileName.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v2.1)");
 #endif
             }
 

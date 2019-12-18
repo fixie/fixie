@@ -4,6 +4,8 @@
     using System.IO;
     using System.Net.Http;
     using System.Net.Http.Headers;
+    using System.Reflection;
+    using System.Runtime.Versioning;
     using System.Text;
     using Internal;
     using static System.Environment;
@@ -19,7 +21,7 @@
 
         readonly PostAction postAction;
         readonly string uri;
-        string fileName;
+        string runName;
 
         static readonly HttpClient Client;
 
@@ -42,7 +44,14 @@
 
         public void Handle(AssemblyStarted message)
         {
-            fileName = Path.GetFileName(message.Assembly.Location);
+            runName = Path.GetFileNameWithoutExtension(message.Assembly.Location);
+
+            var framework = Assembly.GetEntryAssembly()?
+                .GetCustomAttribute<TargetFrameworkAttribute>()?
+                .FrameworkName;
+
+            if (!string.IsNullOrEmpty(framework))
+                runName = $"{runName} ({framework})";
         }
 
         public void Handle(CaseSkipped message)
@@ -80,7 +89,7 @@
             var testResult = new TestResult
             {
                 TestFramework = "Fixie",
-                FileName = fileName,
+                FileName = runName,
                 TestName = message.Name,
                 DurationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
                 StdOut = message.Output

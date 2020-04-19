@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fixie.TestDriven\Fixie.TestDriven.csproj" />
+    <ProjectReference Include="..\Fixie.TestDriven\Fixie.TestDriven.csproj" Condition="'$(TargetFramework)' == 'net452'" />
     <ProjectReference Include="..\Fixie.TestAdapter\Fixie.TestAdapter.csproj" />
     <ProjectReference Include="..\Fixie\Fixie.csproj" />
   </ItemGroup>

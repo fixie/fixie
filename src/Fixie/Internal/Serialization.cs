@@ -2,7 +2,7 @@
 {
     using System.Text;
 
-    #if NETCOREAPP3_0
+    #if NETCOREAPP3_1
     using System;
     using System.Text.Json;
     #else
@@ -19,7 +19,7 @@
 
         public static byte[] SerializeToBytes<TMessage>(TMessage message)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
 
             return JsonSerializer.SerializeToUtf8Bytes(message);
 
@@ -43,7 +43,7 @@
 
         public static TMessage Deserialize<TMessage>(byte[] bytes)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
 
             return JsonSerializer.Deserialize<TMessage>(new ReadOnlySpan<byte>(bytes));
 

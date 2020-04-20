@@ -34,7 +34,7 @@
         public void ShouldFailWhenTestClassConstructorCannotBeInvoked()
         {
             var expectedFailure =
-#if NETCOREAPP3_0
+#if NETCOREAPP3_1
                 $".UnreachableCase failed: No parameterless constructor defined for type '{FullName<CannotInvokeConstructorTestClass>()}'.";
 #else
                 ".UnreachableCase failed: No parameterless constructor defined for this object.";

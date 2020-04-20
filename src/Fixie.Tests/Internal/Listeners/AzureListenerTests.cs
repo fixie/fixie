@@ -71,8 +71,8 @@
 
 #if NET452
             createRun.name.ShouldBe("Fixie.Tests (.NETFramework,Version=v4.5.2)");
-#elif NETCOREAPP3_0
-            createRun.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.0)");
+#elif NETCOREAPP3_1
+            createRun.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.1)");
 #else
             createRun.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v2.1)");
 #endif

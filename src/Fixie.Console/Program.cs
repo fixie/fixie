@@ -156,7 +156,7 @@
 
             AddPassThroughArguments(arguments, options, customArguments);
 
-            return Run(Dotnet.Path, outputPath, arguments.ToArray());
+            return Run("dotnet", outputPath, arguments.ToArray());
         }
 
         static void AddPassThroughArguments(List<string> arguments, Options options, string[] customArguments)

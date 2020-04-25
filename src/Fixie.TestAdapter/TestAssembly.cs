@@ -5,6 +5,7 @@ namespace Fixie.TestAdapter
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Runtime.InteropServices;
     using Cli;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 
@@ -31,7 +32,7 @@ namespace Fixie.TestAdapter
 #if NET452
             return Start(frameworkHandle, assemblyDirectory, assemblyPath);
 #else
-            return Start(frameworkHandle, assemblyDirectory, Dotnet.Path, assemblyPath);
+            return Start(frameworkHandle, assemblyDirectory, "dotnet", assemblyPath);
 #endif
         }
 
@@ -52,16 +53,20 @@ namespace Fixie.TestAdapter
                 // LaunchProcessWithDebuggerAttached, unlike Process.Start,
                 // does not automatically propagate environment variables that
                 // were created within the currently running process, so they
-                // must be explicitly included here.
+                // must be explicitly included here. It also does not resolve
+                // bare commands (`dotnet`) to the full file path of the
+                // corresponding executable, so we must do so manually.
 
                 var environmentVariables = new Dictionary<string, string>
                 {
                     ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
                 };
 
+                var filePath = executable == "dotnet" ? FindDotnet() : executable;
+
                 frameworkHandle?
                     .LaunchProcessWithDebuggerAttached(
-                        executable,
+                        filePath,
                         workingDirectory,
                         serializedArguments,
                         environmentVariables);
@@ -89,6 +94,32 @@ namespace Fixie.TestAdapter
                 return process;
 
             throw new Exception("Failed to start process: " + startInfo.FileName);
+        }
+
+        static string FindDotnet()
+        {
+            var fileName = OsPlatformIsWindows() ? "dotnet.exe" : "dotnet";
+
+            var folderPath = Environment
+                .GetEnvironmentVariable("PATH")?
+                .Split(Path.PathSeparator)
+                .FirstOrDefault(path => File.Exists(Path.Combine(path.Trim(), fileName)));
+
+            if (folderPath == null)
+                throw new Exception(
+                    $"Could not locate {fileName} when searching the PATH environment variable. " +
+                    "Verify that you have installed the .NET SDK.");
+
+            return Path.Combine(folderPath.Trim(), fileName);
+        }
+
+        static bool OsPlatformIsWindows()
+        {
+#if NET452
+        return true;
+#else
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+#endif
         }
     }
 }

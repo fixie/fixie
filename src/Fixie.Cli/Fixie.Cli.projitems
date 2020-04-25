@@ -11,7 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CommandLine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineException.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Dotnet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Foreground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NamedArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser.cs" />

@@ -1,8 +1,8 @@
 ﻿namespace Fixie.Cli
 {
     using System;
-    using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Runtime.InteropServices;
 
     static class Dotnet
@@ -11,24 +11,21 @@
 
         static string FindDotnet()
         {
-            var fileName = OsPlatformIsWindows() ? "dotnet.exe" : "dotnet";
+            var platformIsWindows = OsPlatformIsWindows();
+            var fileName = platformIsWindows ? "dotnet.exe" : "dotnet";
+            var separator = platformIsWindows ? ';' : ':';
 
-            //If `dotnet` is the currently running process, return the full path to that executable.
+            var folderPath = Environment
+                .GetEnvironmentVariable("PATH")?
+                .Split(separator)
+                .FirstOrDefault(s => File.Exists(System.IO.Path.Combine(s, fileName)));
 
-            using (var currentProcess = Process.GetCurrentProcess())
-            {
-                var mainModule = currentProcess.MainModule;
+            if (folderPath == null)
+                throw new Exception(
+                    $"Could not locate {fileName} when searching the PATH environment variable. " +
+                    "Verify that you have installed the .NET SDK.");
 
-                var currentProcessIsDotNet =
-                    !string.IsNullOrEmpty(mainModule?.FileName) &&
-                    System.IO.Path.GetFileName(mainModule.FileName)
-                        .Equals(fileName, StringComparison.OrdinalIgnoreCase);
-
-                if (currentProcessIsDotNet)
-                    return mainModule.FileName;
-
-                return "dotnet";
-            }
+            return System.IO.Path.Combine(folderPath, fileName);
         }
 
         static bool OsPlatformIsWindows()

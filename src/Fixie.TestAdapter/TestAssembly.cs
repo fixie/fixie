@@ -31,7 +31,7 @@ namespace Fixie.TestAdapter
 #if NET452
             return Start(frameworkHandle, assemblyDirectory, assemblyPath);
 #else
-            return Start(frameworkHandle, assemblyDirectory, Dotnet.Path, assemblyPath);
+            return Start(frameworkHandle, assemblyDirectory, "dotnet", assemblyPath);
 #endif
         }
 
@@ -59,9 +59,11 @@ namespace Fixie.TestAdapter
                     ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
                 };
 
+                var filePath = executable == "dotnet" ? Dotnet.Path : executable;
+
                 frameworkHandle?
                     .LaunchProcessWithDebuggerAttached(
-                        executable,
+                        filePath,
                         workingDirectory,
                         serializedArguments,
                         environmentVariables);

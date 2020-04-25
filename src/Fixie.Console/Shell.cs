@@ -67,7 +67,7 @@
             if (outputPath != null)
                 arguments.Add($"/p:_Fixie_OutputFile={outputPath}");
 
-            return Run(Dotnet.Path, workingDirectory: "", arguments.ToArray());
+            return Run("dotnet", workingDirectory: "", arguments.ToArray());
         }
 
         static int Run(ProcessStartInfo startInfo)

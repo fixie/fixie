@@ -98,13 +98,11 @@ namespace Fixie.TestAdapter
 
         static string FindDotnet()
         {
-            var platformIsWindows = OsPlatformIsWindows();
-            var fileName = platformIsWindows ? "dotnet.exe" : "dotnet";
-            var separator = platformIsWindows ? ';' : ':';
+            var fileName = OsPlatformIsWindows() ? "dotnet.exe" : "dotnet";
 
             var folderPath = Environment
                 .GetEnvironmentVariable("PATH")?
-                .Split(separator)
+                .Split(Path.PathSeparator)
                 .FirstOrDefault(path => File.Exists(Path.Combine(path.Trim(), fileName)));
 
             if (folderPath == null)

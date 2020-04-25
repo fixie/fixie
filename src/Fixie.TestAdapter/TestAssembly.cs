@@ -118,7 +118,7 @@ namespace Fixie.TestAdapter
 #if NET452
         return true;
 #else
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 #endif
         }
     }

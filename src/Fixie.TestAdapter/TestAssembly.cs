@@ -105,14 +105,14 @@ namespace Fixie.TestAdapter
             var folderPath = Environment
                 .GetEnvironmentVariable("PATH")?
                 .Split(separator)
-                .FirstOrDefault(s => File.Exists(System.IO.Path.Combine(s, fileName)));
+                .FirstOrDefault(path => File.Exists(Path.Combine(path.Trim(), fileName)));
 
             if (folderPath == null)
                 throw new Exception(
                     $"Could not locate {fileName} when searching the PATH environment variable. " +
                     "Verify that you have installed the .NET SDK.");
 
-            return System.IO.Path.Combine(folderPath, fileName);
+            return Path.Combine(folderPath.Trim(), fileName);
         }
 
         static bool OsPlatformIsWindows()

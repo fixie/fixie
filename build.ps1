@@ -2,8 +2,8 @@
 
 . .\build-helpers
 
-$versionPrefix = "2.2.1"
-$prerelease = $false
+$versionPrefix = "3.0.0"
+$prerelease = $true
 
 $authors = "Patrick Lioi"
 $copyright = copyright 2013 $authors

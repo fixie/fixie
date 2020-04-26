@@ -1,7 +1,9 @@
 ﻿namespace Fixie.Internal.Listeners
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Reflection;
@@ -30,23 +32,30 @@
 
         string runUrl;
 
+        readonly int batchSize;
+        readonly List<Result> batch;
+
         public AzureListener()
             : this(
                 GetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"),
                 GetEnvironmentVariable("SYSTEM_TEAMPROJECT"),
                 GetEnvironmentVariable("SYSTEM_ACCESSTOKEN"),
                 GetEnvironmentVariable("BUILD_BUILDID"),
-                Send)
+                Send,
+                batchSize: 25)
         {
         }
 
-        public AzureListener(string collectionUri, string project, string accessToken, string buildId, ApiAction send)
+        public AzureListener(string collectionUri, string project, string accessToken, string buildId, ApiAction send, int batchSize)
         {
             this.collectionUri = collectionUri;
             this.project = project;
             this.buildId = buildId;
             this.send = send;
-            
+            this.batchSize = batchSize;
+
+            batch = new List<Result>(batchSize);
+
             client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
@@ -82,7 +91,7 @@
 
         public void Handle(CaseSkipped message)
         {
-            Post(message, x =>
+            Include(message, x =>
             {
                 x.outcome = "Warning";
                 x.errorMessage = message.Reason;
@@ -91,7 +100,7 @@
 
         public void Handle(CasePassed message)
         {
-            Post(message, x =>
+            Include(message, x =>
             {
                 x.outcome = "Passed";
             });
@@ -99,7 +108,7 @@
 
         public void Handle(CaseFailed message)
         {
-            Post(message, x =>
+            Include(message, x =>
             {
                 x.outcome = "Failed";
                 x.errorMessage = message.Exception.Message;
@@ -112,6 +121,9 @@
 
         public void Handle(AssemblyCompleted message)
         {
+            if (batch.Any())
+                PostBatch();
+
             var finish = new UpdateRun
             {
                 state = "Completed"
@@ -120,7 +132,7 @@
             send(client, new HttpMethod("PATCH"), $"{runUrl}?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(finish));
         }
 
-        void Post(CaseCompleted message, Action<Result> customize)
+        void Include(CaseCompleted message, Action<Result> customize)
         {
             var result = new Result
             {
@@ -131,7 +143,16 @@
 
             customize(result);
 
-            send(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(new[]{result}));
+            batch.Add(result);
+
+            if (batch.Count >= batchSize)
+                PostBatch();
+        }
+
+        void PostBatch()
+        {
+            send(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(batch));
+            batch.Clear();
         }
 
         static string Send(HttpClient client, HttpMethod method, string uri, string mediaType, string content)

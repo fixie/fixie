@@ -25,6 +25,7 @@
             var buildId = Guid.NewGuid().ToString();
             var runUrl = "http://localhost:4567/run/" + Guid.NewGuid();
             var requests = new List<Request>();
+            var batchSize = 2;
 
             bool first = true;
             var listener = new AzureListener("http://localhost:4567", project, accessToken, buildId, (client, method, uri, mediaType, content) =>
@@ -47,7 +48,7 @@
                 }
 
                 return null;
-            });
+            }, batchSize);
 
             using (var console = new RedirectedConsole())
             {
@@ -80,14 +81,20 @@
             createRun.build.id.ShouldBe(buildId);
             createRun.isAutomated.ShouldBe(true);
 
-            var results = requests.Skip(1).Take(requests.Count - 2).Select(request =>
+            var resultBatches = requests.Skip(1).Take(requests.Count - 2).Select(request =>
             {
                 request.Method.ShouldBe(HttpMethod.Post);
                 request.Uri.ShouldBe($"{runUrl}/results?api-version=5.0");
 
-                return Deserialize<AzureListener.Result[]>(request.Content).Single();
+                return Deserialize<AzureListener.Result[]>(request.Content);
             }).ToList();
 
+            resultBatches.Count.ShouldBe(3);
+            resultBatches[0].Length.ShouldBe(2);
+            resultBatches[1].Length.ShouldBe(2);
+            resultBatches[2].Length.ShouldBe(1);
+
+            var results = resultBatches.SelectMany(x => x).ToList();
             results.Count.ShouldBe(5);
 
             var fail = results[0];

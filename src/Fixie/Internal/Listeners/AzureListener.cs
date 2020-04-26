@@ -170,10 +170,11 @@
                 var body = httpResponse.Content.ReadAsStringAsync().Result;
 
                 if (!httpResponse.IsSuccessStatusCode)
-                {
-                    Console.WriteLine($"{typeof(AzureListener).FullName} failed to {method} a message: {(int)httpResponse.StatusCode} {httpResponse.ReasonPhrase}");
-                    Console.WriteLine(body);
-                }
+                    throw new HttpRequestException(new StringBuilder()
+                        .AppendLine($"{typeof(AzureListener).FullName} failed to {method} a message:")
+                        .AppendLine($"{(int) httpResponse.StatusCode} {httpResponse.ReasonPhrase}")
+                        .AppendLine(body)
+                        .ToString());
 
                 return body;
             }

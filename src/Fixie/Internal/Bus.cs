@@ -1,6 +1,8 @@
 ﻿namespace Fixie.Internal
 {
+    using System;
     using System.Collections.Generic;
+    using Cli;
 
     class Bus
     {
@@ -19,7 +21,22 @@
         public void Publish<TMessage>(TMessage message) where TMessage : Message
         {
             foreach (var listener in listeners)
-                (listener as Handler<TMessage>)?.Handle(message);
+            {
+                try
+                {
+                    (listener as Handler<TMessage>)?.Handle(message);
+                }
+                catch (Exception exception)
+                {
+                    using (Foreground.Yellow)
+                        Console.WriteLine(
+                            $"{listener.GetType().FullName} threw an exception while " +
+                            $"attempting to handle a message of type {typeof(TMessage).FullName}:");
+                    Console.WriteLine();
+                    Console.WriteLine(exception.ToString());
+                    Console.WriteLine();
+                }
+            }
         }
     }
 }

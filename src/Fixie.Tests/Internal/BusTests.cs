@@ -3,6 +3,7 @@
     using System;
     using Assertions;
     using Fixie.Internal;
+    using static Utility;
 
     public class BusTests
     {
@@ -24,12 +25,43 @@
 
                 console.Output.Lines()
                     .ShouldBe(
-                        "EventHandler handled Event 1",
-                        "CombinationEventHandler handled Event 1",
-                        "AnotherEventHandler handled AnotherEvent 2",
-                        "CombinationEventHandler handled AnotherEvent 2",
-                        "EventHandler handled Event 3",
-                        "CombinationEventHandler handled Event 3");
+                        FullName<EventHandler>() + " handled Event 1",
+                        FullName<CombinationEventHandler>() + " handled Event 1",
+                        FullName<AnotherEventHandler>() + " handled AnotherEvent 2",
+                        FullName<CombinationEventHandler>() + " handled AnotherEvent 2",
+                        FullName<EventHandler>() + " handled Event 3",
+                        FullName<CombinationEventHandler>() + " handled Event 3");
+            }
+        }
+
+        public void ShouldCatchAndLogExceptionsThrowByProblematicListenersRatherThanInterruptExecution()
+        {
+            var listeners = new Listener[]
+            {
+                new EventHandler(),
+                new FailingEventHandler()
+            };
+
+            var bus = new Bus(listeners);
+            using (var console = new RedirectedConsole())
+            {
+                bus.Publish(new Event(1));
+                bus.Publish(new AnotherEvent(2));
+                bus.Publish(new Event(3));
+
+                console.Output.Lines()
+                    .ShouldBe(
+                        FullName<EventHandler>() + " handled Event 1",
+                        FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
+                        "",
+                        FullName<StubException>() + ": Could not handle Event 1",
+                        "<<Stack Trace>>",
+                        "",
+                        FullName<EventHandler>() + " handled Event 3",
+                        FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
+                        "",
+                        FullName<StubException>() + ": Could not handle Event 3",
+                        "<<Stack Trace>>");
             }
         }
 
@@ -66,7 +98,25 @@
                 => Log<CombinationEventHandler, AnotherEvent>(message.Id);
         }
 
+        class FailingEventHandler : Handler<Event>
+        {
+            public void Handle(Event message)
+                => throw new StubException($"Could not handle {nameof(Event)} {message.Id}");
+        }
+
         static void Log<THandler, TEvent>(int id)
-            => Console.WriteLine($"{typeof(THandler).Name} handled {typeof(TEvent).Name} {id}");
+            => Console.WriteLine($"{typeof(THandler).FullName} handled {typeof(TEvent).Name} {id}");
+
+        class StubException : Exception
+        {
+            public StubException(string message)
+                : base(message) { }
+
+            public override string StackTrace
+                => "<<Stack Trace>>";
+
+            public override string ToString()
+                => $"{typeof(StubException).FullName}: " + Message + Environment.NewLine + StackTrace;
+        }
     }
 }

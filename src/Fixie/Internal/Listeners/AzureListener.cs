@@ -160,7 +160,6 @@
                 PostBatch();
         }
 
-        int failuresToSimulate = 0;
         void PostBatch()
         {
             var attempt = 1;
@@ -171,9 +170,7 @@
             {
                 try
                 {
-                    var failureSuffix = attempt <= failuresToSimulate ? Guid.NewGuid().ToString() : "";
-
-                    send(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion + failureSuffix}", "application/json", Serialize(batch));
+                    send(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(batch));
                     batch.Clear();
 
                     if (attempt > 1)
@@ -181,8 +178,6 @@
                         WriteLine($"Successfully submitted test result batch to Azure DevOps API on attempt #{attempt}.");
                         WriteLine();
                     }
-
-                    failuresToSimulate++;
 
                     return;
                 }

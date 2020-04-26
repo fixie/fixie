@@ -25,15 +25,15 @@
     </references>
     <dependencies>
       <group targetFramework="net452">
-        <dependency id="Mono.Cecil" version="0.11.1" />
+        <dependency id="Mono.Cecil" version="0.11.2" />
         <dependency id="Microsoft.NET.Test.Sdk" version="16.4.0" />
       </group>
       <group targetFramework="netcoreapp2.0">
-        <dependency id="Mono.Cecil" version="0.11.1" />
+        <dependency id="Mono.Cecil" version="0.11.2" />
         <dependency id="Microsoft.NET.Test.Sdk" version="16.2.0" />
       </group>
       <group targetFramework="netcoreapp3.1">
-        <dependency id="Mono.Cecil" version="0.11.1" />
+        <dependency id="Mono.Cecil" version="0.11.2" />
         <dependency id="Microsoft.NET.Test.Sdk" version="16.4.0" />
       </group>
     </dependencies>

@@ -9,9 +9,11 @@
     using System.Reflection;
     using System.Runtime.Versioning;
     using System.Text;
+    using System.Threading;
     using Internal;
     using static System.Environment;
     using static Serialization;
+    using static System.Console;
 
     public class AzureListener :
         Handler<AssemblyStarted>,
@@ -34,6 +36,7 @@
 
         readonly int batchSize;
         readonly List<Result> batch;
+        bool apiUnavailable;
 
         public AzureListener()
             : this(
@@ -91,6 +94,8 @@
 
         public void Handle(CaseSkipped message)
         {
+            if (apiUnavailable) return;
+
             Include(message, x =>
             {
                 x.outcome = "Warning";
@@ -100,6 +105,8 @@
 
         public void Handle(CasePassed message)
         {
+            if (apiUnavailable) return;
+
             Include(message, x =>
             {
                 x.outcome = "Passed";
@@ -108,6 +115,8 @@
 
         public void Handle(CaseFailed message)
         {
+            if (apiUnavailable) return;
+
             Include(message, x =>
             {
                 x.outcome = "Failed";
@@ -121,6 +130,8 @@
 
         public void Handle(AssemblyCompleted message)
         {
+            if (apiUnavailable) return;
+
             if (batch.Any())
                 PostBatch();
 
@@ -149,9 +160,48 @@
                 PostBatch();
         }
 
+        int failuresToSimulate = 0;
         void PostBatch()
         {
-            send(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion+Guid.NewGuid()}", "application/json", Serialize(batch));
+            var attempt = 1;
+            const int maxAttempts = 5;
+            const int coolDownInSeconds = 5;
+
+            while (attempt <= maxAttempts)
+            {
+                try
+                {
+                    var failureSuffix = attempt <= failuresToSimulate ? Guid.NewGuid().ToString() : "";
+
+                    send(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion + failureSuffix}", "application/json", Serialize(batch));
+                    batch.Clear();
+
+                    if (attempt > 1)
+                    {
+                        WriteLine($"Successfully submitted test result batch to Azure DevOps API on attempt #{attempt}.");
+                        WriteLine();
+                    }
+
+                    failuresToSimulate++;
+
+                    return;
+                }
+                catch (Exception exception)
+                {
+                    WriteLine($"Failed to submit test result batch to Azure DevOps API (attempt #{attempt} of {maxAttempts}): " + exception);
+                    WriteLine();
+                    Thread.Sleep(TimeSpan.FromSeconds(coolDownInSeconds));
+                    attempt++;
+                }
+            }
+
+            WriteLine("Due to repeated failures while submitting test results to the Azure DevOps API,");
+            WriteLine("further attempts will be suppressed for the remainder of this test run. Full test");
+            WriteLine("results will continue to be reported to this console and to the test process exit");
+            WriteLine("code, but the Azure DevOps \"Tests\" summary will be incomplete.");
+            WriteLine();
+
+            apiUnavailable = true;
             batch.Clear();
         }
 

@@ -143,11 +143,6 @@
 
         static IEnumerable<Listener> DefaultExecutionListeners(Options options)
         {
-            if (ShouldUseTeamCityListener())
-                yield return new TeamCityListener();
-            else
-                yield return new ConsoleListener();
-
             if (ShouldUseAzureListener())
                 yield return new AzureListener();
 
@@ -156,6 +151,11 @@
 
             if (options.Report != null)
                 yield return new ReportListener(SaveReport(options));
+
+            if (ShouldUseTeamCityListener())
+                yield return new TeamCityListener();
+            else
+                yield return new ConsoleListener();
         }
 
         static Action<XDocument> SaveReport(Options options)

@@ -151,7 +151,7 @@
 
         void PostBatch()
         {
-            send(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(batch));
+            send(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion+Guid.NewGuid()}", "application/json", Serialize(batch));
             batch.Clear();
         }
 

@@ -150,7 +150,7 @@
 
                 if (!httpResponse.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"{typeof(AzureListener).FullName} failed to {method} a result: {(int)httpResponse.StatusCode} {httpResponse.ReasonPhrase}");
+                    Console.WriteLine($"{typeof(AzureListener).FullName} failed to {method} a message: {(int)httpResponse.StatusCode} {httpResponse.ReasonPhrase}");
                     Console.WriteLine(body);
                 }
 

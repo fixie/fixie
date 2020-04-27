@@ -29,7 +29,7 @@ namespace Fixie.TestAdapter
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
 
-            return Start(frameworkHandle, assemblyDirectory, "dotnet", assemblyPath);
+            return Start(frameworkHandle, assemblyDirectory, assemblyPath);
         }
 
         public static int? TryGetExitCode(this Process process)
@@ -40,7 +40,7 @@ namespace Fixie.TestAdapter
             return null;
         }
 
-        static Process Start(IFrameworkHandle frameworkHandle, string workingDirectory, string executable, params string[] arguments)
+        static Process Start(IFrameworkHandle frameworkHandle, string workingDirectory, params string[] arguments)
         {
             var serializedArguments = CommandLine.Serialize(arguments);
 
@@ -58,11 +58,9 @@ namespace Fixie.TestAdapter
                     ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
                 };
 
-                var filePath = executable == "dotnet" ? FindDotnet() : executable;
-
                 frameworkHandle?
                     .LaunchProcessWithDebuggerAttached(
-                        filePath,
+                        FindDotnet(),
                         workingDirectory,
                         serializedArguments,
                         environmentVariables);
@@ -73,7 +71,7 @@ namespace Fixie.TestAdapter
             return Start(new ProcessStartInfo
             {
                 WorkingDirectory = workingDirectory,
-                FileName = executable,
+                FileName = "dotnet",
                 Arguments = serializedArguments,
                 UseShellExecute = false
             });

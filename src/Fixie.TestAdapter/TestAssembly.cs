@@ -29,11 +29,7 @@ namespace Fixie.TestAdapter
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
 
-#if NET452
-            return Start(frameworkHandle, assemblyDirectory, assemblyPath);
-#else
             return Start(frameworkHandle, assemblyDirectory, "dotnet", assemblyPath);
-#endif
         }
 
         public static int? TryGetExitCode(this Process process)
@@ -114,12 +110,6 @@ namespace Fixie.TestAdapter
         }
 
         static bool OsPlatformIsWindows()
-        {
-#if NET452
-        return true;
-#else
-        return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-#endif
-        }
+            => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
     }
 }

@@ -127,16 +127,7 @@
             for (int i = frames.Length - 1; i >= 0; i--)
             {
                 if (frames[i].GetMethod() == ExceptionRethrowMethod)
-                {
-                    #if NET452
-                        // .NET Framework 4.x includes an extra line in the stack
-                        // trace, for the call to ExceptionDispatchInfo.Throw() itself.
-
-                        numberOfTrailingStackFramesToRemove++;
-                    #endif
-
                     return true;
-                }
 
                 numberOfTrailingStackFramesToRemove++;
             }

@@ -1,22 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netcoreapp2.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;netcoreapp3.1</TargetFrameworks>
     <Description>A convention-based test framework.</Description>
     <NuspecFile>Fixie.nuspec</NuspecFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net452'">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' != 'net452'">
+  <PropertyGroup>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
 
   <Import Project="..\Fixie.Cli\Fixie.Cli.projitems" Label="Shared" />
 

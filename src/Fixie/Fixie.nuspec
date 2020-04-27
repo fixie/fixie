@@ -13,18 +13,11 @@
     <copyright>$copyright$</copyright>
     <repository url="https://github.com/fixie/fixie" />
     <references>
-      <group targetFramework="netcoreapp2.0">
-        <reference file="Fixie.dll" />
-      </group>
       <group targetFramework="netcoreapp3.1">
         <reference file="Fixie.dll" />
       </group>
     </references>
     <dependencies>
-      <group targetFramework="netcoreapp2.0">
-        <dependency id="Mono.Cecil" version="0.11.2" />
-        <dependency id="Microsoft.NET.Test.Sdk" version="16.2.0" />
-      </group>
       <group targetFramework="netcoreapp3.1">
         <dependency id="Mono.Cecil" version="0.11.2" />
         <dependency id="Microsoft.NET.Test.Sdk" version="16.6.1" />
@@ -35,26 +28,15 @@
     <file target="" src="..\..\LICENSE.md" />
     <file target="icon.png" src="..\..\img\fixie_256.png" />
 
-    <!-- Library - Compile-Time Assets -->
-
-    <file target="ref\netcoreapp2.0" src="..\Fixie\bin\Release\netcoreapp2.0\Fixie.dll" />
+    <!-- Compile-Time Assets -->
     <file target="ref\netcoreapp3.1" src="..\Fixie\bin\Release\netcoreapp3.1\Fixie.dll" />
 
-    <!-- Library - Run-Time Assets -->
-
-    <file target="lib\netcoreapp2.0" src="..\Fixie\bin\Release\netcoreapp2.0\Fixie.dll" />
+    <!-- Run-Time Assets -->
     <file target="lib\netcoreapp3.1" src="..\Fixie\bin\Release\netcoreapp3.1\Fixie.dll" />
-
-    <!-- VsTest Adapter -->
-
-    <file target="lib\netcoreapp2.0" src="..\Fixie.TestAdapter\bin\Release\netcoreapp2.0\Fixie.TestAdapter.dll" />
     <file target="lib\netcoreapp3.1" src="..\Fixie.TestAdapter\bin\Release\netcoreapp3.1\Fixie.TestAdapter.dll" />
 
-    <!-- Run Time Support -->
-
+    <!-- Build Support -->
     <file target="build\" src="..\..\build\**" />
-
     <file target="buildMultiTargeting\" src="..\..\buildMultiTargeting\**" />
-
   </files>
 </package>

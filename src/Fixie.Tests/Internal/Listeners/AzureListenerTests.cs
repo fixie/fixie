@@ -70,12 +70,7 @@
 
             var createRun = Deserialize<AzureListener.CreateRun>(firstRequest.Content);
 
-#if NETCOREAPP3_1
             createRun.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.1)");
-#else
-            createRun.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v2.1)");
-#endif
-
             createRun.build.id.ShouldBe(buildId);
             createRun.isAutomated.ShouldBe(true);
 

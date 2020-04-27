@@ -6,23 +6,7 @@
     <GenerateProgramFile Condition="'$(GenerateProgramFile)' == ''">false</GenerateProgramFile>
   </PropertyGroup>
 
-  <ItemGroup Condition="('$(TargetFrameworkIdentifier)' == '.NETCoreApp') And $(TargetFrameworkVersion.StartsWith('v2.'))">
-    <None Include="$(MSBuildThisFileDirectory)..\lib\netcoreapp2.0\Fixie.TestAdapter.dll">
-      <Link>Fixie.TestAdapter.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup Condition="('$(TargetFrameworkIdentifier)' == '.NETCoreApp') And $(TargetFrameworkVersion.StartsWith('v2.'))">
-    <None Include="$(MSBuildThisFileDirectory)..\lib\netcoreapp2.0\Fixie.dll">
-      <Link>Fixie.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup Condition="('$(TargetFrameworkIdentifier)' == '.NETCoreApp') And !($(TargetFrameworkVersion.StartsWith('v2.')))">
+  <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\lib\netcoreapp3.1\Fixie.TestAdapter.dll">
       <Link>Fixie.TestAdapter.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

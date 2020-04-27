@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
     using System.Reflection;
 
     class Runner
@@ -48,22 +47,6 @@
             }
 
             return Run(types, method => request[method.ReflectedType.FullName].Contains(method.Name));
-        }
-
-        public ExecutionSummary Run(Func<Type, bool> classCondition)
-        {
-            var candidateTypes = assembly.GetTypes().Where(classCondition).ToList();
-            return Run(candidateTypes);
-        }
-
-        public ExecutionSummary Run(Type candidateType)
-        {
-            if (candidateType.Assembly != assembly)
-                throw new Exception(
-                    $"Candidate test class '{candidateType.FullName}' cannot be executed for assembly " +
-                    $"'{assembly.GetName().Name}', because it is not defined in that assembly.");
-
-            return Run(new[] { candidateType });
         }
 
         ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool> methodCondition = null)

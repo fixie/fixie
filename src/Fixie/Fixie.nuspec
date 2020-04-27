@@ -54,12 +54,6 @@
     <file target="lib\netcoreapp2.0" src="..\Fixie\bin\Release\netcoreapp2.0\Fixie.dll" />
     <file target="lib\netcoreapp3.1" src="..\Fixie\bin\Release\netcoreapp3.1\Fixie.dll" />
 
-    <!-- TestDriven.NET Adapter -->
-
-    <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.dll.tdnet" />
-    <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\Fixie.TestDriven.dll" />
-    <file target="lib\net452" src="..\Fixie.TestDriven\bin\Release\net452\TestDriven.Framework.dll" />
-
     <!-- VsTest Adapter -->
 
     <file target="lib\net452" src="..\Fixie.TestAdapter\bin\Release\net452\Fixie.TestAdapter.dll" />

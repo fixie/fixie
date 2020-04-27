@@ -14,7 +14,6 @@
 *.config text
 *.xml text
 *.xsd text
-*.tdnet text
 
 *.dll binary
 *.png binary

@@ -15,7 +15,7 @@ namespace Fixie.TestAdapter
         {
             var fixieAssemblies = new[]
             {
-                "Fixie.dll", "Fixie.TestDriven.dll", "Fixie.TestAdapter.dll"
+                "Fixie.dll", "Fixie.TestAdapter.dll"
             };
 
             if (fixieAssemblies.Contains(Path.GetFileName(assemblyPath)))

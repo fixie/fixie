@@ -4,9 +4,6 @@
     <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <Optimize>false</Optimize>
     <IsTestProject>true</IsTestProject>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 

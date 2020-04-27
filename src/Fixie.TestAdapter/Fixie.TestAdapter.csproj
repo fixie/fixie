@@ -2,9 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 

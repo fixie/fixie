@@ -17,13 +17,8 @@
         public static readonly Uri Uri = new Uri(Id);
 
         /// <summary>
-        /// Called by the IDE, when running all tests.
-        /// Called by Azure DevOps, when running all tests.
-        /// Called by Azure DevOps, with a filter within the run context, when running selected tests.
+        /// Called when running all tests.
         /// </summary>
-        /// <param name="sources"></param>
-        /// <param name="runContext"></param>
-        /// <param name="frameworkHandle"></param>
         public void RunTests(IEnumerable<string> sources, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             try
@@ -49,12 +44,8 @@
         }
 
         /// <summary>
-        /// Called by the IDE, when running selected tests.
-        /// Never called from Azure DevOps.
+        /// Called when running selected tests.
         /// </summary>
-        /// <param name="tests"></param>
-        /// <param name="runContext"></param>
-        /// <param name="frameworkHandle"></param>
         public void RunTests(IEnumerable<TestCase> tests, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             try

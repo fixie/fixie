@@ -40,9 +40,9 @@ namespace Fixie.TestAdapter
             return null;
         }
 
-        static Process Start(IFrameworkHandle frameworkHandle, string workingDirectory, params string[] arguments)
+        static Process Start(IFrameworkHandle frameworkHandle, string workingDirectory, string assemblyPath)
         {
-            var serializedArguments = CommandLine.Serialize(arguments);
+            var serializedArguments = CommandLine.Serialize(new[] { assemblyPath });
 
             if (Debugger.IsAttached)
             {

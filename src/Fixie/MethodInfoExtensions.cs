@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
     using System.Runtime.ExceptionServices;
     using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@
         /// </returns>
         public static object Execute(this MethodInfo method, object instance, params object[] parameters)
         {
-            if (method.IsVoid() && method.IsAsync())
+            if (method.IsVoid() && method.HasAsyncKeyword())
                 throw new NotSupportedException(
                     "Async void methods are not supported. Declare async methods with a " +
                     "return type of Task to ensure the task actually runs to completion.");
@@ -60,6 +61,11 @@
             }
 
             return null;
+        }
+
+        static bool HasAsyncKeyword(this MethodInfo method)
+        {
+            return method.Has<AsyncStateMachineAttribute>();
         }
 
         static bool ConvertibleToTask(object result, out Task task)

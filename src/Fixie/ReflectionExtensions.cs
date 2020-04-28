@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
     using System.Reflection;
-    using System.Runtime.CompilerServices;
 
     public static class ReflectionExtensions
     {
@@ -30,11 +29,6 @@
         public static bool Has<TAttribute>(this MethodInfo method) where TAttribute : Attribute
         {
             return method.GetCustomAttributes<TAttribute>(true).Any();
-        }
-
-        public static bool IsAsync(this MethodInfo method)
-        {
-            return method.Has<AsyncStateMachineAttribute>();
         }
 
         public static void Dispose(this object o)

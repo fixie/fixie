@@ -2,7 +2,6 @@
 {
     using System;
     using System.Reflection;
-    using System.Threading.Tasks;
     using Assertions;
 
     public class ReflectionExtensionsTests
@@ -42,13 +41,6 @@
             Method<AttributeSample>("NoAttrribute").Has<SampleMethodAttribute>().ShouldBe(false);
         }
 
-        public void CanDetectAsyncDeclarations()
-        {
-            Method("ReturnsVoid").IsAsync().ShouldBe(false);
-            Method("ReturnsInt").IsAsync().ShouldBe(false);
-            Method("Async").IsAsync().ShouldBe(true);
-        }
-
         public void CanDisposeDisposables()
         {
             var disposeable = new Disposable();
@@ -72,7 +64,6 @@
 
         void ReturnsVoid() { }
         int ReturnsInt() { return 0; }
-        async Task Async() { await Task.Run(() => { }); }
 
         class SampleMethodAttribute : Attribute { }
         class InheritedAttribute : Attribute { }

@@ -103,7 +103,7 @@
 
             customDiscovery
                 .Classes
-                .Where(x => x.IsInNamespace("Fixie.Tests"))
+                .Where(x => (x.Namespace ?? "").StartsWith("Fixie.Tests"))
                 .Where(x => x.Name.Contains("i"))
                 .Where(x => !x.IsStatic());
 

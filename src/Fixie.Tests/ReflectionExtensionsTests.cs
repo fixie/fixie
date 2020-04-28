@@ -49,22 +49,6 @@
             Method("Async").IsAsync().ShouldBe(true);
         }
 
-        public void CanDetectWhetherTypeIsWithinNamespace()
-        {
-            var opCode = typeof(System.Reflection.Emit.OpCode);
-
-            opCode.IsInNamespace(null).ShouldBe(false);
-            opCode.IsInNamespace("").ShouldBe(false);
-            opCode.IsInNamespace("System").ShouldBe(true);
-            opCode.IsInNamespace("Sys").ShouldBe(false);
-            opCode.IsInNamespace("System.").ShouldBe(false);
-
-            opCode.IsInNamespace("System.Reflection").ShouldBe(true);
-            opCode.IsInNamespace("System.Reflection.Emit").ShouldBe(true);
-            opCode.IsInNamespace("System.Reflection.Emit.OpCode").ShouldBe(false);
-            opCode.IsInNamespace("System.Reflection.Typo").ShouldBe(false);
-        }
-
         public void CanDisposeDisposables()
         {
             var disposeable = new Disposable();

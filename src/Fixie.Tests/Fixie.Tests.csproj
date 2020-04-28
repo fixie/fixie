@@ -1,29 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp3.1;net452</TargetFrameworks>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Optimize>false</Optimize>
     <IsTestProject>true</IsTestProject>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net452'">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' != 'net452'">
     <DebugType>embedded</DebugType>
   </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectCapability Include="TestContainer" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fixie.TestDriven\Fixie.TestDriven.csproj" Condition="'$(TargetFramework)' == 'net452'" />
     <ProjectReference Include="..\Fixie.TestAdapter\Fixie.TestAdapter.csproj" />
     <ProjectReference Include="..\Fixie\Fixie.csproj" />
   </ItemGroup>

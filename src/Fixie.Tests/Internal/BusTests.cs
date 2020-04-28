@@ -114,9 +114,6 @@
 
             public override string StackTrace
                 => "<<Stack Trace>>";
-
-            public override string ToString()
-                => $"{typeof(StubException).FullName}: " + Message + Environment.NewLine + StackTrace;
         }
     }
 }

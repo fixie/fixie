@@ -39,14 +39,7 @@
             foreach (var result in results)
             {
                 result.TestFramework.ShouldBe("Fixie");
-
-#if NET452
-                result.FileName.ShouldBe("Fixie.Tests (.NETFramework,Version=v4.5.2)");
-#elif NETCOREAPP3_1
                 result.FileName.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.1)");
-#else
-                result.FileName.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v2.1)");
-#endif
             }
 
             var fail = results[0];

@@ -28,6 +28,7 @@ function Build {
         <PackageOutputPath>..\..\packages</PackageOutputPath>
         <IncludeSymbols>true</IncludeSymbols>
         <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 </Project>
 "@

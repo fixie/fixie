@@ -49,7 +49,7 @@
             return Run(types, method => request[method.ReflectedType!.FullName!].Contains(method.Name));
         }
 
-        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool> methodCondition = null)
+        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool>? methodCondition = null)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);

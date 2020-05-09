@@ -158,7 +158,7 @@
 
         class NullTaskTestClass
         {
-            public Task Test()
+            public Task? Test()
             {
                 // Although unlikely, we must ensure that
                 // we don't attempt to wait on a Task that

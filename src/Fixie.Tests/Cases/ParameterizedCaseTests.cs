@@ -51,16 +51,14 @@
 
         public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
         {
-            FixedParameterSource.Parameters = new[]
+            discovery.Parameters.Add(new FixedParameterSource(new[]
             {
                 new object[] { },
                 new object[] { 0 },
                 new object[] { 0, 1 },
                 new object[] { 0, 1, 2 },
                 new object[] { 0, 1, 2, 3 }
-            };
-
-            discovery.Parameters.Add<FixedParameterSource>();
+            }));
 
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
@@ -232,15 +230,16 @@
 
         class FixedParameterSource : ParameterSource
         {
-            public static object[][] Parameters { get; set; }
+            readonly object[][] parameters;
+
+            public FixedParameterSource(object[][] parameters)
+                => this.parameters = parameters;
 
             public IEnumerable<object[]> GetParameters(MethodInfo method)
-            {
-                return Parameters;
-            }
+                => parameters;
         }
 
-        static object Default(Type type)
+        static object? Default(Type type)
         {
             return type.IsValueType ? Activator.CreateInstance(type) : null;
         }

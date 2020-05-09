@@ -111,7 +111,7 @@
 
                 var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
 
-                PipeMessage.CaseStarted lastCaseStarted = null;
+                PipeMessage.CaseStarted? lastCaseStarted = null;
 
                 while (true)
                 {

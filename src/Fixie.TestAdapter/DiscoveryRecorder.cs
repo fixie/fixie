@@ -26,7 +26,7 @@
         {
             var test = testDiscovered.Test;
 
-            SourceLocation sourceLocation = null;
+            SourceLocation? sourceLocation = null;
 
             try
             {

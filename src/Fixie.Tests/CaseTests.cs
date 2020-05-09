@@ -225,8 +225,9 @@
             @case.Exception.ShouldBe(null);
             @case.Fail("Failure Reason A");
             @case.Fail("Failure Reason B");
-            @case.Exception.ShouldBeType<Exception>();
-            @case.Exception.Message.ShouldBe("Failure Reason B");
+            @case.Exception
+                .ShouldBe<Exception>()
+                .Message.ShouldBe("Failure Reason B");
         }
 
         public void ShouldProtectAgainstLoggingNullExceptions()
@@ -235,10 +236,11 @@
 
             @case.Exception.ShouldBe(null);
             @case.Fail((Exception) null);
-            @case.Exception.ShouldBeType<Exception>();
-            @case.Exception.Message.ShouldBe(
-                "The custom test class lifecycle did not provide " +
-                "an Exception for this test case failure.");
+            @case.Exception
+                .ShouldBe<Exception>()
+                .Message.ShouldBe(
+                    "The custom test class lifecycle did not provide " +
+                    "an Exception for this test case failure.");
         }
 
         public void CanForceAnyTestProcessingState()

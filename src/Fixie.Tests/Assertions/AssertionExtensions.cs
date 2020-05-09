@@ -37,9 +37,12 @@ namespace Fixie.Tests.Assertions
             return $"Expected: {Format(left)} {operation} {Format(right)}{NewLine}but it was not";
         }
 
-        public static void ShouldBeType<T>(this object actual)
+        public static T ShouldBe<T>(this object? actual)
         {
-            (actual?.GetType()).ShouldBe(typeof(T));
+            if (actual is T typed)
+                return typed;
+
+            throw new AssertException(typeof(T), actual?.GetType());
         }
 
         public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
@@ -96,8 +99,9 @@ namespace Fixie.Tests.Assertions
             }
             catch (Exception actual)
             {
-                actual.ShouldBeType<TException>();
-                actual.Message.ShouldBe(expectedMessage);
+                actual
+                    .ShouldBe<TException>()
+                    .Message.ShouldBe(expectedMessage);
                 return (TException)actual;
             }
 

@@ -59,7 +59,7 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe(this string actual, string expected)
+        public static void ShouldBe(this string? actual, string? expected)
         {
             if (actual != expected)
                 throw new AssertException(expected, actual);

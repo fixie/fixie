@@ -34,7 +34,7 @@
         static Type ResolveTypeArgument(Type genericArgument, Type[] parameterTypes, object?[] parameters)
         {
             bool hasNullValue = false;
-            Type resolvedTypeOfNonNullValues = null;
+            Type? resolvedTypeOfNonNullValues = null;
 
             if (parameterTypes.Length != parameters.Length)
                 return typeof(object);

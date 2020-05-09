@@ -10,7 +10,7 @@
         static string ProductVersion()
             => typeof(Framework)
                 .Assembly
-                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()!
                 .InformationalVersion;
     }
 }

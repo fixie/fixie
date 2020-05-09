@@ -26,7 +26,7 @@
             return method.GetCustomAttributes<TAttribute>(true).Any();
         }
 
-        public static void Dispose(this object o)
+        public static void Dispose(this object? o)
         {
             (o as IDisposable)?.Dispose();
         }

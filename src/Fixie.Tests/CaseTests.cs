@@ -315,10 +315,10 @@
             }
         }
 
-        static Case Case(string methodName, params object[] parameters)
+        static Case Case(string methodName, params object?[] parameters)
             => Case<CaseTests>(methodName, parameters);
 
-        static Case Case<TTestClass>(string methodName, params object[] parameters)
+        static Case Case<TTestClass>(string methodName, params object?[] parameters)
             => new Case(typeof(TTestClass).GetInstanceMethod(methodName), parameters);
 
         void Returns()

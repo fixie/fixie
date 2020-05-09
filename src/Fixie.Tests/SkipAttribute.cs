@@ -14,6 +14,6 @@
             Reason = reason;
         }
 
-        public string Reason { get; }
+        public string? Reason { get; }
     }
 }

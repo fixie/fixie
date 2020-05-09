@@ -115,7 +115,7 @@
             public string Outcome { get; set; }
             public string DurationMilliseconds { get; set; }
             public string StdOut { get; set; }
-            public string ErrorMessage { get; set; }
+            public string? ErrorMessage { get; set; }
             public string ErrorStackTrace { get; set; }
         }
     }

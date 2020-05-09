@@ -253,7 +253,7 @@
             public string testCaseTitle { get; set; }
             public double durationInMs { get; set; }
             public string outcome { get; set; }
-            public string errorMessage { get; set; }
+            public string? errorMessage { get; set; }
             public string stackTrace { get; set; }
         }
     }

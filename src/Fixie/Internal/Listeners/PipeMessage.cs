@@ -39,7 +39,7 @@
 
         public class CaseSkipped : CaseCompleted
         {
-            public string Reason { get; set; }
+            public string? Reason { get; set; }
         }
 
         public class CasePassed : CaseCompleted

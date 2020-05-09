@@ -61,7 +61,7 @@
             Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
         }
 
-        static void Message(string format, params string[] args)
+        static void Message(string format, params string?[] args)
         {
             var encodedArgs = args.Select(Encode).Cast<object>().ToArray();
             Console.WriteLine("##teamcity[" + format + "]", encodedArgs);
@@ -73,7 +73,7 @@
                 Message("testStdOut name='{0}' out='{1}'", message.Name, message.Output);
         }
 
-        static string Encode(string value)
+        static string Encode(string? value)
         {
             if (value == null)
                 return "";

@@ -61,7 +61,7 @@
         /// <summary>
         /// Indicate the test case was skipped for the given reason.
         /// </summary>
-        public void Skip(string reason)
+        public void Skip(string? reason)
         {
             State = CaseState.Skipped;
             Exception = null;
@@ -110,7 +110,7 @@
 
         internal TimeSpan Duration { get; set; }
         internal string Output { get; set; }
-        internal string SkipReason { get; private set; }
+        internal string? SkipReason { get; private set; }
         internal CaseState State { get; private set; }
 
         /// <summary>

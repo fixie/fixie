@@ -55,7 +55,7 @@
                     {
                         Start(@case);
 
-                        Exception caseLifecycleException = null;
+                        Exception? caseLifecycleFailure = null;
 
                         string consoleOutput;
                         using (var console = new RedirectedConsole())
@@ -68,7 +68,7 @@
                             }
                             catch (Exception exception)
                             {
-                                caseLifecycleException = exception;
+                                caseLifecycleFailure = exception;
                             }
 
                             caseStopwatch.Stop();
@@ -83,18 +83,17 @@
                         Console.Write(consoleOutput);
 
                         var caseHasNormalResult = @case.State == CaseState.Failed || @case.State == CaseState.Passed;
-                        var caseLifecycleFailed = caseLifecycleException != null;
 
                         if (caseHasNormalResult)
                         {
                             if (@case.State == CaseState.Failed)
                                 Fail(@case, summary);
-                            else if (!caseLifecycleFailed)
+                            else if (caseLifecycleFailure == null)
                                 Pass(@case, summary);
                         }
 
-                        if (caseLifecycleFailed)
-                            Fail(new Case(@case, caseLifecycleException), summary);
+                        if (caseLifecycleFailure != null)
+                            Fail(new Case(@case, caseLifecycleFailure), summary);
                         else if (!caseHasNormalResult)
                             Skip(@case, summary);
                     }

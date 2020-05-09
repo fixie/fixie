@@ -9,14 +9,21 @@
     /// </summary>
     public class Case
     {
-        public Case(MethodInfo caseMethod, params object[] parameters)
+        static readonly object[] EmptyParameters = {};
+
+        public Case(MethodInfo caseMethod)
+            : this(caseMethod, EmptyParameters)
         {
-            Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
+        }
+
+        public Case(MethodInfo caseMethod, object?[] parameters)
+        {
+            Parameters = parameters;
             Class = caseMethod.ReflectedType;
 
             Method = caseMethod.TryResolveTypeArguments(parameters);
 
-            Name = CaseNameBuilder.GetName(Class, Method, Parameters);
+            Name = CaseNameBuilder.GetName(Class, Method, parameters);
 
             Output = "";
         }
@@ -49,9 +56,9 @@
 
         /// <summary>
         /// For parameterized test cases, gets the set of parameters to be passed into the test method.
-        /// For zero-argument test methods, this property is null.
+        /// For zero-argument test methods, this property is the empty array.
         /// </summary>
-        public object[] Parameters { get; }
+        public object?[] Parameters { get; }
 
         /// <summary>
         /// Gets the exception describing this test case's failure.

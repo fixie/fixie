@@ -171,7 +171,7 @@
 
         class InputAttributeParameterSource : ParameterSource
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            public IEnumerable<object?[]> GetParameters(MethodInfo method)
             {
                 var inputAttributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
 
@@ -183,7 +183,7 @@
 
         class InputAttributeOrDefaultParameterSource : ParameterSource
         {
-            public virtual IEnumerable<object[]> GetParameters(MethodInfo method)
+            public virtual IEnumerable<object?[]> GetParameters(MethodInfo method)
             {
                 var parameters = method.GetParameters();
 
@@ -221,7 +221,7 @@
 
         class EagerBuggyParameterSource : InputAttributeOrDefaultParameterSource
         {
-            public override IEnumerable<object[]> GetParameters(MethodInfo method)
+            public override IEnumerable<object?[]> GetParameters(MethodInfo method)
             {
                 if (method.Name == nameof(ParameterizedTestClass.IntArg))
                     throw new Exception("Exception thrown while attempting to eagerly build input parameters for method: " + method.Name);

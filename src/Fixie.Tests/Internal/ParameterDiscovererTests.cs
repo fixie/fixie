@@ -63,7 +63,7 @@
                 });
         }
 
-        IEnumerable<object[]> DiscoveredParameters(Discovery discovery)
+        IEnumerable<object?[]> DiscoveredParameters(Discovery discovery)
         {
             return new ParameterDiscoverer(discovery).GetParameters(method);
         }

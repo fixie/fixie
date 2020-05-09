@@ -163,7 +163,7 @@
                 {
                     while (true)
                     {
-                        object[] parameters;
+                        object?[] parameters;
 
                         try
                         {
@@ -200,7 +200,7 @@
             }
         }
 
-        IEnumerable<object[]> Parameters(MethodInfo method)
+        IEnumerable<object?[]> Parameters(MethodInfo method)
             => parameterDiscoverer.GetParameters(method);
 
         void Start(Type testClass)

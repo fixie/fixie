@@ -6,7 +6,7 @@
 
     static class GenericArgumentResolver
     {
-        public static MethodInfo TryResolveTypeArguments(this MethodInfo caseMethod, object[] parameters)
+        public static MethodInfo TryResolveTypeArguments(this MethodInfo caseMethod, object?[] parameters)
         {
             if (!caseMethod.IsGenericMethodDefinition)
                 return caseMethod;
@@ -23,7 +23,7 @@
             }
         }
 
-        static Type[] ResolveTypeArguments(MethodInfo method, object[] parameters)
+        static Type[] ResolveTypeArguments(MethodInfo method, object?[] parameters)
         {
             var genericArguments = method.GetGenericArguments();
             var parameterTypes = method.GetParameters().Select(p => p.ParameterType).ToArray();
@@ -31,7 +31,7 @@
             return genericArguments.Select(genericArgument => ResolveTypeArgument(genericArgument, parameterTypes, parameters)).ToArray();
         }
 
-        static Type ResolveTypeArgument(Type genericArgument, Type[] parameterTypes, object[] parameters)
+        static Type ResolveTypeArgument(Type genericArgument, Type[] parameterTypes, object?[] parameters)
         {
             bool hasNullValue = false;
             Type resolvedTypeOfNonNullValues = null;
@@ -43,7 +43,7 @@
             {
                 if (parameterTypes[i] == genericArgument)
                 {
-                    object parameterValue = parameters[i];
+                    object? parameterValue = parameters[i];
 
                     if (parameterValue == null)
                         hasNullValue = true;

@@ -20,7 +20,7 @@
         /// For async Task methods, returns null after awaiting the Task.
         /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
         /// </returns>
-        public static object? Execute(this MethodInfo method, object instance, params object[] parameters)
+        public static object? Execute(this MethodInfo method, object instance, object?[] parameters)
         {
             if (method.IsVoid() && method.HasAsyncKeyword())
                 throw new NotSupportedException(
@@ -34,7 +34,7 @@
 
             try
             {
-                result = method.Invoke(instance, parameters != null && parameters.Length == 0 ? null : parameters);
+                result = method.Invoke(instance, parameters.Length == 0 ? null : parameters);
             }
             catch (TargetInvocationException exception)
             {

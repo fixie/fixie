@@ -95,7 +95,7 @@
 
         abstract class SampleTestClassBase
         {
-            protected static void ThrowException([CallerMemberName] string member = null)
+            protected static void ThrowException([CallerMemberName] string member = default!)
             {
                 throw new FailureException(member);
             }

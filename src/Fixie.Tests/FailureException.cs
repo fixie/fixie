@@ -5,7 +5,7 @@
 
     public class FailureException : Exception
     {
-        public FailureException([CallerMemberName] string member = null)
+        public FailureException([CallerMemberName] string member = default!)
             : base($"'{member}' failed!") { }
     }
 }

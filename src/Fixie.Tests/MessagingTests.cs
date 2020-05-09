@@ -54,7 +54,7 @@
                 WhereAmI();
             }
 
-            protected static void WhereAmI([CallerMemberName] string member = null)
+            protected static void WhereAmI([CallerMemberName] string member = default!)
             {
                 Console.Out.WriteLine("Console.Out: " + member);
                 Console.Error.WriteLine("Console.Error: " + member);

@@ -17,7 +17,7 @@
             var instanceMethod = type.GetMethod(methodName, InstanceMethods);
 
             if (instanceMethod == null)
-                throw new Exception($"Could not find instance method '{methodName}' on type '{type.FullName}'");
+                throw new Exception($"Could not find instance method '{methodName}' on type '{type.FullName}'.");
 
             return instanceMethod;
         }

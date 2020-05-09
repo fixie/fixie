@@ -193,7 +193,7 @@
             }
         }
 
-        static void WhereAmI([CallerMemberName] string member = null)
+        static void WhereAmI([CallerMemberName] string member = default!)
         {
             Console.WriteLine(member);
 

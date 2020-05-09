@@ -133,7 +133,7 @@ namespace Fixie.Tests.Cases
             static Task<T> Awaitable<T>(T value)
                 => Task.Run(() => value);
 
-            static void ThrowException([CallerMemberName] string member = null)
+            static void ThrowException([CallerMemberName] string member = default!)
                 => throw new FailureException(member);
         }
 

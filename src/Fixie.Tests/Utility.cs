@@ -11,13 +11,13 @@
         public static string FullName<T>()
             => typeof(T).FullName;
 
-        public static string At<T>(string method, [CallerFilePath] string path = null)
+        public static string At<T>(string method, [CallerFilePath] string path = default!)
             => $"   at {FullName<T>().Replace("+", ".")}.{method} in {path}:line #";
 
         public static string[] For<TSampleTestClass>(params string[] entries)
             => entries.Select(x => FullName<TSampleTestClass>() + x).ToArray();
 
-        public static string PathToThisFile([CallerFilePath] string path = null)
+        public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;
 
         public static IEnumerable<string> Run<TSampleTestClass>(Discovery discovery, Execution execution)

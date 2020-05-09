@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests.TestAdapter
 {
+    using System;
     using Fixie.TestAdapter;
     using Assertions;
     using static Utility;
@@ -79,11 +80,10 @@
         {
             var sourceLocationProvider = new SourceLocationProvider(TestAssemblyPath);
 
-            var success = sourceLocationProvider.TryGetSourceLocation(className, methodName, out var location);
+            if (!sourceLocationProvider.TryGetSourceLocation(className, methodName, out var location))
+                throw new Exception($"Expected to find a SourceLocation for method {className}.{methodName}.");
 
-            success.ShouldBe(true);
             location.CodeFilePath.EndsWith("SourceLocationSamples.cs").ShouldBe(true);
-
             location.LineNumber.ShouldBe(expectedLine);
         }
     }

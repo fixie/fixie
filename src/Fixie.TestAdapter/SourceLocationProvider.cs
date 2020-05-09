@@ -1,6 +1,7 @@
 ﻿namespace Fixie.TestAdapter
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using Mono.Cecil;
@@ -10,7 +11,7 @@
     public class SourceLocationProvider
     {
         readonly string assemblyPath;
-        IDictionary<string, TypeDefinition> types;
+        IDictionary<string, TypeDefinition>? types;
 
         public SourceLocationProvider(string assemblyPath)
         {
@@ -18,7 +19,7 @@
             types = null;
         }
 
-        public bool TryGetSourceLocation(string className, string methodName, out SourceLocation sourceLocation)
+        public bool TryGetSourceLocation(string className, string methodName, [NotNullWhen(true)] out SourceLocation? sourceLocation)
         {
             if (types == null)
                 types = CacheTypes(assemblyPath);
@@ -27,8 +28,8 @@
                 .Where(m => m.Name == methodName)
                 .Select(FirstOrDefaultSequencePoint)
                 .Where(x => x != null)
-                .OrderBy(x => x.StartLine)
-                .Select(x => new SourceLocation(x.Document.Url, x.StartLine))
+                .OrderBy(x => x!.StartLine)
+                .Select(x => new SourceLocation(x!.Document.Url, x!.StartLine))
                 .FirstOrDefault();
 
             return sourceLocation != null;
@@ -48,11 +49,11 @@
         }
 
         IEnumerable<MethodDefinition> GetMethods(string className)
-            => types.TryGetValue(StandardizeTypeName(className), out TypeDefinition type)
+            => types!.TryGetValue(StandardizeTypeName(className), out TypeDefinition? type)
                 ? type.GetMethods()
                 : Enumerable.Empty<MethodDefinition>();
 
-        static SequencePoint FirstOrDefaultSequencePoint(MethodDefinition testMethod)
+        static SequencePoint? FirstOrDefaultSequencePoint(MethodDefinition testMethod)
         {
             if (TryGetAsyncStateMachineAttribute(testMethod, out var asyncStateMachineAttribute))
                 testMethod = GetStateMachineMoveNextMethod(asyncStateMachineAttribute);
@@ -73,7 +74,7 @@
             return stateMachineMoveNextMethod;
         }
 
-        static SequencePoint FirstOrDefaultUnhiddenSequencePoint(MethodBody body)
+        static SequencePoint? FirstOrDefaultUnhiddenSequencePoint(MethodBody body)
         {
             const int lineNumberIndicatingHiddenLine = 16707566; //0xfeefee
 

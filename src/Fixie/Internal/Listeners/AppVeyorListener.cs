@@ -78,7 +78,7 @@
                 x.Outcome = "Failed";
                 x.ErrorMessage = message.Exception.Message;
                 x.ErrorStackTrace =
-                    message.Exception.TypeName() +
+                    message.Exception.GetType().FullName +
                     NewLine +
                     message.Exception.LiterateStackTrace();
             });

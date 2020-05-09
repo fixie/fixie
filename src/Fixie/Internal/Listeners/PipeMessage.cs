@@ -59,7 +59,7 @@
 
             public Exception(System.Exception exception)
             {
-                Type = exception.TypeName();
+                Type = exception.GetType().FullName;
                 Message = exception.Message;
                 StackTrace = exception.LiterateStackTrace();
             }

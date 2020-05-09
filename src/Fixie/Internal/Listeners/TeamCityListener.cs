@@ -36,7 +36,7 @@
         public void Handle(CaseFailed message)
         {
             var details =
-                message.Exception.TypeName() +
+                message.Exception.GetType().FullName +
                 NewLine +
                 message.Exception.LiterateStackTrace();
 

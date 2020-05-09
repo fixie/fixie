@@ -122,7 +122,7 @@
                 x.outcome = "Failed";
                 x.errorMessage = message.Exception.Message;
                 x.stackTrace =
-                    message.Exception.TypeName() +
+                    message.Exception.GetType().FullName +
                     NewLine +
                     message.Exception.LiterateStackTrace();
             });

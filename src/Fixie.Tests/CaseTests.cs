@@ -235,7 +235,7 @@
             var @case = Case("Returns");
 
             @case.Exception.ShouldBe(null);
-            @case.Fail((Exception) null);
+            @case.Fail((Exception) null!);
             @case.Exception
                 .ShouldBe<Exception>()
                 .Message.ShouldBe(

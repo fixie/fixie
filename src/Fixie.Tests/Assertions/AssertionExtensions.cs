@@ -74,12 +74,6 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual, userMessage);
         }
 
-        public static void ShouldNotBe<T>(this T actual, T expected)
-        {
-            if (expected.Is(actual))
-                throw new AssertException($"Unexpected: {Format(expected)}");
-        }
-
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
         {
             if (collection.Any())

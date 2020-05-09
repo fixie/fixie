@@ -527,9 +527,6 @@
 
             static void ShouldMatch(T actual, T expected)
             {
-                expected.ShouldNotBe(null);
-                actual.ShouldNotBe(null);
-
                 foreach (var property in typeof(T).GetProperties())
                 {
                     var actualValue = property.GetValue(actual);

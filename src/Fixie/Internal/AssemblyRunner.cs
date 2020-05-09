@@ -20,7 +20,7 @@
             FatalError = -1
         }
 
-        public static int Main(string[] arguments)
+        public static int Main(Assembly assembly, string[] arguments)
         {
             try
             {
@@ -29,8 +29,6 @@
                 var options = CommandLine.Parse<Options>(runnerArguments);
 
                 options.Validate();
-
-                var assembly = Assembly.GetEntryAssembly();
 
                 var pipeName = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE");
 

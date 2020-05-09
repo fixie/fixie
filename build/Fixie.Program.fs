@@ -5,4 +5,4 @@ open Fixie.Internal
 
 [<STAThread; EntryPoint>]
 let main arguments =
-    AssemblyRunner.Main(arguments)
+    AssemblyRunner.Main(typeof<Program>.Assembly, arguments)

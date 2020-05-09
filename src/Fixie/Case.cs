@@ -19,7 +19,7 @@
         public Case(MethodInfo caseMethod, object?[] parameters)
         {
             Parameters = parameters;
-            Class = caseMethod.ReflectedType;
+            Class = caseMethod.ReflectedType!;
 
             Method = caseMethod.TryResolveTypeArguments(parameters);
 

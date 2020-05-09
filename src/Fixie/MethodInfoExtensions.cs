@@ -20,7 +20,7 @@
         /// For async Task methods, returns null after awaiting the Task.
         /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
         /// </returns>
-        public static object Execute(this MethodInfo method, object instance, params object[] parameters)
+        public static object? Execute(this MethodInfo method, object instance, params object[] parameters)
         {
             if (method.IsVoid() && method.HasAsyncKeyword())
                 throw new NotSupportedException(
@@ -30,7 +30,7 @@
             if (method.ContainsGenericParameters)
                 throw new Exception("Could not resolve type parameters for generic method.");
 
-            object result;
+            object? result;
 
             try
             {

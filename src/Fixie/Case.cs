@@ -123,7 +123,7 @@
         /// For async Task methods, returns null after awaiting the Task.
         /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
         /// </returns>
-        public object Execute(object instance)
+        public object? Execute(object instance)
         {
             try
             {

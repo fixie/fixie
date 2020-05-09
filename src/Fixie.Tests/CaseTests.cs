@@ -261,7 +261,7 @@
             //Indicate a failure, replacing the assumed skip.
             @case.Fail("Failure");
             @case.State.ShouldBe(CaseState.Failed);
-            @case.Exception.Message.ShouldBe("Failure");
+            (@case.Exception?.Message).ShouldBe("Failure");
             @case.SkipReason.ShouldBe(null);
 
             //Indicate a pass, suppressing the above failure.
@@ -285,7 +285,7 @@
             //Indicate a failure, replacing the assumed pass.
             @case.Fail("Failure");
             @case.State.ShouldBe(CaseState.Failed);
-            @case.Exception.Message.ShouldBe("Failure");
+            (@case.Exception?.Message).ShouldBe("Failure");
             @case.SkipReason.ShouldBe(null);
 
             //Indicate a skip, suppressing the above failure.
@@ -295,9 +295,9 @@
             @case.SkipReason.ShouldBe("Reason");
 
             //Indicate a failure, suppressing the above skip, but with a surprisingly-null Exception.
-            @case.Fail((Exception) null);
+            @case.Fail((Exception) null!);
             @case.State.ShouldBe(CaseState.Failed);
-            @case.Exception.Message.ShouldBe(
+            (@case.Exception?.Message).ShouldBe(
                 "The custom test class lifecycle did not provide " +
                 "an Exception for this test case failure.");
             @case.SkipReason.ShouldBe(null);

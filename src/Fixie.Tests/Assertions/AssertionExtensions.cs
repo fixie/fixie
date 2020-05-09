@@ -47,28 +47,22 @@ namespace Fixie.Tests.Assertions
             actual.ToArray().ShouldBe(expected);
         }
 
-        public static void ShouldBe(this bool actual, bool expected, string userMessage = null)
+        public static void ShouldBe(this bool actual, bool expected)
         {
             if (actual != expected)
-                throw new AssertException(expected, actual, userMessage);
+                throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe(this int actual, int expected, string userMessage = null)
+        public static void ShouldBe(this int actual, int expected)
         {
             if (actual != expected)
-                throw new AssertException(expected, actual, userMessage);
+                throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe(this string actual, string expected, string userMessage = null)
+        public static void ShouldBe(this string actual, string expected)
         {
             if (actual != expected)
-                throw new AssertException(expected, actual, userMessage);
-        }
-
-        public static void ShouldBe<T>(this T? actual, T? expected, string userMessage = null) where T : struct
-        {
-            if (!Nullable.Equals(actual, expected))
-                throw new AssertException(expected, actual, userMessage);
+                throw new AssertException(expected, actual);
         }
 
         public static void ShouldBe<T>(this T actual, T expected, string userMessage = null)

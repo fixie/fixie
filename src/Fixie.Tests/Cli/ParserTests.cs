@@ -101,15 +101,15 @@
 
         public void ShouldLeaveDefaultValuesForMissingNamedArguments()
         {
-            Parse<ModelWithConstructor<string>>("--first", "value1", "--second", "value2")
-                .ShouldSucceed(new ModelWithConstructor<string>("value1", "value2", null));
+            Parse<ModelWithConstructor<string?>>("--first", "value1", "--second", "value2")
+                .ShouldSucceed(new ModelWithConstructor<string?>("value1", "value2", null));
 
             Parse<ModelWithConstructor<int>>("--first", "1", "--second", "2")
                 .ShouldSucceed(new ModelWithConstructor<int>(1, 2, 0));
 
             //Unspecified params[] default to an empty array.
-            Parse<ModelWithParams<string>>("--first", "first", "--second", "second")
-                .ShouldSucceed(new ModelWithParams<string>("first", "second", null));
+            Parse<ModelWithParams<string?>>("--first", "first", "--second", "second")
+                .ShouldSucceed(new ModelWithParams<string?>("first", "second", null));
 
             Parse<ModelWithParams<int>>("--first", "1", "--second", "2")
                 .ShouldSucceed(new ModelWithParams<int>(1, 2, 0));
@@ -372,7 +372,7 @@
         class Complex
         {
             public Complex(
-                string @string,
+                string? @string,
                 int integer,
                 bool @bool,
                 int? nullableInteger,
@@ -389,7 +389,7 @@
                 Integers = integers;
             }
 
-            public string String { get; }
+            public string? String { get; }
             public int Integer { get; }
             public bool Bool { get; }
             public int? NullableInteger { get; }
@@ -433,7 +433,7 @@
         class ComplexWithParams
         {
             public ComplexWithParams(
-                string @string,
+                string? @string,
                 int integer,
                 bool @bool,
                 int? nullableInteger,
@@ -452,7 +452,7 @@
                 Rest = rest;
             }
 
-            public string String { get; }
+            public string? String { get; }
             public int Integer { get; }
             public bool Bool { get; }
             public int? NullableInteger { get; }

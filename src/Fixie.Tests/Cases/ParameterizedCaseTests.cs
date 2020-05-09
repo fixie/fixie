@@ -322,7 +322,7 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            static string Format(object obj)
+            static string Format(object? obj)
             {
                 return obj?.ToString() ?? "[null]";
             }
@@ -343,12 +343,12 @@
         [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
         class InputAttribute : Attribute
         {
-            public InputAttribute(params object[] parameters)
+            public InputAttribute(params object?[] parameters)
             {
                 Parameters = parameters;
             }
 
-            public object[] Parameters { get; }
+            public object?[] Parameters { get; }
         }
     }
 }

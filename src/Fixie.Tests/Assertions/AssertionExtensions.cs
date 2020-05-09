@@ -65,7 +65,7 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe<T>(this T actual, T expected, string userMessage = null)
+        public static void ShouldBe<T>(this T actual, T expected, string? userMessage = null)
         {
             if (!expected.Is(actual))
                 throw new AssertException(expected, actual, userMessage);
@@ -83,30 +83,25 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException("Collection was not empty.");
         }
 
-        static string Format(object value)
+        static string Format(object? value)
         {
             return value?.ToString() ?? "(null)";
         }
 
         public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception
         {
-            bool threw = false;
-            Exception exception = null;
-
             try
             {
                 shouldThrow();
             }
             catch (Exception actual)
             {
-                threw = true;
                 actual.ShouldBeType<TException>();
                 actual.Message.ShouldBe(expectedMessage);
-                exception = actual;
+                return (TException)actual;
             }
 
-            threw.ShouldBe(true);
-            return (TException)exception;
+            throw new AssertException("Expected an exception to be thrown.");
         }
 
         static bool Is<T>(this T x, T y)

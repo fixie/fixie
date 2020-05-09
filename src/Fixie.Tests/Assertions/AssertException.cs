@@ -14,12 +14,12 @@ namespace Fixie.Tests.Assertions
         {
         }
 
-        public AssertException(object expected, object actual, string userMessage = null)
+        public AssertException(object? expected, object? actual, string? userMessage = null)
             : base(ExpectationMessage(expected, actual, userMessage))
         {
         }
 
-        static string ExpectationMessage(object expected, object actual, string userMessage)
+        static string ExpectationMessage(object? expected, object? actual, string? userMessage)
         {
             var message = new StringBuilder();
 
@@ -47,7 +47,7 @@ namespace Fixie.Tests.Assertions
             return message.ToString();
         }
 
-        static string ConvertToString(object value)
+        static string? ConvertToString(object value)
         {
             if (value is Array valueArray)
             {
@@ -66,9 +66,9 @@ namespace Fixie.Tests.Assertions
         static string FormatMultiLine(string value)
             => value.Replace(NewLine, NewLine + "          ");
 
-        public override string StackTrace => FilterStackTrace(base.StackTrace);
+        public override string? StackTrace => FilterStackTrace(base.StackTrace);
 
-        static string FilterStackTrace(string stackTrace)
+        static string? FilterStackTrace(string? stackTrace)
         {
             if (stackTrace == null)
                 return null;
@@ -82,12 +82,12 @@ namespace Fixie.Tests.Assertions
                     results.Add(line);
             }
 
-            return string.Join(Environment.NewLine, results.ToArray());
+            return string.Join(NewLine, results.ToArray());
         }
 
         static string[] Lines(string input)
         {
-            return input.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+            return input.Split(new[] {NewLine}, StringSplitOptions.None);
         }
     }
 }

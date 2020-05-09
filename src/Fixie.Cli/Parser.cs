@@ -18,7 +18,7 @@
             var positionalArguments = ScanPositionalArguments(type);
             var namedArguments = ScanNamedArguments(type);
 
-            var paramsPositionalArgumentValues = new List<object>();
+            var paramsPositionalArgumentValues = new List<object?>();
 
             var queue = new Queue<string>(arguments);
             while (queue.Any())
@@ -74,7 +74,7 @@
             foreach (var positionalArgument in positionalArguments)
             {
                 //Bind all of paramsPositionalArgumentValues to this argument.
-                var itemType = positionalArgument.Type.GetElementType();
+                var itemType = positionalArgument.Type.GetElementType()!;
 
                 paramsPositionalArgumentValues =
                     paramsPositionalArgumentValues
@@ -87,7 +87,7 @@
             Model = Create(type, positionalArguments, namedArguments);
         }
 
-        static object Convert(Type type, string userFacingName, object value)
+        static object? Convert(Type type, string userFacingName, object? value)
         {
             if (type == typeof(bool?) || type == typeof(bool))
             {
@@ -158,7 +158,7 @@
                 GetConstructor(type)
                 .GetParameters()
                 .Where(p => p.GetCustomAttribute<ParamArrayAttribute>() == null)
-                .Select(p => new NamedArgument(p.ParameterType, p.Name))
+                .Select(p => new NamedArgument(p.ParameterType, p.Name!))
                 .ToArray();
 
             var dictionary = new Dictionary<string, NamedArgument>();
@@ -183,7 +183,7 @@
 
             var declaredParameters = constructor.GetParameters();
 
-            var actualParameters = new List<object>();
+            var actualParameters = new List<object?>();
 
             foreach (var declaredParameter in declaredParameters)
             {
@@ -191,7 +191,7 @@
 
                 if (named)
                 {
-                    var key = NamedArgument.Normalize(declaredParameter.Name);
+                    var key = NamedArgument.Normalize(declaredParameter.Name!);
 
                     var namedArgument = namedArguments[key];
 
@@ -211,7 +211,7 @@
             return constructor.Invoke(actualParameters.ToArray());
         }
 
-        static object Default(Type type)
+        static object? Default(Type type)
             => type.IsValueType ? Activator.CreateInstance(type) : null;
 
         static ConstructorInfo GetConstructor(Type type)
@@ -220,7 +220,7 @@
         static bool IsNamedArgumentKey(string item)
             => item.StartsWith("--");
 
-        static Array CreateTypedArray(Type itemType, IReadOnlyList<object> values)
+        static Array CreateTypedArray(Type itemType, IReadOnlyList<object?> values)
         {
             Array destinationArray = Array.CreateInstance(itemType, values.Count);
             Array.Copy(values.ToArray(), destinationArray, values.Count);

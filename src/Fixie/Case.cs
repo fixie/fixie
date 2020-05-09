@@ -56,7 +56,7 @@
         /// <summary>
         /// Gets the exception describing this test case's failure.
         /// </summary>
-        public Exception Exception { get; private set; }
+        public Exception? Exception { get; private set; }
 
         /// <summary>
         /// Indicate the test case was skipped for the given reason.

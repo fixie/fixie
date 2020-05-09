@@ -16,7 +16,7 @@
 
         protected string TestClass { get; }
 
-        protected void Run(Listener listener, Action<Discovery> customize = null)
+        protected void Run(Listener listener, Action<Discovery>? customize = null)
         {
             var discovery = new SelfTestDiscovery();
 
@@ -34,7 +34,7 @@
                 {
                     if (@case.Method.Has<SkipAttribute>())
                     {
-                        @case.Skip(@case.Method.GetCustomAttribute<SkipAttribute>().Reason);
+                        @case.Skip(@case.Method.GetCustomAttribute<SkipAttribute>()!.Reason);
                         return;
                     }
 

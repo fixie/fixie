@@ -37,7 +37,7 @@
         /// Constructs an instance of the test class type, using its default constructor.
         /// If the class is static, no action is taken and null is returned.
         /// </summary>
-        public object Construct()
+        public object? Construct()
         {
             if (isStatic)
                 return null;

@@ -9,8 +9,8 @@
 
     static class ExceptionExtensions
     {
-        static readonly MethodInfo CaseExecuteMethod = typeof(Case).GetMethod("Execute");
-        static readonly MethodInfo ExceptionRethrowMethod = typeof(ExceptionDispatchInfo).GetMethod("Throw", new Type[] { });
+        static readonly MethodInfo CaseExecuteMethod = typeof(Case).GetMethod("Execute")!;
+        static readonly MethodInfo ExceptionRethrowMethod = typeof(ExceptionDispatchInfo).GetMethod("Throw", new Type[] { })!;
 
         public static string LiterateStackTrace(this Exception exception)
         {
@@ -35,7 +35,7 @@
             }
         }
 
-        public static string StackTraceOmittingInternalRethrow(Exception exception)
+        public static string? StackTraceOmittingInternalRethrow(Exception exception)
         {
             // If the stack trace ends with a well-known internal segment caused by
             // ExceptionDispatchInfo.Throw(), attempt to omit that section.
@@ -75,7 +75,7 @@
 
             var lastFrame = frames.Last();
 
-            if (lastFrame.GetMethod() != CaseExecuteMethod)
+            if (lastFrame == null || lastFrame.GetMethod() != CaseExecuteMethod)
                 return exception.StackTrace;
 
             if (TryCountFramesToRemove(frames, out var numberOfTrailingStackFramesToRemove))
@@ -120,13 +120,15 @@
             return exception.StackTrace;
         }
 
-        static bool TryCountFramesToRemove(StackFrame[] frames, out int numberOfTrailingStackFramesToRemove)
+        static bool TryCountFramesToRemove(StackFrame?[] frames, out int numberOfTrailingStackFramesToRemove)
         {
             numberOfTrailingStackFramesToRemove = 0;
 
             for (int i = frames.Length - 1; i >= 0; i--)
             {
-                if (frames[i].GetMethod() == ExceptionRethrowMethod)
+                var frame = frames[i];
+
+                if (frame != null && frame.GetMethod() == ExceptionRethrowMethod)
                     return true;
 
                 numberOfTrailingStackFramesToRemove++;

@@ -18,7 +18,7 @@
         List<XElement> currentClass = new List<XElement>();
         List<XElement> classes = new List<XElement>();
 
-        internal static ReportListener Create(Options options)
+        internal static ReportListener? Create(Options options)
         {
             if (options.Report != null)
                 return new ReportListener(SaveReport(options));

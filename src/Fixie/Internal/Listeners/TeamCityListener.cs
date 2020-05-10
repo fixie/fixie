@@ -13,7 +13,7 @@
         Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
-        internal static TeamCityListener Create()
+        internal static TeamCityListener? Create()
         {
             if (GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null)
                 return new TeamCityListener();

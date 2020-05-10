@@ -39,7 +39,7 @@
         readonly List<Result> batch;
         bool apiUnavailable;
 
-        internal static AzureListener Create()
+        internal static AzureListener? Create()
         {
             if (ShouldUseAzureListener())
                 return new AzureListener();

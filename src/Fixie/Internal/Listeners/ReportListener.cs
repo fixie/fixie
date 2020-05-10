@@ -6,7 +6,7 @@
     using System.IO;
     using System.Xml.Linq;
 
-    public class ReportListener :
+    class ReportListener :
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>,

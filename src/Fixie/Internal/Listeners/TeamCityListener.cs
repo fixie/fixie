@@ -6,7 +6,7 @@
     using Internal;
     using static System.Environment;
 
-    public class TeamCityListener :
+    class TeamCityListener :
         Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,

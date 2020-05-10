@@ -15,7 +15,7 @@
     using static Serialization;
     using static System.Console;
 
-    public class AzureListener :
+    class AzureListener :
         Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,

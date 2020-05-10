@@ -4,7 +4,7 @@
     using System.IO.Pipes;
     using Internal;
 
-    public class PipeListener :
+    class PipeListener :
         Handler<MethodDiscovered>,
         Handler<CaseStarted>,
         Handler<CaseSkipped>,

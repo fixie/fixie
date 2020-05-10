@@ -25,6 +25,14 @@
 
         static readonly HttpClient Client;
 
+        internal static AppVeyorListener Create()
+        {
+            if (GetEnvironmentVariable("APPVEYOR") == "True")
+                return new AppVeyorListener();
+
+            return null;
+        }
+
         static AppVeyorListener()
         {
             Client = new HttpClient();

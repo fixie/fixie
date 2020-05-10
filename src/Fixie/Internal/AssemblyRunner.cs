@@ -144,8 +144,8 @@
             if (TryCreate(out AzureListener azure))
                 yield return azure;
 
-            if (ShouldUseAppVeyorListener())
-                yield return new AppVeyorListener();
+            if (TryCreate(out AppVeyorListener appVeyor))
+                yield return appVeyor;
 
             if (options.Report != null)
                 yield return new ReportListener(SaveReport(options));
@@ -163,6 +163,13 @@
             return listener != null;
         }
 
+        static bool TryCreate(out AppVeyorListener listener)
+        {
+            listener = AppVeyorListener.Create();
+
+            return listener != null;
+        }
+
         static Action<XDocument> SaveReport(Options options)
         {
             return report => ReportListener.Save(report, FullPath(options.Report));
@@ -176,11 +183,6 @@
         static bool ShouldUseTeamCityListener()
         {
             return Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
-        }
-
-        static bool ShouldUseAppVeyorListener()
-        {
-            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
         }
     }
 }

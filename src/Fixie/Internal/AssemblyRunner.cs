@@ -150,8 +150,8 @@
             if (Try(() => ReportListener.Create(options), out var report))
                 yield return report;
 
-            if (ShouldUseTeamCityListener())
-                yield return new TeamCityListener();
+            if (Try(TeamCityListener.Create, out var teamCity))
+                yield return teamCity;
             else
                 yield return new ConsoleListener();
         }
@@ -161,11 +161,6 @@
             listener = create();
 
             return listener != null;
-        }
-
-        static bool ShouldUseTeamCityListener()
-        {
-            return Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
         }
     }
 }

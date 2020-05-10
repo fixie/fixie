@@ -13,6 +13,14 @@
         Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
+        internal static TeamCityListener Create()
+        {
+            if (GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null)
+                return new TeamCityListener();
+
+            return null;
+        }
+
         public void Handle(AssemblyStarted message)
         {
             Message("testSuiteStarted name='{0}'", message.Assembly.GetName().Name);

@@ -2,11 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO.Pipes;
     using System.Linq;
     using System.Reflection;
-    using System.Xml.Linq;
     using Cli;
     using Listeners;
     using static System.Console;
@@ -156,7 +155,7 @@
                 yield return new ConsoleListener();
         }
 
-        static bool Try<T>(Func<T> create, out T? listener)
+        static bool Try<T>(Func<T?> create, [NotNullWhen(true)] out T? listener) where T : class
         {
             listener = create();
 

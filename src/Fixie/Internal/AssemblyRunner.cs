@@ -141,10 +141,10 @@
 
         static IEnumerable<Listener> DefaultExecutionListeners(Options options)
         {
-            if (TryCreate(out AzureListener azure))
+            if (Try(AzureListener.Create, out var azure))
                 yield return azure;
 
-            if (TryCreate(out AppVeyorListener appVeyor))
+            if (Try(AppVeyorListener.Create, out var appVeyor))
                 yield return appVeyor;
 
             if (options.Report != null)
@@ -156,16 +156,9 @@
                 yield return new ConsoleListener();
         }
 
-        static bool TryCreate(out AzureListener listener)
+        static bool Try<T>(Func<T> create, out T listener)
         {
-            listener = AzureListener.Create();
-
-            return listener != null;
-        }
-
-        static bool TryCreate(out AppVeyorListener listener)
-        {
-            listener = AppVeyorListener.Create();
+            listener = create();
 
             return listener != null;
         }

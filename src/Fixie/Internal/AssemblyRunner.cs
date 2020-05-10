@@ -147,8 +147,8 @@
             if (Try(AppVeyorListener.Create, out var appVeyor))
                 yield return appVeyor;
 
-            if (options.Report != null)
-                yield return new ReportListener(SaveReport(options));
+            if (Try(() => ReportListener.Create(options), out var report))
+                yield return report;
 
             if (ShouldUseTeamCityListener())
                 yield return new TeamCityListener();
@@ -161,16 +161,6 @@
             listener = create();
 
             return listener != null;
-        }
-
-        static Action<XDocument> SaveReport(Options options)
-        {
-            return report => ReportListener.Save(report, FullPath(options.Report));
-        }
-
-        static string FullPath(string absoluteOrRelativePath)
-        {
-            return Path.Combine(Directory.GetCurrentDirectory(), absoluteOrRelativePath);
         }
 
         static bool ShouldUseTeamCityListener()

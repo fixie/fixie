@@ -141,8 +141,8 @@
 
         static IEnumerable<Listener> DefaultExecutionListeners(Options options)
         {
-            if (ShouldUseAzureListener())
-                yield return new AzureListener();
+            if (TryCreate(out AzureListener azure))
+                yield return azure;
 
             if (ShouldUseAppVeyorListener())
                 yield return new AppVeyorListener();
@@ -156,6 +156,13 @@
                 yield return new ConsoleListener();
         }
 
+        static bool TryCreate(out AzureListener listener)
+        {
+            listener = AzureListener.Create();
+
+            return listener != null;
+        }
+
         static Action<XDocument> SaveReport(Options options)
         {
             return report => ReportListener.Save(report, FullPath(options.Report));
@@ -164,36 +171,6 @@
         static string FullPath(string absoluteOrRelativePath)
         {
             return Path.Combine(Directory.GetCurrentDirectory(), absoluteOrRelativePath);
-        }
-
-        static bool ShouldUseAzureListener()
-        {
-            var runningUnderAzure = Environment.GetEnvironmentVariable("TF_BUILD") == "True";
-
-            if (runningUnderAzure)
-            {
-                var accessTokenIsAvailable =
-                    !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SYSTEM_ACCESSTOKEN"));
-
-                if (accessTokenIsAvailable)
-                    return true;
-
-                using (Foreground.Yellow)
-                {
-                    WriteLine("The Azure DevOps access token has not been made available to this process, so");
-                    WriteLine("test results will not be collected. To resolve this issue, review your pipeline");
-                    WriteLine("definition to ensure that the access token is made available as the environment");
-                    WriteLine("variable SYSTEM_ACCESSTOKEN.");
-                    WriteLine();
-                    WriteLine("From https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables#systemaccesstoken");
-                    WriteLine();
-                    WriteLine("  env:");
-                    WriteLine("    SYSTEM_ACCESSTOKEN: $(System.AccessToken)");
-                    WriteLine();
-                }
-            }
-
-            return false;
         }
 
         static bool ShouldUseTeamCityListener()

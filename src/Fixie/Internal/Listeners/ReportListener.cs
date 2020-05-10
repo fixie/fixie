@@ -6,7 +6,7 @@
     using System.IO;
     using System.Xml.Linq;
 
-    public class ReportListener :
+    class ReportListener :
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>,
@@ -17,6 +17,24 @@
 
         List<XElement> currentClass = new List<XElement>();
         List<XElement> classes = new List<XElement>();
+
+        internal static ReportListener? Create(Options options)
+        {
+            if (options.Report != null)
+                return new ReportListener(SaveReport(options));
+
+            return null;
+        }
+
+        static Action<XDocument> SaveReport(Options options)
+        {
+            return report => Save(report, FullPath(options.Report));
+        }
+
+        static string FullPath(string absoluteOrRelativePath)
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), absoluteOrRelativePath);
+        }
 
         public ReportListener(Action<XDocument> save)
         {

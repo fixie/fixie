@@ -6,13 +6,21 @@
     using Internal;
     using static System.Environment;
 
-    public class TeamCityListener :
+    class TeamCityListener :
         Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
+        internal static TeamCityListener? Create()
+        {
+            if (GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null)
+                return new TeamCityListener();
+
+            return null;
+        }
+
         public void Handle(AssemblyStarted message)
         {
             Message("testSuiteStarted name='{0}'", message.Assembly.GetName().Name);

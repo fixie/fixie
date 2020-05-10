@@ -11,7 +11,7 @@
     using static System.Environment;
     using static Serialization;
 
-    public class AppVeyorListener :
+    class AppVeyorListener :
         Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
@@ -24,6 +24,14 @@
         string runName;
 
         static readonly HttpClient Client;
+
+        internal static AppVeyorListener? Create()
+        {
+            if (GetEnvironmentVariable("APPVEYOR") == "True")
+                return new AppVeyorListener();
+
+            return null;
+        }
 
         static AppVeyorListener()
         {

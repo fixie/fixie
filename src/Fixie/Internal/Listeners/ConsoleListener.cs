@@ -5,7 +5,7 @@
     using Cli;
     using Internal;
 
-    public class ConsoleListener :
+    class ConsoleListener :
         Handler<CaseSkipped>,
         Handler<CaseFailed>,
         Handler<AssemblyCompleted>

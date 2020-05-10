@@ -156,7 +156,7 @@
                 yield return new ConsoleListener();
         }
 
-        static bool Try<T>(Func<T> create, out T listener)
+        static bool Try<T>(Func<T> create, out T? listener)
         {
             listener = create();
 

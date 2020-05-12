@@ -155,7 +155,7 @@
                 yield return new ConsoleListener();
         }
 
-        static bool Try<T>(Func<T?> create, [NotNullWhen(true)] out T? listener) where T : class
+        static bool Try<T>(Func<T> create, [NotNullWhen(true)] out T listener)
         {
             listener = create();
 

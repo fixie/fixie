@@ -2,13 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.IO.Pipes;
     using System.Linq;
     using System.Reflection;
     using Cli;
     using Listeners;
     using static System.Console;
+    using static Maybe;
 
     public class AssemblyRunner
     {
@@ -153,13 +153,6 @@
                 yield return teamCity;
             else
                 yield return new ConsoleListener();
-        }
-
-        static bool Try<T>(Func<T> create, [NotNullWhen(true)] out T listener)
-        {
-            listener = create();
-
-            return listener != null;
         }
     }
 }

@@ -13,9 +13,16 @@
     {
         class Request
         {
-            public HttpMethod Method { get; set; }
-            public string Uri { get; set; }
-            public string Content { get; set; }
+            public Request(HttpMethod method, string uri, string content)
+            {
+                Method = method;
+                Uri = uri;
+                Content = content;
+            }
+
+            public HttpMethod Method { get; }
+            public string Uri { get; }
+            public string Content { get; }
         }
 
         public void ShouldReportResultsToAzureDevOpsApi()
@@ -39,7 +46,7 @@
 
                 mediaType.ShouldBe("application/json");
 
-                requests.Add(new Request { Method = method, Uri = uri, Content = content });
+                requests.Add(new Request(method, uri, content));
 
                 if (first)
                 {

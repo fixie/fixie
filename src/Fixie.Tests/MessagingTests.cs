@@ -15,6 +15,7 @@
         }
 
         protected string TestClass { get; }
+        protected Type TestClassType => typeof(SampleTestClass);
 
         protected void Run(Listener listener, Action<Discovery>? customize = null)
         {

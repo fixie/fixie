@@ -29,10 +29,7 @@
 
                 HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
-                var runAllTests = new PipeMessage.ExecuteTests
-                {
-                    Filter = new PipeMessage.Test[] { }
-                };
+                var runAllTests = new PipeMessage.ExecuteTests();
 
                 foreach (var assemblyPath in sources)
                     RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
@@ -64,20 +61,14 @@
 
                     RunTests(log, frameworkHandle, assemblyPath, pipe =>
                     {
-                        pipe.Send(new PipeMessage.ExecuteTests
-                        {
-                            Filter = assemblyGroup.Select(x =>
+                        pipe.Send(new PipeMessage.ExecuteTests(
+                            assemblyGroup.Select(x =>
                             {
                                 var test = new Test(x.FullyQualifiedName);
 
-                                return new PipeMessage.Test
-                                {
-                                    Class = test.Class,
-                                    Method = test.Method,
-                                    Name = test.Name
-                                };
+                                return new PipeMessage.Test(test);
                             }).ToArray()
-                        });
+                        ));
                     });
                 }
             }
@@ -158,14 +149,9 @@
                         var exception = new TestProcessExitException(process.TryGetExitCode());
 
                         if (lastCaseStarted != null)
-                        {
-                            recorder.Record(new PipeMessage.CaseFailed
-                            {
-                                Test = lastCaseStarted.Test,
-                                Name = lastCaseStarted.Name,
-                                Exception = new PipeMessage.Exception(exception)
-                            });
-                        }
+                            recorder.Record(
+                                new PipeMessage.CaseFailed(lastCaseStarted,
+                                    new PipeMessage.Exception(exception)));
 
                         throw exception;
                     }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
@@ -15,6 +16,7 @@
     using static System.Environment;
     using static Serialization;
     using static System.Console;
+    using static Maybe;
 
     class AzureListener :
         Handler<AssemblyStarted>,
@@ -41,14 +43,6 @@
 
         internal static AzureListener? Create()
         {
-            if (ShouldUseAzureListener())
-                return new AzureListener();
-
-            return null;
-        }
-
-        static bool ShouldUseAzureListener()
-        {
             var runningUnderAzure = GetEnvironmentVariable("TF_BUILD") == "True";
 
             if (runningUnderAzure)
@@ -57,7 +51,23 @@
                     !string.IsNullOrEmpty(GetEnvironmentVariable("SYSTEM_ACCESSTOKEN"));
 
                 if (accessTokenIsAvailable)
-                    return true;
+                {
+                    if (TryGetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", out var collectionUri)
+                        && TryGetEnvironmentVariable("SYSTEM_TEAMPROJECT", out var project)
+                        && TryGetEnvironmentVariable("SYSTEM_ACCESSTOKEN", out var accessToken)
+                        && TryGetEnvironmentVariable("BUILD_BUILDID", out var buildId))
+                    {
+                        return new AzureListener(
+                            collectionUri,
+                            project,
+                            accessToken,
+                            buildId,
+                            Send,
+                            batchSize: 25);
+                    }
+
+                    return null;
+                }
 
                 using (Foreground.Yellow)
                 {
@@ -74,18 +84,24 @@
                 }
             }
 
-            return false;
+            return null;
         }
 
-        public AzureListener()
-            : this(
-                GetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"),
-                GetEnvironmentVariable("SYSTEM_TEAMPROJECT"),
-                GetEnvironmentVariable("SYSTEM_ACCESSTOKEN"),
-                GetEnvironmentVariable("BUILD_BUILDID"),
-                Send,
-                batchSize: 25)
+        static bool TryGetEnvironmentVariable(string variable, [NotNullWhen(true)] out string? value)
         {
+            var found = Try(GetEnvironmentVariable, variable, out value);
+
+            if (!found)
+            {
+                using (Foreground.Yellow)
+                {
+                    WriteLine($"The Azure DevOps environment variable '{variable}' has not been made");
+                    WriteLine("available to this process, so test results will not be collected.");
+                    WriteLine();
+                }
+            }
+
+            return found;
         }
 
         public AzureListener(string collectionUri, string project, string accessToken, string buildId, ApiAction send, int batchSize)

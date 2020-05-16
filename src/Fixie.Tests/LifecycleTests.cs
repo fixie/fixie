@@ -10,13 +10,13 @@
 
     public class LifecycleTests
     {
-        static string[] FailingMembers;
+        static string[] FailingMembers = Array.Empty<string>();
 
         readonly Discovery discovery;
 
         public LifecycleTests()
         {
-            FailingMembers = null;
+            FailingMembers = Array.Empty<string>();
             discovery = new SelfTestDiscovery();
         }
 
@@ -197,7 +197,7 @@
         {
             Console.WriteLine(member);
 
-            if (FailingMembers != null && FailingMembers.Contains(member))
+            if (FailingMembers.Contains(member))
                 throw new FailureException(member);
         }
 

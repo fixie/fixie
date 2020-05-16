@@ -54,7 +54,7 @@
                     return Serialize(new AzureListener.TestRun { url = runUrl });
                 }
 
-                return null;
+                return "";
             }, batchSize);
 
             using (var console = new RedirectedConsole())

@@ -27,12 +27,14 @@
     {
         const string AzureDevOpsRestApiVersion = "5.0";
 
-        public delegate string ApiAction(HttpClient client, HttpMethod method, string uri, string mediaType, string content);
+        public delegate string ApiAction<in T>(HttpClient client, HttpMethod method, string uri, T content);
 
         readonly string collectionUri;
         readonly string project;
         readonly string buildId;
-        readonly ApiAction send;
+        readonly ApiAction<CreateRun> sendCreateRun;
+        readonly ApiAction<IReadOnlyList<Result>> sendResultsBatch;
+        readonly ApiAction<CompleteRun> sendCompleteRun;
         readonly HttpClient client;
 
         string? runUrl;
@@ -62,6 +64,8 @@
                             project,
                             accessToken,
                             buildId,
+                            Send,
+                            Send,
                             Send,
                             batchSize: 25);
                     }
@@ -104,12 +108,22 @@
             return found;
         }
 
-        public AzureListener(string collectionUri, string project, string accessToken, string buildId, ApiAction send, int batchSize)
+        public AzureListener(
+            string collectionUri,
+            string project,
+            string accessToken,
+            string buildId,
+            ApiAction<CreateRun> sendCreateRun,
+            ApiAction<IReadOnlyList<Result>> sendResultsBatch,
+            ApiAction<CompleteRun> sendCompleteRun,
+            int batchSize)
         {
             this.collectionUri = collectionUri;
             this.project = project;
             this.buildId = buildId;
-            this.send = send;
+            this.sendCreateRun = sendCreateRun;
+            this.sendResultsBatch = sendResultsBatch;
+            this.sendCompleteRun = sendCompleteRun;
             this.batchSize = batchSize;
 
             batch = new List<Result>(batchSize);
@@ -129,20 +143,12 @@
 
             if (!string.IsNullOrEmpty(framework))
                 runName = $"{runName} ({framework})";
-            
-            var start = new CreateRun
-            {
-                name = runName,
-                build = new CreateRun.BuildDetail
-                {
-                    id = buildId
-                },
-                isAutomated = true
-            };
+
+            var createRun = new CreateRun(runName, buildId);
 
             var runsUri = new Uri(new Uri(collectionUri), $"{project}/_apis/test/runs").ToString();
 
-            var response = send(client, HttpMethod.Post, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(start));
+            var response = sendCreateRun(client, HttpMethod.Post, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", createRun);
 
             runUrl = Deserialize<TestRun>(response).url;
         }
@@ -151,10 +157,9 @@
         {
             if (apiUnavailable) return;
 
-            Include(message, x =>
+            Include(new Result(message, "Warning")
             {
-                x.outcome = "Warning";
-                x.errorMessage = message.Reason;
+                errorMessage = message.Reason
             });
         }
 
@@ -162,24 +167,20 @@
         {
             if (apiUnavailable) return;
 
-            Include(message, x =>
-            {
-                x.outcome = "Passed";
-            });
+            Include(new Result(message, "Passed"));
         }
 
         public void Handle(CaseFailed message)
         {
             if (apiUnavailable) return;
 
-            Include(message, x =>
+            Include(new Result(message, "Failed")
             {
-                x.outcome = "Failed";
-                x.errorMessage = message.Exception.Message;
-                x.stackTrace =
+                errorMessage = message.Exception.Message,
+                stackTrace =
                     message.Exception.GetType().FullName +
                     NewLine +
-                    message.Exception.LiterateStackTrace();
+                    message.Exception.LiterateStackTrace()
             });
         }
 
@@ -190,25 +191,13 @@
             if (batch.Any())
                 PostBatch();
 
-            var finish = new UpdateRun
-            {
-                state = "Completed"
-            };
+            var completeRun = new CompleteRun();
 
-            send(client, new HttpMethod("PATCH"), $"{runUrl}?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(finish));
+            sendCompleteRun(client, new HttpMethod("PATCH"), $"{runUrl}?api-version={AzureDevOpsRestApiVersion}", completeRun);
         }
 
-        void Include(CaseCompleted message, Action<Result> customize)
+        void Include(Result result)
         {
-            var result = new Result
-            {
-                automatedTestName = message.Name,
-                testCaseTitle = message.Name,
-                durationInMs = message.Duration.TotalMilliseconds
-            };
-
-            customize(result);
-
             batch.Add(result);
 
             if (batch.Count >= batchSize)
@@ -225,7 +214,7 @@
             {
                 try
                 {
-                    send(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", "application/json", Serialize(batch));
+                    sendResultsBatch(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", batch.ToList());
                     batch.Clear();
 
                     if (attempt > 1)
@@ -255,12 +244,14 @@
             batch.Clear();
         }
 
-        static string Send(HttpClient client, HttpMethod method, string uri, string mediaType, string content)
+        static string Send<T>(HttpClient client, HttpMethod method, string uri, T content)
         {
+            var serialized = Serialize(content);
+
             var task = client.SendAsync(
                 new HttpRequestMessage(method, new Uri(uri, UriKind.RelativeOrAbsolute))
                 {
-                    Content = new StringContent(content, Encoding.UTF8, mediaType)
+                    Content = new StringContent(serialized, Encoding.UTF8, "application/json")
                 });
 
             task.Wait();
@@ -282,19 +273,27 @@
 
         public class CreateRun
         {
-            public string name { get; set; }
-            public BuildDetail build { get; set; }
-            public bool isAutomated { get; set; }
+            public CreateRun(string runName, string buildId)
+            {
+                name = runName;
+                build = new BuildDetail(buildId);
+            }
+
+            public string name { get; }
+            public BuildDetail build { get; }
+            public bool isAutomated => true;
 
             public class BuildDetail
             {
-                public string id { get; set; }
+                public BuildDetail(string buildId) => id = buildId;
+
+                public string id { get; }
             }
         }
 
-        public class UpdateRun
+        public class CompleteRun
         {
-            public string state { get; set; }
+            public string state => "Completed";
         }
 
         public class TestRun
@@ -304,12 +303,20 @@
 
         public class Result
         {
-            public string automatedTestName { get; set; }
-            public string testCaseTitle { get; set; }
-            public double durationInMs { get; set; }
+            public Result(CaseCompleted message, string outcome)
+            {
+                automatedTestName = message.Name;
+                testCaseTitle = message.Name;
+                durationInMs = message.Duration.TotalMilliseconds;
+                this.outcome = outcome;
+            }
+
+            public string automatedTestName { get; }
+            public string testCaseTitle { get; }
+            public double durationInMs { get; }
             public string outcome { get; set; }
             public string? errorMessage { get; set; }
-            public string stackTrace { get; set; }
+            public string? stackTrace { get; set; }
         }
     }
 }

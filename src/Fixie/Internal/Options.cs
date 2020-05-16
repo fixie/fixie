@@ -5,12 +5,12 @@
 
     class Options
     {
-        public Options(string report)
+        public Options(string? report)
         {
             Report = report;
         }
 
-        public string Report { get; }
+        public string? Report { get; }
 
         public void Validate()
         {

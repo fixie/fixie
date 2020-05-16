@@ -21,14 +21,14 @@
         internal static ReportListener? Create(Options options)
         {
             if (options.Report != null)
-                return new ReportListener(SaveReport(options));
+                return new ReportListener(SaveReport(options.Report));
 
             return null;
         }
 
-        static Action<XDocument> SaveReport(Options options)
+        static Action<XDocument> SaveReport(string absoluteOrRelativePath)
         {
-            return report => Save(report, FullPath(options.Report));
+            return report => Save(report, FullPath(absoluteOrRelativePath));
         }
 
         static string FullPath(string absoluteOrRelativePath)

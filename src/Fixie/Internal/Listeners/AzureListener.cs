@@ -35,7 +35,7 @@
         readonly ApiAction send;
         readonly HttpClient client;
 
-        string runUrl;
+        string? runUrl;
 
         readonly int batchSize;
         readonly List<Result> batch;
@@ -299,7 +299,7 @@
 
         public class TestRun
         {
-            public string url { get; set; }
+            public string? url { get; set; }
         }
 
         public class Result

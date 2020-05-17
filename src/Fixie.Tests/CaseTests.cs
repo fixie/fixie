@@ -15,9 +15,9 @@
 
         public void ShouldIncludeParameterValuesInNameWhenTheUnderlyingMethodHasParameters()
         {
-            var @case = Case("Parameterized", 123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this);
+            var @case = Case("Parameterized", 123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this, new ObjectWithNullStringRepresentation());
 
-            @case.Name.ShouldBe("Fixie.Tests.CaseTests.Parameterized(123, True, 'a', \"with \\\"quotes\\\"\", \"long \\\"string\\\" g...\", null, Fixie.Tests.CaseTests)");
+            @case.Name.ShouldBe("Fixie.Tests.CaseTests.Parameterized(123, True, 'a', \"with \\\"quotes\\\"\", \"long \\\"string\\\" g...\", null, Fixie.Tests.CaseTests, Fixie.Tests.CaseTests+ObjectWithNullStringRepresentation)");
         }
 
         public void ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasCharParameters()
@@ -159,7 +159,7 @@
             method.Name.ShouldBe("Returns");
             method.GetParameters().ShouldBeEmpty();
 
-            method = Case("Parameterized", 123, true, 'a', "s", null, this).Method;
+            method = Case("Parameterized", 123, true, 'a', "s", null, this, new ObjectWithNullStringRepresentation()).Method;
             method.Name.ShouldBe("Parameterized");
             method.GetParameters()
                 .Select(x => x.ParameterType)
@@ -167,7 +167,8 @@
                     typeof(int), typeof(bool),
                     typeof(char), typeof(string),
                     typeof(string), typeof(object),
-                    typeof(CaseTests));
+                    typeof(CaseTests),
+                    typeof(ObjectWithNullStringRepresentation));
 
             method = Case("Generic", 123, true, "a", "b").Method;
             method.Name.ShouldBe("Generic");
@@ -332,7 +333,7 @@
             throw new FailureException();
         }
 
-        void Parameterized(int i, bool b, char ch, string s1, string s2, object obj, CaseTests complex)
+        void Parameterized(int i, bool b, char ch, string s1, string s2, object obj, CaseTests complex, ObjectWithNullStringRepresentation nullStringRepresentation)
         {
         }
 
@@ -350,6 +351,11 @@
 
         void ConstrainedGeneric<T>(T t) where T : struct
         {
+        }
+
+        class ObjectWithNullStringRepresentation
+        {
+            public override string? ToString() => null;
         }
     }
 }

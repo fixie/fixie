@@ -32,7 +32,12 @@
             if (parameter is string s)
                 return ShortStringLiteral(s);
 
-            return Convert.ToString(parameter, CultureInfo.InvariantCulture);
+            var displayString = Convert.ToString(parameter, CultureInfo.InvariantCulture);
+
+            if (displayString == null)
+                return parameter.GetType().ToString();
+
+            return displayString;
         }
 
         static string CharacterLiteral(char ch)

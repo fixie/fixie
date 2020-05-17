@@ -29,6 +29,7 @@ function Build {
         <IncludeSymbols>true</IncludeSymbols>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 </Project>
 "@

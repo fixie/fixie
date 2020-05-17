@@ -47,7 +47,7 @@
             }
         }
 
-        static int MsBuild(string project, string target, string configuration = null, string targetFramework = null, string outputPath = null)
+        static int MsBuild(string project, string target, string? configuration = null, string? targetFramework = null, string? outputPath = null)
         {
             var arguments = new List<string>
             {

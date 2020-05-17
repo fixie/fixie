@@ -21,13 +21,13 @@ namespace Fixie.TestAdapter
             if (fixieAssemblies.Contains(Path.GetFileName(assemblyPath)))
                 return false;
 
-            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
+            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath)!, "Fixie.dll"));
         }
 
         public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle = null)
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
-            var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
+            var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath)!;
 
             return Start(frameworkHandle, assemblyDirectory, assemblyPath);
         }

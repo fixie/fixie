@@ -24,7 +24,7 @@ namespace Fixie.TestAdapter
             return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
         }
 
-        public static Process? Start(string assemblyPath, IFrameworkHandle frameworkHandle = null)
+        public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle = null)
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
@@ -40,7 +40,7 @@ namespace Fixie.TestAdapter
             return null;
         }
 
-        static Process? Start(IFrameworkHandle frameworkHandle, string workingDirectory, string assemblyPath)
+        static Process? Start(IFrameworkHandle? frameworkHandle, string workingDirectory, string assemblyPath)
         {
             var serializedArguments = CommandLine.Serialize(new[] { assemblyPath });
 

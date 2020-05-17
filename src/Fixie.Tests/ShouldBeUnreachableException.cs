@@ -5,7 +5,7 @@
 
     public class ShouldBeUnreachableException : Exception
     {
-        public ShouldBeUnreachableException([CallerMemberName] string member = null)
+        public ShouldBeUnreachableException([CallerMemberName] string member = default!)
             : base($"'{member}' reached a line of code thought to be unreachable.") { }
     }
 }

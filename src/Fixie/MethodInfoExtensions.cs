@@ -1,6 +1,7 @@
 ﻿namespace Fixie
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
@@ -9,7 +10,7 @@
 
     public static class MethodInfoExtensions
     {
-        static MethodInfo startAsTask;
+        static MethodInfo? startAsTask;
 
         /// <summary>
         /// Execute the given method against the given instance of its class.
@@ -20,7 +21,7 @@
         /// For async Task methods, returns null after awaiting the Task.
         /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
         /// </returns>
-        public static object Execute(this MethodInfo method, object instance, params object[] parameters)
+        public static object? Execute(this MethodInfo method, object? instance, object?[] parameters)
         {
             if (method.IsVoid() && method.HasAsyncKeyword())
                 throw new NotSupportedException(
@@ -30,15 +31,15 @@
             if (method.ContainsGenericParameters)
                 throw new Exception("Could not resolve type parameters for generic method.");
 
-            object result;
+            object? result;
 
             try
             {
-                result = method.Invoke(instance, parameters != null && parameters.Length == 0 ? null : parameters);
+                result = method.Invoke(instance, parameters.Length == 0 ? null : parameters);
             }
             catch (TargetInvocationException exception)
             {
-                ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
+                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
                 throw; //Unreachable.
             }
 
@@ -55,7 +56,7 @@
 
             if (method.ReturnType.IsGenericType)
             {
-                var property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public);
+                var property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public)!;
 
                 return property.GetValue(task, null);
             }
@@ -68,7 +69,7 @@
             return method.Has<AsyncStateMachineAttribute>();
         }
 
-        static bool ConvertibleToTask(object result, out Task task)
+        static bool ConvertibleToTask(object result, [NotNullWhen(true)] out Task? task)
         {
             if (result is Task t)
             {
@@ -101,7 +102,7 @@
                 if (startAsTask == null)
                     startAsTask = resultType
                         .Assembly
-                        .GetType("Microsoft.FSharp.Control.FSharpAsync")
+                        .GetType("Microsoft.FSharp.Control.FSharpAsync")!
                         .GetRuntimeMethods()
                         .Single(x => x.Name == "StartAsTask");
             }
@@ -112,7 +113,7 @@
 
             var genericStartAsTask = startAsTask.MakeGenericMethod(resultType.GetGenericArguments());
 
-            return (Task) genericStartAsTask.Invoke(null, new[] { result, null, null });
+            return (Task) genericStartAsTask.Invoke(null, new[] { result, null, null })!;
         }
     }
 }

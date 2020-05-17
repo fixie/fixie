@@ -5,7 +5,7 @@
     using Cli;
     using Internal;
 
-    public class ConsoleListener :
+    class ConsoleListener :
         Handler<CaseSkipped>,
         Handler<CaseFailed>,
         Handler<AssemblyCompleted>
@@ -30,7 +30,7 @@
             Console.WriteLine();
             Console.WriteLine(message.Exception.Message);
             Console.WriteLine();
-            Console.WriteLine(message.Exception.TypeName());
+            Console.WriteLine(message.Exception.GetType().FullName);
             Console.WriteLine(message.Exception.LiterateStackTrace());
             Console.WriteLine();
         }

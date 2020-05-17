@@ -2,14 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.IO.Pipes;
     using System.Linq;
     using System.Reflection;
-    using System.Xml.Linq;
     using Cli;
     using Listeners;
     using static System.Console;
+    using static Maybe;
 
     public class AssemblyRunner
     {
@@ -20,7 +19,7 @@
             FatalError = -1
         }
 
-        public static int Main(string[] arguments)
+        public static int Main(Assembly assembly, string[] arguments)
         {
             try
             {
@@ -29,8 +28,6 @@
                 var options = CommandLine.Parse<Options>(runnerArguments);
 
                 options.Validate();
-
-                var assembly = Assembly.GetEntryAssembly();
 
                 var pipeName = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE");
 
@@ -143,69 +140,19 @@
 
         static IEnumerable<Listener> DefaultExecutionListeners(Options options)
         {
-            if (ShouldUseAzureListener())
-                yield return new AzureListener();
+            if (Try(AzureListener.Create, out var azure))
+                yield return azure;
 
-            if (ShouldUseAppVeyorListener())
-                yield return new AppVeyorListener();
+            if (Try(AppVeyorListener.Create, out var appVeyor))
+                yield return appVeyor;
 
-            if (options.Report != null)
-                yield return new ReportListener(SaveReport(options));
+            if (Try(() => ReportListener.Create(options), out var report))
+                yield return report;
 
-            if (ShouldUseTeamCityListener())
-                yield return new TeamCityListener();
+            if (Try(TeamCityListener.Create, out var teamCity))
+                yield return teamCity;
             else
                 yield return new ConsoleListener();
-        }
-
-        static Action<XDocument> SaveReport(Options options)
-        {
-            return report => ReportListener.Save(report, FullPath(options.Report));
-        }
-
-        static string FullPath(string absoluteOrRelativePath)
-        {
-            return Path.Combine(Directory.GetCurrentDirectory(), absoluteOrRelativePath);
-        }
-
-        static bool ShouldUseAzureListener()
-        {
-            var runningUnderAzure = Environment.GetEnvironmentVariable("TF_BUILD") == "True";
-
-            if (runningUnderAzure)
-            {
-                var accessTokenIsAvailable =
-                    !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SYSTEM_ACCESSTOKEN"));
-
-                if (accessTokenIsAvailable)
-                    return true;
-
-                using (Foreground.Yellow)
-                {
-                    WriteLine("The Azure DevOps access token has not been made available to this process, so");
-                    WriteLine("test results will not be collected. To resolve this issue, review your pipeline");
-                    WriteLine("definition to ensure that the access token is made available as the environment");
-                    WriteLine("variable SYSTEM_ACCESSTOKEN.");
-                    WriteLine();
-                    WriteLine("From https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables#systemaccesstoken");
-                    WriteLine();
-                    WriteLine("  env:");
-                    WriteLine("    SYSTEM_ACCESSTOKEN: $(System.AccessToken)");
-                    WriteLine();
-                }
-            }
-
-            return false;
-        }
-
-        static bool ShouldUseTeamCityListener()
-        {
-            return Environment.GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null;
-        }
-
-        static bool ShouldUseAppVeyorListener()
-        {
-            return Environment.GetEnvironmentVariable("APPVEYOR") == "True";
         }
     }
 }

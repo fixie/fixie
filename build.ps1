@@ -28,6 +28,8 @@ function Build {
         <PackageOutputPath>..\..\packages</PackageOutputPath>
         <IncludeSymbols>true</IncludeSymbols>
         <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 </Project>
 "@

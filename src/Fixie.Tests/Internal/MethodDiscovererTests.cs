@@ -121,7 +121,9 @@
                 "Exception thrown while attempting to run a custom method-discovery predicate. " +
                 "Check the inner exception for more details.");
 
-            exception.InnerException.Message.ShouldBe("Unsafe method-discovery predicate threw!");
+            exception.InnerException
+                .ShouldBe<Exception>()
+                .Message.ShouldBe("Unsafe method-discovery predicate threw!");
         }
 
         static IEnumerable<string> DiscoveredTestMethods<TTestClass>(Discovery discovery)

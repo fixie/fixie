@@ -4,7 +4,6 @@
     using Assertions;
     using Fixie.Internal;
     using Fixie.Internal.Listeners;
-    using static Fixie.Internal.Serialization;
 
     public class AppVeyorListenerTests : MessagingTests
     {
@@ -12,12 +11,10 @@
         {
             var results = new List<AppVeyorListener.TestResult>();
 
-            var listener = new AppVeyorListener("http://localhost:4567", (uri, mediaType, content) =>
+            var listener = new AppVeyorListener("http://localhost:4567", (uri, content) =>
             {
                 uri.ShouldBe("http://localhost:4567/api/tests");
-                mediaType.ShouldBe("application/json");
-
-                results.Add(Deserialize<AppVeyorListener.TestResult>(content));
+                results.Add(content);
             });
 
             using (var console = new RedirectedConsole())
@@ -66,7 +63,7 @@
             fail.Outcome.ShouldBe("Failed");
             int.Parse(fail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             fail.ErrorMessage.ShouldBe("'Fail' failed!");
-            fail.ErrorStackTrace
+            fail.ErrorStackTrace!
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
@@ -75,10 +72,10 @@
             failByAssertion.TestName.ShouldBe(TestClass + ".FailByAssertion");
             failByAssertion.Outcome.ShouldBe("Failed");
             int.Parse(failByAssertion.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-            failByAssertion.ErrorMessage.Lines().ShouldBe(
+            failByAssertion.ErrorMessage!.Lines().ShouldBe(
                 "Expected: 2",
                 "Actual:   1");
-            failByAssertion.ErrorStackTrace
+            failByAssertion.ErrorStackTrace!
                 .CleanStackTraceLineNumbers()
                 .Lines()
                 .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));

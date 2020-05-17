@@ -111,7 +111,7 @@ namespace Fixie.Tests.Cases
 
             public string String() => "ABC";
 
-            public string StringNull() => null;
+            public string? StringNull() => null;
         }
 
         class SampleAsyncTestClass
@@ -128,12 +128,12 @@ namespace Fixie.Tests.Cases
 
             public async Task<string> String()=> await Awaitable("ABC");
 
-            public async Task<string> StringNull() => await Awaitable<string>(null);
+            public async Task<string?> StringNull() => await Awaitable<string?>(null);
 
             static Task<T> Awaitable<T>(T value)
                 => Task.Run(() => value);
 
-            static void ThrowException([CallerMemberName] string member = null)
+            static void ThrowException([CallerMemberName] string member = default!)
                 => throw new FailureException(member);
         }
 

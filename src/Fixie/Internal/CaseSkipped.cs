@@ -8,6 +8,6 @@
             Reason = @case.SkipReason;
         }
 
-        public string Reason { get; }
+        public string? Reason { get; }
     }
 }

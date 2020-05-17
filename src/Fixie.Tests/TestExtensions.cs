@@ -14,7 +14,12 @@
 
         public static MethodInfo GetInstanceMethod(this Type type, string methodName)
         {
-            return type.GetMethod(methodName, InstanceMethods);
+            var instanceMethod = type.GetMethod(methodName, InstanceMethods);
+
+            if (instanceMethod == null)
+                throw new Exception($"Could not find instance method '{methodName}' on type '{type.FullName}'.");
+
+            return instanceMethod;
         }
 
         public static IReadOnlyList<MethodInfo> GetInstanceMethods(this Type type)

@@ -6,11 +6,6 @@
 
     public static class ReflectionExtensions
     {
-        public static string TypeName(this object o)
-        {
-            return o?.GetType().FullName;
-        }
-
         public static bool IsVoid(this MethodInfo method)
         {
             return method.ReturnType == typeof(void);
@@ -31,7 +26,7 @@
             return method.GetCustomAttributes<TAttribute>(true).Any();
         }
 
-        public static void Dispose(this object o)
+        public static void Dispose(this object? o)
         {
             (o as IDisposable)?.Dispose();
         }

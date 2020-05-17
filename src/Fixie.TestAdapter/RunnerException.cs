@@ -24,7 +24,7 @@
                 .AppendLine()
                 .AppendLine(exception.Message)
                 .AppendLine()
-                .AppendLine(exception.TypeName())
+                .AppendLine(exception.GetType().FullName)
                 .AppendLine(exception.StackTrace)
                 .ToString())
         {

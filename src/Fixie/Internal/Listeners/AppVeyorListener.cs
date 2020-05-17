@@ -11,13 +11,13 @@
     using static System.Environment;
     using static Serialization;
 
-    public class AppVeyorListener :
+    class AppVeyorListener :
         Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>
     {
-        public delegate void PostAction(string uri, string mediaType, string content);
+        public delegate void PostAction(string uri, TestResult testResult);
 
         readonly PostAction postAction;
         readonly string uri;
@@ -25,21 +25,29 @@
 
         static readonly HttpClient Client;
 
+        internal static AppVeyorListener? Create()
+        {
+            if (GetEnvironmentVariable("APPVEYOR") == "True")
+            {
+                var uri = GetEnvironmentVariable("APPVEYOR_API_URL");
+                if (uri != null)
+                    return new AppVeyorListener(uri, Post);
+            }
+
+            return null;
+        }
+
         static AppVeyorListener()
         {
             Client = new HttpClient();
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public AppVeyorListener()
-            : this(GetEnvironmentVariable("APPVEYOR_API_URL"), Post)
-        {
-        }
-
         public AppVeyorListener(string uri, PostAction postAction)
         {
             this.postAction = postAction;
             this.uri = new Uri(new Uri(uri), "api/tests").ToString();
+            runName = "Unknown";
         }
 
         public void Handle(AssemblyStarted message)
@@ -56,67 +64,62 @@
 
         public void Handle(CaseSkipped message)
         {
-            Post(message, x =>
+            Post(new TestResult(runName, message, "Skipped")
             {
-                x.Outcome = "Skipped";
-                x.ErrorMessage = message.Reason;
+                ErrorMessage = message.Reason
             });
         }
 
         public void Handle(CasePassed message)
         {
-            Post(message, x =>
-            {
-                x.Outcome = "Passed";
-            });
+            Post(new TestResult(runName, message, "Passed"));
         }
 
         public void Handle(CaseFailed message)
         {
-            Post(message, x =>
+            Post(new TestResult(runName, message, "Failed")
             {
-                x.Outcome = "Failed";
-                x.ErrorMessage = message.Exception.Message;
-                x.ErrorStackTrace =
-                    message.Exception.TypeName() +
+                ErrorMessage = message.Exception.Message,
+                ErrorStackTrace =
+                    message.Exception.GetType().FullName +
                     NewLine +
-                    message.Exception.LiterateStackTrace();
+                    message.Exception.LiterateStackTrace()
             });
         }
 
-        void Post(CaseCompleted message, Action<TestResult> customize)
+        void Post(TestResult testResult)
         {
-            var testResult = new TestResult
-            {
-                TestFramework = "Fixie",
-                FileName = runName,
-                TestName = message.Name,
-                DurationMilliseconds = message.Duration.TotalMilliseconds.ToString("0"),
-                StdOut = message.Output
-            };
-
-            customize(testResult);
-
-            postAction(uri, "application/json", Serialize(testResult));
+            postAction(uri, testResult);
         }
 
-        static void Post(string uri, string mediaType, string content)
+        static void Post(string uri, TestResult testResult)
         {
-            Client.PostAsync(uri, new StringContent(content, Encoding.UTF8, mediaType))
+            var content = Serialize(testResult);
+            Client.PostAsync(uri, new StringContent(content, Encoding.UTF8, "application/json"))
                 .ContinueWith(x => x.Result.EnsureSuccessStatusCode())
                 .Wait();
         }
 
         public class TestResult
         {
+            public TestResult(string runName, CaseCompleted message, string outcome)
+            {
+                TestFramework = "Fixie";
+                FileName = runName;
+                TestName = message.Name;
+                Outcome = outcome;
+                DurationMilliseconds = message.Duration.TotalMilliseconds.ToString("0");
+                StdOut = message.Output;
+            }
+
             public string TestFramework { get; set; }
             public string FileName { get; set; }
             public string TestName { get; set; }
             public string Outcome { get; set; }
             public string DurationMilliseconds { get; set; }
             public string StdOut { get; set; }
-            public string ErrorMessage { get; set; }
-            public string ErrorStackTrace { get; set; }
+            public string? ErrorMessage { get; set; }
+            public string? ErrorStackTrace { get; set; }
         }
     }
 }

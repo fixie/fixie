@@ -4,11 +4,13 @@
     using System.IO;
     using System.Linq;
     using Assertions;
+    using Fixie.Internal;
     using Fixie.Internal.Listeners;
     using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using static Utility;
 
     public class DiscoveryRecorderTests : MessagingTests
     {
@@ -21,15 +23,9 @@
 
             var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
 
-            discoveryRecorder.Record(new PipeMessage.TestDiscovered
-            {
-                Test = new PipeMessage.Test
-                {
-                    Class = TestClass,
-                    Method = "Fail",
-                    Name = TestClass + ".Fail"
-                }
-            });
+            discoveryRecorder.Record(
+                new PipeMessage.TestDiscovered(
+                    new MethodDiscovered(TestClassType.GetInstanceMethod("Fail"))));
 
             log.Messages.ShouldBeEmpty();
 
@@ -46,15 +42,9 @@
 
             var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, invalidAssemblyPath);
 
-            discoveryRecorder.Record(new PipeMessage.TestDiscovered
-            {
-                Test = new PipeMessage.Test
-                {
-                    Class = TestClass,
-                    Method = "Fail",
-                    Name = TestClass + ".Fail"
-                }
-            });
+            discoveryRecorder.Record(
+                new PipeMessage.TestDiscovered(
+                    new MethodDiscovered(TestClassType.GetInstanceMethod("Fail"))));
 
             log.Messages.Single().Contains(nameof(FileNotFoundException)).ShouldBe(true);
 

@@ -6,7 +6,7 @@
     using System.IO;
     using System.Xml.Linq;
 
-    public class ReportListener :
+    class ReportListener :
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>,
@@ -15,8 +15,26 @@
     {
         readonly Action<XDocument> save;
 
-        List<XElement> currentClass = new List<XElement>();
-        List<XElement> classes = new List<XElement>();
+        readonly List<XElement> currentClass = new List<XElement>();
+        readonly List<XElement> classes = new List<XElement>();
+
+        internal static ReportListener? Create(Options options)
+        {
+            if (options.Report != null)
+                return new ReportListener(SaveReport(options.Report));
+
+            return null;
+        }
+
+        static Action<XDocument> SaveReport(string absoluteOrRelativePath)
+        {
+            return report => Save(report, FullPath(absoluteOrRelativePath));
+        }
+
+        static string FullPath(string absoluteOrRelativePath)
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), absoluteOrRelativePath);
+        }
 
         public ReportListener(Action<XDocument> save)
         {
@@ -58,7 +76,7 @@
                     new XAttribute("result", "Fail"),
                     new XAttribute("time", Seconds(message.Duration)),
                     new XElement("failure",
-                        new XAttribute("exception-type", message.Exception.TypeName()),
+                        new XAttribute("exception-type", message.Exception.GetType().FullName),
                         new XElement("message", new XCData(message.Exception.Message)),
                         new XElement("stack-trace", new XCData(message.Exception.LiterateStackTrace())))));
         }
@@ -75,7 +93,7 @@
                     new XAttribute("skipped", message.Skipped),
                     currentClass));
 
-            currentClass = new List<XElement>();
+            currentClass.Clear();
         }
 
         public void Handle(AssemblyCompleted message)
@@ -97,7 +115,7 @@
                         new XAttribute("test-framework", Fixie.Framework.Version),
                         classes))));
 
-            classes = null;
+            classes.Clear();
         }
 
         static string Framework => Environment.Version.ToString();

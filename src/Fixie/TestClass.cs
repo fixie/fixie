@@ -13,7 +13,7 @@
         readonly bool isStatic;
         internal TestClass(Type type, Action<Action<Case>> runCases) : this(type, runCases, null) { }
 
-        internal TestClass(Type type, Action<Action<Case>> runCases, MethodInfo targetMethod)
+        internal TestClass(Type type, Action<Action<Case>> runCases, MethodInfo? targetMethod)
         {
             this.runCases = runCases;
             Type = type;
@@ -31,13 +31,13 @@
         /// test runner as the sole method to be executed.
         /// Null under normal test execution.
         /// </summary>
-        public MethodInfo TargetMethod { get; }
+        public MethodInfo? TargetMethod { get; }
 
         /// <summary>
         /// Constructs an instance of the test class type, using its default constructor.
         /// If the class is static, no action is taken and null is returned.
         /// </summary>
-        public object Construct()
+        public object? Construct()
         {
             if (isStatic)
                 return null;
@@ -48,7 +48,7 @@
             }
             catch (TargetInvocationException exception)
             {
-                ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
+                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
                 throw; //Unreachable.
             }
         }

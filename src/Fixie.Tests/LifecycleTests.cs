@@ -10,13 +10,13 @@
 
     public class LifecycleTests
     {
-        static string[] FailingMembers;
+        static string[] FailingMembers = Array.Empty<string>();
 
         readonly Discovery discovery;
 
         public LifecycleTests()
         {
-            FailingMembers = null;
+            FailingMembers = Array.Empty<string>();
             discovery = new SelfTestDiscovery();
         }
 
@@ -193,11 +193,11 @@
             }
         }
 
-        static void WhereAmI([CallerMemberName] string member = null)
+        static void WhereAmI([CallerMemberName] string member = default!)
         {
             Console.WriteLine(member);
 
-            if (FailingMembers != null && FailingMembers.Contains(member))
+            if (FailingMembers.Contains(member))
                 throw new FailureException(member);
         }
 

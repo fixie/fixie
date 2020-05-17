@@ -21,18 +21,18 @@ namespace Fixie.TestAdapter
             if (fixieAssemblies.Contains(Path.GetFileName(assemblyPath)))
                 return false;
 
-            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath), "Fixie.dll"));
+            return File.Exists(Path.Combine(Path.GetDirectoryName(assemblyPath)!, "Fixie.dll"));
         }
 
-        public static Process Start(string assemblyPath, IFrameworkHandle frameworkHandle = null)
+        public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle = null)
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);
-            var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
+            var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath)!;
 
             return Start(frameworkHandle, assemblyDirectory, assemblyPath);
         }
 
-        public static int? TryGetExitCode(this Process process)
+        public static int? TryGetExitCode(this Process? process)
         {
             if (process != null && process.WaitForExit(5000))
                 return process.ExitCode;
@@ -40,7 +40,7 @@ namespace Fixie.TestAdapter
             return null;
         }
 
-        static Process Start(IFrameworkHandle frameworkHandle, string workingDirectory, string assemblyPath)
+        static Process? Start(IFrameworkHandle? frameworkHandle, string workingDirectory, string assemblyPath)
         {
             var serializedArguments = CommandLine.Serialize(new[] { assemblyPath });
 
@@ -55,7 +55,7 @@ namespace Fixie.TestAdapter
 
                 var environmentVariables = new Dictionary<string, string>
                 {
-                    ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
+                    ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")!
                 };
 
                 frameworkHandle?

@@ -9,14 +9,21 @@
     /// </summary>
     public class Case
     {
-        public Case(MethodInfo caseMethod, params object[] parameters)
+        static readonly object[] EmptyParameters = {};
+
+        public Case(MethodInfo caseMethod)
+            : this(caseMethod, EmptyParameters)
         {
-            Parameters = parameters != null && parameters.Length == 0 ? null : parameters;
-            Class = caseMethod.ReflectedType;
+        }
+
+        public Case(MethodInfo caseMethod, object?[] parameters)
+        {
+            Parameters = parameters;
+            Class = caseMethod.ReflectedType!;
 
             Method = caseMethod.TryResolveTypeArguments(parameters);
 
-            Name = CaseNameBuilder.GetName(Class, Method, Parameters);
+            Name = CaseNameBuilder.GetName(Class, Method, parameters);
 
             Output = "";
         }
@@ -49,19 +56,19 @@
 
         /// <summary>
         /// For parameterized test cases, gets the set of parameters to be passed into the test method.
-        /// For zero-argument test methods, this property is null.
+        /// For zero-argument test methods, this property is the empty array.
         /// </summary>
-        public object[] Parameters { get; }
+        public object?[] Parameters { get; }
 
         /// <summary>
         /// Gets the exception describing this test case's failure.
         /// </summary>
-        public Exception Exception { get; private set; }
+        public Exception? Exception { get; private set; }
 
         /// <summary>
         /// Indicate the test case was skipped for the given reason.
         /// </summary>
-        public void Skip(string reason)
+        public void Skip(string? reason)
         {
             State = CaseState.Skipped;
             Exception = null;
@@ -110,7 +117,7 @@
 
         internal TimeSpan Duration { get; set; }
         internal string Output { get; set; }
-        internal string SkipReason { get; private set; }
+        internal string? SkipReason { get; private set; }
         internal CaseState State { get; private set; }
 
         /// <summary>
@@ -123,7 +130,7 @@
         /// For async Task methods, returns null after awaiting the Task.
         /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
         /// </returns>
-        public object Execute(object instance)
+        public object? Execute(object? instance)
         {
             try
             {

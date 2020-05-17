@@ -37,9 +37,12 @@ namespace Fixie.Tests.Assertions
             return $"Expected: {Format(left)} {operation} {Format(right)}{NewLine}but it was not";
         }
 
-        public static void ShouldBeType<T>(this object actual)
+        public static T ShouldBe<T>(this object? actual)
         {
-            (actual?.GetType()).ShouldBe(typeof(T));
+            if (actual is T typed)
+                return typed;
+
+            throw new AssertException(typeof(T), actual?.GetType());
         }
 
         public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
@@ -47,40 +50,28 @@ namespace Fixie.Tests.Assertions
             actual.ToArray().ShouldBe(expected);
         }
 
-        public static void ShouldBe(this bool actual, bool expected, string userMessage = null)
+        public static void ShouldBe(this bool actual, bool expected)
         {
             if (actual != expected)
-                throw new AssertException(expected, actual, userMessage);
+                throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe(this int actual, int expected, string userMessage = null)
+        public static void ShouldBe(this int actual, int expected)
         {
             if (actual != expected)
-                throw new AssertException(expected, actual, userMessage);
+                throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe(this string actual, string expected, string userMessage = null)
+        public static void ShouldBe(this string? actual, string? expected)
         {
             if (actual != expected)
-                throw new AssertException(expected, actual, userMessage);
+                throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe<T>(this T? actual, T? expected, string userMessage = null) where T : struct
-        {
-            if (!Nullable.Equals(actual, expected))
-                throw new AssertException(expected, actual, userMessage);
-        }
-
-        public static void ShouldBe<T>(this T actual, T expected, string userMessage = null)
+        public static void ShouldBe<T>(this T actual, T expected, string? userMessage = null)
         {
             if (!expected.Is(actual))
                 throw new AssertException(expected, actual, userMessage);
-        }
-
-        public static void ShouldNotBe<T>(this T actual, T expected)
-        {
-            if (expected.Is(actual))
-                throw new AssertException($"Unexpected: {Format(expected)}");
         }
 
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
@@ -89,30 +80,26 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException("Collection was not empty.");
         }
 
-        static string Format(object value)
+        static string Format(object? value)
         {
             return value?.ToString() ?? "(null)";
         }
 
         public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception
         {
-            bool threw = false;
-            Exception exception = null;
-
             try
             {
                 shouldThrow();
             }
             catch (Exception actual)
             {
-                threw = true;
-                actual.ShouldBeType<TException>();
-                actual.Message.ShouldBe(expectedMessage);
-                exception = actual;
+                actual
+                    .ShouldBe<TException>()
+                    .Message.ShouldBe(expectedMessage);
+                return (TException)actual;
             }
 
-            threw.ShouldBe(true);
-            return (TException)exception;
+            throw new AssertException("Expected an exception to be thrown.");
         }
 
         static bool Is<T>(this T x, T y)

@@ -26,6 +26,10 @@
         public static void Send<TMessage>(this PipeStream pipe, TMessage message)
         {
             var messageType = typeof(TMessage).FullName;
+
+            if (messageType == null)
+                throw new Exception($"Expected type {typeof(TMessage).Name} to have a non-null FullName.");
+
             SendMessageBytes(pipe, Encoding.UTF8.GetBytes(messageType));
 
             SendMessageBytes(pipe, SerializeToBytes(message));

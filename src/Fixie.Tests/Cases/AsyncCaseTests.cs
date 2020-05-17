@@ -95,7 +95,7 @@
 
         abstract class SampleTestClassBase
         {
-            protected static void ThrowException([CallerMemberName] string member = null)
+            protected static void ThrowException([CallerMemberName] string member = default!)
             {
                 throw new FailureException(member);
             }
@@ -158,7 +158,7 @@
 
         class NullTaskTestClass
         {
-            public Task Test()
+            public Task? Test()
             {
                 // Although unlikely, we must ensure that
                 // we don't attempt to wait on a Task that

@@ -8,20 +8,20 @@
 
     static class CaseNameBuilder
     {
-        public static string GetName(Type testClass, MethodInfo method, object[] parameters)
+        public static string GetName(Type testClass, MethodInfo method, object?[] parameters)
         {
             var name = testClass.FullName + "." + method.Name;
 
             if (method.IsGenericMethod)
                 name += $"<{string.Join(", ", method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";
 
-            if (parameters != null && parameters.Length > 0)
+            if (parameters.Length > 0)
                 name += $"({string.Join(", ", parameters.Select(x => x.ToDisplayString()))})";
 
             return name;
         }
 
-        static string ToDisplayString(this object parameter)
+        static string ToDisplayString(this object? parameter)
         {
             if (parameter == null)
                 return "null";
@@ -32,7 +32,12 @@
             if (parameter is string s)
                 return ShortStringLiteral(s);
 
-            return Convert.ToString(parameter, CultureInfo.InvariantCulture);
+            var displayString = Convert.ToString(parameter, CultureInfo.InvariantCulture);
+
+            if (displayString == null)
+                return parameter.GetType().ToString();
+
+            return displayString;
         }
 
         static string CharacterLiteral(char ch)

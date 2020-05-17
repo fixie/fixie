@@ -15,9 +15,9 @@
 
         public void ShouldIncludeParameterValuesInNameWhenTheUnderlyingMethodHasParameters()
         {
-            var @case = Case("Parameterized", 123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this);
+            var @case = Case("Parameterized", 123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this, new ObjectWithNullStringRepresentation());
 
-            @case.Name.ShouldBe("Fixie.Tests.CaseTests.Parameterized(123, True, 'a', \"with \\\"quotes\\\"\", \"long \\\"string\\\" g...\", null, Fixie.Tests.CaseTests)");
+            @case.Name.ShouldBe("Fixie.Tests.CaseTests.Parameterized(123, True, 'a', \"with \\\"quotes\\\"\", \"long \\\"string\\\" g...\", null, Fixie.Tests.CaseTests, Fixie.Tests.CaseTests+ObjectWithNullStringRepresentation)");
         }
 
         public void ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasCharParameters()
@@ -159,7 +159,7 @@
             method.Name.ShouldBe("Returns");
             method.GetParameters().ShouldBeEmpty();
 
-            method = Case("Parameterized", 123, true, 'a', "s", null, this).Method;
+            method = Case("Parameterized", 123, true, 'a', "s", null, this, new ObjectWithNullStringRepresentation()).Method;
             method.Name.ShouldBe("Parameterized");
             method.GetParameters()
                 .Select(x => x.ParameterType)
@@ -167,7 +167,8 @@
                     typeof(int), typeof(bool),
                     typeof(char), typeof(string),
                     typeof(string), typeof(object),
-                    typeof(CaseTests));
+                    typeof(CaseTests),
+                    typeof(ObjectWithNullStringRepresentation));
 
             method = Case("Generic", 123, true, "a", "b").Method;
             method.Name.ShouldBe("Generic");
@@ -225,8 +226,9 @@
             @case.Exception.ShouldBe(null);
             @case.Fail("Failure Reason A");
             @case.Fail("Failure Reason B");
-            @case.Exception.ShouldBeType<Exception>();
-            @case.Exception.Message.ShouldBe("Failure Reason B");
+            @case.Exception
+                .ShouldBe<Exception>()
+                .Message.ShouldBe("Failure Reason B");
         }
 
         public void ShouldProtectAgainstLoggingNullExceptions()
@@ -234,11 +236,12 @@
             var @case = Case("Returns");
 
             @case.Exception.ShouldBe(null);
-            @case.Fail((Exception) null);
-            @case.Exception.ShouldBeType<Exception>();
-            @case.Exception.Message.ShouldBe(
-                "The custom test class lifecycle did not provide " +
-                "an Exception for this test case failure.");
+            @case.Fail((Exception) null!);
+            @case.Exception
+                .ShouldBe<Exception>()
+                .Message.ShouldBe(
+                    "The custom test class lifecycle did not provide " +
+                    "an Exception for this test case failure.");
         }
 
         public void CanForceAnyTestProcessingState()
@@ -259,7 +262,7 @@
             //Indicate a failure, replacing the assumed skip.
             @case.Fail("Failure");
             @case.State.ShouldBe(CaseState.Failed);
-            @case.Exception.Message.ShouldBe("Failure");
+            (@case.Exception?.Message).ShouldBe("Failure");
             @case.SkipReason.ShouldBe(null);
 
             //Indicate a pass, suppressing the above failure.
@@ -283,7 +286,7 @@
             //Indicate a failure, replacing the assumed pass.
             @case.Fail("Failure");
             @case.State.ShouldBe(CaseState.Failed);
-            @case.Exception.Message.ShouldBe("Failure");
+            (@case.Exception?.Message).ShouldBe("Failure");
             @case.SkipReason.ShouldBe(null);
 
             //Indicate a skip, suppressing the above failure.
@@ -293,9 +296,9 @@
             @case.SkipReason.ShouldBe("Reason");
 
             //Indicate a failure, suppressing the above skip, but with a surprisingly-null Exception.
-            @case.Fail((Exception) null);
+            @case.Fail((Exception) null!);
             @case.State.ShouldBe(CaseState.Failed);
-            @case.Exception.Message.ShouldBe(
+            (@case.Exception?.Message).ShouldBe(
                 "The custom test class lifecycle did not provide " +
                 "an Exception for this test case failure.");
             @case.SkipReason.ShouldBe(null);
@@ -315,10 +318,10 @@
             }
         }
 
-        static Case Case(string methodName, params object[] parameters)
+        static Case Case(string methodName, params object?[] parameters)
             => Case<CaseTests>(methodName, parameters);
 
-        static Case Case<TTestClass>(string methodName, params object[] parameters)
+        static Case Case<TTestClass>(string methodName, params object?[] parameters)
             => new Case(typeof(TTestClass).GetInstanceMethod(methodName), parameters);
 
         void Returns()
@@ -330,7 +333,7 @@
             throw new FailureException();
         }
 
-        void Parameterized(int i, bool b, char ch, string s1, string s2, object obj, CaseTests complex)
+        void Parameterized(int i, bool b, char ch, string s1, string s2, object obj, CaseTests complex, ObjectWithNullStringRepresentation nullStringRepresentation)
         {
         }
 
@@ -348,6 +351,11 @@
 
         void ConstrainedGeneric<T>(T t) where T : struct
         {
+        }
+
+        class ObjectWithNullStringRepresentation
+        {
+            public override string? ToString() => null;
         }
     }
 }

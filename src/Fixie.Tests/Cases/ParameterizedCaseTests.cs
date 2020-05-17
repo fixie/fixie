@@ -51,16 +51,14 @@
 
         public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
         {
-            FixedParameterSource.Parameters = new[]
+            discovery.Parameters.Add(new FixedParameterSource(new[]
             {
                 new object[] { },
                 new object[] { 0 },
                 new object[] { 0, 1 },
                 new object[] { 0, 1, 2 },
                 new object[] { 0, 1, 2, 3 }
-            };
-
-            discovery.Parameters.Add<FixedParameterSource>();
+            }));
 
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
@@ -171,7 +169,7 @@
 
         class InputAttributeParameterSource : ParameterSource
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            public IEnumerable<object?[]> GetParameters(MethodInfo method)
             {
                 var inputAttributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
 
@@ -183,7 +181,7 @@
 
         class InputAttributeOrDefaultParameterSource : ParameterSource
         {
-            public virtual IEnumerable<object[]> GetParameters(MethodInfo method)
+            public virtual IEnumerable<object?[]> GetParameters(MethodInfo method)
             {
                 var parameters = method.GetParameters();
 
@@ -221,7 +219,7 @@
 
         class EagerBuggyParameterSource : InputAttributeOrDefaultParameterSource
         {
-            public override IEnumerable<object[]> GetParameters(MethodInfo method)
+            public override IEnumerable<object?[]> GetParameters(MethodInfo method)
             {
                 if (method.Name == nameof(ParameterizedTestClass.IntArg))
                     throw new Exception("Exception thrown while attempting to eagerly build input parameters for method: " + method.Name);
@@ -232,15 +230,16 @@
 
         class FixedParameterSource : ParameterSource
         {
-            public static object[][] Parameters { get; set; }
+            readonly object[][] parameters;
+
+            public FixedParameterSource(object[][] parameters)
+                => this.parameters = parameters;
 
             public IEnumerable<object[]> GetParameters(MethodInfo method)
-            {
-                return Parameters;
-            }
+                => parameters;
         }
 
-        static object Default(Type type)
+        static object? Default(Type type)
         {
             return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
@@ -322,7 +321,7 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            static string Format(object obj)
+            static string Format(object? obj)
             {
                 return obj?.ToString() ?? "[null]";
             }
@@ -343,12 +342,12 @@
         [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
         class InputAttribute : Attribute
         {
-            public InputAttribute(params object[] parameters)
+            public InputAttribute(params object?[] parameters)
             {
                 Parameters = parameters;
             }
 
-            public object[] Parameters { get; }
+            public object?[] Parameters { get; }
         }
     }
 }

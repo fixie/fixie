@@ -12,7 +12,7 @@
     {
         public void ShouldProduceValidXmlDocument()
         {
-            XDocument actual = null;
+            XDocument? actual = null;
             var listener = new ReportListener(report => actual = report);
 
             using (var console = new RedirectedConsole())
@@ -28,6 +28,9 @@
                         "Console.Out: Pass",
                         "Console.Error: Pass");
             }
+
+            if (actual == null)
+                throw new Exception("Expected non-null XML report.");
 
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldBe(ExpectedReport);
         }

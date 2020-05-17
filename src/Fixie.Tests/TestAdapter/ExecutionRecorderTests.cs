@@ -7,6 +7,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Assertions;
+    using Fixie.Internal;
     using Fixie.Internal.Listeners;
     using static System.Environment;
 
@@ -19,90 +20,49 @@
 
             var executionRecorder = new ExecutionRecorder(recorder, assemblyPath);
 
+            var @case = Case("Pass", 1);
             executionRecorder.Record(new PipeMessage.CaseStarted
-            {
-                Test = new PipeMessage.Test
-                {
-                    Class = "Namespace.Class",
-                    Method = "Pass",
-                    Name = "Namespace.Class.Pass",
-                },
-                Name = "Namespace.Class.Pass(1)"
-            });
-
+            (
+                new CaseStarted(@case)
+            ));
+            @case.Duration = TimeSpan.FromSeconds(1);
+            @case.Output = "Output";
             executionRecorder.Record(new PipeMessage.CasePassed
-            {
-                Test = new PipeMessage.Test
-                {
-                    Class = "Namespace.Class",
-                    Method = "Pass",
-                    Name = "Namespace.Class.Pass",
-                },
-                Name = "Namespace.Class.Pass(1)",
-                Duration = TimeSpan.FromSeconds(1),
-                Output = "Output"
-            });
+            (
+                new CasePassed(@case)
+            ));
 
+            @case = Case("Fail");
             executionRecorder.Record(new PipeMessage.CaseStarted
-            {
-                Test = new PipeMessage.Test
-                {
-                    Class = "Namespace.Class",
-                    Method = "Fail",
-                    Name = "Namespace.Class.Fail",
-                },
-                Name = "Namespace.Class.Fail"
-            });
-
+            (
+                new CaseStarted(@case)
+            ));
+            @case.Duration = TimeSpan.FromSeconds(2);
+            @case.Output = "Output";
+            @case.Fail(new StubException("Exception Message"));
             executionRecorder.Record(new PipeMessage.CaseFailed
-            {
-                Test = new PipeMessage.Test
-                {
-                    Class = "Namespace.Class",
-                    Method = "Fail",
-                    Name = "Namespace.Class.Fail",
-                },
-                Name = "Namespace.Class.Fail",
-                Duration = TimeSpan.FromSeconds(2),
-                Output = "Output",
-                Exception = new PipeMessage.Exception
-                {
-                    Type = "Exception Type",
-                    Message = "Exception Message",
-                    StackTrace = "Exception Stack Trace"
-                }
-            });
+            (
+                new CaseFailed(@case)
+            ));
 
+            @case = Case("Skip");
             executionRecorder.Record(new PipeMessage.CaseStarted
-            {
-                Test = new PipeMessage.Test
-                {
-                    Class = "Namespace.Class",
-                    Method = "Skip",
-                    Name = "Namespace.Class.Skip",
-                },
-                Name = "Namespace.Class.Skip"
-            });
-
+            (
+                new CaseStarted(@case)
+            ));
+            @case.Skip("Skip Reason");
             executionRecorder.Record(new PipeMessage.CaseSkipped
-            {
-                Test = new PipeMessage.Test
-                {
-                    Class = "Namespace.Class",
-                    Method = "Skip",
-                    Name = "Namespace.Class.Skip",
-                },
-                Name = "Namespace.Class.Skip",
-                Duration = TimeSpan.Zero,
-                Output = null,
-                Reason = "Skip Reason"
-            });
+            (
+                new CaseSkipped(@case)
+            ));
+
+            var className = typeof(SampleTestClass).FullName;
 
             var starts = recorder.TestStarts;
             starts.Count.ShouldBe(3);
-            starts[0].ShouldBeExecutionTimeTest("Namespace.Class.Pass", assemblyPath);
-            starts[1].ShouldBeExecutionTimeTest("Namespace.Class.Fail", assemblyPath);
-            starts[2].ShouldBeExecutionTimeTest("Namespace.Class.Skip", assemblyPath);
+            starts[0].ShouldBeExecutionTimeTest(className+".Pass", assemblyPath);
+            starts[1].ShouldBeExecutionTimeTest(className+".Fail", assemblyPath);
+            starts[2].ShouldBeExecutionTimeTest(className+".Skip", assemblyPath);
 
             var results = recorder.TestResults;
             results.Count.ShouldBe(3);
@@ -118,36 +78,55 @@
             var fail = results[1];
             var skip = results[2];
 
-            pass.TestCase.ShouldBeExecutionTimeTest("Namespace.Class.Pass", assemblyPath);
-            pass.TestCase.DisplayName.ShouldBe("Namespace.Class.Pass");
+            pass.TestCase.ShouldBeExecutionTimeTest(className+".Pass", assemblyPath);
+            pass.TestCase.DisplayName.ShouldBe(className+".Pass");
             pass.Outcome.ShouldBe(TestOutcome.Passed);
             pass.ErrorMessage.ShouldBe(null);
             pass.ErrorStackTrace.ShouldBe(null);
-            pass.DisplayName.ShouldBe("Namespace.Class.Pass(1)");
+            pass.DisplayName.ShouldBe(className+".Pass(1)");
             pass.Messages.Count.ShouldBe(1);
             pass.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
             pass.Messages[0].Text.ShouldBe("Output");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            fail.TestCase.ShouldBeExecutionTimeTest("Namespace.Class.Fail", assemblyPath);
-            fail.TestCase.DisplayName.ShouldBe("Namespace.Class.Fail");
+            fail.TestCase.ShouldBeExecutionTimeTest(className+".Fail", assemblyPath);
+            fail.TestCase.DisplayName.ShouldBe(className+".Fail");
             fail.Outcome.ShouldBe(TestOutcome.Failed);
             fail.ErrorMessage.ShouldBe("Exception Message");
-            fail.ErrorStackTrace.ShouldBe("Exception Type" + NewLine + "Exception Stack Trace");
-            fail.DisplayName.ShouldBe("Namespace.Class.Fail");
+            fail.ErrorStackTrace.ShouldBe(typeof(StubException).FullName + NewLine + "Exception Stack Trace");
+            fail.DisplayName.ShouldBe(className+".Fail");
             fail.Messages.Count.ShouldBe(1);
             fail.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
             fail.Messages[0].Text.ShouldBe("Output");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            skip.TestCase.ShouldBeExecutionTimeTest("Namespace.Class.Skip", assemblyPath);
-            skip.TestCase.DisplayName.ShouldBe("Namespace.Class.Skip");
+            skip.TestCase.ShouldBeExecutionTimeTest(className+".Skip", assemblyPath);
+            skip.TestCase.DisplayName.ShouldBe(className+".Skip");
             skip.Outcome.ShouldBe(TestOutcome.Skipped);
             skip.ErrorMessage.ShouldBe("Skip Reason");
             skip.ErrorStackTrace.ShouldBe(null);
-            skip.DisplayName.ShouldBe("Namespace.Class.Skip");
+            skip.DisplayName.ShouldBe(className+".Skip");
             skip.Messages.ShouldBeEmpty();
             skip.Duration.ShouldBe(TimeSpan.Zero);
+        }
+
+        static Case Case(string methodName, params object?[] parameters)
+            => new Case(typeof(SampleTestClass).GetInstanceMethod(methodName), parameters);
+
+        class SampleTestClass
+        {
+            public void Pass(int x) { }
+            public void Fail() { }
+            public void Skip() { }
+        }
+
+        class StubException : Exception
+        {
+            public StubException(string message)
+                : base(message) { }
+
+            public override string StackTrace
+                => "Exception Stack Trace";
         }
 
         class StubExecutionRecorder : ITestExecutionRecorder

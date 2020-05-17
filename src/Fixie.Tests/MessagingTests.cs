@@ -15,8 +15,9 @@
         }
 
         protected string TestClass { get; }
+        protected Type TestClassType => typeof(SampleTestClass);
 
-        protected void Run(Listener listener, Action<Discovery> customize = null)
+        protected void Run(Listener listener, Action<Discovery>? customize = null)
         {
             var discovery = new SelfTestDiscovery();
 
@@ -34,7 +35,7 @@
                 {
                     if (@case.Method.Has<SkipAttribute>())
                     {
-                        @case.Skip(@case.Method.GetCustomAttribute<SkipAttribute>().Reason);
+                        @case.Skip(@case.Method.GetCustomAttribute<SkipAttribute>()!.Reason);
                         return;
                     }
 
@@ -54,7 +55,7 @@
                 WhereAmI();
             }
 
-            protected static void WhereAmI([CallerMemberName] string member = null)
+            protected static void WhereAmI([CallerMemberName] string member = default!)
             {
                 Console.Out.WriteLine("Console.Out: " + member);
                 Console.Error.WriteLine("Console.Error: " + member);

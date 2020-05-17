@@ -10,7 +10,7 @@ namespace Fixie
 
         public Test(MethodInfo method)
         {
-            Class = method.ReflectedType.FullName;
+            Class = method.ReflectedType!.FullName!;
             Method = method.Name;
             Name = Class + "." + Method;
         }

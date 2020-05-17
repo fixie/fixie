@@ -55,7 +55,7 @@ namespace Fixie.TestAdapter
 
                 var environmentVariables = new Dictionary<string, string>
                 {
-                    ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
+                    ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")!
                 };
 
                 frameworkHandle?

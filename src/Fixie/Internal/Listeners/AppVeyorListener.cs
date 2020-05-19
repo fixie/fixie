@@ -54,7 +54,7 @@
         {
             runName = Path.GetFileNameWithoutExtension(message.Assembly.Location);
 
-            var framework = Assembly.GetEntryAssembly()?
+            var framework = message.Assembly
                 .GetCustomAttribute<TargetFrameworkAttribute>()?
                 .FrameworkName;
 

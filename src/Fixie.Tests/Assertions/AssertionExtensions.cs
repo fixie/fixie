@@ -34,7 +34,7 @@ namespace Fixie.Tests.Assertions
 
         static string ComparisonFailure(object left, object right, string operation)
         {
-            return $"Expected: {Format(left)} {operation} {Format(right)}{NewLine}but it was not";
+            return $"Expected: {left} {operation} {right}{NewLine}but it was not";
         }
 
         public static T ShouldBe<T>(this object? actual)
@@ -78,11 +78,6 @@ namespace Fixie.Tests.Assertions
         {
             if (collection.Any())
                 throw new AssertException("Collection was not empty.");
-        }
-
-        static string Format(object? value)
-        {
-            return value?.ToString() ?? "(null)";
         }
 
         public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception

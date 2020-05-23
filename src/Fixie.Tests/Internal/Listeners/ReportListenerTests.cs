@@ -32,7 +32,9 @@
             if (actual == null)
                 throw new Exception("Expected non-null XML report.");
 
-            CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldBe(ExpectedReport);
+            CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting))
+                .CleanStackTraceLineNumbers()
+                .ShouldBe(ExpectedReport);
         }
 
         static string CleanBrittleValues(string actualRawContent)
@@ -51,9 +53,6 @@
 
             //Avoid brittle assertion introduced by test duration.
             cleaned = Regex.Replace(cleaned, @"time=""[\d\.]+""", @"time=""1.234""");
-
-            //Avoid brittle assertion introduced by stack trace line numbers.
-            cleaned = cleaned.CleanStackTraceLineNumbers();
 
             return cleaned;
         }

@@ -10,7 +10,7 @@
     using static System.Console;
     using static Maybe;
 
-    public class AssemblyRunner
+    public class EntryPoint
     {
         enum ExitCode
         {
@@ -31,7 +31,7 @@
 
                 var pipeName = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE");
 
-                var runner = new AssemblyRunner();
+                var runner = new EntryPoint();
 
                 if (pipeName == null)
                     return (int)runner.RunAssembly(assembly, options, customArguments);

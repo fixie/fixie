@@ -4,4 +4,4 @@ open System
 
 [<STAThread; EntryPoint>]
 let main arguments =
-    AssemblyRunner.Main(typeof<Program>.Assembly, arguments)
+    EntryPoint.Main(typeof<Program>.Assembly, arguments)

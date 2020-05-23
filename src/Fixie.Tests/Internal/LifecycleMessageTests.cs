@@ -14,8 +14,7 @@
         {
             var listener = new StubCaseCompletedListener();
 
-            using (new RedirectedConsole())
-                Run(listener);
+            Run(listener, out _);
 
             var assembly = typeof(LifecycleMessageTests).Assembly;
 
@@ -46,6 +45,7 @@
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             fail.Exception.ShouldBe<FailureException>();
             fail.Exception.LiterateStackTrace()
+                .Lines()
                 .CleanStackTraceLineNumbers()
                 .ShouldBe(At("Fail()"));
             fail.Exception.Message.ShouldBe("'Fail' failed!");
@@ -57,6 +57,7 @@
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             failByAssertion.Exception.ShouldBe<AssertException>();
             failByAssertion.Exception.LiterateStackTrace()
+                .Lines()
                 .CleanStackTraceLineNumbers()
                 .ShouldBe(At("FailByAssertion()"));
             failByAssertion.Exception.Message.Lines().ShouldBe(

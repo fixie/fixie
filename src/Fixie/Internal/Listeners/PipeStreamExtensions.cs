@@ -44,19 +44,18 @@
         {
             var buffer = new byte[1024];
 
-            using (var ms = new MemoryStream())
+            using var ms = new MemoryStream();
+
+            do
             {
-                do
-                {
-                    var byteCount = pipe.Read(buffer, 0, buffer.Length);
+                var byteCount = pipe.Read(buffer, 0, buffer.Length);
 
-                    if (byteCount > 0)
-                        ms.Write(buffer, 0, byteCount);
-                }
-                while (!pipe.IsMessageComplete);
-
-                return ms.ToArray();
+                if (byteCount > 0)
+                    ms.Write(buffer, 0, byteCount);
             }
+            while (!pipe.IsMessageComplete);
+
+            return ms.ToArray();
         }
 
         static void SendMessageBytes(PipeStream pipe, byte[] bytes)

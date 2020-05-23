@@ -135,9 +135,9 @@
 
             Directory.CreateDirectory(directory);
 
-            using (var stream = new FileStream(path, FileMode.Create))
-            using (var writer = new StreamWriter(stream))
-                report.Save(writer, SaveOptions.None);
+            using var stream = new FileStream(path, FileMode.Create);
+            using var writer = new StreamWriter(stream);
+            report.Save(writer, SaveOptions.None);
         }
     }
 }

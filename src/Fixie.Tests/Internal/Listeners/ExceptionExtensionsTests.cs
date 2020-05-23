@@ -12,8 +12,8 @@
             var exception = GetException();
 
             exception.LiterateStackTrace()
-                .CleanStackTraceLineNumbers()
                 .Lines()
+                .CleanStackTraceLineNumbers()
                 .ShouldBe(
                     At<ExceptionExtensionsTests>("GetException()"),
                     "",

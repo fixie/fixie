@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using Assertions;
-    using Fixie.Internal;
     using Fixie.Internal.Listeners;
 
     public class AppVeyorListenerTests : MessagingTests
@@ -17,19 +16,16 @@
                 results.Add(content);
             });
 
-            using (var console = new RedirectedConsole())
-            {
-                Run(listener);
+            Run(listener, out var console);
 
-                console.Lines()
-                    .ShouldBe(
-                        "Console.Out: Fail",
-                        "Console.Error: Fail",
-                        "Console.Out: FailByAssertion",
-                        "Console.Error: FailByAssertion",
-                        "Console.Out: Pass",
-                        "Console.Error: Pass");
-            }
+            console
+                .ShouldBe(
+                    "Console.Out: Fail",
+                    "Console.Error: Fail",
+                    "Console.Out: FailByAssertion",
+                    "Console.Error: FailByAssertion",
+                    "Console.Out: Pass",
+                    "Console.Error: Pass");
 
             results.Count.ShouldBe(5);
 
@@ -64,8 +60,8 @@
             int.Parse(fail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             fail.ErrorMessage.ShouldBe("'Fail' failed!");
             fail.ErrorStackTrace!
-                .CleanStackTraceLineNumbers()
                 .Lines()
+                .CleanStackTraceLineNumbers()
                 .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
             fail.StdOut.Lines().ShouldBe("Console.Out: Fail", "Console.Error: Fail");
 
@@ -76,8 +72,8 @@
                 "Expected: 2",
                 "Actual:   1");
             failByAssertion.ErrorStackTrace!
-                .CleanStackTraceLineNumbers()
                 .Lines()
+                .CleanStackTraceLineNumbers()
                 .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
             failByAssertion.StdOut.Lines().ShouldBe("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
 

@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Runtime.ExceptionServices;
+    using System.Text;
 
     static class ExceptionExtensions
     {
@@ -14,25 +15,24 @@
 
         public static string LiterateStackTrace(this Exception exception)
         {
-            using (var console = new StringWriter())
+            var console = new StringBuilder();
+
+            var ex = exception;
+
+            console.Append(StackTraceOmittingInternalRethrow(ex));
+
+            var walk = ex;
+            while (walk.InnerException != null)
             {
-                var ex = exception;
-
-                console.Write(StackTraceOmittingInternalRethrow(ex));
-
-                var walk = ex;
-                while (walk.InnerException != null)
-                {
-                    walk = walk.InnerException;
-                    console.WriteLine();
-                    console.WriteLine();
-                    console.WriteLine($"------- Inner Exception: {walk.GetType().FullName} -------");
-                    console.WriteLine(walk.Message);
-                    console.Write(walk.StackTrace);
-                }
-
-                return console.ToString();
+                walk = walk.InnerException;
+                console.AppendLine();
+                console.AppendLine();
+                console.AppendLine($"------- Inner Exception: {walk.GetType().FullName} -------");
+                console.AppendLine(walk.Message);
+                console.Append(walk.StackTrace);
             }
+
+            return console.ToString();
         }
 
         public static string? StackTraceOmittingInternalRethrow(Exception exception)

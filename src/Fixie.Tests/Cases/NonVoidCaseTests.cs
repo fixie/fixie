@@ -11,90 +11,85 @@ namespace Fixie.Tests.Cases
     {
         public void ShouldIgnoreCaseReturnValuesByDefault()
         {
-            using (var console = new RedirectedConsole())
-            {
-                Run<SampleTestClass>()
-                    .ShouldBe(
-                        For<SampleTestClass>(
-                            ".BoolFalse passed",
-                            ".BoolThrow failed: 'BoolThrow' failed!",
-                            ".BoolTrue passed",
-                            ".Pass passed",
-                            ".String passed",
-                            ".StringNull passed",
-                            ".Throw failed: 'Throw' failed!"));
+            using var console = new RedirectedConsole();
 
-                Run<SampleAsyncTestClass>()
-                    .ShouldBe(
-                        For<SampleAsyncTestClass>(
-                            ".BoolFalse passed",
-                            ".BoolThrow failed: 'BoolThrow' failed!",
-                            ".BoolTrue passed",
-                            ".Pass passed",
-                            ".String passed",
-                            ".StringNull passed",
-                            ".Throw failed: 'Throw' failed!"));
+            Run<SampleTestClass>()
+                .ShouldBe(
+                    For<SampleTestClass>(
+                        ".BoolFalse passed",
+                        ".BoolThrow failed: 'BoolThrow' failed!",
+                        ".BoolTrue passed",
+                        ".Pass passed",
+                        ".String passed",
+                        ".StringNull passed",
+                        ".Throw failed: 'Throw' failed!"));
 
-                console.Output.ShouldBe("");
-            }
+            Run<SampleAsyncTestClass>()
+                .ShouldBe(
+                    For<SampleAsyncTestClass>(
+                        ".BoolFalse passed",
+                        ".BoolThrow failed: 'BoolThrow' failed!",
+                        ".BoolTrue passed",
+                        ".Pass passed",
+                        ".String passed",
+                        ".StringNull passed",
+                        ".Throw failed: 'Throw' failed!"));
+
+            console.Output.ShouldBe("");
         }
 
         public void ShouldProvideCaseReturnValuesToCustomBehaviors()
         {
-            using (var console = new RedirectedConsole())
-            {
-                var discovery = new SelfTestDiscovery();
-                var execution = new TreatBoolReturnValuesAsAssertions();
+            var discovery = new SelfTestDiscovery();
+            var execution = new TreatBoolReturnValuesAsAssertions();
+            using var console = new RedirectedConsole();
 
-                Run<SampleTestClass>(discovery, execution)
-                    .ShouldBe(
-                        For<SampleTestClass>(
-                            ".BoolFalse failed: Boolean test case returned false!",
-                            ".BoolThrow failed: 'BoolThrow' failed!",
-                            ".BoolTrue passed",
-                            ".Pass passed",
-                            ".String passed",
-                            ".StringNull passed",
-                            ".Throw failed: 'Throw' failed!"));
+            Run<SampleTestClass>(discovery, execution)
+                .ShouldBe(
+                    For<SampleTestClass>(
+                        ".BoolFalse failed: Boolean test case returned false!",
+                        ".BoolThrow failed: 'BoolThrow' failed!",
+                        ".BoolTrue passed",
+                        ".Pass passed",
+                        ".String passed",
+                        ".StringNull passed",
+                        ".Throw failed: 'Throw' failed!"));
 
-                console.Lines().ShouldBe(
-                    "BoolFalse False",
-                    "BoolThrow null",
-                    "BoolTrue True",
-                    "Pass null",
-                    "String ABC",
-                    "StringNull null",
-                    "Throw null");
-            }
+            console.Lines().ShouldBe(
+                "BoolFalse False",
+                "BoolThrow null",
+                "BoolTrue True",
+                "Pass null",
+                "String ABC",
+                "StringNull null",
+                "Throw null");
         }
 
         public void ShouldUnpackResultValuesFromStronglyTypedTaskObjectsForAsyncCases()
         {
-            using (var console = new RedirectedConsole())
-            {
-                var discovery = new SelfTestDiscovery();
-                var execution = new TreatBoolReturnValuesAsAssertions();
+            var discovery = new SelfTestDiscovery();
+            var execution = new TreatBoolReturnValuesAsAssertions();
+            using var console = new RedirectedConsole();
 
-                Run<SampleAsyncTestClass>(discovery, execution)
-                    .ShouldBe(
-                        For<SampleAsyncTestClass>(
-                            ".BoolFalse failed: Boolean test case returned false!",
-                            ".BoolThrow failed: 'BoolThrow' failed!",
-                            ".BoolTrue passed",
-                            ".Pass passed",
-                            ".String passed",
-                            ".StringNull passed",
-                            ".Throw failed: 'Throw' failed!"));
+            Run<SampleAsyncTestClass>(discovery, execution)
+                .ShouldBe(
+                    For<SampleAsyncTestClass>(
+                        ".BoolFalse failed: Boolean test case returned false!",
+                        ".BoolThrow failed: 'BoolThrow' failed!",
+                        ".BoolTrue passed",
+                        ".Pass passed",
+                        ".String passed",
+                        ".StringNull passed",
+                        ".Throw failed: 'Throw' failed!"));
 
-                console.Lines().ShouldBe(
-                    "BoolFalse False",
-                    "BoolThrow null",
-                    "BoolTrue True",
-                    "Pass null",
-                    "String ABC",
-                    "StringNull null",
-                    "Throw null");
-            }
+            console.Lines().ShouldBe(
+                "BoolFalse False",
+                "BoolThrow null",
+                "BoolTrue True",
+                "Pass null",
+                "String ABC",
+                "StringNull null",
+                "Throw null");
         }
 
         class SampleTestClass

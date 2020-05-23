@@ -5,7 +5,6 @@
     using System.Text.RegularExpressions;
     using System.Xml.Linq;
     using Assertions;
-    using Fixie.Internal;
     using Fixie.Internal.Listeners;
 
     public class ReportListenerTests : MessagingTests
@@ -15,24 +14,24 @@
             XDocument? actual = null;
             var listener = new ReportListener(report => actual = report);
 
-            using (var console = new RedirectedConsole())
-            {
-                Run(listener);
+            Run(listener, out var console);
 
-                console.Lines()
-                    .ShouldBe(
-                        "Console.Out: Fail",
-                        "Console.Error: Fail",
-                        "Console.Out: FailByAssertion",
-                        "Console.Error: FailByAssertion",
-                        "Console.Out: Pass",
-                        "Console.Error: Pass");
-            }
+            console
+                .ShouldBe(
+                    "Console.Out: Fail",
+                    "Console.Error: Fail",
+                    "Console.Out: FailByAssertion",
+                    "Console.Error: FailByAssertion",
+                    "Console.Out: Pass",
+                    "Console.Error: Pass");
 
             if (actual == null)
                 throw new Exception("Expected non-null XML report.");
 
-            CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting)).ShouldBe(ExpectedReport);
+            CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting))
+                .Lines()
+                .CleanStackTraceLineNumbers()
+                .ShouldBe(ExpectedReport.Lines());
         }
 
         static string CleanBrittleValues(string actualRawContent)
@@ -51,9 +50,6 @@
 
             //Avoid brittle assertion introduced by test duration.
             cleaned = Regex.Replace(cleaned, @"time=""[\d\.]+""", @"time=""1.234""");
-
-            //Avoid brittle assertion introduced by stack trace line numbers.
-            cleaned = cleaned.CleanStackTraceLineNumbers();
 
             return cleaned;
         }

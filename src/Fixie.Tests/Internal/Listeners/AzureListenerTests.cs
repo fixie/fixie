@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Net.Http;
     using Assertions;
-    using Fixie.Internal;
     using Fixie.Internal.Listeners;
     using static Fixie.Internal.Serialization;
 
@@ -64,19 +63,16 @@
                     return "";
                 }, batchSize);
 
-            using (var console = new RedirectedConsole())
-            {
-                Run(listener);
+            Run(listener, out var console);
 
-                console.Lines()
-                    .ShouldBe(
-                        "Console.Out: Fail",
-                        "Console.Error: Fail",
-                        "Console.Out: FailByAssertion",
-                        "Console.Error: FailByAssertion",
-                        "Console.Out: Pass",
-                        "Console.Error: Pass");
-            }
+            console
+                .ShouldBe(
+                    "Console.Out: Fail",
+                    "Console.Error: Fail",
+                    "Console.Out: FailByAssertion",
+                    "Console.Error: FailByAssertion",
+                    "Console.Out: Pass",
+                    "Console.Error: Pass");
 
             var firstRequest = (Request<AzureListener.CreateRun>)requests.First();
             firstRequest.Method.ShouldBe(HttpMethod.Post);
@@ -133,8 +129,8 @@
             fail.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
             fail.errorMessage.ShouldBe("'Fail' failed!");
             fail.stackTrace!
-                .CleanStackTraceLineNumbers()
                 .Lines()
+                .CleanStackTraceLineNumbers()
                 .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
 
             failByAssertion.automatedTestName.ShouldBe(TestClass + ".FailByAssertion");
@@ -145,8 +141,8 @@
                 "Expected: 2",
                 "Actual:   1");
             failByAssertion.stackTrace!
-                .CleanStackTraceLineNumbers()
                 .Lines()
+                .CleanStackTraceLineNumbers()
                 .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
 
             pass.automatedTestName.ShouldBe(TestClass + ".Pass");

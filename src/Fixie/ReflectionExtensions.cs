@@ -16,14 +16,9 @@
             return type.IsAbstract && type.IsSealed;
         }
 
-        public static bool Has<TAttribute>(this Type type) where TAttribute : Attribute
+        public static bool Has<TAttribute>(this MemberInfo member) where TAttribute : Attribute
         {
-            return type.GetCustomAttributes<TAttribute>(true).Any();
-        }
-
-        public static bool Has<TAttribute>(this MethodInfo method) where TAttribute : Attribute
-        {
-            return method.GetCustomAttributes<TAttribute>(true).Any();
+            return member.GetCustomAttributes<TAttribute>(true).Any();
         }
 
         public static void Dispose(this object? o)

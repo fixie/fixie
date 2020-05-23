@@ -20,15 +20,12 @@
             typeof(SealedConcreteClass).IsStatic().ShouldBe(false);
         }
 
-        public void CanDetectClassAttributes()
+        public void CanDetectAttributes()
         {
             typeof(AttributeSample).Has<InheritedAttribute>().ShouldBe(true);
             typeof(AttributeSample).Has<NonInheritedAttribute>().ShouldBe(true);
             typeof(AttributeSample).Has<AttributeUsageAttribute>().ShouldBe(false);
-        }
 
-        public void CanDetectMethodAttributes()
-        {
             Method<AttributeSample>("AttributeOnBaseDeclaration").Has<SampleMethodAttribute>().ShouldBe(true);
             Method<AttributeSample>("AttributeOnOverrideDeclaration").Has<SampleMethodAttribute>().ShouldBe(true);
             Method<AttributeSample>("NoAttrribute").Has<SampleMethodAttribute>().ShouldBe(false);

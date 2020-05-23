@@ -1,8 +1,10 @@
 ﻿namespace Fixie
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
+    using static Internal.Maybe;
 
     public static class ReflectionExtensions
     {
@@ -16,14 +18,14 @@
             return type.IsAbstract && type.IsSealed;
         }
 
-        public static bool Has<TAttribute>(this Type type) where TAttribute : Attribute
+        public static bool Has<TAttribute>(this MemberInfo member) where TAttribute : Attribute
         {
-            return type.GetCustomAttributes<TAttribute>(true).Any();
+            return member.GetCustomAttributes<TAttribute>(true).Any();
         }
 
-        public static bool Has<TAttribute>(this MethodInfo method) where TAttribute : Attribute
+        public static bool Has<TAttribute>(this MemberInfo member, [NotNullWhen(true)] out TAttribute? matchingAttribute) where TAttribute : Attribute
         {
-            return method.GetCustomAttributes<TAttribute>(true).Any();
+            return Try(() => member.GetCustomAttribute<TAttribute>(true), out matchingAttribute);
         }
 
         public static void Dispose(this object? o)

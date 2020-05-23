@@ -33,9 +33,9 @@
             {
                 testClass.RunCases(@case =>
                 {
-                    if (@case.Method.Has<SkipAttribute>())
+                    if (@case.Method.Has<SkipAttribute>(out var skip))
                     {
-                        @case.Skip(@case.Method.GetCustomAttribute<SkipAttribute>()!.Reason);
+                        @case.Skip(skip.Reason);
                         return;
                     }
 

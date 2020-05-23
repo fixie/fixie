@@ -116,11 +116,11 @@
                 r => r.Run(tests.Select(x => new Test(x.Class, x.Method)).ToList()));
         }
 
-        ExitCode Run(Assembly assembly, Options options, string[] customArguments, Func<Runner, ExecutionSummary> run)
+        ExitCode Run(Assembly assembly, Options options, string[] customArguments, Func<AssemblyRunner, ExecutionSummary> run)
         {
             var listeners = GetExecutionListeners(options);
             var bus = new Bus(listeners);
-            var runner = new Runner(assembly, bus, customArguments);
+            var runner = new AssemblyRunner(assembly, bus, customArguments);
 
             var summary = run(runner);
 

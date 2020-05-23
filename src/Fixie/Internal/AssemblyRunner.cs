@@ -5,16 +5,16 @@
     using System.Diagnostics;
     using System.Reflection;
 
-    class Runner
+    class AssemblyRunner
     {
         readonly Assembly assembly;
         readonly Bus bus;
         readonly string[] customArguments;
 
-        public Runner(Assembly assembly, Bus bus)
+        public AssemblyRunner(Assembly assembly, Bus bus)
             : this(assembly, bus, new string[] {}) { }
 
-        public Runner(Assembly assembly, Bus bus, string[] customArguments)
+        public AssemblyRunner(Assembly assembly, Bus bus, string[] customArguments)
         {
             this.assembly = assembly;
             this.bus = bus;

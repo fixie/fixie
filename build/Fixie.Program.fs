@@ -1,7 +1,6 @@
-﻿module Fixie.EntryPoint.Program
+﻿module Fixie.Internal.Program
 
 open System
-open Fixie.Internal
 
 [<STAThread; EntryPoint>]
 let main arguments =

@@ -72,11 +72,9 @@
 
         static int Run(ProcessStartInfo startInfo)
         {
-            using (var process = Start(startInfo))
-            {
-                process.WaitForExit();
-                return process.ExitCode;
-            }
+            using var process = Start(startInfo);
+            process.WaitForExit();
+            return process.ExitCode;
         }
 
         static Process Start(ProcessStartInfo startInfo)

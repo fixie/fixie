@@ -17,21 +17,20 @@
             };
 
             var bus = new Bus(listeners);
-            using (var console = new RedirectedConsole())
-            {
-                bus.Publish(new Event(1));
-                bus.Publish(new AnotherEvent(2));
-                bus.Publish(new Event(3));
+            using var console = new RedirectedConsole();
 
-                console.Lines()
-                    .ShouldBe(
-                        FullName<EventHandler>() + " handled Event 1",
-                        FullName<CombinationEventHandler>() + " handled Event 1",
-                        FullName<AnotherEventHandler>() + " handled AnotherEvent 2",
-                        FullName<CombinationEventHandler>() + " handled AnotherEvent 2",
-                        FullName<EventHandler>() + " handled Event 3",
-                        FullName<CombinationEventHandler>() + " handled Event 3");
-            }
+            bus.Publish(new Event(1));
+            bus.Publish(new AnotherEvent(2));
+            bus.Publish(new Event(3));
+
+            console.Lines()
+                .ShouldBe(
+                    FullName<EventHandler>() + " handled Event 1",
+                    FullName<CombinationEventHandler>() + " handled Event 1",
+                    FullName<AnotherEventHandler>() + " handled AnotherEvent 2",
+                    FullName<CombinationEventHandler>() + " handled AnotherEvent 2",
+                    FullName<EventHandler>() + " handled Event 3",
+                    FullName<CombinationEventHandler>() + " handled Event 3");
         }
 
         public void ShouldCatchAndLogExceptionsThrowByProblematicListenersRatherThanInterruptExecution()
@@ -43,26 +42,25 @@
             };
 
             var bus = new Bus(listeners);
-            using (var console = new RedirectedConsole())
-            {
-                bus.Publish(new Event(1));
-                bus.Publish(new AnotherEvent(2));
-                bus.Publish(new Event(3));
+            using var console = new RedirectedConsole();
 
-                console.Lines()
-                    .ShouldBe(
-                        FullName<EventHandler>() + " handled Event 1",
-                        FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
-                        "",
-                        FullName<StubException>() + ": Could not handle Event 1",
-                        "<<Stack Trace>>",
-                        "",
-                        FullName<EventHandler>() + " handled Event 3",
-                        FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
-                        "",
-                        FullName<StubException>() + ": Could not handle Event 3",
-                        "<<Stack Trace>>");
-            }
+            bus.Publish(new Event(1));
+            bus.Publish(new AnotherEvent(2));
+            bus.Publish(new Event(3));
+
+            console.Lines()
+                .ShouldBe(
+                    FullName<EventHandler>() + " handled Event 1",
+                    FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
+                    "",
+                    FullName<StubException>() + ": Could not handle Event 1",
+                    "<<Stack Trace>>",
+                    "",
+                    FullName<EventHandler>() + " handled Event 3",
+                    FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
+                    "",
+                    FullName<StubException>() + ": Could not handle Event 3",
+                    "<<Stack Trace>>");
         }
 
         class Event : Message

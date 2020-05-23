@@ -19,17 +19,16 @@
 
         protected void Run(Listener listener, out IEnumerable<string> consoleLines, Action<Discovery>? customize = null)
         {
-            using (var console = new RedirectedConsole())
-            {
-                var discovery = new SelfTestDiscovery();
+            var discovery = new SelfTestDiscovery();
+            var execution = new CreateInstancePerCase();
 
-                customize?.Invoke(discovery);
+            customize?.Invoke(discovery);
 
-                var execution = new CreateInstancePerCase();
-                Utility.Run(listener, discovery, execution, typeof(SampleTestClass), typeof(EmptyTestClass));
+            using var console = new RedirectedConsole();
 
-                consoleLines = console.Lines();
-            }
+            Utility.Run(listener, discovery, execution, typeof(SampleTestClass), typeof(EmptyTestClass));
+
+            consoleLines = console.Lines();
         }
 
         class CreateInstancePerCase : Execution

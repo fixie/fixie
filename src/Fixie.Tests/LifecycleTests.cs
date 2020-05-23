@@ -34,13 +34,11 @@
         {
             var listener = new StubListener();
             var execution = new TExecution();
+            using var console = new RedirectedConsole();
 
-            using (var console = new RedirectedConsole())
-            {
-                Utility.Run(listener, discovery, execution, testClass);
+            Utility.Run(listener, discovery, execution, testClass);
 
-                return new Output(console.Lines().ToArray(), listener.Entries.ToArray());
-            }
+            return new Output(console.Lines().ToArray(), listener.Entries.ToArray());
         }
 
         class Output

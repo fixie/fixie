@@ -256,19 +256,18 @@
 
             task.Wait();
 
-            using (var httpResponse = task.Result)
-            {
-                var body = httpResponse.Content.ReadAsStringAsync().Result;
+            using var httpResponse = task.Result;
 
-                if (!httpResponse.IsSuccessStatusCode)
-                    throw new HttpRequestException(new StringBuilder()
-                        .AppendLine($"{typeof(AzureListener).FullName} failed to {method} a message:")
-                        .AppendLine($"{(int) httpResponse.StatusCode} {httpResponse.ReasonPhrase}")
-                        .AppendLine(body)
-                        .ToString());
+            var body = httpResponse.Content.ReadAsStringAsync().Result;
 
-                return body;
-            }
+            if (!httpResponse.IsSuccessStatusCode)
+                throw new HttpRequestException(new StringBuilder()
+                    .AppendLine($"{typeof(AzureListener).FullName} failed to {method} a message:")
+                    .AppendLine($"{(int) httpResponse.StatusCode} {httpResponse.ReasonPhrase}")
+                    .AppendLine(body)
+                    .ToString());
+
+            return body;
         }
 
         public class CreateRun

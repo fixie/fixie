@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Net.Http;
     using Assertions;
-    using Fixie.Internal;
     using Fixie.Internal.Listeners;
     using static Fixie.Internal.Serialization;
 
@@ -64,19 +63,16 @@
                     return "";
                 }, batchSize);
 
-            using (var console = new RedirectedConsole())
-            {
-                Run(listener);
+            Run(listener, out var console);
 
-                console.Lines()
-                    .ShouldBe(
-                        "Console.Out: Fail",
-                        "Console.Error: Fail",
-                        "Console.Out: FailByAssertion",
-                        "Console.Error: FailByAssertion",
-                        "Console.Out: Pass",
-                        "Console.Error: Pass");
-            }
+            console
+                .ShouldBe(
+                    "Console.Out: Fail",
+                    "Console.Error: Fail",
+                    "Console.Out: FailByAssertion",
+                    "Console.Error: FailByAssertion",
+                    "Console.Out: Pass",
+                    "Console.Error: Pass");
 
             var firstRequest = (Request<AzureListener.CreateRun>)requests.First();
             firstRequest.Method.ShouldBe(HttpMethod.Post);

@@ -1,7 +1,7 @@
 ﻿namespace Fixie.Tests
 {
     using System;
-    using System.Reflection;
+    using System.Collections.Generic;
     using System.Runtime.CompilerServices;
     using Assertions;
     using Fixie.Internal;
@@ -17,14 +17,19 @@
         protected string TestClass { get; }
         protected Type TestClassType => typeof(SampleTestClass);
 
-        protected void Run(Listener listener, Action<Discovery>? customize = null)
+        protected void Run(Listener listener, out IEnumerable<string> consoleLines, Action<Discovery>? customize = null)
         {
-            var discovery = new SelfTestDiscovery();
+            using (var console = new RedirectedConsole())
+            {
+                var discovery = new SelfTestDiscovery();
 
-            customize?.Invoke(discovery);
+                customize?.Invoke(discovery);
 
-            var execution = new CreateInstancePerCase();
-            Utility.Run(listener, discovery, execution, typeof(SampleTestClass), typeof(EmptyTestClass));
+                var execution = new CreateInstancePerCase();
+                Utility.Run(listener, discovery, execution, typeof(SampleTestClass), typeof(EmptyTestClass));
+
+                consoleLines = console.Lines();
+            }
         }
 
         class CreateInstancePerCase : Execution

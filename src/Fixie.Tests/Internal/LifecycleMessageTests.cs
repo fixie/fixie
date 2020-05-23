@@ -14,8 +14,7 @@
         {
             var listener = new StubCaseCompletedListener();
 
-            using (new RedirectedConsole())
-                Run(listener);
+            Run(listener, out _);
 
             var assembly = typeof(LifecycleMessageTests).Assembly;
 

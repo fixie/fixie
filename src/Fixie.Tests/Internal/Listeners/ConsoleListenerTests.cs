@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Tests.Internal.Listeners
 {
     using System.Linq;
-    using Fixie.Internal;
     using Fixie.Internal.Listeners;
     using Assertions;
 
@@ -11,45 +10,42 @@
         {
             var listener = new ConsoleListener();
 
-            using (var console = new RedirectedConsole())
-            {
-                Run(listener);
+            Run(listener, out var console);
 
-                console.Lines()
-                       .CleanStackTraceLineNumbers()
-                       .CleanDuration()
-                       .ShouldBe(
-                           "Console.Out: Fail",
-                           "Console.Error: Fail",
-                           "Test '" + TestClass + ".Fail' failed:",
-                           "",
-                           "'Fail' failed!",
-                           "",
-                           "Fixie.Tests.FailureException",
-                           At("Fail()"),
-                           "",
+            console
+                .CleanStackTraceLineNumbers()
+                .CleanDuration()
+                .ShouldBe(
+                    "Console.Out: Fail",
+                    "Console.Error: Fail",
+                    "Test '" + TestClass + ".Fail' failed:",
+                    "",
+                    "'Fail' failed!",
+                    "",
+                    "Fixie.Tests.FailureException",
+                    At("Fail()"),
+                    "",
 
-                           "Console.Out: FailByAssertion",
-                           "Console.Error: FailByAssertion",
-                           "Test '" + TestClass + ".FailByAssertion' failed:",
-                           "",
-                           "Expected: 2",
-                           "Actual:   1",
-                           "",
-                           "Fixie.Tests.Assertions.AssertException",
-                           At("FailByAssertion()"),
-                           "",
+                    "Console.Out: FailByAssertion",
+                    "Console.Error: FailByAssertion",
+                    "Test '" + TestClass + ".FailByAssertion' failed:",
+                    "",
+                    "Expected: 2",
+                    "Actual:   1",
+                    "",
+                    "Fixie.Tests.Assertions.AssertException",
+                    At("FailByAssertion()"),
+                    "",
 
-                           "Console.Out: Pass",
-                           "Console.Error: Pass",
+                    "Console.Out: Pass",
+                    "Console.Error: Pass",
 
-                           "Test '" + TestClass + ".SkipWithReason' skipped:",
-                           "⚠ Skipped with reason.",
-                           "",
-                           "Test '" + TestClass + ".SkipWithoutReason' skipped",
-                           "",
-                           "1 passed, 2 failed, 2 skipped, took 1.23 seconds");
-            }
+                    "Test '" + TestClass + ".SkipWithReason' skipped:",
+                    "⚠ Skipped with reason.",
+                    "",
+                    "Test '" + TestClass + ".SkipWithoutReason' skipped",
+                    "",
+                    "1 passed, 2 failed, 2 skipped, took 1.23 seconds");
         }
 
         public void ShouldNotReportPassCountsWhenZeroTestsHavePassed()
@@ -59,16 +55,12 @@
 
             var listener = new ConsoleListener();
 
-            using (var console = new RedirectedConsole())
-            {
-                Run(listener, ZeroPassed);
+            Run(listener, out var console, ZeroPassed);
 
-                console
-                    .Lines()
-                    .CleanDuration()
-                    .Last()
-                    .ShouldBe("2 failed, 2 skipped, took 1.23 seconds");
-            }
+            console
+                .CleanDuration()
+                .Last()
+                .ShouldBe("2 failed, 2 skipped, took 1.23 seconds");
         }
 
         public void ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
@@ -78,16 +70,12 @@
 
             var listener = new ConsoleListener();
 
-            using (var console = new RedirectedConsole())
-            {
-                Run(listener, ZeroFailed);
+            Run(listener, out var console, ZeroFailed);
 
-                console
-                    .Lines()
-                    .CleanDuration()
-                    .Last()
-                    .ShouldBe("1 passed, 2 skipped, took 1.23 seconds");
-            }
+            console
+                .CleanDuration()
+                .Last()
+                .ShouldBe("1 passed, 2 skipped, took 1.23 seconds");
         }
 
         public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
@@ -97,16 +85,12 @@
 
             var listener = new ConsoleListener();
 
-            using (var console = new RedirectedConsole())
-            {
-                Run(listener, ZeroSkipped);
+            Run(listener, out var console, ZeroSkipped);
 
-                console
-                    .Lines()
-                    .CleanDuration()
-                    .Last()
-                    .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
-            }
+            console
+                .CleanDuration()
+                .Last()
+                .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
         }
 
         public void ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
@@ -116,15 +100,11 @@
 
             var listener = new ConsoleListener();
 
-            using (var console = new RedirectedConsole())
-            {
-                Run(listener, NoTestsFound);
+            Run(listener, out var console, NoTestsFound);
 
-                console
-                    .Lines()
-                    .Last()
-                    .ShouldBe("No tests found.");
-            }
+            console
+                .Last()
+                .ShouldBe("No tests found.");
         }
     }
 }

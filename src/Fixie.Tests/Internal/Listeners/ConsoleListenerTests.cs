@@ -16,9 +16,9 @@
                 Run(listener);
 
                 console.Output
+                       .Lines()
                        .CleanStackTraceLineNumbers()
                        .CleanDuration()
-                       .Lines()
                        .ShouldBe(
                            "Console.Out: Fail",
                            "Console.Error: Fail",
@@ -66,8 +66,8 @@
 
                 console.Output
                     .Lines()
-                    .Last()
                     .CleanDuration()
+                    .Last()
                     .ShouldBe("2 failed, 2 skipped, took 1.23 seconds");
             }
         }
@@ -85,8 +85,8 @@
 
                 console.Output
                     .Lines()
-                    .Last()
                     .CleanDuration()
+                    .Last()
                     .ShouldBe("1 passed, 2 skipped, took 1.23 seconds");
             }
         }
@@ -104,8 +104,8 @@
 
                 console.Output
                     .Lines()
-                    .Last()
                     .CleanDuration()
+                    .Last()
                     .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
             }
         }

@@ -133,8 +133,8 @@
             fail.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
             fail.errorMessage.ShouldBe("'Fail' failed!");
             fail.stackTrace!
-                .CleanStackTraceLineNumbers()
                 .Lines()
+                .CleanStackTraceLineNumbers()
                 .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
 
             failByAssertion.automatedTestName.ShouldBe(TestClass + ".FailByAssertion");
@@ -145,8 +145,8 @@
                 "Expected: 2",
                 "Actual:   1");
             failByAssertion.stackTrace!
-                .CleanStackTraceLineNumbers()
                 .Lines()
+                .CleanStackTraceLineNumbers()
                 .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
 
             pass.automatedTestName.ShouldBe(TestClass + ".Pass");

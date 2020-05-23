@@ -33,8 +33,9 @@
                 throw new Exception("Expected non-null XML report.");
 
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting))
+                .Lines()
                 .CleanStackTraceLineNumbers()
-                .ShouldBe(ExpectedReport);
+                .ShouldBe(ExpectedReport.Lines());
         }
 
         static string CleanBrittleValues(string actualRawContent)

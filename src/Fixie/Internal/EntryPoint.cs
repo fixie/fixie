@@ -31,14 +31,14 @@
 
                 var pipeName = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE");
 
-                var runner = new EntryPoint();
+                var entryPoint = new EntryPoint();
 
                 if (pipeName == null)
-                    return (int)runner.RunAssembly(assembly, options, customArguments);
+                    return (int)entryPoint.RunAssembly(assembly, options, customArguments);
 
                 using (var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
                 {
-                    runner.Subscribe(new PipeListener(pipe));
+                    entryPoint.Subscribe(new PipeListener(pipe));
 
                     pipe.Connect();
                     pipe.ReadMode = PipeTransmissionMode.Message;
@@ -52,15 +52,15 @@
                         if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
                         {
                             var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
-                            runner.DiscoverMethods(assembly, customArguments);
+                            entryPoint.DiscoverMethods(assembly, customArguments);
                         }
                         else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
                         {
                             var executeTests = pipe.Receive<PipeMessage.ExecuteTests>();
 
                             exitCode = executeTests.Filter.Length > 0
-                                ? runner.RunTests(assembly, options, customArguments, executeTests.Filter)
-                                : runner.RunAssembly(assembly, options, customArguments);
+                                ? entryPoint.RunTests(assembly, options, customArguments, executeTests.Filter)
+                                : entryPoint.RunAssembly(assembly, options, customArguments);
                         }
                         else
                         {
@@ -120,9 +120,9 @@
         {
             var listeners = GetExecutionListeners(options);
             var bus = new Bus(listeners);
-            var runner = new AssemblyRunner(assembly, bus, customArguments);
+            var assemblyRunner = new AssemblyRunner(assembly, bus, customArguments);
 
-            var summary = run(runner);
+            var summary = run(assemblyRunner);
 
             if (summary.Total == 0)
                 return ExitCode.FatalError;

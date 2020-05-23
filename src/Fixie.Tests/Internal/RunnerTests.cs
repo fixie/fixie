@@ -159,9 +159,6 @@ namespace Fixie.Tests.Internal
         {
             public IEnumerable<object[]> GetParameters(MethodInfo method)
             {
-                if (method.GetParameters().Length == 0)
-                    yield break;
-
                 throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
             }
         }

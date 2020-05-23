@@ -28,7 +28,7 @@
 
             Method<AttributeSample>("AttributeOnBaseDeclaration").Has<SampleMethodAttribute>().ShouldBe(true);
             Method<AttributeSample>("AttributeOnOverrideDeclaration").Has<SampleMethodAttribute>().ShouldBe(true);
-            Method<AttributeSample>("NoAttrribute").Has<SampleMethodAttribute>().ShouldBe(false);
+            Method<AttributeSample>("NoAttribute").Has<SampleMethodAttribute>().ShouldBe(false);
         }
 
         public void CanDetectAndObtainAttributeWhenOneTimeUseAttributeIsPresent()
@@ -97,7 +97,7 @@
             [SampleMethod]
             public virtual void AttributeOnBaseDeclaration() { }
             public virtual void AttributeOnOverrideDeclaration() { }
-            public virtual void NoAttrribute() { }
+            public virtual void NoAttribute() { }
         }
 
         [NonInherited]
@@ -106,7 +106,7 @@
             public override void AttributeOnBaseDeclaration() { }
             [SampleMethod]
             public override void AttributeOnOverrideDeclaration() { }
-            public override void NoAttrribute() { }
+            public override void NoAttribute() { }
         }
 
         static MethodInfo Method(string name)

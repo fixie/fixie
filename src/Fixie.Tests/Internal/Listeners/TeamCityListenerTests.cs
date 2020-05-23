@@ -17,7 +17,6 @@
                 Run(listener);
 
                 console
-                    .Output
                     .Lines()
                     .CleanStackTraceLineNumbers()
                     .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'"))

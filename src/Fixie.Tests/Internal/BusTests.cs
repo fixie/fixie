@@ -23,7 +23,7 @@
                 bus.Publish(new AnotherEvent(2));
                 bus.Publish(new Event(3));
 
-                console.Output.Lines()
+                console.Lines()
                     .ShouldBe(
                         FullName<EventHandler>() + " handled Event 1",
                         FullName<CombinationEventHandler>() + " handled Event 1",
@@ -49,7 +49,7 @@
                 bus.Publish(new AnotherEvent(2));
                 bus.Publish(new Event(3));
 
-                console.Output.Lines()
+                console.Lines()
                     .ShouldBe(
                         FullName<EventHandler>() + " handled Event 1",
                         FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",

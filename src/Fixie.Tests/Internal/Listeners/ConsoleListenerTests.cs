@@ -15,8 +15,7 @@
             {
                 Run(listener);
 
-                console.Output
-                       .Lines()
+                console.Lines()
                        .CleanStackTraceLineNumbers()
                        .CleanDuration()
                        .ShouldBe(
@@ -64,7 +63,7 @@
             {
                 Run(listener, ZeroPassed);
 
-                console.Output
+                console
                     .Lines()
                     .CleanDuration()
                     .Last()
@@ -83,7 +82,7 @@
             {
                 Run(listener, ZeroFailed);
 
-                console.Output
+                console
                     .Lines()
                     .CleanDuration()
                     .Last()
@@ -102,7 +101,7 @@
             {
                 Run(listener, ZeroSkipped);
 
-                console.Output
+                console
                     .Lines()
                     .CleanDuration()
                     .Last()
@@ -121,7 +120,7 @@
             {
                 Run(listener, NoTestsFound);
 
-                console.Output
+                console
                     .Lines()
                     .Last()
                     .ShouldBe("No tests found.");

@@ -10,6 +10,7 @@
     using Fixie.Internal;
     using Fixie.Internal.Listeners;
     using static System.Environment;
+    using static Fixie.Internal.Serialization;
 
     public class ExecutionRecorderTests
     {
@@ -21,40 +22,40 @@
             var executionRecorder = new ExecutionRecorder(recorder, assemblyPath);
 
             var @case = Case("Pass", 1);
-            executionRecorder.Record(new PipeMessage.CaseStarted
+            executionRecorder.Record(Deserialized(new PipeMessage.CaseStarted
             (
                 new CaseStarted(@case)
-            ));
-            @case.Duration = TimeSpan.FromSeconds(1);
+            )));
+            @case.Duration = TimeSpan.FromMilliseconds(1000);
             @case.Output = "Output";
-            executionRecorder.Record(new PipeMessage.CasePassed
+            executionRecorder.Record(Deserialized(new PipeMessage.CasePassed
             (
                 new CasePassed(@case)
-            ));
+            )));
 
             @case = Case("Fail");
-            executionRecorder.Record(new PipeMessage.CaseStarted
+            executionRecorder.Record(Deserialized(new PipeMessage.CaseStarted
             (
                 new CaseStarted(@case)
-            ));
-            @case.Duration = TimeSpan.FromSeconds(2);
+            )));
+            @case.Duration = TimeSpan.FromMilliseconds(2000);
             @case.Output = "Output";
             @case.Fail(new StubException("Exception Message"));
-            executionRecorder.Record(new PipeMessage.CaseFailed
+            executionRecorder.Record(Deserialized(new PipeMessage.CaseFailed
             (
                 new CaseFailed(@case)
-            ));
+            )));
 
             @case = Case("Skip");
-            executionRecorder.Record(new PipeMessage.CaseStarted
+            executionRecorder.Record(Deserialized(new PipeMessage.CaseStarted
             (
                 new CaseStarted(@case)
-            ));
+            )));
             @case.Skip("Skip Reason");
-            executionRecorder.Record(new PipeMessage.CaseSkipped
+            executionRecorder.Record(Deserialized(new PipeMessage.CaseSkipped
             (
                 new CaseSkipped(@case)
-            ));
+            )));
 
             var className = typeof(SampleTestClass).FullName;
 
@@ -87,7 +88,7 @@
             pass.Messages.Count.ShouldBe(1);
             pass.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
             pass.Messages[0].Text.ShouldBe("Output");
-            pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            pass.Duration.ShouldBe(TimeSpan.FromMilliseconds(1000));
 
             fail.TestCase.ShouldBeExecutionTimeTest(className+".Fail", assemblyPath);
             fail.TestCase.DisplayName.ShouldBe(className+".Fail");
@@ -98,7 +99,7 @@
             fail.Messages.Count.ShouldBe(1);
             fail.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
             fail.Messages[0].Text.ShouldBe("Output");
-            fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            fail.Duration.ShouldBe(TimeSpan.FromMilliseconds(2000));
 
             skip.TestCase.ShouldBeExecutionTimeTest(className+".Skip", assemblyPath);
             skip.TestCase.DisplayName.ShouldBe(className+".Skip");
@@ -108,6 +109,16 @@
             skip.DisplayName.ShouldBe(className+".Skip");
             skip.Messages.ShouldBeEmpty();
             skip.Duration.ShouldBe(TimeSpan.Zero);
+        }
+
+        static T Deserialized<T>(T original)
+        {
+            // Because the inter-process communication between the VsTest process
+            // and the test assembly process is not exercised in these single-process
+            // tests, put a given sample message through the same serialization round
+            // trip that would be applied at runtime, in order to detect data loss.
+
+            return Deserialize<T>(Serialize(original));
         }
 
         static Case Case(string methodName, params object?[] parameters)

@@ -57,7 +57,7 @@
             if (message.Skipped > 0)
                 parts.Add($"{message.Skipped} skipped");
 
-            parts.Add($"took {message.Duration.TotalSeconds:N2} seconds");
+            parts.Add($"took {message.Duration.TotalSeconds:0.00} seconds");
 
             return string.Join(", ", parts);
         }

@@ -49,7 +49,7 @@
             cleaned = cleaned.Replace($@"test-framework=""{Fixie.Framework.Version}""", @"test-framework=""Fixie 1.2.3.4""");
 
             //Avoid brittle assertion introduced by test duration.
-            cleaned = Regex.Replace(cleaned, @"time=""[\d\.]+""", @"time=""1.234""");
+            cleaned = Regex.Replace(cleaned, @"time=""\d+\.\d\d\d""", @"time=""1.234""");
 
             return cleaned;
         }

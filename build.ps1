@@ -1,6 +1,6 @@
 ﻿param([int]$buildNumber)
 
-. $PSScriptRoot\build-helpers
+. $PSScriptRoot/build-helpers
 
 $versionPrefix = "3.0.0"
 $prerelease = $true
@@ -13,7 +13,7 @@ $versionSuffix = if ($prerelease) { "beta-{0:D4}" -f $buildNumber } else { "" }
 function Build {
     mit-license $copyright
 
-    generate "$PSScriptRoot\src\Directory.build.props" @"
+    generate "$PSScriptRoot/src/Directory.build.props" @"
 <Project>
     <PropertyGroup>
         <Product>Fixie</Product>
@@ -39,15 +39,15 @@ function Build {
 }
 
 function Test {
-    $fixie = resolve-path .\src\Fixie.Console\bin\$configuration\netcoreapp2.0\dotnet-fixie.dll
+    $fixie = resolve-path ./src/Fixie.Console/bin/$configuration/netcoreapp2.0/dotnet-fixie.dll
 
     exec { dotnet $fixie --configuration $configuration --no-build } src/Fixie.Tests
 }
 
 function Pack {
     remove-folder packages
-    exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src\Fixie
-    exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src\Fixie.Console
+    exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src/Fixie
+    exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src/Fixie.Console
 }
 
 main {

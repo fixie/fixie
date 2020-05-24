@@ -15,9 +15,9 @@
             Action validReport = new Options(report: "Report.xml").Validate;
             validReport();
 
-            Action invalidReport = new Options(report: "\t").Validate;
+            Action invalidReport = new Options(report: "\0").Validate;
             invalidReport.ShouldThrow<CommandLineException>(
-                "Specified report name is invalid: \t");
+                "Specified report name is invalid: \0");
         }
     }
 }

@@ -1,11 +1,10 @@
-﻿namespace Fixie.EntryPoint
+﻿namespace Fixie.Internal
 {
     using System;
-    using Internal;
 
     class Program
     {
         [STAThread]
-        static int Main(string[] arguments) => AssemblyRunner.Main(typeof(Program).Assembly, arguments);
+        static int Main(string[] arguments) => EntryPoint.Main(typeof(Program).Assembly, arguments);
     }
 }

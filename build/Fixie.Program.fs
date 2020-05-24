@@ -1,8 +1,7 @@
-﻿module Fixie.EntryPoint.Program
+﻿module Fixie.Internal.Program
 
 open System
-open Fixie.Internal
 
 [<STAThread; EntryPoint>]
 let main arguments =
-    AssemblyRunner.Main(typeof<Program>.Assembly, arguments)
+    EntryPoint.Main(typeof<Program>.Assembly, arguments)

@@ -2,157 +2,98 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO.Pipes;
-    using System.Linq;
+    using System.Diagnostics;
     using System.Reflection;
-    using Cli;
-    using Listeners;
-    using static System.Console;
-    using static Maybe;
 
-    public class AssemblyRunner
+    class AssemblyRunner
     {
-        enum ExitCode
+        readonly Assembly assembly;
+        readonly Bus bus;
+        readonly string[] customArguments;
+
+        public AssemblyRunner(Assembly assembly, Bus bus)
+            : this(assembly, bus, new string[] {}) { }
+
+        public AssemblyRunner(Assembly assembly, Bus bus, string[] customArguments)
         {
-            Success = 0,
-            Failure = 1,
-            FatalError = -1
+            this.assembly = assembly;
+            this.bus = bus;
+            this.customArguments = customArguments;
         }
 
-        public static int Main(Assembly assembly, string[] arguments)
+        public ExecutionSummary Run()
         {
+            return Run(assembly.GetTypes());
+        }
+
+        public ExecutionSummary Run(IReadOnlyList<Test> tests)
+        {
+            var request = new Dictionary<string, HashSet<string>>();
+            var types = new List<Type>();
+
+            foreach (var test in tests)
+            {
+                if (!request.ContainsKey(test.Class))
+                {
+                    request.Add(test.Class, new HashSet<string>());
+
+                    var type = assembly.GetType(test.Class);
+
+                    if (type != null)
+                        types.Add(type);
+                }
+
+                request[test.Class].Add(test.Method);
+            }
+
+            return Run(types, method => request[method.ReflectedType!.FullName!].Contains(method.Name));
+        }
+
+        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool>? methodCondition = null)
+        {
+            new BehaviorDiscoverer(assembly, customArguments)
+                .GetBehaviors(out var discovery, out var execution);
+
             try
             {
-                CommandLine.Partition(arguments, out var runnerArguments, out var customArguments);
+                if (methodCondition != null)
+                    discovery.Methods.Where(methodCondition);
 
-                var options = CommandLine.Parse<Options>(runnerArguments);
-
-                options.Validate();
-
-                var pipeName = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE");
-
-                var runner = new AssemblyRunner();
-
-                if (pipeName == null)
-                    return (int)runner.RunAssembly(assembly, options, customArguments);
-
-                using (var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
-                {
-                    runner.Subscribe(new PipeListener(pipe));
-
-                    pipe.Connect();
-                    pipe.ReadMode = PipeTransmissionMode.Message;
-
-                    var exitCode = ExitCode.Success;
-
-                    try
-                    {
-                        var messageType = pipe.ReceiveMessage();
-
-                        if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
-                        {
-                            var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
-                            runner.DiscoverMethods(assembly, customArguments);
-                        }
-                        else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
-                        {
-                            var executeTests = pipe.Receive<PipeMessage.ExecuteTests>();
-
-                            exitCode = executeTests.Filter.Length > 0
-                                ? runner.RunTests(assembly, options, customArguments, executeTests.Filter)
-                                : runner.RunAssembly(assembly, options, customArguments);
-                        }
-                        else
-                        {
-                            var body = pipe.ReceiveMessage();
-                            throw new Exception($"Test assembly received unexpected message of type {messageType}: {body}");
-                        }
-                    }
-                    catch (Exception exception)
-                    {
-                        pipe.Send(exception);
-                    }
-                    finally
-                    {
-                        pipe.Send<PipeMessage.Completed>();
-                    }
-
-                    return (int)exitCode;
-                }
+                return Run(candidateTypes, discovery, execution);
             }
-            catch (Exception exception)
+            finally
             {
-                using (Foreground.Red)
-                    WriteLine($"Fatal Error: {exception}");
+                if (execution != discovery)
+                    execution.Dispose();
 
-                return (int)ExitCode.FatalError;
+                discovery.Dispose();
             }
         }
 
-        readonly List<Listener> customListeners = new List<Listener>();
-
-        void Subscribe<TListener>(TListener listener) where TListener : Listener
+        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution)
         {
-            customListeners.Add(listener);
-        }
+            bus.Publish(new AssemblyStarted(assembly));
 
-        void DiscoverMethods(Assembly assembly, string[] customArguments)
-        {
-            var listeners = customListeners;
-            var bus = new Bus(listeners);
-            var discoverer = new Discoverer(bus, customArguments);
+            var assemblySummary = new ExecutionSummary();
+            var stopwatch = Stopwatch.StartNew();
 
-            discoverer.DiscoverMethods(assembly);
-        }
+            var classDiscoverer = new ClassDiscoverer(discovery);
+            var classRunner = new ClassRunner(bus, discovery, execution);
 
-        ExitCode RunAssembly(Assembly assembly, Options options, string[] customArguments)
-        {
-            return Run(assembly, options, customArguments, runner => runner.Run());
-        }
+            var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
-        ExitCode RunTests(Assembly assembly, Options options, string[] customArguments, PipeMessage.Test[] tests)
-        {
-            return Run(assembly, options, customArguments,
-                r => r.Run(tests.Select(x => new Test(x.Class, x.Method)).ToList()));
-        }
+            bool isOnlyTestClass = testClasses.Count == 1;
 
-        ExitCode Run(Assembly assembly, Options options, string[] customArguments, Func<Runner, ExecutionSummary> run)
-        {
-            var listeners = GetExecutionListeners(options);
-            var bus = new Bus(listeners);
-            var runner = new Runner(assembly, bus, customArguments);
+            foreach (var testClass in testClasses)
+            {
+                var classSummary = classRunner.Run(testClass, isOnlyTestClass);
+                assemblySummary.Add(classSummary);
+            }
 
-            var summary = run(runner);
+            stopwatch.Stop();
+            bus.Publish(new AssemblyCompleted(assembly, assemblySummary, stopwatch.Elapsed));
 
-            if (summary.Total == 0)
-                return ExitCode.FatalError;
-
-            if (summary.Failed > 0)
-                return ExitCode.Failure;
-
-            return ExitCode.Success;
-        }
-
-        List<Listener> GetExecutionListeners(Options options)
-        {
-            return customListeners.Any() ? customListeners : DefaultExecutionListeners(options).ToList();
-        }
-
-        static IEnumerable<Listener> DefaultExecutionListeners(Options options)
-        {
-            if (Try(AzureListener.Create, out var azure))
-                yield return azure;
-
-            if (Try(AppVeyorListener.Create, out var appVeyor))
-                yield return appVeyor;
-
-            if (Try(() => ReportListener.Create(options), out var report))
-                yield return report;
-
-            if (Try(TeamCityListener.Create, out var teamCity))
-                yield return teamCity;
-            else
-                yield return new ConsoleListener();
+            return assemblySummary;
         }
     }
 }

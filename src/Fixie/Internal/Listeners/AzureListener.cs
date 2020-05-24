@@ -11,6 +11,7 @@
     using System.Runtime.Versioning;
     using System.Text;
     using System.Threading;
+    using System.Threading.Tasks;
     using Cli;
     using Internal;
     using static System.Environment;
@@ -19,15 +20,15 @@
     using static Maybe;
 
     class AzureListener :
-        Handler<AssemblyStarted>,
-        Handler<CaseSkipped>,
-        Handler<CasePassed>,
-        Handler<CaseFailed>,
-        Handler<AssemblyCompleted>
+        AsyncHandler<AssemblyStarted>,
+        AsyncHandler<CaseSkipped>,
+        AsyncHandler<CasePassed>,
+        AsyncHandler<CaseFailed>,
+        AsyncHandler<AssemblyCompleted>
     {
         const string AzureDevOpsRestApiVersion = "5.0";
 
-        public delegate string ApiAction<in T>(HttpClient client, HttpMethod method, string uri, T content);
+        public delegate Task<string> ApiAction<in T>(HttpClient client, HttpMethod method, string uri, T content);
 
         readonly string collectionUri;
         readonly string project;
@@ -133,7 +134,7 @@
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         }
 
-        public void Handle(AssemblyStarted message)
+        public async Task Handle(AssemblyStarted message)
         {
             var runName = Path.GetFileNameWithoutExtension(message.Assembly.Location);
 
@@ -148,33 +149,33 @@
 
             var runsUri = new Uri(new Uri(collectionUri), $"{project}/_apis/test/runs").ToString();
 
-            var response = sendCreateRun(client, HttpMethod.Post, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", createRun);
+            var response = await sendCreateRun(client, HttpMethod.Post, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", createRun);
 
             runUrl = Deserialize<TestRun>(response).url;
         }
 
-        public void Handle(CaseSkipped message)
+        public async Task Handle(CaseSkipped message)
         {
             if (apiUnavailable) return;
 
-            Include(new Result(message, "Warning")
+            await Include(new Result(message, "Warning")
             {
                 errorMessage = message.Reason
             });
         }
 
-        public void Handle(CasePassed message)
+        public async Task Handle(CasePassed message)
         {
             if (apiUnavailable) return;
 
-            Include(new Result(message, "Passed"));
+            await Include(new Result(message, "Passed"));
         }
 
-        public void Handle(CaseFailed message)
+        public async Task Handle(CaseFailed message)
         {
             if (apiUnavailable) return;
 
-            Include(new Result(message, "Failed")
+            await Include(new Result(message, "Failed")
             {
                 errorMessage = message.Exception.Message,
                 stackTrace =
@@ -184,27 +185,27 @@
             });
         }
 
-        public void Handle(AssemblyCompleted message)
+        public async Task Handle(AssemblyCompleted message)
         {
             if (apiUnavailable) return;
 
             if (batch.Any())
-                PostBatch();
+                await PostBatch();
 
             var completeRun = new CompleteRun();
 
-            sendCompleteRun(client, new HttpMethod("PATCH"), $"{runUrl}?api-version={AzureDevOpsRestApiVersion}", completeRun);
+            await sendCompleteRun(client, new HttpMethod("PATCH"), $"{runUrl}?api-version={AzureDevOpsRestApiVersion}", completeRun);
         }
 
-        void Include(Result result)
+        async Task Include(Result result)
         {
             batch.Add(result);
 
             if (batch.Count >= batchSize)
-                PostBatch();
+                await PostBatch();
         }
 
-        void PostBatch()
+        async Task PostBatch()
         {
             var attempt = 1;
             const int maxAttempts = 5;
@@ -214,7 +215,7 @@
             {
                 try
                 {
-                    sendResultsBatch(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", batch.ToList());
+                    await sendResultsBatch(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", batch.ToList());
                     batch.Clear();
 
                     if (attempt > 1)
@@ -244,21 +245,17 @@
             batch.Clear();
         }
 
-        static string Send<T>(HttpClient client, HttpMethod method, string uri, T content)
+        static async Task<string> Send<T>(HttpClient client, HttpMethod method, string uri, T content)
         {
             var serialized = Serialize(content);
 
-            var task = client.SendAsync(
+            using var httpResponse = await client.SendAsync(
                 new HttpRequestMessage(method, new Uri(uri, UriKind.RelativeOrAbsolute))
                 {
                     Content = new StringContent(serialized, Encoding.UTF8, "application/json")
                 });
 
-            task.Wait();
-
-            using var httpResponse = task.Result;
-
-            var body = httpResponse.Content.ReadAsStringAsync().Result;
+            var body = await httpResponse.Content.ReadAsStringAsync();
 
             if (!httpResponse.IsSuccessStatusCode)
                 throw new HttpRequestException(new StringBuilder()

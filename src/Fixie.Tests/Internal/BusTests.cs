@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests.Internal
 {
     using System;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
     using static Utility;
@@ -87,13 +88,16 @@
                 => Log<AnotherEventHandler, AnotherEvent>(message.Id);
         }
 
-        class CombinationEventHandler : Handler<Event>, Handler<AnotherEvent>
+        class CombinationEventHandler : Handler<Event>, AsyncHandler<AnotherEvent>
         {
             public void Handle(Event message)
                 => Log<CombinationEventHandler, Event>(message.Id);
 
-            public void Handle(AnotherEvent message)
-                => Log<CombinationEventHandler, AnotherEvent>(message.Id);
+            public Task Handle(AnotherEvent message)
+            {
+                Log<CombinationEventHandler, AnotherEvent>(message.Id);
+                return Task.CompletedTask;
+            }
         }
 
         class FailingEventHandler : Handler<Event>

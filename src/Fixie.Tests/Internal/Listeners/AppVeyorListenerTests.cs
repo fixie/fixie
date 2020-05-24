@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests.Internal.Listeners
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal.Listeners;
 
@@ -14,6 +15,7 @@
             {
                 uri.ShouldBe("http://localhost:4567/api/tests");
                 results.Add(content);
+                return Task.CompletedTask;
             });
 
             Run(listener, out var console);

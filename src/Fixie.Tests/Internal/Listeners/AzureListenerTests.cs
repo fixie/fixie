@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal.Listeners;
     using static Fixie.Internal.Serialization;
@@ -48,19 +49,19 @@
                 {
                     assertCommonHttpConcerns(client);
                     requests.Add(new Request<AzureListener.CreateRun>(method, uri, content));
-                    return Serialize(new AzureListener.TestRun {url = runUrl});
+                    return Task.FromResult(Serialize(new AzureListener.TestRun {url = runUrl}));
                 },
                 (client, method, uri, content) =>
                 {
                     assertCommonHttpConcerns(client);
                     requests.Add(new Request<IReadOnlyList<AzureListener.Result>>(method, uri, content));
-                    return "";
+                    return Task.FromResult("");
                 },
                 (client, method, uri, content) =>
                 {
                     assertCommonHttpConcerns(client);
                     requests.Add(new Request<AzureListener.CompleteRun>(method, uri, content));
-                    return "";
+                    return Task.FromResult("");
                 }, batchSize);
 
             Run(listener, out var console);

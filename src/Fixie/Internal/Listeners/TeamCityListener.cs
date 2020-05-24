@@ -66,7 +66,7 @@
 
         static void TestFinished(CaseCompleted message)
         {
-            Message("testFinished name='{0}' duration='{1}'", message.Name, DurationInMilliseconds(message.Duration));
+            Message("testFinished name='{0}' duration='{1}'", message.Name, $"{message.Duration.TotalMilliseconds:0}");
         }
 
         static void Message(string format, params string?[] args)
@@ -118,8 +118,5 @@
 
         static bool RequiresHexEscape(char ch)
             => ch > '\x007f';
-
-        static string DurationInMilliseconds(TimeSpan duration)
-            => $"{duration.TotalMilliseconds:0}";
     }
 }

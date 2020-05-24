@@ -7,17 +7,18 @@
     using System.Reflection;
     using System.Runtime.Versioning;
     using System.Text;
+    using System.Threading.Tasks;
     using Internal;
     using static System.Environment;
     using static Serialization;
 
     class AppVeyorListener :
         Handler<AssemblyStarted>,
-        Handler<CaseSkipped>,
-        Handler<CasePassed>,
-        Handler<CaseFailed>
+        AsyncHandler<CaseSkipped>,
+        AsyncHandler<CasePassed>,
+        AsyncHandler<CaseFailed>
     {
-        public delegate void PostAction(string uri, TestResult testResult);
+        public delegate Task PostAction(string uri, TestResult testResult);
 
         readonly PostAction postAction;
         readonly string uri;
@@ -62,22 +63,22 @@
                 runName = $"{runName} ({framework})";
         }
 
-        public void Handle(CaseSkipped message)
+        public async Task Handle(CaseSkipped message)
         {
-            Post(new TestResult(runName, message, "Skipped")
+            await Post(new TestResult(runName, message, "Skipped")
             {
                 ErrorMessage = message.Reason
             });
         }
 
-        public void Handle(CasePassed message)
+        public async Task Handle(CasePassed message)
         {
-            Post(new TestResult(runName, message, "Passed"));
+            await Post(new TestResult(runName, message, "Passed"));
         }
 
-        public void Handle(CaseFailed message)
+        public async Task Handle(CaseFailed message)
         {
-            Post(new TestResult(runName, message, "Failed")
+            await Post(new TestResult(runName, message, "Failed")
             {
                 ErrorMessage = message.Exception.Message,
                 ErrorStackTrace =
@@ -87,17 +88,16 @@
             });
         }
 
-        void Post(TestResult testResult)
+        async Task Post(TestResult testResult)
         {
-            postAction(uri, testResult);
+            await postAction(uri, testResult);
         }
 
-        static void Post(string uri, TestResult testResult)
+        static async Task Post(string uri, TestResult testResult)
         {
             var content = Serialize(testResult);
-            Client.PostAsync(uri, new StringContent(content, Encoding.UTF8, "application/json"))
-                .ContinueWith(x => x.Result.EnsureSuccessStatusCode())
-                .Wait();
+            var response = await Client.PostAsync(uri, new StringContent(content, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
         }
 
         public class TestResult

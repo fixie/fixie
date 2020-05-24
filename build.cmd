@@ -1,3 +1,3 @@
 @echo off
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "& '.\build.ps1' %*;"
+pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\build.ps1' %*;"

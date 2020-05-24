@@ -20,7 +20,7 @@
 
         public static void Send(this PipeStream pipe, Exception exception)
         {
-            pipe.Send(new PipeMessage.Exception(exception));
+            pipe.Send(new PipeMessage.ExceptionSummary(exception));
         }
 
         public static void Send<TMessage>(this PipeStream pipe, TMessage message)

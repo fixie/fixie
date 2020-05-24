@@ -129,9 +129,9 @@
                         var testResult = pipe.Receive<PipeMessage.CaseFailed>();
                         recorder.Record(testResult);
                     }
-                    else if (messageType == typeof(PipeMessage.Exception).FullName)
+                    else if (messageType == typeof(PipeMessage.ExceptionSummary).FullName)
                     {
-                        var exception = pipe.Receive<PipeMessage.Exception>();
+                        var exception = pipe.Receive<PipeMessage.ExceptionSummary>();
                         throw new RunnerException(exception);
                     }
                     else if (messageType == typeof(PipeMessage.Completed).FullName)
@@ -149,9 +149,7 @@
                         var exception = new TestProcessExitException(process.TryGetExitCode());
 
                         if (lastCaseStarted != null)
-                            recorder.Record(
-                                new PipeMessage.CaseFailed(lastCaseStarted,
-                                    new PipeMessage.Exception(exception)));
+                            recorder.Record(new PipeMessage.CaseFailed(lastCaseStarted, exception));
 
                         throw exception;
                     }

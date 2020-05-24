@@ -6,7 +6,7 @@
 
     public class RunnerException : Exception
     {
-        public RunnerException(PipeMessage.Exception exception)
+        public RunnerException(PipeMessage.ExceptionSummary exception)
             : base(new StringBuilder()
                 .AppendLine()
                 .AppendLine()

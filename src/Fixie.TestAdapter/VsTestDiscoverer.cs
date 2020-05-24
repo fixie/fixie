@@ -60,9 +60,9 @@
                         var testDiscovered = pipe.Receive<PipeMessage.TestDiscovered>();
                         recorder.Record(testDiscovered);
                     }
-                    else if (messageType == typeof(PipeMessage.Exception).FullName)
+                    else if (messageType == typeof(PipeMessage.ExceptionSummary).FullName)
                     {
-                        var exception = pipe.Receive<PipeMessage.Exception>();
+                        var exception = pipe.Receive<PipeMessage.ExceptionSummary>();
                         throw new RunnerException(exception);
                     }
                     else if (messageType == typeof(PipeMessage.Completed).FullName)

@@ -110,7 +110,7 @@
             public CaseFailed(Internal.CaseFailed message)
                 : base(message)
             {
-                Exception = new Exception(message.Exception);
+                Exception = new ExceptionSummary(message.Exception);
             }
 
             public CaseFailed(CaseStarted caseStarted, Exception exception)
@@ -119,31 +119,31 @@
                 Name = caseStarted.Name;
                 Output = "";
                 DurationInMilliseconds = 0;
-                Exception = exception;
+                Exception = new ExceptionSummary(exception);
             }
 
             CaseFailed() { /* Trust Deserialization */ }
 
-            public Exception Exception { get; set; } = default!;
+            public ExceptionSummary Exception { get; set; } = default!;
         }
 
-        public class Exception
+        public class ExceptionSummary
         {
-            public Exception(System.Exception exception)
+            public ExceptionSummary(Exception exception)
             {
                 Type = exception.GetType().FullName!;
                 Message = exception.Message;
                 StackTrace = exception.LiterateStackTrace();
             }
 
-            public Exception(string type, string message, string stackTrace)
+            public ExceptionSummary(string type, string message, string stackTrace)
             {
                 Type = type;
                 Message = message;
                 StackTrace = stackTrace;
             }
 
-            Exception() { /* Trust Deserialization */ }
+            ExceptionSummary() { /* Trust Deserialization */ }
 
             public string Type { get; set; } = default!;
             public string Message { get; set; } = default!;

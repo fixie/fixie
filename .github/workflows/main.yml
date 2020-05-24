@@ -1,0 +1,11 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest] # ubuntu-latest, macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: pwsh ./build.ps1

@@ -1,6 +1,6 @@
 ﻿param([int]$buildNumber)
 
-. .\build-helpers
+. $PSScriptRoot\build-helpers
 
 $versionPrefix = "3.0.0"
 $prerelease = $true

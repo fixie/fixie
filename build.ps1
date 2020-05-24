@@ -13,7 +13,7 @@ $versionSuffix = if ($prerelease) { "beta-{0:D4}" -f $buildNumber } else { "" }
 function Build {
     mit-license $copyright
 
-    generate "src\Directory.build.props" @"
+    generate "$PSScriptRoot\src\Directory.build.props" @"
 <Project>
     <PropertyGroup>
         <Product>Fixie</Product>

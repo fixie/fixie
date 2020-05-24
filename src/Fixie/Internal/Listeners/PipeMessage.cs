@@ -136,13 +136,6 @@
                 StackTrace = exception.LiterateStackTrace();
             }
 
-            public ExceptionSummary(string type, string message, string stackTrace)
-            {
-                Type = type;
-                Message = message;
-                StackTrace = stackTrace;
-            }
-
             ExceptionSummary() { /* Trust Deserialization */ }
 
             public string Type { get; set; } = default!;

@@ -72,7 +72,7 @@
 
                 Test = new Test(test);
                 Name = message.Name;
-                Duration = message.Duration;
+                DurationInMilliseconds = message.Duration.TotalMilliseconds;
                 Output = message.Output;
             }
 
@@ -80,7 +80,7 @@
 
             public Test Test { get; set; } = default!;
             public string Name { get; set; } = default!;
-            public TimeSpan Duration { get; set; }
+            public double DurationInMilliseconds { get; set; }
             public string Output { get; set; } = default!;
         }
 
@@ -118,7 +118,7 @@
                 Test = caseStarted.Test;
                 Name = caseStarted.Name;
                 Output = "";
-                Duration = TimeSpan.Zero;
+                DurationInMilliseconds = 0;
                 Exception = exception;
             }
 

@@ -16,7 +16,7 @@ function generate($path, $content) {
 }
 
 function mit-license($copyright) {
-    generate "LICENSE.md" @"
+    generate "$PSScriptRoot/LICENSE.md" @"
 MIT License
 
 $copyright

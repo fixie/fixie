@@ -2,6 +2,6 @@ pool:
   vmImage: windows-latest
 
 steps:
-- script: build
+- pwsh: ./build
   env:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)

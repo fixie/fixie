@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.IO;
     using System.Xml.Linq;
 
@@ -123,7 +122,7 @@
         static string Seconds(TimeSpan duration)
         {
             //The XML Schema spec requires decimal values to use a culture-ignorant format.
-            return duration.TotalSeconds.ToString("0.000", NumberFormatInfo.InvariantInfo);
+            return FormattableString.Invariant($"{duration.TotalSeconds:0.000}");
         }
 
         public static void Save(XDocument report, string path)

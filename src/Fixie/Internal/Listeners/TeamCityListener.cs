@@ -120,6 +120,6 @@
             => ch > '\x007f';
 
         static string DurationInMilliseconds(TimeSpan duration)
-            => ((int)Math.Ceiling(duration.TotalMilliseconds)).ToString();
+            => $"{duration.TotalMilliseconds:0}";
     }
 }

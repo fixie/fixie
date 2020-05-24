@@ -108,7 +108,7 @@
                 FileName = runName;
                 TestName = message.Name;
                 Outcome = outcome;
-                DurationMilliseconds = message.Duration.TotalMilliseconds.ToString("0");
+                DurationMilliseconds = $"{message.Duration.TotalMilliseconds:0}";
                 StdOut = message.Output;
             }
 

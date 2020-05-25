@@ -1,10 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
 
-  <!-- Suppress Microsoft.NET.Test.Sdk's attempt to introduce an empty Main() method. -->
   <PropertyGroup>
-    <GenerateProgramFile Condition="'$(GenerateProgramFile)' == ''">false</GenerateProgramFile>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectCapability Include="TestContainer" />
+  </ItemGroup>  
 
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\lib\netcoreapp3.1\Fixie.TestAdapter.dll">

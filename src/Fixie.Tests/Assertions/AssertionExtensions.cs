@@ -3,9 +3,6 @@ namespace Fixie.Tests.Assertions
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
-    using Fixie.TestAdapter;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using System.Text.Json;
     using static System.Environment;
 
@@ -99,58 +96,22 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe(this Assembly actual, Assembly expected)
-        {
-            if (actual != expected)
-                throw new AssertException(expected, actual);
-        }
-        
-        public static void ShouldBe(this Type actual, Type expected)
-        {
-            if (actual != expected)
-                throw new AssertException(expected, actual);
-        }
-
-        public static void ShouldBe(this Type actual, Type expected, string userMessage)
-        {
-            if (actual != expected)
-                throw new AssertException(expected, actual, userMessage);
-        }
-        
-        internal static void ShouldBe(this CaseState actual, CaseState expected)
-        {
-            if (actual != expected)
-                throw new AssertException(expected, actual);
-        }
-        
-        public static void ShouldBe(this TestOutcome actual, TestOutcome expected)
-        {
-            if (actual != expected)
-                throw new AssertException(expected, actual);
-        }
-
-        public static void ShouldBe(this Exception? actual, Exception? expected)
-        {
-            if (actual != expected)
-                throw new AssertException(expected, actual);
-        }
-
-        public static void ShouldBe(this SourceLocation? actual, SourceLocation? expected)
-        {
-            if (actual != expected)
-                throw new AssertException(expected, actual);
-        }
-        
         public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected)
         {
             if (!actual.Equals(expected))
                 throw new AssertException(expected, actual);
         }
-        
-        public static void ShouldBe<T>(this T? actual, T? expected) where T: Attribute
+
+        public static void ShouldBe(this object? actual, object? expected)
         {
             if (!Equals(actual, expected))
                 throw new AssertException(expected, actual);
+        }
+
+        public static void ShouldBe(this object? actual, object? expected, string userMessage)
+        {
+            if (!Equals(actual, expected))
+                throw new AssertException(expected, actual, userMessage);
         }
 
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)

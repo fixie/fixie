@@ -58,19 +58,16 @@ namespace Fixie.Tests.Assertions
         public static void ShouldBe(this string[] actual, string[] expected)
         {
             if (actual.Length != expected.Length)
-                throw new AssertException(expected, actual);
+                throw new AssertException(Json(expected), Json(actual));
         
             for (var i = 0; i < actual.Length; i++)
                 if (actual[i] != expected[i])
-                    throw new AssertException(expected, actual);
+                    throw new AssertException(Json(expected), Json(actual));
         }
 
         public static void ShouldMatch<T>(this T actual, T expected)
         {
-            var actualJson = JsonSerializer.Serialize(actual, JsonSerializerOptions);
-            var expectedJson = JsonSerializer.Serialize(expected, JsonSerializerOptions);
-
-            actualJson.ShouldBe(expectedJson);
+            Json(actual).ShouldBe(Json(expected));
         }
 
         public static void ShouldMatch<T>(this IEnumerable<T> actual, params T[] expected)
@@ -123,6 +120,11 @@ namespace Fixie.Tests.Assertions
             }
 
             throw new AssertException("Expected an exception to be thrown.");
+        }
+
+        static string Json<T>(T actual)
+        {
+            return JsonSerializer.Serialize(actual, JsonSerializerOptions);
         }
     }
 }

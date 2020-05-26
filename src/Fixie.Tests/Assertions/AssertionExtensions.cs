@@ -38,7 +38,7 @@ namespace Fixie.Tests.Assertions
             throw new AssertException(typeof(T), actual?.GetType());
         }
 
-        public static void ShouldBe(this IEnumerable<Type> actual, params Type[] expected)
+        public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
         {
             var actualArray = actual.ToArray();
         
@@ -46,7 +46,7 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actualArray);
         
             for (var i = 0; i < actualArray.Length; i++)
-                if (actualArray[i] != expected[i])
+                if (!Equals(actualArray[i], expected[i]))
                     throw new AssertException(expected, actualArray);
         }
         

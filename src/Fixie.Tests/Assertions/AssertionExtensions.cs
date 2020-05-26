@@ -13,27 +13,15 @@ namespace Fixie.Tests.Assertions
             WriteIndented = true
         };
 
-        public static void ShouldBeGreaterThan(this int actual, int minimum)
+        public static void ShouldBeGreaterThan<T>(this T actual, T minimum) where T: IComparable<T>
         {
-            if (actual <= minimum)
+            if (actual.CompareTo(minimum) <= 0)
                 throw new AssertException(ComparisonFailure(actual, minimum, ">"));
         }
 
-        public static void ShouldBeGreaterThanOrEqualTo(this int actual, int minimum)
+        public static void ShouldBeGreaterThanOrEqualTo<T>(this T actual, T minimum) where T: IComparable<T>
         {
-            if (actual < minimum)
-                throw new AssertException(ComparisonFailure(actual, minimum, ">="));
-        }
-
-        public static void ShouldBeGreaterThanOrEqualTo(this double actual, double minimum)
-        {
-            if (actual < minimum)
-                throw new AssertException(ComparisonFailure(actual, minimum, ">="));
-        }
-
-        public static void ShouldBeGreaterThanOrEqualTo(this TimeSpan actual, TimeSpan minimum)
-        {
-            if (actual < minimum)
+            if (actual.CompareTo(minimum) < 0)
                 throw new AssertException(ComparisonFailure(actual, minimum, ">="));
         }
 

@@ -4,6 +4,7 @@ namespace Fixie.Tests.Assertions
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using static System.Environment;
 
@@ -102,6 +103,15 @@ namespace Fixie.Tests.Assertions
         public static void ShouldBe(this Exception? actual, Exception? expected)
         {
             if (actual != expected)
+                throw new AssertException(expected, actual);
+        }
+        
+        public static void ShouldBe(this HttpMethod actual, HttpMethod expected)
+        {
+            var x = actual as IEquatable<HttpMethod>;
+            var y = expected as IEquatable<HttpMethod>;
+
+            if (!x.Equals(y))
                 throw new AssertException(expected, actual);
         }
         

@@ -74,6 +74,12 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual);
         }
         
+        public static void ShouldBe(this TimeSpan actual, TimeSpan expected)
+        {
+            if (actual != expected)
+                throw new AssertException(expected, actual);
+        }
+        
         public static void ShouldBe<T>(this T actual, T expected, string? userMessage = null)
         {
             if (!expected.Is(actual))

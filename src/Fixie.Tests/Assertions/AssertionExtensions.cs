@@ -5,6 +5,7 @@ namespace Fixie.Tests.Assertions
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
+    using System.Reflection;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using static System.Environment;
 
@@ -70,6 +71,12 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual);
         }
 
+        public static void ShouldBe(this Assembly actual, Assembly expected)
+        {
+            if (actual != expected)
+                throw new AssertException(expected, actual);
+        }
+        
         public static void ShouldBe(this Type actual, Type expected)
         {
             if (actual != expected)

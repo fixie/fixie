@@ -93,12 +93,6 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe(this object? actual, object? expected, string userMessage)
-        {
-            if (!Equals(actual, expected))
-                throw new AssertException(expected, actual, userMessage);
-        }
-
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
         {
             if (collection.Any())

@@ -14,20 +14,14 @@ namespace Fixie.Tests.Assertions
         {
         }
 
-        public AssertException(object? expected, object? actual, string? userMessage = null)
-            : base(ExpectationMessage(expected, actual, userMessage))
+        public AssertException(object? expected, object? actual)
+            : base(ExpectationMessage(expected, actual))
         {
         }
 
-        static string ExpectationMessage(object? expected, object? actual, string? userMessage)
+        static string ExpectationMessage(object? expected, object? actual)
         {
             var message = new StringBuilder();
-
-            if (userMessage != null)
-            {
-                message.AppendLine(userMessage);
-                message.AppendLine();
-            }
 
             var actualStr = actual == null ? null : ConvertToString(actual);
             var expectedStr = expected == null ? null : ConvertToString(expected);

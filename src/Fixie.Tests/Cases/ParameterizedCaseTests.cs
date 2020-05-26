@@ -273,8 +273,8 @@
             [Input(null, "stringArg1", "stringArg2", typeof(string), typeof(string))]
             public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genericArgument1A, T2 genericArgument2, T1 genericArgument1B, Type expectedT1, Type expectedT2)
             {
-                typeof(T1).ShouldBe(expectedT1, $"Expected {Format(genericArgument1A)}+{Format(genericArgument1B)} to resolve to type {expectedT1} but found type {typeof(T1)}");
-                typeof(T2).ShouldBe(expectedT2, $"Expected {Format(genericArgument2)} to resolve to type {expectedT2} but found type {typeof(T2)}");
+                typeof(T1).ShouldBe(expectedT1);
+                typeof(T2).ShouldBe(expectedT2);
             }
 
             [Input(123, 456, typeof(int))]
@@ -287,7 +287,7 @@
             [Input(null, "stringArg", typeof(string))]
             public void SingleGenericArgumentMultipleParameters<T>(T genericArgument1, T genericArgument2, Type expectedT)
             {
-                typeof(T).ShouldBe(expectedT, $"Expected {Format(genericArgument1)}+{Format(genericArgument2)} to resolve to type {expectedT} but found type {typeof(T)}");
+                typeof(T).ShouldBe(expectedT);
             }
 
             [Input(123, typeof(int))]
@@ -295,7 +295,7 @@
             [Input("stringArg", typeof(string))]
             public void SingleGenericArgument<T>(T genericArgument, Type expectedT)
             {
-                typeof(T).ShouldBe(expectedT, $"Expected {Format(genericArgument)} to resolve to type {expectedT} but found type {typeof(T)}");
+                typeof(T).ShouldBe(expectedT);
             }
 
             [Input(123, 123)]

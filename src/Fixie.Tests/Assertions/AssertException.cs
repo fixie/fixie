@@ -26,15 +26,6 @@ namespace Fixie.Tests.Assertions
             var actualStr = actual == null ? null : ConvertToString(actual);
             var expectedStr = expected == null ? null : ConvertToString(expected);
 
-            if (actual != null &&
-                expected != null &&
-                actual.ToString() == expected.ToString() &&
-                actual.GetType() != expected.GetType())
-            {
-                actualStr += $" ({actual.GetType().FullName})";
-                expectedStr += $" ({expected.GetType().FullName})";
-            }
-
             message.AppendLine($"Expected: {FormatMultiLine(expectedStr ?? "(null)")}");
             message.Append($"Actual:   {FormatMultiLine(actualStr ?? "(null)")}");
 

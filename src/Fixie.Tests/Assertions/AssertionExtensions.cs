@@ -176,12 +176,6 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe<T>(this T actual, T expected, string? userMessage = null)
-        {
-            if (!expected.Is(actual))
-                throw new AssertException(expected, actual, userMessage);
-        }
-
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
         {
             if (collection.Any())
@@ -203,56 +197,6 @@ namespace Fixie.Tests.Assertions
             }
 
             throw new AssertException("Expected an exception to be thrown.");
-        }
-
-        static bool Is<T>(this T x, T y)
-        {
-            var type = typeof(T);
-
-            if (IsReferenceType(type) || IsNullableValueType(type))
-            {
-                if (Equals(x, default(T)))
-                    return Equals(y, default(T));
-
-                if (Equals(y, default(T)))
-                    return false;
-            }
-
-            if (x is IEquatable<T> equatable)
-                return equatable.Equals(y);
-
-            if (x is IEnumerable enumerableX && y is IEnumerable enumerableY)
-            {
-                var enumeratorX = enumerableX.GetEnumerator();
-                var enumeratorY = enumerableY.GetEnumerator();
-
-                while (true)
-                {
-                    bool hasNextX = enumeratorX.MoveNext();
-                    bool hasNextY = enumeratorY.MoveNext();
-
-                    if (!hasNextX || !hasNextY)
-                        return hasNextX == hasNextY;
-
-                    var currentX = enumeratorX.Current;
-                    var currentY = enumeratorY.Current;
-
-                    if (!currentX.Is(currentY))
-                        return false;
-                }
-            }
-
-            return Equals(x, y);
-        }
-
-        static bool IsNullableValueType(Type type)
-        {
-            return Nullable.GetUnderlyingType(type) != null;
-        }
-
-        static bool IsReferenceType(Type type)
-        {
-            return !type.IsValueType;
         }
     }
 }

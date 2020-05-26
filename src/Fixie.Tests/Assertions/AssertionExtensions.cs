@@ -4,6 +4,7 @@ namespace Fixie.Tests.Assertions
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using static System.Environment;
 
     public static class AssertionExtensions
@@ -81,6 +82,12 @@ namespace Fixie.Tests.Assertions
         }
 
         internal static void ShouldBe(this CaseState actual, CaseState expected)
+        {
+            if (actual != expected)
+                throw new AssertException(expected, actual);
+        }
+        
+        public static void ShouldBe(this TestOutcome actual, TestOutcome expected)
         {
             if (actual != expected)
                 throw new AssertException(expected, actual);

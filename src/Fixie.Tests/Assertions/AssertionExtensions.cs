@@ -6,6 +6,7 @@ namespace Fixie.Tests.Assertions
     using System.Linq;
     using System.Net.Http;
     using System.Reflection;
+    using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using static System.Environment;
 
@@ -108,6 +109,12 @@ namespace Fixie.Tests.Assertions
         }
 
         public static void ShouldBe(this Exception? actual, Exception? expected)
+        {
+            if (actual != expected)
+                throw new AssertException(expected, actual);
+        }
+
+        public static void ShouldBe(this SourceLocation? actual, SourceLocation? expected)
         {
             if (actual != expected)
                 throw new AssertException(expected, actual);

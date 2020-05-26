@@ -514,7 +514,7 @@
             {
                 string[] unusedArguments;
                 var model = CommandLine.Parse<T>(arguments, out unusedArguments);
-                ShouldMatch(model, expectedModel);
+                model.ShouldMatch(expectedModel);
                 unusedArguments.ShouldBe(expectedUnusedArguments);
             }
 
@@ -523,17 +523,6 @@
                 Action shouldThrow = () => CommandLine.Parse<T>(arguments);
 
                 shouldThrow.ShouldThrow<CommandLineException>(expectedExceptionMessage);
-            }
-
-            static void ShouldMatch(T actual, T expected)
-            {
-                foreach (var property in typeof(T).GetProperties())
-                {
-                    var actualValue = property.GetValue(actual);
-                    var expectedValue = property.GetValue(expected);
-
-                    actualValue.ShouldBe(expectedValue);
-                }
             }
         }
     }

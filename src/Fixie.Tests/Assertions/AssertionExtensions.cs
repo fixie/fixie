@@ -8,10 +8,16 @@ namespace Fixie.Tests.Assertions
     using System.Reflection;
     using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using System.Text.Json;
     using static System.Environment;
 
     public static class AssertionExtensions
     {
+        static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+
         public static void ShouldBeGreaterThan(this int actual, int minimum)
         {
             if (actual <= minimum)
@@ -73,9 +79,17 @@ namespace Fixie.Tests.Assertions
                     throw new AssertException(expected, actualArray);
         }
 
-        public static void ShouldBe(this IEnumerable<object?[]> actual, params object?[][] expected)
+        public static void ShouldMatch<T>(this T actual, T expected)
         {
-            actual.ToArray().ShouldBe(expected);
+            var actualJson = JsonSerializer.Serialize(actual, JsonSerializerOptions);
+            var expectedJson = JsonSerializer.Serialize(expected, JsonSerializerOptions);
+
+            actualJson.ShouldBe(expectedJson);
+        }
+
+        public static void ShouldMatch<T>(this IEnumerable<T> actual, params T[] expected)
+        {
+            actual.ToArray().ShouldMatch(expected);
         }
 
         public static void ShouldBe(this bool actual, bool expected)

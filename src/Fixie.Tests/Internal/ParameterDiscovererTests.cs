@@ -35,13 +35,11 @@
                 .Add<SecondParameterSource>();
 
             DiscoveredParameters(customDiscovery)
-                .ShouldBe(new[]
-                {
+                .ShouldMatch(
                     new object[] { "ParameterizedMethod", 0, false },
                     new object[] { "ParameterizedMethod", 1, true },
                     new object[] { "ParameterizedMethod", 2, false },
-                    new object[] { "ParameterizedMethod", 3, true }
-                });
+                    new object[] { "ParameterizedMethod", 3, true });
         }
 
         public void ShouldProvideSetsOfInputsGeneratedByInstantiatedParameterSources()
@@ -54,13 +52,11 @@
                 .Add(new SecondParameterSource());
 
             DiscoveredParameters(customDiscovery)
-                .ShouldBe(new[]
-                {
+                .ShouldMatch(
                     new object[] { "ParameterizedMethod", 0, false },
                     new object[] { "ParameterizedMethod", 1, true },
                     new object[] { "ParameterizedMethod", 2, false },
-                    new object[] { "ParameterizedMethod", 3, true }
-                });
+                    new object[] { "ParameterizedMethod", 3, true });
         }
 
         IEnumerable<object?[]> DiscoveredParameters(Discovery discovery)

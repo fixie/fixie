@@ -51,14 +51,28 @@ namespace Fixie.Tests.Assertions
 
         public static void ShouldBe(this IEnumerable<Type> actual, params Type[] expected)
         {
-            actual.ToArray().ShouldBe(expected);
+            var actualArray = actual.ToArray();
+        
+            if (actualArray.Length != expected.Length)
+                throw new AssertException(expected, actualArray);
+        
+            for (var i = 0; i < actualArray.Length; i++)
+                if (actualArray[i] != expected[i])
+                    throw new AssertException(expected, actualArray);
         }
         
         public static void ShouldBe(this IEnumerable<string> actual, params string[] expected)
         {
-            actual.ToArray().ShouldBe(expected);
-        }
+            var actualArray = actual.ToArray();
         
+            if (actualArray.Length != expected.Length)
+                throw new AssertException(expected, actualArray);
+        
+            for (var i = 0; i < actualArray.Length; i++)
+                if (actualArray[i] != expected[i])
+                    throw new AssertException(expected, actualArray);
+        }
+
         public static void ShouldBe(this IEnumerable<object?[]> actual, params object?[][] expected)
         {
             actual.ToArray().ShouldBe(expected);

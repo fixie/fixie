@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using System.Xml.Linq;
     using Assertions;
@@ -31,7 +32,8 @@
             CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting))
                 .Lines()
                 .CleanStackTraceLineNumbers()
-                .ShouldBe(ExpectedReport.Lines());
+                .ToArray()
+                .ShouldBe(ExpectedReport.Lines().ToArray());
         }
 
         static string CleanBrittleValues(string actualRawContent)

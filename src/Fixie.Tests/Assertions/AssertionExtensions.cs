@@ -1,10 +1,8 @@
 namespace Fixie.Tests.Assertions
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net.Http;
     using System.Reflection;
     using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -95,18 +93,6 @@ namespace Fixie.Tests.Assertions
             actual.ToArray().ShouldMatch(expected);
         }
 
-        public static void ShouldBe(this bool actual, bool expected)
-        {
-            if (actual != expected)
-                throw new AssertException(expected, actual);
-        }
-
-        public static void ShouldBe(this int actual, int expected)
-        {
-            if (actual != expected)
-                throw new AssertException(expected, actual);
-        }
-
         public static void ShouldBe(this string? actual, string? expected)
         {
             if (actual != expected)
@@ -131,12 +117,6 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual, userMessage);
         }
         
-        public static void ShouldBe(this TimeSpan actual, TimeSpan expected)
-        {
-            if (actual != expected)
-                throw new AssertException(expected, actual);
-        }
-
         internal static void ShouldBe(this CaseState actual, CaseState expected)
         {
             if (actual != expected)
@@ -161,12 +141,9 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual);
         }
         
-        public static void ShouldBe(this HttpMethod actual, HttpMethod expected)
+        public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected)
         {
-            var x = actual as IEquatable<HttpMethod>;
-            var y = expected as IEquatable<HttpMethod>;
-
-            if (!x.Equals(y))
+            if (!actual.Equals(expected))
                 throw new AssertException(expected, actual);
         }
         

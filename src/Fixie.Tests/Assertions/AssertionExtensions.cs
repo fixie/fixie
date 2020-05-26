@@ -49,7 +49,17 @@ namespace Fixie.Tests.Assertions
             throw new AssertException(typeof(T), actual?.GetType());
         }
 
-        public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
+        public static void ShouldBe(this IEnumerable<Type> actual, params Type[] expected)
+        {
+            actual.ToArray().ShouldBe(expected);
+        }
+        
+        public static void ShouldBe(this IEnumerable<string> actual, params string[] expected)
+        {
+            actual.ToArray().ShouldBe(expected);
+        }
+        
+        public static void ShouldBe(this IEnumerable<object?[]> actual, params object?[][] expected)
         {
             actual.ToArray().ShouldBe(expected);
         }

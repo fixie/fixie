@@ -122,6 +122,12 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual);
         }
         
+        public static void ShouldBe<T>(this T? actual, T? expected) where T: Attribute
+        {
+            if (!Equals(actual, expected))
+                throw new AssertException(expected, actual);
+        }
+
         public static void ShouldBe<T>(this T actual, T expected, string? userMessage = null)
         {
             if (!expected.Is(actual))

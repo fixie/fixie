@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Description>Visual Studio integration for the Fixie test framework.</Description>
+    <NuspecFile>Fixie.TestAdapter.nuspec</NuspecFile>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 

@@ -12,27 +12,19 @@
     <description>$description$</description>
     <copyright>$copyright$</copyright>
     <repository url="https://github.com/fixie/fixie" />
-    <references>
-      <group targetFramework="netcoreapp3.1">
-        <reference file="Fixie.dll" />
-      </group>
-    </references>
     <dependencies>
-      <group targetFramework="netcoreapp3.1" />
+      <group targetFramework="netcoreapp3.1">
+        <dependency id="Fixie" version="$version$" />
+        <dependency id="Mono.Cecil" version="0.11.2" />
+        <dependency id="Microsoft.TestPlatform.TestHost" version="16.6.1" />
+      </group>
     </dependencies>
   </metadata>
   <files>
     <file target="" src="..\..\LICENSE.md" />
     <file target="icon.png" src="..\..\img\fixie_256.png" />
 
-    <!-- Compile-Time Assets -->
-    <file target="ref\netcoreapp3.1" src="..\Fixie\bin\Release\netcoreapp3.1\Fixie.dll" />
-
     <!-- Run-Time Assets -->
-    <file target="lib\netcoreapp3.1" src="..\Fixie\bin\Release\netcoreapp3.1\Fixie.dll" />
-
-    <!-- Build Support -->
-    <file target="build\" src="..\..\build\**" />
-    <file target="buildMultiTargeting\" src="..\..\buildMultiTargeting\**" />
+    <file target="lib\netcoreapp3.1" src="..\Fixie.TestAdapter\bin\Release\netcoreapp3.1\Fixie.TestAdapter.dll" />
   </files>
 </package>

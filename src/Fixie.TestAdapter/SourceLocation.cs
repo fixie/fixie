@@ -1,6 +1,6 @@
 ﻿namespace Fixie.TestAdapter
 {
-    public class SourceLocation
+    class SourceLocation
     {
         public SourceLocation(string codeFilePath, int lineNumber)
         {

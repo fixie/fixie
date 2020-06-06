@@ -12,7 +12,7 @@
     using static TestAssembly;
 
     [ExtensionUri(Id)]
-    public class VsTestExecutor : ITestExecutor
+    class VsTestExecutor : ITestExecutor
     {
         public const string Id = "executor://fixie.testadapter/";
         public static readonly Uri Uri = new Uri(Id);

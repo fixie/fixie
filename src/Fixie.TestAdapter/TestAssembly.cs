@@ -3,7 +3,7 @@ namespace Fixie.TestAdapter
     using System.IO;
     using System.Linq;
 
-    public static class TestAssembly
+    static class TestAssembly
     {
         public static bool IsTestAssembly(string assemblyPath)
         {

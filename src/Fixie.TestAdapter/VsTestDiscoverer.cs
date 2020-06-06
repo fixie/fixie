@@ -13,7 +13,7 @@
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
     [FileExtension(".dll")]
-    public class VsTestDiscoverer : ITestDiscoverer
+    class VsTestDiscoverer : ITestDiscoverer
     {
         public void DiscoverTests(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger log, ITestCaseDiscoverySink discoverySink)
         {

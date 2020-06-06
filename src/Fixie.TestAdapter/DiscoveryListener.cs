@@ -6,7 +6,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
-    public class DiscoveryListener : Handler<MethodDiscovered>
+    class DiscoveryListener : Handler<MethodDiscovered>
     {
         readonly IMessageLogger log;
         readonly ITestCaseDiscoverySink discoverySink;

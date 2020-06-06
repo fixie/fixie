@@ -3,7 +3,7 @@
     using System;
     using System.Text;
 
-    public class RunnerException : Exception
+    class RunnerException : Exception
     {
         public RunnerException(Exception exception)
             : base(new StringBuilder()

@@ -7,7 +7,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using static System.Environment;
 
-    public class ExecutionListener :
+    class ExecutionListener :
         Handler<CaseStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,

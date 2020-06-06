@@ -5,8 +5,9 @@
     using Internal.Listeners;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+    using static System.Environment;
 
-    class ExecutionListener :
+    public class ExecutionListener :
         Handler<CaseStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
@@ -23,7 +24,8 @@
 
         public void Handle(CaseStarted message)
         {
-            var testCase = ToVsTestCase(message.Name);
+            var test = new Test(message.Method);
+            var testCase = ToVsTestCase(test);
 
             log.RecordStart(testCase);
         }
@@ -52,20 +54,21 @@
                 x.Outcome = TestOutcome.Failed;
                 x.ErrorMessage = message.Exception.Message;
                 x.ErrorStackTrace = message.Exception.GetType().FullName +
-                                    Environment.NewLine +
+                                    NewLine +
                                     message.Exception.LiterateStackTrace();
             });
         }
 
         void Record(CaseCompleted result, Action<TestResult> customize)
         {
-            var testCase = ToVsTestCase(result.Name);
+            var test = new Test(result.Method);
+            var testCase = ToVsTestCase(test);
 
             var testResult = new TestResult(testCase)
             {
                 DisplayName = result.Name,
                 Duration = result.Duration,
-                ComputerName = Environment.MachineName
+                ComputerName = MachineName
             };
 
             customize(testResult);
@@ -75,9 +78,9 @@
             log.RecordResult(testResult);
         }
 
-        TestCase ToVsTestCase(string name)
+        TestCase ToVsTestCase(Test test)
         {
-            return new TestCase(name, VsTestExecutor.Uri, assemblyPath);
+            return new TestCase(test.Name, VsTestExecutor.Uri, assemblyPath);
         }
 
         static void AttachCapturedConsoleOutput(string output, TestResult testResult)

@@ -40,6 +40,7 @@
 
             log.Info("Processing " + assemblyPath);
 
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(assemblyPath)!);
             var assemblyName = new AssemblyName(Path.GetFileNameWithoutExtension(assemblyPath));
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);

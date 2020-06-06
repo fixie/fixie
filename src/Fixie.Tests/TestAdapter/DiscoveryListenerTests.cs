@@ -5,14 +5,12 @@
     using System.Linq;
     using Assertions;
     using Fixie.Internal;
-    using Fixie.Internal.Listeners;
     using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using static Utility;
 
-    public class DiscoveryRecorderTests : MessagingTests
+    public class DiscoveryListenerTests : MessagingTests
     {
         public void ShouldMapDiscoveredTestsToVsTestDiscoverySink()
         {
@@ -21,11 +19,9 @@
             var log = new StubMessageLogger();
             var discoverySink = new StubTestCaseDiscoverySink();
 
-            var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
+            var listener = new DiscoveryListener(log, discoverySink, assemblyPath);
 
-            discoveryRecorder.Record(
-                new PipeMessage.TestDiscovered(
-                    new MethodDiscovered(TestClassType.GetInstanceMethod("Fail"))));
+            listener.Handle(new MethodDiscovered(TestClassType.GetInstanceMethod("Fail")));
 
             log.Messages.ShouldBeEmpty();
 
@@ -40,11 +36,9 @@
             var log = new StubMessageLogger();
             var discoverySink = new StubTestCaseDiscoverySink();
 
-            var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, invalidAssemblyPath);
+            var listener = new DiscoveryListener(log, discoverySink, invalidAssemblyPath);
 
-            discoveryRecorder.Record(
-                new PipeMessage.TestDiscovered(
-                    new MethodDiscovered(TestClassType.GetInstanceMethod("Fail"))));
+            listener.Handle(new MethodDiscovered(TestClassType.GetInstanceMethod("Fail")));
 
             log.Messages.Single().Contains(nameof(FileNotFoundException)).ShouldBe(true);
 

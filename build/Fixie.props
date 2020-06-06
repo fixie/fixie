@@ -9,12 +9,4 @@
     <ProjectCapability Include="TestContainer" />
   </ItemGroup>  
 
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)..\lib\netcoreapp3.1\Fixie.TestAdapter.dll">
-      <Link>Fixie.TestAdapter.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </None>
-  </ItemGroup>
-
 </Project>

@@ -3,10 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Description>A convention-based test framework.</Description>
-    <NuspecFile>Fixie.nuspec</NuspecFile>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <Import Project="..\Fixie.Cli\Fixie.Cli.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.md" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\..\img\fixie_256.png" Pack="true" PackagePath="icon.png" Visible="false" />
+    <None Include="..\..\build\**" Pack="true" PackagePath="build\" Visible="false" />
+    <None Include="..\..\buildMultiTargeting\**" Pack="true" PackagePath="buildMultiTargeting\" Visible="false" />
+  </ItemGroup>
 
 </Project>

@@ -48,6 +48,7 @@ function Pack {
     remove-folder packages
     exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src/Fixie
     exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src/Fixie.Console
+    exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src/Fixie.TestAdapter
 }
 
 main {

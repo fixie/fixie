@@ -8,54 +8,35 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Assertions;
     using Fixie.Internal;
-    using Fixie.Internal.Listeners;
     using static System.Environment;
     using static Fixie.Internal.Serialization;
 
-    public class ExecutionRecorderTests
+    public class ExecutionListenerTests
     {
         public void ShouldMapMessagesToVsTestExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
-            var executionRecorder = new ExecutionRecorder(recorder, assemblyPath);
+            var executionRecorder = new ExecutionListener(recorder, assemblyPath);
 
             var @case = Case("Pass", 1);
-            executionRecorder.Record(Deserialized(new PipeMessage.CaseStarted
-            (
-                new CaseStarted(@case)
-            )));
+            executionRecorder.Handle(new CaseStarted(@case));
             @case.Duration = TimeSpan.FromMilliseconds(1000);
             @case.Output = "Output";
-            executionRecorder.Record(Deserialized(new PipeMessage.CasePassed
-            (
-                new CasePassed(@case)
-            )));
+            executionRecorder.Handle(new CasePassed(@case));
 
             @case = Case("Fail");
-            executionRecorder.Record(Deserialized(new PipeMessage.CaseStarted
-            (
-                new CaseStarted(@case)
-            )));
+            executionRecorder.Handle(new CaseStarted(@case));
             @case.Duration = TimeSpan.FromMilliseconds(2000);
             @case.Output = "Output";
             @case.Fail(new StubException("Exception Message"));
-            executionRecorder.Record(Deserialized(new PipeMessage.CaseFailed
-            (
-                new CaseFailed(@case)
-            )));
+            executionRecorder.Handle(new CaseFailed(@case));
 
             @case = Case("Skip");
-            executionRecorder.Record(Deserialized(new PipeMessage.CaseStarted
-            (
-                new CaseStarted(@case)
-            )));
+            executionRecorder.Handle(new CaseStarted(@case));
             @case.Skip("Skip Reason");
-            executionRecorder.Record(Deserialized(new PipeMessage.CaseSkipped
-            (
-                new CaseSkipped(@case)
-            )));
+            executionRecorder.Handle(new CaseSkipped(@case));
 
             var className = typeof(SampleTestClass).FullName;
 

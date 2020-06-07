@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO.Pipes;
     using System.Linq;
     using System.Reflection;
     using Cli;
@@ -29,56 +28,7 @@
 
                 options.Validate();
 
-                var pipeName = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE");
-
-                var entryPoint = new EntryPoint();
-
-                if (pipeName == null)
-                    return (int)entryPoint.RunAssembly(assembly, options, customArguments);
-
-                using (var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut))
-                {
-                    entryPoint.Subscribe(new PipeListener(pipe));
-
-                    pipe.Connect();
-                    pipe.ReadMode = PipeTransmissionMode.Message;
-
-                    var exitCode = ExitCode.Success;
-
-                    try
-                    {
-                        var messageType = pipe.ReceiveMessage();
-
-                        if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
-                        {
-                            var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
-                            entryPoint.DiscoverMethods(assembly, customArguments);
-                        }
-                        else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
-                        {
-                            var executeTests = pipe.Receive<PipeMessage.ExecuteTests>();
-
-                            exitCode = executeTests.Filter.Length > 0
-                                ? entryPoint.RunTests(assembly, options, customArguments, executeTests.Filter)
-                                : entryPoint.RunAssembly(assembly, options, customArguments);
-                        }
-                        else
-                        {
-                            var body = pipe.ReceiveMessage();
-                            throw new Exception($"Test assembly received unexpected message of type {messageType}: {body}");
-                        }
-                    }
-                    catch (Exception exception)
-                    {
-                        pipe.Send(exception);
-                    }
-                    finally
-                    {
-                        pipe.Send<PipeMessage.Completed>();
-                    }
-
-                    return (int)exitCode;
-                }
+                return (int)RunAssembly(assembly, options, customArguments);
             }
             catch (Exception exception)
             {
@@ -89,40 +39,13 @@
             }
         }
 
-        readonly List<Listener> customListeners = new List<Listener>();
-
-        void Subscribe<TListener>(TListener listener) where TListener : Listener
+        static ExitCode RunAssembly(Assembly assembly, Options options, string[] customArguments)
         {
-            customListeners.Add(listener);
-        }
-
-        void DiscoverMethods(Assembly assembly, string[] customArguments)
-        {
-            var listeners = customListeners;
-            var bus = new Bus(listeners);
-            var discoverer = new Discoverer(bus, customArguments);
-
-            discoverer.DiscoverMethods(assembly);
-        }
-
-        ExitCode RunAssembly(Assembly assembly, Options options, string[] customArguments)
-        {
-            return Run(assembly, options, customArguments, runner => runner.Run());
-        }
-
-        ExitCode RunTests(Assembly assembly, Options options, string[] customArguments, PipeMessage.Test[] tests)
-        {
-            return Run(assembly, options, customArguments,
-                r => r.Run(tests.Select(x => new Test(x.Class, x.Method)).ToList()));
-        }
-
-        ExitCode Run(Assembly assembly, Options options, string[] customArguments, Func<AssemblyRunner, ExecutionSummary> run)
-        {
-            var listeners = GetExecutionListeners(options);
+            var listeners = DefaultExecutionListeners(options).ToList();
             var bus = new Bus(listeners);
             var assemblyRunner = new AssemblyRunner(assembly, bus, customArguments);
 
-            var summary = run(assemblyRunner);
+            var summary = assemblyRunner.Run();
 
             if (summary.Total == 0)
                 return ExitCode.FatalError;
@@ -131,11 +54,6 @@
                 return ExitCode.Failure;
 
             return ExitCode.Success;
-        }
-
-        List<Listener> GetExecutionListeners(Options options)
-        {
-            return customListeners.Any() ? customListeners : DefaultExecutionListeners(options).ToList();
         }
 
         static IEnumerable<Listener> DefaultExecutionListeners(Options options)

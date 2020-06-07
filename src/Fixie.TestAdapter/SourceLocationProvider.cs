@@ -8,7 +8,7 @@
     using Mono.Cecil.Cil;
     using Mono.Cecil.Rocks;
 
-    public class SourceLocationProvider
+    class SourceLocationProvider
     {
         readonly string assemblyPath;
         IDictionary<string, TypeDefinition>? types;

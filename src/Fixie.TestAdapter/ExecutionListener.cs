@@ -1,66 +1,73 @@
 ﻿namespace Fixie.TestAdapter
 {
     using System;
+    using Internal;
+    using Internal.Listeners;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-    using Internal.Listeners;
     using static System.Environment;
 
-    public class ExecutionRecorder
+    class ExecutionListener :
+        Handler<CaseStarted>,
+        Handler<CaseSkipped>,
+        Handler<CasePassed>,
+        Handler<CaseFailed>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
 
-        public ExecutionRecorder(ITestExecutionRecorder log, string assemblyPath)
+        public ExecutionListener(ITestExecutionRecorder log, string assemblyPath)
         {
             this.log = log;
             this.assemblyPath = assemblyPath;
         }
 
-        public void Record(PipeMessage.CaseStarted message)
+        public void Handle(CaseStarted message)
         {
-            var testCase = ToVsTestCase(message.Test);
+            var test = new Test(message.Method);
+            var testCase = ToVsTestCase(test);
 
             log.RecordStart(testCase);
         }
 
-        public void Record(PipeMessage.CaseSkipped result)
+        public void Handle(CaseSkipped message)
         {
-            Record(result, x =>
+            Record(message, x =>
             {
                 x.Outcome = TestOutcome.Skipped;
-                x.ErrorMessage = result.Reason;
+                x.ErrorMessage = message.Reason;
             });
         }
 
-        public void Record(PipeMessage.CasePassed result)
+        public void Handle(CasePassed message)
         {
-            Record(result, x =>
+            Record(message, x =>
             {
                 x.Outcome = TestOutcome.Passed;
             });
         }
 
-        public void Record(PipeMessage.CaseFailed result)
+        public void Handle(CaseFailed message)
         {
-            Record(result, x =>
+            Record(message, x =>
             {
                 x.Outcome = TestOutcome.Failed;
-                x.ErrorMessage = result.Exception.Message;
-                x.ErrorStackTrace = result.Exception.Type +
+                x.ErrorMessage = message.Exception.Message;
+                x.ErrorStackTrace = message.Exception.GetType().FullName +
                                     NewLine +
-                                    result.Exception.StackTrace;
+                                    message.Exception.LiterateStackTrace();
             });
         }
 
-        void Record(PipeMessage.CaseCompleted result, Action<TestResult> customize)
+        void Record(CaseCompleted result, Action<TestResult> customize)
         {
-            var testCase = ToVsTestCase(result.Test);
+            var test = new Test(result.Method);
+            var testCase = ToVsTestCase(test);
 
             var testResult = new TestResult(testCase)
             {
                 DisplayName = result.Name,
-                Duration = TimeSpan.FromMilliseconds(result.DurationInMilliseconds),
+                Duration = result.Duration,
                 ComputerName = MachineName
             };
 
@@ -71,7 +78,7 @@
             log.RecordResult(testResult);
         }
 
-        TestCase ToVsTestCase(PipeMessage.Test test)
+        TestCase ToVsTestCase(Test test)
         {
             return new TestCase(test.Name, VsTestExecutor.Uri, assemblyPath);
         }

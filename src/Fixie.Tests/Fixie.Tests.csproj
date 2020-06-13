@@ -1,15 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\build\Fixie.props" />
+
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Optimize>false</Optimize>
-    <IsTestProject>true</IsTestProject>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectCapability Include="TestContainer" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Fixie.TestAdapter\Fixie.TestAdapter.csproj" />

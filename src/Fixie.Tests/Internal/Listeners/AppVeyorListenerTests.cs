@@ -43,20 +43,6 @@
             var skipWithReason = results[3];
             var skipWithoutReason = results[4];
 
-            skipWithReason.TestName.ShouldBe(TestClass + ".SkipWithReason");
-            skipWithReason.Outcome.ShouldBe("Skipped");
-            int.Parse(skipWithReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-            skipWithReason.ErrorMessage.ShouldBe("⚠ Skipped with reason.");
-            skipWithReason.ErrorStackTrace.ShouldBe(null);
-            skipWithReason.StdOut.ShouldBe("");
-
-            skipWithoutReason.TestName.ShouldBe(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.Outcome.ShouldBe("Skipped");
-            int.Parse(skipWithoutReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-            skipWithoutReason.ErrorMessage.ShouldBe(null);
-            skipWithoutReason.ErrorStackTrace.ShouldBe(null);
-            skipWithoutReason.StdOut.ShouldBe("");
-
             fail.TestName.ShouldBe(TestClass + ".Fail");
             fail.Outcome.ShouldBe("Failed");
             int.Parse(fail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
@@ -85,6 +71,20 @@
             pass.ErrorMessage.ShouldBe(null);
             pass.ErrorStackTrace.ShouldBe(null);
             pass.StdOut.Lines().ShouldBe("Console.Out: Pass", "Console.Error: Pass");
+
+            skipWithReason.TestName.ShouldBe(TestClass + ".SkipWithReason");
+            skipWithReason.Outcome.ShouldBe("Skipped");
+            int.Parse(skipWithReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            skipWithReason.ErrorMessage.ShouldBe("⚠ Skipped with reason.");
+            skipWithReason.ErrorStackTrace.ShouldBe(null);
+            skipWithReason.StdOut.ShouldBe("");
+
+            skipWithoutReason.TestName.ShouldBe(TestClass + ".SkipWithoutReason");
+            skipWithoutReason.Outcome.ShouldBe("Skipped");
+            int.Parse(skipWithoutReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            skipWithoutReason.ErrorMessage.ShouldBe(null);
+            skipWithoutReason.ErrorStackTrace.ShouldBe(null);
+            skipWithoutReason.StdOut.ShouldBe("");
         }
     }
 }

@@ -110,20 +110,6 @@
             var skipWithReason = results[3];
             var skipWithoutReason = results[4];
 
-            skipWithReason.automatedTestName.ShouldBe(TestClass + ".SkipWithReason");
-            skipWithReason.testCaseTitle.ShouldBe(TestClass + ".SkipWithReason");
-            skipWithReason.outcome.ShouldBe("Warning");
-            skipWithReason.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
-            skipWithReason.errorMessage.ShouldBe("⚠ Skipped with reason.");
-            skipWithReason.stackTrace.ShouldBe(null);
-
-            skipWithoutReason.automatedTestName.ShouldBe(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.testCaseTitle.ShouldBe(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.outcome.ShouldBe("Warning");
-            skipWithoutReason.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
-            skipWithoutReason.errorMessage.ShouldBe(null);
-            skipWithoutReason.stackTrace.ShouldBe(null);
-
             fail.automatedTestName.ShouldBe(TestClass + ".Fail");
             fail.testCaseTitle.ShouldBe(TestClass + ".Fail");
             fail.outcome.ShouldBe("Failed");
@@ -152,6 +138,20 @@
             pass.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
             pass.errorMessage.ShouldBe(null);
             pass.stackTrace.ShouldBe(null);
+
+            skipWithReason.automatedTestName.ShouldBe(TestClass + ".SkipWithReason");
+            skipWithReason.testCaseTitle.ShouldBe(TestClass + ".SkipWithReason");
+            skipWithReason.outcome.ShouldBe("Warning");
+            skipWithReason.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+            skipWithReason.errorMessage.ShouldBe("⚠ Skipped with reason.");
+            skipWithReason.stackTrace.ShouldBe(null);
+
+            skipWithoutReason.automatedTestName.ShouldBe(TestClass + ".SkipWithoutReason");
+            skipWithoutReason.testCaseTitle.ShouldBe(TestClass + ".SkipWithoutReason");
+            skipWithoutReason.outcome.ShouldBe("Warning");
+            skipWithoutReason.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+            skipWithoutReason.errorMessage.ShouldBe(null);
+            skipWithoutReason.stackTrace.ShouldBe(null);
 
             var lastRequest = (Request<AzureListener.CompleteRun>)requests.Last();
             lastRequest.Method.ShouldBe(new HttpMethod("PATCH"));

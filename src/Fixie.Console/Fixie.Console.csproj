@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>dotnet-fixie</AssemblyName>
     <PackageId>Fixie.Console</PackageId>
-    <PackageType>DotnetCliTool</PackageType>
+    <PackAsTool>true</PackAsTool>
     <Description>`dotnet fixie` console test runner for the Fixie test framework.</Description>
   </PropertyGroup>
 

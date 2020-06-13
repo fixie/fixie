@@ -6,14 +6,17 @@
             string? configuration,
             bool noBuild,
             string? framework,
-            string? report)
+            string? report,
+            params string[] projectPatterns)
         {
+            ProjectPatterns = projectPatterns;
             Configuration = configuration ?? "Debug";
             NoBuild = noBuild;
             Framework = framework;
             Report = report;
         }
 
+        public string[] ProjectPatterns { get; }
         public string Configuration { get; }
         public bool NoBuild { get; }
         public bool ShouldBuild => !NoBuild;

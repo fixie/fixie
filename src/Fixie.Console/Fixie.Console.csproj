@@ -7,9 +7,6 @@
     <PackageId>Fixie.Console</PackageId>
     <PackAsTool>true</PackAsTool>
     <Description>`dotnet fixie` console test runner for the Fixie test framework.</Description>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 

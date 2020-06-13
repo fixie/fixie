@@ -129,29 +129,6 @@
             Heading($"Running {assemblyName}{context}");
             WriteLine();
 
-            if (targetFrameworkIdentifier == ".NETFramework")
-                return RunDotNetFramework(options, outputPath, targetFileName, customArguments);
-
-            if (targetFrameworkIdentifier == ".NETCoreApp")
-                return RunDotNetCore(options, outputPath, targetFileName, customArguments);
-
-            throw new Exception($"Framework '{targetFramework}' has unsupported TargetFrameworkIdentifier '{targetFrameworkIdentifier}'.");
-        }
-
-        static int RunDotNetFramework(Options options, string outputPath, string targetFileName, string[] customArguments)
-        {
-            var arguments = new List<string>();
-
-            AddPassThroughArguments(arguments, options, customArguments);
-
-            return Run(
-                executable: Path.Combine(outputPath, targetFileName),
-                workingDirectory: outputPath,
-                arguments: arguments.ToArray());
-        }
-
-        static int RunDotNetCore(Options options, string outputPath, string targetFileName, string[] customArguments)
-        {
             var arguments = new List<string> { targetFileName };
 
             AddPassThroughArguments(arguments, options, customArguments);

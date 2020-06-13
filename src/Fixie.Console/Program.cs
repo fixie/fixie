@@ -119,7 +119,6 @@
             var outputPath = assemblyMetadata[0];
             var assemblyName = assemblyMetadata[1];
             var targetFileName = assemblyMetadata[2];
-            var targetFrameworkIdentifier = assemblyMetadata[3];
 
             var context =
                 runningForMultipleFrameworks

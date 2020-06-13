@@ -24,35 +24,36 @@
 
                 var options = ValidateRunnerArguments(runnerArguments);
 
-                var testProject = TestProject();
-
-                if (options.ShouldBuild)
-                {
-                    WriteLine($"Building {Path.GetFileNameWithoutExtension(testProject)}...");
-
-                    var exitCode = RunTarget(testProject, "Build", options.Configuration);
-
-                    if (exitCode != 0)
-                    {
-                        Error("Build failed!");
-                        return FatalError;
-                    }
-                }
-
-                var targetFrameworks = GetTargetFrameworks(options, testProject);
-
                 var overallExitCode = Success;
 
-                bool runningForMultipleFrameworks = targetFrameworks.Length > 1;
-                foreach (var targetFramework in targetFrameworks)
+                foreach(var testProject in TestProjects(options).ToArray())
                 {
-                    int exitCode = RunTests(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
-
-                    if (exitCode != Success && exitCode != Failure)
-                        Error("Unexpected exit code: " + exitCode);
-
-                    if (exitCode != Success)
-                        overallExitCode = Failure;
+                    if (options.ShouldBuild)
+                    {
+                        WriteLine($"Building {Path.GetFileNameWithoutExtension(testProject)}...");
+                    
+                        var exitCode = RunTarget(testProject, "Build", options.Configuration);
+                    
+                        if (exitCode != 0)
+                        {
+                            Error("Build failed!");
+                            return FatalError;
+                        }
+                    }
+                    
+                    var targetFrameworks = GetTargetFrameworks(options, testProject);
+                    
+                    bool runningForMultipleFrameworks = targetFrameworks.Length > 1;
+                    foreach (var targetFramework in targetFrameworks)
+                    {
+                        int exitCode = RunTests(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
+                    
+                        if (exitCode != Success && exitCode != Failure)
+                            Error("Unexpected exit code: " + exitCode);
+                    
+                        if (exitCode != Success)
+                            overallExitCode = Failure;
+                    }
                 }
 
                 return overallExitCode;
@@ -82,14 +83,37 @@
             return options;
         }
 
-        static string TestProject()
+        static IEnumerable<string> TestProjects(Options options)
         {
-            var testProjects = EnumerateFiles(GetCurrentDirectory(), "*.*proj").ToArray();
+            if (options.ProjectPatterns.Any())
+            {
+                foreach (var pattern in options.ProjectPatterns)
+                {
+                    var found = false;
 
-            if (testProjects.Length != 1)
-                throw new CommandLineException($"Expected to find 1 project in the current directory, but found {testProjects.Length}.");
+                    foreach (var project in EnumerateFiles(GetCurrentDirectory(), pattern + ".*proj", SearchOption.AllDirectories))
+                    {
+                        found = true;
+                        yield return project;
+                    }
 
-            return testProjects.Single();
+                    if (!found)
+                        throw new CommandLineException($"There are no projects matching the pattern '{pattern}'.");
+                }
+            }
+            else
+            {
+                var found = false;
+
+                foreach (var project in EnumerateFiles(GetCurrentDirectory(), "*.*proj"))
+                {
+                    found = true;
+                    yield return project;
+                }
+
+                if (!found)
+                    throw new CommandLineException("There are no projects in the current directory.");
+            }
         }
 
         static string[] GetTargetFrameworks(Options options, string testProject)
@@ -119,7 +143,6 @@
             var outputPath = assemblyMetadata[0];
             var assemblyName = assemblyMetadata[1];
             var targetFileName = assemblyMetadata[2];
-            var targetFrameworkIdentifier = assemblyMetadata[3];
 
             var context =
                 runningForMultipleFrameworks
@@ -129,34 +152,15 @@
             Heading($"Running {assemblyName}{context}");
             WriteLine();
 
-            if (targetFrameworkIdentifier == ".NETFramework")
-                return RunDotNetFramework(options, outputPath, targetFileName, customArguments);
-
-            if (targetFrameworkIdentifier == ".NETCoreApp")
-                return RunDotNetCore(options, outputPath, targetFileName, customArguments);
-
-            throw new Exception($"Framework '{targetFramework}' has unsupported TargetFrameworkIdentifier '{targetFrameworkIdentifier}'.");
-        }
-
-        static int RunDotNetFramework(Options options, string outputPath, string targetFileName, string[] customArguments)
-        {
-            var arguments = new List<string>();
-
-            AddPassThroughArguments(arguments, options, customArguments);
-
-            return Run(
-                executable: Path.Combine(outputPath, targetFileName),
-                workingDirectory: outputPath,
-                arguments: arguments.ToArray());
-        }
-
-        static int RunDotNetCore(Options options, string outputPath, string targetFileName, string[] customArguments)
-        {
             var arguments = new List<string> { targetFileName };
 
             AddPassThroughArguments(arguments, options, customArguments);
 
-            return Run("dotnet", outputPath, arguments.ToArray());
+            var workingDirectory = Path.Combine(
+                new FileInfo(testProject).Directory.FullName,
+                outputPath);
+
+            return Run("dotnet", workingDirectory, arguments.ToArray());
         }
 
         static void AddPassThroughArguments(List<string> arguments, Options options, string[] customArguments)
@@ -175,8 +179,14 @@
         static void Help()
         {
             WriteLine();
-            WriteLine("Usage: dotnet fixie [options] [-- [custom arguments]...]");
+            WriteLine("Usage: dotnet fixie [project]... [options] [-- [custom arguments]...]");
             WriteLine();
+            WriteLine();
+            WriteLine("    project");
+            WriteLine("        The name of a test project to run. When this option");
+            WriteLine("        is omitted, the project in the current directory is");
+            WriteLine("        assumed. Specify multiple project names or use * wildcards");
+            WriteLine("        to run multiple test projects.");
             WriteLine();
             WriteLine("    --configuration name");
             WriteLine("        The configuration under which to build. When this option");

@@ -2,21 +2,17 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <AssemblyName>dotnet-fixie</AssemblyName>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageId>Fixie.Console</PackageId>
-    <PackageType>DotnetCliTool</PackageType>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>fixie</ToolCommandName>
     <Description>`dotnet fixie` console test runner for the Fixie test framework.</Description>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <Import Project="..\Fixie.Cli\Fixie.Cli.projitems" Label="Shared" />
 
   <ItemGroup>
-    <None Include="prefercliruntime" Pack="true" PackagePath="" />
     <None Include="..\..\LICENSE.md" Pack="true" PackagePath="" />
     <None Include="..\..\img\fixie_256.png" Pack="true" PackagePath="icon.png" />
   </ItemGroup>

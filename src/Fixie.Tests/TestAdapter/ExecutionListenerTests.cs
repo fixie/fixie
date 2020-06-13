@@ -7,47 +7,52 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Assertions;
-    using Fixie.Internal;
     using static System.Environment;
-    using static Fixie.Internal.Serialization;
 
-    public class ExecutionListenerTests
+    public class ExecutionListenerTests : MessagingTests
     {
         public void ShouldMapMessagesToVsTestExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
-            var executionRecorder = new ExecutionListener(recorder, assemblyPath);
+            var listener = new ExecutionListener(recorder, assemblyPath);
 
-            var @case = Case("Pass", 1);
-            executionRecorder.Handle(new CaseStarted(@case));
-            @case.Duration = TimeSpan.FromMilliseconds(1000);
-            @case.Output = "Output";
-            executionRecorder.Handle(new CasePassed(@case));
+            Run(listener, out var console);
 
-            @case = Case("Fail");
-            executionRecorder.Handle(new CaseStarted(@case));
-            @case.Duration = TimeSpan.FromMilliseconds(2000);
-            @case.Output = "Output";
-            @case.Fail(new StubException("Exception Message"));
-            executionRecorder.Handle(new CaseFailed(@case));
+            console
+                .ShouldBe(
+                    "Console.Out: Fail",
+                    "Console.Error: Fail",
+                    "Console.Out: FailByAssertion",
+                    "Console.Error: FailByAssertion",
+                    "Console.Out: Pass",
+                    "Console.Error: Pass");
 
-            @case = Case("Skip");
-            executionRecorder.Handle(new CaseStarted(@case));
-            @case.Skip("Skip Reason");
-            executionRecorder.Handle(new CaseSkipped(@case));
+            recorder.Messages.Count.ShouldBe(10);
 
-            var className = typeof(SampleTestClass).FullName;
+            var starts = new List<TestCase>();
+            var results = new List<TestResult>();
 
-            var starts = recorder.TestStarts;
-            starts.Count.ShouldBe(3);
-            starts[0].ShouldBeExecutionTimeTest(className+".Pass", assemblyPath);
-            starts[1].ShouldBeExecutionTimeTest(className+".Fail", assemblyPath);
-            starts[2].ShouldBeExecutionTimeTest(className+".Skip", assemblyPath);
+            bool expectStart = true;
+            foreach (var message in recorder.Messages)
+            {
+                if (expectStart)
+                    starts.Add((TestCase) message);
+                else
+                    results.Add((TestResult) message);
 
-            var results = recorder.TestResults;
-            results.Count.ShouldBe(3);
+                expectStart = !expectStart;
+            }
+
+            starts.Count.ShouldBe(5);
+            starts[0].ShouldBeExecutionTimeTest(TestClass+".Fail", assemblyPath);
+            starts[1].ShouldBeExecutionTimeTest(TestClass+".FailByAssertion", assemblyPath);
+            starts[2].ShouldBeExecutionTimeTest(TestClass+".Pass", assemblyPath);
+            starts[3].ShouldBeExecutionTimeTest(TestClass+".SkipWithReason", assemblyPath);
+            starts[4].ShouldBeExecutionTimeTest(TestClass+".SkipWithoutReason", assemblyPath);
+
+            results.Count.ShouldBe(5);
 
             foreach (var result in results)
             {
@@ -56,84 +61,84 @@
                 result.ComputerName.ShouldBe(MachineName);
             }
 
-            var pass = results[0];
-            var fail = results[1];
-            var skip = results[2];
+            var fail = results[0];
+            var failByAssertion = results[1];
+            var pass = results[2];
+            var skipWithReason = results[3];
+            var skipWithoutReason = results[4];
 
-            pass.TestCase.ShouldBeExecutionTimeTest(className+".Pass", assemblyPath);
-            pass.TestCase.DisplayName.ShouldBe(className+".Pass");
+            fail.TestCase.ShouldBeExecutionTimeTest(TestClass+".Fail", assemblyPath);
+            fail.TestCase.DisplayName.ShouldBe(TestClass+".Fail");
+            fail.Outcome.ShouldBe(TestOutcome.Failed);
+            fail.ErrorMessage.ShouldBe("'Fail' failed!");
+            fail.ErrorStackTrace
+                .Lines()
+                .CleanStackTraceLineNumbers()
+                .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
+            fail.DisplayName.ShouldBe(TestClass+".Fail");
+            fail.Messages.Count.ShouldBe(1);
+            fail.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
+            fail.Messages[0].Text.Lines().ShouldBe("Console.Out: Fail", "Console.Error: Fail");
+            fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+
+            failByAssertion.TestCase.ShouldBeExecutionTimeTest(TestClass+".FailByAssertion", assemblyPath);
+            failByAssertion.TestCase.DisplayName.ShouldBe(TestClass+".FailByAssertion");
+            failByAssertion.Outcome.ShouldBe(TestOutcome.Failed);
+            failByAssertion.ErrorMessage.Lines().ShouldBe(
+                "Expected: 2",
+                "Actual:   1");
+            failByAssertion.ErrorStackTrace
+                .Lines()
+                .CleanStackTraceLineNumbers()
+                .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
+            failByAssertion.DisplayName.ShouldBe(TestClass+".FailByAssertion");
+            failByAssertion.Messages.Count.ShouldBe(1);
+            failByAssertion.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
+            failByAssertion.Messages[0].Text.Lines().ShouldBe("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
+            failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+
+            pass.TestCase.ShouldBeExecutionTimeTest(TestClass+".Pass", assemblyPath);
+            pass.TestCase.DisplayName.ShouldBe(TestClass+".Pass");
             pass.Outcome.ShouldBe(TestOutcome.Passed);
             pass.ErrorMessage.ShouldBe(null);
             pass.ErrorStackTrace.ShouldBe(null);
-            pass.DisplayName.ShouldBe(className+".Pass(1)");
+            pass.DisplayName.ShouldBe(TestClass+".Pass");
             pass.Messages.Count.ShouldBe(1);
             pass.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
-            pass.Messages[0].Text.ShouldBe("Output");
-            pass.Duration.ShouldBe(TimeSpan.FromMilliseconds(1000));
+            pass.Messages[0].Text.Lines().ShouldBe("Console.Out: Pass", "Console.Error: Pass");
+            pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            
+            skipWithReason.TestCase.ShouldBeExecutionTimeTest(TestClass+".SkipWithReason", assemblyPath);
+            skipWithReason.TestCase.DisplayName.ShouldBe(TestClass+".SkipWithReason");
+            skipWithReason.Outcome.ShouldBe(TestOutcome.Skipped);
+            skipWithReason.ErrorMessage.ShouldBe("⚠ Skipped with reason.");
+            skipWithReason.ErrorStackTrace.ShouldBe(null);
+            skipWithReason.DisplayName.ShouldBe(TestClass+".SkipWithReason");
+            skipWithReason.Messages.ShouldBeEmpty();
+            skipWithReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            fail.TestCase.ShouldBeExecutionTimeTest(className+".Fail", assemblyPath);
-            fail.TestCase.DisplayName.ShouldBe(className+".Fail");
-            fail.Outcome.ShouldBe(TestOutcome.Failed);
-            fail.ErrorMessage.ShouldBe("Exception Message");
-            fail.ErrorStackTrace.ShouldBe(typeof(StubException).FullName + NewLine + "Exception Stack Trace");
-            fail.DisplayName.ShouldBe(className+".Fail");
-            fail.Messages.Count.ShouldBe(1);
-            fail.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
-            fail.Messages[0].Text.ShouldBe("Output");
-            fail.Duration.ShouldBe(TimeSpan.FromMilliseconds(2000));
-
-            skip.TestCase.ShouldBeExecutionTimeTest(className+".Skip", assemblyPath);
-            skip.TestCase.DisplayName.ShouldBe(className+".Skip");
-            skip.Outcome.ShouldBe(TestOutcome.Skipped);
-            skip.ErrorMessage.ShouldBe("Skip Reason");
-            skip.ErrorStackTrace.ShouldBe(null);
-            skip.DisplayName.ShouldBe(className+".Skip");
-            skip.Messages.ShouldBeEmpty();
-            skip.Duration.ShouldBe(TimeSpan.Zero);
-        }
-
-        static T Deserialized<T>(T original)
-        {
-            // Because the inter-process communication between the VsTest process
-            // and the test assembly process is not exercised in these single-process
-            // tests, put a given sample message through the same serialization round
-            // trip that would be applied at runtime, in order to detect data loss.
-
-            return Deserialize<T>(Serialize(original));
-        }
-
-        static Case Case(string methodName, params object?[] parameters)
-            => new Case(typeof(SampleTestClass).GetInstanceMethod(methodName), parameters);
-
-        class SampleTestClass
-        {
-            public void Pass(int x) { }
-            public void Fail() { }
-            public void Skip() { }
-        }
-
-        class StubException : Exception
-        {
-            public StubException(string message)
-                : base(message) { }
-
-            public override string StackTrace
-                => "Exception Stack Trace";
+            skipWithoutReason.TestCase.ShouldBeExecutionTimeTest(TestClass+".SkipWithoutReason", assemblyPath);
+            skipWithoutReason.TestCase.DisplayName.ShouldBe(TestClass+".SkipWithoutReason");
+            skipWithoutReason.Outcome.ShouldBe(TestOutcome.Skipped);
+            skipWithoutReason.ErrorMessage.ShouldBe(null);
+            skipWithoutReason.ErrorStackTrace.ShouldBe(null);
+            skipWithoutReason.DisplayName.ShouldBe(TestClass+".SkipWithoutReason");
+            skipWithoutReason.Messages.ShouldBeEmpty();
+            skipWithoutReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
         }
 
         class StubExecutionRecorder : ITestExecutionRecorder
         {
-            public List<TestCase> TestStarts { get; } = new List<TestCase>();
-            public List<TestResult> TestResults { get; } = new List<TestResult>();
+            public List<object> Messages { get; } = new List<object>();
+
+            public void RecordStart(TestCase testCase)
+                => Messages.Add(testCase);
 
             public void RecordResult(TestResult testResult)
-                => TestResults.Add(testResult);
+                => Messages.Add(testResult);
 
             public void SendMessage(TestMessageLevel testMessageLevel, string message)
                 => throw new NotImplementedException();
-
-            public void RecordStart(TestCase testCase)
-                => TestStarts.Add(testCase);
 
             public void RecordEnd(TestCase testCase, TestOutcome outcome)
                 => throw new NotImplementedException();

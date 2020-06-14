@@ -4,19 +4,21 @@
 
     class Discoverer
     {
+        readonly Assembly assembly;
         readonly Bus bus;
         readonly string[] customArguments;
 
-        public Discoverer(Bus bus)
-            : this(bus, new string[] {}) { }
+        public Discoverer(Assembly assembly, Bus bus)
+            : this(assembly, bus, new string[] {}) { }
 
-        public Discoverer(Bus bus, string[] customArguments)
+        public Discoverer(Assembly assembly, Bus bus, string[] customArguments)
         {
+            this.assembly = assembly;
             this.bus = bus;
             this.customArguments = customArguments;
         }
 
-        public void DiscoverMethods(Assembly assembly)
+        public void DiscoverMethods()
         {
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
 

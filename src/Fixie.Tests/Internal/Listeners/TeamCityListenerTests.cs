@@ -50,6 +50,13 @@
                     $"##teamcity[testIgnored name='{TestClass}.SkipWithoutReason' message='']",
                     $"##teamcity[testFinished name='{TestClass}.SkipWithoutReason' duration='#']",
 
+                    $"##teamcity[testStarted name='{GenericTestClass}.ShouldBeString<System.String>(\"abc\")']",
+                    $"##teamcity[testFinished name='{GenericTestClass}.ShouldBeString<System.String>(\"abc\")' duration='#']",
+
+                    $"##teamcity[testStarted name='{GenericTestClass}.ShouldBeString<System.Int32>(123)']",
+                    $"##teamcity[testFailed name='{GenericTestClass}.ShouldBeString<System.Int32>(123)' message='Expected: System.String{eol}Actual:   System.Int32' details='Fixie.Tests.Assertions.AssertException{eol}{At<SampleGenericTestClass>("ShouldBeString|[T|](T genericArgument)")}']",
+                    $"##teamcity[testFinished name='{GenericTestClass}.ShouldBeString<System.Int32>(123)' duration='#']",
+
                     "##teamcity[testSuiteFinished name='Fixie.Tests']");
         }
     }

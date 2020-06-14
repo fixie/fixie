@@ -32,7 +32,7 @@
             var buildId = Guid.NewGuid().ToString();
             var runUrl = "http://localhost:4567/run/" + Guid.NewGuid();
             var requests = new List<object>();
-            var batchSize = 2;
+            var batchSize = 3;
 
             Action<HttpClient> assertCommonHttpConcerns = client =>
             {
@@ -97,18 +97,20 @@
                 }).ToList();
 
             resultBatches.Count.ShouldBe(3);
-            resultBatches[0].Count.ShouldBe(2);
-            resultBatches[1].Count.ShouldBe(2);
+            resultBatches[0].Count.ShouldBe(3);
+            resultBatches[1].Count.ShouldBe(3);
             resultBatches[2].Count.ShouldBe(1);
 
             var results = resultBatches.SelectMany(x => x).ToList();
-            results.Count.ShouldBe(5);
+            results.Count.ShouldBe(7);
 
             var fail = results[0];
             var failByAssertion = results[1];
             var pass = results[2];
             var skipWithReason = results[3];
             var skipWithoutReason = results[4];
+            var shouldBeStringPass = results[5];
+            var shouldBeStringFail = results[6];
 
             fail.automatedTestName.ShouldBe(TestClass + ".Fail");
             fail.testCaseTitle.ShouldBe(TestClass + ".Fail");
@@ -152,6 +154,27 @@
             skipWithoutReason.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
             skipWithoutReason.errorMessage.ShouldBe(null);
             skipWithoutReason.stackTrace.ShouldBe(null);
+
+            shouldBeStringPass.automatedTestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"abc\")");
+            shouldBeStringPass.testCaseTitle.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"abc\")");
+            shouldBeStringPass.outcome.ShouldBe("Passed");
+            shouldBeStringPass.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+            shouldBeStringPass.errorMessage.ShouldBe(null);
+            shouldBeStringPass.stackTrace.ShouldBe(null);
+
+            shouldBeStringFail.automatedTestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
+            shouldBeStringFail.testCaseTitle.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
+            shouldBeStringFail.outcome.ShouldBe("Failed");
+            shouldBeStringFail.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+            shouldBeStringFail.errorMessage!.Lines().ShouldBe(
+                "Expected: System.String",
+                "Actual:   System.Int32");
+            shouldBeStringFail.stackTrace!
+                .Lines()
+                .CleanStackTraceLineNumbers()
+                .ShouldBe(
+                    "Fixie.Tests.Assertions.AssertException",
+                    At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
 
             var lastRequest = (Request<AzureListener.CompleteRun>)requests.Last();
             lastRequest.Method.ShouldBe(new HttpMethod("PATCH"));

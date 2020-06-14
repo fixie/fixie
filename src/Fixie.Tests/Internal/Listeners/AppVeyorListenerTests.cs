@@ -29,7 +29,7 @@
                     "Console.Out: Pass",
                     "Console.Error: Pass");
 
-            results.Count.ShouldBe(5);
+            results.Count.ShouldBe(7);
 
             foreach (var result in results)
             {
@@ -42,6 +42,8 @@
             var pass = results[2];
             var skipWithReason = results[3];
             var skipWithoutReason = results[4];
+            var shouldBeStringPass = results[5];
+            var shouldBeStringFail = results[6];
 
             fail.TestName.ShouldBe(TestClass + ".Fail");
             fail.Outcome.ShouldBe("Failed");
@@ -85,6 +87,25 @@
             skipWithoutReason.ErrorMessage.ShouldBe(null);
             skipWithoutReason.ErrorStackTrace.ShouldBe(null);
             skipWithoutReason.StdOut.ShouldBe("");
+
+            shouldBeStringPass.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"abc\")");
+            shouldBeStringPass.Outcome.ShouldBe("Passed");
+            int.Parse(shouldBeStringPass.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            shouldBeStringPass.ErrorMessage.ShouldBe(null);
+            shouldBeStringPass.ErrorStackTrace.ShouldBe(null);
+            shouldBeStringPass.StdOut.ShouldBe("");
+
+            shouldBeStringFail.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
+            shouldBeStringFail.Outcome.ShouldBe("Failed");
+            int.Parse(shouldBeStringFail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            shouldBeStringFail.ErrorMessage!.Lines().ShouldBe(
+                "Expected: System.String",
+                "Actual:   System.Int32");
+            shouldBeStringFail.ErrorStackTrace!
+                .Lines()
+                .CleanStackTraceLineNumbers()
+                .ShouldBe("Fixie.Tests.Assertions.AssertException", At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
+            shouldBeStringFail.StdOut.ShouldBe("");
         }
     }
 }

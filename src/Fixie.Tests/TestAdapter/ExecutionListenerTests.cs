@@ -29,7 +29,7 @@
                     "Console.Out: Pass",
                     "Console.Error: Pass");
 
-            recorder.Messages.Count.ShouldBe(10);
+            recorder.Messages.Count.ShouldBe(14);
 
             var starts = new List<TestCase>();
             var results = new List<TestResult>();
@@ -45,14 +45,16 @@
                 expectStart = !expectStart;
             }
 
-            starts.Count.ShouldBe(5);
+            starts.Count.ShouldBe(7);
             starts[0].ShouldBeExecutionTimeTest(TestClass+".Fail", assemblyPath);
             starts[1].ShouldBeExecutionTimeTest(TestClass+".FailByAssertion", assemblyPath);
             starts[2].ShouldBeExecutionTimeTest(TestClass+".Pass", assemblyPath);
             starts[3].ShouldBeExecutionTimeTest(TestClass+".SkipWithReason", assemblyPath);
             starts[4].ShouldBeExecutionTimeTest(TestClass+".SkipWithoutReason", assemblyPath);
+            starts[5].ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
+            starts[6].ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
 
-            results.Count.ShouldBe(5);
+            results.Count.ShouldBe(7);
 
             foreach (var result in results)
             {
@@ -66,6 +68,8 @@
             var pass = results[2];
             var skipWithReason = results[3];
             var skipWithoutReason = results[4];
+            var shouldBeStringPass = results[5];
+            var shouldBeStringFail = results[6];
 
             fail.TestCase.ShouldBeExecutionTimeTest(TestClass+".Fail", assemblyPath);
             fail.TestCase.DisplayName.ShouldBe(TestClass+".Fail");
@@ -125,6 +129,31 @@
             skipWithoutReason.DisplayName.ShouldBe(TestClass+".SkipWithoutReason");
             skipWithoutReason.Messages.ShouldBeEmpty();
             skipWithoutReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+
+            shouldBeStringPass.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
+            shouldBeStringPass.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");
+            shouldBeStringPass.Outcome.ShouldBe(TestOutcome.Passed);
+            shouldBeStringPass.ErrorMessage.ShouldBe(null);
+            shouldBeStringPass.ErrorStackTrace.ShouldBe(null);
+            shouldBeStringPass.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.String>(\"abc\")");
+            shouldBeStringPass.Messages.ShouldBeEmpty();
+            shouldBeStringPass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+
+            shouldBeStringFail.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
+            shouldBeStringFail.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");
+            shouldBeStringFail.Outcome.ShouldBe(TestOutcome.Failed);
+            shouldBeStringFail.ErrorMessage.Lines().ShouldBe(
+                "Expected: System.String",
+                "Actual:   System.Int32");
+            shouldBeStringFail.ErrorStackTrace
+                .Lines()
+                .CleanStackTraceLineNumbers()
+                .ShouldBe(
+                    "Fixie.Tests.Assertions.AssertException",
+                    At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
+            shouldBeStringFail.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.Int32>(123)");
+            shouldBeStringFail.Messages.ShouldBeEmpty();
+            shouldBeStringFail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
         }
 
         class StubExecutionRecorder : ITestExecutionRecorder

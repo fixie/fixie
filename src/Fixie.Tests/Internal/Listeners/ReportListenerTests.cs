@@ -67,7 +67,9 @@
                                 .Replace("[assemblyLocation]", assemblyLocation)
                                 .Replace("[fileLocation]", fileLocation)
                                 .Replace("[testClass]", TestClass)
-                                .Replace("[testClassForStackTrace]", TestClass.Replace("+", "."));
+                                .Replace("[genericTestClass]", GenericTestClass)
+                                .Replace("[testClassForStackTrace]", TestClass.Replace("+", "."))
+                                .Replace("[genericTestClassForStackTrace]", GenericTestClass.Replace("+", "."));
             }
         }
 

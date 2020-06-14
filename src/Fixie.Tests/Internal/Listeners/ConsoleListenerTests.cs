@@ -45,13 +45,23 @@
                     "",
                     "Test '" + TestClass + ".SkipWithoutReason' skipped",
                     "",
-                    "1 passed, 2 failed, 2 skipped, took 1.23 seconds");
+
+                    "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
+                    "",
+                    "Expected: System.String",
+                    "Actual:   System.Int32",
+                    "",
+                    "Fixie.Tests.Assertions.AssertException",
+                    At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
+                    "",
+
+                    "2 passed, 3 failed, 2 skipped, took 1.23 seconds");
         }
 
         public void ShouldNotReportPassCountsWhenZeroTestsHavePassed()
         {
             void ZeroPassed(Discovery discovery)
-                => discovery.Methods.Where(x => !x.Name.StartsWith("Pass"));
+                => discovery.Methods.Where(x => !x.Name.StartsWith("Pass") && x.ReflectedType == TestClassType);
 
             var listener = new ConsoleListener();
 
@@ -66,7 +76,7 @@
         public void ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
         {
             void ZeroFailed(Discovery discovery)
-                => discovery.Methods.Where(x => !x.Name.StartsWith("Fail"));
+                => discovery.Methods.Where(x => !x.Name.StartsWith("Fail") && x.ReflectedType == TestClassType);
 
             var listener = new ConsoleListener();
 
@@ -81,7 +91,7 @@
         public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
         {
             void ZeroSkipped(Discovery discovery)
-                => discovery.Methods.Where(x => !x.Name.StartsWith("Skip"));
+                => discovery.Methods.Where(x => !x.Name.StartsWith("Skip") && x.ReflectedType == TestClassType);
 
             var listener = new ConsoleListener();
 

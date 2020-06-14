@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
     using Assertions;
     using Fixie.Internal;
@@ -12,21 +14,28 @@
         protected MessagingTests()
         {
             TestClass = FullName<SampleTestClass>();
+            GenericTestClass = FullName<SampleGenericTestClass>();
         }
 
         protected string TestClass { get; }
+        protected string GenericTestClass { get; }
         protected Type TestClassType => typeof(SampleTestClass);
 
         protected void Run(Listener listener, out IEnumerable<string> consoleLines, Action<Discovery>? customize = null)
         {
             var discovery = new SelfTestDiscovery();
+            discovery.Parameters.Add<InputAttributeParameterSource>();
+
             var execution = new CreateInstancePerCase();
 
             customize?.Invoke(discovery);
 
             using var console = new RedirectedConsole();
 
-            Utility.Run(listener, discovery, execution, typeof(SampleTestClass), typeof(EmptyTestClass));
+            Utility.Run(listener, discovery, execution,
+                typeof(SampleTestClass),
+                typeof(SampleGenericTestClass),
+                typeof(EmptyTestClass));
 
             consoleLines = console.Lines();
         }
@@ -49,6 +58,20 @@
 
                     instance.Dispose();
                 });
+            }
+        }
+
+        class InputAttributeParameterSource : ParameterSource
+        {
+            public IEnumerable<object?[]> GetParameters(MethodInfo method)
+            {
+                var inputAttributes = method.GetCustomAttributes<InputAttribute>(true)
+                    .OrderBy(x => x.Order)
+                    .ToArray();
+
+                if (inputAttributes.Any())
+                    foreach (var input in inputAttributes)
+                        yield return input.Parameters;
             }
         }
 
@@ -94,12 +117,38 @@
             }
         }
 
+        protected class SampleGenericTestClass
+        {
+            [Input(1, "abc")]
+            [Input(2, 123)]
+            public void ShouldBeString<T>(T genericArgument)
+            {
+                genericArgument.ShouldBe<string>();
+            }
+        }
+
         class EmptyTestClass
         {
         }
 
+        [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+        class InputAttribute : Attribute
+        {
+            public InputAttribute(int order, params object?[] parameters)
+            {
+                Order = order;
+                Parameters = parameters;
+            }
+
+            public int Order { get; }
+            public object?[] Parameters { get; }
+        }
+
         protected static string At(string method)
             => At<SampleTestClass>(method);
+        
+        protected static string At<T>(string method)
+            => Utility.At<T>(method);
 
         protected static string TestClassPath()
             => PathToThisFile();

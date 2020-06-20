@@ -80,7 +80,7 @@ namespace Fixie.Tests.Assertions
 
         public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
         {
-            actual.ToArray().ShouldBe(expected);
+            actual.ToArray().ShouldMatch(expected);
         }
 
         public static T ShouldBe<T>(this object? actual)

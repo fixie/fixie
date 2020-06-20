@@ -5,7 +5,6 @@ namespace Fixie.Tests.Assertions
     using System.Linq;
     using System.Text.Json;
     using System.Text.Json.Serialization;
-    using static System.Environment;
 
     public static class AssertionExtensions
     {
@@ -50,7 +49,7 @@ namespace Fixie.Tests.Assertions
         public static void ShouldBe(this object? actual, object? expected)
         {
             if (!Equals(actual, expected))
-                throw new AssertException(expected, actual);
+                throw new MatchException(expected?.ToString(), actual?.ToString());
         }
 
         public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)

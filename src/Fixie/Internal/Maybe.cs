@@ -18,5 +18,12 @@
 
             return output != null;
         }
+        
+        public static bool Try<TInput1, TInput2, TOutput>(Func<TInput1, TInput2, TOutput> create, TInput1 input1, TInput2 input2, [NotNullWhen(true)] out TOutput output)
+        {
+            output = create(input1, input2);
+
+            return output != null;
+        }
     }
 }

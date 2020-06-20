@@ -68,8 +68,7 @@ namespace Fixie.Tests.Assertions
 
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
         {
-            if (collection.Any())
-                throw new AssertException("Collection was not empty.");
+            collection.ShouldMatch(Array.Empty<T>());
         }
 
         public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception

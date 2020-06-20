@@ -2,7 +2,6 @@ namespace Fixie.Tests.Assertions
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
     using static System.Environment;
 
     public class AssertException : Exception
@@ -12,21 +11,6 @@ namespace Fixie.Tests.Assertions
         public AssertException(string message)
             : base(message)
         {
-        }
-
-        public AssertException(object? expected, object? actual)
-            : base(ExpectationMessage(expected, actual))
-        {
-        }
-
-        static string ExpectationMessage(object? expected, object? actual)
-        {
-            var message = new StringBuilder();
-
-            message.AppendLine($"Expected: {expected?.ToString() ?? "null"}");
-            message.Append($"Actual:   {actual?.ToString() ?? "null"}");
-
-            return message.ToString();
         }
 
         public override string? StackTrace => FilterStackTrace(base.StackTrace);

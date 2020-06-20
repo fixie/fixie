@@ -51,11 +51,6 @@ namespace Fixie.Tests.Assertions
                     throw new AssertException(Json(expected), Json(actual));
         }
 
-        public static void ShouldBe(this IEnumerable<string> actual, params string[] expected)
-        {
-            actual.ToArray().ShouldBe(expected);
-        }
-
         public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected)
         {
             if (!actual.Equals(expected))

@@ -34,13 +34,15 @@
 
         Type DiscoveryType()
         {
-            if (assembly.GetName().Name == "Fixie.Tests")
-                return typeof(Discovery);
-
             var customDiscoveryTypes = assembly
                 .GetTypes()
                 .Where(type => IsDiscovery(type) && !type.IsAbstract)
                 .ToArray();
+
+            if (assembly.GetName().Name == "Fixie.Tests")
+                customDiscoveryTypes = customDiscoveryTypes
+                    .Where(type => type.Name == "PrimaryConvention")
+                    .ToArray();
 
             if (customDiscoveryTypes.Length > 1)
             {
@@ -57,13 +59,15 @@
 
         Type ExecutionType()
         {
-            if (assembly.GetName().Name == "Fixie.Tests")
-                return typeof(DefaultExecution);
-
             var customExecutionTypes = assembly
                 .GetTypes()
                 .Where(type => IsExecution(type) && !type.IsAbstract)
                 .ToArray();
+
+            if (assembly.GetName().Name == "Fixie.Tests")
+                customExecutionTypes = customExecutionTypes
+                    .Where(type => type.Name == "PrimaryConvention")
+                    .ToArray();
 
             if (customExecutionTypes.Length > 1)
             {

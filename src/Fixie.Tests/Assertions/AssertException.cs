@@ -10,30 +10,38 @@ namespace Fixie.Tests.Assertions
 
         public string? Expected { get; }
         public string? Actual { get; }
+        public bool HasCompactRepresentations { get; }
 
         public AssertException(string? expected, string? actual)
-            : base(ExpectationString(expected, actual))
         {
-            Expected = expected ?? "null";
-            Actual = actual ?? "null";;
+            Expected = expected;
+            Actual = actual;
+            HasCompactRepresentations = HasCompactRepresentation(expected) &&
+                                        HasCompactRepresentation(actual);
         }
 
-        static string ExpectationString(string? expected, string? actual)
+        public override string Message
         {
-            expected ??= "null";
-            actual ??= "null";
+            get
+            {
+                var expected = Expected ?? "null";
+                var actual = Actual ?? "null";
 
-            if (HasCompactRepresentation(expected) && HasCompactRepresentation(actual))
-                return $"Expected: {expected}{NewLine}" +
-                       $"Actual:   {actual}";
+                if (HasCompactRepresentations)
+                    return $"Expected: {expected}{NewLine}" +
+                           $"Actual:   {actual}";
 
-            return $"Expected:{NewLine}{expected}{NewLine}{NewLine}" +
-                   $"Actual:{NewLine}{actual}";
+                return $"Expected:{NewLine}{expected}{NewLine}{NewLine}" +
+                       $"Actual:{NewLine}{actual}";
+            }
         }
 
-        static bool HasCompactRepresentation(string value)
+        static bool HasCompactRepresentation(string? value)
         {
             const int compactLength = 50;
+
+            if (value is null)
+                return true;
 
             return value.Length <= compactLength && !value.Contains(NewLine);
         }

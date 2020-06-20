@@ -22,7 +22,8 @@
                 var methodWasExplicitlyRequested = testClass.TargetMethod != null;
 
                 if (methodWasExplicitlyRequested && @case.Exception is AssertException exception)
-                    LaunchDiffTool(exception);
+                    if (!exception.HasCompactRepresentations)
+                        LaunchDiffTool(exception);
             });
         }
 

@@ -4,14 +4,36 @@ namespace Fixie.Tests.Assertions
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.Json;
+    using System.Text.Json.Serialization;
     using static System.Environment;
 
     public static class AssertionExtensions
     {
-        static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+        static readonly JsonSerializerOptions JsonSerializerOptions;
+
+        static AssertionExtensions()
         {
-            WriteIndented = true
-        };
+            JsonSerializerOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            JsonSerializerOptions.Converters.Add(new StringRepresentation<Type>());
+        }
+
+        class StringRepresentation<T> : JsonConverter<T>
+        {
+            public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+                => throw new NotImplementedException();
+
+            public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+            {
+                if (value is null)
+                    writer.WriteNullValue();
+                else
+                    writer.WriteStringValue(value.ToString());
+            }
+        }
 
         public static void ShouldBe(this string? actual, string? expected)
         {
@@ -123,9 +145,9 @@ namespace Fixie.Tests.Assertions
             actual.ToArray().ShouldMatch(expected);
         }
 
-        static string Json<T>(T actual)
+        static string Json<T>(T @object)
         {
-            return JsonSerializer.Serialize(actual, JsonSerializerOptions);
+            return JsonSerializer.Serialize(@object, JsonSerializerOptions);
         }
     }
 }

@@ -111,7 +111,11 @@ namespace Fixie.Tests.Assertions
 
         public static void ShouldMatch<T>(this T actual, T expected)
         {
-            Json(actual).ShouldBe(Json(expected));
+            var actualJson = Json(actual);
+            var expectedJson = Json(expected);
+            
+            if (actualJson != expectedJson)
+                throw new MatchException(expectedJson, actualJson);
         }
 
         public static void ShouldMatch<T>(this IEnumerable<T> actual, params T[] expected)

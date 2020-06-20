@@ -84,7 +84,7 @@ namespace Fixie.Tests.Assertions
                 return (TException)actual;
             }
 
-            throw new AssertException("Expected an exception to be thrown.");
+            throw new MatchException(typeof(TException).FullName, "No exception was thrown.");
         }
 
         public static void ShouldBeGreaterThan<T>(this T actual, T minimum) where T: IComparable<T>

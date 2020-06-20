@@ -37,19 +37,19 @@ namespace Fixie.Tests.Assertions
         public static void ShouldBe(this string? actual, string? expected)
         {
             if (actual != expected)
-                throw new MatchException(expected, actual);
+                throw new AssertException(expected, actual);
         }
 
         public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected)
         {
             if (!actual.Equals(expected))
-                throw new MatchException(expected.ToString(), actual.ToString());
+                throw new AssertException(expected.ToString(), actual.ToString());
         }
 
         public static void ShouldBe(this object? actual, object? expected)
         {
             if (!Equals(actual, expected))
-                throw new MatchException(expected?.ToString(), actual?.ToString());
+                throw new AssertException(expected?.ToString(), actual?.ToString());
         }
 
         public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
@@ -62,7 +62,7 @@ namespace Fixie.Tests.Assertions
             if (actual is T typed)
                 return typed;
 
-            throw new MatchException(typeof(T).ToString(), actual?.GetType().ToString());
+            throw new AssertException(typeof(T).ToString(), actual?.GetType().ToString());
         }
 
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
@@ -84,19 +84,19 @@ namespace Fixie.Tests.Assertions
                 return (TException)actual;
             }
 
-            throw new MatchException(typeof(TException).FullName, "No exception was thrown.");
+            throw new AssertException(typeof(TException).FullName, "No exception was thrown.");
         }
 
         public static void ShouldBeGreaterThan<T>(this T actual, T minimum) where T: IComparable<T>
         {
             if (actual.CompareTo(minimum) <= 0)
-                throw new MatchException($"value > {minimum}", actual.ToString());
+                throw new AssertException($"value > {minimum}", actual.ToString());
         }
 
         public static void ShouldBeGreaterThanOrEqualTo<T>(this T actual, T minimum) where T: IComparable<T>
         {
             if (actual.CompareTo(minimum) < 0)
-                throw new MatchException($"value >= {minimum}", actual.ToString());
+                throw new AssertException($"value >= {minimum}", actual.ToString());
         }
 
         public static void ShouldMatch<T>(this T actual, T expected)
@@ -105,7 +105,7 @@ namespace Fixie.Tests.Assertions
             var expectedJson = Json(expected);
             
             if (actualJson != expectedJson)
-                throw new MatchException(expectedJson, actualJson);
+                throw new AssertException(expectedJson, actualJson);
         }
 
         static string Json<T>(T @object)

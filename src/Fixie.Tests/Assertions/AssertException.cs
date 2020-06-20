@@ -8,9 +8,34 @@ namespace Fixie.Tests.Assertions
     {
         public static string FilterStackTraceAssemblyPrefix = typeof(AssertException).Namespace + ".";
 
-        public AssertException(string message)
-            : base(message)
+        public string? Expected { get; }
+        public string? Actual { get; }
+
+        public AssertException(string? expected, string? actual)
+            : base(ExpectationString(expected, actual))
         {
+            Expected = expected ?? "null";
+            Actual = actual ?? "null";;
+        }
+
+        static string ExpectationString(string? expected, string? actual)
+        {
+            expected ??= "null";
+            actual ??= "null";
+
+            if (HasCompactRepresentation(expected) && HasCompactRepresentation(actual))
+                return $"Expected: {expected}{NewLine}" +
+                       $"Actual:   {actual}";
+
+            return $"Expected:{NewLine}{expected}{NewLine}{NewLine}" +
+                   $"Actual:{NewLine}{actual}";
+        }
+
+        static bool HasCompactRepresentation(string value)
+        {
+            const int compactLength = 50;
+
+            return value.Length <= compactLength && !value.Contains(NewLine);
         }
 
         public override string? StackTrace => FilterStackTrace(base.StackTrace);

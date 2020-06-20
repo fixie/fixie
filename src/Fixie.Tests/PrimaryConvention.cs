@@ -21,12 +21,12 @@
 
                 var methodWasExplicitlyRequested = testClass.TargetMethod != null;
 
-                if (methodWasExplicitlyRequested && @case.Exception is MatchException exception)
+                if (methodWasExplicitlyRequested && @case.Exception is AssertException exception)
                     LaunchDiffTool(exception);
             });
         }
 
-        static void LaunchDiffTool(MatchException exception)
+        static void LaunchDiffTool(AssertException exception)
         {
             var tempPath = Path.GetTempPath();
             var expectedPath = Path.Combine(tempPath, "expected.txt");

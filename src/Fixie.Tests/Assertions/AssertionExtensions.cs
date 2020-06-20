@@ -4,14 +4,21 @@ namespace Fixie.Tests.Assertions
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.Json;
-    using static System.Environment;
+    using System.Text.Json.Serialization;
 
     public static class AssertionExtensions
     {
-        static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+        static readonly JsonSerializerOptions JsonSerializerOptions;
+
+        static AssertionExtensions()
         {
-            WriteIndented = true
-        };
+            JsonSerializerOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            JsonSerializerOptions.Converters.Add(new StringRepresentation<Type>());
+        }
 
         public static void ShouldBe(this string? actual, string? expected)
         {
@@ -19,46 +26,21 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe(this string[] actual, string[] expected)
-        {
-            if (actual.Length != expected.Length)
-                throw new AssertException(Json(expected), Json(actual));
-        
-            for (var i = 0; i < actual.Length; i++)
-                if (actual[i] != expected[i])
-                    throw new AssertException(Json(expected), Json(actual));
-        }
-
-        public static void ShouldBe(this IEnumerable<string> actual, params string[] expected)
-        {
-            actual.ToArray().ShouldBe(expected);
-        }
-
         public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected)
         {
             if (!actual.Equals(expected))
-                throw new AssertException(expected, actual);
+                throw new AssertException(expected.ToString(), actual.ToString());
         }
 
         public static void ShouldBe(this object? actual, object? expected)
         {
             if (!Equals(actual, expected))
-                throw new AssertException(expected, actual);
-        }
-
-        public static void ShouldBe<T>(this T[] actual, T[] expected)
-        {
-            if (actual.Length != expected.Length)
-                throw new AssertException(expected, actual);
-
-            for (var i = 0; i < actual.Length; i++)
-                if (!Equals(actual[i], expected[i]))
-                    throw new AssertException(expected, actual);
+                throw new AssertException(expected?.ToString(), actual?.ToString());
         }
 
         public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
         {
-            actual.ToArray().ShouldBe(expected);
+            actual.ToArray().ShouldMatch(expected);
         }
 
         public static T ShouldBe<T>(this object? actual)
@@ -66,13 +48,12 @@ namespace Fixie.Tests.Assertions
             if (actual is T typed)
                 return typed;
 
-            throw new AssertException(typeof(T), actual?.GetType());
+            throw new AssertException(typeof(T).ToString(), actual?.GetType().ToString());
         }
 
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
         {
-            if (collection.Any())
-                throw new AssertException("Collection was not empty.");
+            collection.ShouldMatch(Array.Empty<T>());
         }
 
         public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception
@@ -89,39 +70,47 @@ namespace Fixie.Tests.Assertions
                 return (TException)actual;
             }
 
-            throw new AssertException("Expected an exception to be thrown.");
+            throw new AssertException(typeof(TException).FullName, "No exception was thrown.");
         }
 
         public static void ShouldBeGreaterThan<T>(this T actual, T minimum) where T: IComparable<T>
         {
             if (actual.CompareTo(minimum) <= 0)
-                throw new AssertException(ComparisonFailure(actual, minimum, ">"));
+                throw new AssertException($"value > {minimum}", actual.ToString());
         }
 
         public static void ShouldBeGreaterThanOrEqualTo<T>(this T actual, T minimum) where T: IComparable<T>
         {
             if (actual.CompareTo(minimum) < 0)
-                throw new AssertException(ComparisonFailure(actual, minimum, ">="));
-        }
-
-        static string ComparisonFailure(object left, object right, string operation)
-        {
-            return $"Expected: {left} {operation} {right}{NewLine}but it was not";
+                throw new AssertException($"value >= {minimum}", actual.ToString());
         }
 
         public static void ShouldMatch<T>(this T actual, T expected)
         {
-            Json(actual).ShouldBe(Json(expected));
+            var actualJson = Json(actual);
+            var expectedJson = Json(expected);
+            
+            if (actualJson != expectedJson)
+                throw new AssertException(expectedJson, actualJson);
         }
 
-        public static void ShouldMatch<T>(this IEnumerable<T> actual, params T[] expected)
+        static string Json<T>(T @object)
         {
-            actual.ToArray().ShouldMatch(expected);
+            return JsonSerializer.Serialize(@object, JsonSerializerOptions);
         }
 
-        static string Json<T>(T actual)
+        class StringRepresentation<T> : JsonConverter<T>
         {
-            return JsonSerializer.Serialize(actual, JsonSerializerOptions);
+            public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+                => throw new NotImplementedException();
+
+            public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+            {
+                if (value is null)
+                    writer.WriteNullValue();
+                else
+                    writer.WriteStringValue(value.ToString());
+            }
         }
     }
 }

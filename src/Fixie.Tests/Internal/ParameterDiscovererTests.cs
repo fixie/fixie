@@ -35,7 +35,7 @@
                 .Add<SecondParameterSource>();
 
             DiscoveredParameters(customDiscovery)
-                .ShouldMatch(
+                .ShouldBe(
                     new object[] { "ParameterizedMethod", 0, false },
                     new object[] { "ParameterizedMethod", 1, true },
                     new object[] { "ParameterizedMethod", 2, false },
@@ -52,7 +52,7 @@
                 .Add(new SecondParameterSource());
 
             DiscoveredParameters(customDiscovery)
-                .ShouldMatch(
+                .ShouldBe(
                     new object[] { "ParameterizedMethod", 0, false },
                     new object[] { "ParameterizedMethod", 1, true },
                     new object[] { "ParameterizedMethod", 2, false },

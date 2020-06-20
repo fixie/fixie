@@ -2,54 +2,49 @@ namespace Fixie.Tests.Assertions
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
     using static System.Environment;
 
     public class AssertException : Exception
     {
         public static string FilterStackTraceAssemblyPrefix = typeof(AssertException).Namespace + ".";
 
-        public AssertException(string message)
-            : base(message)
+        public string? Expected { get; }
+        public string? Actual { get; }
+        public bool HasCompactRepresentations { get; }
+
+        public AssertException(string? expected, string? actual)
         {
+            Expected = expected;
+            Actual = actual;
+            HasCompactRepresentations = HasCompactRepresentation(expected) &&
+                                        HasCompactRepresentation(actual);
         }
 
-        public AssertException(object? expected, object? actual)
-            : base(ExpectationMessage(expected, actual))
+        public override string Message
         {
-        }
-
-        static string ExpectationMessage(object? expected, object? actual)
-        {
-            var message = new StringBuilder();
-
-            var actualStr = actual == null ? null : ConvertToString(actual);
-            var expectedStr = expected == null ? null : ConvertToString(expected);
-
-            message.AppendLine($"Expected: {FormatMultiLine(expectedStr ?? "(null)")}");
-            message.Append($"Actual:   {FormatMultiLine(actualStr ?? "(null)")}");
-
-            return message.ToString();
-        }
-
-        static string? ConvertToString(object value)
-        {
-            if (value is Array valueArray)
+            get
             {
-                var valueStrings = new List<string>();
+                var expected = Expected ?? "null";
+                var actual = Actual ?? "null";
 
-                foreach (var valueObject in valueArray)
-                    valueStrings.Add(valueObject?.ToString() ?? "(null)");
+                if (HasCompactRepresentations)
+                    return $"Expected: {expected}{NewLine}" +
+                           $"Actual:   {actual}";
 
-                return value.GetType().FullName +
-                       $" {{{NewLine}{string.Join("," + NewLine, valueStrings.ToArray())}{NewLine}}}";
+                return $"Expected:{NewLine}{expected}{NewLine}{NewLine}" +
+                       $"Actual:{NewLine}{actual}";
             }
-
-            return value.ToString();
         }
 
-        static string FormatMultiLine(string value)
-            => value.Replace(NewLine, NewLine + "          ");
+        static bool HasCompactRepresentation(string? value)
+        {
+            const int compactLength = 50;
+
+            if (value is null)
+                return true;
+
+            return value.Length <= compactLength && !value.Contains(NewLine);
+        }
 
         public override string? StackTrace => FilterStackTrace(base.StackTrace);
 

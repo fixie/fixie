@@ -38,7 +38,7 @@ namespace Fixie.Tests.Assertions
         public static void ShouldBe(this string? actual, string? expected)
         {
             if (actual != expected)
-                throw new AssertException(expected, actual);
+                throw new MatchException(expected, actual);
         }
 
         public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected)

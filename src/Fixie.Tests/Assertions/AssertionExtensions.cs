@@ -91,18 +91,13 @@ namespace Fixie.Tests.Assertions
         public static void ShouldBeGreaterThan<T>(this T actual, T minimum) where T: IComparable<T>
         {
             if (actual.CompareTo(minimum) <= 0)
-                throw new AssertException(ComparisonFailure(actual, minimum, ">"));
+                throw new MatchException($"value > {minimum}", actual.ToString());
         }
 
         public static void ShouldBeGreaterThanOrEqualTo<T>(this T actual, T minimum) where T: IComparable<T>
         {
             if (actual.CompareTo(minimum) < 0)
-                throw new AssertException(ComparisonFailure(actual, minimum, ">="));
-        }
-
-        static string ComparisonFailure(object left, object right, string operation)
-        {
-            return $"Expected: {left} {operation} {right}{NewLine}but it was not";
+                throw new MatchException($"value >= {minimum}", actual.ToString());
         }
 
         public static void ShouldMatch<T>(this T actual, T expected)

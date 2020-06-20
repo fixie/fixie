@@ -43,12 +43,7 @@ namespace Fixie.Tests.Assertions
 
         public static void ShouldBe(this string[] actual, string[] expected)
         {
-            if (actual.Length != expected.Length)
-                throw new AssertException(Json(expected), Json(actual));
-        
-            for (var i = 0; i < actual.Length; i++)
-                if (actual[i] != expected[i])
-                    throw new AssertException(Json(expected), Json(actual));
+            actual.ShouldMatch(expected);
         }
 
         public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected)

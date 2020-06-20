@@ -23,33 +23,11 @@ namespace Fixie.Tests.Assertions
         {
             var message = new StringBuilder();
 
-            var actualStr = actual == null ? null : ConvertToString(actual);
-            var expectedStr = expected == null ? null : ConvertToString(expected);
-
-            message.AppendLine($"Expected: {FormatMultiLine(expectedStr ?? "(null)")}");
-            message.Append($"Actual:   {FormatMultiLine(actualStr ?? "(null)")}");
+            message.AppendLine($"Expected: {expected?.ToString() ?? "null"}");
+            message.Append($"Actual:   {actual?.ToString() ?? "null"}");
 
             return message.ToString();
         }
-
-        static string? ConvertToString(object value)
-        {
-            if (value is Array valueArray)
-            {
-                var valueStrings = new List<string>();
-
-                foreach (var valueObject in valueArray)
-                    valueStrings.Add(valueObject?.ToString() ?? "(null)");
-
-                return value.GetType().FullName +
-                       $" {{{NewLine}{string.Join("," + NewLine, valueStrings.ToArray())}{NewLine}}}";
-            }
-
-            return value.ToString();
-        }
-
-        static string FormatMultiLine(string value)
-            => value.Replace(NewLine, NewLine + "          ");
 
         public override string? StackTrace => FilterStackTrace(base.StackTrace);
 

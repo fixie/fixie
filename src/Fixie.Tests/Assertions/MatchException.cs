@@ -9,11 +9,30 @@ namespace Fixie.Tests.Assertions
 
         public MatchException(string? expected, string? actual)
             : base(
-                $"Expected:{NewLine}{expected}{NewLine}{NewLine}" +
-                $"Actual:{NewLine}{actual}")
+                ExpectationString(expected, actual))
         {
-            Expected = expected;
-            Actual = actual;
+            Expected = expected ?? "null";
+            Actual = actual ?? "null";;
+        }
+
+        static string ExpectationString(string? expected, string? actual)
+        {
+            expected ??= "null";
+            actual ??= "null";
+
+            if (HasCompactRepresentation(expected) && HasCompactRepresentation(actual))
+                return $"Expected: {expected}{NewLine}" +
+                       $"Actual:   {actual}";
+
+            return $"Expected:{NewLine}{expected}{NewLine}{NewLine}" +
+                   $"Actual:{NewLine}{actual}";
+        }
+
+        static bool HasCompactRepresentation(string value)
+        {
+            const int compactLength = 50;
+
+            return value.Length <= compactLength && !value.Contains(NewLine);
         }
     }
 }

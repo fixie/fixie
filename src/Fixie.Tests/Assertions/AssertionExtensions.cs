@@ -20,20 +20,6 @@ namespace Fixie.Tests.Assertions
             JsonSerializerOptions.Converters.Add(new StringRepresentation<Type>());
         }
 
-        class StringRepresentation<T> : JsonConverter<T>
-        {
-            public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-                => throw new NotImplementedException();
-
-            public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
-            {
-                if (value is null)
-                    writer.WriteNullValue();
-                else
-                    writer.WriteStringValue(value.ToString());
-            }
-        }
-
         public static void ShouldBe(this string? actual, string? expected)
         {
             if (actual != expected)
@@ -111,6 +97,20 @@ namespace Fixie.Tests.Assertions
         static string Json<T>(T @object)
         {
             return JsonSerializer.Serialize(@object, JsonSerializerOptions);
+        }
+
+        class StringRepresentation<T> : JsonConverter<T>
+        {
+            public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+                => throw new NotImplementedException();
+
+            public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+            {
+                if (value is null)
+                    writer.WriteNullValue();
+                else
+                    writer.WriteStringValue(value.ToString());
+            }
         }
     }
 }

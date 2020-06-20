@@ -62,7 +62,7 @@ namespace Fixie.Tests.Assertions
             if (actual is T typed)
                 return typed;
 
-            throw new AssertException(typeof(T), actual?.GetType());
+            throw new MatchException(typeof(T).ToString(), actual?.GetType().ToString());
         }
 
         public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)

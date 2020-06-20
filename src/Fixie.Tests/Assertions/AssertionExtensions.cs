@@ -68,16 +68,6 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expected, actual);
         }
 
-        public static void ShouldBe<T>(this T[] actual, T[] expected)
-        {
-            if (actual.Length != expected.Length)
-                throw new AssertException(expected, actual);
-
-            for (var i = 0; i < actual.Length; i++)
-                if (!Equals(actual[i], expected[i]))
-                    throw new AssertException(expected, actual);
-        }
-
         public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
         {
             actual.ToArray().ShouldMatch(expected);

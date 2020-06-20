@@ -115,11 +115,6 @@ namespace Fixie.Tests.Assertions
                 throw new MatchException(expectedJson, actualJson);
         }
 
-        public static void ShouldMatch<T>(this IEnumerable<T> actual, params T[] expected)
-        {
-            actual.ToArray().ShouldMatch(expected);
-        }
-
         static string Json<T>(T @object)
         {
             return JsonSerializer.Serialize(@object, JsonSerializerOptions);

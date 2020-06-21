@@ -167,6 +167,36 @@
                         ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed"));
         }
 
+        public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
+        {
+            discovery.Parameters.Add<ComplexGenericParameterSource>();
+
+            Run<ComplexGenericTestClass>(discovery, execution)
+                .ShouldBe(
+                    For<ComplexGenericTestClass>(
+                        //Runtime failure for the CompoundGenericParameter test is undesirable.
+                        //This assertion merely reveals the current behavior.
+                        ".CompoundGenericParameter<System.Object, System.Object>([1, A], \"System.Int32\", \"System.String\") failed: " +
+                        "Object of type 'System.Collections.Generic.KeyValuePair`2[System.Int32,System.String]' cannot be converted to type " +
+                        "'System.Collections.Generic.KeyValuePair`2[System.Object,System.Object]'.",
+
+                        //Runtime failure for the CompoundGenericParameter test is undesirable.
+                        //This assertion merely reveals the current behavior.
+                        ".CompoundGenericParameter<System.Object, System.Object>([B, 2], \"System.String\", \"System.Int32\") failed: " +
+                        "Object of type 'System.Collections.Generic.KeyValuePair`2[System.String,System.Int32]' cannot be converted to type " +
+                        "'System.Collections.Generic.KeyValuePair`2[System.Object,System.Object]'.",
+
+                        //Despite the above limitation, resolution for the GenericFuncParameter test works because
+                        //enough information is picked up from the final parameter.
+                        ".GenericFuncParameter<System.Int32>(5, System.Func`2[System.Int32,System.Int32], 10) passed",
+                        ".GenericFuncParameter<System.String>(5, System.Func`2[System.Int32,System.String], \"5\") passed",
+
+                        //This runtime failure would ideally be better detected at generic type parameter resolution time.
+                        ".GenericFuncParameter<System.Char>(5, System.Func`2[System.Int32,System.String], '5') failed: " +
+                        "Object of type 'System.Func`2[System.Int32,System.String]' cannot be converted to type " +
+                        "'System.Func`2[System.Int32,System.Char]'."));
+        }
+
         class InputAttributeParameterSource : ParameterSource
         {
             public IEnumerable<object?[]> GetParameters(MethodInfo method)
@@ -237,6 +267,24 @@
 
             public IEnumerable<object[]> GetParameters(MethodInfo method)
                 => parameters;
+        }
+
+        class ComplexGenericParameterSource : ParameterSource
+        {
+            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            {
+                if (method.Name == "CompoundGenericParameter")
+                {
+                    yield return new object[] {new KeyValuePair<int, string>(1, "A"), "System.Int32", "System.String"};
+                    yield return new object[] {new KeyValuePair<string, int>("B", 2), "System.String", "System.Int32"};
+                }
+                else if (method.Name == "GenericFuncParameter")
+                {
+                    yield return new object[] {5, new Func<int, int>(i => i * 2), 10};
+                    yield return new object[] {5, new Func<int, string>(i => i.ToString()), "5"};
+                    yield return new object[] {5, new Func<int, string>(i => i.ToString()), '5'};
+                }
+            }
         }
 
         static object? Default(Type type)
@@ -324,6 +372,22 @@
             static string Format(object? obj)
             {
                 return obj?.ToString() ?? "[null]";
+            }
+        }
+
+        class ComplexGenericTestClass
+        {
+            public void CompoundGenericParameter<TKey, TValue>(KeyValuePair<TKey, TValue> pair, string expectedKeyType, string expectedValueType)
+            {
+                typeof(TKey).FullName.ShouldBe(expectedKeyType);
+                typeof(TValue).FullName.ShouldBe(expectedValueType);
+            }
+
+            public void GenericFuncParameter<TResult>(int input, Func<int, TResult> transform, TResult expectedResult)
+            {
+                var result = transform(input);
+
+                result.ShouldBe(expectedResult);
             }
         }
 

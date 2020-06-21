@@ -132,6 +132,30 @@
                 .ShouldBe(typeof(bool));
         }
 
+        public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
+        {
+            //Resorting to 'object' here is not ideal. A perfect match is preferable.
+            //This assertion merely reveals the current behavior.
+            Resolve("CompoundGenericParameter", new KeyValuePair<int, string>(1, "A"))
+                .ShouldBe(typeof(object), typeof(object));
+
+            //Resorting to 'object' here is not ideal. A perfect match is preferable.
+            //This assertion merely reveals the current behavior.
+            Resolve("CompoundGenericParameter", new KeyValuePair<string, int>("A", 1))
+                .ShouldBe(typeof(object), typeof(object));
+
+            Resolve("GenericFuncParameter", 5, new Func<int, int>(i => i * 2), 10)
+                .ShouldBe(typeof(int));
+
+            Resolve("GenericFuncParameter", 5, new Func<int, string>(i => i.ToString()), "5")
+                .ShouldBe(typeof(string));
+
+            //We select char as our T, though the Func would fail to cast at runtime,
+            //causing this test to fail.
+            Resolve("GenericFuncParameter", 5, new Func<int, string>(i => i.ToString()), '5')
+                .ShouldBe(typeof(char));
+        }
+
         public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()
         {
             var unresolved = Resolve("ConstrainedGeneric", "Incompatible").Single();
@@ -158,6 +182,8 @@
                 TOneMatch oneMatch,
                 TMultipleMatch firstMultiMatch, TMultipleMatch secondMultiMatch, TMultipleMatch thirdMultiMatch) { }
             void ConstrainedGeneric<T>(T t) where T : struct { }
+            public void CompoundGenericParameter<TKey, TValue>(KeyValuePair<TKey, TValue> pair) { }
+            public void GenericFuncParameter<TResult>(int input, Func<int, TResult> transform, TResult expectedResult) { }
         }
     }
 }

@@ -92,7 +92,7 @@
             var methodDiscoverer = new MethodDiscoverer(discovery);
             foreach (var testClass in testClasses)
             foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                bus.Publish(new TestDiscovered(testMethod));
+                bus.Publish(new TestDiscovered(new Test(testMethod)));
         }
 
         internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution)

@@ -17,8 +17,7 @@
 
         public void Handle(TestDiscovered message)
         {
-            var test = new Test(message.Method);
-            log.Add($"{test.Name} discovered");
+            log.Add($"{message.Test.Name} discovered");
         }
 
         public void Handle(CaseSkipped message)

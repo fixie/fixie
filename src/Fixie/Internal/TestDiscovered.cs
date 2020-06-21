@@ -1,12 +1,10 @@
 ﻿namespace Fixie.Internal
 {
-    using System.Reflection;
-
     public class TestDiscovered : Message
     {
-        public TestDiscovered(MethodInfo method)
-            => Method = method;
+        public TestDiscovered(Test test)
+            => Test = test;
 
-        public MethodInfo Method { get; }
+        public Test Test { get; }
     }
 }

@@ -12,6 +12,29 @@ namespace Fixie.Tests.Internal
     {
         static readonly string Self = FullName<AssemblyRunnerTests>();
 
+        public void ShouldDiscoverAllTestMethodsInAllDiscoveredTestClasses()
+        {
+            var listener = new StubListener();
+
+            var candidateTypes = new[]
+            {
+                typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
+                typeof(PassFailTestClass), typeof(SkipTestClass)
+            };
+            var discovery = new SelfTestDiscovery();
+
+            var bus = new Bus(listener);
+            new AssemblyRunner(GetType().Assembly, bus).DiscoverMethods(candidateTypes, discovery);
+
+            listener.Entries.ShouldBe(
+                Self + "+PassTestClass.PassA discovered",
+                Self + "+PassTestClass.PassB discovered",
+                Self + "+PassFailTestClass.Pass discovered",
+                Self + "+PassFailTestClass.Fail discovered",
+                Self + "+SkipTestClass.SkipA discovered",
+                Self + "+SkipTestClass.SkipB discovered");
+        }
+
         public void ShouldExecuteAllCasesInAllDiscoveredTestClasses()
         {
             var listener = new StubListener();

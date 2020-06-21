@@ -94,6 +94,19 @@ namespace Fixie.Tests.Assertions
                 throw new AssertException(expectedJson, actualJson);
         }
 
+        public static void ShouldSatisfy<T>(this IEnumerable<T> actual, params Action<T>[] itemExpectations)
+        {
+            var actualItems = actual.ToArray();
+
+            if (actualItems.Length != itemExpectations.Length)
+                throw new AssertException(
+                    $"{itemExpectations.Length} items",
+                    $"{actualItems.Length} items");
+
+            for (var i = 0; i < actualItems.Length; i++)
+                itemExpectations[i](actualItems[i]);
+        }
+
         static string Json<T>(T @object)
         {
             return JsonSerializer.Serialize(@object, JsonSerializerOptions);

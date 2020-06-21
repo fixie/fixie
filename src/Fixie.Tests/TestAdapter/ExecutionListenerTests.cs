@@ -45,14 +45,15 @@
                 expectStart = !expectStart;
             }
 
-            starts.Count.ShouldBe(7);
-            starts[0].ShouldBeExecutionTimeTest(TestClass+".Fail", assemblyPath);
-            starts[1].ShouldBeExecutionTimeTest(TestClass+".FailByAssertion", assemblyPath);
-            starts[2].ShouldBeExecutionTimeTest(TestClass+".Pass", assemblyPath);
-            starts[3].ShouldBeExecutionTimeTest(TestClass+".SkipWithReason", assemblyPath);
-            starts[4].ShouldBeExecutionTimeTest(TestClass+".SkipWithoutReason", assemblyPath);
-            starts[5].ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
-            starts[6].ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
+            starts.ShouldSatisfy(
+                x => x.ShouldBeExecutionTimeTest(TestClass + ".Fail", assemblyPath),
+                x => x.ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion", assemblyPath),
+                x => x.ShouldBeExecutionTimeTest(TestClass + ".Pass", assemblyPath),
+                x => x.ShouldBeExecutionTimeTest(TestClass + ".SkipWithReason", assemblyPath),
+                x => x.ShouldBeExecutionTimeTest(TestClass + ".SkipWithoutReason", assemblyPath),
+                x => x.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath),
+                x => x.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath)
+            );
 
             results.Count.ShouldBe(7);
 

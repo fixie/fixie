@@ -2,9 +2,9 @@
 {
     using System.Reflection;
 
-    public class MethodDiscovered : Message
+    public class TestDiscovered : Message
     {
-        public MethodDiscovered(MethodInfo method)
+        public TestDiscovered(MethodInfo method)
             => Method = method;
 
         public MethodInfo Method { get; }

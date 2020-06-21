@@ -21,6 +21,27 @@
             this.customArguments = customArguments;
         }
 
+        public void DiscoverMethods()
+        {
+            var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
+
+            try
+            {
+                var classDiscoverer = new ClassDiscoverer(discovery);
+                var candidateTypes = assembly.GetTypes();
+                var testClasses = classDiscoverer.TestClasses(candidateTypes);
+
+                var methodDiscoverer = new MethodDiscoverer(discovery);
+                foreach (var testClass in testClasses)
+                foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
+                    bus.Publish(new MethodDiscovered(testMethod));
+            }
+            finally
+            {
+                discovery.Dispose();
+            }
+        }
+
         public ExecutionSummary Run()
         {
             return Run(assembly.GetTypes());

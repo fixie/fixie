@@ -6,7 +6,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
-    class DiscoveryListener : Handler<MethodDiscovered>
+    class DiscoveryListener : Handler<TestDiscovered>
     {
         readonly IMessageLogger log;
         readonly ITestCaseDiscoverySink discoverySink;
@@ -22,9 +22,9 @@
             sourceLocationProvider = new SourceLocationProvider(assemblyPath);
         }
 
-        public void Handle(MethodDiscovered message)
+        public void Handle(TestDiscovered message)
         {
-            var test = new Test(message.Method);
+            var test = message.Test;
 
             SourceLocation? sourceLocation = null;
 

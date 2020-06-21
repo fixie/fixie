@@ -47,7 +47,7 @@
             var listener = new DiscoveryListener(log, discoverySink, assemblyPath);
             var testAssembly = new TestAssembly(assembly, listener);
 
-            testAssembly.DiscoverMethods();
+            testAssembly.Discover();
         }
     }
 }

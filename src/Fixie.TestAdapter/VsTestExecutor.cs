@@ -9,7 +9,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using static TestAssembly;
+    using static AssemblyPath;
 
     [ExtensionUri(Id)]
     class VsTestExecutor : ITestExecutor

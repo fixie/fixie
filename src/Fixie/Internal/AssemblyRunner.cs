@@ -27,14 +27,7 @@
 
             try
             {
-                var candidateTypes = assembly.GetTypes();
-                var classDiscoverer = new ClassDiscoverer(discovery);
-                var testClasses = classDiscoverer.TestClasses(candidateTypes);
-
-                var methodDiscoverer = new MethodDiscoverer(discovery);
-                foreach (var testClass in testClasses)
-                foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                    bus.Publish(new MethodDiscovered(testMethod));
+                DiscoverMethods(assembly.GetTypes(), discovery);
             }
             finally
             {
@@ -89,6 +82,17 @@
 
                 discovery.Dispose();
             }
+        }
+
+        internal void DiscoverMethods(IReadOnlyList<Type> candidateTypes, Discovery discovery)
+        {
+            var classDiscoverer = new ClassDiscoverer(discovery);
+            var testClasses = classDiscoverer.TestClasses(candidateTypes);
+
+            var methodDiscoverer = new MethodDiscoverer(discovery);
+            foreach (var testClass in testClasses)
+            foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
+                bus.Publish(new MethodDiscovered(testMethod));
         }
 
         internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution)

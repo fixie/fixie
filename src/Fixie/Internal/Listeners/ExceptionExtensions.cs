@@ -2,7 +2,6 @@
 {
     using System;
     using System.Diagnostics;
-    using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.ExceptionServices;
@@ -10,8 +9,13 @@
 
     static class ExceptionExtensions
     {
-        static readonly MethodInfo CaseExecuteMethod = typeof(Case).GetMethod("Execute")!;
-        static readonly MethodInfo ExceptionRethrowMethod = typeof(ExceptionDispatchInfo).GetMethod("Throw", new Type[] { })!;
+        static readonly MethodInfo CaseExecuteMethod =
+            typeof(Case).GetMethod("Execute")
+            ?? throw new Exception("Could not find expected method Case.Execute(...).");
+
+        static readonly MethodInfo ExceptionRethrowMethod =
+            typeof(ExceptionDispatchInfo).GetMethod("Throw", new Type[] { })
+            ?? throw new Exception("Could not find expected method ExceptionDispatchInfo.Throw().");
 
         public static string LiterateStackTrace(this Exception exception)
         {

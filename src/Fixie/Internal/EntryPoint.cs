@@ -41,9 +41,8 @@
 
         static ExitCode RunAssembly(Assembly assembly, Options options, string[] customArguments)
         {
-            var listeners = DefaultExecutionListeners(options).ToList();
-            var bus = new Bus(listeners);
-            var assemblyRunner = new AssemblyRunner(assembly, bus, customArguments);
+            var listeners = DefaultExecutionListeners(options).ToArray();
+            var assemblyRunner = new TestAssembly(assembly, customArguments, listeners);
 
             var summary = assemblyRunner.Run();
 

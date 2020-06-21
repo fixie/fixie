@@ -5,20 +5,34 @@
     using System.Diagnostics;
     using System.Reflection;
 
-    class AssemblyRunner
+    class TestAssembly
     {
         readonly Assembly assembly;
-        readonly Bus bus;
         readonly string[] customArguments;
+        readonly Bus bus;
 
-        public AssemblyRunner(Assembly assembly, Bus bus)
-            : this(assembly, bus, new string[] {}) { }
+        public TestAssembly(Assembly assembly, Listener listener)
+            : this(assembly, new string[] {}, listener) { }
 
-        public AssemblyRunner(Assembly assembly, Bus bus, string[] customArguments)
+        public TestAssembly(Assembly assembly, string[] customArguments, params Listener[] listeners)
         {
             this.assembly = assembly;
-            this.bus = bus;
             this.customArguments = customArguments;
+            bus = new Bus(listeners);
+        }
+
+        public void DiscoverMethods()
+        {
+            var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
+
+            try
+            {
+                DiscoverMethods(assembly.GetTypes(), discovery);
+            }
+            finally
+            {
+                discovery.Dispose();
+            }
         }
 
         public ExecutionSummary Run()
@@ -68,6 +82,17 @@
 
                 discovery.Dispose();
             }
+        }
+
+        internal void DiscoverMethods(IReadOnlyList<Type> candidateTypes, Discovery discovery)
+        {
+            var classDiscoverer = new ClassDiscoverer(discovery);
+            var testClasses = classDiscoverer.TestClasses(candidateTypes);
+
+            var methodDiscoverer = new MethodDiscoverer(discovery);
+            foreach (var testClass in testClasses)
+            foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
+                bus.Publish(new MethodDiscovered(testMethod));
         }
 
         internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution)

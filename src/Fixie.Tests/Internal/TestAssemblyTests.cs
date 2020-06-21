@@ -8,9 +8,31 @@ namespace Fixie.Tests.Internal
     using Fixie.Internal;
     using static Utility;
 
-    public class AssemblyRunnerTests
+    public class TestAssemblyTests
     {
-        static readonly string Self = FullName<AssemblyRunnerTests>();
+        static readonly string Self = FullName<TestAssemblyTests>();
+
+        public void ShouldDiscoverAllTestMethodsInAllDiscoveredTestClasses()
+        {
+            var listener = new StubListener();
+
+            var candidateTypes = new[]
+            {
+                typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
+                typeof(PassFailTestClass), typeof(SkipTestClass)
+            };
+            var discovery = new SelfTestDiscovery();
+
+            new TestAssembly(GetType().Assembly, listener).DiscoverMethods(candidateTypes, discovery);
+
+            listener.Entries.ShouldBe(
+                Self + "+PassTestClass.PassA discovered",
+                Self + "+PassTestClass.PassB discovered",
+                Self + "+PassFailTestClass.Pass discovered",
+                Self + "+PassFailTestClass.Fail discovered",
+                Self + "+SkipTestClass.SkipA discovered",
+                Self + "+SkipTestClass.SkipB discovered");
+        }
 
         public void ShouldExecuteAllCasesInAllDiscoveredTestClasses()
         {
@@ -24,8 +46,7 @@ namespace Fixie.Tests.Internal
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerClass();
 
-            var bus = new Bus(listener);
-            new AssemblyRunner(GetType().Assembly, bus).Run(candidateTypes, discovery, execution);
+            new TestAssembly(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",
@@ -51,8 +72,7 @@ namespace Fixie.Tests.Internal
             discovery.Methods
                 .Shuffle(new Random(1));
 
-            var bus = new Bus(listener);
-            new AssemblyRunner(GetType().Assembly, bus).Run(candidateTypes, discovery, execution);
+            new TestAssembly(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassB passed",
@@ -81,8 +101,7 @@ namespace Fixie.Tests.Internal
             discovery.Parameters
                 .Add<BuggyParameterSource>();
 
-            var bus = new Bus(listener);
-            new AssemblyRunner(GetType().Assembly, bus).Run(candidateTypes, discovery, execution);
+            new TestAssembly(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
 
             //NOTE: Since the ordering of cases is deliberately failing, and since member order via reflection
             //      is undefined, we explicitly sort the listener Entries here to avoid making a brittle assertion.

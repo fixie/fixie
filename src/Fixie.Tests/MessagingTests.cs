@@ -21,6 +21,25 @@
         protected string GenericTestClass { get; }
         protected Type TestClassType => typeof(SampleTestClass);
 
+        readonly Type[] candidateTypes =
+        {
+            typeof(SampleTestClass),
+            typeof(SampleGenericTestClass),
+            typeof(EmptyTestClass)
+        };
+
+        protected void Discover(Listener listener, out IEnumerable<string> consoleLines)
+        {
+            var discovery = new SelfTestDiscovery();
+            discovery.Parameters.Add<InputAttributeParameterSource>();
+
+            using var console = new RedirectedConsole();
+
+            Utility.Discover(listener, discovery, candidateTypes);
+
+            consoleLines = console.Lines();
+        }
+
         protected void Run(Listener listener, out IEnumerable<string> consoleLines, Action<Discovery>? customize = null)
         {
             var discovery = new SelfTestDiscovery();
@@ -32,10 +51,7 @@
 
             using var console = new RedirectedConsole();
 
-            Utility.Run(listener, discovery, execution,
-                typeof(SampleTestClass),
-                typeof(SampleGenericTestClass),
-                typeof(EmptyTestClass));
+            Utility.Run(listener, discovery, execution, candidateTypes);
 
             consoleLines = console.Lines();
         }
@@ -146,7 +162,7 @@
 
         protected static string At(string method)
             => At<SampleTestClass>(method);
-        
+
         protected static string At<T>(string method)
             => Utility.At<T>(method);
 

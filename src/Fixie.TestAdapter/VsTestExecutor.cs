@@ -9,7 +9,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using static TestAssembly;
+    using static AssemblyPath;
 
     [ExtensionUri(Id)]
     class VsTestExecutor : ITestExecutor
@@ -72,7 +72,7 @@
 
         public void Cancel() { }
 
-        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<AssemblyRunner> run)
+        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<TestAssembly> run)
         {
             if (!IsTestAssembly(assemblyPath))
             {
@@ -87,10 +87,9 @@
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
             var listener = new ExecutionListener(frameworkHandle, assemblyPath);
-            var bus = new Bus(listener);
-            var runner = new AssemblyRunner(assembly, bus);
+            var testAssembly = new TestAssembly(assembly, listener);
 
-            run(runner);
+            run(testAssembly);
         }
 
         static void HandlePoorVsTestImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)

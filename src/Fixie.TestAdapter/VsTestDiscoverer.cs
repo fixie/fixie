@@ -8,7 +8,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using static TestAssembly;
+    using static AssemblyPath;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
@@ -45,10 +45,9 @@
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
             var listener = new DiscoveryListener(log, discoverySink, assemblyPath);
-            var bus = new Bus(listener);
-            var discoverer = new Discoverer(assembly, bus);
+            var testAssembly = new TestAssembly(assembly, listener);
 
-            discoverer.DiscoverMethods();
+            testAssembly.DiscoverMethods();
         }
     }
 }

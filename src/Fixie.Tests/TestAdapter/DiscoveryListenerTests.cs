@@ -2,13 +2,12 @@
 {
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using Assertions;
-    using Fixie.Internal;
     using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using static System.IO.Directory;
 
     public class DiscoveryListenerTests : MessagingTests
     {
@@ -21,12 +20,19 @@
 
             var listener = new DiscoveryListener(log, discoverySink, assemblyPath);
 
-            listener.Handle(new MethodDiscovered(TestClassType.GetInstanceMethod("Fail")));
+            Discover(listener, out var console);
+
+            console.ShouldBeEmpty();
 
             log.Messages.ShouldBeEmpty();
 
-            discoverySink.TestCases.Single()
-                .ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath);
+            discoverySink.TestCases.ShouldSatisfy(
+                x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath),
+                x => x.ShouldBeDiscoveryTimeTest(TestClass + ".FailByAssertion", assemblyPath),
+                x => x.ShouldBeDiscoveryTimeTest(TestClass + ".SkipWithoutReason", assemblyPath),
+                x => x.ShouldBeDiscoveryTimeTest(TestClass + ".SkipWithReason", assemblyPath),
+                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", assemblyPath),
+                x => x.ShouldBeDiscoveryTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath));
         }
 
         public void ShouldDefaultSourceLocationPropertiesWhenSourceInspectionThrows()
@@ -38,12 +44,28 @@
 
             var listener = new DiscoveryListener(log, discoverySink, invalidAssemblyPath);
 
-            listener.Handle(new MethodDiscovered(TestClassType.GetInstanceMethod("Fail")));
+            Discover(listener, out var console);
 
-            log.Messages.Single().Contains(nameof(FileNotFoundException)).ShouldBe(true);
+            console.ShouldBeEmpty();
 
-            discoverySink.TestCases.Single()
-                .ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail", invalidAssemblyPath);
+            var expectedError =
+                $"Error: {typeof(FileNotFoundException).FullName}: " +
+                $"Could not find file '{Path.Combine(GetCurrentDirectory(), invalidAssemblyPath)}'.";
+            log.Messages.ShouldSatisfy(
+                x => x.Contains(expectedError).ShouldBe(true),
+                x => x.Contains(expectedError).ShouldBe(true),
+                x => x.Contains(expectedError).ShouldBe(true),
+                x => x.Contains(expectedError).ShouldBe(true),
+                x => x.Contains(expectedError).ShouldBe(true),
+                x => x.Contains(expectedError).ShouldBe(true));
+
+            discoverySink.TestCases.ShouldSatisfy(
+                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail", invalidAssemblyPath),
+                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".FailByAssertion", invalidAssemblyPath),
+                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".SkipWithoutReason", invalidAssemblyPath),
+                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".SkipWithReason", invalidAssemblyPath),
+                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", invalidAssemblyPath),
+                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(GenericTestClass + ".ShouldBeString", invalidAssemblyPath));
         }
 
         class StubMessageLogger : IMessageLogger

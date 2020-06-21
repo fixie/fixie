@@ -8,11 +8,18 @@
     using static System.Environment;
 
     public class StubListener :
+        Handler<MethodDiscovered>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>
     {
         readonly List<string> log = new List<string>();
+
+        public void Handle(MethodDiscovered message)
+        {
+            var test = new Test(message.Method);
+            log.Add($"{test.Name} discovered");
+        }
 
         public void Handle(CaseSkipped message)
         {

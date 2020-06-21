@@ -61,8 +61,7 @@
 
         void Record(CaseCompleted result, Action<TestResult> customize)
         {
-            var test = new Test(result.Method);
-            var testCase = ToVsTestCase(test);
+            var testCase = ToVsTestCase(result.Test);
 
             var testResult = new TestResult(testCase)
             {

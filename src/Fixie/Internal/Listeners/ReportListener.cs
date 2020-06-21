@@ -45,8 +45,8 @@
             currentClass.Add(
                 new XElement("test",
                     new XAttribute("name", message.Name),
-                    new XAttribute("type", message.Class.FullName),
-                    new XAttribute("method", message.Method.Name),
+                    new XAttribute("type", message.Test.Class),
+                    new XAttribute("method", message.Test.Method),
                     new XAttribute("result", "Skip"),
                     new XAttribute("time", Seconds(message.Duration)),
                     message.Reason != null
@@ -59,8 +59,8 @@
             currentClass.Add(
                 new XElement("test",
                     new XAttribute("name", message.Name),
-                    new XAttribute("type", message.Class.FullName),
-                    new XAttribute("method", message.Method.Name),
+                    new XAttribute("type", message.Test.Class),
+                    new XAttribute("method", message.Test.Method),
                     new XAttribute("result", "Pass"),
                     new XAttribute("time", Seconds(message.Duration))));
         }
@@ -70,8 +70,8 @@
             currentClass.Add(
                 new XElement("test",
                     new XAttribute("name", message.Name),
-                    new XAttribute("type", message.Class.FullName),
-                    new XAttribute("method", message.Method.Name),
+                    new XAttribute("type", message.Test.Class),
+                    new XAttribute("method", message.Test.Method),
                     new XAttribute("result", "Fail"),
                     new XAttribute("time", Seconds(message.Duration)),
                     new XElement("failure",

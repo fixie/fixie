@@ -21,13 +21,13 @@
             bus = new Bus(listeners);
         }
 
-        public void DiscoverMethods()
+        public void Discover()
         {
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
 
             try
             {
-                DiscoverMethods(assembly.GetTypes(), discovery);
+                Discover(assembly.GetTypes(), discovery);
             }
             finally
             {
@@ -84,7 +84,7 @@
             }
         }
 
-        internal void DiscoverMethods(IReadOnlyList<Type> candidateTypes, Discovery discovery)
+        internal void Discover(IReadOnlyList<Type> candidateTypes, Discovery discovery)
         {
             var classDiscoverer = new ClassDiscoverer(discovery);
             var testClasses = classDiscoverer.TestClasses(candidateTypes);

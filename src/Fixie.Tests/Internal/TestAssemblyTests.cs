@@ -12,7 +12,7 @@ namespace Fixie.Tests.Internal
     {
         static readonly string Self = FullName<TestAssemblyTests>();
 
-        public void ShouldDiscoverAllTestMethodsInAllDiscoveredTestClasses()
+        public void ShouldDiscoverAllTestsInAllDiscoveredTestClasses()
         {
             var listener = new StubListener();
 
@@ -23,7 +23,7 @@ namespace Fixie.Tests.Internal
             };
             var discovery = new SelfTestDiscovery();
 
-            new TestAssembly(GetType().Assembly, listener).DiscoverMethods(candidateTypes, discovery);
+            new TestAssembly(GetType().Assembly, listener).Discover(candidateTypes, discovery);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA discovered",

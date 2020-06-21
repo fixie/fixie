@@ -27,8 +27,8 @@
 
             try
             {
-                var classDiscoverer = new ClassDiscoverer(discovery);
                 var candidateTypes = assembly.GetTypes();
+                var classDiscoverer = new ClassDiscoverer(discovery);
                 var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
                 var methodDiscoverer = new MethodDiscoverer(discovery);

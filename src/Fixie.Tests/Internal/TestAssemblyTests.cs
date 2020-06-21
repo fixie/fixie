@@ -8,9 +8,9 @@ namespace Fixie.Tests.Internal
     using Fixie.Internal;
     using static Utility;
 
-    public class AssemblyRunnerTests
+    public class TestAssemblyTests
     {
-        static readonly string Self = FullName<AssemblyRunnerTests>();
+        static readonly string Self = FullName<TestAssemblyTests>();
 
         public void ShouldDiscoverAllTestMethodsInAllDiscoveredTestClasses()
         {
@@ -23,7 +23,7 @@ namespace Fixie.Tests.Internal
             };
             var discovery = new SelfTestDiscovery();
 
-            new AssemblyRunner(GetType().Assembly, listener).DiscoverMethods(candidateTypes, discovery);
+            new TestAssembly(GetType().Assembly, listener).DiscoverMethods(candidateTypes, discovery);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA discovered",
@@ -46,7 +46,7 @@ namespace Fixie.Tests.Internal
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerClass();
 
-            new AssemblyRunner(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
+            new TestAssembly(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",
@@ -72,7 +72,7 @@ namespace Fixie.Tests.Internal
             discovery.Methods
                 .Shuffle(new Random(1));
 
-            new AssemblyRunner(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
+            new TestAssembly(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassB passed",
@@ -101,7 +101,7 @@ namespace Fixie.Tests.Internal
             discovery.Parameters
                 .Add<BuggyParameterSource>();
 
-            new AssemblyRunner(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
+            new TestAssembly(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
 
             //NOTE: Since the ordering of cases is deliberately failing, and since member order via reflection
             //      is undefined, we explicitly sort the listener Entries here to avoid making a brittle assertion.

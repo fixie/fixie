@@ -45,9 +45,9 @@
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
             var listener = new DiscoveryListener(log, discoverySink, assemblyPath);
-            var discoverer = new AssemblyRunner(assembly, listener);
+            var testAssembly = new TestAssembly(assembly, listener);
 
-            discoverer.DiscoverMethods();
+            testAssembly.DiscoverMethods();
         }
     }
 }

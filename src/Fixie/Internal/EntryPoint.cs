@@ -42,7 +42,7 @@
         static ExitCode RunAssembly(Assembly assembly, Options options, string[] customArguments)
         {
             var listeners = DefaultExecutionListeners(options).ToArray();
-            var assemblyRunner = new AssemblyRunner(assembly, customArguments, listeners);
+            var assemblyRunner = new TestAssembly(assembly, customArguments, listeners);
 
             var summary = assemblyRunner.Run();
 

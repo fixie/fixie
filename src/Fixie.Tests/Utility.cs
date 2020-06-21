@@ -33,6 +33,15 @@
         public static IEnumerable<string> Run<TSampleTestClass>()
             => Run<TSampleTestClass>(new SelfTestDiscovery(), new DefaultExecution());
 
+        public static void Discover(Listener listener, Discovery discovery, params Type[] candidateTypes)
+        {
+            if (candidateTypes.Length == 0)
+                throw new InvalidOperationException("At least one type must be specified.");
+
+            var bus = new Bus(listener);
+            new AssemblyRunner(candidateTypes[0].Assembly, bus).DiscoverMethods(candidateTypes, discovery);
+        }
+
         public static void Run(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)

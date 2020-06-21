@@ -32,8 +32,11 @@
             return console.Output.Lines();
         }
 
-        public static IEnumerable<string> Lines(this string multiline)
+        public static IEnumerable<string> Lines(this string? multiline)
         {
+            if (multiline == null)
+                throw new Exception("Expected a non-null string.");
+
             var lines = multiline.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
             while (lines.Count > 0 && lines[lines.Count-1] == "")

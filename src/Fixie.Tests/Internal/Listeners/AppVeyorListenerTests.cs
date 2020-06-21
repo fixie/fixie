@@ -49,7 +49,7 @@
             fail.Outcome.ShouldBe("Failed");
             int.Parse(fail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             fail.ErrorMessage.ShouldBe("'Fail' failed!");
-            fail.ErrorStackTrace!
+            fail.ErrorStackTrace
                 .Lines()
                 .CleanStackTraceLineNumbers()
                 .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
@@ -58,10 +58,10 @@
             failByAssertion.TestName.ShouldBe(TestClass + ".FailByAssertion");
             failByAssertion.Outcome.ShouldBe("Failed");
             int.Parse(failByAssertion.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-            failByAssertion.ErrorMessage!.Lines().ShouldBe(
+            failByAssertion.ErrorMessage.Lines().ShouldBe(
                 "Expected: 2",
                 "Actual:   1");
-            failByAssertion.ErrorStackTrace!
+            failByAssertion.ErrorStackTrace
                 .Lines()
                 .CleanStackTraceLineNumbers()
                 .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
@@ -98,10 +98,10 @@
             shouldBeStringFail.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
             shouldBeStringFail.Outcome.ShouldBe("Failed");
             int.Parse(shouldBeStringFail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-            shouldBeStringFail.ErrorMessage!.Lines().ShouldBe(
+            shouldBeStringFail.ErrorMessage.Lines().ShouldBe(
                 "Expected: System.String",
                 "Actual:   System.Int32");
-            shouldBeStringFail.ErrorStackTrace!
+            shouldBeStringFail.ErrorStackTrace
                 .Lines()
                 .CleanStackTraceLineNumbers()
                 .ShouldBe("Fixie.Tests.Assertions.AssertException", At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));

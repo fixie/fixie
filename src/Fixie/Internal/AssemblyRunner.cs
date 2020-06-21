@@ -8,17 +8,17 @@
     class AssemblyRunner
     {
         readonly Assembly assembly;
-        readonly Bus bus;
         readonly string[] customArguments;
+        readonly Bus bus;
 
-        public AssemblyRunner(Assembly assembly, Bus bus)
-            : this(assembly, bus, new string[] {}) { }
+        public AssemblyRunner(Assembly assembly, Listener listener)
+            : this(assembly, new string[] {}, listener) { }
 
-        public AssemblyRunner(Assembly assembly, Bus bus, string[] customArguments)
+        public AssemblyRunner(Assembly assembly, string[] customArguments, params Listener[] listeners)
         {
             this.assembly = assembly;
-            this.bus = bus;
             this.customArguments = customArguments;
+            bus = new Bus(listeners);
         }
 
         public void DiscoverMethods()

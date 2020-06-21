@@ -23,8 +23,7 @@ namespace Fixie.Tests.Internal
             };
             var discovery = new SelfTestDiscovery();
 
-            var bus = new Bus(listener);
-            new AssemblyRunner(GetType().Assembly, bus).DiscoverMethods(candidateTypes, discovery);
+            new AssemblyRunner(GetType().Assembly, listener).DiscoverMethods(candidateTypes, discovery);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA discovered",
@@ -47,8 +46,7 @@ namespace Fixie.Tests.Internal
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerClass();
 
-            var bus = new Bus(listener);
-            new AssemblyRunner(GetType().Assembly, bus).Run(candidateTypes, discovery, execution);
+            new AssemblyRunner(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",
@@ -74,8 +72,7 @@ namespace Fixie.Tests.Internal
             discovery.Methods
                 .Shuffle(new Random(1));
 
-            var bus = new Bus(listener);
-            new AssemblyRunner(GetType().Assembly, bus).Run(candidateTypes, discovery, execution);
+            new AssemblyRunner(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassB passed",
@@ -104,8 +101,7 @@ namespace Fixie.Tests.Internal
             discovery.Parameters
                 .Add<BuggyParameterSource>();
 
-            var bus = new Bus(listener);
-            new AssemblyRunner(GetType().Assembly, bus).Run(candidateTypes, discovery, execution);
+            new AssemblyRunner(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
 
             //NOTE: Since the ordering of cases is deliberately failing, and since member order via reflection
             //      is undefined, we explicitly sort the listener Entries here to avoid making a brittle assertion.

@@ -87,8 +87,7 @@
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
             var listener = new ExecutionListener(frameworkHandle, assemblyPath);
-            var bus = new Bus(listener);
-            var runner = new AssemblyRunner(assembly, bus);
+            var runner = new AssemblyRunner(assembly, listener);
 
             run(runner);
         }

@@ -42,19 +42,17 @@
             assemblyStarted.Assembly.ShouldBe(assembly);
             
             sampleTestClassStarted.Class.FullName.ShouldBe(FullName<MessagingTests>() + "+SampleTestClass");
-            
+
+            passStarted.Test.Name.ShouldBe(TestClass + ".Pass");
             passStarted.Name.ShouldBe(TestClass + ".Pass");
-            passStarted.Class.FullName.ShouldBe(TestClass);
-            passStarted.Method.Name.ShouldBe("Pass");
 
             pass.Test.Name.ShouldBe(TestClass + ".Pass");
             pass.Name.ShouldBe(TestClass + ".Pass");
             pass.Output.Lines().ShouldBe("Console.Out: Pass", "Console.Error: Pass");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
+            failStarted.Test.Name.ShouldBe(TestClass + ".Fail");
             failStarted.Name.ShouldBe(TestClass + ".Fail");
-            failStarted.Class.FullName.ShouldBe(TestClass);
-            failStarted.Method.Name.ShouldBe("Fail");
 
             fail.Test.Name.ShouldBe(TestClass + ".Fail");
             fail.Name.ShouldBe(TestClass + ".Fail");
@@ -67,9 +65,8 @@
                 .ShouldBe(At("Fail()"));
             fail.Exception.Message.ShouldBe("'Fail' failed!");
 
+            failByAssertionStarted.Test.Name.ShouldBe(TestClass + ".FailByAssertion");
             failByAssertionStarted.Name.ShouldBe(TestClass + ".FailByAssertion");
-            failByAssertionStarted.Class.FullName.ShouldBe(TestClass);
-            failByAssertionStarted.Method.Name.ShouldBe("FailByAssertion");
 
             failByAssertion.Test.Name.ShouldBe(TestClass + ".FailByAssertion");
             failByAssertion.Name.ShouldBe(TestClass + ".FailByAssertion");
@@ -84,9 +81,8 @@
                 "Expected: 2",
                 "Actual:   1");
 
+            skipWithReasonStarted.Test.Name.ShouldBe(TestClass + ".SkipWithReason");
             skipWithReasonStarted.Name.ShouldBe(TestClass + ".SkipWithReason");
-            skipWithReasonStarted.Class.FullName.ShouldBe(TestClass);
-            skipWithReasonStarted.Method.Name.ShouldBe("SkipWithReason");
 
             skipWithReason.Test.Name.ShouldBe(TestClass + ".SkipWithReason");
             skipWithReason.Name.ShouldBe(TestClass + ".SkipWithReason");
@@ -94,9 +90,8 @@
             skipWithReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             skipWithReason.Reason.ShouldBe("⚠ Skipped with reason.");
 
+            skipWithoutReasonStarted.Test.Name.ShouldBe(TestClass + ".SkipWithoutReason");
             skipWithoutReasonStarted.Name.ShouldBe(TestClass + ".SkipWithoutReason");
-            skipWithoutReasonStarted.Class.FullName.ShouldBe(TestClass);
-            skipWithoutReasonStarted.Method.Name.ShouldBe("SkipWithoutReason");
 
             skipWithoutReason.Test.Name.ShouldBe(TestClass + ".SkipWithoutReason");
             skipWithoutReason.Name.ShouldBe(TestClass + ".SkipWithoutReason");
@@ -108,18 +103,16 @@
 
             sampleGenericTestClassStarted.Class.FullName.ShouldBe(FullName<MessagingTests>() + "+SampleGenericTestClass");
 
+            shouldBeStringPassStarted.Test.Name.ShouldBe(GenericTestClass + ".ShouldBeString");
             shouldBeStringPassStarted.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"abc\")");
-            shouldBeStringPassStarted.Class.FullName.ShouldBe(GenericTestClass);
-            shouldBeStringPassStarted.Method.Name.ShouldBe("ShouldBeString");
 
             shouldBeStringPass.Test.Name.ShouldBe(GenericTestClass + ".ShouldBeString");
             shouldBeStringPass.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"abc\")");
             shouldBeStringPass.Output.ShouldBe("");
             shouldBeStringPass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
+            shouldBeStringFailStarted.Test.Name.ShouldBe(GenericTestClass + ".ShouldBeString");
             shouldBeStringFailStarted.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
-            shouldBeStringFailStarted.Class.FullName.ShouldBe(GenericTestClass);
-            shouldBeStringFailStarted.Method.Name.ShouldBe("ShouldBeString");
 
             shouldBeStringFail.Test.Name.ShouldBe(GenericTestClass + ".ShouldBeString");
             shouldBeStringFail.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");

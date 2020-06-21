@@ -24,8 +24,7 @@
 
         public void Handle(CaseStarted message)
         {
-            var test = new Test(message.Method);
-            var testCase = ToVsTestCase(test);
+            var testCase = ToVsTestCase(message.Test);
 
             log.RecordStart(testCase);
         }

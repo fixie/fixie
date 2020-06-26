@@ -4,19 +4,22 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
-    using Cli;
 
     static class Shell
     {
         public static int Run(string executable, string workingDirectory, string[] arguments)
         {
-            return Run(new ProcessStartInfo
+            var startInfo = new ProcessStartInfo
             {
                 FileName = executable,
-                Arguments = CommandLine.Serialize(arguments),
                 WorkingDirectory = workingDirectory,
                 UseShellExecute = false
-            });
+            };
+
+            foreach (var argument in arguments)
+                startInfo.ArgumentList.Add(argument);
+
+            return Run(startInfo);
         }
 
         public static int RunTarget(string project, string target, string configuration)

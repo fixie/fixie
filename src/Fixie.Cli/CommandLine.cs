@@ -23,9 +23,6 @@
             return parser.Model;
         }
 
-        public static string Serialize(string[] arguments)
-            => Serializer.Serialize(arguments);
-
         public static void Partition(string[] arguments, out string[] runnerArguments, out string[] customArguments)
         {
             var runnerArgumentsList = new List<string>();

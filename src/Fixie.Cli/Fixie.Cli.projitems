@@ -15,6 +15,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)NamedArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PositionalArgument.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Serializer.cs" />
   </ItemGroup>
 </Project>

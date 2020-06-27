@@ -1,25 +1,18 @@
-﻿. $PSScriptRoot/build-helpers
+﻿$ErrorActionPreference = "Stop"
 
-function Build {
-    exec { dotnet clean src -c Release --nologo -v minimal }
-    exec { dotnet build src -c Release --nologo }
+function step($command) {
+    write-host ([Environment]::NewLine + $command.ToString().Trim()) -fore CYAN
+    & $command
+    if ($lastexitcode -ne 0) { exit $lastexitcode }
 }
 
-function Test {
-    $fixie = resolve-path ./src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll
+$fixie = join-path (resolve-path .) src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll
 
-    exec { dotnet $fixie *.Tests --configuration Release --no-build }
-}
+if (test-path packages) { remove-item packages -Recurse }
 
-function Pack {
-    remove-folder packages
-    exec { dotnet pack src/Fixie -c Release --no-restore --no-build --nologo }
-    exec { dotnet pack src/Fixie.Console -c Release --no-restore --no-build --nologo }
-    exec { dotnet pack src/Fixie.TestAdapter -c Release --no-restore --no-build --nologo }
-}
-
-main {
-    step { Build }
-    step { Test }
-    step { Pack }
-}
+step { dotnet clean src -c Release --nologo -v minimal }
+step { dotnet build src -c Release --nologo }
+step { dotnet $fixie *.Tests --configuration Release --no-build }
+step { dotnet pack src/Fixie -c Release --no-restore --no-build --nologo }
+step { dotnet pack src/Fixie.Console -c Release --no-restore --no-build --nologo }
+step { dotnet pack src/Fixie.TestAdapter -c Release --no-restore --no-build --nologo }

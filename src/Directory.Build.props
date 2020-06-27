@@ -11,5 +11,6 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <MinVerMinimumMajorMinor>3.0</MinVerMinimumMajorMinor>
     </PropertyGroup>
 </Project>

@@ -6,7 +6,7 @@ function step($command) {
     if ($lastexitcode -ne 0) { exit $lastexitcode }
 }
 
-$fixie = join-path (resolve-path .) src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll
+$fixie = "src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll"
 
 if (test-path packages) { remove-item packages -Recurse }
 

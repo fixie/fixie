@@ -19,7 +19,6 @@ function Pack {
 }
 
 main {
-    step { dotnet --version }
     step { Build }
     step { Test }
     step { Pack }

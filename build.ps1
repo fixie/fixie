@@ -13,6 +13,6 @@ if (test-path packages) { remove-item packages -Recurse }
 step { dotnet clean src -c Release --nologo -v minimal }
 step { dotnet build src -c Release --nologo }
 step { dotnet $fixie *.Tests --configuration Release --no-build }
-step { dotnet pack src/Fixie -o packages -c Release --no-restore --no-build --nologo }
-step { dotnet pack src/Fixie.Console -o packages -c Release --no-restore --no-build --nologo }
-step { dotnet pack src/Fixie.TestAdapter -o packages -c Release --no-restore --no-build --nologo }
+step { dotnet pack src/Fixie -o packages -c Release --no-build --nologo }
+step { dotnet pack src/Fixie.Console -o packages -c Release --no-build --nologo }
+step { dotnet pack src/Fixie.TestAdapter -o packages -c Release --no-build --nologo }

@@ -4,5 +4,7 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: pwsh ./build.ps1
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build and Test
+      run: pwsh ./build.ps1

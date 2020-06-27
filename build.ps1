@@ -5,22 +5,18 @@
 $versionPrefix = "3.0.0"
 $prerelease = $true
 
-$authors = "Patrick Lioi"
-$copyright = copyright 2013 $authors
 $configuration = 'Release'
 $versionSuffix = if ($prerelease) { "beta-{0:D4}" -f $buildNumber } else { "" }
 
 function Build {
-    mit-license $copyright
-
     generate "$PSScriptRoot/src/Directory.Build.props" @"
 <Project>
     <PropertyGroup>
         <Product>Fixie</Product>
         <VersionPrefix>$versionPrefix</VersionPrefix>
         <VersionSuffix>$versionSuffix</VersionSuffix>
-        <Authors>$authors</Authors>
-        <Copyright>$copyright</Copyright>
+        <Authors>Patrick Lioi</Authors>
+        <Copyright>Copyright (c) 2013 Patrick Lioi</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>

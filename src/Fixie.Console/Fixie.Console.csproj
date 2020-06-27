@@ -17,4 +17,11 @@
     <None Include="..\..\img\fixie_256.png" Pack="true" PackagePath="icon.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MinVer" Version="2.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>

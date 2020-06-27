@@ -1,18 +1,16 @@
 ﻿<Project>
     <PropertyGroup>
         <Product>Fixie</Product>
-        <VersionPrefix>3.0.0</VersionPrefix>
-        <VersionSuffix>beta-0000</VersionSuffix>
         <Authors>Patrick Lioi</Authors>
-        <Copyright>Copyright (c) 2013-2020 Patrick Lioi</Copyright>
+        <Copyright>Copyright (c) 2013 Patrick Lioi</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>
         <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
-        <PackageOutputPath>..\..\packages</PackageOutputPath>
         <IncludeSymbols>true</IncludeSymbols>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <MinVerMinimumMajorMinor>3.0</MinVerMinimumMajorMinor>
     </PropertyGroup>
 </Project>

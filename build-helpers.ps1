@@ -1,14 +1,4 @@
-﻿function generate($path, $content) {
-    $oldContent = [IO.File]::ReadAllText($path)
-
-    if ($content -ne $oldContent) {
-        $relativePath = Resolve-Path -Relative $path
-        write-host "Generating $relativePath"
-        [System.IO.File]::WriteAllText($path, $content, [System.Text.Encoding]::UTF8)
-    }
-}
-
-function remove-folder($path) {
+﻿function remove-folder($path) {
     remove-item $path -Recurse -Force -ErrorAction SilentlyContinue | out-null
 }
 

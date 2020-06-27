@@ -1,8 +1,6 @@
 ﻿<Project>
     <PropertyGroup>
         <Product>Fixie</Product>
-        <VersionPrefix>3.0.0</VersionPrefix>
-        <VersionSuffix>beta-0000</VersionSuffix>
         <Authors>Patrick Lioi</Authors>
         <Copyright>Copyright (c) 2013 Patrick Lioi</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>

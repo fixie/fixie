@@ -13,9 +13,9 @@ function Test {
 
 function Pack {
     remove-folder packages
-    exec { dotnet pack -c Release --no-restore --no-build --nologo } src/Fixie
-    exec { dotnet pack -c Release --no-restore --no-build --nologo } src/Fixie.Console
-    exec { dotnet pack -c Release --no-restore --no-build --nologo } src/Fixie.TestAdapter
+    exec { dotnet pack src/Fixie -c Release --no-restore --no-build --nologo }
+    exec { dotnet pack src/Fixie.Console -c Release --no-restore --no-build --nologo }
+    exec { dotnet pack src/Fixie.TestAdapter -c Release --no-restore --no-build --nologo }
 }
 
 main {

@@ -2,16 +2,9 @@
     remove-item $path -Recurse -Force -ErrorAction SilentlyContinue | out-null
 }
 
-function exec($command, $path) {
-    if ($null -eq $path) {
-        $global:lastexitcode = 0
-        & $command
-    } else {
-        Push-Location $path
-        $global:lastexitcode = 0
-        & $command
-        Pop-Location
-    }
+function exec($command) {
+    $global:lastexitcode = 0
+    & $command
 
     if ($lastexitcode -ne 0) {
         throw "Error executing command: $command"

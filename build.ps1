@@ -3,7 +3,7 @@
 function step($command) {
     write-host ([Environment]::NewLine + $command.ToString().Trim()) -fore CYAN
     & $command
-    if ($lastexitcode -ne 0) { exit $lastexitcode }
+    if ($lastexitcode -ne 0) { throw $lastexitcode }
 }
 
 $fixie = "src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll"

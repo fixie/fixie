@@ -5,7 +5,6 @@
 $versionPrefix = "3.0.0"
 $prerelease = $true
 
-$configuration = 'Release'
 $versionSuffix = if ($prerelease) { "beta-{0:D4}" -f $buildNumber } else { "" }
 
 function Build {
@@ -30,21 +29,21 @@ function Build {
 </Project>
 "@
 
-    exec { dotnet clean src -c $configuration --nologo -v minimal }
-    exec { dotnet build src -c $configuration --nologo }
+    exec { dotnet clean src -c Release --nologo -v minimal }
+    exec { dotnet build src -c Release --nologo }
 }
 
 function Test {
-    $fixie = resolve-path ./src/Fixie.Console/bin/$configuration/netcoreapp3.1/Fixie.Console.dll
+    $fixie = resolve-path ./src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll
 
-    exec { dotnet $fixie *.Tests --configuration $configuration --no-build }
+    exec { dotnet $fixie *.Tests --configuration Release --no-build }
 }
 
 function Pack {
     remove-folder packages
-    exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src/Fixie
-    exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src/Fixie.Console
-    exec { dotnet pack -c $configuration --no-restore --no-build --nologo } src/Fixie.TestAdapter
+    exec { dotnet pack -c Release --no-restore --no-build --nologo } src/Fixie
+    exec { dotnet pack -c Release --no-restore --no-build --nologo } src/Fixie.Console
+    exec { dotnet pack -c Release --no-restore --no-build --nologo } src/Fixie.TestAdapter
 }
 
 main {

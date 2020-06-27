@@ -6,5 +6,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Build and Test
       run: pwsh ./build.ps1

@@ -28,6 +28,13 @@
             var genericArguments = method.GetGenericArguments();
             var parameterTypes = method.GetParameters().Select(p => p.ParameterType).ToArray();
 
+            if (parameterTypes.Length != parameters.Length)
+            {
+                var allAmbiguous = new Type[genericArguments.Length];
+                Array.Fill(allAmbiguous, typeof(object));
+                return allAmbiguous;
+            }
+
             return genericArguments.Select(genericArgument => ResolveTypeArgument(genericArgument, parameterTypes, parameters)).ToArray();
         }
 
@@ -35,9 +42,6 @@
         {
             bool hasNullValue = false;
             Type? resolvedTypeOfNonNullValues = null;
-
-            if (parameterTypes.Length != parameters.Length)
-                return typeof(object);
 
             for (int i = 0; i < parameterTypes.Length; i++)
             {

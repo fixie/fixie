@@ -42,13 +42,13 @@
                 .ShouldBe(typeof(string));
         }
 
-        public void ShouldResolveToObjectWhenGenericTypeHasMultipleMatchingParametersOfInconsistentConcreteTypes()
+        public void ShouldResolveToFirstConcreteTypeWhenGenericTypeHasMultipleMatchingParametersOfInconsistentConcreteTypes()
         {
             Resolve("MultipleMatchingParameter", 1.2m, "string", 0)
-                .ShouldBe(typeof(object));
+                .ShouldBe(typeof(decimal));
             
             Resolve("MultipleMatchingParameter", 1.2m, "string a", "string b")
-                .ShouldBe(typeof(object));
+                .ShouldBe(typeof(decimal));
         }
 
         public void ShouldResolveToConcreteTypeOfValuesWhenGenericTypeHasMultipleMatchingParametersOfTheExactSameConcreteType()
@@ -78,28 +78,28 @@
                 .ShouldBe(typeof(string));
         }
 
-        public void ShouldTreatNullAsTypeIncompatibleWithValueTypes()
+        public void ShouldIgnoreNullAsTypeIncompatibleWithValueTypes()
         {
             Resolve("MultipleMatchingParameter", null, 2.3m, 3.4m)
-                .ShouldBe(typeof(object));
+                .ShouldBe(typeof(decimal));
 
             Resolve("MultipleMatchingParameter", 1.2m, null, 3.4m)
-                .ShouldBe(typeof(object));
+                .ShouldBe(typeof(decimal));
 
             Resolve("MultipleMatchingParameter", 1.2m, 2.3m, null)
-                .ShouldBe(typeof(object));
+                .ShouldBe(typeof(decimal));
         }
 
         public void ShouldResolveAllGenericArguments()
         {
             Resolve("MultipleGenericArguments", null, 1.2m, "string", 0)
-                .ShouldBe(typeof(object), typeof(object), typeof(object));
+                .ShouldBe(typeof(object), typeof(object), typeof(decimal));
 
             Resolve("MultipleGenericArguments", false, 1.2m, "string", 0)
-                .ShouldBe(typeof(object), typeof(bool), typeof(object));
+                .ShouldBe(typeof(object), typeof(bool), typeof(decimal));
 
             Resolve("MultipleGenericArguments", false, 1.2m, "string a", "string b")
-                .ShouldBe(typeof(object), typeof(bool), typeof(object));
+                .ShouldBe(typeof(object), typeof(bool), typeof(decimal));
 
             Resolve("MultipleGenericArguments", false, 1.2m, 2.3m, 3.4m)
                 .ShouldBe(typeof(object), typeof(bool), typeof(decimal));
@@ -114,7 +114,7 @@
                 .ShouldBe(typeof(object), typeof(bool), typeof(string));
 
             Resolve("MultipleGenericArguments", false, 1.2m, 2.3m, null)
-                .ShouldBe(typeof(object), typeof(bool), typeof(object));
+                .ShouldBe(typeof(object), typeof(bool), typeof(decimal));
         }
 
         public void ShouldResolveToObjectWhenInputParameterCountDoesNotMatchDeclaredParameterCount()
@@ -134,15 +134,11 @@
 
         public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
         {
-            //Resorting to 'object' here is not ideal. A perfect match is preferable.
-            //This assertion merely reveals the current behavior.
             Resolve("CompoundGenericParameter", new KeyValuePair<int, string>(1, "A"))
-                .ShouldBe(typeof(object), typeof(object));
+                .ShouldBe(typeof(int), typeof(string));
 
-            //Resorting to 'object' here is not ideal. A perfect match is preferable.
-            //This assertion merely reveals the current behavior.
             Resolve("CompoundGenericParameter", new KeyValuePair<string, int>("A", 1))
-                .ShouldBe(typeof(object), typeof(object));
+                .ShouldBe(typeof(string), typeof(int));
 
             Resolve("GenericFuncParameter", 5, new Func<int, int>(i => i * 2), 10)
                 .ShouldBe(typeof(int));
@@ -150,10 +146,10 @@
             Resolve("GenericFuncParameter", 5, new Func<int, string>(i => i.ToString()), "5")
                 .ShouldBe(typeof(string));
 
-            //We select char as our T, though the Func would fail to cast at runtime,
+            //We select string as our T, though the char argument would fail to cast at runtime,
             //causing this test to fail.
             Resolve("GenericFuncParameter", 5, new Func<int, string>(i => i.ToString()), '5')
-                .ShouldBe(typeof(char));
+                .ShouldBe(typeof(string));
         }
 
         public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()

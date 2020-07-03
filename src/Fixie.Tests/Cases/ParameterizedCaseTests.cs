@@ -158,9 +158,9 @@
                         ".SingleGenericArgument<System.String>(\"stringArg\", System.String) passed",
 
                         ".SingleGenericArgumentMultipleParameters<System.Int32>(123, 456, System.Int32) passed",
-                        ".SingleGenericArgumentMultipleParameters<System.Object>(\"stringArg\", 123, System.Object) passed",
-                        ".SingleGenericArgumentMultipleParameters<System.Object>(123, \"stringArg\", System.Object) passed",
-                        ".SingleGenericArgumentMultipleParameters<System.Object>(123, null, System.Object) passed",
+                        ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", 123, System.Object) failed: Object of type 'System.Int32' cannot be converted to type 'System.String'.",
+                        ".SingleGenericArgumentMultipleParameters<System.Int32>(123, \"stringArg\", System.Object) failed: Object of type 'System.String' cannot be converted to type 'System.Int32'.",
+                        ".SingleGenericArgumentMultipleParameters<System.Int32>(123, null, System.Int32) passed", //MethodInfo.Invoke converts nulls to default(T) for value types.
                         ".SingleGenericArgumentMultipleParameters<System.Object>(null, null, System.Object) passed",
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
@@ -174,27 +174,16 @@
             Run<ComplexGenericTestClass>(discovery, execution)
                 .ShouldBe(
                     For<ComplexGenericTestClass>(
-                        //Runtime failure for the CompoundGenericParameter test is undesirable.
-                        //This assertion merely reveals the current behavior.
-                        ".CompoundGenericParameter<System.Object, System.Object>([1, A], \"System.Int32\", \"System.String\") failed: " +
-                        "Object of type 'System.Collections.Generic.KeyValuePair`2[System.Int32,System.String]' cannot be converted to type " +
-                        "'System.Collections.Generic.KeyValuePair`2[System.Object,System.Object]'.",
+                        ".CompoundGenericParameter<System.Int32, System.String>([1, A], \"System.Int32\", \"System.String\") passed",
+                        ".CompoundGenericParameter<System.String, System.Int32>([B, 2], \"System.String\", \"System.Int32\") passed",
 
-                        //Runtime failure for the CompoundGenericParameter test is undesirable.
-                        //This assertion merely reveals the current behavior.
-                        ".CompoundGenericParameter<System.Object, System.Object>([B, 2], \"System.String\", \"System.Int32\") failed: " +
-                        "Object of type 'System.Collections.Generic.KeyValuePair`2[System.String,System.Int32]' cannot be converted to type " +
-                        "'System.Collections.Generic.KeyValuePair`2[System.Object,System.Object]'.",
-
-                        //Despite the above limitation, resolution for the GenericFuncParameter test works because
-                        //enough information is picked up from the final parameter.
                         ".GenericFuncParameter<System.Int32>(5, System.Func`2[System.Int32,System.Int32], 10) passed",
                         ".GenericFuncParameter<System.String>(5, System.Func`2[System.Int32,System.String], \"5\") passed",
 
                         //This runtime failure would ideally be better detected at generic type parameter resolution time.
-                        ".GenericFuncParameter<System.Char>(5, System.Func`2[System.Int32,System.String], '5') failed: " +
-                        "Object of type 'System.Func`2[System.Int32,System.String]' cannot be converted to type " +
-                        "'System.Func`2[System.Int32,System.Char]'."));
+                        ".GenericFuncParameter<System.String>(5, System.Func`2[System.Int32,System.String], '5') failed: " +
+                        "Object of type 'System.Char' cannot be converted to type " +
+                        "'System.String'."));
         }
 
         class InputAttributeParameterSource : ParameterSource
@@ -328,7 +317,7 @@
             [Input(123, 456, typeof(int))]
             [Input("stringArg", 123, typeof(object))]
             [Input(123, "stringArg", typeof(object))]
-            [Input(123, null, typeof(object))]
+            [Input(123, null, typeof(int))]
             [Input(null, null, typeof(object))]
             [Input("stringArg", null, typeof(string))]
             [Input("stringArg1", "stringArg2", typeof(string))]

@@ -11,47 +11,59 @@
     class SourceLocationProvider
     {
         readonly string assemblyPath;
-        IDictionary<string, TypeDefinition>? types;
+        Dictionary<string, Dictionary<string, SourceLocation>>? sourceLocations;
 
         public SourceLocationProvider(string assemblyPath)
         {
             this.assemblyPath = assemblyPath;
-            types = null;
         }
 
         public bool TryGetSourceLocation(string className, string methodName, [NotNullWhen(true)] out SourceLocation? sourceLocation)
         {
-            if (types == null)
-                types = CacheTypes(assemblyPath);
+            if (sourceLocations == null)
+                sourceLocations = CacheLocations(assemblyPath);
 
-            sourceLocation = GetMethods(className)
-                .Where(m => m.Name == methodName)
-                .Select(FirstOrDefaultSequencePoint)
-                .Where(x => x != null)
-                .OrderBy(x => x!.StartLine)
-                .Select(x => new SourceLocation(x!.Document.Url, x!.StartLine))
-                .FirstOrDefault();
+            sourceLocation = null;
+
+            if (sourceLocations.TryGetValue(StandardizeTypeName(className), out var type))
+                if (type.TryGetValue(methodName, out var firstOverloadLocation))
+                    sourceLocation = firstOverloadLocation;
 
             return sourceLocation != null;
         }
 
-        static IDictionary<string, TypeDefinition> CacheTypes(string assemblyPath)
+        static Dictionary<string, Dictionary<string, SourceLocation>> CacheLocations(string assemblyPath)
         {
-            var readerParameters = new ReaderParameters { ReadSymbols = true, InMemory = true };
-            var module = ModuleDefinition.ReadModule(assemblyPath, readerParameters);
+            var readerParameters = new ReaderParameters { ReadSymbols = true };
+            using var module = ModuleDefinition.ReadModule(assemblyPath, readerParameters);
 
-            var types = new Dictionary<string, TypeDefinition>();
-
-            foreach (var type in module.GetTypes())
-                types[type.FullName] = type;
-
-            return types;
+            return module.GetTypes().ToDictionary(type => type.FullName, MethodLocations);
         }
 
-        IEnumerable<MethodDefinition> GetMethods(string className)
-            => types!.TryGetValue(StandardizeTypeName(className), out TypeDefinition? type)
-                ? type.GetMethods()
-                : Enumerable.Empty<MethodDefinition>();
+        static Dictionary<string, SourceLocation> MethodLocations(TypeDefinition type)
+        {
+            var methodLocations = new Dictionary<string, SourceLocation>();
+
+            foreach (var method in type.GetMethods())
+            {
+                var location = FirstOrDefaultSourceLocation(method);
+
+                if (location != null && !methodLocations.ContainsKey(method.Name))
+                    methodLocations[method.Name] = location;
+            }
+
+            return methodLocations;
+        }
+
+        static SourceLocation? FirstOrDefaultSourceLocation(MethodDefinition method)
+        {
+            var sequencePoint = FirstOrDefaultSequencePoint(method);
+
+            if (sequencePoint != null)
+                return new SourceLocation(sequencePoint.Document.Url, sequencePoint.StartLine);
+            
+            return null;
+        }
 
         static SequencePoint? FirstOrDefaultSequencePoint(MethodDefinition testMethod)
         {

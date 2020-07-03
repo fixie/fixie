@@ -210,6 +210,23 @@
                 .ShouldBe(typeof(string));
         }
 
+        public void ShouldResolveGenericTypeParametersAppearingWithinArrays()
+        {
+            Resolve("GenericArrayResolution", new[] {1}, "A")
+                .ShouldBe(typeof(int), typeof(string));
+
+            Resolve("GenericArrayResolution", new[] {"B"}, 2)
+                .ShouldBe(typeof(string), typeof(int));
+
+            Resolve("GenericArrayResolution", new[] {"C"}, new[] {3})
+                .ShouldBe(typeof(string), typeof(int[]));
+
+            Resolve("GenericArrayResolution", 0, 1)
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("T1"),
+                    x => x.ShouldBeGenericTypeParameter("T2"));
+        }
+
         public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()
         {
             var unresolved = Resolve("ConstrainedGeneric", "Incompatible").Single();
@@ -241,6 +258,7 @@
             void ConstrainedGeneric<T>(T t) where T : struct { }
             public void CompoundGenericParameter<TKey, TValue>(KeyValuePair<TKey, TValue> pair) { }
             public void GenericFuncParameter<TResult>(int input, Func<int, TResult> transform, TResult expectedResult) { }
+            public void GenericArrayResolution<T1, T2>(T1[] array, T2 arbitrary) { }
         }
     }
 }

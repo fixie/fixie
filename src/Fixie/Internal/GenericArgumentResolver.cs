@@ -97,6 +97,20 @@
                 return;
             }
 
+            // Array item types may provide new type mappings:
+            //   Parameter: T[], Argument: int[]
+            if (parameterType.IsArray && argumentType.IsArray)
+            {
+                var parameterElementType = parameterType.GetElementType();
+                var argumentElementType = argumentType.GetElementType();
+
+                if (parameterElementType != null && argumentElementType != null)
+                {
+                    TraverseTypes(genericToSpecific, parameterElementType, argumentElementType);
+                    return;
+                }
+            }
+
             // Non-generics provide no new type mappings:
             //   Parameter: int, Argument: bool
             //   Parameter: List<int>, Argument: bool

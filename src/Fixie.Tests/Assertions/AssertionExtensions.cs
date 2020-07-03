@@ -107,6 +107,13 @@ namespace Fixie.Tests.Assertions
                 itemExpectations[i](actualItems[i]);
         }
 
+        public static void ShouldBeGenericTypeParameter(this Type actual, string expectedName)
+        {
+            actual.IsGenericParameter.ShouldBe(true);
+            actual.FullName.ShouldBe(null);
+            actual.Name.ShouldBe(expectedName);
+        }
+
         static string Json<T>(T @object)
         {
             return JsonSerializer.Serialize(@object, JsonSerializerOptions);

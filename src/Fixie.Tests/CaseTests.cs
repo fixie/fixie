@@ -120,7 +120,7 @@
                 .Name.ShouldBe("Fixie.Tests.CaseTests.Generic<System.Boolean, System.String>(123, True, \"a\", \"b\")");
 
             Case("Generic", 123, true, 1, null)
-                .Name.ShouldBe("Fixie.Tests.CaseTests.Generic<System.Boolean, System.Object>(123, True, 1, null)");
+                .Name.ShouldBe("Fixie.Tests.CaseTests.Generic<System.Boolean, System.Int32>(123, True, 1, null)");
 
             Case("Generic", 123, 1.23m, "a", null)
                 .Name.ShouldBe("Fixie.Tests.CaseTests.Generic<System.Decimal, System.String>(123, 1.23, \"a\", null)");
@@ -180,7 +180,7 @@
             method.Name.ShouldBe("Generic");
             method.GetParameters()
                 .Select(x => x.ParameterType)
-                .ShouldBe(typeof(int), typeof(bool), typeof(object), typeof(object));
+                .ShouldBe(typeof(int), typeof(bool), typeof(int), typeof(int));
 
             method = Case("Generic", 123, 1.23m, "a", null).Method;
             method.Name.ShouldBe("Generic");

@@ -6,12 +6,12 @@
 
     static class GenericArgumentResolver
     {
-        public static MethodInfo TryResolveTypeArguments(this MethodInfo caseMethod, object?[] parameters)
+        public static MethodInfo TryResolveTypeArguments(this MethodInfo caseMethod, object?[] arguments)
         {
             if (!caseMethod.IsGenericMethodDefinition)
                 return caseMethod;
 
-            var typeArguments = ResolveTypeArguments(caseMethod, parameters);
+            var typeArguments = ResolveTypeArguments(caseMethod, arguments);
 
             try
             {
@@ -23,22 +23,22 @@
             }
         }
 
-        static Type[] ResolveTypeArguments(MethodInfo method, object?[] parameters)
+        static Type[] ResolveTypeArguments(MethodInfo method, object?[] arguments)
         {
             var genericArguments = method.GetGenericArguments();
             var parameterTypes = method.GetParameters().Select(p => p.ParameterType).ToArray();
 
-            if (parameterTypes.Length != parameters.Length)
+            if (parameterTypes.Length != arguments.Length)
             {
                 var allAmbiguous = new Type[genericArguments.Length];
                 Array.Fill(allAmbiguous, typeof(object));
                 return allAmbiguous;
             }
 
-            return genericArguments.Select(genericArgument => ResolveTypeArgument(genericArgument, parameterTypes, parameters)).ToArray();
+            return genericArguments.Select(genericArgument => ResolveTypeArgument(genericArgument, parameterTypes, arguments)).ToArray();
         }
 
-        static Type ResolveTypeArgument(Type genericArgument, Type[] parameterTypes, object?[] parameters)
+        static Type ResolveTypeArgument(Type genericArgument, Type[] parameterTypes, object?[] arguments)
         {
             bool hasNullValue = false;
             Type? resolvedTypeOfNonNullValues = null;
@@ -47,13 +47,13 @@
             {
                 if (parameterTypes[i] == genericArgument)
                 {
-                    object? parameterValue = parameters[i];
+                    object? argument = arguments[i];
 
-                    if (parameterValue == null)
+                    if (argument == null)
                         hasNullValue = true;
                     else if (resolvedTypeOfNonNullValues == null)
-                        resolvedTypeOfNonNullValues = parameterValue.GetType();
-                    else if (resolvedTypeOfNonNullValues != parameterValue.GetType())
+                        resolvedTypeOfNonNullValues = argument.GetType();
+                    else if (resolvedTypeOfNonNullValues != argument.GetType())
                         return typeof(object);
                 }
             }

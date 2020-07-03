@@ -21,18 +21,18 @@
                 .ShouldBe(Empty);
         }
 
-        public void ShouldResolveToObjectWhenGenericTypeHasNoMatchingParameters()
+        public void ShouldNotResolveWhenGenericTypeHasNoMatchingParameters()
         {
             Resolve("NoMatchingParameters", 0, "")
-                .ShouldBe(typeof(object));
+                .ShouldSatisfy(x => x.ShouldBeGenericTypeParameter("T"));
         }
 
-        public void ShouldResolveToObjectWhenGenericTypeHasOneNullMatchingParameter()
+        public void ShouldNotResolveWhenGenericTypeHasOneNullMatchingParameter()
         {
-            Resolve("OneMatchingParameter", new object?[] { null })
-                .ShouldBe(typeof(object));
+            Resolve("OneMatchingParameter", new object?[] {null})
+                .ShouldSatisfy(t => t.ShouldBeGenericTypeParameter("T"));
         }
-
+        
         public void ShouldResolveToConcreteTypeOfValueWhenGenericTypeHasOneNonNullMatchingParameter()
         {
             Resolve("OneMatchingParameter", 1.2m)
@@ -60,10 +60,10 @@
                 .ShouldBe(typeof(string));
         }
 
-        public void ShouldResolveToObjectWhenGenericTypeHasMultipleMatchingParametersButAllAreNull()
+        public void ShouldNotResolveWhenGenericTypeHasMultipleMatchingParametersButAllAreNull()
         {
             Resolve("MultipleMatchingParameter", null, null, null)
-                .ShouldBe(typeof(object));
+                .ShouldSatisfy(x => x.ShouldBeGenericTypeParameter("T"));
         }
 
         public void ShouldTreatNullsAsTypeCompatibleWithReferenceTypes()
@@ -90,37 +90,95 @@
                 .ShouldBe(typeof(decimal));
         }
 
-        public void ShouldResolveAllGenericArguments()
+        public void ShouldResolveGenericArgumentsIfAndOnlyIfTheyCanAllBeResolved()
         {
-            Resolve("MultipleGenericArguments", null, 1.2m, "string", 0)
-                .ShouldBe(typeof(object), typeof(object), typeof(decimal));
+            Resolve("MultipleUnsatisfiableGenericArguments", null, 1.2m, "string", 0)
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("TNoMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TOneMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TMultipleMatch"));
 
-            Resolve("MultipleGenericArguments", false, 1.2m, "string", 0)
-                .ShouldBe(typeof(object), typeof(bool), typeof(decimal));
+            Resolve("MultipleUnsatisfiableGenericArguments", false, 1.2m, "string", 0)
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("TNoMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TOneMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TMultipleMatch"));
 
-            Resolve("MultipleGenericArguments", false, 1.2m, "string a", "string b")
-                .ShouldBe(typeof(object), typeof(bool), typeof(decimal));
+            Resolve("MultipleUnsatisfiableGenericArguments", false, 1.2m, "string a", "string b")
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("TNoMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TOneMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TMultipleMatch"));
 
-            Resolve("MultipleGenericArguments", false, 1.2m, 2.3m, 3.4m)
-                .ShouldBe(typeof(object), typeof(bool), typeof(decimal));
+            Resolve("MultipleUnsatisfiableGenericArguments", false, 1.2m, 2.3m, 3.4m)
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("TNoMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TOneMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TMultipleMatch"));
 
-            Resolve("MultipleGenericArguments", false, "string a", "string b", "string c")
-                .ShouldBe(typeof(object), typeof(bool), typeof(string));
+            Resolve("MultipleUnsatisfiableGenericArguments", false, "string a", "string b", "string c")
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("TNoMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TOneMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TMultipleMatch"));
 
-            Resolve("MultipleGenericArguments", false, null, null, null)
-                .ShouldBe(typeof(object), typeof(bool), typeof(object));
+            Resolve("MultipleUnsatisfiableGenericArguments", false, null, null, null)
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("TNoMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TOneMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TMultipleMatch"));
             
-            Resolve("MultipleGenericArguments", false, "string a", "string b", null)
-                .ShouldBe(typeof(object), typeof(bool), typeof(string));
+            Resolve("MultipleUnsatisfiableGenericArguments", false, "string a", "string b", null)
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("TNoMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TOneMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TMultipleMatch"));
 
-            Resolve("MultipleGenericArguments", false, 1.2m, 2.3m, null)
-                .ShouldBe(typeof(object), typeof(bool), typeof(decimal));
+            Resolve("MultipleUnsatisfiableGenericArguments", false, 1.2m, 2.3m, null)
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("TNoMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TOneMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TMultipleMatch"));
+
+            Resolve("MultipleSatisfiableGenericArguments", null, 1.2m, "string", 0)
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("TOneMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TMultipleMatch"));
+
+            Resolve("MultipleSatisfiableGenericArguments", false, 1.2m, "string", 0)
+                .ShouldBe(typeof(bool), typeof(decimal));
+
+            Resolve("MultipleSatisfiableGenericArguments", false, 1.2m, "string a", "string b")
+                .ShouldBe(typeof(bool), typeof(decimal));
+
+            Resolve("MultipleSatisfiableGenericArguments", false, 1.2m, 2.3m, 3.4m)
+                .ShouldBe(typeof(bool), typeof(decimal));
+
+            Resolve("MultipleSatisfiableGenericArguments", false, "string a", "string b", "string c")
+                .ShouldBe(typeof(bool), typeof(string));
+
+            Resolve("MultipleSatisfiableGenericArguments", false, null, null, null)
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("TOneMatch"),
+                    x => x.ShouldBeGenericTypeParameter("TMultipleMatch"));
+            
+            Resolve("MultipleSatisfiableGenericArguments", false, "string a", "string b", null)
+                .ShouldBe(typeof(bool), typeof(string));
+
+            Resolve("MultipleSatisfiableGenericArguments", false, 1.2m, 2.3m, null)
+                .ShouldBe(typeof(bool), typeof(decimal));
         }
 
-        public void ShouldResolveToObjectWhenInputParameterCountDoesNotMatchDeclaredParameterCount()
+        public void ShouldNotResolveWhenInputParameterCountIsLessThanDeclaredParameterCount()
         {
-            Resolve("MultipleGenericArguments", 1).ShouldBe(typeof(object), typeof(object), typeof(object));
-            Resolve("MultipleGenericArguments", 1, true, false, true, false).ShouldBe(typeof(object), typeof(object), typeof(object));
+            Resolve("MultipleMatchingParameter", 1, 2)
+                .ShouldSatisfy(x => x.ShouldBeGenericTypeParameter("T"));
+        }
+
+        public void ShouldAttemptReasonableResolutionByIgnoringExcessParametersWhenInputParameterCountIsGreaterThanDeclaredParameterCount()
+        {
+            Resolve("MultipleMatchingParameter", 1, 2, 3, 4)
+                .ShouldBe(typeof(int));
         }
 
         public void ShouldResolveGenericArgumentsWhenGenericConstraintsAreSatisfied()
@@ -174,7 +232,10 @@
             public void NoMatchingParameters<T>(int i, string s) { }
             public void OneMatchingParameter<T>(T match) { }
             public void MultipleMatchingParameter<T>(T firstMatch, T secondMatch, T thirdMatch) { }
-            public void MultipleGenericArguments<TNoMatch, TOneMatch, TMultipleMatch>(
+            public void MultipleUnsatisfiableGenericArguments<TNoMatch, TOneMatch, TMultipleMatch>(
+                TOneMatch oneMatch,
+                TMultipleMatch firstMultiMatch, TMultipleMatch secondMultiMatch, TMultipleMatch thirdMultiMatch) { }
+            public void MultipleSatisfiableGenericArguments<TOneMatch, TMultipleMatch>(
                 TOneMatch oneMatch,
                 TMultipleMatch firstMultiMatch, TMultipleMatch secondMultiMatch, TMultipleMatch thirdMultiMatch) { }
             void ConstrainedGeneric<T>(T t) where T : struct { }

@@ -128,7 +128,7 @@
                         ".ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
                         ".UnconstrainedGeneric<System.Int32>(0) passed",
                         ".UnconstrainedGeneric<System.Int32>(1) passed",
-                        ".UnconstrainedGeneric<System.Object> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric"));
+                        ".UnconstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric"));
         }
 
         public void ShouldResolveGenericTypeParameters()
@@ -143,25 +143,25 @@
 
                         ".ConstrainedGenericMethodWithNoInputsProvided<T> failed: This test case has declared parameters, but no parameter values have been provided to it.",
 
-                        ".GenericMethodWithIncorrectParameterCountProvided<System.Object>(123, 123) failed: Parameter count mismatch.",
+                        ".GenericMethodWithIncorrectParameterCountProvided<System.Int32>(123, 123) failed: Parameter count mismatch.",
 
-                        ".GenericMethodWithNoInputsProvided<System.Object> failed: This test case has declared parameters, but no parameter values have been provided to it.",
+                        ".GenericMethodWithNoInputsProvided<T> failed: This test case has declared parameters, but no parameter values have been provided to it.",
 
-                        ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.Object>(123, null, 456, System.Int32, System.Object) passed",
+                        ".MultipleGenericArgumentsMultipleParameters<T1, T2>(123, null, 456, System.Int32, System.Object) failed: Could not resolve type parameters for generic method.",
                         ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",
-                        ".MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg\", null, null, System.String, System.Object) passed",
-                        ".MultipleGenericArgumentsMultipleParameters<System.String, System.Object>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) passed",
+                        ".MultipleGenericArgumentsMultipleParameters<T1, T2>(\"stringArg\", null, null, System.String, System.Object) failed: Could not resolve type parameters for generic method.",
+                        ".MultipleGenericArgumentsMultipleParameters<T1, T2>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) failed: Could not resolve type parameters for generic method.",
                         ".MultipleGenericArgumentsMultipleParameters<System.String, System.String>(null, \"stringArg1\", \"stringArg2\", System.String, System.String) passed",
 
                         ".SingleGenericArgument<System.Int32>(123, System.Int32) passed",
-                        ".SingleGenericArgument<System.Object>(null, System.Object) passed",
+                        ".SingleGenericArgument<T>(null, System.Object) failed: Could not resolve type parameters for generic method.",
                         ".SingleGenericArgument<System.String>(\"stringArg\", System.String) passed",
 
                         ".SingleGenericArgumentMultipleParameters<System.Int32>(123, 456, System.Int32) passed",
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", 123, System.Object) failed: Object of type 'System.Int32' cannot be converted to type 'System.String'.",
                         ".SingleGenericArgumentMultipleParameters<System.Int32>(123, \"stringArg\", System.Object) failed: Object of type 'System.String' cannot be converted to type 'System.Int32'.",
                         ".SingleGenericArgumentMultipleParameters<System.Int32>(123, null, System.Int32) passed", //MethodInfo.Invoke converts nulls to default(T) for value types.
-                        ".SingleGenericArgumentMultipleParameters<System.Object>(null, null, System.Object) passed",
+                        ".SingleGenericArgumentMultipleParameters<T>(null, null, System.Object) failed: Could not resolve type parameters for generic method.",
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
                         ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed"));
@@ -180,10 +180,8 @@
                         ".GenericFuncParameter<System.Int32>(5, System.Func`2[System.Int32,System.Int32], 10) passed",
                         ".GenericFuncParameter<System.String>(5, System.Func`2[System.Int32,System.String], \"5\") passed",
 
-                        //This runtime failure would ideally be better detected at generic type parameter resolution time.
                         ".GenericFuncParameter<System.String>(5, System.Func`2[System.Int32,System.String], '5') failed: " +
-                        "Object of type 'System.Char' cannot be converted to type " +
-                        "'System.String'."));
+                        "Object of type 'System.Char' cannot be converted to type 'System.String'."));
         }
 
         class InputAttributeParameterSource : ParameterSource

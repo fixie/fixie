@@ -1,7 +1,8 @@
-namespace Fixie.Internal
+﻿namespace Fixie.Internal
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
 
@@ -12,54 +13,77 @@ namespace Fixie.Internal
             if (!caseMethod.IsGenericMethodDefinition)
                 return caseMethod;
 
-            var typeArguments = ResolveTypeArguments(caseMethod, arguments);
+            if (!TryResolveTypeArguments(caseMethod, arguments, out var resolvedTypeParameters))
+                return caseMethod;
 
             try
             {
-                return caseMethod.MakeGenericMethod(typeArguments);
+                return caseMethod.MakeGenericMethod(resolvedTypeParameters);
             }
             catch (Exception)
             {
+                // Allow MethodInfo.Invoke(...) to provide a more useful error message.
                 return caseMethod;
             }
         }
 
-        static Type[] ResolveTypeArguments(MethodInfo method, object?[] arguments)
+        static bool TryResolveTypeArguments(MethodInfo method, object?[] arguments, [NotNullWhen(true)] out Type[]? resolvedTypeParameters)
         {
             var genericArguments = method.GetGenericArguments();
             var parameterTypes = method.GetParameters().Select(p => p.ParameterType).ToArray();
 
-            if (parameterTypes.Length != arguments.Length)
+            if (parameterTypes.Length > arguments.Length)
             {
-                var allAmbiguous = new Type[genericArguments.Length];
-                Array.Fill(allAmbiguous, typeof(object));
-                return allAmbiguous;
+                resolvedTypeParameters = null;
+                return false;
+            }
+
+            if (parameterTypes.Length < arguments.Length)
+            {
+                // Proceed with type argument resolution as if the excess arguments were not provided,
+                // allowing as much resolution as possible while still allowing the "Parameter count mismatch"
+                // failure to arise at invocation time.
+
+                arguments = arguments.Take(parameterTypes.Length).ToArray();
             }
 
             var genericToSpecific = new Dictionary<Type, Type>();
 
             for (int i = 0; i < parameterTypes.Length; i++)
-        {
+            {
                 var argument = arguments[i];
                 var parameterType = parameterTypes[i];
 
+                // The null value has no type, so it
+                // provides no new type mappings.
                 if (argument == null)
                     continue;
 
                 TraverseTypes(genericToSpecific, parameterType, argument.GetType());
             }
 
-            return genericArguments
-                .Select(genericArgument =>
-                    genericToSpecific.TryGetValue(genericArgument, out var specificType)
-                        ? specificType
-                        : typeof(object)).ToArray();
+            var results = new List<Type>();
+            foreach (var genericArgument in genericArguments)
+            {
+                if (genericToSpecific.TryGetValue(genericArgument, out var specificType))
+                {
+                    results.Add(specificType);
+                }
+                else
+                {
+                    resolvedTypeParameters = null;
+                    return false;
+                }
+            }
+
+            resolvedTypeParameters = results.ToArray();
+            return true;
         }
 
         static void TraverseTypes(Dictionary<Type, Type> genericToSpecific, Type parameterType, Type argumentType)
-            {
+        {
             if (parameterType.IsGenericParameter)
-                {
+            {
                 // A type mapping has been detected:
                 //   Parameter: T, Argument: Dictionary<int, string>
 

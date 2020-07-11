@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Cli;
     using Internal;
 
     class ConsoleListener :

@@ -6,8 +6,6 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
-  <Import Project="..\Fixie.Cli\Fixie.Cli.projitems" Label="Shared" />
-
   <ItemGroup>
     <None Include="..\..\LICENSE.md" Pack="true" PackagePath="" Visible="false" />
     <None Include="..\..\img\fixie_256.png" Pack="true" PackagePath="icon.png" Visible="false" />

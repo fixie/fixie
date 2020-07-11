@@ -1,8 +1,8 @@
-﻿namespace Fixie.Cli
+﻿namespace Fixie.Console
 {
     using System.Collections.Generic;
 
-    class CommandLine
+    public class CommandLine
     {
         public static T Parse<T>(string[] arguments) where T : class
             => new Parser<T>(arguments).Model;

@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Console
 {
     using System.IO;
-    using Cli;
 
     public class Options
     {

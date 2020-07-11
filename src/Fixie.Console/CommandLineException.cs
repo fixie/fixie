@@ -1,8 +1,8 @@
-﻿namespace Fixie.Cli
+﻿namespace Fixie.Console
 {
     using System;
 
-    class CommandLineException : Exception
+    public class CommandLineException : Exception
     {
         public CommandLineException(string message, Exception innerException)
             : base(message, innerException) { }

@@ -1,4 +1,4 @@
-﻿namespace Fixie.Cli
+﻿namespace Fixie.Console
 {
     using System;
     using System.Collections.Generic;

@@ -1,8 +1,8 @@
-﻿namespace Fixie.Tests.Cli
+﻿namespace Fixie.Tests.Console
 {
     using System;
     using Assertions;
-    using Fixie.Cli;
+    using Fixie.Console;
 
     public class ParserTests
     {

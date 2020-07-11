@@ -2,7 +2,6 @@
 {
     using System;
     using Assertions;
-    using Fixie.Cli;
     using Fixie.Console;
 
     public class OptionsTests

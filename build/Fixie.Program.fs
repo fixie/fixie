@@ -4,5 +4,5 @@ open System
 open System.Reflection
 
 [<STAThread; EntryPoint>]
-let main arguments =
-    EntryPoint.Main(Assembly.GetExecutingAssembly(), arguments)
+let main customArguments =
+    EntryPoint.Main(Assembly.GetExecutingAssembly(), customArguments)

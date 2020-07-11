@@ -1,21 +1,21 @@
-﻿namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests.Console
 {
     using System;
     using Assertions;
     using Fixie.Cli;
-    using Fixie.Internal;
+    using Fixie.Console;
 
     public class OptionsTests
     {
         public void DemandsValidReportFileNameWhenProvided()
         {
-            Action noReport = new Options(report: null).Validate;
+            Action noReport = new Options(null, false, null, report: null).Validate;
             noReport();
 
-            Action validReport = new Options(report: "Report.xml").Validate;
+            Action validReport = new Options(null, false, null, report: "Report.xml").Validate;
             validReport();
 
-            Action invalidReport = new Options(report: "\0").Validate;
+            Action invalidReport = new Options(null, false, null, report: "\0").Validate;
             invalidReport.ShouldThrow<CommandLineException>(
                 "Specified report name is invalid: \0");
         }

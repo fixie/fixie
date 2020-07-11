@@ -5,6 +5,6 @@
     class Program
     {
         [STAThread]
-        static int Main(string[] arguments) => EntryPoint.Main(typeof(Program).Assembly, arguments);
+        static int Main(string[] customArguments) => EntryPoint.Main(typeof(Program).Assembly, customArguments);
     }
 }

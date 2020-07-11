@@ -100,8 +100,8 @@
 
             protected static void WhereAmI([CallerMemberName] string member = default!)
             {
-                Console.Out.WriteLine("Console.Out: " + member);
-                Console.Error.WriteLine("Console.Error: " + member);
+                System.Console.Out.WriteLine("Console.Out: " + member);
+                System.Console.Error.WriteLine("Console.Error: " + member);
             }
         }
 

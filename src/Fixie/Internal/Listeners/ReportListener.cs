@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Xml.Linq;
+    using static System.Environment;
 
     class ReportListener :
         Handler<CaseSkipped>,
@@ -17,10 +18,12 @@
         readonly List<XElement> currentClass = new List<XElement>();
         readonly List<XElement> classes = new List<XElement>();
 
-        internal static ReportListener? Create(Options options)
+        internal static ReportListener? Create()
         {
-            if (options.Report != null)
-                return new ReportListener(SaveReport(options.Report));
+            var absoluteOrRelativePath = GetEnvironmentVariable("FIXIE:REPORT");
+
+            if (absoluteOrRelativePath != null)
+                return new ReportListener(SaveReport(absoluteOrRelativePath));
 
             return null;
         }

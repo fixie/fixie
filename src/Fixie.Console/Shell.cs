@@ -7,7 +7,7 @@
 
     static class Shell
     {
-        public static int Run(string executable, string workingDirectory, string[] arguments)
+        public static int Run(string executable, string workingDirectory, string[] arguments, IDictionary<string, string>? environmentVariables = null)
         {
             var startInfo = new ProcessStartInfo
             {
@@ -18,6 +18,10 @@
 
             foreach (var argument in arguments)
                 startInfo.ArgumentList.Add(argument);
+
+            if (environmentVariables != null)
+                foreach (var pair in environmentVariables)
+                    startInfo.Environment.Add(pair);
 
             return Run(startInfo);
         }

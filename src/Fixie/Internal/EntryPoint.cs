@@ -18,17 +18,11 @@
             FatalError = -1
         }
 
-        public static int Main(Assembly assembly, string[] arguments)
+        public static int Main(Assembly assembly, string[] customArguments)
         {
             try
             {
-                CommandLine.Partition(arguments, out var runnerArguments, out var customArguments);
-
-                var options = CommandLine.Parse<Options>(runnerArguments);
-
-                options.Validate();
-
-                return (int)RunAssembly(assembly, options, customArguments);
+                return (int)RunAssembly(assembly, customArguments);
             }
             catch (Exception exception)
             {
@@ -39,9 +33,9 @@
             }
         }
 
-        static ExitCode RunAssembly(Assembly assembly, Options options, string[] customArguments)
+        static ExitCode RunAssembly(Assembly assembly, string[] customArguments)
         {
-            var listeners = DefaultExecutionListeners(options).ToArray();
+            var listeners = DefaultExecutionListeners().ToArray();
             var assemblyRunner = new TestAssembly(assembly, customArguments, listeners);
 
             var summary = assemblyRunner.Run();
@@ -55,7 +49,7 @@
             return ExitCode.Success;
         }
 
-        static IEnumerable<Listener> DefaultExecutionListeners(Options options)
+        static IEnumerable<Listener> DefaultExecutionListeners()
         {
             if (Try(AzureListener.Create, out var azure))
                 yield return azure;
@@ -63,7 +57,7 @@
             if (Try(AppVeyorListener.Create, out var appVeyor))
                 yield return appVeyor;
 
-            if (Try(() => ReportListener.Create(options), out var report))
+            if (Try(ReportListener.Create, out var report))
                 yield return report;
 
             if (Try(TeamCityListener.Create, out var teamCity))

@@ -24,6 +24,8 @@
 
                 var options = CommandLine.Parse<Options>(runnerArguments);
 
+                options.Validate();
+
                 var overallExitCode = Success;
 
                 foreach(var testProject in TestProjects(options).ToArray())
@@ -144,26 +146,19 @@
 
             var arguments = new List<string> { targetFileName };
 
-            AddPassThroughArguments(arguments, options, customArguments);
+            arguments.AddRange(customArguments);
 
             var workingDirectory = Path.Combine(
                 new FileInfo(testProject).Directory.FullName,
                 outputPath);
 
-            return Run("dotnet", workingDirectory, arguments.ToArray());
-        }
-
-        static void AddPassThroughArguments(List<string> arguments, Options options, string[] customArguments)
-        {
-            if (options.Report != null)
-            {
-                arguments.Add("--report");
-                arguments.Add(options.Report);
-            }
-
-            arguments.Add("--");
-
-            arguments.AddRange(customArguments);
+            return Run("dotnet", workingDirectory, arguments.ToArray(),
+                options.Report == null
+                    ? null
+                    : new Dictionary<string, string>
+                    {
+                        {"FIXIE:REPORT", options.Report}
+                    });
         }
 
         static void Help()

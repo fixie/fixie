@@ -25,6 +25,9 @@
             {
                 var item = queue.Dequeue();
 
+                if (IsFirstLetterAbbreviation(item))
+                    item = ExpandFirstLetterAbbreviation(namedArguments, item);
+
                 if (IsNamedArgumentKey(item))
                 {
                     var name = NamedArgument.Normalize(item);
@@ -177,6 +180,28 @@
             return dictionary;
         }
 
+        static string ExpandFirstLetterAbbreviation(Dictionary<string, NamedArgument> namedArguments, string item)
+        {
+            var candidates =
+                namedArguments.Keys
+                    .Where(x => x.StartsWith(NamedArgument.Normalize(item)))
+                    .OrderBy(x => x)
+                    .ToArray();
+
+            if (candidates.Length > 1)
+            {
+                var suggestions = candidates.Select(x => $"--{x}").ToArray();
+
+                suggestions[^1] = $"or {suggestions[^1]}";
+
+                throw new CommandLineException(
+                    $"{item} is not a recognized option. Did you mean " +
+                    $"{string.Join(suggestions.Length > 2 ? ", " : " ", suggestions)}?");
+            }
+
+            return $"--{candidates.Single()}";
+        }
+
         static object Create(Type type, List<PositionalArgument> arguments, Dictionary<string, NamedArgument> namedArguments)
         {
             var constructor = GetConstructor(type);
@@ -217,8 +242,11 @@
         static ConstructorInfo GetConstructor(Type type)
             => type.GetConstructors().Single();
 
+        static bool IsFirstLetterAbbreviation(string item)
+            => item.Length == 2 && item[0] == '-' && char.IsLetter(item[1]);
+
         static bool IsNamedArgumentKey(string item)
-            => item.StartsWith("--");
+            => item.StartsWith("-");
 
         static Array CreateTypedArray(Type itemType, IReadOnlyList<object?> values)
         {

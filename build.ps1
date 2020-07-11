@@ -12,7 +12,7 @@ if (test-path artifacts) { remove-item artifacts -Recurse }
 
 step { dotnet clean src -c Release --nologo -v minimal }
 step { dotnet build src -c Release --nologo }
-step { dotnet $fixie *.Tests --configuration Release --no-build }
+step { dotnet $fixie *.Tests -c Release --no-build }
 step { dotnet pack src/Fixie -o artifacts -c Release --no-build --nologo }
 step { dotnet pack src/Fixie.Console -o artifacts -c Release --no-build --nologo }
 

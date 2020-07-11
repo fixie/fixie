@@ -69,6 +69,15 @@
             Parse<ModelWithConstructor<int>>("--first", "1", "--second", "2", "--third", "abc")
                 .ShouldFail("--third was not in the correct format.");
 
+            Parse<ModelWithConstructor<string>>("-f", "value1", "-s", "value2", "-t", "value3")
+                .ShouldSucceed(new ModelWithConstructor<string>("value1", "value2", "value3"));
+
+            Parse<ModelWithConstructor<int>>("-f", "1", "-s", "2", "-t", "3")
+                .ShouldSucceed(new ModelWithConstructor<int>(1, 2, 3));
+
+            Parse<ModelWithConstructor<int>>("-f", "1", "-s", "2", "-t", "abc")
+                .ShouldFail("--third was not in the correct format.");
+
             //Unspecified params[]
             Parse<ModelWithParams<string>>("--first", "value1", "--second", "value2", "--third", "value3")
                 .ShouldSucceed(new ModelWithParams<string>("value1", "value2", "value3"));
@@ -94,8 +103,14 @@
         {
             Parse<ModelWithConstructor<int>>("--first", "1", "--second", "2", "--third")
                 .ShouldFail("--third is missing its required value.");
+            
+            Parse<ModelWithConstructor<int>>("-f", "1", "-s", "2", "-t")
+                .ShouldFail("--third is missing its required value.");
 
             Parse<ModelWithConstructor<int>>("--first", "1", "--second", "--third", "3")
+                .ShouldFail("--second is missing its required value.");
+
+            Parse<ModelWithConstructor<int>>("-f", "1", "-s", "-t", "3")
                 .ShouldFail("--second is missing its required value.");
         }
 
@@ -142,10 +157,13 @@
         {
             Parse<ModelWithConstructor<bool>>("--first", "--third")
                 .ShouldSucceed(new ModelWithConstructor<bool>(true, false, true));
+            
+            Parse<ModelWithConstructor<bool>>("-f", "-t")
+                .ShouldSucceed(new ModelWithConstructor<bool>(true, false, true));
 
             //Unspecified params[]
-            Parse<ModelWithConstructor<bool>>("--first", "--third")
-                .ShouldSucceed(new ModelWithConstructor<bool>(true, false, true));
+            Parse<ModelWithParams<bool>>("--first", "--third")
+                .ShouldSucceed(new ModelWithParams<bool>(true, false, true));
 
             //Specified params[]
             Parse<ModelWithParams<bool>>("--first", "--third", "true", "false")
@@ -319,7 +337,7 @@
 
         public void ShouldFailWhenNonArrayArgumentsAreRepeated()
         {
-            Parse<ModelWithConstructor<int>>("--first", "1", "--second", "2", "--first", "3")
+            Parse<ModelWithConstructor<int>>("--first", "1", "--second", "2", "-f", "3")
                 .ShouldFail("--first cannot be specified more than once.");
         }
 
@@ -361,12 +379,44 @@
             public int parameter { get; }
         }
 
+        class AmbiguousFirstLetterParameters
+        {
+            public AmbiguousFirstLetterParameters(
+                string pattern,
+                string configuration,
+                string password,
+                string convention,
+                string prefix)
+            {
+                Pattern = pattern;
+                Configuration = configuration;
+                Password = password;
+                Convention = convention;
+                Prefix = prefix;
+            }
+
+            public string Pattern { get; }
+            public string Configuration { get; }
+            public string Password { get; }
+            public string Convention { get; }
+            public string Prefix { get; } 
+        }
+
         public void ShouldDemandUnambiguousParameterNames()
         {
             Parse<AmbiguousParameters>()
                 .ShouldFail("Parsing command line arguments for type AmbiguousParameters " +
                             "is ambiguous, because it has more than one parameter corresponding " +
                             "with the --parameter argument.");
+        }
+
+        public void ShouldDemandUnambiguousFirstLetterParameterNameAbbreviations()
+        {
+            Parse<AmbiguousFirstLetterParameters>("-p", "a*c", "-c")
+                .ShouldFail("-p is not a recognized option. Did you mean --password, --pattern, or --prefix?");
+
+            Parse<AmbiguousFirstLetterParameters>("--pattern", "a*c", "-c")
+                .ShouldFail("-c is not a recognized option. Did you mean --configuration or --convention?");
         }
 
         class Complex

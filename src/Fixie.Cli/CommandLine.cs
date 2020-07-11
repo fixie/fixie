@@ -1,19 +1,11 @@
 ﻿namespace Fixie.Cli
 {
-    using System;
     using System.Collections.Generic;
 
     class CommandLine
     {
         public static T Parse<T>(string[] arguments) where T : class
-            => (T)Parse(typeof(T), arguments);
-
-        public static object Parse(Type type, string[] arguments)
-        {
-            var parser = new Parser(type, arguments);
-
-            return parser.Model;
-        }
+            => new Parser<T>(arguments).Model;
 
         public static void Partition(string[] arguments, out string[] runnerArguments, out string[] customArguments)
         {

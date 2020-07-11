@@ -5,12 +5,14 @@
     using System.Linq;
     using System.Reflection;
 
-    class Parser
+    class Parser<T>
     {
-        public object Model { get; }
+        public T Model { get; }
 
-        public Parser(Type type, string[] arguments)
+        public Parser(string[] arguments)
         {
+            var type = typeof(T);
+
             DemandSingleConstructor(type);
 
             var positionalArguments = ScanPositionalArguments(type);
@@ -193,7 +195,7 @@
             return $"--{candidates.Single()}";
         }
 
-        static object Create(Type type, List<PositionalArgument> arguments, Dictionary<string, NamedArgument> namedArguments)
+        static T Create(Type type, List<PositionalArgument> arguments, Dictionary<string, NamedArgument> namedArguments)
         {
             var constructor = GetConstructor(type);
 
@@ -224,7 +226,7 @@
                 }
             }
 
-            return constructor.Invoke(actualParameters.ToArray());
+            return (T)constructor.Invoke(actualParameters.ToArray());
         }
 
         static object? Default(Type type)

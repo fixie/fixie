@@ -92,11 +92,12 @@
         {
             try
             {
-                return CommandLine.Parse(type, customArguments);
-            }
-            catch (CommandLineException ex)
-            {
-                throw new Exception($"Command line argument parsing failed while attempting to construct an instance of type '{type.FullName}'. " + ex.Message);
+                var constructor = type.GetConstructors().Single();
+                
+                return constructor.Invoke(
+                    constructor.GetParameters().Length == 1
+                        ? new object?[] {customArguments}
+                        : Array.Empty<object>());
             }
             catch (Exception ex)
             {

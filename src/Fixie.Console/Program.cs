@@ -22,7 +22,7 @@
             {
                 CommandLine.Partition(arguments, out var runnerArguments, out var customArguments);
 
-                var options = ValidateRunnerArguments(runnerArguments);
+                var options = CommandLine.Parse<Options>(runnerArguments);
 
                 var overallExitCode = Success;
 
@@ -71,16 +71,6 @@
 
                 return FatalError;
             }
-        }
-
-        static Options ValidateRunnerArguments(string[] runnerArguments)
-        {
-            var options = CommandLine.Parse<Options>(runnerArguments, out var unusedArguments);
-
-            foreach (var unusedArgument in unusedArguments)
-                throw new CommandLineException($"The argument '{unusedArgument}' was unexpected. Custom arguments must appear after the argument separator '--'.");
-
-            return options;
         }
 
         static IEnumerable<string> TestProjects(Options options)

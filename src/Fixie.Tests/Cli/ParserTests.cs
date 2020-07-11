@@ -273,66 +273,24 @@
                 .ShouldFail("rest must be one of: Information, Warning, Error.");
         }
 
-        public void ShouldCollectExcessArgumentsForLaterInspection()
+        public void ShouldFailForUnexpectedArguments()
         {
-            Parse<Empty>("first", "second", "third", "fourth", "fifth")
-                .ShouldSucceed(new Empty(), "first", "second", "third", "fourth", "fifth");
+            Parse<Empty>("first", "second")
+                .ShouldFail("Unexpected argument: first");
 
             Parse<ModelWithConstructor<string>>(
                 "--first", "value1",
                 "--second", "value2",
                 "--third", "value3",
-                "--fourth", "value4",
-                "--array", "value5",
-                "--array", "--value6",
-                "value7")
-                .ShouldSucceed(new ModelWithConstructor<string>("value1", "value2", "value3"),
-                    "--fourth", "value4", "--array", "value5", "--array", "--value6", "value7");
-
-            Parse<ModelWithConstructor<int>>(
-                "--first", "1",
-                "--second", "2",
-                "--third", "3",
-                "--fourth", "4",
-                "--array", "5",
-                "--array", "6",
-                "7")
-                .ShouldSucceed(new ModelWithConstructor<int>(1, 2, 3),
-                    "--fourth", "4", "--array", "5", "--array", "6", "7");
-
-            //Excess unnamed arguments are taken by a params[] array, when one is declared.
-
-            Parse<ModelWithParams<string>>(
-                    "--first", "value1",
-                    "--second", "value2",
-                    "--third", "value3",
-                    "--fourth", "value4",
-                    "--array", "value5",
-                    "--array", "value6",
-                    "value7")
-                .ShouldSucceed(new ModelWithParams<string>("value1", "value2", "value3", "value7"),
-                    "--fourth", "value4", "--array", "value5", "--array", "value6");
-
-            Parse<ModelWithParams<int>>(
-                    "--first", "1",
-                    "--second", "2",
-                    "--third", "3",
-                    "--fourth", "4",
-                    "--array", "5",
-                    "--array", "6",
-                    "7")
-                .ShouldSucceed(new ModelWithParams<int>(1, 2, 3, 7),
-                    "--fourth", "4", "--array", "5", "--array", "6");
-
-            Parse<ModelWithParams<int>>(
-                    "--first", "1",
-                    "--second", "2",
-                    "--third", "3",
-                    "--fourth", "4",
-                    "--array", "5",
-                    "--array", "6",
-                    "value7")
-                .ShouldFail("rest was not in the correct format.");
+                "--fourth", "value4")
+                .ShouldFail("Unexpected argument: --fourth");
+            
+            Parse<ModelWithConstructor<string>>(
+                "--first", "value1",
+                "--second", "value2",
+                "--third", "value3",
+                "value4")
+                .ShouldFail("Unexpected argument: value4");
         }
 
         public void ShouldFailWhenNonArrayArgumentsAreRepeated()
@@ -461,23 +419,13 @@
                 "--nullable-integer", "56",
                 "--nullable-boolean", "off",
                 "--strings", "first",
-                "--unexpected-argument",
                 "--strings", "second",
-                "unexpectedArgument",
                 "--integers", "78",
-                "--unexpected-argument-with-value", "unexpectedValue",
                 "--integers", "90")
                 .ShouldSucceed(new Complex(
                         "def", 34, true, 56, false,
                         new[] { "first", "second" },
-                        new[] { 78, 90 }),
-                    expectedUnusedArguments: new[]
-                    {
-                        "--unexpected-argument",
-                        "unexpectedArgument",
-                        "--unexpected-argument-with-value",
-                        "unexpectedValue"
-                    });
+                        new[] { 78, 90 }));
         }
 
         class ComplexWithParams
@@ -518,8 +466,6 @@
                 .ShouldSucceed(new ComplexWithParams(null, 0, false, null, null,
                     new string[] { }, new int[] { }));
 
-            //Here, "unexpectedArgument" is claimed as part of our params[] array,
-            //so only unexpected named arguments are truly unused by the parser.
             Parse<ComplexWithParams>(
                 "--string", "def",
                 "--integer", "34",
@@ -527,23 +473,17 @@
                 "--nullable-integer", "56",
                 "--nullable-boolean", "off",
                 "--strings", "first",
-                "--unexpected-argument",
                 "--strings", "second",
-                "unexpectedArgument",
+                "positionalArgumentA",
                 "--integers", "78",
-                "--unexpected-argument-with-value", "unexpectedValue",
-                "--integers", "90")
+                "positionalArgumentB",
+                "--integers", "90",
+                "positionalArgumentC")
                 .ShouldSucceed(new ComplexWithParams(
                         "def", 34, true, 56, false,
                         new[] { "first", "second" },
                         new[] { 78, 90 },
-                        "unexpectedArgument"),
-                    expectedUnusedArguments: new[]
-                    {
-                        "--unexpected-argument",
-                        "--unexpected-argument-with-value",
-                        "unexpectedValue"
-                    });
+                        "positionalArgumentA", "positionalArgumentB", "positionalArgumentC"));
         }
 
         static Scenario<T> Parse<T>(params string[] arguments) where T : class
@@ -560,12 +500,10 @@
                 this.arguments = arguments;
             }
 
-            public void ShouldSucceed(T expectedModel, params string[] expectedUnusedArguments)
+            public void ShouldSucceed(T expectedModel)
             {
-                string[] unusedArguments;
-                var model = CommandLine.Parse<T>(arguments, out unusedArguments);
+                var model = CommandLine.Parse<T>(arguments);
                 model.ShouldMatch(expectedModel);
-                unusedArguments.ShouldBe(expectedUnusedArguments);
             }
 
             public void ShouldFail(string expectedExceptionMessage)

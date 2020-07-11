@@ -8,12 +8,10 @@
     class Parser
     {
         public object Model { get; }
-        public List<string> UnusedArguments { get; }
 
         public Parser(Type type, string[] arguments)
         {
             DemandSingleConstructor(type);
-            UnusedArguments = new List<string>();
 
             var positionalArguments = ScanPositionalArguments(type);
             var namedArguments = ScanNamedArguments(type);
@@ -33,14 +31,7 @@
                     var name = NamedArgument.Normalize(item);
 
                     if (!namedArguments.ContainsKey(name))
-                    {
-                        UnusedArguments.Add(item);
-
-                        if (queue.Any() && !IsNamedArgumentKey(queue.Peek()))
-                            UnusedArguments.Add(queue.Dequeue());
-
-                        continue;
-                    }
+                        throw new CommandLineException("Unexpected argument: " + item);
 
                     var namedArgument = namedArguments[name];
 
@@ -70,7 +61,7 @@
                     if (positionalArguments.Any())
                         paramsPositionalArgumentValues.Add(item);
                     else
-                        UnusedArguments.Add(item);
+                        throw new CommandLineException("Unexpected argument: " + item);
                 }
             }
 

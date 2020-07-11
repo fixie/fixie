@@ -291,6 +291,13 @@
                 "--third", "value3",
                 "value4")
                 .ShouldFail("Unexpected argument: value4");
+
+            Parse<ModelWithConstructor<string>>(
+                    "--first", "value1",
+                    "--second", "value2",
+                    "--third", "value3",
+                    "-x", "value4")
+                .ShouldFail("Unexpected argument: -x");
         }
 
         public void ShouldFailWhenNonArrayArgumentsAreRepeated()

@@ -192,6 +192,9 @@
                     $"{string.Join(suggestions.Length > 2 ? ", " : " ", suggestions)}?");
             }
 
+            if (candidates.Length == 0)
+                throw new CommandLineException("Unexpected argument: " + item);
+
             return $"--{candidates.Single()}";
         }
 

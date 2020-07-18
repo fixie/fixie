@@ -51,8 +51,9 @@
                 {
                     runCasesInvokedByLifecycle = true;
 
-                    foreach (var @case in YieldCases(orderedMethods, summary))
-                        Run(@case, caseLifecycle, summary);
+                    foreach (var method in orderedMethods)
+                        foreach (var @case in YieldCases(method, summary))
+                            Run(@case, caseLifecycle, summary);
                 };
 
                 var runContext = isOnlyTestClass && methods.Count == 1
@@ -99,13 +100,6 @@
 
                 return methods;
             }
-        }
-
-        IEnumerable<Case> YieldCases(IReadOnlyList<MethodInfo> orderedMethods, ExecutionSummary summary)
-        {
-            foreach (var method in orderedMethods)
-                foreach (var @case in YieldCases(method, summary))
-                    yield return @case;
         }
 
         IEnumerable<Case> YieldCases(MethodInfo method, ExecutionSummary summary)

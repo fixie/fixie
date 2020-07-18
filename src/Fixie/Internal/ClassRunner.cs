@@ -148,54 +148,59 @@
         IEnumerable<Case> YieldCases(IReadOnlyList<MethodInfo> orderedMethods, ExecutionSummary summary)
         {
             foreach (var method in orderedMethods)
+                foreach (var @case in YieldCases(method, summary))
+                    yield return @case;
+        }
+
+        IEnumerable<Case> YieldCases(MethodInfo method, ExecutionSummary summary)
+        {
+            if (method.GetParameters().Length == 0)
             {
-                if (method.GetParameters().Length == 0)
-                {
-                    yield return new Case(method);
-                    continue;
-                }
+                yield return new Case(method);
+                yield break;
+            }
 
-                bool generatedInputParameters = false;
-                bool parameterGenerationThrew = false;
+            bool generatedInputParameters = false;
+            bool parameterGenerationThrew = false;
 
-                using (var resource = Parameters(method).GetEnumerator())
+            using (var resource = Parameters(method).GetEnumerator())
+            {
+                while (true)
                 {
-                    while (true)
+                    object?[] parameters;
+
+                    try
                     {
-                        object?[] parameters;
-
-                        try
-                        {
-                            if (!resource.MoveNext())
-                                break;
-
-                            parameters = resource.Current;
-                        }
-                        catch (Exception exception)
-                        {
-                            parameterGenerationThrew = true;
-
-                            Fail(method, exception, summary);
-
+                        if (!resource.MoveNext())
                             break;
-                        }
 
-                        generatedInputParameters = true;
-                        yield return new Case(method, parameters);
+                        parameters = resource.Current;
                     }
-                }
+                    catch (Exception exception)
+                    {
+                        parameterGenerationThrew = true;
 
-                if (parameterGenerationThrew || generatedInputParameters)
-                    continue;
+                        Fail(method, exception, summary);
 
-                try
-                {
-                    throw new Exception("This test case has declared parameters, but no parameter values have been provided to it.");
+                        break;
+                    }
+
+                    generatedInputParameters = true;
+                    yield return new Case(method, parameters);
                 }
-                catch (Exception exception)
-                {
-                    Fail(method, exception, summary);
-                }
+            }
+
+            if (parameterGenerationThrew || generatedInputParameters)
+                yield break;
+
+            try
+            {
+                throw new Exception(
+                    "This test case has declared parameters, but no parameter values have been provided to it.");
+            }
+            catch (Exception exception)
+            {
+                Fail(method, exception, summary);
             }
         }
 

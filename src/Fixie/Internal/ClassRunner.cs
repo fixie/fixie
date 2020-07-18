@@ -52,51 +52,7 @@
                     runCasesInvokedByLifecycle = true;
 
                     foreach (var @case in YieldCases(orderedMethods, summary))
-                    {
-                        Start(@case);
-
-                        Exception? caseLifecycleFailure = null;
-
-                        string consoleOutput;
-                        using (var console = new RedirectedConsole())
-                        {
-                            var caseStopwatch = Stopwatch.StartNew();
-
-                            try
-                            {
-                                caseLifecycle(@case);
-                            }
-                            catch (Exception exception)
-                            {
-                                caseLifecycleFailure = exception;
-                            }
-
-                            caseStopwatch.Stop();
-
-                            @case.Duration += caseStopwatch.Elapsed;
-
-                            consoleOutput = console.Output;
-
-                            @case.Output += consoleOutput;
-                        }
-
-                        Console.Write(consoleOutput);
-
-                        var caseHasNormalResult = @case.State == CaseState.Failed || @case.State == CaseState.Passed;
-
-                        if (caseHasNormalResult)
-                        {
-                            if (@case.State == CaseState.Failed)
-                                Fail(@case, summary);
-                            else if (caseLifecycleFailure == null)
-                                Pass(@case, summary);
-                        }
-
-                        if (caseLifecycleFailure != null)
-                            Fail(new Case(@case, caseLifecycleFailure), summary);
-                        else if (!caseHasNormalResult)
-                            Skip(@case, summary);
-                    }
+                        Run(@case, caseLifecycle, summary);
                 };
 
                 var runContext = isOnlyTestClass && methods.Count == 1
@@ -202,6 +158,53 @@
             {
                 Fail(method, exception, summary);
             }
+        }
+
+        void Run(Case @case, Action<Case> caseLifecycle, ExecutionSummary summary)
+        {
+            Start(@case);
+
+            Exception? caseLifecycleFailure = null;
+
+            string consoleOutput;
+            using (var console = new RedirectedConsole())
+            {
+                var caseStopwatch = Stopwatch.StartNew();
+
+                try
+                {
+                    caseLifecycle(@case);
+                }
+                catch (Exception exception)
+                {
+                    caseLifecycleFailure = exception;
+                }
+
+                caseStopwatch.Stop();
+
+                @case.Duration += caseStopwatch.Elapsed;
+
+                consoleOutput = console.Output;
+
+                @case.Output += consoleOutput;
+            }
+
+            Console.Write(consoleOutput);
+
+            var caseHasNormalResult = @case.State == CaseState.Failed || @case.State == CaseState.Passed;
+
+            if (caseHasNormalResult)
+            {
+                if (@case.State == CaseState.Failed)
+                    Fail(@case, summary);
+                else if (caseLifecycleFailure == null)
+                    Pass(@case, summary);
+            }
+
+            if (caseLifecycleFailure != null)
+                Fail(new Case(@case, caseLifecycleFailure), summary);
+            else if (!caseHasNormalResult)
+                Skip(@case, summary);
         }
 
         IEnumerable<object?[]> Parameters(MethodInfo method)

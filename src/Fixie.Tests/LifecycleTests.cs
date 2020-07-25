@@ -239,17 +239,9 @@
                 instance.Dispose();
             }
 
-            static void CaseSetUp(Case @case)
-            {
-                @case.Class.ShouldBe(typeof(SampleTestClass));
-                WhereAmI();
-            }
+            static void CaseSetUp(Case @case) => WhereAmI();
 
-            static void CaseTearDown(Case @case)
-            {
-                @case.Class.ShouldBe(typeof(SampleTestClass));
-                WhereAmI();
-            }
+            static void CaseTearDown(Case @case) => WhereAmI();
         }
 
         class BuggyExecution : Execution

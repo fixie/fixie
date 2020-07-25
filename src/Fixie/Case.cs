@@ -11,6 +11,8 @@
     {
         static readonly object[] EmptyParameters = {};
 
+        readonly object?[] parameters;
+
         public Case(MethodInfo testMethod)
             : this(testMethod, EmptyParameters)
         {
@@ -18,7 +20,7 @@
 
         public Case(MethodInfo testMethod, object?[] parameters)
         {
-            Parameters = parameters;
+            this.parameters = parameters;
             Test = new Test(testMethod);
             Method = testMethod.TryResolveTypeArguments(parameters);
             Name = CaseNameBuilder.GetName(Method, parameters);
@@ -27,7 +29,7 @@
 
         internal Case(Case originalCase, Exception secondaryFailureReason)
         {
-            Parameters = originalCase.Parameters;
+            parameters = originalCase.parameters;
             Test = originalCase.Test;
             Method = originalCase.Method;
             Name = originalCase.Name;
@@ -50,12 +52,6 @@
         /// Gets the method that defines this test case.
         /// </summary>
         public MethodInfo Method { get; }
-
-        /// <summary>
-        /// For parameterized test cases, gets the set of parameters to be passed into the test method.
-        /// For zero-argument test methods, this property is the empty array.
-        /// </summary>
-        public object?[] Parameters { get; }
 
         /// <summary>
         /// Gets the exception describing this test case's failure.
@@ -131,7 +127,7 @@
         {
             try
             {
-                var result = Method.Execute(instance, Parameters);
+                var result = Method.Execute(instance, parameters);
                 Pass();
                 return result;
             }

@@ -20,9 +20,8 @@
         {
             Parameters = parameters;
             Test = new Test(testMethod);
-            Class = testMethod.ReflectedType!;
             Method = testMethod.TryResolveTypeArguments(parameters);
-            Name = CaseNameBuilder.GetName(Class, Method, parameters);
+            Name = CaseNameBuilder.GetName(testMethod.ReflectedType!, Method, parameters);
             Output = "";
         }
 
@@ -30,7 +29,6 @@
         {
             Parameters = originalCase.Parameters;
             Test = originalCase.Test;
-            Class = originalCase.Class;
             Method = originalCase.Method;
             Name = originalCase.Name;
             Output = "";
@@ -47,11 +45,6 @@
         /// Gets the name of the test case, including any input parameters.
         /// </summary>
         public string Name { get; }
-
-        /// <summary>
-        /// Gets the test class in which this test case is defined.
-        /// </summary>
-        public Type Class { get; }
 
         /// <summary>
         /// Gets the method that defines this test case.

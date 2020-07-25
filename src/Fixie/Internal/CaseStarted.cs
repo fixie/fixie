@@ -4,7 +4,7 @@
     {
         public CaseStarted(Case @case)
         {
-            Test = new Test(@case.Method);
+            Test = @case.Test;
             Name = @case.Name;
         }
 

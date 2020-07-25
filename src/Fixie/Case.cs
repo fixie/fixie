@@ -19,18 +19,17 @@
         public Case(MethodInfo testMethod, object?[] parameters)
         {
             Parameters = parameters;
+            Test = new Test(testMethod);
             Class = testMethod.ReflectedType!;
-
             Method = testMethod.TryResolveTypeArguments(parameters);
-
             Name = CaseNameBuilder.GetName(Class, Method, parameters);
-
             Output = "";
         }
 
         internal Case(Case originalCase, Exception secondaryFailureReason)
         {
             Parameters = originalCase.Parameters;
+            Test = originalCase.Test;
             Class = originalCase.Class;
             Method = originalCase.Method;
             Name = originalCase.Name;
@@ -38,6 +37,11 @@
 
             Fail(secondaryFailureReason);
         }
+
+        /// <summary>
+        /// Gets the test for which this case describes a single execution.
+        /// </summary>
+        public Test Test { get; }
 
         /// <summary>
         /// Gets the name of the test case, including any input parameters.

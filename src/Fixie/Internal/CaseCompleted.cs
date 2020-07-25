@@ -6,7 +6,7 @@ namespace Fixie.Internal
     {
         protected CaseCompleted(Case @case)
         {
-            Test = new Test(@case.Method);
+            Test = @case.Test;
             Name = @case.Name;
             Duration = @case.Duration;
             Output = @case.Output;

@@ -11,17 +11,17 @@
     {
         static readonly object[] EmptyParameters = {};
 
-        public Case(MethodInfo caseMethod)
-            : this(caseMethod, EmptyParameters)
+        public Case(MethodInfo testMethod)
+            : this(testMethod, EmptyParameters)
         {
         }
 
-        public Case(MethodInfo caseMethod, object?[] parameters)
+        public Case(MethodInfo testMethod, object?[] parameters)
         {
             Parameters = parameters;
-            Class = caseMethod.ReflectedType!;
+            Class = testMethod.ReflectedType!;
 
-            Method = caseMethod.TryResolveTypeArguments(parameters);
+            Method = testMethod.TryResolveTypeArguments(parameters);
 
             Name = CaseNameBuilder.GetName(Class, Method, parameters);
 

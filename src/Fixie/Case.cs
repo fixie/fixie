@@ -21,7 +21,7 @@
             Parameters = parameters;
             Test = new Test(testMethod);
             Method = testMethod.TryResolveTypeArguments(parameters);
-            Name = CaseNameBuilder.GetName(testMethod.ReflectedType!, Method, parameters);
+            Name = CaseNameBuilder.GetName(Method, parameters);
             Output = "";
         }
 

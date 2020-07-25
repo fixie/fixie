@@ -142,15 +142,15 @@
         {
             var methodDeclaredInChildClass =
                 Case<SampleChildTestClass>("TestMethodDefinedWithinChildClass");
-            methodDeclaredInChildClass.Class.ShouldBe(typeof(SampleChildTestClass));
+            methodDeclaredInChildClass.Name.ShouldBe("Fixie.Tests.CaseTests+SampleChildTestClass.TestMethodDefinedWithinChildClass");
 
             var methodDeclaredInParentClass =
                 Case<SampleParentTestClass>("TestMethodDefinedWithinParentClass");
-            methodDeclaredInParentClass.Class.ShouldBe(typeof(SampleParentTestClass));
+            methodDeclaredInParentClass.Name.ShouldBe("Fixie.Tests.CaseTests+SampleParentTestClass.TestMethodDefinedWithinParentClass");
 
             var parentMethodInheritedByChildClass =
                 Case<SampleChildTestClass>("TestMethodDefinedWithinParentClass");
-            parentMethodInheritedByChildClass.Class.ShouldBe(typeof(SampleChildTestClass));
+            parentMethodInheritedByChildClass.Name.ShouldBe("Fixie.Tests.CaseTests+SampleChildTestClass.TestMethodDefinedWithinParentClass");
         }
 
         public void ShouldHaveMethodInfoIncludingResolvedGenericArguments()

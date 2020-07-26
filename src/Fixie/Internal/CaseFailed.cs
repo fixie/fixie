@@ -4,7 +4,7 @@
 
     public class CaseFailed : CaseCompleted
     {
-        public CaseFailed(Case @case) : base(@case)
+        public CaseFailed(Case @case, TimeSpan duration) : base(@case, duration)
             => Exception = @case.Exception!;
 
         public Exception Exception { get; }

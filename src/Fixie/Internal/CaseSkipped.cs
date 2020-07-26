@@ -1,9 +1,11 @@
 ﻿namespace Fixie.Internal
 {
+    using System;
+
     public class CaseSkipped : CaseCompleted
     {
-        public CaseSkipped(Case @case)
-            : base(@case)
+        public CaseSkipped(Case @case, TimeSpan duration)
+            : base(@case, duration)
         {
             Reason = @case.SkipReason;
         }

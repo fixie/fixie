@@ -12,6 +12,7 @@
         readonly Execution execution;
         readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
+        readonly Stopwatch caseStopwatch;
 
         readonly Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> orderMethods;
 
@@ -23,6 +24,7 @@
             this.execution = execution;
             methodDiscoverer = new MethodDiscoverer(discovery);
             parameterDiscoverer = new ParameterDiscoverer(discovery);
+            caseStopwatch = new Stopwatch();
 
             orderMethods = config.OrderMethods;
         }
@@ -39,6 +41,7 @@
             Start(testClass);
 
             var classStopwatch = Stopwatch.StartNew();
+            caseStopwatch.Restart();
 
             var orderedMethods = OrderedMethods(methods, summary);
 
@@ -163,8 +166,6 @@
             string consoleOutput;
             using (var console = new RedirectedConsole())
             {
-                var caseStopwatch = Stopwatch.StartNew();
-
                 try
                 {
                     caseLifecycle(@case);
@@ -173,10 +174,6 @@
                 {
                     caseLifecycleFailure = exception;
                 }
-
-                caseStopwatch.Stop();
-
-                @case.Duration += caseStopwatch.Elapsed;
 
                 consoleOutput = console.Output;
 
@@ -216,21 +213,30 @@
 
         void Skip(Case @case, ExecutionSummary summary)
         {
-            var message = new CaseSkipped(@case);
+            var duration = caseStopwatch.Elapsed;
+            caseStopwatch.Restart();
+
+            var message = new CaseSkipped(@case, duration);
             summary.Add(message);
             bus.Publish(message);
         }
 
         void Pass(Case @case, ExecutionSummary summary)
         {
-            var message = new CasePassed(@case);
+            var duration = caseStopwatch.Elapsed;
+            caseStopwatch.Restart();
+
+            var message = new CasePassed(@case, duration);
             summary.Add(message);
             bus.Publish(message);
         }
 
         void Fail(Case @case, ExecutionSummary summary)
         {
-            var message = new CaseFailed(@case);
+            var duration = caseStopwatch.Elapsed;
+            caseStopwatch.Restart();
+
+            var message = new CaseFailed(@case, duration);
             summary.Add(message);
             bus.Publish(message);
         }

@@ -108,7 +108,6 @@
             }
         }
 
-        internal TimeSpan Duration { get; set; }
         internal string Output { get; set; }
         internal string? SkipReason { get; private set; }
         internal CaseState State { get; private set; }

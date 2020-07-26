@@ -24,7 +24,6 @@
             Test = new Test(testMethod);
             Method = testMethod.TryResolveTypeArguments(parameters);
             Name = CaseNameBuilder.GetName(Method, parameters);
-            Output = "";
         }
 
         internal Case(Case originalCase, Exception secondaryFailureReason)
@@ -33,7 +32,6 @@
             Test = originalCase.Test;
             Method = originalCase.Method;
             Name = originalCase.Name;
-            Output = "";
 
             Fail(secondaryFailureReason);
         }
@@ -108,7 +106,6 @@
             }
         }
 
-        internal string Output { get; set; }
         internal string? SkipReason { get; private set; }
         internal CaseState State { get; private set; }
 

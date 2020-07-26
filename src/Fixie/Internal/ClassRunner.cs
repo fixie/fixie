@@ -163,7 +163,7 @@
 
             Exception? caseLifecycleFailure = null;
 
-            string consoleOutput;
+            string output;
             using (var console = new RedirectedConsole())
             {
                 try
@@ -175,27 +175,25 @@
                     caseLifecycleFailure = exception;
                 }
 
-                consoleOutput = console.Output;
-
-                @case.Output += consoleOutput;
+                output = console.Output;
             }
 
-            Console.Write(consoleOutput);
+            Console.Write(output);
 
             var caseHasNormalResult = @case.State == CaseState.Failed || @case.State == CaseState.Passed;
 
             if (caseHasNormalResult)
             {
                 if (@case.State == CaseState.Failed)
-                    Fail(@case, summary);
+                    Fail(@case, summary, output);
                 else if (caseLifecycleFailure == null)
-                    Pass(@case, summary);
+                    Pass(@case, summary, output);
             }
 
             if (caseLifecycleFailure != null)
                 Fail(new Case(@case, caseLifecycleFailure), summary);
             else if (!caseHasNormalResult)
-                Skip(@case, summary);
+                Skip(@case, summary, output);
         }
 
         IEnumerable<object?[]> Parameters(MethodInfo method)
@@ -211,32 +209,32 @@
             bus.Publish(new CaseStarted(@case));
         }
 
-        void Skip(Case @case, ExecutionSummary summary)
+        void Skip(Case @case, ExecutionSummary summary, string output = "")
         {
             var duration = caseStopwatch.Elapsed;
             caseStopwatch.Restart();
 
-            var message = new CaseSkipped(@case, duration);
+            var message = new CaseSkipped(@case, duration, output);
             summary.Add(message);
             bus.Publish(message);
         }
 
-        void Pass(Case @case, ExecutionSummary summary)
+        void Pass(Case @case, ExecutionSummary summary, string output)
         {
             var duration = caseStopwatch.Elapsed;
             caseStopwatch.Restart();
 
-            var message = new CasePassed(@case, duration);
+            var message = new CasePassed(@case, duration, output);
             summary.Add(message);
             bus.Publish(message);
         }
 
-        void Fail(Case @case, ExecutionSummary summary)
+        void Fail(Case @case, ExecutionSummary summary, string output = "")
         {
             var duration = caseStopwatch.Elapsed;
             caseStopwatch.Restart();
 
-            var message = new CaseFailed(@case, duration);
+            var message = new CaseFailed(@case, duration, output);
             summary.Add(message);
             bus.Publish(message);
         }

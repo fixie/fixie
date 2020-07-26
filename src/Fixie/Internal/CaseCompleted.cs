@@ -4,12 +4,12 @@ namespace Fixie.Internal
 
     public abstract class CaseCompleted : Message
     {
-        protected CaseCompleted(Case @case, TimeSpan duration)
+        protected CaseCompleted(Case @case, TimeSpan duration, string output)
         {
             Test = @case.Test;
             Name = @case.Name;
             Duration = duration;
-            Output = @case.Output;
+            Output = output;
         }
 
         public Test Test { get; }

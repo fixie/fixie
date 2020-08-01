@@ -62,7 +62,11 @@
                         {
                             bool invoked = false;
 
-                            foreach (var parameters in YieldInvocations(method, summary))
+                            var lazyInvocations = method.GetParameters().Length == 0
+                                ? new[] { EmptyParameters }
+                                : parameterDiscoverer.GetParameters(method);
+
+                            foreach (var parameters in lazyInvocations)
                             {
                                 invoked = true;
                                 Run(method, parameters, caseLifecycle, summary);
@@ -124,13 +128,6 @@
             }
         }
 
-        IEnumerable<object?[]> YieldInvocations(MethodInfo method, ExecutionSummary summary)
-        {
-            return method.GetParameters().Length == 0
-                ? new[] { EmptyParameters }
-                : Parameters(method);
-        }
-
         void Run(MethodInfo method, object?[] parameters, Action<Case> caseLifecycle, ExecutionSummary summary)
         {
             var @case = new Case(method, parameters);
@@ -171,9 +168,6 @@
             else if (!caseHasNormalResult)
                 Skip(@case, summary, output);
         }
-
-        IEnumerable<object?[]> Parameters(MethodInfo method)
-            => parameterDiscoverer.GetParameters(method);
 
         void Start(Type testClass)
         {

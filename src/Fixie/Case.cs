@@ -9,14 +9,7 @@
     /// </summary>
     public class Case
     {
-        static readonly object[] EmptyParameters = {};
-
         readonly object?[] parameters;
-
-        public Case(MethodInfo testMethod)
-            : this(testMethod, EmptyParameters)
-        {
-        }
 
         public Case(MethodInfo testMethod, object?[] parameters)
         {

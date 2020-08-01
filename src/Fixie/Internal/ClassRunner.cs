@@ -103,7 +103,7 @@
                 //each method.
                 foreach (var method in orderedMethods)
                 {
-                    var @case = new Case(method);
+                    var @case = new Case(method, EmptyParameters);
                     Skip(@case, summary);
                 }
             }
@@ -212,7 +212,7 @@
 
         void Fail(MethodInfo method, Exception exception, ExecutionSummary summary)
         {
-            var @case = new Case(method);
+            var @case = new Case(method, EmptyParameters);
             @case.Fail(exception);
             Fail(@case, summary);
         }

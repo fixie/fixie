@@ -57,8 +57,17 @@
                     runCasesInvokedByLifecycle = true;
 
                     foreach (var method in orderedMethods)
-                        foreach (var parameters in YieldInvocations(method, summary))
-                            Run(method, parameters, caseLifecycle, summary);
+                    {
+                        try
+                        {
+                            foreach (var parameters in YieldInvocations(method, summary))
+                                Run(method, parameters, caseLifecycle, summary);
+                        }
+                        catch (Exception exception)
+                        {
+                            Fail(method, exception, summary);
+                        }
+                    }
                 };
 
                 var runContext = isOnlyTestClass && methods.Count == 1
@@ -121,21 +130,10 @@
             {
                 while (true)
                 {
-                    object?[] parameters;
+                    if (!resource.MoveNext())
+                        break;
 
-                    try
-                    {
-                        if (!resource.MoveNext())
-                            break;
-
-                        parameters = resource.Current;
-                    }
-                    catch (Exception exception)
-                    {
-                        Fail(method, exception, summary);
-
-                        yield break;
-                    }
+                    var parameters = resource.Current;
 
                     generatedInputParameters = true;
                     yield return parameters;

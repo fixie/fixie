@@ -102,10 +102,7 @@
                 //failure for each method, so emit a general skip for
                 //each method.
                 foreach (var method in orderedMethods)
-                {
-                    var @case = new Case(method, EmptyParameters);
-                    Skip(@case, summary);
-                }
+                    Skip(method, summary);
             }
 
             classStopwatch.Stop();
@@ -188,6 +185,12 @@
             var message = new CaseSkipped(@case, duration, output);
             summary.Add(message);
             bus.Publish(message);
+        }
+
+        void Skip(MethodInfo method, ExecutionSummary summary)
+        {
+            var @case = new Case(method, EmptyParameters);
+            Skip(@case, summary);
         }
 
         void Pass(Case @case, ExecutionSummary summary, string output)

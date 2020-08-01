@@ -9,6 +9,7 @@
     class ClassRunner
     {
         static readonly object[] EmptyParameters = {};
+        static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
 
         readonly Bus bus;
         readonly Execution execution;
@@ -63,7 +64,7 @@
                             bool invoked = false;
 
                             var lazyInvocations = method.GetParameters().Length == 0
-                                ? new[] { EmptyParameters }
+                                ? InvokeOnceWithZeroParameters
                                 : parameterDiscoverer.GetParameters(method);
 
                             foreach (var parameters in lazyInvocations)

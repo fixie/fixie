@@ -126,15 +126,9 @@
 
         IEnumerable<object?[]> YieldInvocations(MethodInfo method, ExecutionSummary summary)
         {
-            if (method.GetParameters().Length == 0)
-            {
-                yield return EmptyParameters;
-                yield break;
-            }
-
-            using (var resource = Parameters(method).GetEnumerator())
-                while (resource.MoveNext())
-                    yield return resource.Current;
+            return method.GetParameters().Length == 0
+                ? new[] { EmptyParameters }
+                : Parameters(method);
         }
 
         void Run(MethodInfo method, object?[] parameters, Action<Case> caseLifecycle, ExecutionSummary summary)

@@ -116,7 +116,6 @@
             }
 
             bool generatedInputParameters = false;
-            bool parameterGenerationThrew = false;
 
             using (var resource = Parameters(method).GetEnumerator())
             {
@@ -133,11 +132,9 @@
                     }
                     catch (Exception exception)
                     {
-                        parameterGenerationThrew = true;
-
                         Fail(method, exception, summary);
 
-                        break;
+                        yield break;
                     }
 
                     generatedInputParameters = true;
@@ -145,7 +142,7 @@
                 }
             }
 
-            if (parameterGenerationThrew || generatedInputParameters)
+            if (generatedInputParameters)
                 yield break;
 
             try

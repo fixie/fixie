@@ -8,6 +8,8 @@
 
     class ClassRunner
     {
+        static readonly object[] EmptyParameters = {};
+
         readonly Bus bus;
         readonly Execution execution;
         readonly MethodDiscoverer methodDiscoverer;
@@ -55,8 +57,8 @@
                     runCasesInvokedByLifecycle = true;
 
                     foreach (var method in orderedMethods)
-                        foreach (var @case in YieldCases(method, summary))
-                            Run(@case, caseLifecycle, summary);
+                        foreach (var parameters in YieldInvocations(method, summary))
+                            Run(method, parameters, caseLifecycle, summary);
                 };
 
                 var runContext = isOnlyTestClass && methods.Count == 1
@@ -105,11 +107,11 @@
             }
         }
 
-        IEnumerable<Case> YieldCases(MethodInfo method, ExecutionSummary summary)
+        IEnumerable<object?[]> YieldInvocations(MethodInfo method, ExecutionSummary summary)
         {
             if (method.GetParameters().Length == 0)
             {
-                yield return new Case(method);
+                yield return EmptyParameters;
                 yield break;
             }
 
@@ -139,7 +141,7 @@
                     }
 
                     generatedInputParameters = true;
-                    yield return new Case(method, parameters);
+                    yield return parameters;
                 }
             }
 
@@ -156,8 +158,10 @@
             }
         }
 
-        void Run(Case @case, Action<Case> caseLifecycle, ExecutionSummary summary)
+        void Run(MethodInfo method, object?[] parameters, Action<Case> caseLifecycle, ExecutionSummary summary)
         {
+            var @case = new Case(method, parameters);
+
             Start(@case);
 
             Exception? caseLifecycleFailure = null;

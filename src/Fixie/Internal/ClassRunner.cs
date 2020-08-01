@@ -148,8 +148,7 @@
 
             try
             {
-                throw new Exception(
-                    "This test case has declared parameters, but no parameter values have been provided to it.");
+                throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");
             }
             catch (Exception exception)
             {

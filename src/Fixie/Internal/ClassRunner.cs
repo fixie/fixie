@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Internal
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
@@ -17,19 +16,13 @@
         readonly ParameterDiscoverer parameterDiscoverer;
         readonly Stopwatch caseStopwatch;
 
-        readonly Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> orderMethods;
-
         public ClassRunner(Bus bus, Discovery discovery, Execution execution)
         {
-            var config = discovery.Config;
-
             this.bus = bus;
             this.execution = execution;
             methodDiscoverer = new MethodDiscoverer(discovery);
             parameterDiscoverer = new ParameterDiscoverer(discovery);
             caseStopwatch = new Stopwatch();
-
-            orderMethods = config.OrderMethods;
         }
 
         public ExecutionSummary Run(Type testClass, bool isOnlyTestClass)
@@ -46,8 +39,6 @@
             var classStopwatch = Stopwatch.StartNew();
             caseStopwatch.Restart();
 
-            var orderedMethods = OrderedMethods(methods, summary);
-
             bool classLifecycleFailed = false;
             bool runCasesInvokedByLifecycle = false;
 
@@ -57,7 +48,7 @@
                 {
                     runCasesInvokedByLifecycle = true;
 
-                    foreach (var method in orderedMethods)
+                    foreach (var method in methods)
                     {
                         try
                         {
@@ -92,7 +83,7 @@
             catch (Exception exception)
             {
                 classLifecycleFailed = true;
-                foreach (var method in orderedMethods)
+                foreach (var method in methods)
                     Fail(method, exception, summary);
             }
 
@@ -101,7 +92,7 @@
                 //No cases ran, and we didn't already emit a general
                 //failure for each method, so emit a general skip for
                 //each method.
-                foreach (var method in orderedMethods)
+                foreach (var method in methods)
                     Skip(method, summary);
             }
 
@@ -109,21 +100,6 @@
             Complete(testClass, summary, classStopwatch.Elapsed);
 
             return summary;
-        }
-
-        IReadOnlyList<MethodInfo> OrderedMethods(IReadOnlyList<MethodInfo> methods, ExecutionSummary summary)
-        {
-            try
-            {
-                return orderMethods(methods);
-            }
-            catch (Exception orderException)
-            {
-                foreach (var method in methods)
-                    Fail(method, orderException, summary);
-
-                return methods;
-            }
         }
 
         void Run(MethodInfo method, object?[] parameters, Action<Case> caseLifecycle, ExecutionSummary summary)

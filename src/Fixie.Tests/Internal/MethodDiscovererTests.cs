@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
@@ -113,17 +114,36 @@
 
             customDiscovery
                 .Methods
-                .Where(x => throw new Exception("Unsafe method-discovery predicate threw!"));
+                .Where(x => throw new Exception("Unsafe method discovery predicate threw!"));
 
             Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(customDiscovery);
 
             var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
-                "Exception thrown while attempting to run a custom method-discovery predicate. " +
+                "Exception thrown while attempting to run a custom method discovery predicate. " +
                 "Check the inner exception for more details.");
 
             exception.InnerException
                 .ShouldBe<Exception>()
-                .Message.ShouldBe("Unsafe method-discovery predicate threw!");
+                .Message.ShouldBe("Unsafe method discovery predicate threw!");
+        }
+
+        public void ShouldFailWithClearExplanationWhenOrderingThrows()
+        {
+            var customDiscovery = new SampleDiscovery();
+
+            customDiscovery
+                .Methods
+                .OrderBy((Func<MethodInfo, string>)(x => throw new Exception("Unsafe method ordering rule threw!")));
+
+            Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(customDiscovery);
+
+            var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
+                "Exception thrown while attempting to run a custom method ordering rule. " +
+                "Check the inner exception for more details.");
+
+            exception.InnerException
+                .ShouldBe<Exception>()
+                .Message.ShouldBe("Unsafe method ordering rule threw!");
         }
 
         static IEnumerable<string> DiscoveredTestMethods<TTestClass>(Discovery discovery)

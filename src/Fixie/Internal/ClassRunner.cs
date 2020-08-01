@@ -60,8 +60,16 @@
                     {
                         try
                         {
+                            bool invoked = false;
+
                             foreach (var parameters in YieldInvocations(method, summary))
+                            {
+                                invoked = true;
                                 Run(method, parameters, caseLifecycle, summary);
+                            }
+
+                            if (!invoked)
+                                throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");
                         }
                         catch (Exception exception)
                         {
@@ -124,33 +132,9 @@
                 yield break;
             }
 
-            bool generatedInputParameters = false;
-
             using (var resource = Parameters(method).GetEnumerator())
-            {
-                while (true)
-                {
-                    if (!resource.MoveNext())
-                        break;
-
-                    var parameters = resource.Current;
-
-                    generatedInputParameters = true;
-                    yield return parameters;
-                }
-            }
-
-            if (generatedInputParameters)
-                yield break;
-
-            try
-            {
-                throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");
-            }
-            catch (Exception exception)
-            {
-                Fail(method, exception, summary);
-            }
+                while (resource.MoveNext())
+                    yield return resource.Current;
         }
 
         void Run(MethodInfo method, object?[] parameters, Action<Case> caseLifecycle, ExecutionSummary summary)

@@ -19,6 +19,7 @@
             Type = type;
             TargetMethod = targetMethod;
             isStatic = Type.IsStatic();
+            Invoked = false;
         }
 
         /// <summary>
@@ -32,6 +33,8 @@
         /// Null under normal test execution.
         /// </summary>
         public MethodInfo? TargetMethod { get; }
+
+        internal bool Invoked { get; private set; }
 
         /// <summary>
         /// Constructs an instance of the test class type, using its default constructor.
@@ -55,6 +58,7 @@
 
         public void RunCases(Action<Case> caseLifecycle)
         {
+            Invoked = true;
             runCases(caseLifecycle);
         }
     }

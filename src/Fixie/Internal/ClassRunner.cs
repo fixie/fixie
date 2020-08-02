@@ -27,11 +27,11 @@
 
         public ExecutionSummary Run(Type testClass, bool isOnlyTestClass)
         {
-            var methods = methodDiscoverer.TestMethods(testClass);
+            var testMethods = methodDiscoverer.TestMethods(testClass);
 
             var summary = new ExecutionSummary();
 
-            if (!methods.Any())
+            if (!testMethods.Any())
                 return summary;
 
             Start(testClass);
@@ -48,20 +48,20 @@
                 {
                     runCasesInvokedByLifecycle = true;
 
-                    foreach (var method in methods)
+                    foreach (var testMethod in testMethods)
                     {
                         try
                         {
                             bool invoked = false;
 
-                            var lazyInvocations = method.GetParameters().Length == 0
+                            var lazyInvocations = testMethod.GetParameters().Length == 0
                                 ? InvokeOnceWithZeroParameters
-                                : parameterDiscoverer.GetParameters(method);
+                                : parameterDiscoverer.GetParameters(testMethod);
 
                             foreach (var parameters in lazyInvocations)
                             {
                                 invoked = true;
-                                Run(method, parameters, caseLifecycle, summary);
+                                Run(testMethod, parameters, caseLifecycle, summary);
                             }
 
                             if (!invoked)
@@ -69,13 +69,13 @@
                         }
                         catch (Exception exception)
                         {
-                            Fail(method, exception, summary);
+                            Fail(testMethod, exception, summary);
                         }
                     }
                 };
 
-                var runContext = isOnlyTestClass && methods.Count == 1
-                    ? new TestClass(testClass, runCases, methods.Single())
+                var runContext = isOnlyTestClass && testMethods.Count == 1
+                    ? new TestClass(testClass, runCases, testMethods.Single())
                     : new TestClass(testClass, runCases);
 
                 execution.Execute(runContext);
@@ -83,17 +83,17 @@
             catch (Exception exception)
             {
                 classLifecycleFailed = true;
-                foreach (var method in methods)
-                    Fail(method, exception, summary);
+                foreach (var testMethod in testMethods)
+                    Fail(testMethod, exception, summary);
             }
 
             if (!runCasesInvokedByLifecycle && !classLifecycleFailed)
             {
                 //No cases ran, and we didn't already emit a general
-                //failure for each method, so emit a general skip for
-                //each method.
-                foreach (var method in methods)
-                    Skip(method, summary);
+                //failure for each test method, so emit a general skip for
+                //each test method.
+                foreach (var testMethod in testMethods)
+                    Skip(testMethod, summary);
             }
 
             classStopwatch.Stop();
@@ -102,9 +102,9 @@
             return summary;
         }
 
-        void Run(MethodInfo method, object?[] parameters, Action<Case> caseLifecycle, ExecutionSummary summary)
+        void Run(MethodInfo testMethod, object?[] parameters, Action<Case> caseLifecycle, ExecutionSummary summary)
         {
-            var @case = new Case(method, parameters);
+            var @case = new Case(testMethod, parameters);
 
             Start(@case);
 
@@ -163,9 +163,9 @@
             bus.Publish(message);
         }
 
-        void Skip(MethodInfo method, ExecutionSummary summary)
+        void Skip(MethodInfo testMethod, ExecutionSummary summary)
         {
-            var @case = new Case(method, EmptyParameters);
+            var @case = new Case(testMethod, EmptyParameters);
             Skip(@case, summary);
         }
 
@@ -189,9 +189,9 @@
             bus.Publish(message);
         }
 
-        void Fail(MethodInfo method, Exception exception, ExecutionSummary summary)
+        void Fail(MethodInfo testMethod, Exception exception, ExecutionSummary summary)
         {
-            var @case = new Case(method, EmptyParameters);
+            var @case = new Case(testMethod, EmptyParameters);
             @case.Fail(exception);
             Fail(@case, summary);
         }

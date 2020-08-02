@@ -40,13 +40,13 @@
             caseStopwatch.Restart();
 
             bool classLifecycleFailed = false;
-            bool runCasesInvokedByLifecycle = false;
+            bool runCasesInvokedByClassLifecycle = false;
 
             try
             {
                 Action<Action<Case>> runCases = caseLifecycle =>
                 {
-                    runCasesInvokedByLifecycle = true;
+                    runCasesInvokedByClassLifecycle = true;
 
                     foreach (var testMethod in testMethods)
                         Run(testMethod, caseLifecycle, summary);
@@ -65,7 +65,7 @@
                     Fail(testMethod, exception, summary);
             }
 
-            if (!runCasesInvokedByLifecycle && !classLifecycleFailed)
+            if (!runCasesInvokedByClassLifecycle && !classLifecycleFailed)
             {
                 //No cases ran, and we didn't already emit a general
                 //failure for each test method, so emit a general skip for

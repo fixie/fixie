@@ -49,32 +49,7 @@
                     runCasesInvokedByLifecycle = true;
 
                     foreach (var testMethod in testMethods)
-                    {
-                        try
-                        {
-                            bool invoked = false;
-
-                            var lazyInvocations = testMethod.GetParameters().Length == 0
-                                ? InvokeOnceWithZeroParameters
-                                : parameterDiscoverer.GetParameters(testMethod);
-
-                            foreach (var parameters in lazyInvocations)
-                            {
-                                invoked = true;
-                                
-                                var @case = new Case(testMethod, parameters);
-                                
-                                Run(@case, caseLifecycle, summary);
-                            }
-
-                            if (!invoked)
-                                throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");
-                        }
-                        catch (Exception exception)
-                        {
-                            Fail(testMethod, exception, summary);
-                        }
-                    }
+                        Run(testMethod, caseLifecycle, summary);
                 };
 
                 var runContext = isOnlyTestClass && testMethods.Count == 1
@@ -103,6 +78,34 @@
             Complete(testClass, summary, classStopwatch.Elapsed);
 
             return summary;
+        }
+
+        void Run(MethodInfo testMethod, Action<Case> caseLifecycle, ExecutionSummary summary)
+        {
+            try
+            {
+                bool invoked = false;
+
+                var lazyInvocations = testMethod.GetParameters().Length == 0
+                    ? InvokeOnceWithZeroParameters
+                    : parameterDiscoverer.GetParameters(testMethod);
+
+                foreach (var parameters in lazyInvocations)
+                {
+                    invoked = true;
+
+                    var @case = new Case(testMethod, parameters);
+
+                    Run(@case, caseLifecycle, summary);
+                }
+
+                if (!invoked)
+                    throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");
+            }
+            catch (Exception exception)
+            {
+                Fail(testMethod, exception, summary);
+            }
         }
 
         void Run(Case @case, Action<Case> caseLifecycle, ExecutionSummary summary)

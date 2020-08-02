@@ -42,20 +42,20 @@
             bool classLifecycleFailed = false;
             bool runCasesInvokedByClassLifecycle = false;
 
+            Action<Action<Case>> runCases = caseLifecycle =>
+            {
+                runCasesInvokedByClassLifecycle = true;
+
+                foreach (var testMethod in testMethods)
+                    Run(testMethod, caseLifecycle, summary);
+            };
+
+            var runContext = isOnlyTestClass && testMethods.Count == 1
+                ? new TestClass(testClass, runCases, testMethods.Single())
+                : new TestClass(testClass, runCases);
+            
             try
             {
-                Action<Action<Case>> runCases = caseLifecycle =>
-                {
-                    runCasesInvokedByClassLifecycle = true;
-
-                    foreach (var testMethod in testMethods)
-                        Run(testMethod, caseLifecycle, summary);
-                };
-
-                var runContext = isOnlyTestClass && testMethods.Count == 1
-                    ? new TestClass(testClass, runCases, testMethods.Single())
-                    : new TestClass(testClass, runCases);
-
                 execution.Execute(runContext);
             }
             catch (Exception exception)

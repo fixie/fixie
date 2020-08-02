@@ -61,7 +61,10 @@
                             foreach (var parameters in lazyInvocations)
                             {
                                 invoked = true;
-                                Run(testMethod, parameters, caseLifecycle, summary);
+                                
+                                var @case = new Case(testMethod, parameters);
+                                
+                                Run(@case, caseLifecycle, summary);
                             }
 
                             if (!invoked)
@@ -102,10 +105,8 @@
             return summary;
         }
 
-        void Run(MethodInfo testMethod, object?[] parameters, Action<Case> caseLifecycle, ExecutionSummary summary)
+        void Run(Case @case, Action<Case> caseLifecycle, ExecutionSummary summary)
         {
-            var @case = new Case(testMethod, parameters);
-
             Start(@case);
 
             Exception? caseLifecycleFailure = null;

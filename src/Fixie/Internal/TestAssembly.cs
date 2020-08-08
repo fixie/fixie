@@ -98,15 +98,13 @@
 
         internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution)
         {
-            bus.Publish(new AssemblyStarted(assembly));
-
-            var assemblySummary = new ExecutionSummary();
-            var stopwatch = Stopwatch.StartNew();
-
+            var recorder = new ExecutionRecorder(bus);
+            
+            recorder.Start(assembly);
+            
             var classDiscoverer = new ClassDiscoverer(discovery);
             var methodDiscoverer = new MethodDiscoverer(discovery);
-            var executionRecorder = new ExecutionRecorder(bus, assemblySummary);
-            var classRunner = new ClassRunner(executionRecorder, discovery, execution);
+            var classRunner = new ClassRunner(recorder, discovery, execution);
 
             var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
@@ -120,10 +118,7 @@
                     classRunner.Run(testClass, isOnlyTestClass, testMethods);
             }
 
-            stopwatch.Stop();
-            bus.Publish(new AssemblyCompleted(assembly, assemblySummary, stopwatch.Elapsed));
-
-            return assemblySummary;
+            return recorder.Complete(assembly);
         }
     }
 }

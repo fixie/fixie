@@ -9,19 +9,30 @@
         static readonly object[] EmptyParameters = { };
 
         readonly Bus bus;
+
         readonly ExecutionSummary assemblySummary;
         ExecutionSummary classSummary;
+
+        readonly Stopwatch assemblyStopwatch;
         readonly Stopwatch classStopwatch;
         readonly Stopwatch caseStopwatch;
 
-        public ExecutionRecorder(Bus bus, ExecutionSummary assemblySummary)
+        public ExecutionRecorder(Bus bus)
         {
             this.bus = bus;
-            this.assemblySummary = assemblySummary;
 
+            assemblySummary = new ExecutionSummary();
             classSummary = new ExecutionSummary();
+            
+            assemblyStopwatch = new Stopwatch();
             classStopwatch = new Stopwatch();
             caseStopwatch = new Stopwatch();
+        }
+
+        public void Start(Assembly testAssembly)
+        {
+            bus.Publish(new AssemblyStarted(testAssembly));
+            assemblyStopwatch.Restart();
         }
 
         public void Start(Type testClass)
@@ -87,6 +98,13 @@
             classStopwatch.Stop();
             bus.Publish(new ClassCompleted(testClass, classSummary, duration));
             assemblySummary.Add(classSummary);
+        }
+
+        public ExecutionSummary Complete(Assembly testAssembly)
+        {
+            assemblyStopwatch.Stop();
+            bus.Publish(new AssemblyCompleted(testAssembly, assemblySummary, assemblyStopwatch.Elapsed));
+            return assemblySummary;
         }
     }
 }

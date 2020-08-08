@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Internal
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
@@ -12,7 +13,6 @@
 
         readonly Bus bus;
         readonly Execution execution;
-        readonly MethodDiscoverer methodDiscoverer;
         readonly ParameterDiscoverer parameterDiscoverer;
         readonly Stopwatch caseStopwatch;
 
@@ -20,15 +20,12 @@
         {
             this.bus = bus;
             this.execution = execution;
-            methodDiscoverer = new MethodDiscoverer(discovery);
             parameterDiscoverer = new ParameterDiscoverer(discovery);
             caseStopwatch = new Stopwatch();
         }
 
-        public ExecutionSummary Run(Type testClass, bool isOnlyTestClass)
+        public ExecutionSummary Run(Type testClass, bool isOnlyTestClass, IReadOnlyList<MethodInfo> testMethods)
         {
-            var testMethods = methodDiscoverer.TestMethods(testClass);
-
             var summary = new ExecutionSummary();
 
             if (!testMethods.Any())
@@ -50,7 +47,7 @@
             var runContext = isOnlyTestClass && testMethods.Count == 1
                 ? new TestClass(testClass, runCases, testMethods.Single())
                 : new TestClass(testClass, runCases);
-            
+
             try
             {
                 execution.Execute(runContext);

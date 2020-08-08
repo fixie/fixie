@@ -103,6 +103,7 @@
             var stopwatch = Stopwatch.StartNew();
 
             var classDiscoverer = new ClassDiscoverer(discovery);
+            var methodDiscoverer = new MethodDiscoverer(discovery);
             var classRunner = new ClassRunner(bus, discovery, execution);
 
             var testClasses = classDiscoverer.TestClasses(candidateTypes);
@@ -111,7 +112,8 @@
 
             foreach (var testClass in testClasses)
             {
-                var classSummary = classRunner.Run(testClass, isOnlyTestClass);
+                var testMethods = methodDiscoverer.TestMethods(testClass);
+                var classSummary = classRunner.Run(testClass, isOnlyTestClass, testMethods);
                 assemblySummary.Add(classSummary);
             }
 

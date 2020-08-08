@@ -11,28 +11,20 @@
         static readonly object[] EmptyParameters = {};
         static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
 
-        readonly Bus bus;
+        readonly ExecutionRecorder recorder;
         readonly Execution execution;
         readonly ParameterDiscoverer parameterDiscoverer;
-        
-        ExecutionSummary classSummary;
-        readonly Stopwatch classStopwatch;
-        readonly Stopwatch caseStopwatch;
 
-        public ClassRunner(Bus bus, Discovery discovery, Execution execution)
+        public ClassRunner(Bus bus, ExecutionSummary assemblySummary, Discovery discovery, Execution execution)
         {
-            this.bus = bus;
+            recorder = new ExecutionRecorder(bus, assemblySummary);
             this.execution = execution;
             parameterDiscoverer = new ParameterDiscoverer(discovery);
-            
-            classSummary = new ExecutionSummary();
-            classStopwatch = new Stopwatch();
-            caseStopwatch = new Stopwatch();
         }
 
-        public ExecutionSummary Run(Type testClass, bool isOnlyTestClass, IReadOnlyList<MethodInfo> testMethods)
+        public void Run(Type testClass, bool isOnlyTestClass, IReadOnlyList<MethodInfo> testMethods)
         {
-            Start(testClass);
+            recorder.Start(testClass);
 
             bool classLifecycleFailed = false;
 
@@ -54,7 +46,7 @@
             {
                 classLifecycleFailed = true;
                 foreach (var testMethod in testMethods)
-                    Fail(testMethod, exception);
+                    recorder.Fail(testMethod, exception);
             }
 
             if (!runContext.Invoked && !classLifecycleFailed)
@@ -63,17 +55,15 @@
                 //failure for each test method, so emit a general skip for
                 //each test method.
                 foreach (var testMethod in testMethods)
-                    Skip(testMethod);
+                    recorder.Skip(testMethod);
             }
 
-            Complete(testClass);
-
-            return classSummary;
+            recorder.Complete(testClass);
         }
 
         void Run(MethodInfo testMethod, Action<Case> caseLifecycle)
         {
-            Start(testMethod);
+            recorder.Start(testMethod);
 
             try
             {
@@ -97,7 +87,7 @@
             }
             catch (Exception exception)
             {
-                Fail(testMethod, exception);
+                recorder.Fail(testMethod, exception);
             }
         }
 
@@ -127,18 +117,39 @@
             if (caseHasNormalResult)
             {
                 if (@case.State == CaseState.Failed)
-                    Fail(@case, output);
+                    recorder.Fail(@case, output);
                 else if (caseLifecycleFailure == null)
-                    Pass(@case, output);
+                    recorder.Pass(@case, output);
             }
 
             if (caseLifecycleFailure != null)
-                Fail(new Case(@case, caseLifecycleFailure));
+                recorder.Fail(new Case(@case, caseLifecycleFailure));
             else if (!caseHasNormalResult)
-                Skip(@case, output);
+                recorder.Skip(@case, output);
+        }
+    }
+
+    class ExecutionRecorder
+    {
+        static readonly object[] EmptyParameters = { };
+
+        readonly Bus bus;
+        readonly ExecutionSummary assemblySummary;
+        ExecutionSummary classSummary;
+        readonly Stopwatch classStopwatch;
+        readonly Stopwatch caseStopwatch;
+
+        public ExecutionRecorder(Bus bus, ExecutionSummary assemblySummary)
+        {
+            this.bus = bus;
+            this.assemblySummary = assemblySummary;
+
+            classSummary = new ExecutionSummary();
+            classStopwatch = new Stopwatch();
+            caseStopwatch = new Stopwatch();
         }
 
-        void Start(Type testClass)
+        public void Start(Type testClass)
         {
             classSummary = new ExecutionSummary();
             bus.Publish(new ClassStarted(testClass));
@@ -146,13 +157,13 @@
             caseStopwatch.Restart();
         }
 
-        void Start(MethodInfo testMethod)
+        public void Start(MethodInfo testMethod)
         {
             var test = new Test(testMethod);
             bus.Publish(new TestStarted(test));
         }
 
-        void Skip(Case @case, string output = "")
+        public void Skip(Case @case, string output = "")
         {
             var duration = caseStopwatch.Elapsed;
             caseStopwatch.Restart();
@@ -162,13 +173,13 @@
             bus.Publish(message);
         }
 
-        void Skip(MethodInfo testMethod)
+        public void Skip(MethodInfo testMethod)
         {
             var @case = new Case(testMethod, EmptyParameters);
             Skip(@case);
         }
 
-        void Pass(Case @case, string output)
+        public void Pass(Case @case, string output)
         {
             var duration = caseStopwatch.Elapsed;
             caseStopwatch.Restart();
@@ -178,7 +189,7 @@
             bus.Publish(message);
         }
 
-        void Fail(Case @case, string output = "")
+        public void Fail(Case @case, string output = "")
         {
             var duration = caseStopwatch.Elapsed;
             caseStopwatch.Restart();
@@ -188,18 +199,19 @@
             bus.Publish(message);
         }
 
-        void Fail(MethodInfo testMethod, Exception exception)
+        public void Fail(MethodInfo testMethod, Exception exception)
         {
             var @case = new Case(testMethod, EmptyParameters);
             @case.Fail(exception);
             Fail(@case);
         }
 
-        void Complete(Type testClass)
+        public void Complete(Type testClass)
         {
             var duration = classStopwatch.Elapsed;
             classStopwatch.Stop();
             bus.Publish(new ClassCompleted(testClass, classSummary, duration));
+            assemblySummary.Add(classSummary);
         }
     }
 }

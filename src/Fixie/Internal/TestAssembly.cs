@@ -105,7 +105,7 @@
 
             var classDiscoverer = new ClassDiscoverer(discovery);
             var methodDiscoverer = new MethodDiscoverer(discovery);
-            var classRunner = new ClassRunner(bus, discovery, execution);
+            var classRunner = new ClassRunner(bus, assemblySummary, discovery, execution);
 
             var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
@@ -116,10 +116,7 @@
                 var testMethods = methodDiscoverer.TestMethods(testClass);
 
                 if (testMethods.Any())
-                {
-                    var classSummary = classRunner.Run(testClass, isOnlyTestClass, testMethods);
-                    assemblySummary.Add(classSummary);
-                }
+                    classRunner.Run(testClass, isOnlyTestClass, testMethods);
             }
 
             stopwatch.Stop();

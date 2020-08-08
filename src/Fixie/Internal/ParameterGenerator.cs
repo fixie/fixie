@@ -4,11 +4,11 @@
     using System.Linq;
     using System.Reflection;
 
-    class ParameterDiscoverer
+    class ParameterGenerator
     {
         readonly IReadOnlyList<ParameterSource> parameterSources;
 
-        public ParameterDiscoverer(Discovery discovery)
+        public ParameterGenerator(Discovery discovery)
             => parameterSources = discovery.Config.ParameterSources;
 
         public IEnumerable<object?[]> GetParameters(MethodInfo method)

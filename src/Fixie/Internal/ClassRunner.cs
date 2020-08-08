@@ -12,13 +12,13 @@
 
         readonly ExecutionRecorder recorder;
         readonly Execution execution;
-        readonly ParameterDiscoverer parameterDiscoverer;
+        readonly ParameterGenerator parameterGenerator;
 
         public ClassRunner(ExecutionRecorder recorder, Discovery discovery, Execution execution)
         {
             this.recorder = recorder;
             this.execution = execution;
-            parameterDiscoverer = new ParameterDiscoverer(discovery);
+            parameterGenerator = new ParameterGenerator(discovery);
         }
 
         public void Run(Type testClass, bool isOnlyTestClass, IReadOnlyList<MethodInfo> testMethods)
@@ -70,7 +70,7 @@
 
                 var lazyInvocations = testMethod.GetParameters().Length == 0
                     ? InvokeOnceWithZeroParameters
-                    : parameterDiscoverer.GetParameters(testMethod);
+                    : parameterGenerator.GetParameters(testMethod);
 
                 foreach (var parameters in lazyInvocations)
                 {

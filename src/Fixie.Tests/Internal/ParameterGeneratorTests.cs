@@ -5,7 +5,7 @@
     using Assertions;
     using Fixie.Internal;
 
-    public class ParameterDiscovererTests
+    public class ParameterGeneratorTests
     {
         class SampleDiscovery : Discovery
         {
@@ -13,7 +13,7 @@
 
         readonly MethodInfo method;
 
-        public ParameterDiscovererTests()
+        public ParameterGeneratorTests()
         {
             method = typeof(SampleTestClass).GetInstanceMethod("ParameterizedMethod");
         }
@@ -61,7 +61,7 @@
 
         IEnumerable<object?[]> DiscoveredParameters(Discovery discovery)
         {
-            return new ParameterDiscoverer(discovery).GetParameters(method);
+            return new ParameterGenerator(discovery).GetParameters(method);
         }
 
         class SampleTestClass

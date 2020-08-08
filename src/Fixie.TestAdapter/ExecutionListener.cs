@@ -8,7 +8,7 @@
     using static System.Environment;
 
     class ExecutionListener :
-        Handler<CaseStarted>,
+        Handler<TestStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>
@@ -22,7 +22,7 @@
             this.assemblyPath = assemblyPath;
         }
 
-        public void Handle(CaseStarted message)
+        public void Handle(TestStarted message)
         {
             var testCase = ToVsTestCase(message.Test);
 

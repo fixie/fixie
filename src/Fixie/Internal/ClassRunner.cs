@@ -73,6 +73,8 @@
 
         void Run(MethodInfo testMethod, Action<Case> caseLifecycle, ExecutionSummary summary)
         {
+            Start(testMethod);
+
             try
             {
                 bool invoked = false;
@@ -101,8 +103,6 @@
 
         void Run(Case @case, Action<Case> caseLifecycle, ExecutionSummary summary)
         {
-            Start(@case);
-
             Exception? caseLifecycleFailure = null;
 
             string output;
@@ -144,9 +144,10 @@
             classStopwatch.Restart();
         }
 
-        void Start(Case @case)
+        void Start(MethodInfo testMethod)
         {
-            bus.Publish(new CaseStarted(@case));
+            var test = new Test(testMethod);
+            bus.Publish(new TestStarted(test));
         }
 
         void Skip(Case @case, ExecutionSummary summary, string output = "")

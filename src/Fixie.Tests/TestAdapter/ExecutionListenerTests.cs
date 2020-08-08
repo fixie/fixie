@@ -29,48 +29,40 @@
                     "Console.Out: Pass",
                     "Console.Error: Pass");
 
-            recorder.Messages.Count.ShouldBe(14);
+            var messages = recorder.Messages;
 
-            var starts = new List<TestCase>();
-            var results = new List<TestResult>();
+            messages.Count.ShouldBe(13);
 
-            bool expectStart = true;
-            foreach (var message in recorder.Messages)
+            foreach (var message in messages)
             {
-                if (expectStart)
-                    starts.Add((TestCase) message);
-                else
-                    results.Add((TestResult) message);
-
-                expectStart = !expectStart;
+                if (message is TestResult result)
+                {
+                    result.Traits.ShouldBeEmpty();
+                    result.Attachments.ShouldBeEmpty();
+                    result.ComputerName.ShouldBe(MachineName);
+                }
             }
 
-            starts.ShouldSatisfy(
-                x => x.ShouldBeExecutionTimeTest(TestClass + ".Fail", assemblyPath),
-                x => x.ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion", assemblyPath),
-                x => x.ShouldBeExecutionTimeTest(TestClass + ".Pass", assemblyPath),
-                x => x.ShouldBeExecutionTimeTest(TestClass + ".SkipWithReason", assemblyPath),
-                x => x.ShouldBeExecutionTimeTest(TestClass + ".SkipWithoutReason", assemblyPath),
-                x => x.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath),
-                x => x.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath)
-            );
+            var failStart = (TestCase)messages[0];
+            var fail = (TestResult)messages[1];
+            
+            var failByAssertionStart = (TestCase)messages[2];
+            var failByAssertion = (TestResult)messages[3];
+            
+            var passStart = (TestCase)messages[4];
+            var pass = (TestResult)messages[5];
+            
+            var skipWithReasonStart = (TestCase)messages[6];
+            var skipWithReason = (TestResult)messages[7];
+            
+            var skipWithoutReasonStart = (TestCase)messages[8];
+            var skipWithoutReason = (TestResult)messages[9];
+            
+            var shouldBeStringStart = (TestCase)messages[10];
+            var shouldBeStringPass = (TestResult)messages[11];
+            var shouldBeStringFail = (TestResult)messages[12];
 
-            results.Count.ShouldBe(7);
-
-            foreach (var result in results)
-            {
-                result.Traits.ShouldBeEmpty();
-                result.Attachments.ShouldBeEmpty();
-                result.ComputerName.ShouldBe(MachineName);
-            }
-
-            var fail = results[0];
-            var failByAssertion = results[1];
-            var pass = results[2];
-            var skipWithReason = results[3];
-            var skipWithoutReason = results[4];
-            var shouldBeStringPass = results[5];
-            var shouldBeStringFail = results[6];
+            failStart.ShouldBeExecutionTimeTest(TestClass + ".Fail", assemblyPath);
 
             fail.TestCase.ShouldBeExecutionTimeTest(TestClass+".Fail", assemblyPath);
             fail.TestCase.DisplayName.ShouldBe(TestClass+".Fail");
@@ -85,6 +77,8 @@
             fail.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
             fail.Messages[0].Text.Lines().ShouldBe("Console.Out: Fail", "Console.Error: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+
+            failByAssertionStart.ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion", assemblyPath);
 
             failByAssertion.TestCase.ShouldBeExecutionTimeTest(TestClass+".FailByAssertion", assemblyPath);
             failByAssertion.TestCase.DisplayName.ShouldBe(TestClass+".FailByAssertion");
@@ -102,6 +96,8 @@
             failByAssertion.Messages[0].Text.Lines().ShouldBe("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
+            passStart.ShouldBeExecutionTimeTest(TestClass + ".Pass", assemblyPath);
+
             pass.TestCase.ShouldBeExecutionTimeTest(TestClass+".Pass", assemblyPath);
             pass.TestCase.DisplayName.ShouldBe(TestClass+".Pass");
             pass.Outcome.ShouldBe(TestOutcome.Passed);
@@ -112,7 +108,9 @@
             pass.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
             pass.Messages[0].Text.Lines().ShouldBe("Console.Out: Pass", "Console.Error: Pass");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            
+
+            skipWithReasonStart.ShouldBeExecutionTimeTest(TestClass + ".SkipWithReason", assemblyPath);
+
             skipWithReason.TestCase.ShouldBeExecutionTimeTest(TestClass+".SkipWithReason", assemblyPath);
             skipWithReason.TestCase.DisplayName.ShouldBe(TestClass+".SkipWithReason");
             skipWithReason.Outcome.ShouldBe(TestOutcome.Skipped);
@@ -122,6 +120,8 @@
             skipWithReason.Messages.ShouldBeEmpty();
             skipWithReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
+            skipWithoutReasonStart.ShouldBeExecutionTimeTest(TestClass + ".SkipWithoutReason", assemblyPath);
+
             skipWithoutReason.TestCase.ShouldBeExecutionTimeTest(TestClass+".SkipWithoutReason", assemblyPath);
             skipWithoutReason.TestCase.DisplayName.ShouldBe(TestClass+".SkipWithoutReason");
             skipWithoutReason.Outcome.ShouldBe(TestOutcome.Skipped);
@@ -130,6 +130,8 @@
             skipWithoutReason.DisplayName.ShouldBe(TestClass+".SkipWithoutReason");
             skipWithoutReason.Messages.ShouldBeEmpty();
             skipWithoutReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+
+            shouldBeStringStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
 
             shouldBeStringPass.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
             shouldBeStringPass.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");

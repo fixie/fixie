@@ -14,6 +14,7 @@
         readonly Bus bus;
         readonly Execution execution;
         readonly ParameterDiscoverer parameterDiscoverer;
+        readonly Stopwatch classStopwatch;
         readonly Stopwatch caseStopwatch;
 
         public ClassRunner(Bus bus, Discovery discovery, Execution execution)
@@ -21,6 +22,7 @@
             this.bus = bus;
             this.execution = execution;
             parameterDiscoverer = new ParameterDiscoverer(discovery);
+            classStopwatch = new Stopwatch();
             caseStopwatch = new Stopwatch();
         }
 
@@ -30,7 +32,6 @@
 
             Start(testClass);
 
-            var classStopwatch = Stopwatch.StartNew();
             caseStopwatch.Restart();
 
             bool classLifecycleFailed = false;
@@ -65,7 +66,6 @@
                     Skip(testMethod, summary);
             }
 
-            classStopwatch.Stop();
             Complete(testClass, summary, classStopwatch.Elapsed);
 
             return summary;
@@ -141,6 +141,7 @@
         void Start(Type testClass)
         {
             bus.Publish(new ClassStarted(testClass));
+            classStopwatch.Restart();
         }
 
         void Start(Case @case)
@@ -193,6 +194,7 @@
 
         void Complete(Type testClass, ExecutionSummary summary, TimeSpan duration)
         {
+            classStopwatch.Stop();
             bus.Publish(new ClassCompleted(testClass, summary, duration));
         }
     }

@@ -15,7 +15,7 @@
         readonly Execution execution;
         readonly ParameterDiscoverer parameterDiscoverer;
         
-        ExecutionSummary summary;
+        ExecutionSummary classSummary;
         readonly Stopwatch classStopwatch;
         readonly Stopwatch caseStopwatch;
 
@@ -25,7 +25,7 @@
             this.execution = execution;
             parameterDiscoverer = new ParameterDiscoverer(discovery);
             
-            summary = new ExecutionSummary();
+            classSummary = new ExecutionSummary();
             classStopwatch = new Stopwatch();
             caseStopwatch = new Stopwatch();
         }
@@ -68,7 +68,7 @@
 
             Complete(testClass);
 
-            return summary;
+            return classSummary;
         }
 
         void Run(MethodInfo testMethod, Action<Case> caseLifecycle)
@@ -140,7 +140,7 @@
 
         void Start(Type testClass)
         {
-            summary = new ExecutionSummary();
+            classSummary = new ExecutionSummary();
             bus.Publish(new ClassStarted(testClass));
             classStopwatch.Restart();
             caseStopwatch.Restart();
@@ -158,7 +158,7 @@
             caseStopwatch.Restart();
 
             var message = new CaseSkipped(@case, duration, output);
-            summary.Add(message);
+            classSummary.Add(message);
             bus.Publish(message);
         }
 
@@ -174,7 +174,7 @@
             caseStopwatch.Restart();
 
             var message = new CasePassed(@case, duration, output);
-            summary.Add(message);
+            classSummary.Add(message);
             bus.Publish(message);
         }
 
@@ -184,7 +184,7 @@
             caseStopwatch.Restart();
 
             var message = new CaseFailed(@case, duration, output);
-            summary.Add(message);
+            classSummary.Add(message);
             bus.Publish(message);
         }
 
@@ -199,7 +199,7 @@
         {
             var duration = classStopwatch.Elapsed;
             classStopwatch.Stop();
-            bus.Publish(new ClassCompleted(testClass, summary, duration));
+            bus.Publish(new ClassCompleted(testClass, classSummary, duration));
         }
     }
 }

@@ -105,7 +105,8 @@
 
             var classDiscoverer = new ClassDiscoverer(discovery);
             var methodDiscoverer = new MethodDiscoverer(discovery);
-            var classRunner = new ClassRunner(bus, assemblySummary, discovery, execution);
+            var executionRecorder = new ExecutionRecorder(bus, assemblySummary);
+            var classRunner = new ClassRunner(executionRecorder, discovery, execution);
 
             var testClasses = classDiscoverer.TestClasses(candidateTypes);
 

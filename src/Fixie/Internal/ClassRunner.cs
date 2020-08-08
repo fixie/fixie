@@ -14,9 +14,9 @@
         readonly Execution execution;
         readonly ParameterDiscoverer parameterDiscoverer;
 
-        public ClassRunner(Bus bus, ExecutionSummary assemblySummary, Discovery discovery, Execution execution)
+        public ClassRunner(ExecutionRecorder recorder, Discovery discovery, Execution execution)
         {
-            recorder = new ExecutionRecorder(bus, assemblySummary);
+            this.recorder = recorder;
             this.execution = execution;
             parameterDiscoverer = new ParameterDiscoverer(discovery);
         }

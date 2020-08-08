@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Reflection;
 
     class TestAssembly
@@ -113,8 +114,12 @@
             foreach (var testClass in testClasses)
             {
                 var testMethods = methodDiscoverer.TestMethods(testClass);
-                var classSummary = classRunner.Run(testClass, isOnlyTestClass, testMethods);
-                assemblySummary.Add(classSummary);
+
+                if (testMethods.Any())
+                {
+                    var classSummary = classRunner.Run(testClass, isOnlyTestClass, testMethods);
+                    assemblySummary.Add(classSummary);
+                }
             }
 
             stopwatch.Stop();

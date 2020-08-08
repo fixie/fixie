@@ -28,9 +28,6 @@
         {
             var summary = new ExecutionSummary();
 
-            if (!testMethods.Any())
-                return summary;
-
             Start(testClass);
 
             var classStopwatch = Stopwatch.StartNew();

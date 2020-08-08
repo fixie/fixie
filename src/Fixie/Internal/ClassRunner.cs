@@ -14,6 +14,8 @@
         readonly Bus bus;
         readonly Execution execution;
         readonly ParameterDiscoverer parameterDiscoverer;
+        
+        ExecutionSummary summary;
         readonly Stopwatch classStopwatch;
         readonly Stopwatch caseStopwatch;
 
@@ -22,14 +24,14 @@
             this.bus = bus;
             this.execution = execution;
             parameterDiscoverer = new ParameterDiscoverer(discovery);
+            
+            summary = new ExecutionSummary();
             classStopwatch = new Stopwatch();
             caseStopwatch = new Stopwatch();
         }
 
         public ExecutionSummary Run(Type testClass, bool isOnlyTestClass, IReadOnlyList<MethodInfo> testMethods)
         {
-            var summary = new ExecutionSummary();
-
             Start(testClass);
 
             bool classLifecycleFailed = false;
@@ -37,7 +39,7 @@
             Action<Action<Case>> runCases = caseLifecycle =>
             {
                 foreach (var testMethod in testMethods)
-                    Run(testMethod, caseLifecycle, summary);
+                    Run(testMethod, caseLifecycle);
             };
 
             var runContext = isOnlyTestClass && testMethods.Count == 1
@@ -52,7 +54,7 @@
             {
                 classLifecycleFailed = true;
                 foreach (var testMethod in testMethods)
-                    Fail(testMethod, exception, summary);
+                    Fail(testMethod, exception);
             }
 
             if (!runContext.Invoked && !classLifecycleFailed)
@@ -61,15 +63,15 @@
                 //failure for each test method, so emit a general skip for
                 //each test method.
                 foreach (var testMethod in testMethods)
-                    Skip(testMethod, summary);
+                    Skip(testMethod);
             }
 
-            Complete(testClass, summary);
+            Complete(testClass);
 
             return summary;
         }
 
-        void Run(MethodInfo testMethod, Action<Case> caseLifecycle, ExecutionSummary summary)
+        void Run(MethodInfo testMethod, Action<Case> caseLifecycle)
         {
             Start(testMethod);
 
@@ -87,7 +89,7 @@
 
                     var @case = new Case(testMethod, parameters);
 
-                    Run(@case, caseLifecycle, summary);
+                    Run(@case, caseLifecycle);
                 }
 
                 if (!invoked)
@@ -95,11 +97,11 @@
             }
             catch (Exception exception)
             {
-                Fail(testMethod, exception, summary);
+                Fail(testMethod, exception);
             }
         }
 
-        void Run(Case @case, Action<Case> caseLifecycle, ExecutionSummary summary)
+        void Run(Case @case, Action<Case> caseLifecycle)
         {
             Exception? caseLifecycleFailure = null;
 
@@ -125,19 +127,20 @@
             if (caseHasNormalResult)
             {
                 if (@case.State == CaseState.Failed)
-                    Fail(@case, summary, output);
+                    Fail(@case, output);
                 else if (caseLifecycleFailure == null)
-                    Pass(@case, summary, output);
+                    Pass(@case, output);
             }
 
             if (caseLifecycleFailure != null)
-                Fail(new Case(@case, caseLifecycleFailure), summary);
+                Fail(new Case(@case, caseLifecycleFailure));
             else if (!caseHasNormalResult)
-                Skip(@case, summary, output);
+                Skip(@case, output);
         }
 
         void Start(Type testClass)
         {
+            summary = new ExecutionSummary();
             bus.Publish(new ClassStarted(testClass));
             classStopwatch.Restart();
             caseStopwatch.Restart();
@@ -149,7 +152,7 @@
             bus.Publish(new TestStarted(test));
         }
 
-        void Skip(Case @case, ExecutionSummary summary, string output = "")
+        void Skip(Case @case, string output = "")
         {
             var duration = caseStopwatch.Elapsed;
             caseStopwatch.Restart();
@@ -159,13 +162,13 @@
             bus.Publish(message);
         }
 
-        void Skip(MethodInfo testMethod, ExecutionSummary summary)
+        void Skip(MethodInfo testMethod)
         {
             var @case = new Case(testMethod, EmptyParameters);
-            Skip(@case, summary);
+            Skip(@case);
         }
 
-        void Pass(Case @case, ExecutionSummary summary, string output)
+        void Pass(Case @case, string output)
         {
             var duration = caseStopwatch.Elapsed;
             caseStopwatch.Restart();
@@ -175,7 +178,7 @@
             bus.Publish(message);
         }
 
-        void Fail(Case @case, ExecutionSummary summary, string output = "")
+        void Fail(Case @case, string output = "")
         {
             var duration = caseStopwatch.Elapsed;
             caseStopwatch.Restart();
@@ -185,14 +188,14 @@
             bus.Publish(message);
         }
 
-        void Fail(MethodInfo testMethod, Exception exception, ExecutionSummary summary)
+        void Fail(MethodInfo testMethod, Exception exception)
         {
             var @case = new Case(testMethod, EmptyParameters);
             @case.Fail(exception);
-            Fail(@case, summary);
+            Fail(@case);
         }
 
-        void Complete(Type testClass, ExecutionSummary summary)
+        void Complete(Type testClass)
         {
             var duration = classStopwatch.Elapsed;
             classStopwatch.Stop();

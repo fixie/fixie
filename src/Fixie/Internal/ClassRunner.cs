@@ -32,8 +32,6 @@
 
             Start(testClass);
 
-            caseStopwatch.Restart();
-
             bool classLifecycleFailed = false;
 
             Action<Action<Case>> runCases = caseLifecycle =>
@@ -66,7 +64,7 @@
                     Skip(testMethod, summary);
             }
 
-            Complete(testClass, summary, classStopwatch.Elapsed);
+            Complete(testClass, summary);
 
             return summary;
         }
@@ -142,6 +140,7 @@
         {
             bus.Publish(new ClassStarted(testClass));
             classStopwatch.Restart();
+            caseStopwatch.Restart();
         }
 
         void Start(MethodInfo testMethod)
@@ -193,8 +192,9 @@
             Fail(@case, summary);
         }
 
-        void Complete(Type testClass, ExecutionSummary summary, TimeSpan duration)
+        void Complete(Type testClass, ExecutionSummary summary)
         {
+            var duration = classStopwatch.Elapsed;
             classStopwatch.Stop();
             bus.Publish(new ClassCompleted(testClass, summary, duration));
         }

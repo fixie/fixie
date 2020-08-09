@@ -103,7 +103,8 @@
             
             var classDiscoverer = new ClassDiscoverer(discovery);
             var methodDiscoverer = new MethodDiscoverer(discovery);
-            var classRunner = new ClassRunner(recorder, discovery, execution);
+            var parameterGenerator = new ParameterGenerator(discovery);
+            var classRunner = new ClassRunner(recorder, parameterGenerator, execution);
 
             var testClasses = classDiscoverer.TestClasses(candidateTypes);
 

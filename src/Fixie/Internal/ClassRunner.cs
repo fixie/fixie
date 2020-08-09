@@ -10,11 +10,11 @@
         readonly Execution execution;
         readonly ParameterGenerator parameterGenerator;
 
-        public ClassRunner(ExecutionRecorder recorder, Discovery discovery, Execution execution)
+        public ClassRunner(ExecutionRecorder recorder, ParameterGenerator parameterGenerator, Execution execution)
         {
             this.recorder = recorder;
-            this.execution = execution;
-            parameterGenerator = new ParameterGenerator(discovery);
+            this.execution = execution; 
+            this.parameterGenerator = parameterGenerator;
         }
 
         public void Run(Type testClass, IReadOnlyList<MethodInfo> testMethods, MethodInfo? targetMethod)

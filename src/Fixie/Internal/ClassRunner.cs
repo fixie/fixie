@@ -108,9 +108,7 @@
 
             Console.Write(output);
 
-            var caseHasNormalResult = @case.State == CaseState.Failed || @case.State == CaseState.Passed;
-
-            if (caseHasNormalResult)
+            if (@case.State == CaseState.Failed || @case.State == CaseState.Passed)
             {
                 if (@case.State == CaseState.Failed)
                     recorder.Fail(@case, output);
@@ -120,7 +118,7 @@
 
             if (caseLifecycleFailure != null)
                 recorder.Fail(new Case(@case, caseLifecycleFailure));
-            else if (!caseHasNormalResult)
+            else if (@case.State == CaseState.Skipped)
                 recorder.Skip(@case, output);
         }
     }

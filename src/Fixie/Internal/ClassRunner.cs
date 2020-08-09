@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
 
     class ClassRunner
@@ -25,8 +24,6 @@
         {
             recorder.Start(testClass);
 
-            bool classLifecycleFailed = false;
-
             Action<Action<Case>> runCases = caseLifecycle =>
             {
                 foreach (var testMethod in testMethods)
@@ -34,6 +31,8 @@
             };
 
             var runContext = new TestClass(testClass, runCases, targetMethod);
+            
+            Exception? classLifecycleFailure = null;
 
             try
             {
@@ -41,20 +40,20 @@
             }
             catch (Exception exception)
             {
-                classLifecycleFailed = true;
-                foreach (var testMethod in testMethods)
-                    recorder.Fail(testMethod, exception);
+                classLifecycleFailure = exception;
             }
 
-            if (!runContext.Invoked && !classLifecycleFailed)
+            if (classLifecycleFailure != null)
             {
-                //No cases ran, and we didn't already emit a general
-                //failure for each test method, so emit a general skip for
-                //each test method.
+                foreach (var testMethod in testMethods)
+                    recorder.Fail(testMethod, classLifecycleFailure);
+            }
+            else if (!runContext.Invoked)
+            {
                 foreach (var testMethod in testMethods)
                     recorder.Skip(testMethod);
             }
-
+            
             recorder.Complete(testClass);
         }
 

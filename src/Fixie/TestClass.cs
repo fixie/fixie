@@ -1,19 +1,27 @@
 ﻿namespace Fixie
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
     using System.Runtime.ExceptionServices;
+    using Internal;
 
     /// <summary>
     /// The context in which a test class is running.
     /// </summary>
     public class TestClass
     {
+        readonly ExecutionRecorder recorder;
+        readonly ParameterGenerator parameterGenerator;
+        readonly IReadOnlyList<MethodInfo> testMethods;
         readonly Action<Action<Case>> runCases;
         readonly bool isStatic;
 
-        internal TestClass(Type type, Action<Action<Case>> runCases, MethodInfo? targetMethod)
+        internal TestClass(ExecutionRecorder recorder, ParameterGenerator parameterGenerator, Type type, IReadOnlyList<MethodInfo> testMethods, Action<Action<Case>> runCases, MethodInfo? targetMethod)
         {
+            this.recorder = recorder;
+            this.parameterGenerator = parameterGenerator;
+            this.testMethods = testMethods;
             this.runCases = runCases;
             Type = type;
             TargetMethod = targetMethod;

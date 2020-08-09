@@ -30,7 +30,7 @@
                     Run(testMethod, caseLifecycle);
             };
 
-            var runContext = new TestClass(testClass, runCases, targetMethod);
+            var runContext = new TestClass(recorder, parameterGenerator, testClass, testMethods, runCases, targetMethod);
             
             Exception? classLifecycleFailure = null;
 

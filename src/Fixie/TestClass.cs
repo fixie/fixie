@@ -11,7 +11,6 @@
     {
         readonly Action<Action<Case>> runCases;
         readonly bool isStatic;
-        internal TestClass(Type type, Action<Action<Case>> runCases) : this(type, runCases, null) { }
 
         internal TestClass(Type type, Action<Action<Case>> runCases, MethodInfo? targetMethod)
         {

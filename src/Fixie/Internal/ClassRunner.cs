@@ -21,7 +21,7 @@
             parameterGenerator = new ParameterGenerator(discovery);
         }
 
-        public void Run(Type testClass, bool isOnlyTestClass, IReadOnlyList<MethodInfo> testMethods)
+        public void Run(Type testClass, IReadOnlyList<MethodInfo> testMethods, MethodInfo? targetMethod)
         {
             recorder.Start(testClass);
 
@@ -33,9 +33,7 @@
                     Run(testMethod, caseLifecycle);
             };
 
-            var runContext = isOnlyTestClass && testMethods.Count == 1
-                ? new TestClass(testClass, runCases, testMethods.Single())
-                : new TestClass(testClass, runCases);
+            var runContext = new TestClass(testClass, runCases, targetMethod);
 
             try
             {

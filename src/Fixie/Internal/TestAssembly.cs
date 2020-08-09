@@ -107,14 +107,18 @@
 
             var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
-            bool isOnlyTestClass = testClasses.Count == 1;
-
             foreach (var testClass in testClasses)
             {
                 var testMethods = methodDiscoverer.TestMethods(testClass);
 
                 if (testMethods.Any())
-                    classRunner.Run(testClass, isOnlyTestClass, testMethods);
+                {
+                    var targetMethod = testClasses.Count == 1 && testMethods.Count == 1
+                        ? testMethods.Single()
+                        : null;
+
+                    classRunner.Run(testClass, testMethods, targetMethod);
+                }
             }
 
             return recorder.Complete(assembly);

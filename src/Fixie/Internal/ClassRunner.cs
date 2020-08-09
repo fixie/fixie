@@ -108,13 +108,10 @@
 
             Console.Write(output);
 
-            if (@case.State == CaseState.Failed || @case.State == CaseState.Passed)
-            {
-                if (@case.State == CaseState.Failed)
-                    recorder.Fail(@case, output);
-                else if (caseLifecycleFailure == null)
-                    recorder.Pass(@case, output);
-            }
+            if (@case.State == CaseState.Failed)
+                recorder.Fail(@case, output);
+            else if (@case.State == CaseState.Passed && caseLifecycleFailure == null)
+                recorder.Pass(@case, output);
 
             if (caseLifecycleFailure != null)
                 recorder.Fail(new Case(@case, caseLifecycleFailure));

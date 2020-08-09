@@ -104,7 +104,6 @@
             var classDiscoverer = new ClassDiscoverer(discovery);
             var methodDiscoverer = new MethodDiscoverer(discovery);
             var parameterGenerator = new ParameterGenerator(discovery);
-            var classRunner = new ClassRunner(recorder, parameterGenerator, execution);
 
             var testClasses = classDiscoverer.TestClasses(candidateTypes);
 
@@ -118,7 +117,33 @@
                         ? testMethods.Single()
                         : null;
 
-                    classRunner.Run(testClass, testMethods, targetMethod);
+                    recorder.Start(testClass);
+
+                    var runContext = new TestClass(recorder, parameterGenerator, testClass, testMethods, targetMethod);
+            
+                    Exception? classLifecycleFailure = null;
+
+                    try
+                    {
+                        execution.Execute(runContext);
+                    }
+                    catch (Exception exception)
+                    {
+                        classLifecycleFailure = exception;
+                    }
+
+                    if (classLifecycleFailure != null)
+                    {
+                        foreach (var testMethod in testMethods)
+                            recorder.Fail(testMethod, classLifecycleFailure);
+                    }
+                    else if (!runContext.Invoked)
+                    {
+                        foreach (var testMethod in testMethods)
+                            recorder.Skip(testMethod);
+                    }
+            
+                    recorder.Complete(testClass);
                 }
             }
 

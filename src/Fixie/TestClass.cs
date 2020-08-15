@@ -75,20 +75,14 @@
 
                 try
                 {
-                    bool invoked = false;
-
                     var lazyInvocations = testMethod.Method.GetParameters().Length == 0
                         ? InvokeOnceWithZeroParameters
                         : parameterGenerator.GetParameters(testMethod.Method);
 
                     foreach (var parameters in lazyInvocations)
-                    {
-                        invoked = true;
-
                         testMethod.Run(parameters, caseLifecycle);
-                    }
 
-                    if (!invoked)
+                    if (!testMethod.Invoked)
                         throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");
                 }
                 catch (Exception exception)

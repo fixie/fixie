@@ -14,12 +14,17 @@
             this.recorder = recorder;
             this.parameterGenerator = parameterGenerator;
             Method = method;
+            Invoked = false;
         }
 
         public MethodInfo Method { get; }
 
+        internal bool Invoked { get; private set; }
+
         public void Run(object?[] parameters, Action<Case> caseLifecycle)
         {
+            Invoked = true;
+
             var @case = new Case(Method, parameters);
 
             Exception? caseLifecycleFailure = null;

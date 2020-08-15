@@ -1,5 +1,6 @@
 ﻿namespace Fixie
 {
+    using System;
     using System.Reflection;
     using Internal;
 
@@ -16,5 +17,39 @@
         }
 
         public MethodInfo Method { get; }
+
+        public void Run(object?[] parameters, Action<Case> caseLifecycle)
+        {
+            var @case = new Case(Method, parameters);
+
+            Exception? caseLifecycleFailure = null;
+
+            string output;
+            using (var console = new RedirectedConsole())
+            {
+                try
+                {
+                    caseLifecycle(@case);
+                }
+                catch (Exception exception)
+                {
+                    caseLifecycleFailure = exception;
+                }
+
+                output = console.Output;
+            }
+
+            Console.Write(output);
+
+            if (@case.State == CaseState.Failed)
+                recorder.Fail(@case, output);
+            else if (@case.State == CaseState.Passed && caseLifecycleFailure == null)
+                recorder.Pass(@case, output);
+
+            if (caseLifecycleFailure != null)
+                recorder.Fail(new Case(@case, caseLifecycleFailure));
+            else if (@case.State == CaseState.Skipped)
+                recorder.Skip(@case, output);
+        }
     }
 }

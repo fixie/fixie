@@ -85,7 +85,7 @@
                     {
                         invoked = true;
 
-                        Run(testMethod, parameters, caseLifecycle);
+                        testMethod.Run(parameters, caseLifecycle);
                     }
 
                     if (!invoked)
@@ -96,40 +96,6 @@
                     recorder.Fail(testMethod, exception);
                 }
             }
-        }
-
-        void Run(TestMethod testMethod, object?[] parameters, Action<Case> caseLifecycle)
-        {
-            var @case = new Case(testMethod.Method, parameters);
-
-            Exception? caseLifecycleFailure = null;
-
-            string output;
-            using (var console = new RedirectedConsole())
-            {
-                try
-                {
-                    caseLifecycle(@case);
-                }
-                catch (Exception exception)
-                {
-                    caseLifecycleFailure = exception;
-                }
-
-                output = console.Output;
-            }
-
-            Console.Write(output);
-
-            if (@case.State == CaseState.Failed)
-                recorder.Fail(@case, output);
-            else if (@case.State == CaseState.Passed && caseLifecycleFailure == null)
-                recorder.Pass(@case, output);
-
-            if (caseLifecycleFailure != null)
-                recorder.Fail(new Case(@case, caseLifecycleFailure));
-            else if (@case.State == CaseState.Skipped)
-                recorder.Skip(@case, output);
         }
     }
 }

@@ -70,36 +70,33 @@
             Invoked = true;
 
             foreach (var testMethod in testMethods)
-                Run(testMethod, caseLifecycle);
-        }
-
-        void Run(TestMethod testMethod, Action<Case> caseLifecycle)
-        {
-            recorder.Start(testMethod);
-
-            try
             {
-                bool invoked = false;
+                recorder.Start(testMethod);
 
-                var lazyInvocations = testMethod.Method.GetParameters().Length == 0
-                    ? InvokeOnceWithZeroParameters
-                    : parameterGenerator.GetParameters(testMethod.Method);
-
-                foreach (var parameters in lazyInvocations)
+                try
                 {
-                    invoked = true;
+                    bool invoked = false;
 
-                    var @case = new Case(testMethod.Method, parameters);
+                    var lazyInvocations = testMethod.Method.GetParameters().Length == 0
+                        ? InvokeOnceWithZeroParameters
+                        : parameterGenerator.GetParameters(testMethod.Method);
 
-                    Run(@case, caseLifecycle);
+                    foreach (var parameters in lazyInvocations)
+                    {
+                        invoked = true;
+
+                        var @case = new Case(testMethod.Method, parameters);
+
+                        Run(@case, caseLifecycle);
+                    }
+
+                    if (!invoked)
+                        throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");
                 }
-
-                if (!invoked)
-                    throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");
-            }
-            catch (Exception exception)
-            {
-                recorder.Fail(testMethod, exception);
+                catch (Exception exception)
+                {
+                    recorder.Fail(testMethod, exception);
+                }
             }
         }
 

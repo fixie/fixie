@@ -1,14 +1,14 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
-    class ParameterGenerator
+    public class ParameterGenerator
     {
         readonly IReadOnlyList<ParameterSource> parameterSources;
 
-        public ParameterGenerator(Discovery discovery)
+        internal ParameterGenerator(Discovery discovery)
             => parameterSources = discovery.Config.ParameterSources;
 
         public IEnumerable<object?[]> GetParameters(MethodInfo method)

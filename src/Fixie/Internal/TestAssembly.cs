@@ -105,30 +105,30 @@
             var methodDiscoverer = new MethodDiscoverer(discovery);
             var parameterGenerator = new ParameterGenerator(discovery);
 
-            var testClasses = classDiscoverer.TestClasses(candidateTypes);
+            var classes = classDiscoverer.TestClasses(candidateTypes);
 
-            foreach (var testClass in testClasses)
+            foreach (var @class in classes)
             {
                 var testMethods = methodDiscoverer
-                    .TestMethods(testClass)
-                    .Select(x => new TestMethod(x))
+                    .TestMethods(@class)
+                    .Select(method => new TestMethod(method))
                     .ToList();
 
                 if (testMethods.Any())
                 {
-                    var targetMethod = testClasses.Count == 1 && testMethods.Count == 1
+                    var targetMethod = classes.Count == 1 && testMethods.Count == 1
                         ? testMethods.Single()
                         : null;
 
-                    recorder.Start(testClass);
+                    recorder.Start(@class);
 
-                    var runContext = new TestClass(recorder, parameterGenerator, testClass, testMethods, targetMethod?.Method);
+                    var testClass = new TestClass(recorder, parameterGenerator, @class, testMethods, targetMethod?.Method);
             
                     Exception? classLifecycleFailure = null;
 
                     try
                     {
-                        execution.Execute(runContext);
+                        execution.Execute(testClass);
                     }
                     catch (Exception exception)
                     {
@@ -140,13 +140,13 @@
                         foreach (var testMethod in testMethods)
                             recorder.Fail(testMethod, classLifecycleFailure);
                     }
-                    else if (!runContext.Invoked)
+                    else if (!testClass.Invoked)
                     {
                         foreach (var testMethod in testMethods)
                             recorder.Skip(testMethod);
                     }
             
-                    recorder.Complete(testClass);
+                    recorder.Complete(@class);
                 }
             }
 

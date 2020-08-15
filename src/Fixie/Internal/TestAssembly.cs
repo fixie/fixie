@@ -109,7 +109,10 @@
 
             foreach (var testClass in testClasses)
             {
-                var testMethods = methodDiscoverer.TestMethods(testClass);
+                var testMethods = methodDiscoverer
+                    .TestMethods(testClass)
+                    .Select(x => new TestMethod(x))
+                    .ToList();
 
                 if (testMethods.Any())
                 {
@@ -119,7 +122,7 @@
 
                     recorder.Start(testClass);
 
-                    var runContext = new TestClass(recorder, parameterGenerator, testClass, testMethods, targetMethod);
+                    var runContext = new TestClass(recorder, parameterGenerator, testClass, testMethods, targetMethod?.Method);
             
                     Exception? classLifecycleFailure = null;
 
@@ -135,12 +138,12 @@
                     if (classLifecycleFailure != null)
                     {
                         foreach (var testMethod in testMethods)
-                            recorder.Fail(testMethod, classLifecycleFailure);
+                            recorder.Fail(testMethod.Method, classLifecycleFailure);
                     }
                     else if (!runContext.Invoked)
                     {
                         foreach (var testMethod in testMethods)
-                            recorder.Skip(testMethod);
+                            recorder.Skip(testMethod.Method);
                     }
             
                     recorder.Complete(testClass);

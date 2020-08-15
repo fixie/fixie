@@ -16,10 +16,10 @@
 
         readonly ExecutionRecorder recorder;
         readonly ParameterGenerator parameterGenerator;
-        readonly IReadOnlyList<MethodInfo> testMethods;
+        readonly IReadOnlyList<TestMethod> testMethods;
         readonly bool isStatic;
 
-        internal TestClass(ExecutionRecorder recorder, ParameterGenerator parameterGenerator, Type type, IReadOnlyList<MethodInfo> testMethods, MethodInfo? targetMethod)
+        internal TestClass(ExecutionRecorder recorder, ParameterGenerator parameterGenerator, Type type, IReadOnlyList<TestMethod> testMethods, MethodInfo? targetMethod)
         {
             this.recorder = recorder;
             this.parameterGenerator = parameterGenerator;
@@ -73,23 +73,23 @@
                 Run(testMethod, caseLifecycle);
         }
 
-        void Run(MethodInfo testMethod, Action<Case> caseLifecycle)
+        void Run(TestMethod testMethod, Action<Case> caseLifecycle)
         {
-            recorder.Start(testMethod);
+            recorder.Start(testMethod.Method);
 
             try
             {
                 bool invoked = false;
 
-                var lazyInvocations = testMethod.GetParameters().Length == 0
+                var lazyInvocations = testMethod.Method.GetParameters().Length == 0
                     ? InvokeOnceWithZeroParameters
-                    : parameterGenerator.GetParameters(testMethod);
+                    : parameterGenerator.GetParameters(testMethod.Method);
 
                 foreach (var parameters in lazyInvocations)
                 {
                     invoked = true;
 
-                    var @case = new Case(testMethod, parameters);
+                    var @case = new Case(testMethod.Method, parameters);
 
                     Run(@case, caseLifecycle);
                 }
@@ -99,7 +99,7 @@
             }
             catch (Exception exception)
             {
-                recorder.Fail(testMethod, exception);
+                recorder.Fail(testMethod.Method, exception);
             }
         }
 

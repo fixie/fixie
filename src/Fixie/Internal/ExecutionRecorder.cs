@@ -43,9 +43,9 @@
             caseStopwatch.Restart();
         }
 
-        public void Start(MethodInfo testMethod)
+        public void Start(TestMethod testMethod)
         {
-            var test = new Test(testMethod);
+            var test = new Test(testMethod.Method);
             bus.Publish(new TestStarted(test));
         }
 
@@ -59,9 +59,9 @@
             bus.Publish(message);
         }
 
-        public void Skip(MethodInfo testMethod)
+        public void Skip(TestMethod testMethod)
         {
-            var @case = new Case(testMethod, EmptyParameters);
+            var @case = new Case(testMethod.Method, EmptyParameters);
             Skip(@case);
         }
 
@@ -85,9 +85,9 @@
             bus.Publish(message);
         }
 
-        public void Fail(MethodInfo testMethod, Exception exception)
+        public void Fail(TestMethod testMethod, Exception exception)
         {
-            var @case = new Case(testMethod, EmptyParameters);
+            var @case = new Case(testMethod.Method, EmptyParameters);
             @case.Fail(exception);
             Fail(@case);
         }

@@ -75,7 +75,7 @@
 
         void Run(TestMethod testMethod, Action<Case> caseLifecycle)
         {
-            recorder.Start(testMethod.Method);
+            recorder.Start(testMethod);
 
             try
             {
@@ -99,7 +99,7 @@
             }
             catch (Exception exception)
             {
-                recorder.Fail(testMethod.Method, exception);
+                recorder.Fail(testMethod, exception);
             }
         }
 

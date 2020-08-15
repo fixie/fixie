@@ -138,12 +138,12 @@
                     if (classLifecycleFailure != null)
                     {
                         foreach (var testMethod in testMethods)
-                            recorder.Fail(testMethod.Method, classLifecycleFailure);
+                            recorder.Fail(testMethod, classLifecycleFailure);
                     }
                     else if (!runContext.Invoked)
                     {
                         foreach (var testMethod in testMethods)
-                            recorder.Skip(testMethod.Method);
+                            recorder.Skip(testMethod);
                     }
             
                     recorder.Complete(testClass);

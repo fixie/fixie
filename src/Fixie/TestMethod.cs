@@ -6,13 +6,14 @@
 
     public class TestMethod
     {
-        readonly ExecutionRecorder recorder;
-        readonly ParameterGenerator parameterGenerator;
+        static readonly object[] EmptyParameters = {};
+        static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
 
-        internal TestMethod(ExecutionRecorder recorder, ParameterGenerator parameterGenerator, MethodInfo method)
+        readonly ExecutionRecorder recorder;
+
+        internal TestMethod(ExecutionRecorder recorder, MethodInfo method)
         {
             this.recorder = recorder;
-            this.parameterGenerator = parameterGenerator;
             Method = method;
             Invoked = false;
         }
@@ -55,6 +56,16 @@
                 recorder.Fail(new Case(@case, caseLifecycleFailure));
             else if (@case.State == CaseState.Skipped)
                 recorder.Skip(@case, output);
+        }
+
+        public void Run(ParameterGenerator generator, Action<Case> caseLifecycle)
+        {
+            var lazyInvocations = Method.GetParameters().Length == 0
+                ? InvokeOnceWithZeroParameters
+                : generator.GetParameters(Method);
+
+            foreach (var parameters in lazyInvocations)
+                Run(parameters, caseLifecycle);
         }
     }
 }

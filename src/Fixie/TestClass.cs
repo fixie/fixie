@@ -11,9 +11,6 @@
     /// </summary>
     public class TestClass
     {
-        static readonly object[] EmptyParameters = {};
-        static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
-
         readonly ExecutionRecorder recorder;
         readonly ParameterGenerator parameterGenerator;
         readonly IReadOnlyList<TestMethod> testMethods;
@@ -75,12 +72,7 @@
 
                 try
                 {
-                    var lazyInvocations = testMethod.Method.GetParameters().Length == 0
-                        ? InvokeOnceWithZeroParameters
-                        : parameterGenerator.GetParameters(testMethod.Method);
-
-                    foreach (var parameters in lazyInvocations)
-                        testMethod.Run(parameters, caseLifecycle);
+                    testMethod.Run(parameterGenerator, caseLifecycle);
 
                     if (!testMethod.Invoked)
                         throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");

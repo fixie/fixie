@@ -120,10 +120,10 @@
                         ? testMethods.Single()
                         : null;
 
-                    recorder.Start(@class);
-
                     var testClass = new TestClass(recorder, parameterGenerator, @class, testMethods, targetMethod?.Method);
-            
+
+                    recorder.Start(testClass);
+
                     Exception? classLifecycleFailure = null;
 
                     try
@@ -146,7 +146,7 @@
                             recorder.Skip(testMethod);
                     }
             
-                    recorder.Complete(@class);
+                    recorder.Complete(testClass);
                 }
             }
 

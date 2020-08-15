@@ -35,10 +35,10 @@
             assemblyStopwatch.Restart();
         }
 
-        public void Start(Type testClass)
+        public void Start(TestClass testClass)
         {
             classSummary = new ExecutionSummary();
-            bus.Publish(new ClassStarted(testClass));
+            bus.Publish(new ClassStarted(testClass.Type));
             classStopwatch.Restart();
             caseStopwatch.Restart();
         }
@@ -92,11 +92,11 @@
             Fail(@case);
         }
 
-        public void Complete(Type testClass)
+        public void Complete(TestClass testClass)
         {
             var duration = classStopwatch.Elapsed;
             classStopwatch.Stop();
-            bus.Publish(new ClassCompleted(testClass, classSummary, duration));
+            bus.Publish(new ClassCompleted(testClass.Type, classSummary, duration));
             assemblySummary.Add(classSummary);
         }
 

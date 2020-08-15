@@ -1,12 +1,20 @@
 ﻿namespace Fixie
 {
     using System.Reflection;
+    using Internal;
 
     public class TestMethod
     {
-        public MethodInfo Method { get; }
+        readonly ExecutionRecorder recorder;
+        readonly ParameterGenerator parameterGenerator;
 
-        internal TestMethod(MethodInfo method)
-            => Method = method;
+        internal TestMethod(ExecutionRecorder recorder, ParameterGenerator parameterGenerator, MethodInfo method)
+        {
+            this.recorder = recorder;
+            this.parameterGenerator = parameterGenerator;
+            Method = method;
+        }
+
+        public MethodInfo Method { get; }
     }
 }

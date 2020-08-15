@@ -111,7 +111,7 @@
             {
                 var testMethods = methodDiscoverer
                     .TestMethods(@class)
-                    .Select(method => new TestMethod(method))
+                    .Select(method => new TestMethod(recorder, parameterGenerator, method))
                     .ToList();
 
                 if (testMethods.Any())

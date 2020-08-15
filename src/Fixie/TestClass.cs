@@ -85,9 +85,7 @@
                     {
                         invoked = true;
 
-                        var @case = new Case(testMethod.Method, parameters);
-
-                        Run(@case, caseLifecycle);
+                        Run(testMethod, parameters, caseLifecycle);
                     }
 
                     if (!invoked)
@@ -100,8 +98,10 @@
             }
         }
 
-        void Run(Case @case, Action<Case> caseLifecycle)
+        void Run(TestMethod testMethod, object?[] parameters, Action<Case> caseLifecycle)
         {
+            var @case = new Case(testMethod.Method, parameters);
+
             Exception? caseLifecycleFailure = null;
 
             string output;

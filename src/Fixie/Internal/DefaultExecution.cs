@@ -4,13 +4,16 @@
     {
         public void Execute(TestClass testClass)
         {
-            testClass.RunTests(@case =>
+            testClass.RunTests(test =>
             {
-                var instance = testClass.Construct();
+                test.RunCases(@case =>
+                {
+                    var instance = testClass.Construct();
 
-                @case.Execute(instance);
+                    @case.Execute(instance);
 
-                instance.Dispose();
+                    instance.Dispose();
+                });
             });
         }
     }

@@ -71,12 +71,15 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(@case =>
+                testClass.RunTests(test =>
                 {
-                    if (@case.Method.Name.Contains("Skip"))
-                        return;
+                    test.RunCases(@case =>
+                    {
+                        if (@case.Method.Name.Contains("Skip"))
+                            return;
 
-                    @case.Execute(testClass.Construct());
+                        @case.Execute(testClass.Construct());
+                    });
                 });
             }
         }

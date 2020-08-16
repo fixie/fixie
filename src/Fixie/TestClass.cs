@@ -60,7 +60,7 @@
             }
         }
 
-        public void RunTests(Action<Case> caseLifecycle)
+        public void RunTests(Action<TestMethod> testLifecycle)
         {
             Invoked = true;
 
@@ -70,7 +70,7 @@
 
                 try
                 {
-                    testMethod.RunCases(caseLifecycle);
+                    testLifecycle(testMethod);
 
                     if (!testMethod.Invoked)
                         throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");

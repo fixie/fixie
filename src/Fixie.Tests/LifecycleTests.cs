@@ -203,16 +203,19 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(@case =>
+                testClass.RunTests(test =>
                 {
-                    if (@case.Method.Name.Contains("Skip"))
-                        return;
+                    test.RunCases(@case =>
+                    {
+                        if (@case.Method.Name.Contains("Skip"))
+                            return;
 
-                    var instance = testClass.Construct();
+                        var instance = testClass.Construct();
 
-                    @case.Execute(instance);
+                        @case.Execute(instance);
 
-                    instance.Dispose();
+                        instance.Dispose();
+                    });
                 });
             }
         }
@@ -223,17 +226,20 @@
             {
                 var instance = testClass.Construct();
 
-                testClass.RunTests(@case =>
+                testClass.RunTests(test =>
                 {
-                    if (@case.Method.Name.Contains("Skip"))
+                    test.RunCases(@case =>
                     {
-                        @case.Skip("skipped by naming convention");
-                        return;
-                    }
+                        if (@case.Method.Name.Contains("Skip"))
+                        {
+                            @case.Skip("skipped by naming convention");
+                            return;
+                        }
 
-                    CaseSetUp(@case);
-                    @case.Execute(instance);
-                    CaseTearDown(@case);
+                        CaseSetUp(@case);
+                        @case.Execute(instance);
+                        CaseTearDown(@case);
+                    });
                 });
 
                 instance.Dispose();
@@ -264,11 +270,14 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(@case =>
+                testClass.RunTests(test =>
                 {
-                    //Case lifecycle chooses not to invoke @case.Execute(instance).
-                    //Since the test cases never run, they are all considered
-                    //'skipped'.
+                    test.RunCases(@case =>
+                    {
+                        //Case lifecycle chooses not to invoke @case.Execute(instance).
+                        //Since the test cases never run, they are all considered
+                        //'skipped'.
+                    });
                 });
             }
         }
@@ -281,12 +290,15 @@
 
                 for (int i = 1; i <= 2; i++)
                 {
-                    testClass.RunTests(@case =>
+                    testClass.RunTests(test =>
                     {
-                        if (@case.Method.Name.Contains("Skip"))
-                            return;
+                        test.RunCases(@case =>
+                        {
+                            if (@case.Method.Name.Contains("Skip"))
+                                return;
 
-                        @case.Execute(instance);
+                            @case.Execute(instance);
+                        });
                     });
                 }
 
@@ -300,15 +312,18 @@
             {
                 var instance = testClass.Construct();
 
-                testClass.RunTests(@case =>
+                testClass.RunTests(test =>
                 {
-                    if (@case.Method.Name.Contains("Skip"))
-                        return;
+                    test.RunCases(@case =>
+                    {
+                        if (@case.Method.Name.Contains("Skip"))
+                            return;
 
-                    @case.Execute(instance);
-
-                    if (@case.Exception != null)
                         @case.Execute(instance);
+
+                        if (@case.Exception != null)
+                            @case.Execute(instance);
+                    });
                 });
 
                 instance.Dispose();

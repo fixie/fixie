@@ -136,7 +136,7 @@ namespace Fixie.Tests.Cases
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(@case =>
+                Action<Case> caseLifecycle = @case =>
                 {
                     var instance = testClass.Construct();
 
@@ -148,7 +148,9 @@ namespace Fixie.Tests.Cases
                         @case.Fail("Boolean test case returned false!");
 
                     instance.Dispose();
-                });
+                };
+
+                testClass.RunTests(test => test.RunCases(caseLifecycle));
             }
         }
     }

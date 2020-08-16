@@ -60,19 +60,22 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(@case =>
+                testClass.RunTests(test =>
                 {
-                    if (@case.Method.Has<SkipAttribute>(out var skip))
+                    test.RunCases(@case =>
                     {
-                        @case.Skip(skip.Reason);
-                        return;
-                    }
+                        if (@case.Method.Has<SkipAttribute>(out var skip))
+                        {
+                            @case.Skip(skip.Reason);
+                            return;
+                        }
 
-                    var instance = testClass.Construct();
+                        var instance = testClass.Construct();
 
-                    @case.Execute(instance);
+                        @case.Execute(instance);
 
-                    instance.Dispose();
+                        instance.Dispose();
+                    });
                 });
             }
         }

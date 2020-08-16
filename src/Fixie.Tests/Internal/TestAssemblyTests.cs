@@ -2,7 +2,6 @@ namespace Fixie.Tests.Internal
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using Assertions;
     using Fixie.Internal;
@@ -89,12 +88,15 @@ namespace Fixie.Tests.Internal
             {
                 var instance = testClass.Construct();
 
-                testClass.RunTests(@case =>
+                testClass.RunTests(test =>
                 {
-                    if (@case.Method.Name.Contains("Skip"))
-                        return;
+                    test.RunCases(@case =>
+                    {
+                        if (@case.Method.Name.Contains("Skip"))
+                            return;
 
-                    @case.Execute(instance);
+                        @case.Execute(instance);
+                    });
                 });
 
                 instance.Dispose();

@@ -111,7 +111,7 @@
             {
                 var testMethods = methodDiscoverer
                     .TestMethods(@class)
-                    .Select(method => new TestMethod(recorder, method))
+                    .Select(method => new TestMethod(recorder, parameterGenerator, method))
                     .ToList();
 
                 if (testMethods.Any())
@@ -120,7 +120,7 @@
                         ? testMethods.Single()
                         : null;
 
-                    var testClass = new TestClass(recorder, parameterGenerator, @class, testMethods, targetMethod?.Method);
+                    var testClass = new TestClass(recorder, @class, testMethods, targetMethod?.Method);
 
                     recorder.Start(testClass);
 

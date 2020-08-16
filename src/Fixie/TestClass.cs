@@ -12,14 +12,12 @@
     public class TestClass
     {
         readonly ExecutionRecorder recorder;
-        readonly ParameterGenerator parameterGenerator;
         readonly IReadOnlyList<TestMethod> testMethods;
         readonly bool isStatic;
 
-        internal TestClass(ExecutionRecorder recorder, ParameterGenerator parameterGenerator, Type type, IReadOnlyList<TestMethod> testMethods, MethodInfo? targetMethod)
+        internal TestClass(ExecutionRecorder recorder, Type type, IReadOnlyList<TestMethod> testMethods, MethodInfo? targetMethod)
         {
             this.recorder = recorder;
-            this.parameterGenerator = parameterGenerator;
             this.testMethods = testMethods;
 
             Type = type;
@@ -72,7 +70,7 @@
 
                 try
                 {
-                    testMethod.Run(parameterGenerator, caseLifecycle);
+                    testMethod.RunCases(caseLifecycle);
 
                     if (!testMethod.Invoked)
                         throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");

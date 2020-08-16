@@ -60,7 +60,7 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunCases(@case =>
+                testClass.RunTests(@case =>
                 {
                     if (@case.Method.Has<SkipAttribute>(out var skip))
                     {

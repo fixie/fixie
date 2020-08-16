@@ -60,7 +60,7 @@
             }
         }
 
-        public void RunCases(Action<Case> caseLifecycle)
+        public void RunTests(Action<Case> caseLifecycle)
         {
             Invoked = true;
 

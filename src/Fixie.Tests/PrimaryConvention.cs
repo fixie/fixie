@@ -11,7 +11,7 @@
     {
         public void Execute(TestClass testClass)
         {
-            testClass.RunCases(@case =>
+            testClass.RunTests(@case =>
             {
                 var instance = testClass.Construct();
 

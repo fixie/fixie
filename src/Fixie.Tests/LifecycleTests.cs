@@ -203,7 +203,7 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunCases(@case =>
+                testClass.RunTests(@case =>
                 {
                     if (@case.Method.Name.Contains("Skip"))
                         return;
@@ -223,7 +223,7 @@
             {
                 var instance = testClass.Construct();
 
-                testClass.RunCases(@case =>
+                testClass.RunTests(@case =>
                 {
                     if (@case.Method.Name.Contains("Skip"))
                     {
@@ -254,7 +254,7 @@
         {
             public void Execute(TestClass testClass)
             {
-                //Class lifecycle chooses not to invoke testClass.RunCases(...).
+                //Class lifecycle chooses not to invoke testClass.RunTests(...).
                 //Since the test cases never run, they are all considered
                 //'skipped'.
             }
@@ -264,7 +264,7 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunCases(@case =>
+                testClass.RunTests(@case =>
                 {
                     //Case lifecycle chooses not to invoke @case.Execute(instance).
                     //Since the test cases never run, they are all considered
@@ -281,7 +281,7 @@
 
                 for (int i = 1; i <= 2; i++)
                 {
-                    testClass.RunCases(@case =>
+                    testClass.RunTests(@case =>
                     {
                         if (@case.Method.Name.Contains("Skip"))
                             return;
@@ -300,7 +300,7 @@
             {
                 var instance = testClass.Construct();
 
-                testClass.RunCases(@case =>
+                testClass.RunTests(@case =>
                 {
                     if (@case.Method.Name.Contains("Skip"))
                         return;

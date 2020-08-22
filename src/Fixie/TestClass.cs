@@ -73,7 +73,7 @@
                     testLifecycle(testMethod);
 
                     if (!testMethod.Invoked)
-                        throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");
+                        recorder.Skip(testMethod);
                 }
                 catch (Exception exception)
                 {

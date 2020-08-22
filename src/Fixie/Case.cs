@@ -129,7 +129,7 @@
         }
 
         /// <summary>
-        /// Execute the test case against the new instance of the test class,
+        /// Execute the test case against a new instance of the test class,
         /// causing the case state to become either passing or failing.
         /// </summary>
         /// <returns>
@@ -140,7 +140,7 @@
         /// </returns>
         public object? Execute()
         {
-            var instance = Construct(Method.ReflectedType!);
+            var instance = Method.IsStatic ? null : Construct(Method.ReflectedType!);
             var result = Execute(instance);
             instance.Dispose();
             return result;
@@ -148,9 +148,6 @@
 
         static object? Construct(Type type)
         {
-            if (type.IsStatic())
-                return null;
-
             try
             {
                 return Activator.CreateInstance(type);

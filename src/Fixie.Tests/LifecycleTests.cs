@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests
+namespace Fixie.Tests
 {
     using System;
     using System.Collections.Generic;
@@ -261,8 +261,21 @@
             public void Execute(TestClass testClass)
             {
                 //Class lifecycle chooses not to invoke testClass.RunTests(...).
-                //Since the test cases never run, they are all considered
+                //Since the tests never run, they are all considered
                 //'skipped'.
+            }
+        }
+
+        class ShortCircuitTestExection : Execution
+        {
+            public void Execute(TestClass testClass)
+            {
+                testClass.RunTests(test =>
+                {
+                    //Test lifecycle chooses not to invoke test.RunCases(...).
+                    //Since the tests never run, they are all considered
+                    //'skipped'.
+                });
             }
         }
 
@@ -383,9 +396,21 @@
                 "Dispose");
         }
 
-        public void ShouldSkipAllCasesWhenShortCircuitingClassExecution()
+        public void ShouldSkipAllTestsWhenShortCircuitingClassExecution()
         {
             var output = Run<SampleTestClass, ShortCircuitClassExecution>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail skipped",
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Skip skipped");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldSkipAllTestsWhenShortCircuitingTestExecution()
+        {
+            var output = Run<SampleTestClass, ShortCircuitTestExection>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail skipped",

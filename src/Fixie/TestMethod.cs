@@ -69,5 +69,16 @@
             foreach (var parameters in lazyInvocations)
                 Run(parameters, caseLifecycle);
         }
+
+        /// <summary>
+        /// Indicate the test was skipped for the given reason.
+        /// </summary>
+        public void Skip(string? reason)
+        {
+            Run(EmptyParameters, @case =>
+            {
+                @case.Skip(reason);
+            });
+        }
     }
 }

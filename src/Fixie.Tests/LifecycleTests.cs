@@ -229,11 +229,8 @@ namespace Fixie.Tests
                 testClass.RunTests(test =>
                 {
                     if (test.Method.Name.Contains("Skip"))
-                    {
-                        test.Skip("skipped by naming convention");
                         return;
-                    }
-                    
+
                     test.RunCases(@case =>
                     {
                         CaseSetUp(@case);
@@ -387,7 +384,7 @@ namespace Fixie.Tests
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Pass passed",
-                "SampleTestClass.Skip skipped: skipped by naming convention");
+                "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
@@ -481,7 +478,7 @@ namespace Fixie.Tests
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'CaseSetUp' failed!",
                 "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Skip skipped: skipped by naming convention");
+                "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
@@ -500,7 +497,7 @@ namespace Fixie.Tests
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Skip skipped: skipped by naming convention");
+                "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
                 ".ctor",
@@ -535,7 +532,7 @@ namespace Fixie.Tests
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Pass passed",
-                "SampleTestClass.Skip skipped: skipped by naming convention",
+                "SampleTestClass.Skip skipped",
 
                 "SampleTestClass.Fail failed: 'Dispose' failed!",
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
@@ -565,9 +562,9 @@ namespace Fixie.Tests
             var output = Run<AllSkippedTestClass, CreateInstancePerClass>();
 
             output.ShouldHaveResults(
-                "AllSkippedTestClass.SkipA skipped: skipped by naming convention",
-                "AllSkippedTestClass.SkipB skipped: skipped by naming convention",
-                "AllSkippedTestClass.SkipC skipped: skipped by naming convention");
+                "AllSkippedTestClass.SkipA skipped",
+                "AllSkippedTestClass.SkipB skipped",
+                "AllSkippedTestClass.SkipC skipped");
 
             output.ShouldHaveLifecycle(".ctor", "Dispose");
         }

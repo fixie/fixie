@@ -76,7 +76,7 @@
                     if (test.Method.Name.Contains("Skip"))
                         return;
 
-                    test.RunCases(@case => @case.Execute(testClass.Construct()));
+                    test.RunCases(@case => @case.Execute());
                 });
             }
         }

@@ -11,18 +11,13 @@
     /// </summary>
     public class TestClass
     {
-        static readonly object[] EmptyParameters = {};
-        static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
-
         readonly ExecutionRecorder recorder;
-        readonly ParameterGenerator parameterGenerator;
-        readonly IReadOnlyList<MethodInfo> testMethods;
+        readonly IReadOnlyList<TestMethod> testMethods;
         readonly bool isStatic;
 
-        internal TestClass(ExecutionRecorder recorder, ParameterGenerator parameterGenerator, Type type, IReadOnlyList<MethodInfo> testMethods, MethodInfo? targetMethod)
+        internal TestClass(ExecutionRecorder recorder, Type type, IReadOnlyList<TestMethod> testMethods, MethodInfo? targetMethod)
         {
             this.recorder = recorder;
-            this.parameterGenerator = parameterGenerator;
             this.testMethods = testMethods;
 
             Type = type;
@@ -65,74 +60,26 @@
             }
         }
 
-        public void RunCases(Action<Case> caseLifecycle)
+        public void RunTests(Action<TestMethod> testLifecycle)
         {
             Invoked = true;
 
             foreach (var testMethod in testMethods)
-                Run(testMethod, caseLifecycle);
-        }
-
-        void Run(MethodInfo testMethod, Action<Case> caseLifecycle)
-        {
-            recorder.Start(testMethod);
-
-            try
             {
-                bool invoked = false;
+                recorder.Start(testMethod);
 
-                var lazyInvocations = testMethod.GetParameters().Length == 0
-                    ? InvokeOnceWithZeroParameters
-                    : parameterGenerator.GetParameters(testMethod);
-
-                foreach (var parameters in lazyInvocations)
-                {
-                    invoked = true;
-
-                    var @case = new Case(testMethod, parameters);
-
-                    Run(@case, caseLifecycle);
-                }
-
-                if (!invoked)
-                    throw new Exception("This test has declared parameters, but no parameter values have been provided to it.");
-            }
-            catch (Exception exception)
-            {
-                recorder.Fail(testMethod, exception);
-            }
-        }
-
-        void Run(Case @case, Action<Case> caseLifecycle)
-        {
-            Exception? caseLifecycleFailure = null;
-
-            string output;
-            using (var console = new RedirectedConsole())
-            {
                 try
                 {
-                    caseLifecycle(@case);
+                    testLifecycle(testMethod);
+
+                    if (!testMethod.Invoked)
+                        recorder.Skip(testMethod);
                 }
                 catch (Exception exception)
                 {
-                    caseLifecycleFailure = exception;
+                    recorder.Fail(testMethod, exception);
                 }
-
-                output = console.Output;
             }
-
-            Console.Write(output);
-
-            if (@case.State == CaseState.Failed)
-                recorder.Fail(@case, output);
-            else if (@case.State == CaseState.Passed && caseLifecycleFailure == null)
-                recorder.Pass(@case, output);
-
-            if (caseLifecycleFailure != null)
-                recorder.Fail(new Case(@case, caseLifecycleFailure));
-            else if (@case.State == CaseState.Skipped)
-                recorder.Skip(@case, output);
         }
     }
 }

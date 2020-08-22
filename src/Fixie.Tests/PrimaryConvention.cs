@@ -11,19 +11,22 @@
     {
         public void Execute(TestClass testClass)
         {
-            testClass.RunCases(@case =>
+            testClass.RunTests(test =>
             {
-                var instance = testClass.Construct();
+                test.RunCases(@case =>
+                {
+                    var instance = testClass.Construct();
 
-                @case.Execute(instance);
+                    @case.Execute(instance);
 
-                instance.Dispose();
+                    instance.Dispose();
 
-                var methodWasExplicitlyRequested = testClass.TargetMethod != null;
+                    var methodWasExplicitlyRequested = testClass.TargetMethod != null;
 
-                if (methodWasExplicitlyRequested && @case.Exception is AssertException exception)
-                    if (!exception.HasCompactRepresentations)
-                        LaunchDiffTool(exception);
+                    if (methodWasExplicitlyRequested && @case.Exception is AssertException exception)
+                        if (!exception.HasCompactRepresentations)
+                            LaunchDiffTool(exception);
+                });
             });
         }
 

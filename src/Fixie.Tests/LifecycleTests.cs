@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests
+namespace Fixie.Tests
 {
     using System;
     using System.Collections.Generic;
@@ -203,18 +203,30 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunCases(@case =>
+                ClassSetUp();
+                testClass.RunTests(test =>
                 {
-                    if (@case.Method.Name.Contains("Skip"))
+                    if (test.Method.Name.Contains("Skip"))
                         return;
 
-                    var instance = testClass.Construct();
+                    TestSetUp();
+                    test.RunCases(@case =>
+                    {
+                        var instance = testClass.Construct();
 
-                    @case.Execute(instance);
+                        @case.Execute(instance);
 
-                    instance.Dispose();
+                        instance.Dispose();
+                    });
+                    TestTearDown();
                 });
+                ClassTearDown();
             }
+
+            static void ClassSetUp() => WhereAmI();
+            static void TestSetUp() => WhereAmI();
+            static void TestTearDown() => WhereAmI();
+            static void ClassTearDown() => WhereAmI();
         }
 
         class CreateInstancePerClass : Execution
@@ -223,40 +235,50 @@
             {
                 var instance = testClass.Construct();
 
-                testClass.RunCases(@case =>
+                testClass.RunTests(test =>
                 {
-                    if (@case.Method.Name.Contains("Skip"))
-                    {
-                        @case.Skip("skipped by naming convention");
+                    if (test.Method.Name.Contains("Skip"))
                         return;
-                    }
 
-                    CaseSetUp(@case);
-                    @case.Execute(instance);
-                    CaseTearDown(@case);
+                    TestSetUp();
+                    test.RunCases(@case =>
+                    {
+                        CaseSetUp();
+                        @case.Execute(instance);
+                        CaseTearDown();
+                    });
+                    TestTearDown();
                 });
 
                 instance.Dispose();
             }
 
-            static void CaseSetUp(Case @case) => WhereAmI();
-
-            static void CaseTearDown(Case @case) => WhereAmI();
-        }
-
-        class BuggyExecution : Execution
-        {
-            public void Execute(TestClass testClass)
-                => throw new Exception("Unsafe custom execution threw!");
+            static void TestSetUp() => WhereAmI();
+            static void CaseSetUp() => WhereAmI();
+            static void CaseTearDown() => WhereAmI();
+            static void TestTearDown() => WhereAmI();
         }
 
         class ShortCircuitClassExecution : Execution
         {
             public void Execute(TestClass testClass)
             {
-                //Class lifecycle chooses not to invoke testClass.RunCases(...).
-                //Since the test cases never run, they are all considered
+                //Class lifecycle chooses not to invoke testClass.RunTests(...).
+                //Since the tests never run, they are all considered
                 //'skipped'.
+            }
+        }
+
+        class ShortCircuitTestExection : Execution
+        {
+            public void Execute(TestClass testClass)
+            {
+                testClass.RunTests(test =>
+                {
+                    //Test lifecycle chooses not to invoke test.RunCases(...).
+                    //Since the tests never run, they are all considered
+                    //'skipped'.
+                });
             }
         }
 
@@ -264,11 +286,14 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunCases(@case =>
+                testClass.RunTests(test =>
                 {
-                    //Case lifecycle chooses not to invoke @case.Execute(instance).
-                    //Since the test cases never run, they are all considered
-                    //'skipped'.
+                    test.RunCases(@case =>
+                    {
+                        //Case lifecycle chooses not to invoke @case.Execute(instance).
+                        //Since the test cases never run, they are all considered
+                        //'skipped'.
+                    });
                 });
             }
         }
@@ -281,12 +306,15 @@
 
                 for (int i = 1; i <= 2; i++)
                 {
-                    testClass.RunCases(@case =>
+                    testClass.RunTests(test =>
                     {
-                        if (@case.Method.Name.Contains("Skip"))
+                        if (test.Method.Name.Contains("Skip"))
                             return;
 
-                        @case.Execute(instance);
+                        test.RunCases(@case =>
+                        {
+                            @case.Execute(instance);
+                        });
                     });
                 }
 
@@ -300,15 +328,18 @@
             {
                 var instance = testClass.Construct();
 
-                testClass.RunCases(@case =>
+                testClass.RunTests(test =>
                 {
-                    if (@case.Method.Name.Contains("Skip"))
+                    if (test.Method.Name.Contains("Skip"))
                         return;
 
-                    @case.Execute(instance);
-
-                    if (@case.Exception != null)
+                    test.RunCases(@case =>
+                    {
                         @case.Execute(instance);
+
+                        if (@case.Exception != null)
+                            @case.Execute(instance);
+                    });
                 });
 
                 instance.Dispose();
@@ -348,48 +379,42 @@
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "Dispose",
-                ".ctor", "Pass", "Dispose");
+                "ClassSetUp",
+                "TestSetUp", ".ctor", "Fail", "Dispose", "TestTearDown",
+                "TestSetUp", ".ctor", "Pass", "Dispose", "TestTearDown",
+                "ClassTearDown");
         }
 
-        public void ShouldAllowConstructingPerClass()
+        public void ShouldFailAllTestsWhenConstructingPerCaseAndClassSetUpThrows()
         {
-            var output = Run<SampleTestClass, CreateInstancePerClass>();
+            FailDuring("ClassSetUp");
+        
+            var output = Run<SampleTestClass, CreateInstancePerCase>();
+        
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail failed: 'ClassSetUp' failed!",
+                "SampleTestClass.Pass failed: 'ClassSetUp' failed!",
+                "SampleTestClass.Skip failed: 'ClassSetUp' failed!");
+        
+            output.ShouldHaveLifecycle("ClassSetUp");
+        }
+
+        public void ShouldFailCaseWhenConstructingPerCaseAndTestSetUpThrows()
+        {
+            FailDuring("TestSetUp");
+
+            var output = Run<SampleTestClass, CreateInstancePerCase>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Skip skipped: skipped by naming convention");
+                "SampleTestClass.Fail failed: 'TestSetUp' failed!",
+                "SampleTestClass.Pass failed: 'TestSetUp' failed!",
+                "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
-                ".ctor",
-                "CaseSetUp", "Fail", "CaseTearDown",
-                "CaseSetUp", "Pass", "CaseTearDown",
-                "Dispose");
-        }
-
-        public void ShouldSkipAllCasesWhenShortCircuitingClassExecution()
-        {
-            var output = Run<SampleTestClass, ShortCircuitClassExecution>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped",
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Skip skipped");
-
-            output.ShouldHaveLifecycle();
-        }
-
-        public void ShouldSkipAllCasesWhenShortCircuitingCaseExecution()
-        {
-            var output = Run<SampleTestClass, ShortCircuitCaseExection>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped",
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Skip skipped");
-
-            output.ShouldHaveLifecycle();
+                "ClassSetUp",
+                "TestSetUp",
+                "TestSetUp",
+                "ClassTearDown");
         }
 
         public void ShouldFailCaseWhenConstructingPerCaseAndConstructorThrows()
@@ -403,70 +428,11 @@
                 "SampleTestClass.Pass failed: '.ctor' failed!",
                 "SampleTestClass.Skip skipped");
 
-            output.ShouldHaveLifecycle(".ctor", ".ctor");
-        }
-
-        public void ShouldFailAllMethodsWhenCustomExecutionThrows()
-        {
-            var output = Run<SampleTestClass, BuggyExecution>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: Unsafe custom execution threw!",
-                "SampleTestClass.Pass failed: Unsafe custom execution threw!",
-                "SampleTestClass.Skip failed: Unsafe custom execution threw!");
-
-            output.ShouldHaveLifecycle();
-        }
-
-        public void ShouldFailAllMethodsWhenConstructingPerClassAndConstructorThrows()
-        {
-            FailDuring(".ctor");
-
-            var output = Run<SampleTestClass, CreateInstancePerClass>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: '.ctor' failed!",
-                "SampleTestClass.Pass failed: '.ctor' failed!",
-                "SampleTestClass.Skip failed: '.ctor' failed!");
-
-            output.ShouldHaveLifecycle(".ctor");
-        }
-
-        public void ShouldFailCasesWhenConstructingPerClassAndCaseSetUpThrows()
-        {
-            FailDuring("CaseSetUp");
-
-            var output = Run<SampleTestClass, CreateInstancePerClass>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Skip skipped: skipped by naming convention");
-
             output.ShouldHaveLifecycle(
-                ".ctor",
-                "CaseSetUp",
-                "CaseSetUp",
-                "Dispose");
-        }
-
-        public void ShouldFailCasesWhenConstructingPerClassAndCaseTearDownThrows()
-        {
-            FailDuring("CaseTearDown");
-
-            var output = Run<SampleTestClass, CreateInstancePerClass>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Skip skipped: skipped by naming convention");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "CaseSetUp", "Fail", "CaseTearDown",
-                "CaseSetUp", "Pass", "CaseTearDown",
-                "Dispose");
+                "ClassSetUp",
+                "TestSetUp", ".ctor", "TestTearDown",
+                "TestSetUp", ".ctor", "TestTearDown",
+                "ClassTearDown");
         }
 
         public void ShouldFailCaseWhenConstructingPerCaseAndDisposeThrows()
@@ -482,30 +448,54 @@
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "Dispose",
-                ".ctor", "Pass", "Dispose");
+                "ClassSetUp",
+                "TestSetUp", ".ctor", "Fail", "Dispose", "TestTearDown",
+                "TestSetUp", ".ctor", "Pass", "Dispose", "TestTearDown",
+                "ClassTearDown");
         }
 
-        public void ShouldFailAllMethodsAfterReportingPrimaryResultsWhenConstructingPerClassAndDisposeThrows()
+        public void ShouldFailCasesAlongsidePrimaryResultsWhenConstructingPerCaseAndTestTearDownThrows()
         {
-            FailDuring("Dispose");
+            FailDuring("TestTearDown");
 
-            var output = Run<SampleTestClass, CreateInstancePerClass>();
+            var output = Run<SampleTestClass, CreateInstancePerCase>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Fail failed: 'TestTearDown' failed!",
+
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Pass failed: 'TestTearDown' failed!",
+                
+                "SampleTestClass.Skip skipped");
+
+            output.ShouldHaveLifecycle(
+                "ClassSetUp",
+                "TestSetUp", ".ctor", "Fail", "Dispose", "TestTearDown",
+                "TestSetUp", ".ctor", "Pass", "Dispose", "TestTearDown",
+                "ClassTearDown");
+        }
+
+        public void ShouldFailAllTestsAfterReportingPrimaryResultsWhenConstructingPerCaseAndClassTearDownThrows()
+        {
+            FailDuring("ClassTearDown");
+
+            var output = Run<SampleTestClass, CreateInstancePerCase>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Pass passed",
-                "SampleTestClass.Skip skipped: skipped by naming convention",
+                "SampleTestClass.Skip skipped",
 
-                "SampleTestClass.Fail failed: 'Dispose' failed!",
-                "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Skip failed: 'Dispose' failed!");
+                "SampleTestClass.Fail failed: 'ClassTearDown' failed!",
+                "SampleTestClass.Pass failed: 'ClassTearDown' failed!",
+                "SampleTestClass.Skip failed: 'ClassTearDown' failed!");
 
             output.ShouldHaveLifecycle(
-                ".ctor",
-                "CaseSetUp", "Fail", "CaseTearDown",
-                "CaseSetUp", "Pass", "CaseTearDown",
-                "Dispose");
+                "ClassSetUp",
+                "TestSetUp", ".ctor", "Fail", "Dispose", "TestTearDown",
+                "TestSetUp", ".ctor", "Pass", "Dispose", "TestTearDown",
+                "ClassTearDown");
         }
 
         public void ShouldSkipLifecycleWhenConstructingPerCaseAndAllCasesAreSkipped()
@@ -517,19 +507,7 @@
                 "AllSkippedTestClass.SkipB skipped",
                 "AllSkippedTestClass.SkipC skipped");
 
-            output.ShouldHaveLifecycle();
-        }
-
-        public void ShouldNotSkipLifecycleWhenConstructingPerClassAndAllCasesAreSkipped()
-        {
-            var output = Run<AllSkippedTestClass, CreateInstancePerClass>();
-
-            output.ShouldHaveResults(
-                "AllSkippedTestClass.SkipA skipped: skipped by naming convention",
-                "AllSkippedTestClass.SkipB skipped: skipped by naming convention",
-                "AllSkippedTestClass.SkipC skipped: skipped by naming convention");
-
-            output.ShouldHaveLifecycle(".ctor", "Dispose");
+            output.ShouldHaveLifecycle("ClassSetUp", "ClassTearDown");
         }
 
         public void ShouldSkipLifecycleWhenConstructingPerCaseButAllCasesFailCustomParameterGeneration()
@@ -542,7 +520,152 @@
                 "ParameterizedSampleTestClass.BoolArg failed: Exception thrown while attempting to yield input parameters for method: BoolArg",
                 "ParameterizedSampleTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg");
 
-            output.ShouldHaveLifecycle();
+            output.ShouldHaveLifecycle(
+                "ClassSetUp",
+                "TestSetUp",
+                "TestSetUp",
+                "ClassTearDown");
+        }
+
+        public void ShouldAllowConstructingPerClass()
+        {
+            var output = Run<SampleTestClass, CreateInstancePerClass>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Skip skipped");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "TestSetUp", "CaseSetUp", "Fail", "CaseTearDown", "TestTearDown",
+                "TestSetUp", "CaseSetUp", "Pass", "CaseTearDown", "TestTearDown",
+                "Dispose");
+        }
+
+        public void ShouldFailAllTestsWhenConstructingPerClassAndConstructorThrows()
+        {
+            FailDuring(".ctor");
+
+            var output = Run<SampleTestClass, CreateInstancePerClass>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail failed: '.ctor' failed!",
+                "SampleTestClass.Pass failed: '.ctor' failed!",
+                "SampleTestClass.Skip failed: '.ctor' failed!");
+
+            output.ShouldHaveLifecycle(".ctor");
+        }
+
+        public void ShouldFailCasesWhenConstructingPerClassAndTestSetUpThrows()
+        {
+            FailDuring("TestSetUp");
+
+            var output = Run<SampleTestClass, CreateInstancePerClass>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail failed: 'TestSetUp' failed!",
+                "SampleTestClass.Pass failed: 'TestSetUp' failed!",
+                "SampleTestClass.Skip skipped");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "TestSetUp",
+                "TestSetUp",
+                "Dispose");
+        }
+
+        public void ShouldFailCasesWhenConstructingPerClassAndCaseSetUpThrows()
+        {
+            FailDuring("CaseSetUp");
+
+            var output = Run<SampleTestClass, CreateInstancePerClass>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Skip skipped");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "TestSetUp", "CaseSetUp", "TestTearDown",
+                "TestSetUp", "CaseSetUp", "TestTearDown",
+                "Dispose");
+        }
+
+        public void ShouldFailCasesWhenConstructingPerClassAndCaseTearDownThrows()
+        {
+            FailDuring("CaseTearDown");
+
+            var output = Run<SampleTestClass, CreateInstancePerClass>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Fail failed: 'CaseTearDown' failed!",
+                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
+                "SampleTestClass.Skip skipped");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "TestSetUp", "CaseSetUp", "Fail", "CaseTearDown", "TestTearDown",
+                "TestSetUp", "CaseSetUp", "Pass", "CaseTearDown", "TestTearDown",
+                "Dispose");
+        }
+
+        public void ShouldFailCasesAlongsidePrimaryResultsWhenConstructingPerClassAndTestTearDownThrows()
+        {
+            FailDuring("TestTearDown");
+
+            var output = Run<SampleTestClass, CreateInstancePerClass>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Fail failed: 'TestTearDown' failed!",
+                
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Pass failed: 'TestTearDown' failed!",
+                
+                "SampleTestClass.Skip skipped");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "TestSetUp", "CaseSetUp", "Fail", "CaseTearDown", "TestTearDown",
+                "TestSetUp", "CaseSetUp", "Pass", "CaseTearDown", "TestTearDown",
+                "Dispose");
+        }
+
+        public void ShouldFailAllTestsAfterReportingPrimaryResultsWhenConstructingPerClassAndDisposeThrows()
+        {
+            FailDuring("Dispose");
+
+            var output = Run<SampleTestClass, CreateInstancePerClass>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Pass passed",
+                "SampleTestClass.Skip skipped",
+
+                "SampleTestClass.Fail failed: 'Dispose' failed!",
+                "SampleTestClass.Pass failed: 'Dispose' failed!",
+                "SampleTestClass.Skip failed: 'Dispose' failed!");
+
+            output.ShouldHaveLifecycle(
+                ".ctor",
+                "TestSetUp", "CaseSetUp", "Fail", "CaseTearDown", "TestTearDown",
+                "TestSetUp", "CaseSetUp", "Pass", "CaseTearDown", "TestTearDown",
+                "Dispose");
+        }
+
+        public void ShouldNotSkipLifecycleWhenConstructingPerClassAndAllCasesAreSkipped()
+        {
+            var output = Run<AllSkippedTestClass, CreateInstancePerClass>();
+
+            output.ShouldHaveResults(
+                "AllSkippedTestClass.SkipA skipped",
+                "AllSkippedTestClass.SkipB skipped",
+                "AllSkippedTestClass.SkipC skipped");
+
+            output.ShouldHaveLifecycle(".ctor", "Dispose");
         }
 
         public void ShouldNotSkipLifecycleWhenConstructingPerClassAndAllCasesFailCustomParameterGeneration()
@@ -555,7 +678,7 @@
                 "ParameterizedSampleTestClass.BoolArg failed: Exception thrown while attempting to yield input parameters for method: BoolArg",
                 "ParameterizedSampleTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg");
 
-            output.ShouldHaveLifecycle(".ctor", "Dispose");
+            output.ShouldHaveLifecycle(".ctor", "TestSetUp", "TestSetUp", "Dispose");
         }
 
         public void ShouldAllowRunningAllCasesMultipleTimes()
@@ -598,7 +721,46 @@
                 "StaticTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
-                "Fail", "Pass");
+                "ClassSetUp",
+                "TestSetUp", "Fail", "TestTearDown",
+                "TestSetUp", "Pass", "TestTearDown",
+                "ClassTearDown");
+        }
+
+        public void ShouldSkipAllTestsWhenShortCircuitingClassExecution()
+        {
+            var output = Run<SampleTestClass, ShortCircuitClassExecution>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail skipped",
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Skip skipped");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldSkipAllTestsWhenShortCircuitingTestExecution()
+        {
+            var output = Run<SampleTestClass, ShortCircuitTestExection>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail skipped",
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Skip skipped");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public void ShouldSkipAllCasesWhenShortCircuitingCaseExecution()
+        {
+            var output = Run<SampleTestClass, ShortCircuitCaseExection>();
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail skipped",
+                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Skip skipped");
+
+            output.ShouldHaveLifecycle();
         }
     }
 }

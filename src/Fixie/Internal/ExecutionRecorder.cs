@@ -35,17 +35,17 @@
             assemblyStopwatch.Restart();
         }
 
-        public void Start(Type testClass)
+        public void Start(TestClass testClass)
         {
             classSummary = new ExecutionSummary();
-            bus.Publish(new ClassStarted(testClass));
+            bus.Publish(new ClassStarted(testClass.Type));
             classStopwatch.Restart();
             caseStopwatch.Restart();
         }
 
-        public void Start(MethodInfo testMethod)
+        public void Start(TestMethod testMethod)
         {
-            var test = new Test(testMethod);
+            var test = new Test(testMethod.Method);
             bus.Publish(new TestStarted(test));
         }
 
@@ -59,9 +59,9 @@
             bus.Publish(message);
         }
 
-        public void Skip(MethodInfo testMethod)
+        public void Skip(TestMethod testMethod)
         {
-            var @case = new Case(testMethod, EmptyParameters);
+            var @case = new Case(testMethod.Method, EmptyParameters);
             Skip(@case);
         }
 
@@ -85,18 +85,18 @@
             bus.Publish(message);
         }
 
-        public void Fail(MethodInfo testMethod, Exception exception)
+        public void Fail(TestMethod testMethod, Exception exception)
         {
-            var @case = new Case(testMethod, EmptyParameters);
+            var @case = new Case(testMethod.Method, EmptyParameters);
             @case.Fail(exception);
             Fail(@case);
         }
 
-        public void Complete(Type testClass)
+        public void Complete(TestClass testClass)
         {
             var duration = classStopwatch.Elapsed;
             classStopwatch.Stop();
-            bus.Publish(new ClassCompleted(testClass, classSummary, duration));
+            bus.Publish(new ClassCompleted(testClass.Type, classSummary, duration));
             assemblySummary.Add(classSummary);
         }
 

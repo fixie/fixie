@@ -105,27 +105,30 @@
             var methodDiscoverer = new MethodDiscoverer(discovery);
             var parameterGenerator = new ParameterGenerator(discovery);
 
-            var testClasses = classDiscoverer.TestClasses(candidateTypes);
+            var classes = classDiscoverer.TestClasses(candidateTypes);
 
-            foreach (var testClass in testClasses)
+            foreach (var @class in classes)
             {
-                var testMethods = methodDiscoverer.TestMethods(testClass);
+                var testMethods = methodDiscoverer
+                    .TestMethods(@class)
+                    .Select(method => new TestMethod(recorder, parameterGenerator, method))
+                    .ToList();
 
                 if (testMethods.Any())
                 {
-                    var targetMethod = testClasses.Count == 1 && testMethods.Count == 1
+                    var targetMethod = classes.Count == 1 && testMethods.Count == 1
                         ? testMethods.Single()
                         : null;
 
+                    var testClass = new TestClass(recorder, @class, testMethods, targetMethod?.Method);
+
                     recorder.Start(testClass);
 
-                    var runContext = new TestClass(recorder, parameterGenerator, testClass, testMethods, targetMethod);
-            
                     Exception? classLifecycleFailure = null;
 
                     try
                     {
-                        execution.Execute(runContext);
+                        execution.Execute(testClass);
                     }
                     catch (Exception exception)
                     {
@@ -137,7 +140,7 @@
                         foreach (var testMethod in testMethods)
                             recorder.Fail(testMethod, classLifecycleFailure);
                     }
-                    else if (!runContext.Invoked)
+                    else if (!testClass.Invoked)
                     {
                         foreach (var testMethod in testMethods)
                             recorder.Skip(testMethod);

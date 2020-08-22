@@ -27,25 +27,25 @@
                         ".ZeroArgs passed"));
         }
 
-        public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
+        public void ShouldSkipWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
         {
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
-                        ".IntArg failed: This test has declared parameters, but no parameter values have been provided to it.",
-                        ".MultipleCasesFromAttributes failed: This test has declared parameters, but no parameter values have been provided to it.",
+                        ".IntArg skipped",
+                        ".MultipleCasesFromAttributes skipped",
                         ".ZeroArgs passed"));
         }
 
-        public void ShouldFailWithClearExplanationWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
+        public void ShouldSkipWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
         {
             discovery.Parameters.Add<EmptyParameterSource>();
 
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
-                        ".IntArg failed: This test has declared parameters, but no parameter values have been provided to it.",
-                        ".MultipleCasesFromAttributes failed: This test has declared parameters, but no parameter values have been provided to it.",
+                        ".IntArg skipped",
+                        ".MultipleCasesFromAttributes skipped",
                         ".ZeroArgs passed"));
         }
 
@@ -141,11 +141,11 @@
                         ".ConstrainedGeneric<System.Int32>(1) passed",
                         ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",
 
-                        ".ConstrainedGenericMethodWithNoInputsProvided<T> failed: This test has declared parameters, but no parameter values have been provided to it.",
+                        ".ConstrainedGenericMethodWithNoInputsProvided<T> skipped",
 
                         ".GenericMethodWithIncorrectParameterCountProvided<System.Int32>(123, 123) failed: Parameter count mismatch.",
 
-                        ".GenericMethodWithNoInputsProvided<T> failed: This test has declared parameters, but no parameter values have been provided to it.",
+                        ".GenericMethodWithNoInputsProvided<T> skipped",
 
                         ".MultipleGenericArgumentsMultipleParameters<T1, T2>(123, null, 456, System.Int32, System.Object) failed: Could not resolve type parameters for generic method.",
                         ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",

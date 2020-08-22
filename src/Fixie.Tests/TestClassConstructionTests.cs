@@ -138,7 +138,8 @@ namespace Fixie.Tests
         {
             public void Execute(TestClass testClass)
             {
-                var instance = testClass.Construct();
+                var type = testClass.Type;
+                var instance = type.IsStatic() ? null : Activator.CreateInstance(type);
 
                 testClass.RunTests(test =>
                 {

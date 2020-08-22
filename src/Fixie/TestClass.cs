@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using System.Runtime.ExceptionServices;
     using Internal;
 
     /// <summary>
@@ -13,7 +12,6 @@
     {
         readonly ExecutionRecorder recorder;
         readonly IReadOnlyList<TestMethod> testMethods;
-        readonly bool isStatic;
 
         internal TestClass(ExecutionRecorder recorder, Type type, IReadOnlyList<TestMethod> testMethods, MethodInfo? targetMethod)
         {
@@ -22,7 +20,6 @@
 
             Type = type;
             TargetMethod = targetMethod;
-            isStatic = Type.IsStatic();
             Invoked = false;
         }
 
@@ -39,26 +36,6 @@
         public MethodInfo? TargetMethod { get; }
 
         internal bool Invoked { get; private set; }
-
-        /// <summary>
-        /// Constructs an instance of the test class type, using its default constructor.
-        /// If the class is static, no action is taken and null is returned.
-        /// </summary>
-        public object? Construct()
-        {
-            if (isStatic)
-                return null;
-
-            try
-            {
-                return Activator.CreateInstance(Type);
-            }
-            catch (TargetInvocationException exception)
-            {
-                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
-                throw; //Unreachable.
-            }
-        }
 
         public void RunTests(Action<TestMethod> testLifecycle)
         {

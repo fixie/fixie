@@ -259,12 +259,6 @@ namespace Fixie.Tests
             static void TestTearDown() => WhereAmI();
         }
 
-        class BuggyExecution : Execution
-        {
-            public void Execute(TestClass testClass)
-                => throw new Exception("Unsafe custom execution threw!");
-        }
-
         class ShortCircuitClassExecution : Execution
         {
             public void Execute(TestClass testClass)
@@ -765,18 +759,6 @@ namespace Fixie.Tests
                 "SampleTestClass.Fail skipped",
                 "SampleTestClass.Pass skipped",
                 "SampleTestClass.Skip skipped");
-
-            output.ShouldHaveLifecycle();
-        }
-
-        public void ShouldFailAllTestsWhenCustomExecutionThrows()
-        {
-            var output = Run<SampleTestClass, BuggyExecution>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: Unsafe custom execution threw!",
-                "SampleTestClass.Pass failed: Unsafe custom execution threw!",
-                "SampleTestClass.Skip failed: Unsafe custom execution threw!");
 
             output.ShouldHaveLifecycle();
         }

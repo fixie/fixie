@@ -10,19 +10,19 @@ namespace Fixie.Tests
 
     public class LifecycleTests
     {
-        static string[] FailingMembers = Array.Empty<string>();
+        static string? FailingMember;
 
         readonly Discovery discovery;
 
         public LifecycleTests()
         {
-            FailingMembers = Array.Empty<string>();
+            FailingMember = null;
             discovery = new SelfTestDiscovery();
         }
 
-        static void FailDuring(params string[] failingMemberNames)
+        static void FailDuring(string failingMemberName)
         {
-            FailingMembers = failingMemberNames;
+            FailingMember = failingMemberName;
         }
 
         Output Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
@@ -195,7 +195,7 @@ namespace Fixie.Tests
         {
             System.Console.WriteLine(member);
 
-            if (FailingMembers.Contains(member))
+            if (FailingMember == member)
                 throw new FailureException(member);
         }
 

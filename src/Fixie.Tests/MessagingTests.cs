@@ -62,14 +62,14 @@
             {
                 testClass.RunTests(test =>
                 {
+                    if (test.Method.Has<SkipAttribute>(out var skip))
+                    {
+                        test.Skip(skip.Reason);
+                        return;
+                    }
+
                     test.RunCases(@case =>
                     {
-                        if (@case.Method.Has<SkipAttribute>(out var skip))
-                        {
-                            @case.Skip(skip.Reason);
-                            return;
-                        }
-
                         var instance = testClass.Construct();
 
                         @case.Execute(instance);

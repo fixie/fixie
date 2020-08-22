@@ -205,11 +205,11 @@ namespace Fixie.Tests
             {
                 testClass.RunTests(test =>
                 {
+                    if (test.Method.Name.Contains("Skip"))
+                        return;
+
                     test.RunCases(@case =>
                     {
-                        if (@case.Method.Name.Contains("Skip"))
-                            return;
-
                         var instance = testClass.Construct();
 
                         @case.Execute(instance);
@@ -228,14 +228,14 @@ namespace Fixie.Tests
 
                 testClass.RunTests(test =>
                 {
+                    if (test.Method.Name.Contains("Skip"))
+                    {
+                        test.Skip("skipped by naming convention");
+                        return;
+                    }
+                    
                     test.RunCases(@case =>
                     {
-                        if (@case.Method.Name.Contains("Skip"))
-                        {
-                            @case.Skip("skipped by naming convention");
-                            return;
-                        }
-
                         CaseSetUp(@case);
                         @case.Execute(instance);
                         CaseTearDown(@case);
@@ -305,11 +305,11 @@ namespace Fixie.Tests
                 {
                     testClass.RunTests(test =>
                     {
+                        if (test.Method.Name.Contains("Skip"))
+                            return;
+
                         test.RunCases(@case =>
                         {
-                            if (@case.Method.Name.Contains("Skip"))
-                                return;
-
                             @case.Execute(instance);
                         });
                     });
@@ -327,11 +327,11 @@ namespace Fixie.Tests
 
                 testClass.RunTests(test =>
                 {
+                    if (test.Method.Name.Contains("Skip"))
+                        return;
+
                     test.RunCases(@case =>
                     {
-                        if (@case.Method.Name.Contains("Skip"))
-                            return;
-
                         @case.Execute(instance);
 
                         if (@case.Exception != null)

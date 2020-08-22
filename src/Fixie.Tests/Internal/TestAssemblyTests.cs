@@ -90,13 +90,10 @@ namespace Fixie.Tests.Internal
 
                 testClass.RunTests(test =>
                 {
-                    test.RunCases(@case =>
-                    {
-                        if (@case.Method.Name.Contains("Skip"))
-                            return;
-
-                        @case.Execute(instance);
-                    });
+                    if (test.Method.Name.Contains("Skip"))
+                        return;
+                    
+                    test.RunCases(@case => @case.Execute(instance));
                 });
 
                 instance.Dispose();

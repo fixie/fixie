@@ -1,8 +1,9 @@
-﻿namespace Fixie.Tests
+﻿namespace Fixie.Tests.Internal
 {
     using System.Collections.Generic;
     using System.Reflection;
     using Assertions;
+    using Fixie.Internal;
 
     public class ParameterGeneratorTests
     {

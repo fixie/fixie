@@ -203,13 +203,13 @@ namespace Fixie.Tests
         {
             public void Execute(TestClass testClass)
             {
-                ClassSetUp(testClass);
+                ClassSetUp();
                 testClass.RunTests(test =>
                 {
                     if (test.Method.Name.Contains("Skip"))
                         return;
 
-                    TestSetUp(test);
+                    TestSetUp();
                     test.RunCases(@case =>
                     {
                         var instance = testClass.Construct();
@@ -218,15 +218,15 @@ namespace Fixie.Tests
 
                         instance.Dispose();
                     });
-                    TestTearDown(test);
+                    TestTearDown();
                 });
-                ClassTearDown(testClass);
+                ClassTearDown();
             }
 
-            static void ClassSetUp(TestClass testClass) => WhereAmI();
-            static void TestSetUp(TestMethod test) => WhereAmI();
-            static void TestTearDown(TestMethod test) => WhereAmI();
-            static void ClassTearDown(TestClass testClass) => WhereAmI();
+            static void ClassSetUp() => WhereAmI();
+            static void TestSetUp() => WhereAmI();
+            static void TestTearDown() => WhereAmI();
+            static void ClassTearDown() => WhereAmI();
         }
 
         class CreateInstancePerClass : Execution
@@ -240,23 +240,23 @@ namespace Fixie.Tests
                     if (test.Method.Name.Contains("Skip"))
                         return;
 
-                    TestSetUp(test);
+                    TestSetUp();
                     test.RunCases(@case =>
                     {
-                        CaseSetUp(@case);
+                        CaseSetUp();
                         @case.Execute(instance);
-                        CaseTearDown(@case);
+                        CaseTearDown();
                     });
-                    TestTearDown(test);
+                    TestTearDown();
                 });
 
                 instance.Dispose();
             }
 
-            static void TestSetUp(TestMethod test) => WhereAmI();
-            static void CaseSetUp(Case @case) => WhereAmI();
-            static void CaseTearDown(Case @case) => WhereAmI();
-            static void TestTearDown(TestMethod test) => WhereAmI();
+            static void TestSetUp() => WhereAmI();
+            static void CaseSetUp() => WhereAmI();
+            static void CaseTearDown() => WhereAmI();
+            static void TestTearDown() => WhereAmI();
         }
 
         class BuggyExecution : Execution

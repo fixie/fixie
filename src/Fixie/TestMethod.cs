@@ -10,12 +10,12 @@
         static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
 
         readonly ExecutionRecorder recorder;
-        readonly ParameterGenerator parameterGenerator;
+        readonly ParameterSource parameterSource;
         
-        internal TestMethod(ExecutionRecorder recorder, ParameterGenerator parameterGenerator, MethodInfo method)
+        internal TestMethod(ExecutionRecorder recorder, ParameterSource parameterSource, MethodInfo method)
         {
             this.recorder = recorder;
-            this.parameterGenerator = parameterGenerator;
+            this.parameterSource = parameterSource;
             Method = method;
             Invoked = false;
         }
@@ -64,7 +64,7 @@
         {
             var lazyInvocations = Method.GetParameters().Length == 0
                 ? InvokeOnceWithZeroParameters
-                : parameterGenerator.GetParameters(Method);
+                : parameterSource.GetParameters(Method);
 
             foreach (var parameters in lazyInvocations)
                 Run(parameters, caseLifecycle);

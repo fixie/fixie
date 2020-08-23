@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Reflection;
 
-    class ParameterGenerator
+    class ParameterGenerator : ParameterSource
     {
         readonly IReadOnlyList<ParameterSource> parameterSources;
 

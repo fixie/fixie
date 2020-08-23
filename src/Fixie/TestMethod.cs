@@ -10,12 +10,10 @@
         static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
 
         readonly ExecutionRecorder recorder;
-        readonly ParameterSource parameterSource;
         
-        internal TestMethod(ExecutionRecorder recorder, ParameterSource parameterSource, MethodInfo method)
+        internal TestMethod(ExecutionRecorder recorder, MethodInfo method)
         {
             this.recorder = recorder;
-            this.parameterSource = parameterSource;
             Method = method;
             Invoked = false;
         }
@@ -62,7 +60,7 @@
 
         public void RunCases(Action<Case> caseLifecycle)
         {
-            RunCases(parameterSource, caseLifecycle);
+            Run(EmptyParameters, caseLifecycle);
         }
 
         public void RunCases(ParameterSource parameterSource, Action<Case> caseLifecycle)

@@ -6,12 +6,35 @@
 
     class ParameterGenerator : ParameterSource
     {
-        readonly IReadOnlyList<ParameterSource> parameterSources;
+        readonly List<ParameterSource> sources;
 
         public ParameterGenerator(IReadOnlyList<ParameterSource> parameterSources)
-            => this.parameterSources = parameterSources;
+            => sources = new List<ParameterSource>(parameterSources);
+
+        public ParameterGenerator()
+            => sources = new List<ParameterSource>();
+
+        /// <summary>
+        /// Includes the given type as a generator of test method parameters.
+        /// All such registered parameter sources will be asked to contribute parameters to test methods.
+        /// </summary>
+        public ParameterGenerator Add<TParameterSource>() where TParameterSource : ParameterSource, new()
+        {
+            sources.Add(new TParameterSource());
+            return this;
+        }
+
+        /// <summary>
+        /// Includes the given object as a generator of test method parameters.
+        /// All such registered parameter sources will be asked to contribute parameters to test methods.
+        /// </summary>
+        public ParameterGenerator Add(ParameterSource parameterSource)
+        {
+            sources.Add(parameterSource);
+            return this;
+        }
 
         public IEnumerable<object?[]> GetParameters(MethodInfo method)
-            => parameterSources.SelectMany(source => source.GetParameters(method));
+            => sources.SelectMany(source => source.GetParameters(method));
     }
 }

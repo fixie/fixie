@@ -7,10 +7,6 @@
 
     public class ParameterGeneratorTests
     {
-        class SampleDiscovery : Discovery
-        {
-        }
-
         readonly MethodInfo method;
 
         public ParameterGeneratorTests()
@@ -20,21 +16,20 @@
 
         public void ShouldProvideZeroSetsOfInputParametersByDefault()
         {
-            var customDiscovery = new SampleDiscovery();
+            var parameterGenerator = new ParameterGenerator();
 
-            DiscoveredParameters(customDiscovery).ShouldBeEmpty();
+            GeneratedParameters(parameterGenerator).ShouldBeEmpty();
         }
 
         public void ShouldProvideSetsOfInputsGeneratedByNamedParameterSources()
         {
-            var customDiscovery = new SampleDiscovery();
+            var parameterGenerator = new ParameterGenerator();
 
-            customDiscovery
-                .Parameters
+            parameterGenerator
                 .Add<FirstParameterSource>()
                 .Add<SecondParameterSource>();
 
-            DiscoveredParameters(customDiscovery)
+            GeneratedParameters(parameterGenerator)
                 .ShouldBe(
                     new object[] { "ParameterizedMethod", 0, false },
                     new object[] { "ParameterizedMethod", 1, true },
@@ -44,14 +39,13 @@
 
         public void ShouldProvideSetsOfInputsGeneratedByInstantiatedParameterSources()
         {
-            var customDiscovery = new SampleDiscovery();
+            var parameterGenerator = new ParameterGenerator();
 
-            customDiscovery
-                .Parameters
+            parameterGenerator
                 .Add(new FirstParameterSource())
                 .Add(new SecondParameterSource());
 
-            DiscoveredParameters(customDiscovery)
+            GeneratedParameters(parameterGenerator)
                 .ShouldBe(
                     new object[] { "ParameterizedMethod", 0, false },
                     new object[] { "ParameterizedMethod", 1, true },
@@ -59,9 +53,9 @@
                     new object[] { "ParameterizedMethod", 3, true });
         }
 
-        IEnumerable<object?[]> DiscoveredParameters(Discovery discovery)
+        IEnumerable<object?[]> GeneratedParameters(ParameterGenerator customDiscovery)
         {
-            return new ParameterGenerator(discovery.Config.ParameterSources).GetParameters(method);
+            return customDiscovery.GetParameters(method);
         }
 
         class SampleTestClass

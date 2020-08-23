@@ -31,7 +31,6 @@
         protected void Discover(Listener listener, out IEnumerable<string> consoleLines)
         {
             var discovery = new SelfTestDiscovery();
-            discovery.Parameters.Add<InputAttributeParameterSource>();
 
             using var console = new RedirectedConsole();
 

@@ -5,17 +5,43 @@
     using System.Linq;
     using System.Reflection;
     using Assertions;
-    using Fixie.Internal;
     using static Utility;
 
     public class ParameterizedCaseTests
     {
-        readonly Discovery discovery = new SelfTestDiscovery();
-        readonly Execution execution = new DefaultExecution();
+        readonly Discovery discovery;
+        readonly ParameterGenerator parameters;
+        readonly Execution execution;
 
-        public void ShouldAllowDiscoveryToGeneratePotentiallyManySetsOfInputParametersPerMethod()
+        public ParameterizedCaseTests()
         {
-            discovery.Parameters.Add<InputAttributeOrDefaultParameterSource>();
+            discovery = new SelfTestDiscovery();
+            parameters = new ParameterGenerator();
+            execution = new ParameterizedExecution(parameters);
+        }
+
+        class ParameterizedExecution : Execution
+        {
+            readonly ParameterSource parameterSource;
+
+            public ParameterizedExecution(ParameterSource parameterSource)
+                => this.parameterSource = parameterSource;
+
+            public void Execute(TestClass testClass)
+            {
+                testClass.RunTests(test =>
+                {
+                    test.RunCases(parameterSource, @case =>
+                    {
+                        @case.Execute();
+                    });
+                });
+            }
+        }
+
+        public void ShouldAllowExecutionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
+        {
+            parameters.Add<InputAttributeOrDefaultParameterSource>();
 
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
@@ -39,7 +65,7 @@
 
         public void ShouldSkipWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
         {
-            discovery.Parameters.Add<EmptyParameterSource>();
+            parameters.Add<EmptyParameterSource>();
 
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
@@ -51,7 +77,7 @@
 
         public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
         {
-            discovery.Parameters.Add(new FixedParameterSource(new[]
+            parameters.Add(new FixedParameterSource(new[]
             {
                 new object[] { },
                 new object[] { 0 },
@@ -80,7 +106,7 @@
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
-            discovery.Parameters.Add<LazyBuggyParameterSource>();
+            parameters.Add<LazyBuggyParameterSource>();
 
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
@@ -103,7 +129,7 @@
             //when trying to handle the IntArg test method. Since IntArg runs first,
             //this test demonstrates how the failure is isolated to that test method.
 
-            discovery.Parameters.Add<EagerBuggyParameterSource>();
+            parameters.Add<EagerBuggyParameterSource>();
 
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
@@ -118,7 +144,7 @@
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
         {
-            discovery.Parameters.Add<LazyBuggyParameterSource>();
+            parameters.Add<LazyBuggyParameterSource>();
 
             Run<ConstrainedGenericTestClass>(discovery, execution)
                 .ShouldBe(
@@ -133,7 +159,7 @@
 
         public void ShouldResolveGenericTypeParameters()
         {
-            discovery.Parameters.Add<InputAttributeParameterSource>();
+            parameters.Add<InputAttributeParameterSource>();
 
             Run<GenericTestClass>(discovery, execution)
                 .ShouldBe(
@@ -169,7 +195,7 @@
 
         public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
         {
-            discovery.Parameters.Add<ComplexGenericParameterSource>();
+            parameters.Add<ComplexGenericParameterSource>();
 
             Run<ComplexGenericTestClass>(discovery, execution)
                 .ShouldBe(

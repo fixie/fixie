@@ -30,10 +30,19 @@ namespace Fixie.Tests
             return Run<TExecution>(typeof(TSampleTestClass));
         }
 
+        Output Run<TSampleTestClass>(Execution execution)
+        {
+            return Run(typeof(TSampleTestClass), execution);
+        }
+
         Output Run<TExecution>(Type testClass) where TExecution : Execution, new()
         {
+            return Run(testClass, new TExecution());
+        }
+
+        Output Run<TExecution>(Type testClass, TExecution execution) where TExecution : Execution
+        {
             var listener = new StubListener();
-            var execution = new TExecution();
             using var console = new RedirectedConsole();
 
             Utility.Run(listener, discovery, execution, testClass);
@@ -153,6 +162,14 @@ namespace Fixie.Tests
 
         class InstrumentedExecution : Execution
         {
+            readonly ParameterSource parameterSource;
+
+            public InstrumentedExecution()
+                : this(new ParameterGenerator()) { }
+
+            public InstrumentedExecution(ParameterSource parameterSource)
+                => this.parameterSource = parameterSource;
+
             public void Execute(TestClass testClass)
             {
                 ClassSetUp();
@@ -162,7 +179,7 @@ namespace Fixie.Tests
                         return;
 
                     TestSetUp();
-                    test.RunCases(@case =>
+                    test.RunCases(parameterSource, @case =>
                     {
                         CaseSetUp();
                         @case.Execute();
@@ -419,9 +436,8 @@ namespace Fixie.Tests
 
         public void ShouldFailTestsWhenCustomParameterGenerationThrows()
         {
-            discovery.Parameters.Add<BuggyParameterSource>();
-
-            var output = Run<ParameterizedSampleTestClass, InstrumentedExecution>();
+            var execution = new InstrumentedExecution(new BuggyParameterSource());
+            var output = Run<ParameterizedSampleTestClass>(execution);
 
             output.ShouldHaveResults(
                 "ParameterizedSampleTestClass.BoolArg failed: Exception thrown while attempting to yield input parameters for method: BoolArg",

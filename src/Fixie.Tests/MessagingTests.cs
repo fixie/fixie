@@ -42,9 +42,7 @@
         protected void Run(Listener listener, out IEnumerable<string> consoleLines, Action<Discovery>? customize = null)
         {
             var discovery = new SelfTestDiscovery();
-            discovery.Parameters.Add<InputAttributeParameterSource>();
-
-            var execution = new CreateInstancePerCase();
+            var execution = new MessagingTestsExecution();
 
             customize?.Invoke(discovery);
 
@@ -55,8 +53,10 @@
             consoleLines = console.Lines();
         }
 
-        class CreateInstancePerCase : Execution
+        class MessagingTestsExecution : Execution
         {
+            readonly ParameterSource parameterSource = new InputAttributeParameterSource();
+
             public void Execute(TestClass testClass)
             {
                 testClass.RunTests(test =>
@@ -67,7 +67,7 @@
                         return;
                     }
 
-                    test.RunCases(@case =>
+                    test.RunCases(parameterSource, @case =>
                     {
                         @case.Execute();
                     });

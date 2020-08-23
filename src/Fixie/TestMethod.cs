@@ -62,6 +62,11 @@
 
         public void RunCases(Action<Case> caseLifecycle)
         {
+            RunCases(parameterSource, caseLifecycle);
+        }
+
+        public void RunCases(ParameterSource parameterSource, Action<Case> caseLifecycle)
+        {
             var lazyInvocations = Method.GetParameters().Length == 0
                 ? InvokeOnceWithZeroParameters
                 : parameterSource.GetParameters(Method);

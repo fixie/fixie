@@ -6,13 +6,7 @@
 
     public class ParameterGenerator : ParameterSource
     {
-        readonly List<ParameterSource> sources;
-
-        public ParameterGenerator(IReadOnlyList<ParameterSource> parameterSources)
-            => sources = new List<ParameterSource>(parameterSources);
-
-        public ParameterGenerator()
-            => sources = new List<ParameterSource>();
+        readonly List<ParameterSource> sources = new List<ParameterSource>();
 
         /// <summary>
         /// Includes the given type as a generator of test method parameters.

@@ -23,7 +23,6 @@
 
             Classes = new ClassExpression(Config);
             Methods = new MethodExpression(Config);
-            Parameters = Config.ParameterGenerator;
         }
 
         /// <summary>
@@ -42,10 +41,5 @@
         /// and what order to run them in.
         /// </summary>
         public MethodExpression Methods { get; }
-
-        /// <summary>
-        /// Defines the set of parameter sources, which provide inputs to parameterized test methods.
-        /// </summary>
-        public ParameterGenerator Parameters { get; }
     }
 }

@@ -44,9 +44,6 @@
         public void AddTestMethodCondition(Func<MethodInfo, bool> testMethodCondition)
             => testMethodConditions.Add(testMethodCondition);
 
-        public void AddParameterSource(ParameterSource parameterSource)
-            => ParameterGenerator.Add(parameterSource);
-
         public IReadOnlyList<Func<Type, bool>> TestClassConditions => testClassConditions;
         public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions => testMethodConditions;
         public ParameterGenerator ParameterGenerator { get; }

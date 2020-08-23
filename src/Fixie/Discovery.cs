@@ -23,7 +23,7 @@
 
             Classes = new ClassExpression(Config);
             Methods = new MethodExpression(Config);
-            Parameters = new ParameterSourceExpression(Config);
+            Parameters = Config.ParameterGenerator;
         }
 
         /// <summary>
@@ -46,6 +46,6 @@
         /// <summary>
         /// Defines the set of parameter sources, which provide inputs to parameterized test methods.
         /// </summary>
-        public ParameterSourceExpression Parameters { get; }
+        public ParameterGenerator Parameters { get; }
     }
 }

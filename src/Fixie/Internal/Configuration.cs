@@ -8,7 +8,6 @@
     {
         readonly List<Func<Type, bool>> testClassConditions;
         readonly List<Func<MethodInfo, bool>> testMethodConditions;
-        readonly List<ParameterSource> parameterSources;
         bool usingDefaultTestClassCondition;
 
         public Configuration()
@@ -21,7 +20,6 @@
                 x => x.Name.EndsWith("Tests")
             };
             testMethodConditions = new List<Func<MethodInfo, bool>>();
-            parameterSources = new List<ParameterSource>();
         }
 
         public Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> OrderMethods { get; set; }
@@ -45,11 +43,7 @@
         public void AddTestMethodCondition(Func<MethodInfo, bool> testMethodCondition)
             => testMethodConditions.Add(testMethodCondition);
 
-        public void AddParameterSource(ParameterSource parameterSource)
-            => parameterSources.Add(parameterSource);
-
         public IReadOnlyList<Func<Type, bool>> TestClassConditions => testClassConditions;
         public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions => testMethodConditions;
-        public IReadOnlyList<ParameterSource> ParameterSources => parameterSources;
     }
 }

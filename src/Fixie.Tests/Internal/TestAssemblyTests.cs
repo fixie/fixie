@@ -1,8 +1,6 @@
 namespace Fixie.Tests.Internal
 {
     using System;
-    using System.Collections.Generic;
-    using System.Reflection;
     using Assertions;
     using Fixie.Internal;
     using static Utility;
@@ -116,20 +114,6 @@ namespace Fixie.Tests.Internal
         {
             public void SkipA() { throw new ShouldBeUnreachableException(); }
             public void SkipB() { throw new ShouldBeUnreachableException(); }
-        }
-
-        class BuggyParameterGenerationTestClass
-        {
-            public void ParameterizedA(int i) { }
-            public void ParameterizedB(int i) { }
-        }
-
-        class BuggyParameterSource : ParameterSource
-        {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
-            {
-                throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
-            }
         }
     }
 }

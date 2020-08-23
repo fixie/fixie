@@ -8,8 +8,8 @@
     {
         readonly IReadOnlyList<ParameterSource> parameterSources;
 
-        public ParameterGenerator(Discovery discovery)
-            => parameterSources = discovery.Config.ParameterSources;
+        public ParameterGenerator(IReadOnlyList<ParameterSource> parameterSources)
+            => this.parameterSources = parameterSources;
 
         public IEnumerable<object?[]> GetParameters(MethodInfo method)
             => parameterSources.SelectMany(source => source.GetParameters(method));

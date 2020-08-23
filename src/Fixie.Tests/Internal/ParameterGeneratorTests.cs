@@ -61,7 +61,7 @@
 
         IEnumerable<object?[]> DiscoveredParameters(Discovery discovery)
         {
-            return new ParameterGenerator(discovery).GetParameters(method);
+            return new ParameterGenerator(discovery.Config.ParameterSources).GetParameters(method);
         }
 
         class SampleTestClass

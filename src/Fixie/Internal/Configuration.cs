@@ -20,7 +20,6 @@
                 x => x.Name.EndsWith("Tests")
             };
             testMethodConditions = new List<Func<MethodInfo, bool>>();
-            ParameterGenerator = new ParameterGenerator();
         }
 
         public Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> OrderMethods { get; set; }
@@ -46,6 +45,5 @@
 
         public IReadOnlyList<Func<Type, bool>> TestClassConditions => testClassConditions;
         public IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions => testMethodConditions;
-        public ParameterGenerator ParameterGenerator { get; }
     }
 }

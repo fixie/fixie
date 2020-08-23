@@ -103,7 +103,7 @@
             
             var classDiscoverer = new ClassDiscoverer(discovery);
             var methodDiscoverer = new MethodDiscoverer(discovery);
-            var parameterGenerator = discovery.Config.ParameterGenerator;
+            var parameterGenerator = new ParameterGenerator();
 
             var classes = classDiscoverer.TestClasses(candidateTypes);
 

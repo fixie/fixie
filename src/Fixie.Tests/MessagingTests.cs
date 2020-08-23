@@ -70,11 +70,7 @@
 
                     test.RunCases(@case =>
                     {
-                        var instance = testClass.Construct();
-
-                        @case.Execute(instance);
-
-                        instance.Dispose();
+                        @case.Execute();
                     });
                 });
             }

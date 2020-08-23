@@ -43,7 +43,7 @@ namespace Fixie.Tests.Internal
                 typeof(PassFailTestClass), typeof(SkipTestClass)
             };
             var discovery = new SelfTestDiscovery();
-            var execution = new CreateInstancePerClass();
+            var execution = new CreateInstancePerCase();
 
             new TestAssembly(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
 
@@ -66,7 +66,7 @@ namespace Fixie.Tests.Internal
                 typeof(PassFailTestClass), typeof(SkipTestClass)
             };
             var discovery = new SelfTestDiscovery();
-            var execution = new CreateInstancePerClass();
+            var execution = new CreateInstancePerCase();
 
             discovery.Methods
                 .Shuffle(new Random(1));
@@ -82,21 +82,15 @@ namespace Fixie.Tests.Internal
                 Self + "+SkipTestClass.SkipA skipped");
         }
 
-        class CreateInstancePerClass : Execution
+        class CreateInstancePerCase : Execution
         {
             public void Execute(TestClass testClass)
             {
-                var instance = testClass.Construct();
-
                 testClass.RunTests(test =>
                 {
-                    if (test.Method.Name.Contains("Skip"))
-                        return;
-                    
-                    test.RunCases(@case => @case.Execute(instance));
+                    if (!test.Method.Name.Contains("Skip"))
+                        test.RunCases(@case => @case.Execute());
                 });
-
-                instance.Dispose();
             }
         }
 

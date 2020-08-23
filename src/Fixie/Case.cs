@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using System.Runtime.ExceptionServices;
     using Internal;
 
     /// <summary>
@@ -124,6 +125,37 @@
             {
                 Fail(exception);
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Execute the test case against a new instance of the test class,
+        /// causing the case state to become either passing or failing.
+        /// </summary>
+        /// <returns>
+        /// For void methods, returns null.
+        /// For synchronous methods, returns the value returned by the test method.
+        /// For async Task methods, returns null after awaiting the Task.
+        /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
+        /// </returns>
+        public object? Execute()
+        {
+            var instance = Method.IsStatic ? null : Construct(Method.ReflectedType!);
+            var result = Execute(instance);
+            instance.Dispose();
+            return result;
+        }
+
+        static object? Construct(Type type)
+        {
+            try
+            {
+                return Activator.CreateInstance(type);
+            }
+            catch (TargetInvocationException exception)
+            {
+                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
+                throw; //Unreachable.
             }
         }
     }

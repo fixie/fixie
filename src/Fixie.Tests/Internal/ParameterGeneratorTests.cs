@@ -53,9 +53,9 @@
                     new object[] { "ParameterizedMethod", 3, true });
         }
 
-        IEnumerable<object?[]> GeneratedParameters(ParameterGenerator customDiscovery)
+        IEnumerable<object?[]> GeneratedParameters(ParameterSource parameterSource)
         {
-            return customDiscovery.GetParameters(method);
+            return parameterSource.GetParameters(method);
         }
 
         class SampleTestClass

@@ -34,7 +34,7 @@
             return this;
         }
 
-        public IEnumerable<object?[]> GetParameters(MethodInfo method)
+        IEnumerable<object?[]> ParameterSource.GetParameters(MethodInfo method)
             => sources.SelectMany(source => source.GetParameters(method));
     }
 }

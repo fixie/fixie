@@ -25,7 +25,7 @@
 
         internal bool Invoked { get; private set; }
 
-        void Run(object?[] parameters, Action<Case> caseLifecycle)
+        public void Run(object?[] parameters, Action<Case> caseLifecycle)
         {
             Invoked = true;
 

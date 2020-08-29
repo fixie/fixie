@@ -33,6 +33,25 @@
             }
         }
 
+        class ExplicitlyParameterizedExecution : Execution
+        {
+            public void Execute(TestClass testClass)
+            {
+                testClass.RunTests(test =>
+                {
+                    if (test.HasParameters)
+                    {
+                        foreach (var parameters in InputAttributeParameterSource(test.Method))
+                            test.Run(parameters, @case => @case.Execute());
+                    }
+                    else
+                    {
+                        test.Run(@case => @case.Execute());
+                    }
+                });
+            }
+        }
+
         public void ShouldAllowExecutionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
             var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
@@ -138,6 +157,17 @@
         public void ShouldResolveGenericTypeParameters()
         {
             var execution = new ParameterizedExecution(InputAttributeParameterSource);
+            ShouldResolveGenericTypeParameters(execution);
+        }
+
+        public void ShouldSupportExplicitParameterization()
+        {
+            var execution = new ExplicitlyParameterizedExecution();
+            ShouldResolveGenericTypeParameters(execution);
+        }
+
+        void ShouldResolveGenericTypeParameters(Execution execution)
+        {
             Run<GenericTestClass>(discovery, execution)
                 .ShouldBe(
                     For<GenericTestClass>(

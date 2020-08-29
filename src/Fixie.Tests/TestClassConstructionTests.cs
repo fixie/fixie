@@ -136,7 +136,7 @@ namespace Fixie.Tests
                 testClass.RunTests(test =>
                 {
                     if (!ShouldSkip(test))
-                        test.RunCases(UsingInputAttibutes, @case => @case.Execute());
+                        test.RunCases(UsingInputAttibutes);
                 });
             }
         }
@@ -151,7 +151,7 @@ namespace Fixie.Tests
                 testClass.RunTests(test =>
                 {
                     if (!ShouldSkip(test))
-                        test.RunCases(UsingInputAttibutes, @case => @case.Execute(instance));
+                        test.RunCases(UsingInputAttibutes, instance);
                 });
 
                 instance.Dispose();

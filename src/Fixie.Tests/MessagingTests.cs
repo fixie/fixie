@@ -65,10 +65,7 @@
                         return;
                     }
 
-                    test.RunCases(UsingInputAttibutes, @case =>
-                    {
-                        @case.Execute();
-                    });
+                    test.RunCases(UsingInputAttibutes);
                 });
             }
 

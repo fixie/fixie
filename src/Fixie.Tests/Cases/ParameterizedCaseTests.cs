@@ -25,10 +25,7 @@
             {
                 testClass.RunTests(test =>
                 {
-                    test.RunCases(parameterSource, @case =>
-                    {
-                        @case.Execute();
-                    });
+                    test.RunCases(parameterSource);
                 });
             }
         }
@@ -42,11 +39,11 @@
                     if (test.HasParameters)
                     {
                         foreach (var parameters in InputAttributeParameterSource(test.Method))
-                            test.Run(parameters, @case => @case.Execute());
+                            test.Run(parameters);
                     }
                     else
                     {
-                        test.Run(@case => @case.Execute());
+                        test.Run();
                     }
                 });
             }

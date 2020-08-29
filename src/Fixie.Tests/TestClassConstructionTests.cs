@@ -32,9 +32,11 @@ namespace Fixie.Tests
                 WhereAmI();
             }
 
-            public void Pass()
+            [Input(1, 1)]
+            [Input(2, 2)]
+            public void Pass(int i)
             {
-                WhereAmI();
+                WhereAmI(i);
             }
 
             public void Fail()
@@ -116,6 +118,9 @@ namespace Fixie.Tests
             }
         }
 
+        static void WhereAmI(object parameter, [CallerMemberName] string member = default!)
+            => System.Console.WriteLine($"{member}({parameter})");
+        
         static void WhereAmI([CallerMemberName] string member = default!)
             => System.Console.WriteLine(member);
 
@@ -124,18 +129,22 @@ namespace Fixie.Tests
 
         class CreateInstancePerCase : Execution
         {
+            readonly ParameterSource parameterSource = new InputAttributeParameterSource();
+
             public void Execute(TestClass testClass)
             {
                 testClass.RunTests(test =>
                 {
                     if (!ShouldSkip(test))
-                        test.RunCases(@case => @case.Execute());
+                        test.RunCases(parameterSource, @case => @case.Execute());
                 });
             }
         }
 
         class CreateInstancePerClass : Execution
         {
+            readonly ParameterSource parameterSource = new InputAttributeParameterSource();
+
             public void Execute(TestClass testClass)
             {
                 var type = testClass.Type;
@@ -144,7 +153,7 @@ namespace Fixie.Tests
                 testClass.RunTests(test =>
                 {
                     if (!ShouldSkip(test))
-                        test.RunCases(@case => @case.Execute(instance));
+                        test.RunCases(parameterSource, @case => @case.Execute(instance));
                 });
 
                 instance.Dispose();
@@ -153,10 +162,15 @@ namespace Fixie.Tests
 
         public void ShouldConstructPerCaseByDefault()
         {
+            //NOTE: With no input parameter or skip behaviors,
+            //      all test methods are attempted once and with zero
+            //      parameters, so Skip() is reached and Pass(int)
+            //      is attempted once but never reached.
+
             Run<SampleTestClass, DefaultExecution>()
                 .ShouldBe(
                     ".ctor", "Fail", "Dispose",
-                    ".ctor", "Pass", "Dispose",
+                    ".ctor", "Dispose",
                     ".ctor", "Skip", "Dispose");
         }
 
@@ -165,13 +179,14 @@ namespace Fixie.Tests
             Run<SampleTestClass, CreateInstancePerCase>()
                 .ShouldBe(
                     ".ctor", "Fail", "Dispose",
-                    ".ctor", "Pass", "Dispose");
+                    ".ctor", "Pass(1)", "Dispose",
+                    ".ctor", "Pass(2)", "Dispose");
         }
 
         public void ShouldAllowConstructingPerClass()
         {
             Run<SampleTestClass, CreateInstancePerClass>()
-                .ShouldBe(".ctor", "Fail", "Pass", "Dispose");
+                .ShouldBe(".ctor", "Fail", "Pass(1)", "Pass(2)", "Dispose");
         }
 
         public void ShouldBypassConstructionWhenConstructingPerCaseAndAllCasesAreSkipped()

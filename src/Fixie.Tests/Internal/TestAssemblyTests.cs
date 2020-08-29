@@ -87,7 +87,7 @@ namespace Fixie.Tests.Internal
                 testClass.RunTests(test =>
                 {
                     if (!test.Method.Name.Contains("Skip"))
-                        test.RunCases(@case => @case.Execute());
+                        test.Run(@case => @case.Execute());
                 });
             }
         }

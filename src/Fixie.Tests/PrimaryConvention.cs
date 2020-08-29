@@ -13,7 +13,7 @@
         {
             testClass.RunTests(test =>
             {
-                test.RunCases(@case =>
+                test.Run(@case =>
                 {
                     @case.Execute();
 

@@ -138,7 +138,7 @@ namespace Fixie.Tests.Cases
             {
                 testClass.RunTests(test =>
                 {
-                    test.RunCases(@case =>
+                    test.Run(@case =>
                     {
                         var returnValue = @case.Execute();
 

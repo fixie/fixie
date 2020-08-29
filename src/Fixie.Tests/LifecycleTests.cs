@@ -229,7 +229,7 @@ namespace Fixie.Tests
             {
                 testClass.RunTests(test =>
                 {
-                    //Test lifecycle chooses not to invoke test.RunCases(...).
+                    //Test lifecycle chooses not to invoke test.Run(...).
                     //Since the tests never run, they are all considered
                     //'skipped'.
                 });
@@ -242,7 +242,7 @@ namespace Fixie.Tests
             {
                 testClass.RunTests(test =>
                 {
-                    test.RunCases(@case =>
+                    test.Run(@case =>
                     {
                         //Case lifecycle chooses not to invoke @case.Execute(instance).
                         //Since the test cases never run, they are all considered

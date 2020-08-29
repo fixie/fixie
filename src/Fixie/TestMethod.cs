@@ -61,7 +61,7 @@
                 recorder.Skip(@case, output);
         }
 
-        public void RunCases(Action<Case> caseLifecycle)
+        public void Run(Action<Case> caseLifecycle)
         {
             Run(EmptyParameters, caseLifecycle);
         }

@@ -69,7 +69,7 @@
         public void RunCases(ParameterSource parameterSource, Action<Case> caseLifecycle)
         {
             var lazyInvocations = HasParameters
-                ? parameterSource.GetParameters(Method)
+                ? parameterSource(Method)
                 : InvokeOnceWithZeroParameters;
 
             foreach (var parameters in lazyInvocations)

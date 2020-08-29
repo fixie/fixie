@@ -175,7 +175,7 @@ namespace Fixie.Tests
             readonly ParameterSource parameterSource;
 
             public InstrumentedExecution()
-                : this(new InputAttributeParameterSource()) { }
+                : this(UsingInputAttributes) { }
 
             public InstrumentedExecution(ParameterSource parameterSource)
                 => this.parameterSource = parameterSource;
@@ -207,6 +207,11 @@ namespace Fixie.Tests
         static void CaseTearDown() => WhereAmI();
         static void TestTearDown() => WhereAmI();
         static void ClassTearDown() => WhereAmI();
+
+        static IEnumerable<object?[]> UsingInputAttributes(MethodInfo method)
+            => method
+                .GetCustomAttributes<InputAttribute>(true)
+                .Select(input => input.Parameters);
 
         class ShortCircuitClassExecution : Execution
         {
@@ -249,32 +254,27 @@ namespace Fixie.Tests
 
         class RunHooksTwice : Execution
         {
-            readonly ParameterSource parameterSource = new InputAttributeParameterSource();
-
             public void Execute(TestClass testClass)
             {
                 testClass.RunTests(test =>
                 {
                     if (test.Method.Name.Contains("Skip")) return;
-                    test.RunCases(parameterSource, @case => { @case.Execute(); @case.Execute(); });
-                    test.RunCases(parameterSource, @case => { @case.Execute(); @case.Execute(); });
+                    test.RunCases(UsingInputAttributes, @case => { @case.Execute(); @case.Execute(); });
+                    test.RunCases(UsingInputAttributes, @case => { @case.Execute(); @case.Execute(); });
                 });
 
                 testClass.RunTests(test =>
                 {
                     if (test.Method.Name.Contains("Skip")) return;
-                    test.RunCases(parameterSource, @case => { @case.Execute(); @case.Execute(); });
-                    test.RunCases(parameterSource, @case => { @case.Execute(); @case.Execute(); });
+                    test.RunCases(UsingInputAttributes, @case => { @case.Execute(); @case.Execute(); });
+                    test.RunCases(UsingInputAttributes, @case => { @case.Execute(); @case.Execute(); });
                 });
             }
         }
 
-        class BuggyParameterSource : ParameterSource
+        static IEnumerable<object[]> BuggyParameterSource(MethodInfo method)
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
-            {
-                throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
-            }
+            throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
         }
 
         public void ShouldRunAllTestsByDefault()
@@ -478,7 +478,7 @@ namespace Fixie.Tests
 
         public void ShouldFailTestsWhenCustomParameterGenerationThrows()
         {
-            var execution = new InstrumentedExecution(new BuggyParameterSource());
+            var execution = new InstrumentedExecution(BuggyParameterSource);
             var output = Run<ParameterizedSampleTestClass>(execution);
 
             output.ShouldHaveResults(

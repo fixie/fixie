@@ -1,7 +1,9 @@
 namespace Fixie.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
     using Assertions;
     using Fixie.Internal;
@@ -129,22 +131,18 @@ namespace Fixie.Tests
 
         class CreateInstancePerCase : Execution
         {
-            readonly ParameterSource parameterSource = new InputAttributeParameterSource();
-
             public void Execute(TestClass testClass)
             {
                 testClass.RunTests(test =>
                 {
                     if (!ShouldSkip(test))
-                        test.RunCases(parameterSource, @case => @case.Execute());
+                        test.RunCases(UsingInputAttibutes, @case => @case.Execute());
                 });
             }
         }
 
         class CreateInstancePerClass : Execution
         {
-            readonly ParameterSource parameterSource = new InputAttributeParameterSource();
-
             public void Execute(TestClass testClass)
             {
                 var type = testClass.Type;
@@ -153,12 +151,17 @@ namespace Fixie.Tests
                 testClass.RunTests(test =>
                 {
                     if (!ShouldSkip(test))
-                        test.RunCases(parameterSource, @case => @case.Execute(instance));
+                        test.RunCases(UsingInputAttibutes, @case => @case.Execute(instance));
                 });
 
                 instance.Dispose();
             }
         }
+
+        static IEnumerable<object?[]> UsingInputAttibutes(MethodInfo method)
+            => method
+                .GetCustomAttributes<InputAttribute>(true)
+                .Select(input => input.Parameters);
 
         public void ShouldConstructPerCaseByDefault()
         {

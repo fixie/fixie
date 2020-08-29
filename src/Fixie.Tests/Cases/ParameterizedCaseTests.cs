@@ -10,15 +10,9 @@
     public class ParameterizedCaseTests
     {
         readonly Discovery discovery;
-        readonly ParameterGenerator parameters;
-        readonly Execution execution;
 
         public ParameterizedCaseTests()
-        {
-            discovery = new SelfTestDiscovery();
-            parameters = new ParameterGenerator();
-            execution = new ParameterizedExecution(parameters);
-        }
+            => discovery = new SelfTestDiscovery();
 
         class ParameterizedExecution : Execution
         {
@@ -41,8 +35,7 @@
 
         public void ShouldAllowExecutionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
-            parameters.Add<InputAttributeOrDefaultParameterSource>();
-
+            var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
@@ -53,20 +46,9 @@
                         ".ZeroArgs passed"));
         }
 
-        public void ShouldSkipWhenInputParameterGenerationHasNotBeenCustomizedYetTestMethodAcceptsParameters()
+        public void ShouldSkipWhenInputParameterGenerationYieldsZeroSetsOfInputs()
         {
-            Run<ParameterizedTestClass>(discovery, execution)
-                .ShouldBe(
-                    For<ParameterizedTestClass>(
-                        ".IntArg skipped",
-                        ".MultipleCasesFromAttributes skipped",
-                        ".ZeroArgs passed"));
-        }
-
-        public void ShouldSkipWhenInputParameterGenerationHasBeenCustomizedYetYieldsZeroSetsOfInputs()
-        {
-            parameters.Add<EmptyParameterSource>();
-
+            var execution = new ParameterizedExecution(EmptyParameterSource);
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
@@ -77,15 +59,14 @@
 
         public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
         {
-            parameters.Add(new FixedParameterSource(new[]
+            var execution = new ParameterizedExecution(method => new[]
             {
                 new object[] { },
-                new object[] { 0 },
-                new object[] { 0, 1 },
-                new object[] { 0, 1, 2 },
-                new object[] { 0, 1, 2, 3 }
-            }));
-
+                new object[] {0},
+                new object[] {0, 1},
+                new object[] {0, 1, 2},
+                new object[] {0, 1, 2, 3}
+            });
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
@@ -106,8 +87,7 @@
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
-            parameters.Add<LazyBuggyParameterSource>();
-
+            var execution = new ParameterizedExecution(LazyBuggyParameterSource);
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
@@ -129,8 +109,7 @@
             //when trying to handle the IntArg test method. Since IntArg runs first,
             //this test demonstrates how the failure is isolated to that test method.
 
-            parameters.Add<EagerBuggyParameterSource>();
-
+            var execution = new ParameterizedExecution(EagerBuggyParameterSource);
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
@@ -144,8 +123,7 @@
 
         public void ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
         {
-            parameters.Add<LazyBuggyParameterSource>();
-
+            var execution = new ParameterizedExecution(LazyBuggyParameterSource);
             Run<ConstrainedGenericTestClass>(discovery, execution)
                 .ShouldBe(
                     For<ConstrainedGenericTestClass>(
@@ -159,8 +137,7 @@
 
         public void ShouldResolveGenericTypeParameters()
         {
-            parameters.Add<InputAttributeParameterSource>();
-
+            var execution = new ParameterizedExecution(InputAttributeParameterSource);
             Run<GenericTestClass>(discovery, execution)
                 .ShouldBe(
                     For<GenericTestClass>(
@@ -195,8 +172,7 @@
 
         public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
         {
-            parameters.Add<ComplexGenericParameterSource>();
-
+            var execution = new ParameterizedExecution(ComplexGenericParameterSource);
             Run<ComplexGenericTestClass>(discovery, execution)
                 .ShouldBe(
                     For<ComplexGenericTestClass>(
@@ -210,81 +186,60 @@
                         "Object of type 'System.Char' cannot be converted to type 'System.String'."));
         }
 
-        class InputAttributeOrDefaultParameterSource : ParameterSource
+        static IEnumerable<object?[]> InputAttributeParameterSource(MethodInfo method)
+            => method
+                .GetCustomAttributes<InputAttribute>(true)
+                .Select(input => input.Parameters);
+
+        static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(MethodInfo method)
         {
-            public virtual IEnumerable<object?[]> GetParameters(MethodInfo method)
+            var parameters = method.GetParameters();
+
+            var attributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
+
+            if (attributes.Any())
             {
-                var parameters = method.GetParameters();
-
-                var attributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
-
-                if (attributes.Any())
-                {
-                    foreach (var input in attributes)
-                        yield return input.Parameters;
-                }
-                else
-                {
-                    yield return parameters.Select(p => Default(p.ParameterType)).ToArray();
-                }
+                foreach (var input in attributes)
+                    yield return input.Parameters;
+            }
+            else
+            {
+                yield return parameters.Select(p => Default(p.ParameterType)).ToArray();
             }
         }
 
-        class EmptyParameterSource : ParameterSource
+        static IEnumerable<object[]> EmptyParameterSource(MethodInfo method)
         {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            yield break;
+        }
+
+        static IEnumerable<object[]> LazyBuggyParameterSource(MethodInfo method)
+        {
+            yield return new object[] { 0 };
+            yield return new object[] { 1 };
+            throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
+        }
+
+        static IEnumerable<object?[]> EagerBuggyParameterSource(MethodInfo method)
+        {
+            if (method.Name == nameof(ParameterizedTestClass.IntArg))
+                throw new Exception("Exception thrown while attempting to eagerly build input parameters for method: " + method.Name);
+
+            return InputAttributeOrDefaultParameterSource(method).ToArray();
+        }
+
+        static IEnumerable<object[]> ComplexGenericParameterSource(MethodInfo method)
+        {
+            if (method.Name == "CompoundGenericParameter")
             {
-                yield break;
+                yield return new object[] {new KeyValuePair<int, string>(1, "A"), "System.Int32", "System.String"};
+                yield return new object[] {new KeyValuePair<string, int>("B", 2), "System.String", "System.Int32"};
             }
-        }
-
-        class LazyBuggyParameterSource : ParameterSource
-        {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
+            else if (method.Name == "GenericFuncParameter")
             {
-                yield return new object[] { 0 };
-                yield return new object[] { 1 };
-                throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
-            }
-        }
-
-        class EagerBuggyParameterSource : InputAttributeOrDefaultParameterSource
-        {
-            public override IEnumerable<object?[]> GetParameters(MethodInfo method)
-            {
-                if (method.Name == nameof(ParameterizedTestClass.IntArg))
-                    throw new Exception("Exception thrown while attempting to eagerly build input parameters for method: " + method.Name);
-
-                return base.GetParameters(method).ToArray();
-            }
-        }
-
-        class FixedParameterSource : ParameterSource
-        {
-            readonly object[][] parameters;
-
-            public FixedParameterSource(object[][] parameters)
-                => this.parameters = parameters;
-
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
-                => parameters;
-        }
-
-        class ComplexGenericParameterSource : ParameterSource
-        {
-            public IEnumerable<object[]> GetParameters(MethodInfo method)
-            {
-                if (method.Name == "CompoundGenericParameter")
-                {
-                    yield return new object[] {new KeyValuePair<int, string>(1, "A"), "System.Int32", "System.String"};
-                    yield return new object[] {new KeyValuePair<string, int>("B", 2), "System.String", "System.Int32"};
-                }
-                else if (method.Name == "GenericFuncParameter")
-                {
-                    yield return new object[] {5, new Func<int, int>(i => i * 2), 10};
-                    yield return new object[] {5, new Func<int, string>(i => i.ToString()), "5"};
-                    yield return new object[] {5, new Func<int, string>(i => i.ToString()), '5'};
-                }
+                yield return new object[] {5, new Func<int, int>(i => i * 2), 10};
+                yield return new object[] {5, new Func<int, string>(i => i.ToString()), "5"};
+                yield return new object[] {5, new Func<int, string>(i => i.ToString()), '5'};
             }
         }
 

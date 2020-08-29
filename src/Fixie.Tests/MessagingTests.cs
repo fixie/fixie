@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
     using Assertions;
     using Fixie.Internal;
@@ -53,8 +55,6 @@
 
         class MessagingTestsExecution : Execution
         {
-            readonly ParameterSource parameterSource = new InputAttributeParameterSource();
-
             public void Execute(TestClass testClass)
             {
                 testClass.RunTests(test =>
@@ -65,12 +65,17 @@
                         return;
                     }
 
-                    test.RunCases(parameterSource, @case =>
+                    test.RunCases(UsingInputAttibutes, @case =>
                     {
                         @case.Execute();
                     });
                 });
             }
+
+            static IEnumerable<object?[]> UsingInputAttibutes(MethodInfo method)
+                => method
+                    .GetCustomAttributes<InputAttribute>(true)
+                    .Select(input => input.Parameters);
         }
 
         protected class Base

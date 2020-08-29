@@ -76,9 +76,11 @@ namespace Fixie.Tests
 
         class SampleTestClass
         {
-            public void Pass()
+            [Input(1, 1)]
+            [Input(2, 2)]
+            public void Pass(int i)
             {
-                WhereAmI();
+                WhereAmI(i);
             }
 
             public void Fail()
@@ -152,6 +154,14 @@ namespace Fixie.Tests
             }
         }
 
+        static void WhereAmI(object parameter, [CallerMemberName] string member = default!)
+        {
+            System.Console.WriteLine($"{member}({parameter})");
+
+            if (FailingMember == member)
+                throw new FailureException(member);
+        }
+        
         static void WhereAmI([CallerMemberName] string member = default!)
         {
             System.Console.WriteLine(member);
@@ -165,7 +175,7 @@ namespace Fixie.Tests
             readonly ParameterSource parameterSource;
 
             public InstrumentedExecution()
-                : this(new ParameterGenerator()) { }
+                : this(new InputAttributeParameterSource()) { }
 
             public InstrumentedExecution(ParameterSource parameterSource)
                 => this.parameterSource = parameterSource;
@@ -239,20 +249,22 @@ namespace Fixie.Tests
 
         class RunHooksTwice : Execution
         {
+            readonly ParameterSource parameterSource = new InputAttributeParameterSource();
+
             public void Execute(TestClass testClass)
             {
                 testClass.RunTests(test =>
                 {
                     if (test.Method.Name.Contains("Skip")) return;
-                    test.RunCases(@case => { @case.Execute(); @case.Execute(); });
-                    test.RunCases(@case => { @case.Execute(); @case.Execute(); });
+                    test.RunCases(parameterSource, @case => { @case.Execute(); @case.Execute(); });
+                    test.RunCases(parameterSource, @case => { @case.Execute(); @case.Execute(); });
                 });
 
                 testClass.RunTests(test =>
                 {
                     if (test.Method.Name.Contains("Skip")) return;
-                    test.RunCases(@case => { @case.Execute(); @case.Execute(); });
-                    test.RunCases(@case => { @case.Execute(); @case.Execute(); });
+                    test.RunCases(parameterSource, @case => { @case.Execute(); @case.Execute(); });
+                    test.RunCases(parameterSource, @case => { @case.Execute(); @case.Execute(); });
                 });
             }
         }
@@ -269,12 +281,17 @@ namespace Fixie.Tests
         {
             var output = Run<SampleTestClass, DefaultExecution>();
 
+            //NOTE: With no input parameter or skip behaviors,
+            //      all test methods are attempted and with zero
+            //      parameters, so Skip() is reached and Pass(int)
+            //      is attempted but never reached.
+
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass passed",
+                "SampleTestClass.Pass failed: Parameter count mismatch.",
                 "SampleTestClass.Skip failed: 'Skip' reached a line of code thought to be unreachable.");
 
-            output.ShouldHaveLifecycle("Fail", "Pass", "Skip");
+            output.ShouldHaveLifecycle("Fail", "Skip");
         }
 
         public void ShouldSupportExecutionHooksAtClassAndTestAndCaseLevels()
@@ -283,13 +300,19 @@ namespace Fixie.Tests
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass passed",
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
-                "TestSetUp", "CaseSetUp", "Fail", "CaseTearDown", "TestTearDown",
-                "TestSetUp", "CaseSetUp", "Pass", "CaseTearDown", "TestTearDown",
+                "TestSetUp",
+                "CaseSetUp", "Fail", "CaseTearDown",
+                "TestTearDown",
+                "TestSetUp",
+                "CaseSetUp", "Pass(1)", "CaseTearDown",
+                "CaseSetUp", "Pass(2)", "CaseTearDown",
+                "TestTearDown",
                 "ClassTearDown");
         }
 
@@ -349,13 +372,14 @@ namespace Fixie.Tests
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Pass(1) failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Pass(2) failed: 'CaseSetUp' failed!",
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 "TestSetUp", "CaseSetUp", "TestTearDown",
-                "TestSetUp", "CaseSetUp", "TestTearDown",
+                "TestSetUp", "CaseSetUp", "CaseSetUp", "TestTearDown",
                 "ClassTearDown");
         }
 
@@ -368,13 +392,19 @@ namespace Fixie.Tests
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
+                "SampleTestClass.Pass(1) failed: 'CaseTearDown' failed!",
+                "SampleTestClass.Pass(2) failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
-                "TestSetUp", "CaseSetUp", "Fail", "CaseTearDown", "TestTearDown",
-                "TestSetUp", "CaseSetUp", "Pass", "CaseTearDown", "TestTearDown",
+                "TestSetUp",
+                "CaseSetUp", "Fail", "CaseTearDown",
+                "TestTearDown",
+                "TestSetUp",
+                "CaseSetUp", "Pass(1)", "CaseTearDown",
+                "CaseSetUp", "Pass(2)", "CaseTearDown",
+                "TestTearDown",
                 "ClassTearDown");
         }
 
@@ -388,15 +418,21 @@ namespace Fixie.Tests
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'TestTearDown' failed!",
 
-                "SampleTestClass.Pass passed",
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Pass failed: 'TestTearDown' failed!",
                 
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
-                "TestSetUp", "CaseSetUp", "Fail", "CaseTearDown", "TestTearDown",
-                "TestSetUp", "CaseSetUp", "Pass", "CaseTearDown", "TestTearDown",
+                "TestSetUp",
+                "CaseSetUp", "Fail", "CaseTearDown",
+                "TestTearDown",
+                "TestSetUp",
+                "CaseSetUp", "Pass(1)", "CaseTearDown",
+                "CaseSetUp", "Pass(2)", "CaseTearDown",
+                "TestTearDown",
                 "ClassTearDown");
         }
 
@@ -408,7 +444,8 @@ namespace Fixie.Tests
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass passed",
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Skip skipped",
 
                 "SampleTestClass.Fail failed: 'ClassTearDown' failed!",
@@ -417,8 +454,13 @@ namespace Fixie.Tests
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
-                "TestSetUp", "CaseSetUp", "Fail", "CaseTearDown", "TestTearDown",
-                "TestSetUp", "CaseSetUp", "Pass", "CaseTearDown", "TestTearDown",
+                "TestSetUp",
+                "CaseSetUp", "Fail", "CaseTearDown",
+                "TestTearDown",
+                "TestSetUp",
+                "CaseSetUp", "Pass(1)", "CaseTearDown",
+                "CaseSetUp", "Pass(2)", "CaseTearDown",
+                "TestTearDown",
                 "ClassTearDown");
         }
 
@@ -458,28 +500,35 @@ namespace Fixie.Tests
 
             //NOTE: At the Case level, results are mutated in place,
             //      so here we see 2 fail results and 2 pass results,
-            //      though Fail() and Pass() are each executed 4 time.
-            //      This discrepancy is undesirable. This assertion is
-            //      merely stating the current behavior.
+            //      though Fail(), Pass(1), and Pass(2) are each
+            //      executed 4 times. This discrepancy is undesirable.
+            //      This assertion is merely stating the current
+            //      behavior.
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Pass passed",
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass(2) passed",
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Skip skipped",
 
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass passed",
-                "SampleTestClass.Pass passed",
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass(2) passed",
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
                 "Fail", "Fail", "Fail", "Fail",
-                "Pass", "Pass", "Pass", "Pass",
+                "Pass(1)", "Pass(1)", "Pass(2)", "Pass(2)",
+                "Pass(1)", "Pass(1)", "Pass(2)", "Pass(2)",
                 "Fail", "Fail", "Fail", "Fail",
-                "Pass", "Pass", "Pass", "Pass");
+                "Pass(1)", "Pass(1)", "Pass(2)", "Pass(2)",
+                "Pass(1)", "Pass(1)", "Pass(2)", "Pass(2)");
         }
 
         public void ShouldSkipAllTestsWhenShortCircuitingClassExecution()

@@ -2,8 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
     using System.Runtime.CompilerServices;
     using Assertions;
     using Fixie.Internal;
@@ -75,20 +73,6 @@
             }
         }
 
-        class InputAttributeParameterSource : ParameterSource
-        {
-            public IEnumerable<object?[]> GetParameters(MethodInfo method)
-            {
-                var inputAttributes = method.GetCustomAttributes<InputAttribute>(true)
-                    .OrderBy(x => x.Order)
-                    .ToArray();
-
-                if (inputAttributes.Any())
-                    foreach (var input in inputAttributes)
-                        yield return input.Parameters;
-            }
-        }
-
         protected class Base
         {
             public void Pass()
@@ -143,19 +127,6 @@
 
         class EmptyTestClass
         {
-        }
-
-        [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-        class InputAttribute : Attribute
-        {
-            public InputAttribute(int order, params object?[] parameters)
-            {
-                Order = order;
-                Parameters = parameters;
-            }
-
-            public int Order { get; }
-            public object?[] Parameters { get; }
         }
 
         protected static string At(string method)

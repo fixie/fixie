@@ -32,8 +32,8 @@ namespace Fixie.Tests
                 WhereAmI();
             }
 
-            [Input(1, 1)]
-            [Input(2, 2)]
+            [Input(1)]
+            [Input(2)]
             public void Pass(int i)
             {
                 WhereAmI(i);

@@ -117,8 +117,8 @@
 
         protected class SampleGenericTestClass
         {
-            [Input(1, "abc")]
-            [Input(2, 123)]
+            [Input("abc")]
+            [Input(123)]
             public void ShouldBeString<T>(T genericArgument)
             {
                 genericArgument.ShouldBe<string>();

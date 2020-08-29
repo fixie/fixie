@@ -9,7 +9,6 @@
         public IEnumerable<object?[]> GetParameters(MethodInfo method)
             => method
                 .GetCustomAttributes<InputAttribute>(true)
-                .OrderBy(x => x.Order)
                 .Select(input => input.Parameters);
     }
 }

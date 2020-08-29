@@ -41,7 +41,7 @@
 
         public void ShouldAllowExecutionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
-            parameters.Add<ParametersAttributeOrDefaultParameterSource>();
+            parameters.Add<InputAttributeOrDefaultParameterSource>();
 
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
@@ -159,7 +159,7 @@
 
         public void ShouldResolveGenericTypeParameters()
         {
-            parameters.Add<ParametersAttributeParameterSource>();
+            parameters.Add<InputAttributeParameterSource>();
 
             Run<GenericTestClass>(discovery, execution)
                 .ShouldBe(
@@ -210,25 +210,13 @@
                         "Object of type 'System.Char' cannot be converted to type 'System.String'."));
         }
 
-        class ParametersAttributeParameterSource : ParameterSource
-        {
-            public IEnumerable<object?[]> GetParameters(MethodInfo method)
-            {
-                var attributes = method.GetCustomAttributes<ParametersAttribute>(true).ToArray();
-
-                if (attributes.Any())
-                    foreach (var input in attributes)
-                        yield return input.Parameters;
-            }
-        }
-
-        class ParametersAttributeOrDefaultParameterSource : ParameterSource
+        class InputAttributeOrDefaultParameterSource : ParameterSource
         {
             public virtual IEnumerable<object?[]> GetParameters(MethodInfo method)
             {
                 var parameters = method.GetParameters();
 
-                var attributes = method.GetCustomAttributes<ParametersAttribute>(true).ToArray();
+                var attributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
 
                 if (attributes.Any())
                 {
@@ -260,7 +248,7 @@
             }
         }
 
-        class EagerBuggyParameterSource : ParametersAttributeOrDefaultParameterSource
+        class EagerBuggyParameterSource : InputAttributeOrDefaultParameterSource
         {
             public override IEnumerable<object?[]> GetParameters(MethodInfo method)
             {
@@ -315,9 +303,9 @@
                     throw new Exception("Expected 0, but was " + i);
             }
 
-            [Parameters(1, 1, 2)]
-            [Parameters(1, 2, 3)]
-            [Parameters(5, 5, 11)]
+            [Input(1, 1, 2)]
+            [Input(1, 2, 3)]
+            [Input(5, 5, 11)]
             public void MultipleCasesFromAttributes(int a, int b, int expectedSum)
             {
                 if (a + b != expectedSum)
@@ -327,39 +315,39 @@
 
         class GenericTestClass
         {
-            [Parameters(123, null, 456, typeof(int), typeof(object))]
-            [Parameters(123, "stringArg1", 456, typeof(int), typeof(string))]
-            [Parameters("stringArg", null, null, typeof(string), typeof(object))]
-            [Parameters("stringArg1", null, "stringArg2", typeof(string), typeof(object))]
-            [Parameters(null, "stringArg1", "stringArg2", typeof(string), typeof(string))]
+            [Input(123, null, 456, typeof(int), typeof(object))]
+            [Input(123, "stringArg1", 456, typeof(int), typeof(string))]
+            [Input("stringArg", null, null, typeof(string), typeof(object))]
+            [Input("stringArg1", null, "stringArg2", typeof(string), typeof(object))]
+            [Input(null, "stringArg1", "stringArg2", typeof(string), typeof(string))]
             public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genericArgument1A, T2 genericArgument2, T1 genericArgument1B, Type expectedT1, Type expectedT2)
             {
                 typeof(T1).ShouldBe(expectedT1);
                 typeof(T2).ShouldBe(expectedT2);
             }
 
-            [Parameters(123, 456, typeof(int))]
-            [Parameters("stringArg", 123, typeof(object))]
-            [Parameters(123, "stringArg", typeof(object))]
-            [Parameters(123, null, typeof(int))]
-            [Parameters(null, null, typeof(object))]
-            [Parameters("stringArg", null, typeof(string))]
-            [Parameters("stringArg1", "stringArg2", typeof(string))]
-            [Parameters(null, "stringArg", typeof(string))]
+            [Input(123, 456, typeof(int))]
+            [Input("stringArg", 123, typeof(object))]
+            [Input(123, "stringArg", typeof(object))]
+            [Input(123, null, typeof(int))]
+            [Input(null, null, typeof(object))]
+            [Input("stringArg", null, typeof(string))]
+            [Input("stringArg1", "stringArg2", typeof(string))]
+            [Input(null, "stringArg", typeof(string))]
             public void SingleGenericArgumentMultipleParameters<T>(T genericArgument1, T genericArgument2, Type expectedT)
             {
                 typeof(T).ShouldBe(expectedT);
             }
 
-            [Parameters(123, typeof(int))]
-            [Parameters(null, typeof(object))]
-            [Parameters("stringArg", typeof(string))]
+            [Input(123, typeof(int))]
+            [Input(null, typeof(object))]
+            [Input("stringArg", typeof(string))]
             public void SingleGenericArgument<T>(T genericArgument, Type expectedT)
             {
                 typeof(T).ShouldBe(expectedT);
             }
 
-            [Parameters(123, 123)]
+            [Input(123, 123)]
             public void GenericMethodWithIncorrectParameterCountProvided<T>(T genericArgument)
             {
                 throw new ShouldBeUnreachableException();
@@ -370,8 +358,8 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            [Parameters(1)]
-            [Parameters("Oops")]
+            [Input(1)]
+            [Input("Oops")]
             public void ConstrainedGeneric<T>(T input) where T : struct
             {
                 typeof(T).IsValueType.ShouldBe(true);
@@ -414,17 +402,6 @@
             {
                 typeof(T).IsValueType.ShouldBe(true);
             }
-        }
-
-        [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-        class ParametersAttribute : Attribute
-        {
-            public ParametersAttribute(params object?[] parameters)
-            {
-                Parameters = parameters;
-            }
-
-            public object?[] Parameters { get; }
         }
     }
 }

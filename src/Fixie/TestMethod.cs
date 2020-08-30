@@ -26,7 +26,7 @@
 
         internal bool Invoked { get; private set; }
 
-        void RunCore(object?[] parameters, Action<Case>? caseLifecycle = null)
+        void RunCore(object?[] parameters, object? instance, Action<Case>? caseLifecycle = null)
         {
             Invoked = true;
 
@@ -67,24 +67,24 @@
 
         public void Run(object?[] parameters, Action<Case>? caseLifecycle = null)
         {
-            RunCore(parameters, caseLifecycle);
+            RunCore(parameters, null, caseLifecycle);
         }
 
         public void Run(Action<Case>? caseLifecycle = null)
         {
-            RunCore(EmptyParameters, caseLifecycle);
+            RunCore(EmptyParameters, null, caseLifecycle);
         }
 
         public void RunCases(ParameterSource parameterSource, Action<Case>? caseLifecycle = null)
         {
             foreach (var parameters in GetCases(parameterSource))
-                RunCore(parameters, caseLifecycle);
+                RunCore(parameters, null, caseLifecycle);
         }
 
         public void RunCases(ParameterSource parameterSource, object? instance)
         {
             foreach (var parameters in GetCases(parameterSource))
-                RunCore(parameters, @case => @case.Execute(instance));
+                RunCore(parameters, null, @case => @case.Execute(instance));
         }
 
         IEnumerable<object?[]> GetCases(ParameterSource parameterSource)
@@ -99,7 +99,7 @@
         /// </summary>
         public void Skip(string? reason)
         {
-            RunCore(EmptyParameters, @case =>
+            RunCore(EmptyParameters, null, @case =>
             {
                 @case.Skip(reason);
             });
@@ -110,7 +110,7 @@
         /// </summary>
         public void Fail(Exception reason)
         {
-            RunCore(EmptyParameters, @case =>
+            RunCore(EmptyParameters, null, @case =>
             {
                 @case.Fail(reason);
             });

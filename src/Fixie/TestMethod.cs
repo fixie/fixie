@@ -85,13 +85,24 @@
         }
 
         /// <summary>
-        /// Indicate the test was skipped for the given reason.
+        /// Emit a skip result for this test, with the given reason.
         /// </summary>
         public void Skip(string? reason)
         {
             Run(EmptyParameters, @case =>
             {
                 @case.Skip(reason);
+            });
+        }
+
+        /// <summary>
+        /// Emit a fail result for this test, with the given reason.
+        /// </summary>
+        public void Fail(Exception reason)
+        {
+            Run(EmptyParameters, @case =>
+            {
+                @case.Fail(reason);
             });
         }
     }

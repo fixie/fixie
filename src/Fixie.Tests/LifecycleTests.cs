@@ -215,13 +215,20 @@ namespace Fixie.Tests
                     
                     foreach (var parameters in cases)
                     {
-                        test.Run(parameters, @case =>
+                        try
                         {
                             CaseSetUp();
-                            @case.Execute();
-                            CaseInspection();
+                            test.Run(parameters, @case =>
+                            {
+                                @case.Execute();
+                                CaseInspection();
+                            });
                             CaseTearDown();
-                        });
+                        }
+                        catch (Exception exception)
+                        {
+                            test.Fail(exception);
+                        }
                     }
                     TestTearDown();
                 });
@@ -428,7 +435,7 @@ namespace Fixie.Tests
                 "ClassTearDown");
         }
 
-        public void ShouldFailCaseWhenCaseSetUpThrows()
+        public void ShouldFailTestWhenCaseSetUpThrows()
         {
             FailDuring("CaseSetUp", occurrence: 2);
 
@@ -436,7 +443,7 @@ namespace Fixie.Tests
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass(1) failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
                 "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Skip skipped");
 
@@ -452,7 +459,7 @@ namespace Fixie.Tests
                 "ClassTearDown");
         }
 
-        public void ShouldFailCaseWithoutHidingPrimaryFailureWhenCaseTearDownThrows()
+        public void ShouldFailTestWithoutHidingPrimaryCaseResultsWhenCaseTearDownThrows()
         {
             FailDuring("CaseTearDown");
 
@@ -461,8 +468,10 @@ namespace Fixie.Tests
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Pass(1) failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Pass(2) failed: 'CaseTearDown' failed!",
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
+                "SampleTestClass.Pass(2) passed",
+                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
@@ -493,11 +502,11 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 "TestSetUp",
-                "CaseSetUp", "Fail", "CaseInspection",
+                "CaseSetUp", "Fail", "CaseInspection", "CaseTearDown",
                 "TestTearDown",
                 "TestSetUp",
-                "CaseSetUp", "Pass(1)", "CaseInspection",
-                "CaseSetUp", "Pass(2)", "CaseInspection",
+                "CaseSetUp", "Pass(1)", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Pass(2)", "CaseInspection", "CaseTearDown",
                 "TestTearDown",
                 "ClassTearDown");
         }

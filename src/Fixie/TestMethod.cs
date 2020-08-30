@@ -106,10 +106,8 @@
         /// </summary>
         public void Skip(string? reason)
         {
-            RunCore(EmptyParameters, null, @case =>
-            {
-                @case.Skip(reason);
-            });
+            Invoked = true;
+            recorder.Skip(this, reason);
         }
 
         /// <summary>
@@ -117,10 +115,8 @@
         /// </summary>
         public void Fail(Exception reason)
         {
-            RunCore(EmptyParameters, null, @case =>
-            {
-                @case.Fail(reason);
-            });
+            Invoked = true;
+            recorder.Fail(this, reason);
         }
     }
 }

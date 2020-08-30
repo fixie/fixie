@@ -59,9 +59,10 @@
             bus.Publish(message);
         }
 
-        public void Skip(TestMethod testMethod)
+        public void Skip(TestMethod testMethod, string? reason = null)
         {
             var @case = new Case(testMethod.Method, EmptyParameters);
+            @case.Skip(reason);
             Skip(@case);
         }
 
@@ -85,10 +86,10 @@
             bus.Publish(message);
         }
 
-        public void Fail(TestMethod testMethod, Exception exception)
+        public void Fail(TestMethod testMethod, Exception reason)
         {
             var @case = new Case(testMethod.Method, EmptyParameters);
-            @case.Fail(exception);
+            @case.Fail(reason);
             Fail(@case);
         }
 

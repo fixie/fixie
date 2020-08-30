@@ -1,6 +1,7 @@
 ﻿namespace Fixie
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
     using Internal;
 
@@ -15,7 +16,7 @@
         {
             this.recorder = recorder;
             Method = method;
-            Invoked = false;
+            RecordedResult = false;
         }
 
         bool? hasParameters;
@@ -23,12 +24,10 @@
 
         public MethodInfo Method { get; }
 
-        internal bool Invoked { get; private set; }
+        internal bool RecordedResult { get; private set; }
 
-        public void Run(object?[] parameters, Action<Case>? caseLifecycle = null)
+        void RunCore(object?[] parameters, object? instance, Action<Case>? inspectCase)
         {
-            Invoked = true;
-
             var @case = new Case(Method, parameters);
 
             Exception? caseLifecycleFailure = null;
@@ -38,10 +37,12 @@
             {
                 try
                 {
-                    if (caseLifecycle == null)
-                        @case.Execute();
+                    if (instance != null)
+                        @case.Execute(instance);
                     else
-                        caseLifecycle(@case);
+                        @case.Execute();
+
+                    inspectCase?.Invoke(@case);
                 }
                 catch (Exception exception)
                 {
@@ -62,26 +63,47 @@
                 recorder.Fail(new Case(@case, caseLifecycleFailure));
             else if (@case.State == CaseState.Skipped)
                 recorder.Skip(@case, output);
+            
+            RecordedResult = true;
         }
 
-        public void Run(Action<Case>? caseLifecycle = null)
+        public void Run(Action<Case>? inspectCase = null)
         {
-            Run(EmptyParameters, caseLifecycle);
+            RunCore(EmptyParameters, instance: null, inspectCase);
         }
 
-        public void RunCases(ParameterSource parameterSource, Action<Case>? caseLifecycle = null)
+        public void Run(object?[] parameters, Action<Case>? inspectCase = null)
         {
-            var lazyInvocations = HasParameters
+            RunCore(parameters, instance: null, inspectCase);
+        }
+
+        public void RunCases(ParameterSource parameterSource, Action<Case>? inspectCase = null)
+        {
+            foreach (var parameters in GetCases(parameterSource))
+                RunCore(parameters, instance: null, inspectCase);
+        }
+
+        public void Run(object? instance, Action<Case>? inspectCase = null)
+        {
+            RunCore(EmptyParameters, instance, inspectCase);
+        }
+
+        public void Run(object?[] parameters, object? instance, Action<Case>? inspectCase = null)
+        {
+            RunCore(parameters, instance, inspectCase);
+        }
+
+        public void RunCases(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
+        {
+            foreach (var parameters in GetCases(parameterSource))
+                RunCore(parameters, instance, inspectCase);
+        }
+
+        IEnumerable<object?[]> GetCases(ParameterSource parameterSource)
+        {
+            return HasParameters
                 ? parameterSource(Method)
                 : InvokeOnceWithZeroParameters;
-
-            foreach (var parameters in lazyInvocations)
-                Run(parameters, caseLifecycle);
-        }
-
-        public void RunCases(ParameterSource parameterSource, object? instance)
-        {
-            RunCases(parameterSource, @case => @case.Execute(instance));
         }
 
         /// <summary>
@@ -89,10 +111,8 @@
         /// </summary>
         public void Skip(string? reason)
         {
-            Run(EmptyParameters, @case =>
-            {
-                @case.Skip(reason);
-            });
+            recorder.Skip(this, reason);
+            RecordedResult = true;
         }
 
         /// <summary>
@@ -100,10 +120,8 @@
         /// </summary>
         public void Fail(Exception reason)
         {
-            Run(EmptyParameters, @case =>
-            {
-                @case.Fail(reason);
-            });
+            recorder.Fail(this, reason);
+            RecordedResult = true;
         }
     }
 }

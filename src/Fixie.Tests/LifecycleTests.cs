@@ -459,19 +459,17 @@ namespace Fixie.Tests
                 "ClassTearDown");
         }
 
-        public void ShouldFailTestWithoutHidingPrimaryCaseResultsWhenCaseTearDownThrows()
+        public void ShouldFailCaseWithoutHidingPrimaryFailureWhenCaseInspectionThrows()
         {
-            FailDuring("CaseTearDown");
+            FailDuring("CaseInspection");
 
             var output = Run<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
+                "SampleTestClass.Fail failed: 'CaseInspection' failed!",
+                "SampleTestClass.Pass(1) failed: 'CaseInspection' failed!",
+                "SampleTestClass.Pass(2) failed: 'CaseInspection' failed!",
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
@@ -486,17 +484,19 @@ namespace Fixie.Tests
                 "ClassTearDown");
         }
 
-        public void ShouldFailCaseWithoutHidingPrimaryFailureWhenCaseInspectionThrows()
+        public void ShouldFailTestWithoutHidingPrimaryCaseResultsWhenCaseTearDownThrows()
         {
-            FailDuring("CaseInspection");
+            FailDuring("CaseTearDown");
 
             var output = Run<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'CaseInspection' failed!",
-                "SampleTestClass.Pass(1) failed: 'CaseInspection' failed!",
-                "SampleTestClass.Pass(2) failed: 'CaseInspection' failed!",
+                "SampleTestClass.Fail failed: 'CaseTearDown' failed!",
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
+                "SampleTestClass.Pass(2) passed",
+                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(

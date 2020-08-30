@@ -16,7 +16,7 @@
         {
             this.recorder = recorder;
             Method = method;
-            Invoked = false;
+            RecordedResult = false;
         }
 
         bool? hasParameters;
@@ -24,12 +24,10 @@
 
         public MethodInfo Method { get; }
 
-        internal bool Invoked { get; private set; }
+        internal bool RecordedResult { get; private set; }
 
         void RunCore(object?[] parameters, object? instance, Action<Case>? caseLifecycle = null)
         {
-            Invoked = true;
-
             var @case = new Case(Method, parameters);
 
             Exception? caseLifecycleFailure = null;
@@ -70,6 +68,7 @@
                 recorder.Fail(new Case(@case, caseLifecycleFailure));
             else if (@case.State == CaseState.Skipped)
                 recorder.Skip(@case, output);
+            RecordedResult = true;
         }
 
         public void Run(object?[] parameters, Action<Case>? caseLifecycle = null)
@@ -106,8 +105,8 @@
         /// </summary>
         public void Skip(string? reason)
         {
-            Invoked = true;
             recorder.Skip(this, reason);
+            RecordedResult = true;
         }
 
         /// <summary>
@@ -115,8 +114,8 @@
         /// </summary>
         public void Fail(Exception reason)
         {
-            Invoked = true;
             recorder.Fail(this, reason);
+            RecordedResult = true;
         }
     }
 }

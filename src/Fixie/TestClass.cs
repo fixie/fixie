@@ -49,7 +49,7 @@
                 {
                     testLifecycle(testMethod);
 
-                    if (!testMethod.Invoked)
+                    if (!testMethod.RecordedResult)
                         recorder.Skip(testMethod);
                 }
                 catch (Exception exception)

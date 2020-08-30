@@ -18,11 +18,14 @@
             Invoked = false;
         }
 
+        bool? hasParameters;
+        public bool HasParameters => hasParameters ??= Method.GetParameters().Length > 0;
+
         public MethodInfo Method { get; }
 
         internal bool Invoked { get; private set; }
 
-        void Run(object?[] parameters, Action<Case> caseLifecycle)
+        public void Run(object?[] parameters, Action<Case>? caseLifecycle = null)
         {
             Invoked = true;
 
@@ -35,7 +38,10 @@
             {
                 try
                 {
-                    caseLifecycle(@case);
+                    if (caseLifecycle == null)
+                        @case.Execute();
+                    else
+                        caseLifecycle(@case);
                 }
                 catch (Exception exception)
                 {
@@ -58,19 +64,24 @@
                 recorder.Skip(@case, output);
         }
 
-        public void RunCases(Action<Case> caseLifecycle)
+        public void Run(Action<Case>? caseLifecycle = null)
         {
             Run(EmptyParameters, caseLifecycle);
         }
 
-        public void RunCases(ParameterSource parameterSource, Action<Case> caseLifecycle)
+        public void RunCases(ParameterSource parameterSource, Action<Case>? caseLifecycle = null)
         {
-            var lazyInvocations = Method.GetParameters().Length == 0
-                ? InvokeOnceWithZeroParameters
-                : parameterSource.GetParameters(Method);
+            var lazyInvocations = HasParameters
+                ? parameterSource(Method)
+                : InvokeOnceWithZeroParameters;
 
             foreach (var parameters in lazyInvocations)
                 Run(parameters, caseLifecycle);
+        }
+
+        public void RunCases(ParameterSource parameterSource, object? instance)
+        {
+            RunCases(parameterSource, @case => @case.Execute(instance));
         }
 
         /// <summary>

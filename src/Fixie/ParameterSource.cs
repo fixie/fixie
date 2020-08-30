@@ -13,8 +13,5 @@
     /// invocation of the test method.
     /// </para>
     /// </summary>
-    public interface ParameterSource
-    {
-        IEnumerable<object?[]> GetParameters(MethodInfo method);
-    }
+    public delegate IEnumerable<object?[]> ParameterSource(MethodInfo method);
 }

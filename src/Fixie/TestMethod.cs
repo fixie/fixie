@@ -40,9 +40,16 @@
                 try
                 {
                     if (caseLifecycle == null)
-                        @case.Execute();
+                    {
+                        if (instance != null)
+                            @case.Execute(instance);
+                        else
+                            @case.Execute();
+                    }
                     else
+                    {
                         caseLifecycle(@case);
+                    }
                 }
                 catch (Exception exception)
                 {
@@ -84,7 +91,7 @@
         public void RunCases(ParameterSource parameterSource, object? instance)
         {
             foreach (var parameters in GetCases(parameterSource))
-                RunCore(parameters, null, @case => @case.Execute(instance));
+                RunCore(parameters, instance, null);
         }
 
         IEnumerable<object?[]> GetCases(ParameterSource parameterSource)

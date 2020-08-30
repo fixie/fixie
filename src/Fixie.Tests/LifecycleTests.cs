@@ -408,38 +408,45 @@ namespace Fixie.Tests
 
         public void ShouldFailTestWhenTestSetUpThrows()
         {
-            FailDuring("TestSetUp");
+            FailDuring("TestSetUp", occurrence: 2);
 
             var output = Run<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'TestSetUp' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Pass failed: 'TestSetUp' failed!",
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 "TestSetUp",
+                "CaseSetUp", "Fail", "CaseTearDown",
+                "TestTearDown",
                 "TestSetUp",
                 "ClassTearDown");
         }
 
         public void ShouldFailCaseWhenCaseSetUpThrows()
         {
-            FailDuring("CaseSetUp");
+            FailDuring("CaseSetUp", occurrence: 2);
 
             var output = Run<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Pass(1) failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Pass(2) failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
-                "TestSetUp", "CaseSetUp", "TestTearDown",
-                "TestSetUp", "CaseSetUp", "CaseSetUp", "TestTearDown",
+                "TestSetUp",
+                "CaseSetUp", "Fail", "CaseTearDown",
+                "TestTearDown",
+                "TestSetUp",
+                "CaseSetUp",
+                "CaseSetUp", "Pass(2)", "CaseTearDown",
+                "TestTearDown",
                 "ClassTearDown");
         }
 

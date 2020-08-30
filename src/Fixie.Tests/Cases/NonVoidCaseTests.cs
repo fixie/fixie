@@ -140,11 +140,13 @@ namespace Fixie.Tests.Cases
                 {
                     test.Run(@case =>
                     {
-                        var returnValue = @case.Execute();
+                        @case.Execute();
 
-                        Console.WriteLine(@case.Method.Name + " " + (returnValue ?? "null"));
+                        var result = @case.Result;
 
-                        if (@case.Exception == null && returnValue is bool success && !success)
+                        Console.WriteLine(@case.Method.Name + " " + (result ?? "null"));
+
+                        if (@case.Exception == null && result is bool success && !success)
                             @case.Fail("Boolean test case returned false!");
                     });
                 });

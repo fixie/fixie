@@ -51,6 +51,15 @@
         public Exception? Exception { get; private set; }
 
         /// <summary>
+        /// Gets the object returned by invoking the test case's underlying method.
+        /// For void methods, returns null.
+        /// For synchronous methods, returns the value returned by the test method.
+        /// For async Task methods, returns null after awaiting the Task.
+        /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
+        /// </summary>
+        public object? Result { get; private set; }
+
+        /// <summary>
         /// Indicate the test case was skipped for the given reason.
         /// </summary>
         public void Skip(string? reason)
@@ -107,24 +116,17 @@
         /// Execute the test case against the given instance of the test class,
         /// causing the case state to become either passing or failing.
         /// </summary>
-        /// <returns>
-        /// For void methods, returns null.
-        /// For synchronous methods, returns the value returned by the test method.
-        /// For async Task methods, returns null after awaiting the Task.
-        /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
-        /// </returns>
-        public object? Execute(object? instance)
+        public void Execute(object? instance)
         {
             try
             {
                 var result = Method.Execute(instance, parameters);
                 Pass();
-                return result;
+                Result = result;
             }
             catch (Exception exception)
             {
                 Fail(exception);
-                return null;
             }
         }
 
@@ -132,18 +134,11 @@
         /// Execute the test case against a new instance of the test class,
         /// causing the case state to become either passing or failing.
         /// </summary>
-        /// <returns>
-        /// For void methods, returns null.
-        /// For synchronous methods, returns the value returned by the test method.
-        /// For async Task methods, returns null after awaiting the Task.
-        /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
-        /// </returns>
-        public object? Execute()
+        public void Execute()
         {
             var instance = Method.IsStatic ? null : Construct(Method.ReflectedType!);
-            var result = Execute(instance);
+            Execute(instance);
             instance.Dispose();
-            return result;
         }
 
         static object? Construct(Type type)

@@ -26,7 +26,7 @@
 
         internal bool RecordedResult { get; private set; }
 
-        void RunCore(object?[] parameters, object? instance, Action<Case>? inspectCase = null)
+        void RunCore(object?[] parameters, object? instance, Action<Case>? inspectCase)
         {
             var @case = new Case(Method, parameters);
 
@@ -63,29 +63,40 @@
                 recorder.Fail(new Case(@case, caseLifecycleFailure));
             else if (@case.State == CaseState.Skipped)
                 recorder.Skip(@case, output);
+            
             RecordedResult = true;
-        }
-
-        public void Run(object?[] parameters, Action<Case>? inspectCase = null)
-        {
-            RunCore(parameters, null, inspectCase);
         }
 
         public void Run(Action<Case>? inspectCase = null)
         {
-            RunCore(EmptyParameters, null, inspectCase);
+            RunCore(EmptyParameters, instance: null, inspectCase);
+        }
+
+        public void Run(object?[] parameters, Action<Case>? inspectCase = null)
+        {
+            RunCore(parameters, instance: null, inspectCase);
         }
 
         public void RunCases(ParameterSource parameterSource, Action<Case>? inspectCase = null)
         {
             foreach (var parameters in GetCases(parameterSource))
-                RunCore(parameters, null, inspectCase);
+                RunCore(parameters, instance: null, inspectCase);
         }
 
-        public void RunCases(ParameterSource parameterSource, object? instance)
+        public void Run(object? instance, Action<Case>? inspectCase = null)
+        {
+            RunCore(EmptyParameters, instance, inspectCase);
+        }
+
+        public void Run(object?[] parameters, object? instance, Action<Case>? inspectCase = null)
+        {
+            RunCore(parameters, instance, inspectCase);
+        }
+
+        public void RunCases(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
         {
             foreach (var parameters in GetCases(parameterSource))
-                RunCore(parameters, instance, inspectCase: null);
+                RunCore(parameters, instance, inspectCase);
         }
 
         IEnumerable<object?[]> GetCases(ParameterSource parameterSource)

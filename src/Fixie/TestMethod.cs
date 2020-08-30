@@ -1,6 +1,7 @@
 ﻿namespace Fixie
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
     using Internal;
 
@@ -71,17 +72,21 @@
 
         public void RunCases(ParameterSource parameterSource, Action<Case>? caseLifecycle = null)
         {
-            var lazyInvocations = HasParameters
-                ? parameterSource(Method)
-                : InvokeOnceWithZeroParameters;
-
-            foreach (var parameters in lazyInvocations)
+            foreach (var parameters in GetCases(parameterSource))
                 Run(parameters, caseLifecycle);
         }
 
         public void RunCases(ParameterSource parameterSource, object? instance)
         {
-            RunCases(parameterSource, @case => @case.Execute(instance));
+            foreach (var parameters in GetCases(parameterSource))
+                Run(parameters, @case => @case.Execute(instance));
+        }
+
+        IEnumerable<object?[]> GetCases(ParameterSource parameterSource)
+        {
+            return HasParameters
+                ? parameterSource(Method)
+                : InvokeOnceWithZeroParameters;
         }
 
         /// <summary>

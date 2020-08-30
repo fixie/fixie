@@ -189,16 +189,27 @@ namespace Fixie.Tests
                         return;
 
                     TestSetUp();
-                    test.RunCases(parameterSource, @case =>
+
+                    var cases = test.HasParameters
+                        ? parameterSource(test.Method)
+                        : InvokeOnceWithZeroParameters;
+                    
+                    foreach (var parameters in cases)
                     {
-                        CaseSetUp();
-                        @case.Execute();
-                        CaseTearDown();
-                    });
+                        test.Run(parameters, @case =>
+                        {
+                            CaseSetUp();
+                            @case.Execute();
+                            CaseTearDown();
+                        });
+                    }
                     TestTearDown();
                 });
                 ClassTearDown();
             }
+
+            static readonly object[] EmptyParameters = {};
+            static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
         }
 
         static void ClassSetUp() => WhereAmI();

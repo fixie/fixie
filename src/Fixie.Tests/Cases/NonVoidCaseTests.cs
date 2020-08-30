@@ -140,8 +140,6 @@ namespace Fixie.Tests.Cases
                 {
                     test.Run(@case =>
                     {
-                        @case.Execute();
-
                         var result = @case.Result;
 
                         Console.WriteLine(@case.Method.Name + " " + (result ?? "null"));

@@ -218,11 +218,7 @@ namespace Fixie.Tests
                         try
                         {
                             CaseSetUp();
-                            test.Run(parameters, @case =>
-                            {
-                                @case.Execute();
-                                CaseInspection();
-                            });
+                            test.Run(parameters, @case => CaseInspection());
                             CaseTearDown();
                         }
                         catch (Exception exception)
@@ -275,22 +271,6 @@ namespace Fixie.Tests
             }
         }
 
-        class ShortCircuitCaseExection : Execution
-        {
-            public void Execute(TestClass testClass)
-            {
-                testClass.RunTests(test =>
-                {
-                    test.Run(@case =>
-                    {
-                        //Case lifecycle chooses not to invoke @case.Execute(instance).
-                        //Since the test cases never run, they are all considered
-                        //'skipped'.
-                    });
-                });
-            }
-        }
-
         class RetryExecution : Execution
         {
             const int MaxAttempts = 3;
@@ -313,8 +293,6 @@ namespace Fixie.Tests
                 {
                     test.Run(parameters, @case =>
                     {
-                        @case.Execute();
-
                         remainingAttempts--;
                         
                         if (@case.State == CaseState.Failed && remainingAttempts > 0)
@@ -630,18 +608,6 @@ namespace Fixie.Tests
         public void ShouldSkipAllTestsWhenShortCircuitingTestExecution()
         {
             var output = Run<SampleTestClass, ShortCircuitTestExection>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped",
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Skip skipped");
-
-            output.ShouldHaveLifecycle();
-        }
-
-        public void ShouldSkipAllCasesWhenShortCircuitingCaseExecution()
-        {
-            var output = Run<SampleTestClass, ShortCircuitCaseExection>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail skipped",

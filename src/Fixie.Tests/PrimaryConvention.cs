@@ -15,8 +15,6 @@
             {
                 test.Run(@case =>
                 {
-                    @case.Execute();
-
                     var methodWasExplicitlyRequested = testClass.TargetMethod != null;
 
                     if (methodWasExplicitlyRequested && @case.Exception is AssertException exception)

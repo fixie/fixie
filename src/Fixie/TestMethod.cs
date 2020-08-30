@@ -26,7 +26,7 @@
 
         internal bool RecordedResult { get; private set; }
 
-        void RunCore(object?[] parameters, object? instance, Action<Case>? caseLifecycle = null)
+        void RunCore(object?[] parameters, object? instance, Action<Case>? inspectCase = null)
         {
             var @case = new Case(Method, parameters);
 
@@ -37,17 +37,12 @@
             {
                 try
                 {
-                    if (caseLifecycle == null)
-                    {
-                        if (instance != null)
-                            @case.Execute(instance);
-                        else
-                            @case.Execute();
-                    }
+                    if (instance != null)
+                        @case.Execute(instance);
                     else
-                    {
-                        caseLifecycle(@case);
-                    }
+                        @case.Execute();
+
+                    inspectCase?.Invoke(@case);
                 }
                 catch (Exception exception)
                 {
@@ -71,26 +66,26 @@
             RecordedResult = true;
         }
 
-        public void Run(object?[] parameters, Action<Case>? caseLifecycle = null)
+        public void Run(object?[] parameters, Action<Case>? inspectCase = null)
         {
-            RunCore(parameters, null, caseLifecycle);
+            RunCore(parameters, null, inspectCase);
         }
 
-        public void Run(Action<Case>? caseLifecycle = null)
+        public void Run(Action<Case>? inspectCase = null)
         {
-            RunCore(EmptyParameters, null, caseLifecycle);
+            RunCore(EmptyParameters, null, inspectCase);
         }
 
-        public void RunCases(ParameterSource parameterSource, Action<Case>? caseLifecycle = null)
+        public void RunCases(ParameterSource parameterSource, Action<Case>? inspectCase = null)
         {
             foreach (var parameters in GetCases(parameterSource))
-                RunCore(parameters, null, caseLifecycle);
+                RunCore(parameters, null, inspectCase);
         }
 
         public void RunCases(ParameterSource parameterSource, object? instance)
         {
             foreach (var parameters in GetCases(parameterSource))
-                RunCore(parameters, instance, null);
+                RunCore(parameters, instance, inspectCase: null);
         }
 
         IEnumerable<object?[]> GetCases(ParameterSource parameterSource)

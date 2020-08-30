@@ -543,7 +543,7 @@ namespace Fixie.Tests
                 "ClassTearDown");
         }
 
-        public void ShouldSkipTestAndCaseLifecyclesWhenAllTestsAreSkipped()
+        public void ShouldSkipTestLifecyclesWhenAllTestsAreSkipped()
         {
             var output = Run<AllSkippedTestClass, InstrumentedExecution>();
 

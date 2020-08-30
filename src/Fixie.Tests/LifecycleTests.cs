@@ -11,18 +11,22 @@ namespace Fixie.Tests
     public class LifecycleTests
     {
         static string? FailingMember;
+        static int? FailingMemberOccurrence;
 
         readonly Discovery discovery;
 
         public LifecycleTests()
         {
             FailingMember = null;
+            FailingMemberOccurrence = null;
+
             discovery = new SelfTestDiscovery();
         }
 
-        static void FailDuring(string failingMemberName)
+        static void FailDuring(string failingMemberName, int? occurrence = null)
         {
             FailingMember = failingMemberName;
+            FailingMemberOccurrence = occurrence;
         }
 
         Output Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
@@ -158,16 +162,31 @@ namespace Fixie.Tests
         {
             System.Console.WriteLine($"{member}({parameter})");
 
-            if (FailingMember == member)
-                throw new FailureException(member);
+            ProcessScriptedFailure(member);
         }
         
         static void WhereAmI([CallerMemberName] string member = default!)
         {
             System.Console.WriteLine(member);
 
+            ProcessScriptedFailure(member);
+        }
+
+        static void ProcessScriptedFailure(string member)
+        {
             if (FailingMember == member)
-                throw new FailureException(member);
+            {
+                if (FailingMemberOccurrence == null)
+                    throw new FailureException(member);
+
+                if (FailingMemberOccurrence > 0)
+                {
+                    FailingMemberOccurrence--;
+
+                    if (FailingMemberOccurrence == 0)
+                        throw new FailureException(member);
+                }
+            }
         }
 
         class InstrumentedExecution : Execution
@@ -537,17 +556,20 @@ namespace Fixie.Tests
 
         public void ShouldAllowRunningTestsMultipleTimesWithDistinctResultPerInvocation()
         {
+            FailDuring("Pass", occurrence: 1);
+
             var output = Run<SampleTestClass, RetryExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail skipped: 'Fail' failed! Retrying...",
                 "SampleTestClass.Fail skipped: 'Fail' failed! Retrying...",
                 "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Pass(1) skipped: 'Pass' failed! Retrying...",
                 "SampleTestClass.Pass(1) passed",
                 "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Skip skipped");
 
-            output.ShouldHaveLifecycle("Fail", "Fail", "Fail", "Pass(1)", "Pass(2)");
+            output.ShouldHaveLifecycle("Fail", "Fail", "Fail", "Pass(1)", "Pass(1)", "Pass(2)");
         }
 
         public void ShouldSkipAllTestsWhenShortCircuitingClassExecution()

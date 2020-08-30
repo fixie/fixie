@@ -121,23 +121,6 @@ namespace Fixie.Tests
             }
         }
 
-        class ParameterizedSampleTestClass
-        {
-            public void IntArg(int i)
-            {
-                WhereAmI();
-                if (i != 0)
-                    throw new Exception("Expected 0, but was " + i);
-            }
-
-            public void BoolArg(bool b)
-            {
-                WhereAmI();
-                if (!b)
-                    throw new Exception("Expected true, but was false");
-            }
-        }
-
         static class StaticTestClass
         {
             public static void Pass()
@@ -319,11 +302,6 @@ namespace Fixie.Tests
             static readonly object[] EmptyParameters = {};
         }
 
-        static IEnumerable<object[]> BuggyParameterSource(MethodInfo method)
-        {
-            throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
-        }
-
         public void ShouldRunAllTestsByDefault()
         {
             var output = Run<SampleTestClass, DefaultExecution>();
@@ -402,6 +380,26 @@ namespace Fixie.Tests
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Pass failed: 'TestSetUp' failed!",
+                "SampleTestClass.Skip skipped");
+
+            output.ShouldHaveLifecycle(
+                "ClassSetUp",
+                "TestSetUp",
+                "CaseSetUp", "Fail", "CaseInspection", "CaseTearDown",
+                "TestTearDown",
+                "TestSetUp",
+                "ClassTearDown");
+        }
+
+        public void ShouldFailTestWhenCustomParameterGenerationThrows()
+        {
+            var execution = new InstrumentedExecution(method =>
+                throw new Exception("Failed to yield input parameters."));
+            var output = Run<SampleTestClass>(execution);
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Pass failed: Failed to yield input parameters.",
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
@@ -555,24 +553,6 @@ namespace Fixie.Tests
                 "AllSkippedTestClass.SkipC skipped");
 
             output.ShouldHaveLifecycle("ClassSetUp", "ClassTearDown");
-        }
-
-        public void ShouldFailTestsWhenCustomParameterGenerationThrows()
-        {
-            var execution = new InstrumentedExecution(BuggyParameterSource);
-            var output = Run<ParameterizedSampleTestClass>(execution);
-
-            output.ShouldHaveResults(
-                "ParameterizedSampleTestClass.BoolArg failed: Exception thrown while attempting to yield input parameters for method: BoolArg",
-                "ParameterizedSampleTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg");
-
-            //NOTE: It should be possible to limit the impact of these exceptions.
-            //      This assertion is merely stating the current behavior.
-            output.ShouldHaveLifecycle(
-                "ClassSetUp",
-                "TestSetUp",
-                "TestSetUp",
-                "ClassTearDown");
         }
 
         public void ShouldAllowRunningTestsMultipleTimesWithDistinctResultPerInvocation()

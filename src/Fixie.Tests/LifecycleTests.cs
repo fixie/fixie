@@ -252,24 +252,54 @@ namespace Fixie.Tests
             }
         }
 
-        class RunHooksTwice : Execution
+        class RetryExecution : Execution
         {
+            const int MaxAttempts = 3;
+
             public void Execute(TestClass testClass)
             {
                 testClass.RunTests(test =>
                 {
-                    if (test.Method.Name.Contains("Skip")) return;
-                    test.RunCases(UsingInputAttributes, @case => { @case.Execute(); @case.Execute(); });
-                    test.RunCases(UsingInputAttributes, @case => { @case.Execute(); @case.Execute(); });
-                });
-
-                testClass.RunTests(test =>
-                {
-                    if (test.Method.Name.Contains("Skip")) return;
-                    test.RunCases(UsingInputAttributes, @case => { @case.Execute(); @case.Execute(); });
-                    test.RunCases(UsingInputAttributes, @case => { @case.Execute(); @case.Execute(); });
+                    if (!test.Method.Name.Contains("Skip"))
+                        foreach (var parameters in Cases(test))
+                            RunWithRetries(test, parameters);
                 });
             }
+
+            static void RunWithRetries(TestMethod test, object?[] parameters)
+            {
+                var remainingAttempts = MaxAttempts;
+
+                while (remainingAttempts > 0)
+                {
+                    test.Run(parameters, @case =>
+                    {
+                        @case.Execute();
+
+                        remainingAttempts--;
+                        
+                        if (@case.State == CaseState.Failed && remainingAttempts > 0)
+                            @case.Skip(@case.Exception?.Message + " Retrying...");
+                        else
+                            remainingAttempts = 0;
+                    });
+                }
+            }
+
+            static IEnumerable<object?[]> Cases(TestMethod test)
+            {
+                if (test.HasParameters)
+                {
+                    foreach (var parameters in UsingInputAttributes(test.Method))
+                        yield return parameters;
+                }
+                else
+                {
+                    yield return EmptyParameters;
+                }
+            }
+
+            static readonly object[] EmptyParameters = {};
         }
 
         static IEnumerable<object[]> BuggyParameterSource(MethodInfo method)
@@ -494,41 +524,19 @@ namespace Fixie.Tests
                 "ClassTearDown");
         }
 
-        public void ShouldAllowRunningAllExecutionHooksMultipleTimes()
+        public void ShouldAllowRunningTestsMultipleTimesWithDistinctResultPerInvocation()
         {
-            var output = Run<SampleTestClass, RunHooksTwice>();
-
-            //NOTE: At the Case level, results are mutated in place,
-            //      so here we see 2 fail results and 2 pass results,
-            //      though Fail(), Pass(1), and Pass(2) are each
-            //      executed 4 times. This discrepancy is undesirable.
-            //      This assertion is merely stating the current
-            //      behavior.
+            var output = Run<SampleTestClass, RetryExecution>();
 
             output.ShouldHaveResults(
+                "SampleTestClass.Fail skipped: 'Fail' failed! Retrying...",
+                "SampleTestClass.Fail skipped: 'Fail' failed! Retrying...",
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Skip skipped",
-
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Pass(1) passed",
                 "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Skip skipped");
 
-            output.ShouldHaveLifecycle(
-                "Fail", "Fail", "Fail", "Fail",
-                "Pass(1)", "Pass(1)", "Pass(2)", "Pass(2)",
-                "Pass(1)", "Pass(1)", "Pass(2)", "Pass(2)",
-                "Fail", "Fail", "Fail", "Fail",
-                "Pass(1)", "Pass(1)", "Pass(2)", "Pass(2)",
-                "Pass(1)", "Pass(1)", "Pass(2)", "Pass(2)");
+            output.ShouldHaveLifecycle("Fail", "Fail", "Fail", "Pass(1)", "Pass(2)");
         }
 
         public void ShouldSkipAllTestsWhenShortCircuitingClassExecution()

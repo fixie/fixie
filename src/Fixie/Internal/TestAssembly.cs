@@ -134,18 +134,15 @@
                         classLifecycleFailure = exception;
                     }
 
-                    if (classLifecycleFailure != null)
+                    foreach (var testMethod in testMethods)
                     {
-                        foreach (var testMethod in testMethods)
+                        if (!testMethod.RecordedResult)
+                            testMethod.Skip();
+
+                        if (classLifecycleFailure != null)
                             testMethod.Fail(classLifecycleFailure);
                     }
-                    else
-                    {
-                        foreach (var testMethod in testMethods)
-                            if (!testMethod.RecordedResult)
-                                testMethod.Skip();
-                    }
-            
+
                     recorder.Complete(testClass);
                 }
             }

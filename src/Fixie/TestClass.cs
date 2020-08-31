@@ -43,9 +43,6 @@
                 try
                 {
                     testLifecycle(testMethod);
-
-                    if (!testMethod.RecordedResult)
-                        testMethod.Skip();
                 }
                 catch (Exception exception)
                 {

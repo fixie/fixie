@@ -68,9 +68,9 @@
             Run<ParameterizedTestClass>(discovery, execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
+                        ".ZeroArgs passed",
                         ".IntArg skipped",
-                        ".MultipleCasesFromAttributes skipped",
-                        ".ZeroArgs passed"));
+                        ".MultipleCasesFromAttributes skipped"));
         }
 
         public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
@@ -171,11 +171,7 @@
                         ".ConstrainedGeneric<System.Int32>(1) passed",
                         ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",
 
-                        ".ConstrainedGenericMethodWithNoInputsProvided<T> skipped",
-
                         ".GenericMethodWithIncorrectParameterCountProvided<System.Int32>(123, 123) failed: Parameter count mismatch.",
-
-                        ".GenericMethodWithNoInputsProvided<T> skipped",
 
                         ".MultipleGenericArgumentsMultipleParameters<T1, T2>(123, null, 456, System.Int32, System.Object) failed: Could not resolve type parameters for generic method.",
                         ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",
@@ -194,7 +190,10 @@
                         ".SingleGenericArgumentMultipleParameters<T>(null, null, System.Object) failed: Could not resolve type parameters for generic method.",
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
-                        ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed"));
+                        ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed",
+                        
+                        ".ConstrainedGenericMethodWithNoInputsProvided<T> skipped",
+                        ".GenericMethodWithNoInputsProvided<T> skipped"));
         }
 
         public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()

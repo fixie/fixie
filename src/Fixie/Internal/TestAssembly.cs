@@ -139,10 +139,11 @@
                         foreach (var testMethod in testMethods)
                             recorder.Fail(testMethod, classLifecycleFailure);
                     }
-                    else if (!testClass.Invoked)
+                    else
                     {
                         foreach (var testMethod in testMethods)
-                            recorder.Skip(testMethod);
+                            if (!testMethod.RecordedResult)
+                                recorder.Skip(testMethod);
                     }
             
                     recorder.Complete(testClass);

@@ -20,7 +20,6 @@
 
             Type = type;
             TargetMethod = targetMethod;
-            Invoked = false;
         }
 
         /// <summary>
@@ -35,12 +34,8 @@
         /// </summary>
         public MethodInfo? TargetMethod { get; }
 
-        internal bool Invoked { get; private set; }
-
         public void RunTests(Action<TestMethod> testLifecycle)
         {
-            Invoked = true;
-
             foreach (var testMethod in testMethods)
             {
                 recorder.Start(testMethod);

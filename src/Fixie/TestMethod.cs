@@ -54,15 +54,15 @@
 
             Console.Write(output);
 
+            if (@case.State == CaseState.Skipped)
+                recorder.Skip(@case, output);
             if (@case.State == CaseState.Failed)
                 recorder.Fail(@case, output);
-            else if (@case.State == CaseState.Passed && caseLifecycleFailure == null)
+            else if (@case.State == CaseState.Passed)
                 recorder.Pass(@case, output);
 
             if (caseLifecycleFailure != null)
                 recorder.Fail(new Case(@case, caseLifecycleFailure));
-            else if (@case.State == CaseState.Skipped)
-                recorder.Skip(@case, output);
             
             RecordedResult = true;
         }

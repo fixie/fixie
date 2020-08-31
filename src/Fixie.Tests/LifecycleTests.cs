@@ -440,7 +440,7 @@ namespace Fixie.Tests
                 "ClassTearDown");
         }
 
-        public void ShouldFailCaseWithoutHidingPrimaryFailureWhenCaseInspectionThrows()
+        public void ShouldFailCaseWithoutHidingPrimaryCaseResultsWhenCaseInspectionThrows()
         {
             FailDuring("CaseInspection");
 
@@ -449,7 +449,9 @@ namespace Fixie.Tests
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'CaseInspection' failed!",
+                "SampleTestClass.Pass(1) passed",
                 "SampleTestClass.Pass(1) failed: 'CaseInspection' failed!",
+                "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Pass(2) failed: 'CaseInspection' failed!",
                 "SampleTestClass.Skip skipped");
 

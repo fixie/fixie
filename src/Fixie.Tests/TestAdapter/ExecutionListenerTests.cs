@@ -31,7 +31,7 @@
 
             var messages = recorder.Messages;
 
-            messages.Count.ShouldBe(13);
+            messages.Count.ShouldBe(11);
 
             foreach (var message in messages)
             {
@@ -52,15 +52,13 @@
             var passStart = (TestCase)messages[4];
             var pass = (TestResult)messages[5];
             
-            var skipWithReasonStart = (TestCase)messages[6];
-            var skipWithReason = (TestResult)messages[7];
+            var skipWithReason = (TestResult)messages[6];
             
-            var skipWithoutReasonStart = (TestCase)messages[8];
-            var skipWithoutReason = (TestResult)messages[9];
+            var skipWithoutReason = (TestResult)messages[7];
             
-            var shouldBeStringStart = (TestCase)messages[10];
-            var shouldBeStringPass = (TestResult)messages[11];
-            var shouldBeStringFail = (TestResult)messages[12];
+            var shouldBeStringStart = (TestCase)messages[8];
+            var shouldBeStringPass = (TestResult)messages[9];
+            var shouldBeStringFail = (TestResult)messages[10];
 
             failStart.ShouldBeExecutionTimeTest(TestClass + ".Fail", assemblyPath);
 
@@ -109,8 +107,6 @@
             pass.Messages[0].Text.Lines().ShouldBe("Console.Out: Pass", "Console.Error: Pass");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            skipWithReasonStart.ShouldBeExecutionTimeTest(TestClass + ".SkipWithReason", assemblyPath);
-
             skipWithReason.TestCase.ShouldBeExecutionTimeTest(TestClass+".SkipWithReason", assemblyPath);
             skipWithReason.TestCase.DisplayName.ShouldBe(TestClass+".SkipWithReason");
             skipWithReason.Outcome.ShouldBe(TestOutcome.Skipped);
@@ -119,8 +115,6 @@
             skipWithReason.DisplayName.ShouldBe(TestClass+".SkipWithReason");
             skipWithReason.Messages.ShouldBeEmpty();
             skipWithReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-
-            skipWithoutReasonStart.ShouldBeExecutionTimeTest(TestClass + ".SkipWithoutReason", assemblyPath);
 
             skipWithoutReason.TestCase.ShouldBeExecutionTimeTest(TestClass+".SkipWithoutReason", assemblyPath);
             skipWithoutReason.TestCase.DisplayName.ShouldBe(TestClass+".SkipWithoutReason");

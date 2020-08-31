@@ -38,8 +38,6 @@
         {
             foreach (var testMethod in testMethods)
             {
-                recorder.Start(testMethod);
-
                 try
                 {
                     testLifecycle(testMethod);

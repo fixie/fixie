@@ -109,7 +109,7 @@
         /// <summary>
         /// Emit a skip result for this test, with the given reason.
         /// </summary>
-        public void Skip(string? reason)
+        public void Skip(string? reason = null)
         {
             recorder.Skip(this, reason);
             RecordedResult = true;

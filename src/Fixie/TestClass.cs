@@ -50,11 +50,11 @@
                     testLifecycle(testMethod);
 
                     if (!testMethod.RecordedResult)
-                        recorder.Skip(testMethod);
+                        testMethod.Skip();
                 }
                 catch (Exception exception)
                 {
-                    recorder.Fail(testMethod, exception);
+                    testMethod.Fail(exception);
                 }
             }
         }

@@ -119,7 +119,7 @@
                         ? testMethods.Single()
                         : null;
 
-                    var testClass = new TestClass(recorder, @class, testMethods, targetMethod?.Method);
+                    var testClass = new TestClass(@class, testMethods, targetMethod?.Method);
 
                     recorder.Start(testClass);
 

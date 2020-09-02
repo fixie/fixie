@@ -3,19 +3,16 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using Internal;
 
     /// <summary>
     /// The context in which a test class is running.
     /// </summary>
     public class TestClass
     {
-        readonly ExecutionRecorder recorder;
         readonly IReadOnlyList<TestMethod> testMethods;
 
-        internal TestClass(ExecutionRecorder recorder, Type type, IReadOnlyList<TestMethod> testMethods, MethodInfo? targetMethod)
+        internal TestClass(Type type, IReadOnlyList<TestMethod> testMethods, MethodInfo? targetMethod)
         {
-            this.recorder = recorder;
             this.testMethods = testMethods;
 
             Type = type;

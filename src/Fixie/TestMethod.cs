@@ -59,7 +59,7 @@
 
             if (@case.State == CaseState.Skipped)
                 recorder.Skip(@case, output);
-            if (@case.State == CaseState.Failed)
+            else if (@case.State == CaseState.Failed)
                 recorder.Fail(@case, output);
             else if (@case.State == CaseState.Passed)
                 recorder.Pass(@case, output);

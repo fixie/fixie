@@ -254,16 +254,9 @@ namespace Fixie.Tests
             {
                 foreach (var test in testClass.Tests)
                 {
-                    try
-                    {
-                        //Test lifecycle chooses not to invoke test.Run(...).
-                        //Since the tests never run, they are all considered
-                        //'skipped'.
-                    }
-                    catch (Exception exception)
-                    {
-                        test.Fail(exception);
-                    }
+                    //Test lifecycle chooses not to invoke test.Run(...).
+                    //Since the tests never run, they are all considered
+                    //'skipped'.
                 }
             }
         }
@@ -275,18 +268,9 @@ namespace Fixie.Tests
             public void Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
-                {
-                    try
-                    {
-                        if (!test.Method.Name.Contains("Skip"))
-                            foreach (var parameters in Cases(test))
-                                RunWithRetries(test, parameters);
-                    }
-                    catch (Exception exception)
-                    {
-                        test.Fail(exception);
-                    }
-                }
+                    if (!test.Method.Name.Contains("Skip"))
+                        foreach (var parameters in Cases(test))
+                            RunWithRetries(test, parameters);
             }
 
             static void RunWithRetries(TestMethod test, object?[] parameters)

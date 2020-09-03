@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Tests.Internal
 {
-    using System;
     using System.Collections.Generic;
     using Assertions;
     using Fixie.Internal;
@@ -73,19 +72,8 @@
             public void Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
-                {
-                    try
-                    {
-                        if (test.Method.Name.Contains("Skip"))
-                            continue;
-
+                    if (!test.Method.Name.Contains("Skip"))
                         test.Run();
-                    }
-                    catch (Exception exception)
-                    {
-                        test.Fail(exception);
-                    }
-                }
             }
         }
     }

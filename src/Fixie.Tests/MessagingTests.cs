@@ -59,21 +59,13 @@
             {
                 foreach (var test in testClass.Tests)
                 {
-                    try
+                    if (test.Method.Has<SkipAttribute>(out var skip))
                     {
-                        if (test.Method.Has<SkipAttribute>(out var skip))
-                        {
-                            test.Skip(skip.Reason);
-                        }
-                        else
-                        {
-                            test.RunCases(UsingInputAttibutes);
-                        }
+                        test.Skip(skip.Reason);
+                        continue;
                     }
-                    catch (Exception exception)
-                    {
-                        test.Fail(exception);
-                    }
+
+                    test.RunCases(UsingInputAttibutes);
                 }
             }
 

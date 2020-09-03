@@ -138,22 +138,15 @@ namespace Fixie.Tests.Cases
             {
                 foreach (var test in testClass.Tests)
                 {
-                    try
+                    test.Run(@case =>
                     {
-                        test.Run(@case =>
-                        {
-                            var result = @case.Result;
+                        var result = @case.Result;
 
-                            Console.WriteLine(@case.Method.Name + " " + (result ?? "null"));
+                        Console.WriteLine(@case.Method.Name + " " + (result ?? "null"));
 
-                            if (@case.Exception == null && result is bool success && !success)
-                                @case.Fail("Boolean test case returned false!");
-                        });
-                    }
-                    catch (Exception exception)
-                    {
-                        test.Fail(exception);
-                    }
+                        if (@case.Exception == null && result is bool success && !success)
+                            @case.Fail("Boolean test case returned false!");
+                    });
                 }
             }
         }

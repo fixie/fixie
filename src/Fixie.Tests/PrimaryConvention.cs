@@ -14,21 +14,14 @@
         {
             foreach (var test in testClass.Tests)
             {
-                try
+                test.Run(@case =>
                 {
-                    test.Run(@case =>
-                    {
-                        var methodWasExplicitlyRequested = testClass.TargetMethod != null;
+                    var methodWasExplicitlyRequested = testClass.TargetMethod != null;
 
-                        if (methodWasExplicitlyRequested && @case.Exception is AssertException exception)
-                            if (!exception.HasCompactRepresentations)
-                                LaunchDiffTool(exception);
-                    });
-                }
-                catch (Exception exception1)
-                {
-                    test.Fail(exception1);
-                }
+                    if (methodWasExplicitlyRequested && @case.Exception is AssertException exception)
+                        if (!exception.HasCompactRepresentations)
+                            LaunchDiffTool(exception);
+                });
             }
         }
 

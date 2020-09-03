@@ -23,10 +23,17 @@
 
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(test =>
+                foreach (var test in testClass.Tests)
                 {
-                    test.RunCases(parameterSource);
-                });
+                    try
+                    {
+                        test.RunCases(parameterSource);
+                    }
+                    catch (Exception exception)
+                    {
+                        test.Fail(exception);
+                    }
+                }
             }
         }
 
@@ -34,18 +41,25 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(test =>
+                foreach (var test in testClass.Tests)
                 {
-                    if (test.HasParameters)
+                    try
                     {
-                        foreach (var parameters in InputAttributeParameterSource(test.Method))
-                            test.Run(parameters);
+                        if (test.HasParameters)
+                        {
+                            foreach (var parameters in InputAttributeParameterSource(test.Method))
+                                test.Run(parameters);
+                        }
+                        else
+                        {
+                            test.Run();
+                        }
                     }
-                    else
+                    catch (Exception exception)
                     {
-                        test.Run();
+                        test.Fail(exception);
                     }
-                });
+                }
             }
         }
 

@@ -32,20 +32,5 @@
         /// Null under normal test execution.
         /// </summary>
         public MethodInfo? TargetMethod { get; }
-
-        public void RunTests(Action<TestMethod> testLifecycle)
-        {
-            foreach (var test in Tests)
-            {
-                try
-                {
-                    testLifecycle(test);
-                }
-                catch (Exception exception)
-                {
-                    test.Fail(exception);
-                }
-            }
-        }
     }
 }

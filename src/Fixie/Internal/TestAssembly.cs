@@ -119,7 +119,7 @@
                         ? testMethods.Single()
                         : null;
 
-                    var testClass = new TestClass(recorder, @class, testMethods, targetMethod?.Method);
+                    var testClass = new TestClass(@class, testMethods, targetMethod?.Method);
 
                     recorder.Start(testClass);
 
@@ -134,17 +134,15 @@
                         classLifecycleFailure = exception;
                     }
 
-                    if (classLifecycleFailure != null)
+                    foreach (var testMethod in testMethods)
                     {
-                        foreach (var testMethod in testMethods)
-                            recorder.Fail(testMethod, classLifecycleFailure);
+                        if (!testMethod.RecordedResult)
+                            testMethod.Skip();
+
+                        if (classLifecycleFailure != null)
+                            testMethod.Fail(classLifecycleFailure);
                     }
-                    else if (!testClass.Invoked)
-                    {
-                        foreach (var testMethod in testMethods)
-                            recorder.Skip(testMethod);
-                    }
-            
+
                     recorder.Complete(testClass);
                 }
             }

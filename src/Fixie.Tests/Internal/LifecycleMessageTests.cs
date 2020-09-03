@@ -16,7 +16,7 @@
 
             Run(listener, out _);
 
-            listener.Messages.Count.ShouldBe(19);
+            listener.Messages.Count.ShouldBe(17);
             
             var assemblyStarted = (AssemblyStarted)listener.Messages[0];
             var sampleTestClassStarted = (ClassStarted)listener.Messages[1];
@@ -26,17 +26,16 @@
             var failByAssertion = (CaseFailed)listener.Messages[5];
             var passStarted = (TestStarted)listener.Messages[6];
             var pass = (CasePassed)listener.Messages[7];
-            var skipWithReasonStarted = (TestStarted)listener.Messages[8];
-            var skipWithReason = (CaseSkipped)listener.Messages[9];
-            var skipWithoutReasonStarted = (TestStarted)listener.Messages[10];
-            var skipWithoutReason = (CaseSkipped)listener.Messages[11];
-            var sampleTestClassCompleted = (ClassCompleted)listener.Messages[12];
-            var sampleGenericTestClassStarted = (ClassStarted)listener.Messages[13];
-            var shouldBeStringStarted = (TestStarted)listener.Messages[14];
-            var shouldBeStringPass = (CasePassed)listener.Messages[15];
-            var shouldBeStringFail = (CaseFailed)listener.Messages[16];
-            var sampleGenericTestClassCompleted = (ClassCompleted)listener.Messages[17];
-            var assemblyCompleted = (AssemblyCompleted)listener.Messages[18];
+            
+            var skipWithReason = (CaseSkipped)listener.Messages[8];
+            var skipWithoutReason = (CaseSkipped)listener.Messages[9];
+            var sampleTestClassCompleted = (ClassCompleted)listener.Messages[10];
+            var sampleGenericTestClassStarted = (ClassStarted)listener.Messages[11];
+            var shouldBeStringStarted = (TestStarted)listener.Messages[12];
+            var shouldBeStringPass = (CasePassed)listener.Messages[13];
+            var shouldBeStringFail = (CaseFailed)listener.Messages[14];
+            var sampleGenericTestClassCompleted = (ClassCompleted)listener.Messages[15];
+            var assemblyCompleted = (AssemblyCompleted)listener.Messages[16];
 
             assemblyStarted.Assembly.ShouldBe(assembly);
             
@@ -77,15 +76,11 @@
                 "Expected: 2",
                 "Actual:   1");
 
-            skipWithReasonStarted.Test.Name.ShouldBe(TestClass + ".SkipWithReason");
-
             skipWithReason.Test.Name.ShouldBe(TestClass + ".SkipWithReason");
             skipWithReason.Name.ShouldBe(TestClass + ".SkipWithReason");
             skipWithReason.Output.ShouldBe("");
             skipWithReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             skipWithReason.Reason.ShouldBe("⚠ Skipped with reason.");
-
-            skipWithoutReasonStarted.Test.Name.ShouldBe(TestClass + ".SkipWithoutReason");
 
             skipWithoutReason.Test.Name.ShouldBe(TestClass + ".SkipWithoutReason");
             skipWithoutReason.Name.ShouldBe(TestClass + ".SkipWithoutReason");

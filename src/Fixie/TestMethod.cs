@@ -28,6 +28,9 @@
 
         void RunCore(object?[] parameters, object? instance, Action<Case>? inspectCase)
         {
+            if (!RecordedResult)
+                recorder.Start(this);
+
             var @case = new Case(Method, parameters);
 
             Exception? caseLifecycleFailure = null;
@@ -54,15 +57,15 @@
 
             Console.Write(output);
 
-            if (@case.State == CaseState.Failed)
+            if (@case.State == CaseState.Skipped)
+                recorder.Skip(@case, output);
+            else if (@case.State == CaseState.Failed)
                 recorder.Fail(@case, output);
-            else if (@case.State == CaseState.Passed && caseLifecycleFailure == null)
+            else if (@case.State == CaseState.Passed)
                 recorder.Pass(@case, output);
 
             if (caseLifecycleFailure != null)
                 recorder.Fail(new Case(@case, caseLifecycleFailure));
-            else if (@case.State == CaseState.Skipped)
-                recorder.Skip(@case, output);
             
             RecordedResult = true;
         }
@@ -109,7 +112,7 @@
         /// <summary>
         /// Emit a skip result for this test, with the given reason.
         /// </summary>
-        public void Skip(string? reason)
+        public void Skip(string? reason = null)
         {
             recorder.Skip(this, reason);
             RecordedResult = true;

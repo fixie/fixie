@@ -186,39 +186,46 @@ namespace Fixie.Tests
             {
                 ClassSetUp();
 
-                foreach (var test in testClass.Tests.Where(t => !t.Method.Name.Contains("Skip")))
-                {
-                    try
-                    {
-                        TestSetUp();
-
-                        var cases = test.HasParameters
-                            ? parameterSource(test.Method)
-                            : InvokeOnceWithZeroParameters;
-
-                        foreach (var parameters in cases)
-                        {
-                            try
-                            {
-                                CaseSetUp();
-                                test.Run(parameters, @case => CaseInspection());
-                                CaseTearDown();
-                            }
-                            catch (Exception exception)
-                            {
-                                test.Fail(exception);
-                            }
-                        }
-
-                        TestTearDown();
-                    }
-                    catch (Exception exception)
-                    {
-                        test.Fail(exception);
-                    }
-                }
+                foreach (var test in testClass.Tests)
+                    if (!test.Method.Name.Contains("Skip"))
+                        TestLifecycle(test);
 
                 ClassTearDown();
+            }
+
+            void TestLifecycle(TestMethod test)
+            {
+                try
+                {
+                    TestSetUp();
+
+                    var cases = test.HasParameters
+                        ? parameterSource(test.Method)
+                        : InvokeOnceWithZeroParameters;
+
+                    foreach (var parameters in cases)
+                        CaseLifecycle(test, parameters);
+
+                    TestTearDown();
+                }
+                catch (Exception exception)
+                {
+                    test.Fail(exception);
+                }
+            }
+
+            static void CaseLifecycle(TestMethod test, object?[] parameters)
+            {
+                try
+                {
+                    CaseSetUp();
+                    test.Run(parameters, @case => CaseInspection());
+                    CaseTearDown();
+                }
+                catch (Exception exception)
+                {
+                    test.Fail(exception);
+                }
             }
 
             static readonly object[] EmptyParameters = {};

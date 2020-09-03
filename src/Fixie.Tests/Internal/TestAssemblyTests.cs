@@ -84,11 +84,18 @@ namespace Fixie.Tests.Internal
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(test =>
+                foreach (var test in testClass.Tests)
                 {
-                    if (!test.Method.Name.Contains("Skip"))
-                        test.Run();
-                });
+                    try
+                    {
+                        if (!test.Method.Name.Contains("Skip"))
+                            test.Run();
+                    }
+                    catch (Exception exception)
+                    {
+                        test.Fail(exception);
+                    }
+                }
             }
         }
 

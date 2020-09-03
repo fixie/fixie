@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests
 {
+    using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -11,17 +12,24 @@
     {
         public void Execute(TestClass testClass)
         {
-            testClass.RunTests(test =>
+            foreach (var test in testClass.Tests)
             {
-                test.Run(@case =>
+                try
                 {
-                    var methodWasExplicitlyRequested = testClass.TargetMethod != null;
+                    test.Run(@case =>
+                    {
+                        var methodWasExplicitlyRequested = testClass.TargetMethod != null;
 
-                    if (methodWasExplicitlyRequested && @case.Exception is AssertException exception)
-                        if (!exception.HasCompactRepresentations)
-                            LaunchDiffTool(exception);
-                });
-            });
+                        if (methodWasExplicitlyRequested && @case.Exception is AssertException exception)
+                            if (!exception.HasCompactRepresentations)
+                                LaunchDiffTool(exception);
+                    });
+                }
+                catch (Exception exception1)
+                {
+                    test.Fail(exception1);
+                }
+            }
         }
 
         static void LaunchDiffTool(AssertException exception)

@@ -1,8 +1,22 @@
 ﻿namespace Fixie.Internal
 {
+    using System;
+
     class DefaultExecution : Execution
     {
         public void Execute(TestClass testClass)
-            => testClass.RunTests(test => test.Run());
+        {
+            foreach (var test in testClass.Tests)
+            {
+                try
+                {
+                    test.Run();
+                }
+                catch (Exception exception)
+                {
+                    test.Fail(exception);
+                }
+            }
+        }
     }
 }

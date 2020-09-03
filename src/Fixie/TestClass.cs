@@ -9,20 +9,22 @@
     /// </summary>
     public class TestClass
     {
-        readonly IReadOnlyList<TestMethod> testMethods;
-
-        internal TestClass(Type type, IReadOnlyList<TestMethod> testMethods, MethodInfo? targetMethod)
+        internal TestClass(Type type, IReadOnlyList<TestMethod> tests, MethodInfo? targetMethod)
         {
-            this.testMethods = testMethods;
-
             Type = type;
+            Tests = tests;
             TargetMethod = targetMethod;
         }
 
         /// <summary>
-        /// The test class to execute.
+        /// The test class under execution.
         /// </summary>
         public Type Type { get; }
+
+        /// <summary>
+        /// The test methods under execution.
+        /// </summary>
+        public IReadOnlyList<TestMethod> Tests { get; }
 
         /// <summary>
         /// Gets the target MethodInfo identified by the
@@ -33,15 +35,15 @@
 
         public void RunTests(Action<TestMethod> testLifecycle)
         {
-            foreach (var testMethod in testMethods)
+            foreach (var test in Tests)
             {
                 try
                 {
-                    testLifecycle(testMethod);
+                    testLifecycle(test);
                 }
                 catch (Exception exception)
                 {
-                    testMethod.Fail(exception);
+                    test.Fail(exception);
                 }
             }
         }

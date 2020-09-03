@@ -186,34 +186,31 @@ namespace Fixie.Tests
             {
                 ClassSetUp();
 
-                foreach (var test in testClass.Tests)
+                foreach (var test in testClass.Tests.Where(t => !t.Method.Name.Contains("Skip")))
                 {
                     try
                     {
-                        if (!test.Method.Name.Contains("Skip"))
+                        TestSetUp();
+
+                        var cases = test.HasParameters
+                            ? parameterSource(test.Method)
+                            : InvokeOnceWithZeroParameters;
+
+                        foreach (var parameters in cases)
                         {
-                            TestSetUp();
-
-                            var cases = test.HasParameters
-                                ? parameterSource(test.Method)
-                                : InvokeOnceWithZeroParameters;
-
-                            foreach (var parameters in cases)
+                            try
                             {
-                                try
-                                {
-                                    CaseSetUp();
-                                    test.Run(parameters, @case => CaseInspection());
-                                    CaseTearDown();
-                                }
-                                catch (Exception exception)
-                                {
-                                    test.Fail(exception);
-                                }
+                                CaseSetUp();
+                                test.Run(parameters, @case => CaseInspection());
+                                CaseTearDown();
                             }
-
-                            TestTearDown();
+                            catch (Exception exception)
+                            {
+                                test.Fail(exception);
+                            }
                         }
+
+                        TestTearDown();
                     }
                     catch (Exception exception)
                     {

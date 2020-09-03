@@ -185,32 +185,42 @@ namespace Fixie.Tests
             public void Execute(TestClass testClass)
             {
                 ClassSetUp();
-                testClass.RunTests(test =>
+
+                foreach (var test in testClass.Tests)
                 {
-                    if (test.Method.Name.Contains("Skip"))
-                        return;
-
-                    TestSetUp();
-
-                    var cases = test.HasParameters
-                        ? parameterSource(test.Method)
-                        : InvokeOnceWithZeroParameters;
-                    
-                    foreach (var parameters in cases)
+                    try
                     {
-                        try
+                        if (!test.Method.Name.Contains("Skip"))
                         {
-                            CaseSetUp();
-                            test.Run(parameters, @case => CaseInspection());
-                            CaseTearDown();
-                        }
-                        catch (Exception exception)
-                        {
-                            test.Fail(exception);
+                            TestSetUp();
+
+                            var cases = test.HasParameters
+                                ? parameterSource(test.Method)
+                                : InvokeOnceWithZeroParameters;
+
+                            foreach (var parameters in cases)
+                            {
+                                try
+                                {
+                                    CaseSetUp();
+                                    test.Run(parameters, @case => CaseInspection());
+                                    CaseTearDown();
+                                }
+                                catch (Exception exception)
+                                {
+                                    test.Fail(exception);
+                                }
+                            }
+
+                            TestTearDown();
                         }
                     }
-                    TestTearDown();
-                });
+                    catch (Exception exception)
+                    {
+                        test.Fail(exception);
+                    }
+                }
+
                 ClassTearDown();
             }
 

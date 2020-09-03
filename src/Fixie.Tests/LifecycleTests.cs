@@ -238,26 +238,13 @@ namespace Fixie.Tests
                 .GetCustomAttributes<InputAttribute>(true)
                 .Select(input => input.Parameters);
 
-        class ShortCircuitClassExecution : Execution
+        class ShortCircuitTestExecution : Execution
         {
             public void Execute(TestClass testClass)
             {
-                //Class lifecycle chooses not to invoke testClass.RunTests(...).
+                //Class lifecycle chooses not to invoke test.Run(...).
                 //Since the tests never run, they are all considered
                 //'skipped'.
-            }
-        }
-
-        class ShortCircuitTestExection : Execution
-        {
-            public void Execute(TestClass testClass)
-            {
-                foreach (var test in testClass.Tests)
-                {
-                    //Test lifecycle chooses not to invoke test.Run(...).
-                    //Since the tests never run, they are all considered
-                    //'skipped'.
-                }
             }
         }
 
@@ -585,21 +572,9 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle("Fail", "Fail", "Fail", "Pass(1)", "Pass(1)", "Pass(2)");
         }
 
-        public void ShouldSkipAllTestsWhenShortCircuitingClassExecution()
-        {
-            var output = Run<SampleTestClass, ShortCircuitClassExecution>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped",
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Skip skipped");
-
-            output.ShouldHaveLifecycle();
-        }
-
         public void ShouldSkipAllTestsWhenShortCircuitingTestExecution()
         {
-            var output = Run<SampleTestClass, ShortCircuitTestExection>();
+            var output = Run<SampleTestClass, ShortCircuitTestExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail skipped",

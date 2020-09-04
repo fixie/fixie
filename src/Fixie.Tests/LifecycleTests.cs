@@ -185,33 +185,47 @@ namespace Fixie.Tests
             public void Execute(TestClass testClass)
             {
                 ClassSetUp();
-                testClass.RunTests(test =>
-                {
-                    if (test.Method.Name.Contains("Skip"))
-                        return;
 
+                foreach (var test in testClass.Tests)
+                    if (!test.Method.Name.Contains("Skip"))
+                        TestLifecycle(test);
+
+                ClassTearDown();
+            }
+
+            void TestLifecycle(TestMethod test)
+            {
+                try
+                {
                     TestSetUp();
 
                     var cases = test.HasParameters
                         ? parameterSource(test.Method)
                         : InvokeOnceWithZeroParameters;
-                    
+
                     foreach (var parameters in cases)
-                    {
-                        try
-                        {
-                            CaseSetUp();
-                            test.Run(parameters, @case => CaseInspection());
-                            CaseTearDown();
-                        }
-                        catch (Exception exception)
-                        {
-                            test.Fail(exception);
-                        }
-                    }
+                        CaseLifecycle(test, parameters);
+
                     TestTearDown();
-                });
-                ClassTearDown();
+                }
+                catch (Exception exception)
+                {
+                    test.Fail(exception);
+                }
+            }
+
+            static void CaseLifecycle(TestMethod test, object?[] parameters)
+            {
+                try
+                {
+                    CaseSetUp();
+                    test.Run(parameters, @case => CaseInspection());
+                    CaseTearDown();
+                }
+                catch (Exception exception)
+                {
+                    test.Fail(exception);
+                }
             }
 
             static readonly object[] EmptyParameters = {};
@@ -231,26 +245,13 @@ namespace Fixie.Tests
                 .GetCustomAttributes<InputAttribute>(true)
                 .Select(input => input.Parameters);
 
-        class ShortCircuitClassExecution : Execution
+        class ShortCircuitTestExecution : Execution
         {
             public void Execute(TestClass testClass)
             {
-                //Class lifecycle chooses not to invoke testClass.RunTests(...).
+                //Class lifecycle chooses not to invoke test.Run(...).
                 //Since the tests never run, they are all considered
                 //'skipped'.
-            }
-        }
-
-        class ShortCircuitTestExection : Execution
-        {
-            public void Execute(TestClass testClass)
-            {
-                testClass.RunTests(test =>
-                {
-                    //Test lifecycle chooses not to invoke test.Run(...).
-                    //Since the tests never run, they are all considered
-                    //'skipped'.
-                });
             }
         }
 
@@ -260,12 +261,10 @@ namespace Fixie.Tests
 
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(test =>
-                {
+                foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
                         foreach (var parameters in Cases(test))
                             RunWithRetries(test, parameters);
-                });
             }
 
             static void RunWithRetries(TestMethod test, object?[] parameters)
@@ -580,21 +579,9 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle("Fail", "Fail", "Fail", "Pass(1)", "Pass(1)", "Pass(2)");
         }
 
-        public void ShouldSkipAllTestsWhenShortCircuitingClassExecution()
-        {
-            var output = Run<SampleTestClass, ShortCircuitClassExecution>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped",
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Skip skipped");
-
-            output.ShouldHaveLifecycle();
-        }
-
         public void ShouldSkipAllTestsWhenShortCircuitingTestExecution()
         {
-            var output = Run<SampleTestClass, ShortCircuitTestExection>();
+            var output = Run<SampleTestClass, ShortCircuitTestExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail skipped",

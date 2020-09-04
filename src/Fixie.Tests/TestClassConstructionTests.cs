@@ -133,11 +133,9 @@ namespace Fixie.Tests
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(test =>
-                {
+                foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
                         test.RunCases(UsingInputAttibutes);
-                });
             }
         }
 
@@ -148,11 +146,9 @@ namespace Fixie.Tests
                 var type = testClass.Type;
                 var instance = type.IsStatic() ? null : Activator.CreateInstance(type);
 
-                testClass.RunTests(test =>
-                {
+                foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
                         test.RunCases(UsingInputAttibutes, instance);
-                });
 
                 instance.Dispose();
             }

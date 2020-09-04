@@ -71,13 +71,9 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(test =>
-                {
-                    if (test.Method.Name.Contains("Skip"))
-                        return;
-
-                    test.Run();
-                });
+                foreach (var test in testClass.Tests)
+                    if (!test.Method.Name.Contains("Skip"))
+                        test.Run();
             }
         }
     }

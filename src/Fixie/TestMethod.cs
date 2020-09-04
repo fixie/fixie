@@ -82,8 +82,15 @@
 
         public void RunCases(ParameterSource parameterSource, Action<Case>? inspectCase = null)
         {
-            foreach (var parameters in GetCases(parameterSource))
-                RunCore(parameters, instance: null, inspectCase);
+            try
+            {
+                foreach (var parameters in GetCases(parameterSource))
+                    RunCore(parameters, instance: null, inspectCase);
+            }
+            catch (Exception exception)
+            {
+                Fail(exception);
+            }
         }
 
         public void Run(object? instance, Action<Case>? inspectCase = null)
@@ -98,8 +105,15 @@
 
         public void RunCases(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
         {
-            foreach (var parameters in GetCases(parameterSource))
-                RunCore(parameters, instance, inspectCase);
+            try
+            {
+                foreach (var parameters in GetCases(parameterSource))
+                    RunCore(parameters, instance, inspectCase);
+            }
+            catch (Exception exception)
+            {
+                Fail(exception);
+            }
         }
 
         IEnumerable<object?[]> GetCases(ParameterSource parameterSource)

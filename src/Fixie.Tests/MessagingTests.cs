@@ -57,16 +57,16 @@
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(test =>
+                foreach (var test in testClass.Tests)
                 {
                     if (test.Method.Has<SkipAttribute>(out var skip))
                     {
                         test.Skip(skip.Reason);
-                        return;
+                        continue;
                     }
 
                     test.RunCases(UsingInputAttibutes);
-                });
+                }
             }
 
             static IEnumerable<object?[]> UsingInputAttibutes(MethodInfo method)

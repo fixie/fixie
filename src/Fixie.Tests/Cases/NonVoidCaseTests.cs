@@ -136,7 +136,7 @@ namespace Fixie.Tests.Cases
         {
             public void Execute(TestClass testClass)
             {
-                testClass.RunTests(test =>
+                foreach (var test in testClass.Tests)
                 {
                     test.Run(@case =>
                     {
@@ -147,7 +147,7 @@ namespace Fixie.Tests.Cases
                         if (@case.Exception == null && result is bool success && !success)
                             @case.Fail("Boolean test case returned false!");
                     });
-                });
+                }
             }
         }
     }

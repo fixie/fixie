@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests
 {
+    using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -11,7 +12,7 @@
     {
         public void Execute(TestClass testClass)
         {
-            testClass.RunTests(test =>
+            foreach (var test in testClass.Tests)
             {
                 test.Run(@case =>
                 {
@@ -21,7 +22,7 @@
                         if (!exception.HasCompactRepresentations)
                             LaunchDiffTool(exception);
                 });
-            });
+            }
         }
 
         static void LaunchDiffTool(AssertException exception)

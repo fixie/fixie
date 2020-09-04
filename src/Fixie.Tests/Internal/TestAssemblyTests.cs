@@ -74,8 +74,8 @@ namespace Fixie.Tests.Internal
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassB passed",
                 Self + "+PassTestClass.PassA passed",
-                Self + "+PassFailTestClass.Fail failed: 'Fail' failed!",
                 Self + "+PassFailTestClass.Pass passed",
+                Self + "+PassFailTestClass.Fail failed: 'Fail' failed!",
                 Self + "+SkipTestClass.SkipB skipped",
                 Self + "+SkipTestClass.SkipA skipped");
         }
@@ -104,8 +104,8 @@ namespace Fixie.Tests.Internal
 
         class PassFailTestClass
         {
-            public void Pass() { }
             public void Fail() { throw new FailureException(); }
+            public void Pass() { }
         }
 
         class SkipTestClass

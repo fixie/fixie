@@ -58,9 +58,9 @@
         {
             public void FailA() { throw new FailureException(); }
 
-            public void PassA() { }
-
             public void FailB() { throw new FailureException(); }
+
+            public void PassA() { }
 
             public void PassB() { }
 

@@ -34,21 +34,14 @@
             {
                 foreach (var test in testClass.Tests)
                 {
-                    try
+                    if (test.HasParameters)
                     {
-                        if (test.HasParameters)
-                        {
-                            foreach (var parameters in InputAttributeParameterSource(test.Method))
-                                test.Run(parameters);
-                        }
-                        else
-                        {
-                            test.Run();
-                        }
+                        foreach (var parameters in InputAttributeParameterSource(test.Method))
+                            test.Run(parameters);
                     }
-                    catch (Exception exception)
+                    else
                     {
-                        test.Fail(exception);
+                        test.Run();
                     }
                 }
             }

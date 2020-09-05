@@ -10,13 +10,7 @@ namespace Fixie.Tests
 
         public void ShouldEnableRandomShufflingOfTestExecutionOrder()
         {
-            var listener = new StubListener();
-            var discovery = new SelfTestDiscovery();
-            var execution = new ShuffleExecution();
-
-            Run(listener, discovery, execution, typeof(SampleTestClass));
-
-            listener.Entries
+            Run<SampleTestClass, ShuffleExecution>()
                 .ShouldBe(
                     For<SampleTestClass>(
                         ".PassC passed",

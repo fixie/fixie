@@ -23,6 +23,12 @@
         public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;
 
+        public static IEnumerable<string> Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
+            => Run<TSampleTestClass>(new SelfTestDiscovery(), new TExecution());
+
+        public static IEnumerable<string> Run<TSampleTestClass>(Execution execution)
+            => Run<TSampleTestClass>(new SelfTestDiscovery(), execution);
+
         public static IEnumerable<string> Run<TSampleTestClass>(Discovery discovery, Execution execution)
         {
             var listener = new StubListener();

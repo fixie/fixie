@@ -36,6 +36,13 @@
             return listener.Entries;
         }
 
+        public static IEnumerable<string> Run<TExecution>(Type testClass, TExecution execution) where TExecution : Execution
+        {
+            var listener = new StubListener();
+            Run(listener, new SelfTestDiscovery(), execution, testClass);
+            return listener.Entries;
+        }
+
         public static IEnumerable<string> Run<TSampleTestClass>()
             => Run<TSampleTestClass>(new SelfTestDiscovery(), new DefaultExecution());
 

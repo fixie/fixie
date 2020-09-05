@@ -13,14 +13,10 @@ namespace Fixie.Tests
         static string? FailingMember;
         static int? FailingMemberOccurrence;
 
-        readonly Discovery discovery;
-
         public LifecycleTests()
         {
             FailingMember = null;
             FailingMemberOccurrence = null;
-
-            discovery = new SelfTestDiscovery();
         }
 
         static void FailDuring(string failingMemberName, int? occurrence = null)
@@ -46,12 +42,11 @@ namespace Fixie.Tests
 
         Output Run<TExecution>(Type testClass, TExecution execution) where TExecution : Execution
         {
-            var listener = new StubListener();
             using var console = new RedirectedConsole();
 
-            Utility.Run(listener, discovery, execution, testClass);
+            var results = Utility.Run(testClass, execution);
 
-            return new Output(console.Lines().ToArray(), listener.Entries.ToArray());
+            return new Output(console.Lines().ToArray(), results.ToArray());
         }
 
         class Output

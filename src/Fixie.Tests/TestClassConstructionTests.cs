@@ -15,12 +15,9 @@ namespace Fixie.Tests
 
         static string[] Run<TExecution>(Type testClass) where TExecution : Execution, new()
         {
-            var listener = new StubListener();
-            var discovery = new SelfTestDiscovery();
-            var execution = new TExecution();
             using var console = new RedirectedConsole();
 
-            Utility.Run(listener, discovery, execution, testClass);
+            Utility.Run<TExecution>(testClass);
 
             return console.Lines().ToArray();
         }

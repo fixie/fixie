@@ -39,6 +39,13 @@
         public static IEnumerable<string> Run<TSampleTestClass>()
             => Run<TSampleTestClass>(new SelfTestDiscovery(), new DefaultExecution());
 
+        public static IEnumerable<string> Run<TExecution>(Type testClass) where TExecution : Execution, new()
+        {
+            var listener = new StubListener();
+            Run(listener, new SelfTestDiscovery(), new TExecution(), testClass);
+            return listener.Entries;
+        }
+
         public static void Discover(Listener listener, Discovery discovery, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)

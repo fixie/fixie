@@ -13,6 +13,15 @@
             @case.Name.ShouldBe("Fixie.Tests.CaseTests.Returns");
         }
 
+        public void ShouldExposeParameterValues()
+        {
+            Case("Returns").Parameters.ShouldBeEmpty();
+
+            var objectWithNullStringRepresentation = new ObjectWithNullStringRepresentation();
+            Case("Parameterized", 123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this, objectWithNullStringRepresentation)
+                .Parameters.ShouldBe(123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this, objectWithNullStringRepresentation);
+        }
+
         public void ShouldIncludeParameterValuesInNameWhenTheUnderlyingMethodHasParameters()
         {
             var @case = Case("Parameterized", 123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this, new ObjectWithNullStringRepresentation());

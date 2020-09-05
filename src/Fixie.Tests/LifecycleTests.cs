@@ -40,7 +40,7 @@ namespace Fixie.Tests
             return Run(testClass, new TExecution());
         }
 
-        Output Run<TExecution>(Type testClass, TExecution execution) where TExecution : Execution
+        Output Run(Type testClass, Execution execution)
         {
             using var console = new RedirectedConsole();
 

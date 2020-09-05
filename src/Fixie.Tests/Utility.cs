@@ -23,39 +23,22 @@
         public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;
 
+        public static IEnumerable<string> Run<TSampleTestClass>()
+            => Run<TSampleTestClass, DefaultExecution>();
+
         public static IEnumerable<string> Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
-            => Run<TSampleTestClass>(new SelfTestDiscovery(), new TExecution());
+            => Run<TSampleTestClass>(new TExecution());
 
         public static IEnumerable<string> Run<TSampleTestClass>(Execution execution)
-            => Run<TSampleTestClass>(new SelfTestDiscovery(), execution);
-
-        public static IEnumerable<string> Run<TSampleTestClass>(Discovery discovery, Execution execution)
-        {
-            var testClass = typeof(TSampleTestClass);
-
-            var listener = new StubListener();
-            Run(listener, discovery, execution, testClass);
-            return listener.Entries;
-        }
-
-        public static IEnumerable<string> Run<TExecution>(Type testClass, TExecution execution) where TExecution : Execution
-        {
-            var discovery = new SelfTestDiscovery();
-
-            var listener = new StubListener();
-            Run(listener, discovery, execution, testClass);
-            return listener.Entries;
-        }
-
-        public static IEnumerable<string> Run<TSampleTestClass>()
-            => Run<TSampleTestClass>(new SelfTestDiscovery(), new DefaultExecution());
+            => Run(typeof(TSampleTestClass), execution);
 
         public static IEnumerable<string> Run<TExecution>(Type testClass) where TExecution : Execution, new()
-        {
-            var discovery = new SelfTestDiscovery();
-            var execution = new TExecution();
+            => Run(testClass, new TExecution());
 
+        public static IEnumerable<string> Run(Type testClass, Execution execution)
+        {
             var listener = new StubListener();
+            var discovery = new SelfTestDiscovery();
             Run(listener, discovery, execution, testClass);
             return listener.Entries;
         }

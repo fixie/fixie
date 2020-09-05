@@ -246,9 +246,9 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "Dispose", "CaseInspection",
-                ".ctor", "Pass(1)", "Dispose", "CaseInspection",
-                ".ctor", "Pass(2)", "Dispose", "CaseInspection");
+                ".ctor", "Fail", "CaseInspection", "Dispose",
+                ".ctor", "Pass(1)", "CaseInspection", "Dispose",
+                ".ctor", "Pass(2)", "CaseInspection", "Dispose");
         }
 
         public void ShouldFailCaseInAbsenseOfPrimaryCaseResultAndProceedWithCaseInspectionWhenConstructingPerCaseAndConstructorThrows()
@@ -285,9 +285,9 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "Dispose", "CaseInspection",
-                ".ctor", "Pass(1)", "Dispose", "CaseInspection",
-                ".ctor", "Pass(2)", "Dispose", "CaseInspection");
+                ".ctor", "Fail", "CaseInspection", "Dispose",
+                ".ctor", "Pass(1)", "CaseInspection", "Dispose",
+                ".ctor", "Pass(2)", "CaseInspection", "Dispose");
         }
 
         public void ShouldAllowConstructingPerClass()

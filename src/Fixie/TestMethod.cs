@@ -42,6 +42,15 @@
                 if (instance != null)
                 {
                     @case.Execute(instance);
+
+                    try
+                    {
+                        inspectCase?.Invoke(@case);
+                    }
+                    catch (Exception exception)
+                    {
+                        caseInspectionFailure = exception;
+                    }
                 }
                 else
                 {
@@ -50,6 +59,15 @@
                         var automaticInstance = @case.Method.IsStatic ? null : Construct(@case.Method.ReflectedType!);
 
                         @case.Execute(automaticInstance);
+
+                        try
+                        {
+                            inspectCase?.Invoke(@case);
+                        }
+                        catch (Exception exception)
+                        {
+                            caseInspectionFailure = exception;
+                        }
 
                         try
                         {
@@ -71,16 +89,16 @@
                         // without risk of overwriting some other
                         // primary result.
                         @case.Fail(constructionFailure);
-                    }
-                }
 
-                try
-                {
-                    inspectCase?.Invoke(@case);
-                }
-                catch (Exception exception)
-                {
-                    caseInspectionFailure = exception;
+                        try
+                        {
+                            inspectCase?.Invoke(@case);
+                        }
+                        catch (Exception exception)
+                        {
+                            caseInspectionFailure = exception;
+                        }
+                    }
                 }
 
                 output = console.Output;

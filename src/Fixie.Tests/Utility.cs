@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
     using Fixie.Internal;
 
@@ -58,5 +59,10 @@
 
             new TestAssembly(candidateTypes[0].Assembly, listener).Run(candidateTypes, discovery, execution);
         }
+
+        public static IEnumerable<object?[]> UsingInputAttributes(MethodInfo method)
+            => method
+                .GetCustomAttributes<InputAttribute>(true)
+                .Select(input => input.Parameters);
     }
 }

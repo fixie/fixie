@@ -3,7 +3,6 @@ namespace Fixie.Tests
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.CompilerServices;
     using Assertions;
     using Fixie.Internal;
@@ -172,7 +171,7 @@ namespace Fixie.Tests
             readonly ParameterSource parameterSource;
 
             public InstrumentedExecution()
-                : this(UsingInputAttributes) { }
+                : this(Utility.UsingInputAttributes) { }
 
             public InstrumentedExecution(ParameterSource parameterSource)
                 => this.parameterSource = parameterSource;
@@ -235,11 +234,6 @@ namespace Fixie.Tests
         static void TestTearDown() => WhereAmI();
         static void ClassTearDown() => WhereAmI();
 
-        static IEnumerable<object?[]> UsingInputAttributes(MethodInfo method)
-            => method
-                .GetCustomAttributes<InputAttribute>(true)
-                .Select(input => input.Parameters);
-
         class ShortCircuitTestExecution : Execution
         {
             public void Execute(TestClass testClass)
@@ -284,7 +278,7 @@ namespace Fixie.Tests
             {
                 if (test.HasParameters)
                 {
-                    foreach (var parameters in UsingInputAttributes(test.Method))
+                    foreach (var parameters in Utility.UsingInputAttributes(test.Method))
                         yield return parameters;
                 }
                 else

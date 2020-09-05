@@ -1,9 +1,7 @@
 namespace Fixie.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.CompilerServices;
     using Assertions;
     using Fixie.Internal;
@@ -132,7 +130,7 @@ namespace Fixie.Tests
             {
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        test.RunCases(UsingInputAttibutes);
+                        test.RunCases(Utility.UsingInputAttributes);
             }
         }
 
@@ -145,16 +143,11 @@ namespace Fixie.Tests
 
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        test.RunCases(UsingInputAttibutes, instance);
+                        test.RunCases(Utility.UsingInputAttributes, instance);
 
                 instance.Dispose();
             }
         }
-
-        static IEnumerable<object?[]> UsingInputAttibutes(MethodInfo method)
-            => method
-                .GetCustomAttributes<InputAttribute>(true)
-                .Select(input => input.Parameters);
 
         public void ShouldConstructPerCaseByDefault()
         {

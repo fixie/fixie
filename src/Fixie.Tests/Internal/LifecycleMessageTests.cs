@@ -16,26 +16,27 @@
 
             Run(listener, out _);
 
-            listener.Messages.Count.ShouldBe(17);
+            listener.Messages.Count.ShouldBe(18);
             
             var assemblyStarted = (AssemblyStarted)listener.Messages[0];
             var sampleTestClassStarted = (ClassStarted)listener.Messages[1];
-            var failStarted = (TestStarted)listener.Messages[2];
+            var failStarted = (CaseStarted)listener.Messages[2];
             var fail = (CaseFailed)listener.Messages[3];
-            var failByAssertionStarted = (TestStarted)listener.Messages[4];
+            var failByAssertionStarted = (CaseStarted)listener.Messages[4];
             var failByAssertion = (CaseFailed)listener.Messages[5];
-            var passStarted = (TestStarted)listener.Messages[6];
+            var passStarted = (CaseStarted)listener.Messages[6];
             var pass = (CasePassed)listener.Messages[7];
             
             var skipWithReason = (CaseSkipped)listener.Messages[8];
             var skipWithoutReason = (CaseSkipped)listener.Messages[9];
             var sampleTestClassCompleted = (ClassCompleted)listener.Messages[10];
             var sampleGenericTestClassStarted = (ClassStarted)listener.Messages[11];
-            var shouldBeStringStarted = (TestStarted)listener.Messages[12];
+            var shouldBeStringPassStarted = (CaseStarted)listener.Messages[12];
             var shouldBeStringPass = (CasePassed)listener.Messages[13];
-            var shouldBeStringFail = (CaseFailed)listener.Messages[14];
-            var sampleGenericTestClassCompleted = (ClassCompleted)listener.Messages[15];
-            var assemblyCompleted = (AssemblyCompleted)listener.Messages[16];
+            var shouldBeStringFailStarted = (CaseStarted)listener.Messages[14];
+            var shouldBeStringFail = (CaseFailed)listener.Messages[15];
+            var sampleGenericTestClassCompleted = (ClassCompleted)listener.Messages[16];
+            var assemblyCompleted = (AssemblyCompleted)listener.Messages[17];
 
             assemblyStarted.Assembly.ShouldBe(assembly);
             
@@ -92,12 +93,14 @@
 
             sampleGenericTestClassStarted.Class.FullName.ShouldBe(FullName<MessagingTests>() + "+SampleGenericTestClass");
 
-            shouldBeStringStarted.Test.Name.ShouldBe(GenericTestClass + ".ShouldBeString");
+            shouldBeStringPassStarted.Test.Name.ShouldBe(GenericTestClass + ".ShouldBeString");
 
             shouldBeStringPass.Test.Name.ShouldBe(GenericTestClass + ".ShouldBeString");
             shouldBeStringPass.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"abc\")");
             shouldBeStringPass.Output.ShouldBe("");
             shouldBeStringPass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+
+            shouldBeStringFailStarted.Test.Name.ShouldBe(GenericTestClass + ".ShouldBeString");
 
             shouldBeStringFail.Test.Name.ShouldBe(GenericTestClass + ".ShouldBeString");
             shouldBeStringFail.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
@@ -120,7 +123,7 @@
         public class StubCaseCompletedListener :
             Handler<AssemblyStarted>,
             Handler<ClassStarted>,
-            Handler<TestStarted>,
+            Handler<CaseStarted>,
             Handler<CaseCompleted>,
             Handler<ClassCompleted>,
             Handler<AssemblyCompleted>
@@ -129,7 +132,7 @@
 
             public void Handle(AssemblyStarted message) => Messages.Add(message);
             public void Handle(ClassStarted message) => Messages.Add(message);
-            public void Handle(TestStarted message) => Messages.Add(message);
+            public void Handle(CaseStarted message) => Messages.Add(message);
             public void Handle(CaseCompleted message) => Messages.Add(message);
             public void Handle(ClassCompleted message) => Messages.Add(message);
             public void Handle(AssemblyCompleted message) => Messages.Add(message);

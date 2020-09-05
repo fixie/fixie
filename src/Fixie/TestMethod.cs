@@ -28,10 +28,9 @@
 
         void RunCore(object?[] parameters, object? instance, Action<Case>? inspectCase)
         {
-            if (!RecordedResult)
-                recorder.Start(this);
-
             var @case = new Case(Method, parameters);
+
+            recorder.Start(@case);
 
             Exception? caseLifecycleFailure = null;
 

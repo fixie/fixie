@@ -43,10 +43,9 @@
             caseStopwatch.Restart();
         }
 
-        public void Start(TestMethod testMethod)
+        public void Start(Case @case)
         {
-            var test = new Test(testMethod.Method);
-            bus.Publish(new TestStarted(test));
+            bus.Publish(new CaseStarted(@case));
         }
 
         public void Skip(Case @case, string output = "")

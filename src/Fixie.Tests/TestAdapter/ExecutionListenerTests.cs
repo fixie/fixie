@@ -31,7 +31,7 @@
 
             var messages = recorder.Messages;
 
-            messages.Count.ShouldBe(11);
+            messages.Count.ShouldBe(12);
 
             foreach (var message in messages)
             {
@@ -56,9 +56,10 @@
             
             var skipWithoutReason = (TestResult)messages[7];
             
-            var shouldBeStringStart = (TestCase)messages[8];
+            var shouldBeStringPassStart = (TestCase)messages[8];
             var shouldBeStringPass = (TestResult)messages[9];
-            var shouldBeStringFail = (TestResult)messages[10];
+            var shouldBeStringFailStart = (TestCase)messages[10];
+            var shouldBeStringFail = (TestResult)messages[11];
 
             failStart.ShouldBeExecutionTimeTest(TestClass + ".Fail", assemblyPath);
 
@@ -125,7 +126,7 @@
             skipWithoutReason.Messages.ShouldBeEmpty();
             skipWithoutReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            shouldBeStringStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
+            shouldBeStringPassStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
 
             shouldBeStringPass.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
             shouldBeStringPass.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");
@@ -135,6 +136,8 @@
             shouldBeStringPass.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.String>(\"abc\")");
             shouldBeStringPass.Messages.ShouldBeEmpty();
             shouldBeStringPass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+
+            shouldBeStringFailStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
 
             shouldBeStringFail.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
             shouldBeStringFail.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");

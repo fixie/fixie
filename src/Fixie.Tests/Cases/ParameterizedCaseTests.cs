@@ -9,11 +9,6 @@
 
     public class ParameterizedCaseTests
     {
-        readonly Discovery discovery;
-
-        public ParameterizedCaseTests()
-            => discovery = new SelfTestDiscovery();
-
         class ParameterizedExecution : Execution
         {
             readonly ParameterSource parameterSource;
@@ -50,7 +45,7 @@
         public void ShouldAllowExecutionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
             var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
-            Run<ParameterizedTestClass>(discovery, execution)
+            Run<ParameterizedTestClass>(execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -63,7 +58,7 @@
         public void ShouldSkipWhenInputParameterGenerationYieldsZeroSetsOfInputs()
         {
             var execution = new ParameterizedExecution(EmptyParameterSource);
-            Run<ParameterizedTestClass>(discovery, execution)
+            Run<ParameterizedTestClass>(execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".ZeroArgs passed",
@@ -81,7 +76,7 @@
                 new object[] {0, 1, 2},
                 new object[] {0, 1, 2, 3}
             });
-            Run<ParameterizedTestClass>(discovery, execution)
+            Run<ParameterizedTestClass>(execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Parameter count mismatch.",
@@ -102,7 +97,7 @@
         public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
             var execution = new ParameterizedExecution(LazyBuggyParameterSource);
-            Run<ParameterizedTestClass>(discovery, execution)
+            Run<ParameterizedTestClass>(execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -124,7 +119,7 @@
             //this test demonstrates how the failure is isolated to that test method.
 
             var execution = new ParameterizedExecution(EagerBuggyParameterSource);
-            Run<ParameterizedTestClass>(discovery, execution)
+            Run<ParameterizedTestClass>(execution)
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Exception thrown while attempting to eagerly build input parameters for method: IntArg",
@@ -138,7 +133,7 @@
         public void ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
         {
             var execution = new ParameterizedExecution(LazyBuggyParameterSource);
-            Run<ConstrainedGenericTestClass>(discovery, execution)
+            Run<ConstrainedGenericTestClass>(execution)
                 .ShouldBe(
                     For<ConstrainedGenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(0) passed",
@@ -163,7 +158,7 @@
 
         void ShouldResolveGenericTypeParameters(Execution execution)
         {
-            Run<GenericTestClass>(discovery, execution)
+            Run<GenericTestClass>(execution)
                 .ShouldBe(
                     For<GenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(1) passed",
@@ -197,7 +192,7 @@
         public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
         {
             var execution = new ParameterizedExecution(ComplexGenericParameterSource);
-            Run<ComplexGenericTestClass>(discovery, execution)
+            Run<ComplexGenericTestClass>(execution)
                 .ShouldBe(
                     For<ComplexGenericTestClass>(
                         ".CompoundGenericParameter<System.Int32, System.String>([1, A], \"System.Int32\", \"System.String\") passed",

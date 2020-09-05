@@ -40,11 +40,9 @@ namespace Fixie.Tests.Cases
 
         public void ShouldProvideCaseReturnValuesToCustomBehaviors()
         {
-            var discovery = new SelfTestDiscovery();
-            var execution = new TreatBoolReturnValuesAsAssertions();
             using var console = new RedirectedConsole();
 
-            Run<SampleTestClass>(discovery, execution)
+            Run<SampleTestClass, TreatBoolReturnValuesAsAssertions>()
                 .ShouldBe(
                     For<SampleTestClass>(
                         ".BoolFalse failed: Boolean test case returned false!",
@@ -67,11 +65,9 @@ namespace Fixie.Tests.Cases
 
         public void ShouldUnpackResultValuesFromStronglyTypedTaskObjectsForAsyncCases()
         {
-            var discovery = new SelfTestDiscovery();
-            var execution = new TreatBoolReturnValuesAsAssertions();
             using var console = new RedirectedConsole();
 
-            Run<SampleAsyncTestClass>(discovery, execution)
+            Run<SampleAsyncTestClass, TreatBoolReturnValuesAsAssertions>()
                 .ShouldBe(
                     For<SampleAsyncTestClass>(
                         ".BoolFalse failed: Boolean test case returned false!",

@@ -5,6 +5,7 @@ namespace Fixie.Tests
     using System.Runtime.CompilerServices;
     using Assertions;
     using Fixie.Internal;
+    using static System.Environment;
 
     public class TestClassConstructionTests
     {
@@ -316,11 +317,11 @@ namespace Fixie.Tests
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail skipped",
-                "SampleTestClass.Fail failed: Exception has been thrown by the target of an invocation.\r\n------- Inner Exception: Fixie.Tests.FailureException -------\r\n'.ctor' failed!",
+                $"SampleTestClass.Fail failed: Exception has been thrown by the target of an invocation.{NewLine}------- Inner Exception: Fixie.Tests.FailureException -------{NewLine}'.ctor' failed!",
                 "SampleTestClass.Pass skipped",
-                "SampleTestClass.Pass failed: Exception has been thrown by the target of an invocation.\r\n------- Inner Exception: Fixie.Tests.FailureException -------\r\n'.ctor' failed!",
+                $"SampleTestClass.Pass failed: Exception has been thrown by the target of an invocation.{NewLine}------- Inner Exception: Fixie.Tests.FailureException -------{NewLine}'.ctor' failed!",
                 "SampleTestClass.Skip skipped",
-                "SampleTestClass.Skip failed: Exception has been thrown by the target of an invocation.\r\n------- Inner Exception: Fixie.Tests.FailureException -------\r\n'.ctor' failed!"
+                $"SampleTestClass.Skip failed: Exception has been thrown by the target of an invocation.{NewLine}------- Inner Exception: Fixie.Tests.FailureException -------{NewLine}'.ctor' failed!"
             );
 
             output.ShouldHaveLifecycle(".ctor");

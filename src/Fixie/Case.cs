@@ -121,7 +121,7 @@
         /// Execute the test case against the given instance of the test class,
         /// causing the case state to become either passing or failing.
         /// </summary>
-        public void Execute(object? instance)
+        internal void Execute(object? instance)
         {
             try
             {

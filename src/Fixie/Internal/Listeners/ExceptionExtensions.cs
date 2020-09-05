@@ -10,7 +10,7 @@
     static class ExceptionExtensions
     {
         static readonly MethodInfo CaseExecuteMethod =
-            typeof(Case).GetMethod("Execute", new[]{ typeof(object) })
+            typeof(Case).GetMethod("Execute", BindingFlags.Instance | BindingFlags.NonPublic)
             ?? throw new Exception("Could not find expected method Case.Execute(...).");
 
         static readonly MethodInfo ExceptionRethrowMethod =

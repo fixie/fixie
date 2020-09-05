@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Runtime.ExceptionServices;
     using Internal;
 
     public class TestMethod
@@ -32,23 +33,54 @@
 
             recorder.Start(@case);
 
-            Exception? caseLifecycleFailure = null;
+            Exception? caseInspectionFailure = null;
+            Exception? disposalFailure = null;
 
             string output;
             using (var console = new RedirectedConsole())
             {
+                if (instance != null)
+                {
+                    @case.Execute(instance);
+                }
+                else
+                {
+                    try
+                    {
+                        var automaticInstance = @case.Method.IsStatic ? null : Construct(@case.Method.ReflectedType!);
+
+                        @case.Execute(automaticInstance);
+
+                        try
+                        {
+                            automaticInstance.Dispose();
+                        }
+                        catch (Exception exception)
+                        {
+                            // Because the case already has a primary
+                            // result, capture the failure so that it
+                            // can be recorded after the primary result.
+                            disposalFailure = exception;
+                        }
+                    }
+                    catch (Exception constructionFailure)
+                    {
+                        // Because a construction failure prevents
+                        // executing the case method, we can safely
+                        // record the failure directly on the case
+                        // without risk of overwriting some other
+                        // primary result.
+                        @case.Fail(constructionFailure);
+                    }
+                }
+
                 try
                 {
-                    if (instance != null)
-                        @case.Execute(instance);
-                    else
-                        @case.Execute();
-
                     inspectCase?.Invoke(@case);
                 }
                 catch (Exception exception)
                 {
-                    caseLifecycleFailure = exception;
+                    caseInspectionFailure = exception;
                 }
 
                 output = console.Output;
@@ -63,8 +95,11 @@
             else if (@case.State == CaseState.Passed)
                 recorder.Pass(@case, output);
 
-            if (caseLifecycleFailure != null)
-                recorder.Fail(new Case(@case, caseLifecycleFailure));
+            if (caseInspectionFailure != null)
+                recorder.Fail(new Case(@case, caseInspectionFailure));
+
+            if (disposalFailure != null)
+                recorder.Fail(new Case(@case, disposalFailure));
             
             RecordedResult = true;
         }
@@ -138,6 +173,19 @@
         {
             recorder.Fail(this, reason);
             RecordedResult = true;
+        }
+
+        static object? Construct(Type type)
+        {
+            try
+            {
+                return Activator.CreateInstance(type);
+            }
+            catch (TargetInvocationException exception)
+            {
+                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
+                throw; //Unreachable.
+            }
         }
     }
 }

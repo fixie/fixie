@@ -36,7 +36,6 @@
             Run<CannotInvokeConstructorTestClass>()
                 .ShouldBe(
                     For<CannotInvokeConstructorTestClass>(
-                        ".UnreachableCase skipped",
                         ".UnreachableCase failed: No parameterless constructor defined " +
                         $"for type '{FullName<CannotInvokeConstructorTestClass>()}'."));
         }

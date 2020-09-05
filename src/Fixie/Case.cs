@@ -2,7 +2,6 @@
 {
     using System;
     using System.Reflection;
-    using System.Runtime.ExceptionServices;
     using Internal;
 
     /// <summary>
@@ -127,30 +126,6 @@
             catch (Exception exception)
             {
                 Fail(exception);
-            }
-        }
-
-        /// <summary>
-        /// Execute the test case against a new instance of the test class,
-        /// causing the case state to become either passing or failing.
-        /// </summary>
-        public void Execute()
-        {
-            var instance = Method.IsStatic ? null : Construct(Method.ReflectedType!);
-            Execute(instance);
-            instance.Dispose();
-        }
-
-        static object? Construct(Type type)
-        {
-            try
-            {
-                return Activator.CreateInstance(type);
-            }
-            catch (TargetInvocationException exception)
-            {
-                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
-                throw; //Unreachable.
             }
         }
     }

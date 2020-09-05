@@ -251,25 +251,25 @@ namespace Fixie.Tests
                 ".ctor", "Pass(2)", "Dispose", "CaseInspection");
         }
 
-        public void ShouldFailCaseWithoutHidingPrimarySkipResultWhenConstructingPerCaseAndConstructorThrows()
+        public void ShouldFailCaseInAbsenseOfPrimaryCaseResultAndProceedWithCaseInspectionWhenConstructingPerCaseAndConstructorThrows()
         {
             FailDuring(".ctor");
             
             var output = Run<SampleTestClass, CreateInstancePerCase>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped",
                 "SampleTestClass.Fail failed: '.ctor' failed!",
-                "SampleTestClass.Pass(1) skipped",
                 "SampleTestClass.Pass(1) failed: '.ctor' failed!",
-                "SampleTestClass.Pass(2) skipped",
                 "SampleTestClass.Pass(2) failed: '.ctor' failed!",
                 "SampleTestClass.Skip skipped");
 
-            output.ShouldHaveLifecycle(".ctor", ".ctor", ".ctor");
+            output.ShouldHaveLifecycle(
+                ".ctor", "CaseInspection",
+                ".ctor", "CaseInspection",
+                ".ctor", "CaseInspection");
         }
 
-        public void ShouldFailCaseWithoutHidingPrimaryCaseResultWhenConstructingPerCaseAndDisposeThrows()
+        public void ShouldFailCaseWithoutHidingPrimaryCaseResultAndProceedWithCaseInspectionWhenConstructingPerCaseAndDisposeThrows()
         {
             FailDuring("Dispose");
 
@@ -285,9 +285,9 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "Dispose",
-                ".ctor", "Pass(1)", "Dispose",
-                ".ctor", "Pass(2)", "Dispose");
+                ".ctor", "Fail", "Dispose", "CaseInspection",
+                ".ctor", "Pass(1)", "Dispose", "CaseInspection",
+                ".ctor", "Pass(2)", "Dispose", "CaseInspection");
         }
 
         public void ShouldAllowConstructingPerClass()

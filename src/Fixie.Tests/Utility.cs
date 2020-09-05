@@ -31,15 +31,19 @@
 
         public static IEnumerable<string> Run<TSampleTestClass>(Discovery discovery, Execution execution)
         {
+            var testClass = typeof(TSampleTestClass);
+
             var listener = new StubListener();
-            Run(listener, discovery, execution, typeof(TSampleTestClass));
+            Run(listener, discovery, execution, testClass);
             return listener.Entries;
         }
 
         public static IEnumerable<string> Run<TExecution>(Type testClass, TExecution execution) where TExecution : Execution
         {
+            var discovery = new SelfTestDiscovery();
+
             var listener = new StubListener();
-            Run(listener, new SelfTestDiscovery(), execution, testClass);
+            Run(listener, discovery, execution, testClass);
             return listener.Entries;
         }
 
@@ -48,8 +52,11 @@
 
         public static IEnumerable<string> Run<TExecution>(Type testClass) where TExecution : Execution, new()
         {
+            var discovery = new SelfTestDiscovery();
+            var execution = new TExecution();
+
             var listener = new StubListener();
-            Run(listener, new SelfTestDiscovery(), new TExecution(), testClass);
+            Run(listener, discovery, execution, testClass);
             return listener.Entries;
         }
 

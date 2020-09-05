@@ -12,6 +12,9 @@
     {
         const BindingFlags InstanceMethods = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 
+        public static IEnumerable<TestMethod> OrderByName(this IEnumerable<TestMethod> tests)
+            => tests.OrderBy(x => x.Method.Name, StringComparer.Ordinal);
+
         public static MethodInfo GetInstanceMethod(this Type type, string methodName)
         {
             var instanceMethod = type.GetMethod(methodName, InstanceMethods);

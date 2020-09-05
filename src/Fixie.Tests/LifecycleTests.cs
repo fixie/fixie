@@ -262,11 +262,12 @@ namespace Fixie.Tests
 
                 while (remainingAttempts > 0)
                 {
+                    remainingAttempts--;
+                    var failureCanBeRetried = remainingAttempts > 0;
+
                     test.Run(parameters, @case =>
                     {
-                        remainingAttempts--;
-                        
-                        if (@case.State == CaseState.Failed && remainingAttempts > 0)
+                        if (@case.State == CaseState.Failed && failureCanBeRetried)
                             @case.Skip(@case.Exception?.Message + " Retrying...");
                         else
                             remainingAttempts = 0;

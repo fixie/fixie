@@ -94,36 +94,24 @@ namespace Fixie.Tests.Cases
 
         class SampleTestClass
         {
-            public void Throw() { throw new FailureException(); }
-
-            public void Pass() { }
-
-            public bool BoolThrow() { throw new FailureException(); }
-
-            public bool BoolTrue() => true;
-
             public bool BoolFalse() => false;
-
+            public bool BoolThrow() { throw new FailureException(); }
+            public bool BoolTrue() => true;
+            public void Pass() { }
             public string String() => "ABC";
-
             public string? StringNull() => null;
+            public void Throw() { throw new FailureException(); }
         }
 
         class SampleAsyncTestClass
         {
-            public async Task Throw() { ThrowException(); await Awaitable(true); }
-            
-            public async Task Pass() => await Awaitable(true);
-
-            public async Task<bool> BoolThrow() { ThrowException(); return await Awaitable(true); }
-            
-            public async Task<bool> BoolTrue() => await Awaitable(true);
-
             public async Task<bool> BoolFalse() => await Awaitable(false);
-
+            public async Task<bool> BoolThrow() { ThrowException(); return await Awaitable(true); }
+            public async Task<bool> BoolTrue() => await Awaitable(true);
+            public async Task Pass() => await Awaitable(true);
             public async Task<string> String()=> await Awaitable("ABC");
-
             public async Task<string?> StringNull() => await Awaitable<string?>(null);
+            public async Task Throw() { ThrowException(); await Awaitable(true); }
 
             static Task<T> Awaitable<T>(T value)
                 => Task.Run(() => value);

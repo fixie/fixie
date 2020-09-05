@@ -2,38 +2,19 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Reflection;
 
     class MethodDiscoverer
     {
         readonly IReadOnlyList<Func<MethodInfo, bool>> testMethodConditions;
-        readonly Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> orderMethods;
         
         public MethodDiscoverer(Discovery discovery)
         {
             testMethodConditions = discovery.Config.TestMethodConditions;
-            orderMethods = discovery.Config.OrderMethods;
         }
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
-        {
-            var matchingMethods = MatchingMethods(testClass);
-
-            try
-            {
-                return orderMethods(matchingMethods);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(
-                    "Exception thrown while attempting to run a custom method ordering rule. " +
-                    "Check the inner exception for more details.", exception);
-            }
-        }
-
-        IReadOnlyList<MethodInfo> MatchingMethods(Type testClass)
         {
             try
             {

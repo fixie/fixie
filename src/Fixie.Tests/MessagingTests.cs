@@ -57,7 +57,7 @@
         {
             public void Execute(TestClass testClass)
             {
-                foreach (var test in testClass.Tests)
+                foreach (var test in testClass.Tests.OrderByName())
                 {
                     if (test.Method.Has<SkipAttribute>(out var skip))
                     {

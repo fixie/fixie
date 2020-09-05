@@ -34,17 +34,17 @@ namespace Fixie.Tests
                 WhereAmI();
             }
 
+            public void Fail()
+            {
+                WhereAmI();
+                throw new FailureException();
+            }
+
             [Input(1)]
             [Input(2)]
             public void Pass(int i)
             {
                 WhereAmI(i);
-            }
-
-            public void Fail()
-            {
-                WhereAmI();
-                throw new FailureException();
             }
 
             public void Skip()
@@ -102,15 +102,15 @@ namespace Fixie.Tests
 
         static class StaticTestClass
         {
-            public static void Pass()
-            {
-                WhereAmI();
-            }
-
             public static void Fail()
             {
                 WhereAmI();
                 throw new FailureException();
+            }
+
+            public static void Pass()
+            {
+                WhereAmI();
             }
 
             public static void Skip()

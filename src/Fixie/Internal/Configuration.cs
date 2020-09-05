@@ -12,8 +12,6 @@
 
         public Configuration()
         {
-            OrderMethods = methods => methods;
-
             usingDefaultTestClassCondition = true;
             testClassConditions = new List<Func<Type, bool>>
             {
@@ -21,8 +19,6 @@
             };
             testMethodConditions = new List<Func<MethodInfo, bool>>();
         }
-
-        public Func<IReadOnlyList<MethodInfo>, IReadOnlyList<MethodInfo>> OrderMethods { get; set; }
 
         public void AddTestClassCondition(Func<Type, bool> testClassCondition)
         {

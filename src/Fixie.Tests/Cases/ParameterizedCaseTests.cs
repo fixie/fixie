@@ -274,8 +274,6 @@
 
         class ParameterizedTestClass
         {
-            public void ZeroArgs() { }
-
             public void IntArg(int i)
             {
                 if (i != 0)
@@ -290,40 +288,22 @@
                 if (a + b != expectedSum)
                     throw new Exception($"Expected sum of {expectedSum} but was {a + b}.");
             }
+
+            public void ZeroArgs() { }
         }
 
         class GenericTestClass
         {
-            [Input(123, null, 456, typeof(int), typeof(object))]
-            [Input(123, "stringArg1", 456, typeof(int), typeof(string))]
-            [Input("stringArg", null, null, typeof(string), typeof(object))]
-            [Input("stringArg1", null, "stringArg2", typeof(string), typeof(object))]
-            [Input(null, "stringArg1", "stringArg2", typeof(string), typeof(string))]
-            public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genericArgument1A, T2 genericArgument2, T1 genericArgument1B, Type expectedT1, Type expectedT2)
+            [Input(1)]
+            [Input("Oops")]
+            public void ConstrainedGeneric<T>(T input) where T : struct
             {
-                typeof(T1).ShouldBe(expectedT1);
-                typeof(T2).ShouldBe(expectedT2);
+                typeof(T).IsValueType.ShouldBe(true);
             }
 
-            [Input(123, 456, typeof(int))]
-            [Input("stringArg", 123, typeof(object))]
-            [Input(123, "stringArg", typeof(object))]
-            [Input(123, null, typeof(int))]
-            [Input(null, null, typeof(object))]
-            [Input("stringArg", null, typeof(string))]
-            [Input("stringArg1", "stringArg2", typeof(string))]
-            [Input(null, "stringArg", typeof(string))]
-            public void SingleGenericArgumentMultipleParameters<T>(T genericArgument1, T genericArgument2, Type expectedT)
+            public void ConstrainedGenericMethodWithNoInputsProvided<T>(T input) where T : struct
             {
-                typeof(T).ShouldBe(expectedT);
-            }
-
-            [Input(123, typeof(int))]
-            [Input(null, typeof(object))]
-            [Input("stringArg", typeof(string))]
-            public void SingleGenericArgument<T>(T genericArgument, Type expectedT)
-            {
-                typeof(T).ShouldBe(expectedT);
+                throw new ShouldBeUnreachableException();
             }
 
             [Input(123, 123)]
@@ -337,16 +317,36 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            [Input(1)]
-            [Input("Oops")]
-            public void ConstrainedGeneric<T>(T input) where T : struct
+            [Input(123, null, 456, typeof(int), typeof(object))]
+            [Input(123, "stringArg1", 456, typeof(int), typeof(string))]
+            [Input("stringArg", null, null, typeof(string), typeof(object))]
+            [Input("stringArg1", null, "stringArg2", typeof(string), typeof(object))]
+            [Input(null, "stringArg1", "stringArg2", typeof(string), typeof(string))]
+            public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genericArgument1A, T2 genericArgument2, T1 genericArgument1B, Type expectedT1, Type expectedT2)
             {
-                typeof(T).IsValueType.ShouldBe(true);
+                typeof(T1).ShouldBe(expectedT1);
+                typeof(T2).ShouldBe(expectedT2);
             }
 
-            public void ConstrainedGenericMethodWithNoInputsProvided<T>(T input) where T : struct
+            [Input(123, typeof(int))]
+            [Input(null, typeof(object))]
+            [Input("stringArg", typeof(string))]
+            public void SingleGenericArgument<T>(T genericArgument, Type expectedT)
             {
-                throw new ShouldBeUnreachableException();
+                typeof(T).ShouldBe(expectedT);
+            }
+
+            [Input(123, 456, typeof(int))]
+            [Input("stringArg", 123, typeof(object))]
+            [Input(123, "stringArg", typeof(object))]
+            [Input(123, null, typeof(int))]
+            [Input(null, null, typeof(object))]
+            [Input("stringArg", null, typeof(string))]
+            [Input("stringArg1", "stringArg2", typeof(string))]
+            [Input(null, "stringArg", typeof(string))]
+            public void SingleGenericArgumentMultipleParameters<T>(T genericArgument1, T genericArgument2, Type expectedT)
+            {
+                typeof(T).ShouldBe(expectedT);
             }
 
             static string Format(object? obj)
@@ -373,13 +373,13 @@
 
         class ConstrainedGenericTestClass
         {
-            public void UnconstrainedGeneric<T>(T input)
-            {
-            }
-
             public void ConstrainedGeneric<T>(T input) where T : struct
             {
                 typeof(T).IsValueType.ShouldBe(true);
+            }
+
+            public void UnconstrainedGeneric<T>(T input)
+            {
             }
         }
     }

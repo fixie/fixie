@@ -1,6 +1,5 @@
 namespace Fixie.Tests.Internal
 {
-    using System;
     using Assertions;
     using Fixie.Internal;
     using static Utility;
@@ -54,32 +53,6 @@ namespace Fixie.Tests.Internal
                 Self + "+SkipTestClass.SkipB skipped");
         }
 
-        public void ShouldAllowRandomShufflingOfCaseExecutionOrder()
-        {
-            var listener = new StubListener();
-
-            var candidateTypes = new[]
-            {
-                typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
-                typeof(PassFailTestClass), typeof(SkipTestClass)
-            };
-            var discovery = new SelfTestDiscovery();
-            var execution = new CreateInstancePerCase();
-
-            discovery.Methods
-                .Shuffle(new Random(1));
-
-            new TestAssembly(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
-
-            listener.Entries.ShouldBe(
-                Self + "+PassTestClass.PassB passed",
-                Self + "+PassTestClass.PassA passed",
-                Self + "+PassFailTestClass.Fail failed: 'Fail' failed!",
-                Self + "+PassFailTestClass.Pass passed",
-                Self + "+SkipTestClass.SkipB skipped",
-                Self + "+SkipTestClass.SkipA skipped");
-        }
-
         class CreateInstancePerCase : Execution
         {
             public void Execute(TestClass testClass)
@@ -104,8 +77,8 @@ namespace Fixie.Tests.Internal
 
         class PassFailTestClass
         {
-            public void Pass() { }
             public void Fail() { throw new FailureException(); }
+            public void Pass() { }
         }
 
         class SkipTestClass

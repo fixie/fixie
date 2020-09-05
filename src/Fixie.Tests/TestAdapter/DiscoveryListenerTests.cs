@@ -29,9 +29,9 @@
             discoverySink.TestCases.ShouldSatisfy(
                 x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath),
                 x => x.ShouldBeDiscoveryTimeTest(TestClass + ".FailByAssertion", assemblyPath),
-                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", assemblyPath),
-                x => x.ShouldBeDiscoveryTimeTest(TestClass + ".SkipWithReason", assemblyPath),
                 x => x.ShouldBeDiscoveryTimeTest(TestClass + ".SkipWithoutReason", assemblyPath),
+                x => x.ShouldBeDiscoveryTimeTest(TestClass + ".SkipWithReason", assemblyPath),
+                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", assemblyPath),
                 x => x.ShouldBeDiscoveryTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath));
         }
 
@@ -62,9 +62,9 @@
             discoverySink.TestCases.ShouldSatisfy(
                 x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail", invalidAssemblyPath),
                 x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".FailByAssertion", invalidAssemblyPath),
-                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", invalidAssemblyPath),
-                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".SkipWithReason", invalidAssemblyPath),
                 x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".SkipWithoutReason", invalidAssemblyPath),
+                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".SkipWithReason", invalidAssemblyPath),
+                x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", invalidAssemblyPath),
                 x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(GenericTestClass + ".ShouldBeString", invalidAssemblyPath));
         }
 

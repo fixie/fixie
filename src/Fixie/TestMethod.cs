@@ -41,16 +41,8 @@
             {
                 if (instance != null)
                 {
-                    @case.Execute(instance);
-
-                    try
-                    {
-                        inspectCase?.Invoke(@case);
-                    }
-                    catch (Exception exception)
-                    {
-                        caseInspectionFailure = exception;
-                    }
+                    TryRunCase(@case, instance);
+                    TryInspectCase(@case, inspectCase, out caseInspectionFailure);
                 }
                 else
                 {
@@ -58,46 +50,15 @@
                     {
                         var automaticInstance = @case.Method.IsStatic ? null : Construct(@case.Method.ReflectedType!);
 
-                        @case.Execute(automaticInstance);
-
-                        try
-                        {
-                            inspectCase?.Invoke(@case);
-                        }
-                        catch (Exception exception)
-                        {
-                            caseInspectionFailure = exception;
-                        }
-
-                        try
-                        {
-                            automaticInstance.Dispose();
-                        }
-                        catch (Exception exception)
-                        {
-                            // Because the case already has a primary
-                            // result, capture the failure so that it
-                            // can be recorded after the primary result.
-                            disposalFailure = exception;
-                        }
+                        TryRunCase(@case, automaticInstance);
+                        TryInspectCase(@case, inspectCase, out caseInspectionFailure);
+                        TryDispose(automaticInstance, out disposalFailure);
                     }
                     catch (Exception constructionFailure)
                     {
-                        // Because a construction failure prevents
-                        // executing the case method, we can safely
-                        // record the failure directly on the case
-                        // without risk of overwriting some other
-                        // primary result.
                         @case.Fail(constructionFailure);
 
-                        try
-                        {
-                            inspectCase?.Invoke(@case);
-                        }
-                        catch (Exception exception)
-                        {
-                            caseInspectionFailure = exception;
-                        }
+                        TryInspectCase(@case, inspectCase, out caseInspectionFailure);
                     }
                 }
 
@@ -120,6 +81,39 @@
                 recorder.Fail(new Case(@case, disposalFailure));
             
             RecordedResult = true;
+        }
+
+        static void TryRunCase(Case @case, object? instance)
+        {
+            @case.Execute(instance);
+        }
+
+        static void TryInspectCase(Case @case, Action<Case>? inspectCase, out Exception? caseInspectionFailure)
+        {
+            caseInspectionFailure = null;
+
+            try
+            {
+                inspectCase?.Invoke(@case);
+            }
+            catch (Exception exception)
+            {
+                caseInspectionFailure = exception;
+            }
+        }
+
+        static void TryDispose(object? automaticInstance, out Exception? disposalFailure)
+        {
+            disposalFailure = null;
+
+            try
+            {
+                automaticInstance.Dispose();
+            }
+            catch (Exception exception)
+            {
+                disposalFailure = exception;
+            }
         }
 
         public void Run(Action<Case>? inspectCase = null)

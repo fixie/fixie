@@ -204,7 +204,7 @@ namespace Fixie.Tests
             public void Execute(TestClass testClass)
             {
                 var type = testClass.Type;
-                var instance = type.IsStatic() ? null : Activator.CreateInstance(type);
+                var instance = type.IsStatic() ? null : testClass.Construct();
 
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
@@ -317,11 +317,11 @@ namespace Fixie.Tests
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail skipped",
-                $"SampleTestClass.Fail failed: Exception has been thrown by the target of an invocation.{NewLine}------- Inner Exception: Fixie.Tests.FailureException -------{NewLine}'.ctor' failed!",
+                $"SampleTestClass.Fail failed: '.ctor' failed!",
                 "SampleTestClass.Pass skipped",
-                $"SampleTestClass.Pass failed: Exception has been thrown by the target of an invocation.{NewLine}------- Inner Exception: Fixie.Tests.FailureException -------{NewLine}'.ctor' failed!",
+                $"SampleTestClass.Pass failed: '.ctor' failed!",
                 "SampleTestClass.Skip skipped",
-                $"SampleTestClass.Skip failed: Exception has been thrown by the target of an invocation.{NewLine}------- Inner Exception: Fixie.Tests.FailureException -------{NewLine}'.ctor' failed!"
+                $"SampleTestClass.Skip failed: '.ctor' failed!"
             );
 
             output.ShouldHaveLifecycle(".ctor");

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Runtime.ExceptionServices;
 
     /// <summary>
     /// The context in which a test class is running.
@@ -32,5 +33,23 @@
         /// Null under normal test execution.
         /// </summary>
         public MethodInfo? TargetMethod { get; }
+
+        /// <summary>
+        /// Construct an instance of the test class using
+        /// the constructor that best matches the specified
+        /// parameters.
+        /// </summary>
+        public object? Construct(params object?[] parameters)
+        {
+            try
+            {
+                return Activator.CreateInstance(Type, parameters);
+            }
+            catch (TargetInvocationException exception)
+            {
+                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
+                throw; //Unreachable.
+            }
+        }
     }
 }

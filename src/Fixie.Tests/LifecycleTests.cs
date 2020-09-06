@@ -2,76 +2,10 @@ namespace Fixie.Tests
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
-    using Assertions;
     using Fixie.Internal;
 
-    public class LifecycleTests
+    public class LifecycleTests : InstrumentedExecutionTests
     {
-        static string? FailingMember;
-        static int? FailingMemberOccurrence;
-
-        public LifecycleTests()
-        {
-            FailingMember = null;
-            FailingMemberOccurrence = null;
-        }
-
-        static void FailDuring(string failingMemberName, int? occurrence = null)
-        {
-            FailingMember = failingMemberName;
-            FailingMemberOccurrence = occurrence;
-        }
-
-        Output Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
-        {
-            return Run<TExecution>(typeof(TSampleTestClass));
-        }
-
-        Output Run<TSampleTestClass>(Execution execution)
-        {
-            return Run(typeof(TSampleTestClass), execution);
-        }
-
-        Output Run<TExecution>(Type testClass) where TExecution : Execution, new()
-        {
-            return Run(testClass, new TExecution());
-        }
-
-        Output Run(Type testClass, Execution execution)
-        {
-            using var console = new RedirectedConsole();
-
-            var results = Utility.Run(testClass, execution);
-
-            return new Output(console.Lines().ToArray(), results.ToArray());
-        }
-
-        class Output
-        {
-            readonly string[] lifecycle;
-            readonly string[] results;
-
-            public Output(string[] lifecycle, string[] results)
-            {
-                this.lifecycle = lifecycle;
-                this.results = results;
-            }
-
-            public void ShouldHaveLifecycle(params string[] expected)
-            {
-                lifecycle.ShouldBe(expected);
-            }
-
-            public void ShouldHaveResults(params string[] expected)
-            {
-                var namespaceQualifiedExpectation = expected.Select(x => "Fixie.Tests.LifecycleTests+" + x).ToArray();
-
-                results.ShouldBe(namespaceQualifiedExpectation);
-            }
-        }
-
         class SampleTestClass
         {
             public void Fail()
@@ -132,37 +66,6 @@ namespace Fixie.Tests
             {
                 WhereAmI();
                 throw new ShouldBeUnreachableException();
-            }
-        }
-
-        static void WhereAmI(object parameter, [CallerMemberName] string member = default!)
-        {
-            System.Console.WriteLine($"{member}({parameter})");
-
-            ProcessScriptedFailure(member);
-        }
-        
-        static void WhereAmI([CallerMemberName] string member = default!)
-        {
-            System.Console.WriteLine(member);
-
-            ProcessScriptedFailure(member);
-        }
-
-        static void ProcessScriptedFailure(string member)
-        {
-            if (FailingMember == member)
-            {
-                if (FailingMemberOccurrence == null)
-                    throw new FailureException(member);
-
-                if (FailingMemberOccurrence > 0)
-                {
-                    FailingMemberOccurrence--;
-
-                    if (FailingMemberOccurrence == 0)
-                        throw new FailureException(member);
-                }
             }
         }
 

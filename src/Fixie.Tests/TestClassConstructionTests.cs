@@ -1,65 +1,10 @@
 namespace Fixie.Tests
 {
     using System;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
-    using Assertions;
     using Fixie.Internal;
-    using static System.Environment;
 
-    public class TestClassConstructionTests
+    public class TestClassConstructionTests : InstrumentedExecutionTests
     {
-        static string? FailingMember;
-        static int? FailingMemberOccurrence;
-
-        public TestClassConstructionTests()
-        {
-            FailingMember = null;
-            FailingMemberOccurrence = null;
-        }
-
-        static void FailDuring(string failingMemberName, int? occurrence = null)
-        {
-            FailingMember = failingMemberName;
-            FailingMemberOccurrence = occurrence;
-        }
-
-        static Output Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
-            => Run<TExecution>(typeof(TSampleTestClass));
-
-        static Output Run<TExecution>(Type testClass) where TExecution : Execution, new()
-        {
-            using var console = new RedirectedConsole();
-
-            var results = Utility.Run<TExecution>(testClass);
-
-            return new Output(console.Lines().ToArray(), results.ToArray());
-        }
-
-        class Output
-        {
-            readonly string[] lifecycle;
-            readonly string[] results;
-
-            public Output(string[] lifecycle, string[] results)
-            {
-                this.lifecycle = lifecycle;
-                this.results = results;
-            }
-
-            public void ShouldHaveLifecycle(params string[] expected)
-            {
-                lifecycle.ShouldBe(expected);
-            }
-
-            public void ShouldHaveResults(params string[] expected)
-            {
-                var namespaceQualifiedExpectation = expected.Select(x => "Fixie.Tests.TestClassConstructionTests+" + x).ToArray();
-
-                results.ShouldBe(namespaceQualifiedExpectation);
-            }
-        }
-
         class SampleTestClass : IDisposable
         {
             bool disposed;
@@ -152,37 +97,6 @@ namespace Fixie.Tests
             {
                 WhereAmI();
                 throw new ShouldBeUnreachableException();
-            }
-        }
-
-        static void WhereAmI(object parameter, [CallerMemberName] string member = default!)
-        {
-            System.Console.WriteLine($"{member}({parameter})");
-
-            ProcessScriptedFailure(member);
-        }
-
-        static void WhereAmI([CallerMemberName] string member = default!)
-        {
-            System.Console.WriteLine(member);
-
-            ProcessScriptedFailure(member);
-        }
-
-        static void ProcessScriptedFailure(string member)
-        {
-            if (FailingMember == member)
-            {
-                if (FailingMemberOccurrence == null)
-                    throw new FailureException(member);
-
-                if (FailingMemberOccurrence > 0)
-                {
-                    FailingMemberOccurrence--;
-
-                    if (FailingMemberOccurrence == 0)
-                        throw new FailureException(member);
-                }
             }
         }
 
@@ -317,11 +231,11 @@ namespace Fixie.Tests
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail skipped",
-                $"SampleTestClass.Fail failed: '.ctor' failed!",
+                "SampleTestClass.Fail failed: '.ctor' failed!",
                 "SampleTestClass.Pass skipped",
-                $"SampleTestClass.Pass failed: '.ctor' failed!",
+                "SampleTestClass.Pass failed: '.ctor' failed!",
                 "SampleTestClass.Skip skipped",
-                $"SampleTestClass.Skip failed: '.ctor' failed!"
+                "SampleTestClass.Skip failed: '.ctor' failed!"
             );
 
             output.ShouldHaveLifecycle(".ctor");

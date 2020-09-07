@@ -1,6 +1,8 @@
 ﻿namespace Fixie
 {
-    using Internal;
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
     using Internal.Expressions;
 
     /// <summary>
@@ -17,19 +19,22 @@
     /// </summary>
     public class Discovery
     {
+        readonly List<Func<Type, bool>> testClassConditions;
+        readonly List<Func<MethodInfo, bool>> testMethodConditions;
+        bool usingDefaultTestClassCondition;
+
         public Discovery()
         {
-            Config = new Configuration();
+            usingDefaultTestClassCondition = true;
+            testClassConditions = new List<Func<Type, bool>>
+            {
+                x => x.Name.EndsWith("Tests")
+            };
+            testMethodConditions = new List<Func<MethodInfo, bool>>();
 
-            Classes = new ClassExpression(Config);
-            Methods = new MethodExpression(Config);
+            Classes = new ClassExpression(this);
+            Methods = new MethodExpression(this);
         }
-
-        /// <summary>
-        /// The current state describing the discovery rules. This state can be manipulated through
-        /// the other properties on Discovery.
-        /// </summary>
-        internal Configuration Config { get; }
 
         /// <summary>
         /// Defines the set of conditions that describe which classes are test classes.
@@ -41,5 +46,27 @@
         /// and what order to run them in.
         /// </summary>
         public MethodExpression Methods { get; }
+
+        internal void AddTestClassCondition(Func<Type, bool> testClassCondition)
+        {
+            if (usingDefaultTestClassCondition)
+            {
+                //The default test class condition is useful, but too restrictive
+                //in the case that a customization is defining their own test class
+                //discovery rules. Upon the first such customization, we start over
+                //from an empty list of conditions.
+
+                testClassConditions.Clear();
+            }
+
+            testClassConditions.Add(testClassCondition);
+            usingDefaultTestClassCondition = false;
+        }
+
+        internal void AddTestMethodCondition(Func<MethodInfo, bool> testMethodCondition)
+            => testMethodConditions.Add(testMethodCondition);
+
+        internal IReadOnlyList<Func<Type, bool>> TestClassConditions => testClassConditions;
+        internal IReadOnlyList<Func<MethodInfo, bool>> TestMethodConditions => testMethodConditions;
     }
 }

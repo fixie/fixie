@@ -5,12 +5,10 @@
 
     public class MethodExpression
     {
-        readonly Configuration config;
+        readonly Discovery discovery;
 
-        internal MethodExpression(Configuration config)
-        {
-            this.config = config;
-        }
+        internal MethodExpression(Discovery discovery)
+            => this.discovery = discovery;
 
         /// <summary>
         /// Limits discovered test methods to those which satisfy the given condition.
@@ -19,7 +17,7 @@
         /// </summary>
         public MethodExpression Where(Func<MethodInfo, bool> condition)
         {
-            config.AddTestMethodCondition(condition);
+            discovery.AddTestMethodCondition(condition);
             return this;
         }
     }

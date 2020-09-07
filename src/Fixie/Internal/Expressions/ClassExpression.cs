@@ -4,12 +4,10 @@ namespace Fixie.Internal.Expressions
 
     public class ClassExpression
     {
-        readonly Configuration config;
+        readonly Discovery discovery;
 
-        internal ClassExpression(Configuration config)
-        {
-            this.config = config;
-        }
+        internal ClassExpression(Discovery discovery)
+            => this.discovery = discovery;
 
         /// <summary>
         /// Limits discovered test classes to those which satisfy the given condition.
@@ -18,7 +16,7 @@ namespace Fixie.Internal.Expressions
         /// </summary>
         public ClassExpression Where(Func<Type, bool> condition)
         {
-            config.AddTestClassCondition(condition);
+            discovery.AddTestClassCondition(condition);
             return this;
         }
     }

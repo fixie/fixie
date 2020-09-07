@@ -11,7 +11,7 @@
         
         public MethodDiscoverer(Discovery discovery)
         {
-            testMethodConditions = discovery.Config.TestMethodConditions;
+            testMethodConditions = discovery.TestMethodConditions;
         }
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)

@@ -7,34 +7,26 @@ namespace Fixie.Internal
 
     class ClassDiscoverer
     {
+        readonly Discovery discovery;
         readonly IReadOnlyList<Func<Type, bool>> testClassConditions;
 
         public ClassDiscoverer(Discovery discovery)
         {
-            var conditions = new List<Func<Type, bool>>
+            this.discovery = discovery;
+
+            testClassConditions = new List<Func<Type, bool>>
             {
                 ConcreteClasses,
                 NonCustomizationClasses,
                 NonCompilerGeneratedClasses
             };
-
-            if (discovery.TestClassConditions.Count == 0)
-            {
-               conditions.Add(x => x.Name.EndsWith("Tests"));
-            }
-            else
-            {
-                conditions.AddRange(discovery.TestClassConditions);
-            }
-
-            testClassConditions = conditions;
         }
 
         public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
         {
             try
             {
-                return candidates.Where(IsMatch).ToList();
+                return discovery.TestClasses(candidates.Where(IsApplicable)).ToList();
             }
             catch (Exception exception)
             {
@@ -44,7 +36,7 @@ namespace Fixie.Internal
             }
         }
 
-        bool IsMatch(Type candidate)
+        bool IsApplicable(Type candidate)
             => testClassConditions.All(condition => condition(candidate));
 
         static bool ConcreteClasses(Type type)
@@ -54,7 +46,7 @@ namespace Fixie.Internal
             => !IsDiscovery(type) && !IsExecution(type);
 
         static bool IsDiscovery(Type type)
-            => type.IsSubclassOf(typeof(Discovery));
+            => type.GetInterfaces().Contains(typeof(Discovery));
 
         static bool IsExecution(Type type)
             => type.GetInterfaces().Contains(typeof(Execution));

@@ -1,6 +1,8 @@
 ﻿namespace Fixie.Tests.Internal.Listeners
 {
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using Fixie.Internal.Listeners;
     using Assertions;
 
@@ -60,10 +62,8 @@
 
         class ZeroPassed : SelfTestDiscovery
         {
-            public ZeroPassed()
-            {
-                TestMethodConditions.Add(x => !x.Name.StartsWith("Pass") && x.ReflectedType == TestClassType);
-            }
+            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => publicMethods.Where(x => !x.Name.StartsWith("Pass") && x.ReflectedType == TestClassType);
         }
 
         public void ShouldNotReportPassCountsWhenZeroTestsHavePassed()
@@ -81,10 +81,8 @@
 
         class ZeroFailed : SelfTestDiscovery
         {
-            public ZeroFailed()
-            {
-                TestMethodConditions.Add(x => !x.Name.StartsWith("Fail") && x.ReflectedType == TestClassType);
-            }
+            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => publicMethods.Where(x => !x.Name.StartsWith("Fail") && x.ReflectedType == TestClassType);
         }
 
         public void ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
@@ -102,10 +100,8 @@
 
         class ZeroSkipped : SelfTestDiscovery
         {
-            public ZeroSkipped()
-            {
-                TestMethodConditions.Add(x => !x.Name.StartsWith("Skip") && x.ReflectedType == TestClassType);
-            }
+            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => publicMethods.Where(x => !x.Name.StartsWith("Skip") && x.ReflectedType == TestClassType);
         }
 
         public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
@@ -121,12 +117,10 @@
                 .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
         }
 
-        class NoTestsFound : Discovery
+        class NoTestsFound : SelfTestDiscovery
         {
-            public NoTestsFound()
-            {
-                TestMethodConditions.Add(x => false);
-            }
+            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => publicMethods.Where(x => false);
         }
 
         public void ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()

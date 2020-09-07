@@ -1,11 +1,20 @@
 ﻿namespace Fixie.Tests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public class SelfTestDiscovery : Discovery
     {
-        public SelfTestDiscovery()
+        public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
         {
-            TestClassConditions.Add(x => x.IsNestedPrivate || x.IsNestedFamily);
-            TestClassConditions.Add(x => x.Name.EndsWith("TestClass"));
+            return concreteClasses
+                .Where(x => x.IsNestedPrivate || x.IsNestedFamily)
+                .Where(x => x.Name.EndsWith("TestClass"));
         }
+
+        public virtual IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+            => publicMethods;
     }
 }

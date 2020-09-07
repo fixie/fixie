@@ -31,28 +31,25 @@
 
         class MaximumDiscovery : Discovery
         {
-            public MaximumDiscovery()
-            {
-                //Include a trivial condition, causing the default "name ends with 'Tests'" rule
-                //to be suppressed in favor of only the rules specified here in ClassDiscovererTests.
-                TestClassConditions.Add(x => true);
-            }
+            public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
+                => concreteClasses;
         }
 
         class NarrowDiscovery : Discovery
         {
-            public NarrowDiscovery()
+            public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
             {
-                TestClassConditions.Add(x => (x.Namespace ?? "").StartsWith("Fixie.Tests"));
-                TestClassConditions.Add(x => x.Name.Contains("i"));
-                TestClassConditions.Add(x => !x.IsStatic());
+                return concreteClasses
+                    .Where(x => (x.Namespace ?? "").StartsWith("Fixie.Tests"))
+                    .Where(x => x.Name.Contains("i"))
+                    .Where(x => !x.IsStatic());
             }
         }
         
         class BuggyDiscovery : Discovery
         {
-            public BuggyDiscovery()
-                => TestClassConditions.Add(x => throw new Exception("Unsafe class-discovery predicate threw!"));
+            public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
+                => throw new Exception("Unsafe class-discovery predicate threw!");
         }
 
         class SampleExecution : Execution

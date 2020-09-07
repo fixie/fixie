@@ -2,10 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
     /// <summary>
-    /// Subclass Discovery to customize test discovery rules.
+    /// Implement Discovery to customize test discovery rules.
     /// 
     /// The default discovery rules are applied to a test assembly whenever the test
     /// assembly includes no such subclass.
@@ -16,17 +17,18 @@
     ///
     /// <para>All public methods in a test class are test methods.</para>
     /// </summary>
-    public class Discovery
+    public interface Discovery
     {
         /// <summary>
-        /// Defines the set of conditions that describe which classes are test classes.
+        /// Filters a set of candidate classes to those which are to be treated as test classes.
         /// </summary>
-        public List<Func<Type, bool>> TestClassConditions { get; } = new List<Func<Type, bool>>();
+        IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
+            => concreteClasses.Where(x => x.Name.EndsWith("Tests"));
 
         /// <summary>
-        /// Defines the set of conditions that describe which test class methods are test methods,
-        /// and what order to run them in.
+        /// Filters a set of candidate methods to those which are to be treated as test methods.
         /// </summary>
-        public List<Func<MethodInfo, bool>> TestMethodConditions { get; } = new List<Func<MethodInfo, bool>>();
+        IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+            => publicMethods;
     }
 }

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
@@ -15,22 +16,25 @@
         
         class MaximumDiscovery : Discovery
         {
+            public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => publicMethods;
         }
 
         class NarrowDiscovery : Discovery
         {
-            public NarrowDiscovery()
+            public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
             {
-                TestMethodConditions.Add(x => x.Name.Contains("Void"));
-                TestMethodConditions.Add(x => x.Name.Contains("No"));
-                TestMethodConditions.Add(x => !x.IsStatic);
+                return publicMethods
+                    .Where(x => x.Name.Contains("Void"))
+                    .Where(x => x.Name.Contains("No"))
+                    .Where(x => !x.IsStatic);
             }
         }
 
         class BuggyDiscovery : Discovery
         {
-            public BuggyDiscovery()
-                => TestMethodConditions.Add(x => throw new Exception("Unsafe method discovery predicate threw!"));
+            public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => throw new Exception("Unsafe method discovery predicate threw!");
         }
 
         public void ShouldConsiderOnlyPublicMethods()

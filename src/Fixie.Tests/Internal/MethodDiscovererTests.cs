@@ -9,15 +9,35 @@
 
     public class MethodDiscovererTests
     {
-        class SampleDiscovery : Discovery
+        class DefaultDiscovery : Discovery
         {
+        }
+        
+        class MaximumDiscovery : Discovery
+        {
+        }
+
+        class NarrowDiscovery : Discovery
+        {
+            public NarrowDiscovery()
+            {
+                TestMethodConditions.Add(x => x.Name.Contains("Void"));
+                TestMethodConditions.Add(x => x.Name.Contains("No"));
+                TestMethodConditions.Add(x => !x.IsStatic);
+            }
+        }
+
+        class BuggyDiscovery : Discovery
+        {
+            public BuggyDiscovery()
+                => TestMethodConditions.Add(x => throw new Exception("Unsafe method discovery predicate threw!"));
         }
 
         public void ShouldConsiderOnlyPublicMethods()
         {
-            var customDiscovery = new SampleDiscovery();
+            var discovery = new MaximumDiscovery();
 
-            DiscoveredTestMethods<Sample>(customDiscovery)
+            DiscoveredTestMethods<Sample>(discovery)
                 .ShouldBe(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
@@ -29,7 +49,7 @@
                     "PublicStaticWithArgsVoid(x)",
                     "PublicStaticWithArgsWithReturn(x)");
 
-            DiscoveredTestMethods<AsyncSample>(customDiscovery)
+            DiscoveredTestMethods<AsyncSample>(discovery)
                 .ShouldBe(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
@@ -44,20 +64,20 @@
 
         public void ShouldNotConsiderIDisposableDisposeMethod()
         {
-            var customDiscovery = new SampleDiscovery();
+            var discovery = new MaximumDiscovery();
 
-            DiscoveredTestMethods<DisposableSample>(customDiscovery)
+            DiscoveredTestMethods<DisposableSample>(discovery)
                 .ShouldBe(
                     "Dispose(disposing)",
                     "NotNamedDispose()");
 
-            DiscoveredTestMethods<NonDisposableSample>(customDiscovery)
+            DiscoveredTestMethods<NonDisposableSample>(discovery)
                 .ShouldBe(
                     "Dispose()",
                     "Dispose(disposing)",
                     "NotNamedDispose()");
 
-            DiscoveredTestMethods<NonDisposableByReturnTypeSample>(customDiscovery)
+            DiscoveredTestMethods<NonDisposableByReturnTypeSample>(discovery)
                 .ShouldBe(
                     "Dispose()",
                     "Dispose(disposing)",
@@ -66,21 +86,17 @@
 
         public void ShouldDiscoverMethodsSatisfyingAllSpecifiedConditions()
         {
-            var customDiscovery = new SampleDiscovery();
+            var discovery = new NarrowDiscovery();
 
-            customDiscovery.TestMethodConditions.Add(x => x.Name.Contains("Void"));
-            customDiscovery.TestMethodConditions.Add(x => x.Name.Contains("No"));
-            customDiscovery.TestMethodConditions.Add(x => !x.IsStatic);
-
-            DiscoveredTestMethods<Sample>(customDiscovery)
+            DiscoveredTestMethods<Sample>(discovery)
                 .ShouldBe("PublicInstanceNoArgsVoid()");
         }
 
         public void TheDefaultDiscoveryShouldDiscoverPublicMethods()
         {
-            var defaultDiscovery = new Discovery();
+            var discovery = new DefaultDiscovery();
 
-            DiscoveredTestMethods<Sample>(defaultDiscovery)
+            DiscoveredTestMethods<Sample>(discovery)
                 .ShouldBe(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
@@ -92,7 +108,7 @@
                     "PublicStaticWithArgsVoid(x)",
                     "PublicStaticWithArgsWithReturn(x)");
 
-            DiscoveredTestMethods<AsyncSample>(defaultDiscovery)
+            DiscoveredTestMethods<AsyncSample>(discovery)
                 .ShouldBe(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
@@ -107,13 +123,9 @@
 
         public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
         {
-            var customDiscovery = new SampleDiscovery();
+            var discovery = new BuggyDiscovery();
 
-            customDiscovery
-                .TestMethodConditions
-                .Add(x => throw new Exception("Unsafe method discovery predicate threw!"));
-
-            Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(customDiscovery);
+            Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(discovery);
 
             var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
                 "Exception thrown while attempting to run a custom method discovery predicate. " +

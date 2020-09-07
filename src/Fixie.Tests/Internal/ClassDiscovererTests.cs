@@ -25,14 +25,34 @@
             typeof(InheritanceSample)
         };
 
-        class SampleDiscovery : Discovery
+        class DefaultDiscovery : Discovery
         {
-            public SampleDiscovery()
+        }
+
+        class MaximumDiscovery : Discovery
+        {
+            public MaximumDiscovery()
             {
                 //Include a trivial condition, causing the default "name ends with 'Tests'" rule
                 //to be suppressed in favor of only the rules specified here in ClassDiscovererTests.
                 TestClassConditions.Add(x => true);
             }
+        }
+
+        class NarrowDiscovery : Discovery
+        {
+            public NarrowDiscovery()
+            {
+                TestClassConditions.Add(x => (x.Namespace ?? "").StartsWith("Fixie.Tests"));
+                TestClassConditions.Add(x => x.Name.Contains("i"));
+                TestClassConditions.Add(x => !x.IsStatic());
+            }
+        }
+        
+        class BuggyDiscovery : Discovery
+        {
+            public BuggyDiscovery()
+                => TestClassConditions.Add(x => throw new Exception("Unsafe class-discovery predicate threw!"));
         }
 
         class SampleExecution : Execution
@@ -44,9 +64,9 @@
         
         public void ShouldConsiderOnlyConcreteClasses()
         {
-            var customDiscovery = new SampleDiscovery();
+            var discovery = new MaximumDiscovery();
 
-            DiscoveredTestClasses(customDiscovery)
+            DiscoveredTestClasses(discovery)
                 .ShouldBe(
                     typeof(StaticClass),
                     typeof(DefaultConstructor),
@@ -59,10 +79,13 @@
 
         public void ShouldNotConsiderDiscoveryAndExecutionCustomizationClasses()
         {
-            var customDiscovery = new SampleDiscovery();
+            var discovery = new MaximumDiscovery();
 
-            DiscoveredTestClasses(customDiscovery,
-                    typeof(SampleDiscovery),
+            DiscoveredTestClasses(discovery,
+                    typeof(DefaultDiscovery),
+                    typeof(MaximumDiscovery),
+                    typeof(NarrowDiscovery),
+                    typeof(BuggyDiscovery),
                     typeof(SampleExecution))
                 .ShouldBe(
                     typeof(StaticClass),
@@ -84,9 +107,9 @@
             nested.Has<CompilerGeneratedAttribute>().ShouldBe(true);
 
             //Confirm that the nested closure class is omitted from test class discovery.
-            var customDiscovery = new SampleDiscovery();
+            var discovery = new MaximumDiscovery();
 
-            DiscoveredTestClasses(customDiscovery, nested)
+            DiscoveredTestClasses(discovery, nested)
                 .ShouldBe(
                     typeof(StaticClass),
                     typeof(DefaultConstructor),
@@ -99,13 +122,9 @@
 
         public void ShouldDiscoverClassesSatisfyingAllSpecifiedConditions()
         {
-            var customDiscovery = new SampleDiscovery();
+            var discovery = new NarrowDiscovery();
 
-            customDiscovery.TestClassConditions.Add(x => (x.Namespace ?? "").StartsWith("Fixie.Tests"));
-            customDiscovery.TestClassConditions.Add(x => x.Name.Contains("i"));
-            customDiscovery.TestClassConditions.Add(x => !x.IsStatic());
-
-            DiscoveredTestClasses(customDiscovery)
+            DiscoveredTestClasses(discovery)
                 .ShouldBe(
                     typeof(NameEndsWithTests),
                     typeof(InheritanceSampleBase),
@@ -114,22 +133,18 @@
 
         public void TheDefaultDiscoveryShouldDiscoverClassesWhoseNameEndsWithTests()
         {
-            var defaultDiscovery = new Discovery();
+            var discovery = new DefaultDiscovery();
 
-            DiscoveredTestClasses(defaultDiscovery)
+            DiscoveredTestClasses(discovery)
                 .ShouldBe(
                     typeof(NameEndsWithTests));
         }
 
         public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
         {
-            var customDiscovery = new SampleDiscovery();
+            var discovery = new BuggyDiscovery();
 
-            customDiscovery
-                .TestClassConditions
-                .Add(x => throw new Exception("Unsafe class-discovery predicate threw!"));
-
-            Action attemptFaultyDiscovery = () => DiscoveredTestClasses(customDiscovery);
+            Action attemptFaultyDiscovery = () => DiscoveredTestClasses(discovery);
 
             var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
                 "Exception thrown while attempting to run a custom class-discovery predicate. " +

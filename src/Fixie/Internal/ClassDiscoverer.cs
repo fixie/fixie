@@ -8,19 +8,9 @@ namespace Fixie.Internal
     class ClassDiscoverer
     {
         readonly Discovery discovery;
-        readonly IReadOnlyList<Func<Type, bool>> testClassConditions;
 
         public ClassDiscoverer(Discovery discovery)
-        {
-            this.discovery = discovery;
-
-            testClassConditions = new List<Func<Type, bool>>
-            {
-                ConcreteClasses,
-                NonCustomizationClasses,
-                NonCompilerGeneratedClasses
-            };
-        }
+            => this.discovery = discovery;
 
         public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
         {
@@ -36,8 +26,12 @@ namespace Fixie.Internal
             }
         }
 
-        bool IsApplicable(Type candidate)
-            => testClassConditions.All(condition => condition(candidate));
+        static bool IsApplicable(Type candidate)
+        {
+            return ConcreteClasses(candidate) &&
+                   NonCustomizationClasses(candidate) &&
+                   NonCompilerGeneratedClasses(candidate);
+        }
 
         static bool ConcreteClasses(Type type)
             => type.IsClass && (!type.IsAbstract || type.IsStatic());

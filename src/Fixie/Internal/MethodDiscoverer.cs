@@ -10,9 +10,7 @@
         readonly Discovery discovery;
 
         public MethodDiscoverer(Discovery discovery)
-        {
-            this.discovery = discovery;
-        }
+            => this.discovery = discovery;
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
         {

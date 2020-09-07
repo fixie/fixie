@@ -21,15 +21,10 @@
     {
         readonly List<Func<Type, bool>> testClassConditions;
         readonly List<Func<MethodInfo, bool>> testMethodConditions;
-        bool usingDefaultTestClassCondition;
 
         public Discovery()
         {
-            usingDefaultTestClassCondition = true;
-            testClassConditions = new List<Func<Type, bool>>
-            {
-                x => x.Name.EndsWith("Tests")
-            };
+            testClassConditions = new List<Func<Type, bool>>();
             testMethodConditions = new List<Func<MethodInfo, bool>>();
 
             Classes = new ClassExpression(this);
@@ -48,20 +43,7 @@
         public MethodExpression Methods { get; }
 
         internal void AddTestClassCondition(Func<Type, bool> testClassCondition)
-        {
-            if (usingDefaultTestClassCondition)
-            {
-                //The default test class condition is useful, but too restrictive
-                //in the case that a customization is defining their own test class
-                //discovery rules. Upon the first such customization, we start over
-                //from an empty list of conditions.
-
-                testClassConditions.Clear();
-            }
-
-            testClassConditions.Add(testClassCondition);
-            usingDefaultTestClassCondition = false;
-        }
+            => testClassConditions.Add(testClassCondition);
 
         internal void AddTestMethodCondition(Func<MethodInfo, bool> testMethodCondition)
             => testMethodConditions.Add(testMethodCondition);

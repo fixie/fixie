@@ -18,7 +18,14 @@ namespace Fixie.Internal
                 NonCompilerGeneratedClasses
             };
 
-            conditions.AddRange(discovery.TestClassConditions);
+            if (discovery.TestClassConditions.Count == 0)
+            {
+               conditions.Add(x => x.Name.EndsWith("Tests"));
+            }
+            else
+            {
+                conditions.AddRange(discovery.TestClassConditions);
+            }
 
             testClassConditions = conditions;
         }

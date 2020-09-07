@@ -17,7 +17,7 @@
 
         protected string TestClass { get; }
         protected string GenericTestClass { get; }
-        protected Type TestClassType => typeof(SampleTestClass);
+        protected static Type TestClassType => typeof(SampleTestClass);
 
         readonly Type[] candidateTypes =
         {
@@ -37,12 +37,14 @@
             consoleLines = console.Lines();
         }
 
-        protected void Run(Listener listener, out IEnumerable<string> consoleLines, Action<Discovery>? customize = null)
+        protected void Run(Listener listener, out IEnumerable<string> consoleLines)
         {
-            var discovery = new SelfTestDiscovery();
-            var execution = new MessagingTestsExecution();
+            Run(listener, new SelfTestDiscovery(), out consoleLines);
+        }
 
-            customize?.Invoke(discovery);
+        protected void Run(Listener listener, Discovery discovery, out IEnumerable<string> consoleLines)
+        {
+            var execution = new MessagingTestsExecution();
 
             using var console = new RedirectedConsole();
 

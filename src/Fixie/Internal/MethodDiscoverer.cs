@@ -7,12 +7,10 @@
 
     class MethodDiscoverer
     {
-        readonly IReadOnlyList<Func<MethodInfo, bool>> testMethodConditions;
-        
+        readonly Discovery discovery;
+
         public MethodDiscoverer(Discovery discovery)
-        {
-            testMethodConditions = discovery.Config.TestMethodConditions;
-        }
+            => this.discovery = discovery;
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
         {
@@ -20,23 +18,20 @@
             {
                 bool testClassIsDisposable = IsDisposable(testClass);
 
-                return testClass
-                    .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-                    .Where(method => method.DeclaringType != typeof(object))
-                    .Where(method => !(testClassIsDisposable && HasDisposeSignature(method)))
-                    .Where(IsMatch)
+                return discovery.TestMethods(
+                        testClass
+                            .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
+                            .Where(method => method.DeclaringType != typeof(object))
+                            .Where(method => !(testClassIsDisposable && HasDisposeSignature(method))))
                     .ToList();
             }
             catch (Exception exception)
             {
                 throw new Exception(
-                    "Exception thrown while attempting to run a custom method discovery predicate. " +
+                    "Exception thrown during test method discovery. " +
                     "Check the inner exception for more details.", exception);
             }
         }
-
-        bool IsMatch(MethodInfo candidate)
-            => testMethodConditions.All(condition => condition(candidate));
 
         static bool IsDisposable(Type type)
             => type.GetInterfaces().Contains(typeof(IDisposable));

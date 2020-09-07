@@ -7,38 +7,31 @@ namespace Fixie.Internal
 
     class ClassDiscoverer
     {
-        readonly IReadOnlyList<Func<Type, bool>> testClassConditions;
+        readonly Discovery discovery;
 
         public ClassDiscoverer(Discovery discovery)
-        {
-            var conditions = new List<Func<Type, bool>>
-            {
-                ConcreteClasses,
-                NonCustomizationClasses,
-                NonCompilerGeneratedClasses
-            };
-
-            conditions.AddRange(discovery.Config.TestClassConditions);
-
-            testClassConditions = conditions;
-        }
+            => this.discovery = discovery;
 
         public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
         {
             try
             {
-                return candidates.Where(IsMatch).ToList();
+                return discovery.TestClasses(candidates.Where(IsApplicable)).ToList();
             }
             catch (Exception exception)
             {
                 throw new Exception(
-                    "Exception thrown while attempting to run a custom class-discovery predicate. " +
+                    "Exception thrown during test class discovery. " +
                     "Check the inner exception for more details.", exception);
             }
         }
 
-        bool IsMatch(Type candidate)
-            => testClassConditions.All(condition => condition(candidate));
+        static bool IsApplicable(Type candidate)
+        {
+            return ConcreteClasses(candidate) &&
+                   NonCustomizationClasses(candidate) &&
+                   NonCompilerGeneratedClasses(candidate);
+        }
 
         static bool ConcreteClasses(Type type)
             => type.IsClass && (!type.IsAbstract || type.IsStatic());
@@ -47,7 +40,7 @@ namespace Fixie.Internal
             => !IsDiscovery(type) && !IsExecution(type);
 
         static bool IsDiscovery(Type type)
-            => type.IsSubclassOf(typeof(Discovery));
+            => type.GetInterfaces().Contains(typeof(Discovery));
 
         static bool IsExecution(Type type)
             => type.GetInterfaces().Contains(typeof(Execution));

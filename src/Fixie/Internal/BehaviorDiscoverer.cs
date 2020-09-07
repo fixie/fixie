@@ -53,7 +53,7 @@
                             .Select(x => $"\t{x.FullName}")));
             }
 
-            return customDiscoveryTypes.SingleOrDefault() ?? typeof(Discovery);
+            return customDiscoveryTypes.SingleOrDefault() ?? typeof(DefaultDiscovery);
         }
 
         Type ExecutionType()
@@ -82,7 +82,7 @@
         }
 
         static bool IsDiscovery(Type type)
-            => type.IsSubclassOf(typeof(Discovery));
+            => type.GetInterfaces().Contains(typeof(Discovery));
 
         static bool IsExecution(Type type)
             => type.GetInterfaces().Contains(typeof(Execution));

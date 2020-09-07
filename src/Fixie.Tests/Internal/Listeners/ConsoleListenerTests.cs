@@ -1,6 +1,8 @@
 ﻿namespace Fixie.Tests.Internal.Listeners
 {
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using Fixie.Internal.Listeners;
     using Assertions;
 
@@ -58,14 +60,18 @@
                     "2 passed, 3 failed, 2 skipped, took 1.23 seconds");
         }
 
+        class ZeroPassed : SelfTestDiscovery
+        {
+            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => publicMethods.Where(x => !x.Name.StartsWith("Pass") && x.ReflectedType == TestClassType);
+        }
+
         public void ShouldNotReportPassCountsWhenZeroTestsHavePassed()
         {
-            void ZeroPassed(Discovery discovery)
-                => discovery.Methods.Where(x => !x.Name.StartsWith("Pass") && x.ReflectedType == TestClassType);
-
             var listener = new ConsoleListener();
+            var discovery = new ZeroPassed();
 
-            Run(listener, out var console, ZeroPassed);
+            Run(listener, discovery, out var console);
 
             console
                 .CleanDuration()
@@ -73,14 +79,18 @@
                 .ShouldBe("2 failed, 2 skipped, took 1.23 seconds");
         }
 
+        class ZeroFailed : SelfTestDiscovery
+        {
+            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => publicMethods.Where(x => !x.Name.StartsWith("Fail") && x.ReflectedType == TestClassType);
+        }
+
         public void ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
         {
-            void ZeroFailed(Discovery discovery)
-                => discovery.Methods.Where(x => !x.Name.StartsWith("Fail") && x.ReflectedType == TestClassType);
-
             var listener = new ConsoleListener();
+            var discovery = new ZeroFailed();
 
-            Run(listener, out var console, ZeroFailed);
+            Run(listener, discovery, out var console);
 
             console
                 .CleanDuration()
@@ -88,14 +98,18 @@
                 .ShouldBe("1 passed, 2 skipped, took 1.23 seconds");
         }
 
+        class ZeroSkipped : SelfTestDiscovery
+        {
+            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => publicMethods.Where(x => !x.Name.StartsWith("Skip") && x.ReflectedType == TestClassType);
+        }
+
         public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
         {
-            void ZeroSkipped(Discovery discovery)
-                => discovery.Methods.Where(x => !x.Name.StartsWith("Skip") && x.ReflectedType == TestClassType);
-
             var listener = new ConsoleListener();
+            var discovery = new ZeroSkipped();
 
-            Run(listener, out var console, ZeroSkipped);
+            Run(listener, discovery, out var console);
 
             console
                 .CleanDuration()
@@ -103,14 +117,18 @@
                 .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
         }
 
+        class NoTestsFound : SelfTestDiscovery
+        {
+            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => publicMethods.Where(x => false);
+        }
+
         public void ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
         {
-            void NoTestsFound(Discovery discovery)
-                => discovery.Methods.Where(x => false);
-
             var listener = new ConsoleListener();
+            var discovery = new NoTestsFound();
 
-            Run(listener, out var console, NoTestsFound);
+            Run(listener, discovery, out var console);
 
             console
                 .Last()

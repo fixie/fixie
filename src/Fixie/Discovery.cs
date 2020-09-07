@@ -1,10 +1,12 @@
 ﻿namespace Fixie
 {
-    using Internal;
-    using Internal.Expressions;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
 
     /// <summary>
-    /// Subclass Discovery to customize test discovery rules.
+    /// Implement Discovery to customize test discovery rules.
     /// 
     /// The default discovery rules are applied to a test assembly whenever the test
     /// assembly includes no such subclass.
@@ -15,31 +17,18 @@
     ///
     /// <para>All public methods in a test class are test methods.</para>
     /// </summary>
-    public class Discovery
+    public interface Discovery
     {
-        public Discovery()
-        {
-            Config = new Configuration();
-
-            Classes = new ClassExpression(Config);
-            Methods = new MethodExpression(Config);
-        }
+        /// <summary>
+        /// Filters a set of candidate classes to those which are to be treated as test classes.
+        /// </summary>
+        IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
+            => concreteClasses.Where(x => x.Name.EndsWith("Tests"));
 
         /// <summary>
-        /// The current state describing the discovery rules. This state can be manipulated through
-        /// the other properties on Discovery.
+        /// Filters a set of candidate methods to those which are to be treated as test methods.
         /// </summary>
-        internal Configuration Config { get; }
-
-        /// <summary>
-        /// Defines the set of conditions that describe which classes are test classes.
-        /// </summary>
-        public ClassExpression Classes { get; }
-
-        /// <summary>
-        /// Defines the set of conditions that describe which test class methods are test methods,
-        /// and what order to run them in.
-        /// </summary>
-        public MethodExpression Methods { get; }
+        IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+            => publicMethods;
     }
 }

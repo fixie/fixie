@@ -21,7 +21,7 @@ namespace Fixie.Internal
             catch (Exception exception)
             {
                 throw new Exception(
-                    "Exception thrown while attempting to run a custom class-discovery predicate. " +
+                    "Exception thrown during test class discovery. " +
                     "Check the inner exception for more details.", exception);
             }
         }

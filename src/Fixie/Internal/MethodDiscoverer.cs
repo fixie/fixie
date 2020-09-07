@@ -28,7 +28,7 @@
             catch (Exception exception)
             {
                 throw new Exception(
-                    "Exception thrown while attempting to run a custom method discovery predicate. " +
+                    "Exception thrown during test method discovery. " +
                     "Check the inner exception for more details.", exception);
             }
         }

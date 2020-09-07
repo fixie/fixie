@@ -34,7 +34,9 @@
         class BuggyDiscovery : Discovery
         {
             public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
-                => throw new Exception("Unsafe method discovery predicate threw!");
+            {
+                return publicMethods.Where(x => throw new Exception("Unsafe method discovery predicate threw!"));
+            }
         }
 
         public void ShouldConsiderOnlyPublicMethods()
@@ -125,14 +127,14 @@
                     "PublicStaticWithArgsWithReturn(x)");
         }
 
-        public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
+        public void ShouldFailWithClearExplanationWhenDiscoveryThrows()
         {
             var discovery = new BuggyDiscovery();
 
             Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(discovery);
 
             var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
-                "Exception thrown while attempting to run a custom method discovery predicate. " +
+                "Exception thrown during test method discovery. " +
                 "Check the inner exception for more details.");
 
             exception.InnerException

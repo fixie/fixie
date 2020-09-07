@@ -49,7 +49,9 @@
         class BuggyDiscovery : Discovery
         {
             public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
-                => throw new Exception("Unsafe class-discovery predicate threw!");
+            {
+                return concreteClasses.Where(x => throw new Exception("Unsafe class-discovery predicate threw!"));
+            }
         }
 
         class SampleExecution : Execution
@@ -137,14 +139,14 @@
                     typeof(NameEndsWithTests));
         }
 
-        public void ShouldFailWithClearExplanationWhenAnyGivenConditionThrows()
+        public void ShouldFailWithClearExplanationWhenDiscoveryThrows()
         {
             var discovery = new BuggyDiscovery();
 
             Action attemptFaultyDiscovery = () => DiscoveredTestClasses(discovery);
 
             var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
-                "Exception thrown while attempting to run a custom class-discovery predicate. " +
+                "Exception thrown during test class discovery. " +
                 "Check the inner exception for more details.");
 
             exception.InnerException

@@ -68,11 +68,9 @@
         {
             var customDiscovery = new SampleDiscovery();
 
-            customDiscovery
-                .Methods
-                .Where(x => x.Name.Contains("Void"))
-                .Where(x => x.Name.Contains("No"))
-                .Where(x => !x.IsStatic);
+            customDiscovery.TestMethodConditions.Add(x => x.Name.Contains("Void"));
+            customDiscovery.TestMethodConditions.Add(x => x.Name.Contains("No"));
+            customDiscovery.TestMethodConditions.Add(x => !x.IsStatic);
 
             DiscoveredTestMethods<Sample>(customDiscovery)
                 .ShouldBe("PublicInstanceNoArgsVoid()");
@@ -112,8 +110,8 @@
             var customDiscovery = new SampleDiscovery();
 
             customDiscovery
-                .Methods
-                .Where(x => throw new Exception("Unsafe method discovery predicate threw!"));
+                .TestMethodConditions
+                .Add(x => throw new Exception("Unsafe method discovery predicate threw!"));
 
             Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(customDiscovery);
 

@@ -61,7 +61,7 @@
         public void ShouldNotReportPassCountsWhenZeroTestsHavePassed()
         {
             void ZeroPassed(Discovery discovery)
-                => discovery.Methods.Where(x => !x.Name.StartsWith("Pass") && x.ReflectedType == TestClassType);
+                => discovery.TestMethodConditions.Add(x => !x.Name.StartsWith("Pass") && x.ReflectedType == TestClassType);
 
             var listener = new ConsoleListener();
 
@@ -76,7 +76,7 @@
         public void ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
         {
             void ZeroFailed(Discovery discovery)
-                => discovery.Methods.Where(x => !x.Name.StartsWith("Fail") && x.ReflectedType == TestClassType);
+                => discovery.TestMethodConditions.Add(x => !x.Name.StartsWith("Fail") && x.ReflectedType == TestClassType);
 
             var listener = new ConsoleListener();
 
@@ -91,7 +91,7 @@
         public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
         {
             void ZeroSkipped(Discovery discovery)
-                => discovery.Methods.Where(x => !x.Name.StartsWith("Skip") && x.ReflectedType == TestClassType);
+                => discovery.TestMethodConditions.Add(x => !x.Name.StartsWith("Skip") && x.ReflectedType == TestClassType);
 
             var listener = new ConsoleListener();
 
@@ -106,7 +106,7 @@
         public void ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
         {
             void NoTestsFound(Discovery discovery)
-                => discovery.Methods.Where(x => false);
+                => discovery.TestMethodConditions.Add(x => false);
 
             var listener = new ConsoleListener();
 

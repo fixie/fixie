@@ -71,7 +71,7 @@
             try
             {
                 if (methodCondition != null)
-                    discovery.Methods.Where(methodCondition);
+                    discovery.TestMethodConditions.Add(methodCondition);
 
                 return Run(candidateTypes, discovery, execution);
             }

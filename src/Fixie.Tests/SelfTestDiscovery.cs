@@ -4,9 +4,8 @@
     {
         public SelfTestDiscovery()
         {
-            Classes
-                .Where(x => x.IsNestedPrivate || x.IsNestedFamily)
-                .Where(x => x.Name.EndsWith("TestClass"));
+            TestClassConditions.Add(x => x.IsNestedPrivate || x.IsNestedFamily);
+            TestClassConditions.Add(x => x.Name.EndsWith("TestClass"));
         }
     }
 }

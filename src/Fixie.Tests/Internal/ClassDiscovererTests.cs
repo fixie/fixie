@@ -31,7 +31,7 @@
             {
                 //Include a trivial condition, causing the default "name ends with 'Tests'" rule
                 //to be suppressed in favor of only the rules specified here in ClassDiscovererTests.
-                Classes.Where(x => true);
+                TestClassConditions.Add(x => true);
             }
         }
 
@@ -101,11 +101,9 @@
         {
             var customDiscovery = new SampleDiscovery();
 
-            customDiscovery
-                .Classes
-                .Where(x => (x.Namespace ?? "").StartsWith("Fixie.Tests"))
-                .Where(x => x.Name.Contains("i"))
-                .Where(x => !x.IsStatic());
+            customDiscovery.TestClassConditions.Add(x => (x.Namespace ?? "").StartsWith("Fixie.Tests"));
+            customDiscovery.TestClassConditions.Add(x => x.Name.Contains("i"));
+            customDiscovery.TestClassConditions.Add(x => !x.IsStatic());
 
             DiscoveredTestClasses(customDiscovery)
                 .ShouldBe(
@@ -128,8 +126,8 @@
             var customDiscovery = new SampleDiscovery();
 
             customDiscovery
-                .Classes
-                .Where(x => throw new Exception("Unsafe class-discovery predicate threw!"));
+                .TestClassConditions
+                .Add(x => throw new Exception("Unsafe class-discovery predicate threw!"));
 
             Action attemptFaultyDiscovery = () => DiscoveredTestClasses(customDiscovery);
 

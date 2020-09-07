@@ -63,17 +63,14 @@
             return Run(types, method => request[method.ReflectedType!.FullName!].Contains(method.Name));
         }
 
-        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool>? methodCondition = null)
+        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool>? selected = null)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);
 
             try
             {
-                if (methodCondition != null)
-                    discovery.TestMethodConditions.Add(methodCondition);
-
-                return Run(candidateTypes, discovery, execution);
+                return Run(candidateTypes, discovery, execution, selected);
             }
             finally
             {
@@ -95,7 +92,7 @@
                 bus.Publish(new TestDiscovered(new Test(testMethod)));
         }
 
-        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution)
+        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, Func<MethodInfo, bool>? selected = null)
         {
             var recorder = new ExecutionRecorder(bus);
             
@@ -108,8 +105,12 @@
 
             foreach (var @class in classes)
             {
-                var testMethods = methodDiscoverer
-                    .TestMethods(@class)
+                IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
+                
+                if (selected != null)
+                    methods = methods.Where(selected);
+
+                var testMethods = methods
                     .Select(method => new TestMethod(recorder, method))
                     .ToList();
 

@@ -2,40 +2,20 @@ namespace Fixie.Tests
 {
     using System;
     using Assertions;
-    using static Utility;
 
     public class ShuffleExtensionsTests
     {
-        const int Seed = 17;
+        const int Seed = 42;
 
-        public void ShouldEnableRandomShufflingOfTestExecutionOrder()
+        public void ShouldProvideCollectionItemsInRandomOrder()
         {
-            Run<SampleTestClass, ShuffleExecution>()
-                .ShouldBe(
-                    For<SampleTestClass>(
-                        ".PassC passed",
-                        ".PassA passed",
-                        ".PassB passed",
-                        ".PassE passed",
-                        ".PassD passed"));
-        }
+            new[] {1, 2, 3, 4, 5}
+                .Shuffle(new Random(Seed))
+                .ShouldBe(3, 2, 5, 1, 4);
 
-        class ShuffleExecution : Execution
-        {
-            public void Execute(TestClass testClass)
-            {
-                foreach (var test in testClass.Tests.Shuffle(new Random(Seed)))
-                    test.Run();
-            }
-        }
-
-        class SampleTestClass
-        {
-            public void PassA() { }
-            public void PassB() { }
-            public void PassC() { }
-            public void PassD() { }
-            public void PassE() { }
+            "Hello World"
+                .Shuffle(new Random(Seed))
+                .ShouldBe('d', ' ', 'H', 'l', 'l', 'W', 'r', 'o', 'l', 'e', 'o');
         }
     }
 }

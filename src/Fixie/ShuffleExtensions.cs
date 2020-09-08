@@ -9,7 +9,7 @@
         /// <summary>
         /// Randomizes the order of the given tests.
         /// </summary>
-        public static IReadOnlyList<TestMethod> Shuffle(this IEnumerable<TestMethod> tests)
+        public static IReadOnlyList<T> Shuffle<T>(this IEnumerable<T> tests)
         {
             return tests.Shuffle(new Random());
         }
@@ -17,7 +17,7 @@
         /// <summary>
         /// Randomizes the order of the given tests, using the given pseudo-random number generator.
         /// </summary>
-        public static IReadOnlyList<TestMethod> Shuffle(this IEnumerable<TestMethod> tests, Random random)
+        public static IReadOnlyList<T> Shuffle<T>(this IEnumerable<T> tests, Random random)
         {
             var array = tests.ToList();
 

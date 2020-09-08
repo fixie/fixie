@@ -40,8 +40,8 @@
                 actualHeader.MediaType.ShouldBe("application/json");
 
                 var actualAuthorization = client.DefaultRequestHeaders.Authorization;
-                actualAuthorization.Scheme.ShouldBe("Bearer");
-                actualAuthorization.Parameter.ShouldBe(accessToken);
+                actualAuthorization?.Scheme.ShouldBe("Bearer");
+                actualAuthorization?.Parameter.ShouldBe(accessToken);
             };
 
             var listener = new AzureListener("http://localhost:4567", project, accessToken, buildId,

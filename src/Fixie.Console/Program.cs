@@ -148,10 +148,10 @@
             arguments.AddRange(customArguments);
 
             var workingDirectory = Path.Combine(
-                new FileInfo(testProject).Directory.FullName,
+                new FileInfo(testProject).Directory!.FullName,
                 outputPath);
 
-            var environmentVariables = new Dictionary<string, string>();
+            var environmentVariables = new Dictionary<string, string?>();
 
             if (options.Report != null)
                 environmentVariables["FIXIE:REPORT"] = options.Report;

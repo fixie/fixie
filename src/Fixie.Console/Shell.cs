@@ -7,7 +7,7 @@
 
     static class Shell
     {
-        public static int Run(string executable, string workingDirectory, string[] arguments, IDictionary<string, string>? environmentVariables = null)
+        public static int Run(string executable, string workingDirectory, string[] arguments, IDictionary<string, string?>? environmentVariables = null)
         {
             var startInfo = new ProcessStartInfo
             {

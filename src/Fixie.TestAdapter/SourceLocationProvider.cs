@@ -76,7 +76,7 @@ namespace Fixie.TestAdapter
             return FirstOrDefaultUnhiddenSequencePoint(testMethod.Body);
         }
 
-        static bool TryGetAsyncStateMachineAttribute(MethodDefinition method, out CustomAttribute attribute)
+        static bool TryGetAsyncStateMachineAttribute(MethodDefinition method, [NotNullWhen(true)] out CustomAttribute? attribute)
         {
             attribute = method.CustomAttributes.FirstOrDefault(c => c.AttributeType.Name == typeof(AsyncStateMachineAttribute).Name);
             return attribute != null;

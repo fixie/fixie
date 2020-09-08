@@ -11,7 +11,7 @@
   </Target>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <Description>Visual Studio integration for the Fixie test framework.</Description>
     <NuspecFile>Fixie.TestAdapter.nuspec</NuspecFile>
     <DebugType>embedded</DebugType>

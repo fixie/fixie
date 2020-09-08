@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/Fixie.Tests/bin/Debug/netcoreapp3.1/Fixie.Tests.dll",
+            "program": "${workspaceFolder}/src/Fixie.Tests/bin/Debug/net5.0/Fixie.Tests.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Fixie.Tests",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

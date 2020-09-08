@@ -13,7 +13,7 @@
     <copyright>$copyright$</copyright>
     <repository url="https://github.com/fixie/fixie" />
     <dependencies>
-      <group targetFramework="netcoreapp3.1">
+      <group targetFramework="net5.0">
         <dependency id="Fixie" version="$version$" />
         <dependency id="Mono.Cecil" version="0.11.2" />
         <dependency id="Microsoft.TestPlatform.TestHost" version="16.6.1" />
@@ -25,6 +25,6 @@
     <file target="icon.png" src="..\..\img\fixie_256.png" />
 
     <!-- Run-Time Assets -->
-    <file target="lib\netcoreapp3.1" src="..\Fixie.TestAdapter\bin\Release\netcoreapp3.1\Fixie.TestAdapter.dll" />
+    <file target="lib\net5.0" src="..\Fixie.TestAdapter\bin\Release\net5.0\Fixie.TestAdapter.dll" />
   </files>
 </package>

@@ -19,16 +19,16 @@
         /// </summary>
         public static IReadOnlyList<TestMethod> Shuffle(this IEnumerable<TestMethod> tests, Random random)
         {
-            var array = tests.ToArray();
+            var array = tests.ToList();
 
             FisherYatesShuffle(array, random);
 
             return array;
         }
 
-        static void FisherYatesShuffle<T>(T[] array, Random random)
+        static void FisherYatesShuffle<T>(IList<T> array, Random random)
         {
-            int n = array.Length;
+            int n = array.Count;
             while (n > 1)
             {
                 int k = random.Next(n--);

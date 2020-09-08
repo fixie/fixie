@@ -93,19 +93,17 @@
 
         static bool TryGetEnvironmentVariable(string variable, [NotNullWhen(true)] out string? value)
         {
-            var found = Try(GetEnvironmentVariable, variable, out value);
-
-            if (!found)
+            if (Try(GetEnvironmentVariable, variable, out value))
+                return true;
+            
+            using (Foreground.Yellow)
             {
-                using (Foreground.Yellow)
-                {
-                    WriteLine($"The Azure DevOps environment variable '{variable}' has not been made");
-                    WriteLine("available to this process, so test results will not be collected.");
-                    WriteLine();
-                }
+                WriteLine($"The Azure DevOps environment variable '{variable}' has not been made");
+                WriteLine("available to this process, so test results will not be collected.");
+                WriteLine();
             }
 
-            return found;
+            return false;
         }
 
         public AzureListener(

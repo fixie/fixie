@@ -10,7 +10,13 @@
         <IncludeSymbols>true</IncludeSymbols>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <MinVerMinimumMajorMinor>3.0</MinVerMinimumMajorMinor>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsNotAsErrors>162,612,618</WarningsNotAsErrors>
+        <!--
+            CS0162: Unreachable code detected
+            CS0612: '...' is obsolete
+            CS0618: '...' is obsolete: "..."
+        -->
     </PropertyGroup>
 </Project>

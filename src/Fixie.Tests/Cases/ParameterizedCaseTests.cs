@@ -62,8 +62,8 @@
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".ZeroArgs passed",
-                        ".IntArg skipped",
-                        ".MultipleCasesFromAttributes skipped"));
+                        ".IntArg skipped: This test did not run.",
+                        ".MultipleCasesFromAttributes skipped: This test did not run."));
         }
 
         public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
@@ -185,8 +185,8 @@
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
                         ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed",
                         
-                        ".ConstrainedGenericMethodWithNoInputsProvided<T> skipped",
-                        ".GenericMethodWithNoInputsProvided<T> skipped"));
+                        ".ConstrainedGenericMethodWithNoInputsProvided<T> skipped: This test did not run.",
+                        ".GenericMethodWithNoInputsProvided<T> skipped: This test did not run."));
         }
 
         public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()

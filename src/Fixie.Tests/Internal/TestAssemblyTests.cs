@@ -49,8 +49,8 @@ namespace Fixie.Tests.Internal
                 Self + "+PassTestClass.PassB passed",
                 Self + "+PassFailTestClass.Fail failed: 'Fail' failed!",
                 Self + "+PassFailTestClass.Pass passed",
-                Self + "+SkipTestClass.SkipA skipped",
-                Self + "+SkipTestClass.SkipB skipped");
+                Self + "+SkipTestClass.SkipA skipped: This test did not run.",
+                Self + "+SkipTestClass.SkipB skipped: This test did not run.");
         }
 
         class CreateInstancePerCase : Execution

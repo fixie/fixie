@@ -219,7 +219,7 @@ namespace Fixie.Tests
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Pass(1) passed",
                 "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Skip skipped");
+                "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
@@ -240,7 +240,7 @@ namespace Fixie.Tests
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",
                 "StaticTestClass.Pass passed",
-                "StaticTestClass.Skip skipped");
+                "StaticTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
@@ -256,13 +256,13 @@ namespace Fixie.Tests
             var output = Run<SampleTestClass, InstrumentedExecution>();
         
             output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped",
+                "SampleTestClass.Fail skipped: This test did not run.",
                 "SampleTestClass.Fail failed: 'ClassSetUp' failed!",
                 
-                "SampleTestClass.Pass skipped",
+                "SampleTestClass.Pass skipped: This test did not run.",
                 "SampleTestClass.Pass failed: 'ClassSetUp' failed!",
                 
-                "SampleTestClass.Skip skipped",
+                "SampleTestClass.Skip skipped: This test did not run.",
                 "SampleTestClass.Skip failed: 'ClassSetUp' failed!");
         
             output.ShouldHaveLifecycle("ClassSetUp");
@@ -277,7 +277,7 @@ namespace Fixie.Tests
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Pass failed: 'TestSetUp' failed!",
-                "SampleTestClass.Skip skipped");
+                "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
@@ -297,7 +297,7 @@ namespace Fixie.Tests
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Pass failed: Failed to yield input parameters.",
-                "SampleTestClass.Skip skipped");
+                "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
@@ -318,7 +318,7 @@ namespace Fixie.Tests
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
                 "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Skip skipped");
+                "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
@@ -345,7 +345,7 @@ namespace Fixie.Tests
                 "SampleTestClass.Pass(1) failed: 'CaseInspection' failed!",
                 "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Pass(2) failed: 'CaseInspection' failed!",
-                "SampleTestClass.Skip skipped");
+                "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
@@ -372,7 +372,7 @@ namespace Fixie.Tests
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Skip skipped");
+                "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
@@ -400,7 +400,7 @@ namespace Fixie.Tests
                 "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Pass failed: 'TestTearDown' failed!",
                 
-                "SampleTestClass.Skip skipped");
+                "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
@@ -427,7 +427,7 @@ namespace Fixie.Tests
 
                 "SampleTestClass.Fail failed: 'ClassTearDown' failed!",
                 "SampleTestClass.Pass failed: 'ClassTearDown' failed!",
-                "SampleTestClass.Skip skipped",
+                "SampleTestClass.Skip skipped: This test did not run.",
                 "SampleTestClass.Skip failed: 'ClassTearDown' failed!");
 
             output.ShouldHaveLifecycle(
@@ -447,9 +447,9 @@ namespace Fixie.Tests
             var output = Run<AllSkippedTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
-                "AllSkippedTestClass.SkipA skipped",
-                "AllSkippedTestClass.SkipB skipped",
-                "AllSkippedTestClass.SkipC skipped");
+                "AllSkippedTestClass.SkipA skipped: This test did not run.",
+                "AllSkippedTestClass.SkipB skipped: This test did not run.",
+                "AllSkippedTestClass.SkipC skipped: This test did not run.");
 
             output.ShouldHaveLifecycle("ClassSetUp", "ClassTearDown");
         }
@@ -467,7 +467,7 @@ namespace Fixie.Tests
                 "SampleTestClass.Pass(1) skipped: 'Pass' failed! Retrying...",
                 "SampleTestClass.Pass(1) passed",
                 "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Skip skipped");
+                "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle("Fail", "Fail", "Fail", "Pass(1)", "Pass(1)", "Pass(2)");
         }
@@ -477,9 +477,9 @@ namespace Fixie.Tests
             var output = Run<SampleTestClass, ShortCircuitTestExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped",
-                "SampleTestClass.Pass skipped",
-                "SampleTestClass.Skip skipped");
+                "SampleTestClass.Fail skipped: This test did not run.",
+                "SampleTestClass.Pass skipped: This test did not run.",
+                "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle();
         }

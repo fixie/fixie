@@ -138,7 +138,7 @@
                     foreach (var testMethod in testMethods)
                     {
                         if (!testMethod.RecordedResult)
-                            testMethod.Skip();
+                            testMethod.Skip("This test did not run.");
 
                         if (classLifecycleFailure != null)
                             testMethod.Fail(classLifecycleFailure);

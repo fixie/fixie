@@ -15,6 +15,6 @@
         }
 
         public virtual IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
-            => publicMethods;
+            => publicMethods.OrderBy(x => x.Name, StringComparer.Ordinal);
     }
 }

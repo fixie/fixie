@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using Assertions;
     using Fixie.Internal;
@@ -57,7 +58,7 @@
         {
             public void Execute(TestClass testClass)
             {
-                foreach (var test in testClass.Tests.OrderByName())
+                foreach (var test in testClass.Tests)
                 {
                     if (test.Method.Has<SkipAttribute>(out var skip))
                     {

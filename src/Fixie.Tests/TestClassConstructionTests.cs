@@ -184,7 +184,7 @@ namespace Fixie.Tests
                 ".ctor", "CaseInspection");
         }
 
-        public void ShouldFailCaseWithoutHidingPrimaryCaseResultAndProceedWithCaseInspectionWhenConstructingPerCaseAndDisposeThrows()
+        public void ShouldFailCaseWithoutHidingPrimaryFailuresAndProceedWithCaseInspectionWhenConstructingPerCaseAndDisposeThrows()
         {
             FailDuring("Dispose");
 
@@ -193,9 +193,7 @@ namespace Fixie.Tests
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'Dispose' failed!",
-                "SampleTestClass.Pass(1) passed",
                 "SampleTestClass.Pass(1) failed: 'Dispose' failed!",
-                "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Pass(2) failed: 'Dispose' failed!",
                 "SampleTestClass.Skip skipped: This test did not run.");
 

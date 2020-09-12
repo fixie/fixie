@@ -67,19 +67,36 @@
 
             Console.Write(output);
 
+            bool accounted = false;
             if (@case.State == CaseState.Skipped)
+            {
                 recorder.Skip(@case, output);
-            else if (@case.State == CaseState.Failed)
+                accounted = true;
+            }
+
+            if (@case.State == CaseState.Failed)
+            {
                 recorder.Fail(@case, output);
-            else if (@case.State == CaseState.Passed)
-                recorder.Pass(@case, output);
+                accounted = true;
+            }
 
             if (caseInspectionFailure != null)
-                recorder.Fail(new Case(@case, caseInspectionFailure));
+            {
+                recorder.Fail(new Case(@case, caseInspectionFailure), output);
+                accounted = true;
+            }
 
             if (disposalFailure != null)
-                recorder.Fail(new Case(@case, disposalFailure));
+            {
+                recorder.Fail(new Case(@case, disposalFailure), output);
+                accounted = true;
+            }
             
+            if (@case.State == CaseState.Passed && !accounted)
+            {
+                recorder.Pass(@case, output);
+            }
+
             RecordedResult = true;
         }
 

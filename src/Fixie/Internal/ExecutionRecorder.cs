@@ -2,7 +2,6 @@
 {
     using System;
     using System.Diagnostics;
-    using System.Reflection;
 
     class ExecutionRecorder
     {
@@ -29,9 +28,9 @@
             caseStopwatch = new Stopwatch();
         }
 
-        public void Start(Assembly testAssembly)
+        public void Start(TestAssembly testAssembly)
         {
-            bus.Publish(new AssemblyStarted(testAssembly));
+            bus.Publish(new AssemblyStarted(testAssembly.Assembly));
             assemblyStopwatch.Restart();
         }
 
@@ -100,10 +99,10 @@
             assemblySummary.Add(classSummary);
         }
 
-        public ExecutionSummary Complete(Assembly testAssembly)
+        public ExecutionSummary Complete(TestAssembly testAssembly)
         {
             assemblyStopwatch.Stop();
-            bus.Publish(new AssemblyCompleted(testAssembly, assemblySummary, assemblyStopwatch.Elapsed));
+            bus.Publish(new AssemblyCompleted(testAssembly.Assembly, assemblySummary, assemblyStopwatch.Elapsed));
             return assemblySummary;
         }
     }

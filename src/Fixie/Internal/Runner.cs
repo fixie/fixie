@@ -95,17 +95,14 @@
         internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, Func<MethodInfo, bool>? selected = null)
         {
             var recorder = new ExecutionRecorder(bus);
-            
-            recorder.Start(assembly);
-            
             var classDiscoverer = new ClassDiscoverer(discovery);
-            var methodDiscoverer = new MethodDiscoverer(discovery);
-
             var classes = classDiscoverer.TestClasses(candidateTypes);
-
+            var methodDiscoverer = new MethodDiscoverer(discovery);
+            
+            var testAssembly = new TestAssembly(assembly);
+            recorder.Start(testAssembly);
             Run(recorder, classes, methodDiscoverer, selected, execution);
-
-            return recorder.Complete(assembly);
+            return recorder.Complete(testAssembly);
         }
 
         static void Run(ExecutionRecorder recorder, IReadOnlyList<Type> classes, MethodDiscoverer methodDiscoverer, Func<MethodInfo, bool>? selected, Execution execution)

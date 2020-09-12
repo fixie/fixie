@@ -5,9 +5,6 @@
     using System.Reflection;
     using System.Runtime.ExceptionServices;
 
-    /// <summary>
-    /// The context in which a test class is running.
-    /// </summary>
     public class TestClass
     {
         internal TestClass(Type type, IReadOnlyList<TestMethod> tests, MethodInfo? targetMethod)

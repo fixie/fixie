@@ -74,7 +74,7 @@
             var stackTrace = new StackTrace(exception);
             var frames = stackTrace.GetFrames();
 
-            if (frames == null || frames.Length == 0)
+            if (frames.Length == 0)
                 return exception.StackTrace;
 
             var lastFrame = frames.Last();

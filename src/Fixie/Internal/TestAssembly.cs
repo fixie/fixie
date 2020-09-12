@@ -103,10 +103,17 @@
 
             var classes = classDiscoverer.TestClasses(candidateTypes);
 
+            Run(recorder, classes, methodDiscoverer, selected, execution);
+
+            return recorder.Complete(assembly);
+        }
+
+        static void Run(ExecutionRecorder recorder, IReadOnlyList<Type> classes, MethodDiscoverer methodDiscoverer, Func<MethodInfo, bool>? selected, Execution execution)
+        {
             foreach (var @class in classes)
             {
                 IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
-                
+
                 if (selected != null)
                     methods = methods.Where(selected);
 
@@ -147,8 +154,6 @@
                     recorder.Complete(testClass);
                 }
             }
-
-            return recorder.Complete(assembly);
         }
     }
 }

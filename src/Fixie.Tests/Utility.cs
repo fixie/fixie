@@ -49,7 +49,7 @@
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            new TestAssembly(candidateTypes[0].Assembly, listener).Discover(candidateTypes, discovery);
+            new Runner(candidateTypes[0].Assembly, listener).Discover(candidateTypes, discovery);
         }
 
         public static void Run(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)
@@ -57,7 +57,7 @@
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            new TestAssembly(candidateTypes[0].Assembly, listener).Run(candidateTypes, discovery, execution);
+            new Runner(candidateTypes[0].Assembly, listener).Run(candidateTypes, discovery, execution);
         }
 
         public static IEnumerable<object?[]> UsingInputAttributes(MethodInfo method)

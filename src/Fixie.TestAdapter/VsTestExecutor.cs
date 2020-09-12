@@ -72,7 +72,7 @@
 
         public void Cancel() { }
 
-        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<TestAssembly> run)
+        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<Runner> run)
         {
             if (!IsTestAssembly(assemblyPath))
             {
@@ -87,9 +87,9 @@
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
             var listener = new ExecutionListener(frameworkHandle, assemblyPath);
-            var testAssembly = new TestAssembly(assembly, listener);
+            var runner = new Runner(assembly, listener);
 
-            run(testAssembly);
+            run(runner);
         }
 
         static void HandlePoorVsTestImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)

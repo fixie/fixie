@@ -4,9 +4,9 @@ namespace Fixie.Tests.Internal
     using Fixie.Internal;
     using static Utility;
 
-    public class TestAssemblyTests
+    public class RunnerTests
     {
-        static readonly string Self = FullName<TestAssemblyTests>();
+        static readonly string Self = FullName<RunnerTests>();
 
         public void ShouldDiscoverAllTestsInAllDiscoveredTestClasses()
         {
@@ -19,7 +19,7 @@ namespace Fixie.Tests.Internal
             };
             var discovery = new SelfTestDiscovery();
 
-            new TestAssembly(GetType().Assembly, listener).Discover(candidateTypes, discovery);
+            new Runner(GetType().Assembly, listener).Discover(candidateTypes, discovery);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA discovered",
@@ -42,7 +42,7 @@ namespace Fixie.Tests.Internal
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();
 
-            new TestAssembly(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
+            new Runner(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",

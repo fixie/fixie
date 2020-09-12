@@ -35,9 +35,9 @@
         static ExitCode RunAssembly(Assembly assembly, string[] customArguments)
         {
             var listeners = DefaultExecutionListeners().ToArray();
-            var assemblyRunner = new TestAssembly(assembly, customArguments, listeners);
+            var runner = new Runner(assembly, customArguments, listeners);
 
-            var summary = assemblyRunner.Run();
+            var summary = runner.Run();
 
             if (summary.Total == 0)
                 return ExitCode.FatalError;

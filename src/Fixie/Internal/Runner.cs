@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
 
     class Runner
@@ -84,10 +83,10 @@
         internal void Discover(IReadOnlyList<Type> candidateTypes, Discovery discovery)
         {
             var classDiscoverer = new ClassDiscoverer(discovery);
-            var testClasses = classDiscoverer.TestClasses(candidateTypes);
+            var classes = classDiscoverer.TestClasses(candidateTypes);
 
             var methodDiscoverer = new MethodDiscoverer(discovery);
-            foreach (var testClass in testClasses)
+            foreach (var testClass in classes)
             foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
                 bus.Publish(new TestDiscovered(new Test(testMethod)));
         }
@@ -98,59 +97,11 @@
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
             var methodDiscoverer = new MethodDiscoverer(discovery);
-            
-            var testAssembly = new TestAssembly(assembly);
+
+            var testAssembly = new TestAssembly(assembly, recorder, classes, methodDiscoverer, selected, execution);
             recorder.Start(testAssembly);
-            Run(recorder, classes, methodDiscoverer, selected, execution);
+            testAssembly.Run();
             return recorder.Complete(testAssembly);
-        }
-
-        static void Run(ExecutionRecorder recorder, IReadOnlyList<Type> classes, MethodDiscoverer methodDiscoverer, Func<MethodInfo, bool>? selected, Execution execution)
-        {
-            foreach (var @class in classes)
-            {
-                IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
-
-                if (selected != null)
-                    methods = methods.Where(selected);
-
-                var testMethods = methods
-                    .Select(method => new TestMethod(recorder, method))
-                    .ToList();
-
-                if (testMethods.Any())
-                {
-                    var targetMethod = classes.Count == 1 && testMethods.Count == 1
-                        ? testMethods.Single()
-                        : null;
-
-                    var testClass = new TestClass(@class, testMethods, targetMethod?.Method);
-
-                    recorder.Start(testClass);
-
-                    Exception? classLifecycleFailure = null;
-
-                    try
-                    {
-                        execution.Execute(testClass);
-                    }
-                    catch (Exception exception)
-                    {
-                        classLifecycleFailure = exception;
-                    }
-
-                    foreach (var testMethod in testMethods)
-                    {
-                        if (!testMethod.RecordedResult)
-                            testMethod.Skip("This test did not run.");
-
-                        if (classLifecycleFailure != null)
-                            testMethod.Fail(classLifecycleFailure);
-                    }
-
-                    recorder.Complete(testClass);
-                }
-            }
         }
     }
 }

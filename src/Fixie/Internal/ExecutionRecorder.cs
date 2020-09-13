@@ -10,8 +10,6 @@
         readonly Bus bus;
 
         readonly ExecutionSummary assemblySummary;
-        ExecutionSummary classSummary;
-
         readonly Stopwatch assemblyStopwatch;
         readonly Stopwatch caseStopwatch;
 
@@ -20,7 +18,6 @@
             this.bus = bus;
 
             assemblySummary = new ExecutionSummary();
-            classSummary = new ExecutionSummary();
             
             assemblyStopwatch = new Stopwatch();
             caseStopwatch = new Stopwatch();
@@ -34,7 +31,6 @@
 
         public void Start(TestClass testClass)
         {
-            classSummary = new ExecutionSummary();
             caseStopwatch.Restart();
         }
 
@@ -49,7 +45,7 @@
             caseStopwatch.Restart();
 
             var message = new CaseSkipped(@case, duration, output);
-            classSummary.Add(message);
+            assemblySummary.Add(message);
             bus.Publish(message);
         }
 
@@ -66,7 +62,7 @@
             caseStopwatch.Restart();
 
             var message = new CasePassed(@case, duration, output);
-            classSummary.Add(message);
+            assemblySummary.Add(message);
             bus.Publish(message);
         }
 
@@ -76,7 +72,7 @@
             caseStopwatch.Restart();
 
             var message = new CaseFailed(@case, duration, output);
-            classSummary.Add(message);
+            assemblySummary.Add(message);
             bus.Publish(message);
         }
 
@@ -89,7 +85,6 @@
 
         public void Complete(TestClass testClass)
         {
-            assemblySummary.Add(classSummary);
         }
 
         public ExecutionSummary Complete(TestAssembly testAssembly)

@@ -13,7 +13,6 @@
         ExecutionSummary classSummary;
 
         readonly Stopwatch assemblyStopwatch;
-        readonly Stopwatch classStopwatch;
         readonly Stopwatch caseStopwatch;
 
         public ExecutionRecorder(Bus bus)
@@ -24,7 +23,6 @@
             classSummary = new ExecutionSummary();
             
             assemblyStopwatch = new Stopwatch();
-            classStopwatch = new Stopwatch();
             caseStopwatch = new Stopwatch();
         }
 
@@ -37,7 +35,6 @@
         public void Start(TestClass testClass)
         {
             classSummary = new ExecutionSummary();
-            classStopwatch.Restart();
             caseStopwatch.Restart();
         }
 
@@ -92,8 +89,6 @@
 
         public void Complete(TestClass testClass)
         {
-            var duration = classStopwatch.Elapsed;
-            classStopwatch.Stop();
             assemblySummary.Add(classSummary);
         }
 

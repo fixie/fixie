@@ -31,12 +31,12 @@
 
         public void Start(TestClass testClass)
         {
-            caseStopwatch.Restart();
         }
 
         public void Start(Case @case)
         {
             bus.Publish(new CaseStarted(@case));
+            caseStopwatch.Restart();
         }
 
         public void Skip(Case @case, string output = "")

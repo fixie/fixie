@@ -16,22 +16,9 @@
 
             Run(listener, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
-            listener.ClassSummaries.Count.ShouldBe(2);
             listener.AssemblySummary.Count.ShouldBe(1);
 
-            var classA = listener.ClassSummaries[0];
-            var classB = listener.ClassSummaries[1];
             var assembly = listener.AssemblySummary[0];
-
-            classA.Passed.ShouldBe(1);
-            classA.Failed.ShouldBe(1);
-            classA.Skipped.ShouldBe(1);
-            classA.Total.ShouldBe(3);
-
-            classB.Passed.ShouldBe(1);
-            classB.Failed.ShouldBe(2);
-            classB.Skipped.ShouldBe(3);
-            classB.Total.ShouldBe(6);
 
             assembly.Passed.ShouldBe(2);
             assembly.Failed.ShouldBe(3);
@@ -40,13 +27,10 @@
         }
 
         class StubExecutionSummaryListener :
-            Handler<ClassCompleted>,
             Handler<AssemblyCompleted>
         {
-            public List<ClassCompleted> ClassSummaries { get; } = new List<ClassCompleted>();
             public List<AssemblyCompleted> AssemblySummary { get; } = new List<AssemblyCompleted>();
 
-            public void Handle(ClassCompleted message) => ClassSummaries.Add(message);
             public void Handle(AssemblyCompleted message) => AssemblySummary.Add(message);
         }
 

@@ -37,7 +37,6 @@
         public void Start(TestClass testClass)
         {
             classSummary = new ExecutionSummary();
-            bus.Publish(new ClassStarted(testClass.Type));
             classStopwatch.Restart();
             caseStopwatch.Restart();
         }
@@ -95,7 +94,6 @@
         {
             var duration = classStopwatch.Elapsed;
             classStopwatch.Stop();
-            bus.Publish(new ClassCompleted(testClass.Type, classSummary, duration));
             assemblySummary.Add(classSummary);
         }
 

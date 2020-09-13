@@ -29,10 +29,6 @@
             assemblyStopwatch.Restart();
         }
 
-        public void Start(TestClass testClass)
-        {
-        }
-
         public void Start(Case @case)
         {
             bus.Publish(new CaseStarted(@case));
@@ -81,10 +77,6 @@
             var @case = new Case(testMethod.Method, EmptyParameters);
             @case.Fail(reason);
             Fail(@case);
-        }
-
-        public void Complete(TestClass testClass)
-        {
         }
 
         public ExecutionSummary Complete(TestAssembly testAssembly)

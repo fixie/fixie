@@ -48,8 +48,6 @@
 
                     var testClass = new TestClass(@class, testMethods, targetMethod?.Method);
 
-                    recorder.Start(testClass);
-
                     Exception? classLifecycleFailure = null;
 
                     try
@@ -69,8 +67,6 @@
                         if (classLifecycleFailure != null)
                             testMethod.Fail(classLifecycleFailure);
                     }
-
-                    recorder.Complete(testClass);
                 }
             }
         }

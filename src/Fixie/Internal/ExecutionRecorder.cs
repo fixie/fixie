@@ -27,12 +27,12 @@
         {
             bus.Publish(new AssemblyStarted(testAssembly.Assembly));
             assemblyStopwatch.Restart();
+            caseStopwatch.Restart();
         }
 
         public void Start(Case @case)
         {
             bus.Publish(new CaseStarted(@case));
-            caseStopwatch.Restart();
         }
 
         public void Skip(Case @case, string output = "")

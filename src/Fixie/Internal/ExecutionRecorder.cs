@@ -38,11 +38,12 @@
         public void Skip(Case @case, string output = "")
         {
             var duration = caseStopwatch.Elapsed;
-            caseStopwatch.Restart();
 
             var message = new CaseSkipped(@case, duration, output);
             assemblySummary.Add(message);
             bus.Publish(message);
+
+            caseStopwatch.Restart();
         }
 
         public void Skip(TestMethod testMethod, string? reason = null)
@@ -55,21 +56,23 @@
         public void Pass(Case @case, string output)
         {
             var duration = caseStopwatch.Elapsed;
-            caseStopwatch.Restart();
 
             var message = new CasePassed(@case, duration, output);
             assemblySummary.Add(message);
             bus.Publish(message);
+
+            caseStopwatch.Restart();
         }
 
         public void Fail(Case @case, string output = "")
         {
             var duration = caseStopwatch.Elapsed;
-            caseStopwatch.Restart();
 
             var message = new CaseFailed(@case, duration, output);
             assemblySummary.Add(message);
             bus.Publish(message);
+
+            caseStopwatch.Restart();
         }
 
         public void Fail(TestMethod testMethod, Exception reason)
@@ -81,8 +84,12 @@
 
         public ExecutionSummary Complete(TestAssembly testAssembly)
         {
+            var duration = assemblyStopwatch.Elapsed;
+
+            bus.Publish(new AssemblyCompleted(testAssembly.Assembly, assemblySummary, duration));
+
+            caseStopwatch.Stop();
             assemblyStopwatch.Stop();
-            bus.Publish(new AssemblyCompleted(testAssembly.Assembly, assemblySummary, assemblyStopwatch.Elapsed));
             return assemblySummary;
         }
     }

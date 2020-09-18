@@ -17,12 +17,5 @@
         public void Add(CaseSkipped message) => Skipped += 1;
         public void Add(CasePassed message) => Passed += 1;
         public void Add(CaseFailed message) => Failed += 1;
-
-        public void Add(ExecutionSummary partial)
-        {
-            Passed += partial.Passed;
-            Failed += partial.Failed;
-            Skipped += partial.Skipped;
-        }
     }
 }

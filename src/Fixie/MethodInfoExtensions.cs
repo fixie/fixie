@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
-    using System.Runtime.ExceptionServices;
     using System.Threading.Tasks;
 
     public static class MethodInfoExtensions
@@ -39,8 +38,7 @@
             }
             catch (TargetInvocationException exception)
             {
-                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
-                throw; //Unreachable.
+                throw new PreservedException(exception);
             }
 
             if (result == null)

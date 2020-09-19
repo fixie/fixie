@@ -129,6 +129,10 @@
                 Pass();
                 Result = result;
             }
+            catch (PreservedException preservedException)
+            {
+                Fail(preservedException.OriginalException);
+            }
             catch (Exception exception)
             {
                 Fail(exception);

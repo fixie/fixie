@@ -61,11 +61,13 @@
 
                     foreach (var testMethod in testMethods)
                     {
-                        if (!testMethod.RecordedResult)
-                            testMethod.Skip("This test did not run.");
+                        var testNeverRan = !testMethod.RecordedResult;
 
                         if (classLifecycleFailure != null)
                             testMethod.Fail(classLifecycleFailure);
+                        
+                        if (testNeverRan)
+                            testMethod.Skip("This test did not run.");
                     }
                 }
             }

@@ -228,12 +228,12 @@ namespace Fixie.Tests
             var output = Run<SampleTestClass, CreateInstancePerClass>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped: This test did not run.",
                 "SampleTestClass.Fail failed: '.ctor' failed!",
-                "SampleTestClass.Pass skipped: This test did not run.",
+                "SampleTestClass.Fail skipped: This test did not run.",
                 "SampleTestClass.Pass failed: '.ctor' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.",
-                "SampleTestClass.Skip failed: '.ctor' failed!"
+                "SampleTestClass.Pass skipped: This test did not run.",
+                "SampleTestClass.Skip failed: '.ctor' failed!",
+                "SampleTestClass.Skip skipped: This test did not run."
             );
 
             output.ShouldHaveLifecycle(".ctor");
@@ -251,8 +251,8 @@ namespace Fixie.Tests
                 "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Fail failed: 'Dispose' failed!",
                 "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.",
-                "SampleTestClass.Skip failed: 'Dispose' failed!");
+                "SampleTestClass.Skip failed: 'Dispose' failed!",
+                "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 ".ctor",

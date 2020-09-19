@@ -28,15 +28,15 @@
         {
             Run<ConstructionFailureTestClass, ExplicitConstruction>()
                 .ShouldBe(
-                    "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' skipped:",
-                    "This test did not run.",
-                    "",
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                     "",
                     "'.ctor' failed!",
                     "",
                     "Fixie.Tests.FailureException",
                     At<ConstructionFailureTestClass>(".ctor()"),
+                    "",
+                    "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' skipped:",
+                    "This test did not run.",
                     "",
                     "1 failed, 1 skipped, took 1.23 seconds");
         }

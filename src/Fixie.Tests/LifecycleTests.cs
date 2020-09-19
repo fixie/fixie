@@ -256,14 +256,14 @@ namespace Fixie.Tests
             var output = Run<SampleTestClass, InstrumentedExecution>();
         
             output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped: This test did not run.",
                 "SampleTestClass.Fail failed: 'ClassSetUp' failed!",
+                "SampleTestClass.Fail skipped: This test did not run.",
                 
-                "SampleTestClass.Pass skipped: This test did not run.",
                 "SampleTestClass.Pass failed: 'ClassSetUp' failed!",
+                "SampleTestClass.Pass skipped: This test did not run.",
                 
-                "SampleTestClass.Skip skipped: This test did not run.",
-                "SampleTestClass.Skip failed: 'ClassSetUp' failed!");
+                "SampleTestClass.Skip failed: 'ClassSetUp' failed!",
+                "SampleTestClass.Skip skipped: This test did not run.");
         
             output.ShouldHaveLifecycle("ClassSetUp");
         }
@@ -425,8 +425,8 @@ namespace Fixie.Tests
 
                 "SampleTestClass.Fail failed: 'ClassTearDown' failed!",
                 "SampleTestClass.Pass failed: 'ClassTearDown' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.",
-                "SampleTestClass.Skip failed: 'ClassTearDown' failed!");
+                "SampleTestClass.Skip failed: 'ClassTearDown' failed!",
+                "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",

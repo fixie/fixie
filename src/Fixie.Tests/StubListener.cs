@@ -1,11 +1,8 @@
 ﻿namespace Fixie.Tests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Fixie.Internal;
     using Fixie.Internal.Listeners;
-    using static System.Environment;
 
     public class StubListener :
         Handler<TestDiscovered>,
@@ -33,20 +30,7 @@
 
         public void Handle(CaseFailed message)
         {
-            log.Add($"{message.Name} failed: {message.Exception.Message}{SimplifyLiterateStackTrace(message.Exception.LiterateStackTrace())}");
-        }
-
-        static string SimplifyLiterateStackTrace(string literateStackTrace)
-        {
-            var stackTrace = literateStackTrace;
-
-            stackTrace =
-                string.Join(NewLine,
-                    stackTrace.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries)
-                        .Where(x => !x.StartsWith("   at "))
-                        .Where(x => x != "--- End of stack trace from previous location where exception was thrown ---"));
-
-            return stackTrace == "" ? stackTrace : NewLine + stackTrace;
+            log.Add($"{message.Name} failed: {message.Exception.Message}");
         }
 
         public IEnumerable<string> Entries => log;

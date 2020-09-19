@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Assertions;
@@ -61,6 +62,45 @@
                     "2 failed, took 1.23 seconds");
         }
 
+        public void ShouldProvideLiterateStackTraceIncludingAllNestedExceptions()
+        {
+            Run<NestedFailureTestClass, ImplicitConstruction>()
+                .ShouldBe(
+                    "Test '" + FullName<NestedFailureTestClass>() + ".Asynchronous' failed:",
+                    "",
+                    "Primary Exception!",
+                    "",
+                    FullName<PrimaryException>(),
+                    At<StackTracePresentationTests>("ThrowNestedException()"),
+                    At<NestedFailureTestClass>("Asynchronous()"),
+                    "",
+                    "------- Inner Exception: System.AggregateException -------",
+                    "One or more errors occurred. (Divide by Zero Exception!)",
+                    At<StackTracePresentationTests>("ThrowNestedException()"),
+                    "",
+                    "------- Inner Exception: System.DivideByZeroException -------",
+                    "Divide by Zero Exception!",
+                    At<StackTracePresentationTests>("ThrowNestedException()"),
+                    "",
+                    "Test '" + FullName<NestedFailureTestClass>() + ".Synchronous' failed:",
+                    "",
+                    "Primary Exception!",
+                    "",
+                    FullName<PrimaryException>(),
+                    At<StackTracePresentationTests>("ThrowNestedException()"),
+                    At<NestedFailureTestClass>("Synchronous()"),
+                    "",
+                    "------- Inner Exception: System.AggregateException -------",
+                    "One or more errors occurred. (Divide by Zero Exception!)",
+                    At<StackTracePresentationTests>("ThrowNestedException()"),
+                    "",
+                    "------- Inner Exception: System.DivideByZeroException -------",
+                    "Divide by Zero Exception!",
+                    At<StackTracePresentationTests>("ThrowNestedException()"),
+                    "",
+                    "2 failed, took 1.23 seconds");
+        }
+
         static IEnumerable<string> Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
         {
             var listener = new ConsoleListener();
@@ -113,6 +153,45 @@
                 await Task.Yield();
                 throw new FailureException();
             }
+        }
+
+        class NestedFailureTestClass
+        {
+            public void Synchronous()
+            {
+                ThrowNestedException();
+            }
+
+            public async Task Asynchronous()
+            {
+                await Task.Yield();
+                ThrowNestedException();
+            }
+        }
+
+        static void ThrowNestedException()
+        {
+            try
+            {
+                try
+                {
+                    throw new DivideByZeroException("Divide by Zero Exception!");
+                }
+                catch (Exception exception)
+                {
+                    throw new AggregateException(exception);
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new PrimaryException(exception);
+            }
+        }
+
+        class PrimaryException : Exception
+        {
+            public PrimaryException(Exception innerException)
+                : base("Primary Exception!", innerException) { }
         }
     }
 }

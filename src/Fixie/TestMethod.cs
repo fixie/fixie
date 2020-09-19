@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using System.Runtime.ExceptionServices;
     using Internal;
 
     public class TestMethod
@@ -102,7 +101,7 @@
 
         static void TryRunCase(Case @case, object? instance)
         {
-            @case.Execute(instance);
+            @case.Run(instance);
         }
 
         static void TryInspectCase(Case @case, Action<Case>? inspectCase, out Exception? caseInspectionFailure)

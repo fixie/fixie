@@ -121,10 +121,10 @@
         internal CaseState State { get; private set; }
 
         /// <summary>
-        /// Execute the test case against the given instance of the test class,
+        /// Run the test case against the given instance of the test class,
         /// causing the case state to become either passing or failing.
         /// </summary>
-        internal void Execute(object? instance)
+        internal void Run(object? instance)
         {
             try
             {

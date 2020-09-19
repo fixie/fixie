@@ -89,6 +89,9 @@
         /// </summary>
         public void Fail(Exception reason)
         {
+            if (reason is PreservedException preservedException)
+                reason = preservedException.OriginalException;
+
             State = CaseState.Failed;
 
             Exception = reason;
@@ -128,10 +131,6 @@
                 var result = Method.Execute(instance, parameters);
                 Pass();
                 Result = result;
-            }
-            catch (PreservedException preservedException)
-            {
-                Fail(preservedException.OriginalException);
             }
             catch (Exception exception)
             {

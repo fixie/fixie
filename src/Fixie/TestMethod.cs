@@ -212,8 +212,7 @@
             }
             catch (TargetInvocationException exception)
             {
-                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
-                throw; //Unreachable.
+                throw new PreservedException(exception);
             }
         }
     }

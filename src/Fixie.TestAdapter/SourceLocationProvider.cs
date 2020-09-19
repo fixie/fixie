@@ -1,4 +1,4 @@
-﻿namespace Fixie.TestAdapter
+namespace Fixie.TestAdapter
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -86,16 +86,19 @@
             return stateMachineMoveNextMethod;
         }
 
-        static SequencePoint? FirstOrDefaultUnhiddenSequencePoint(MethodBody body)
+        static SequencePoint? FirstOrDefaultUnhiddenSequencePoint(MethodBody? body)
         {
             const int lineNumberIndicatingHiddenLine = 16707566; //0xfeefee
 
-            foreach (var instruction in body.Instructions)
+            if (body != null)
             {
-                var sequencePoint = body.Method.DebugInformation.GetSequencePoint(instruction);
-                if (sequencePoint != null && sequencePoint.StartLine != lineNumberIndicatingHiddenLine)
+                foreach (var instruction in body.Instructions)
                 {
-                    return sequencePoint;
+                    var sequencePoint = body.Method.DebugInformation.GetSequencePoint(instruction);
+                    if (sequencePoint != null && sequencePoint.StartLine != lineNumberIndicatingHiddenLine)
+                    {
+                        return sequencePoint;
+                    }
                 }
             }
 

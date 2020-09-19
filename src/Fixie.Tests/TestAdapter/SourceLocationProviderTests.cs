@@ -7,6 +7,12 @@
 
     public class SourceLocationProviderTests
     {
+        // Ensure that during the assembly-wide scan of types, methods with no possible
+        // body definition are present. This way, we can be sure that method source location
+        // scanning safely bypasses these irrelevant methods.
+        interface SampleInterface { void MethodWithNoBody(); }
+        abstract class SampleAbstractClass { public abstract void MethodWithNoBody(); }
+
         // Line numbers vary slightly between Debug and Release modes.
         //
         //      Debug: opening curly brace.

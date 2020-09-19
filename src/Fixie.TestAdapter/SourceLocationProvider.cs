@@ -37,7 +37,7 @@ namespace Fixie.TestAdapter
             var readerParameters = new ReaderParameters { ReadSymbols = true };
             using var module = ModuleDefinition.ReadModule(assemblyPath, readerParameters);
 
-            return module.GetTypes().ToDictionary(type => type.FullName, MethodLocations);
+            return module.GetTypes().Where(type => type.IsClass).ToDictionary(type => type.FullName, MethodLocations);
         }
 
         static Dictionary<string, SourceLocation> MethodLocations(TypeDefinition type)
@@ -46,10 +46,13 @@ namespace Fixie.TestAdapter
 
             foreach (var method in type.GetMethods())
             {
-                var location = FirstOrDefaultSourceLocation(method);
+                if (!method.IsAbstract)
+                {
+                    var location = FirstOrDefaultSourceLocation(method);
 
-                if (location != null && !methodLocations.ContainsKey(method.Name))
-                    methodLocations[method.Name] = location;
+                    if (location != null && !methodLocations.ContainsKey(method.Name))
+                        methodLocations[method.Name] = location;
+                }
             }
 
             return methodLocations;

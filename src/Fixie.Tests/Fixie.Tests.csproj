@@ -4,7 +4,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Optimize>false</Optimize>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 

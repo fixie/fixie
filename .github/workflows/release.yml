@@ -15,5 +15,6 @@ jobs:
       run: pwsh ./build.ps1
     - name: Release to NuGet
       env:
+        NUGET_URL: https://api.nuget.org/v3/index.json
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: pwsh ./release.ps1

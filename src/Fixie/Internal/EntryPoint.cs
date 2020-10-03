@@ -6,6 +6,7 @@
     using System.Reflection;
     using Listeners;
     using static System.Console;
+    using static System.Environment;
     using static Maybe;
 
     public class EntryPoint
@@ -37,7 +38,11 @@
             var listeners = DefaultExecutionListeners().ToArray();
             var runner = new Runner(assembly, customArguments, listeners);
 
-            var summary = runner.Run();
+            var pattern = GetEnvironmentVariable("FIXIE:TESTS");
+
+            var summary = pattern == null
+                ? runner.Run()
+                : runner.Run(new TestPattern(pattern));
 
             if (summary.Total == 0)
                 return ExitCode.FatalError;
@@ -62,7 +67,7 @@
             if (Try(TeamCityListener.Create, out var teamCity))
                 yield return teamCity;
             else
-                yield return new ConsoleListener();
+                yield return ConsoleListener.Create();
         }
     }
 }

@@ -151,13 +151,15 @@
                 new FileInfo(testProject).Directory.FullName,
                 outputPath);
 
-            return Run("dotnet", workingDirectory, arguments.ToArray(),
-                options.Report == null
-                    ? null
-                    : new Dictionary<string, string>
-                    {
-                        {"FIXIE:REPORT", options.Report}
-                    });
+            var environmentVariables = new Dictionary<string, string>();
+
+            if (options.Report != null)
+                environmentVariables["FIXIE:REPORT"] = options.Report;
+
+            if (options.Tests != null)
+                environmentVariables["FIXIE:TESTS"] = options.Tests;
+
+            return Run("dotnet", workingDirectory, arguments.ToArray(), environmentVariables);
         }
 
         static void Help()
@@ -189,6 +191,10 @@
             WriteLine("    --report <path>");
             WriteLine("        Write test results to the specified path, using the");
             WriteLine("        xUnit XML format.");
+            WriteLine();
+            WriteLine("    -t <pattern>");
+            WriteLine("    --tests <pattern>");
+            WriteLine("        Run only the tests whose full names match the given pattern.");
             WriteLine();
             WriteLine("    --");
             WriteLine("        Signifies the end of built-in arguments and the beginning");

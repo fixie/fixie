@@ -9,6 +9,7 @@
             bool noBuild,
             string? framework,
             string? report,
+            string? tests,
             params string[] projectPatterns)
         {
             ProjectPatterns = projectPatterns;
@@ -16,6 +17,7 @@
             NoBuild = noBuild;
             Framework = framework;
             Report = report;
+            Tests = tests;
         }
 
         public string[] ProjectPatterns { get; }
@@ -24,6 +26,7 @@
         public bool ShouldBuild => !NoBuild;
         public string? Framework { get; }
         public string? Report { get; }
+        public string? Tests { get; }
 
         public void Validate()
         {

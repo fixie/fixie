@@ -67,7 +67,7 @@
             if (Try(TeamCityListener.Create, out var teamCity))
                 yield return teamCity;
             else
-                yield return new ConsoleListener();
+                yield return ConsoleListener.Create();
         }
     }
 }

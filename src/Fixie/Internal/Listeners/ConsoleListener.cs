@@ -3,12 +3,22 @@
     using System;
     using System.Collections.Generic;
     using Internal;
+    using static System.Environment;
 
     class ConsoleListener :
         Handler<CaseSkipped>,
+        Handler<CasePassed>,
         Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
+        readonly bool outputCasePassed;
+
+        internal static ConsoleListener Create()
+            => new ConsoleListener(GetEnvironmentVariable("FIXIE:TESTS") != null);
+
+        public ConsoleListener(bool outputCasePassed = false)
+            => this.outputCasePassed = outputCasePassed;
+
         public void Handle(CaseSkipped message)
         {
             var hasReason = message.Reason != null;
@@ -20,6 +30,17 @@
                 Console.WriteLine($"{message.Reason}");
 
             Console.WriteLine();
+        }
+
+        public void Handle(CasePassed message)
+        {
+            if (outputCasePassed)
+            {
+                using (Foreground.Green)
+                    Console.WriteLine($"Test '{message.Name}' passed");
+
+                Console.WriteLine();
+            }
         }
 
         public void Handle(CaseFailed message)

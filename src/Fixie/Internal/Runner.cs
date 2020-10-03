@@ -62,7 +62,7 @@
             return Run(types, method => request[method.ReflectedType!.FullName!].Contains(method.Name));
         }
 
-        public ExecutionSummary Run(string testsPattern)
+        public ExecutionSummary Run(TestPattern testPattern)
         {
             var matchingTests = new List<Test>();
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
@@ -78,7 +78,7 @@
                 {
                     var test = new Test(testMethod);
 
-                    if (test.Matches(testsPattern))
+                    if (testPattern.Matches(test))
                         matchingTests.Add(test);
                 }
             }

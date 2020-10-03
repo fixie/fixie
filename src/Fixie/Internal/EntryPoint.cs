@@ -38,11 +38,11 @@
             var listeners = DefaultExecutionListeners().ToArray();
             var runner = new Runner(assembly, customArguments, listeners);
 
-            var testsPattern = GetEnvironmentVariable("FIXIE:TESTS");
+            var pattern = GetEnvironmentVariable("FIXIE:TESTS");
 
-            var summary = testsPattern == null
+            var summary = pattern == null
                 ? runner.Run()
-                : runner.Run(testsPattern);
+                : runner.Run(new TestPattern(pattern));
 
             if (summary.Total == 0)
                 return ExitCode.FatalError;

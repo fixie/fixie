@@ -62,6 +62,34 @@
             return Run(types, method => request[method.ReflectedType!.FullName!].Contains(method.Name));
         }
 
+        public ExecutionSummary Run(string testsPattern)
+        {
+            var matchingTests = new List<Test>();
+            var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
+
+            try
+            {
+                var candidateTypes = assembly.GetTypes();
+                var classDiscoverer = new ClassDiscoverer(discovery);
+                var classes = classDiscoverer.TestClasses(candidateTypes);
+                var methodDiscoverer = new MethodDiscoverer(discovery);
+                foreach (var testClass in classes)
+                foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
+                {
+                    var test = new Test(testMethod);
+
+                    if (test.Name.Contains(testsPattern))
+                        matchingTests.Add(test);
+                }
+            }
+            finally
+            {
+                discovery.Dispose();
+            }
+
+            return Run(matchingTests);
+        }
+
         ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool>? selected = null)
         {
             new BehaviorDiscoverer(assembly, customArguments)

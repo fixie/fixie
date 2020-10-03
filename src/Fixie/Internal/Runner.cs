@@ -78,7 +78,7 @@
                 {
                     var test = new Test(testMethod);
 
-                    if (test.Name.Contains(testsPattern))
+                    if (test.Matches(testsPattern))
                         matchingTests.Add(test);
                 }
             }

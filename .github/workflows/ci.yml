@@ -18,6 +18,6 @@ jobs:
       run: pwsh ./build.ps1
     - name: Release to MyGet
       env:
-        NUGET_URL: https://www.myget.org/F/fixie-ci/api/v3/index.json
-        NUGET_API_KEY: ${{ secrets.MYGET_API_KEY }}
+        PACKAGE_URL: https://www.myget.org/F/fixie-ci/api/v3/index.json
+        PACKAGE_API_KEY: ${{ secrets.MYGET_API_KEY }}
       run: pwsh ./release.ps1

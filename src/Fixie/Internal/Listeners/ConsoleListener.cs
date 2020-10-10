@@ -12,6 +12,7 @@
         Handler<AssemblyCompleted>
     {
         readonly bool outputCasePassed;
+        bool paddingWouldRequireOpeningBlankLine;
 
         internal static ConsoleListener Create()
             => new ConsoleListener(GetEnvironmentVariable("FIXIE:TESTS") != null);
@@ -23,36 +24,57 @@
         {
             var hasReason = message.Reason != null;
 
-            using (Foreground.Yellow)
-                Console.WriteLine($"Test '{message.Name}' skipped{(hasReason ? ":" : null)}");
+            WithPadding(() =>
+            {
+                using (Foreground.Yellow)
+                    Console.WriteLine($"Test '{message.Name}' skipped{(hasReason ? ":" : null)}");
 
-            if (hasReason)
-                Console.WriteLine($"{message.Reason}");
-
-            Console.WriteLine();
+                if (hasReason)
+                    Console.WriteLine($"{message.Reason}");
+            });
         }
 
         public void Handle(CasePassed message)
         {
             if (outputCasePassed)
             {
-                using (Foreground.Green)
-                    Console.WriteLine($"Test '{message.Name}' passed");
-
-                Console.WriteLine();
+                WithoutPadding(() =>
+                {
+                    using (Foreground.Green)
+                        Console.WriteLine($"Test '{message.Name}' passed");
+                });
             }
         }
 
         public void Handle(CaseFailed message)
         {
-            using (Foreground.Red)
-                Console.WriteLine($"Test '{message.Name}' failed:");
+            WithPadding(() =>
+            {
+                using (Foreground.Red)
+                    Console.WriteLine($"Test '{message.Name}' failed:");
+                Console.WriteLine();
+                Console.WriteLine(message.Exception.Message);
+                Console.WriteLine();
+                Console.WriteLine(message.Exception.GetType().FullName);
+                Console.WriteLine(message.Exception.LiterateStackTrace());
+            });
+        }
+
+        void WithPadding(Action write)
+        {
+            if (paddingWouldRequireOpeningBlankLine)
+                Console.WriteLine();
+
+            write();
+            
             Console.WriteLine();
-            Console.WriteLine(message.Exception.Message);
-            Console.WriteLine();
-            Console.WriteLine(message.Exception.GetType().FullName);
-            Console.WriteLine(message.Exception.LiterateStackTrace());
-            Console.WriteLine();
+            paddingWouldRequireOpeningBlankLine = false;
+        }
+
+        void WithoutPadding(Action write)
+        {
+            write();
+            paddingWouldRequireOpeningBlankLine = true;
         }
 
         public void Handle(AssemblyCompleted message)

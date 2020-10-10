@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Reflection;
 
     class Runner
@@ -36,17 +37,17 @@
 
         public ExecutionSummary Run()
         {
-            return Run(assembly.GetTypes());
+            return Run(assembly.GetTypes(), ImmutableHashSet<string>.Empty);
         }
 
-        public ExecutionSummary Run(HashSet<string> selectedTests)
+        public ExecutionSummary Run(ImmutableHashSet<string> selectedTests)
         {
             return Run(assembly.GetTypes(), selectedTests);
         }
 
         public ExecutionSummary Run(TestPattern testPattern)
         {
-            var matchingTests = new HashSet<string>();
+            var matchingTests = ImmutableHashSet<string>.Empty;
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
 
             try
@@ -61,7 +62,7 @@
                     var test = new Test(testMethod);
 
                     if (testPattern.Matches(test))
-                        matchingTests.Add(test.Name);
+                        matchingTests = matchingTests.Add(test.Name);
                 }
             }
             finally
@@ -72,7 +73,7 @@
             return Run(matchingTests);
         }
 
-        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, HashSet<string>? selectedTests = null)
+        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);
@@ -101,7 +102,7 @@
                 bus.Publish(new TestDiscovered(new Test(testMethod)));
         }
 
-        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, HashSet<string>? selectedTests = null)
+        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)
         {
             var recorder = new ExecutionRecorder(bus);
             var classDiscoverer = new ClassDiscoverer(discovery);

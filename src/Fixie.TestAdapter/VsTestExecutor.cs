@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -60,7 +61,7 @@
 
                     RunTests(log, frameworkHandle, assemblyPath, runner =>
                     {
-                        runner.Run(assemblyGroup.Select(x => x.FullyQualifiedName).ToHashSet());
+                        runner.Run(assemblyGroup.Select(x => x.FullyQualifiedName).ToImmutableHashSet());
                     });
                 }
             }

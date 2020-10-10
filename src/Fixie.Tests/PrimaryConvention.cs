@@ -18,7 +18,7 @@
                 test.Run(@case =>
                 {
                     if (@case.Exception is AssertException exception && !exception.HasCompactRepresentations)
-                        if (testClass.TestAssembly.SelectedTests?.Count == 1)
+                        if (testClass.TestAssembly.SelectedTests.Count == 1)
                             LaunchDiffTool(exception);
                 });
             }

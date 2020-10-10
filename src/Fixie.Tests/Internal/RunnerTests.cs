@@ -1,5 +1,6 @@
 namespace Fixie.Tests.Internal
 {
+    using System.Collections.Immutable;
     using Assertions;
     using Fixie.Internal;
     using static Utility;
@@ -42,7 +43,7 @@ namespace Fixie.Tests.Internal
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();
 
-            new Runner(GetType().Assembly, listener).Run(candidateTypes, discovery, execution);
+            new Runner(GetType().Assembly, listener).Run(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",

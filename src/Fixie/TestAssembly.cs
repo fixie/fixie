@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using System.Reflection;
     using Internal;
@@ -13,7 +14,7 @@
         readonly MethodDiscoverer methodDiscoverer;
         readonly Execution execution;
 
-        internal TestAssembly(Assembly assembly, HashSet<string>? selectedTests, ExecutionRecorder recorder,
+        internal TestAssembly(Assembly assembly, ImmutableHashSet<string> selectedTests, ExecutionRecorder recorder,
             IReadOnlyList<Type> classes,
             MethodDiscoverer methodDiscoverer, Execution execution)
         {
@@ -30,9 +31,9 @@
 
         /// <summary>
         /// Gets the set of explicitly selected test names to be executed.
-        /// Null under normal test execution when all tests are being executed.
+        /// Empty under normal test execution when all tests are being executed.
         /// </summary>
-        public HashSet<string>? SelectedTests { get; }
+        public ImmutableHashSet<string> SelectedTests { get; }
 
         internal void Run()
         {
@@ -40,7 +41,7 @@
             {
                 IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
 
-                if (SelectedTests != null)
+                if (!SelectedTests.IsEmpty)
                     methods = methods.Where(method => SelectedTests.Contains(new Test(method).Name));
 
                 var testMethods = methods

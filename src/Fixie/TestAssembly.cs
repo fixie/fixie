@@ -49,11 +49,7 @@
 
                 if (testMethods.Any())
                 {
-                    var targetMethod = classes.Count == 1 && testMethods.Count == 1
-                        ? testMethods.Single()
-                        : null;
-
-                    var testClass = new TestClass(this, @class, testMethods, targetMethod?.Method);
+                    var testClass = new TestClass(this, @class, testMethods);
 
                     Exception? classLifecycleFailure = null;
 

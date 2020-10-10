@@ -39,12 +39,12 @@
             return Run(assembly.GetTypes());
         }
 
-        public ExecutionSummary Run(IReadOnlyList<Test> tests)
+        public ExecutionSummary Run(IReadOnlyList<Test> selectedTests)
         {
             var request = new Dictionary<string, HashSet<string>>();
             var types = new List<Type>();
 
-            foreach (var test in tests)
+            foreach (var test in selectedTests)
             {
                 if (!request.ContainsKey(test.Class))
                 {

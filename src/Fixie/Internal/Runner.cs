@@ -41,29 +41,11 @@
 
         public ExecutionSummary Run(IReadOnlyList<Test> selectedTests)
         {
-            var request = new Dictionary<string, HashSet<string>>();
-            var types = new List<Type>();
-            
             var selectedTestNames = new HashSet<string>();
             foreach (var test in selectedTests)
                 selectedTestNames.Add(test.Name);
 
-            foreach (var test in selectedTests)
-            {
-                if (!request.ContainsKey(test.Class))
-                {
-                    request.Add(test.Class, new HashSet<string>());
-
-                    var type = assembly.GetType(test.Class);
-
-                    if (type != null)
-                        types.Add(type);
-                }
-
-                request[test.Class].Add(test.Method);
-            }
-
-            return Run(types, method => selectedTestNames.Contains(new Test(method).Name));
+            return Run(assembly.GetTypes(), method => selectedTestNames.Contains(new Test(method).Name));
         }
 
         public ExecutionSummary Run(TestPattern testPattern)

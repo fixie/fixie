@@ -39,18 +39,14 @@
             return Run(assembly.GetTypes());
         }
 
-        public ExecutionSummary Run(IReadOnlyList<string> selectedTests)
+        public ExecutionSummary Run(HashSet<string> selectedTests)
         {
-            var selectedTestNames = new HashSet<string>();
-            foreach (var selectedTest in selectedTests)
-                selectedTestNames.Add(selectedTest);
-
-            return Run(assembly.GetTypes(), method => selectedTestNames.Contains(new Test(method).Name));
+            return Run(assembly.GetTypes(), method => selectedTests.Contains(new Test(method).Name));
         }
 
         public ExecutionSummary Run(TestPattern testPattern)
         {
-            var matchingTests = new List<string>();
+            var matchingTests = new HashSet<string>();
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
 
             try

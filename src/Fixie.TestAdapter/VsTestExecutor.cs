@@ -60,7 +60,7 @@
 
                     RunTests(log, frameworkHandle, assemblyPath, runner =>
                     {
-                        runner.Run(assemblyGroup.Select(x => x.FullyQualifiedName).ToList());
+                        runner.Run(assemblyGroup.Select(x => x.FullyQualifiedName).ToHashSet());
                     });
                 }
             }

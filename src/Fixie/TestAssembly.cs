@@ -11,17 +11,17 @@
         readonly ExecutionRecorder recorder;
         readonly IReadOnlyList<Type> classes;
         readonly MethodDiscoverer methodDiscoverer;
-        readonly Func<MethodInfo, bool>? selected;
+        readonly HashSet<string>? selectedTests;
         readonly Execution execution;
 
         internal TestAssembly(Assembly assembly, ExecutionRecorder recorder, IReadOnlyList<Type> classes,
-            MethodDiscoverer methodDiscoverer, Func<MethodInfo, bool>? selected, Execution execution)
+            MethodDiscoverer methodDiscoverer, HashSet<string>? selectedTests, Execution execution)
         {
             Assembly = assembly;
             this.recorder = recorder;
             this.classes = classes;
             this.methodDiscoverer = methodDiscoverer;
-            this.selected = selected;
+            this.selectedTests = selectedTests;
             this.execution = execution;
         }
 
@@ -33,8 +33,8 @@
             {
                 IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
 
-                if (selected != null)
-                    methods = methods.Where(selected);
+                if (selectedTests != null)
+                    methods = methods.Where(method => selectedTests.Contains(new Test(method).Name));
 
                 var testMethods = methods
                     .Select(method => new TestMethod(recorder, method))

@@ -41,7 +41,7 @@
 
         public ExecutionSummary Run(HashSet<string> selectedTests)
         {
-            return Run(assembly.GetTypes(), method => selectedTests.Contains(new Test(method).Name));
+            return Run(assembly.GetTypes(), selectedTests);
         }
 
         public ExecutionSummary Run(TestPattern testPattern)
@@ -72,14 +72,14 @@
             return Run(matchingTests);
         }
 
-        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool>? selected = null)
+        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, HashSet<string>? selectedTests = null)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);
 
             try
             {
-                return Run(candidateTypes, discovery, execution, selected);
+                return Run(candidateTypes, discovery, execution, selectedTests);
             }
             finally
             {
@@ -101,14 +101,14 @@
                 bus.Publish(new TestDiscovered(new Test(testMethod)));
         }
 
-        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, Func<MethodInfo, bool>? selected = null)
+        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, HashSet<string>? selectedTests = null)
         {
             var recorder = new ExecutionRecorder(bus);
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
             var methodDiscoverer = new MethodDiscoverer(discovery);
 
-            var testAssembly = new TestAssembly(assembly, recorder, classes, methodDiscoverer, selected, execution);
+            var testAssembly = new TestAssembly(assembly, recorder, classes, methodDiscoverer, selectedTests, execution);
             recorder.Start(testAssembly);
             testAssembly.Run();
             return recorder.Complete(testAssembly);

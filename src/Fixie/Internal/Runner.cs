@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Reflection;
 
     class Runner
@@ -36,35 +37,17 @@
 
         public ExecutionSummary Run()
         {
-            return Run(assembly.GetTypes());
+            return Run(assembly.GetTypes(), ImmutableHashSet<string>.Empty);
         }
 
-        public ExecutionSummary Run(IReadOnlyList<Test> tests)
+        public ExecutionSummary Run(ImmutableHashSet<string> selectedTests)
         {
-            var request = new Dictionary<string, HashSet<string>>();
-            var types = new List<Type>();
-
-            foreach (var test in tests)
-            {
-                if (!request.ContainsKey(test.Class))
-                {
-                    request.Add(test.Class, new HashSet<string>());
-
-                    var type = assembly.GetType(test.Class);
-
-                    if (type != null)
-                        types.Add(type);
-                }
-
-                request[test.Class].Add(test.Method);
-            }
-
-            return Run(types, method => request[method.ReflectedType!.FullName!].Contains(method.Name));
+            return Run(assembly.GetTypes(), selectedTests);
         }
 
         public ExecutionSummary Run(TestPattern testPattern)
         {
-            var matchingTests = new List<Test>();
+            var matchingTests = ImmutableHashSet<string>.Empty;
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
 
             try
@@ -79,7 +62,7 @@
                     var test = new Test(testMethod);
 
                     if (testPattern.Matches(test))
-                        matchingTests.Add(test);
+                        matchingTests = matchingTests.Add(test.Name);
                 }
             }
             finally
@@ -90,14 +73,14 @@
             return Run(matchingTests);
         }
 
-        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Func<MethodInfo, bool>? selected = null)
+        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);
 
             try
             {
-                return Run(candidateTypes, discovery, execution, selected);
+                return Run(candidateTypes, discovery, execution, selectedTests);
             }
             finally
             {
@@ -119,14 +102,14 @@
                 bus.Publish(new TestDiscovered(new Test(testMethod)));
         }
 
-        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, Func<MethodInfo, bool>? selected = null)
+        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)
         {
             var recorder = new ExecutionRecorder(bus);
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
             var methodDiscoverer = new MethodDiscoverer(discovery);
 
-            var testAssembly = new TestAssembly(assembly, recorder, classes, methodDiscoverer, selected, execution);
+            var testAssembly = new TestAssembly(assembly, selectedTests, recorder, classes, methodDiscoverer, execution);
             recorder.Start(testAssembly);
             testAssembly.Run();
             return recorder.Complete(testAssembly);

@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -16,10 +17,8 @@
             {
                 test.Run(@case =>
                 {
-                    var methodWasExplicitlyRequested = testClass.TargetMethod != null;
-
-                    if (methodWasExplicitlyRequested && @case.Exception is AssertException exception)
-                        if (!exception.HasCompactRepresentations)
+                    if (@case.Exception is AssertException exception && !exception.HasCompactRepresentations)
+                        if (testClass.TestAssembly.SelectedTests.Count == 1)
                             LaunchDiffTool(exception);
                 });
             }

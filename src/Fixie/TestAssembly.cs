@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using System.Reflection;
     using Internal;
@@ -11,30 +12,37 @@
         readonly ExecutionRecorder recorder;
         readonly IReadOnlyList<Type> classes;
         readonly MethodDiscoverer methodDiscoverer;
-        readonly Func<MethodInfo, bool>? selected;
         readonly Execution execution;
 
-        internal TestAssembly(Assembly assembly, ExecutionRecorder recorder, IReadOnlyList<Type> classes,
-            MethodDiscoverer methodDiscoverer, Func<MethodInfo, bool>? selected, Execution execution)
+        internal TestAssembly(Assembly assembly, ImmutableHashSet<string> selectedTests, ExecutionRecorder recorder,
+            IReadOnlyList<Type> classes,
+            MethodDiscoverer methodDiscoverer, Execution execution)
         {
             Assembly = assembly;
+            SelectedTests = selectedTests;
+
             this.recorder = recorder;
             this.classes = classes;
             this.methodDiscoverer = methodDiscoverer;
-            this.selected = selected;
             this.execution = execution;
         }
 
-        public Assembly Assembly { get; }
+        internal Assembly Assembly { get; }
 
-        public void Run()
+        /// <summary>
+        /// Gets the set of explicitly selected test names to be executed.
+        /// Empty under normal test execution when all tests are being executed.
+        /// </summary>
+        public ImmutableHashSet<string> SelectedTests { get; }
+
+        internal void Run()
         {
             foreach (var @class in classes)
             {
                 IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
 
-                if (selected != null)
-                    methods = methods.Where(selected);
+                if (!SelectedTests.IsEmpty)
+                    methods = methods.Where(method => SelectedTests.Contains(new Test(method).Name));
 
                 var testMethods = methods
                     .Select(method => new TestMethod(recorder, method))
@@ -42,11 +50,7 @@
 
                 if (testMethods.Any())
                 {
-                    var targetMethod = classes.Count == 1 && testMethods.Count == 1
-                        ? testMethods.Single()
-                        : null;
-
-                    var testClass = new TestClass(@class, testMethods, targetMethod?.Method);
+                    var testClass = new TestClass(this, @class, testMethods);
 
                     Exception? classLifecycleFailure = null;
 

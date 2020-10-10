@@ -6,12 +6,17 @@
 
     public class TestClass
     {
-        internal TestClass(Type type, IReadOnlyList<TestMethod> tests, MethodInfo? targetMethod)
+        internal TestClass(TestAssembly testAssembly, Type type, IReadOnlyList<TestMethod> tests)
         {
+            TestAssembly = testAssembly;
             Type = type;
             Tests = tests;
-            TargetMethod = targetMethod;
         }
+
+        /// <summary>
+        /// The test assembly under execution.
+        /// </summary>
+        public TestAssembly TestAssembly { get; }
 
         /// <summary>
         /// The test class under execution.
@@ -22,13 +27,6 @@
         /// The test methods under execution.
         /// </summary>
         public IReadOnlyList<TestMethod> Tests { get; }
-
-        /// <summary>
-        /// Gets the target MethodInfo identified by the
-        /// test runner as the sole method to be executed.
-        /// Null under normal test execution.
-        /// </summary>
-        public MethodInfo? TargetMethod { get; }
 
         /// <summary>
         /// Construct an instance of the test class using

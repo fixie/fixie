@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
@@ -57,7 +58,7 @@
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            new Runner(candidateTypes[0].Assembly, listener).Run(candidateTypes, discovery, execution);
+            new Runner(candidateTypes[0].Assembly, listener).Run(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
         }
 
         public static IEnumerable<object?[]> UsingInputAttributes(MethodInfo method)

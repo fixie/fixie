@@ -108,7 +108,7 @@
             var classes = classDiscoverer.TestClasses(candidateTypes);
             var methodDiscoverer = new MethodDiscoverer(discovery);
 
-            var testAssembly = new TestAssembly(assembly, recorder, classes, methodDiscoverer, selectedTests, execution);
+            var testAssembly = new TestAssembly(assembly, selectedTests, recorder, classes, methodDiscoverer, execution);
             recorder.Start(testAssembly);
             testAssembly.Run();
             return recorder.Complete(testAssembly);

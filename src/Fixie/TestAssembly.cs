@@ -11,30 +11,37 @@
         readonly ExecutionRecorder recorder;
         readonly IReadOnlyList<Type> classes;
         readonly MethodDiscoverer methodDiscoverer;
-        readonly HashSet<string>? selectedTests;
         readonly Execution execution;
 
-        internal TestAssembly(Assembly assembly, ExecutionRecorder recorder, IReadOnlyList<Type> classes,
-            MethodDiscoverer methodDiscoverer, HashSet<string>? selectedTests, Execution execution)
+        internal TestAssembly(Assembly assembly, HashSet<string>? selectedTests, ExecutionRecorder recorder,
+            IReadOnlyList<Type> classes,
+            MethodDiscoverer methodDiscoverer, Execution execution)
         {
             Assembly = assembly;
+            SelectedTests = selectedTests;
+
             this.recorder = recorder;
             this.classes = classes;
             this.methodDiscoverer = methodDiscoverer;
-            this.selectedTests = selectedTests;
             this.execution = execution;
         }
 
-        public Assembly Assembly { get; }
+        internal Assembly Assembly { get; }
 
-        public void Run()
+        /// <summary>
+        /// Gets the set of explicitly selected test names to be executed.
+        /// Null under normal test execution when all tests are being executed.
+        /// </summary>
+        public HashSet<string>? SelectedTests { get; }
+
+        internal void Run()
         {
             foreach (var @class in classes)
             {
                 IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
 
-                if (selectedTests != null)
-                    methods = methods.Where(method => selectedTests.Contains(new Test(method).Name));
+                if (SelectedTests != null)
+                    methods = methods.Where(method => SelectedTests.Contains(new Test(method).Name));
 
                 var testMethods = methods
                     .Select(method => new TestMethod(recorder, method))
@@ -46,7 +53,7 @@
                         ? testMethods.Single()
                         : null;
 
-                    var testClass = new TestClass(@class, testMethods, targetMethod?.Method);
+                    var testClass = new TestClass(this, @class, testMethods, targetMethod?.Method);
 
                     Exception? classLifecycleFailure = null;
 

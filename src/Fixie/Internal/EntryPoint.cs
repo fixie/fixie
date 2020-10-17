@@ -19,11 +19,11 @@
             FatalError = -1
         }
 
-        public static int Main(Assembly assembly, string[] customArguments)
+        public static async Task<int> Main(Assembly assembly, string[] customArguments)
         {
             try
             {
-                return (int)RunAssembly(assembly, customArguments).GetAwaiter().GetResult();
+                return (int) await RunAssembly(assembly, customArguments);
             }
             catch (Exception exception)
             {

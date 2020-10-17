@@ -128,7 +128,8 @@
         {
             try
             {
-                var result = Method.Execute(instance, parameters);
+                var result = Method.Execute(instance, parameters)
+                    .GetAwaiter().GetResult();
                 Pass();
                 Result = result;
             }

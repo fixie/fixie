@@ -20,7 +20,7 @@
         /// For async Task methods, returns null after awaiting the Task.
         /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
         /// </returns>
-        public static object? Execute(this MethodInfo method, object? instance, params object?[] parameters)
+        public static async Task<object?> Execute(this MethodInfo method, object? instance, params object?[] parameters)
         {
             if (method.IsVoid() && method.HasAsyncKeyword())
                 throw new NotSupportedException(
@@ -50,7 +50,7 @@
             if (task.Status == TaskStatus.Created)
                 throw new InvalidOperationException("The test returned a non-started task, which cannot be awaited. Consider using Task.Run or Task.Factory.StartNew.");
 
-            task.GetAwaiter().GetResult();
+            await task;
 
             if (method.ReturnType.IsGenericType)
             {

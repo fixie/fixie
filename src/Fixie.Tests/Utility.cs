@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
     using Fixie.Internal;
 
     public static class Utility
@@ -41,7 +42,7 @@
         {
             var listener = new StubListener();
             var discovery = new SelfTestDiscovery();
-            Run(listener, discovery, execution, testClass);
+            Run(listener, discovery, execution, testClass).GetAwaiter().GetResult();
             return listener.Entries;
         }
 
@@ -53,13 +54,14 @@
             new Runner(candidateTypes[0].Assembly, listener).Discover(candidateTypes, discovery);
         }
 
-        public static void Run(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)
+        public static Task Run(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            new Runner(candidateTypes[0].Assembly, listener).Run(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty)
-                .GetAwaiter().GetResult();
+            var runner = new Runner(candidateTypes[0].Assembly, listener);
+
+            return runner.Run(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
         }
 
         public static IEnumerable<object?[]> UsingInputAttributes(MethodInfo method)

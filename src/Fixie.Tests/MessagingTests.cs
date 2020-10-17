@@ -50,7 +50,7 @@
 
             using var console = new RedirectedConsole();
 
-            Utility.Run(listener, discovery, execution, candidateTypes);
+            Utility.Run(listener, discovery, execution, candidateTypes).GetAwaiter().GetResult();
 
             consoleLines = console.Lines();
         }

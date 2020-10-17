@@ -109,7 +109,7 @@
             
             using var console = new RedirectedConsole();
 
-            Utility.Run(listener, discovery, execution, typeof(TSampleTestClass));
+            Utility.Run(listener, discovery, execution, typeof(TSampleTestClass)).GetAwaiter().GetResult();
 
             return console.Lines()
                 .CleanStackTraceLineNumbers()

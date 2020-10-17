@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Reflection;
+    using System.Threading.Tasks;
 
     class Runner
     {
@@ -80,7 +81,7 @@
 
             try
             {
-                return Run(candidateTypes, discovery, execution, selectedTests);
+                return Run(candidateTypes, discovery, execution, selectedTests).GetAwaiter().GetResult();
             }
             finally
             {
@@ -102,7 +103,7 @@
                 bus.Publish(new TestDiscovered(new Test(testMethod)));
         }
 
-        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)
+        internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)
         {
             var recorder = new ExecutionRecorder(bus);
             var classDiscoverer = new ClassDiscoverer(discovery);
@@ -111,7 +112,7 @@
 
             var testAssembly = new TestAssembly(assembly, selectedTests, recorder, classes, methodDiscoverer, execution);
             recorder.Start(testAssembly);
-            testAssembly.Run().GetAwaiter().GetResult();
+            await testAssembly.Run();
             return recorder.Complete(testAssembly);
         }
     }

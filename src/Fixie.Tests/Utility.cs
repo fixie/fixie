@@ -58,7 +58,8 @@
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            new Runner(candidateTypes[0].Assembly, listener).Run(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
+            new Runner(candidateTypes[0].Assembly, listener).Run(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty)
+                .GetAwaiter().GetResult();
         }
 
         public static IEnumerable<object?[]> UsingInputAttributes(MethodInfo method)

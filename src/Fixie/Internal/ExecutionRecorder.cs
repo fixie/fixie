@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Threading.Tasks;
 
     class ExecutionRecorder
     {
@@ -23,71 +24,70 @@
             caseStopwatch = new Stopwatch();
         }
 
-        public void Start(TestAssembly testAssembly)
+        public async Task StartAsync(TestAssembly testAssembly)
         {
-            bus.PublishAsync(new AssemblyStarted(testAssembly.Assembly)).GetAwaiter().GetResult();
+            await bus.PublishAsync(new AssemblyStarted(testAssembly.Assembly));
             assemblyStopwatch.Restart();
             caseStopwatch.Restart();
         }
 
-        public void Start(Case @case)
+        public async Task StartAsync(Case @case)
         {
-            bus.PublishAsync(new CaseStarted(@case)).GetAwaiter().GetResult();
+            await bus.PublishAsync(new CaseStarted(@case));
         }
 
-        public void Skip(Case @case, string output = "")
+        public async Task SkipAsync(Case @case, string output = "")
         {
             var duration = caseStopwatch.Elapsed;
 
             var message = new CaseSkipped(@case, duration, output);
             assemblySummary.Add(message);
-            bus.PublishAsync(message).GetAwaiter().GetResult();
+            await bus.PublishAsync(message);
 
             caseStopwatch.Restart();
         }
 
-        public void Skip(TestMethod testMethod, string? reason = null)
+        public async Task SkipAsync(TestMethod testMethod, string? reason = null)
         {
             var @case = new Case(testMethod.Method, EmptyParameters);
             @case.Skip(reason);
-            Skip(@case);
+            await SkipAsync(@case);
         }
 
-        public void Pass(Case @case, string output)
+        public async Task PassAsync(Case @case, string output)
         {
             var duration = caseStopwatch.Elapsed;
 
             var message = new CasePassed(@case, duration, output);
             assemblySummary.Add(message);
-            bus.PublishAsync(message).GetAwaiter().GetResult();
+            await bus.PublishAsync(message);
 
             caseStopwatch.Restart();
         }
 
-        public void Fail(Case @case, string output = "")
+        public async Task FailAsync(Case @case, string output = "")
         {
             var duration = caseStopwatch.Elapsed;
 
             var message = new CaseFailed(@case, duration, output);
             assemblySummary.Add(message);
-            bus.PublishAsync(message).GetAwaiter().GetResult();
+            await bus.PublishAsync(message);
 
             caseStopwatch.Restart();
         }
 
-        public void Fail(TestMethod testMethod, Exception reason)
+        public async Task FailAsync(TestMethod testMethod, Exception reason)
         {
             var @case = new Case(testMethod.Method, EmptyParameters);
             @case.Fail(reason);
-            Fail(@case);
+            await FailAsync(@case);
         }
 
-        public ExecutionSummary Complete(TestAssembly testAssembly)
+        public async Task<ExecutionSummary> CompleteAsync(TestAssembly testAssembly)
         {
             var duration = assemblyStopwatch.Elapsed;
 
-            bus.PublishAsync(new AssemblyCompleted(testAssembly.Assembly, assemblySummary, duration))
-                .GetAwaiter().GetResult();
+            await bus.PublishAsync(new AssemblyCompleted(testAssembly.Assembly, assemblySummary, duration));
 
             caseStopwatch.Stop();
             assemblyStopwatch.Stop();

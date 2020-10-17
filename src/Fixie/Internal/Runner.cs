@@ -111,9 +111,9 @@
             var methodDiscoverer = new MethodDiscoverer(discovery);
 
             var testAssembly = new TestAssembly(assembly, selectedTests, recorder, classes, methodDiscoverer, execution);
-            recorder.Start(testAssembly);
+            await recorder.StartAsync(testAssembly);
             await testAssembly.RunAsync();
-            return recorder.Complete(testAssembly);
+            return await recorder.CompleteAsync(testAssembly);
         }
     }
 }

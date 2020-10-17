@@ -69,10 +69,10 @@
                         var testNeverRan = !testMethod.RecordedResult;
 
                         if (classLifecycleFailure != null)
-                            testMethod.Fail(classLifecycleFailure);
+                            await testMethod.FailAsync(classLifecycleFailure);
                         
                         if (testNeverRan)
-                            testMethod.Skip("This test did not run.");
+                            await testMethod.SkipAsync("This test did not run.");
                     }
                 }
             }

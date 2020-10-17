@@ -31,7 +31,7 @@
         {
             var @case = new Case(Method, parameters);
 
-            recorder.Start(@case);
+            await recorder.StartAsync(@case);
 
             Exception? caseInspectionFailure = null;
             Exception? disposalFailure = null;
@@ -70,31 +70,31 @@
             bool accounted = false;
             if (@case.State == CaseState.Skipped)
             {
-                recorder.Skip(@case, output);
+                await recorder.SkipAsync(@case, output);
                 accounted = true;
             }
 
             if (@case.State == CaseState.Failed)
             {
-                recorder.Fail(@case, output);
+                await recorder.FailAsync(@case, output);
                 accounted = true;
             }
 
             if (caseInspectionFailure != null)
             {
-                recorder.Fail(new Case(@case, caseInspectionFailure), output);
+                await recorder.FailAsync(new Case(@case, caseInspectionFailure), output);
                 accounted = true;
             }
 
             if (disposalFailure != null)
             {
-                recorder.Fail(new Case(@case, disposalFailure), output);
+                await recorder.FailAsync(new Case(@case, disposalFailure), output);
                 accounted = true;
             }
             
             if (@case.State == CaseState.Passed && !accounted)
             {
-                recorder.Pass(@case, output);
+                await recorder.PassAsync(@case, output);
             }
 
             RecordedResult = true;
@@ -152,7 +152,7 @@
             }
             catch (Exception exception)
             {
-                Fail(exception);
+                await FailAsync(exception);
             }
         }
 
@@ -175,7 +175,7 @@
             }
             catch (Exception exception)
             {
-                Fail(exception);
+                await FailAsync(exception);
             }
         }
 
@@ -189,18 +189,18 @@
         /// <summary>
         /// Emit a skip result for this test, with the given reason.
         /// </summary>
-        public void Skip(string? reason = null)
+        public async Task SkipAsync(string? reason = null)
         {
-            recorder.Skip(this, reason);
+            await recorder.SkipAsync(this, reason);
             RecordedResult = true;
         }
 
         /// <summary>
         /// Emit a fail result for this test, with the given reason.
         /// </summary>
-        public void Fail(Exception reason)
+        public async Task FailAsync(Exception reason)
         {
-            recorder.Fail(this, reason);
+            await recorder.FailAsync(this, reason);
             RecordedResult = true;
         }
 

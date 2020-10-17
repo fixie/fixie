@@ -108,7 +108,7 @@ namespace Fixie.Tests
                 }
                 catch (Exception exception)
                 {
-                    test.Fail(exception);
+                    await test.FailAsync(exception);
                 }
             }
 
@@ -122,7 +122,7 @@ namespace Fixie.Tests
                 }
                 catch (Exception exception)
                 {
-                    test.Fail(exception);
+                    await test.FailAsync(exception);
                 }
             }
 

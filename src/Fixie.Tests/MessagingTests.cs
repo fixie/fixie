@@ -70,7 +70,7 @@
                 {
                     if (test.Method.Has<SkipAttribute>(out var skip))
                     {
-                        test.Skip(skip.Reason);
+                        await test.SkipAsync(skip.Reason);
                         continue;
                     }
 

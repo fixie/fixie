@@ -27,7 +27,7 @@
 
         internal bool RecordedResult { get; private set; }
 
-        void RunCore(object?[] parameters, object? instance, Action<Case>? inspectCase)
+        async Task RunCore(object?[] parameters, object? instance, Action<Case>? inspectCase)
         {
             var @case = new Case(Method, parameters);
 
@@ -41,7 +41,7 @@
             {
                 if (instance != null)
                 {
-                    TryRunCase(@case, instance).GetAwaiter().GetResult();
+                    await TryRunCase(@case, instance);
                     TryInspectCase(@case, inspectCase, out caseInspectionFailure);
                 }
                 else
@@ -50,7 +50,7 @@
                     {
                         var automaticInstance = @case.Method.IsStatic ? null : Construct(@case.Method.ReflectedType!);
 
-                        TryRunCase(@case, automaticInstance).GetAwaiter().GetResult();
+                        await TryRunCase(@case, automaticInstance);
                         TryInspectCase(@case, inspectCase, out caseInspectionFailure);
                         TryDispose(automaticInstance, out disposalFailure);
                     }
@@ -135,12 +135,12 @@
 
         public void Run(Action<Case>? inspectCase = null)
         {
-            RunCore(EmptyParameters, instance: null, inspectCase);
+            RunCore(EmptyParameters, instance: null, inspectCase).GetAwaiter().GetResult();
         }
 
         public void Run(object?[] parameters, Action<Case>? inspectCase = null)
         {
-            RunCore(parameters, instance: null, inspectCase);
+            RunCore(parameters, instance: null, inspectCase).GetAwaiter().GetResult();
         }
 
         public void RunCases(ParameterSource parameterSource, Action<Case>? inspectCase = null)
@@ -148,7 +148,7 @@
             try
             {
                 foreach (var parameters in GetCases(parameterSource))
-                    RunCore(parameters, instance: null, inspectCase);
+                    RunCore(parameters, instance: null, inspectCase).GetAwaiter().GetResult();
             }
             catch (Exception exception)
             {
@@ -158,12 +158,12 @@
 
         public void Run(object? instance, Action<Case>? inspectCase = null)
         {
-            RunCore(EmptyParameters, instance, inspectCase);
+            RunCore(EmptyParameters, instance, inspectCase).GetAwaiter().GetResult();
         }
 
         public void Run(object?[] parameters, object? instance, Action<Case>? inspectCase = null)
         {
-            RunCore(parameters, instance, inspectCase);
+            RunCore(parameters, instance, inspectCase).GetAwaiter().GetResult();
         }
 
         public void RunCases(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
@@ -171,7 +171,7 @@
             try
             {
                 foreach (var parameters in GetCases(parameterSource))
-                    RunCore(parameters, instance, inspectCase);
+                    RunCore(parameters, instance, inspectCase).GetAwaiter().GetResult();
             }
             catch (Exception exception)
             {

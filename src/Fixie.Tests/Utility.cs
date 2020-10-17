@@ -35,8 +35,8 @@
         public static Task<IEnumerable<string>> Run<TSampleTestClass>(Execution execution)
             => Run(typeof(TSampleTestClass), execution);
 
-        public static IEnumerable<string> Run<TExecution>(Type testClass) where TExecution : Execution, new()
-            => Run(testClass, new TExecution()).GetAwaiter().GetResult();
+        public static Task<IEnumerable<string>> Run<TExecution>(Type testClass) where TExecution : Execution, new()
+            => Run(testClass, new TExecution());
 
         public static async Task<IEnumerable<string>> Run(Type testClass, Execution execution)
         {

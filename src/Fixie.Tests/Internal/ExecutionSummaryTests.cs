@@ -8,15 +8,14 @@
 
     public class ExecutionSummaryTests
     {
-        public void ShouldAccumulateCaseStatusCounts()
+        public async Task ShouldAccumulateCaseStatusCounts()
         {
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();
 
             var listener = new StubExecutionSummaryListener();
 
-            Run(listener, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass))
-                .GetAwaiter().GetResult();
+            await Run(listener, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
             listener.AssemblySummary.Count.ShouldBe(1);
 

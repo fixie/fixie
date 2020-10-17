@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Listeners;
     using static System.Console;
     using static System.Environment;
@@ -22,7 +23,7 @@
         {
             try
             {
-                return (int)RunAssembly(assembly, customArguments);
+                return (int)RunAssembly(assembly, customArguments).GetAwaiter().GetResult();
             }
             catch (Exception exception)
             {
@@ -33,7 +34,7 @@
             }
         }
 
-        static ExitCode RunAssembly(Assembly assembly, string[] customArguments)
+        static async Task<ExitCode> RunAssembly(Assembly assembly, string[] customArguments)
         {
             var listeners = DefaultExecutionListeners().ToArray();
             var runner = new Runner(assembly, customArguments, listeners);
@@ -41,8 +42,8 @@
             var pattern = GetEnvironmentVariable("FIXIE:TESTS");
 
             var summary = pattern == null
-                ? runner.Run().GetAwaiter().GetResult()
-                : runner.Run(new TestPattern(pattern)).GetAwaiter().GetResult();
+                ? await runner.Run()
+                : await runner.Run(new TestPattern(pattern));
 
             if (summary.Total == 0)
                 return ExitCode.FatalError;

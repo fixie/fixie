@@ -43,10 +43,10 @@
             }
         }
 
-        public void ShouldAllowExecutionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
+        public async Task ShouldAllowExecutionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
             var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
-            Run<ParameterizedTestClass>(execution)
+            (await Run<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -56,10 +56,10 @@
                         ".ZeroArgs passed"));
         }
 
-        public void ShouldSkipWhenInputParameterGenerationYieldsZeroSetsOfInputs()
+        public async Task ShouldSkipWhenInputParameterGenerationYieldsZeroSetsOfInputs()
         {
             var execution = new ParameterizedExecution(EmptyParameterSource);
-            Run<ParameterizedTestClass>(execution)
+            (await Run<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".ZeroArgs passed",
@@ -67,7 +67,7 @@
                         ".MultipleCasesFromAttributes skipped: This test did not run."));
         }
 
-        public void ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
+        public async Task ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
         {
             var execution = new ParameterizedExecution(method => new[]
             {
@@ -77,7 +77,7 @@
                 new object[] {0, 1, 2},
                 new object[] {0, 1, 2, 3}
             });
-            Run<ParameterizedTestClass>(execution)
+            (await Run<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Parameter count mismatch.",
@@ -95,10 +95,10 @@
                         ".ZeroArgs passed"));
         }
 
-        public void ShouldFailWithClearExplanationWhenParameterGenerationThrows()
+        public async Task ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
             var execution = new ParameterizedExecution(LazyBuggyParameterSource);
-            Run<ParameterizedTestClass>(execution)
+            (await Run<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -112,7 +112,7 @@
                         ".ZeroArgs passed"));
         }
 
-        public void ShouldIsolateFailureToTheAffectedTestMethodWhenEagerParameterGenerationThrows()
+        public async Task ShouldIsolateFailureToTheAffectedTestMethodWhenEagerParameterGenerationThrows()
         {
             //The EagerBuggyParameterSource attempts to realize a complete set of
             //parameter arrays before returning, but will first throw an exception
@@ -120,7 +120,7 @@
             //this test demonstrates how the failure is isolated to that test method.
 
             var execution = new ParameterizedExecution(EagerBuggyParameterSource);
-            Run<ParameterizedTestClass>(execution)
+            (await Run<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Exception thrown while attempting to eagerly build input parameters for method: IntArg",
@@ -131,10 +131,10 @@
                         ".ZeroArgs passed"));
         }
 
-        public void ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
+        public async Task ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
         {
             var execution = new ParameterizedExecution(LazyBuggyParameterSource);
-            Run<ConstrainedGenericTestClass>(execution)
+            (await Run<ConstrainedGenericTestClass>(execution))
                 .ShouldBe(
                     For<ConstrainedGenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(0) passed",
@@ -145,21 +145,21 @@
                         ".UnconstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric"));
         }
 
-        public void ShouldResolveGenericTypeParameters()
+        public async Task ShouldResolveGenericTypeParameters()
         {
             var execution = new ParameterizedExecution(InputAttributeParameterSource);
-            ShouldResolveGenericTypeParameters(execution);
+            await ShouldResolveGenericTypeParameters(execution);
         }
 
-        public void ShouldSupportExplicitParameterization()
+        public async Task ShouldSupportExplicitParameterization()
         {
             var execution = new ExplicitlyParameterizedExecution();
-            ShouldResolveGenericTypeParameters(execution);
+            await ShouldResolveGenericTypeParameters(execution);
         }
 
-        void ShouldResolveGenericTypeParameters(Execution execution)
+        async Task ShouldResolveGenericTypeParameters(Execution execution)
         {
-            Run<GenericTestClass>(execution)
+            (await Run<GenericTestClass>(execution))
                 .ShouldBe(
                     For<GenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(1) passed",
@@ -190,10 +190,10 @@
                         ".GenericMethodWithNoInputsProvided<T> skipped: This test did not run."));
         }
 
-        public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
+        public async Task ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
         {
             var execution = new ParameterizedExecution(ComplexGenericParameterSource);
-            Run<ComplexGenericTestClass>(execution)
+            (await Run<ComplexGenericTestClass>(execution))
                 .ShouldBe(
                     For<ComplexGenericTestClass>(
                         ".CompoundGenericParameter<System.Int32, System.String>([1, A], \"System.Int32\", \"System.String\") passed",

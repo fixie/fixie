@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Internal;
 
     /// <summary>
@@ -124,12 +125,11 @@
         /// Run the test case against the given instance of the test class,
         /// causing the case state to become either passing or failing.
         /// </summary>
-        internal void Run(object? instance)
+        internal async Task Run(object? instance)
         {
             try
             {
-                var result = Method.Execute(instance, parameters)
-                    .GetAwaiter().GetResult();
+                var result = await Method.Execute(instance, parameters);
                 Pass();
                 Result = result;
             }

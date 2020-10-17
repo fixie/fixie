@@ -101,7 +101,8 @@
 
         static void TryRunCase(Case @case, object? instance)
         {
-            @case.Run(instance);
+            @case.Run(instance)
+                .GetAwaiter().GetResult();
         }
 
         static void TryInspectCase(Case @case, Action<Case>? inspectCase, out Exception? caseInspectionFailure)

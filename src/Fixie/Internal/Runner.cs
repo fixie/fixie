@@ -41,9 +41,9 @@
             return Run(assembly.GetTypes(), ImmutableHashSet<string>.Empty).GetAwaiter().GetResult();
         }
 
-        public ExecutionSummary Run(ImmutableHashSet<string> selectedTests)
+        public Task<ExecutionSummary> Run(ImmutableHashSet<string> selectedTests)
         {
-            return Run(assembly.GetTypes(), selectedTests).GetAwaiter().GetResult();
+            return Run(assembly.GetTypes(), selectedTests);
         }
 
         public ExecutionSummary Run(TestPattern testPattern)
@@ -71,7 +71,7 @@
                 discovery.Dispose();
             }
 
-            return Run(matchingTests);
+            return Run(matchingTests).GetAwaiter().GetResult();
         }
 
         async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)

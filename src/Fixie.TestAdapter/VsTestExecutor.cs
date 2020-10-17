@@ -61,7 +61,8 @@
 
                     RunTests(log, frameworkHandle, assemblyPath, runner =>
                     {
-                        runner.Run(assemblyGroup.Select(x => x.FullyQualifiedName).ToImmutableHashSet());
+                        runner.Run(assemblyGroup.Select(x => x.FullyQualifiedName).ToImmutableHashSet())
+                            .GetAwaiter().GetResult();
                     });
                 }
             }

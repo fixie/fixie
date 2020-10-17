@@ -82,13 +82,13 @@ namespace Fixie.Tests
         }
 
         protected Output Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
-            => Run<TExecution>(typeof(TSampleTestClass));
+            => Run<TExecution>(typeof(TSampleTestClass)).GetAwaiter().GetResult();
 
         protected Output Run<TSampleTestClass>(Execution execution)
             => Run(typeof(TSampleTestClass), execution).GetAwaiter().GetResult();
 
-        protected Output Run<TExecution>(Type testClass) where TExecution : Execution, new()
-            => Run(testClass, new TExecution()).GetAwaiter().GetResult();
+        protected Task<Output> Run<TExecution>(Type testClass) where TExecution : Execution, new()
+            => Run(testClass, new TExecution());
 
         protected async Task<Output> Run(Type testClass, Execution execution)
         {

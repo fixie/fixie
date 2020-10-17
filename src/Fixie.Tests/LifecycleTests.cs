@@ -235,9 +235,9 @@ namespace Fixie.Tests
                 "ClassTearDown");
         }
 
-        public void ShouldSupportStaticTestClassesAndMethods()
+        public async Task ShouldSupportStaticTestClassesAndMethods()
         {
-            var output = Run<InstrumentedExecution>(typeof(StaticTestClass));
+            var output = await Run<InstrumentedExecution>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",

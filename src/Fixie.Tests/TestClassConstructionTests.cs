@@ -287,9 +287,9 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(".ctor", "Dispose");
         }
 
-        public void ShouldBypassConstructionAttemptsWhenTestMethodsAreStatic()
+        public async Task ShouldBypassConstructionAttemptsWhenTestMethodsAreStatic()
         {
-            var output = Run<DefaultExecution>(typeof(StaticTestClass));
+            var output = await Run<DefaultExecution>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",
@@ -300,7 +300,7 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle("Fail", "Pass", "Skip");
 
 
-            output = Run<CreateInstancePerCase>(typeof(StaticTestClass));
+            output = await Run<CreateInstancePerCase>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",
@@ -313,7 +313,7 @@ namespace Fixie.Tests
                 "Pass", "CaseInspection");
 
 
-            output = Run<CreateInstancePerClass>(typeof(StaticTestClass));
+            output = await Run<CreateInstancePerClass>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",

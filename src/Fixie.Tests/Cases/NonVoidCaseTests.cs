@@ -38,11 +38,11 @@ namespace Fixie.Tests.Cases
             console.Output.ShouldBe("");
         }
 
-        public void ShouldProvideCaseReturnValuesToCustomBehaviors()
+        public async Task ShouldProvideCaseReturnValuesToCustomBehaviors()
         {
             using var console = new RedirectedConsole();
 
-            Run<SampleTestClass, TreatBoolReturnValuesAsAssertions>()
+            (await Run<SampleTestClass, TreatBoolReturnValuesAsAssertions>())
                 .ShouldBe(
                     For<SampleTestClass>(
                         ".BoolFalse failed: Boolean test case returned false!",
@@ -63,11 +63,11 @@ namespace Fixie.Tests.Cases
                 "Throw null");
         }
 
-        public void ShouldUnpackResultValuesFromStronglyTypedTaskObjectsForAsyncCases()
+        public async Task ShouldUnpackResultValuesFromStronglyTypedTaskObjectsForAsyncCases()
         {
             using var console = new RedirectedConsole();
 
-            Run<SampleAsyncTestClass, TreatBoolReturnValuesAsAssertions>()
+            (await Run<SampleAsyncTestClass, TreatBoolReturnValuesAsAssertions>())
                 .ShouldBe(
                     For<SampleAsyncTestClass>(
                         ".BoolFalse failed: Boolean test case returned false!",

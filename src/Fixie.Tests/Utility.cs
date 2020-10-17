@@ -27,10 +27,10 @@
             => path;
 
         public static IEnumerable<string> Run<TSampleTestClass>()
-            => Run<TSampleTestClass, DefaultExecution>();
+            => Run<TSampleTestClass, DefaultExecution>().GetAwaiter().GetResult();
 
-        public static IEnumerable<string> Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
-            => Run<TSampleTestClass>(new TExecution()).GetAwaiter().GetResult();
+        public static Task<IEnumerable<string>> Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
+            => Run<TSampleTestClass>(new TExecution());
 
         public static Task<IEnumerable<string>> Run<TSampleTestClass>(Execution execution)
             => Run(typeof(TSampleTestClass), execution);

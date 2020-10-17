@@ -3,18 +3,19 @@
     using System;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal.Listeners;
 
     public class TeamCityListenerTests : MessagingTests
     {
-        public void ShouldReportResultsToTheConsoleInTeamCityFormat()
+        public async Task ShouldReportResultsToTheConsoleInTeamCityFormat()
         {
             var eol = Environment.NewLine == "\r\n" ? "|r|n" : "|n";
 
             var listener = new TeamCityListener();
 
-            var output = Run(listener);
+            var output = await Run(listener);
 
             output.Console
                 .CleanStackTraceLineNumbers()

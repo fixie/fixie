@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -11,14 +12,14 @@
 
     public class ExecutionListenerTests : MessagingTests
     {
-        public void ShouldMapMessagesToVsTestExecutionRecorder()
+        public async Task ShouldMapMessagesToVsTestExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
             var listener = new ExecutionListener(recorder, assemblyPath);
 
-            var output = Run(listener);
+            var output = await Run(listener);
 
             output.Console
                 .ShouldBe(

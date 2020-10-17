@@ -2,18 +2,19 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
     using Fixie.Internal.Listeners;
 
     public class LifecycleMessageTests : MessagingTests
     {
-        public void ShouldDescribeTestLifecycleMessagesEmittedDuringExecution()
+        public async Task ShouldDescribeTestLifecycleMessagesEmittedDuringExecution()
         {
             var assembly = typeof(LifecycleMessageTests).Assembly;
             var listener = new StubCaseCompletedListener();
 
-            Run(listener);
+            await Run(listener);
 
             listener.Messages.Count.ShouldBe(14);
             

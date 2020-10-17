@@ -25,7 +25,7 @@
             public TContent Content { get; }
         }
 
-        public void ShouldReportResultsToAzureDevOpsApi()
+        public async Task ShouldReportResultsToAzureDevOpsApi()
         {
             var project = Guid.NewGuid().ToString();
             var accessToken = Guid.NewGuid().ToString();
@@ -64,7 +64,7 @@
                     return Task.FromResult("");
                 }, batchSize);
 
-            var output = Run(listener);
+            var output = await Run(listener);
 
             output.Console
                 .ShouldBe(

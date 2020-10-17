@@ -9,11 +9,11 @@
 
     public class ConsoleListenerTests : MessagingTests
     {
-        public void ShouldReportResults()
+        public async Task ShouldReportResults()
         {
             var listener = new ConsoleListener();
 
-            var output = Run(listener);
+            var output = await Run(listener);
 
             output.Console
                 .CleanStackTraceLineNumbers()
@@ -61,11 +61,11 @@
                     "2 passed, 3 failed, 2 skipped, took 1.23 seconds");
         }
 
-        public void CanOptionallyIncludePassingResults()
+        public async Task CanOptionallyIncludePassingResults()
         {
             var listener = new ConsoleListener(outputCasePassed: true);
 
-            var output = Run(listener);
+            var output = await Run(listener);
 
             output.Console
                 .CleanStackTraceLineNumbers()

@@ -47,9 +47,9 @@
             consoleLines = console.Lines();
         }
 
-        protected Output Run(Listener listener)
+        protected Task<Output> Run(Listener listener)
         {
-            return Run(listener, new SelfTestDiscovery()).GetAwaiter().GetResult();
+            return Run(listener, new SelfTestDiscovery());
         }
 
         protected async Task<Output> Run(Listener listener, Discovery discovery)

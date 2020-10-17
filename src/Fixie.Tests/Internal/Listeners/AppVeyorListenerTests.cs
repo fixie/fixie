@@ -7,7 +7,7 @@
 
     public class AppVeyorListenerTests : MessagingTests
     {
-        public void ShouldReportResultsToAppVeyorBuildWorkerApi()
+        public async Task ShouldReportResultsToAppVeyorBuildWorkerApi()
         {
             var results = new List<AppVeyorListener.TestResult>();
 
@@ -18,7 +18,7 @@
                 return Task.CompletedTask;
             });
 
-            var output = Run(listener);
+            var output = await Run(listener);
 
             output.Console
                 .ShouldBe(

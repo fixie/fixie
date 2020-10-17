@@ -4,18 +4,19 @@
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
     using System.Xml.Linq;
     using Assertions;
     using Fixie.Internal.Listeners;
 
     public class ReportListenerTests : MessagingTests
     {
-        public void ShouldProduceValidXmlDocument()
+        public async Task ShouldProduceValidXmlDocument()
         {
             XDocument? actual = null;
             var listener = new ReportListener(report => actual = report);
 
-            var output = Run(listener);
+            var output = await Run(listener);
 
             output.Console
                 .ShouldBe(

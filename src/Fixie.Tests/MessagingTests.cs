@@ -42,7 +42,7 @@
 
             using var console = new RedirectedConsole();
 
-            Utility.Discover(listener, discovery, candidateTypes);
+            Utility.DiscoverAsync(listener, discovery, candidateTypes).GetAwaiter().GetResult();
 
             consoleLines = console.Lines();
         }

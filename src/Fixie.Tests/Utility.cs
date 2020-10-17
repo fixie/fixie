@@ -46,14 +46,14 @@
             return listener.Entries;
         }
 
-        public static void Discover(Listener listener, Discovery discovery, params Type[] candidateTypes)
+        public static async Task DiscoverAsync(Listener listener, Discovery discovery, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
             var runner = new Runner(candidateTypes[0].Assembly, listener);
 
-            runner.DiscoverAsync(candidateTypes, discovery).GetAwaiter().GetResult();
+            await runner.DiscoverAsync(candidateTypes, discovery);
         }
 
         public static Task RunAsync(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)

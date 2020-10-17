@@ -111,7 +111,7 @@
 
             var testAssembly = new TestAssembly(assembly, selectedTests, recorder, classes, methodDiscoverer, execution);
             recorder.Start(testAssembly);
-            testAssembly.Run();
+            testAssembly.Run().GetAwaiter().GetResult();
             return recorder.Complete(testAssembly);
         }
     }

@@ -5,6 +5,7 @@
     using System.Collections.Immutable;
     using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Internal;
 
     public class TestAssembly
@@ -35,7 +36,7 @@
         /// </summary>
         public ImmutableHashSet<string> SelectedTests { get; }
 
-        internal void Run()
+        internal async Task Run()
         {
             foreach (var @class in classes)
             {
@@ -56,7 +57,7 @@
 
                     try
                     {
-                        execution.Execute(testClass).GetAwaiter().GetResult();
+                        await execution.Execute(testClass);
                     }
                     catch (Exception exception)
                     {

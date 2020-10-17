@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
@@ -36,15 +35,15 @@
             public string[] Console { get; }
         }
 
-        protected void Discover(Listener listener, out IEnumerable<string> consoleLines)
+        protected async Task DiscoverAsync(Listener listener)
         {
             var discovery = new SelfTestDiscovery();
 
             using var console = new RedirectedConsole();
 
-            Utility.DiscoverAsync(listener, discovery, candidateTypes).GetAwaiter().GetResult();
+            await Utility.DiscoverAsync(listener, discovery, candidateTypes);
 
-            consoleLines = console.Lines();
+            console.Lines().ShouldBeEmpty();
         }
 
         protected Task<Output> RunAsync(Listener listener)

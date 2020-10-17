@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -11,7 +12,7 @@
 
     public class DiscoveryListenerTests : MessagingTests
     {
-        public void ShouldMapDiscoveredTestsToVsTestDiscoverySink()
+        public async Task ShouldMapDiscoveredTestsToVsTestDiscoverySink()
         {
             var assemblyPath = typeof(MessagingTests).Assembly.Location;
 
@@ -20,9 +21,7 @@
 
             var listener = new DiscoveryListener(log, discoverySink, assemblyPath);
 
-            Discover(listener, out var console);
-
-            console.ShouldBeEmpty();
+            await DiscoverAsync(listener);
 
             log.Messages.ShouldBeEmpty();
 
@@ -35,7 +34,7 @@
                 x => x.ShouldBeDiscoveryTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath));
         }
 
-        public void ShouldDefaultSourceLocationPropertiesWhenSourceInspectionThrows()
+        public async Task ShouldDefaultSourceLocationPropertiesWhenSourceInspectionThrows()
         {
             const string invalidAssemblyPath = "assembly.path.dll";
 
@@ -44,9 +43,7 @@
 
             var listener = new DiscoveryListener(log, discoverySink, invalidAssemblyPath);
 
-            Discover(listener, out var console);
-
-            console.ShouldBeEmpty();
+            await DiscoverAsync(listener);
 
             var expectedError =
                 $"Error: {typeof(FileNotFoundException).FullName}: " +

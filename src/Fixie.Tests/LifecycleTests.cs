@@ -290,11 +290,11 @@ namespace Fixie.Tests
                 "ClassTearDown");
         }
 
-        public void ShouldFailTestWhenCustomParameterGenerationThrows()
+        public async Task ShouldFailTestWhenCustomParameterGenerationThrows()
         {
             var execution = new InstrumentedExecution(method =>
                 throw new Exception("Failed to yield input parameters."));
-            var output = Run<SampleTestClass>(execution);
+            var output = await Run<SampleTestClass>(execution);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",

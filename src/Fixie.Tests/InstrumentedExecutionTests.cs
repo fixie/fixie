@@ -81,8 +81,8 @@ namespace Fixie.Tests
             }
         }
 
-        protected Output Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
-            => Run<TExecution>(typeof(TSampleTestClass)).GetAwaiter().GetResult();
+        protected Task<Output> Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
+            => Run<TExecution>(typeof(TSampleTestClass));
 
         protected Task<Output> Run<TSampleTestClass>(Execution execution)
             => Run(typeof(TSampleTestClass), execution);

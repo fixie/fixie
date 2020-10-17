@@ -46,7 +46,7 @@
             return Run(assembly.GetTypes(), selectedTests);
         }
 
-        public ExecutionSummary Run(TestPattern testPattern)
+        public Task<ExecutionSummary> Run(TestPattern testPattern)
         {
             var matchingTests = ImmutableHashSet<string>.Empty;
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
@@ -71,7 +71,7 @@
                 discovery.Dispose();
             }
 
-            return Run(matchingTests).GetAwaiter().GetResult();
+            return Run(matchingTests);
         }
 
         async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)

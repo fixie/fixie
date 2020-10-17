@@ -42,7 +42,7 @@
 
             var summary = pattern == null
                 ? runner.Run().GetAwaiter().GetResult()
-                : runner.Run(new TestPattern(pattern));
+                : runner.Run(new TestPattern(pattern)).GetAwaiter().GetResult();
 
             if (summary.Total == 0)
                 return ExitCode.FatalError;

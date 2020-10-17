@@ -121,7 +121,7 @@
             public void Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
-                    test.Run();
+                    test.Run().GetAwaiter().GetResult();
             }
         }
 
@@ -131,7 +131,7 @@
             {
                 var instance = testClass.Construct();
                 foreach (var test in testClass.Tests)
-                    test.Run(instance);
+                    test.Run(instance).GetAwaiter().GetResult();
             }
         }
 

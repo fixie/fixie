@@ -130,7 +130,7 @@ namespace Fixie.Tests.Cases
 
                         if (@case.Exception == null && result is bool success && !success)
                             @case.Fail("Boolean test case returned false!");
-                    });
+                    }).GetAwaiter().GetResult();
                 }
             }
         }

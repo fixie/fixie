@@ -19,7 +19,8 @@
             public void Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
-                    test.RunCases(parameterSource);
+                    test.RunCases(parameterSource)
+                        .GetAwaiter().GetResult();
             }
         }
 
@@ -32,11 +33,11 @@
                     if (test.HasParameters)
                     {
                         foreach (var parameters in InputAttributeParameterSource(test.Method))
-                            test.Run(parameters);
+                            test.Run(parameters).GetAwaiter().GetResult();
                     }
                     else
                     {
-                        test.Run();
+                        test.Run().GetAwaiter().GetResult();
                     }
                 }
             }

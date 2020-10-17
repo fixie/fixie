@@ -66,7 +66,8 @@
                         continue;
                     }
 
-                    test.RunCases(UsingInputAttributes);
+                    test.RunCases(UsingInputAttributes)
+                        .GetAwaiter().GetResult();
                 }
             }
         }

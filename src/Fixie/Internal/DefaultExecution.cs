@@ -5,7 +5,7 @@
         public void Execute(TestClass testClass)
         {
             foreach (var test in testClass.Tests)
-                test.Run();
+                test.Run().GetAwaiter().GetResult();
         }
     }
 }

@@ -116,7 +116,7 @@ namespace Fixie.Tests
                 try
                 {
                     CaseSetUp();
-                    test.Run(parameters, @case => CaseInspection());
+                    test.Run(parameters, @case => CaseInspection()).GetAwaiter().GetResult();
                     CaseTearDown();
                 }
                 catch (Exception exception)
@@ -174,7 +174,7 @@ namespace Fixie.Tests
                             @case.Skip(@case.Exception?.Message + " Retrying...");
                         else
                             remainingAttempts = 0;
-                    });
+                    }).GetAwaiter().GetResult();
                 }
             }
 

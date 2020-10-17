@@ -109,7 +109,8 @@ namespace Fixie.Tests
             {
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        test.RunCases(Utility.UsingInputAttributes, @case => CaseInspection());
+                        test.RunCases(Utility.UsingInputAttributes, @case => CaseInspection())
+                            .GetAwaiter().GetResult();
             }
         }
 
@@ -122,7 +123,8 @@ namespace Fixie.Tests
 
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        test.RunCases(Utility.UsingInputAttributes, instance, @case => CaseInspection());
+                        test.RunCases(Utility.UsingInputAttributes, instance, @case => CaseInspection())
+                            .GetAwaiter().GetResult();
 
                 instance.Dispose();
             }

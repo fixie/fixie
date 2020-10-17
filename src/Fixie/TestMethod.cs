@@ -133,22 +133,22 @@
             }
         }
 
-        public void Run(Action<Case>? inspectCase = null)
+        public Task Run(Action<Case>? inspectCase = null)
         {
-            RunCore(EmptyParameters, instance: null, inspectCase).GetAwaiter().GetResult();
+            return RunCore(EmptyParameters, instance: null, inspectCase);
         }
 
-        public void Run(object?[] parameters, Action<Case>? inspectCase = null)
+        public Task Run(object?[] parameters, Action<Case>? inspectCase = null)
         {
-            RunCore(parameters, instance: null, inspectCase).GetAwaiter().GetResult();
+            return RunCore(parameters, instance: null, inspectCase);
         }
 
-        public void RunCases(ParameterSource parameterSource, Action<Case>? inspectCase = null)
+        public async Task RunCases(ParameterSource parameterSource, Action<Case>? inspectCase = null)
         {
             try
             {
                 foreach (var parameters in GetCases(parameterSource))
-                    RunCore(parameters, instance: null, inspectCase).GetAwaiter().GetResult();
+                    await RunCore(parameters, instance: null, inspectCase);
             }
             catch (Exception exception)
             {
@@ -156,22 +156,22 @@
             }
         }
 
-        public void Run(object? instance, Action<Case>? inspectCase = null)
+        public Task Run(object? instance, Action<Case>? inspectCase = null)
         {
-            RunCore(EmptyParameters, instance, inspectCase).GetAwaiter().GetResult();
+            return RunCore(EmptyParameters, instance, inspectCase);
         }
 
-        public void Run(object?[] parameters, object? instance, Action<Case>? inspectCase = null)
+        public Task Run(object?[] parameters, object? instance, Action<Case>? inspectCase = null)
         {
-            RunCore(parameters, instance, inspectCase).GetAwaiter().GetResult();
+            return RunCore(parameters, instance, inspectCase);
         }
 
-        public void RunCases(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
+        public async Task RunCases(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
         {
             try
             {
                 foreach (var parameters in GetCases(parameterSource))
-                    RunCore(parameters, instance, inspectCase).GetAwaiter().GetResult();
+                    await RunCore(parameters, instance, inspectCase);
             }
             catch (Exception exception)
             {

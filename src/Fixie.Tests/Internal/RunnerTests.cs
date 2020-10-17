@@ -60,7 +60,7 @@ namespace Fixie.Tests.Internal
             {
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
-                        test.Run();
+                        test.Run().GetAwaiter().GetResult();
             }
         }
 

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
     using static Utility;
@@ -56,7 +57,7 @@
 
         class MessagingTestsExecution : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                 {
@@ -66,8 +67,7 @@
                         continue;
                     }
 
-                    test.RunCases(UsingInputAttributes)
-                        .GetAwaiter().GetResult();
+                    await test.RunCases(UsingInputAttributes);
                 }
             }
         }

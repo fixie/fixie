@@ -118,11 +118,11 @@ namespace Fixie.Tests.Cases
 
         class TreatBoolReturnValuesAsAssertions : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                 {
-                    test.Run(@case =>
+                    await test.Run(@case =>
                     {
                         var result = @case.Result;
 
@@ -130,7 +130,7 @@ namespace Fixie.Tests.Cases
 
                         if (@case.Exception == null && result is bool success && !success)
                             @case.Fail("Boolean test case returned false!");
-                    }).GetAwaiter().GetResult();
+                    });
                 }
             }
         }

@@ -1,6 +1,7 @@
 namespace Fixie.Tests
 {
     using System;
+    using System.Threading.Tasks;
     using Fixie.Internal;
 
     public class TestClassConstructionTests : InstrumentedExecutionTests
@@ -105,26 +106,24 @@ namespace Fixie.Tests
 
         class CreateInstancePerCase : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        test.RunCases(Utility.UsingInputAttributes, @case => CaseInspection())
-                            .GetAwaiter().GetResult();
+                        await test.RunCases(Utility.UsingInputAttributes, @case => CaseInspection());
             }
         }
 
         class CreateInstancePerClass : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task Execute(TestClass testClass)
             {
                 var type = testClass.Type;
                 var instance = type.IsStatic() ? null : testClass.Construct();
 
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        test.RunCases(Utility.UsingInputAttributes, instance, @case => CaseInspection())
-                            .GetAwaiter().GetResult();
+                        await test.RunCases(Utility.UsingInputAttributes, instance, @case => CaseInspection());
 
                 instance.Dispose();
             }

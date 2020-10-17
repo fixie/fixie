@@ -1,11 +1,13 @@
 ﻿namespace Fixie.Internal
 {
+    using System.Threading.Tasks;
+
     class DefaultExecution : Execution
     {
-        public void Execute(TestClass testClass)
+        public async Task Execute(TestClass testClass)
         {
             foreach (var test in testClass.Tests)
-                test.Run().GetAwaiter().GetResult();
+                await test.Run();
         }
     }
 }

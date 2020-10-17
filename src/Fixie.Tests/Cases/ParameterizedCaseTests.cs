@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Assertions;
     using static Utility;
 
@@ -16,28 +17,27 @@
             public ParameterizedExecution(ParameterSource parameterSource)
                 => this.parameterSource = parameterSource;
 
-            public void Execute(TestClass testClass)
+            public async Task Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
-                    test.RunCases(parameterSource)
-                        .GetAwaiter().GetResult();
+                    await test.RunCases(parameterSource);
             }
         }
 
         class ExplicitlyParameterizedExecution : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                 {
                     if (test.HasParameters)
                     {
                         foreach (var parameters in InputAttributeParameterSource(test.Method))
-                            test.Run(parameters).GetAwaiter().GetResult();
+                            await test.Run(parameters);
                     }
                     else
                     {
-                        test.Run().GetAwaiter().GetResult();
+                        await test.Run();
                     }
                 }
             }

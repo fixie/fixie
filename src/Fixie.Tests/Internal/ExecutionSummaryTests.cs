@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests.Internal
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
     using static Utility;
@@ -53,11 +54,11 @@
 
         class CreateInstancePerCase : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
-                        test.Run().GetAwaiter().GetResult();
+                        await test.Run();
             }
         }
     }

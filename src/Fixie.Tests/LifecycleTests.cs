@@ -2,6 +2,7 @@ namespace Fixie.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Fixie.Internal;
 
     public class LifecycleTests : InstrumentedExecutionTests
@@ -79,18 +80,18 @@ namespace Fixie.Tests
             public InstrumentedExecution(ParameterSource parameterSource)
                 => this.parameterSource = parameterSource;
 
-            public void Execute(TestClass testClass)
+            public async Task Execute(TestClass testClass)
             {
                 ClassSetUp();
 
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
-                        TestLifecycle(test);
+                        await TestLifecycle(test);
 
                 ClassTearDown();
             }
 
-            void TestLifecycle(TestMethod test)
+            async Task TestLifecycle(TestMethod test)
             {
                 try
                 {
@@ -101,7 +102,7 @@ namespace Fixie.Tests
                         : InvokeOnceWithZeroParameters;
 
                     foreach (var parameters in cases)
-                        CaseLifecycle(test, parameters);
+                        await CaseLifecycle(test, parameters);
 
                     TestTearDown();
                 }
@@ -111,12 +112,12 @@ namespace Fixie.Tests
                 }
             }
 
-            static void CaseLifecycle(TestMethod test, object?[] parameters)
+            static async Task CaseLifecycle(TestMethod test, object?[] parameters)
             {
                 try
                 {
                     CaseSetUp();
-                    test.Run(parameters, @case => CaseInspection()).GetAwaiter().GetResult();
+                    await test.Run(parameters, @case => CaseInspection());
                     CaseTearDown();
                 }
                 catch (Exception exception)
@@ -139,11 +140,12 @@ namespace Fixie.Tests
 
         class ShortCircuitTestExecution : Execution
         {
-            public void Execute(TestClass testClass)
+            public Task Execute(TestClass testClass)
             {
                 //Class lifecycle chooses not to invoke test.Run(...).
                 //Since the tests never run, they are all considered
                 //'skipped'.
+                return Task.CompletedTask;
             }
         }
 
@@ -151,15 +153,15 @@ namespace Fixie.Tests
         {
             const int MaxAttempts = 3;
 
-            public void Execute(TestClass testClass)
+            public async Task Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
                         foreach (var parameters in Cases(test))
-                            RunWithRetries(test, parameters);
+                            await RunWithRetries(test, parameters);
             }
 
-            static void RunWithRetries(TestMethod test, object?[] parameters)
+            static async Task RunWithRetries(TestMethod test, object?[] parameters)
             {
                 var remainingAttempts = MaxAttempts;
 
@@ -168,13 +170,13 @@ namespace Fixie.Tests
                     remainingAttempts--;
                     var failureCanBeRetried = remainingAttempts > 0;
 
-                    test.Run(parameters, @case =>
+                    await test.Run(parameters, @case =>
                     {
                         if (@case.State == CaseState.Failed && failureCanBeRetried)
                             @case.Skip(@case.Exception?.Message + " Retrying...");
                         else
                             remainingAttempts = 0;
-                    }).GetAwaiter().GetResult();
+                    });
                 }
             }
 

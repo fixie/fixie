@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
 
@@ -56,9 +57,8 @@
 
         class SampleExecution : Execution
         {
-            public void Execute(TestClass testClass)
-            {
-            }
+            public Task Execute(TestClass testClass)
+                => Task.CompletedTask;
         }
         
         public void ShouldConsiderOnlyConcreteClasses()

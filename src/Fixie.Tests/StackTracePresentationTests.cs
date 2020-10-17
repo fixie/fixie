@@ -118,20 +118,20 @@
 
         class ImplicitConstruction : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task Execute(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
-                    test.Run().GetAwaiter().GetResult();
+                    await test.Run();
             }
         }
 
         class ExplicitConstruction : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task Execute(TestClass testClass)
             {
                 var instance = testClass.Construct();
                 foreach (var test in testClass.Tests)
-                    test.Run(instance).GetAwaiter().GetResult();
+                    await test.Run(instance);
             }
         }
 

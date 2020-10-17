@@ -56,7 +56,7 @@
 
                     try
                     {
-                        execution.Execute(testClass);
+                        execution.Execute(testClass).GetAwaiter().GetResult();
                     }
                     catch (Exception exception)
                     {

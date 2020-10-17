@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Internal;
 
     public class TestMethod
@@ -40,7 +41,7 @@
             {
                 if (instance != null)
                 {
-                    TryRunCase(@case, instance);
+                    TryRunCase(@case, instance).GetAwaiter().GetResult();
                     TryInspectCase(@case, inspectCase, out caseInspectionFailure);
                 }
                 else
@@ -49,7 +50,7 @@
                     {
                         var automaticInstance = @case.Method.IsStatic ? null : Construct(@case.Method.ReflectedType!);
 
-                        TryRunCase(@case, automaticInstance);
+                        TryRunCase(@case, automaticInstance).GetAwaiter().GetResult();
                         TryInspectCase(@case, inspectCase, out caseInspectionFailure);
                         TryDispose(automaticInstance, out disposalFailure);
                     }
@@ -99,10 +100,9 @@
             RecordedResult = true;
         }
 
-        static void TryRunCase(Case @case, object? instance)
+        static Task TryRunCase(Case @case, object? instance)
         {
-            @case.Run(instance)
-                .GetAwaiter().GetResult();
+            return @case.Run(instance);
         }
 
         static void TryInspectCase(Case @case, Action<Case>? inspectCase, out Exception? caseInspectionFailure)

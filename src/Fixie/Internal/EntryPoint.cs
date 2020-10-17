@@ -41,7 +41,7 @@
             var pattern = GetEnvironmentVariable("FIXIE:TESTS");
 
             var summary = pattern == null
-                ? runner.Run()
+                ? runner.Run().GetAwaiter().GetResult()
                 : runner.Run(new TestPattern(pattern));
 
             if (summary.Total == 0)

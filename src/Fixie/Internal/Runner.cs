@@ -36,9 +36,9 @@
             }
         }
 
-        public ExecutionSummary Run()
+        public Task<ExecutionSummary> Run()
         {
-            return Run(assembly.GetTypes(), ImmutableHashSet<string>.Empty).GetAwaiter().GetResult();
+            return Run(assembly.GetTypes(), ImmutableHashSet<string>.Empty);
         }
 
         public Task<ExecutionSummary> Run(ImmutableHashSet<string> selectedTests)

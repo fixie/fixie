@@ -64,7 +64,7 @@
                     return Task.FromResult("");
                 }, batchSize);
 
-            var output = await Run(listener);
+            var output = await RunAsync(listener);
 
             output.Console
                 .ShouldBe(

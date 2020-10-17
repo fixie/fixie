@@ -12,7 +12,7 @@
     {
         public async Task ShouldProvideCleanStackTraceForImplicitTestClassConstructionFailures()
         {
-            (await Run<ConstructionFailureTestClass, ImplicitConstruction>())
+            (await RunAsync<ConstructionFailureTestClass, ImplicitConstruction>())
                 .ShouldBe(
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                     "",
@@ -26,7 +26,7 @@
         
         public async Task ShouldProvideCleanStackTraceForExplicitTestClassConstructionFailures()
         {
-            (await Run<ConstructionFailureTestClass, ExplicitConstruction>())
+            (await RunAsync<ConstructionFailureTestClass, ExplicitConstruction>())
                 .ShouldBe(
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                     "",
@@ -43,7 +43,7 @@
 
         public async Task ShouldProvideCleanStackTraceTestMethodFailures()
         {
-            (await Run<FailureTestClass, ImplicitConstruction>())
+            (await RunAsync<FailureTestClass, ImplicitConstruction>())
                 .ShouldBe(
                     "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
                     "",
@@ -64,7 +64,7 @@
 
         public async Task ShouldProvideLiterateStackTraceIncludingAllNestedExceptions()
         {
-            (await Run<NestedFailureTestClass, ImplicitConstruction>())
+            (await RunAsync<NestedFailureTestClass, ImplicitConstruction>())
                 .ShouldBe(
                     "Test '" + FullName<NestedFailureTestClass>() + ".Asynchronous' failed:",
                     "",
@@ -101,7 +101,7 @@
                     "2 failed, took 1.23 seconds");
         }
 
-        static async Task<IEnumerable<string>> Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
+        static async Task<IEnumerable<string>> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
         {
             var listener = new ConsoleListener();
             var discovery = new SelfTestDiscovery();
@@ -109,7 +109,7 @@
             
             using var console = new RedirectedConsole();
 
-            await Utility.Run(listener, discovery, execution, typeof(TSampleTestClass));
+            await Utility.RunAsync(listener, discovery, execution, typeof(TSampleTestClass));
 
             return console.Lines()
                 .CleanStackTraceLineNumbers()
@@ -118,20 +118,20 @@
 
         class ImplicitConstruction : Execution
         {
-            public async Task Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
-                    await test.Run();
+                    await test.RunAsync();
             }
         }
 
         class ExplicitConstruction : Execution
         {
-            public async Task Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 var instance = testClass.Construct();
                 foreach (var test in testClass.Tests)
-                    await test.Run(instance);
+                    await test.RunAsync(instance);
             }
         }
 

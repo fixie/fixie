@@ -8,21 +8,21 @@
     {
         public async Task ShouldPassUponSuccessfulExecution()
         {
-            (await Run<PassTestClass>())
+            (await RunAsync<PassTestClass>())
                 .ShouldBe(
                     For<PassTestClass>(".Pass passed"));
         }
 
         public async Task ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
         {
-            (await Run<FailTestClass>())
+            (await RunAsync<FailTestClass>())
                 .ShouldBe(
                     For<FailTestClass>(".Fail failed: 'Fail' failed!"));
         }
 
         public async Task ShouldPassOrFailCasesIndividually()
         {
-            (await Run<PassFailTestClass>())
+            (await RunAsync<PassFailTestClass>())
                 .ShouldBe(
                     For<PassFailTestClass>(
                         ".FailA failed: 'FailA' failed!",
@@ -34,7 +34,7 @@
 
         public async Task ShouldFailWhenTestClassConstructorCannotBeInvoked()
         {
-            (await Run<CannotInvokeConstructorTestClass>())
+            (await RunAsync<CannotInvokeConstructorTestClass>())
                 .ShouldBe(
                     For<CannotInvokeConstructorTestClass>(
                         ".UnreachableCase failed: No parameterless constructor defined " +

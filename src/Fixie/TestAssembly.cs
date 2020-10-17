@@ -36,7 +36,7 @@
         /// </summary>
         public ImmutableHashSet<string> SelectedTests { get; }
 
-        internal async Task Run()
+        internal async Task RunAsync()
         {
             foreach (var @class in classes)
             {
@@ -57,7 +57,7 @@
 
                     try
                     {
-                        await execution.Execute(testClass);
+                        await execution.ExecuteAsync(testClass);
                     }
                     catch (Exception exception)
                     {

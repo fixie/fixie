@@ -13,7 +13,7 @@
         {
             var listener = new ConsoleListener();
 
-            var output = await Run(listener);
+            var output = await RunAsync(listener);
 
             output.Console
                 .CleanStackTraceLineNumbers()
@@ -65,7 +65,7 @@
         {
             var listener = new ConsoleListener(outputCasePassed: true);
 
-            var output = await Run(listener);
+            var output = await RunAsync(listener);
 
             output.Console
                 .CleanStackTraceLineNumbers()
@@ -130,7 +130,7 @@
             var listener = new ConsoleListener();
             var discovery = new ZeroPassed();
 
-            var output = await Run(listener, discovery);
+            var output = await RunAsync(listener, discovery);
 
             output.Console
                 .CleanDuration()
@@ -149,7 +149,7 @@
             var listener = new ConsoleListener();
             var discovery = new ZeroFailed();
 
-            var output = await Run(listener, discovery);
+            var output = await RunAsync(listener, discovery);
 
             output.Console
                 .CleanDuration()
@@ -168,7 +168,7 @@
             var listener = new ConsoleListener();
             var discovery = new ZeroSkipped();
 
-            var output = await Run(listener, discovery);
+            var output = await RunAsync(listener, discovery);
 
             output.Console
                 .CleanDuration()
@@ -187,7 +187,7 @@
             var listener = new ConsoleListener();
             var discovery = new NoTestsFound();
 
-            var output = await Run(listener, discovery);
+            var output = await RunAsync(listener, discovery);
 
             output.Console
                 .Last()

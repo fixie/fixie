@@ -13,7 +13,7 @@ namespace Fixie.Tests.Cases
         {
             using var console = new RedirectedConsole();
 
-            (await Run<SampleTestClass>())
+            (await RunAsync<SampleTestClass>())
                 .ShouldBe(
                     For<SampleTestClass>(
                         ".BoolFalse passed",
@@ -24,7 +24,7 @@ namespace Fixie.Tests.Cases
                         ".StringNull passed",
                         ".Throw failed: 'Throw' failed!"));
 
-            (await Run<SampleAsyncTestClass>())
+            (await RunAsync<SampleAsyncTestClass>())
                 .ShouldBe(
                     For<SampleAsyncTestClass>(
                         ".BoolFalse passed",
@@ -42,7 +42,7 @@ namespace Fixie.Tests.Cases
         {
             using var console = new RedirectedConsole();
 
-            (await Run<SampleTestClass, TreatBoolReturnValuesAsAssertions>())
+            (await RunAsync<SampleTestClass, TreatBoolReturnValuesAsAssertions>())
                 .ShouldBe(
                     For<SampleTestClass>(
                         ".BoolFalse failed: Boolean test case returned false!",
@@ -67,7 +67,7 @@ namespace Fixie.Tests.Cases
         {
             using var console = new RedirectedConsole();
 
-            (await Run<SampleAsyncTestClass, TreatBoolReturnValuesAsAssertions>())
+            (await RunAsync<SampleAsyncTestClass, TreatBoolReturnValuesAsAssertions>())
                 .ShouldBe(
                     For<SampleAsyncTestClass>(
                         ".BoolFalse failed: Boolean test case returned false!",
@@ -118,11 +118,11 @@ namespace Fixie.Tests.Cases
 
         class TreatBoolReturnValuesAsAssertions : Execution
         {
-            public async Task Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                 {
-                    await test.Run(@case =>
+                    await test.RunAsync(@case =>
                     {
                         var result = @case.Result;
 

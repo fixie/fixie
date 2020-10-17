@@ -93,7 +93,7 @@
             public void Handle(Event message)
                 => Log<CombinationEventHandler, Event>(message.Id);
 
-            public Task Handle(AnotherEvent message)
+            public Task HandleAsync(AnotherEvent message)
             {
                 Log<CombinationEventHandler, AnotherEvent>(message.Id);
                 return Task.CompletedTask;

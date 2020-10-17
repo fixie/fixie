@@ -17,27 +17,27 @@
             public ParameterizedExecution(ParameterSource parameterSource)
                 => this.parameterSource = parameterSource;
 
-            public async Task Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
-                    await test.RunCases(parameterSource);
+                    await test.RunCasesAsync(parameterSource);
             }
         }
 
         class ExplicitlyParameterizedExecution : Execution
         {
-            public async Task Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                 {
                     if (test.HasParameters)
                     {
                         foreach (var parameters in InputAttributeParameterSource(test.Method))
-                            await test.Run(parameters);
+                            await test.RunAsync(parameters);
                     }
                     else
                     {
-                        await test.Run();
+                        await test.RunAsync();
                     }
                 }
             }
@@ -46,7 +46,7 @@
         public async Task ShouldAllowExecutionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
             var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
-            (await Run<ParameterizedTestClass>(execution))
+            (await RunAsync<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -59,7 +59,7 @@
         public async Task ShouldSkipWhenInputParameterGenerationYieldsZeroSetsOfInputs()
         {
             var execution = new ParameterizedExecution(EmptyParameterSource);
-            (await Run<ParameterizedTestClass>(execution))
+            (await RunAsync<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".ZeroArgs passed",
@@ -77,7 +77,7 @@
                 new object[] {0, 1, 2},
                 new object[] {0, 1, 2, 3}
             });
-            (await Run<ParameterizedTestClass>(execution))
+            (await RunAsync<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Parameter count mismatch.",
@@ -98,7 +98,7 @@
         public async Task ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
             var execution = new ParameterizedExecution(LazyBuggyParameterSource);
-            (await Run<ParameterizedTestClass>(execution))
+            (await RunAsync<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -120,7 +120,7 @@
             //this test demonstrates how the failure is isolated to that test method.
 
             var execution = new ParameterizedExecution(EagerBuggyParameterSource);
-            (await Run<ParameterizedTestClass>(execution))
+            (await RunAsync<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg failed: Exception thrown while attempting to eagerly build input parameters for method: IntArg",
@@ -134,7 +134,7 @@
         public async Task ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
         {
             var execution = new ParameterizedExecution(LazyBuggyParameterSource);
-            (await Run<ConstrainedGenericTestClass>(execution))
+            (await RunAsync<ConstrainedGenericTestClass>(execution))
                 .ShouldBe(
                     For<ConstrainedGenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(0) passed",
@@ -148,18 +148,18 @@
         public async Task ShouldResolveGenericTypeParameters()
         {
             var execution = new ParameterizedExecution(InputAttributeParameterSource);
-            await ShouldResolveGenericTypeParameters(execution);
+            await ShouldResolveGenericTypeParametersAsync(execution);
         }
 
         public async Task ShouldSupportExplicitParameterization()
         {
             var execution = new ExplicitlyParameterizedExecution();
-            await ShouldResolveGenericTypeParameters(execution);
+            await ShouldResolveGenericTypeParametersAsync(execution);
         }
 
-        async Task ShouldResolveGenericTypeParameters(Execution execution)
+        async Task ShouldResolveGenericTypeParametersAsync(Execution execution)
         {
-            (await Run<GenericTestClass>(execution))
+            (await RunAsync<GenericTestClass>(execution))
                 .ShouldBe(
                     For<GenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(1) passed",
@@ -193,7 +193,7 @@
         public async Task ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
         {
             var execution = new ParameterizedExecution(ComplexGenericParameterSource);
-            (await Run<ComplexGenericTestClass>(execution))
+            (await RunAsync<ComplexGenericTestClass>(execution))
                 .ShouldBe(
                     For<ComplexGenericTestClass>(
                         ".CompoundGenericParameter<System.Int32, System.String>([1, A], \"System.Int32\", \"System.String\") passed",

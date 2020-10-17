@@ -7,6 +7,6 @@
     /// </summary>
     public interface Execution
     {
-        Task Execute(TestClass testClass);
+        Task ExecuteAsync(TestClass testClass);
     }
 }

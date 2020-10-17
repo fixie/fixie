@@ -47,25 +47,25 @@
             consoleLines = console.Lines();
         }
 
-        protected Task<Output> Run(Listener listener)
+        protected Task<Output> RunAsync(Listener listener)
         {
-            return Run(listener, new SelfTestDiscovery());
+            return RunAsync(listener, new SelfTestDiscovery());
         }
 
-        protected async Task<Output> Run(Listener listener, Discovery discovery)
+        protected async Task<Output> RunAsync(Listener listener, Discovery discovery)
         {
             var execution = new MessagingTestsExecution();
 
             using var console = new RedirectedConsole();
 
-            await Utility.Run(listener, discovery, execution, candidateTypes);
+            await Utility.RunAsync(listener, discovery, execution, candidateTypes);
 
             return new Output(console.Lines().ToArray());
         }
 
         class MessagingTestsExecution : Execution
         {
-            public async Task Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                 {
@@ -75,7 +75,7 @@
                         continue;
                     }
 
-                    await test.RunCases(UsingInputAttributes);
+                    await test.RunCasesAsync(UsingInputAttributes);
                 }
             }
         }

@@ -23,7 +23,7 @@
         {
             try
             {
-                return (int) await RunAssembly(assembly, customArguments);
+                return (int) await RunAssemblyAsync(assembly, customArguments);
             }
             catch (Exception exception)
             {
@@ -34,7 +34,7 @@
             }
         }
 
-        static async Task<ExitCode> RunAssembly(Assembly assembly, string[] customArguments)
+        static async Task<ExitCode> RunAssemblyAsync(Assembly assembly, string[] customArguments)
         {
             var listeners = DefaultExecutionListeners().ToArray();
             var runner = new Runner(assembly, customArguments, listeners);
@@ -42,8 +42,8 @@
             var pattern = GetEnvironmentVariable("FIXIE:TESTS");
 
             var summary = pattern == null
-                ? await runner.Run()
-                : await runner.Run(new TestPattern(pattern));
+                ? await runner.RunAsync()
+                : await runner.RunAsync(new TestPattern(pattern));
 
             if (summary.Total == 0)
                 return ExitCode.FatalError;

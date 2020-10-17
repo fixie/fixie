@@ -4,10 +4,10 @@
 
     class DefaultExecution : Execution
     {
-        public async Task Execute(TestClass testClass)
+        public async Task ExecuteAsync(TestClass testClass)
         {
             foreach (var test in testClass.Tests)
-                await test.Run();
+                await test.RunAsync();
         }
     }
 }

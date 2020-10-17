@@ -10,42 +10,42 @@
     {
         public async Task ShouldAwaitThenPassUponSuccessfulAsyncExecution()
         {
-            (await Run<AwaitThenPassTestClass>())
+            (await RunAsync<AwaitThenPassTestClass>())
                 .ShouldBe(
                     For<AwaitThenPassTestClass>(".Test passed"));
         }
 
         public async Task ShouldAwaitResultThenPassUponSuccessfulAsyncExecution()
         {
-            (await Run<AwaitResultThenPassTestClass>())
+            (await RunAsync<AwaitResultThenPassTestClass>())
                 .ShouldBe(
                     For<AwaitResultThenPassTestClass>(".Test passed"));
         }
 
         public async Task ShouldCompleteTaskThenPassUponSuccessfulTaskExecution()
         {
-            (await Run<CompleteTaskThenPassTestClass>())
+            (await RunAsync<CompleteTaskThenPassTestClass>())
                 .ShouldBe(
                     For<CompleteTaskThenPassTestClass>(".Test passed"));
         }
 
         public async Task ShouldGetTaskResultThenPassUponSuccessfulTaskExecution()
         {
-            (await Run<CompleteTaskWithResultThenPassTestClass>())
+            (await RunAsync<CompleteTaskWithResultThenPassTestClass>())
                 .ShouldBe(
                     For<CompleteTaskWithResultThenPassTestClass>(".Test passed"));
         }
 
         public async Task ShouldPassForNullTask()
         {
-            (await Run<NullTaskTestClass>())
+            (await RunAsync<NullTaskTestClass>())
                 .ShouldBe(
                     For<NullTaskTestClass>(".Test passed"));
         }
 
         public async Task ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
-            (await Run<AwaitThenFailTestClass>())
+            (await RunAsync<AwaitThenFailTestClass>())
                 .ShouldBe(
                     For<AwaitThenFailTestClass>(
                         ".Test failed: Expected: 0" + NewLine +
@@ -54,21 +54,21 @@
 
         public async Task ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
         {
-            (await Run<AwaitOnTaskThatThrowsTestClass>())
+            (await RunAsync<AwaitOnTaskThatThrowsTestClass>())
                 .ShouldBe(
                     For<AwaitOnTaskThatThrowsTestClass>(".Test failed: Attempted to divide by zero."));
         }
 
         public async Task ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
         {
-            (await Run<FailBeforeAwaitTestClass>())
+            (await RunAsync<FailBeforeAwaitTestClass>())
                 .ShouldBe(
                     For<FailBeforeAwaitTestClass>(".Test failed: 'Test' failed!"));
         }
 
         public async Task ShouldFailWithClearExplanationWhenAsyncCaseMethodReturnsNonStartedTask()
         {
-            (await Run<FailDueToNonStartedTaskTestClass>())
+            (await RunAsync<FailDueToNonStartedTaskTestClass>())
                 .ShouldBe(
                     For<FailDueToNonStartedTaskTestClass>(
                         ".Test failed: The test returned a non-started task, which cannot " +
@@ -77,7 +77,7 @@
 
         public async Task ShouldExecuteReturnedTaskDeclaredAsObject()
         {
-            (await Run<CompleteTaskDeclaredAsObjectTestClass>())
+            (await RunAsync<CompleteTaskDeclaredAsObjectTestClass>())
                 .ShouldBe(
                     For<CompleteTaskDeclaredAsObjectTestClass>(
                         ".Test failed: Expected: 0" + NewLine +
@@ -86,7 +86,7 @@
 
         public async Task ShouldFailUnsupportedAsyncVoidCases()
         {
-            (await Run<UnsupportedAsyncVoidTestTestClass>())
+            (await RunAsync<UnsupportedAsyncVoidTestTestClass>())
                 .ShouldBe(
                     For<UnsupportedAsyncVoidTestTestClass>(".Test failed: " +
                         "Async void methods are not supported. Declare async methods with a return type of " +
@@ -100,7 +100,7 @@
                 throw new FailureException(member);
             }
 
-            protected static Task<int> Divide(int numerator, int denominator)
+            protected static Task<int> DivideAsync(int numerator, int denominator)
             {
                 return Task.Run(() => numerator/denominator);
             }
@@ -110,7 +110,7 @@
         {
             public async Task Test()
             {
-                var result = await Divide(15, 5);
+                var result = await DivideAsync(15, 5);
 
                 result.ShouldBe(3);
             }
@@ -120,7 +120,7 @@
         {
             public async Task<bool> Test()
             {
-                var result = await Divide(15, 5);
+                var result = await DivideAsync(15, 5);
 
                 result.ShouldBe(3);
 
@@ -132,7 +132,7 @@
         {
             public Task Test()
             {
-                var divide = Divide(15, 5);
+                var divide = DivideAsync(15, 5);
 
                 return divide.ContinueWith(division =>
                 {
@@ -145,7 +145,7 @@
         {
             public Task<bool> Test()
             {
-                var divide = Divide(15, 5);
+                var divide = DivideAsync(15, 5);
 
                 return divide.ContinueWith(division =>
                 {
@@ -171,7 +171,7 @@
         {
             public async Task Test()
             {
-                var result = await Divide(15, 5);
+                var result = await DivideAsync(15, 5);
 
                 result.ShouldBe(0);
             }
@@ -181,7 +181,7 @@
         {
             public async Task Test()
             {
-                await Divide(15, 0);
+                await DivideAsync(15, 0);
 
                 throw new ShouldBeUnreachableException();
             }
@@ -193,7 +193,7 @@
             {
                 ThrowException();
 
-                await Divide(15, 5);
+                await DivideAsync(15, 5);
             }
         }
 
@@ -209,7 +209,7 @@
         {
             public object Test()
             {
-                var divide = Divide(15, 5);
+                var divide = DivideAsync(15, 5);
 
                 return divide.ContinueWith(division =>
                 {
@@ -224,7 +224,7 @@
         {
             public async void Test()
             {
-                await Divide(15, 5);
+                await DivideAsync(15, 5);
 
                 throw new ShouldBeUnreachableException();
             }

@@ -81,20 +81,20 @@ namespace Fixie.Tests
             }
         }
 
-        protected Task<Output> Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
-            => Run<TExecution>(typeof(TSampleTestClass));
+        protected Task<Output> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
+            => RunAsync<TExecution>(typeof(TSampleTestClass));
 
-        protected Task<Output> Run<TSampleTestClass>(Execution execution)
-            => Run(typeof(TSampleTestClass), execution);
+        protected Task<Output> RunAsync<TSampleTestClass>(Execution execution)
+            => RunAsync(typeof(TSampleTestClass), execution);
 
-        protected Task<Output> Run<TExecution>(Type testClass) where TExecution : Execution, new()
-            => Run(testClass, new TExecution());
+        protected Task<Output> RunAsync<TExecution>(Type testClass) where TExecution : Execution, new()
+            => RunAsync(testClass, new TExecution());
 
-        protected async Task<Output> Run(Type testClass, Execution execution)
+        protected async Task<Output> RunAsync(Type testClass, Execution execution)
         {
             using var console = new RedirectedConsole();
 
-            var results = await Utility.Run(testClass, execution);
+            var results = await Utility.RunAsync(testClass, execution);
 
             return new Output(GetType().FullName!, console.Lines().ToArray(), results.ToArray());
         }

@@ -125,11 +125,11 @@
         /// Run the test case against the given instance of the test class,
         /// causing the case state to become either passing or failing.
         /// </summary>
-        internal async Task Run(object? instance)
+        internal async Task RunAsync(object? instance)
         {
             try
             {
-                var result = await Method.Execute(instance, parameters);
+                var result = await Method.ExecuteAsync(instance, parameters);
                 Pass();
                 Result = result;
             }

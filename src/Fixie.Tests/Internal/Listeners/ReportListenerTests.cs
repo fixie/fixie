@@ -16,7 +16,7 @@
             XDocument? actual = null;
             var listener = new ReportListener(report => actual = report);
 
-            var output = await Run(listener);
+            var output = await RunAsync(listener);
 
             output.Console
                 .ShouldBe(

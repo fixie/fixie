@@ -80,18 +80,18 @@ namespace Fixie.Tests
             public InstrumentedExecution(ParameterSource parameterSource)
                 => this.parameterSource = parameterSource;
 
-            public async Task Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 ClassSetUp();
 
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
-                        await TestLifecycle(test);
+                        await TestLifecycleAsync(test);
 
                 ClassTearDown();
             }
 
-            async Task TestLifecycle(TestMethod test)
+            async Task TestLifecycleAsync(TestMethod test)
             {
                 try
                 {
@@ -102,7 +102,7 @@ namespace Fixie.Tests
                         : InvokeOnceWithZeroParameters;
 
                     foreach (var parameters in cases)
-                        await CaseLifecycle(test, parameters);
+                        await CaseLifecycleAsync(test, parameters);
 
                     TestTearDown();
                 }
@@ -112,12 +112,12 @@ namespace Fixie.Tests
                 }
             }
 
-            static async Task CaseLifecycle(TestMethod test, object?[] parameters)
+            static async Task CaseLifecycleAsync(TestMethod test, object?[] parameters)
             {
                 try
                 {
                     CaseSetUp();
-                    await test.Run(parameters, @case => CaseInspection());
+                    await test.RunAsync(parameters, @case => CaseInspection());
                     CaseTearDown();
                 }
                 catch (Exception exception)
@@ -140,9 +140,9 @@ namespace Fixie.Tests
 
         class ShortCircuitTestExecution : Execution
         {
-            public Task Execute(TestClass testClass)
+            public Task ExecuteAsync(TestClass testClass)
             {
-                //Class lifecycle chooses not to invoke test.Run(...).
+                //Class lifecycle chooses not to invoke test.RunAsync(...).
                 //Since the tests never run, they are all considered
                 //'skipped'.
                 return Task.CompletedTask;
@@ -153,7 +153,7 @@ namespace Fixie.Tests
         {
             const int MaxAttempts = 3;
 
-            public async Task Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
@@ -170,7 +170,7 @@ namespace Fixie.Tests
                     remainingAttempts--;
                     var failureCanBeRetried = remainingAttempts > 0;
 
-                    await test.Run(parameters, @case =>
+                    await test.RunAsync(parameters, @case =>
                     {
                         if (@case.State == CaseState.Failed && failureCanBeRetried)
                             @case.Skip(@case.Exception?.Message + " Retrying...");
@@ -198,7 +198,7 @@ namespace Fixie.Tests
 
         public async Task ShouldRunAllTestsByDefault()
         {
-            var output = await Run<SampleTestClass, DefaultExecution>();
+            var output = await RunAsync<SampleTestClass, DefaultExecution>();
 
             //NOTE: With no input parameter or skip behaviors,
             //      all test methods are attempted and with zero
@@ -215,7 +215,7 @@ namespace Fixie.Tests
 
         public async Task ShouldSupportExecutionHooksAtClassAndTestAndCaseLevels()
         {
-            var output = await Run<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -237,7 +237,7 @@ namespace Fixie.Tests
 
         public async Task ShouldSupportStaticTestClassesAndMethods()
         {
-            var output = await Run<InstrumentedExecution>(typeof(StaticTestClass));
+            var output = await RunAsync<InstrumentedExecution>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",
@@ -255,7 +255,7 @@ namespace Fixie.Tests
         {
             FailDuring("ClassSetUp");
         
-            var output = await Run<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
         
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'ClassSetUp' failed!",
@@ -274,7 +274,7 @@ namespace Fixie.Tests
         {
             FailDuring("TestSetUp", occurrence: 2);
 
-            var output = await Run<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -294,7 +294,7 @@ namespace Fixie.Tests
         {
             var execution = new InstrumentedExecution(method =>
                 throw new Exception("Failed to yield input parameters."));
-            var output = await Run<SampleTestClass>(execution);
+            var output = await RunAsync<SampleTestClass>(execution);
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -314,7 +314,7 @@ namespace Fixie.Tests
         {
             FailDuring("CaseSetUp", occurrence: 2);
 
-            var output = await Run<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -338,7 +338,7 @@ namespace Fixie.Tests
         {
             FailDuring("CaseInspection");
 
-            var output = await Run<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -363,7 +363,7 @@ namespace Fixie.Tests
         {
             FailDuring("CaseTearDown");
 
-            var output = await Run<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -390,7 +390,7 @@ namespace Fixie.Tests
         {
             FailDuring("TestTearDown");
 
-            var output = await Run<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -418,7 +418,7 @@ namespace Fixie.Tests
         {
             FailDuring("ClassTearDown");
 
-            var output = await Run<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -444,7 +444,7 @@ namespace Fixie.Tests
 
         public async Task ShouldSkipTestLifecyclesWhenAllTestsAreSkipped()
         {
-            var output = await Run<AllSkippedTestClass, InstrumentedExecution>();
+            var output = await RunAsync<AllSkippedTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "AllSkippedTestClass.SkipA skipped: This test did not run.",
@@ -458,7 +458,7 @@ namespace Fixie.Tests
         {
             FailDuring("Pass", occurrence: 1);
 
-            var output = await Run<SampleTestClass, RetryExecution>();
+            var output = await RunAsync<SampleTestClass, RetryExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail skipped: 'Fail' failed! Retrying...",
@@ -474,7 +474,7 @@ namespace Fixie.Tests
 
         public async Task ShouldSkipAllTestsWhenShortCircuitingTestExecution()
         {
-            var output = await Run<SampleTestClass, ShortCircuitTestExecution>();
+            var output = await RunAsync<SampleTestClass, ShortCircuitTestExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail skipped: This test did not run.",

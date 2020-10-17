@@ -18,7 +18,7 @@
                 return Task.CompletedTask;
             });
 
-            var output = await Run(listener);
+            var output = await RunAsync(listener);
 
             output.Console
                 .ShouldBe(

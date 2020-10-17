@@ -43,8 +43,8 @@
 
             if (lines.Length >= 2)
             {
-                if (lines[^2].Contains(" Fixie.MethodInfoExtensions.Execute(MethodInfo method, Object instance, Object[] parameters)") &&
-                    lines[^1].Contains(" Fixie.Case.Run(Object instance)"))
+                if (lines[^2].Contains(" Fixie.MethodInfoExtensions.ExecuteAsync(MethodInfo method, Object instance, Object[] parameters)") &&
+                    lines[^1].Contains(" Fixie.Case.RunAsync(Object instance)"))
 
                     return string.Join(NewLine, lines[..^2]);
             }

@@ -24,7 +24,7 @@
                 try
                 {
                     (listener as Handler<TMessage>)?.Handle(message);
-                    (listener as AsyncHandler<TMessage>)?.Handle(message).GetAwaiter().GetResult();
+                    (listener as AsyncHandler<TMessage>)?.HandleAsync(message).GetAwaiter().GetResult();
                 }
                 catch (Exception exception)
                 {

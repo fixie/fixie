@@ -14,7 +14,7 @@
             var assembly = typeof(LifecycleMessageTests).Assembly;
             var listener = new StubCaseCompletedListener();
 
-            await Run(listener);
+            await RunAsync(listener);
 
             listener.Messages.Count.ShouldBe(14);
             

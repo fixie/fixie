@@ -19,7 +19,7 @@
 
             var listener = new ExecutionListener(recorder, assemblyPath);
 
-            var output = await Run(listener);
+            var output = await RunAsync(listener);
 
             output.Console
                 .ShouldBe(

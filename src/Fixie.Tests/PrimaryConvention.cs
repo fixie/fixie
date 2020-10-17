@@ -12,11 +12,11 @@
 
     class PrimaryConvention : Execution
     {
-        public async Task Execute(TestClass testClass)
+        public async Task ExecuteAsync(TestClass testClass)
         {
             foreach (var test in testClass.Tests)
             {
-                await test.Run(@case =>
+                await test.RunAsync(@case =>
                 {
                     if (@case.Exception is AssertException exception && !exception.HasCompactRepresentations)
                         if (testClass.TestAssembly.SelectedTests.Count == 1)

@@ -15,7 +15,7 @@
 
             var listener = new TeamCityListener();
 
-            var output = await Run(listener);
+            var output = await RunAsync(listener);
 
             output.Console
                 .CleanStackTraceLineNumbers()

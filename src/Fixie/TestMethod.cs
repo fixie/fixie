@@ -27,7 +27,7 @@
 
         internal bool RecordedResult { get; private set; }
 
-        async Task RunCore(object?[] parameters, object? instance, Action<Case>? inspectCase)
+        async Task RunCoreAsync(object?[] parameters, object? instance, Action<Case>? inspectCase)
         {
             var @case = new Case(Method, parameters);
 
@@ -41,7 +41,7 @@
             {
                 if (instance != null)
                 {
-                    await TryRunCase(@case, instance);
+                    await TryRunCaseAsync(@case, instance);
                     TryInspectCase(@case, inspectCase, out caseInspectionFailure);
                 }
                 else
@@ -50,7 +50,7 @@
                     {
                         var automaticInstance = @case.Method.IsStatic ? null : Construct(@case.Method.ReflectedType!);
 
-                        await TryRunCase(@case, automaticInstance);
+                        await TryRunCaseAsync(@case, automaticInstance);
                         TryInspectCase(@case, inspectCase, out caseInspectionFailure);
                         TryDispose(automaticInstance, out disposalFailure);
                     }
@@ -100,9 +100,9 @@
             RecordedResult = true;
         }
 
-        static Task TryRunCase(Case @case, object? instance)
+        static Task TryRunCaseAsync(Case @case, object? instance)
         {
-            return @case.Run(instance);
+            return @case.RunAsync(instance);
         }
 
         static void TryInspectCase(Case @case, Action<Case>? inspectCase, out Exception? caseInspectionFailure)
@@ -133,22 +133,22 @@
             }
         }
 
-        public Task Run(Action<Case>? inspectCase = null)
+        public Task RunAsync(Action<Case>? inspectCase = null)
         {
-            return RunCore(EmptyParameters, instance: null, inspectCase);
+            return RunCoreAsync(EmptyParameters, instance: null, inspectCase);
         }
 
-        public Task Run(object?[] parameters, Action<Case>? inspectCase = null)
+        public Task RunAsync(object?[] parameters, Action<Case>? inspectCase = null)
         {
-            return RunCore(parameters, instance: null, inspectCase);
+            return RunCoreAsync(parameters, instance: null, inspectCase);
         }
 
-        public async Task RunCases(ParameterSource parameterSource, Action<Case>? inspectCase = null)
+        public async Task RunCasesAsync(ParameterSource parameterSource, Action<Case>? inspectCase = null)
         {
             try
             {
                 foreach (var parameters in GetCases(parameterSource))
-                    await RunCore(parameters, instance: null, inspectCase);
+                    await RunCoreAsync(parameters, instance: null, inspectCase);
             }
             catch (Exception exception)
             {
@@ -156,22 +156,22 @@
             }
         }
 
-        public Task Run(object? instance, Action<Case>? inspectCase = null)
+        public Task RunAsync(object? instance, Action<Case>? inspectCase = null)
         {
-            return RunCore(EmptyParameters, instance, inspectCase);
+            return RunCoreAsync(EmptyParameters, instance, inspectCase);
         }
 
-        public Task Run(object?[] parameters, object? instance, Action<Case>? inspectCase = null)
+        public Task RunAsync(object?[] parameters, object? instance, Action<Case>? inspectCase = null)
         {
-            return RunCore(parameters, instance, inspectCase);
+            return RunCoreAsync(parameters, instance, inspectCase);
         }
 
-        public async Task RunCases(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
+        public async Task RunCasesAsync(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
         {
             try
             {
                 foreach (var parameters in GetCases(parameterSource))
-                    await RunCore(parameters, instance, inspectCase);
+                    await RunCoreAsync(parameters, instance, inspectCase);
             }
             catch (Exception exception)
             {

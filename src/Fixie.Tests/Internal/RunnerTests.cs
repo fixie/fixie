@@ -45,7 +45,7 @@ namespace Fixie.Tests.Internal
             var execution = new CreateInstancePerCase();
 
             var runner = new Runner(GetType().Assembly, listener);
-            await runner.Run(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
+            await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",
@@ -58,11 +58,11 @@ namespace Fixie.Tests.Internal
 
         class CreateInstancePerCase : Execution
         {
-            public async Task Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
-                        await test.Run();
+                        await test.RunAsync();
             }
         }
 

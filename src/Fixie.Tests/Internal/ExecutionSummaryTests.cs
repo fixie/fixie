@@ -15,7 +15,7 @@
 
             var listener = new StubExecutionSummaryListener();
 
-            await Run(listener, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
+            await RunAsync(listener, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
             listener.AssemblySummary.Count.ShouldBe(1);
 
@@ -54,11 +54,11 @@
 
         class CreateInstancePerCase : Execution
         {
-            public async Task Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
-                        await test.Run();
+                        await test.RunAsync();
             }
         }
     }

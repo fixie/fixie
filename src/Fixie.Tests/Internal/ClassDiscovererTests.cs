@@ -57,7 +57,7 @@
 
         class SampleExecution : Execution
         {
-            public Task Execute(TestClass testClass)
+            public Task ExecuteAsync(TestClass testClass)
                 => Task.CompletedTask;
         }
         

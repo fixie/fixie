@@ -49,16 +49,16 @@
 
         protected Output Run(Listener listener)
         {
-            return Run(listener, new SelfTestDiscovery());
+            return Run(listener, new SelfTestDiscovery()).GetAwaiter().GetResult();
         }
 
-        protected Output Run(Listener listener, Discovery discovery)
+        protected async Task<Output> Run(Listener listener, Discovery discovery)
         {
             var execution = new MessagingTestsExecution();
 
             using var console = new RedirectedConsole();
 
-            Utility.Run(listener, discovery, execution, candidateTypes).GetAwaiter().GetResult();
+            await Utility.Run(listener, discovery, execution, candidateTypes);
 
             return new Output(console.Lines().ToArray());
         }

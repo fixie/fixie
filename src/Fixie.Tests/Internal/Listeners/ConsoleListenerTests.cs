@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Fixie.Internal.Listeners;
     using Assertions;
 
@@ -124,12 +125,12 @@
                 => publicMethods.Where(x => !x.Name.StartsWith("Pass") && x.ReflectedType == TestClassType);
         }
 
-        public void ShouldNotReportPassCountsWhenZeroTestsHavePassed()
+        public async Task ShouldNotReportPassCountsWhenZeroTestsHavePassed()
         {
             var listener = new ConsoleListener();
             var discovery = new ZeroPassed();
 
-            var output = Run(listener, discovery);
+            var output = await Run(listener, discovery);
 
             output.Console
                 .CleanDuration()
@@ -143,12 +144,12 @@
                 => publicMethods.Where(x => !x.Name.StartsWith("Fail") && x.ReflectedType == TestClassType);
         }
 
-        public void ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
+        public async Task ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
         {
             var listener = new ConsoleListener();
             var discovery = new ZeroFailed();
 
-            var output = Run(listener, discovery);
+            var output = await Run(listener, discovery);
 
             output.Console
                 .CleanDuration()
@@ -162,12 +163,12 @@
                 => publicMethods.Where(x => !x.Name.StartsWith("Skip") && x.ReflectedType == TestClassType);
         }
 
-        public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
+        public async Task ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
         {
             var listener = new ConsoleListener();
             var discovery = new ZeroSkipped();
 
-            var output = Run(listener, discovery);
+            var output = await Run(listener, discovery);
 
             output.Console
                 .CleanDuration()
@@ -181,12 +182,12 @@
                 => publicMethods.Where(x => false);
         }
 
-        public void ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
+        public async Task ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
         {
             var listener = new ConsoleListener();
             var discovery = new NoTestsFound();
 
-            var output = Run(listener, discovery);
+            var output = await Run(listener, discovery);
 
             output.Console
                 .Last()

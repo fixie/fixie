@@ -38,12 +38,12 @@
 
         public ExecutionSummary Run()
         {
-            return Run(assembly.GetTypes(), ImmutableHashSet<string>.Empty);
+            return Run(assembly.GetTypes(), ImmutableHashSet<string>.Empty).GetAwaiter().GetResult();
         }
 
         public ExecutionSummary Run(ImmutableHashSet<string> selectedTests)
         {
-            return Run(assembly.GetTypes(), selectedTests);
+            return Run(assembly.GetTypes(), selectedTests).GetAwaiter().GetResult();
         }
 
         public ExecutionSummary Run(TestPattern testPattern)
@@ -74,14 +74,14 @@
             return Run(matchingTests);
         }
 
-        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
+        async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);
 
             try
             {
-                return Run(candidateTypes, discovery, execution, selectedTests).GetAwaiter().GetResult();
+                return await Run(candidateTypes, discovery, execution, selectedTests);
             }
             finally
             {

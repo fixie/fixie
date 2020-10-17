@@ -28,6 +28,14 @@
             typeof(EmptyTestClass)
         };
 
+        protected class Output
+        {
+            public Output(string[] console)
+                => Console = console;
+
+            public string[] Console { get; }
+        }
+
         protected void Discover(Listener listener, out IEnumerable<string> consoleLines)
         {
             var discovery = new SelfTestDiscovery();
@@ -39,12 +47,12 @@
             consoleLines = console.Lines();
         }
 
-        protected void Run(Listener listener, out IEnumerable<string> consoleLines)
+        protected Output Run(Listener listener)
         {
-            Run(listener, new SelfTestDiscovery(), out consoleLines);
+            return Run(listener, new SelfTestDiscovery());
         }
 
-        protected void Run(Listener listener, Discovery discovery, out IEnumerable<string> consoleLines)
+        protected Output Run(Listener listener, Discovery discovery)
         {
             var execution = new MessagingTestsExecution();
 
@@ -52,7 +60,7 @@
 
             Utility.Run(listener, discovery, execution, candidateTypes).GetAwaiter().GetResult();
 
-            consoleLines = console.Lines();
+            return new Output(console.Lines().ToArray());
         }
 
         class MessagingTestsExecution : Execution

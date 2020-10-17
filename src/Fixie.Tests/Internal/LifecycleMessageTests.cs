@@ -13,7 +13,7 @@
             var assembly = typeof(LifecycleMessageTests).Assembly;
             var listener = new StubCaseCompletedListener();
 
-            Run(listener, out _);
+            Run(listener);
 
             listener.Messages.Count.ShouldBe(14);
             

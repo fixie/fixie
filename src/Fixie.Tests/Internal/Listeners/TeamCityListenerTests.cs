@@ -14,9 +14,9 @@
 
             var listener = new TeamCityListener();
 
-            Run(listener, out var console);
+            var output = Run(listener);
 
-            console
+            output.Console
                 .CleanStackTraceLineNumbers()
                 .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'"))
                 .ShouldBe(

@@ -12,9 +12,9 @@
         {
             var listener = new ConsoleListener();
 
-            Run(listener, out var console);
+            var output = Run(listener);
 
-            console
+            output.Console
                 .CleanStackTraceLineNumbers()
                 .CleanDuration()
                 .ShouldBe(
@@ -64,9 +64,9 @@
         {
             var listener = new ConsoleListener(outputCasePassed: true);
 
-            Run(listener, out var console);
+            var output = Run(listener);
 
-            console
+            output.Console
                 .CleanStackTraceLineNumbers()
                 .CleanDuration()
                 .ShouldBe(
@@ -129,9 +129,9 @@
             var listener = new ConsoleListener();
             var discovery = new ZeroPassed();
 
-            Run(listener, discovery, out var console);
+            var output = Run(listener, discovery);
 
-            console
+            output.Console
                 .CleanDuration()
                 .Last()
                 .ShouldBe("2 failed, 2 skipped, took 1.23 seconds");
@@ -148,9 +148,9 @@
             var listener = new ConsoleListener();
             var discovery = new ZeroFailed();
 
-            Run(listener, discovery, out var console);
+            var output = Run(listener, discovery);
 
-            console
+            output.Console
                 .CleanDuration()
                 .Last()
                 .ShouldBe("1 passed, 2 skipped, took 1.23 seconds");
@@ -167,9 +167,9 @@
             var listener = new ConsoleListener();
             var discovery = new ZeroSkipped();
 
-            Run(listener, discovery, out var console);
+            var output = Run(listener, discovery);
 
-            console
+            output.Console
                 .CleanDuration()
                 .Last()
                 .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
@@ -186,9 +186,9 @@
             var listener = new ConsoleListener();
             var discovery = new NoTestsFound();
 
-            Run(listener, discovery, out var console);
+            var output = Run(listener, discovery);
 
-            console
+            output.Console
                 .Last()
                 .ShouldBe("No tests found.");
         }

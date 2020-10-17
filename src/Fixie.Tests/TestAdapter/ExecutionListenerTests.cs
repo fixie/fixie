@@ -18,9 +18,9 @@
 
             var listener = new ExecutionListener(recorder, assemblyPath);
 
-            Run(listener, out var console);
+            var output = Run(listener);
 
-            console
+            output.Console
                 .ShouldBe(
                     "Console.Out: Fail",
                     "Console.Error: Fail",

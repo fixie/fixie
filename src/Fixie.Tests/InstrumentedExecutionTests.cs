@@ -93,7 +93,7 @@ namespace Fixie.Tests
         {
             using var console = new RedirectedConsole();
 
-            var results = Utility.Run(testClass, execution);
+            var results = Utility.Run(testClass, execution).GetAwaiter().GetResult();
 
             return new Output(GetType().FullName!, console.Lines().ToArray(), results.ToArray());
         }

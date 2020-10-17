@@ -33,16 +33,16 @@
             => Run<TSampleTestClass>(new TExecution());
 
         public static IEnumerable<string> Run<TSampleTestClass>(Execution execution)
-            => Run(typeof(TSampleTestClass), execution);
+            => Run(typeof(TSampleTestClass), execution).GetAwaiter().GetResult();
 
         public static IEnumerable<string> Run<TExecution>(Type testClass) where TExecution : Execution, new()
-            => Run(testClass, new TExecution());
+            => Run(testClass, new TExecution()).GetAwaiter().GetResult();
 
-        public static IEnumerable<string> Run(Type testClass, Execution execution)
+        public static async Task<IEnumerable<string>> Run(Type testClass, Execution execution)
         {
             var listener = new StubListener();
             var discovery = new SelfTestDiscovery();
-            Run(listener, discovery, execution, testClass).GetAwaiter().GetResult();
+            await Run(listener, discovery, execution, testClass);
             return listener.Entries;
         }
 

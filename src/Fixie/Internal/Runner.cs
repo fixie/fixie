@@ -100,7 +100,8 @@
             var methodDiscoverer = new MethodDiscoverer(discovery);
             foreach (var testClass in classes)
             foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                bus.Publish(new TestDiscovered(new Test(testMethod)));
+                bus.PublishAsync(new TestDiscovered(new Test(testMethod)))
+                    .GetAwaiter().GetResult();
         }
 
         internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)

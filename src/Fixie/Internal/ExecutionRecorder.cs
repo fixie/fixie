@@ -25,14 +25,14 @@
 
         public void Start(TestAssembly testAssembly)
         {
-            bus.Publish(new AssemblyStarted(testAssembly.Assembly));
+            bus.PublishAsync(new AssemblyStarted(testAssembly.Assembly)).GetAwaiter().GetResult();
             assemblyStopwatch.Restart();
             caseStopwatch.Restart();
         }
 
         public void Start(Case @case)
         {
-            bus.Publish(new CaseStarted(@case));
+            bus.PublishAsync(new CaseStarted(@case)).GetAwaiter().GetResult();
         }
 
         public void Skip(Case @case, string output = "")
@@ -41,7 +41,7 @@
 
             var message = new CaseSkipped(@case, duration, output);
             assemblySummary.Add(message);
-            bus.Publish(message);
+            bus.PublishAsync(message).GetAwaiter().GetResult();
 
             caseStopwatch.Restart();
         }
@@ -59,7 +59,7 @@
 
             var message = new CasePassed(@case, duration, output);
             assemblySummary.Add(message);
-            bus.Publish(message);
+            bus.PublishAsync(message).GetAwaiter().GetResult();
 
             caseStopwatch.Restart();
         }
@@ -70,7 +70,7 @@
 
             var message = new CaseFailed(@case, duration, output);
             assemblySummary.Add(message);
-            bus.Publish(message);
+            bus.PublishAsync(message).GetAwaiter().GetResult();
 
             caseStopwatch.Restart();
         }
@@ -86,7 +86,8 @@
         {
             var duration = assemblyStopwatch.Elapsed;
 
-            bus.Publish(new AssemblyCompleted(testAssembly.Assembly, assemblySummary, duration));
+            bus.PublishAsync(new AssemblyCompleted(testAssembly.Assembly, assemblySummary, duration))
+                .GetAwaiter().GetResult();
 
             caseStopwatch.Stop();
             assemblyStopwatch.Stop();

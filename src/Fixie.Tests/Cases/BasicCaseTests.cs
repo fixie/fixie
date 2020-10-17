@@ -1,27 +1,28 @@
 ﻿namespace Fixie.Tests.Cases
 {
+    using System.Threading.Tasks;
     using Assertions;
     using static Utility;
 
     public class BasicCaseTests
     {
-        public void ShouldPassUponSuccessfulExecution()
+        public async Task ShouldPassUponSuccessfulExecution()
         {
-            Run<PassTestClass>()
+            (await Run<PassTestClass>())
                 .ShouldBe(
                     For<PassTestClass>(".Pass passed"));
         }
 
-        public void ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
+        public async Task ShouldFailWithOriginalExceptionWhenCaseMethodThrows()
         {
-            Run<FailTestClass>()
+            (await Run<FailTestClass>())
                 .ShouldBe(
                     For<FailTestClass>(".Fail failed: 'Fail' failed!"));
         }
 
-        public void ShouldPassOrFailCasesIndividually()
+        public async Task ShouldPassOrFailCasesIndividually()
         {
-            Run<PassFailTestClass>()
+            (await Run<PassFailTestClass>())
                 .ShouldBe(
                     For<PassFailTestClass>(
                         ".FailA failed: 'FailA' failed!",
@@ -31,9 +32,9 @@
                         ".PassC passed"));
         }
 
-        public void ShouldFailWhenTestClassConstructorCannotBeInvoked()
+        public async Task ShouldFailWhenTestClassConstructorCannotBeInvoked()
         {
-            Run<CannotInvokeConstructorTestClass>()
+            (await Run<CannotInvokeConstructorTestClass>())
                 .ShouldBe(
                     For<CannotInvokeConstructorTestClass>(
                         ".UnreachableCase failed: No parameterless constructor defined " +

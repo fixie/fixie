@@ -26,8 +26,8 @@
         public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;
 
-        public static IEnumerable<string> Run<TSampleTestClass>()
-            => Run<TSampleTestClass, DefaultExecution>().GetAwaiter().GetResult();
+        public static Task<IEnumerable<string>> Run<TSampleTestClass>()
+            => Run<TSampleTestClass, DefaultExecution>();
 
         public static Task<IEnumerable<string>> Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
             => Run<TSampleTestClass>(new TExecution());

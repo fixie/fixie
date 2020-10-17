@@ -9,11 +9,11 @@ namespace Fixie.Tests.Cases
 
     public class NonVoidCaseTests
     {
-        public void ShouldIgnoreCaseReturnValuesByDefault()
+        public async Task ShouldIgnoreCaseReturnValuesByDefault()
         {
             using var console = new RedirectedConsole();
 
-            Run<SampleTestClass>()
+            (await Run<SampleTestClass>())
                 .ShouldBe(
                     For<SampleTestClass>(
                         ".BoolFalse passed",
@@ -24,7 +24,7 @@ namespace Fixie.Tests.Cases
                         ".StringNull passed",
                         ".Throw failed: 'Throw' failed!"));
 
-            Run<SampleAsyncTestClass>()
+            (await Run<SampleAsyncTestClass>())
                 .ShouldBe(
                     For<SampleAsyncTestClass>(
                         ".BoolFalse passed",

@@ -8,85 +8,85 @@
 
     public class AsyncCaseTests
     {
-        public void ShouldAwaitThenPassUponSuccessfulAsyncExecution()
+        public async Task ShouldAwaitThenPassUponSuccessfulAsyncExecution()
         {
-            Run<AwaitThenPassTestClass>()
+            (await Run<AwaitThenPassTestClass>())
                 .ShouldBe(
                     For<AwaitThenPassTestClass>(".Test passed"));
         }
 
-        public void ShouldAwaitResultThenPassUponSuccessfulAsyncExecution()
+        public async Task ShouldAwaitResultThenPassUponSuccessfulAsyncExecution()
         {
-            Run<AwaitResultThenPassTestClass>()
+            (await Run<AwaitResultThenPassTestClass>())
                 .ShouldBe(
                     For<AwaitResultThenPassTestClass>(".Test passed"));
         }
 
-        public void ShouldCompleteTaskThenPassUponSuccessfulTaskExecution()
+        public async Task ShouldCompleteTaskThenPassUponSuccessfulTaskExecution()
         {
-            Run<CompleteTaskThenPassTestClass>()
+            (await Run<CompleteTaskThenPassTestClass>())
                 .ShouldBe(
                     For<CompleteTaskThenPassTestClass>(".Test passed"));
         }
 
-        public void ShouldGetTaskResultThenPassUponSuccessfulTaskExecution()
+        public async Task ShouldGetTaskResultThenPassUponSuccessfulTaskExecution()
         {
-            Run<CompleteTaskWithResultThenPassTestClass>()
+            (await Run<CompleteTaskWithResultThenPassTestClass>())
                 .ShouldBe(
                     For<CompleteTaskWithResultThenPassTestClass>(".Test passed"));
         }
 
-        public void ShouldPassForNullTask()
+        public async Task ShouldPassForNullTask()
         {
-            Run<NullTaskTestClass>()
+            (await Run<NullTaskTestClass>())
                 .ShouldBe(
                     For<NullTaskTestClass>(".Test passed"));
         }
 
-        public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
+        public async Task ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
         {
-            Run<AwaitThenFailTestClass>()
+            (await Run<AwaitThenFailTestClass>())
                 .ShouldBe(
                     For<AwaitThenFailTestClass>(
                         ".Test failed: Expected: 0" + NewLine +
                         "Actual:   3"));
         }
 
-        public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
+        public async Task ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
         {
-            Run<AwaitOnTaskThatThrowsTestClass>()
+            (await Run<AwaitOnTaskThatThrowsTestClass>())
                 .ShouldBe(
                     For<AwaitOnTaskThatThrowsTestClass>(".Test failed: Attempted to divide by zero."));
         }
 
-        public void ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
+        public async Task ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
         {
-            Run<FailBeforeAwaitTestClass>()
+            (await Run<FailBeforeAwaitTestClass>())
                 .ShouldBe(
                     For<FailBeforeAwaitTestClass>(".Test failed: 'Test' failed!"));
         }
 
-        public void ShouldFailWithClearExplanationWhenAsyncCaseMethodReturnsNonStartedTask()
+        public async Task ShouldFailWithClearExplanationWhenAsyncCaseMethodReturnsNonStartedTask()
         {
-            Run<FailDueToNonStartedTaskTestClass>()
+            (await Run<FailDueToNonStartedTaskTestClass>())
                 .ShouldBe(
                     For<FailDueToNonStartedTaskTestClass>(
                         ".Test failed: The test returned a non-started task, which cannot " +
                         "be awaited. Consider using Task.Run or Task.Factory.StartNew."));
         }
 
-        public void ShouldExecuteReturnedTaskDeclaredAsObject()
+        public async Task ShouldExecuteReturnedTaskDeclaredAsObject()
         {
-            Run<CompleteTaskDeclaredAsObjectTestClass>()
+            (await Run<CompleteTaskDeclaredAsObjectTestClass>())
                 .ShouldBe(
                     For<CompleteTaskDeclaredAsObjectTestClass>(
                         ".Test failed: Expected: 0" + NewLine +
                         "Actual:   3"));
         }
 
-        public void ShouldFailUnsupportedAsyncVoidCases()
+        public async Task ShouldFailUnsupportedAsyncVoidCases()
         {
-            Run<UnsupportedAsyncVoidTestTestClass>()
+            (await Run<UnsupportedAsyncVoidTestTestClass>())
                 .ShouldBe(
                     For<UnsupportedAsyncVoidTestTestClass>(".Test failed: " +
                         "Async void methods are not supported. Declare async methods with a return type of " +

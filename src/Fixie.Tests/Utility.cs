@@ -51,7 +51,9 @@
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            new Runner(candidateTypes[0].Assembly, listener).Discover(candidateTypes, discovery);
+            var runner = new Runner(candidateTypes[0].Assembly, listener);
+
+            runner.DiscoverAsync(candidateTypes, discovery).GetAwaiter().GetResult();
         }
 
         public static Task RunAsync(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)

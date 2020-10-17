@@ -47,7 +47,7 @@
             var listener = new DiscoveryListener(log, discoverySink, assemblyPath);
             var runner = new Runner(assembly, listener);
 
-            runner.Discover();
+            runner.DiscoverAsync().GetAwaiter().GetResult();
         }
     }
 }

@@ -22,13 +22,13 @@
             bus = new Bus(listeners);
         }
 
-        public void Discover()
+        public async Task DiscoverAsync()
         {
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
 
             try
             {
-                Discover(assembly.GetTypes(), discovery);
+                await DiscoverAsync(assembly.GetTypes(), discovery);
             }
             finally
             {
@@ -92,7 +92,7 @@
             }
         }
 
-        internal void Discover(IReadOnlyList<Type> candidateTypes, Discovery discovery)
+        internal async Task DiscoverAsync(IReadOnlyList<Type> candidateTypes, Discovery discovery)
         {
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
@@ -100,8 +100,7 @@
             var methodDiscoverer = new MethodDiscoverer(discovery);
             foreach (var testClass in classes)
             foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                bus.PublishAsync(new TestDiscovered(new Test(testMethod)))
-                    .GetAwaiter().GetResult();
+                await bus.PublishAsync(new TestDiscovered(new Test(testMethod)));
         }
 
         internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)

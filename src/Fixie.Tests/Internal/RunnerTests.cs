@@ -10,7 +10,7 @@ namespace Fixie.Tests.Internal
     {
         static readonly string Self = FullName<RunnerTests>();
 
-        public void ShouldDiscoverAllTestsInAllDiscoveredTestClasses()
+        public async Task ShouldDiscoverAllTestsInAllDiscoveredTestClasses()
         {
             var listener = new StubListener();
 
@@ -20,8 +20,9 @@ namespace Fixie.Tests.Internal
                 typeof(PassFailTestClass), typeof(SkipTestClass)
             };
             var discovery = new SelfTestDiscovery();
-
-            new Runner(GetType().Assembly, listener).Discover(candidateTypes, discovery);
+            
+            var runner = new Runner(GetType().Assembly, listener);
+            await runner.DiscoverAsync(candidateTypes, discovery);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA discovered",

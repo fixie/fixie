@@ -20,7 +20,7 @@
     {
         public delegate Task PostAction(string uri, TestResult testResult);
 
-        readonly PostAction postAction;
+        readonly PostAction postActionAsync;
         readonly string uri;
         string runName;
 
@@ -44,9 +44,9 @@
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public AppVeyorListener(string uri, PostAction postAction)
+        public AppVeyorListener(string uri, PostAction postActionAsync)
         {
-            this.postAction = postAction;
+            this.postActionAsync = postActionAsync;
             this.uri = new Uri(new Uri(uri), "api/tests").ToString();
             runName = "Unknown";
         }
@@ -90,7 +90,7 @@
 
         async Task PostAsync(TestResult testResult)
         {
-            await postAction(uri, testResult);
+            await postActionAsync(uri, testResult);
         }
 
         static async Task PostAsync(string uri, TestResult testResult)

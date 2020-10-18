@@ -158,10 +158,10 @@ namespace Fixie.Tests
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
                         foreach (var parameters in Cases(test))
-                            await RunWithRetries(test, parameters);
+                            await RunWithRetriesAsync(test, parameters);
             }
 
-            static async Task RunWithRetries(TestMethod test, object?[] parameters)
+            static async Task RunWithRetriesAsync(TestMethod test, object?[] parameters)
             {
                 var remainingAttempts = MaxAttempts;
 

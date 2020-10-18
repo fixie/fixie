@@ -8,7 +8,7 @@
 
     public class BusTests
     {
-        public void ShouldPublishEventsForAllListeners()
+        public async Task ShouldPublishEventsForAllListeners()
         {
             var listeners = new Listener[]
             {
@@ -20,9 +20,9 @@
             var bus = new Bus(listeners);
             using var console = new RedirectedConsole();
 
-            bus.Publish(new Event(1));
-            bus.Publish(new AnotherEvent(2));
-            bus.Publish(new Event(3));
+            await bus.PublishAsync(new Event(1));
+            await bus.PublishAsync(new AnotherEvent(2));
+            await bus.PublishAsync(new Event(3));
 
             console.Lines()
                 .ShouldBe(
@@ -34,7 +34,7 @@
                     FullName<CombinationEventHandler>() + " handled Event 3");
         }
 
-        public void ShouldCatchAndLogExceptionsThrowByProblematicListenersRatherThanInterruptExecution()
+        public async Task ShouldCatchAndLogExceptionsThrowByProblematicListenersRatherThanInterruptExecution()
         {
             var listeners = new Listener[]
             {
@@ -45,9 +45,9 @@
             var bus = new Bus(listeners);
             using var console = new RedirectedConsole();
 
-            bus.Publish(new Event(1));
-            bus.Publish(new AnotherEvent(2));
-            bus.Publish(new Event(3));
+            await bus.PublishAsync(new Event(1));
+            await bus.PublishAsync(new AnotherEvent(2));
+            await bus.PublishAsync(new Event(3));
 
             console.Lines()
                 .ShouldBe(
@@ -93,7 +93,7 @@
             public void Handle(Event message)
                 => Log<CombinationEventHandler, Event>(message.Id);
 
-            public Task Handle(AnotherEvent message)
+            public Task HandleAsync(AnotherEvent message)
             {
                 Log<CombinationEventHandler, AnotherEvent>(message.Id);
                 return Task.CompletedTask;

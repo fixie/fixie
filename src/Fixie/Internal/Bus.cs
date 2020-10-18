@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     class Bus
     {
@@ -17,14 +18,17 @@
             this.listeners = new List<Listener>(listeners);
         }
 
-        public void Publish<TMessage>(TMessage message) where TMessage : Message
+        public async Task PublishAsync<TMessage>(TMessage message) where TMessage : Message
         {
             foreach (var listener in listeners)
             {
                 try
                 {
-                    (listener as Handler<TMessage>)?.Handle(message);
-                    (listener as AsyncHandler<TMessage>)?.Handle(message).GetAwaiter().GetResult();
+                    if (listener is Handler<TMessage> handler)
+                        handler.Handle(message);
+
+                    if (listener is AsyncHandler<TMessage> asyncHandler)
+                        await asyncHandler.HandleAsync(message);
                 }
                 catch (Exception exception)
                 {

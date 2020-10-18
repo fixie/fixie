@@ -9,6 +9,6 @@
 
     public interface AsyncHandler<in TMessage> : Listener where TMessage : Message
     {
-        Task Handle(TMessage message);
+        Task HandleAsync(TMessage message);
     }
 }

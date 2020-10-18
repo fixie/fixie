@@ -1,6 +1,7 @@
 namespace Fixie.Tests
 {
     using System;
+    using System.Threading.Tasks;
     using Fixie.Internal;
 
     public class TestClassConstructionTests : InstrumentedExecutionTests
@@ -105,24 +106,24 @@ namespace Fixie.Tests
 
         class CreateInstancePerCase : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        test.RunCases(Utility.UsingInputAttributes, @case => CaseInspection());
+                        await test.RunCasesAsync(Utility.UsingInputAttributes, @case => CaseInspection());
             }
         }
 
         class CreateInstancePerClass : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 var type = testClass.Type;
                 var instance = type.IsStatic() ? null : testClass.Construct();
 
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        test.RunCases(Utility.UsingInputAttributes, instance, @case => CaseInspection());
+                        await test.RunCasesAsync(Utility.UsingInputAttributes, instance, @case => CaseInspection());
 
                 instance.Dispose();
             }
@@ -130,14 +131,14 @@ namespace Fixie.Tests
 
         static void CaseInspection() => WhereAmI();
 
-        public void ShouldConstructPerCaseByDefault()
+        public async Task ShouldConstructPerCaseByDefault()
         {
             //NOTE: With no input parameter or skip behaviors,
             //      all test methods are attempted once and with zero
             //      parameters, so Skip() is reached and Pass(int)
             //      is attempted once but never reached.
 
-            var output = Run<SampleTestClass, DefaultExecution>();
+            var output = await RunAsync<SampleTestClass, DefaultExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -150,9 +151,9 @@ namespace Fixie.Tests
                 ".ctor", "Skip", "Dispose");
         }
 
-        public void ShouldAllowConstructingPerCase()
+        public async Task ShouldAllowConstructingPerCase()
         {
-            var output = Run<SampleTestClass, CreateInstancePerCase>();
+            var output = await RunAsync<SampleTestClass, CreateInstancePerCase>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -166,11 +167,11 @@ namespace Fixie.Tests
                 ".ctor", "Pass(2)", "CaseInspection", "Dispose");
         }
 
-        public void ShouldFailCaseInAbsenseOfPrimaryCaseResultAndProceedWithCaseInspectionWhenConstructingPerCaseAndConstructorThrows()
+        public async Task ShouldFailCaseInAbsenseOfPrimaryCaseResultAndProceedWithCaseInspectionWhenConstructingPerCaseAndConstructorThrows()
         {
             FailDuring(".ctor");
             
-            var output = Run<SampleTestClass, CreateInstancePerCase>();
+            var output = await RunAsync<SampleTestClass, CreateInstancePerCase>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: '.ctor' failed!",
@@ -184,11 +185,11 @@ namespace Fixie.Tests
                 ".ctor", "CaseInspection");
         }
 
-        public void ShouldFailCaseWithoutHidingPrimaryFailuresAndProceedWithCaseInspectionWhenConstructingPerCaseAndDisposeThrows()
+        public async Task ShouldFailCaseWithoutHidingPrimaryFailuresAndProceedWithCaseInspectionWhenConstructingPerCaseAndDisposeThrows()
         {
             FailDuring("Dispose");
 
-            var output = Run<SampleTestClass, CreateInstancePerCase>();
+            var output = await RunAsync<SampleTestClass, CreateInstancePerCase>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -203,9 +204,9 @@ namespace Fixie.Tests
                 ".ctor", "Pass(2)", "CaseInspection", "Dispose");
         }
 
-        public void ShouldAllowConstructingPerClass()
+        public async Task ShouldAllowConstructingPerClass()
         {
-            var output = Run<SampleTestClass, CreateInstancePerClass>();
+            var output = await RunAsync<SampleTestClass, CreateInstancePerClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -221,11 +222,11 @@ namespace Fixie.Tests
                 "Dispose");
         }
 
-        public void ShouldFailAllTestsWithoutHidingPrimarySkipResultsWhenConstructingPerClassAndConstructorThrows()
+        public async Task ShouldFailAllTestsWithoutHidingPrimarySkipResultsWhenConstructingPerClassAndConstructorThrows()
         {
             FailDuring(".ctor");
 
-            var output = Run<SampleTestClass, CreateInstancePerClass>();
+            var output = await RunAsync<SampleTestClass, CreateInstancePerClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: '.ctor' failed!",
@@ -239,11 +240,11 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(".ctor");
         }
 
-        public void ShouldFailAllTestsWithoutHidingPrimaryCaseResultsWhenConstructingPerClassAndDisposeThrows()
+        public async Task ShouldFailAllTestsWithoutHidingPrimaryCaseResultsWhenConstructingPerClassAndDisposeThrows()
         {
             FailDuring("Dispose");
 
-            var output = Run<SampleTestClass, CreateInstancePerClass>();
+            var output = await RunAsync<SampleTestClass, CreateInstancePerClass>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -262,9 +263,9 @@ namespace Fixie.Tests
                 "Dispose");
         }
 
-        public void ShouldBypassConstructionWhenConstructingPerCaseAndAllCasesAreSkipped()
+        public async Task ShouldBypassConstructionWhenConstructingPerCaseAndAllCasesAreSkipped()
         {
-            var output = Run<AllSkippedTestClass, CreateInstancePerCase>();
+            var output = await RunAsync<AllSkippedTestClass, CreateInstancePerCase>();
 
             output.ShouldHaveResults(
                 "AllSkippedTestClass.SkipA skipped: This test did not run.",
@@ -274,9 +275,9 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle();
         }
 
-        public void ShouldNotBypassConstructionWhenConstructingPerClassAndAllCasesAreSkipped()
+        public async Task ShouldNotBypassConstructionWhenConstructingPerClassAndAllCasesAreSkipped()
         {
-            var output = Run<AllSkippedTestClass, CreateInstancePerClass>();
+            var output = await RunAsync<AllSkippedTestClass, CreateInstancePerClass>();
 
             output.ShouldHaveResults(
                 "AllSkippedTestClass.SkipA skipped: This test did not run.",
@@ -286,9 +287,9 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(".ctor", "Dispose");
         }
 
-        public void ShouldBypassConstructionAttemptsWhenTestMethodsAreStatic()
+        public async Task ShouldBypassConstructionAttemptsWhenTestMethodsAreStatic()
         {
-            var output = Run<DefaultExecution>(typeof(StaticTestClass));
+            var output = await RunAsync<DefaultExecution>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",
@@ -299,7 +300,7 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle("Fail", "Pass", "Skip");
 
 
-            output = Run<CreateInstancePerCase>(typeof(StaticTestClass));
+            output = await RunAsync<CreateInstancePerCase>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",
@@ -312,7 +313,7 @@ namespace Fixie.Tests
                 "Pass", "CaseInspection");
 
 
-            output = Run<CreateInstancePerClass>(typeof(StaticTestClass));
+            output = await RunAsync<CreateInstancePerClass>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",

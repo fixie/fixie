@@ -1,10 +1,12 @@
 ﻿namespace Fixie.Internal
 {
     using System;
+    using System.Threading.Tasks;
 
     class Program
     {
         [STAThread]
-        static int Main(string[] customArguments) => EntryPoint.Main(typeof(Program).Assembly, customArguments);
+        static async Task<int> Main(string[] customArguments)
+            => await EntryPoint.Main(typeof(Program).Assembly, customArguments);
     }
 }

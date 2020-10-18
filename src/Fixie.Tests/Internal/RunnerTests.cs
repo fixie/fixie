@@ -1,6 +1,7 @@
 namespace Fixie.Tests.Internal
 {
     using System.Collections.Immutable;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
     using static Utility;
@@ -9,7 +10,7 @@ namespace Fixie.Tests.Internal
     {
         static readonly string Self = FullName<RunnerTests>();
 
-        public void ShouldDiscoverAllTestsInAllDiscoveredTestClasses()
+        public async Task ShouldDiscoverAllTestsInAllDiscoveredTestClasses()
         {
             var listener = new StubListener();
 
@@ -19,8 +20,9 @@ namespace Fixie.Tests.Internal
                 typeof(PassFailTestClass), typeof(SkipTestClass)
             };
             var discovery = new SelfTestDiscovery();
-
-            new Runner(GetType().Assembly, listener).Discover(candidateTypes, discovery);
+            
+            var runner = new Runner(GetType().Assembly, listener);
+            await runner.DiscoverAsync(candidateTypes, discovery);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA discovered",
@@ -31,7 +33,7 @@ namespace Fixie.Tests.Internal
                 Self + "+SkipTestClass.SkipB discovered");
         }
 
-        public void ShouldExecuteAllCasesInAllDiscoveredTestClasses()
+        public async Task ShouldExecuteAllCasesInAllDiscoveredTestClasses()
         {
             var listener = new StubListener();
 
@@ -43,7 +45,8 @@ namespace Fixie.Tests.Internal
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();
 
-            new Runner(GetType().Assembly, listener).Run(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
+            var runner = new Runner(GetType().Assembly, listener);
+            await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
 
             listener.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",
@@ -56,11 +59,11 @@ namespace Fixie.Tests.Internal
 
         class CreateInstancePerCase : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
-                        test.Run();
+                        await test.RunAsync();
             }
         }
 

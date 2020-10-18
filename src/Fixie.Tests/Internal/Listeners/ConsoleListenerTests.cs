@@ -3,18 +3,19 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Fixie.Internal.Listeners;
     using Assertions;
 
     public class ConsoleListenerTests : MessagingTests
     {
-        public void ShouldReportResults()
+        public async Task ShouldReportResults()
         {
             var listener = new ConsoleListener();
 
-            Run(listener, out var console);
+            var output = await RunAsync(listener);
 
-            console
+            output.Console
                 .CleanStackTraceLineNumbers()
                 .CleanDuration()
                 .ShouldBe(
@@ -60,13 +61,13 @@
                     "2 passed, 3 failed, 2 skipped, took 1.23 seconds");
         }
 
-        public void CanOptionallyIncludePassingResults()
+        public async Task CanOptionallyIncludePassingResults()
         {
             var listener = new ConsoleListener(outputCasePassed: true);
 
-            Run(listener, out var console);
+            var output = await RunAsync(listener);
 
-            console
+            output.Console
                 .CleanStackTraceLineNumbers()
                 .CleanDuration()
                 .ShouldBe(
@@ -124,14 +125,14 @@
                 => publicMethods.Where(x => !x.Name.StartsWith("Pass") && x.ReflectedType == TestClassType);
         }
 
-        public void ShouldNotReportPassCountsWhenZeroTestsHavePassed()
+        public async Task ShouldNotReportPassCountsWhenZeroTestsHavePassed()
         {
             var listener = new ConsoleListener();
             var discovery = new ZeroPassed();
 
-            Run(listener, discovery, out var console);
+            var output = await RunAsync(listener, discovery);
 
-            console
+            output.Console
                 .CleanDuration()
                 .Last()
                 .ShouldBe("2 failed, 2 skipped, took 1.23 seconds");
@@ -143,14 +144,14 @@
                 => publicMethods.Where(x => !x.Name.StartsWith("Fail") && x.ReflectedType == TestClassType);
         }
 
-        public void ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
+        public async Task ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
         {
             var listener = new ConsoleListener();
             var discovery = new ZeroFailed();
 
-            Run(listener, discovery, out var console);
+            var output = await RunAsync(listener, discovery);
 
-            console
+            output.Console
                 .CleanDuration()
                 .Last()
                 .ShouldBe("1 passed, 2 skipped, took 1.23 seconds");
@@ -162,14 +163,14 @@
                 => publicMethods.Where(x => !x.Name.StartsWith("Skip") && x.ReflectedType == TestClassType);
         }
 
-        public void ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
+        public async Task ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
         {
             var listener = new ConsoleListener();
             var discovery = new ZeroSkipped();
 
-            Run(listener, discovery, out var console);
+            var output = await RunAsync(listener, discovery);
 
-            console
+            output.Console
                 .CleanDuration()
                 .Last()
                 .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
@@ -181,14 +182,14 @@
                 => publicMethods.Where(x => false);
         }
 
-        public void ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
+        public async Task ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
         {
             var listener = new ConsoleListener();
             var discovery = new NoTestsFound();
 
-            Run(listener, discovery, out var console);
+            var output = await RunAsync(listener, discovery);
 
-            console
+            output.Console
                 .Last()
                 .ShouldBe("No tests found.");
         }

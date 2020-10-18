@@ -1,9 +1,9 @@
 ﻿namespace Fixie.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
     using static Utility;
@@ -27,46 +27,54 @@
             typeof(EmptyTestClass)
         };
 
-        protected void Discover(Listener listener, out IEnumerable<string> consoleLines)
+        protected class Output
+        {
+            public Output(string[] console)
+                => Console = console;
+
+            public string[] Console { get; }
+        }
+
+        protected async Task DiscoverAsync(Listener listener)
         {
             var discovery = new SelfTestDiscovery();
 
             using var console = new RedirectedConsole();
 
-            Utility.Discover(listener, discovery, candidateTypes);
+            await Utility.DiscoverAsync(listener, discovery, candidateTypes);
 
-            consoleLines = console.Lines();
+            console.Lines().ShouldBeEmpty();
         }
 
-        protected void Run(Listener listener, out IEnumerable<string> consoleLines)
+        protected Task<Output> RunAsync(Listener listener)
         {
-            Run(listener, new SelfTestDiscovery(), out consoleLines);
+            return RunAsync(listener, new SelfTestDiscovery());
         }
 
-        protected void Run(Listener listener, Discovery discovery, out IEnumerable<string> consoleLines)
+        protected async Task<Output> RunAsync(Listener listener, Discovery discovery)
         {
             var execution = new MessagingTestsExecution();
 
             using var console = new RedirectedConsole();
 
-            Utility.Run(listener, discovery, execution, candidateTypes);
+            await Utility.RunAsync(listener, discovery, execution, candidateTypes);
 
-            consoleLines = console.Lines();
+            return new Output(console.Lines().ToArray());
         }
 
         class MessagingTestsExecution : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                 {
                     if (test.Method.Has<SkipAttribute>(out var skip))
                     {
-                        test.Skip(skip.Reason);
+                        await test.SkipAsync(skip.Reason);
                         continue;
                     }
 
-                    test.RunCases(UsingInputAttributes);
+                    await test.RunCasesAsync(UsingInputAttributes);
                 }
             }
         }

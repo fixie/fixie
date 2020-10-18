@@ -32,9 +32,9 @@
         readonly string collectionUri;
         readonly string project;
         readonly string buildId;
-        readonly ApiAction<CreateRun> sendCreateRun;
-        readonly ApiAction<IReadOnlyList<Result>> sendResultsBatch;
-        readonly ApiAction<CompleteRun> sendCompleteRun;
+        readonly ApiAction<CreateRun> sendCreateRunAsync;
+        readonly ApiAction<IReadOnlyList<Result>> sendResultsBatchAsync;
+        readonly ApiAction<CompleteRun> sendCompleteRunAsync;
         readonly HttpClient client;
 
         string? runUrl;
@@ -64,9 +64,9 @@
                             project,
                             accessToken,
                             buildId,
-                            Send,
-                            Send,
-                            Send,
+                            SendAsync,
+                            SendAsync,
+                            SendAsync,
                             batchSize: 25);
                     }
 
@@ -111,17 +111,17 @@
             string project,
             string accessToken,
             string buildId,
-            ApiAction<CreateRun> sendCreateRun,
-            ApiAction<IReadOnlyList<Result>> sendResultsBatch,
-            ApiAction<CompleteRun> sendCompleteRun,
+            ApiAction<CreateRun> sendCreateRunAsync,
+            ApiAction<IReadOnlyList<Result>> sendResultsBatchAsync,
+            ApiAction<CompleteRun> sendCompleteRunAsync,
             int batchSize)
         {
             this.collectionUri = collectionUri;
             this.project = project;
             this.buildId = buildId;
-            this.sendCreateRun = sendCreateRun;
-            this.sendResultsBatch = sendResultsBatch;
-            this.sendCompleteRun = sendCompleteRun;
+            this.sendCreateRunAsync = sendCreateRunAsync;
+            this.sendResultsBatchAsync = sendResultsBatchAsync;
+            this.sendCompleteRunAsync = sendCompleteRunAsync;
             this.batchSize = batchSize;
 
             batch = new List<Result>(batchSize);
@@ -131,7 +131,7 @@
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         }
 
-        public async Task Handle(AssemblyStarted message)
+        public async Task HandleAsync(AssemblyStarted message)
         {
             var runName = Path.GetFileNameWithoutExtension(message.Assembly.Location);
 
@@ -146,33 +146,33 @@
 
             var runsUri = new Uri(new Uri(collectionUri), $"{project}/_apis/test/runs").ToString();
 
-            var response = await sendCreateRun(client, HttpMethod.Post, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", createRun);
+            var response = await sendCreateRunAsync(client, HttpMethod.Post, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", createRun);
 
             runUrl = Deserialize<TestRun>(response).url;
         }
 
-        public async Task Handle(CaseSkipped message)
+        public async Task HandleAsync(CaseSkipped message)
         {
             if (apiUnavailable) return;
 
-            await Include(new Result(message, "Warning")
+            await IncludeAsync(new Result(message, "Warning")
             {
                 errorMessage = message.Reason
             });
         }
 
-        public async Task Handle(CasePassed message)
+        public async Task HandleAsync(CasePassed message)
         {
             if (apiUnavailable) return;
 
-            await Include(new Result(message, "Passed"));
+            await IncludeAsync(new Result(message, "Passed"));
         }
 
-        public async Task Handle(CaseFailed message)
+        public async Task HandleAsync(CaseFailed message)
         {
             if (apiUnavailable) return;
 
-            await Include(new Result(message, "Failed")
+            await IncludeAsync(new Result(message, "Failed")
             {
                 errorMessage = message.Exception.Message,
                 stackTrace =
@@ -182,27 +182,27 @@
             });
         }
 
-        public async Task Handle(AssemblyCompleted message)
+        public async Task HandleAsync(AssemblyCompleted message)
         {
             if (apiUnavailable) return;
 
             if (batch.Any())
-                await PostBatch();
+                await PostBatchAsync();
 
             var completeRun = new CompleteRun();
 
-            await sendCompleteRun(client, new HttpMethod("PATCH"), $"{runUrl}?api-version={AzureDevOpsRestApiVersion}", completeRun);
+            await sendCompleteRunAsync(client, new HttpMethod("PATCH"), $"{runUrl}?api-version={AzureDevOpsRestApiVersion}", completeRun);
         }
 
-        async Task Include(Result result)
+        async Task IncludeAsync(Result result)
         {
             batch.Add(result);
 
             if (batch.Count >= batchSize)
-                await PostBatch();
+                await PostBatchAsync();
         }
 
-        async Task PostBatch()
+        async Task PostBatchAsync()
         {
             var attempt = 1;
             const int maxAttempts = 5;
@@ -212,7 +212,7 @@
             {
                 try
                 {
-                    await sendResultsBatch(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", batch.ToList());
+                    await sendResultsBatchAsync(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", batch.ToList());
                     batch.Clear();
 
                     if (attempt > 1)
@@ -242,7 +242,7 @@
             batch.Clear();
         }
 
-        static async Task<string> Send<T>(HttpClient client, HttpMethod method, string uri, T content)
+        static async Task<string> SendAsync<T>(HttpClient client, HttpMethod method, string uri, T content)
         {
             var serialized = Serialize(content);
 

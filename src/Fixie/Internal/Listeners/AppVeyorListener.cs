@@ -20,7 +20,7 @@
     {
         public delegate Task PostAction(string uri, TestResult testResult);
 
-        readonly PostAction postAction;
+        readonly PostAction postActionAsync;
         readonly string uri;
         string runName;
 
@@ -32,7 +32,7 @@
             {
                 var uri = GetEnvironmentVariable("APPVEYOR_API_URL");
                 if (uri != null)
-                    return new AppVeyorListener(uri, Post);
+                    return new AppVeyorListener(uri, PostAsync);
             }
 
             return null;
@@ -44,9 +44,9 @@
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public AppVeyorListener(string uri, PostAction postAction)
+        public AppVeyorListener(string uri, PostAction postActionAsync)
         {
-            this.postAction = postAction;
+            this.postActionAsync = postActionAsync;
             this.uri = new Uri(new Uri(uri), "api/tests").ToString();
             runName = "Unknown";
         }
@@ -63,22 +63,22 @@
                 runName = $"{runName} ({framework})";
         }
 
-        public async Task Handle(CaseSkipped message)
+        public async Task HandleAsync(CaseSkipped message)
         {
-            await Post(new TestResult(runName, message, "Skipped")
+            await PostAsync(new TestResult(runName, message, "Skipped")
             {
                 ErrorMessage = message.Reason
             });
         }
 
-        public async Task Handle(CasePassed message)
+        public async Task HandleAsync(CasePassed message)
         {
-            await Post(new TestResult(runName, message, "Passed"));
+            await PostAsync(new TestResult(runName, message, "Passed"));
         }
 
-        public async Task Handle(CaseFailed message)
+        public async Task HandleAsync(CaseFailed message)
         {
-            await Post(new TestResult(runName, message, "Failed")
+            await PostAsync(new TestResult(runName, message, "Failed")
             {
                 ErrorMessage = message.Exception.Message,
                 ErrorStackTrace =
@@ -88,12 +88,12 @@
             });
         }
 
-        async Task Post(TestResult testResult)
+        async Task PostAsync(TestResult testResult)
         {
-            await postAction(uri, testResult);
+            await postActionAsync(uri, testResult);
         }
 
-        static async Task Post(string uri, TestResult testResult)
+        static async Task PostAsync(string uri, TestResult testResult)
         {
             var content = Serialize(testResult);
             var response = await Client.PostAsync(uri, new StringContent(content, Encoding.UTF8, "application/json"));

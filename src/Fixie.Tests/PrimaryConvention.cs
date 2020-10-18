@@ -5,17 +5,18 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using Assertions;
     using static System.Environment;
     using static Fixie.Internal.Maybe;
 
     class PrimaryConvention : Execution
     {
-        public void Execute(TestClass testClass)
+        public async Task ExecuteAsync(TestClass testClass)
         {
             foreach (var test in testClass.Tests)
             {
-                test.Run(@case =>
+                await test.RunAsync(@case =>
                 {
                     if (@case.Exception is AssertException exception && !exception.HasCompactRepresentations)
                         if (testClass.TestAssembly.SelectedTests.Count == 1)

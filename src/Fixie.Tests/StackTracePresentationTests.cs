@@ -10,9 +10,9 @@
 
     public class StackTracePresentationTests
     {
-        public void ShouldProvideCleanStackTraceForImplicitTestClassConstructionFailures()
+        public async Task ShouldProvideCleanStackTraceForImplicitTestClassConstructionFailures()
         {
-            Run<ConstructionFailureTestClass, ImplicitConstruction>()
+            (await RunAsync<ConstructionFailureTestClass, ImplicitConstruction>())
                 .ShouldBe(
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                     "",
@@ -24,9 +24,9 @@
                     "1 failed, took 1.23 seconds");
         }
         
-        public void ShouldProvideCleanStackTraceForExplicitTestClassConstructionFailures()
+        public async Task ShouldProvideCleanStackTraceForExplicitTestClassConstructionFailures()
         {
-            Run<ConstructionFailureTestClass, ExplicitConstruction>()
+            (await RunAsync<ConstructionFailureTestClass, ExplicitConstruction>())
                 .ShouldBe(
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                     "",
@@ -41,9 +41,9 @@
                     "1 failed, 1 skipped, took 1.23 seconds");
         }
 
-        public void ShouldProvideCleanStackTraceTestMethodFailures()
+        public async Task ShouldProvideCleanStackTraceTestMethodFailures()
         {
-            Run<FailureTestClass, ImplicitConstruction>()
+            (await RunAsync<FailureTestClass, ImplicitConstruction>())
                 .ShouldBe(
                     "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
                     "",
@@ -62,9 +62,9 @@
                     "2 failed, took 1.23 seconds");
         }
 
-        public void ShouldProvideLiterateStackTraceIncludingAllNestedExceptions()
+        public async Task ShouldProvideLiterateStackTraceIncludingAllNestedExceptions()
         {
-            Run<NestedFailureTestClass, ImplicitConstruction>()
+            (await RunAsync<NestedFailureTestClass, ImplicitConstruction>())
                 .ShouldBe(
                     "Test '" + FullName<NestedFailureTestClass>() + ".Asynchronous' failed:",
                     "",
@@ -101,7 +101,7 @@
                     "2 failed, took 1.23 seconds");
         }
 
-        static IEnumerable<string> Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
+        static async Task<IEnumerable<string>> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
         {
             var listener = new ConsoleListener();
             var discovery = new SelfTestDiscovery();
@@ -109,7 +109,7 @@
             
             using var console = new RedirectedConsole();
 
-            Utility.Run(listener, discovery, execution, typeof(TSampleTestClass));
+            await Utility.RunAsync(listener, discovery, execution, typeof(TSampleTestClass));
 
             return console.Lines()
                 .CleanStackTraceLineNumbers()
@@ -118,20 +118,20 @@
 
         class ImplicitConstruction : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
-                    test.Run();
+                    await test.RunAsync();
             }
         }
 
         class ExplicitConstruction : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 var instance = testClass.Construct();
                 foreach (var test in testClass.Tests)
-                    test.Run(instance);
+                    await test.RunAsync(instance);
             }
         }
 

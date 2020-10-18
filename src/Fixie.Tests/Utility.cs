@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
     using Fixie.Internal;
 
     public static class Utility
@@ -25,40 +26,44 @@
         public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;
 
-        public static IEnumerable<string> Run<TSampleTestClass>()
-            => Run<TSampleTestClass, DefaultExecution>();
+        public static Task<IEnumerable<string>> RunAsync<TSampleTestClass>()
+            => RunAsync<TSampleTestClass, DefaultExecution>();
 
-        public static IEnumerable<string> Run<TSampleTestClass, TExecution>() where TExecution : Execution, new()
-            => Run<TSampleTestClass>(new TExecution());
+        public static Task<IEnumerable<string>> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
+            => RunAsync<TSampleTestClass>(new TExecution());
 
-        public static IEnumerable<string> Run<TSampleTestClass>(Execution execution)
-            => Run(typeof(TSampleTestClass), execution);
+        public static Task<IEnumerable<string>> RunAsync<TSampleTestClass>(Execution execution)
+            => RunAsync(typeof(TSampleTestClass), execution);
 
-        public static IEnumerable<string> Run<TExecution>(Type testClass) where TExecution : Execution, new()
-            => Run(testClass, new TExecution());
+        public static Task<IEnumerable<string>> RunAsync<TExecution>(Type testClass) where TExecution : Execution, new()
+            => RunAsync(testClass, new TExecution());
 
-        public static IEnumerable<string> Run(Type testClass, Execution execution)
+        public static async Task<IEnumerable<string>> RunAsync(Type testClass, Execution execution)
         {
             var listener = new StubListener();
             var discovery = new SelfTestDiscovery();
-            Run(listener, discovery, execution, testClass);
+            await RunAsync(listener, discovery, execution, testClass);
             return listener.Entries;
         }
 
-        public static void Discover(Listener listener, Discovery discovery, params Type[] candidateTypes)
+        public static async Task DiscoverAsync(Listener listener, Discovery discovery, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            new Runner(candidateTypes[0].Assembly, listener).Discover(candidateTypes, discovery);
+            var runner = new Runner(candidateTypes[0].Assembly, listener);
+
+            await runner.DiscoverAsync(candidateTypes, discovery);
         }
 
-        public static void Run(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)
+        public static async Task RunAsync(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            new Runner(candidateTypes[0].Assembly, listener).Run(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
+            var runner = new Runner(candidateTypes[0].Assembly, listener);
+
+            await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
         }
 
         public static IEnumerable<object?[]> UsingInputAttributes(MethodInfo method)

@@ -5,6 +5,7 @@
     using System.Collections.Immutable;
     using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Internal;
 
     public class TestAssembly
@@ -35,7 +36,7 @@
         /// </summary>
         public ImmutableHashSet<string> SelectedTests { get; }
 
-        internal void Run()
+        internal async Task RunAsync()
         {
             foreach (var @class in classes)
             {
@@ -56,7 +57,7 @@
 
                     try
                     {
-                        execution.Execute(testClass);
+                        await execution.ExecuteAsync(testClass);
                     }
                     catch (Exception exception)
                     {
@@ -68,10 +69,10 @@
                         var testNeverRan = !testMethod.RecordedResult;
 
                         if (classLifecycleFailure != null)
-                            testMethod.Fail(classLifecycleFailure);
+                            await testMethod.FailAsync(classLifecycleFailure);
                         
                         if (testNeverRan)
-                            testMethod.Skip("This test did not run.");
+                            await testMethod.SkipAsync("This test did not run.");
                     }
                 }
             }

@@ -32,7 +32,10 @@
                 HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
                 foreach (var assemblyPath in sources)
-                    RunTests(log, frameworkHandle, assemblyPath, runner => runner.Run());
+                    RunTests(log, frameworkHandle, assemblyPath, runner =>
+                    {
+                        runner.RunAsync().GetAwaiter().GetResult();
+                    });
             }
             catch (Exception exception)
             {
@@ -61,7 +64,10 @@
 
                     RunTests(log, frameworkHandle, assemblyPath, runner =>
                     {
-                        runner.Run(assemblyGroup.Select(x => x.FullyQualifiedName).ToImmutableHashSet());
+                        var selectedTests =
+                            assemblyGroup.Select(x => x.FullyQualifiedName).ToImmutableHashSet();
+                        
+                        runner.RunAsync(selectedTests).GetAwaiter().GetResult();
                     });
                 }
             }

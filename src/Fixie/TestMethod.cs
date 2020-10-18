@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Internal;
 
     public class TestMethod
@@ -26,11 +27,11 @@
 
         internal bool RecordedResult { get; private set; }
 
-        void RunCore(object?[] parameters, object? instance, Action<Case>? inspectCase)
+        async Task RunCoreAsync(object?[] parameters, object? instance, Action<Case>? inspectCase)
         {
             var @case = new Case(Method, parameters);
 
-            recorder.Start(@case);
+            await recorder.StartAsync(@case);
 
             Exception? caseInspectionFailure = null;
             Exception? disposalFailure = null;
@@ -40,7 +41,7 @@
             {
                 if (instance != null)
                 {
-                    TryRunCase(@case, instance);
+                    await TryRunCaseAsync(@case, instance);
                     TryInspectCase(@case, inspectCase, out caseInspectionFailure);
                 }
                 else
@@ -49,7 +50,7 @@
                     {
                         var automaticInstance = @case.Method.IsStatic ? null : Construct(@case.Method.ReflectedType!);
 
-                        TryRunCase(@case, automaticInstance);
+                        await TryRunCaseAsync(@case, automaticInstance);
                         TryInspectCase(@case, inspectCase, out caseInspectionFailure);
                         TryDispose(automaticInstance, out disposalFailure);
                     }
@@ -69,39 +70,39 @@
             bool accounted = false;
             if (@case.State == CaseState.Skipped)
             {
-                recorder.Skip(@case, output);
+                await recorder.SkipAsync(@case, output);
                 accounted = true;
             }
 
             if (@case.State == CaseState.Failed)
             {
-                recorder.Fail(@case, output);
+                await recorder.FailAsync(@case, output);
                 accounted = true;
             }
 
             if (caseInspectionFailure != null)
             {
-                recorder.Fail(new Case(@case, caseInspectionFailure), output);
+                await recorder.FailAsync(new Case(@case, caseInspectionFailure), output);
                 accounted = true;
             }
 
             if (disposalFailure != null)
             {
-                recorder.Fail(new Case(@case, disposalFailure), output);
+                await recorder.FailAsync(new Case(@case, disposalFailure), output);
                 accounted = true;
             }
             
             if (@case.State == CaseState.Passed && !accounted)
             {
-                recorder.Pass(@case, output);
+                await recorder.PassAsync(@case, output);
             }
 
             RecordedResult = true;
         }
 
-        static void TryRunCase(Case @case, object? instance)
+        static Task TryRunCaseAsync(Case @case, object? instance)
         {
-            @case.Run(instance);
+            return @case.RunAsync(instance);
         }
 
         static void TryInspectCase(Case @case, Action<Case>? inspectCase, out Exception? caseInspectionFailure)
@@ -132,49 +133,49 @@
             }
         }
 
-        public void Run(Action<Case>? inspectCase = null)
+        public Task RunAsync(Action<Case>? inspectCase = null)
         {
-            RunCore(EmptyParameters, instance: null, inspectCase);
+            return RunCoreAsync(EmptyParameters, instance: null, inspectCase);
         }
 
-        public void Run(object?[] parameters, Action<Case>? inspectCase = null)
+        public Task RunAsync(object?[] parameters, Action<Case>? inspectCase = null)
         {
-            RunCore(parameters, instance: null, inspectCase);
+            return RunCoreAsync(parameters, instance: null, inspectCase);
         }
 
-        public void RunCases(ParameterSource parameterSource, Action<Case>? inspectCase = null)
+        public async Task RunCasesAsync(ParameterSource parameterSource, Action<Case>? inspectCase = null)
         {
             try
             {
                 foreach (var parameters in GetCases(parameterSource))
-                    RunCore(parameters, instance: null, inspectCase);
+                    await RunCoreAsync(parameters, instance: null, inspectCase);
             }
             catch (Exception exception)
             {
-                Fail(exception);
+                await FailAsync(exception);
             }
         }
 
-        public void Run(object? instance, Action<Case>? inspectCase = null)
+        public Task RunAsync(object? instance, Action<Case>? inspectCase = null)
         {
-            RunCore(EmptyParameters, instance, inspectCase);
+            return RunCoreAsync(EmptyParameters, instance, inspectCase);
         }
 
-        public void Run(object?[] parameters, object? instance, Action<Case>? inspectCase = null)
+        public Task RunAsync(object?[] parameters, object? instance, Action<Case>? inspectCase = null)
         {
-            RunCore(parameters, instance, inspectCase);
+            return RunCoreAsync(parameters, instance, inspectCase);
         }
 
-        public void RunCases(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
+        public async Task RunCasesAsync(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
         {
             try
             {
                 foreach (var parameters in GetCases(parameterSource))
-                    RunCore(parameters, instance, inspectCase);
+                    await RunCoreAsync(parameters, instance, inspectCase);
             }
             catch (Exception exception)
             {
-                Fail(exception);
+                await FailAsync(exception);
             }
         }
 
@@ -188,18 +189,18 @@
         /// <summary>
         /// Emit a skip result for this test, with the given reason.
         /// </summary>
-        public void Skip(string? reason = null)
+        public async Task SkipAsync(string? reason = null)
         {
-            recorder.Skip(this, reason);
+            await recorder.SkipAsync(this, reason);
             RecordedResult = true;
         }
 
         /// <summary>
         /// Emit a fail result for this test, with the given reason.
         /// </summary>
-        public void Fail(Exception reason)
+        public async Task FailAsync(Exception reason)
         {
-            recorder.Fail(this, reason);
+            await recorder.FailAsync(this, reason);
             RecordedResult = true;
         }
 

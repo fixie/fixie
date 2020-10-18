@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Reflection;
+    using System.Threading.Tasks;
 
     class Runner
     {
@@ -21,13 +22,13 @@
             bus = new Bus(listeners);
         }
 
-        public void Discover()
+        public async Task DiscoverAsync()
         {
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
 
             try
             {
-                Discover(assembly.GetTypes(), discovery);
+                await DiscoverAsync(assembly.GetTypes(), discovery);
             }
             finally
             {
@@ -35,17 +36,17 @@
             }
         }
 
-        public ExecutionSummary Run()
+        public Task<ExecutionSummary> RunAsync()
         {
-            return Run(assembly.GetTypes(), ImmutableHashSet<string>.Empty);
+            return RunAsync(assembly.GetTypes(), ImmutableHashSet<string>.Empty);
         }
 
-        public ExecutionSummary Run(ImmutableHashSet<string> selectedTests)
+        public Task<ExecutionSummary> RunAsync(ImmutableHashSet<string> selectedTests)
         {
-            return Run(assembly.GetTypes(), selectedTests);
+            return RunAsync(assembly.GetTypes(), selectedTests);
         }
 
-        public ExecutionSummary Run(TestPattern testPattern)
+        public async Task<ExecutionSummary> RunAsync(TestPattern testPattern)
         {
             var matchingTests = ImmutableHashSet<string>.Empty;
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
@@ -70,17 +71,17 @@
                 discovery.Dispose();
             }
 
-            return Run(matchingTests);
+            return await RunAsync(matchingTests);
         }
 
-        ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
+        async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);
 
             try
             {
-                return Run(candidateTypes, discovery, execution, selectedTests);
+                return await RunAsync(candidateTypes, discovery, execution, selectedTests);
             }
             finally
             {
@@ -91,7 +92,7 @@
             }
         }
 
-        internal void Discover(IReadOnlyList<Type> candidateTypes, Discovery discovery)
+        internal async Task DiscoverAsync(IReadOnlyList<Type> candidateTypes, Discovery discovery)
         {
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
@@ -99,10 +100,10 @@
             var methodDiscoverer = new MethodDiscoverer(discovery);
             foreach (var testClass in classes)
             foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                bus.Publish(new TestDiscovered(new Test(testMethod)));
+                await bus.PublishAsync(new TestDiscovered(new Test(testMethod)));
         }
 
-        internal ExecutionSummary Run(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)
+        internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)
         {
             var recorder = new ExecutionRecorder(bus);
             var classDiscoverer = new ClassDiscoverer(discovery);
@@ -110,9 +111,9 @@
             var methodDiscoverer = new MethodDiscoverer(discovery);
 
             var testAssembly = new TestAssembly(assembly, selectedTests, recorder, classes, methodDiscoverer, execution);
-            recorder.Start(testAssembly);
-            testAssembly.Run();
-            return recorder.Complete(testAssembly);
+            await recorder.StartAsync(testAssembly);
+            await testAssembly.RunAsync();
+            return await recorder.CompleteAsync(testAssembly);
         }
     }
 }

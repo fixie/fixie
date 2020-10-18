@@ -1,20 +1,21 @@
 ﻿namespace Fixie.Tests.Internal
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
     using static Utility;
 
     public class ExecutionSummaryTests
     {
-        public void ShouldAccumulateCaseStatusCounts()
+        public async Task ShouldAccumulateCaseStatusCounts()
         {
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();
 
             var listener = new StubExecutionSummaryListener();
 
-            Run(listener, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
+            await RunAsync(listener, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
             listener.AssemblySummary.Count.ShouldBe(1);
 
@@ -53,11 +54,11 @@
 
         class CreateInstancePerCase : Execution
         {
-            public void Execute(TestClass testClass)
+            public async Task ExecuteAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))
-                        test.Run();
+                        await test.RunAsync();
             }
         }
     }

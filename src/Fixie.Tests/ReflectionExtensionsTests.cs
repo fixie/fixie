@@ -7,12 +7,6 @@
 
     public class ReflectionExtensionsTests
     {
-        public void CanDetectVoidReturnType()
-        {
-            Method("ReturnsVoid").IsVoid().ShouldBe(true);
-            Method("ReturnsInt").IsVoid().ShouldBe(false);
-        }
-
         public void CanDetectStaticTypes()
         {
             typeof(StaticClass).IsStatic().ShouldBe(true);

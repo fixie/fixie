@@ -46,6 +46,6 @@
             => type.GetInterfaces().Contains(typeof(IDisposable));
 
         static bool HasDisposeSignature(MethodInfo method)
-            => method.Name == "Dispose" && method.IsVoid() && method.GetParameters().Length == 0;
+            => method.Name == "Dispose" && method.ReturnType == typeof(void) && method.GetParameters().Length == 0;
     }
 }

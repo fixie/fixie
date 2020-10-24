@@ -9,11 +9,6 @@
 
     public static class ReflectionExtensions
     {
-        public static bool IsVoid(this MethodInfo method)
-        {
-            return method.ReturnType == typeof(void);
-        }
-
         public static bool IsStatic(this Type type)
         {
             return type.IsAbstract && type.IsSealed;

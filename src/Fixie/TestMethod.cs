@@ -52,7 +52,7 @@
 
                         await TryRunCaseAsync(@case, automaticInstance);
                         TryInspectCase(@case, inspectCase, out caseInspectionFailure);
-                        disposalFailure = await TryDispose(automaticInstance);
+                        disposalFailure = await TryDisposeAsync(automaticInstance);
                     }
                     catch (Exception constructionFailure)
                     {
@@ -119,7 +119,7 @@
             }
         }
 
-        static async Task<Exception?> TryDispose(object? automaticInstance)
+        static async Task<Exception?> TryDisposeAsync(object? automaticInstance)
         {
             Exception? disposalFailure = null;
 

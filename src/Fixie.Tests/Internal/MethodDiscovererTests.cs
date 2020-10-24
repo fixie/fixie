@@ -68,7 +68,7 @@
                     "PublicStaticWithArgsWithReturn(x)");
         }
 
-        public void ShouldNotConsiderIDisposableDisposeMethod()
+        public void ShouldNotConsiderIDisposableOrIAsyncDisposableMethods()
         {
             var discovery = new MaximumDiscovery();
 

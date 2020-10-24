@@ -75,18 +75,23 @@
             DiscoveredTestMethods<DisposableSample>(discovery)
                 .ShouldBe(
                     "Dispose(disposing)",
+                    "DisposeAsync(disposing)",
                     "NotNamedDispose()");
 
             DiscoveredTestMethods<NonDisposableSample>(discovery)
                 .ShouldBe(
                     "Dispose()",
                     "Dispose(disposing)",
+                    "DisposeAsync()",
+                    "DisposeAsync(disposing)",
                     "NotNamedDispose()");
 
             DiscoveredTestMethods<NonDisposableByReturnTypeSample>(discovery)
                 .ShouldBe(
                     "Dispose()",
                     "Dispose(disposing)",
+                    "DisposeAsync()",
+                    "DisposeAsync(disposing)",
                     "NotNamedDispose()");
         }
 
@@ -180,7 +185,7 @@
             public void Dispose() { }
         }
 
-        class AsyncSample
+        class AsyncSample : IAsyncDisposable
         {
             public static async Task<int> PublicStaticWithArgsWithReturn(int x) { return await Zero(); }
             public static async Task<int> PublicStaticNoArgsWithReturn() { return await Zero(); }
@@ -206,10 +211,14 @@
             {
                 return Task.Run(() => 0);
             }
+
+            public ValueTask DisposeAsync() => default;
         }
 
-        class DisposableSample : IDisposable
+        class DisposableSample : IAsyncDisposable, IDisposable
         {
+            public ValueTask DisposeAsync(bool disposing) => default;
+            public ValueTask DisposeAsync() => default;
             public void Dispose(bool disposing) { }
             public void Dispose() { }
             public void NotNamedDispose() { }
@@ -217,6 +226,8 @@
 
         class NonDisposableSample
         {
+            public ValueTask DisposeAsync(bool disposing) => default;
+            public ValueTask DisposeAsync() => default;
             public void Dispose(bool disposing) { }
             public void Dispose() { }
             public void NotNamedDispose() { }
@@ -224,6 +235,8 @@
 
         class NonDisposableByReturnTypeSample
         {
+            public int DisposeAsync(bool disposing) => 0;
+            public int DisposeAsync() => 0;
             public void Dispose(bool disposing) { }
             public int Dispose() => 0;
             public void NotNamedDispose() { }

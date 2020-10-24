@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Assertions;
 
     public class ReflectionExtensionsTests
@@ -53,24 +54,28 @@
             attemptAmbiguousAttributeLookup.ShouldThrow<AmbiguousMatchException>("Multiple custom attributes of the same type found.");
         }
 
-        public void CanDisposeDisposables()
+        public async Task CanDisposeDisposablesAndAsyncDisposables()
         {
             var disposeable = new Disposable();
             var disposeButNotDisposable = new DisposeButNotDisposable();
             var notDisposable = new NotDisposable();
             object? nullObject = null;
 
-            disposeable.Invoked.ShouldBe(false);
-            disposeButNotDisposable.Invoked.ShouldBe(false);
+            disposeable.DisposeAsyncInvoked.ShouldBe(false);
+            disposeable.DisposeInvoked.ShouldBe(false);
+            disposeButNotDisposable.DisposeAsyncInvoked.ShouldBe(false);
+            disposeButNotDisposable.DisposeInvoked.ShouldBe(false);
             notDisposable.Invoked.ShouldBe(false);
 
-            ((object)disposeable).Dispose();
-            ((object)disposeButNotDisposable).Dispose();
-            notDisposable.Dispose();
-            nullObject.Dispose();
+            await ((object)disposeable).DisposeIfApplicableAsync();
+            await ((object)disposeButNotDisposable).DisposeIfApplicableAsync();
+            await notDisposable.DisposeIfApplicableAsync();
+            await nullObject.DisposeIfApplicableAsync();
 
-            disposeable.Invoked.ShouldBe(true);
-            disposeButNotDisposable.Invoked.ShouldBe(false);
+            disposeable.DisposeAsyncInvoked.ShouldBe(true);
+            disposeable.DisposeInvoked.ShouldBe(true);
+            disposeButNotDisposable.DisposeAsyncInvoked.ShouldBe(false);
+            disposeButNotDisposable.DisposeInvoked.ShouldBe(false);
             notDisposable.Invoked.ShouldBe(false);
         }
 
@@ -115,16 +120,32 @@
         static MethodInfo Method<T>(string name)
             => typeof(T).GetInstanceMethod(name);
 
-        class Disposable : IDisposable
+        class Disposable : IAsyncDisposable, IDisposable
         {
-            public bool Invoked { get; private set; }
-            public void Dispose() => Invoked = true;
+            public bool DisposeAsyncInvoked { get; private set; }
+            public bool DisposeInvoked { get; private set; }
+
+            public ValueTask DisposeAsync()
+            {
+                DisposeAsyncInvoked = true;
+                return default;
+            }
+
+            public void Dispose() => DisposeInvoked = true;
         }
 
         class DisposeButNotDisposable
         {
-            public bool Invoked { get; private set; }
-            public void Dispose() => Invoked = true;
+            public bool DisposeAsyncInvoked { get; private set; }
+            public bool DisposeInvoked { get; private set; }
+
+            public ValueTask DisposeAsync()
+            {
+                DisposeAsyncInvoked = true;
+                return default;
+            }
+
+            public void Dispose() => DisposeInvoked = true;
         }
 
         class NotDisposable

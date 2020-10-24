@@ -4,6 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
     using static Internal.Maybe;
 
     public static class ReflectionExtensions
@@ -28,8 +29,11 @@
             return Try(() => member.GetCustomAttribute<TAttribute>(true), out matchingAttribute);
         }
 
-        public static void Dispose(this object? o)
+        public static async Task DisposeIfApplicableAsync(this object? o)
         {
+            if (o is IAsyncDisposable asyncDisposable)
+                await asyncDisposable.DisposeAsync();
+
             if (o is IDisposable disposable)
                 disposable.Dispose();
         }

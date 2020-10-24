@@ -32,7 +32,7 @@
             }
             finally
             {
-                discovery.Dispose();
+                await discovery.DisposeIfApplicableAsync();
             }
         }
 
@@ -68,7 +68,7 @@
             }
             finally
             {
-                discovery.Dispose();
+                await discovery.DisposeIfApplicableAsync();
             }
 
             return await RunAsync(matchingTests);
@@ -86,9 +86,9 @@
             finally
             {
                 if (execution != discovery)
-                    execution.Dispose();
+                    await execution.DisposeIfApplicableAsync();
 
-                discovery.Dispose();
+                await discovery.DisposeIfApplicableAsync();
             }
         }
 

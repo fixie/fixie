@@ -125,7 +125,7 @@ namespace Fixie.Tests
                     if (!ShouldSkip(test))
                         await test.RunCasesAsync(Utility.UsingInputAttributes, instance, @case => CaseInspection());
 
-                instance.Dispose();
+                await instance.DisposeIfApplicableAsync();
             }
         }
 

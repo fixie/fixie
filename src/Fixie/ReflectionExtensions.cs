@@ -29,7 +29,7 @@
             return Try(() => member.GetCustomAttribute<TAttribute>(true), out matchingAttribute);
         }
 
-        public static async Task DisposeIfApplicableAsync(this object? o)
+        internal static async Task DisposeIfApplicableAsync(this object? o)
         {
             if (o is IAsyncDisposable asyncDisposable)
                 await asyncDisposable.DisposeAsync();

@@ -30,7 +30,8 @@
 
         public static void Dispose(this object? o)
         {
-            (o as IDisposable)?.Dispose();
+            if (o is IDisposable disposable)
+                disposable.Dispose();
         }
     }
 }

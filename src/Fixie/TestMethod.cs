@@ -52,7 +52,7 @@
 
                         await TryRunCaseAsync(@case, automaticInstance);
                         TryInspectCase(@case, inspectCase, out caseInspectionFailure);
-                        TryDispose(automaticInstance, out disposalFailure);
+                        disposalFailure = await TryDisposeAsync(automaticInstance);
                     }
                     catch (Exception constructionFailure)
                     {
@@ -119,18 +119,20 @@
             }
         }
 
-        static void TryDispose(object? automaticInstance, out Exception? disposalFailure)
+        static async Task<Exception?> TryDisposeAsync(object? automaticInstance)
         {
-            disposalFailure = null;
+            Exception? disposalFailure = null;
 
             try
             {
-                automaticInstance.Dispose();
+                await automaticInstance.DisposeIfApplicableAsync();
             }
             catch (Exception exception)
             {
                 disposalFailure = exception;
             }
+
+            return disposalFailure;
         }
 
         public Task RunAsync(Action<Case>? inspectCase = null)

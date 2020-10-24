@@ -22,7 +22,7 @@
         /// </returns>
         public static async Task<object?> ExecuteAsync(this MethodInfo method, object? instance, params object?[] parameters)
         {
-            if (method.IsVoid() && method.HasAsyncKeyword())
+            if (method.ReturnType == typeof(void) && method.HasAsyncKeyword())
                 throw new NotSupportedException(
                     "Async void methods are not supported. Declare async methods with a " +
                     "return type of Task to ensure the task actually runs to completion.");

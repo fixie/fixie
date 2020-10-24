@@ -4,15 +4,11 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
     using static Internal.Maybe;
 
     public static class ReflectionExtensions
     {
-        public static bool IsVoid(this MethodInfo method)
-        {
-            return method.ReturnType == typeof(void);
-        }
-
         public static bool IsStatic(this Type type)
         {
             return type.IsAbstract && type.IsSealed;
@@ -28,9 +24,13 @@
             return Try(() => member.GetCustomAttribute<TAttribute>(true), out matchingAttribute);
         }
 
-        public static void Dispose(this object? o)
+        internal static async Task DisposeIfApplicableAsync(this object? o)
         {
-            (o as IDisposable)?.Dispose();
+            if (o is IAsyncDisposable asyncDisposable)
+                await asyncDisposable.DisposeAsync();
+
+            if (o is IDisposable disposable)
+                disposable.Dispose();
         }
     }
 }

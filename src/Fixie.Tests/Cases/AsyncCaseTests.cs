@@ -41,21 +41,13 @@
                         "be awaited. Consider using Task.Run or Task.Factory.StartNew."));
         }
 
-        public async Task ShouldExecuteReturnedTaskDeclaredAsObject()
-        {
-            (await RunAsync<CompleteTaskDeclaredAsObjectTestClass>())
-                .ShouldBe(
-                    For<CompleteTaskDeclaredAsObjectTestClass>(
-                        ".Test failed: Expected: 0" + NewLine +
-                        "Actual:   3"));
-        }
-
         public async Task ShouldFailUnsupportedReturnTypeDeclarationsRatherThanAttemptExecution()
         {
             UnsupportedReturnTypeDeclarationsTestClass.AsyncGenericTaskInvoked = false;
             UnsupportedReturnTypeDeclarationsTestClass.AsyncVoidInvoked = false;
             UnsupportedReturnTypeDeclarationsTestClass.GenericTaskInvoked = false;
             UnsupportedReturnTypeDeclarationsTestClass.GenericValueTaskInvoked = false;
+            UnsupportedReturnTypeDeclarationsTestClass.ObjectInvoked = false;
 
             (await RunAsync<UnsupportedReturnTypeDeclarationsTestClass>())
                 .ShouldBe(
@@ -78,13 +70,18 @@
                         ".GenericValueTask failed: " +
                         "`async ValueTask<T>` test methods are not supported. Declare " +
                         "the test method as `async ValueTask` to ensure the task " +
-                        "actually runs to completion."
+                        "actually runs to completion.",
+
+                        ".Object failed: " +
+                        "Test method return type is not supported. Declare " +
+                        "the test method return type as `void`, `Task`, or `ValueTask`."
                     ));
 
             UnsupportedReturnTypeDeclarationsTestClass.AsyncGenericTaskInvoked.ShouldBe(false);
             UnsupportedReturnTypeDeclarationsTestClass.AsyncVoidInvoked.ShouldBe(false);
             UnsupportedReturnTypeDeclarationsTestClass.GenericTaskInvoked.ShouldBe(false);
             UnsupportedReturnTypeDeclarationsTestClass.GenericValueTaskInvoked.ShouldBe(false);
+            UnsupportedReturnTypeDeclarationsTestClass.ObjectInvoked.ShouldBe(false);
         }
 
         abstract class SampleTestClassBase
@@ -188,27 +185,13 @@
             }
         }
 
-        class CompleteTaskDeclaredAsObjectTestClass : SampleTestClassBase
-        {
-            public object Test()
-            {
-                var divide = DivideAsync(15, 5);
-
-                return divide.ContinueWith(division =>
-                {
-                    // Fail within the continuation, so that we can prove
-                    // that the task object was fully executed.
-                    division.Result.ShouldBe(0);
-                });
-            }
-        }
-
         class UnsupportedReturnTypeDeclarationsTestClass : SampleTestClassBase
         {
             public static bool AsyncGenericTaskInvoked;
             public static bool AsyncVoidInvoked;
             public static bool GenericTaskInvoked;
             public static bool GenericValueTaskInvoked;
+            public static bool ObjectInvoked;
 
             public async Task<bool> AsyncGenericTask()
             {
@@ -235,6 +218,12 @@
             {
                 GenericValueTaskInvoked = true;
                 await DivideAsync(15, 5);
+                throw new ShouldBeUnreachableException();
+            }
+
+            public object Object()
+            {
+                ObjectInvoked = true;
                 throw new ShouldBeUnreachableException();
             }
         }

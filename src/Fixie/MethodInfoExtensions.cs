@@ -13,38 +13,53 @@ namespace Fixie
 
         public static async Task ExecuteAsync(this MethodInfo method, object? instance, params object?[] parameters)
         {
-            if (method.ReturnType == typeof(void) && method.HasAsyncKeyword())
-                throw new NotSupportedException(
-                    "`async void` test methods are not supported. Declare " +
-                    "the test method as `async Task` to ensure the task " +
-                    "actually runs to completion.");
-
-            if (method.ReturnType.IsGenericType)
+            if (method.ReturnType == typeof(void))
             {
-                var genericTypeDefinition = method.ReturnType.GetGenericTypeDefinition();
-
-                if (genericTypeDefinition == typeof(Task<>))
+                if (method.HasAsyncKeyword())
+                    throw new NotSupportedException(
+                        "`async void` test methods are not supported. Declare " +
+                        "the test method as `async Task` to ensure the task " +
+                        "actually runs to completion.");
+            }
+            else
+            {
+                var isFSharpAsync = IsFSharpAsync(method.ReturnType);
+                if (method.ReturnType != typeof(Task) &&
+                    method.ReturnType != typeof(ValueTask) &&
+                    !isFSharpAsync)
                 {
-                    if (method.HasAsyncKeyword())
+                    if (method.ReturnType.IsGenericType)
                     {
-                        throw new NotSupportedException(
-                            "`async Task<T>` test methods are not supported. Declare " +
-                            "the test method as `async Task` to ensure the task " +
-                            "actually runs to completion.");
+                        var genericTypeDefinition = method.ReturnType.GetGenericTypeDefinition();
+
+                        if (genericTypeDefinition == typeof(Task<>))
+                        {
+                            if (method.HasAsyncKeyword())
+                            {
+                                throw new NotSupportedException(
+                                    "`async Task<T>` test methods are not supported. Declare " +
+                                    "the test method as `async Task` to ensure the task " +
+                                    "actually runs to completion.");
+                            }
+
+                            throw new NotSupportedException(
+                                "`Task<T>` test methods are not supported. Declare " +
+                                "the test method as `Task` to ensure the task " +
+                                "actually runs to completion.");
+                        }
+
+                        if (genericTypeDefinition == typeof(ValueTask<>))
+                        {
+                            throw new NotSupportedException(
+                                "`async ValueTask<T>` test methods are not supported. Declare " +
+                                "the test method as `async ValueTask` to ensure the task " +
+                                "actually runs to completion.");
+                        }
                     }
 
                     throw new NotSupportedException(
-                        "`Task<T>` test methods are not supported. Declare " +
-                        "the test method as `Task` to ensure the task " +
-                        "actually runs to completion.");
-                }
-
-                if (genericTypeDefinition == typeof(ValueTask<>))
-                {
-                    throw new NotSupportedException(
-                        "`async ValueTask<T>` test methods are not supported. Declare " +
-                        "the test method as `async ValueTask` to ensure the task " +
-                        "actually runs to completion.");
+                        "Test method return type is not supported. Declare " +
+                        "the test method return type as `void`, `Task`, or `ValueTask`.");
                 }
             }
 

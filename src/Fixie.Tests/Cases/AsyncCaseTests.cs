@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.Cases
+namespace Fixie.Tests.Cases
 {
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
@@ -88,9 +88,11 @@
         {
             (await RunAsync<UnsupportedAsyncVoidTestTestClass>())
                 .ShouldBe(
-                    For<UnsupportedAsyncVoidTestTestClass>(".Test failed: " +
-                        "Async void methods are not supported. Declare async methods with a return type of " +
-                        "Task to ensure the task actually runs to completion."));
+                    For<UnsupportedAsyncVoidTestTestClass>(
+                        ".Test failed: " +
+                        "`async void` test methods are not supported. Declare " +
+                        "the test method as `async Task` to ensure the task " +
+                        "actually runs to completion."));
         }
 
         abstract class SampleTestClassBase

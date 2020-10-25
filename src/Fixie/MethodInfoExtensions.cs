@@ -1,4 +1,4 @@
-﻿namespace Fixie
+namespace Fixie
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -15,8 +15,9 @@
         {
             if (method.ReturnType == typeof(void) && method.HasAsyncKeyword())
                 throw new NotSupportedException(
-                    "Async void methods are not supported. Declare async methods with a " +
-                    "return type of Task to ensure the task actually runs to completion.");
+                    "`async void` test methods are not supported. Declare " +
+                    "the test method as `async Task` to ensure the task " +
+                    "actually runs to completion.");
 
             if (method.ContainsGenericParameters)
                 throw new Exception("Could not resolve type parameters for generic method.");

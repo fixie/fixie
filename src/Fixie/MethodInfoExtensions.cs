@@ -7,19 +7,10 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
-    public static class MethodInfoExtensions
+    static class MethodInfoExtensions
     {
         static MethodInfo? startAsTask;
 
-        /// <summary>
-        /// Execute the given method against the given instance of its class.
-        /// </summary>
-        /// <returns>
-        /// For void methods, returns null.
-        /// For synchronous methods, returns the value returned by the test method.
-        /// For async Task methods, returns null after awaiting the Task.
-        /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
-        /// </returns>
         public static async Task<object?> ExecuteAsync(this MethodInfo method, object? instance, params object?[] parameters)
         {
             if (method.ReturnType == typeof(void) && method.HasAsyncKeyword())

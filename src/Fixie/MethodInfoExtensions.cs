@@ -1,31 +1,63 @@
-﻿namespace Fixie
+namespace Fixie
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
-    public static class MethodInfoExtensions
+    static class MethodInfoExtensions
     {
         static MethodInfo? startAsTask;
 
-        /// <summary>
-        /// Execute the given method against the given instance of its class.
-        /// </summary>
-        /// <returns>
-        /// For void methods, returns null.
-        /// For synchronous methods, returns the value returned by the test method.
-        /// For async Task methods, returns null after awaiting the Task.
-        /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
-        /// </returns>
-        public static async Task<object?> ExecuteAsync(this MethodInfo method, object? instance, params object?[] parameters)
+        public static async Task ExecuteAsync(this MethodInfo method, object? instance, params object?[] parameters)
         {
-            if (method.ReturnType == typeof(void) && method.HasAsyncKeyword())
-                throw new NotSupportedException(
-                    "Async void methods are not supported. Declare async methods with a " +
-                    "return type of Task to ensure the task actually runs to completion.");
+            var returnType = method.ReturnType;
+
+            var isVoid = returnType == typeof(void);
+
+            if (isVoid)
+            {
+                if (method.HasAsyncKeyword())
+                    throw new NotSupportedException(
+                        "`async void` test methods are not supported. Declare " +
+                        "the test method as `async Task` to ensure the task " +
+                        "actually runs to completion.");
+            }
+            else
+            {
+                if (returnType != typeof(Task) &&
+                    returnType != typeof(ValueTask) &&
+                    !IsFSharpAsync(returnType))
+                {
+                    if (returnType.IsGenericType)
+                    {
+                        var genericTypeDefinition = returnType.GetGenericTypeDefinition();
+
+                        if (genericTypeDefinition == typeof(Task<>))
+                        {
+                            var asyncPrefix = method.HasAsyncKeyword() ? "async " : "";
+
+                            throw new NotSupportedException(
+                                $"`{asyncPrefix}Task<T>` test methods are not supported. Declare " +
+                                $"the test method as `{asyncPrefix}Task` to acknowledge that the " +
+                                "`Result` will not be witnessed.");
+                        }
+
+                        if (genericTypeDefinition == typeof(ValueTask<>))
+                        {
+                            throw new NotSupportedException(
+                                "`async ValueTask<T>` test methods are not supported. Declare " +
+                                "the test method as `async ValueTask` to acknowledge that the " +
+                                "`Result` will not be witnessed.");
+                        }
+                    }
+
+                    throw new NotSupportedException(
+                        "Test method return type is not supported. Declare " +
+                        "the test method return type as `void`, `Task`, or `ValueTask`.");
+                }
+            }
 
             if (method.ContainsGenericParameters)
                 throw new Exception("Could not resolve type parameters for generic method.");
@@ -41,25 +73,22 @@
                 throw new PreservedException(exception);
             }
 
-            if (result == null)
-                return null;
+            if (isVoid)
+                return;
 
-            if (!ConvertibleToTask(result, out var task))
-                return result;
+            if (result == null)
+                throw new NullReferenceException(
+                    "This asynchronous test returned null, but " +
+                    "a non-null awaitable object was expected.");
+
+            var task = ConvertToTask(result);
 
             if (task.Status == TaskStatus.Created)
-                throw new InvalidOperationException("The test returned a non-started task, which cannot be awaited. Consider using Task.Run or Task.Factory.StartNew.");
+                throw new InvalidOperationException(
+                    "The test returned a non-started task, which cannot be awaited. " +
+                    "Consider using Task.Run or Task.Factory.StartNew.");
 
             await task;
-
-            if (method.ReturnType.IsGenericType)
-            {
-                var property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public)!;
-
-                return property.GetValue(task, null);
-            }
-
-            return null;
         }
 
         static bool HasAsyncKeyword(this MethodInfo method)
@@ -67,24 +96,21 @@
             return method.Has<AsyncStateMachineAttribute>();
         }
 
-        static bool ConvertibleToTask(object result, [NotNullWhen(true)] out Task? task)
+        static Task ConvertToTask(object result)
         {
             if (result is Task t)
-            {
-                task = t;
-                return true;
-            }
+                return t;
+
+            if (result is ValueTask vt)
+                return vt.AsTask();
 
             var resultType = result.GetType();
-
+            
             if (IsFSharpAsync(resultType))
-            {
-                task = ConvertFSharpAsyncToTask(result, resultType);
-                return true;
-            }
+                return ConvertFSharpAsyncToTask(result, resultType);
 
-            task = null;
-            return false;
+            throw new InvalidOperationException(
+                $"The test returned an object with an unsupported type: {resultType.FullName}");
         }
 
         static bool IsFSharpAsync(Type resultType)

@@ -83,8 +83,7 @@ namespace Fixie
                     "a non-null awaitable object was expected.");
             }
 
-            if (!ConvertibleToTask(result, out var task))
-                return;
+            var task = ConvertToTask(result);
 
             if (task.Status == TaskStatus.Created)
                 throw new InvalidOperationException(
@@ -99,27 +98,18 @@ namespace Fixie
             return method.Has<AsyncStateMachineAttribute>();
         }
 
-        static bool ConvertibleToTask(object result, [NotNullWhen(true)] out Task? task)
+        static Task ConvertToTask(object result)
         {
             if (result is Task t)
-            {
-                task = t;
-                return true;
-            }
+                return t;
 
             if (result is ValueTask vt)
-            {
-                task = vt.AsTask();
-                return true;
-            }
+                return vt.AsTask();
 
             var resultType = result.GetType();
-
+            
             if (IsFSharpAsync(resultType))
-            {
-                task = ConvertFSharpAsyncToTask(result, resultType);
-                return true;
-            }
+                return ConvertFSharpAsyncToTask(result, resultType);
 
             throw new InvalidOperationException(
                 $"The test returned an object with an unsupported type: {resultType.FullName}");

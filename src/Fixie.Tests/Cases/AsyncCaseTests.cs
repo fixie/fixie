@@ -8,7 +8,7 @@
 
     public class AsyncCaseTests
     {
-        public async Task ShouldAwaitTaskReturningTestsToEnsureCompleteExecution()
+        public async Task ShouldAwaitAsynchronousTestsToEnsureCompleteExecution()
         {
             (await RunAsync<SampleTestClass>())
                 .ShouldBe(
@@ -25,7 +25,7 @@
                         ));
         }
 
-        public async Task ShouldFailForNullTask()
+        public async Task ShouldFailWithClearExplanationWhenCaseMethodReturnsNullAwaitable()
         {
             (await RunAsync<NullTaskTestClass>())
                 .ShouldBe(

@@ -14,7 +14,9 @@ namespace Fixie
         {
             var returnType = method.ReturnType;
 
-            if (returnType == typeof(void))
+            var isVoid = returnType == typeof(void);
+
+            if (isVoid)
             {
                 if (method.HasAsyncKeyword())
                     throw new NotSupportedException(
@@ -73,7 +75,7 @@ namespace Fixie
 
             if (result == null)
             {
-                if (returnType == typeof(void))
+                if (isVoid)
                     return;
                 
                 throw new NullReferenceException(

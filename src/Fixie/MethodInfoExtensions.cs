@@ -19,12 +19,33 @@ namespace Fixie
                     "the test method as `async Task` to ensure the task " +
                     "actually runs to completion.");
 
-            if (method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(ValueTask<>))
+            if (method.ReturnType.IsGenericType)
             {
-                throw new NotSupportedException(
-                    "`async ValueTask<T>` test methods are not supported. Declare " +
-                    "the test method as `async ValueTask` to ensure the task " +
-                    "actually runs to completion.");
+                var genericTypeDefinition = method.ReturnType.GetGenericTypeDefinition();
+
+                if (genericTypeDefinition == typeof(Task<>))
+                {
+                    if (method.HasAsyncKeyword())
+                    {
+                        throw new NotSupportedException(
+                            "`async Task<T>` test methods are not supported. Declare " +
+                            "the test method as `async Task` to ensure the task " +
+                            "actually runs to completion.");
+                    }
+
+                    throw new NotSupportedException(
+                        "`Task<T>` test methods are not supported. Declare " +
+                        "the test method as `Task` to ensure the task " +
+                        "actually runs to completion.");
+                }
+
+                if (genericTypeDefinition == typeof(ValueTask<>))
+                {
+                    throw new NotSupportedException(
+                        "`async ValueTask<T>` test methods are not supported. Declare " +
+                        "the test method as `async ValueTask` to ensure the task " +
+                        "actually runs to completion.");
+                }
             }
 
             if (method.ContainsGenericParameters)

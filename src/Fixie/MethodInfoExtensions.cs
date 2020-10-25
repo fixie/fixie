@@ -36,17 +36,11 @@ namespace Fixie
 
                         if (genericTypeDefinition == typeof(Task<>))
                         {
-                            if (method.HasAsyncKeyword())
-                            {
-                                throw new NotSupportedException(
-                                    "`async Task<T>` test methods are not supported. Declare " +
-                                    "the test method as `async Task` to ensure the task " +
-                                    "actually runs to completion.");
-                            }
+                            var asyncPrefix = method.HasAsyncKeyword() ? "async " : "";
 
                             throw new NotSupportedException(
-                                "`Task<T>` test methods are not supported. Declare " +
-                                "the test method as `Task` to ensure the task " +
+                                $"`{asyncPrefix}Task<T>` test methods are not supported. Declare " +
+                                $"the test method as `{asyncPrefix}Task` to ensure the task " +
                                 "actually runs to completion.");
                         }
 

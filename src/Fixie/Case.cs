@@ -57,15 +57,6 @@
         public Exception? Exception { get; private set; }
 
         /// <summary>
-        /// Gets the object returned by invoking the test case's underlying method.
-        /// For void methods, returns null.
-        /// For synchronous methods, returns the value returned by the test method.
-        /// For async Task methods, returns null after awaiting the Task.
-        /// For async Task<![CDATA[<T>]]> methods, returns the Result T after awaiting the Task.
-        /// </summary>
-        public object? Result { get; private set; }
-
-        /// <summary>
         /// Indicate the test case was skipped for the given reason.
         /// </summary>
         public void Skip(string? reason)
@@ -129,9 +120,8 @@
         {
             try
             {
-                var result = await Method.ExecuteAsync(instance, parameters);
+                await Method.ExecuteAsync(instance, parameters);
                 Pass();
-                Result = result;
             }
             catch (Exception exception)
             {

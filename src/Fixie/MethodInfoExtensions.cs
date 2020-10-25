@@ -58,6 +58,12 @@ namespace Fixie
                 return true;
             }
 
+            if (result is ValueTask vt)
+            {
+                task = vt.AsTask();
+                return true;
+            }
+
             var resultType = result.GetType();
 
             if (IsFSharpAsync(resultType))

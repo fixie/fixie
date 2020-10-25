@@ -15,11 +15,17 @@
                     For<SampleTestClass>(
                         ".AwaitTaskThenPass passed",
                         ".AwaitTaskWithResultThenPass passed",
+                        ".AwaitValueTaskThenPass passed",
+                        ".AwaitValueTaskWithResultThenPass passed",
                         ".CompleteTaskThenPass passed",
                         ".CompleteTaskWithResultThenPass passed",
                         ".FailAfterAwaitTask failed: Expected: 0" + NewLine + "Actual:   3",
+                        ".FailAfterAwaitValueTask failed: Expected: 0" + NewLine + "Actual:   3",
                         ".FailBeforeAwaitTask failed: 'FailBeforeAwaitTask' failed!",
-                        ".FailDuringAwaitTask failed: Attempted to divide by zero."));
+                        ".FailBeforeAwaitValueTask failed: 'FailBeforeAwaitValueTask' failed!",
+                        ".FailDuringAwaitTask failed: Attempted to divide by zero.",
+                        ".FailDuringAwaitValueTask failed: Attempted to divide by zero."
+                        ));
         }
 
         public async Task ShouldPassForNullTask()
@@ -89,6 +95,22 @@
                 return true;
             }
 
+            public async ValueTask AwaitValueTaskThenPass()
+            {
+                var result = await DivideAsync(15, 5);
+
+                result.ShouldBe(3);
+            }
+
+            public async ValueTask<bool> AwaitValueTaskWithResultThenPass()
+            {
+                var result = await DivideAsync(15, 5);
+
+                result.ShouldBe(3);
+
+                return true;
+            }
+
             public Task CompleteTaskThenPass()
             {
                 var divide = DivideAsync(15, 5);
@@ -118,6 +140,13 @@
                 result.ShouldBe(0);
             }
 
+            public async ValueTask FailAfterAwaitValueTask()
+            {
+                var result = await DivideAsync(15, 5);
+
+                result.ShouldBe(0);
+            }
+
             public async Task FailBeforeAwaitTask()
             {
                 ThrowException();
@@ -125,7 +154,21 @@
                 await DivideAsync(15, 5);
             }
 
+            public async ValueTask FailBeforeAwaitValueTask()
+            {
+                ThrowException();
+
+                await DivideAsync(15, 5);
+            }
+
             public async Task FailDuringAwaitTask()
+            {
+                await DivideAsync(15, 0);
+
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async ValueTask FailDuringAwaitValueTask()
             {
                 await DivideAsync(15, 0);
 

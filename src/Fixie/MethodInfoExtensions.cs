@@ -24,10 +24,9 @@ namespace Fixie
             }
             else
             {
-                var isFSharpAsync = IsFSharpAsync(returnType);
                 if (returnType != typeof(Task) &&
                     returnType != typeof(ValueTask) &&
-                    !isFSharpAsync)
+                    !IsFSharpAsync(returnType))
                 {
                     if (returnType.IsGenericType)
                     {

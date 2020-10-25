@@ -16,7 +16,6 @@
                         ".AwaitTaskThenPass passed",
                         ".AwaitTaskWithResultThenPass passed",
                         ".AwaitValueTaskThenPass passed",
-                        ".AwaitValueTaskWithResultThenPass passed",
                         ".CompleteTaskThenPass passed",
                         ".CompleteTaskWithResultThenPass passed",
                         ".FailAfterAwaitTask failed: Expected: 0" + NewLine + "Actual:   3",
@@ -53,15 +52,27 @@
                         "Actual:   3"));
         }
 
-        public async Task ShouldFailUnsupportedAsyncVoidCases()
+        public async Task ShouldFailUnsupportedReturnTypeDeclarationsRatherThanAttemptExecution()
         {
-            (await RunAsync<UnsupportedAsyncVoidTestTestClass>())
+            UnsupportedReturnTypeDeclarationsTestClass.AsyncVoidInvoked = false;
+            UnsupportedReturnTypeDeclarationsTestClass.GenericValueTaskInvoked = false;
+
+            (await RunAsync<UnsupportedReturnTypeDeclarationsTestClass>())
                 .ShouldBe(
-                    For<UnsupportedAsyncVoidTestTestClass>(
-                        ".Test failed: " +
+                    For<UnsupportedReturnTypeDeclarationsTestClass>(
+                        ".AsyncVoid failed: " +
                         "`async void` test methods are not supported. Declare " +
                         "the test method as `async Task` to ensure the task " +
-                        "actually runs to completion."));
+                        "actually runs to completion.",
+
+                        ".GenericValueTask failed: " +
+                        "`async ValueTask<T>` test methods are not supported. Declare " +
+                        "the test method as `async ValueTask` to ensure the task " +
+                        "actually runs to completion."
+                    ));
+
+            UnsupportedReturnTypeDeclarationsTestClass.AsyncVoidInvoked.ShouldBe(false);
+            UnsupportedReturnTypeDeclarationsTestClass.GenericValueTaskInvoked.ShouldBe(false);
         }
 
         abstract class SampleTestClassBase
@@ -100,15 +111,6 @@
                 var result = await DivideAsync(15, 5);
 
                 result.ShouldBe(3);
-            }
-
-            public async ValueTask<bool> AwaitValueTaskWithResultThenPass()
-            {
-                var result = await DivideAsync(15, 5);
-
-                result.ShouldBe(3);
-
-                return true;
             }
 
             public Task CompleteTaskThenPass()
@@ -210,12 +212,22 @@
             }
         }
 
-        class UnsupportedAsyncVoidTestTestClass : SampleTestClassBase
+        class UnsupportedReturnTypeDeclarationsTestClass : SampleTestClassBase
         {
-            public async void Test()
-            {
-                await DivideAsync(15, 5);
+            public static bool AsyncVoidInvoked;
+            public static bool GenericValueTaskInvoked;
 
+            public async void AsyncVoid()
+            {
+                AsyncVoidInvoked = true;
+                await DivideAsync(15, 5);
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async ValueTask<bool> GenericValueTask()
+            {
+                GenericValueTaskInvoked = true;
+                await DivideAsync(15, 5);
                 throw new ShouldBeUnreachableException();
             }
         }

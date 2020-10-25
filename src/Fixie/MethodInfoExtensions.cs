@@ -19,6 +19,14 @@ namespace Fixie
                     "the test method as `async Task` to ensure the task " +
                     "actually runs to completion.");
 
+            if (method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(ValueTask<>))
+            {
+                throw new NotSupportedException(
+                    "`async ValueTask<T>` test methods are not supported. Declare " +
+                    "the test method as `async ValueTask` to ensure the task " +
+                    "actually runs to completion.");
+            }
+
             if (method.ContainsGenericParameters)
                 throw new Exception("Could not resolve type parameters for generic method.");
 

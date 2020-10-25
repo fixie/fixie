@@ -73,15 +73,13 @@ namespace Fixie
                 throw new PreservedException(exception);
             }
 
+            if (isVoid)
+                return;
+
             if (result == null)
-            {
-                if (isVoid)
-                    return;
-                
                 throw new NullReferenceException(
                     "This asynchronous test returned null, but " +
                     "a non-null awaitable object was expected.");
-            }
 
             var task = ConvertToTask(result);
 

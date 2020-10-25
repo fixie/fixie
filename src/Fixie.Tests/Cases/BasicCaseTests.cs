@@ -45,9 +45,9 @@
 
         public async Task ShouldAwaitAsynchronousTestsToEnsureCompleteExecution()
         {
-            (await RunAsync<SampleTestClass>())
+            (await RunAsync<AsyncTestClass>())
                 .ShouldBe(
-                    For<SampleTestClass>(
+                    For<AsyncTestClass>(
                         ".AwaitTaskThenPass passed",
                         ".AwaitValueTaskThenPass passed",
                         ".CompleteTaskThenPass passed",
@@ -156,20 +156,17 @@
             public void UnreachableCase() { }
         }
 
-        abstract class SampleTestClassBase
+        static void ThrowException([CallerMemberName] string member = default!)
         {
-            protected static void ThrowException([CallerMemberName] string member = default!)
-            {
-                throw new FailureException(member);
-            }
-
-            protected static Task<int> DivideAsync(int numerator, int denominator)
-            {
-                return Task.Run(() => numerator/denominator);
-            }
+            throw new FailureException(member);
         }
 
-        class SampleTestClass : SampleTestClassBase
+        static Task<int> DivideAsync(int numerator, int denominator)
+        {
+            return Task.Run(() => numerator/denominator);
+        }
+
+        class AsyncTestClass
         {
             public async Task AwaitTaskThenPass()
             {
@@ -257,7 +254,7 @@
             }
         }
 
-        class UnsupportedReturnTypeDeclarationsTestClass : SampleTestClassBase
+        class UnsupportedReturnTypeDeclarationsTestClass
         {
             public static bool AsyncGenericTaskInvoked;
             public static bool AsyncVoidInvoked;

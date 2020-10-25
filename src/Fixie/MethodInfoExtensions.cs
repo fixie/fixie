@@ -84,10 +84,12 @@ namespace Fixie
             }
 
             if (!ConvertibleToTask(result, out var task))
-                return; //This is severe now. When I'm done it should be impossible to get here because I will have essentially allow-listed only signatures that would be satisfied by ConvertibleToTask! I should straight up throw because it would mean we definitely have a bug!
+                return;
 
             if (task.Status == TaskStatus.Created)
-                throw new InvalidOperationException("The test returned a non-started task, which cannot be awaited. Consider using Task.Run or Task.Factory.StartNew.");
+                throw new InvalidOperationException(
+                    "The test returned a non-started task, which cannot be awaited. " +
+                    "Consider using Task.Run or Task.Factory.StartNew.");
 
             await task;
         }
@@ -119,8 +121,8 @@ namespace Fixie
                 return true;
             }
 
-            task = null;
-            return false;
+            throw new InvalidOperationException(
+                $"The test returned an object with an unsupported type: {resultType.FullName}");
         }
 
         static bool IsFSharpAsync(Type resultType)

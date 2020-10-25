@@ -40,16 +40,16 @@ namespace Fixie
 
                             throw new NotSupportedException(
                                 $"`{asyncPrefix}Task<T>` test methods are not supported. Declare " +
-                                $"the test method as `{asyncPrefix}Task` to ensure the task " +
-                                "actually runs to completion.");
+                                $"the test method as `{asyncPrefix}Task` to acknowledge that the " +
+                                "`Result` will not be witnessed.");
                         }
 
                         if (genericTypeDefinition == typeof(ValueTask<>))
                         {
                             throw new NotSupportedException(
                                 "`async ValueTask<T>` test methods are not supported. Declare " +
-                                "the test method as `async ValueTask` to ensure the task " +
-                                "actually runs to completion.");
+                                "the test method as `async ValueTask` to acknowledge that the " +
+                                "`Result` will not be witnessed.");
                         }
                     }
 

@@ -56,8 +56,8 @@
                     For<UnsupportedReturnTypeDeclarationsTestClass>(
                         ".AsyncGenericTask failed: " +
                         "`async Task<T>` test methods are not supported. Declare " +
-                        "the test method as `async Task` to ensure the task " +
-                        "actually runs to completion.",
+                        "the test method as `async Task` to acknowledge that the " +
+                        "`Result` will not be witnessed.",
 
                         ".AsyncVoid failed: " +
                         "`async void` test methods are not supported. Declare " +
@@ -66,13 +66,13 @@
 
                         ".GenericTask failed: " +
                         "`Task<T>` test methods are not supported. Declare " +
-                        "the test method as `Task` to ensure the task " +
-                        "actually runs to completion.",
+                        "the test method as `Task` to acknowledge that the " +
+                        "`Result` will not be witnessed.",
 
                         ".GenericValueTask failed: " +
                         "`async ValueTask<T>` test methods are not supported. Declare " +
-                        "the test method as `async ValueTask` to ensure the task " +
-                        "actually runs to completion.",
+                        "the test method as `async ValueTask` to acknowledge that the " +
+                        "`Result` will not be witnessed.",
 
                         ".Object failed: " +
                         "Test method return type is not supported. Declare " +

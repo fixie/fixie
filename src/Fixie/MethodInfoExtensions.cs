@@ -11,7 +11,7 @@
     {
         static MethodInfo? startAsTask;
 
-        public static async Task<object?> ExecuteAsync(this MethodInfo method, object? instance, params object?[] parameters)
+        public static async Task ExecuteAsync(this MethodInfo method, object? instance, params object?[] parameters)
         {
             if (method.ReturnType == typeof(void) && method.HasAsyncKeyword())
                 throw new NotSupportedException(
@@ -33,24 +33,15 @@
             }
 
             if (result == null)
-                return null;
+                return;
 
             if (!ConvertibleToTask(result, out var task))
-                return result;
+                return;
 
             if (task.Status == TaskStatus.Created)
                 throw new InvalidOperationException("The test returned a non-started task, which cannot be awaited. Consider using Task.Run or Task.Factory.StartNew.");
 
             await task;
-
-            if (method.ReturnType.IsGenericType)
-            {
-                var property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public)!;
-
-                return property.GetValue(task, null);
-            }
-
-            return null;
         }
 
         static bool HasAsyncKeyword(this MethodInfo method)

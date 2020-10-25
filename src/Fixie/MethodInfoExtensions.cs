@@ -13,7 +13,9 @@ namespace Fixie
 
         public static async Task ExecuteAsync(this MethodInfo method, object? instance, params object?[] parameters)
         {
-            if (method.ReturnType == typeof(void))
+            var returnType = method.ReturnType;
+
+            if (returnType == typeof(void))
             {
                 if (method.HasAsyncKeyword())
                     throw new NotSupportedException(
@@ -23,14 +25,14 @@ namespace Fixie
             }
             else
             {
-                var isFSharpAsync = IsFSharpAsync(method.ReturnType);
-                if (method.ReturnType != typeof(Task) &&
-                    method.ReturnType != typeof(ValueTask) &&
+                var isFSharpAsync = IsFSharpAsync(returnType);
+                if (returnType != typeof(Task) &&
+                    returnType != typeof(ValueTask) &&
                     !isFSharpAsync)
                 {
-                    if (method.ReturnType.IsGenericType)
+                    if (returnType.IsGenericType)
                     {
-                        var genericTypeDefinition = method.ReturnType.GetGenericTypeDefinition();
+                        var genericTypeDefinition = returnType.GetGenericTypeDefinition();
 
                         if (genericTypeDefinition == typeof(Task<>))
                         {
@@ -79,7 +81,7 @@ namespace Fixie
 
             if (result == null)
             {
-                if (method.ReturnType == typeof(void))
+                if (returnType == typeof(void))
                     return;
                 
                 throw new NullReferenceException(

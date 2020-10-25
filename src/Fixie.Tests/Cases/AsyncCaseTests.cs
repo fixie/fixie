@@ -1,4 +1,4 @@
-namespace Fixie.Tests.Cases
+﻿namespace Fixie.Tests.Cases
 {
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
@@ -8,32 +8,18 @@ namespace Fixie.Tests.Cases
 
     public class AsyncCaseTests
     {
-        public async Task ShouldAwaitThenPassUponSuccessfulAsyncExecution()
+        public async Task ShouldAwaitTaskReturningTestsToEnsureCompleteExecution()
         {
-            (await RunAsync<AwaitThenPassTestClass>())
+            (await RunAsync<SampleTestClass>())
                 .ShouldBe(
-                    For<AwaitThenPassTestClass>(".Test passed"));
-        }
-
-        public async Task ShouldAwaitResultThenPassUponSuccessfulAsyncExecution()
-        {
-            (await RunAsync<AwaitResultThenPassTestClass>())
-                .ShouldBe(
-                    For<AwaitResultThenPassTestClass>(".Test passed"));
-        }
-
-        public async Task ShouldCompleteTaskThenPassUponSuccessfulTaskExecution()
-        {
-            (await RunAsync<CompleteTaskThenPassTestClass>())
-                .ShouldBe(
-                    For<CompleteTaskThenPassTestClass>(".Test passed"));
-        }
-
-        public async Task ShouldGetTaskResultThenPassUponSuccessfulTaskExecution()
-        {
-            (await RunAsync<CompleteTaskWithResultThenPassTestClass>())
-                .ShouldBe(
-                    For<CompleteTaskWithResultThenPassTestClass>(".Test passed"));
+                    For<SampleTestClass>(
+                        ".AwaitTaskThenPass passed",
+                        ".AwaitTaskWithResultThenPass passed",
+                        ".CompleteTaskThenPass passed",
+                        ".CompleteTaskWithResultThenPass passed",
+                        ".FailAfterAwaitTask failed: Expected: 0" + NewLine + "Actual:   3",
+                        ".FailBeforeAwaitTask failed: 'FailBeforeAwaitTask' failed!",
+                        ".FailDuringAwaitTask failed: Attempted to divide by zero."));
         }
 
         public async Task ShouldPassForNullTask()
@@ -41,29 +27,6 @@ namespace Fixie.Tests.Cases
             (await RunAsync<NullTaskTestClass>())
                 .ShouldBe(
                     For<NullTaskTestClass>(".Test passed"));
-        }
-
-        public async Task ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsAfterAwaiting()
-        {
-            (await RunAsync<AwaitThenFailTestClass>())
-                .ShouldBe(
-                    For<AwaitThenFailTestClass>(
-                        ".Test failed: Expected: 0" + NewLine +
-                        "Actual:   3"));
-        }
-
-        public async Task ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsWithinTheAwaitedTask()
-        {
-            (await RunAsync<AwaitOnTaskThatThrowsTestClass>())
-                .ShouldBe(
-                    For<AwaitOnTaskThatThrowsTestClass>(".Test failed: Attempted to divide by zero."));
-        }
-
-        public async Task ShouldFailWithOriginalExceptionWhenAsyncCaseMethodThrowsBeforeAwaitingOnAnyTask()
-        {
-            (await RunAsync<FailBeforeAwaitTestClass>())
-                .ShouldBe(
-                    For<FailBeforeAwaitTestClass>(".Test failed: 'Test' failed!"));
         }
 
         public async Task ShouldFailWithClearExplanationWhenAsyncCaseMethodReturnsNonStartedTask()
@@ -108,19 +71,16 @@ namespace Fixie.Tests.Cases
             }
         }
 
-        class AwaitThenPassTestClass : SampleTestClassBase
+        class SampleTestClass : SampleTestClassBase
         {
-            public async Task Test()
+            public async Task AwaitTaskThenPass()
             {
                 var result = await DivideAsync(15, 5);
 
                 result.ShouldBe(3);
             }
-        }
 
-        class AwaitResultThenPassTestClass : SampleTestClassBase
-        {
-            public async Task<bool> Test()
+            public async Task<bool> AwaitTaskWithResultThenPass()
             {
                 var result = await DivideAsync(15, 5);
 
@@ -128,11 +88,8 @@ namespace Fixie.Tests.Cases
 
                 return true;
             }
-        }
 
-        class CompleteTaskThenPassTestClass : SampleTestClassBase
-        {
-            public Task Test()
+            public Task CompleteTaskThenPass()
             {
                 var divide = DivideAsync(15, 5);
 
@@ -141,11 +98,8 @@ namespace Fixie.Tests.Cases
                     division.Result.ShouldBe(3);
                 });
             }
-        }
 
-        class CompleteTaskWithResultThenPassTestClass : SampleTestClassBase
-        {
-            public Task<bool> Test()
+            public Task<bool> CompleteTaskWithResultThenPass()
             {
                 var divide = DivideAsync(15, 5);
 
@@ -155,6 +109,27 @@ namespace Fixie.Tests.Cases
 
                     return true;
                 });
+            }
+
+            public async Task FailAfterAwaitTask()
+            {
+                var result = await DivideAsync(15, 5);
+
+                result.ShouldBe(0);
+            }
+
+            public async Task FailBeforeAwaitTask()
+            {
+                ThrowException();
+
+                await DivideAsync(15, 5);
+            }
+
+            public async Task FailDuringAwaitTask()
+            {
+                await DivideAsync(15, 0);
+
+                throw new ShouldBeUnreachableException();
             }
         }
 
@@ -166,36 +141,6 @@ namespace Fixie.Tests.Cases
                 // we don't attempt to wait on a Task that
                 // is in fact null.
                 return null;
-            }
-        }
-
-        class AwaitThenFailTestClass : SampleTestClassBase
-        {
-            public async Task Test()
-            {
-                var result = await DivideAsync(15, 5);
-
-                result.ShouldBe(0);
-            }
-        }
-
-        class AwaitOnTaskThatThrowsTestClass : SampleTestClassBase
-        {
-            public async Task Test()
-            {
-                await DivideAsync(15, 0);
-
-                throw new ShouldBeUnreachableException();
-            }
-        }
-
-        class FailBeforeAwaitTestClass : SampleTestClassBase
-        {
-            public async Task Test()
-            {
-                ThrowException();
-
-                await DivideAsync(15, 5);
             }
         }
 

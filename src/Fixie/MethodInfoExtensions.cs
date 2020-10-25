@@ -78,10 +78,17 @@ namespace Fixie
             }
 
             if (result == null)
-                return;
+            {
+                if (method.ReturnType == typeof(void))
+                    return;
+                
+                throw new NullReferenceException(
+                    "This asynchronous test returned null, but " +
+                    "a non-null awaitable object was expected.");
+            }
 
             if (!ConvertibleToTask(result, out var task))
-                return;
+                return; //This is severe now. When I'm done it should be impossible to get here because I will have essentially allow-listed only signatures that would be satisfied by ConvertibleToTask! I should straight up throw because it would mean we definitely have a bug!
 
             if (task.Status == TaskStatus.Created)
                 throw new InvalidOperationException("The test returned a non-started task, which cannot be awaited. Consider using Task.Run or Task.Factory.StartNew.");

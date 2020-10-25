@@ -25,11 +25,13 @@
                         ));
         }
 
-        public async Task ShouldPassForNullTask()
+        public async Task ShouldFailForNullTask()
         {
             (await RunAsync<NullTaskTestClass>())
                 .ShouldBe(
-                    For<NullTaskTestClass>(".Test passed"));
+                    For<NullTaskTestClass>(
+                        ".Test failed: This asynchronous test returned null, " +
+                        "but a non-null awaitable object was expected."));
         }
 
         public async Task ShouldFailWithClearExplanationWhenAsyncCaseMethodReturnsNonStartedTask()

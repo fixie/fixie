@@ -121,16 +121,18 @@
             {
                 duration += message.Duration;
                 summary.Add(message);
-                results.Add(
-                    new XElement("test",
+
+                var test = new XElement("test",
                         new XAttribute("name", message.Name),
                         new XAttribute("type", message.Test.Class),
                         new XAttribute("method", message.Test.Method),
                         new XAttribute("result", "Skip"),
-                        new XAttribute("time", Seconds(message.Duration)),
-                        message.Reason != null
-                            ? new XElement("reason", new XCData(message.Reason))
-                            : null));
+                        new XAttribute("time", Seconds(message.Duration)));
+
+                if (message.Reason != null)
+                    test.Add(new XElement("reason", new XCData(message.Reason)));
+
+                results.Add(test);
             }
 
             public void Add(CasePassed message)

@@ -11,7 +11,11 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: .NET SDK
+    - name: .NET SDK (Run)
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.404'
+    - name: .NET SDK (Build)
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '5.0.100'

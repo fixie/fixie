@@ -20,7 +20,7 @@ namespace Fixie.TestAdapter
 
         public static string FolderPath(string assemblyPath)
         {
-            return new FileInfo(assemblyPath).Directory.FullName;
+            return new FileInfo(assemblyPath).Directory!.FullName;
         }
     }
 }

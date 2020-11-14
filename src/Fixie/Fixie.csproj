@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Description>A convention-based test framework.</Description>
+    <Description>Ergonomic Testing for .NET</Description>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 

@@ -14,7 +14,7 @@
     <repository url="https://github.com/fixie/fixie" />
     <dependencies>
       <group targetFramework="netcoreapp3.1">
-        <dependency id="Fixie" version="$version$" />
+        <dependency id="Fixie" version="[$version$]" />
         <dependency id="Mono.Cecil" version="0.11.2" />
         <dependency id="Microsoft.TestPlatform.TestHost" version="16.6.1" />
       </group>

@@ -8,6 +8,7 @@
     <ToolCommandName>fixie</ToolCommandName>
     <Description>`dotnet fixie` console test runner for the Fixie test framework.</Description>
     <DebugType>embedded</DebugType>
+    <RollForward>Major</RollForward>
   </PropertyGroup>
 
   <ItemGroup>

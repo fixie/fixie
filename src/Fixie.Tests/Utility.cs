@@ -46,6 +46,14 @@
             return listener.Entries;
         }
 
+        public static async Task<IEnumerable<string>> RunAsync(Type[] testClasses, Execution execution)
+        {
+            var listener = new StubListener();
+            var discovery = new SelfTestDiscovery();
+            await RunAsync(listener, discovery, execution, testClasses);
+            return listener.Entries;
+        }
+
         public static async Task DiscoverAsync(Listener listener, Discovery discovery, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)

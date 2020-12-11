@@ -98,5 +98,14 @@ namespace Fixie.Tests
 
             return new Output(GetType().FullName!, console.Lines().ToArray(), results.ToArray());
         }
+
+        protected async Task<Output> RunAsync(Type[] testClasses, Execution execution)
+        {
+            using var console = new RedirectedConsole();
+
+            var results = await Utility.RunAsync(testClasses, execution);
+
+            return new Output(GetType().FullName!, console.Lines().ToArray(), results.ToArray());
+        }
     }
 }

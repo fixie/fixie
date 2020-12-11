@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using System.Threading.Tasks;
     using Internal;
@@ -26,6 +27,12 @@
         public MethodInfo Method { get; }
 
         internal bool RecordedResult { get; private set; }
+
+        public bool Has<TAttribute>() where TAttribute : Attribute
+            => Method.Has<TAttribute>();
+
+        public bool Has<TAttribute>([NotNullWhen(true)] out TAttribute? matchingAttribute) where TAttribute : Attribute
+            => Method.Has(out matchingAttribute);
 
         async Task RunCoreAsync(object?[] parameters, object? instance, Action<Case>? inspectCase)
         {

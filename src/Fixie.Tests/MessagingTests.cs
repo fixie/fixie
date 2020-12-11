@@ -68,7 +68,7 @@
             {
                 foreach (var test in testClass.Tests)
                 {
-                    if (test.Method.Has<SkipAttribute>(out var skip))
+                    if (test.Has<SkipAttribute>(out var skip))
                     {
                         await test.SkipAsync(skip.Reason);
                         continue;

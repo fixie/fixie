@@ -5,7 +5,7 @@ namespace Fixie.Tests
     using System.Threading.Tasks;
     using Fixie.Internal;
 
-    public class LifecycleTests : InstrumentedExecutionTests
+    public class TestClassLifecycleTests : InstrumentedExecutionTests
     {
         class SampleTestClass
         {

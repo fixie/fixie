@@ -13,7 +13,7 @@
     {
         readonly object?[] parameters;
 
-        public Case(MethodInfo testMethod, object?[] parameters)
+        internal Case(MethodInfo testMethod, object?[] parameters)
         {
             this.parameters = parameters;
             Test = new Test(testMethod);

@@ -7,7 +7,7 @@
     /// Packages an exception thrown by a method invoked via reflection,
     /// so that the original exception's stack trace is preserved.
     /// </summary>
-    public class PreservedException : Exception
+    class PreservedException : Exception
     {
         public Exception OriginalException { get; }
 

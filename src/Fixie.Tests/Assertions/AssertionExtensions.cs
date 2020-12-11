@@ -5,6 +5,7 @@ namespace Fixie.Tests.Assertions
     using System.Linq;
     using System.Text.Json;
     using System.Text.Json.Serialization;
+    using System.Threading.Tasks;
 
     public static class AssertionExtensions
     {
@@ -61,6 +62,23 @@ namespace Fixie.Tests.Assertions
             try
             {
                 shouldThrow();
+            }
+            catch (Exception actual)
+            {
+                actual
+                    .ShouldBe<TException>()
+                    .Message.ShouldBe(expectedMessage);
+                return (TException)actual;
+            }
+
+            throw new AssertException(typeof(TException).FullName, "No exception was thrown.");
+        }
+
+        public static async Task<TException> ShouldThrowAsync<TException>(this Func<Task> shouldThrowAsync, string expectedMessage) where TException : Exception
+        {
+            try
+            {
+                await shouldThrowAsync();
             }
             catch (Exception actual)
             {

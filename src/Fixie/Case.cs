@@ -97,7 +97,7 @@
         /// <summary>
         /// Indicate the test case failed for the given reason.
         /// </summary>
-        public void Fail(string reason)
+        void Fail(string reason)
         {
             try
             {

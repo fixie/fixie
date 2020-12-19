@@ -228,18 +228,6 @@
             @case.Exception.ShouldBe(exceptionB);
         }
 
-        public void ShouldAllowFailureByReasonStringWithImplicitException()
-        {
-            var @case = Case("Returns");
-
-            @case.Exception.ShouldBe(null);
-            @case.Fail("Failure Reason A");
-            @case.Fail("Failure Reason B");
-            @case.Exception
-                .ShouldBe<Exception>()
-                .Message.ShouldBe("Failure Reason B");
-        }
-
         public void ShouldProtectAgainstLoggingNullExceptions()
         {
             var @case = Case("Returns");
@@ -269,7 +257,7 @@
             @case.SkipReason.ShouldBe("Reason");
 
             //Indicate a failure, replacing the assumed skip.
-            @case.Fail("Failure");
+            @case.Fail(new Exception("Failure"));
             @case.State.ShouldBe(CaseState.Failed);
             (@case.Exception?.Message).ShouldBe("Failure");
             @case.SkipReason.ShouldBe(null);
@@ -281,7 +269,7 @@
             @case.SkipReason.ShouldBe("Reason");
 
             //Indicate a failure, replacing the above pass.
-            @case.Fail("Failure");
+            @case.Fail(new Exception("Failure"));
             @case.State.ShouldBe(CaseState.Failed);
             (@case.Exception?.Message).ShouldBe("Failure");
             @case.SkipReason.ShouldBe(null);

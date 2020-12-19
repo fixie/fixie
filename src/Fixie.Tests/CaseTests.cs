@@ -228,19 +228,6 @@
             @case.Exception.ShouldBe(exceptionB);
         }
 
-        public void ShouldProtectAgainstLoggingNullExceptions()
-        {
-            var @case = Case("Returns");
-
-            @case.Exception.ShouldBe(null);
-            @case.Fail((Exception) null!);
-            @case.Exception
-                .ShouldBe<Exception>()
-                .Message.ShouldBe(
-                    "The custom test class lifecycle did not provide " +
-                    "an Exception for this test case failure.");
-        }
-
         public void CanForceTestProcessingState()
         {
             var @case = Case("Returns");
@@ -268,7 +255,7 @@
             @case.Exception.ShouldBe(null);
             @case.SkipReason.ShouldBe("Reason");
 
-            //Indicate a failure, replacing the above pass.
+            //Indicate a failure, replacing the above skip.
             @case.Fail(new Exception("Failure"));
             @case.State.ShouldBe(CaseState.Failed);
             (@case.Exception?.Message).ShouldBe("Failure");
@@ -279,14 +266,6 @@
             @case.State.ShouldBe(CaseState.Skipped);
             @case.Exception.ShouldBe(null);
             @case.SkipReason.ShouldBe("Reason");
-
-            //Indicate a failure, suppressing the above skip, but with a surprisingly-null Exception.
-            @case.Fail((Exception) null!);
-            @case.State.ShouldBe(CaseState.Failed);
-            (@case.Exception?.Message).ShouldBe(
-                "The custom test class lifecycle did not provide " +
-                "an Exception for this test case failure.");
-            @case.SkipReason.ShouldBe(null);
         }
 
         class SampleParentTestClass

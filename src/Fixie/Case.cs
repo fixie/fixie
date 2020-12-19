@@ -1,4 +1,4 @@
-namespace Fixie
+﻿namespace Fixie
 {
     using System;
     using System.Collections.Generic;
@@ -89,24 +89,6 @@ namespace Fixie
             Exception = reason;
 
             SkipReason = null;
-
-            if (reason == null)
-                Fail("The custom test class lifecycle did not provide an Exception for this test case failure.");
-        }
-
-        /// <summary>
-        /// Indicate the test case failed for the given reason.
-        /// </summary>
-        void Fail(string reason)
-        {
-            try
-            {
-                throw new Exception(reason);
-            }
-            catch (Exception exception)
-            {
-                Fail(exception);
-            }
         }
 
         internal string? SkipReason { get; private set; }

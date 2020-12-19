@@ -117,7 +117,7 @@ namespace Fixie.Tests
                 try
                 {
                     CaseSetUp();
-                    await test.RunAsync(parameters, @case => CaseInspection());
+                    await test.RunAsync(parameters, failure => InspectFailure());
                     CaseTearDown();
                 }
                 catch (Exception exception)
@@ -134,7 +134,7 @@ namespace Fixie.Tests
         static void TestSetUp() => WhereAmI();
         static void CaseSetUp() => WhereAmI();
         static void CaseTearDown() => WhereAmI();
-        static void CaseInspection() => WhereAmI();
+        static void InspectFailure() => WhereAmI();
         static void TestTearDown() => WhereAmI();
         static void ClassTearDown() => WhereAmI();
 
@@ -168,15 +168,18 @@ namespace Fixie.Tests
                 while (remainingAttempts > 0)
                 {
                     remainingAttempts--;
-                    var failureCanBeRetried = remainingAttempts > 0;
 
-                    await test.RunAsync(parameters, @case =>
+                    bool attemptFailed = false;
+
+                    await test.RunAsync(parameters, failure =>
                     {
-                        if (@case.State == CaseState.Failed && failureCanBeRetried)
-                            @case.Skip(@case.Exception?.Message + " Retrying...");
-                        else
-                            remainingAttempts = 0;
+                        attemptFailed = true;
+                        if (remainingAttempts > 0)
+                            failure.Skip(failure.Exception?.Message + " Retrying...");
                     });
+
+                    if (!attemptFailed)
+                        remainingAttempts = 0;
                 }
             }
 
@@ -226,11 +229,11 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 "TestSetUp",
-                "CaseSetUp", "Fail", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Fail", "InspectFailure", "CaseTearDown",
                 "TestTearDown",
                 "TestSetUp",
-                "CaseSetUp", "Pass(1)", "CaseInspection", "CaseTearDown",
-                "CaseSetUp", "Pass(2)", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Pass(1)", "CaseTearDown",
+                "CaseSetUp", "Pass(2)", "CaseTearDown",
                 "TestTearDown",
                 "ClassTearDown");
         }
@@ -246,8 +249,8 @@ namespace Fixie.Tests
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
-                "TestSetUp", "CaseSetUp", "Fail", "CaseInspection", "CaseTearDown", "TestTearDown",
-                "TestSetUp", "CaseSetUp", "Pass", "CaseInspection", "CaseTearDown", "TestTearDown",
+                "TestSetUp", "CaseSetUp", "Fail", "InspectFailure", "CaseTearDown", "TestTearDown",
+                "TestSetUp", "CaseSetUp", "Pass", "CaseTearDown", "TestTearDown",
                 "ClassTearDown");
         }
 
@@ -284,7 +287,7 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 "TestSetUp",
-                "CaseSetUp", "Fail", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Fail", "InspectFailure", "CaseTearDown",
                 "TestTearDown",
                 "TestSetUp",
                 "ClassTearDown");
@@ -304,7 +307,7 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 "TestSetUp",
-                "CaseSetUp", "Fail", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Fail", "InspectFailure", "CaseTearDown",
                 "TestTearDown",
                 "TestSetUp",
                 "ClassTearDown");
@@ -325,36 +328,36 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 "TestSetUp",
-                "CaseSetUp", "Fail", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Fail", "InspectFailure", "CaseTearDown",
                 "TestTearDown",
                 "TestSetUp",
                 "CaseSetUp",
-                "CaseSetUp", "Pass(2)", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Pass(2)", "CaseTearDown",
                 "TestTearDown",
                 "ClassTearDown");
         }
 
-        public async Task ShouldFailCaseWithoutHidingPrimaryFailuresWhenCaseInspectionThrows()
+        public async Task ShouldFailCaseWithoutHidingPrimaryFailuresWhenFailureInspectionThrows()
         {
-            FailDuring("CaseInspection");
+            FailDuring("InspectFailure");
 
             var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'CaseInspection' failed!",
-                "SampleTestClass.Pass(1) failed: 'CaseInspection' failed!",
-                "SampleTestClass.Pass(2) failed: 'CaseInspection' failed!",
+                "SampleTestClass.Fail failed: 'InspectFailure' failed!",
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 "TestSetUp",
-                "CaseSetUp", "Fail", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Fail", "InspectFailure", "CaseTearDown",
                 "TestTearDown",
                 "TestSetUp",
-                "CaseSetUp", "Pass(1)", "CaseInspection", "CaseTearDown",
-                "CaseSetUp", "Pass(2)", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Pass(1)", "CaseTearDown",
+                "CaseSetUp", "Pass(2)", "CaseTearDown",
                 "TestTearDown",
                 "ClassTearDown");
         }
@@ -377,11 +380,11 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 "TestSetUp",
-                "CaseSetUp", "Fail", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Fail", "InspectFailure", "CaseTearDown",
                 "TestTearDown",
                 "TestSetUp",
-                "CaseSetUp", "Pass(1)", "CaseInspection", "CaseTearDown",
-                "CaseSetUp", "Pass(2)", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Pass(1)", "CaseTearDown",
+                "CaseSetUp", "Pass(2)", "CaseTearDown",
                 "TestTearDown",
                 "ClassTearDown");
         }
@@ -405,11 +408,11 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 "TestSetUp",
-                "CaseSetUp", "Fail", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Fail", "InspectFailure", "CaseTearDown",
                 "TestTearDown",
                 "TestSetUp",
-                "CaseSetUp", "Pass(1)", "CaseInspection", "CaseTearDown",
-                "CaseSetUp", "Pass(2)", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Pass(1)", "CaseTearDown",
+                "CaseSetUp", "Pass(2)", "CaseTearDown",
                 "TestTearDown",
                 "ClassTearDown");
         }
@@ -433,11 +436,11 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(
                 "ClassSetUp",
                 "TestSetUp",
-                "CaseSetUp", "Fail", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Fail", "InspectFailure", "CaseTearDown",
                 "TestTearDown",
                 "TestSetUp",
-                "CaseSetUp", "Pass(1)", "CaseInspection", "CaseTearDown",
-                "CaseSetUp", "Pass(2)", "CaseInspection", "CaseTearDown",
+                "CaseSetUp", "Pass(1)", "CaseTearDown",
+                "CaseSetUp", "Pass(2)", "CaseTearDown",
                 "TestTearDown",
                 "ClassTearDown");
         }

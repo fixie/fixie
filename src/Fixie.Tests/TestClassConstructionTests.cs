@@ -134,7 +134,7 @@ namespace Fixie.Tests
             {
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        await test.RunAsync(Utility.UsingInputAttributes, @case => CaseInspection());
+                        await test.RunAsync(Utility.UsingInputAttributes, failure => InspectFailure());
             }
         }
 
@@ -147,13 +147,13 @@ namespace Fixie.Tests
 
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        await test.RunAsync(Utility.UsingInputAttributes, instance, @case => CaseInspection());
+                        await test.RunAsync(Utility.UsingInputAttributes, instance, failure => InspectFailure());
 
                 await instance.DisposeIfApplicableAsync();
             }
         }
 
-        static void CaseInspection() => WhereAmI();
+        static void InspectFailure() => WhereAmI();
 
         public async Task ShouldConstructPerCaseByDefault()
         {
@@ -186,12 +186,12 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "CaseInspection", "DisposeAsync", "Dispose",
-                ".ctor", "Pass(1)", "CaseInspection", "DisposeAsync","Dispose",
-                ".ctor", "Pass(2)", "CaseInspection", "DisposeAsync","Dispose");
+                ".ctor", "Fail", "InspectFailure", "DisposeAsync", "Dispose",
+                ".ctor", "Pass(1)", "DisposeAsync","Dispose",
+                ".ctor", "Pass(2)", "DisposeAsync","Dispose");
         }
 
-        public async Task ShouldFailCaseInAbsenseOfPrimaryCaseResultAndProceedWithCaseInspectionWhenConstructingPerCaseAndConstructorThrows()
+        public async Task ShouldFailCaseInAbsenseOfPrimaryCaseResultAndProceedWithFailureInspectionWhenConstructingPerCaseAndConstructorThrows()
         {
             FailDuring(".ctor");
             
@@ -204,12 +204,12 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "CaseInspection",
-                ".ctor", "CaseInspection",
-                ".ctor", "CaseInspection");
+                ".ctor", "InspectFailure",
+                ".ctor", "InspectFailure",
+                ".ctor", "InspectFailure");
         }
 
-        public async Task ShouldFailCaseWithoutHidingPrimaryFailuresAndProceedWithCaseInspectionWhenConstructingPerCaseAndDisposeThrows()
+        public async Task ShouldFailCaseWithoutHidingPrimaryFailuresWhenConstructingPerCaseAndDisposeThrows()
         {
             FailDuring("Dispose");
 
@@ -223,12 +223,12 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "CaseInspection", "DisposeAsync", "Dispose",
-                ".ctor", "Pass(1)", "CaseInspection", "DisposeAsync", "Dispose",
-                ".ctor", "Pass(2)", "CaseInspection", "DisposeAsync", "Dispose");
+                ".ctor", "Fail", "InspectFailure", "DisposeAsync", "Dispose",
+                ".ctor", "Pass(1)", "DisposeAsync", "Dispose",
+                ".ctor", "Pass(2)", "DisposeAsync", "Dispose");
         }
 
-        public async Task ShouldFailCaseWithoutHidingPrimaryFailuresAndProceedWithCaseInspectionAndShortCircuitSynchronousDisposeWhenConstructingPerCaseAndDisposeAsyncThrows()
+        public async Task ShouldFailCaseWithoutHidingPrimaryFailuresAndShortCircuitSynchronousDisposeWhenConstructingPerCaseAndDisposeAsyncThrows()
         {
             FailDuring("DisposeAsync");
 
@@ -242,9 +242,9 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "CaseInspection", "DisposeAsync",
-                ".ctor", "Pass(1)", "CaseInspection", "DisposeAsync",
-                ".ctor", "Pass(2)", "CaseInspection", "DisposeAsync");
+                ".ctor", "Fail", "InspectFailure", "DisposeAsync",
+                ".ctor", "Pass(1)", "DisposeAsync",
+                ".ctor", "Pass(2)", "DisposeAsync");
         }
 
         public async Task ShouldAllowConstructingPerClass()
@@ -259,9 +259,9 @@ namespace Fixie.Tests
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "Fail", "CaseInspection",
-                "Pass(1)", "CaseInspection",
-                "Pass(2)", "CaseInspection",
+                "Fail", "InspectFailure",
+                "Pass(1)",
+                "Pass(2)",
                 "DisposeAsync",
                 "Dispose");
         }
@@ -301,9 +301,9 @@ namespace Fixie.Tests
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "Fail", "CaseInspection",
-                "Pass(1)", "CaseInspection",
-                "Pass(2)", "CaseInspection",
+                "Fail", "InspectFailure",
+                "Pass(1)",
+                "Pass(2)",
                 "DisposeAsync",
                 "Dispose");
         }
@@ -325,9 +325,9 @@ namespace Fixie.Tests
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "Fail", "CaseInspection",
-                "Pass(1)", "CaseInspection",
-                "Pass(2)", "CaseInspection",
+                "Fail", "InspectFailure",
+                "Pass(1)",
+                "Pass(2)",
                 "DisposeAsync");
         }
 
@@ -377,9 +377,8 @@ namespace Fixie.Tests
             );
 
             output.ShouldHaveLifecycle(
-                "Fail", "CaseInspection",
-                "Pass", "CaseInspection");
-
+                "Fail", "InspectFailure",
+                "Pass");
 
             output = await RunAsync<CreateInstancePerClass>(typeof(StaticTestClass));
 
@@ -390,8 +389,8 @@ namespace Fixie.Tests
             );
 
             output.ShouldHaveLifecycle(
-                "Fail", "CaseInspection",
-                "Pass", "CaseInspection");
+                "Fail", "InspectFailure",
+                "Pass");
         }
     }
 }

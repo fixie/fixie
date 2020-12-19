@@ -1,7 +1,5 @@
 ﻿namespace Fixie.Tests
 {
-    using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -16,9 +14,9 @@
         {
             foreach (var test in testClass.Tests)
             {
-                await test.RunAsync(@case =>
+                await test.RunAsync(failure =>
                 {
-                    if (@case.Exception is AssertException exception && !exception.HasCompactRepresentations)
+                    if (failure.Exception is AssertException exception && !exception.HasCompactRepresentations)
                         if (testClass.TestAssembly.SelectedTests.Count == 1)
                             LaunchDiffTool(exception);
                 });

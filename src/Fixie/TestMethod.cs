@@ -209,6 +209,9 @@
         /// </summary>
         public async Task FailAsync(Exception reason)
         {
+            if (reason == null)
+                throw new ArgumentNullException(nameof(reason));
+
             await recorder.FailAsync(this, reason);
             RecordedResult = true;
         }

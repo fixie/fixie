@@ -57,7 +57,7 @@
 
                     try
                     {
-                        await execution.ExecuteAsync(testClass);
+                        await execution.RunAsync(testClass);
                     }
                     catch (Exception exception)
                     {

@@ -80,7 +80,7 @@ namespace Fixie.Tests
             public InstrumentedExecution(ParameterSource parameterSource)
                 => this.parameterSource = parameterSource;
 
-            public async Task ExecuteAsync(TestClass testClass)
+            public async Task RunAsync(TestClass testClass)
             {
                 ClassSetUp();
 
@@ -140,7 +140,7 @@ namespace Fixie.Tests
 
         class ShortCircuitTestExecution : Execution
         {
-            public Task ExecuteAsync(TestClass testClass)
+            public Task RunAsync(TestClass testClass)
             {
                 //Class lifecycle chooses not to invoke test.RunAsync(...).
                 //Since the tests never run, they are all considered
@@ -153,7 +153,7 @@ namespace Fixie.Tests
         {
             const int MaxAttempts = 3;
 
-            public async Task ExecuteAsync(TestClass testClass)
+            public async Task RunAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))

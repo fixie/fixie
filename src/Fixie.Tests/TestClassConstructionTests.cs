@@ -130,7 +130,7 @@ namespace Fixie.Tests
 
         class CreateInstancePerCase : Execution
         {
-            public async Task ExecuteAsync(TestClass testClass)
+            public async Task RunAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
@@ -140,7 +140,7 @@ namespace Fixie.Tests
 
         class CreateInstancePerClass : Execution
         {
-            public async Task ExecuteAsync(TestClass testClass)
+            public async Task RunAsync(TestClass testClass)
             {
                 var type = testClass.Type;
                 var instance = type.IsStatic() ? null : testClass.Construct();

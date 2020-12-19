@@ -118,7 +118,7 @@
 
         class ImplicitConstruction : Execution
         {
-            public async Task ExecuteAsync(TestClass testClass)
+            public async Task RunAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     await test.RunAsync();
@@ -127,7 +127,7 @@
 
         class ExplicitConstruction : Execution
         {
-            public async Task ExecuteAsync(TestClass testClass)
+            public async Task RunAsync(TestClass testClass)
             {
                 var instance = testClass.Construct();
                 foreach (var test in testClass.Tests)

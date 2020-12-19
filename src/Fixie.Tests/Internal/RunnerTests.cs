@@ -59,7 +59,7 @@ namespace Fixie.Tests.Internal
 
         class CreateInstancePerCase : Execution
         {
-            public async Task ExecuteAsync(TestClass testClass)
+            public async Task RunAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
                     if (!test.Method.Name.Contains("Skip"))

@@ -10,7 +10,7 @@ namespace Fixie
     {
         static MethodInfo? startAsTask;
 
-        public static async Task ExecuteAsync(this MethodInfo method, object? instance, params object?[] parameters)
+        public static async Task RunTestMethodAsync(this MethodInfo method, object? instance, params object?[] parameters)
         {
             var returnType = method.ReturnType;
 

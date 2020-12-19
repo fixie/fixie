@@ -120,7 +120,7 @@
         {
             try
             {
-                await Method.ExecuteAsync(instance, parameters);
+                await Method.RunTestMethodAsync(instance, parameters);
                 Pass();
             }
             catch (Exception exception)

@@ -1,4 +1,4 @@
-﻿namespace Fixie
+namespace Fixie
 {
     using System;
     using System.Collections.Generic;
@@ -79,7 +79,7 @@
         /// <summary>
         /// Indicate the test case failed for the given reason.
         /// </summary>
-        public void Fail(Exception reason)
+        internal void Fail(Exception reason)
         {
             if (reason is PreservedException preservedException)
                 reason = preservedException.OriginalException;

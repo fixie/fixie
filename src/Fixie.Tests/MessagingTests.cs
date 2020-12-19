@@ -74,7 +74,7 @@
                         continue;
                     }
 
-                    await test.RunCasesAsync(UsingInputAttributes);
+                    await test.RunAsync(UsingInputAttributes);
                 }
             }
         }

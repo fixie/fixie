@@ -134,7 +134,7 @@ namespace Fixie.Tests
             {
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        await test.RunCasesAsync(Utility.UsingInputAttributes, @case => CaseInspection());
+                        await test.RunAsync(Utility.UsingInputAttributes, @case => CaseInspection());
             }
         }
 
@@ -147,7 +147,7 @@ namespace Fixie.Tests
 
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        await test.RunCasesAsync(Utility.UsingInputAttributes, instance, @case => CaseInspection());
+                        await test.RunAsync(Utility.UsingInputAttributes, instance, @case => CaseInspection());
 
                 await instance.DisposeIfApplicableAsync();
             }

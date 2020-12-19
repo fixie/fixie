@@ -152,7 +152,7 @@
             return RunCoreAsync(parameters, instance: null, inspectCase);
         }
 
-        public async Task RunCasesAsync(ParameterSource parameterSource, Action<Case>? inspectCase = null)
+        public async Task RunAsync(ParameterSource parameterSource, Action<Case>? inspectCase = null)
         {
             try
             {
@@ -175,7 +175,7 @@
             return RunCoreAsync(parameters, instance, inspectCase);
         }
 
-        public async Task RunCasesAsync(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
+        public async Task RunAsync(ParameterSource parameterSource, object? instance, Action<Case>? inspectCase = null)
         {
             try
             {

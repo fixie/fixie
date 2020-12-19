@@ -20,7 +20,7 @@
             public async Task RunAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
-                    await test.RunCasesAsync(parameterSource);
+                    await test.RunAsync(parameterSource);
             }
         }
 

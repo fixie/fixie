@@ -228,7 +228,7 @@
             @case.Exception.ShouldBe(exceptionB);
         }
 
-        public void CanForceTestProcessingState()
+        public void CanUpdateResultState()
         {
             var @case = Case("Returns");
 

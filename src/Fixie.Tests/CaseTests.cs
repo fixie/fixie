@@ -253,7 +253,7 @@
                     "an Exception for this test case failure.");
         }
 
-        public void CanForceAnyTestProcessingState()
+        public void CanForceTestProcessingState()
         {
             var @case = Case("Returns");
 
@@ -274,25 +274,13 @@
             (@case.Exception?.Message).ShouldBe("Failure");
             @case.SkipReason.ShouldBe(null);
 
-            //Indicate a pass, suppressing the above failure.
-            @case.Pass();
-            @case.State.ShouldBe(CaseState.Passed);
-            @case.Exception.ShouldBe(null);
-            @case.SkipReason.ShouldBe(null);
-
-            //Indicate a skip, suppressing the above pass.
+            //Indicate a skip, suppressing the above fail.
             @case.Skip("Reason");
             @case.State.ShouldBe(CaseState.Skipped);
             @case.Exception.ShouldBe(null);
             @case.SkipReason.ShouldBe("Reason");
 
-            //Indicate a pass, suppressing the above skip.
-            @case.Pass();
-            @case.State.ShouldBe(CaseState.Passed);
-            @case.Exception.ShouldBe(null);
-            @case.SkipReason.ShouldBe(null);
-
-            //Indicate a failure, replacing the assumed pass.
+            //Indicate a failure, replacing the above pass.
             @case.Fail("Failure");
             @case.State.ShouldBe(CaseState.Failed);
             (@case.Exception?.Message).ShouldBe("Failure");

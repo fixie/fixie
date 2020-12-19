@@ -69,7 +69,7 @@
         /// <summary>
         /// Indicate the test case passed.
         /// </summary>
-        public void Pass()
+        void Pass()
         {
             State = CaseState.Passed;
             Exception = null;

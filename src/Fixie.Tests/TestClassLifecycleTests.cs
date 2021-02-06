@@ -1,6 +1,7 @@
 namespace Fixie.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fixie.Internal;
 
@@ -156,11 +157,59 @@ namespace Fixie.Tests
                 {
                     if (test.Method.Name.Contains("Skip")) continue;
 
-                    await test.RunAsync(Utility.UsingInputAttributes);
-                    await test.RunAsync(Utility.UsingInputAttributes);
-                    await test.RunAsync(Utility.UsingInputAttributes);
+                    for (int i = 1; i <= 3; i++)
+                        await test.RunAsync(Utility.UsingInputAttributes);
                 }
             }
+        }
+
+        class CircuitBreakingExecution : Execution
+        {
+            readonly int maxFailures;
+
+            public CircuitBreakingExecution(int maxFailures)
+                => this.maxFailures = maxFailures;
+
+            public async Task RunAsync(TestClass testClass)
+            {
+                int failures = 0;
+
+                foreach (var test in testClass.Tests)
+                {
+                    if (test.Method.Name.Contains("Skip")) continue;
+
+                    for (int i = 1; i <= 3; i++)
+                    {
+                        foreach (var parameters in Cases(test))
+                        {
+                            var result = await test.RunAsync(parameters);
+
+                            if (result != null)
+                            {
+                                failures++;
+
+                                if (failures > maxFailures)
+                                    return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            static IEnumerable<object?[]> Cases(TestMethod test)
+            {
+                if (test.HasParameters)
+                {
+                    foreach (var parameters in Utility.UsingInputAttributes(test.Method))
+                        yield return parameters;
+                }
+                else
+                {
+                    yield return EmptyParameters;
+                }
+            }
+
+            static readonly object[] EmptyParameters = {};
         }
 
         public async Task ShouldRunAllTestsByDefault()
@@ -423,7 +472,7 @@ namespace Fixie.Tests
 
         public async Task ShouldAllowRunningTestsMultipleTimesWithDistinctResultPerInvocation()
         {
-            FailDuring("Pass", occurrence: 5);
+            FailDuring("Pass", occurrence: 3);
 
             var output = await RunAsync<SampleTestClass, RepeatedExecution>();
 
@@ -434,13 +483,13 @@ namespace Fixie.Tests
                 
                 "SampleTestClass.Pass(1) passed",
                 "SampleTestClass.Pass(2) passed",
-                
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
-                
+
                 "SampleTestClass.Pass(1) failed: 'Pass' failed!",
                 "SampleTestClass.Pass(2) passed",
-                
+
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass(2) passed",
+
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
@@ -450,6 +499,32 @@ namespace Fixie.Tests
                 "Pass(1)", "Pass(2)",
                 "Pass(1)", "Pass(2)",
                 "Pass(1)", "Pass(2)");
+        }
+
+        public async Task ShouldAllowInspectionOfIndividualTestInvocationResultsToDriveExecutionDecisions()
+        {
+            FailDuring("Pass", occurrence: 3);
+
+            var output = await RunAsync<SampleTestClass>(new CircuitBreakingExecution(maxFailures: 3));
+
+            output.ShouldHaveResults(
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass(2) passed",
+
+                "SampleTestClass.Pass(1) failed: 'Pass' failed!", //The fourth failure stops the run early.
+
+                "SampleTestClass.Skip skipped: This test did not run.");
+
+            output.ShouldHaveLifecycle(
+                "Fail",
+                "Fail",
+                "Fail",
+                "Pass(1)", "Pass(2)",
+                "Pass(1)");
         }
 
         public async Task ShouldSkipAllTestsWhenShortCircuitingTestExecution()

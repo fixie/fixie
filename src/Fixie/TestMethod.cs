@@ -34,7 +34,7 @@
         public bool Has<TAttribute>([NotNullWhen(true)] out TAttribute? matchingAttribute) where TAttribute : Attribute
             => Method.Has(out matchingAttribute);
 
-        async Task RunCoreAsync(object?[] parameters, object? instance, Action<Case>? inspectFailure)
+        async Task<Exception?> RunCoreAsync(object?[] parameters, object? instance, Action<Case>? inspectFailure)
         {
             var @case = new Case(Method, parameters);
 
@@ -105,6 +105,8 @@
             }
 
             RecordedResult = true;
+
+            return @case.Exception;
         }
 
         static Task TryRunCaseAsync(Case @case, object? instance)
@@ -145,12 +147,12 @@
             return disposalFailure;
         }
 
-        public Task RunAsync(Action<Case>? inspectFailure = null)
+        public Task<Exception?> RunAsync(Action<Case>? inspectFailure = null)
         {
             return RunCoreAsync(EmptyParameters, instance: null, inspectFailure);
         }
 
-        public Task RunAsync(object?[] parameters, Action<Case>? inspectFailure = null)
+        public Task<Exception?> RunAsync(object?[] parameters, Action<Case>? inspectFailure = null)
         {
             return RunCoreAsync(parameters, instance: null, inspectFailure);
         }
@@ -168,12 +170,12 @@
             }
         }
 
-        public Task RunAsync(object? instance, Action<Case>? inspectFailure = null)
+        public Task<Exception?> RunAsync(object? instance, Action<Case>? inspectFailure = null)
         {
             return RunCoreAsync(EmptyParameters, instance, inspectFailure);
         }
 
-        public Task RunAsync(object?[] parameters, object? instance, Action<Case>? inspectFailure = null)
+        public Task<Exception?> RunAsync(object?[] parameters, object? instance, Action<Case>? inspectFailure = null)
         {
             return RunCoreAsync(parameters, instance, inspectFailure);
         }

@@ -4,7 +4,7 @@
 
     public class CasePassed : CaseCompleted
     {
-        public CasePassed(Case @case, TimeSpan duration, string output)
+        internal CasePassed(Case @case, TimeSpan duration, string output)
             : base(@case, duration, output)
         {
         }

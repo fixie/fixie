@@ -134,7 +134,7 @@ namespace Fixie.Tests
             {
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        await test.RunAsync(Utility.UsingInputAttributes, failure => InspectFailure());
+                        await test.RunAsync(Utility.UsingInputAttributes);
             }
         }
 
@@ -147,13 +147,11 @@ namespace Fixie.Tests
 
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
-                        await test.RunAsync(Utility.UsingInputAttributes, instance, failure => InspectFailure());
+                        await test.RunAsync(Utility.UsingInputAttributes, instance);
 
                 await instance.DisposeIfApplicableAsync();
             }
         }
-
-        static void InspectFailure() => WhereAmI();
 
         public async Task ShouldConstructPerCaseByDefault()
         {
@@ -186,7 +184,7 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "InspectFailure", "DisposeAsync", "Dispose",
+                ".ctor", "Fail", "DisposeAsync", "Dispose",
                 ".ctor", "Pass(1)", "DisposeAsync","Dispose",
                 ".ctor", "Pass(2)", "DisposeAsync","Dispose");
         }
@@ -204,9 +202,9 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "InspectFailure",
-                ".ctor", "InspectFailure",
-                ".ctor", "InspectFailure");
+                ".ctor",
+                ".ctor",
+                ".ctor");
         }
 
         public async Task ShouldFailCaseWithoutHidingPrimaryFailuresWhenConstructingPerCaseAndDisposeThrows()
@@ -223,7 +221,7 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "InspectFailure", "DisposeAsync", "Dispose",
+                ".ctor", "Fail", "DisposeAsync", "Dispose",
                 ".ctor", "Pass(1)", "DisposeAsync", "Dispose",
                 ".ctor", "Pass(2)", "DisposeAsync", "Dispose");
         }
@@ -242,7 +240,7 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "InspectFailure", "DisposeAsync",
+                ".ctor", "Fail", "DisposeAsync",
                 ".ctor", "Pass(1)", "DisposeAsync",
                 ".ctor", "Pass(2)", "DisposeAsync");
         }
@@ -259,7 +257,7 @@ namespace Fixie.Tests
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "Fail", "InspectFailure",
+                "Fail",
                 "Pass(1)",
                 "Pass(2)",
                 "DisposeAsync",
@@ -301,7 +299,7 @@ namespace Fixie.Tests
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "Fail", "InspectFailure",
+                "Fail",
                 "Pass(1)",
                 "Pass(2)",
                 "DisposeAsync",
@@ -325,7 +323,7 @@ namespace Fixie.Tests
 
             output.ShouldHaveLifecycle(
                 ".ctor",
-                "Fail", "InspectFailure",
+                "Fail",
                 "Pass(1)",
                 "Pass(2)",
                 "DisposeAsync");
@@ -376,9 +374,7 @@ namespace Fixie.Tests
                 "StaticTestClass.Skip skipped: This test did not run."
             );
 
-            output.ShouldHaveLifecycle(
-                "Fail", "InspectFailure",
-                "Pass");
+            output.ShouldHaveLifecycle("Fail", "Pass");
 
             output = await RunAsync<CreateInstancePerClass>(typeof(StaticTestClass));
 
@@ -388,9 +384,7 @@ namespace Fixie.Tests
                 "StaticTestClass.Skip skipped: This test did not run."
             );
 
-            output.ShouldHaveLifecycle(
-                "Fail", "InspectFailure",
-                "Pass");
+            output.ShouldHaveLifecycle("Fail", "Pass");
         }
     }
 }

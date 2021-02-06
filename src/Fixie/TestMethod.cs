@@ -34,13 +34,12 @@
         public bool Has<TAttribute>([NotNullWhen(true)] out TAttribute? matchingAttribute) where TAttribute : Attribute
             => Method.Has(out matchingAttribute);
 
-        async Task<Exception?> RunCoreAsync(object?[] parameters, object? instance, Action<Case>? inspectFailure)
+        async Task<Exception?> RunCoreAsync(object?[] parameters, object? instance)
         {
             var @case = new Case(Method, parameters);
 
             await recorder.StartAsync(@case);
 
-            Exception? inspectionFailure = null;
             Exception? disposalFailure = null;
 
             string output;
@@ -49,7 +48,6 @@
                 if (instance != null)
                 {
                     await TryRunCaseAsync(@case, instance);
-                    TryInspectFailures(@case, inspectFailure, out inspectionFailure);
                 }
                 else
                 {
@@ -58,14 +56,11 @@
                         var automaticInstance = @case.Method.IsStatic ? null : Construct(@case.Method.ReflectedType!);
 
                         await TryRunCaseAsync(@case, automaticInstance);
-                        TryInspectFailures(@case, inspectFailure, out inspectionFailure);
                         disposalFailure = await TryDisposeAsync(automaticInstance);
                     }
                     catch (Exception constructionFailure)
                     {
                         @case.Fail(constructionFailure);
-
-                        TryInspectFailures(@case, inspectFailure, out inspectionFailure);
                     }
                 }
 
@@ -84,12 +79,6 @@
             if (@case.State == CaseState.Failed)
             {
                 await recorder.FailAsync(@case, output);
-                accounted = true;
-            }
-
-            if (inspectionFailure != null)
-            {
-                await recorder.FailAsync(new Case(@case, inspectionFailure), output);
                 accounted = true;
             }
 
@@ -114,23 +103,6 @@
             return @case.RunAsync(instance);
         }
 
-        static void TryInspectFailures(Case @case, Action<Case>? inspectFailure, out Exception? inspectionFailure)
-        {
-            inspectionFailure = null;
-
-            if (@case.State != CaseState.Failed)
-                return;
-
-            try
-            {
-                inspectFailure?.Invoke(@case);
-            }
-            catch (Exception exception)
-            {
-                inspectionFailure = exception;
-            }
-        }
-
         static async Task<Exception?> TryDisposeAsync(object? automaticInstance)
         {
             Exception? disposalFailure = null;
@@ -147,22 +119,22 @@
             return disposalFailure;
         }
 
-        public Task<Exception?> RunAsync(Action<Case>? inspectFailure = null)
+        public Task<Exception?> RunAsync()
         {
-            return RunCoreAsync(EmptyParameters, instance: null, inspectFailure);
+            return RunCoreAsync(EmptyParameters, instance: null);
         }
 
-        public Task<Exception?> RunAsync(object?[] parameters, Action<Case>? inspectFailure = null)
+        public Task<Exception?> RunAsync(object?[] parameters)
         {
-            return RunCoreAsync(parameters, instance: null, inspectFailure);
+            return RunCoreAsync(parameters, instance: null);
         }
 
-        public async Task RunAsync(ParameterSource parameterSource, Action<Case>? inspectFailure = null)
+        public async Task RunAsync(ParameterSource parameterSource)
         {
             try
             {
                 foreach (var parameters in GetCases(parameterSource))
-                    await RunCoreAsync(parameters, instance: null, inspectFailure);
+                    await RunCoreAsync(parameters, instance: null);
             }
             catch (Exception exception)
             {
@@ -170,22 +142,22 @@
             }
         }
 
-        public Task<Exception?> RunAsync(object? instance, Action<Case>? inspectFailure = null)
+        public Task<Exception?> RunAsync(object? instance)
         {
-            return RunCoreAsync(EmptyParameters, instance, inspectFailure);
+            return RunCoreAsync(EmptyParameters, instance);
         }
 
-        public Task<Exception?> RunAsync(object?[] parameters, object? instance, Action<Case>? inspectFailure = null)
+        public Task<Exception?> RunAsync(object?[] parameters, object? instance)
         {
-            return RunCoreAsync(parameters, instance, inspectFailure);
+            return RunCoreAsync(parameters, instance);
         }
 
-        public async Task RunAsync(ParameterSource parameterSource, object? instance, Action<Case>? inspectFailure = null)
+        public async Task RunAsync(ParameterSource parameterSource, object? instance)
         {
             try
             {
                 foreach (var parameters in GetCases(parameterSource))
-                    await RunCoreAsync(parameters, instance, inspectFailure);
+                    await RunCoreAsync(parameters, instance);
             }
             catch (Exception exception)
             {

@@ -26,14 +26,13 @@
             typeof(InheritanceSample)
         };
 
-        class DefaultDiscovery : Discovery
-        {
-        }
-
         class MaximumDiscovery : Discovery
         {
             public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
                 => concreteClasses;
+
+            public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => throw new ShouldBeUnreachableException();
         }
 
         class NarrowDiscovery : Discovery
@@ -45,6 +44,9 @@
                     .Where(x => x.Name.Contains("i"))
                     .Where(x => !x.IsStatic());
             }
+
+            public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => throw new ShouldBeUnreachableException();
         }
         
         class BuggyDiscovery : Discovery
@@ -53,6 +55,9 @@
             {
                 return concreteClasses.Where(x => throw new Exception("Unsafe class-discovery predicate threw!"));
             }
+
+            public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+                => throw new ShouldBeUnreachableException();
         }
 
         class SampleExecution : Execution
@@ -81,7 +86,6 @@
             var discovery = new MaximumDiscovery();
 
             DiscoveredTestClasses(discovery,
-                    typeof(DefaultDiscovery),
                     typeof(MaximumDiscovery),
                     typeof(NarrowDiscovery),
                     typeof(BuggyDiscovery),

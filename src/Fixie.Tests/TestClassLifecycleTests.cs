@@ -1,7 +1,6 @@
 namespace Fixie.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fixie.Internal;
 
@@ -149,54 +148,19 @@ namespace Fixie.Tests
             }
         }
 
-        class RetryExecution : Execution
+        class RepeatedExecution : Execution
         {
-            const int MaxAttempts = 3;
-
             public async Task RunAsync(TestClass testClass)
             {
                 foreach (var test in testClass.Tests)
-                    if (!test.Method.Name.Contains("Skip"))
-                        foreach (var parameters in Cases(test))
-                            await RunWithRetriesAsync(test, parameters);
-            }
-
-            static async Task RunWithRetriesAsync(TestMethod test, object?[] parameters)
-            {
-                var remainingAttempts = MaxAttempts;
-
-                while (remainingAttempts > 0)
                 {
-                    remainingAttempts--;
+                    if (test.Method.Name.Contains("Skip")) continue;
 
-                    bool attemptFailed = false;
-
-                    await test.RunAsync(parameters, failure =>
-                    {
-                        attemptFailed = true;
-                        if (remainingAttempts > 0)
-                            failure.Skip(failure.Exception?.Message + " Retrying...");
-                    });
-
-                    if (!attemptFailed)
-                        remainingAttempts = 0;
+                    await test.RunAsync(Utility.UsingInputAttributes);
+                    await test.RunAsync(Utility.UsingInputAttributes);
+                    await test.RunAsync(Utility.UsingInputAttributes);
                 }
             }
-
-            static IEnumerable<object?[]> Cases(TestMethod test)
-            {
-                if (test.HasParameters)
-                {
-                    foreach (var parameters in Utility.UsingInputAttributes(test.Method))
-                        yield return parameters;
-                }
-                else
-                {
-                    yield return EmptyParameters;
-                }
-            }
-
-            static readonly object[] EmptyParameters = {};
         }
 
         public async Task ShouldRunAllTestsByDefault()
@@ -459,20 +423,33 @@ namespace Fixie.Tests
 
         public async Task ShouldAllowRunningTestsMultipleTimesWithDistinctResultPerInvocation()
         {
-            FailDuring("Pass", occurrence: 1);
+            FailDuring("Pass", occurrence: 5);
 
-            var output = await RunAsync<SampleTestClass, RetryExecution>();
+            var output = await RunAsync<SampleTestClass, RepeatedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped: 'Fail' failed! Retrying...",
-                "SampleTestClass.Fail skipped: 'Fail' failed! Retrying...",
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass(1) skipped: 'Pass' failed! Retrying...",
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "SampleTestClass.Fail failed: 'Fail' failed!",
+                
                 "SampleTestClass.Pass(1) passed",
                 "SampleTestClass.Pass(2) passed",
+                
+                "SampleTestClass.Pass(1) passed",
+                "SampleTestClass.Pass(2) passed",
+                
+                "SampleTestClass.Pass(1) failed: 'Pass' failed!",
+                "SampleTestClass.Pass(2) passed",
+                
                 "SampleTestClass.Skip skipped: This test did not run.");
 
-            output.ShouldHaveLifecycle("Fail", "Fail", "Fail", "Pass(1)", "Pass(1)", "Pass(2)");
+            output.ShouldHaveLifecycle(
+                "Fail",
+                "Fail",
+                "Fail",
+                "Pass(1)", "Pass(2)",
+                "Pass(1)", "Pass(2)",
+                "Pass(1)", "Pass(2)");
         }
 
         public async Task ShouldSkipAllTestsWhenShortCircuitingTestExecution()

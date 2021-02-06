@@ -4,7 +4,7 @@ namespace Fixie.Internal
 
     public abstract class CaseCompleted : Message
     {
-        protected CaseCompleted(Case @case, TimeSpan duration, string output)
+        internal CaseCompleted(Case @case, TimeSpan duration, string output)
         {
             Test = @case.Test;
             Name = @case.Name;

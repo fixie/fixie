@@ -2,7 +2,7 @@
 {
     public class CaseStarted : Message
     {
-        public CaseStarted(Case @case)
+        internal CaseStarted(Case @case)
         {
             Test = @case.Test;
             Name = @case.Name;

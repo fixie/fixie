@@ -4,7 +4,7 @@
 
     public class CaseSkipped : CaseCompleted
     {
-        public CaseSkipped(Case @case, TimeSpan duration, string output)
+        internal CaseSkipped(Case @case, TimeSpan duration, string output)
             : base(@case, duration, output)
         {
             Reason = @case.SkipReason;

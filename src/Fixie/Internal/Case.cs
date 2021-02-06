@@ -1,19 +1,18 @@
-﻿namespace Fixie
+﻿namespace Fixie.Internal
 {
     using System;
     using System.Collections.Generic;
     using System.Reflection;
     using System.Threading.Tasks;
-    using Internal;
 
     /// <summary>
     /// A test case being executed, representing a single call to a test method.
     /// </summary>
-    public class Case
+    class Case
     {
         readonly object?[] parameters;
 
-        internal Case(MethodInfo testMethod, object?[] parameters)
+        public Case(MethodInfo testMethod, object?[] parameters)
         {
             this.parameters = parameters;
             Test = new Test(testMethod);
@@ -21,7 +20,7 @@
             Name = CaseNameBuilder.GetName(Method, parameters);
         }
 
-        internal Case(Case originalCase, Exception secondaryFailureReason)
+        public Case(Case originalCase, Exception secondaryFailureReason)
         {
             parameters = originalCase.parameters;
             Test = originalCase.Test;
@@ -79,7 +78,7 @@
         /// <summary>
         /// Indicate the test case failed for the given reason.
         /// </summary>
-        internal void Fail(Exception reason)
+        public void Fail(Exception reason)
         {
             if (reason is PreservedException preservedException)
                 reason = preservedException.OriginalException;
@@ -91,14 +90,14 @@
             SkipReason = null;
         }
 
-        internal string? SkipReason { get; private set; }
-        internal CaseState State { get; private set; }
+        public string? SkipReason { get; private set; }
+        public CaseState State { get; private set; }
 
         /// <summary>
         /// Run the test case against the given instance of the test class,
         /// causing the case state to become either passing or failing.
         /// </summary>
-        internal async Task RunAsync(object? instance)
+        public async Task RunAsync(object? instance)
         {
             try
             {

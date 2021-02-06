@@ -14,12 +14,11 @@
         {
             foreach (var test in testClass.Tests)
             {
-                await test.RunAsync(failure =>
-                {
-                    if (failure.Exception is AssertException exception && !exception.HasCompactRepresentations)
-                        if (testClass.TestAssembly.SelectedTests.Count == 1)
-                            LaunchDiffTool(exception);
-                });
+                var result = await test.RunAsync();
+
+                if (result is AssertException exception && !exception.HasCompactRepresentations)
+                    if (testClass.TestAssembly.SelectedTests.Count == 1)
+                        LaunchDiffTool(exception);
             }
         }
 

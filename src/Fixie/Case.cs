@@ -59,7 +59,7 @@
         /// <summary>
         /// Indicate the test case was skipped for the given reason.
         /// </summary>
-        public void Skip(string? reason)
+        internal void Skip(string? reason)
         {
             State = CaseState.Skipped;
             Exception = null;

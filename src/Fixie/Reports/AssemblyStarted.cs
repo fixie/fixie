@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Reports
 {
     using System.Reflection;
 

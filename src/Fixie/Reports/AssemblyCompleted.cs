@@ -1,7 +1,8 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Reports
 {
     using System;
     using System.Reflection;
+    using Internal;
 
     public class AssemblyCompleted : Message
     {

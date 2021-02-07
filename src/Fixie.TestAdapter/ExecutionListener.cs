@@ -5,6 +5,7 @@
     using Internal.Listeners;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+    using Reports;
     using static System.Environment;
 
     class ExecutionListener :

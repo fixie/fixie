@@ -1,6 +1,7 @@
-namespace Fixie.Internal
+namespace Fixie.Reports
 {
     using System;
+    using Internal;
 
     public abstract class CaseCompleted : Message
     {

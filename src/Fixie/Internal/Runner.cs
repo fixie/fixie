@@ -5,6 +5,7 @@
     using System.Collections.Immutable;
     using System.Reflection;
     using System.Threading.Tasks;
+    using Reports;
 
     class Runner
     {

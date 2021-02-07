@@ -1,5 +1,7 @@
 ﻿namespace Fixie.Internal
 {
+    using Reports;
+
     class ExecutionSummary
     {
         public ExecutionSummary()

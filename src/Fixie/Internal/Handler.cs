@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Internal
 {
     using System.Threading.Tasks;
+    using Reports;
 
     public interface Handler<in TMessage> : Listener where TMessage : Message
     {

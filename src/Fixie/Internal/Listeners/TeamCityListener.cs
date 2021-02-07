@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Text;
     using Internal;
+    using Reports;
     using static System.Environment;
 
     class TeamCityListener :

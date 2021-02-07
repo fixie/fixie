@@ -1,5 +1,7 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Reports
 {
+    using Internal;
+
     public class CaseStarted : Message
     {
         internal CaseStarted(Case @case)

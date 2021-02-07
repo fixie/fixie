@@ -6,6 +6,7 @@
     using Assertions;
     using Fixie.Internal;
     using Fixie.Internal.Listeners;
+    using Reports;
 
     public class LifecycleMessageTests : MessagingTests
     {

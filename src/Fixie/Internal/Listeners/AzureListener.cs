@@ -13,6 +13,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Internal;
+    using Reports;
     using static System.Environment;
     using static Serialization;
     using static System.Console;

@@ -5,6 +5,7 @@ namespace Fixie
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
+    using Internal;
 
     static class MethodInfoExtensions
     {

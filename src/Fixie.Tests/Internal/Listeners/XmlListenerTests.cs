@@ -9,12 +9,12 @@
     using Assertions;
     using Fixie.Internal.Listeners;
 
-    public class ReportListenerTests : MessagingTests
+    public class XmlListenerTests : MessagingTests
     {
         public async Task ShouldProduceValidXmlDocument()
         {
             XDocument? actual = null;
-            var listener = new ReportListener(report => actual = report);
+            var listener = new XmlListener(report => actual = report);
 
             var output = await RunAsync(listener);
 

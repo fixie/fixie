@@ -62,8 +62,8 @@
             if (Try(AppVeyorListener.Create, out var appVeyor))
                 yield return appVeyor;
 
-            if (Try(ReportListener.Create, out var report))
-                yield return report;
+            if (Try(XmlListener.Create, out var xml))
+                yield return xml;
 
             if (Try(TeamCityListener.Create, out var teamCity))
                 yield return teamCity;

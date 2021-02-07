@@ -79,7 +79,7 @@
                         new XAttribute("failed", message.Failed),
                         new XAttribute("skipped", message.Skipped),
                         new XAttribute("environment", $"{IntPtr.Size * 8}-bit .NET {Framework}"),
-                        new XAttribute("test-framework", Fixie.Framework.Version),
+                        new XAttribute("test-framework", Internal.Framework.Version),
                         report.Select(x => x.ToElement())))));
 
             report.Clear();

@@ -1,8 +1,8 @@
-﻿namespace Fixie
+﻿namespace Fixie.Internal
 {
     using System.Reflection;
 
-    public static class Framework
+    static class Framework
     {
         public static string Version
             => "Fixie " + ProductVersion();

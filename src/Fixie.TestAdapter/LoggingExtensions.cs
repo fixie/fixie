@@ -1,5 +1,6 @@
 ﻿namespace Fixie.TestAdapter
 {
+    using Internal;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
     static class LoggingExtensions

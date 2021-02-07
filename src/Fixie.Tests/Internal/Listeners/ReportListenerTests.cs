@@ -49,7 +49,7 @@
             cleaned = cleaned.Replace($@"environment=""{IntPtr.Size * 8}-bit .NET {Framework}""", @"environment=""00-bit .NET 1.2.3.4""");
 
             //Avoid brittle assertion introduced by fixie version.
-            cleaned = cleaned.Replace($@"test-framework=""{Fixie.Framework.Version}""", @"test-framework=""Fixie 1.2.3.4""");
+            cleaned = cleaned.Replace($@"test-framework=""{Fixie.Internal.Framework.Version}""", @"test-framework=""Fixie 1.2.3.4""");
 
             //Avoid brittle assertion introduced by test duration.
             cleaned = Regex.Replace(cleaned, @"time=""\d+\.\d\d\d""", @"time=""1.234""");

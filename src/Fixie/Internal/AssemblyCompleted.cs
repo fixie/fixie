@@ -7,7 +7,7 @@
     {
         readonly ExecutionSummary summary;
 
-        public AssemblyCompleted(Assembly assembly, ExecutionSummary summary, TimeSpan duration)
+        internal AssemblyCompleted(Assembly assembly, ExecutionSummary summary, TimeSpan duration)
         {
             Assembly = assembly;
             Duration = duration;

@@ -4,7 +4,7 @@
 
     public class AssemblyStarted : Message
     {
-        public AssemblyStarted(Assembly assembly)
+        internal AssemblyStarted(Assembly assembly)
         {
             Assembly = assembly;
         }

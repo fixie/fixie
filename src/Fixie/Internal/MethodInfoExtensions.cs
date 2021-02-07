@@ -1,11 +1,10 @@
-namespace Fixie
+namespace Fixie.Internal
 {
     using System;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
-    using Internal;
 
     static class MethodInfoExtensions
     {

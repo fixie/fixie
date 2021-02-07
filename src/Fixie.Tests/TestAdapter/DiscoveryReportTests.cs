@@ -11,7 +11,7 @@
     using Reports;
     using static System.IO.Directory;
 
-    public class DiscoveryListenerTests : MessagingTests
+    public class DiscoveryReportTests : MessagingTests
     {
         public async Task ShouldMapDiscoveredTestsToVsTestDiscoverySink()
         {
@@ -20,9 +20,9 @@
             var log = new StubMessageLogger();
             var discoverySink = new StubTestCaseDiscoverySink();
 
-            var listener = new DiscoveryListener(log, discoverySink, assemblyPath);
+            var report = new DiscoveryReport(log, discoverySink, assemblyPath);
 
-            await DiscoverAsync(listener);
+            await DiscoverAsync(report);
 
             log.Messages.ShouldBeEmpty();
 
@@ -42,9 +42,9 @@
             var log = new StubMessageLogger();
             var discoverySink = new StubTestCaseDiscoverySink();
 
-            var listener = new DiscoveryListener(log, discoverySink, invalidAssemblyPath);
+            var report = new DiscoveryReport(log, discoverySink, invalidAssemblyPath);
 
-            await DiscoverAsync(listener);
+            await DiscoverAsync(report);
 
             var expectedError =
                 $"Error: {typeof(FileNotFoundException).FullName}: " +

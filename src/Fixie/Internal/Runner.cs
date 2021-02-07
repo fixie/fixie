@@ -13,14 +13,14 @@
         readonly string[] customArguments;
         readonly Bus bus;
 
-        public Runner(Assembly assembly, Listener listener)
-            : this(assembly, new string[] {}, listener) { }
+        public Runner(Assembly assembly, Report report)
+            : this(assembly, new string[] {}, report) { }
 
-        public Runner(Assembly assembly, string[] customArguments, params Listener[] listeners)
+        public Runner(Assembly assembly, string[] customArguments, params Report[] reports)
         {
             this.assembly = assembly;
             this.customArguments = customArguments;
-            bus = new Bus(listeners);
+            bus = new Bus(reports);
         }
 
         public async Task DiscoverAsync()

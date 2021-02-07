@@ -11,26 +11,26 @@
         public async Task ShouldDescribeTestLifecycleMessagesEmittedDuringExecution()
         {
             var assembly = typeof(LifecycleMessageTests).Assembly;
-            var listener = new StubCaseCompletedListener();
+            var report = new StubCaseCompletedReport();
 
-            await RunAsync(listener);
+            await RunAsync(report);
 
-            listener.Messages.Count.ShouldBe(14);
+            report.Messages.Count.ShouldBe(14);
             
-            var assemblyStarted = (AssemblyStarted)listener.Messages[0];
-            var failStarted = (CaseStarted)listener.Messages[1];
-            var fail = (CaseFailed)listener.Messages[2];
-            var failByAssertionStarted = (CaseStarted)listener.Messages[3];
-            var failByAssertion = (CaseFailed)listener.Messages[4];
-            var passStarted = (CaseStarted)listener.Messages[5];
-            var pass = (CasePassed)listener.Messages[6];
-            var skipWithReason = (CaseSkipped)listener.Messages[7];
-            var skipWithoutReason = (CaseSkipped)listener.Messages[8];
-            var shouldBeStringPassStarted = (CaseStarted)listener.Messages[9];
-            var shouldBeStringPass = (CasePassed)listener.Messages[10];
-            var shouldBeStringFailStarted = (CaseStarted)listener.Messages[11];
-            var shouldBeStringFail = (CaseFailed)listener.Messages[12];
-            var assemblyCompleted = (AssemblyCompleted)listener.Messages[13];
+            var assemblyStarted = (AssemblyStarted)report.Messages[0];
+            var failStarted = (CaseStarted)report.Messages[1];
+            var fail = (CaseFailed)report.Messages[2];
+            var failByAssertionStarted = (CaseStarted)report.Messages[3];
+            var failByAssertion = (CaseFailed)report.Messages[4];
+            var passStarted = (CaseStarted)report.Messages[5];
+            var pass = (CasePassed)report.Messages[6];
+            var skipWithReason = (CaseSkipped)report.Messages[7];
+            var skipWithoutReason = (CaseSkipped)report.Messages[8];
+            var shouldBeStringPassStarted = (CaseStarted)report.Messages[9];
+            var shouldBeStringPass = (CasePassed)report.Messages[10];
+            var shouldBeStringFailStarted = (CaseStarted)report.Messages[11];
+            var shouldBeStringFail = (CaseFailed)report.Messages[12];
+            var assemblyCompleted = (AssemblyCompleted)report.Messages[13];
 
             assemblyStarted.Assembly.ShouldBe(assembly);
             
@@ -106,7 +106,7 @@
             assemblyCompleted.Assembly.ShouldBe(assembly);
         }
 
-        public class StubCaseCompletedListener :
+        public class StubCaseCompletedReport :
             Handler<AssemblyStarted>,
             Handler<CaseStarted>,
             Handler<CaseCompleted>,

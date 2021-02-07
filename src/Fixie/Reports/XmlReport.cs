@@ -8,7 +8,7 @@
     using Internal;
     using static System.Environment;
 
-    class XmlListener :
+    class XmlReport :
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>,
@@ -19,12 +19,12 @@
         ClassResult? currentClass;
         readonly List<ClassResult> report = new List<ClassResult>();
 
-        internal static XmlListener? Create()
+        internal static XmlReport? Create()
         {
             var absoluteOrRelativePath = GetEnvironmentVariable("FIXIE:REPORT");
 
             if (absoluteOrRelativePath != null)
-                return new XmlListener(SaveReport(absoluteOrRelativePath));
+                return new XmlReport(SaveReport(absoluteOrRelativePath));
 
             return null;
         }
@@ -39,7 +39,7 @@
             return Path.Combine(Directory.GetCurrentDirectory(), absoluteOrRelativePath);
         }
 
-        public XmlListener(Action<XDocument> save)
+        public XmlReport(Action<XDocument> save)
         {
             this.save = save;
         }

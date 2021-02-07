@@ -11,16 +11,16 @@
     using Reports;
     using static System.Environment;
 
-    public class ExecutionListenerTests : MessagingTests
+    public class ExecutionReportTests : MessagingTests
     {
         public async Task ShouldMapMessagesToVsTestExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
-            var listener = new ExecutionListener(recorder, assemblyPath);
+            var report = new ExecutionReport(recorder, assemblyPath);
 
-            var output = await RunAsync(listener);
+            var output = await RunAsync(report);
 
             output.Console
                 .ShouldBe(

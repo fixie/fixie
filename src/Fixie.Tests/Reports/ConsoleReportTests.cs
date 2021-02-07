@@ -7,13 +7,13 @@
     using Assertions;
     using Fixie.Reports;
 
-    public class ConsoleListenerTests : MessagingTests
+    public class ConsoleReportTests : MessagingTests
     {
         public async Task ShouldReportResults()
         {
-            var listener = new ConsoleListener();
+            var report = new ConsoleReport();
 
-            var output = await RunAsync(listener);
+            var output = await RunAsync(report);
 
             output.Console
                 .CleanStackTraceLineNumbers()
@@ -63,9 +63,9 @@
 
         public async Task CanOptionallyIncludePassingResults()
         {
-            var listener = new ConsoleListener(outputCasePassed: true);
+            var report = new ConsoleReport(outputCasePassed: true);
 
-            var output = await RunAsync(listener);
+            var output = await RunAsync(report);
 
             output.Console
                 .CleanStackTraceLineNumbers()
@@ -127,10 +127,10 @@
 
         public async Task ShouldNotReportPassCountsWhenZeroTestsHavePassed()
         {
-            var listener = new ConsoleListener();
+            var report = new ConsoleReport();
             var discovery = new ZeroPassed();
 
-            var output = await RunAsync(listener, discovery);
+            var output = await RunAsync(report, discovery);
 
             output.Console
                 .CleanDuration()
@@ -146,10 +146,10 @@
 
         public async Task ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
         {
-            var listener = new ConsoleListener();
+            var report = new ConsoleReport();
             var discovery = new ZeroFailed();
 
-            var output = await RunAsync(listener, discovery);
+            var output = await RunAsync(report, discovery);
 
             output.Console
                 .CleanDuration()
@@ -165,10 +165,10 @@
 
         public async Task ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
         {
-            var listener = new ConsoleListener();
+            var report = new ConsoleReport();
             var discovery = new ZeroSkipped();
 
-            var output = await RunAsync(listener, discovery);
+            var output = await RunAsync(report, discovery);
 
             output.Console
                 .CleanDuration()
@@ -184,10 +184,10 @@
 
         public async Task ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
         {
-            var listener = new ConsoleListener();
+            var report = new ConsoleReport();
             var discovery = new NoTestsFound();
 
-            var output = await RunAsync(listener, discovery);
+            var output = await RunAsync(report, discovery);
 
             output.Console
                 .Last()

@@ -7,15 +7,15 @@
     using Assertions;
     using Fixie.Reports;
 
-    public class TeamCityListenerTests : MessagingTests
+    public class TeamCityReportTests : MessagingTests
     {
         public async Task ShouldReportResultsToTheConsoleInTeamCityFormat()
         {
             var eol = Environment.NewLine == "\r\n" ? "|r|n" : "|n";
 
-            var listener = new TeamCityListener();
+            var report = new TeamCityReport();
 
-            var output = await RunAsync(listener);
+            var output = await RunAsync(report);
 
             output.Console
                 .CleanStackTraceLineNumbers()

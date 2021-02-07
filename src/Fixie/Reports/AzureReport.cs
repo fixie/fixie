@@ -18,7 +18,7 @@
     using static System.Console;
     using static Internal.Maybe;
 
-    class AzureListener :
+    class AzureReport :
         AsyncHandler<AssemblyStarted>,
         AsyncHandler<CaseSkipped>,
         AsyncHandler<CasePassed>,
@@ -43,7 +43,7 @@
         readonly List<Result> batch;
         bool apiUnavailable;
 
-        internal static AzureListener? Create()
+        internal static AzureReport? Create()
         {
             var runningUnderAzure = GetEnvironmentVariable("TF_BUILD") == "True";
 
@@ -59,7 +59,7 @@
                         && TryGetEnvironmentVariable("SYSTEM_ACCESSTOKEN", out var accessToken)
                         && TryGetEnvironmentVariable("BUILD_BUILDID", out var buildId))
                     {
-                        return new AzureListener(
+                        return new AzureReport(
                             collectionUri,
                             project,
                             accessToken,
@@ -106,7 +106,7 @@
             return false;
         }
 
-        public AzureListener(
+        public AzureReport(
             string collectionUri,
             string project,
             string accessToken,
@@ -256,7 +256,7 @@
 
             if (!httpResponse.IsSuccessStatusCode)
                 throw new HttpRequestException(new StringBuilder()
-                    .AppendLine($"{typeof(AzureListener).FullName} failed to {method} a message:")
+                    .AppendLine($"{typeof(AzureReport).FullName} failed to {method} a message:")
                     .AppendLine($"{(int) httpResponse.StatusCode} {httpResponse.ReasonPhrase}")
                     .AppendLine(body)
                     .ToString());

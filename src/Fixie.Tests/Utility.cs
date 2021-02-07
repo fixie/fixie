@@ -41,36 +41,36 @@
 
         public static async Task<IEnumerable<string>> RunAsync(Type testClass, Execution execution)
         {
-            var listener = new StubListener();
+            var report = new StubReport();
             var discovery = new SelfTestDiscovery();
-            await RunAsync(listener, discovery, execution, testClass);
-            return listener.Entries;
+            await RunAsync(report, discovery, execution, testClass);
+            return report.Entries;
         }
 
         public static async Task<IEnumerable<string>> RunAsync(Type[] testClasses, Execution execution)
         {
-            var listener = new StubListener();
+            var report = new StubReport();
             var discovery = new SelfTestDiscovery();
-            await RunAsync(listener, discovery, execution, testClasses);
-            return listener.Entries;
+            await RunAsync(report, discovery, execution, testClasses);
+            return report.Entries;
         }
 
-        public static async Task DiscoverAsync(Listener listener, Discovery discovery, params Type[] candidateTypes)
+        public static async Task DiscoverAsync(Report report, Discovery discovery, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            var runner = new Runner(candidateTypes[0].Assembly, listener);
+            var runner = new Runner(candidateTypes[0].Assembly, report);
 
             await runner.DiscoverAsync(candidateTypes, discovery);
         }
 
-        public static async Task RunAsync(Listener listener, Discovery discovery, Execution execution, params Type[] candidateTypes)
+        public static async Task RunAsync(Report report, Discovery discovery, Execution execution, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            var runner = new Runner(candidateTypes[0].Assembly, listener);
+            var runner = new Runner(candidateTypes[0].Assembly, report);
 
             await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
         }

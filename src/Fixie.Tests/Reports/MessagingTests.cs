@@ -36,29 +36,29 @@
             public string[] Console { get; }
         }
 
-        protected async Task DiscoverAsync(Listener listener)
+        protected async Task DiscoverAsync(Report report)
         {
             var discovery = new SelfTestDiscovery();
 
             using var console = new RedirectedConsole();
 
-            await Utility.DiscoverAsync(listener, discovery, candidateTypes);
+            await Utility.DiscoverAsync(report, discovery, candidateTypes);
 
             console.Lines().ShouldBeEmpty();
         }
 
-        protected Task<Output> RunAsync(Listener listener)
+        protected Task<Output> RunAsync(Report report)
         {
-            return RunAsync(listener, new SelfTestDiscovery());
+            return RunAsync(report, new SelfTestDiscovery());
         }
 
-        protected async Task<Output> RunAsync(Listener listener, Discovery discovery)
+        protected async Task<Output> RunAsync(Report report, Discovery discovery)
         {
             var execution = new MessagingTestsExecution();
 
             using var console = new RedirectedConsole();
 
-            await Utility.RunAsync(listener, discovery, execution, candidateTypes);
+            await Utility.RunAsync(report, discovery, execution, candidateTypes);
 
             return new Output(console.Lines().ToArray());
         }

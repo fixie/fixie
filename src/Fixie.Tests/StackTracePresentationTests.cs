@@ -103,13 +103,13 @@
 
         static async Task<IEnumerable<string>> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
         {
-            var listener = new ConsoleListener();
+            var report = new ConsoleReport();
             var discovery = new SelfTestDiscovery();
             var execution = new TExecution();
             
             using var console = new RedirectedConsole();
 
-            await Utility.RunAsync(listener, discovery, execution, typeof(TSampleTestClass));
+            await Utility.RunAsync(report, discovery, execution, typeof(TSampleTestClass));
 
             return console.Lines()
                 .CleanStackTraceLineNumbers()

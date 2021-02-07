@@ -6,7 +6,7 @@
     using Reports;
     using static System.Environment;
 
-    class ExecutionListener :
+    class ExecutionReport :
         Handler<CaseStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
@@ -15,7 +15,7 @@
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
 
-        public ExecutionListener(ITestExecutionRecorder log, string assemblyPath)
+        public ExecutionReport(ITestExecutionRecorder log, string assemblyPath)
         {
             this.log = log;
             this.assemblyPath = assemblyPath;

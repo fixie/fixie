@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using Fixie.Reports;
 
-    public class StubListener :
+    public class StubReport :
         Handler<TestDiscovered>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,

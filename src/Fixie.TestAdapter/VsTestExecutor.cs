@@ -93,8 +93,8 @@
             var assemblyName = new AssemblyName(Path.GetFileNameWithoutExtension(assemblyPath));
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
-            var listener = new ExecutionListener(frameworkHandle, assemblyPath);
-            var runner = new Runner(assembly, listener);
+            var report = new ExecutionReport(frameworkHandle, assemblyPath);
+            var runner = new Runner(assembly, report);
 
             run(runner);
         }

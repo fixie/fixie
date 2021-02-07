@@ -12,7 +12,7 @@ namespace Fixie.Tests.Internal
 
         public async Task ShouldDiscoverAllTestsInAllDiscoveredTestClasses()
         {
-            var listener = new StubListener();
+            var report = new StubReport();
 
             var candidateTypes = new[]
             {
@@ -21,10 +21,10 @@ namespace Fixie.Tests.Internal
             };
             var discovery = new SelfTestDiscovery();
             
-            var runner = new Runner(GetType().Assembly, listener);
+            var runner = new Runner(GetType().Assembly, report);
             await runner.DiscoverAsync(candidateTypes, discovery);
 
-            listener.Entries.ShouldBe(
+            report.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA discovered",
                 Self + "+PassTestClass.PassB discovered",
                 Self + "+PassFailTestClass.Fail discovered",
@@ -35,7 +35,7 @@ namespace Fixie.Tests.Internal
 
         public async Task ShouldExecuteAllCasesInAllDiscoveredTestClasses()
         {
-            var listener = new StubListener();
+            var report = new StubReport();
 
             var candidateTypes = new[]
             {
@@ -45,10 +45,10 @@ namespace Fixie.Tests.Internal
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();
 
-            var runner = new Runner(GetType().Assembly, listener);
+            var runner = new Runner(GetType().Assembly, report);
             await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
 
-            listener.Entries.ShouldBe(
+            report.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",
                 Self + "+PassTestClass.PassB passed",
                 Self + "+PassFailTestClass.Fail failed: 'Fail' failed!",

@@ -11,7 +11,7 @@
     using static System.Environment;
     using static Internal.Serialization;
 
-    class AppVeyorListener :
+    class AppVeyorReport :
         Handler<AssemblyStarted>,
         AsyncHandler<CaseSkipped>,
         AsyncHandler<CasePassed>,
@@ -25,25 +25,25 @@
 
         static readonly HttpClient Client;
 
-        internal static AppVeyorListener? Create()
+        internal static AppVeyorReport? Create()
         {
             if (GetEnvironmentVariable("APPVEYOR") == "True")
             {
                 var uri = GetEnvironmentVariable("APPVEYOR_API_URL");
                 if (uri != null)
-                    return new AppVeyorListener(uri, PostAsync);
+                    return new AppVeyorReport(uri, PostAsync);
             }
 
             return null;
         }
 
-        static AppVeyorListener()
+        static AppVeyorReport()
         {
             Client = new HttpClient();
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public AppVeyorListener(string uri, PostAction postActionAsync)
+        public AppVeyorReport(string uri, PostAction postActionAsync)
         {
             this.postActionAsync = postActionAsync;
             this.uri = new Uri(new Uri(uri), "api/tests").ToString();

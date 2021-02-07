@@ -9,7 +9,7 @@
     using Fixie.Reports;
     using static Fixie.Internal.Serialization;
 
-    public class AzureListenerTests : MessagingTests
+    public class AzureReportTests : MessagingTests
     {
         class Request<TContent>
         {
@@ -44,27 +44,27 @@
                 actualAuthorization.Parameter.ShouldBe(accessToken);
             };
 
-            var listener = new AzureListener("http://localhost:4567", project, accessToken, buildId,
+            var report = new AzureReport("http://localhost:4567", project, accessToken, buildId,
                 (client, method, uri, content) =>
                 {
                     assertCommonHttpConcerns(client);
-                    requests.Add(new Request<AzureListener.CreateRun>(method, uri, content));
-                    return Task.FromResult(Serialize(new AzureListener.TestRun {url = runUrl}));
+                    requests.Add(new Request<AzureReport.CreateRun>(method, uri, content));
+                    return Task.FromResult(Serialize(new AzureReport.TestRun {url = runUrl}));
                 },
                 (client, method, uri, content) =>
                 {
                     assertCommonHttpConcerns(client);
-                    requests.Add(new Request<IReadOnlyList<AzureListener.Result>>(method, uri, content));
+                    requests.Add(new Request<IReadOnlyList<AzureReport.Result>>(method, uri, content));
                     return Task.FromResult("");
                 },
                 (client, method, uri, content) =>
                 {
                     assertCommonHttpConcerns(client);
-                    requests.Add(new Request<AzureListener.CompleteRun>(method, uri, content));
+                    requests.Add(new Request<AzureReport.CompleteRun>(method, uri, content));
                     return Task.FromResult("");
                 }, batchSize);
 
-            var output = await RunAsync(listener);
+            var output = await RunAsync(report);
 
             output.Console
                 .ShouldBe(
@@ -75,7 +75,7 @@
                     "Console.Out: Pass",
                     "Console.Error: Pass");
 
-            var firstRequest = (Request<AzureListener.CreateRun>)requests.First();
+            var firstRequest = (Request<AzureReport.CreateRun>)requests.First();
             firstRequest.Method.ShouldBe(HttpMethod.Post);
             firstRequest.Uri.ShouldBe($"http://localhost:4567/{project}/_apis/test/runs?api-version=5.0");
 
@@ -87,7 +87,7 @@
             var resultBatches = requests
                 .Skip(1)
                 .Take(requests.Count - 2)
-                .Cast<Request<IReadOnlyList<AzureListener.Result>>>()
+                .Cast<Request<IReadOnlyList<AzureReport.Result>>>()
                 .Select(request =>
                 {
                     request.Method.ShouldBe(HttpMethod.Post);
@@ -176,7 +176,7 @@
                     "Fixie.Tests.Assertions.AssertException",
                     At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
 
-            var lastRequest = (Request<AzureListener.CompleteRun>)requests.Last();
+            var lastRequest = (Request<AzureReport.CompleteRun>)requests.Last();
             lastRequest.Method.ShouldBe(new HttpMethod("PATCH"));
             lastRequest.Uri.ShouldBe($"{runUrl}?api-version=5.0");
 

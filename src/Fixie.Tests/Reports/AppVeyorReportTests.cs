@@ -5,20 +5,20 @@
     using Assertions;
     using Fixie.Reports;
 
-    public class AppVeyorListenerTests : MessagingTests
+    public class AppVeyorReportTests : MessagingTests
     {
         public async Task ShouldReportResultsToAppVeyorBuildWorkerApi()
         {
-            var results = new List<AppVeyorListener.TestResult>();
+            var results = new List<AppVeyorReport.TestResult>();
 
-            var listener = new AppVeyorListener("http://localhost:4567", (uri, content) =>
+            var report = new AppVeyorReport("http://localhost:4567", (uri, content) =>
             {
                 uri.ShouldBe("http://localhost:4567/api/tests");
                 results.Add(content);
                 return Task.CompletedTask;
             });
 
-            var output = await RunAsync(listener);
+            var output = await RunAsync(report);
 
             output.Console
                 .ShouldBe(

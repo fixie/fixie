@@ -44,8 +44,8 @@
             var assemblyName = new AssemblyName(Path.GetFileNameWithoutExtension(assemblyPath));
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
-            var listener = new DiscoveryListener(log, discoverySink, assemblyPath);
-            var runner = new Runner(assembly, listener);
+            var report = new DiscoveryReport(log, discoverySink, assemblyPath);
+            var runner = new Runner(assembly, report);
 
             runner.DiscoverAsync().GetAwaiter().GetResult();
         }

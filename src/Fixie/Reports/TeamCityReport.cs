@@ -6,17 +6,17 @@
     using Internal;
     using static System.Environment;
 
-    class TeamCityListener :
+    class TeamCityReport :
         Handler<AssemblyStarted>,
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>,
         Handler<AssemblyCompleted>
     {
-        internal static TeamCityListener? Create()
+        internal static TeamCityReport? Create()
         {
             if (GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null)
-                return new TeamCityListener();
+                return new TeamCityReport();
 
             return null;
         }

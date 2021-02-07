@@ -9,16 +9,16 @@
 
     public class BusTests
     {
-        public async Task ShouldPublishEventsForAllListeners()
+        public async Task ShouldPublishEventsToAllReports()
         {
-            var listeners = new Listener[]
+            var reports = new Report[]
             {
                 new EventHandler(),
                 new AnotherEventHandler(),
                 new CombinationEventHandler()
             };
 
-            var bus = new Bus(listeners);
+            var bus = new Bus(reports);
             using var console = new RedirectedConsole();
 
             await bus.PublishAsync(new Event(1));
@@ -35,15 +35,15 @@
                     FullName<CombinationEventHandler>() + " handled Event 3");
         }
 
-        public async Task ShouldCatchAndLogExceptionsThrowByProblematicListenersRatherThanInterruptExecution()
+        public async Task ShouldCatchAndLogExceptionsThrowByProblematicReportsRatherThanInterruptExecution()
         {
-            var listeners = new Listener[]
+            var reports = new Report[]
             {
                 new EventHandler(),
                 new FailingEventHandler()
             };
 
-            var bus = new Bus(listeners);
+            var bus = new Bus(reports);
             using var console = new RedirectedConsole();
 
             await bus.PublishAsync(new Event(1));

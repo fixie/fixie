@@ -36,8 +36,8 @@
 
         static async Task<ExitCode> RunAssemblyAsync(Assembly assembly, string[] customArguments)
         {
-            var listeners = DefaultExecutionListeners().ToArray();
-            var runner = new Runner(assembly, customArguments, listeners);
+            var reports = DefaultReports().ToArray();
+            var runner = new Runner(assembly, customArguments, reports);
 
             var pattern = GetEnvironmentVariable("FIXIE:TESTS");
 
@@ -54,21 +54,21 @@
             return ExitCode.Success;
         }
 
-        static IEnumerable<Listener> DefaultExecutionListeners()
+        static IEnumerable<Report> DefaultReports()
         {
-            if (Try(AzureListener.Create, out var azure))
+            if (Try(AzureReport.Create, out var azure))
                 yield return azure;
 
-            if (Try(AppVeyorListener.Create, out var appVeyor))
+            if (Try(AppVeyorReport.Create, out var appVeyor))
                 yield return appVeyor;
 
-            if (Try(XmlListener.Create, out var xml))
+            if (Try(XmlReport.Create, out var xml))
                 yield return xml;
 
-            if (Try(TeamCityListener.Create, out var teamCity))
+            if (Try(TeamCityReport.Create, out var teamCity))
                 yield return teamCity;
             else
-                yield return ConsoleListener.Create();
+                yield return ConsoleReport.Create();
         }
     }
 }

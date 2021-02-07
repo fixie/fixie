@@ -13,13 +13,13 @@
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();
 
-            var listener = new StubExecutionSummaryListener();
+            var report = new StubExecutionSummaryReport();
 
-            await RunAsync(listener, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
+            await RunAsync(report, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
-            listener.AssemblySummary.Count.ShouldBe(1);
+            report.AssemblySummary.Count.ShouldBe(1);
 
-            var assembly = listener.AssemblySummary[0];
+            var assembly = report.AssemblySummary[0];
 
             assembly.Passed.ShouldBe(2);
             assembly.Failed.ShouldBe(3);
@@ -27,7 +27,7 @@
             assembly.Total.ShouldBe(9);
         }
 
-        class StubExecutionSummaryListener :
+        class StubExecutionSummaryReport :
             Handler<AssemblyCompleted>
         {
             public List<AssemblyCompleted> AssemblySummary { get; } = new List<AssemblyCompleted>();

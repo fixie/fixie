@@ -5,7 +5,7 @@
     using Internal;
     using static System.Environment;
 
-    class ConsoleListener :
+    class ConsoleReport :
         Handler<CaseSkipped>,
         Handler<CasePassed>,
         Handler<CaseFailed>,
@@ -14,10 +14,10 @@
         readonly bool outputCasePassed;
         bool paddingWouldRequireOpeningBlankLine;
 
-        internal static ConsoleListener Create()
-            => new ConsoleListener(GetEnvironmentVariable("FIXIE:TESTS") != null);
+        internal static ConsoleReport Create()
+            => new ConsoleReport(GetEnvironmentVariable("FIXIE:TESTS") != null);
 
-        public ConsoleListener(bool outputCasePassed = false)
+        public ConsoleReport(bool outputCasePassed = false)
             => this.outputCasePassed = outputCasePassed;
 
         public void Handle(CaseSkipped message)

@@ -1,8 +1,6 @@
 ﻿namespace Fixie.TestAdapter
 {
     using System;
-    using Internal;
-    using Internal.Listeners;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Reports;

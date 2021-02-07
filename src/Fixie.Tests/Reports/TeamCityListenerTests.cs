@@ -1,11 +1,11 @@
-﻿namespace Fixie.Tests.Internal.Listeners
+﻿namespace Fixie.Tests.Reports
 {
     using System;
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Assertions;
-    using Fixie.Internal.Listeners;
+    using Fixie.Reports;
 
     public class TeamCityListenerTests : MessagingTests
     {

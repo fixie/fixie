@@ -1,10 +1,9 @@
-﻿namespace Fixie.Internal.Listeners
+﻿namespace Fixie.Reports
 {
     using System;
     using System.Linq;
     using System.Text;
     using Internal;
-    using Reports;
     using static System.Environment;
 
     class TeamCityListener :

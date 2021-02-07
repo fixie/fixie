@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal.Listeners
+﻿namespace Fixie.Reports
 {
     using System;
     using System.IO;
@@ -8,10 +8,8 @@
     using System.Runtime.Versioning;
     using System.Text;
     using System.Threading.Tasks;
-    using Internal;
-    using Reports;
     using static System.Environment;
-    using static Serialization;
+    using static Internal.Serialization;
 
     class AppVeyorListener :
         Handler<AssemblyStarted>,

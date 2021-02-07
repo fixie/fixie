@@ -1,11 +1,11 @@
-﻿namespace Fixie.Tests.Internal.Listeners
+﻿namespace Fixie.Tests.Reports
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
-    using Fixie.Internal.Listeners;
     using Assertions;
+    using Fixie.Reports;
 
     public class ConsoleListenerTests : MessagingTests
     {

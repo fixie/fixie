@@ -8,6 +8,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    using Reports;
     using static System.IO.Directory;
 
     public class DiscoveryListenerTests : MessagingTests

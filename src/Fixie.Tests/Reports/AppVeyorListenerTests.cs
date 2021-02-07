@@ -1,9 +1,9 @@
-﻿namespace Fixie.Tests.Internal.Listeners
+﻿namespace Fixie.Tests.Reports
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Assertions;
-    using Fixie.Internal.Listeners;
+    using Fixie.Reports;
 
     public class AppVeyorListenerTests : MessagingTests
     {

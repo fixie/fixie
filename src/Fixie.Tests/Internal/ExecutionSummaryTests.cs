@@ -3,8 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Assertions;
-    using Fixie.Internal;
-    using Reports;
+    using Fixie.Reports;
     using static Utility;
 
     public class ExecutionSummaryTests

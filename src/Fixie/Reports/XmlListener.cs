@@ -1,11 +1,11 @@
-﻿namespace Fixie.Internal.Listeners
+﻿namespace Fixie.Reports
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Xml.Linq;
-    using Reports;
+    using Internal;
     using static System.Environment;
 
     class XmlListener :

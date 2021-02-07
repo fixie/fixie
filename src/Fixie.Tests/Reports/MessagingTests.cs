@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests
+﻿namespace Fixie.Tests.Reports
 {
     using System;
     using System.Linq;
@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
+    using Fixie.Reports;
     using static Utility;
 
     public abstract class MessagingTests

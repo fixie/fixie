@@ -1,9 +1,8 @@
-﻿namespace Fixie.Internal.Listeners
+﻿namespace Fixie.Reports
 {
     using System;
     using System.Collections.Generic;
     using Internal;
-    using Reports;
     using static System.Environment;
 
     class ConsoleListener :

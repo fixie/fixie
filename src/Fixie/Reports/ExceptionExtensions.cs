@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal.Listeners
+﻿namespace Fixie.Reports
 {
     using System;
     using System.Text;

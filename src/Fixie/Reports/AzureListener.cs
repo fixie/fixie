@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal.Listeners
+﻿namespace Fixie.Reports
 {
     using System;
     using System.Collections.Generic;
@@ -13,11 +13,10 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Internal;
-    using Reports;
     using static System.Environment;
-    using static Serialization;
+    using static Internal.Serialization;
     using static System.Console;
-    using static Maybe;
+    using static Internal.Maybe;
 
     class AzureListener :
         AsyncHandler<AssemblyStarted>,

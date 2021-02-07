@@ -1,12 +1,10 @@
-﻿namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests.Reports
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Assertions;
-    using Fixie.Internal;
-    using Fixie.Internal.Listeners;
-    using Reports;
+    using Fixie.Reports;
 
     public class LifecycleMessageTests : MessagingTests
     {

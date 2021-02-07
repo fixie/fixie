@@ -1,9 +1,7 @@
 ﻿namespace Fixie.Tests
 {
     using System.Collections.Generic;
-    using Fixie.Internal;
-    using Fixie.Internal.Listeners;
-    using Reports;
+    using Fixie.Reports;
 
     public class StubListener :
         Handler<TestDiscovered>,

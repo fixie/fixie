@@ -8,6 +8,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Assertions;
+    using Reports;
     using static System.Environment;
 
     public class ExecutionListenerTests : MessagingTests

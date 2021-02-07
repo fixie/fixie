@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
-    using Fixie.Internal.Listeners;
+    using Fixie.Reports;
     using static Utility;
 
     public class StackTracePresentationTests

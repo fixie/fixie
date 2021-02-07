@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.Internal.Listeners
+﻿namespace Fixie.Tests.Reports
 {
     using System;
     using System.IO;
@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
     using System.Xml.Linq;
     using Assertions;
-    using Fixie.Internal.Listeners;
+    using Fixie.Reports;
 
     public class XmlListenerTests : MessagingTests
     {
@@ -63,7 +63,7 @@
             {
                 var assemblyLocation = GetType().Assembly.Location;
                 var fileLocation = TestClassPath();
-                return XDocument.Parse(File.ReadAllText(Path.Combine("Internal", Path.Combine("Listeners", "XUnitXmlReport.xml"))))
+                return XDocument.Parse(File.ReadAllText(Path.Combine("Reports", "XUnitXmlReport.xml")))
                                 .ToString(SaveOptions.DisableFormatting)
                                 .Replace("[assemblyLocation]", assemblyLocation)
                                 .Replace("[fileLocation]", fileLocation)

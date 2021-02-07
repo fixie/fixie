@@ -8,6 +8,7 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Fixie.Internal;
+    using Fixie.Reports;
 
     public static class Utility
     {

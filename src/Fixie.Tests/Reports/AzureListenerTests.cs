@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.Internal.Listeners
+﻿namespace Fixie.Tests.Reports
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     using System.Net.Http;
     using System.Threading.Tasks;
     using Assertions;
-    using Fixie.Internal.Listeners;
+    using Fixie.Reports;
     using static Fixie.Internal.Serialization;
 
     public class AzureListenerTests : MessagingTests

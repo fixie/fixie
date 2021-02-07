@@ -1,6 +1,6 @@
 ﻿namespace Fixie.Internal
 {
-    public class ExecutionSummary
+    class ExecutionSummary
     {
         public ExecutionSummary()
         {

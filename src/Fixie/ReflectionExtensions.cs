@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
     using static Internal.Maybe;
 
-    public static class ReflectionExtensions
+    static class ReflectionExtensions
     {
         public static bool IsStatic(this Type type)
         {
@@ -24,7 +24,7 @@
             return Try(() => member.GetCustomAttribute<TAttribute>(true), out matchingAttribute);
         }
 
-        internal static async Task DisposeIfApplicableAsync(this object? o)
+        public static async Task DisposeIfApplicableAsync(this object? o)
         {
             if (o is IAsyncDisposable asyncDisposable)
                 await asyncDisposable.DisposeAsync();

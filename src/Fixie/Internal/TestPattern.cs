@@ -1,4 +1,4 @@
-namespace Fixie
+namespace Fixie.Internal
 {
     using System.Text.RegularExpressions;
 

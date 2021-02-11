@@ -194,10 +194,18 @@
         /// </summary>
         public async Task FailAsync(Exception reason)
         {
+            await FailAsync(EmptyParameters, reason);
+        }
+
+        /// <summary>
+        /// Emit a fail result for this test, with the given reason.
+        /// </summary>
+        public async Task FailAsync(object?[] parameters, Exception reason)
+        {
             if (reason == null)
                 throw new ArgumentNullException(nameof(reason));
 
-            await recorder.FailAsync(this, reason);
+            await recorder.FailAsync(this, parameters, reason);
             RecordedResult = true;
         }
 

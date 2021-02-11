@@ -7,8 +7,6 @@
 
     class ExecutionRecorder
     {
-        static readonly object[] EmptyParameters = { };
-
         readonly Bus bus;
 
         readonly ExecutionSummary assemblySummary;
@@ -77,9 +75,9 @@
             caseStopwatch.Restart();
         }
 
-        public async Task FailAsync(TestMethod testMethod, Exception reason)
+        public async Task FailAsync(TestMethod testMethod, object?[] parameters, Exception reason)
         {
-            var @case = new Case(testMethod.Method, EmptyParameters);
+            var @case = new Case(testMethod.Method, parameters);
             @case.Fail(reason);
             await FailAsync(@case);
         }

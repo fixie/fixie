@@ -122,7 +122,7 @@ namespace Fixie.Tests
                 }
                 catch (Exception exception)
                 {
-                    await test.FailAsync(exception);
+                    await test.FailAsync(parameters, exception);
                 }
             }
 
@@ -333,7 +333,7 @@ namespace Fixie.Tests
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass failed: 'CaseSetUp' failed!",
+                "SampleTestClass.Pass(1) failed: 'CaseSetUp' failed!",
                 "SampleTestClass.Pass(2) passed",
                 "SampleTestClass.Skip skipped: This test did not run.");
 
@@ -359,9 +359,9 @@ namespace Fixie.Tests
                 "SampleTestClass.Fail failed: 'Fail' failed!",
                 "SampleTestClass.Fail failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
+                "SampleTestClass.Pass(1) failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Pass failed: 'CaseTearDown' failed!",
+                "SampleTestClass.Pass(2) failed: 'CaseTearDown' failed!",
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(

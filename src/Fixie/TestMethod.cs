@@ -177,7 +177,15 @@
         /// </summary>
         public async Task SkipAsync(string? reason)
         {
-            await recorder.SkipAsync(this, reason);
+            await SkipAsync(EmptyParameters, reason);
+        }
+
+        /// <summary>
+        /// Emit a skip result for this test, with the given reason.
+        /// </summary>
+        public async Task SkipAsync(object?[] parameters, string? reason)
+        {
+            await recorder.SkipAsync(this, parameters, reason);
             RecordedResult = true;
         }
 

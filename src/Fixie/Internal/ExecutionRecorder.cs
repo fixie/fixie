@@ -48,7 +48,7 @@
             caseStopwatch.Restart();
         }
 
-        public async Task SkipAsync(TestMethod testMethod, string? reason = null)
+        public async Task SkipAsync(TestMethod testMethod, string? reason)
         {
             var @case = new Case(testMethod.Method, EmptyParameters);
             @case.Skip(reason);

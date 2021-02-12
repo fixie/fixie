@@ -1,4 +1,4 @@
-﻿namespace Fixie
+namespace Fixie
 {
     using System;
     using System.Collections.Generic;
@@ -13,10 +13,12 @@
         static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
 
         readonly ExecutionRecorder recorder;
-        
-        internal TestMethod(ExecutionRecorder recorder, MethodInfo method)
+        readonly bool classIsDisposable;
+
+        internal TestMethod(ExecutionRecorder recorder, bool classIsDisposable, MethodInfo method)
         {
             this.recorder = recorder;
+            this.classIsDisposable = classIsDisposable;
             Method = method;
             RecordedResult = false;
         }

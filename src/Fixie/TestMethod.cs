@@ -156,7 +156,7 @@ namespace Fixie
         {
             var @case = new Case(Method, parameters);
             @case.Skip(reason);
-            await recorder.SkipAsync(@case);
+            await recorder.SkipAsync(@case, "");
 
             RecordedResult = true;
         }
@@ -179,7 +179,7 @@ namespace Fixie
 
             var @case = new Case(Method, parameters);
             @case.Fail(reason);
-            await recorder.FailAsync(@case);
+            await recorder.FailAsync(@case, "");
 
             RecordedResult = true;
         }

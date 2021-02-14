@@ -35,7 +35,7 @@
             await bus.PublishAsync(new CaseStarted(@case));
         }
 
-        public async Task SkipAsync(Case @case, string output = "")
+        public async Task SkipAsync(Case @case, string output)
         {
             var duration = caseStopwatch.Elapsed;
 
@@ -57,7 +57,7 @@
             caseStopwatch.Restart();
         }
 
-        public async Task FailAsync(Case @case, string output = "")
+        public async Task FailAsync(Case @case, string output)
         {
             var duration = caseStopwatch.Elapsed;
 

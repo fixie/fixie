@@ -148,8 +148,6 @@ namespace Fixie.Tests
                 foreach (var test in testClass.Tests)
                     if (!ShouldSkip(test))
                         await test.RunAsync(Utility.UsingInputAttributes, instance);
-
-                await instance.DisposeIfApplicableAsync();
             }
         }
 
@@ -259,9 +257,7 @@ namespace Fixie.Tests
                 ".ctor",
                 "Fail",
                 "Pass(1)",
-                "Pass(2)",
-                "DisposeAsync",
-                "Dispose");
+                "Pass(2)");
         }
 
         public async Task ShouldFailAllTestsWithoutHidingPrimarySkipResultsWhenConstructingPerClassAndConstructorThrows()
@@ -303,7 +299,7 @@ namespace Fixie.Tests
                 "AllSkippedTestClass.SkipB skipped: This test did not run.",
                 "AllSkippedTestClass.SkipC skipped: This test did not run.");
 
-            output.ShouldHaveLifecycle(".ctor", "DisposeAsync", "Dispose");
+            output.ShouldHaveLifecycle(".ctor");
         }
 
         public async Task ShouldBypassConstructionAttemptsWhenTestMethodsAreStatic()

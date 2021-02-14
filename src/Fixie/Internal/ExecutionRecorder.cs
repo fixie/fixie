@@ -35,22 +35,15 @@
             await bus.PublishAsync(new CaseStarted(@case));
         }
 
-        public async Task SkipAsync(Case @case, string output = "")
+        public async Task SkipAsync(Case @case, string output, string? reason)
         {
             var duration = caseStopwatch.Elapsed;
 
-            var message = new CaseSkipped(@case, duration, output);
+            var message = new CaseSkipped(@case, duration, output, reason);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 
             caseStopwatch.Restart();
-        }
-
-        public async Task SkipAsync(TestMethod testMethod, object?[] parameters, string? reason)
-        {
-            var @case = new Case(testMethod.Method, parameters);
-            @case.Skip(reason);
-            await SkipAsync(@case);
         }
 
         public async Task PassAsync(Case @case, string output)
@@ -64,22 +57,15 @@
             caseStopwatch.Restart();
         }
 
-        public async Task FailAsync(Case @case, string output = "")
+        public async Task FailAsync(Case @case, string output, Exception reason)
         {
             var duration = caseStopwatch.Elapsed;
 
-            var message = new CaseFailed(@case, duration, output);
+            var message = new CaseFailed(@case, duration, output, reason);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 
             caseStopwatch.Restart();
-        }
-
-        public async Task FailAsync(TestMethod testMethod, object?[] parameters, Exception reason)
-        {
-            var @case = new Case(testMethod.Method, parameters);
-            @case.Fail(reason);
-            await FailAsync(@case);
         }
 
         public async Task<ExecutionSummary> CompleteAsync(TestAssembly testAssembly)

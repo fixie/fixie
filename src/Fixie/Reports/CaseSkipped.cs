@@ -5,10 +5,10 @@
 
     public class CaseSkipped : CaseCompleted
     {
-        internal CaseSkipped(Case @case, TimeSpan duration, string output)
+        internal CaseSkipped(Case @case, TimeSpan duration, string output, string? reason)
             : base(@case, duration, output)
         {
-            Reason = @case.SkipReason;
+            Reason = reason;
         }
 
         public string? Reason { get; }

@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Tests.Internal
 {
-    using System;
     using System.Linq;
     using Assertions;
     using Fixie.Internal;
@@ -12,15 +11,6 @@
             var @case = Case("Returns");
 
             @case.Name.ShouldBe("Fixie.Tests.Internal.CaseTests.Returns");
-        }
-
-        public void ShouldExposeParameterValues()
-        {
-            Case("Returns").Parameters.ShouldBeEmpty();
-
-            var objectWithNullStringRepresentation = new ObjectWithNullStringRepresentation();
-            Case("Parameterized", 123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this, objectWithNullStringRepresentation)
-                .Parameters.ShouldBe(123, true, 'a', "with \"quotes\"", "long \"string\" gets truncated", null, this, objectWithNullStringRepresentation);
         }
 
         public void ShouldIncludeParameterValuesInNameWhenTheUnderlyingMethodHasParameters()
@@ -214,59 +204,6 @@
             var unresolvedParameterType = method.GetParameters().Single().ParameterType;
             unresolvedParameterType.Name.ShouldBe("T");
             unresolvedParameterType.IsGenericParameter.ShouldBe(true);
-        }
-
-        public void ShouldTrackLastExceptionAsFailureReason()
-        {
-            var exceptionA = new InvalidOperationException();
-            var exceptionB = new DivideByZeroException();
-
-            var @case = Case("Returns");
-
-            @case.Exception.ShouldBe(null);
-            @case.Fail(exceptionA);
-            @case.Fail(exceptionB);
-            @case.Exception.ShouldBe(exceptionB);
-        }
-
-        public void CanUpdateResultState()
-        {
-            var @case = Case("Returns");
-
-            //Assumed skipped.
-            @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBe(null);
-            @case.SkipReason.ShouldBe(null);
-
-            //Indicate a skip, including a reason.
-            @case.Skip("Reason");
-            @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBe(null);
-            @case.SkipReason.ShouldBe("Reason");
-
-            //Indicate a failure, replacing the assumed skip.
-            @case.Fail(new Exception("Failure"));
-            @case.State.ShouldBe(CaseState.Failed);
-            (@case.Exception?.Message).ShouldBe("Failure");
-            @case.SkipReason.ShouldBe(null);
-
-            //Indicate a skip, suppressing the above fail.
-            @case.Skip("Reason");
-            @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBe(null);
-            @case.SkipReason.ShouldBe("Reason");
-
-            //Indicate a failure, replacing the above skip.
-            @case.Fail(new Exception("Failure"));
-            @case.State.ShouldBe(CaseState.Failed);
-            (@case.Exception?.Message).ShouldBe("Failure");
-            @case.SkipReason.ShouldBe(null);
-
-            //Indicate a skip, suppressing the above failure.
-            @case.Skip("Reason");
-            @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBe(null);
-            @case.SkipReason.ShouldBe("Reason");
         }
 
         class SampleParentTestClass

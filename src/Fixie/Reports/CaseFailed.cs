@@ -5,8 +5,11 @@
 
     public class CaseFailed : CaseCompleted
     {
-        internal CaseFailed(Case @case, TimeSpan duration, string output) : base(@case, duration, output)
-            => Exception = @case.Exception!;
+        internal CaseFailed(Case @case, TimeSpan duration, string output, Exception exception)
+            : base(@case, duration, output)
+        {
+            Exception = exception;
+        }
 
         public Exception Exception { get; }
     }

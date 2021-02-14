@@ -146,7 +146,10 @@ namespace Fixie
         /// </summary>
         public async Task SkipAsync(object?[] parameters, string? reason)
         {
-            await recorder.SkipAsync(this, parameters, reason);
+            var @case = new Case(Method, parameters);
+            @case.Skip(reason);
+            await recorder.SkipAsync(@case);
+
             RecordedResult = true;
         }
 

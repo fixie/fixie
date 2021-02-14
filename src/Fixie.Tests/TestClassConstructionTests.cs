@@ -282,53 +282,6 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(".ctor");
         }
 
-        public async Task ShouldFailAllTestsWithoutHidingPrimaryCaseResultsWhenConstructingPerClassAndDisposeThrows()
-        {
-            FailDuring("Dispose");
-
-            var output = await RunAsync<SampleTestClass, CreateInstancePerClass>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Fail failed: 'Dispose' failed!",
-                "SampleTestClass.Pass failed: 'Dispose' failed!",
-                "SampleTestClass.Skip failed: 'Dispose' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "Fail",
-                "Pass(1)",
-                "Pass(2)",
-                "DisposeAsync",
-                "Dispose");
-        }
-
-        public async Task ShouldFailAllTestsWithoutHidingPrimaryCaseResultsAndShortCircuitSynchronousDisposeWhenConstructingPerClassAndDisposeAsyncThrows()
-        {
-            FailDuring("DisposeAsync");
-
-            var output = await RunAsync<SampleTestClass, CreateInstancePerClass>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Fail failed: 'DisposeAsync' failed!",
-                "SampleTestClass.Pass failed: 'DisposeAsync' failed!",
-                "SampleTestClass.Skip failed: 'DisposeAsync' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.");
-
-            output.ShouldHaveLifecycle(
-                ".ctor",
-                "Fail",
-                "Pass(1)",
-                "Pass(2)",
-                "DisposeAsync");
-        }
-
         public async Task ShouldBypassConstructionWhenConstructingPerCaseAndAllCasesAreSkipped()
         {
             var output = await RunAsync<AllSkippedTestClass, CreateInstancePerCase>();

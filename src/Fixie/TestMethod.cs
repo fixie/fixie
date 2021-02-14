@@ -70,11 +70,7 @@ namespace Fixie
 
             Console.Write(output);
 
-            if (@case.State == CaseState.Skipped)
-            {
-                await recorder.SkipAsync(@case, output, null);
-            }
-            else if (@case.State == CaseState.Failed)
+            if (@case.State == CaseState.Failed)
             {
                 await recorder.FailAsync(@case, output);
             }

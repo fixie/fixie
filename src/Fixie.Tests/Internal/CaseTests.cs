@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Tests.Internal
 {
-    using System;
     using System.Linq;
     using Assertions;
     using Fixie.Internal;
@@ -214,53 +213,6 @@
             var unresolvedParameterType = method.GetParameters().Single().ParameterType;
             unresolvedParameterType.Name.ShouldBe("T");
             unresolvedParameterType.IsGenericParameter.ShouldBe(true);
-        }
-
-        public void ShouldTrackLastExceptionAsFailureReason()
-        {
-            var exceptionA = new InvalidOperationException();
-            var exceptionB = new DivideByZeroException();
-
-            var @case = Case("Returns");
-
-            @case.Exception.ShouldBe(null);
-            @case.Fail(exceptionA);
-            @case.Fail(exceptionB);
-            @case.Exception.ShouldBe(exceptionB);
-        }
-
-        public void CanUpdateResultState()
-        {
-            var @case = Case("Returns");
-
-            //Assumed skipped.
-            @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBe(null);
-
-            //Indicate a skip, including a reason.
-            @case.Skip();
-            @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBe(null);
-
-            //Indicate a failure, replacing the assumed skip.
-            @case.Fail(new Exception("Failure"));
-            @case.State.ShouldBe(CaseState.Failed);
-            (@case.Exception?.Message).ShouldBe("Failure");
-
-            //Indicate a skip, suppressing the above fail.
-            @case.Skip();
-            @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBe(null);
-
-            //Indicate a failure, replacing the above skip.
-            @case.Fail(new Exception("Failure"));
-            @case.State.ShouldBe(CaseState.Failed);
-            (@case.Exception?.Message).ShouldBe("Failure");
-
-            //Indicate a skip, suppressing the above failure.
-            @case.Skip();
-            @case.State.ShouldBe(CaseState.Skipped);
-            @case.Exception.ShouldBe(null);
         }
 
         class SampleParentTestClass

@@ -57,11 +57,11 @@
             caseStopwatch.Restart();
         }
 
-        public async Task FailAsync(Case @case, string output)
+        public async Task FailAsync(Case @case, string output, Exception reason)
         {
             var duration = caseStopwatch.Elapsed;
 
-            var message = new CaseFailed(@case, duration, output);
+            var message = new CaseFailed(@case, duration, output, reason);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 

@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Internal
 {
-    using System;
     using System.Collections.Generic;
     using System.Reflection;
     using System.Threading.Tasks;
@@ -39,44 +38,6 @@
         /// Gets the method that defines this test case.
         /// </summary>
         public MethodInfo Method { get; }
-
-        /// <summary>
-        /// Gets the exception describing this test case's failure.
-        /// </summary>
-        public Exception? Exception { get; private set; }
-
-        /// <summary>
-        /// Indicate the test case was skipped for the given reason.
-        /// </summary>
-        public void Skip()
-        {
-            State = CaseState.Skipped;
-            Exception = null;
-        }
-
-        /// <summary>
-        /// Indicate the test case passed.
-        /// </summary>
-        public void Pass()
-        {
-            State = CaseState.Passed;
-            Exception = null;
-        }
-
-        /// <summary>
-        /// Indicate the test case failed for the given reason.
-        /// </summary>
-        public void Fail(Exception reason)
-        {
-            if (reason is PreservedException preservedException)
-                reason = preservedException.OriginalException;
-
-            State = CaseState.Failed;
-
-            Exception = reason;
-        }
-
-        public CaseState State { get; private set; }
 
         public async Task RunAsync(object? instance)
             => await Method.RunTestMethodAsync(instance, parameters);

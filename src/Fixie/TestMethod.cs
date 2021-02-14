@@ -39,6 +39,7 @@ namespace Fixie
         async Task<Exception?> RunCoreAsync(object?[] parameters, object? instance)
         {
             var @case = new Case(Method, parameters);
+            Exception? failureReason = null;
 
             await recorder.StartAsync(@case);
 
@@ -53,16 +54,15 @@ namespace Fixie
                     try
                     {
                         await @case.RunAsync(instance);
-                        @case.Pass();
                     }
-                    catch (Exception exception)
+                    catch (Exception caseFailure)
                     {
-                        @case.Fail(exception);
+                        failureReason = caseFailure;
                     }
                 }
                 catch (Exception constructionFailure)
                 {
-                    @case.Fail(constructionFailure);
+                    failureReason = constructionFailure;
                 }
 
                 output = console.Output;
@@ -70,9 +70,12 @@ namespace Fixie
 
             Console.Write(output);
 
-            if (@case.State == CaseState.Failed)
+            if (failureReason != null)
             {
-                await recorder.FailAsync(@case, output);
+                if (failureReason is PreservedException preservedException)
+                    failureReason = preservedException.OriginalException;
+
+                await recorder.FailAsync(@case, output, failureReason);
             }
             else
             {
@@ -81,7 +84,7 @@ namespace Fixie
 
             RecordedResult = true;
 
-            return @case.Exception;
+            return failureReason;
         }
 
         public Task<Exception?> RunAsync()
@@ -151,7 +154,6 @@ namespace Fixie
         public async Task SkipAsync(object?[] parameters, string? reason)
         {
             var @case = new Case(Method, parameters);
-            @case.Skip();
             await recorder.SkipAsync(@case, "", reason);
 
             RecordedResult = true;
@@ -173,9 +175,12 @@ namespace Fixie
             if (reason == null)
                 throw new ArgumentNullException(nameof(reason));
 
+            if (reason is PreservedException preservedException)
+                reason = preservedException.OriginalException;
+
             var @case = new Case(Method, parameters);
-            @case.Fail(reason);
-            await recorder.FailAsync(@case, "");
+
+            await recorder.FailAsync(@case, "", reason);
 
             RecordedResult = true;
         }

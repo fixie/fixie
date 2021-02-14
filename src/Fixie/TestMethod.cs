@@ -166,7 +166,10 @@ namespace Fixie
             if (reason == null)
                 throw new ArgumentNullException(nameof(reason));
 
-            await recorder.FailAsync(this, parameters, reason);
+            var @case = new Case(Method, parameters);
+            @case.Fail(reason);
+            await recorder.FailAsync(@case);
+
             RecordedResult = true;
         }
 

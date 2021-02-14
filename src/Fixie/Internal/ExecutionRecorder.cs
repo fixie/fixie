@@ -75,13 +75,6 @@
             caseStopwatch.Restart();
         }
 
-        public async Task FailAsync(TestMethod testMethod, object?[] parameters, Exception reason)
-        {
-            var @case = new Case(testMethod.Method, parameters);
-            @case.Fail(reason);
-            await FailAsync(@case);
-        }
-
         public async Task<ExecutionSummary> CompleteAsync(TestAssembly testAssembly)
         {
             var duration = assemblyStopwatch.Elapsed;

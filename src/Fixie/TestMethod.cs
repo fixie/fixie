@@ -62,20 +62,15 @@ namespace Fixie
 
             Console.Write(output);
 
-            bool accounted = false;
             if (@case.State == CaseState.Skipped)
             {
                 await recorder.SkipAsync(@case, output);
-                accounted = true;
             }
-
-            if (@case.State == CaseState.Failed)
+            else if (@case.State == CaseState.Failed)
             {
                 await recorder.FailAsync(@case, output);
-                accounted = true;
             }
-
-            if (@case.State == CaseState.Passed && !accounted)
+            else
             {
                 await recorder.PassAsync(@case, output);
             }

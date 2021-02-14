@@ -51,18 +51,14 @@ namespace Fixie
                     if (instance == null && !@case.Method.IsStatic)
                         instance = Construct(@case.Method.ReflectedType!);
 
-                    try
-                    {
-                        await @case.RunAsync(instance);
-                    }
-                    catch (Exception caseFailure)
-                    {
-                        failureReason = caseFailure;
-                    }
+                    await @case.RunAsync(instance);
                 }
-                catch (Exception constructionFailure)
+                catch (Exception exception)
                 {
-                    failureReason = constructionFailure;
+                    if (exception is PreservedException preservedException)
+                        exception = preservedException.OriginalException;
+
+                    failureReason = exception;
                 }
 
                 output = console.Output;
@@ -72,9 +68,6 @@ namespace Fixie
 
             if (failureReason != null)
             {
-                if (failureReason is PreservedException preservedException)
-                    failureReason = preservedException.OriginalException;
-
                 await recorder.FailAsync(@case, output, failureReason);
             }
             else

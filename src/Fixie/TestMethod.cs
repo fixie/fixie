@@ -50,7 +50,7 @@ namespace Fixie
                     if (instance == null && !@case.Method.IsStatic)
                         instance = Construct(@case.Method.ReflectedType!);
 
-                    await TryRunCaseAsync(@case, instance);
+                    await @case.RunAsync(instance);
                 }
                 catch (Exception constructionFailure)
                 {
@@ -83,11 +83,6 @@ namespace Fixie
             RecordedResult = true;
 
             return @case.Exception;
-        }
-
-        static Task TryRunCaseAsync(Case @case, object? instance)
-        {
-            return @case.RunAsync(instance);
         }
 
         public Task<Exception?> RunAsync()

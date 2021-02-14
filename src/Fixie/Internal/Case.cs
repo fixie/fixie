@@ -42,11 +42,4 @@
         public async Task RunAsync(object? instance)
             => await Method.RunTestMethodAsync(instance, parameters);
     }
-
-    enum CaseState
-    {
-        Skipped,
-        Passed,
-        Failed
-    }
 }

@@ -1,4 +1,4 @@
-﻿namespace Fixie
+namespace Fixie
 {
     using System;
     using System.Collections.Generic;
@@ -13,10 +13,12 @@
         static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
 
         readonly ExecutionRecorder recorder;
-        
-        internal TestMethod(ExecutionRecorder recorder, MethodInfo method)
+        readonly bool classIsDisposable;
+
+        internal TestMethod(ExecutionRecorder recorder, bool classIsDisposable, MethodInfo method)
         {
             this.recorder = recorder;
+            this.classIsDisposable = classIsDisposable;
             Method = method;
             RecordedResult = false;
         }
@@ -40,28 +42,19 @@
 
             await recorder.StartAsync(@case);
 
-            Exception? disposalFailure = null;
-
             string output;
             using (var console = new RedirectedConsole())
             {
-                if (instance != null)
+                try
                 {
-                    await TryRunCaseAsync(@case, instance);
-                }
-                else
-                {
-                    try
-                    {
-                        var automaticInstance = @case.Method.IsStatic ? null : Construct(@case.Method.ReflectedType!);
+                    if (instance == null && !@case.Method.IsStatic)
+                        instance = Construct(@case.Method.ReflectedType!);
 
-                        await TryRunCaseAsync(@case, automaticInstance);
-                        disposalFailure = await TryDisposeAsync(automaticInstance);
-                    }
-                    catch (Exception constructionFailure)
-                    {
-                        @case.Fail(constructionFailure);
-                    }
+                    await @case.RunAsync(instance);
+                }
+                catch (Exception constructionFailure)
+                {
+                    @case.Fail(constructionFailure);
                 }
 
                 output = console.Output;
@@ -69,26 +62,15 @@
 
             Console.Write(output);
 
-            bool accounted = false;
             if (@case.State == CaseState.Skipped)
             {
                 await recorder.SkipAsync(@case, output);
-                accounted = true;
             }
-
-            if (@case.State == CaseState.Failed)
+            else if (@case.State == CaseState.Failed)
             {
                 await recorder.FailAsync(@case, output);
-                accounted = true;
             }
-
-            if (disposalFailure != null)
-            {
-                await recorder.FailAsync(new Case(@case, disposalFailure), output);
-                accounted = true;
-            }
-            
-            if (@case.State == CaseState.Passed && !accounted)
+            else
             {
                 await recorder.PassAsync(@case, output);
             }
@@ -96,27 +78,6 @@
             RecordedResult = true;
 
             return @case.Exception;
-        }
-
-        static Task TryRunCaseAsync(Case @case, object? instance)
-        {
-            return @case.RunAsync(instance);
-        }
-
-        static async Task<Exception?> TryDisposeAsync(object? automaticInstance)
-        {
-            Exception? disposalFailure = null;
-
-            try
-            {
-                await automaticInstance.DisposeIfApplicableAsync();
-            }
-            catch (Exception exception)
-            {
-                disposalFailure = exception;
-            }
-
-            return disposalFailure;
         }
 
         public Task<Exception?> RunAsync()
@@ -209,16 +170,29 @@
             RecordedResult = true;
         }
 
-        static object? Construct(Type type)
+        object? Construct(Type testClass)
         {
+            if (classIsDisposable)
+                FailDueToDisposalMisuse(testClass);
+
             try
             {
-                return Activator.CreateInstance(type);
+                return Activator.CreateInstance(testClass);
             }
             catch (TargetInvocationException exception)
             {
                 throw new PreservedException(exception);
             }
+        }
+
+        static void FailDueToDisposalMisuse(Type testClass)
+        {
+            throw new Exception(
+                $"Test class {testClass} is declared as disposable, which is firmly discouraged " +
+                "for test tear-down purposes. Test class disposal is not supported when the test " +
+                "runner is constructing test class instances implicitly. If you wish to use " +
+                "IDisposable or IDisposableAsync for test class tear down, perform construction " +
+                "and disposal explicitly in an implementation of Execution.RunAsync(...).");
         }
     }
 }

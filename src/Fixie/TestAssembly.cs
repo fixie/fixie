@@ -1,4 +1,4 @@
-﻿namespace Fixie
+namespace Fixie
 {
     using System;
     using System.Collections.Generic;
@@ -45,8 +45,9 @@
                 if (!SelectedTests.IsEmpty)
                     methods = methods.Where(method => SelectedTests.Contains(new Test(method).Name));
 
+                var classIsDisposable = IsDisposable(@class);
                 var testMethods = methods
-                    .Select(method => new TestMethod(recorder, method))
+                    .Select(method => new TestMethod(recorder, classIsDisposable, method))
                     .ToList();
 
                 if (testMethods.Any())
@@ -77,5 +78,8 @@
                 }
             }
         }
+
+        static bool IsDisposable(Type @class)
+            => @class.GetInterfaces().Any(x => x == typeof(IAsyncDisposable) || x == typeof(IDisposable));
     }
 }

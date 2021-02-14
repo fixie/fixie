@@ -20,16 +20,6 @@
             Name = CaseNameBuilder.GetName(Method, parameters);
         }
 
-        public Case(Case originalCase, Exception secondaryFailureReason)
-        {
-            parameters = originalCase.parameters;
-            Test = originalCase.Test;
-            Method = originalCase.Method;
-            Name = originalCase.Name;
-
-            Fail(secondaryFailureReason);
-        }
-
         /// <summary>
         /// Gets the test for which this case describes a single execution.
         /// </summary>

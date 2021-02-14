@@ -104,22 +104,6 @@ namespace Fixie
             return @case.RunAsync(instance);
         }
 
-        static async Task<Exception?> TryDisposeAsync(object? automaticInstance)
-        {
-            Exception? disposalFailure = null;
-
-            try
-            {
-                await automaticInstance.DisposeIfApplicableAsync();
-            }
-            catch (Exception exception)
-            {
-                disposalFailure = exception;
-            }
-
-            return disposalFailure;
-        }
-
         public Task<Exception?> RunAsync()
         {
             return RunCoreAsync(EmptyParameters, instance: null);

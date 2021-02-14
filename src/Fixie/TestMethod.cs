@@ -42,8 +42,6 @@ namespace Fixie
 
             await recorder.StartAsync(@case);
 
-            Exception? disposalFailure = null;
-
             string output;
             using (var console = new RedirectedConsole())
             {
@@ -83,12 +81,6 @@ namespace Fixie
                 accounted = true;
             }
 
-            if (disposalFailure != null)
-            {
-                await recorder.FailAsync(new Case(@case, disposalFailure), output);
-                accounted = true;
-            }
-            
             if (@case.State == CaseState.Passed && !accounted)
             {
                 await recorder.PassAsync(@case, output);

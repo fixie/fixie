@@ -210,16 +210,29 @@ namespace Fixie
             RecordedResult = true;
         }
 
-        static object? Construct(Type type)
+        object? Construct(Type testClass)
         {
+            if (classIsDisposable)
+                FailDueToDisposalMisuse(testClass);
+
             try
             {
-                return Activator.CreateInstance(type);
+                return Activator.CreateInstance(testClass);
             }
             catch (TargetInvocationException exception)
             {
                 throw new PreservedException(exception);
             }
+        }
+
+        static void FailDueToDisposalMisuse(Type testClass)
+        {
+            throw new Exception(
+                $"Test class {testClass} is declared as disposable, which is firmly discouraged " +
+                "for test tear-down purposes. Test class disposal is not supported when the test " +
+                "runner is constructing test class instances implicitly. If you wish to use " +
+                "IDisposable or IDisposableAsync for test class tear down, perform construction " +
+                "and disposal explicitly in an implementation of Execution.RunAsync(...).");
         }
     }
 }

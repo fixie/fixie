@@ -6,11 +6,8 @@ namespace Fixie.Tests
 
     public class TestClassConstructionTests : InstrumentedExecutionTests
     {
-        class SampleTestClass : IAsyncDisposable, IDisposable
+        class SampleTestClass
         {
-            bool asyncDisposed;
-            bool disposed;
-
             public SampleTestClass()
             {
                 WhereAmI();
@@ -34,6 +31,33 @@ namespace Fixie.Tests
                 WhereAmI();
                 throw new ShouldBeUnreachableException();
             }
+        }
+
+        class DisposableSampleTestClass : IDisposable
+        {
+            bool disposed;
+
+            public DisposableSampleTestClass()
+            {
+                WhereAmI();
+            }
+
+            public void Fail()
+            {
+                WhereAmI();
+                throw new FailureException();
+            }
+
+            public void Pass()
+            {
+                WhereAmI();
+            }
+
+            public void Skip()
+            {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
 
             public void Dispose()
             {
@@ -42,6 +66,33 @@ namespace Fixie.Tests
                 disposed = true;
 
                 WhereAmI();
+            }
+        }
+
+        class AsyncDisposableSampleTestClass : IAsyncDisposable
+        {
+            bool asyncDisposed;
+
+            public AsyncDisposableSampleTestClass()
+            {
+                WhereAmI();
+            }
+
+            public void Fail()
+            {
+                WhereAmI();
+                throw new FailureException();
+            }
+
+            public void Pass()
+            {
+                WhereAmI();
+            }
+
+            public void Skip()
+            {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
             }
 
             public ValueTask DisposeAsync()
@@ -138,6 +189,20 @@ namespace Fixie.Tests
             }
         }
 
+        class CreateInstancePerCaseExplicitly : Execution
+        {
+            public async Task RunAsync(TestClass testClass)
+            {
+                foreach (var test in testClass.Tests)
+                    if (!ShouldSkip(test))
+                    {
+                        var instance = testClass.Construct();
+                        await test.RunAsync(instance);
+                        await instance.DisposeIfApplicableAsync();
+                    }
+            }
+        }
+
         class CreateInstancePerClass : Execution
         {
             public async Task RunAsync(TestClass testClass)
@@ -187,7 +252,7 @@ namespace Fixie.Tests
                 ".ctor", "Pass(2)");
         }
 
-        public async Task ShouldFailCaseInAbsenseOfPrimaryCaseResultAndProceedWithFailureInspectionWhenConstructingPerCaseAndConstructorThrows()
+        public async Task ShouldFailCaseInAbsenseOfPrimaryCaseResultWhenConstructingPerCaseAndConstructorThrows()
         {
             FailDuring(".ctor");
             
@@ -203,6 +268,58 @@ namespace Fixie.Tests
                 ".ctor",
                 ".ctor",
                 ".ctor");
+        }
+
+        public async Task ShouldFailCaseInAbsenseOfPrimaryCaseResultWhenConstructingImplicitlyAndTestClassIsDisposable()
+        {
+            var output = await RunAsync<DisposableSampleTestClass, CreateInstancePerCase>();
+
+            output.ShouldHaveResults(
+                "DisposableSampleTestClass.Fail failed: Test class Fixie.Tests.TestClassConstructionTests+DisposableSampleTestClass is declared as disposable, which is firmly discouraged for test tear-down purposes. Test class disposal is not supported when the test runner is constructing test class instances implicitly. If you wish to use IDisposable or IDisposableAsync for test class tear down, perform construction and disposal explicitly in an implementation of Execution.RunAsync(...).",
+                "DisposableSampleTestClass.Pass failed: Test class Fixie.Tests.TestClassConstructionTests+DisposableSampleTestClass is declared as disposable, which is firmly discouraged for test tear-down purposes. Test class disposal is not supported when the test runner is constructing test class instances implicitly. If you wish to use IDisposable or IDisposableAsync for test class tear down, perform construction and disposal explicitly in an implementation of Execution.RunAsync(...).",
+                "DisposableSampleTestClass.Skip skipped: This test did not run.");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public async Task ShouldFailCaseInAbsenseOfPrimaryCaseResultWhenConstructingImplicitlyAndTestClassIsAsyncDisposable()
+        {
+            var output = await RunAsync<AsyncDisposableSampleTestClass, CreateInstancePerCase>();
+
+            output.ShouldHaveResults(
+                "AsyncDisposableSampleTestClass.Fail failed: Test class Fixie.Tests.TestClassConstructionTests+AsyncDisposableSampleTestClass is declared as disposable, which is firmly discouraged for test tear-down purposes. Test class disposal is not supported when the test runner is constructing test class instances implicitly. If you wish to use IDisposable or IDisposableAsync for test class tear down, perform construction and disposal explicitly in an implementation of Execution.RunAsync(...).",
+                "AsyncDisposableSampleTestClass.Pass failed: Test class Fixie.Tests.TestClassConstructionTests+AsyncDisposableSampleTestClass is declared as disposable, which is firmly discouraged for test tear-down purposes. Test class disposal is not supported when the test runner is constructing test class instances implicitly. If you wish to use IDisposable or IDisposableAsync for test class tear down, perform construction and disposal explicitly in an implementation of Execution.RunAsync(...).",
+                "AsyncDisposableSampleTestClass.Skip skipped: This test did not run.");
+
+            output.ShouldHaveLifecycle();
+        }
+
+        public async Task ShouldAllowExecutionWhenConstructingExplicitlyAndTestClassIsDisposable()
+        {
+            var output = await RunAsync<DisposableSampleTestClass, CreateInstancePerCaseExplicitly>();
+
+            output.ShouldHaveResults(
+                "DisposableSampleTestClass.Fail failed: 'Fail' failed!",
+                "DisposableSampleTestClass.Pass passed",
+                "DisposableSampleTestClass.Skip skipped: This test did not run.");
+
+            output.ShouldHaveLifecycle(
+                ".ctor", "Fail", "Dispose",
+                ".ctor", "Pass", "Dispose");
+        }
+
+        public async Task ShouldAllowExecutionWhenConstructingExplicitlyAndTestClassIsAsyncDisposable()
+        {
+            var output = await RunAsync<AsyncDisposableSampleTestClass, CreateInstancePerCaseExplicitly>();
+
+            output.ShouldHaveResults(
+                "AsyncDisposableSampleTestClass.Fail failed: 'Fail' failed!",
+                "AsyncDisposableSampleTestClass.Pass passed",
+                "AsyncDisposableSampleTestClass.Skip skipped: This test did not run.");
+
+            output.ShouldHaveLifecycle(
+                ".ctor", "Fail", "DisposeAsync",
+                ".ctor", "Pass", "DisposeAsync");
         }
 
         public async Task ShouldAllowConstructingPerClass()

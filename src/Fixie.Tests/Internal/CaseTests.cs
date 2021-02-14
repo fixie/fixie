@@ -236,37 +236,31 @@
             //Assumed skipped.
             @case.State.ShouldBe(CaseState.Skipped);
             @case.Exception.ShouldBe(null);
-            @case.SkipReason.ShouldBe(null);
 
             //Indicate a skip, including a reason.
-            @case.Skip("Reason");
+            @case.Skip();
             @case.State.ShouldBe(CaseState.Skipped);
             @case.Exception.ShouldBe(null);
-            @case.SkipReason.ShouldBe("Reason");
 
             //Indicate a failure, replacing the assumed skip.
             @case.Fail(new Exception("Failure"));
             @case.State.ShouldBe(CaseState.Failed);
             (@case.Exception?.Message).ShouldBe("Failure");
-            @case.SkipReason.ShouldBe(null);
 
             //Indicate a skip, suppressing the above fail.
-            @case.Skip("Reason");
+            @case.Skip();
             @case.State.ShouldBe(CaseState.Skipped);
             @case.Exception.ShouldBe(null);
-            @case.SkipReason.ShouldBe("Reason");
 
             //Indicate a failure, replacing the above skip.
             @case.Fail(new Exception("Failure"));
             @case.State.ShouldBe(CaseState.Failed);
             (@case.Exception?.Message).ShouldBe("Failure");
-            @case.SkipReason.ShouldBe(null);
 
             //Indicate a skip, suppressing the above failure.
-            @case.Skip("Reason");
+            @case.Skip();
             @case.State.ShouldBe(CaseState.Skipped);
             @case.Exception.ShouldBe(null);
-            @case.SkipReason.ShouldBe("Reason");
         }
 
         class SampleParentTestClass

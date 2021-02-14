@@ -35,11 +35,11 @@
             await bus.PublishAsync(new CaseStarted(@case));
         }
 
-        public async Task SkipAsync(Case @case, string output)
+        public async Task SkipAsync(Case @case, string output, string? reason)
         {
             var duration = caseStopwatch.Elapsed;
 
-            var message = new CaseSkipped(@case, duration, output);
+            var message = new CaseSkipped(@case, duration, output, reason);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 

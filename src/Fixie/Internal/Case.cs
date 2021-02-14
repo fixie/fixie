@@ -48,11 +48,10 @@
         /// <summary>
         /// Indicate the test case was skipped for the given reason.
         /// </summary>
-        public void Skip(string? reason)
+        public void Skip()
         {
             State = CaseState.Skipped;
             Exception = null;
-            SkipReason = reason;
         }
 
         /// <summary>
@@ -62,7 +61,6 @@
         {
             State = CaseState.Passed;
             Exception = null;
-            SkipReason = null;
         }
 
         /// <summary>
@@ -76,11 +74,8 @@
             State = CaseState.Failed;
 
             Exception = reason;
-
-            SkipReason = null;
         }
 
-        public string? SkipReason { get; private set; }
         public CaseState State { get; private set; }
 
         public async Task RunAsync(object? instance)

@@ -72,7 +72,7 @@ namespace Fixie
 
             if (@case.State == CaseState.Skipped)
             {
-                await recorder.SkipAsync(@case, output);
+                await recorder.SkipAsync(@case, output, null);
             }
             else if (@case.State == CaseState.Failed)
             {
@@ -155,8 +155,8 @@ namespace Fixie
         public async Task SkipAsync(object?[] parameters, string? reason)
         {
             var @case = new Case(Method, parameters);
-            @case.Skip(reason);
-            await recorder.SkipAsync(@case, "");
+            @case.Skip();
+            await recorder.SkipAsync(@case, "", reason);
 
             RecordedResult = true;
         }

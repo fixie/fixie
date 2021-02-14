@@ -58,7 +58,6 @@ namespace Fixie
                         var automaticInstance = @case.Method.IsStatic ? null : Construct(@case.Method.ReflectedType!);
 
                         await TryRunCaseAsync(@case, automaticInstance);
-                        disposalFailure = await TryDisposeAsync(automaticInstance);
                     }
                     catch (Exception constructionFailure)
                     {

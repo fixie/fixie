@@ -166,9 +166,9 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip failed: 'Skip' reached a line of code thought to be unreachable.");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "DisposeAsync", "Dispose",
-                ".ctor", "DisposeAsync", "Dispose",
-                ".ctor", "Skip", "DisposeAsync", "Dispose");
+                ".ctor", "Fail",
+                ".ctor",
+                ".ctor", "Skip");
         }
 
         public async Task ShouldAllowConstructingPerCase()
@@ -182,9 +182,9 @@ namespace Fixie.Tests
                 "SampleTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "DisposeAsync", "Dispose",
-                ".ctor", "Pass(1)", "DisposeAsync","Dispose",
-                ".ctor", "Pass(2)", "DisposeAsync","Dispose");
+                ".ctor", "Fail",
+                ".ctor", "Pass(1)",
+                ".ctor", "Pass(2)");
         }
 
         public async Task ShouldFailCaseInAbsenseOfPrimaryCaseResultAndProceedWithFailureInspectionWhenConstructingPerCaseAndConstructorThrows()
@@ -203,44 +203,6 @@ namespace Fixie.Tests
                 ".ctor",
                 ".ctor",
                 ".ctor");
-        }
-
-        public async Task ShouldFailCaseWithoutHidingPrimaryFailuresWhenConstructingPerCaseAndDisposeThrows()
-        {
-            FailDuring("Dispose");
-
-            var output = await RunAsync<SampleTestClass, CreateInstancePerCase>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'Dispose' failed!",
-                "SampleTestClass.Pass(1) failed: 'Dispose' failed!",
-                "SampleTestClass.Pass(2) failed: 'Dispose' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.");
-
-            output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "DisposeAsync", "Dispose",
-                ".ctor", "Pass(1)", "DisposeAsync", "Dispose",
-                ".ctor", "Pass(2)", "DisposeAsync", "Dispose");
-        }
-
-        public async Task ShouldFailCaseWithoutHidingPrimaryFailuresAndShortCircuitSynchronousDisposeWhenConstructingPerCaseAndDisposeAsyncThrows()
-        {
-            FailDuring("DisposeAsync");
-
-            var output = await RunAsync<SampleTestClass, CreateInstancePerCase>();
-
-            output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'DisposeAsync' failed!",
-                "SampleTestClass.Pass(1) failed: 'DisposeAsync' failed!",
-                "SampleTestClass.Pass(2) failed: 'DisposeAsync' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.");
-
-            output.ShouldHaveLifecycle(
-                ".ctor", "Fail", "DisposeAsync",
-                ".ctor", "Pass(1)", "DisposeAsync",
-                ".ctor", "Pass(2)", "DisposeAsync");
         }
 
         public async Task ShouldAllowConstructingPerClass()

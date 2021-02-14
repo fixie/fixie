@@ -45,22 +45,16 @@ namespace Fixie
             string output;
             using (var console = new RedirectedConsole())
             {
-                if (instance != null)
+                try
                 {
+                    if (instance == null && !@case.Method.IsStatic)
+                        instance = Construct(@case.Method.ReflectedType!);
+
                     await TryRunCaseAsync(@case, instance);
                 }
-                else
+                catch (Exception constructionFailure)
                 {
-                    try
-                    {
-                        var automaticInstance = @case.Method.IsStatic ? null : Construct(@case.Method.ReflectedType!);
-
-                        await TryRunCaseAsync(@case, automaticInstance);
-                    }
-                    catch (Exception constructionFailure)
-                    {
-                        @case.Fail(constructionFailure);
-                    }
+                    @case.Fail(constructionFailure);
                 }
 
                 output = console.Output;

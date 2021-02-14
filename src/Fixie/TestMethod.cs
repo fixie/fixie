@@ -50,7 +50,15 @@ namespace Fixie
                     if (instance == null && !@case.Method.IsStatic)
                         instance = Construct(@case.Method.ReflectedType!);
 
-                    await @case.RunAsync(instance);
+                    try
+                    {
+                        await @case.RunAsync(instance);
+                        @case.Pass();
+                    }
+                    catch (Exception exception)
+                    {
+                        @case.Fail(exception);
+                    }
                 }
                 catch (Exception constructionFailure)
                 {

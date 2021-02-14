@@ -58,7 +58,7 @@
         /// <summary>
         /// Indicate the test case passed.
         /// </summary>
-        void Pass()
+        public void Pass()
         {
             State = CaseState.Passed;
             Exception = null;
@@ -83,22 +83,8 @@
         public string? SkipReason { get; private set; }
         public CaseState State { get; private set; }
 
-        /// <summary>
-        /// Run the test case against the given instance of the test class,
-        /// causing the case state to become either passing or failing.
-        /// </summary>
         public async Task RunAsync(object? instance)
-        {
-            try
-            {
-                await Method.RunTestMethodAsync(instance, parameters);
-                Pass();
-            }
-            catch (Exception exception)
-            {
-                Fail(exception);
-            }
-        }
+            => await Method.RunTestMethodAsync(instance, parameters);
     }
 
     enum CaseState

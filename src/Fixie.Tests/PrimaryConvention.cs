@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Assertions;
+    using Fixie.Reports;
     using static System.Environment;
     using static Fixie.Internal.Maybe;
 
@@ -16,9 +17,11 @@
             {
                 var result = await test.RunAsync();
 
-                if (result is AssertException exception && !exception.HasCompactRepresentations)
-                    if (testClass.TestAssembly.SelectedTests.Count == 1)
-                        LaunchDiffTool(exception);
+                if (result is CaseFailed failure)
+                    if (failure.Exception is AssertException exception)
+                        if (!exception.HasCompactRepresentations)
+                            if (testClass.TestAssembly.SelectedTests.Count == 1)
+                                LaunchDiffTool(exception);
             }
         }
 

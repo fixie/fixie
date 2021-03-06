@@ -6,6 +6,7 @@ namespace Fixie
     using System.Reflection;
     using System.Threading.Tasks;
     using Internal;
+    using Reports;
 
     public class TestMethod
     {
@@ -36,7 +37,7 @@ namespace Fixie
         public bool Has<TAttribute>([NotNullWhen(true)] out TAttribute? matchingAttribute) where TAttribute : Attribute
             => Method.Has(out matchingAttribute);
 
-        async Task<Exception?> RunCoreAsync(object?[] parameters, object? instance)
+        async Task<CaseCompleted> RunCoreAsync(object?[] parameters, object? instance)
         {
             var @case = new Case(Method, parameters);
             Exception? failureReason = null;
@@ -66,26 +67,27 @@ namespace Fixie
 
             Console.Write(output);
 
+            CaseCompleted? result = null;
             if (failureReason != null)
             {
-                await recorder.FailAsync(@case, output, failureReason);
+                result = await recorder.FailAsync(@case, output, failureReason);
             }
             else
             {
-                await recorder.PassAsync(@case, output);
+                result = await recorder.PassAsync(@case, output);
             }
 
             RecordedResult = true;
 
-            return failureReason;
+            return result;
         }
 
-        public Task<Exception?> RunAsync()
+        public Task<CaseCompleted> RunAsync()
         {
             return RunCoreAsync(EmptyParameters, instance: null);
         }
 
-        public Task<Exception?> RunAsync(object?[] parameters)
+        public Task<CaseCompleted> RunAsync(object?[] parameters)
         {
             return RunCoreAsync(parameters, instance: null);
         }
@@ -103,12 +105,12 @@ namespace Fixie
             }
         }
 
-        public Task<Exception?> RunAsync(object? instance)
+        public Task<CaseCompleted> RunAsync(object? instance)
         {
             return RunCoreAsync(EmptyParameters, instance);
         }
 
-        public Task<Exception?> RunAsync(object?[] parameters, object? instance)
+        public Task<CaseCompleted> RunAsync(object?[] parameters, object? instance)
         {
             return RunCoreAsync(parameters, instance);
         }

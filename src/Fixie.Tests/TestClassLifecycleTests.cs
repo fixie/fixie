@@ -81,15 +81,18 @@ namespace Fixie.Tests
             public InstrumentedExecution(ParameterSource parameterSource)
                 => this.parameterSource = parameterSource;
 
-            public async Task RunAsync(TestClass testClass)
+            public async Task RunAsync(TestAssembly testAssembly)
             {
-                ClassSetUp();
+                foreach (var testClass in testAssembly.TestClasses)
+                {
+                    ClassSetUp();
 
-                foreach (var test in testClass.Tests)
-                    if (!test.Method.Name.Contains("Skip"))
-                        await TestLifecycleAsync(test);
+                    foreach (var test in testClass.Tests)
+                        if (!test.Method.Name.Contains("Skip"))
+                            await TestLifecycleAsync(test);
 
-                ClassTearDown();
+                    ClassTearDown();
+                }
             }
 
             async Task TestLifecycleAsync(TestMethod test)
@@ -140,25 +143,28 @@ namespace Fixie.Tests
 
         class ShortCircuitTestExecution : Execution
         {
-            public Task RunAsync(TestClass testClass)
+            public Task RunAsync(TestAssembly testAssembly)
             {
-                //Class lifecycle chooses not to invoke test.RunAsync(...).
-                //Since the tests never run, they are all considered
-                //'skipped'.
+                //Lifecycle chooses not to invoke any tests
+                //Since the tests never run, they are all
+                //considered 'skipped'.
                 return Task.CompletedTask;
             }
         }
 
         class RepeatedExecution : Execution
         {
-            public async Task RunAsync(TestClass testClass)
+            public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var test in testClass.Tests)
+                foreach (var testClass in testAssembly.TestClasses)
                 {
-                    if (test.Method.Name.Contains("Skip")) continue;
+                    foreach (var test in testClass.Tests)
+                    {
+                        if (test.Method.Name.Contains("Skip")) continue;
 
-                    for (int i = 1; i <= 3; i++)
-                        await test.RunAsync(Utility.UsingInputAttributes);
+                        for (int i = 1; i <= 3; i++)
+                            await test.RunAsync(Utility.UsingInputAttributes);
+                    }
                 }
             }
         }
@@ -170,26 +176,29 @@ namespace Fixie.Tests
             public CircuitBreakingExecution(int maxFailures)
                 => this.maxFailures = maxFailures;
 
-            public async Task RunAsync(TestClass testClass)
+            public async Task RunAsync(TestAssembly testAssembly)
             {
                 int failures = 0;
 
-                foreach (var test in testClass.Tests)
+                foreach (var testClass in testAssembly.TestClasses)
                 {
-                    if (test.Method.Name.Contains("Skip")) continue;
-
-                    for (int i = 1; i <= 3; i++)
+                    foreach (var test in testClass.Tests)
                     {
-                        foreach (var parameters in Cases(test))
+                        if (test.Method.Name.Contains("Skip")) continue;
+
+                        for (int i = 1; i <= 3; i++)
                         {
-                            var result = await test.RunAsync(parameters);
-
-                            if (result is CaseFailed)
+                            foreach (var parameters in Cases(test))
                             {
-                                failures++;
+                                var result = await test.RunAsync(parameters);
 
-                                if (failures > maxFailures)
-                                    return;
+                                if (result is CaseFailed)
+                                {
+                                    failures++;
+
+                                    if (failures > maxFailures)
+                                        return;
+                                }
                             }
                         }
                     }

@@ -54,11 +54,12 @@
 
         class CreateInstancePerCase : Execution
         {
-            public async Task RunAsync(TestClass testClass)
+            public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var test in testClass.Tests)
-                    if (!test.Method.Name.Contains("Skip"))
-                        await test.RunAsync();
+                foreach (var testClass in testAssembly.TestClasses)
+                    foreach (var test in testClass.Tests)
+                        if (!test.Method.Name.Contains("Skip"))
+                            await test.RunAsync();
             }
         }
     }

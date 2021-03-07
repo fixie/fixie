@@ -167,8 +167,7 @@
             
             try
             {
-                foreach (var testClass in testClasses)
-                    await execution.RunAsync(testClass);
+                await execution.RunAsync(testAssembly);
             }
             catch (Exception exception)
             {

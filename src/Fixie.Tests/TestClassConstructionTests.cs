@@ -181,38 +181,43 @@ namespace Fixie.Tests
 
         class CreateInstancePerCase : Execution
         {
-            public async Task RunAsync(TestClass testClass)
+            public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var test in testClass.Tests)
-                    if (!ShouldSkip(test))
-                        await test.RunAsync(Utility.UsingInputAttributes);
+                foreach (var testClass in testAssembly.TestClasses)
+                    foreach (var test in testClass.Tests)
+                        if (!ShouldSkip(test))
+                            await test.RunAsync(Utility.UsingInputAttributes);
             }
         }
 
         class CreateInstancePerCaseExplicitly : Execution
         {
-            public async Task RunAsync(TestClass testClass)
+            public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var test in testClass.Tests)
-                    if (!ShouldSkip(test))
-                    {
-                        var instance = testClass.Construct();
-                        await test.RunAsync(instance);
-                        await instance.DisposeIfApplicableAsync();
-                    }
+                foreach (var testClass in testAssembly.TestClasses)
+                    foreach (var test in testClass.Tests)
+                        if (!ShouldSkip(test))
+                        {
+                            var instance = testClass.Construct();
+                            await test.RunAsync(instance);
+                            await instance.DisposeIfApplicableAsync();
+                        }
             }
         }
 
         class CreateInstancePerClass : Execution
         {
-            public async Task RunAsync(TestClass testClass)
+            public async Task RunAsync(TestAssembly testAssembly)
             {
-                var type = testClass.Type;
-                var instance = type.IsStatic() ? null : testClass.Construct();
+                foreach (var testClass in testAssembly.TestClasses)
+                {
+                    var type = testClass.Type;
+                    var instance = type.IsStatic() ? null : testClass.Construct();
 
-                foreach (var test in testClass.Tests)
-                    if (!ShouldSkip(test))
-                        await test.RunAsync(Utility.UsingInputAttributes, instance);
+                    foreach (var test in testClass.Tests)
+                        if (!ShouldSkip(test))
+                            await test.RunAsync(Utility.UsingInputAttributes, instance);
+                }
             }
         }
 

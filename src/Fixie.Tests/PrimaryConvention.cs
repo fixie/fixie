@@ -11,17 +11,20 @@
 
     class PrimaryConvention : Execution
     {
-        public async Task RunAsync(TestClass testClass)
+        public async Task RunAsync(TestAssembly testAssembly)
         {
-            foreach (var test in testClass.Tests)
+            foreach (var testClass in testAssembly.TestClasses)
             {
-                var result = await test.RunAsync();
+                foreach (var test in testClass.Tests)
+                {
+                    var result = await test.RunAsync();
 
-                if (result is CaseFailed failure)
-                    if (failure.Exception is AssertException exception)
-                        if (!exception.HasCompactRepresentations)
-                            if (testClass.TestAssembly.SelectedTests.Count == 1)
-                                LaunchDiffTool(exception);
+                    if (result is CaseFailed failure)
+                        if (failure.Exception is AssertException exception)
+                            if (!exception.HasCompactRepresentations)
+                                if (testClass.TestAssembly.SelectedTests.Count == 1)
+                                    LaunchDiffTool(exception);
+                }
             }
         }
 

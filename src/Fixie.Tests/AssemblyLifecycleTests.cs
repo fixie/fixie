@@ -29,10 +29,11 @@
                 return Task.CompletedTask;
             }
 
-            public async Task RunAsync(TestClass testClass)
+            public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var test in testClass.Tests)
-                    await test.RunAsync();
+                foreach (var testClass in testAssembly.TestClasses)
+                    foreach (var test in testClass.Tests)
+                        await test.RunAsync();
             }
 
             public Task CompleteAsync()

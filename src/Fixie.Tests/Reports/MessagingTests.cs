@@ -65,17 +65,20 @@
 
         class MessagingTestsExecution : Execution
         {
-            public async Task RunAsync(TestClass testClass)
+            public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var test in testClass.Tests)
+                foreach (var testClass in testAssembly.TestClasses)
                 {
-                    if (test.Has<SkipAttribute>(out var skip))
+                    foreach (var test in testClass.Tests)
                     {
-                        await test.SkipAsync(skip.Reason);
-                        continue;
-                    }
+                        if (test.Has<SkipAttribute>(out var skip))
+                        {
+                            await test.SkipAsync(skip.Reason);
+                            continue;
+                        }
 
-                    await test.RunAsync(UsingInputAttributes);
+                        await test.RunAsync(UsingInputAttributes);
+                    }
                 }
             }
         }

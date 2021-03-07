@@ -128,7 +128,7 @@
             MethodDiscoverer methodDiscoverer,
             Execution execution)
         {
-            var testClasses = new List<TestClass>();
+            var testClasses = new List<TestClass>(selectedTests.Count > 0 ? 0 : classes.Count);
 
             foreach (var @class in classes)
             {

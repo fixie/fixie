@@ -129,13 +129,26 @@
             Execution execution)
         {
             var testClasses = new List<TestClass>(selectedTests.Count > 0 ? 0 : classes.Count);
+            var selectionWorkingList = new List<MethodInfo>();
 
             foreach (var @class in classes)
             {
                 var methods = methodDiscoverer.TestMethods(@class);
 
                 if (!selectedTests.IsEmpty)
-                    methods = methods.Where(method => selectedTests.Contains(new Test(method).Name)).ToList();
+                {
+                    selectionWorkingList.AddRange(methods.Where(method => selectedTests.Contains(new Test(method).Name)));
+
+                    if (selectionWorkingList.Count == 0)
+                    {
+                        methods = Array.Empty<MethodInfo>();
+                    }
+                    else
+                    {
+                        methods = selectionWorkingList;
+                        selectionWorkingList = new List<MethodInfo>();
+                    }
+                }
 
                 if (methods.Count > 0)
                 {

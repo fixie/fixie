@@ -111,10 +111,10 @@
             var classes = classDiscoverer.TestClasses(candidateTypes);
             var methodDiscoverer = new MethodDiscoverer(discovery);
 
-            var testAssembly = new TestAssembly(assembly, selectedTests, recorder, classes, methodDiscoverer, execution);
+            var testAssembly = new TestAssembly(assembly, selectedTests);
             await recorder.StartAsync(testAssembly);
             await execution.StartAsync();
-            await testAssembly.RunAsync();
+            await testAssembly.RunAsync(selectedTests, recorder, classes, methodDiscoverer, execution);
             await execution.CompleteAsync();
             return await recorder.CompleteAsync(testAssembly);
         }

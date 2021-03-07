@@ -10,22 +10,10 @@ namespace Fixie
 
     public class TestAssembly
     {
-        readonly ExecutionRecorder recorder;
-        readonly IReadOnlyList<Type> classes;
-        readonly MethodDiscoverer methodDiscoverer;
-        readonly Execution execution;
-
-        internal TestAssembly(Assembly assembly, ImmutableHashSet<string> selectedTests, ExecutionRecorder recorder,
-            IReadOnlyList<Type> classes,
-            MethodDiscoverer methodDiscoverer, Execution execution)
+        internal TestAssembly(Assembly assembly, ImmutableHashSet<string> selectedTests)
         {
             Assembly = assembly;
             SelectedTests = selectedTests;
-
-            this.recorder = recorder;
-            this.classes = classes;
-            this.methodDiscoverer = methodDiscoverer;
-            this.execution = execution;
         }
 
         internal Assembly Assembly { get; }
@@ -36,14 +24,19 @@ namespace Fixie
         /// </summary>
         public ImmutableHashSet<string> SelectedTests { get; }
 
-        internal async Task RunAsync()
+        internal async Task RunAsync(
+            ImmutableHashSet<string> selectedTests,
+            ExecutionRecorder recorder,
+            IReadOnlyList<Type> classes,
+            MethodDiscoverer methodDiscoverer,
+            Execution execution)
         {
             foreach (var @class in classes)
             {
                 IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
 
-                if (!SelectedTests.IsEmpty)
-                    methods = methods.Where(method => SelectedTests.Contains(new Test(method).Name));
+                if (!selectedTests.IsEmpty)
+                    methods = methods.Where(method => selectedTests.Contains(new Test(method).Name));
 
                 var classIsDisposable = IsDisposable(@class);
                 var testMethods = methods

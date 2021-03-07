@@ -161,6 +161,8 @@
                 }
             }
 
+            testAssembly.TestClasses = testClasses;
+
             Exception? assemblyLifecycleFailure = null;
             
             try

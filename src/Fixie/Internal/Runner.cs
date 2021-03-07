@@ -161,25 +161,26 @@
                 }
             }
 
+            Exception? assemblyLifecycleFailure = null;
+            
+            try
+            {
+                foreach (var testClass in testClasses)
+                    await execution.RunAsync(testClass);
+            }
+            catch (Exception exception)
+            {
+                assemblyLifecycleFailure = exception;
+            }
+
             foreach (var testClass in testClasses)
             {
-                Exception? classLifecycleFailure = null;
-
-                try
-                {
-                    await execution.RunAsync(testClass);
-                }
-                catch (Exception exception)
-                {
-                    classLifecycleFailure = exception;
-                }
-
                 foreach (var test in testClass.Tests)
                 {
                     var testNeverRan = !test.RecordedResult;
 
-                    if (classLifecycleFailure != null)
-                        await test.FailAsync(classLifecycleFailure);
+                    if (assemblyLifecycleFailure != null)
+                        await test.FailAsync(assemblyLifecycleFailure);
 
                     if (testNeverRan)
                         await test.SkipAsync("This test did not run.");

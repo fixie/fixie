@@ -128,6 +128,8 @@
             MethodDiscoverer methodDiscoverer,
             Execution execution)
         {
+            var testClasses = new List<TestClass>();
+
             foreach (var @class in classes)
             {
                 IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
@@ -141,30 +143,31 @@
                     .ToList();
 
                 if (testMethods.Any())
+                    testClasses.Add(new TestClass(testAssembly, @class, testMethods));
+            }
+
+            foreach (var testClass in testClasses)
+            {
+                Exception? classLifecycleFailure = null;
+
+                try
                 {
-                    var testClass = new TestClass(testAssembly, @class, testMethods);
+                    await execution.RunAsync(testClass);
+                }
+                catch (Exception exception)
+                {
+                    classLifecycleFailure = exception;
+                }
 
-                    Exception? classLifecycleFailure = null;
+                foreach (var test in testClass.Tests)
+                {
+                    var testNeverRan = !test.RecordedResult;
 
-                    try
-                    {
-                        await execution.RunAsync(testClass);
-                    }
-                    catch (Exception exception)
-                    {
-                        classLifecycleFailure = exception;
-                    }
+                    if (classLifecycleFailure != null)
+                        await test.FailAsync(classLifecycleFailure);
 
-                    foreach (var testMethod in testMethods)
-                    {
-                        var testNeverRan = !testMethod.RecordedResult;
-
-                        if (classLifecycleFailure != null)
-                            await testMethod.FailAsync(classLifecycleFailure);
-                        
-                        if (testNeverRan)
-                            await testMethod.SkipAsync("This test did not run.");
-                    }
+                    if (testNeverRan)
+                        await test.SkipAsync("This test did not run.");
                 }
             }
         }

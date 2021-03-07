@@ -24,7 +24,8 @@ namespace Fixie
         /// </summary>
         public ImmutableHashSet<string> SelectedTests { get; }
 
-        internal async Task RunAsync(
+        internal static async Task RunAsync(
+            TestAssembly testAssembly,
             ImmutableHashSet<string> selectedTests,
             ExecutionRecorder recorder,
             IReadOnlyList<Type> classes,
@@ -45,7 +46,7 @@ namespace Fixie
 
                 if (testMethods.Any())
                 {
-                    var testClass = new TestClass(this, @class, testMethods);
+                    var testClass = new TestClass(testAssembly, @class, testMethods);
 
                     Exception? classLifecycleFailure = null;
 

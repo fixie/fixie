@@ -132,18 +132,20 @@
 
             foreach (var @class in classes)
             {
-                IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
+                var methods = methodDiscoverer.TestMethods(@class);
 
                 if (!selectedTests.IsEmpty)
-                    methods = methods.Where(method => selectedTests.Contains(new Test(method).Name));
+                    methods = methods.Where(method => selectedTests.Contains(new Test(method).Name)).ToList();
 
-                var classIsDisposable = IsDisposable(@class);
-                var testMethods = methods
-                    .Select(method => new TestMethod(recorder, classIsDisposable, method))
-                    .ToList();
+                if (methods.Count > 0)
+                {
+                    var classIsDisposable = IsDisposable(@class);
+                    var testMethods = methods
+                        .Select(method => new TestMethod(recorder, classIsDisposable, method))
+                        .ToList();
 
-                if (testMethods.Any())
                     testClasses.Add(new TestClass(testAssembly, @class, testMethods));
+                }
             }
 
             foreach (var testClass in testClasses)

@@ -7,8 +7,6 @@
     /// </summary>
     public interface Execution
     {
-        Task StartAsync() => Task.CompletedTask;
         Task RunAsync(TestAssembly testAssembly);
-        Task CompleteAsync() => Task.CompletedTask;
     }
 }

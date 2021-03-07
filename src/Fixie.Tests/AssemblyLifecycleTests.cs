@@ -23,24 +23,19 @@
 
         class CustomExecution : Execution
         {
-            public Task StartAsync()
-            {
-                WhereAmI();
-                return Task.CompletedTask;
-            }
-
             public async Task RunAsync(TestAssembly testAssembly)
             {
+                AssemblySetUp();
+
                 foreach (var testClass in testAssembly.TestClasses)
                     foreach (var test in testClass.Tests)
                         await test.RunAsync();
+
+                AssemblyTearDown();
             }
 
-            public Task CompleteAsync()
-            {
-                WhereAmI();
-                return Task.CompletedTask;
-            }
+            static void AssemblySetUp() => WhereAmI();
+            static void AssemblyTearDown() => WhereAmI();
         }
 
         static readonly Type[] TestClasses = {typeof(FirstTestClass), typeof(SecondTestClass)};
@@ -57,7 +52,7 @@
                 "Fail", "Pass");
         }
 
-        public async Task ShouldPerformOptionalAssemblyLevelBehaviorsOncePerRun()
+        public async Task ShouldPerformOptionalAssemblyLevelBehaviors()
         {
             var output = await RunSampleAsync();
 
@@ -66,27 +61,44 @@
                 "SecondTestClass.Pass passed");
 
             output.ShouldHaveLifecycle(
-                "StartAsync",
+                "AssemblySetUp",
                 "Fail", "Pass",
-                "CompleteAsync");
+                "AssemblyTearDown");
         }
 
-        public async Task ShouldFailEntireRunWhenAssemblyStartThrows()
+        public async Task ShouldFailAllTestsWithoutHidingPrimarySkipResultsWhenAssemblySetUpThrows()
         {
-            FailDuring("StartAsync");
+            FailDuring("AssemblySetUp");
 
-            Func<Task> attemptInvalidRun = RunSampleAsync;
+            var output = await RunSampleAsync();
 
-            await attemptInvalidRun.ShouldThrowAsync<FailureException>("'StartAsync' failed!");
+            output.ShouldHaveResults(
+                "FirstTestClass.Fail failed: 'AssemblySetUp' failed!",
+                "FirstTestClass.Fail skipped: This test did not run.",
+
+                "SecondTestClass.Pass failed: 'AssemblySetUp' failed!",
+                "SecondTestClass.Pass skipped: This test did not run.");
+
+            output.ShouldHaveLifecycle("AssemblySetUp");
         }
 
-        public async Task ShouldFailEntireRunWhenAssemblyCompletionThrows()
+        public async Task ShouldFailAllTestsWithoutHidingPrimaryCaseResultsWhenAssemblyTearDownThrows()
         {
-            FailDuring("CompleteAsync");
+            FailDuring("AssemblyTearDown");
 
-            Func<Task> attemptInvalidRun = RunSampleAsync;
+            var output = await RunSampleAsync();
 
-            await attemptInvalidRun.ShouldThrowAsync<FailureException>("'CompleteAsync' failed!");
+            output.ShouldHaveResults(
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "SecondTestClass.Pass passed",
+
+                "FirstTestClass.Fail failed: 'AssemblyTearDown' failed!",
+                "SecondTestClass.Pass failed: 'AssemblyTearDown' failed!");
+
+            output.ShouldHaveLifecycle(
+                "AssemblySetUp",
+                "Fail", "Pass",
+                "AssemblyTearDown");
         }
 
         async Task<Output> RunSampleAsync() => await RunAsync(TestClasses, new CustomExecution());

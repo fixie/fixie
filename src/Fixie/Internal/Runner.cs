@@ -114,9 +114,7 @@
 
             var testAssembly = new TestAssembly(assembly, selectedTests);
             await recorder.StartAsync(testAssembly);
-            await execution.StartAsync();
             await RunAsync(testAssembly, selectedTests, recorder, classes, methodDiscoverer, execution);
-            await execution.CompleteAsync();
             return await recorder.CompleteAsync(testAssembly);
         }
 

@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests
 {
+    using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -13,6 +14,9 @@
     {
         public async Task RunAsync(TestAssembly testAssembly)
         {
+            int failures = 0;
+            Exception? singleFailure = null;
+
             foreach (var testClass in testAssembly.TestClasses)
             {
                 foreach (var test in testClass.Tests)
@@ -20,12 +24,17 @@
                     var result = await test.RunAsync();
 
                     if (result is CaseFailed failure)
-                        if (failure.Exception is AssertException exception)
-                            if (!exception.HasCompactRepresentations)
-                                if (testClass.TestAssembly.SelectedTests.Count == 1)
-                                    LaunchDiffTool(exception);
+                    {
+                        failures++;
+
+                        singleFailure = failures == 1 ? failure.Exception : null;
+                    }
                 }
             }
+
+            if (failures == 1 && singleFailure is AssertException exception)
+                if (!exception.HasCompactRepresentations)
+                    LaunchDiffTool(exception);
         }
 
         static void LaunchDiffTool(AssertException exception)

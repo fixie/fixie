@@ -113,7 +113,6 @@
             var methodDiscoverer = new MethodDiscoverer(discovery);
 
             var testAssembly = new TestAssembly(assembly);
-            await recorder.StartAsync(testAssembly);
 
             var testClasses = new List<TestClass>(selectedTests.Count > 0 ? 0 : classes.Count);
             var selectionWorkingList = new List<MethodInfo>();
@@ -150,8 +149,8 @@
 
             testAssembly.TestClasses = testClasses;
 
+            await recorder.StartAsync(testAssembly);
             await RunAsync(testAssembly, execution);
-
             return await recorder.CompleteAsync(testAssembly);
         }
 

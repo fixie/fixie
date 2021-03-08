@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Internal;
 
     public class TestClass
@@ -38,6 +39,15 @@
             {
                 throw new PreservedException(exception);
             }
+        }
+
+        /// <summary>
+        /// Emit fail results for all tests in the test class, with the given reason.
+        /// </summary>
+        public async Task FailAsync(Exception reason)
+        {
+            foreach (var test in Tests)
+                await test.FailAsync(reason);
         }
     }
 }

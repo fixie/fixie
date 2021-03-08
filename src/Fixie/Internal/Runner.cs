@@ -114,18 +114,7 @@
 
             var testAssembly = new TestAssembly(assembly);
             await recorder.StartAsync(testAssembly);
-            await RunAsync(testAssembly, selectedTests, recorder, classes, methodDiscoverer, execution);
-            return await recorder.CompleteAsync(testAssembly);
-        }
 
-        static async Task RunAsync(
-            TestAssembly testAssembly,
-            ImmutableHashSet<string> selectedTests,
-            ExecutionRecorder recorder,
-            IReadOnlyList<Type> classes,
-            MethodDiscoverer methodDiscoverer,
-            Execution execution)
-        {
             var testClasses = new List<TestClass>(selectedTests.Count > 0 ? 0 : classes.Count);
             var selectionWorkingList = new List<MethodInfo>();
 
@@ -162,6 +151,8 @@
             testAssembly.TestClasses = testClasses;
 
             await RunAsync(testAssembly, execution);
+
+            return await recorder.CompleteAsync(testAssembly);
         }
 
         static async Task RunAsync(TestAssembly testAssembly, Execution execution)

@@ -5,10 +5,10 @@ namespace Fixie
 
     public class TestAssembly
     {
-        internal TestAssembly(Assembly assembly)
+        internal TestAssembly(Assembly assembly, IReadOnlyList<TestClass> testClasses)
         {
             Assembly = assembly;
-            TestClasses = default!;
+            TestClasses = testClasses;
         }
 
         internal Assembly Assembly { get; }
@@ -16,6 +16,6 @@ namespace Fixie
         /// <summary>
         /// The test classes under execution.
         /// </summary>
-        public IReadOnlyList<TestClass> TestClasses { get; internal set; } //TODO: Initialize at construction time, once TestClass no longer needs a back reference to its TestAssembly.
+        public IReadOnlyList<TestClass> TestClasses { get; }
     }
 }

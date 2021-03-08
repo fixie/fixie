@@ -8,7 +8,7 @@ namespace Fixie.Tests
 
     public class TestClassLifecycleTests : InstrumentedExecutionTests
     {
-        class SampleTestClass
+        class FirstTestClass
         {
             public void Fail()
             {
@@ -239,7 +239,7 @@ namespace Fixie.Tests
 
         public async Task ShouldRunAllTestsByDefault()
         {
-            var output = await RunAsync<SampleTestClass, DefaultExecution>();
+            var output = await RunAsync<FirstTestClass, DefaultExecution>();
 
             //NOTE: With no input parameter or skip behaviors,
             //      all test methods are attempted and with zero
@@ -247,22 +247,22 @@ namespace Fixie.Tests
             //      is attempted but never reached.
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass failed: Parameter count mismatch.",
-                "SampleTestClass.Skip failed: 'Skip' reached a line of code thought to be unreachable.");
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Pass failed: Parameter count mismatch.",
+                "FirstTestClass.Skip failed: 'Skip' reached a line of code thought to be unreachable.");
 
             output.ShouldHaveLifecycle("Fail", "Skip");
         }
 
         public async Task ShouldSupportExecutionLifecycleHooks()
         {
-            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<FirstTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Pass(1) passed",
+                "FirstTestClass.Pass(2) passed",
+                "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "AssemblySetUp",
@@ -300,17 +300,17 @@ namespace Fixie.Tests
         {
             FailDuring("AssemblySetUp");
 
-            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<FirstTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'AssemblySetUp' failed!",
-                "SampleTestClass.Fail skipped: This test did not run.",
+                "FirstTestClass.Fail failed: 'AssemblySetUp' failed!",
+                "FirstTestClass.Fail skipped: This test did not run.",
 
-                "SampleTestClass.Pass failed: 'AssemblySetUp' failed!",
-                "SampleTestClass.Pass skipped: This test did not run.",
+                "FirstTestClass.Pass failed: 'AssemblySetUp' failed!",
+                "FirstTestClass.Pass skipped: This test did not run.",
 
-                "SampleTestClass.Skip failed: 'AssemblySetUp' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "FirstTestClass.Skip failed: 'AssemblySetUp' failed!",
+                "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle("AssemblySetUp");
         }
@@ -319,12 +319,12 @@ namespace Fixie.Tests
         {
             FailDuring("ClassSetUp");
         
-            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<FirstTestClass, InstrumentedExecution>();
         
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'ClassSetUp' failed!",
-                "SampleTestClass.Pass failed: 'ClassSetUp' failed!",
-                "SampleTestClass.Skip failed: 'ClassSetUp' failed!");
+                "FirstTestClass.Fail failed: 'ClassSetUp' failed!",
+                "FirstTestClass.Pass failed: 'ClassSetUp' failed!",
+                "FirstTestClass.Skip failed: 'ClassSetUp' failed!");
         
             output.ShouldHaveLifecycle("AssemblySetUp", "ClassSetUp", "AssemblyTearDown");
         }
@@ -333,12 +333,12 @@ namespace Fixie.Tests
         {
             FailDuring("TestSetUp", occurrence: 2);
 
-            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<FirstTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass failed: 'TestSetUp' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Pass failed: 'TestSetUp' failed!",
+                "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "AssemblySetUp",
@@ -355,12 +355,12 @@ namespace Fixie.Tests
         {
             var execution = new InstrumentedExecution(method =>
                 throw new Exception("Failed to yield input parameters."));
-            var output = await RunAsync<SampleTestClass>(execution);
+            var output = await RunAsync<FirstTestClass>(execution);
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass failed: Failed to yield input parameters.",
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Pass failed: Failed to yield input parameters.",
+                "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "AssemblySetUp",
@@ -377,13 +377,13 @@ namespace Fixie.Tests
         {
             FailDuring("CaseSetUp", occurrence: 2);
 
-            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<FirstTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass(1) failed: 'CaseSetUp' failed!",
-                "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Pass(1) failed: 'CaseSetUp' failed!",
+                "FirstTestClass.Pass(2) passed",
+                "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "AssemblySetUp",
@@ -403,16 +403,16 @@ namespace Fixie.Tests
         {
             FailDuring("CaseTearDown");
 
-            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<FirstTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(1) failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Pass(2) failed: 'CaseTearDown' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Fail failed: 'CaseTearDown' failed!",
+                "FirstTestClass.Pass(1) passed",
+                "FirstTestClass.Pass(1) failed: 'CaseTearDown' failed!",
+                "FirstTestClass.Pass(2) passed",
+                "FirstTestClass.Pass(2) failed: 'CaseTearDown' failed!",
+                "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "AssemblySetUp",
@@ -432,17 +432,17 @@ namespace Fixie.Tests
         {
             FailDuring("TestTearDown");
 
-            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<FirstTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'TestTearDown' failed!",
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Fail failed: 'TestTearDown' failed!",
 
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
-                "SampleTestClass.Pass failed: 'TestTearDown' failed!",
+                "FirstTestClass.Pass(1) passed",
+                "FirstTestClass.Pass(2) passed",
+                "FirstTestClass.Pass failed: 'TestTearDown' failed!",
                 
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "AssemblySetUp",
@@ -462,16 +462,16 @@ namespace Fixie.Tests
         {
             FailDuring("ClassTearDown");
 
-            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<FirstTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Pass(1) passed",
+                "FirstTestClass.Pass(2) passed",
 
-                "SampleTestClass.Fail failed: 'ClassTearDown' failed!",
-                "SampleTestClass.Pass failed: 'ClassTearDown' failed!",
-                "SampleTestClass.Skip failed: 'ClassTearDown' failed!");
+                "FirstTestClass.Fail failed: 'ClassTearDown' failed!",
+                "FirstTestClass.Pass failed: 'ClassTearDown' failed!",
+                "FirstTestClass.Skip failed: 'ClassTearDown' failed!");
 
             output.ShouldHaveLifecycle(
                 "AssemblySetUp",
@@ -491,17 +491,17 @@ namespace Fixie.Tests
         {
             FailDuring("AssemblyTearDown");
 
-            var output = await RunAsync<SampleTestClass, InstrumentedExecution>();
+            var output = await RunAsync<FirstTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Pass(1) passed",
+                "FirstTestClass.Pass(2) passed",
 
-                "SampleTestClass.Fail failed: 'AssemblyTearDown' failed!",
-                "SampleTestClass.Pass failed: 'AssemblyTearDown' failed!",
-                "SampleTestClass.Skip failed: 'AssemblyTearDown' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "FirstTestClass.Fail failed: 'AssemblyTearDown' failed!",
+                "FirstTestClass.Pass failed: 'AssemblyTearDown' failed!",
+                "FirstTestClass.Skip failed: 'AssemblyTearDown' failed!",
+                "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "AssemblySetUp",
@@ -533,23 +533,23 @@ namespace Fixie.Tests
         {
             FailDuring("Pass", occurrence: 3);
 
-            var output = await RunAsync<SampleTestClass, RepeatedExecution>();
+            var output = await RunAsync<FirstTestClass, RepeatedExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Fail failed: 'Fail' failed!",
                 
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
+                "FirstTestClass.Pass(1) passed",
+                "FirstTestClass.Pass(2) passed",
 
-                "SampleTestClass.Pass(1) failed: 'Pass' failed!",
-                "SampleTestClass.Pass(2) passed",
+                "FirstTestClass.Pass(1) failed: 'Pass' failed!",
+                "FirstTestClass.Pass(2) passed",
 
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
+                "FirstTestClass.Pass(1) passed",
+                "FirstTestClass.Pass(2) passed",
 
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "Fail",
@@ -564,19 +564,19 @@ namespace Fixie.Tests
         {
             FailDuring("Pass", occurrence: 3);
 
-            var output = await RunAsync<SampleTestClass>(new CircuitBreakingExecution(maxFailures: 3));
+            var output = await RunAsync<FirstTestClass>(new CircuitBreakingExecution(maxFailures: 3));
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!",
-                "SampleTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Fail failed: 'Fail' failed!",
+                "FirstTestClass.Fail failed: 'Fail' failed!",
                 
-                "SampleTestClass.Pass(1) passed",
-                "SampleTestClass.Pass(2) passed",
+                "FirstTestClass.Pass(1) passed",
+                "FirstTestClass.Pass(2) passed",
 
-                "SampleTestClass.Pass(1) failed: 'Pass' failed!", //The fourth failure stops the run early.
+                "FirstTestClass.Pass(1) failed: 'Pass' failed!", //The fourth failure stops the run early.
 
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(
                 "Fail",
@@ -588,12 +588,12 @@ namespace Fixie.Tests
 
         public async Task ShouldSkipAllTestsWhenShortCircuitingTestExecution()
         {
-            var output = await RunAsync<SampleTestClass, ShortCircuitTestExecution>();
+            var output = await RunAsync<FirstTestClass, ShortCircuitTestExecution>();
 
             output.ShouldHaveResults(
-                "SampleTestClass.Fail skipped: This test did not run.",
-                "SampleTestClass.Pass skipped: This test did not run.",
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "FirstTestClass.Fail skipped: This test did not run.",
+                "FirstTestClass.Pass skipped: This test did not run.",
+                "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle();
         }

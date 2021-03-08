@@ -7,17 +7,11 @@
 
     public class TestClass
     {
-        internal TestClass(TestAssembly testAssembly, Type type, IReadOnlyList<TestMethod> tests)
+        internal TestClass(Type type, IReadOnlyList<TestMethod> tests)
         {
-            TestAssembly = testAssembly;
             Type = type;
             Tests = tests;
         }
-
-        /// <summary>
-        /// The test assembly under execution.
-        /// </summary>
-        public TestAssembly TestAssembly { get; }
 
         /// <summary>
         /// The test class under execution.

@@ -155,7 +155,7 @@
                         .Select(method => new TestMethod(recorder, classIsDisposable, method))
                         .ToList();
 
-                    testClasses.Add(new TestClass(testAssembly, @class, testMethods));
+                    testClasses.Add(new TestClass(@class, testMethods));
                 }
             }
 

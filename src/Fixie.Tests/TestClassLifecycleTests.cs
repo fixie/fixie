@@ -86,6 +86,14 @@ namespace Fixie.Tests
                 AssemblySetUp();
 
                 foreach (var testClass in testAssembly.TestClasses)
+                    await TestClassLifecycle(testClass);
+
+                AssemblyTearDown();
+            }
+
+            async Task TestClassLifecycle(TestClass testClass)
+            {
+                try
                 {
                     ClassSetUp();
 
@@ -95,8 +103,11 @@ namespace Fixie.Tests
 
                     ClassTearDown();
                 }
-
-                AssemblyTearDown();
+                catch (Exception exception)
+                {
+                    foreach (var test in testClass.Tests)
+                        await test.FailAsync(exception);
+                }
             }
 
             async Task TestLifecycleAsync(TestMethod test)
@@ -313,15 +324,10 @@ namespace Fixie.Tests
         
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'ClassSetUp' failed!",
-                "SampleTestClass.Fail skipped: This test did not run.",
-                
                 "SampleTestClass.Pass failed: 'ClassSetUp' failed!",
-                "SampleTestClass.Pass skipped: This test did not run.",
-                
-                "SampleTestClass.Skip failed: 'ClassSetUp' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "SampleTestClass.Skip failed: 'ClassSetUp' failed!");
         
-            output.ShouldHaveLifecycle("AssemblySetUp", "ClassSetUp");
+            output.ShouldHaveLifecycle("AssemblySetUp", "ClassSetUp", "AssemblyTearDown");
         }
 
         public async Task ShouldFailTestWhenTestSetUpThrows()
@@ -466,8 +472,7 @@ namespace Fixie.Tests
 
                 "SampleTestClass.Fail failed: 'ClassTearDown' failed!",
                 "SampleTestClass.Pass failed: 'ClassTearDown' failed!",
-                "SampleTestClass.Skip failed: 'ClassTearDown' failed!",
-                "SampleTestClass.Skip skipped: This test did not run.");
+                "SampleTestClass.Skip failed: 'ClassTearDown' failed!");
 
             output.ShouldHaveLifecycle(
                 "AssemblySetUp",
@@ -479,7 +484,8 @@ namespace Fixie.Tests
                 "CaseSetUp", "Pass(1)", "CaseTearDown",
                 "CaseSetUp", "Pass(2)", "CaseTearDown",
                 "TestTearDown",
-                "ClassTearDown");
+                "ClassTearDown",
+                "AssemblyTearDown");
         }
 
         public async Task ShouldFailAllTestsWithoutHidingPrimaryCaseResultsWhenAssemblyTearDownThrows()

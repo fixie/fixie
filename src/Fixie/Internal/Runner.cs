@@ -161,8 +161,13 @@
 
             testAssembly.TestClasses = testClasses;
 
+            await RunAsync(testAssembly, execution);
+        }
+
+        static async Task RunAsync(TestAssembly testAssembly, Execution execution)
+        {
             Exception? assemblyLifecycleFailure = null;
-            
+
             try
             {
                 await execution.RunAsync(testAssembly);
@@ -172,7 +177,7 @@
                 assemblyLifecycleFailure = exception;
             }
 
-            foreach (var testClass in testClasses)
+            foreach (var testClass in testAssembly.TestClasses)
             {
                 foreach (var test in testClass.Tests)
                 {

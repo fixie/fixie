@@ -81,6 +81,17 @@ namespace Fixie.Tests
             }
         }
 
+        protected Task<Output> RunAsync<TSampleTestClass1, TSampleTestClass2, TExecution>()
+            where TExecution : Execution, new()
+            => RunAsync(
+                new[] {typeof(TSampleTestClass1), typeof(TSampleTestClass2)},
+                new TExecution());
+
+        protected Task<Output> RunAsync<TSampleTestClass1, TSampleTestClass2>(Execution execution)
+            => RunAsync(
+                new[] {typeof(TSampleTestClass1), typeof(TSampleTestClass2)},
+                execution);
+        
         protected Task<Output> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
             => RunAsync<TExecution>(typeof(TSampleTestClass));
 

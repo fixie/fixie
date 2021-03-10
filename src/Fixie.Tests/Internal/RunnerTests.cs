@@ -61,10 +61,9 @@ namespace Fixie.Tests.Internal
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var testClass in testAssembly.TestClasses)
-                    foreach (var test in testClass.Tests)
-                        if (!test.Method.Name.Contains("Skip"))
-                            await test.RunAsync();
+                foreach (var test in testAssembly.Tests)
+                    if (!test.Method.Name.Contains("Skip"))
+                        await test.RunAsync();
             }
         }
 

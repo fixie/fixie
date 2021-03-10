@@ -165,18 +165,15 @@
                 assemblyLifecycleFailure = exception;
             }
 
-            foreach (var testClass in testAssembly.TestClasses)
+            foreach (var test in testAssembly.Tests)
             {
-                foreach (var test in testClass.Tests)
-                {
-                    var testNeverRan = !test.RecordedResult;
+                var testNeverRan = !test.RecordedResult;
 
-                    if (assemblyLifecycleFailure != null)
-                        await test.FailAsync(assemblyLifecycleFailure);
+                if (assemblyLifecycleFailure != null)
+                    await test.FailAsync(assemblyLifecycleFailure);
 
-                    if (testNeverRan)
-                        await test.SkipAsync("This test did not run.");
-                }
+                if (testNeverRan)
+                    await test.SkipAsync("This test did not run.");
             }
         }
 

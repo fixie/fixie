@@ -17,18 +17,15 @@
             int failures = 0;
             Exception? singleFailure = null;
 
-            foreach (var testClass in testAssembly.TestClasses)
+            foreach (var test in testAssembly.Tests)
             {
-                foreach (var test in testClass.Tests)
+                var result = await test.RunAsync();
+
+                if (result is CaseFailed failure)
                 {
-                    var result = await test.RunAsync();
+                    failures++;
 
-                    if (result is CaseFailed failure)
-                    {
-                        failures++;
-
-                        singleFailure = failures == 1 ? failure.Exception : null;
-                    }
+                    singleFailure = failures == 1 ? failure.Exception : null;
                 }
             }
 

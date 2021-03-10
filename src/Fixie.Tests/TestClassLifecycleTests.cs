@@ -169,7 +169,7 @@ namespace Fixie.Tests
         {
             public Task RunAsync(TestAssembly testAssembly)
             {
-                //Lifecycle chooses not to invoke any tests
+                //Lifecycle chooses not to invoke any tests.
                 //Since the tests never run, they are all
                 //considered 'skipped'.
                 return Task.CompletedTask;
@@ -180,15 +180,12 @@ namespace Fixie.Tests
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var testClass in testAssembly.TestClasses)
+                foreach (var test in testAssembly.Tests)
                 {
-                    foreach (var test in testClass.Tests)
-                    {
-                        if (test.Method.Name.Contains("Skip")) continue;
+                    if (test.Method.Name.Contains("Skip")) continue;
 
-                        for (int i = 1; i <= 3; i++)
-                            await test.RunAsync(Utility.UsingInputAttributes);
-                    }
+                    for (int i = 1; i <= 3; i++)
+                        await test.RunAsync(Utility.UsingInputAttributes);
                 }
             }
         }
@@ -204,25 +201,22 @@ namespace Fixie.Tests
             {
                 int failures = 0;
 
-                foreach (var testClass in testAssembly.TestClasses)
+                foreach (var test in testAssembly.Tests)
                 {
-                    foreach (var test in testClass.Tests)
+                    if (test.Method.Name.Contains("Skip")) continue;
+
+                    for (int i = 1; i <= 3; i++)
                     {
-                        if (test.Method.Name.Contains("Skip")) continue;
-
-                        for (int i = 1; i <= 3; i++)
+                        foreach (var parameters in Cases(test))
                         {
-                            foreach (var parameters in Cases(test))
+                            var result = await test.RunAsync(parameters);
+
+                            if (result is CaseFailed)
                             {
-                                var result = await test.RunAsync(parameters);
+                                failures++;
 
-                                if (result is CaseFailed)
-                                {
-                                    failures++;
-
-                                    if (failures > maxFailures)
-                                        return;
-                                }
+                                if (failures > maxFailures)
+                                    return;
                             }
                         }
                     }

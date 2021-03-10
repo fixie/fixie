@@ -19,9 +19,8 @@
 
             public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var testClass in testAssembly.TestClasses)
-                    foreach (var test in testClass.Tests)
-                        await test.RunAsync(parameterSource);
+                foreach (var test in testAssembly.Tests)
+                    await test.RunAsync(parameterSource);
             }
         }
 
@@ -29,19 +28,16 @@
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var testClass in testAssembly.TestClasses)
+                foreach (var test in testAssembly.Tests)
                 {
-                    foreach (var test in testClass.Tests)
+                    if (test.HasParameters)
                     {
-                        if (test.HasParameters)
-                        {
-                            foreach (var parameters in InputAttributeParameterSource(test.Method))
-                                await test.RunAsync(parameters);
-                        }
-                        else
-                        {
-                            await test.RunAsync();
-                        }
+                        foreach (var parameters in InputAttributeParameterSource(test.Method))
+                            await test.RunAsync(parameters);
+                    }
+                    else
+                    {
+                        await test.RunAsync();
                     }
                 }
             }

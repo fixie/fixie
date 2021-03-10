@@ -1,6 +1,7 @@
 namespace Fixie.Tests
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using Fixie.Internal;
 
@@ -183,10 +184,9 @@ namespace Fixie.Tests
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var testClass in testAssembly.TestClasses)
-                    foreach (var test in testClass.Tests)
-                        if (!ShouldSkip(test))
-                            await test.RunAsync(Utility.UsingInputAttributes);
+                foreach (var test in testAssembly.Tests)
+                    if (!ShouldSkip(test))
+                        await test.RunAsync(Utility.UsingInputAttributes);
             }
         }
 

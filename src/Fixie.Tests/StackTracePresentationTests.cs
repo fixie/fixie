@@ -120,9 +120,8 @@
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var testClass in testAssembly.TestClasses)
-                    foreach (var test in testClass.Tests)
-                        await test.RunAsync();
+                foreach (var test in testAssembly.Tests)
+                    await test.RunAsync();
             }
         }
 

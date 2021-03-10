@@ -67,18 +67,15 @@
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var testClass in testAssembly.TestClasses)
+                foreach (var test in testAssembly.Tests)
                 {
-                    foreach (var test in testClass.Tests)
+                    if (test.Has<SkipAttribute>(out var skip))
                     {
-                        if (test.Has<SkipAttribute>(out var skip))
-                        {
-                            await test.SkipAsync(skip.Reason);
-                            continue;
-                        }
-
-                        await test.RunAsync(UsingInputAttributes);
+                        await test.SkipAsync(skip.Reason);
+                        continue;
                     }
+
+                    await test.RunAsync(UsingInputAttributes);
                 }
             }
         }

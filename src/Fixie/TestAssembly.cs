@@ -1,6 +1,7 @@
 namespace Fixie
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
     public class TestAssembly
@@ -17,5 +18,10 @@ namespace Fixie
         /// The test classes under execution.
         /// </summary>
         public IReadOnlyList<TestClass> TestClasses { get; }
+
+        /// <summary>
+        /// The tests under execution.
+        /// </summary>
+        public IEnumerable<TestMethod> Tests => TestClasses.SelectMany(x => x.Tests);
     }
 }

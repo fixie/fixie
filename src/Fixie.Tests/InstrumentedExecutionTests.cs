@@ -101,7 +101,7 @@ namespace Fixie.Tests
         protected Task<Output> RunAsync<TExecution>(Type testClass) where TExecution : Execution, new()
             => RunAsync(testClass, new TExecution());
 
-        protected async Task<Output> RunAsync(Type testClass, Execution execution)
+        async Task<Output> RunAsync(Type testClass, Execution execution)
         {
             using var console = new RedirectedConsole();
 
@@ -110,7 +110,7 @@ namespace Fixie.Tests
             return new Output(GetType().FullName!, console.Lines().ToArray(), results.ToArray());
         }
 
-        protected async Task<Output> RunAsync(Type[] testClasses, Execution execution)
+        async Task<Output> RunAsync(Type[] testClasses, Execution execution)
         {
             using var console = new RedirectedConsole();
 

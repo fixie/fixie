@@ -29,7 +29,7 @@
                 }
             }
 
-            if (failures == 1 && singleFailure is AssertException exception)
+            if (singleFailure is AssertException exception)
                 if (!exception.HasCompactRepresentations)
                     LaunchDiffTool(exception);
         }

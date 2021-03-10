@@ -17,18 +17,18 @@
             public ParameterizedExecution(ParameterSource parameterSource)
                 => this.parameterSource = parameterSource;
 
-            public async Task RunAsync(TestClass testClass)
+            public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var test in testClass.Tests)
+                foreach (var test in testAssembly.Tests)
                     await test.RunAsync(parameterSource);
             }
         }
 
         class ExplicitlyParameterizedExecution : Execution
         {
-            public async Task RunAsync(TestClass testClass)
+            public async Task RunAsync(TestAssembly testAssembly)
             {
-                foreach (var test in testClass.Tests)
+                foreach (var test in testAssembly.Tests)
                 {
                     if (test.HasParameters)
                     {

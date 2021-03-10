@@ -112,22 +112,6 @@
             var classes = classDiscoverer.TestClasses(candidateTypes);
             var methodDiscoverer = new MethodDiscoverer(discovery);
 
-            var testAssembly = new TestAssembly(assembly, selectedTests);
-            await recorder.StartAsync(testAssembly);
-            await execution.StartAsync();
-            await RunAsync(testAssembly, selectedTests, recorder, classes, methodDiscoverer, execution);
-            await execution.CompleteAsync();
-            return await recorder.CompleteAsync(testAssembly);
-        }
-
-        static async Task RunAsync(
-            TestAssembly testAssembly,
-            ImmutableHashSet<string> selectedTests,
-            ExecutionRecorder recorder,
-            IReadOnlyList<Type> classes,
-            MethodDiscoverer methodDiscoverer,
-            Execution execution)
-        {
             var testClasses = new List<TestClass>(selectedTests.Count > 0 ? 0 : classes.Count);
             var selectionWorkingList = new List<MethodInfo>();
 
@@ -157,33 +141,39 @@
                         .Select(method => new TestMethod(recorder, classIsDisposable, method))
                         .ToList();
 
-                    testClasses.Add(new TestClass(testAssembly, @class, testMethods));
+                    testClasses.Add(new TestClass(@class, testMethods));
                 }
             }
 
-            foreach (var testClass in testClasses)
+            var testAssembly = new TestAssembly(assembly, testClasses);
+
+            await recorder.StartAsync(testAssembly);
+            await RunAsync(testAssembly, execution);
+            return await recorder.CompleteAsync(testAssembly);
+        }
+
+        static async Task RunAsync(TestAssembly testAssembly, Execution execution)
+        {
+            Exception? assemblyLifecycleFailure = null;
+
+            try
             {
-                Exception? classLifecycleFailure = null;
+                await execution.RunAsync(testAssembly);
+            }
+            catch (Exception exception)
+            {
+                assemblyLifecycleFailure = exception;
+            }
 
-                try
-                {
-                    await execution.RunAsync(testClass);
-                }
-                catch (Exception exception)
-                {
-                    classLifecycleFailure = exception;
-                }
+            foreach (var test in testAssembly.Tests)
+            {
+                var testNeverRan = !test.RecordedResult;
 
-                foreach (var test in testClass.Tests)
-                {
-                    var testNeverRan = !test.RecordedResult;
+                if (assemblyLifecycleFailure != null)
+                    await test.FailAsync(assemblyLifecycleFailure);
 
-                    if (classLifecycleFailure != null)
-                        await test.FailAsync(classLifecycleFailure);
-
-                    if (testNeverRan)
-                        await test.SkipAsync("This test did not run.");
-                }
+                if (testNeverRan)
+                    await test.SkipAsync("This test did not run.");
             }
         }
 

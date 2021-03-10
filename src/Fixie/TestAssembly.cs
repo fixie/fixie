@@ -1,22 +1,27 @@
 namespace Fixie
 {
-    using System.Collections.Immutable;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
     public class TestAssembly
     {
-        internal TestAssembly(Assembly assembly, ImmutableHashSet<string> selectedTests)
+        internal TestAssembly(Assembly assembly, IReadOnlyList<TestClass> testClasses)
         {
             Assembly = assembly;
-            SelectedTests = selectedTests;
+            TestClasses = testClasses;
         }
 
         internal Assembly Assembly { get; }
 
         /// <summary>
-        /// Gets the set of explicitly selected test names to be executed.
-        /// Empty under normal test execution when all tests are being executed.
+        /// The test classes under execution.
         /// </summary>
-        public ImmutableHashSet<string> SelectedTests { get; }
+        public IReadOnlyList<TestClass> TestClasses { get; }
+
+        /// <summary>
+        /// The tests under execution.
+        /// </summary>
+        public IEnumerable<TestMethod> Tests => TestClasses.SelectMany(x => x.Tests);
     }
 }

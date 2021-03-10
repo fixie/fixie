@@ -3,21 +3,16 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Internal;
 
     public class TestClass
     {
-        internal TestClass(TestAssembly testAssembly, Type type, IReadOnlyList<TestMethod> tests)
+        internal TestClass(Type type, IReadOnlyList<TestMethod> tests)
         {
-            TestAssembly = testAssembly;
             Type = type;
             Tests = tests;
         }
-
-        /// <summary>
-        /// The test assembly under execution.
-        /// </summary>
-        public TestAssembly TestAssembly { get; }
 
         /// <summary>
         /// The test class under execution.
@@ -44,6 +39,15 @@
             {
                 throw new PreservedException(exception);
             }
+        }
+
+        /// <summary>
+        /// Emit fail results for all tests in the test class, with the given reason.
+        /// </summary>
+        public async Task FailAsync(Exception reason)
+        {
+            foreach (var test in Tests)
+                await test.FailAsync(reason);
         }
     }
 }

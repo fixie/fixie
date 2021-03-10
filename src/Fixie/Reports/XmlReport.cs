@@ -16,8 +16,7 @@
     {
         readonly Action<XDocument> save;
 
-        ClassResult? currentClass;
-        readonly List<ClassResult> report = new List<ClassResult>();
+        readonly SortedDictionary<string, ClassResult> report = new SortedDictionary<string, ClassResult>();
 
         internal static XmlReport? Create()
         {
@@ -45,23 +44,22 @@
         }
 
         public void Handle(CaseSkipped message)
-            => TrackCurrentClass(message).Add(message);
+            => ForClass(message).Add(message);
 
         public void Handle(CasePassed message)
-            => TrackCurrentClass(message).Add(message);
+            => ForClass(message).Add(message);
 
         public void Handle(CaseFailed message)
-            => TrackCurrentClass(message).Add(message);
+            => ForClass(message).Add(message);
 
-        ClassResult TrackCurrentClass(CaseCompleted message)
+        ClassResult ForClass(CaseCompleted message)
         {
-            if (currentClass == null || currentClass.Name != message.Test.Class)
-            {
-                currentClass = new ClassResult(message.Test.Class);
-                report.Add(currentClass);
-            }
+            var testClass = message.Test.Class;
 
-            return currentClass;
+            if (!report.ContainsKey(testClass))
+                report.Add(testClass, new ClassResult(testClass));
+
+            return report[testClass];
         }
 
         public void Handle(AssemblyCompleted message)
@@ -81,7 +79,7 @@
                         new XAttribute("skipped", message.Skipped),
                         new XAttribute("environment", $"{IntPtr.Size * 8}-bit .NET {Framework}"),
                         new XAttribute("test-framework", Internal.Framework.Version),
-                        report.Select(x => x.ToElement())))));
+                        report.Values.Select(x => x.ToElement())))));
 
             report.Clear();
         }
@@ -110,14 +108,13 @@
 
         class ClassResult
         {
+            readonly string name;
             TimeSpan duration = TimeSpan.Zero;
             readonly List<XElement> results = new List<XElement>();
             readonly ExecutionSummary summary = new ExecutionSummary();
 
-            public ClassResult(string name) => Name = name;
-
-            public string Name { get; }
-
+            public ClassResult(string name) => this.name = name;
+            
             public void Add(CaseSkipped message)
             {
                 duration += message.Duration;
@@ -170,7 +167,7 @@
             {
                 return new XElement("collection",
                     new XAttribute("time", Seconds(duration)),
-                    new XAttribute("name", Name),
+                    new XAttribute("name", name),
                     new XAttribute("total", summary.Total),
                     new XAttribute("passed", summary.Passed),
                     new XAttribute("failed", summary.Failed),

@@ -81,6 +81,17 @@ namespace Fixie.Tests
             }
         }
 
+        protected Task<Output> RunAsync<TSampleTestClass1, TSampleTestClass2, TExecution>()
+            where TExecution : Execution, new()
+            => RunAsync(
+                new[] {typeof(TSampleTestClass1), typeof(TSampleTestClass2)},
+                new TExecution());
+
+        protected Task<Output> RunAsync<TSampleTestClass1, TSampleTestClass2>(Execution execution)
+            => RunAsync(
+                new[] {typeof(TSampleTestClass1), typeof(TSampleTestClass2)},
+                execution);
+        
         protected Task<Output> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
             => RunAsync<TExecution>(typeof(TSampleTestClass));
 
@@ -90,7 +101,7 @@ namespace Fixie.Tests
         protected Task<Output> RunAsync<TExecution>(Type testClass) where TExecution : Execution, new()
             => RunAsync(testClass, new TExecution());
 
-        protected async Task<Output> RunAsync(Type testClass, Execution execution)
+        async Task<Output> RunAsync(Type testClass, Execution execution)
         {
             using var console = new RedirectedConsole();
 
@@ -99,7 +110,7 @@ namespace Fixie.Tests
             return new Output(GetType().FullName!, console.Lines().ToArray(), results.ToArray());
         }
 
-        protected async Task<Output> RunAsync(Type[] testClasses, Execution execution)
+        async Task<Output> RunAsync(Type[] testClasses, Execution execution)
         {
             using var console = new RedirectedConsole();
 

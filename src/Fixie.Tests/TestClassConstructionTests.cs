@@ -1,10 +1,10 @@
 namespace Fixie.Tests
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
     using Fixie.Internal;
-
+    using static Utility;
+    
     public class TestClassConstructionTests : InstrumentedExecutionTests
     {
         class SampleTestClass
@@ -186,7 +186,7 @@ namespace Fixie.Tests
             {
                 foreach (var test in testAssembly.Tests)
                     if (!ShouldSkip(test))
-                        await test.RunAsync(Utility.UsingInputAttributes);
+                        await test.RunAsync(UsingInputAttributes);
             }
         }
 
@@ -216,7 +216,7 @@ namespace Fixie.Tests
 
                     foreach (var test in testClass.Tests)
                         if (!ShouldSkip(test))
-                            await test.RunAsync(Utility.UsingInputAttributes, instance);
+                            await test.RunAsync(UsingInputAttributes, instance);
                 }
             }
         }

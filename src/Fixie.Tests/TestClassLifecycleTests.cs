@@ -5,6 +5,7 @@ namespace Fixie.Tests
     using System.Threading.Tasks;
     using Fixie.Internal;
     using Fixie.Reports;
+    using static Utility;
 
     public class TestClassLifecycleTests : InstrumentedExecutionTests
     {
@@ -84,7 +85,7 @@ namespace Fixie.Tests
             readonly ParameterSource parameterSource;
 
             public InstrumentedExecution()
-                : this(Utility.UsingInputAttributes) { }
+                : this(UsingInputAttributes) { }
 
             public InstrumentedExecution(ParameterSource parameterSource)
                 => this.parameterSource = parameterSource;
@@ -185,7 +186,7 @@ namespace Fixie.Tests
                     if (test.Method.Name.Contains("Skip")) continue;
 
                     for (int i = 1; i <= 3; i++)
-                        await test.RunAsync(Utility.UsingInputAttributes);
+                        await test.RunAsync(UsingInputAttributes);
                 }
             }
         }
@@ -226,7 +227,7 @@ namespace Fixie.Tests
             static IEnumerable<object?[]> Cases(TestMethod test)
             {
                 return test.HasParameters
-                    ? Utility.UsingInputAttributes(test.Method)
+                    ? UsingInputAttributes(test.Method)
                     : InvokeOnceWithZeroParameters;
             }
 

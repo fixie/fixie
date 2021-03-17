@@ -128,7 +128,7 @@ namespace Fixie
             }
         }
 
-        IEnumerable<object?[]> GetCases(ParameterSource parameterSource)
+        public IEnumerable<object?[]> GetCases(ParameterSource parameterSource)
         {
             return HasParameters
                 ? parameterSource(Method)

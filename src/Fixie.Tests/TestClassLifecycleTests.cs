@@ -124,11 +124,7 @@ namespace Fixie.Tests
                 {
                     TestSetUp();
 
-                    var cases = test.HasParameters
-                        ? parameterSource(test.Method)
-                        : InvokeOnceWithZeroParameters;
-
-                    foreach (var parameters in cases)
+                    foreach (var parameters in test.GetCases(parameterSource))
                         await CaseLifecycleAsync(test, parameters);
 
                     TestTearDown();
@@ -152,9 +148,6 @@ namespace Fixie.Tests
                     await test.FailAsync(parameters, exception);
                 }
             }
-
-            static readonly object[] EmptyParameters = {};
-            static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
         }
 
         static void AssemblySetUp() => WhereAmI();
@@ -208,7 +201,7 @@ namespace Fixie.Tests
 
                     for (int i = 1; i <= 3; i++)
                     {
-                        foreach (var parameters in Cases(test))
+                        foreach (var parameters in test.GetCases(UsingInputAttributes))
                         {
                             var result = await test.RunAsync(parameters);
 
@@ -223,16 +216,6 @@ namespace Fixie.Tests
                     }
                 }
             }
-
-            static IEnumerable<object?[]> Cases(TestMethod test)
-            {
-                return test.HasParameters
-                    ? UsingInputAttributes(test.Method)
-                    : InvokeOnceWithZeroParameters;
-            }
-
-            static readonly object[] EmptyParameters = {};
-            static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
         }
 
         public async Task ShouldRunAllTestsByDefault()

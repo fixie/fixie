@@ -225,18 +225,13 @@ namespace Fixie.Tests
 
             static IEnumerable<object?[]> Cases(TestMethod test)
             {
-                if (test.HasParameters)
-                {
-                    foreach (var parameters in Utility.UsingInputAttributes(test.Method))
-                        yield return parameters;
-                }
-                else
-                {
-                    yield return EmptyParameters;
-                }
+                return test.HasParameters
+                    ? Utility.UsingInputAttributes(test.Method)
+                    : InvokeOnceWithZeroParameters;
             }
 
             static readonly object[] EmptyParameters = {};
+            static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
         }
 
         public async Task ShouldRunAllTestsByDefault()

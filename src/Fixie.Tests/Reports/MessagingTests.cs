@@ -75,15 +75,8 @@
                         continue;
                     }
 
-                    try
-                    {
-                        foreach (var parameters in test.GetCases(UsingInputAttributes))
-                            await test.RunAsync(parameters);
-                    }
-                    catch (Exception exception)
-                    {
-                        await test.FailAsync(exception);
-                    }
+                    foreach (var parameters in test.GetCases(UsingInputAttributes))
+                        await test.RunAsync(parameters);
                 }
             }
         }

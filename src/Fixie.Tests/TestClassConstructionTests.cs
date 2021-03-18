@@ -186,7 +186,17 @@ namespace Fixie.Tests
             {
                 foreach (var test in testAssembly.Tests)
                     if (!ShouldSkip(test))
-                        await test.RunAsync(UsingInputAttributes);
+                    {
+                        try
+                        {
+                            foreach (var parameters in test.GetCases(UsingInputAttributes))
+                                await test.RunAsync(parameters);
+                        }
+                        catch (Exception exception)
+                        {
+                            await test.FailAsync(exception);
+                        }
+                    }
             }
         }
 
@@ -216,7 +226,17 @@ namespace Fixie.Tests
 
                     foreach (var test in testClass.Tests)
                         if (!ShouldSkip(test))
-                            await test.RunAsync(UsingInputAttributes, instance);
+                        {
+                            try
+                            {
+                                foreach (var parameters in test.GetCases(UsingInputAttributes))
+                                    await test.RunAsync(parameters, instance);
+                            }
+                            catch (Exception exception)
+                            {
+                                await test.FailAsync(exception);
+                            }
+                        }
                 }
             }
         }

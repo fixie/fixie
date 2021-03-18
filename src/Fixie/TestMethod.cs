@@ -92,19 +92,6 @@ namespace Fixie
             return RunCoreAsync(parameters, instance: null);
         }
 
-        public async Task RunAsync(ParameterSource parameterSource)
-        {
-            try
-            {
-                foreach (var parameters in GetCases(parameterSource))
-                    await RunCoreAsync(parameters, instance: null);
-            }
-            catch (Exception exception)
-            {
-                await FailAsync(exception);
-            }
-        }
-
         public Task<CaseCompleted> RunAsync(object? instance)
         {
             return RunCoreAsync(EmptyParameters, instance);
@@ -113,19 +100,6 @@ namespace Fixie
         public Task<CaseCompleted> RunAsync(object?[] parameters, object? instance)
         {
             return RunCoreAsync(parameters, instance);
-        }
-
-        public async Task RunAsync(ParameterSource parameterSource, object? instance)
-        {
-            try
-            {
-                foreach (var parameters in GetCases(parameterSource))
-                    await RunCoreAsync(parameters, instance);
-            }
-            catch (Exception exception)
-            {
-                await FailAsync(exception);
-            }
         }
 
         public IEnumerable<object?[]> GetCases(ParameterSource parameterSource)

@@ -20,7 +20,17 @@
             public async Task RunAsync(TestAssembly testAssembly)
             {
                 foreach (var test in testAssembly.Tests)
-                    await test.RunAsync(parameterSource);
+                {
+                    try
+                    {
+                        foreach (var parameters in test.GetCases(parameterSource))
+                            await test.RunAsync(parameters);
+                    }
+                    catch (Exception exception)
+                    {
+                        await test.FailAsync(exception);
+                    }
+                }
             }
         }
 

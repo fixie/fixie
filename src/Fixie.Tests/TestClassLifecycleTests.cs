@@ -179,7 +179,17 @@ namespace Fixie.Tests
                     if (test.Method.Name.Contains("Skip")) continue;
 
                     for (int i = 1; i <= 3; i++)
-                        await test.RunAsync(UsingInputAttributes);
+                    {
+                        try
+                        {
+                            foreach (var parameters in test.GetCases(UsingInputAttributes))
+                                await test.RunAsync(parameters);
+                        }
+                        catch (Exception exception)
+                        {
+                            await test.FailAsync(exception);
+                        }
+                    }
                 }
             }
         }

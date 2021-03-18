@@ -34,6 +34,21 @@
             }
         }
 
+        class FailFastParameterizedExecution : Execution
+        {
+            readonly ParameterSource parameterSource;
+
+            public FailFastParameterizedExecution(ParameterSource parameterSource)
+                => this.parameterSource = parameterSource;
+
+            public async Task RunAsync(TestAssembly testAssembly)
+            {
+                foreach (var test in testAssembly.Tests)
+                    foreach (var parameters in test.GetCases(parameterSource))
+                        await test.RunAsync(parameters);
+            }
+        }
+
         class ExplicitlyParameterizedExecution : Execution
         {
             public async Task RunAsync(TestAssembly testAssembly)
@@ -107,7 +122,7 @@
 
         public async Task ShouldFailWithClearExplanationWhenParameterGenerationThrows()
         {
-            var execution = new ParameterizedExecution(LazyBuggyParameterSource);
+            var execution = new ParameterizedExecution(BuggyParameterSource);
             (await RunAsync<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
@@ -122,28 +137,52 @@
                         ".ZeroArgs passed"));
         }
 
-        public async Task ShouldIsolateFailureToTheAffectedTestMethodWhenEagerParameterGenerationThrows()
+        public async Task ShouldSupportIsolatingFailuresToTheAffectedTestMethodWhenParameterGenerationThrows()
         {
-            //The EagerBuggyParameterSource attempts to realize a complete set of
-            //parameter arrays before returning, but will first throw an exception
-            //when trying to handle the IntArg test method. Since IntArg runs first,
-            //this test demonstrates how the failure is isolated to that test method.
+            //Because the ParameterizedExecution convention explicitly catches and
+            //handles these exceptions at an appropriate granularity, it demonstrates
+            //how a failure can be isolated to the affected test method. A user may
+            //wish to do this to isolate a problematic parameter generation scheme
+            //while keeping as much of their build passing as possible.
 
-            var execution = new ParameterizedExecution(EagerBuggyParameterSource);
-            (await RunAsync<ParameterizedTestClass>(execution))
+            //Because the FailFastParameterizedExecution convention does not attempt
+            //to handle these exceptions, the convention exits early and the runner
+            //acknowledges that fact with failure and skip results on the elided tests.
+            //A user may wish to do this to 'fail fast' when their testing infrastructure
+            //is clearly in an untrustworthy state to begin with.
+
+            var isolatedExecution = new ParameterizedExecution(BuggyParameterSource);
+            (await RunAsync<ParameterizedTestClass>(isolatedExecution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
-                        ".IntArg failed: Exception thrown while attempting to eagerly build input parameters for method: IntArg",
+                        ".IntArg(0) passed",
+                        ".IntArg(1) failed: Expected 0, but was 1",
+                        ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
 
-                        ".MultipleCasesFromAttributes(1, 1, 2) passed",
-                        ".MultipleCasesFromAttributes(1, 2, 3) passed",
-                        ".MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
+                        ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
+                        ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
+                        ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
+
                         ".ZeroArgs passed"));
+
+            var failFastExecution = new FailFastParameterizedExecution(BuggyParameterSource);
+            (await RunAsync<ParameterizedTestClass>(failFastExecution))
+                .ShouldBe(
+                    For<ParameterizedTestClass>(
+                        ".IntArg(0) passed",
+                        ".IntArg(1) failed: Expected 0, but was 1",
+                        ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+
+                        ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                        ".MultipleCasesFromAttributes skipped: This test did not run.",
+                        
+                        ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                        ".ZeroArgs skipped: This test did not run."));
         }
 
         public async Task ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
         {
-            var execution = new ParameterizedExecution(LazyBuggyParameterSource);
+            var execution = new ParameterizedExecution(BuggyParameterSource);
             (await RunAsync<ConstrainedGenericTestClass>(execution))
                 .ShouldBe(
                     For<ConstrainedGenericTestClass>(
@@ -243,19 +282,11 @@
             yield break;
         }
 
-        static IEnumerable<object[]> LazyBuggyParameterSource(MethodInfo method)
+        static IEnumerable<object[]> BuggyParameterSource(MethodInfo method)
         {
             yield return new object[] { 0 };
             yield return new object[] { 1 };
             throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
-        }
-
-        static IEnumerable<object?[]> EagerBuggyParameterSource(MethodInfo method)
-        {
-            if (method.Name == nameof(ParameterizedTestClass.IntArg))
-                throw new Exception("Exception thrown while attempting to eagerly build input parameters for method: " + method.Name);
-
-            return InputAttributeOrDefaultParameterSource(method).ToArray();
         }
 
         static IEnumerable<object[]> ComplexGenericParameterSource(MethodInfo method)

@@ -97,7 +97,7 @@ namespace Fixie
             return RunCoreAsync(EmptyParameters, instance);
         }
 
-        public Task<CaseCompleted> RunAsync(object?[] parameters, object? instance)
+        public Task<CaseCompleted> RunAsync(object? instance, object?[] parameters)
         {
             return RunCoreAsync(parameters, instance);
         }

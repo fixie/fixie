@@ -218,7 +218,7 @@ namespace Fixie.Tests
                     foreach (var test in testClass.Tests)
                         if (!ShouldSkip(test))
                             foreach (var parameters in test.GetCases(UsingInputAttributes))
-                                await test.RunAsync(parameters, instance);
+                                await test.RunAsync(instance, parameters);
                 }
             }
         }

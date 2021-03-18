@@ -37,7 +37,7 @@ namespace Fixie
         public bool Has<TAttribute>([NotNullWhen(true)] out TAttribute? matchingAttribute) where TAttribute : Attribute
             => Method.Has(out matchingAttribute);
 
-        async Task<CaseCompleted> RunCoreAsync(object?[] parameters, object? instance)
+        async Task<CaseCompleted> RunCoreAsync(object? instance, object?[] parameters)
         {
             var @case = new Case(Method, parameters);
             Exception? failureReason = null;
@@ -84,22 +84,22 @@ namespace Fixie
 
         public Task<CaseCompleted> RunAsync()
         {
-            return RunCoreAsync(EmptyParameters, instance: null);
+            return RunCoreAsync(instance: null, EmptyParameters);
         }
 
         public Task<CaseCompleted> RunAsync(object?[] parameters)
         {
-            return RunCoreAsync(parameters, instance: null);
+            return RunCoreAsync(instance: null, parameters);
         }
 
         public Task<CaseCompleted> RunAsync(object? instance)
         {
-            return RunCoreAsync(EmptyParameters, instance);
+            return RunCoreAsync(instance, EmptyParameters);
         }
 
         public Task<CaseCompleted> RunAsync(object? instance, object?[] parameters)
         {
-            return RunCoreAsync(parameters, instance);
+            return RunCoreAsync(instance, parameters);
         }
 
         public IEnumerable<object?[]> GetCases(ParameterSource parameterSource)

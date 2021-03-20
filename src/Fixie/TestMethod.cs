@@ -1,7 +1,6 @@
 namespace Fixie
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using System.Threading.Tasks;
@@ -11,7 +10,6 @@ namespace Fixie
     public class TestMethod
     {
         static readonly object[] EmptyParameters = {};
-        static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
 
         readonly ExecutionRecorder recorder;
         readonly bool classIsDisposable;
@@ -100,13 +98,6 @@ namespace Fixie
         public Task<CaseCompleted> RunAsync(object? instance, object?[] parameters)
         {
             return RunCoreAsync(instance, parameters);
-        }
-
-        public IEnumerable<object?[]> GetCases(ParameterSource parameterSource)
-        {
-            return HasParameters
-                ? parameterSource(Method)
-                : InvokeOnceWithZeroParameters;
         }
 
         /// <summary>

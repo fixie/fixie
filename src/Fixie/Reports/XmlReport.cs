@@ -54,7 +54,8 @@
 
         ClassResult ForClass(CaseCompleted message)
         {
-            var testClass = message.Test.Class;
+            var testName = new TestName(message.Test);
+            var testClass = testName.Class;
 
             if (!report.ContainsKey(testClass))
                 report.Add(testClass, new ClassResult(testClass));
@@ -120,10 +121,11 @@
                 duration += message.Duration;
                 summary.Add(message);
 
+                var testName = new TestName(message.Test);
                 var test = new XElement("test",
                         new XAttribute("name", message.Name),
-                        new XAttribute("type", message.Test.Class),
-                        new XAttribute("method", message.Test.Method),
+                        new XAttribute("type", testName.Class),
+                        new XAttribute("method", testName.Method),
                         new XAttribute("result", "Skip"),
                         new XAttribute("time", Seconds(message.Duration)));
 
@@ -137,11 +139,13 @@
             {
                 duration += message.Duration;
                 summary.Add(message);
+
+                var testName = new TestName(message.Test);
                 results.Add(
                     new XElement("test",
                         new XAttribute("name", message.Name),
-                        new XAttribute("type", message.Test.Class),
-                        new XAttribute("method", message.Test.Method),
+                        new XAttribute("type", testName.Class),
+                        new XAttribute("method", testName.Method),
                         new XAttribute("result", "Pass"),
                         new XAttribute("time", Seconds(message.Duration))));
             }
@@ -150,11 +154,13 @@
             {
                 duration += message.Duration;
                 summary.Add(message);
+
+                var testName = new TestName(message.Test);
                 results.Add(
                     new XElement("test",
                         new XAttribute("name", message.Name),
-                        new XAttribute("type", message.Test.Class),
-                        new XAttribute("method", message.Test.Method),
+                        new XAttribute("type", testName.Class),
+                        new XAttribute("method", testName.Method),
                         new XAttribute("result", "Fail"),
                         new XAttribute("time", Seconds(message.Duration)),
                         new XElement("failure",

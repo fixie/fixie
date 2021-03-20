@@ -7,13 +7,13 @@ namespace Fixie.Reports
     {
         internal CaseCompleted(Case @case, TimeSpan duration, string output)
         {
-            Test = @case.Test;
+            Test = @case.Test.FullName;
             Name = @case.Name;
             Duration = duration;
             Output = output;
         }
 
-        public TestName Test { get; }
+        public string Test { get; }
         public string Name { get; }
         public TimeSpan Duration { get; }
         public string Output { get; }

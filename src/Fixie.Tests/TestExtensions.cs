@@ -60,15 +60,5 @@
 
             return lines.Select(line => Regex.Replace(line, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds"));
         }
-
-        public static IEnumerable<object?[]> GetCases(this TestMethod test, ParameterSource parameterSource)
-        {
-            return test.HasParameters
-                ? parameterSource(test.Method)
-                : InvokeOnceWithZeroParameters;
-        }
-
-        static readonly object[] EmptyParameters = {};
-        static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
     }
 }

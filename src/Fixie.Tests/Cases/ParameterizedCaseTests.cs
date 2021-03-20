@@ -23,8 +23,15 @@
                 {
                     try
                     {
-                        foreach (var parameters in test.GetCases(parameterSource))
-                            await test.RunAsync(parameters);
+                        if (test.HasParameters)
+                        {
+                            foreach (var parameters in parameterSource(test.Method))
+                                await test.RunAsync(parameters);
+                        }
+                        else
+                        {
+                            await test.RunAsync();
+                        }
                     }
                     catch (Exception exception)
                     {
@@ -44,8 +51,17 @@
             public async Task RunAsync(TestAssembly testAssembly)
             {
                 foreach (var test in testAssembly.Tests)
-                    foreach (var parameters in test.GetCases(parameterSource))
-                        await test.RunAsync(parameters);
+                {
+                    if (test.HasParameters)
+                    {
+                        foreach (var parameters in parameterSource(test.Method))
+                            await test.RunAsync(parameters);
+                    }
+                    else
+                    {
+                        await test.RunAsync();
+                    }
+                }
             }
         }
 

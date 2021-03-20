@@ -76,8 +76,16 @@
         }
 
         public static IEnumerable<object?[]> FromInputAttributes(TestMethod test)
-            => test.GetCases(method => method
-                .GetCustomAttributes<InputAttribute>(true)
-                .Select(input => input.Parameters));
+        {
+            if (test.HasParameters)
+                return test.Method
+                    .GetCustomAttributes<InputAttribute>(true)
+                    .Select(input => input.Parameters);
+
+            return InvokeOnceWithZeroParameters;
+        }
+
+        static readonly object[] EmptyParameters = {};
+        static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
     }
 }

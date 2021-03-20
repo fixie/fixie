@@ -222,12 +222,12 @@
 
         static IEnumerable<object[]> ComplexGenericParameterSource(Test test)
         {
-            if (test.Method.Name == "CompoundGenericParameter")
+            if (test.Name.EndsWith(".CompoundGenericParameter"))
             {
                 yield return new object[] {new KeyValuePair<int, string>(1, "A"), "System.Int32", "System.String"};
                 yield return new object[] {new KeyValuePair<string, int>("B", 2), "System.String", "System.Int32"};
             }
-            else if (test.Method.Name == "GenericFuncParameter")
+            else if (test.Name.EndsWith(".GenericFuncParameter"))
             {
                 yield return new object[] {5, new Func<int, int>(i => i * 2), 10};
                 yield return new object[] {5, new Func<int, string>(i => i.ToString()), "5"};

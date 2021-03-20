@@ -18,9 +18,12 @@ namespace Fixie
         {
             this.recorder = recorder;
             this.classIsDisposable = classIsDisposable;
+            Name = method.TestName();
             Method = method;
             RecordedResult = false;
         }
+
+        public string Name { get; }
 
         bool? hasParameters;
         public bool HasParameters => hasParameters ??= Method.GetParameters().Length > 0;

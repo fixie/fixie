@@ -156,14 +156,18 @@
 
         public async Task ShouldResolveGenericTypeParameters()
         {
-            var execution = new ParameterizedExecution(InputAttributeParameterSource);
+            var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
             (await RunAsync<GenericTestClass>(execution))
                 .ShouldBe(
                     For<GenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(1) passed",
                         ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",
+                        
+                        ".ConstrainedGenericMethodWithNoInputsProvided<T> failed: Cannot create an instance of T because Type.ContainsGenericParameters is true.",
 
                         ".GenericMethodWithIncorrectParameterCountProvided<System.Int32>(123, 123) failed: Parameter count mismatch.",
+
+                        ".GenericMethodWithNoInputsProvided<T>(null) failed: Could not resolve type parameters for generic method.",
 
                         ".MultipleGenericArgumentsMultipleParameters<T1, T2>(123, null, 456, System.Int32, System.Object) failed: Could not resolve type parameters for generic method.",
                         ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",
@@ -182,10 +186,8 @@
                         ".SingleGenericArgumentMultipleParameters<T>(null, null, System.Object) failed: Could not resolve type parameters for generic method.",
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
-                        ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed",
-                        
-                        ".ConstrainedGenericMethodWithNoInputsProvided<T> skipped: This test did not run.",
-                        ".GenericMethodWithNoInputsProvided<T> skipped: This test did not run."));
+                        ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed"
+                        ));
         }
 
         public async Task ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
@@ -203,11 +205,6 @@
                         ".GenericFuncParameter<System.String>(5, System.Func`2[System.Int32,System.String], '5') failed: " +
                         "Object of type 'System.Char' cannot be converted to type 'System.String'."));
         }
-
-        static IEnumerable<object?[]> InputAttributeParameterSource(MethodInfo method)
-            => method
-                .GetCustomAttributes<InputAttribute>(true)
-                .Select(input => input.Parameters);
 
         static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(MethodInfo method)
         {

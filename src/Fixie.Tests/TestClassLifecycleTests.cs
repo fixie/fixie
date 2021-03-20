@@ -1,6 +1,7 @@
 namespace Fixie.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fixie.Internal;
     using Fixie.Reports;
@@ -81,14 +82,6 @@ namespace Fixie.Tests
 
         class InstrumentedExecution : Execution
         {
-            readonly ParameterSource parameterSource;
-
-            public InstrumentedExecution()
-                : this(UsingInputAttributes) { }
-
-            public InstrumentedExecution(ParameterSource parameterSource)
-                => this.parameterSource = parameterSource;
-
             public async Task RunAsync(TestAssembly testAssembly)
             {
                 AssemblySetUp();
@@ -123,7 +116,7 @@ namespace Fixie.Tests
                 {
                     TestSetUp();
 
-                    foreach (var parameters in test.GetCases(parameterSource))
+                    foreach (var parameters in YieldParameters(test))
                         await CaseLifecycleAsync(test, parameters);
 
                     TestTearDown();
@@ -132,6 +125,13 @@ namespace Fixie.Tests
                 {
                     await test.FailAsync(exception);
                 }
+            }
+
+            static IEnumerable<object?[]> YieldParameters(TestMethod test)
+            {
+                ProcessScriptedFailure();
+
+                return test.GetCases(UsingInputAttributes);
             }
 
             static async Task CaseLifecycleAsync(TestMethod test, object?[] parameters)
@@ -359,13 +359,14 @@ namespace Fixie.Tests
 
         public async Task ShouldFailTestWhenCustomParameterGenerationThrows()
         {
-            var execution = new InstrumentedExecution(method =>
-                throw new Exception("Failed to yield input parameters."));
+            FailDuring("YieldParameters", 2);
+
+            var execution = new InstrumentedExecution();
             var output = await RunAsync<FirstTestClass>(execution);
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'Fail' failed!",
-                "FirstTestClass.Pass failed: Failed to yield input parameters.",
+                "FirstTestClass.Pass failed: 'YieldParameters' failed!",
                 "FirstTestClass.Skip skipped: This test did not run.");
 
             output.ShouldHaveLifecycle(

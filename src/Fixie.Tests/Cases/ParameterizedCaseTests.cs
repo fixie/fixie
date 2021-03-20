@@ -96,8 +96,8 @@
 
         public async Task ShouldSupportEndingTheRunEarlyWhenParameterGenerationThrows()
         {
-            var failFastExecution = new ParameterizedExecution(BuggyParameterSource);
-            (await RunAsync<ParameterizedTestClass>(failFastExecution))
+            var execution = new ParameterizedExecution(BuggyParameterSource);
+            (await RunAsync<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -113,8 +113,8 @@
 
         public async Task ShouldSupportIsolatingFailuresToTheAffectedTestMethodWhenParameterGenerationThrows()
         {
-            var isolatedExecution = new IsolatedParameterizedExecution(BuggyParameterSource);
-            (await RunAsync<ParameterizedTestClass>(isolatedExecution))
+            var execution = new IsolatedParameterizedExecution(BuggyParameterSource);
+            (await RunAsync<ParameterizedTestClass>(execution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",

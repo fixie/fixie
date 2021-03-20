@@ -20,6 +20,21 @@
             public async Task RunAsync(TestAssembly testAssembly)
             {
                 foreach (var test in testAssembly.Tests)
+                    foreach (var parameters in parameterSource(test.Method))
+                        await test.RunAsync(parameters);
+            }
+        }
+
+        class IsolatedParameterizedExecution : Execution
+        {
+            readonly Func<MethodInfo, IEnumerable<object?[]>> parameterSource;
+
+            public IsolatedParameterizedExecution(Func<MethodInfo, IEnumerable<object?[]>> parameterSource)
+                => this.parameterSource = parameterSource;
+
+            public async Task RunAsync(TestAssembly testAssembly)
+            {
+                foreach (var test in testAssembly.Tests)
                 {
                     try
                     {
@@ -31,21 +46,6 @@
                         await test.FailAsync(exception);
                     }
                 }
-            }
-        }
-
-        class FailFastParameterizedExecution : Execution
-        {
-            readonly Func<MethodInfo, IEnumerable<object?[]>> parameterSource;
-
-            public FailFastParameterizedExecution(Func<MethodInfo, IEnumerable<object?[]>> parameterSource)
-                => this.parameterSource = parameterSource;
-
-            public async Task RunAsync(TestAssembly testAssembly)
-            {
-                foreach (var test in testAssembly.Tests)
-                    foreach (var parameters in parameterSource(test.Method))
-                        await test.RunAsync(parameters);
             }
         }
 
@@ -96,7 +96,7 @@
 
         public async Task ShouldSupportIsolatingFailuresToTheAffectedTestMethodWhenParameterGenerationThrows()
         {
-            var isolatedExecution = new ParameterizedExecution(BuggyParameterSource);
+            var isolatedExecution = new IsolatedParameterizedExecution(BuggyParameterSource);
             (await RunAsync<ParameterizedTestClass>(isolatedExecution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
@@ -115,7 +115,7 @@
 
         public async Task ShouldSupportEndingTheRunEarlyWhenParameterGenerationThrows()
         {
-            var failFastExecution = new FailFastParameterizedExecution(BuggyParameterSource);
+            var failFastExecution = new ParameterizedExecution(BuggyParameterSource);
             (await RunAsync<ParameterizedTestClass>(failFastExecution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
@@ -132,7 +132,7 @@
 
         public async Task ShouldFailWithGenericTestNameWhenGenericTypeParametersCannotBeResolved()
         {
-            var execution = new ParameterizedExecution(BuggyParameterSource);
+            var execution = new IsolatedParameterizedExecution(BuggyParameterSource);
             (await RunAsync<ConstrainedGenericTestClass>(execution))
                 .ShouldBe(
                     For<ConstrainedGenericTestClass>(
@@ -146,7 +146,7 @@
 
         public async Task ShouldResolveGenericTypeParameters()
         {
-            var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
+            var execution = new IsolatedParameterizedExecution(InputAttributeOrDefaultParameterSource);
             (await RunAsync<GenericTestClass>(execution))
                 .ShouldBe(
                     For<GenericTestClass>(

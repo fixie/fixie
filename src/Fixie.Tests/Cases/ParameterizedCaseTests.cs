@@ -106,37 +106,8 @@
                         ".ZeroArgs passed"));
         }
 
-        public async Task ShouldFailWithClearExplanationWhenParameterGenerationThrows()
-        {
-            var execution = new ParameterizedExecution(BuggyParameterSource);
-            (await RunAsync<ParameterizedTestClass>(execution))
-                .ShouldBe(
-                    For<ParameterizedTestClass>(
-                        ".IntArg(0) passed",
-                        ".IntArg(1) failed: Expected 0, but was 1",
-                        ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-
-                        ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
-                        ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
-                        ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
-
-                        ".ZeroArgs passed"));
-        }
-
         public async Task ShouldSupportIsolatingFailuresToTheAffectedTestMethodWhenParameterGenerationThrows()
         {
-            //Because the ParameterizedExecution convention explicitly catches and
-            //handles these exceptions at an appropriate granularity, it demonstrates
-            //how a failure can be isolated to the affected test method. A user may
-            //wish to do this to isolate a problematic parameter generation scheme
-            //while keeping as much of their build passing as possible.
-
-            //Because the FailFastParameterizedExecution convention does not attempt
-            //to handle these exceptions, the convention exits early and the runner
-            //acknowledges that fact with failure and skip results on the elided tests.
-            //A user may wish to do this to 'fail fast' when their testing infrastructure
-            //is clearly in an untrustworthy state to begin with.
-
             var isolatedExecution = new ParameterizedExecution(BuggyParameterSource);
             (await RunAsync<ParameterizedTestClass>(isolatedExecution))
                 .ShouldBe(
@@ -150,7 +121,10 @@
                         ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
 
                         ".ZeroArgs passed"));
+        }
 
+        public async Task ShouldSupportEndingTheRunEarlyWhenParameterGenerationThrows()
+        {
             var failFastExecution = new FailFastParameterizedExecution(BuggyParameterSource);
             (await RunAsync<ParameterizedTestClass>(failFastExecution))
                 .ShouldBe(

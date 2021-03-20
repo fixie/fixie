@@ -7,9 +7,9 @@
     {
         public void CanDetermineWhetherTestsMatchTheGivenPattern()
         {
-            var childClassChildMethod = new TestName("Fixie.Tests.TestTests+ChildClass.MethodDefinedWithinChildClass");
-            var parentClassParentMethod = new TestName("Fixie.Tests.TestTests+ParentClass.MethodDefinedWithinParentClass");
-            var childClassParentMethod = new TestName("Fixie.Tests.TestTests+ChildClass.MethodDefinedWithinParentClass");
+            var childClassChildMethod = "Fixie.Tests.TestTests+ChildClass.MethodDefinedWithinChildClass";
+            var parentClassParentMethod = "Fixie.Tests.TestTests+ParentClass.MethodDefinedWithinParentClass";
+            var childClassParentMethod = "Fixie.Tests.TestTests+ChildClass.MethodDefinedWithinParentClass";
 
             foreach (var test in new[] {childClassChildMethod, parentClassParentMethod, childClassParentMethod})
             {
@@ -20,7 +20,7 @@
                 new TestPattern("ZZZ").Matches(test).ShouldBe(false);
                 
                 // Perfect match on full name.
-                new TestPattern(test.FullName).Matches(test).ShouldBe(true);
+                new TestPattern(test).Matches(test).ShouldBe(true);
                 
                 // Substring match on full name.
                 new TestPattern("Fixie.Tests.TestTests+").Matches(test).ShouldBe(true);

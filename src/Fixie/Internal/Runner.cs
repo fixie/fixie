@@ -62,10 +62,10 @@
                 foreach (var testClass in classes)
                 foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
                 {
-                    var test = new TestName(testMethod);
+                    var test = new TestName(testMethod).FullName;
 
                     if (testPattern.Matches(test))
-                        matchingTests = matchingTests.Add(test.FullName);
+                        matchingTests = matchingTests.Add(test);
                 }
             }
             finally

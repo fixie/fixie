@@ -2,27 +2,27 @@ namespace Fixie
 {
     using System.Reflection;
 
-    public class Test
+    public class TestName
     {
         public string Class { get; }
         public string Method { get; }
         public string FullName { get; }
 
-        internal Test(MethodInfo method)
+        internal TestName(MethodInfo method)
         {
             Class = method.ReflectedType!.FullName!;
             Method = method.Name;
             FullName = Class + "." + Method;
         }
 
-        internal Test(string @class, string method)
+        internal TestName(string @class, string method)
         {
             Class = @class;
             Method = method;
             FullName = Class + "." + Method;
         }
 
-        internal Test(string fullName)
+        internal TestName(string fullName)
         {
             var indexOfMemberSeparator = fullName.LastIndexOf(".");
             var className = fullName.Substring(0, indexOfMemberSeparator);

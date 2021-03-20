@@ -13,7 +13,7 @@ namespace Fixie.Reports
             Output = output;
         }
 
-        public Test Test { get; }
+        public TestName Test { get; }
         public string Name { get; }
         public TimeSpan Duration { get; }
         public string Output { get; }

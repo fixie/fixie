@@ -7,9 +7,9 @@
     {
         public void CanDetermineWhetherTestsMatchTheGivenPattern()
         {
-            var childClassChildMethod = new Test("Fixie.Tests.TestTests+ChildClass.MethodDefinedWithinChildClass");
-            var parentClassParentMethod = new Test("Fixie.Tests.TestTests+ParentClass.MethodDefinedWithinParentClass");
-            var childClassParentMethod = new Test("Fixie.Tests.TestTests+ChildClass.MethodDefinedWithinParentClass");
+            var childClassChildMethod = new TestName("Fixie.Tests.TestTests+ChildClass.MethodDefinedWithinChildClass");
+            var parentClassParentMethod = new TestName("Fixie.Tests.TestTests+ParentClass.MethodDefinedWithinParentClass");
+            var childClassParentMethod = new TestName("Fixie.Tests.TestTests+ChildClass.MethodDefinedWithinParentClass");
 
             foreach (var test in new[] {childClassChildMethod, parentClassParentMethod, childClassParentMethod})
             {

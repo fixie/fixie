@@ -10,7 +10,7 @@
             Name = @case.Name;
         }
 
-        public Test Test { get; }
+        public TestName Test { get; }
         public string Name { get; }
     }
 }

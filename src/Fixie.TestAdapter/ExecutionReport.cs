@@ -75,7 +75,7 @@
             log.RecordResult(testResult);
         }
 
-        TestCase ToVsTestCase(Test test)
+        TestCase ToVsTestCase(TestName test)
         {
             return new TestCase(test.FullName, VsTestExecutor.Uri, assemblyPath);
         }

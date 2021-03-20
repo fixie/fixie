@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests
 {
     using Assertions;
+    using Fixie.Internal;
 
     public class TestNameTests
     {
@@ -23,7 +24,7 @@
         }
 
         static string Test<TTestClass>(string method)
-            => new TestName(typeof(TTestClass).GetInstanceMethod(method)).FullName;
+            => typeof(TTestClass).GetInstanceMethod(method).TestName();
 
         class ParentClass
         {

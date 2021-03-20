@@ -13,7 +13,7 @@
         public Case(MethodInfo testMethod, object?[] parameters)
         {
             this.parameters = parameters;
-            Test = new TestName(testMethod).FullName;
+            Test = testMethod.TestName();
             Method = testMethod.TryResolveTypeArguments(parameters);
             Name = CaseNameBuilder.GetName(Method, parameters);
         }

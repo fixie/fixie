@@ -62,7 +62,7 @@
                 foreach (var testClass in classes)
                 foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
                 {
-                    var test = new TestName(testMethod).FullName;
+                    var test = testMethod.TestName();
 
                     if (testPattern.Matches(test))
                         matchingTests = matchingTests.Add(test);
@@ -102,7 +102,7 @@
             var methodDiscoverer = new MethodDiscoverer(discovery);
             foreach (var testClass in classes)
             foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                await bus.PublishAsync(new TestDiscovered(new TestName(testMethod).FullName));
+                await bus.PublishAsync(new TestDiscovered(testMethod.TestName()));
         }
 
         internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)
@@ -121,7 +121,7 @@
 
                 if (!selectedTests.IsEmpty)
                 {
-                    selectionWorkingList.AddRange(methods.Where(method => selectedTests.Contains(new TestName(method).FullName)));
+                    selectionWorkingList.AddRange(methods.Where(method => selectedTests.Contains(method.TestName())));
 
                     if (selectionWorkingList.Count == 0)
                     {

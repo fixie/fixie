@@ -40,7 +40,7 @@ namespace Fixie
 
         async Task<CaseCompleted> RunCoreAsync(object? instance, object?[] parameters)
         {
-            var @case = new Case(Method, parameters);
+            var @case = new Case(this, parameters);
             Exception? failureReason = null;
 
             await recorder.StartAsync(@case);
@@ -116,7 +116,7 @@ namespace Fixie
         /// </summary>
         public async Task SkipAsync(object?[] parameters, string? reason)
         {
-            var @case = new Case(Method, parameters);
+            var @case = new Case(this, parameters);
             await recorder.SkipAsync(@case, "", reason);
 
             RecordedResult = true;
@@ -141,7 +141,7 @@ namespace Fixie
             if (reason is PreservedException preservedException)
                 reason = preservedException.OriginalException;
 
-            var @case = new Case(Method, parameters);
+            var @case = new Case(this, parameters);
 
             await recorder.FailAsync(@case, "", reason);
 

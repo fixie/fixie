@@ -6,7 +6,7 @@
     {
         internal CaseStarted(Case @case)
         {
-            Test = @case.Test;
+            Test = @case.Test.Name;
             Name = @case.Name;
         }
 

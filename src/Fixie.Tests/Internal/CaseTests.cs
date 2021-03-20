@@ -3,6 +3,7 @@
     using System.Linq;
     using Assertions;
     using Fixie.Internal;
+    using Fixie.Reports;
 
     public class CaseTests
     {
@@ -224,7 +225,15 @@
             => Case<CaseTests>(methodName, parameters);
 
         static Case Case<TTestClass>(string methodName, params object?[] parameters)
-            => new Case(typeof(TTestClass).GetInstanceMethod(methodName), parameters);
+        {
+            var caseMethod = typeof(TTestClass).GetInstanceMethod(methodName);
+            
+            var recordNothing = new ExecutionRecorder(new Bus(new Report[] { }));
+            var classIsDisposable = false;
+            var test = new Test(recordNothing, classIsDisposable, caseMethod);
+
+            return new Case(test, parameters);
+        }
 
         void Returns()
         {

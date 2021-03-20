@@ -5,6 +5,7 @@
     using System.Linq;
     using Assertions;
     using Fixie.Internal;
+    using Fixie.Reports;
 
     public class GenericArgumentResolverTests
     {
@@ -240,7 +241,11 @@
             var testClass = typeof(Generic);
             var caseMethod = testClass.GetInstanceMethod(methodName);
 
-            return new Case(caseMethod, parameters).Method.GetGenericArguments();
+            var recordNothing = new ExecutionRecorder(new Bus(new Report[] { }));
+            var classIsDisposable = false;
+            var test = new Test(recordNothing, classIsDisposable, caseMethod);
+
+            return new Case(test, parameters).Method.GetGenericArguments();
         }
 
         class Generic

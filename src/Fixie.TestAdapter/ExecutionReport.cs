@@ -23,8 +23,7 @@
 
         public void Handle(CaseStarted message)
         {
-            TestName test = message.Test;
-            var testCase = ToVsTestCase(test.FullName);
+            var testCase = ToVsTestCase(message.Test);
 
             log.RecordStart(testCase);
         }

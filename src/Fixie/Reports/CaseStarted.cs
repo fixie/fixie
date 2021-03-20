@@ -6,11 +6,11 @@
     {
         internal CaseStarted(Case @case)
         {
-            Test = @case.Test;
+            Test = @case.Test.FullName;
             Name = @case.Name;
         }
 
-        public TestName Test { get; }
+        public string Test { get; }
         public string Name { get; }
     }
 }

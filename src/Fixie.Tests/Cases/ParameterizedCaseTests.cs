@@ -65,7 +65,7 @@
             }
         }
 
-        public async Task ShouldAllowExecutionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
+        public async Task ShouldAllowRunningTestsMultipleTimesWithVaryingInputParameters()
         {
             var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
             (await RunAsync<ParameterizedTestClass>(execution))

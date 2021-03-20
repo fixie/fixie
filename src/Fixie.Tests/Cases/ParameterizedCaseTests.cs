@@ -140,7 +140,7 @@
                         ".ZeroArgs skipped: This test did not run."));
         }
 
-        public async Task ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
+        public async Task ShouldFailWithGenericTestNameWhenGenericTypeParametersCannotBeResolved()
         {
             var execution = new ParameterizedExecution(BuggyParameterSource);
             (await RunAsync<ConstrainedGenericTestClass>(execution))

@@ -12,24 +12,24 @@
     {
         class ParameterizedExecution : Execution
         {
-            readonly Func<MethodInfo, IEnumerable<object?[]>> parameterSource;
+            readonly Func<TestMethod, IEnumerable<object?[]>> parameterSource;
 
-            public ParameterizedExecution(Func<MethodInfo, IEnumerable<object?[]>> parameterSource)
+            public ParameterizedExecution(Func<TestMethod, IEnumerable<object?[]>> parameterSource)
                 => this.parameterSource = parameterSource;
 
             public async Task RunAsync(TestAssembly testAssembly)
             {
                 foreach (var test in testAssembly.Tests)
-                    foreach (var parameters in parameterSource(test.Method))
+                    foreach (var parameters in parameterSource(test))
                         await test.RunAsync(parameters);
             }
         }
 
         class IsolatedParameterizedExecution : Execution
         {
-            readonly Func<MethodInfo, IEnumerable<object?[]>> parameterSource;
+            readonly Func<TestMethod, IEnumerable<object?[]>> parameterSource;
 
-            public IsolatedParameterizedExecution(Func<MethodInfo, IEnumerable<object?[]>> parameterSource)
+            public IsolatedParameterizedExecution(Func<TestMethod, IEnumerable<object?[]>> parameterSource)
                 => this.parameterSource = parameterSource;
 
             public async Task RunAsync(TestAssembly testAssembly)
@@ -38,7 +38,7 @@
                 {
                     try
                     {
-                        foreach (var parameters in parameterSource(test.Method))
+                        foreach (var parameters in parameterSource(test))
                             await test.RunAsync(parameters);
                     }
                     catch (Exception exception)
@@ -196,11 +196,11 @@
                         "Object of type 'System.Char' cannot be converted to type 'System.String'."));
         }
 
-        static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(MethodInfo method)
+        static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(TestMethod test)
         {
-            var parameters = method.GetParameters();
+            var parameters = test.Method.GetParameters();
 
-            var attributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
+            var attributes = test.Method.GetCustomAttributes<InputAttribute>(true).ToArray();
 
             if (attributes.Any())
             {
@@ -213,21 +213,21 @@
             }
         }
 
-        static IEnumerable<object[]> BuggyParameterSource(MethodInfo method)
+        static IEnumerable<object[]> BuggyParameterSource(TestMethod test)
         {
             yield return new object[] { 0 };
             yield return new object[] { 1 };
-            throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
+            throw new Exception("Exception thrown while attempting to yield input parameters for method: " + test.Method.Name);
         }
 
-        static IEnumerable<object[]> ComplexGenericParameterSource(MethodInfo method)
+        static IEnumerable<object[]> ComplexGenericParameterSource(TestMethod test)
         {
-            if (method.Name == "CompoundGenericParameter")
+            if (test.Method.Name == "CompoundGenericParameter")
             {
                 yield return new object[] {new KeyValuePair<int, string>(1, "A"), "System.Int32", "System.String"};
                 yield return new object[] {new KeyValuePair<string, int>("B", 2), "System.String", "System.Int32"};
             }
-            else if (method.Name == "GenericFuncParameter")
+            else if (test.Method.Name == "GenericFuncParameter")
             {
                 yield return new object[] {5, new Func<int, int>(i => i * 2), 10};
                 yield return new object[] {5, new Func<int, string>(i => i.ToString()), "5"};

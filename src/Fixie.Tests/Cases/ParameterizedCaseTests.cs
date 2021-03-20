@@ -78,17 +78,6 @@
                         ".ZeroArgs passed"));
         }
 
-        public async Task ShouldSkipWhenInputParameterGenerationYieldsZeroSetsOfInputs()
-        {
-            var execution = new ParameterizedExecution(EmptyParameterSource);
-            (await RunAsync<ParameterizedTestClass>(execution))
-                .ShouldBe(
-                    For<ParameterizedTestClass>(
-                        ".ZeroArgs passed",
-                        ".IntArg skipped: This test did not run.",
-                        ".MultipleCasesFromAttributes skipped: This test did not run."));
-        }
-
         public async Task ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
         {
             var execution = new ParameterizedExecution(method => new[]
@@ -261,11 +250,6 @@
             {
                 yield return parameters.Select(p => Default(p.ParameterType)).ToArray();
             }
-        }
-
-        static IEnumerable<object[]> EmptyParameterSource(MethodInfo method)
-        {
-            yield break;
         }
 
         static IEnumerable<object[]> BuggyParameterSource(MethodInfo method)

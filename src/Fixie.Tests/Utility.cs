@@ -79,5 +79,8 @@
             => method
                 .GetCustomAttributes<InputAttribute>(true)
                 .Select(input => input.Parameters);
+
+        public static IEnumerable<object?[]> FromInputAttributes(TestMethod test)
+            => test.GetCases(UsingInputAttributes);
     }
 }

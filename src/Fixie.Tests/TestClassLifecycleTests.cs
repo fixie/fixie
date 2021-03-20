@@ -131,7 +131,7 @@ namespace Fixie.Tests
             {
                 ProcessScriptedFailure();
 
-                return test.GetCases(UsingInputAttributes);
+                return FromInputAttributes(test);
             }
 
             static async Task CaseLifecycleAsync(TestMethod test, object?[] parameters)
@@ -178,7 +178,7 @@ namespace Fixie.Tests
                     if (test.Method.Name.Contains("Skip")) continue;
 
                     for (int i = 1; i <= 3; i++)
-                        foreach (var parameters in test.GetCases(UsingInputAttributes))
+                        foreach (var parameters in FromInputAttributes(test))
                             await test.RunAsync(parameters);
                 }
             }
@@ -201,7 +201,7 @@ namespace Fixie.Tests
 
                     for (int i = 1; i <= 3; i++)
                     {
-                        foreach (var parameters in test.GetCases(UsingInputAttributes))
+                        foreach (var parameters in FromInputAttributes(test))
                         {
                             var result = await test.RunAsync(parameters);
 

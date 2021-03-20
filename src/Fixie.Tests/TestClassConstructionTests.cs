@@ -186,7 +186,7 @@ namespace Fixie.Tests
             {
                 foreach (var test in testAssembly.Tests)
                     if (!ShouldSkip(test))
-                        foreach (var parameters in test.GetCases(UsingInputAttributes))
+                        foreach (var parameters in FromInputAttributes(test))
                             await test.RunAsync(parameters);
             }
         }
@@ -217,7 +217,7 @@ namespace Fixie.Tests
 
                     foreach (var test in testClass.Tests)
                         if (!ShouldSkip(test))
-                            foreach (var parameters in test.GetCases(UsingInputAttributes))
+                            foreach (var parameters in FromInputAttributes(test))
                                 await test.RunAsync(instance, parameters);
                 }
             }

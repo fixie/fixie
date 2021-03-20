@@ -138,7 +138,7 @@
                 {
                     var classIsDisposable = IsDisposable(@class);
                     var testMethods = methods
-                        .Select(method => new TestMethod(recorder, classIsDisposable, method))
+                        .Select(method => new Test(recorder, classIsDisposable, method))
                         .ToList();
 
                     testClasses.Add(new TestClass(@class, testMethods));

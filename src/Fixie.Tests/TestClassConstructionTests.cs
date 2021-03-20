@@ -177,7 +177,7 @@ namespace Fixie.Tests
             }
         }
 
-        static bool ShouldSkip(TestMethod test)
+        static bool ShouldSkip(Test test)
             => test.Method.Name.Contains("Skip");
 
         class CreateInstancePerCase : Execution

@@ -75,7 +75,7 @@
             await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
         }
 
-        public static IEnumerable<object?[]> FromInputAttributes(TestMethod test)
+        public static IEnumerable<object?[]> FromInputAttributes(Test test)
         {
             if (test.HasParameters)
                 return test.Method

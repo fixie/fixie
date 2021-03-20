@@ -110,7 +110,7 @@ namespace Fixie.Tests
                 }
             }
 
-            async Task TestLifecycleAsync(TestMethod test)
+            async Task TestLifecycleAsync(Test test)
             {
                 try
                 {
@@ -127,14 +127,14 @@ namespace Fixie.Tests
                 }
             }
 
-            static IEnumerable<object?[]> YieldParameters(TestMethod test)
+            static IEnumerable<object?[]> YieldParameters(Test test)
             {
                 ProcessScriptedFailure();
 
                 return FromInputAttributes(test);
             }
 
-            static async Task CaseLifecycleAsync(TestMethod test, object?[] parameters)
+            static async Task CaseLifecycleAsync(Test test, object?[] parameters)
             {
                 try
                 {

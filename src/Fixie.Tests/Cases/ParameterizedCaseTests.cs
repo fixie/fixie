@@ -12,9 +12,9 @@
     {
         class ParameterizedExecution : Execution
         {
-            readonly Func<TestMethod, IEnumerable<object?[]>> parameterSource;
+            readonly Func<Test, IEnumerable<object?[]>> parameterSource;
 
-            public ParameterizedExecution(Func<TestMethod, IEnumerable<object?[]>> parameterSource)
+            public ParameterizedExecution(Func<Test, IEnumerable<object?[]>> parameterSource)
                 => this.parameterSource = parameterSource;
 
             public async Task RunAsync(TestAssembly testAssembly)
@@ -27,9 +27,9 @@
 
         class IsolatedParameterizedExecution : Execution
         {
-            readonly Func<TestMethod, IEnumerable<object?[]>> parameterSource;
+            readonly Func<Test, IEnumerable<object?[]>> parameterSource;
 
-            public IsolatedParameterizedExecution(Func<TestMethod, IEnumerable<object?[]>> parameterSource)
+            public IsolatedParameterizedExecution(Func<Test, IEnumerable<object?[]>> parameterSource)
                 => this.parameterSource = parameterSource;
 
             public async Task RunAsync(TestAssembly testAssembly)
@@ -196,7 +196,7 @@
                         "Object of type 'System.Char' cannot be converted to type 'System.String'."));
         }
 
-        static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(TestMethod test)
+        static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(Test test)
         {
             var parameters = test.Method.GetParameters();
 
@@ -213,14 +213,14 @@
             }
         }
 
-        static IEnumerable<object[]> BuggyParameterSource(TestMethod test)
+        static IEnumerable<object[]> BuggyParameterSource(Test test)
         {
             yield return new object[] { 0 };
             yield return new object[] { 1 };
             throw new Exception("Exception thrown while attempting to yield input parameters for method: " + test.Method.Name);
         }
 
-        static IEnumerable<object[]> ComplexGenericParameterSource(TestMethod test)
+        static IEnumerable<object[]> ComplexGenericParameterSource(Test test)
         {
             if (test.Method.Name == "CompoundGenericParameter")
             {

@@ -22,6 +22,6 @@ namespace Fixie
         /// <summary>
         /// The tests under execution.
         /// </summary>
-        public IEnumerable<TestMethod> Tests => TestClasses.SelectMany(x => x.Tests);
+        public IEnumerable<Test> Tests => TestClasses.SelectMany(x => x.Tests);
     }
 }

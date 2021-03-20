@@ -8,7 +8,7 @@
 
     public class TestClass
     {
-        internal TestClass(Type type, IReadOnlyList<TestMethod> tests)
+        internal TestClass(Type type, IReadOnlyList<Test> tests)
         {
             Type = type;
             Tests = tests;
@@ -20,9 +20,9 @@
         public Type Type { get; }
 
         /// <summary>
-        /// The test methods under execution.
+        /// The tests under execution as discovered on this test class.
         /// </summary>
-        public IReadOnlyList<TestMethod> Tests { get; }
+        public IReadOnlyList<Test> Tests { get; }
 
         /// <summary>
         /// Construct an instance of the test class using

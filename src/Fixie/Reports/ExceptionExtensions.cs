@@ -45,7 +45,7 @@
             {
                 if (lines[^3].Contains(" Fixie.Internal.MethodInfoExtensions.RunTestMethodAsync(MethodInfo method, Object instance, Object[] parameters)") &&
                     lines[^2].Contains(" Fixie.Internal.Case.RunAsync(Object instance)") &&
-                    lines[^1].Contains(" Fixie.TestMethod.RunCoreAsync(Object instance, Object[] parameters)"))
+                    lines[^1].Contains(" Fixie.Test.RunCoreAsync(Object instance, Object[] parameters)"))
 
                     return string.Join(NewLine, lines[..^3]);
             }

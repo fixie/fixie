@@ -7,14 +7,14 @@ namespace Fixie
     using Internal;
     using Reports;
 
-    public class TestMethod
+    public class Test
     {
         static readonly object[] EmptyParameters = {};
 
         readonly ExecutionRecorder recorder;
         readonly bool classIsDisposable;
 
-        internal TestMethod(ExecutionRecorder recorder, bool classIsDisposable, MethodInfo method)
+        internal Test(ExecutionRecorder recorder, bool classIsDisposable, MethodInfo method)
         {
             this.recorder = recorder;
             this.classIsDisposable = classIsDisposable;

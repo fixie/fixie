@@ -34,7 +34,7 @@ namespace Fixie.Internal
 
         public bool Matches(Test test)
         {
-            return regex.IsMatch(test.Name);
+            return regex.IsMatch(test.FullName);
         }
     }
 }

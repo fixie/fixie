@@ -20,7 +20,7 @@
                 new TestPattern("ZZZ").Matches(test).ShouldBe(false);
                 
                 // Perfect match on full name.
-                new TestPattern(test.Name).Matches(test).ShouldBe(true);
+                new TestPattern(test.FullName).Matches(test).ShouldBe(true);
                 
                 // Substring match on full name.
                 new TestPattern("Fixie.Tests.TestTests+").Matches(test).ShouldBe(true);

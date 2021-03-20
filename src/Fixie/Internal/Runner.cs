@@ -65,7 +65,7 @@
                     var test = new Test(testMethod);
 
                     if (testPattern.Matches(test))
-                        matchingTests = matchingTests.Add(test.Name);
+                        matchingTests = matchingTests.Add(test.FullName);
                 }
             }
             finally
@@ -121,7 +121,7 @@
 
                 if (!selectedTests.IsEmpty)
                 {
-                    selectionWorkingList.AddRange(methods.Where(method => selectedTests.Contains(new Test(method).Name)));
+                    selectionWorkingList.AddRange(methods.Where(method => selectedTests.Contains(new Test(method).FullName)));
 
                     if (selectionWorkingList.Count == 0)
                     {

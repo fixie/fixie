@@ -78,7 +78,7 @@
         {
             actual.Class.ShouldBe(expectedClass);
             actual.Method.ShouldBe(expectedMethod);
-            actual.Name.ShouldBe(expectedName);
+            actual.FullName.ShouldBe(expectedName);
         }
 
         static Test Test<TTestClass>(string method)

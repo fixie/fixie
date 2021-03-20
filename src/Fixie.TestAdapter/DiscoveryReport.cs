@@ -37,9 +37,9 @@
                 log.Error(exception.ToString());
             }
 
-            var discoveredTest = new TestCase(test.Name, VsTestExecutor.Uri, assemblyPath)
+            var discoveredTest = new TestCase(test.FullName, VsTestExecutor.Uri, assemblyPath)
             {
-                DisplayName = test.Name
+                DisplayName = test.FullName
             };
 
             if (sourceLocation != null)

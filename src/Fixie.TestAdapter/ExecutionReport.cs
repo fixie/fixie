@@ -77,7 +77,7 @@
 
         TestCase ToVsTestCase(Test test)
         {
-            return new TestCase(test.Name, VsTestExecutor.Uri, assemblyPath);
+            return new TestCase(test.FullName, VsTestExecutor.Uri, assemblyPath);
         }
 
         static void AttachCapturedConsoleOutput(string output, TestResult testResult)

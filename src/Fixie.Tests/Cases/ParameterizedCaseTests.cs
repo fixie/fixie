@@ -94,6 +94,23 @@
                         ".ZeroArgs(0, 1, 2, 3) failed: Parameter count mismatch."));
         }
 
+        public async Task ShouldSupportEndingTheRunEarlyWhenParameterGenerationThrows()
+        {
+            var failFastExecution = new ParameterizedExecution(BuggyParameterSource);
+            (await RunAsync<ParameterizedTestClass>(failFastExecution))
+                .ShouldBe(
+                    For<ParameterizedTestClass>(
+                        ".IntArg(0) passed",
+                        ".IntArg(1) failed: Expected 0, but was 1",
+                        ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+
+                        ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                        ".MultipleCasesFromAttributes skipped: This test did not run.",
+                        
+                        ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                        ".ZeroArgs skipped: This test did not run."));
+        }
+
         public async Task ShouldSupportIsolatingFailuresToTheAffectedTestMethodWhenParameterGenerationThrows()
         {
             var isolatedExecution = new IsolatedParameterizedExecution(BuggyParameterSource);
@@ -111,23 +128,6 @@
                         ".ZeroArgs(0) failed: Parameter count mismatch.",
                         ".ZeroArgs(1) failed: Parameter count mismatch.",
                         ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs"));
-        }
-
-        public async Task ShouldSupportEndingTheRunEarlyWhenParameterGenerationThrows()
-        {
-            var failFastExecution = new ParameterizedExecution(BuggyParameterSource);
-            (await RunAsync<ParameterizedTestClass>(failFastExecution))
-                .ShouldBe(
-                    For<ParameterizedTestClass>(
-                        ".IntArg(0) passed",
-                        ".IntArg(1) failed: Expected 0, but was 1",
-                        ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-
-                        ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-                        ".MultipleCasesFromAttributes skipped: This test did not run.",
-                        
-                        ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-                        ".ZeroArgs skipped: This test did not run."));
         }
 
         public async Task ShouldFailWithGenericTestNameWhenGenericTypeParametersCannotBeResolved()

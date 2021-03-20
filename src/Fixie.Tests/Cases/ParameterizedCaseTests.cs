@@ -65,25 +65,6 @@
             }
         }
 
-        class ExplicitlyParameterizedExecution : Execution
-        {
-            public async Task RunAsync(TestAssembly testAssembly)
-            {
-                foreach (var test in testAssembly.Tests)
-                {
-                    if (test.HasParameters)
-                    {
-                        foreach (var parameters in InputAttributeParameterSource(test.Method))
-                            await test.RunAsync(parameters);
-                    }
-                    else
-                    {
-                        await test.RunAsync();
-                    }
-                }
-            }
-        }
-
         public async Task ShouldAllowExecutionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
         {
             var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
@@ -213,12 +194,6 @@
         public async Task ShouldResolveGenericTypeParameters()
         {
             var execution = new ParameterizedExecution(InputAttributeParameterSource);
-            await ShouldResolveGenericTypeParametersAsync(execution);
-        }
-
-        public async Task ShouldSupportExplicitParameterization()
-        {
-            var execution = new ExplicitlyParameterizedExecution();
             await ShouldResolveGenericTypeParametersAsync(execution);
         }
 

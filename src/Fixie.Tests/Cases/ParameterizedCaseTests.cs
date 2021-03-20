@@ -23,15 +23,8 @@
                 {
                     try
                     {
-                        if (test.HasParameters)
-                        {
-                            foreach (var parameters in parameterSource(test.Method))
-                                await test.RunAsync(parameters);
-                        }
-                        else
-                        {
-                            await test.RunAsync();
-                        }
+                        foreach (var parameters in parameterSource(test.Method))
+                            await test.RunAsync(parameters);
                     }
                     catch (Exception exception)
                     {
@@ -51,17 +44,8 @@
             public async Task RunAsync(TestAssembly testAssembly)
             {
                 foreach (var test in testAssembly.Tests)
-                {
-                    if (test.HasParameters)
-                    {
-                        foreach (var parameters in parameterSource(test.Method))
-                            await test.RunAsync(parameters);
-                    }
-                    else
-                    {
-                        await test.RunAsync();
-                    }
-                }
+                    foreach (var parameters in parameterSource(test.Method))
+                        await test.RunAsync(parameters);
             }
         }
 
@@ -103,7 +87,11 @@
                         ".MultipleCasesFromAttributes(0, 1, 2) failed: Expected sum of 2 but was 1.",
                         ".MultipleCasesFromAttributes(0, 1, 2, 3) failed: Parameter count mismatch.",
 
-                        ".ZeroArgs passed"));
+                        ".ZeroArgs passed",
+                        ".ZeroArgs(0) failed: Parameter count mismatch.",
+                        ".ZeroArgs(0, 1) failed: Parameter count mismatch.",
+                        ".ZeroArgs(0, 1, 2) failed: Parameter count mismatch.",
+                        ".ZeroArgs(0, 1, 2, 3) failed: Parameter count mismatch."));
         }
 
         public async Task ShouldSupportIsolatingFailuresToTheAffectedTestMethodWhenParameterGenerationThrows()
@@ -120,7 +108,9 @@
                         ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
                         ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
 
-                        ".ZeroArgs passed"));
+                        ".ZeroArgs(0) failed: Parameter count mismatch.",
+                        ".ZeroArgs(1) failed: Parameter count mismatch.",
+                        ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs"));
         }
 
         public async Task ShouldSupportEndingTheRunEarlyWhenParameterGenerationThrows()

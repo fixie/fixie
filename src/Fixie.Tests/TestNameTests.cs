@@ -53,27 +53,6 @@
                 "Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinParentClass");
         }
 
-        public void CanBeConstructedFromTrustedClassNameAndMethodName()
-        {
-            AssertTest(
-                new TestName(FullName<ChildClass>(), "MethodDefinedWithinChildClass"),
-                "Fixie.Tests.TestNameTests+ChildClass",
-                "MethodDefinedWithinChildClass",
-                "Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinChildClass");
-
-            AssertTest(
-                new TestName(FullName<ParentClass>(), "MethodDefinedWithinParentClass"),
-                "Fixie.Tests.TestNameTests+ParentClass",
-                "MethodDefinedWithinParentClass",
-                "Fixie.Tests.TestNameTests+ParentClass.MethodDefinedWithinParentClass");
-
-            AssertTest(
-                new TestName(FullName<ChildClass>(), "MethodDefinedWithinParentClass"),
-                "Fixie.Tests.TestNameTests+ChildClass",
-                "MethodDefinedWithinParentClass",
-                "Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinParentClass");
-        }
-
         static void AssertTest(TestName actual, string expectedClass, string expectedMethod, string expectedName)
         {
             actual.Class.ShouldBe(expectedClass);

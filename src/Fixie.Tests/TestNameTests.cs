@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Tests
 {
     using Assertions;
-    using static Utility;
 
     public class TestNameTests
     {
@@ -27,27 +26,6 @@
         {
             AssertTest(
                 Test<ChildClass>("MethodDefinedWithinParentClass"),
-                "Fixie.Tests.TestNameTests+ChildClass",
-                "MethodDefinedWithinParentClass",
-                "Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinParentClass");
-        }
-
-        public void CanParseFromFullNameStrings()
-        {
-            AssertTest(
-                new TestName("Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinChildClass"),
-                "Fixie.Tests.TestNameTests+ChildClass",
-                "MethodDefinedWithinChildClass",
-                "Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinChildClass");
-
-            AssertTest(
-                new TestName("Fixie.Tests.TestNameTests+ParentClass.MethodDefinedWithinParentClass"),
-                "Fixie.Tests.TestNameTests+ParentClass",
-                "MethodDefinedWithinParentClass",
-                "Fixie.Tests.TestNameTests+ParentClass.MethodDefinedWithinParentClass");
-
-            AssertTest(
-                new TestName("Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinParentClass"),
                 "Fixie.Tests.TestNameTests+ChildClass",
                 "MethodDefinedWithinParentClass",
                 "Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinParentClass");

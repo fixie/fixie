@@ -14,16 +14,5 @@ namespace Fixie
             Method = method.Name;
             FullName = Class + "." + Method;
         }
-
-        internal TestName(string fullName)
-        {
-            var indexOfMemberSeparator = fullName.LastIndexOf(".");
-            var className = fullName.Substring(0, indexOfMemberSeparator);
-            var methodName = fullName.Substring(indexOfMemberSeparator + 1);
-
-            Class = className;
-            Method = methodName;
-            FullName = fullName;
-        }
     }
 }

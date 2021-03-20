@@ -1,7 +1,6 @@
 namespace Fixie.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fixie.Internal;
     using Fixie.Reports;

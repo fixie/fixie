@@ -13,7 +13,7 @@
         public Case(MethodInfo testMethod, object?[] parameters)
         {
             this.parameters = parameters;
-            Test = new TestName(testMethod);
+            Test = new TestName(testMethod).FullName;
             Method = testMethod.TryResolveTypeArguments(parameters);
             Name = CaseNameBuilder.GetName(Method, parameters);
         }
@@ -21,7 +21,7 @@
         /// <summary>
         /// Gets the test for which this case describes a single execution.
         /// </summary>
-        public TestName Test { get; }
+        public string Test { get; }
 
         /// <summary>
         /// Gets the name of the test case, including any input parameters.

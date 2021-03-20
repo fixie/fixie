@@ -13,7 +13,7 @@
 
         public void Handle(TestDiscovered message)
         {
-            log.Add($"{message.Test.FullName} discovered");
+            log.Add($"{message.Test} discovered");
         }
 
         public void Handle(CaseSkipped message)

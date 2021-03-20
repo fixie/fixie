@@ -24,7 +24,7 @@
 
         public void Handle(TestDiscovered message)
         {
-            var test = message.Test.FullName;
+            var test = message.Test;
 
             SourceLocation? sourceLocation = null;
 

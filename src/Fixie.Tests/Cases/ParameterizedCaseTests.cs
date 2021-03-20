@@ -194,11 +194,6 @@
         public async Task ShouldResolveGenericTypeParameters()
         {
             var execution = new ParameterizedExecution(InputAttributeParameterSource);
-            await ShouldResolveGenericTypeParametersAsync(execution);
-        }
-
-        async Task ShouldResolveGenericTypeParametersAsync(Execution execution)
-        {
             (await RunAsync<GenericTestClass>(execution))
                 .ShouldBe(
                     For<GenericTestClass>(

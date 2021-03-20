@@ -30,16 +30,16 @@
 
             try
             {
-                sourceLocationProvider.TryGetSourceLocation(test.Class, test.Method, out sourceLocation);
+                sourceLocationProvider.TryGetSourceLocation(test, out sourceLocation);
             }
             catch (Exception exception)
             {
                 log.Error(exception.ToString());
             }
 
-            var discoveredTest = new TestCase(test.Name, VsTestExecutor.Uri, assemblyPath)
+            var discoveredTest = new TestCase(test, VsTestExecutor.Uri, assemblyPath)
             {
-                DisplayName = test.Name
+                DisplayName = test
             };
 
             if (sourceLocation != null)

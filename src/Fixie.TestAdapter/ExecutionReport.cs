@@ -75,9 +75,9 @@
             log.RecordResult(testResult);
         }
 
-        TestCase ToVsTestCase(Test test)
+        TestCase ToVsTestCase(string fullyQualifiedName)
         {
-            return new TestCase(test.Name, VsTestExecutor.Uri, assemblyPath);
+            return new TestCase(fullyQualifiedName, VsTestExecutor.Uri, assemblyPath);
         }
 
         static void AttachCapturedConsoleOutput(string output, TestResult testResult)

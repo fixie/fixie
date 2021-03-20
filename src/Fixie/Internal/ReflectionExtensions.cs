@@ -5,10 +5,15 @@
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
-    using static Internal.Maybe;
+    using static Maybe;
 
     static class ReflectionExtensions
     {
+        public static string TestName(this MethodInfo method)
+        {
+            return method.ReflectedType!.FullName! + "." + method.Name;
+        }
+
         public static bool IsStatic(this Type type)
         {
             return type.IsAbstract && type.IsSealed;

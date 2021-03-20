@@ -54,12 +54,12 @@
 
         ClassResult ForClass(CaseCompleted message)
         {
-            var testClass = message.Test.Class;
+            Parse(message.Test, out var type, out _);
 
-            if (!report.ContainsKey(testClass))
-                report.Add(testClass, new ClassResult(testClass));
+            if (!report.ContainsKey(type))
+                report.Add(type, new ClassResult(type));
 
-            return report[testClass];
+            return report[type];
         }
 
         public void Handle(AssemblyCompleted message)
@@ -120,10 +120,12 @@
                 duration += message.Duration;
                 summary.Add(message);
 
+                Parse(message.Test, out var type, out var method);
+
                 var test = new XElement("test",
                         new XAttribute("name", message.Name),
-                        new XAttribute("type", message.Test.Class),
-                        new XAttribute("method", message.Test.Method),
+                        new XAttribute("type", type),
+                        new XAttribute("method", method),
                         new XAttribute("result", "Skip"),
                         new XAttribute("time", Seconds(message.Duration)));
 
@@ -137,11 +139,14 @@
             {
                 duration += message.Duration;
                 summary.Add(message);
+
+                Parse(message.Test, out var type, out var method);
+
                 results.Add(
                     new XElement("test",
                         new XAttribute("name", message.Name),
-                        new XAttribute("type", message.Test.Class),
-                        new XAttribute("method", message.Test.Method),
+                        new XAttribute("type", type),
+                        new XAttribute("method", method),
                         new XAttribute("result", "Pass"),
                         new XAttribute("time", Seconds(message.Duration))));
             }
@@ -150,11 +155,14 @@
             {
                 duration += message.Duration;
                 summary.Add(message);
+
+                Parse(message.Test, out var type, out var method);
+
                 results.Add(
                     new XElement("test",
                         new XAttribute("name", message.Name),
-                        new XAttribute("type", message.Test.Class),
-                        new XAttribute("method", message.Test.Method),
+                        new XAttribute("type", type),
+                        new XAttribute("method", method),
                         new XAttribute("result", "Fail"),
                         new XAttribute("time", Seconds(message.Duration)),
                         new XElement("failure",
@@ -174,6 +182,13 @@
                     new XAttribute("skipped", summary.Skipped),
                     results);
             }
+        }
+
+        static void Parse(string fullName, out string className, out string methodName)
+        {
+            var indexOfMemberSeparator = fullName.LastIndexOf(".");
+            className = fullName.Substring(0, indexOfMemberSeparator);
+            methodName = fullName.Substring(indexOfMemberSeparator + 1);
         }
     }
 }

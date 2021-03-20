@@ -2,9 +2,9 @@
 {
     public class TestDiscovered : Message
     {
-        internal TestDiscovered(Test test)
+        internal TestDiscovered(string test)
             => Test = test;
 
-        public Test Test { get; }
+        public string Test { get; }
     }
 }

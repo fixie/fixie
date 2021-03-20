@@ -32,9 +32,9 @@ namespace Fixie.Internal
             regex = new Regex(patternWithWildcards);
         }
 
-        public bool Matches(Test test)
+        public bool Matches(string test)
         {
-            return regex.IsMatch(test.Name);
+            return regex.IsMatch(test);
         }
     }
 }

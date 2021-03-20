@@ -6,40 +6,24 @@
     {
         public void CanRepresentMethodsDeclaredInChildClasses()
         {
-            AssertTest(
-                Test<ChildClass>("MethodDefinedWithinChildClass"),
-                "Fixie.Tests.TestNameTests+ChildClass",
-                "MethodDefinedWithinChildClass",
-                "Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinChildClass");
+            Test<ChildClass>("MethodDefinedWithinChildClass")
+                .ShouldBe("Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinChildClass");
         }
 
         public void CanRepresentMethodsDeclaredInParentClasses()
         {
-            AssertTest(
-                Test<ParentClass>("MethodDefinedWithinParentClass"),
-                "Fixie.Tests.TestNameTests+ParentClass",
-                "MethodDefinedWithinParentClass",
-                "Fixie.Tests.TestNameTests+ParentClass.MethodDefinedWithinParentClass");
+            Test<ParentClass>("MethodDefinedWithinParentClass")
+                .ShouldBe("Fixie.Tests.TestNameTests+ParentClass.MethodDefinedWithinParentClass");
         }
 
         public void CanRepresentParentMethodsInheritedByChildClasses()
         {
-            AssertTest(
-                Test<ChildClass>("MethodDefinedWithinParentClass"),
-                "Fixie.Tests.TestNameTests+ChildClass",
-                "MethodDefinedWithinParentClass",
-                "Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinParentClass");
+            Test<ChildClass>("MethodDefinedWithinParentClass")
+                .ShouldBe("Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinParentClass");
         }
 
-        static void AssertTest(TestName actual, string expectedClass, string expectedMethod, string expectedName)
-        {
-            actual.Class.ShouldBe(expectedClass);
-            actual.Method.ShouldBe(expectedMethod);
-            actual.FullName.ShouldBe(expectedName);
-        }
-
-        static TestName Test<TTestClass>(string method)
-            => new TestName(typeof(TTestClass).GetInstanceMethod(method));
+        static string Test<TTestClass>(string method)
+            => new TestName(typeof(TTestClass).GetInstanceMethod(method)).FullName;
 
         class ParentClass
         {

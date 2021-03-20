@@ -12,9 +12,9 @@
     {
         class ParameterizedExecution : Execution
         {
-            readonly ParameterSource parameterSource;
+            readonly Func<MethodInfo, IEnumerable<object?[]>> parameterSource;
 
-            public ParameterizedExecution(ParameterSource parameterSource)
+            public ParameterizedExecution(Func<MethodInfo, IEnumerable<object?[]>> parameterSource)
                 => this.parameterSource = parameterSource;
 
             public async Task RunAsync(TestAssembly testAssembly)
@@ -43,9 +43,9 @@
 
         class FailFastParameterizedExecution : Execution
         {
-            readonly ParameterSource parameterSource;
+            readonly Func<MethodInfo, IEnumerable<object?[]>> parameterSource;
 
-            public FailFastParameterizedExecution(ParameterSource parameterSource)
+            public FailFastParameterizedExecution(Func<MethodInfo, IEnumerable<object?[]>> parameterSource)
                 => this.parameterSource = parameterSource;
 
             public async Task RunAsync(TestAssembly testAssembly)

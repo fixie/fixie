@@ -25,8 +25,10 @@ namespace Fixie
 
         public string Name { get; }
 
-        bool? hasParameters;
-        public bool HasParameters => hasParameters ??= Method.GetParameters().Length > 0;
+        ParameterInfo[]? parameters;
+        public ParameterInfo[] Parameters => parameters ??= Method.GetParameters();
+
+        public bool HasParameters => Parameters.Length > 0;
 
         public MethodInfo Method { get; }
 

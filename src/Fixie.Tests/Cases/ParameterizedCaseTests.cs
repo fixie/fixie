@@ -198,8 +198,6 @@
 
         static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(Test test)
         {
-            var parameters = test.Method.GetParameters();
-
             var attributes = test.Method.GetCustomAttributes<InputAttribute>(true).ToArray();
 
             if (attributes.Any())
@@ -209,7 +207,7 @@
             }
             else
             {
-                yield return parameters.Select(p => Default(p.ParameterType)).ToArray();
+                yield return test.Parameters.Select(p => Default(p.ParameterType)).ToArray();
             }
         }
 

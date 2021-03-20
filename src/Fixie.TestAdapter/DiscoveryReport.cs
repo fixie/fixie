@@ -24,22 +24,22 @@
 
         public void Handle(TestDiscovered message)
         {
-            var test = message.Test;
+            var test = message.Test.FullName;
 
             SourceLocation? sourceLocation = null;
 
             try
             {
-                sourceLocationProvider.TryGetSourceLocation(test.Class, test.Method, out sourceLocation);
+                sourceLocationProvider.TryGetSourceLocation(test, out sourceLocation);
             }
             catch (Exception exception)
             {
                 log.Error(exception.ToString());
             }
 
-            var discoveredTest = new TestCase(test.FullName, VsTestExecutor.Uri, assemblyPath)
+            var discoveredTest = new TestCase(test, VsTestExecutor.Uri, assemblyPath)
             {
-                DisplayName = test.FullName
+                DisplayName = test
             };
 
             if (sourceLocation != null)

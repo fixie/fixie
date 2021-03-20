@@ -18,18 +18,37 @@ namespace Fixie.TestAdapter
             this.assemblyPath = assemblyPath;
         }
 
-        public bool TryGetSourceLocation(string className, string methodName, [NotNullWhen(true)] out SourceLocation? sourceLocation)
+        public bool TryGetSourceLocation(string test, [NotNullWhen(true)] out SourceLocation? sourceLocation)
         {
             if (sourceLocations == null)
                 sourceLocations = CacheLocations(assemblyPath);
 
             sourceLocation = null;
 
-            if (sourceLocations.TryGetValue(StandardizeTypeName(className), out var type))
-                if (type.TryGetValue(methodName, out var firstOverloadLocation))
-                    sourceLocation = firstOverloadLocation;
+            if (TryParse(test, out var className, out var methodName))
+                if (sourceLocations.TryGetValue(StandardizeTypeName(className), out var type))
+                    if (type.TryGetValue(methodName, out var firstOverloadLocation))
+                        sourceLocation = firstOverloadLocation;
 
             return sourceLocation != null;
+        }
+
+        static bool TryParse(string fullyQualifiedMethodName, [NotNullWhen(true)] out string? className, [NotNullWhen(true)] out string? methodName)
+        {
+            var indexOfMemberSeparator = fullyQualifiedMethodName.LastIndexOf(".");
+
+            if (indexOfMemberSeparator >= 0)
+            {
+                className = fullyQualifiedMethodName.Substring(0, indexOfMemberSeparator);
+                methodName = fullyQualifiedMethodName.Substring(indexOfMemberSeparator + 1);
+
+                if (className.Length > 0 && methodName.Length > 0)
+                    return true;
+            }
+
+            className = null;
+            methodName = null;
+            return false;
         }
 
         static Dictionary<string, Dictionary<string, SourceLocation>> CacheLocations(string assemblyPath)

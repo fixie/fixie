@@ -64,7 +64,7 @@ namespace Fixie.Tests
             ProcessScriptedFailure(member);
         }
 
-        static void ProcessScriptedFailure(string member)
+        protected static void ProcessScriptedFailure([CallerMemberName] string member = default!)
         {
             if (FailingMember == member)
             {

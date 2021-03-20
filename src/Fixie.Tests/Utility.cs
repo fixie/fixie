@@ -75,9 +75,17 @@
             await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
         }
 
-        public static IEnumerable<object?[]> UsingInputAttributes(MethodInfo method)
-            => method
-                .GetCustomAttributes<InputAttribute>(true)
-                .Select(input => input.Parameters);
+        public static IEnumerable<object?[]> FromInputAttributes(TestMethod test)
+        {
+            if (test.HasParameters)
+                return test.Method
+                    .GetCustomAttributes<InputAttribute>(true)
+                    .Select(input => input.Parameters);
+
+            return InvokeOnceWithZeroParameters;
+        }
+
+        static readonly object[] EmptyParameters = {};
+        static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
     }
 }

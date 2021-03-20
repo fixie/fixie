@@ -75,7 +75,7 @@
                         continue;
                     }
 
-                    foreach (var parameters in test.GetCases(UsingInputAttributes))
+                    foreach (var parameters in FromInputAttributes(test))
                         await test.RunAsync(parameters);
                 }
             }

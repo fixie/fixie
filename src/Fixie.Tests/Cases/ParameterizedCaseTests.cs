@@ -12,9 +12,24 @@
     {
         class ParameterizedExecution : Execution
         {
-            readonly ParameterSource parameterSource;
+            readonly Func<TestMethod, IEnumerable<object?[]>> parameterSource;
 
-            public ParameterizedExecution(ParameterSource parameterSource)
+            public ParameterizedExecution(Func<TestMethod, IEnumerable<object?[]>> parameterSource)
+                => this.parameterSource = parameterSource;
+
+            public async Task RunAsync(TestAssembly testAssembly)
+            {
+                foreach (var test in testAssembly.Tests)
+                    foreach (var parameters in parameterSource(test))
+                        await test.RunAsync(parameters);
+            }
+        }
+
+        class IsolatedParameterizedExecution : Execution
+        {
+            readonly Func<TestMethod, IEnumerable<object?[]>> parameterSource;
+
+            public IsolatedParameterizedExecution(Func<TestMethod, IEnumerable<object?[]>> parameterSource)
                 => this.parameterSource = parameterSource;
 
             public async Task RunAsync(TestAssembly testAssembly)
@@ -23,7 +38,7 @@
                 {
                     try
                     {
-                        foreach (var parameters in test.GetCases(parameterSource))
+                        foreach (var parameters in parameterSource(test))
                             await test.RunAsync(parameters);
                     }
                     catch (Exception exception)
@@ -34,41 +49,7 @@
             }
         }
 
-        class FailFastParameterizedExecution : Execution
-        {
-            readonly ParameterSource parameterSource;
-
-            public FailFastParameterizedExecution(ParameterSource parameterSource)
-                => this.parameterSource = parameterSource;
-
-            public async Task RunAsync(TestAssembly testAssembly)
-            {
-                foreach (var test in testAssembly.Tests)
-                    foreach (var parameters in test.GetCases(parameterSource))
-                        await test.RunAsync(parameters);
-            }
-        }
-
-        class ExplicitlyParameterizedExecution : Execution
-        {
-            public async Task RunAsync(TestAssembly testAssembly)
-            {
-                foreach (var test in testAssembly.Tests)
-                {
-                    if (test.HasParameters)
-                    {
-                        foreach (var parameters in InputAttributeParameterSource(test.Method))
-                            await test.RunAsync(parameters);
-                    }
-                    else
-                    {
-                        await test.RunAsync();
-                    }
-                }
-            }
-        }
-
-        public async Task ShouldAllowExecutionToGeneratePotentiallyManySetsOfInputParametersPerMethod()
+        public async Task ShouldAllowRunningTestsMultipleTimesWithVaryingInputParameters()
         {
             var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
             (await RunAsync<ParameterizedTestClass>(execution))
@@ -79,17 +60,6 @@
                         ".MultipleCasesFromAttributes(1, 2, 3) passed",
                         ".MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
                         ".ZeroArgs passed"));
-        }
-
-        public async Task ShouldSkipWhenInputParameterGenerationYieldsZeroSetsOfInputs()
-        {
-            var execution = new ParameterizedExecution(EmptyParameterSource);
-            (await RunAsync<ParameterizedTestClass>(execution))
-                .ShouldBe(
-                    For<ParameterizedTestClass>(
-                        ".ZeroArgs passed",
-                        ".IntArg skipped: This test did not run.",
-                        ".MultipleCasesFromAttributes skipped: This test did not run."));
         }
 
         public async Task ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
@@ -117,56 +87,17 @@
                         ".MultipleCasesFromAttributes(0, 1, 2) failed: Expected sum of 2 but was 1.",
                         ".MultipleCasesFromAttributes(0, 1, 2, 3) failed: Parameter count mismatch.",
 
-                        ".ZeroArgs passed"));
+                        ".ZeroArgs passed",
+                        ".ZeroArgs(0) failed: Parameter count mismatch.",
+                        ".ZeroArgs(0, 1) failed: Parameter count mismatch.",
+                        ".ZeroArgs(0, 1, 2) failed: Parameter count mismatch.",
+                        ".ZeroArgs(0, 1, 2, 3) failed: Parameter count mismatch."));
         }
 
-        public async Task ShouldFailWithClearExplanationWhenParameterGenerationThrows()
+        public async Task ShouldSupportEndingTheRunEarlyWhenParameterGenerationThrows()
         {
             var execution = new ParameterizedExecution(BuggyParameterSource);
             (await RunAsync<ParameterizedTestClass>(execution))
-                .ShouldBe(
-                    For<ParameterizedTestClass>(
-                        ".IntArg(0) passed",
-                        ".IntArg(1) failed: Expected 0, but was 1",
-                        ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-
-                        ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
-                        ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
-                        ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
-
-                        ".ZeroArgs passed"));
-        }
-
-        public async Task ShouldSupportIsolatingFailuresToTheAffectedTestMethodWhenParameterGenerationThrows()
-        {
-            //Because the ParameterizedExecution convention explicitly catches and
-            //handles these exceptions at an appropriate granularity, it demonstrates
-            //how a failure can be isolated to the affected test method. A user may
-            //wish to do this to isolate a problematic parameter generation scheme
-            //while keeping as much of their build passing as possible.
-
-            //Because the FailFastParameterizedExecution convention does not attempt
-            //to handle these exceptions, the convention exits early and the runner
-            //acknowledges that fact with failure and skip results on the elided tests.
-            //A user may wish to do this to 'fail fast' when their testing infrastructure
-            //is clearly in an untrustworthy state to begin with.
-
-            var isolatedExecution = new ParameterizedExecution(BuggyParameterSource);
-            (await RunAsync<ParameterizedTestClass>(isolatedExecution))
-                .ShouldBe(
-                    For<ParameterizedTestClass>(
-                        ".IntArg(0) passed",
-                        ".IntArg(1) failed: Expected 0, but was 1",
-                        ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-
-                        ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
-                        ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
-                        ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
-
-                        ".ZeroArgs passed"));
-
-            var failFastExecution = new FailFastParameterizedExecution(BuggyParameterSource);
-            (await RunAsync<ParameterizedTestClass>(failFastExecution))
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
@@ -180,9 +111,28 @@
                         ".ZeroArgs skipped: This test did not run."));
         }
 
-        public async Task ShouldFailWithClearExplanationWhenParameterGenerationExceptionPreventsGenericTypeParametersFromBeingResolvable()
+        public async Task ShouldSupportIsolatingFailuresToTheAffectedTestMethodWhenParameterGenerationThrows()
         {
-            var execution = new ParameterizedExecution(BuggyParameterSource);
+            var execution = new IsolatedParameterizedExecution(BuggyParameterSource);
+            (await RunAsync<ParameterizedTestClass>(execution))
+                .ShouldBe(
+                    For<ParameterizedTestClass>(
+                        ".IntArg(0) passed",
+                        ".IntArg(1) failed: Expected 0, but was 1",
+                        ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+
+                        ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
+                        ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
+                        ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
+
+                        ".ZeroArgs(0) failed: Parameter count mismatch.",
+                        ".ZeroArgs(1) failed: Parameter count mismatch.",
+                        ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs"));
+        }
+
+        public async Task ShouldFailWithGenericTestNameWhenGenericTypeParametersCannotBeResolved()
+        {
+            var execution = new IsolatedParameterizedExecution(BuggyParameterSource);
             (await RunAsync<ConstrainedGenericTestClass>(execution))
                 .ShouldBe(
                     For<ConstrainedGenericTestClass>(
@@ -196,25 +146,18 @@
 
         public async Task ShouldResolveGenericTypeParameters()
         {
-            var execution = new ParameterizedExecution(InputAttributeParameterSource);
-            await ShouldResolveGenericTypeParametersAsync(execution);
-        }
-
-        public async Task ShouldSupportExplicitParameterization()
-        {
-            var execution = new ExplicitlyParameterizedExecution();
-            await ShouldResolveGenericTypeParametersAsync(execution);
-        }
-
-        async Task ShouldResolveGenericTypeParametersAsync(Execution execution)
-        {
+            var execution = new IsolatedParameterizedExecution(InputAttributeOrDefaultParameterSource);
             (await RunAsync<GenericTestClass>(execution))
                 .ShouldBe(
                     For<GenericTestClass>(
                         ".ConstrainedGeneric<System.Int32>(1) passed",
                         ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",
+                        
+                        ".ConstrainedGenericMethodWithNoInputsProvided<T> failed: Cannot create an instance of T because Type.ContainsGenericParameters is true.",
 
                         ".GenericMethodWithIncorrectParameterCountProvided<System.Int32>(123, 123) failed: Parameter count mismatch.",
+
+                        ".GenericMethodWithNoInputsProvided<T>(null) failed: Could not resolve type parameters for generic method.",
 
                         ".MultipleGenericArgumentsMultipleParameters<T1, T2>(123, null, 456, System.Int32, System.Object) failed: Could not resolve type parameters for generic method.",
                         ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",
@@ -233,10 +176,8 @@
                         ".SingleGenericArgumentMultipleParameters<T>(null, null, System.Object) failed: Could not resolve type parameters for generic method.",
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
                         ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
-                        ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed",
-                        
-                        ".ConstrainedGenericMethodWithNoInputsProvided<T> skipped: This test did not run.",
-                        ".GenericMethodWithNoInputsProvided<T> skipped: This test did not run."));
+                        ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed"
+                        ));
         }
 
         public async Task ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
@@ -255,16 +196,11 @@
                         "Object of type 'System.Char' cannot be converted to type 'System.String'."));
         }
 
-        static IEnumerable<object?[]> InputAttributeParameterSource(MethodInfo method)
-            => method
-                .GetCustomAttributes<InputAttribute>(true)
-                .Select(input => input.Parameters);
-
-        static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(MethodInfo method)
+        static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(TestMethod test)
         {
-            var parameters = method.GetParameters();
+            var parameters = test.Method.GetParameters();
 
-            var attributes = method.GetCustomAttributes<InputAttribute>(true).ToArray();
+            var attributes = test.Method.GetCustomAttributes<InputAttribute>(true).ToArray();
 
             if (attributes.Any())
             {
@@ -277,26 +213,21 @@
             }
         }
 
-        static IEnumerable<object[]> EmptyParameterSource(MethodInfo method)
-        {
-            yield break;
-        }
-
-        static IEnumerable<object[]> BuggyParameterSource(MethodInfo method)
+        static IEnumerable<object[]> BuggyParameterSource(TestMethod test)
         {
             yield return new object[] { 0 };
             yield return new object[] { 1 };
-            throw new Exception("Exception thrown while attempting to yield input parameters for method: " + method.Name);
+            throw new Exception("Exception thrown while attempting to yield input parameters for method: " + test.Method.Name);
         }
 
-        static IEnumerable<object[]> ComplexGenericParameterSource(MethodInfo method)
+        static IEnumerable<object[]> ComplexGenericParameterSource(TestMethod test)
         {
-            if (method.Name == "CompoundGenericParameter")
+            if (test.Method.Name == "CompoundGenericParameter")
             {
                 yield return new object[] {new KeyValuePair<int, string>(1, "A"), "System.Int32", "System.String"};
                 yield return new object[] {new KeyValuePair<string, int>("B", 2), "System.String", "System.Int32"};
             }
-            else if (method.Name == "GenericFuncParameter")
+            else if (test.Method.Name == "GenericFuncParameter")
             {
                 yield return new object[] {5, new Func<int, int>(i => i * 2), 10};
                 yield return new object[] {5, new Func<int, string>(i => i.ToString()), "5"};

@@ -23,7 +23,8 @@
 
         public void Handle(CaseStarted message)
         {
-            var testCase = ToVsTestCase(message.Test);
+            TestName test = message.Test;
+            var testCase = ToVsTestCase(test.FullName);
 
             log.RecordStart(testCase);
         }
@@ -59,7 +60,8 @@
 
         void Record(CaseCompleted result, Action<TestResult> customize)
         {
-            var testCase = ToVsTestCase(result.Test);
+            TestName test = result.Test;
+            var testCase = ToVsTestCase(test.FullName);
 
             var testResult = new TestResult(testCase)
             {
@@ -75,9 +77,9 @@
             log.RecordResult(testResult);
         }
 
-        TestCase ToVsTestCase(TestName test)
+        TestCase ToVsTestCase(string fullyQualifiedName)
         {
-            return new TestCase(test.FullName, VsTestExecutor.Uri, assemblyPath);
+            return new TestCase(fullyQualifiedName, VsTestExecutor.Uri, assemblyPath);
         }
 
         static void AttachCapturedConsoleOutput(string output, TestResult testResult)

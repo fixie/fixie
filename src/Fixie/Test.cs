@@ -31,7 +31,7 @@ namespace Fixie
 
         public bool HasParameters => Parameters.Length > 0;
 
-        public MethodInfo Method { get; }
+        internal MethodInfo Method { get; }
 
         internal bool RecordedResult { get; private set; }
 

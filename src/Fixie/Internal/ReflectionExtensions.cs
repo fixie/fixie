@@ -4,7 +4,6 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
-    using System.Threading.Tasks;
     using static Maybe;
 
     static class ReflectionExtensions
@@ -27,15 +26,6 @@
         public static bool Has<TAttribute>(this MemberInfo member, [NotNullWhen(true)] out TAttribute? matchingAttribute) where TAttribute : Attribute
         {
             return Try(() => member.GetCustomAttribute<TAttribute>(true), out matchingAttribute);
-        }
-
-        public static async Task DisposeIfApplicableAsync(this object? o)
-        {
-            if (o is IAsyncDisposable asyncDisposable)
-                await asyncDisposable.DisposeAsync();
-
-            if (o is IDisposable disposable)
-                disposable.Dispose();
         }
     }
 }

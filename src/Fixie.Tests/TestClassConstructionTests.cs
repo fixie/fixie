@@ -200,8 +200,14 @@ namespace Fixie.Tests
                         if (!ShouldSkip(test))
                         {
                             var instance = testClass.Construct();
+                            
                             await test.RunAsync(instance);
-                            await instance.DisposeIfApplicableAsync();
+
+                            if (instance is IAsyncDisposable asyncDisposable)
+                                await asyncDisposable.DisposeAsync();
+
+                            if (instance is IDisposable disposable)
+                                disposable.Dispose();
                         }
             }
         }
@@ -301,7 +307,7 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle();
         }
 
-        public async Task ShouldAllowExecutionWhenConstructingExplicitlyAndTestClassIsDisposable()
+        public async Task ShouldAllowExecutionWithExplicitDisposalWhenConstructingExplicitlyAndTestClassIsDisposable()
         {
             var output = await RunAsync<DisposableSampleTestClass, CreateInstancePerCaseExplicitly>();
 
@@ -315,7 +321,7 @@ namespace Fixie.Tests
                 ".ctor", "Pass", "Dispose");
         }
 
-        public async Task ShouldAllowExecutionWhenConstructingExplicitlyAndTestClassIsAsyncDisposable()
+        public async Task ShouldAllowExecutionWithExplicitDisposalWhenConstructingExplicitlyAndTestClassIsAsyncDisposable()
         {
             var output = await RunAsync<AsyncDisposableSampleTestClass, CreateInstancePerCaseExplicitly>();
 

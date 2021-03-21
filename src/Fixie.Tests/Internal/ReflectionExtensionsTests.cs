@@ -2,7 +2,6 @@
 {
     using System;
     using System.Reflection;
-    using System.Threading.Tasks;
     using Assertions;
     using Fixie.Internal;
 
@@ -49,31 +48,6 @@
             attemptAmbiguousAttributeLookup.ShouldThrow<AmbiguousMatchException>("Multiple custom attributes of the same type found.");
         }
 
-        public async Task CanDisposeDisposablesAndAsyncDisposables()
-        {
-            var disposeable = new Disposable();
-            var disposeButNotDisposable = new DisposeButNotDisposable();
-            var notDisposable = new NotDisposable();
-            object? nullObject = null;
-
-            disposeable.DisposeAsyncInvoked.ShouldBe(false);
-            disposeable.DisposeInvoked.ShouldBe(false);
-            disposeButNotDisposable.DisposeAsyncInvoked.ShouldBe(false);
-            disposeButNotDisposable.DisposeInvoked.ShouldBe(false);
-            notDisposable.Invoked.ShouldBe(false);
-
-            await ((object)disposeable).DisposeIfApplicableAsync();
-            await ((object)disposeButNotDisposable).DisposeIfApplicableAsync();
-            await notDisposable.DisposeIfApplicableAsync();
-            await nullObject.DisposeIfApplicableAsync();
-
-            disposeable.DisposeAsyncInvoked.ShouldBe(true);
-            disposeable.DisposeInvoked.ShouldBe(true);
-            disposeButNotDisposable.DisposeAsyncInvoked.ShouldBe(false);
-            disposeButNotDisposable.DisposeInvoked.ShouldBe(false);
-            notDisposable.Invoked.ShouldBe(false);
-        }
-
         void ReturnsVoid() { }
         int ReturnsInt() { return 0; }
 
@@ -114,38 +88,5 @@
 
         static MethodInfo Method<T>(string name)
             => typeof(T).GetInstanceMethod(name);
-
-        class Disposable : IAsyncDisposable, IDisposable
-        {
-            public bool DisposeAsyncInvoked { get; private set; }
-            public bool DisposeInvoked { get; private set; }
-
-            public ValueTask DisposeAsync()
-            {
-                DisposeAsyncInvoked = true;
-                return default;
-            }
-
-            public void Dispose() => DisposeInvoked = true;
-        }
-
-        class DisposeButNotDisposable
-        {
-            public bool DisposeAsyncInvoked { get; private set; }
-            public bool DisposeInvoked { get; private set; }
-
-            public ValueTask DisposeAsync()
-            {
-                DisposeAsyncInvoked = true;
-                return default;
-            }
-
-            public void Dispose() => DisposeInvoked = true;
-        }
-
-        class NotDisposable
-        {
-            public bool Invoked { get; private set; }
-        }
     }
 }

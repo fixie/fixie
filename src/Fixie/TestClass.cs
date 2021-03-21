@@ -8,6 +8,8 @@
 
     public class TestClass
     {
+        static readonly object[] EmptyParameters = {};
+
         internal TestClass(Type type, IReadOnlyList<Test> tests)
         {
             Type = type;
@@ -26,10 +28,19 @@
 
         /// <summary>
         /// Constructs an instance of the test class using
+        /// the default constructor.
+        /// </summary>
+        public object? Construct()
+        {
+            return Construct(EmptyParameters);
+        }
+
+        /// <summary>
+        /// Constructs an instance of the test class using
         /// the constructor that best matches the specified
         /// parameters.
         /// </summary>
-        public object? Construct(params object?[] parameters)
+        public object? Construct(object?[] parameters)
         {
             try
             {

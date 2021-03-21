@@ -25,7 +25,7 @@
                 {
                     failures++;
 
-                    singleFailure = failures == 1 ? failure.Exception : null;
+                    singleFailure = failures == 1 ? failure.Reason : null;
                 }
             }
 

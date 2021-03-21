@@ -44,13 +44,13 @@
         public void Handle(TestFailed message)
         {
             var details =
-                message.Exception.GetType().FullName +
+                message.Reason.GetType().FullName +
                 NewLine +
-                message.Exception.LiterateStackTrace();
+                message.Reason.LiterateStackTrace();
 
             TestStarted(message);
             Output(message);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Exception.Message, details);
+            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Reason.Message, details);
             TestFinished(message);
         }
 

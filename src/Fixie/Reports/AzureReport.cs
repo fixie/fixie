@@ -174,11 +174,11 @@
 
             await IncludeAsync(new Result(message, "Failed")
             {
-                errorMessage = message.Exception.Message,
+                errorMessage = message.Reason.Message,
                 stackTrace =
-                    message.Exception.GetType().FullName +
+                    message.Reason.GetType().FullName +
                     NewLine +
-                    message.Exception.LiterateStackTrace()
+                    message.Reason.LiterateStackTrace()
             });
         }
 

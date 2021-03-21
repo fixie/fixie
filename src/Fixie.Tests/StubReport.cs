@@ -29,7 +29,7 @@
 
         public void Handle(TestFailed message)
         {
-            log.Add($"{message.Name} failed: {message.Exception.Message}");
+            log.Add($"{message.Name} failed: {message.Reason.Message}");
         }
 
         public IEnumerable<string> Entries => log;

@@ -79,11 +79,11 @@
         {
             await PostAsync(new TestResult(runName, message, "Failed")
             {
-                ErrorMessage = message.Exception.Message,
+                ErrorMessage = message.Reason.Message,
                 ErrorStackTrace =
-                    message.Exception.GetType().FullName +
+                    message.Reason.GetType().FullName +
                     NewLine +
-                    message.Exception.LiterateStackTrace()
+                    message.Reason.LiterateStackTrace()
             });
         }
 

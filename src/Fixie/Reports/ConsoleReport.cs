@@ -53,10 +53,10 @@
                 using (Foreground.Red)
                     Console.WriteLine($"Test '{message.Name}' failed:");
                 Console.WriteLine();
-                Console.WriteLine(message.Exception.Message);
+                Console.WriteLine(message.Reason.Message);
                 Console.WriteLine();
-                Console.WriteLine(message.Exception.GetType().FullName);
-                Console.WriteLine(message.Exception.LiterateStackTrace());
+                Console.WriteLine(message.Reason.GetType().FullName);
+                Console.WriteLine(message.Reason.LiterateStackTrace());
             });
         }
 

@@ -50,10 +50,10 @@
             Record(message, x =>
             {
                 x.Outcome = TestOutcome.Failed;
-                x.ErrorMessage = message.Exception.Message;
-                x.ErrorStackTrace = message.Exception.GetType().FullName +
+                x.ErrorMessage = message.Reason.Message;
+                x.ErrorStackTrace = message.Reason.GetType().FullName +
                                     NewLine +
-                                    message.Exception.LiterateStackTrace();
+                                    message.Reason.LiterateStackTrace();
             });
         }
 

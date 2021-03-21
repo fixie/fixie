@@ -47,12 +47,12 @@
             fail.Name.ShouldBe(TestClass + ".Fail");
             fail.Output.Lines().ShouldBe("Console.Out: Fail", "Console.Error: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            fail.Exception.ShouldBe<FailureException>();
-            fail.Exception.LiterateStackTrace()
+            fail.Reason.ShouldBe<FailureException>();
+            fail.Reason.LiterateStackTrace()
                 .Lines()
                 .CleanStackTraceLineNumbers()
                 .ShouldBe(At("Fail()"));
-            fail.Exception.Message.ShouldBe("'Fail' failed!");
+            fail.Reason.Message.ShouldBe("'Fail' failed!");
 
             failByAssertionStarted.Test.ShouldBe(TestClass + ".FailByAssertion");
 
@@ -60,12 +60,12 @@
             failByAssertion.Name.ShouldBe(TestClass + ".FailByAssertion");
             failByAssertion.Output.Lines().ShouldBe("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            failByAssertion.Exception.ShouldBe<AssertException>();
-            failByAssertion.Exception.LiterateStackTrace()
+            failByAssertion.Reason.ShouldBe<AssertException>();
+            failByAssertion.Reason.LiterateStackTrace()
                 .Lines()
                 .CleanStackTraceLineNumbers()
                 .ShouldBe(At("FailByAssertion()"));
-            failByAssertion.Exception.Message.Lines().ShouldBe(
+            failByAssertion.Reason.Message.Lines().ShouldBe(
                 "Expected: 2",
                 "Actual:   1");
 
@@ -94,12 +94,12 @@
             shouldBeStringFail.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
             shouldBeStringFail.Output.ShouldBe("");
             shouldBeStringFail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            shouldBeStringFail.Exception.ShouldBe<AssertException>();
-            shouldBeStringFail.Exception.LiterateStackTrace()
+            shouldBeStringFail.Reason.ShouldBe<AssertException>();
+            shouldBeStringFail.Reason.LiterateStackTrace()
                 .Lines()
                 .CleanStackTraceLineNumbers()
                 .ShouldBe(At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
-            shouldBeStringFail.Exception.Message.Lines().ShouldBe(
+            shouldBeStringFail.Reason.Message.Lines().ShouldBe(
                 "Expected: System.String",
                 "Actual:   System.Int32");
 

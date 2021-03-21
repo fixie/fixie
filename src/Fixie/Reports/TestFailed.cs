@@ -5,12 +5,12 @@
 
     public class TestFailed : TestCompleted
     {
-        internal TestFailed(Case @case, TimeSpan duration, string output, Exception exception)
+        internal TestFailed(Case @case, TimeSpan duration, string output, Exception reason)
             : base(@case, duration, output)
         {
-            Exception = exception;
+            Reason = reason;
         }
 
-        public Exception Exception { get; }
+        public Exception Reason { get; }
     }
 }

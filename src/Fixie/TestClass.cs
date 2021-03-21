@@ -25,7 +25,7 @@
         public IReadOnlyList<Test> Tests { get; }
 
         /// <summary>
-        /// Construct an instance of the test class using
+        /// Constructs an instance of the test class using
         /// the constructor that best matches the specified
         /// parameters.
         /// </summary>
@@ -42,7 +42,7 @@
         }
 
         /// <summary>
-        /// Emit fail results for all tests in the test class, with the given reason.
+        /// Emits failure results for all tests in the test class, with the given reason.
         /// </summary>
         public async Task FailAsync(Exception reason)
         {

@@ -2,11 +2,11 @@
 {
     using System.Threading.Tasks;
 
-    /// <summary>
-    /// Defines a test class lifecycle, to be executed once per test class.
-    /// </summary>
     public interface Execution
     {
+        /// <summary>
+        /// Runs the given set of discovered tests.
+        /// </summary>
         Task RunAsync(TestAssembly testAssembly);
     }
 }

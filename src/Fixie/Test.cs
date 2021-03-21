@@ -24,23 +24,44 @@ namespace Fixie
             RecordedResult = false;
         }
 
+        /// <summary>
+        /// Gets the full name of the test. Note that the full name of an individual test
+        /// <em>case</em> may further clarify this name with parameters and/or generic type
+        /// parameters.
+        /// </summary>
         public string Name { get; }
 
-        ParameterInfo[]? parameters;
+        /// <summary>
+        /// Gets the parameters of the test.
+        /// </summary>
         public ParameterInfo[] Parameters => parameters ??= Method.GetParameters();
+        ParameterInfo[]? parameters;
 
+        /// <summary>
+        /// Determines whether the test is parameterized.
+        /// </summary>
         public bool HasParameters => Parameters.Length > 0;
 
         internal MethodInfo Method { get; }
 
         internal bool RecordedResult { get; private set; }
 
+        /// <summary>
+        /// Determines whether any attributes of the specified type are applied to the test declaration.
+        /// </summary>
         public bool Has<TAttribute>() where TAttribute : Attribute
             => Method.Has<TAttribute>();
 
+        /// <summary>
+        /// Determines whether an attribute of the specified type is applied to the test declaration,
+        /// providing that attribute as an `out` parameter when found.
+        /// </summary>
         public bool Has<TAttribute>([NotNullWhen(true)] out TAttribute? matchingAttribute) where TAttribute : Attribute
             => Method.Has(out matchingAttribute);
 
+        /// <summary>
+        /// Gets all attributes of the specified type that are applied to the test declaration.
+        /// </summary>
         public TAttribute[] GetAll<TAttribute>() where TAttribute : Attribute
             => Method.GetCustomAttributes<TAttribute>(true).ToArray();
 
@@ -89,28 +110,43 @@ namespace Fixie
             return result;
         }
 
+        /// <summary>
+        /// Runs the test. The test will be run against a new instance of the test class, using
+        /// its default constructor.
+        /// </summary> 
         public Task<CaseCompleted> RunAsync()
         {
             return RunCoreAsync(instance: null, EmptyParameters);
         }
 
+        /// <summary>
+        /// Runs the test, using the given input parameters. The test will be run against a new
+        /// instance of the test class, using its default constructor.
+        /// </summary>
         public Task<CaseCompleted> RunAsync(object?[] parameters)
         {
             return RunCoreAsync(instance: null, parameters);
         }
 
+        /// <summary>
+        /// Runs the test against the given test class instance.
+        /// </summary>
         public Task<CaseCompleted> RunAsync(object? instance)
         {
             return RunCoreAsync(instance, EmptyParameters);
         }
 
+        /// <summary>
+        /// Runs the test against the given test class instance, using
+        /// the given input parameters.
+        /// </summary>
         public Task<CaseCompleted> RunAsync(object? instance, object?[] parameters)
         {
             return RunCoreAsync(instance, parameters);
         }
 
         /// <summary>
-        /// Emit a skip result for this test, with the given reason.
+        /// Emits a skip result for this test, with the given reason.
         /// </summary>
         public async Task SkipAsync(string? reason)
         {
@@ -118,7 +154,7 @@ namespace Fixie
         }
 
         /// <summary>
-        /// Emit a skip result for this test, with the given reason.
+        /// Emits a skip result for this test case, with the given reason.
         /// </summary>
         public async Task SkipAsync(object?[] parameters, string? reason)
         {
@@ -129,7 +165,7 @@ namespace Fixie
         }
 
         /// <summary>
-        /// Emit a fail result for this test, with the given reason.
+        /// Emits a failure result for this test, with the given reason.
         /// </summary>
         public async Task FailAsync(Exception reason)
         {
@@ -137,7 +173,7 @@ namespace Fixie
         }
 
         /// <summary>
-        /// Emit a fail result for this test, with the given reason.
+        /// Emits a failure result for this test case, with the given reason.
         /// </summary>
         public async Task FailAsync(object?[] parameters, Exception reason)
         {

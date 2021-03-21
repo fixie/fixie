@@ -4,9 +4,6 @@
     using System.Collections.Generic;
     using System.Reflection;
 
-    /// <summary>
-    /// Implement Discovery to customize test discovery rules.
-    /// </summary>
     public interface Discovery
     {
         /// <summary>

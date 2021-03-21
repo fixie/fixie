@@ -7,19 +7,19 @@
     public static class ShuffleExtensions
     {
         /// <summary>
-        /// Randomizes the order of the given tests.
+        /// Randomizes the order of the given items.
         /// </summary>
-        public static IReadOnlyList<T> Shuffle<T>(this IEnumerable<T> tests)
+        public static IReadOnlyList<T> Shuffle<T>(this IEnumerable<T> items)
         {
-            return tests.Shuffle(new Random());
+            return items.Shuffle(new Random());
         }
 
         /// <summary>
-        /// Randomizes the order of the given tests, using the given pseudo-random number generator.
+        /// Randomizes the order of the given items, using the given pseudo-random number generator.
         /// </summary>
-        public static IReadOnlyList<T> Shuffle<T>(this IEnumerable<T> tests, Random random)
+        public static IReadOnlyList<T> Shuffle<T>(this IEnumerable<T> items, Random random)
         {
-            var array = tests.ToList();
+            var array = items.ToList();
 
             FisherYatesShuffle(array, random);
 

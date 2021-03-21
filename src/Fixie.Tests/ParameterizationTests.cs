@@ -1,14 +1,13 @@
-﻿namespace Fixie.Tests.Cases
+﻿namespace Fixie.Tests
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Threading.Tasks;
     using Assertions;
     using static Utility;
 
-    public class ParameterizedCaseTests
+    public class ParameterizationTests
     {
         class ParameterizedExecution : Execution
         {
@@ -56,9 +55,9 @@
                 .ShouldBe(
                     For<ParameterizedTestClass>(
                         ".IntArg(0) passed",
-                        ".MultipleCasesFromAttributes(1, 1, 2) passed",
-                        ".MultipleCasesFromAttributes(1, 2, 3) passed",
-                        ".MultipleCasesFromAttributes(5, 5, 11) failed: Expected sum of 11 but was 10.",
+                        ".Sum(1, 1, 2) passed",
+                        ".Sum(1, 2, 3) passed",
+                        ".Sum(5, 5, 11) failed: Expected sum of 11 but was 10.",
                         ".ZeroArgs passed"));
         }
 
@@ -81,11 +80,11 @@
                         ".IntArg(0, 1, 2) failed: Parameter count mismatch.",
                         ".IntArg(0, 1, 2, 3) failed: Parameter count mismatch.",
 
-                        ".MultipleCasesFromAttributes failed: Parameter count mismatch.",
-                        ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
-                        ".MultipleCasesFromAttributes(0, 1) failed: Parameter count mismatch.",
-                        ".MultipleCasesFromAttributes(0, 1, 2) failed: Expected sum of 2 but was 1.",
-                        ".MultipleCasesFromAttributes(0, 1, 2, 3) failed: Parameter count mismatch.",
+                        ".Sum failed: Parameter count mismatch.",
+                        ".Sum(0) failed: Parameter count mismatch.",
+                        ".Sum(0, 1) failed: Parameter count mismatch.",
+                        ".Sum(0, 1, 2) failed: Expected sum of 2 but was 1.",
+                        ".Sum(0, 1, 2, 3) failed: Parameter count mismatch.",
 
                         ".ZeroArgs passed",
                         ".ZeroArgs(0) failed: Parameter count mismatch.",
@@ -104,8 +103,8 @@
                         ".IntArg(1) failed: Expected 0, but was 1",
                         ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
 
-                        ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-                        ".MultipleCasesFromAttributes skipped: This test did not run.",
+                        ".Sum failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                        ".Sum skipped: This test did not run.",
                         
                         ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: IntArg",
                         ".ZeroArgs skipped: This test did not run."));
@@ -121,9 +120,9 @@
                         ".IntArg(1) failed: Expected 0, but was 1",
                         ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
 
-                        ".MultipleCasesFromAttributes(0) failed: Parameter count mismatch.",
-                        ".MultipleCasesFromAttributes(1) failed: Parameter count mismatch.",
-                        ".MultipleCasesFromAttributes failed: Exception thrown while attempting to yield input parameters for method: MultipleCasesFromAttributes",
+                        ".Sum(0) failed: Parameter count mismatch.",
+                        ".Sum(1) failed: Parameter count mismatch.",
+                        ".Sum failed: Exception thrown while attempting to yield input parameters for method: Sum",
 
                         ".ZeroArgs(0) failed: Parameter count mismatch.",
                         ".ZeroArgs(1) failed: Parameter count mismatch.",
@@ -249,7 +248,7 @@
             [Input(1, 1, 2)]
             [Input(1, 2, 3)]
             [Input(5, 5, 11)]
-            public void MultipleCasesFromAttributes(int a, int b, int expectedSum)
+            public void Sum(int a, int b, int expectedSum)
             {
                 if (a + b != expectedSum)
                     throw new Exception($"Expected sum of {expectedSum} but was {a + b}.");

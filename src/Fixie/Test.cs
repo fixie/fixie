@@ -65,51 +65,6 @@ namespace Fixie
         public TAttribute[] GetAll<TAttribute>() where TAttribute : Attribute
             => Method.GetCustomAttributes<TAttribute>(true).ToArray();
 
-        async Task<CaseCompleted> RunCoreAsync(object? instance, object?[] parameters)
-        {
-            var @case = new Case(this, parameters);
-            Exception? failureReason = null;
-
-            await recorder.StartAsync(@case);
-
-            string output;
-            using (var console = new RedirectedConsole())
-            {
-                try
-                {
-                    if (instance == null && !@case.Method.IsStatic)
-                        instance = Construct(@case.Method.ReflectedType!);
-
-                    await @case.RunAsync(instance);
-                }
-                catch (Exception exception)
-                {
-                    if (exception is PreservedException preservedException)
-                        exception = preservedException.OriginalException;
-
-                    failureReason = exception;
-                }
-
-                output = console.Output;
-            }
-
-            Console.Write(output);
-
-            CaseCompleted? result = null;
-            if (failureReason != null)
-            {
-                result = await recorder.FailAsync(@case, output, failureReason);
-            }
-            else
-            {
-                result = await recorder.PassAsync(@case, output);
-            }
-
-            RecordedResult = true;
-
-            return result;
-        }
-
         /// <summary>
         /// Runs the test. The test will be run against a new instance of the test class, using
         /// its default constructor.
@@ -188,6 +143,51 @@ namespace Fixie
             await recorder.FailAsync(@case, "", reason);
 
             RecordedResult = true;
+        }
+
+        async Task<CaseCompleted> RunCoreAsync(object? instance, object?[] parameters)
+        {
+            var @case = new Case(this, parameters);
+            Exception? failureReason = null;
+
+            await recorder.StartAsync(@case);
+
+            string output;
+            using (var console = new RedirectedConsole())
+            {
+                try
+                {
+                    if (instance == null && !@case.Method.IsStatic)
+                        instance = Construct(@case.Method.ReflectedType!);
+
+                    await @case.RunAsync(instance);
+                }
+                catch (Exception exception)
+                {
+                    if (exception is PreservedException preservedException)
+                        exception = preservedException.OriginalException;
+
+                    failureReason = exception;
+                }
+
+                output = console.Output;
+            }
+
+            Console.Write(output);
+
+            CaseCompleted? result = null;
+            if (failureReason != null)
+            {
+                result = await recorder.FailAsync(@case, output, failureReason);
+            }
+            else
+            {
+                result = await recorder.PassAsync(@case, output);
+            }
+
+            RecordedResult = true;
+
+            return result;
         }
 
         object? Construct(Type testClass)

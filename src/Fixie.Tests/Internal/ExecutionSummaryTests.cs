@@ -8,7 +8,7 @@
 
     public class ExecutionSummaryTests
     {
-        public async Task ShouldAccumulateCaseStatusCounts()
+        public async Task ShouldAccumulateTestResultCounts()
         {
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();

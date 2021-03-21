@@ -10,7 +10,7 @@ namespace Fixie.Tests.Internal
     {
         static readonly string Self = FullName<RunnerTests>();
 
-        public async Task ShouldDiscoverAllTestsInAllDiscoveredTestClasses()
+        public async Task ShouldPerformDiscoveryPhase()
         {
             var report = new StubReport();
 
@@ -33,7 +33,7 @@ namespace Fixie.Tests.Internal
                 Self + "+SkipTestClass.SkipB discovered");
         }
 
-        public async Task ShouldExecuteAllCasesInAllDiscoveredTestClasses()
+        public async Task ShouldPerformExecutionPhase()
         {
             var report = new StubReport();
 

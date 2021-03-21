@@ -239,11 +239,11 @@
         static IEnumerable<Type> Resolve(string methodName, params object?[] parameters)
         {
             var testClass = typeof(Generic);
-            var caseMethod = testClass.GetInstanceMethod(methodName);
+            var testMethod = testClass.GetInstanceMethod(methodName);
 
             var recordNothing = new ExecutionRecorder(new Bus(new Report[] { }));
             var classIsDisposable = false;
-            var test = new Test(recordNothing, classIsDisposable, caseMethod);
+            var test = new Test(recordNothing, classIsDisposable, testMethod);
 
             return new Case(test, parameters).Method.GetGenericArguments();
         }

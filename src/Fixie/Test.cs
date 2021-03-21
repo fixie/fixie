@@ -2,6 +2,7 @@ namespace Fixie
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
     using Internal;
@@ -39,6 +40,9 @@ namespace Fixie
 
         public bool Has<TAttribute>([NotNullWhen(true)] out TAttribute? matchingAttribute) where TAttribute : Attribute
             => Method.Has(out matchingAttribute);
+
+        public TAttribute[] GetAll<TAttribute>() where TAttribute : Attribute
+            => Method.GetCustomAttributes<TAttribute>(true).ToArray();
 
         async Task<CaseCompleted> RunCoreAsync(object? instance, object?[] parameters)
         {

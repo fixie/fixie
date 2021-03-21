@@ -198,7 +198,7 @@
 
         static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(Test test)
         {
-            var attributes = test.Method.GetCustomAttributes<InputAttribute>(true).ToArray();
+            var attributes = test.GetAll<InputAttribute>();
 
             if (attributes.Any())
             {

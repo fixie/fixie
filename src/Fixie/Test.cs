@@ -34,8 +34,8 @@ namespace Fixie
         /// <summary>
         /// Gets the parameters of the test.
         /// </summary>
-        public ParameterInfo[] Parameters => parameters ??= Method.GetParameters();
-        ParameterInfo[]? parameters;
+        public ParameterInfo[] Parameters => cachedParameters ??= Method.GetParameters();
+        ParameterInfo[]? cachedParameters;
 
         /// <summary>
         /// Determines whether the test is parameterized.

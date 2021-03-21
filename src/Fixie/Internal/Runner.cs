@@ -28,14 +28,7 @@
         {
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
 
-            try
-            {
-                await DiscoverAsync(assembly.GetTypes(), discovery);
-            }
-            finally
-            {
-                await discovery.DisposeIfApplicableAsync();
-            }
+            await DiscoverAsync(assembly.GetTypes(), discovery);
         }
 
         public Task<ExecutionSummary> RunAsync()
@@ -53,13 +46,11 @@
             var matchingTests = ImmutableHashSet<string>.Empty;
             var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
 
-            try
-            {
-                var candidateTypes = assembly.GetTypes();
-                var classDiscoverer = new ClassDiscoverer(discovery);
-                var classes = classDiscoverer.TestClasses(candidateTypes);
-                var methodDiscoverer = new MethodDiscoverer(discovery);
-                foreach (var testClass in classes)
+            var candidateTypes = assembly.GetTypes();
+            var classDiscoverer = new ClassDiscoverer(discovery);
+            var classes = classDiscoverer.TestClasses(candidateTypes);
+            var methodDiscoverer = new MethodDiscoverer(discovery);
+            foreach (var testClass in classes)
                 foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
                 {
                     var test = testMethod.TestName();
@@ -67,11 +58,6 @@
                     if (testPattern.Matches(test))
                         matchingTests = matchingTests.Add(test);
                 }
-            }
-            finally
-            {
-                await discovery.DisposeIfApplicableAsync();
-            }
 
             return await RunAsync(matchingTests);
         }
@@ -81,17 +67,7 @@
             new BehaviorDiscoverer(assembly, customArguments)
                 .GetBehaviors(out var discovery, out var execution);
 
-            try
-            {
-                return await RunAsync(candidateTypes, discovery, execution, selectedTests);
-            }
-            finally
-            {
-                if (execution != discovery)
-                    await execution.DisposeIfApplicableAsync();
-
-                await discovery.DisposeIfApplicableAsync();
-            }
+            return await RunAsync(candidateTypes, discovery, execution, selectedTests);
         }
 
         internal async Task DiscoverAsync(IReadOnlyList<Type> candidateTypes, Discovery discovery)

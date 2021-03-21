@@ -13,9 +13,9 @@
 
     class AppVeyorReport :
         Handler<AssemblyStarted>,
-        AsyncHandler<CaseSkipped>,
-        AsyncHandler<CasePassed>,
-        AsyncHandler<CaseFailed>
+        AsyncHandler<TestSkipped>,
+        AsyncHandler<TestPassed>,
+        AsyncHandler<TestFailed>
     {
         public delegate Task PostAction(string uri, TestResult testResult);
 
@@ -62,7 +62,7 @@
                 runName = $"{runName} ({framework})";
         }
 
-        public async Task HandleAsync(CaseSkipped message)
+        public async Task HandleAsync(TestSkipped message)
         {
             await PostAsync(new TestResult(runName, message, "Skipped")
             {
@@ -70,12 +70,12 @@
             });
         }
 
-        public async Task HandleAsync(CasePassed message)
+        public async Task HandleAsync(TestPassed message)
         {
             await PostAsync(new TestResult(runName, message, "Passed"));
         }
 
-        public async Task HandleAsync(CaseFailed message)
+        public async Task HandleAsync(TestFailed message)
         {
             await PostAsync(new TestResult(runName, message, "Failed")
             {
@@ -101,7 +101,7 @@
 
         public class TestResult
         {
-            public TestResult(string runName, CaseCompleted message, string outcome)
+            public TestResult(string runName, TestCompleted message, string outcome)
             {
                 TestFramework = "Fixie";
                 FileName = runName;

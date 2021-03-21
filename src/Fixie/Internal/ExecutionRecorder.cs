@@ -39,18 +39,18 @@
         {
             var duration = caseStopwatch.Elapsed;
 
-            var message = new CaseSkipped(@case, duration, output, reason);
+            var message = new TestSkipped(@case, duration, output, reason);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 
             caseStopwatch.Restart();
         }
 
-        public async Task<CasePassed> PassAsync(Case @case, string output)
+        public async Task<TestPassed> PassAsync(Case @case, string output)
         {
             var duration = caseStopwatch.Elapsed;
 
-            var message = new CasePassed(@case, duration, output);
+            var message = new TestPassed(@case, duration, output);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 
@@ -59,11 +59,11 @@
             return message;
         }
 
-        public async Task<CaseFailed> FailAsync(Case @case, string output, Exception reason)
+        public async Task<TestFailed> FailAsync(Case @case, string output, Exception reason)
         {
             var duration = caseStopwatch.Elapsed;
 
-            var message = new CaseFailed(@case, duration, output, reason);
+            var message = new TestFailed(@case, duration, output, reason);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 

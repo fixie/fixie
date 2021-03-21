@@ -8,9 +8,9 @@
 
     class ExecutionReport :
         Handler<TestStarted>,
-        Handler<CaseSkipped>,
-        Handler<CasePassed>,
-        Handler<CaseFailed>
+        Handler<TestSkipped>,
+        Handler<TestPassed>,
+        Handler<TestFailed>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
@@ -28,7 +28,7 @@
             log.RecordStart(testCase);
         }
 
-        public void Handle(CaseSkipped message)
+        public void Handle(TestSkipped message)
         {
             Record(message, x =>
             {
@@ -37,7 +37,7 @@
             });
         }
 
-        public void Handle(CasePassed message)
+        public void Handle(TestPassed message)
         {
             Record(message, x =>
             {
@@ -45,7 +45,7 @@
             });
         }
 
-        public void Handle(CaseFailed message)
+        public void Handle(TestFailed message)
         {
             Record(message, x =>
             {
@@ -57,7 +57,7 @@
             });
         }
 
-        void Record(CaseCompleted result, Action<TestResult> customize)
+        void Record(TestCompleted result, Action<TestResult> customize)
         {
             var testCase = ToVsTestCase(result.Test);
 

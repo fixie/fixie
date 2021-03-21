@@ -3,9 +3,9 @@ namespace Fixie.Reports
     using System;
     using Internal;
 
-    public abstract class CaseCompleted : Message
+    public abstract class TestCompleted : Message
     {
-        internal CaseCompleted(Case @case, TimeSpan duration, string output)
+        internal TestCompleted(Case @case, TimeSpan duration, string output)
         {
             Test = @case.Test.Name;
             Name = @case.Name;

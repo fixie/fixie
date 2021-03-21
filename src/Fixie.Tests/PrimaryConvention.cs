@@ -21,7 +21,7 @@
             {
                 var result = await test.RunAsync();
 
-                if (result is CaseFailed failure)
+                if (result is TestFailed failure)
                 {
                     failures++;
 

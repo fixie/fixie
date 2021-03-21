@@ -63,7 +63,7 @@
 
         public async Task CanOptionallyIncludePassingResults()
         {
-            var report = new ConsoleReport(outputCasePassed: true);
+            var report = new ConsoleReport(outputTestPassed: true);
 
             var output = await RunAsync(report);
 

@@ -205,7 +205,7 @@ namespace Fixie.Tests
                         {
                             var result = await test.RunAsync(parameters);
 
-                            if (result is CaseFailed)
+                            if (result is TestFailed)
                             {
                                 failures++;
 

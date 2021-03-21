@@ -8,9 +8,9 @@
 
     class TeamCityReport :
         Handler<AssemblyStarted>,
-        Handler<CaseSkipped>,
-        Handler<CasePassed>,
-        Handler<CaseFailed>,
+        Handler<TestSkipped>,
+        Handler<TestPassed>,
+        Handler<TestFailed>,
         Handler<AssemblyCompleted>
     {
         internal static TeamCityReport? Create()
@@ -26,7 +26,7 @@
             Message("testSuiteStarted name='{0}'", message.Assembly.GetName().Name);
         }
 
-        public void Handle(CaseSkipped message)
+        public void Handle(TestSkipped message)
         {
             TestStarted(message);
             Output(message);
@@ -34,14 +34,14 @@
             TestFinished(message);
         }
 
-        public void Handle(CasePassed message)
+        public void Handle(TestPassed message)
         {
             TestStarted(message);
             Output(message);
             TestFinished(message);
         }
 
-        public void Handle(CaseFailed message)
+        public void Handle(TestFailed message)
         {
             var details =
                 message.Exception.GetType().FullName +
@@ -59,12 +59,12 @@
             Message("testSuiteFinished name='{0}'", message.Assembly.GetName().Name);
         }
 
-        static void TestStarted(CaseCompleted message)
+        static void TestStarted(TestCompleted message)
         {
             Message("testStarted name='{0}'", message.Name);
         }
 
-        static void TestFinished(CaseCompleted message)
+        static void TestFinished(TestCompleted message)
         {
             Message("testFinished name='{0}' duration='{1}'", message.Name, $"{message.Duration.TotalMilliseconds:0}");
         }
@@ -75,7 +75,7 @@
             Console.WriteLine("##teamcity[" + format + "]", encodedArgs);
         }
 
-        static void Output(CaseCompleted message)
+        static void Output(TestCompleted message)
         {
             if (!string.IsNullOrEmpty(message.Output))
                 Message("testStdOut name='{0}' out='{1}'", message.Name, message.Output);

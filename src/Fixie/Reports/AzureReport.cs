@@ -20,9 +20,9 @@
 
     class AzureReport :
         AsyncHandler<AssemblyStarted>,
-        AsyncHandler<CaseSkipped>,
-        AsyncHandler<CasePassed>,
-        AsyncHandler<CaseFailed>,
+        AsyncHandler<TestSkipped>,
+        AsyncHandler<TestPassed>,
+        AsyncHandler<TestFailed>,
         AsyncHandler<AssemblyCompleted>
     {
         const string AzureDevOpsRestApiVersion = "5.0";
@@ -151,7 +151,7 @@
             runUrl = Deserialize<TestRun>(response).url;
         }
 
-        public async Task HandleAsync(CaseSkipped message)
+        public async Task HandleAsync(TestSkipped message)
         {
             if (apiUnavailable) return;
 
@@ -161,14 +161,14 @@
             });
         }
 
-        public async Task HandleAsync(CasePassed message)
+        public async Task HandleAsync(TestPassed message)
         {
             if (apiUnavailable) return;
 
             await IncludeAsync(new Result(message, "Passed"));
         }
 
-        public async Task HandleAsync(CaseFailed message)
+        public async Task HandleAsync(TestFailed message)
         {
             if (apiUnavailable) return;
 
@@ -296,7 +296,7 @@
 
         public class Result
         {
-            public Result(CaseCompleted message, string outcome)
+            public Result(TestCompleted message, string outcome)
             {
                 automatedTestName = message.Name;
                 testCaseTitle = message.Name;

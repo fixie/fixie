@@ -3,9 +3,9 @@
     using System;
     using Internal;
 
-    public class CasePassed : CaseCompleted
+    public class TestPassed : TestCompleted
     {
-        internal CasePassed(Case @case, TimeSpan duration, string output)
+        internal TestPassed(Case @case, TimeSpan duration, string output)
             : base(@case, duration, output)
         {
         }

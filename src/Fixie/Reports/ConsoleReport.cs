@@ -6,21 +6,21 @@
     using static System.Environment;
 
     class ConsoleReport :
-        Handler<CaseSkipped>,
-        Handler<CasePassed>,
-        Handler<CaseFailed>,
+        Handler<TestSkipped>,
+        Handler<TestPassed>,
+        Handler<TestFailed>,
         Handler<AssemblyCompleted>
     {
-        readonly bool outputCasePassed;
+        readonly bool outputTestPassed;
         bool paddingWouldRequireOpeningBlankLine;
 
         internal static ConsoleReport Create()
             => new ConsoleReport(GetEnvironmentVariable("FIXIE:TESTS") != null);
 
-        public ConsoleReport(bool outputCasePassed = false)
-            => this.outputCasePassed = outputCasePassed;
+        public ConsoleReport(bool outputTestPassed = false)
+            => this.outputTestPassed = outputTestPassed;
 
-        public void Handle(CaseSkipped message)
+        public void Handle(TestSkipped message)
         {
             var hasReason = message.Reason != null;
 
@@ -34,9 +34,9 @@
             });
         }
 
-        public void Handle(CasePassed message)
+        public void Handle(TestPassed message)
         {
-            if (outputCasePassed)
+            if (outputTestPassed)
             {
                 WithoutPadding(() =>
                 {
@@ -46,7 +46,7 @@
             }
         }
 
-        public void Handle(CaseFailed message)
+        public void Handle(TestFailed message)
         {
             WithPadding(() =>
             {

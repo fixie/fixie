@@ -9,9 +9,9 @@
     using static System.Environment;
 
     class XmlReport :
-        Handler<CaseSkipped>,
-        Handler<CasePassed>,
-        Handler<CaseFailed>,
+        Handler<TestSkipped>,
+        Handler<TestPassed>,
+        Handler<TestFailed>,
         Handler<AssemblyCompleted>
     {
         readonly Action<XDocument> save;
@@ -43,16 +43,16 @@
             this.save = save;
         }
 
-        public void Handle(CaseSkipped message)
+        public void Handle(TestSkipped message)
             => ForClass(message).Add(message);
 
-        public void Handle(CasePassed message)
+        public void Handle(TestPassed message)
             => ForClass(message).Add(message);
 
-        public void Handle(CaseFailed message)
+        public void Handle(TestFailed message)
             => ForClass(message).Add(message);
 
-        ClassResult ForClass(CaseCompleted message)
+        ClassResult ForClass(TestCompleted message)
         {
             Parse(message.Test, out var type, out _);
 
@@ -115,7 +115,7 @@
 
             public ClassResult(string name) => this.name = name;
             
-            public void Add(CaseSkipped message)
+            public void Add(TestSkipped message)
             {
                 duration += message.Duration;
                 summary.Add(message);
@@ -135,7 +135,7 @@
                 results.Add(test);
             }
 
-            public void Add(CasePassed message)
+            public void Add(TestPassed message)
             {
                 duration += message.Duration;
                 summary.Add(message);
@@ -151,7 +151,7 @@
                         new XAttribute("time", Seconds(message.Duration))));
             }
 
-            public void Add(CaseFailed message)
+            public void Add(TestFailed message)
             {
                 duration += message.Duration;
                 summary.Add(message);

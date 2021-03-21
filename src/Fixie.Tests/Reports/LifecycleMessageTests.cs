@@ -11,7 +11,7 @@
         public async Task ShouldDescribeTestLifecycleMessagesEmittedDuringExecution()
         {
             var assembly = typeof(LifecycleMessageTests).Assembly;
-            var report = new StubCaseCompletedReport();
+            var report = new StubTestCompletedReport();
 
             await RunAsync(report);
 
@@ -19,17 +19,17 @@
             
             var assemblyStarted = (AssemblyStarted)report.Messages[0];
             var failStarted = (TestStarted)report.Messages[1];
-            var fail = (CaseFailed)report.Messages[2];
+            var fail = (TestFailed)report.Messages[2];
             var failByAssertionStarted = (TestStarted)report.Messages[3];
-            var failByAssertion = (CaseFailed)report.Messages[4];
+            var failByAssertion = (TestFailed)report.Messages[4];
             var passStarted = (TestStarted)report.Messages[5];
-            var pass = (CasePassed)report.Messages[6];
-            var skipWithReason = (CaseSkipped)report.Messages[7];
-            var skipWithoutReason = (CaseSkipped)report.Messages[8];
+            var pass = (TestPassed)report.Messages[6];
+            var skipWithReason = (TestSkipped)report.Messages[7];
+            var skipWithoutReason = (TestSkipped)report.Messages[8];
             var shouldBeStringPassStarted = (TestStarted)report.Messages[9];
-            var shouldBeStringPass = (CasePassed)report.Messages[10];
+            var shouldBeStringPass = (TestPassed)report.Messages[10];
             var shouldBeStringFailStarted = (TestStarted)report.Messages[11];
-            var shouldBeStringFail = (CaseFailed)report.Messages[12];
+            var shouldBeStringFail = (TestFailed)report.Messages[12];
             var assemblyCompleted = (AssemblyCompleted)report.Messages[13];
 
             assemblyStarted.Assembly.ShouldBe(assembly);
@@ -106,17 +106,17 @@
             assemblyCompleted.Assembly.ShouldBe(assembly);
         }
 
-        public class StubCaseCompletedReport :
+        public class StubTestCompletedReport :
             Handler<AssemblyStarted>,
             Handler<TestStarted>,
-            Handler<CaseCompleted>,
+            Handler<TestCompleted>,
             Handler<AssemblyCompleted>
         {
             public List<object> Messages { get; } = new List<object>();
 
             public void Handle(AssemblyStarted message) => Messages.Add(message);
             public void Handle(TestStarted message) => Messages.Add(message);
-            public void Handle(CaseCompleted message) => Messages.Add(message);
+            public void Handle(TestCompleted message) => Messages.Add(message);
             public void Handle(AssemblyCompleted message) => Messages.Add(message);
         }
     }

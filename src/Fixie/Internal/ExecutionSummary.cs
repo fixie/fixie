@@ -16,8 +16,8 @@
         public int Skipped { get; private set; }
         public int Total => Passed + Failed + Skipped;
 
-        public void Add(CaseSkipped message) => Skipped += 1;
-        public void Add(CasePassed message) => Passed += 1;
-        public void Add(CaseFailed message) => Failed += 1;
+        public void Add(TestSkipped message) => Skipped += 1;
+        public void Add(TestPassed message) => Passed += 1;
+        public void Add(TestFailed message) => Failed += 1;
     }
 }

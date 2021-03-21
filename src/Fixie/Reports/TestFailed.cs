@@ -3,9 +3,9 @@
     using System;
     using Internal;
 
-    public class CaseFailed : CaseCompleted
+    public class TestFailed : TestCompleted
     {
-        internal CaseFailed(Case @case, TimeSpan duration, string output, Exception exception)
+        internal TestFailed(Case @case, TimeSpan duration, string output, Exception exception)
             : base(@case, duration, output)
         {
             Exception = exception;

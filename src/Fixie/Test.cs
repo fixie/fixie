@@ -150,7 +150,7 @@ namespace Fixie
             var @case = new Case(this, parameters);
             Exception? failureReason = null;
 
-            await recorder.StartAsync(@case);
+            await recorder.StartAsync(this);
 
             string output;
             using (var console = new RedirectedConsole())

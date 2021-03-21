@@ -18,17 +18,17 @@
             report.Messages.Count.ShouldBe(14);
             
             var assemblyStarted = (AssemblyStarted)report.Messages[0];
-            var failStarted = (CaseStarted)report.Messages[1];
+            var failStarted = (TestStarted)report.Messages[1];
             var fail = (CaseFailed)report.Messages[2];
-            var failByAssertionStarted = (CaseStarted)report.Messages[3];
+            var failByAssertionStarted = (TestStarted)report.Messages[3];
             var failByAssertion = (CaseFailed)report.Messages[4];
-            var passStarted = (CaseStarted)report.Messages[5];
+            var passStarted = (TestStarted)report.Messages[5];
             var pass = (CasePassed)report.Messages[6];
             var skipWithReason = (CaseSkipped)report.Messages[7];
             var skipWithoutReason = (CaseSkipped)report.Messages[8];
-            var shouldBeStringPassStarted = (CaseStarted)report.Messages[9];
+            var shouldBeStringPassStarted = (TestStarted)report.Messages[9];
             var shouldBeStringPass = (CasePassed)report.Messages[10];
-            var shouldBeStringFailStarted = (CaseStarted)report.Messages[11];
+            var shouldBeStringFailStarted = (TestStarted)report.Messages[11];
             var shouldBeStringFail = (CaseFailed)report.Messages[12];
             var assemblyCompleted = (AssemblyCompleted)report.Messages[13];
 
@@ -108,14 +108,14 @@
 
         public class StubCaseCompletedReport :
             Handler<AssemblyStarted>,
-            Handler<CaseStarted>,
+            Handler<TestStarted>,
             Handler<CaseCompleted>,
             Handler<AssemblyCompleted>
         {
             public List<object> Messages { get; } = new List<object>();
 
             public void Handle(AssemblyStarted message) => Messages.Add(message);
-            public void Handle(CaseStarted message) => Messages.Add(message);
+            public void Handle(TestStarted message) => Messages.Add(message);
             public void Handle(CaseCompleted message) => Messages.Add(message);
             public void Handle(AssemblyCompleted message) => Messages.Add(message);
         }

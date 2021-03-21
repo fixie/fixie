@@ -30,9 +30,9 @@
             caseStopwatch.Restart();
         }
 
-        public async Task StartAsync(Case @case)
+        public async Task StartAsync(Test test)
         {
-            await bus.PublishAsync(new CaseStarted(@case));
+            await bus.PublishAsync(new TestStarted(test));
         }
 
         public async Task SkipAsync(Case @case, string output, string? reason)

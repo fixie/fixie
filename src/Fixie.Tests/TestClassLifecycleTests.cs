@@ -99,7 +99,7 @@ namespace Fixie.Tests
                     ClassSetUp();
 
                     foreach (var test in testClass.Tests)
-                        if (!test.Method.Name.Contains("Skip"))
+                        if (!test.Name.Contains("Skip"))
                             await TestLifecycleAsync(test);
 
                     ClassTearDown();
@@ -175,7 +175,7 @@ namespace Fixie.Tests
             {
                 foreach (var test in testAssembly.Tests)
                 {
-                    if (test.Method.Name.Contains("Skip")) continue;
+                    if (test.Name.Contains("Skip")) continue;
 
                     for (int i = 1; i <= 3; i++)
                         foreach (var parameters in FromInputAttributes(test))
@@ -197,7 +197,7 @@ namespace Fixie.Tests
 
                 foreach (var test in testAssembly.Tests)
                 {
-                    if (test.Method.Name.Contains("Skip")) continue;
+                    if (test.Name.Contains("Skip")) continue;
 
                     for (int i = 1; i <= 3; i++)
                     {

@@ -2,6 +2,7 @@ namespace Fixie
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
     using Internal;
@@ -18,12 +19,17 @@ namespace Fixie
         {
             this.recorder = recorder;
             this.classIsDisposable = classIsDisposable;
+            Name = method.TestName();
             Method = method;
             RecordedResult = false;
         }
 
-        bool? hasParameters;
-        public bool HasParameters => hasParameters ??= Method.GetParameters().Length > 0;
+        public string Name { get; }
+
+        ParameterInfo[]? parameters;
+        public ParameterInfo[] Parameters => parameters ??= Method.GetParameters();
+
+        public bool HasParameters => Parameters.Length > 0;
 
         public MethodInfo Method { get; }
 
@@ -35,9 +41,12 @@ namespace Fixie
         public bool Has<TAttribute>([NotNullWhen(true)] out TAttribute? matchingAttribute) where TAttribute : Attribute
             => Method.Has(out matchingAttribute);
 
+        public TAttribute[] GetAll<TAttribute>() where TAttribute : Attribute
+            => Method.GetCustomAttributes<TAttribute>(true).ToArray();
+
         async Task<CaseCompleted> RunCoreAsync(object? instance, object?[] parameters)
         {
-            var @case = new Case(Method, parameters);
+            var @case = new Case(this, parameters);
             Exception? failureReason = null;
 
             await recorder.StartAsync(@case);
@@ -113,7 +122,7 @@ namespace Fixie
         /// </summary>
         public async Task SkipAsync(object?[] parameters, string? reason)
         {
-            var @case = new Case(Method, parameters);
+            var @case = new Case(this, parameters);
             await recorder.SkipAsync(@case, "", reason);
 
             RecordedResult = true;
@@ -138,7 +147,7 @@ namespace Fixie
             if (reason is PreservedException preservedException)
                 reason = preservedException.OriginalException;
 
-            var @case = new Case(Method, parameters);
+            var @case = new Case(this, parameters);
 
             await recorder.FailAsync(@case, "", reason);
 

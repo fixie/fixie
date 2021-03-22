@@ -46,7 +46,7 @@
             caseStopwatch.Restart();
         }
 
-        public async Task<TestPassed> PassAsync(Case @case, string output)
+        public async Task PassAsync(Case @case, string output)
         {
             var duration = caseStopwatch.Elapsed;
 
@@ -55,11 +55,9 @@
             await bus.PublishAsync(message);
 
             caseStopwatch.Restart();
-
-            return message;
         }
 
-        public async Task<TestFailed> FailAsync(Case @case, string output, Exception reason)
+        public async Task FailAsync(Case @case, string output, Exception reason)
         {
             var duration = caseStopwatch.Elapsed;
 
@@ -68,8 +66,6 @@
             await bus.PublishAsync(message);
 
             caseStopwatch.Restart();
-
-            return message;
         }
 
         public async Task<ExecutionSummary> CompleteAsync(TestAssembly testAssembly)

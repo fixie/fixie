@@ -4,7 +4,6 @@ namespace Fixie.Tests
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fixie.Internal;
-    using Fixie.Reports;
     using static Utility;
 
     public class TestClassLifecycleTests : InstrumentedExecutionTests
@@ -205,7 +204,7 @@ namespace Fixie.Tests
                         {
                             var result = await test.RunAsync(parameters);
 
-                            if (result is TestFailed)
+                            if (result is Failed)
                             {
                                 failures++;
 

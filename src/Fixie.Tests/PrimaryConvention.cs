@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Assertions;
-    using Fixie.Reports;
     using static System.Environment;
     using static Fixie.Internal.Maybe;
 
@@ -21,7 +20,7 @@
             {
                 var result = await test.RunAsync();
 
-                if (result is TestFailed failure)
+                if (result is Failed failure)
                 {
                     failures++;
 

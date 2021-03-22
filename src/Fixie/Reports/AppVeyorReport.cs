@@ -17,7 +17,7 @@
         AsyncHandler<TestPassed>,
         AsyncHandler<TestFailed>
     {
-        public delegate Task PostAction(string uri, TestResult testResult);
+        public delegate Task PostAction(string uri, Result result);
 
         readonly PostAction postActionAsync;
         readonly string uri;
@@ -64,7 +64,7 @@
 
         public async Task HandleAsync(TestSkipped message)
         {
-            await PostAsync(new TestResult(runName, message, "Skipped")
+            await PostAsync(new Result(runName, message, "Skipped")
             {
                 ErrorMessage = message.Reason
             });
@@ -72,12 +72,12 @@
 
         public async Task HandleAsync(TestPassed message)
         {
-            await PostAsync(new TestResult(runName, message, "Passed"));
+            await PostAsync(new Result(runName, message, "Passed"));
         }
 
         public async Task HandleAsync(TestFailed message)
         {
-            await PostAsync(new TestResult(runName, message, "Failed")
+            await PostAsync(new Result(runName, message, "Failed")
             {
                 ErrorMessage = message.Reason.Message,
                 ErrorStackTrace =
@@ -87,21 +87,21 @@
             });
         }
 
-        async Task PostAsync(TestResult testResult)
+        async Task PostAsync(Result result)
         {
-            await postActionAsync(uri, testResult);
+            await postActionAsync(uri, result);
         }
 
-        static async Task PostAsync(string uri, TestResult testResult)
+        static async Task PostAsync(string uri, Result result)
         {
-            var content = Serialize(testResult);
+            var content = Serialize(result);
             var response = await Client.PostAsync(uri, new StringContent(content, Encoding.UTF8, "application/json"));
             response.EnsureSuccessStatusCode();
         }
 
-        public class TestResult
+        public class Result
         {
-            public TestResult(string runName, TestCompleted message, string outcome)
+            public Result(string runName, TestCompleted message, string outcome)
             {
                 TestFramework = "Fixie";
                 FileName = runName;

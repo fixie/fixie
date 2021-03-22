@@ -9,7 +9,7 @@
     {
         public async Task ShouldReportResultsToAppVeyorBuildWorkerApi()
         {
-            var results = new List<AppVeyorReport.TestResult>();
+            var results = new List<AppVeyorReport.Result>();
 
             var report = new AppVeyorReport("http://localhost:4567", (uri, content) =>
             {

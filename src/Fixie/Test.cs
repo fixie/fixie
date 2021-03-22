@@ -6,7 +6,6 @@ namespace Fixie
     using System.Reflection;
     using System.Threading.Tasks;
     using Internal;
-    using Reports;
 
     public class Test
     {
@@ -69,7 +68,7 @@ namespace Fixie
         /// Runs the test. The test will be run against a new instance of the test class, using
         /// its default constructor.
         /// </summary> 
-        public Task<TestCompleted> RunAsync()
+        public Task<TestResult> RunAsync()
         {
             return RunCoreAsync(instance: null, EmptyParameters);
         }
@@ -78,7 +77,7 @@ namespace Fixie
         /// Runs the test, using the given input parameters. The test will be run against a new
         /// instance of the test class, using its default constructor.
         /// </summary>
-        public Task<TestCompleted> RunAsync(object?[] parameters)
+        public Task<TestResult> RunAsync(object?[] parameters)
         {
             return RunCoreAsync(instance: null, parameters);
         }
@@ -86,7 +85,7 @@ namespace Fixie
         /// <summary>
         /// Runs the test against the given test class instance.
         /// </summary>
-        public Task<TestCompleted> RunAsync(object? instance)
+        public Task<TestResult> RunAsync(object? instance)
         {
             return RunCoreAsync(instance, EmptyParameters);
         }
@@ -95,7 +94,7 @@ namespace Fixie
         /// Runs the test against the given test class instance, using
         /// the given input parameters.
         /// </summary>
-        public Task<TestCompleted> RunAsync(object? instance, object?[] parameters)
+        public Task<TestResult> RunAsync(object? instance, object?[] parameters)
         {
             return RunCoreAsync(instance, parameters);
         }
@@ -145,7 +144,7 @@ namespace Fixie
             RecordedResult = true;
         }
 
-        async Task<TestCompleted> RunCoreAsync(object? instance, object?[] parameters)
+        async Task<TestResult> RunCoreAsync(object? instance, object?[] parameters)
         {
             var @case = new Case(this, parameters);
             Exception? failureReason = null;
@@ -175,14 +174,16 @@ namespace Fixie
 
             Console.Write(output);
 
-            TestCompleted? result = null;
+            TestResult? result;
             if (failureReason != null)
             {
-                result = await recorder.FailAsync(@case, output, failureReason);
+                await recorder.FailAsync(@case, output, failureReason);
+                result = TestResult.Failed(failureReason);
             }
             else
             {
-                result = await recorder.PassAsync(@case, output);
+                await recorder.PassAsync(@case, output);
+                result = TestResult.Passed;
             }
 
             RecordedResult = true;

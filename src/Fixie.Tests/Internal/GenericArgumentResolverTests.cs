@@ -242,8 +242,7 @@
             var testMethod = testClass.GetInstanceMethod(methodName);
 
             var recordNothing = new ExecutionRecorder(new Bus(new Report[] { }));
-            var classIsDisposable = false;
-            var test = new Test(recordNothing, classIsDisposable, testMethod);
+            var test = new Test(recordNothing, testMethod);
 
             return new Case(test, parameters).Method.GetGenericArguments();
         }

@@ -229,8 +229,7 @@
             var caseMethod = typeof(TTestClass).GetInstanceMethod(methodName);
             
             var recordNothing = new ExecutionRecorder(new Bus(new Report[] { }));
-            var classIsDisposable = false;
-            var test = new Test(recordNothing, classIsDisposable, caseMethod);
+            var test = new Test(recordNothing, caseMethod);
 
             return new Case(test, parameters);
         }

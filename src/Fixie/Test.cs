@@ -12,12 +12,10 @@ namespace Fixie
         static readonly object[] EmptyParameters = {};
 
         readonly ExecutionRecorder recorder;
-        readonly bool classIsDisposable;
 
-        internal Test(ExecutionRecorder recorder, bool classIsDisposable, MethodInfo method)
+        internal Test(ExecutionRecorder recorder, MethodInfo method)
         {
             this.recorder = recorder;
-            this.classIsDisposable = classIsDisposable;
             Name = method.TestName();
             Method = method;
             RecordedResult = false;
@@ -191,11 +189,8 @@ namespace Fixie
             return result;
         }
 
-        object? Construct(Type testClass)
+        static object? Construct(Type testClass)
         {
-            if (classIsDisposable)
-                FailDueToDisposalMisuse(testClass);
-
             try
             {
                 return Activator.CreateInstance(testClass);
@@ -204,16 +199,6 @@ namespace Fixie
             {
                 throw new PreservedException(exception);
             }
-        }
-
-        static void FailDueToDisposalMisuse(Type testClass)
-        {
-            throw new Exception(
-                $"Test class {testClass} is declared as disposable, which is firmly discouraged " +
-                "for test tear-down purposes. Test class disposal is not supported when the test " +
-                "runner is constructing test class instances implicitly. If you wish to use " +
-                "IDisposable or IDisposableAsync for test class tear down, perform construction " +
-                "and disposal explicitly in an implementation of Execution.RunAsync(...).");
         }
     }
 }

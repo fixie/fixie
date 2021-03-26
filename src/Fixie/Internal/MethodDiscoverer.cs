@@ -18,7 +18,7 @@
             {
                 return discovery.TestMethods(
                         testClass
-                            .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
+                            .GetMethods()
                             .Where(method => method.DeclaringType != typeof(object)))
                     .ToList();
             }

@@ -112,9 +112,8 @@
 
                 if (methods.Count > 0)
                 {
-                    var classIsDisposable = IsDisposable(@class);
                     var testMethods = methods
-                        .Select(method => new Test(recorder, classIsDisposable, method))
+                        .Select(method => new Test(recorder, method))
                         .ToList();
 
                     testClasses.Add(new TestClass(@class, testMethods));
@@ -152,8 +151,5 @@
                     await test.SkipAsync("This test did not run.");
             }
         }
-
-        static bool IsDisposable(Type @class)
-            => @class.GetInterfaces().Any(x => x == typeof(IAsyncDisposable) || x == typeof(IDisposable));
     }
 }

@@ -44,7 +44,26 @@
             }
         }
 
-        public void ShouldConsiderOnlyPublicMethods()
+        public void ShouldDiscoverOnlyPublicInstanceMethodsByDefault()
+        {
+            var discovery = new DefaultDiscovery();
+
+            DiscoveredTestMethods<Sample>(discovery)
+                .ShouldBe(
+                    "PublicInstanceNoArgsVoid()",
+                    "PublicInstanceNoArgsWithReturn()",
+                    "PublicInstanceWithArgsVoid(x)",
+                    "PublicInstanceWithArgsWithReturn(x)");
+
+            DiscoveredTestMethods<AsyncSample>(discovery)
+                .ShouldBe(
+                    "PublicInstanceNoArgsVoid()",
+                    "PublicInstanceNoArgsWithReturn()",
+                    "PublicInstanceWithArgsVoid(x)",
+                    "PublicInstanceWithArgsWithReturn(x)");
+        }
+
+        public void ShouldSupportMaximalDiscoveryOfAllPublicMethods()
         {
             var discovery = new MaximumDiscovery();
 
@@ -79,35 +98,6 @@
 
             DiscoveredTestMethods<Sample>(discovery)
                 .ShouldBe("PublicInstanceNoArgsVoid()");
-        }
-
-        public void TheDefaultDiscoveryShouldDiscoverPublicMethods()
-        {
-            var discovery = new DefaultDiscovery();
-
-            DiscoveredTestMethods<Sample>(discovery)
-                .ShouldBe(
-                    "PublicInstanceNoArgsVoid()",
-                    "PublicInstanceNoArgsWithReturn()",
-                    "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)",
-
-                    "PublicStaticNoArgsVoid()",
-                    "PublicStaticNoArgsWithReturn()",
-                    "PublicStaticWithArgsVoid(x)",
-                    "PublicStaticWithArgsWithReturn(x)");
-
-            DiscoveredTestMethods<AsyncSample>(discovery)
-                .ShouldBe(
-                    "PublicInstanceNoArgsVoid()",
-                    "PublicInstanceNoArgsWithReturn()",
-                    "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)",
-
-                    "PublicStaticNoArgsVoid()",
-                    "PublicStaticNoArgsWithReturn()",
-                    "PublicStaticWithArgsVoid(x)",
-                    "PublicStaticWithArgsWithReturn(x)");
         }
 
         public void ShouldFailWithClearExplanationWhenDiscoveryThrows()

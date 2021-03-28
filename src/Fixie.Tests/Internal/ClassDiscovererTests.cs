@@ -65,8 +65,17 @@
             public Task RunAsync(TestAssembly testAssembly)
                 => Task.CompletedTask;
         }
-        
-        public void ShouldConsiderOnlyConcreteClasses()
+
+        public void ShouldDiscoverClassesWhoseNameEndsWithTestsByDefault()
+        {
+            var discovery = new DefaultDiscovery();
+
+            DiscoveredTestClasses(discovery)
+                .ShouldBe(
+                    typeof(NameEndsWithTests));
+        }
+
+        public void ShouldSupportMaximalDiscoveryOfConcreteClasses()
         {
             var discovery = new MaximumDiscovery();
 
@@ -132,15 +141,6 @@
                     typeof(NameEndsWithTests),
                     typeof(InheritanceSampleBase),
                     typeof(InheritanceSample));
-        }
-
-        public void TheDefaultDiscoveryShouldDiscoverClassesWhoseNameEndsWithTests()
-        {
-            var discovery = new DefaultDiscovery();
-
-            DiscoveredTestClasses(discovery)
-                .ShouldBe(
-                    typeof(NameEndsWithTests));
         }
 
         public void ShouldFailWithClearExplanationWhenDiscoveryThrows()

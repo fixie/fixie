@@ -44,7 +44,7 @@
             }
         }
 
-        public void ShouldConsiderOnlyPublicMethods()
+        public void ShouldSupportMaximalDiscoveryOfAllPublicMethods()
         {
             var discovery = new MaximumDiscovery();
 
@@ -81,7 +81,7 @@
                 .ShouldBe("PublicInstanceNoArgsVoid()");
         }
 
-        public void TheDefaultDiscoveryShouldDiscoverPublicMethods()
+        public void ShouldDiscoverOnlyPublicInstanceMethodsByDefault()
         {
             var discovery = new DefaultDiscovery();
 
@@ -90,24 +90,14 @@
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
                     "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)",
-
-                    "PublicStaticNoArgsVoid()",
-                    "PublicStaticNoArgsWithReturn()",
-                    "PublicStaticWithArgsVoid(x)",
-                    "PublicStaticWithArgsWithReturn(x)");
+                    "PublicInstanceWithArgsWithReturn(x)");
 
             DiscoveredTestMethods<AsyncSample>(discovery)
                 .ShouldBe(
                     "PublicInstanceNoArgsVoid()",
                     "PublicInstanceNoArgsWithReturn()",
                     "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)",
-
-                    "PublicStaticNoArgsVoid()",
-                    "PublicStaticNoArgsWithReturn()",
-                    "PublicStaticWithArgsVoid(x)",
-                    "PublicStaticWithArgsWithReturn(x)");
+                    "PublicInstanceWithArgsWithReturn(x)");
         }
 
         public void ShouldFailWithClearExplanationWhenDiscoveryThrows()

@@ -11,6 +11,6 @@
             => concreteClasses.Where(x => x.Name.EndsWith("Tests"));
 
         public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
-            => publicMethods;
+            => publicMethods.Where(x => !x.IsStatic);
     }
 }

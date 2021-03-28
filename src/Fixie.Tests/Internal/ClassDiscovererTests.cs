@@ -66,7 +66,7 @@
                 => Task.CompletedTask;
         }
 
-        public void TheDefaultDiscoveryShouldDiscoverClassesWhoseNameEndsWithTests()
+        public void ShouldDiscoverClassesWhoseNameEndsWithTestsByDefault()
         {
             var discovery = new DefaultDiscovery();
 
@@ -75,7 +75,7 @@
                     typeof(NameEndsWithTests));
         }
 
-        public void ShouldConsiderOnlyConcreteClasses()
+        public void ShouldSupportMaximalDiscoveryOfConcreteClasses()
         {
             var discovery = new MaximumDiscovery();
 

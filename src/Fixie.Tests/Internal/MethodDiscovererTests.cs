@@ -44,6 +44,25 @@
             }
         }
 
+        public void ShouldDiscoverOnlyPublicInstanceMethodsByDefault()
+        {
+            var discovery = new DefaultDiscovery();
+
+            DiscoveredTestMethods<Sample>(discovery)
+                .ShouldBe(
+                    "PublicInstanceNoArgsVoid()",
+                    "PublicInstanceNoArgsWithReturn()",
+                    "PublicInstanceWithArgsVoid(x)",
+                    "PublicInstanceWithArgsWithReturn(x)");
+
+            DiscoveredTestMethods<AsyncSample>(discovery)
+                .ShouldBe(
+                    "PublicInstanceNoArgsVoid()",
+                    "PublicInstanceNoArgsWithReturn()",
+                    "PublicInstanceWithArgsVoid(x)",
+                    "PublicInstanceWithArgsWithReturn(x)");
+        }
+
         public void ShouldSupportMaximalDiscoveryOfAllPublicMethods()
         {
             var discovery = new MaximumDiscovery();
@@ -79,25 +98,6 @@
 
             DiscoveredTestMethods<Sample>(discovery)
                 .ShouldBe("PublicInstanceNoArgsVoid()");
-        }
-
-        public void ShouldDiscoverOnlyPublicInstanceMethodsByDefault()
-        {
-            var discovery = new DefaultDiscovery();
-
-            DiscoveredTestMethods<Sample>(discovery)
-                .ShouldBe(
-                    "PublicInstanceNoArgsVoid()",
-                    "PublicInstanceNoArgsWithReturn()",
-                    "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)");
-
-            DiscoveredTestMethods<AsyncSample>(discovery)
-                .ShouldBe(
-                    "PublicInstanceNoArgsVoid()",
-                    "PublicInstanceNoArgsWithReturn()",
-                    "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)");
         }
 
         public void ShouldFailWithClearExplanationWhenDiscoveryThrows()

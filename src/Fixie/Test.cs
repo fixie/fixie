@@ -39,7 +39,10 @@ namespace Fixie
         /// </summary>
         public bool HasParameters => Parameters.Length > 0;
 
-        internal MethodInfo Method { get; }
+        /// <summary>
+        /// The method that defines this test.
+        /// </summary>
+        public MethodInfo Method { get; }
 
         internal bool RecordedResult { get; private set; }
 

@@ -27,7 +27,7 @@
   </Target>
 
   <ItemGroup Condition="'$(Language)'=='C#' or '$(Language)'=='F#'">
-    <Compile Include="$(MSBuildThisFileDirectory)Fixie.Program$(DefaultLanguageSourceExtension)" Visible="false" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fixie.Main$(DefaultLanguageSourceExtension)" Visible="false" />
   </ItemGroup>
 
 </Project>

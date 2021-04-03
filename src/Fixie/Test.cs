@@ -98,6 +98,25 @@ namespace Fixie
         }
 
         /// <summary>
+        /// Emits a pass result for this test.
+        /// </summary>
+        public async Task PassAsync()
+        {
+            await PassAsync(EmptyParameters);
+        }
+
+        /// <summary>
+        /// Emits a pass result for this test case.
+        /// </summary>
+        public async Task PassAsync(object?[] parameters)
+        {
+            var @case = new Case(this, parameters);
+            await recorder.PassAsync(@case, "");
+
+            RecordedResult = true;
+        }
+
+        /// <summary>
         /// Emits a skip result for this test, with the given reason.
         /// </summary>
         public async Task SkipAsync(string? reason)

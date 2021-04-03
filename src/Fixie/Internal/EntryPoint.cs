@@ -67,8 +67,8 @@
 
             if (Try(TeamCityReport.Create, out var teamCity))
                 yield return teamCity;
-            else
-                yield return ConsoleReport.Create();
+
+            yield return ConsoleReport.Create();
         }
     }
 }

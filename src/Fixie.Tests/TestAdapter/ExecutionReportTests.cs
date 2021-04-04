@@ -24,12 +24,9 @@
 
             output.Console
                 .ShouldBe(
-                    "Console.Out: Fail",
-                    "Console.Error: Fail",
-                    "Console.Out: FailByAssertion",
-                    "Console.Error: FailByAssertion",
-                    "Console.Out: Pass",
-                    "Console.Error: Pass");
+                    "Standard Out: Fail",
+                    "Standard Out: FailByAssertion",
+                    "Standard Out: Pass");
 
             var messages = recorder.Messages;
 
@@ -76,7 +73,7 @@
             fail.DisplayName.ShouldBe(TestClass+".Fail");
             fail.Messages.Count.ShouldBe(1);
             fail.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
-            fail.Messages[0].Text.Lines().ShouldBe("Console.Out: Fail", "Console.Error: Fail");
+            fail.Messages[0].Text.Lines().ShouldBe("Standard Out: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             failByAssertionStart.ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion", assemblyPath);
@@ -94,7 +91,7 @@
             failByAssertion.DisplayName.ShouldBe(TestClass+".FailByAssertion");
             failByAssertion.Messages.Count.ShouldBe(1);
             failByAssertion.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
-            failByAssertion.Messages[0].Text.Lines().ShouldBe("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
+            failByAssertion.Messages[0].Text.Lines().ShouldBe("Standard Out: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             passStart.ShouldBeExecutionTimeTest(TestClass + ".Pass", assemblyPath);
@@ -107,7 +104,7 @@
             pass.DisplayName.ShouldBe(TestClass+".Pass");
             pass.Messages.Count.ShouldBe(1);
             pass.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
-            pass.Messages[0].Text.Lines().ShouldBe("Console.Out: Pass", "Console.Error: Pass");
+            pass.Messages[0].Text.Lines().ShouldBe("Standard Out: Pass");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             skipWithReason.TestCase.ShouldBeExecutionTimeTest(TestClass+".SkipWithReason", assemblyPath);

@@ -89,10 +89,7 @@
             }
 
             protected static void WhereAmI([CallerMemberName] string member = default!)
-            {
-                System.Console.Out.WriteLine("Console.Out: " + member);
-                System.Console.Error.WriteLine("Console.Error: " + member);
-            }
+                => Console.WriteLine("Standard Out: " + member);
         }
 
         class SampleTestClass : Base

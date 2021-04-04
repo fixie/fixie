@@ -5,25 +5,21 @@
 
     class RedirectedConsole : IDisposable
     {
-        readonly TextWriter outBefore;
-        readonly TextWriter errBefore;
+        readonly TextWriter original;
         readonly StringWriter console;
 
         public RedirectedConsole()
         {
             console = new StringWriter();
-            outBefore = Console.Out;
-            errBefore = Console.Error;
+            original = Console.Out;
             Console.SetOut(console);
-            Console.SetError(console);
         }
 
         public string Output => console.ToString();
 
         public void Dispose()
         {
-            Console.SetOut(outBefore);
-            Console.SetError(errBefore);
+            Console.SetOut(original);
             console.Dispose();
         }
     }

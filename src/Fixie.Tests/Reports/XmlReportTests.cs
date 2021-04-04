@@ -20,12 +20,9 @@
 
             output.Console
                 .ShouldBe(
-                    "Console.Out: Fail",
-                    "Console.Error: Fail",
-                    "Console.Out: FailByAssertion",
-                    "Console.Error: FailByAssertion",
-                    "Console.Out: Pass",
-                    "Console.Error: Pass");
+                    "Standard Out: Fail",
+                    "Standard Out: FailByAssertion",
+                    "Standard Out: Pass");
 
             if (actual == null)
                 throw new Exception("Expected non-null XML report.");

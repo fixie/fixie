@@ -22,12 +22,9 @@
 
             output.Console
                 .ShouldBe(
-                    "Console.Out: Fail",
-                    "Console.Error: Fail",
-                    "Console.Out: FailByAssertion",
-                    "Console.Error: FailByAssertion",
-                    "Console.Out: Pass",
-                    "Console.Error: Pass");
+                    "Standard Out: Fail",
+                    "Standard Out: FailByAssertion",
+                    "Standard Out: Pass");
 
             results.Count.ShouldBe(7);
 
@@ -53,7 +50,7 @@
                 .Lines()
                 .CleanStackTraceLineNumbers()
                 .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
-            fail.StdOut.Lines().ShouldBe("Console.Out: Fail", "Console.Error: Fail");
+            fail.StdOut.Lines().ShouldBe("Standard Out: Fail");
 
             failByAssertion.TestName.ShouldBe(TestClass + ".FailByAssertion");
             failByAssertion.Outcome.ShouldBe("Failed");
@@ -65,14 +62,14 @@
                 .Lines()
                 .CleanStackTraceLineNumbers()
                 .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
-            failByAssertion.StdOut.Lines().ShouldBe("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
+            failByAssertion.StdOut.Lines().ShouldBe("Standard Out: FailByAssertion");
 
             pass.TestName.ShouldBe(TestClass + ".Pass");
             pass.Outcome.ShouldBe("Passed");
             int.Parse(pass.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
             pass.ErrorMessage.ShouldBe(null);
             pass.ErrorStackTrace.ShouldBe(null);
-            pass.StdOut.Lines().ShouldBe("Console.Out: Pass", "Console.Error: Pass");
+            pass.StdOut.Lines().ShouldBe("Standard Out: Pass");
 
             skipWithReason.TestName.ShouldBe(TestClass + ".SkipWithReason");
             skipWithReason.Outcome.ShouldBe("Skipped");

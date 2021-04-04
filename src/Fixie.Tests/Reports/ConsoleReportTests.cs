@@ -19,8 +19,7 @@
                 .CleanStackTraceLineNumbers()
                 .CleanDuration()
                 .ShouldBe(
-                    "Console.Out: Fail",
-                    "Console.Error: Fail",
+                    "Standard Out: Fail",
                     "Test '" + TestClass + ".Fail' failed:",
                     "",
                     "'Fail' failed!",
@@ -29,8 +28,7 @@
                     At("Fail()"),
                     "",
 
-                    "Console.Out: FailByAssertion",
-                    "Console.Error: FailByAssertion",
+                    "Standard Out: FailByAssertion",
                     "Test '" + TestClass + ".FailByAssertion' failed:",
                     "",
                     "Expected: 2",
@@ -40,8 +38,7 @@
                     At("FailByAssertion()"),
                     "",
 
-                    "Console.Out: Pass",
-                    "Console.Error: Pass",
+                    "Standard Out: Pass",
 
                     "Test '" + TestClass + ".SkipWithReason' skipped:",
                     "⚠ Skipped with reason.",
@@ -71,8 +68,7 @@
                 .CleanStackTraceLineNumbers()
                 .CleanDuration()
                 .ShouldBe(
-                    "Console.Out: Fail",
-                    "Console.Error: Fail",
+                    "Standard Out: Fail",
                     "Test '" + TestClass + ".Fail' failed:",
                     "",
                     "'Fail' failed!",
@@ -81,8 +77,7 @@
                     At("Fail()"),
                     "",
 
-                    "Console.Out: FailByAssertion",
-                    "Console.Error: FailByAssertion",
+                    "Standard Out: FailByAssertion",
                     "Test '" + TestClass + ".FailByAssertion' failed:",
                     "",
                     "Expected: 2",
@@ -92,9 +87,7 @@
                     At("FailByAssertion()"),
                     "",
 
-                    "Console.Out: Pass",
-                    "Console.Error: Pass",
-                    
+                    "Standard Out: Pass",
                     "Test '" + TestClass + ".Pass' passed",
                     "",
 

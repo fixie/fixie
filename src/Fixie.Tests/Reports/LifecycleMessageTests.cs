@@ -38,14 +38,14 @@
 
             pass.Test.ShouldBe(TestClass + ".Pass");
             pass.Name.ShouldBe(TestClass + ".Pass");
-            pass.Output.Lines().ShouldBe("Console.Out: Pass", "Console.Error: Pass");
+            pass.Output.Lines().ShouldBe("Standard Out: Pass");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             failStarted.Test.ShouldBe(TestClass + ".Fail");
 
             fail.Test.ShouldBe(TestClass + ".Fail");
             fail.Name.ShouldBe(TestClass + ".Fail");
-            fail.Output.Lines().ShouldBe("Console.Out: Fail", "Console.Error: Fail");
+            fail.Output.Lines().ShouldBe("Standard Out: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             fail.Reason.ShouldBe<FailureException>();
             fail.Reason.LiterateStackTrace()
@@ -58,7 +58,7 @@
 
             failByAssertion.Test.ShouldBe(TestClass + ".FailByAssertion");
             failByAssertion.Name.ShouldBe(TestClass + ".FailByAssertion");
-            failByAssertion.Output.Lines().ShouldBe("Console.Out: FailByAssertion", "Console.Error: FailByAssertion");
+            failByAssertion.Output.Lines().ShouldBe("Standard Out: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             failByAssertion.Reason.ShouldBe<AssertException>();
             failByAssertion.Reason.LiterateStackTrace()

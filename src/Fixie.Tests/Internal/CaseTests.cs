@@ -228,7 +228,7 @@
         {
             var caseMethod = typeof(TTestClass).GetInstanceMethod(methodName);
             
-            var recordNothing = new ExecutionRecorder(new Bus(new Report[] { }));
+            var recordNothing = new ExecutionRecorder(new Bus(System.Console.Out, new Report[] { }));
             var test = new Test(recordNothing, caseMethod);
 
             return new Case(test, parameters);

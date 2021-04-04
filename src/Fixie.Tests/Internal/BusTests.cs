@@ -18,9 +18,9 @@
                 new CombinationEventHandler()
             };
 
-            var bus = new Bus(reports);
             using var console = new RedirectedConsole();
 
+            var bus = new Bus(Console.Out, reports);
             await bus.PublishAsync(new Event(1));
             await bus.PublishAsync(new AnotherEvent(2));
             await bus.PublishAsync(new Event(3));
@@ -43,9 +43,9 @@
                 new FailingEventHandler()
             };
 
-            var bus = new Bus(reports);
             using var console = new RedirectedConsole();
 
+            var bus = new Bus(Console.Out, reports);
             await bus.PublishAsync(new Event(1));
             await bus.PublishAsync(new AnotherEvent(2));
             await bus.PublishAsync(new Event(3));

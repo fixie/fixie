@@ -2,20 +2,23 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
     using Reports;
 
     class Bus
     {
+        readonly TextWriter console;
         readonly List<Report> reports;
 
-        public Bus(Report report)
-            : this(new[] { report })
+        public Bus(TextWriter console, Report report)
+            : this(console, new[] { report })
         {
         }
 
-        public Bus(IReadOnlyList<Report> reports)
+        public Bus(TextWriter console, IReadOnlyList<Report> reports)
         {
+            this.console = console;
             this.reports = new List<Report>(reports);
         }
 
@@ -34,12 +37,12 @@
                 catch (Exception exception)
                 {
                     using (Foreground.Yellow)
-                        Console.WriteLine(
+                        console.WriteLine(
                             $"{report.GetType().FullName} threw an exception while " +
                             $"attempting to handle a message of type {typeof(TMessage).FullName}:");
-                    Console.WriteLine();
-                    Console.WriteLine(exception.ToString());
-                    Console.WriteLine();
+                    console.WriteLine();
+                    console.WriteLine(exception.ToString());
+                    console.WriteLine();
                 }
             }
         }

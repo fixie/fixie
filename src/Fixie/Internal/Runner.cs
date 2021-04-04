@@ -21,7 +21,7 @@
         {
             this.assembly = assembly;
             this.customArguments = customArguments;
-            bus = new Bus(reports);
+            bus = new Bus(Console.Out, reports);
         }
 
         public async Task DiscoverAsync()

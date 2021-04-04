@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using Assertions;
     using Fixie.Internal;
@@ -241,7 +242,7 @@
             var testClass = typeof(Generic);
             var testMethod = testClass.GetInstanceMethod(methodName);
 
-            var recordNothing = new ExecutionRecorder(new Bus(new Report[] { }));
+            var recordNothing = new ExecutionRecorder(new Bus(Console.Out, new Report[] { }));
             var test = new Test(recordNothing, testMethod);
 
             return new Case(test, parameters).Method.GetGenericArguments();

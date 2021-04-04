@@ -6,7 +6,6 @@
     using System.Reflection;
     using System.Threading.Tasks;
     using Reports;
-    using static System.Console;
     using static System.Environment;
     using static Maybe;
 
@@ -28,7 +27,7 @@
             catch (Exception exception)
             {
                 using (Foreground.Red)
-                    WriteLine($"Fatal Error: {exception}");
+                    Console.WriteLine($"Fatal Error: {exception}");
 
                 return (int)ExitCode.FatalError;
             }
@@ -56,7 +55,9 @@
 
         static IEnumerable<Report> DefaultReports()
         {
-            if (Try(AzureReport.Create, out var azure))
+            var originalStandardOut = Console.Out;
+
+            if (Try(() => AzureReport.Create(originalStandardOut), out var azure))
                 yield return azure;
 
             if (Try(AppVeyorReport.Create, out var appVeyor))
@@ -65,10 +66,10 @@
             if (Try(XmlReport.Create, out var xml))
                 yield return xml;
 
-            if (Try(TeamCityReport.Create, out var teamCity))
+            if (Try(() => TeamCityReport.Create(originalStandardOut), out var teamCity))
                 yield return teamCity;
 
-            yield return ConsoleReport.Create();
+            yield return ConsoleReport.Create(originalStandardOut);
         }
     }
 }

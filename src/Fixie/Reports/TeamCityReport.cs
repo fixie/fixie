@@ -1,9 +1,8 @@
 ﻿namespace Fixie.Reports
 {
-    using System;
+    using System.IO;
     using System.Linq;
     using System.Text;
-    using Internal;
     using static System.Environment;
 
     class TeamCityReport :
@@ -13,13 +12,18 @@
         Handler<TestFailed>,
         Handler<AssemblyCompleted>
     {
-        internal static TeamCityReport? Create()
+        readonly TextWriter console;
+
+        internal static TeamCityReport? Create(TextWriter console)
         {
             if (GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null)
-                return new TeamCityReport();
+                return new TeamCityReport(console);
 
             return null;
         }
+
+        public TeamCityReport(TextWriter console)
+            => this.console = console;
 
         public void Handle(AssemblyStarted message)
         {
@@ -59,23 +63,23 @@
             Message("testSuiteFinished name='{0}'", message.Assembly.GetName().Name);
         }
 
-        static void TestStarted(TestCompleted message)
+        void TestStarted(TestCompleted message)
         {
             Message("testStarted name='{0}'", message.Name);
         }
 
-        static void TestFinished(TestCompleted message)
+        void TestFinished(TestCompleted message)
         {
             Message("testFinished name='{0}' duration='{1}'", message.Name, $"{message.Duration.TotalMilliseconds:0}");
         }
 
-        static void Message(string format, params string?[] args)
+        void Message(string format, params string?[] args)
         {
             var encodedArgs = args.Select(Encode).Cast<object>().ToArray();
-            Console.WriteLine("##teamcity[" + format + "]", encodedArgs);
+            console.WriteLine("##teamcity[" + format + "]", encodedArgs);
         }
 
-        static void Output(TestCompleted message)
+        void Output(TestCompleted message)
         {
             if (!string.IsNullOrEmpty(message.Output))
                 Message("testStdOut name='{0}' out='{1}'", message.Name, message.Output);

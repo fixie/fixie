@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests.Reports
 {
     using System;
+    using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
@@ -49,16 +50,26 @@
 
         protected Task<Output> RunAsync(Report report)
         {
-            return RunAsync(report, new SelfTestDiscovery());
+            return RunAsync(_ => report);
         }
 
-        protected async Task<Output> RunAsync(Report report, Discovery discovery)
+        protected Task<Output> RunAsync(Report report, Discovery discovery)
+        {
+            return RunAsync(_ => report, discovery);
+        }
+
+        protected Task<Output> RunAsync(Func<TextWriter, Report> getReport)
+        {
+            return RunAsync(getReport, new SelfTestDiscovery());
+        }
+
+        protected async Task<Output> RunAsync(Func<TextWriter, Report> getReport, Discovery discovery)
         {
             var execution = new MessagingTestsExecution();
 
             using var console = new RedirectedConsole();
 
-            await Utility.RunAsync(report, discovery, execution, candidateTypes);
+            await Utility.RunAsync(getReport(Console.Out), discovery, execution, candidateTypes);
 
             return new Output(console.Lines().ToArray());
         }

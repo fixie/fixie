@@ -11,9 +11,7 @@
     {
         public async Task ShouldReportResults()
         {
-            var report = new ConsoleReport();
-
-            var output = await RunAsync(report);
+            var output = await RunAsync(console => new ConsoleReport(console));
 
             output.Console
                 .CleanStackTraceLineNumbers()
@@ -60,9 +58,7 @@
 
         public async Task CanOptionallyIncludePassingResults()
         {
-            var report = new ConsoleReport(outputTestPassed: true);
-
-            var output = await RunAsync(report);
+            var output = await RunAsync(console => new ConsoleReport(console, outputTestPassed: true));
 
             output.Console
                 .CleanStackTraceLineNumbers()
@@ -120,10 +116,9 @@
 
         public async Task ShouldNotReportPassCountsWhenZeroTestsHavePassed()
         {
-            var report = new ConsoleReport();
             var discovery = new ZeroPassed();
 
-            var output = await RunAsync(report, discovery);
+            var output = await RunAsync(console => new ConsoleReport(console), discovery);
 
             output.Console
                 .CleanDuration()
@@ -139,10 +134,9 @@
 
         public async Task ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
         {
-            var report = new ConsoleReport();
             var discovery = new ZeroFailed();
 
-            var output = await RunAsync(report, discovery);
+            var output = await RunAsync(console => new ConsoleReport(console), discovery);
 
             output.Console
                 .CleanDuration()
@@ -158,10 +152,9 @@
 
         public async Task ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
         {
-            var report = new ConsoleReport();
             var discovery = new ZeroSkipped();
 
-            var output = await RunAsync(report, discovery);
+            var output = await RunAsync(console => new ConsoleReport(console), discovery);
 
             output.Console
                 .CleanDuration()
@@ -177,10 +170,9 @@
 
         public async Task ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
         {
-            var report = new ConsoleReport();
             var discovery = new NoTestsFound();
 
-            var output = await RunAsync(report, discovery);
+            var output = await RunAsync(console => new ConsoleReport(console), discovery);
 
             output.Console
                 .Last()

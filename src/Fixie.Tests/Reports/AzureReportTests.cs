@@ -44,27 +44,26 @@
                 actualAuthorization.Parameter.ShouldBe(accessToken);
             };
 
-            var report = new AzureReport("http://localhost:4567", project, accessToken, buildId,
-                (client, method, uri, content) =>
-                {
-                    assertCommonHttpConcerns(client);
-                    requests.Add(new Request<AzureReport.CreateRun>(method, uri, content));
-                    return Task.FromResult(Serialize(new AzureReport.TestRun {url = runUrl}));
-                },
-                (client, method, uri, content) =>
-                {
-                    assertCommonHttpConcerns(client);
-                    requests.Add(new Request<IReadOnlyList<AzureReport.Result>>(method, uri, content));
-                    return Task.FromResult("");
-                },
-                (client, method, uri, content) =>
-                {
-                    assertCommonHttpConcerns(client);
-                    requests.Add(new Request<AzureReport.CompleteRun>(method, uri, content));
-                    return Task.FromResult("");
-                }, batchSize);
-
-            var output = await RunAsync(report);
+            var output = await RunAsync(console =>
+                new AzureReport(console, "http://localhost:4567", project, accessToken, buildId,
+                    (client, method, uri, content) =>
+                    {
+                        assertCommonHttpConcerns(client);
+                        requests.Add(new Request<AzureReport.CreateRun>(method, uri, content));
+                        return Task.FromResult(Serialize(new AzureReport.TestRun {url = runUrl}));
+                    },
+                    (client, method, uri, content) =>
+                    {
+                        assertCommonHttpConcerns(client);
+                        requests.Add(new Request<IReadOnlyList<AzureReport.Result>>(method, uri, content));
+                        return Task.FromResult("");
+                    },
+                    (client, method, uri, content) =>
+                    {
+                        assertCommonHttpConcerns(client);
+                        requests.Add(new Request<AzureReport.CompleteRun>(method, uri, content));
+                        return Task.FromResult("");
+                    }, batchSize));
 
             output.Console
                 .ShouldBe(

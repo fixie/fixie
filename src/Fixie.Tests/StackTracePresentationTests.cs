@@ -103,12 +103,13 @@
 
         static async Task<IEnumerable<string>> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
         {
-            var report = new ConsoleReport();
             var discovery = new SelfTestDiscovery();
             var execution = new TExecution();
             
             using var console = new RedirectedConsole();
 
+            var report = new ConsoleReport(System.Console.Out);
+            
             await Utility.RunAsync(report, discovery, execution, typeof(TSampleTestClass));
 
             return console.Lines()

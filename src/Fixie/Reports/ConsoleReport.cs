@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using Internal;
     using static System.Environment;
 
@@ -11,14 +12,18 @@
         Handler<TestFailed>,
         Handler<AssemblyCompleted>
     {
+        readonly TextWriter console;
         readonly bool outputTestPassed;
         bool paddingWouldRequireOpeningBlankLine;
 
-        internal static ConsoleReport Create()
-            => new ConsoleReport(GetEnvironmentVariable("FIXIE:TESTS") != null);
+        internal static ConsoleReport Create(TextWriter console)
+            => new ConsoleReport(console, GetEnvironmentVariable("FIXIE:TESTS") != null);
 
-        public ConsoleReport(bool outputTestPassed = false)
-            => this.outputTestPassed = outputTestPassed;
+        public ConsoleReport(TextWriter console, bool outputTestPassed = false)
+        {
+            this.console = console;
+            this.outputTestPassed = outputTestPassed;
+        }
 
         public void Handle(TestSkipped message)
         {
@@ -27,10 +32,10 @@
             WithPadding(() =>
             {
                 using (Foreground.Yellow)
-                    Console.WriteLine($"Test '{message.Name}' skipped{(hasReason ? ":" : null)}");
+                    console.WriteLine($"Test '{message.Name}' skipped{(hasReason ? ":" : null)}");
 
                 if (hasReason)
-                    Console.WriteLine($"{message.Reason}");
+                    console.WriteLine($"{message.Reason}");
             });
         }
 
@@ -41,7 +46,7 @@
                 WithoutPadding(() =>
                 {
                     using (Foreground.Green)
-                        Console.WriteLine($"Test '{message.Name}' passed");
+                        console.WriteLine($"Test '{message.Name}' passed");
                 });
             }
         }
@@ -51,23 +56,23 @@
             WithPadding(() =>
             {
                 using (Foreground.Red)
-                    Console.WriteLine($"Test '{message.Name}' failed:");
-                Console.WriteLine();
-                Console.WriteLine(message.Reason.Message);
-                Console.WriteLine();
-                Console.WriteLine(message.Reason.GetType().FullName);
-                Console.WriteLine(message.Reason.LiterateStackTrace());
+                    console.WriteLine($"Test '{message.Name}' failed:");
+                console.WriteLine();
+                console.WriteLine(message.Reason.Message);
+                console.WriteLine();
+                console.WriteLine(message.Reason.GetType().FullName);
+                console.WriteLine(message.Reason.LiterateStackTrace());
             });
         }
 
         void WithPadding(Action write)
         {
             if (paddingWouldRequireOpeningBlankLine)
-                Console.WriteLine();
+                console.WriteLine();
 
             write();
             
-            Console.WriteLine();
+            console.WriteLine();
             paddingWouldRequireOpeningBlankLine = false;
         }
 
@@ -79,8 +84,8 @@
 
         public void Handle(AssemblyCompleted message)
         {
-            Console.WriteLine(Summarize(message));
-            Console.WriteLine();
+            console.WriteLine(Summarize(message));
+            console.WriteLine();
         }
 
         static string Summarize(AssemblyCompleted message)

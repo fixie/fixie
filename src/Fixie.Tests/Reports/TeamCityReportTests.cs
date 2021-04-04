@@ -13,9 +13,7 @@
         {
             var eol = Environment.NewLine == "\r\n" ? "|r|n" : "|n";
 
-            var report = new TeamCityReport();
-
-            var output = await RunAsync(report);
+            var output = await RunAsync(console => new TeamCityReport(console));
 
             output.Console
                 .CleanStackTraceLineNumbers()

@@ -15,7 +15,6 @@
     using Internal;
     using static System.Environment;
     using static Internal.Serialization;
-    using static System.Console;
     using static Internal.Maybe;
 
     class AzureReport :
@@ -29,6 +28,7 @@
 
         public delegate Task<string> ApiAction<in T>(HttpClient client, HttpMethod method, string uri, T content);
 
+        readonly TextWriter console;
         readonly string collectionUri;
         readonly string project;
         readonly string buildId;
@@ -43,7 +43,7 @@
         readonly List<Result> batch;
         bool apiUnavailable;
 
-        internal static AzureReport? Create()
+        internal static AzureReport? Create(TextWriter console)
         {
             var runningUnderAzure = GetEnvironmentVariable("TF_BUILD") == "True";
 
@@ -54,12 +54,13 @@
 
                 if (accessTokenIsAvailable)
                 {
-                    if (TryGetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", out var collectionUri)
-                        && TryGetEnvironmentVariable("SYSTEM_TEAMPROJECT", out var project)
-                        && TryGetEnvironmentVariable("SYSTEM_ACCESSTOKEN", out var accessToken)
-                        && TryGetEnvironmentVariable("BUILD_BUILDID", out var buildId))
+                    if (TryGetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", console, out var collectionUri)
+                        && TryGetEnvironmentVariable("SYSTEM_TEAMPROJECT", console, out var project)
+                        && TryGetEnvironmentVariable("SYSTEM_ACCESSTOKEN", console, out var accessToken)
+                        && TryGetEnvironmentVariable("BUILD_BUILDID", console, out var buildId))
                     {
                         return new AzureReport(
+                            console,
                             collectionUri,
                             project,
                             accessToken,
@@ -75,38 +76,39 @@
 
                 using (Foreground.Yellow)
                 {
-                    WriteLine("The Azure DevOps access token has not been made available to this process, so");
-                    WriteLine("test results will not be collected. To resolve this issue, review your pipeline");
-                    WriteLine("definition to ensure that the access token is made available as the environment");
-                    WriteLine("variable SYSTEM_ACCESSTOKEN.");
-                    WriteLine();
-                    WriteLine("From https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables#systemaccesstoken");
-                    WriteLine();
-                    WriteLine("  env:");
-                    WriteLine("    SYSTEM_ACCESSTOKEN: $(System.AccessToken)");
-                    WriteLine();
+                    console.WriteLine("The Azure DevOps access token has not been made available to this process, so");
+                    console.WriteLine("test results will not be collected. To resolve this issue, review your pipeline");
+                    console.WriteLine("definition to ensure that the access token is made available as the environment");
+                    console.WriteLine("variable SYSTEM_ACCESSTOKEN.");
+                    console.WriteLine();
+                    console.WriteLine("From https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables#systemaccesstoken");
+                    console.WriteLine();
+                    console.WriteLine("  env:");
+                    console.WriteLine("    SYSTEM_ACCESSTOKEN: $(System.AccessToken)");
+                    console.WriteLine();
                 }
             }
 
             return null;
         }
 
-        static bool TryGetEnvironmentVariable(string variable, [NotNullWhen(true)] out string? value)
+        static bool TryGetEnvironmentVariable(string variable, TextWriter console, [NotNullWhen(true)] out string? value)
         {
             if (Try(GetEnvironmentVariable, variable, out value))
                 return true;
             
             using (Foreground.Yellow)
             {
-                WriteLine($"The Azure DevOps environment variable '{variable}' has not been made");
-                WriteLine("available to this process, so test results will not be collected.");
-                WriteLine();
+                console.WriteLine($"The Azure DevOps environment variable '{variable}' has not been made");
+                console.WriteLine("available to this process, so test results will not be collected.");
+                console.WriteLine();
             }
 
             return false;
         }
 
         public AzureReport(
+            TextWriter console,
             string collectionUri,
             string project,
             string accessToken,
@@ -116,6 +118,7 @@
             ApiAction<CompleteRun> sendCompleteRunAsync,
             int batchSize)
         {
+            this.console = console;
             this.collectionUri = collectionUri;
             this.project = project;
             this.buildId = buildId;
@@ -217,26 +220,26 @@
 
                     if (attempt > 1)
                     {
-                        WriteLine($"Successfully submitted test result batch to Azure DevOps API on attempt #{attempt}.");
-                        WriteLine();
+                        console.WriteLine($"Successfully submitted test result batch to Azure DevOps API on attempt #{attempt}.");
+                        console.WriteLine();
                     }
 
                     return;
                 }
                 catch (Exception exception)
                 {
-                    WriteLine($"Failed to submit test result batch to Azure DevOps API (attempt #{attempt} of {maxAttempts}): " + exception);
-                    WriteLine();
+                    console.WriteLine($"Failed to submit test result batch to Azure DevOps API (attempt #{attempt} of {maxAttempts}): " + exception);
+                    console.WriteLine();
                     Thread.Sleep(TimeSpan.FromSeconds(coolDownInSeconds));
                     attempt++;
                 }
             }
 
-            WriteLine("Due to repeated failures while submitting test results to the Azure DevOps API,");
-            WriteLine("further attempts will be suppressed for the remainder of this test run. Full test");
-            WriteLine("results will continue to be reported to this console and to the test process exit");
-            WriteLine("code, but the Azure DevOps \"Tests\" summary will be incomplete.");
-            WriteLine();
+            console.WriteLine("Due to repeated failures while submitting test results to the Azure DevOps API,");
+            console.WriteLine("further attempts will be suppressed for the remainder of this test run. Full test");
+            console.WriteLine("results will continue to be reported to this console and to the test process exit");
+            console.WriteLine("code, but the Azure DevOps \"Tests\" summary will be incomplete.");
+            console.WriteLine();
 
             apiUnavailable = true;
             batch.Clear();

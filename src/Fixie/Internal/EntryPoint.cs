@@ -23,6 +23,8 @@
         {
             var console = Console.Out;
 
+            using var boundary = new ConsoleRedirectionBoundary();
+
             try
             {
                 return (int) await RunAssemblyAsync(assembly, console, customArguments);

@@ -45,7 +45,11 @@
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
             var report = new DiscoveryReport(log, discoverySink, assemblyPath);
-            var runner = new Runner(assembly, Console.Out, report);
+            
+            var console = Console.Out;
+            using var boundary = new ConsoleRedirectionBoundary();
+
+            var runner = new Runner(assembly, console, report);
 
             runner.DiscoverAsync().GetAwaiter().GetResult();
         }

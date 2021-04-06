@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
@@ -14,14 +15,14 @@
         readonly string[] customArguments;
         readonly Bus bus;
 
-        public Runner(Assembly assembly, Report report)
-            : this(assembly, new string[] {}, report) { }
+        public Runner(Assembly assembly, TextWriter console, Report report)
+            : this(assembly, console, new string[] {}, report) { }
 
-        public Runner(Assembly assembly, string[] customArguments, params Report[] reports)
+        public Runner(Assembly assembly, TextWriter console, string[] customArguments, params Report[] reports)
         {
             this.assembly = assembly;
             this.customArguments = customArguments;
-            bus = new Bus(Console.Out, reports);
+            bus = new Bus(console, reports);
         }
 
         public async Task DiscoverAsync()

@@ -1,5 +1,6 @@
 namespace Fixie.Tests.Internal
 {
+    using System;
     using System.Collections.Immutable;
     using System.Threading.Tasks;
     using Assertions;
@@ -21,7 +22,7 @@ namespace Fixie.Tests.Internal
             };
             var discovery = new SelfTestDiscovery();
             
-            var runner = new Runner(GetType().Assembly, report);
+            var runner = new Runner(GetType().Assembly, Console.Out, report);
             await runner.DiscoverAsync(candidateTypes, discovery);
 
             report.Entries.ShouldBe(
@@ -45,7 +46,7 @@ namespace Fixie.Tests.Internal
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();
 
-            var runner = new Runner(GetType().Assembly, report);
+            var runner = new Runner(GetType().Assembly, Console.Out, report);
             await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
 
             report.Entries.ShouldBe(

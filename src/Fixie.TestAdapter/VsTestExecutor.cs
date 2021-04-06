@@ -94,7 +94,7 @@
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
             var report = new ExecutionReport(frameworkHandle, assemblyPath);
-            var runner = new Runner(assembly, report);
+            var runner = new Runner(assembly, Console.Out, report);
 
             run(runner);
         }

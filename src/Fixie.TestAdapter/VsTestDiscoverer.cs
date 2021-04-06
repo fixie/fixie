@@ -45,7 +45,7 @@
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
             var report = new DiscoveryReport(log, discoverySink, assemblyPath);
-            var runner = new Runner(assembly, report);
+            var runner = new Runner(assembly, Console.Out, report);
 
             runner.DiscoverAsync().GetAwaiter().GetResult();
         }

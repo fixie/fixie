@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
@@ -20,23 +21,25 @@
 
         public static async Task<int> Main(Assembly assembly, string[] customArguments)
         {
+            var console = Console.Out;
+
             try
             {
-                return (int) await RunAssemblyAsync(assembly, customArguments);
+                return (int) await RunAssemblyAsync(assembly, console, customArguments);
             }
             catch (Exception exception)
             {
                 using (Foreground.Red)
-                    Console.WriteLine($"Fatal Error: {exception}");
+                    console.WriteLine($"Fatal Error: {exception}");
 
                 return (int)ExitCode.FatalError;
             }
         }
 
-        static async Task<ExitCode> RunAssemblyAsync(Assembly assembly, string[] customArguments)
+        static async Task<ExitCode> RunAssemblyAsync(Assembly assembly, TextWriter console, string[] customArguments)
         {
-            var reports = DefaultReports().ToArray();
-            var runner = new Runner(assembly, Console.Out, customArguments, reports);
+            var reports = DefaultReports(console).ToArray();
+            var runner = new Runner(assembly, console, customArguments, reports);
 
             var pattern = GetEnvironmentVariable("FIXIE:TESTS");
 
@@ -53,11 +56,9 @@
             return ExitCode.Success;
         }
 
-        static IEnumerable<Report> DefaultReports()
+        static IEnumerable<Report> DefaultReports(TextWriter console)
         {
-            var originalStandardOut = Console.Out;
-
-            if (Try(() => AzureReport.Create(originalStandardOut), out var azure))
+            if (Try(() => AzureReport.Create(console), out var azure))
                 yield return azure;
 
             if (Try(AppVeyorReport.Create, out var appVeyor))
@@ -66,10 +67,10 @@
             if (Try(XmlReport.Create, out var xml))
                 yield return xml;
 
-            if (Try(() => TeamCityReport.Create(originalStandardOut), out var teamCity))
+            if (Try(() => TeamCityReport.Create(console), out var teamCity))
                 yield return teamCity;
 
-            yield return ConsoleReport.Create(originalStandardOut);
+            yield return ConsoleReport.Create(console);
         }
     }
 }

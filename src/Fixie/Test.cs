@@ -114,7 +114,7 @@ namespace Fixie
         public async Task PassAsync(object?[] parameters)
         {
             var @case = new Case(this, parameters);
-            await recorder.PassAsync(@case, "");
+            await recorder.PassAsync(@case);
 
             RecordedResult = true;
         }
@@ -133,7 +133,7 @@ namespace Fixie
         public async Task SkipAsync(object?[] parameters, string? reason)
         {
             var @case = new Case(this, parameters);
-            await recorder.SkipAsync(@case, "", reason);
+            await recorder.SkipAsync(@case, reason);
 
             RecordedResult = true;
         }
@@ -159,7 +159,7 @@ namespace Fixie
 
             var @case = new Case(this, parameters);
 
-            await recorder.FailAsync(@case, "", reason);
+            await recorder.FailAsync(@case, reason);
 
             RecordedResult = true;
         }
@@ -171,38 +171,30 @@ namespace Fixie
 
             await recorder.StartAsync(this);
 
-            string output;
-            using (var console = new RedirectedConsole())
+            try
             {
-                try
-                {
-                    if (instance == null && !@case.Method.IsStatic)
-                        instance = Construct(@case.Method.ReflectedType!);
+                if (instance == null && !@case.Method.IsStatic)
+                    instance = Construct(@case.Method.ReflectedType!);
 
-                    await @case.RunAsync(instance);
-                }
-                catch (Exception exception)
-                {
-                    if (exception is PreservedException preservedException)
-                        exception = preservedException.OriginalException;
-
-                    failureReason = exception;
-                }
-
-                output = console.Output;
+                await @case.RunAsync(instance);
             }
+            catch (Exception exception)
+            {
+                if (exception is PreservedException preservedException)
+                    exception = preservedException.OriginalException;
 
-            Console.Write(output);
+                failureReason = exception;
+            }
 
             TestResult? result;
             if (failureReason != null)
             {
-                await recorder.FailAsync(@case, output, failureReason);
+                await recorder.FailAsync(@case, failureReason);
                 result = TestResult.Failed(failureReason);
             }
             else
             {
-                await recorder.PassAsync(@case, output);
+                await recorder.PassAsync(@case);
                 result = TestResult.Passed;
             }
 

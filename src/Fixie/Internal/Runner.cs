@@ -14,6 +14,7 @@
         readonly Assembly assembly;
         readonly string[] customArguments;
         readonly Bus bus;
+        readonly TextWriter console;
 
         public Runner(Assembly assembly, TextWriter console, Report report)
             : this(assembly, console, new string[] {}, report) { }
@@ -22,6 +23,7 @@
         {
             this.assembly = assembly;
             this.customArguments = customArguments;
+            this.console = console;
             bus = new Bus(console, reports);
         }
 
@@ -84,7 +86,8 @@
 
         internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)
         {
-            var recorder = new ExecutionRecorder(bus);
+            var recordingConsole = new RecordingWriter(console);
+            var recorder = new ExecutionRecorder(recordingConsole, bus);
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
             var methodDiscoverer = new MethodDiscoverer(discovery);
@@ -123,9 +126,13 @@
 
             var testAssembly = new TestAssembly(assembly, testClasses);
 
-            await recorder.StartAsync(testAssembly);
-            await RunAsync(testAssembly, execution);
-            return await recorder.CompleteAsync(testAssembly);
+            using (new ConsoleRedirectionBoundary())
+            {
+                Console.SetOut(recordingConsole);
+                await recorder.StartAsync(testAssembly);
+                await RunAsync(testAssembly, execution);
+                return await recorder.CompleteAsync(testAssembly);
+            }
         }
 
         static async Task RunAsync(TestAssembly testAssembly, Execution execution)

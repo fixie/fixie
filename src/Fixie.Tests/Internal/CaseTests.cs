@@ -228,8 +228,9 @@
         static Case Case<TTestClass>(string methodName, params object?[] parameters)
         {
             var caseMethod = typeof(TTestClass).GetInstanceMethod(methodName);
-            
-            var recordNothing = new ExecutionRecorder(new Bus(TextWriter.Null, new Report[] { }));
+
+            var console = TextWriter.Null;
+            var recordNothing = new ExecutionRecorder(new RecordingWriter(console), new Bus(console, new Report[] { }));
             var test = new Test(recordNothing, caseMethod);
 
             return new Case(test, parameters);

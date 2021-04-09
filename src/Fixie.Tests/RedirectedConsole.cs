@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Tests
 {
     using System;
     using System.IO;
@@ -11,15 +11,15 @@
         public RedirectedConsole()
         {
             console = new StringWriter();
-            original = Console.Out;
-            Console.SetOut(console);
+            original = System.Console.Out;
+            System.Console.SetOut(console);
         }
 
         public string Output => console.ToString();
 
         public void Dispose()
         {
-            Console.SetOut(original);
+            System.Console.SetOut(original);
             console.Dispose();
         }
     }

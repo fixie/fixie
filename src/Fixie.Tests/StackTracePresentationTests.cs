@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Assertions;
-    using Fixie.Internal;
     using Fixie.Reports;
     using static Utility;
 

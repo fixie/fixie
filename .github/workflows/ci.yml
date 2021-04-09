@@ -19,7 +19,7 @@ jobs:
       with:
         dotnet-version: '5.0.100'
     - name: Build and Test
-      run: pwsh ./build.ps1
+      run: pwsh ./build.ps1 --pack
     - name: Release to MyGet
       env:
         PACKAGE_URL: https://www.myget.org/F/fixie-ci/api/v3/index.json

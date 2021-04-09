@@ -16,7 +16,7 @@ jobs:
       with:
         dotnet-version: '5.0.100'
     - name: Build and Test
-      run: pwsh ./build.ps1
+      run: pwsh ./build.ps1 --pack
     - name: Release to NuGet
       env:
         PACKAGE_URL: https://api.nuget.org/v3/index.json

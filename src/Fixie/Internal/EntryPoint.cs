@@ -41,7 +41,7 @@
 
         static async Task<ExitCode> RunAssemblyAsync(TestEnvironment environment)
         {
-            var reports = DefaultReports(environment.Console).ToArray();
+            var reports = DefaultReports(environment).ToArray();
             var runner = new Runner(environment, reports);
 
             var pattern = GetEnvironmentVariable("FIXIE:TESTS");
@@ -59,8 +59,10 @@
             return ExitCode.Success;
         }
 
-        static IEnumerable<Report> DefaultReports(TextWriter console)
+        static IEnumerable<Report> DefaultReports(TestEnvironment environment)
         {
+            TextWriter console = environment.Console;
+
             if (Try(() => AzureReport.Create(console), out var azure))
                 yield return azure;
 

@@ -70,7 +70,7 @@
             if (Try(AppVeyorReport.Create, out var appVeyor))
                 yield return appVeyor;
 
-            if (Try(XmlReport.Create, out var xml))
+            if (Try(() => XmlReport.Create(environment), out var xml))
                 yield return xml;
 
             if (Try(() => TeamCityReport.Create(console), out var teamCity))

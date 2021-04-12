@@ -96,7 +96,8 @@
             var report = new ExecutionReport(frameworkHandle, assemblyPath);
             
             var console = Console.Out;
-            var environment = new TestEnvironment(assembly, console);
+            var rootDirectory = Directory.GetCurrentDirectory();
+            var environment = new TestEnvironment(assembly, console, rootDirectory);
 
             using var boundary = new ConsoleRedirectionBoundary();
 

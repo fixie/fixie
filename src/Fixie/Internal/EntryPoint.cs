@@ -22,7 +22,8 @@
         public static async Task<int> Main(Assembly assembly, string[] customArguments)
         {
             var console = Console.Out;
-            var environment = new TestEnvironment(assembly, customArguments, console);
+            var rootDirectory = Directory.GetCurrentDirectory();
+            var environment = new TestEnvironment(assembly, customArguments, console, rootDirectory);
 
             using var boundary = new ConsoleRedirectionBoundary();
 

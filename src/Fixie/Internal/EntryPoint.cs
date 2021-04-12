@@ -22,12 +22,13 @@
         public static async Task<int> Main(Assembly assembly, string[] customArguments)
         {
             var console = Console.Out;
+            var environment = new TestEnvironment(assembly, customArguments, console);
 
             using var boundary = new ConsoleRedirectionBoundary();
 
             try
             {
-                return (int) await RunAssemblyAsync(assembly, console, customArguments);
+                return (int) await RunAssemblyAsync(environment);
             }
             catch (Exception exception)
             {
@@ -38,10 +39,10 @@
             }
         }
 
-        static async Task<ExitCode> RunAssemblyAsync(Assembly assembly, TextWriter console, string[] customArguments)
+        static async Task<ExitCode> RunAssemblyAsync(TestEnvironment environment)
         {
-            var reports = DefaultReports(console).ToArray();
-            var runner = new Runner(assembly, console, customArguments, reports);
+            var reports = DefaultReports(environment.Console).ToArray();
+            var runner = new Runner(environment.Assembly, environment.Console, environment.CustomArguments, reports);
 
             var pattern = GetEnvironmentVariable("FIXIE:TESTS");
 

@@ -47,9 +47,11 @@
             var report = new DiscoveryReport(log, discoverySink, assemblyPath);
             
             var console = Console.Out;
+            var environment = new TestEnvironment(assembly, console);
+
             using var boundary = new ConsoleRedirectionBoundary();
 
-            var runner = new Runner(assembly, console, report);
+            var runner = new Runner(environment.Assembly, environment.Console, report);
 
             runner.DiscoverAsync().GetAwaiter().GetResult();
         }

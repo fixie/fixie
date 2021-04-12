@@ -5,6 +5,9 @@
 
     class TestEnvironment
     {
+        public TestEnvironment(Assembly assembly, TextWriter console)
+            : this(assembly, new string[] {}, console) { }
+
         public TestEnvironment(Assembly assembly, string[] customArguments, TextWriter console)
         {
             Assembly = assembly;

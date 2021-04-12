@@ -9,10 +9,10 @@
         readonly Assembly assembly;
         readonly string[] customArguments;
 
-        public BehaviorDiscoverer(Assembly assembly, string[] customArguments)
+        public BehaviorDiscoverer(TestEnvironment environment)
         {
-            this.assembly = assembly;
-            this.customArguments = customArguments;
+            assembly = environment.Assembly;
+            customArguments = environment.CustomArguments;
         }
 
         public Discovery GetDiscovery()

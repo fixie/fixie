@@ -22,7 +22,8 @@ namespace Fixie.Tests.Internal
             };
             var discovery = new SelfTestDiscovery();
             
-            var runner = new Runner(GetType().Assembly, Console.Out, report);
+            var environment = new TestEnvironment(GetType().Assembly, Console.Out);
+            var runner = new Runner(environment, report);
             await runner.DiscoverAsync(candidateTypes, discovery);
 
             report.Entries.ShouldBe(
@@ -46,7 +47,8 @@ namespace Fixie.Tests.Internal
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();
 
-            var runner = new Runner(GetType().Assembly, Console.Out, report);
+            var environment = new TestEnvironment(GetType().Assembly, Console.Out);
+            var runner = new Runner(environment, report);
             await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
 
             report.Entries.ShouldBe(

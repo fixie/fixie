@@ -16,14 +16,11 @@
         readonly Bus bus;
         readonly TextWriter console;
 
-        public Runner(Assembly assembly, TextWriter console, Report report)
-            : this(assembly, console, new string[] {}, report) { }
-
-        public Runner(Assembly assembly, TextWriter console, string[] customArguments, params Report[] reports)
+        public Runner(TestEnvironment environment, params Report[] reports)
         {
-            this.assembly = assembly;
-            this.customArguments = customArguments;
-            this.console = console;
+            assembly = environment.Assembly;
+            customArguments = environment.CustomArguments;
+            console = environment.Console;
             bus = new Bus(console, reports);
         }
 

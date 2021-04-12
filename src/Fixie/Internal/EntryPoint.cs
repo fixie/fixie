@@ -42,7 +42,7 @@
         static async Task<ExitCode> RunAssemblyAsync(TestEnvironment environment)
         {
             var reports = DefaultReports(environment.Console).ToArray();
-            var runner = new Runner(environment.Assembly, environment.Console, environment.CustomArguments, reports);
+            var runner = new Runner(environment, reports);
 
             var pattern = GetEnvironmentVariable("FIXIE:TESTS");
 

@@ -51,7 +51,7 @@
 
             using var boundary = new ConsoleRedirectionBoundary();
 
-            var runner = new Runner(environment.Assembly, environment.Console, report);
+            var runner = new Runner(environment, report);
 
             runner.DiscoverAsync().GetAwaiter().GetResult();
         }

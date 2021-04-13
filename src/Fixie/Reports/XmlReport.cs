@@ -18,24 +18,24 @@
 
         readonly SortedDictionary<string, ClassResult> report = new SortedDictionary<string, ClassResult>();
 
-        internal static XmlReport? Create(TestEnvironment environment)
+        internal static XmlReport? Create(TestContext context)
         {
             var absoluteOrRelativePath = GetEnvironmentVariable("FIXIE:REPORT");
 
             if (absoluteOrRelativePath != null)
-                return new XmlReport(SaveReport(environment, absoluteOrRelativePath));
+                return new XmlReport(SaveReport(context, absoluteOrRelativePath));
 
             return null;
         }
 
-        static Action<XDocument> SaveReport(TestEnvironment environment, string absoluteOrRelativePath)
+        static Action<XDocument> SaveReport(TestContext context, string absoluteOrRelativePath)
         {
-            return report => Save(report, FullPath(environment, absoluteOrRelativePath));
+            return report => Save(report, FullPath(context, absoluteOrRelativePath));
         }
 
-        static string FullPath(TestEnvironment environment, string absoluteOrRelativePath)
+        static string FullPath(TestContext context, string absoluteOrRelativePath)
         {
-            return Path.Combine(environment.RootDirectory, absoluteOrRelativePath);
+            return Path.Combine(context.RootDirectory, absoluteOrRelativePath);
         }
 
         public XmlReport(Action<XDocument> save)

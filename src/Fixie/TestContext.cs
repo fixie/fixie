@@ -5,12 +5,12 @@
     using System.IO;
     using System.Reflection;
 
-    public class TestEnvironment
+    public class TestContext
     {
-        public TestEnvironment(Assembly assembly, TextWriter console, string rootDirectory)
+        public TestContext(Assembly assembly, TextWriter console, string rootDirectory)
             : this(assembly, Array.Empty<string>(), console, rootDirectory) { }
 
-        public TestEnvironment(Assembly assembly, IReadOnlyList<string> customArguments, TextWriter console, string rootDirectory)
+        public TestContext(Assembly assembly, IReadOnlyList<string> customArguments, TextWriter console, string rootDirectory)
         {
             Assembly = assembly;
             CustomArguments = customArguments;

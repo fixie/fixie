@@ -23,13 +23,13 @@
         {
             var console = Console.Out;
             var rootDirectory = Directory.GetCurrentDirectory();
-            var environment = new TestEnvironment(assembly, customArguments, console, rootDirectory);
+            var context = new TestContext(assembly, customArguments, console, rootDirectory);
 
             using var boundary = new ConsoleRedirectionBoundary();
 
             try
             {
-                return (int) await RunAssemblyAsync(environment);
+                return (int) await RunAssemblyAsync(context);
             }
             catch (Exception exception)
             {
@@ -40,10 +40,10 @@
             }
         }
 
-        static async Task<ExitCode> RunAssemblyAsync(TestEnvironment environment)
+        static async Task<ExitCode> RunAssemblyAsync(TestContext context)
         {
-            var reports = DefaultReports(environment).ToArray();
-            var runner = new Runner(environment, reports);
+            var reports = DefaultReports(context).ToArray();
+            var runner = new Runner(context, reports);
 
             var pattern = GetEnvironmentVariable("FIXIE:TESTS");
 
@@ -60,9 +60,9 @@
             return ExitCode.Success;
         }
 
-        static IEnumerable<Report> DefaultReports(TestEnvironment environment)
+        static IEnumerable<Report> DefaultReports(TestContext context)
         {
-            TextWriter console = environment.Console;
+            TextWriter console = context.Console;
 
             if (Try(() => AzureReport.Create(console), out var azure))
                 yield return azure;
@@ -70,7 +70,7 @@
             if (Try(AppVeyorReport.Create, out var appVeyor))
                 yield return appVeyor;
 
-            if (Try(() => XmlReport.Create(environment), out var xml))
+            if (Try(() => XmlReport.Create(context), out var xml))
                 yield return xml;
 
             if (Try(() => TeamCityReport.Create(console), out var teamCity))

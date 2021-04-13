@@ -6,13 +6,13 @@
 
     class BehaviorDiscoverer
     {
-        readonly TestEnvironment environment;
+        readonly TestContext context;
         readonly Assembly assembly;
 
-        public BehaviorDiscoverer(TestEnvironment environment)
+        public BehaviorDiscoverer(TestContext context)
         {
-            this.environment = environment;
-            assembly = environment.Assembly;
+            this.context = context;
+            assembly = context.Assembly;
         }
 
         public Discovery GetDiscovery()
@@ -95,7 +95,7 @@
                 
                 return constructor.Invoke(
                     constructor.GetParameters().Length == 1
-                        ? new object?[] { environment }
+                        ? new object?[] { context }
                         : Array.Empty<object>());
             }
             catch (Exception ex)

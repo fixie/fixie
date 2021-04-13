@@ -60,8 +60,8 @@
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            var environment = new TestEnvironment(candidateTypes[0].Assembly, System.Console.Out, Directory.GetCurrentDirectory());
-            var runner = new Runner(environment, report);
+            var context = new TestContext(candidateTypes[0].Assembly, System.Console.Out, Directory.GetCurrentDirectory());
+            var runner = new Runner(context, report);
 
             await runner.DiscoverAsync(candidateTypes, discovery);
         }
@@ -71,8 +71,8 @@
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
-            var environment = new TestEnvironment(candidateTypes[0].Assembly, System.Console.Out, Directory.GetCurrentDirectory());
-            var runner = new Runner(environment, report);
+            var context = new TestContext(candidateTypes[0].Assembly, System.Console.Out, Directory.GetCurrentDirectory());
+            var runner = new Runner(context, report);
 
             await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
         }

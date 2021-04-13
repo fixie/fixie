@@ -11,22 +11,22 @@
 
     class Runner
     {
-        readonly TestEnvironment environment;
+        readonly TestContext context;
         readonly Assembly assembly;
         readonly Bus bus;
         readonly TextWriter console;
 
-        public Runner(TestEnvironment environment, params Report[] reports)
+        public Runner(TestContext context, params Report[] reports)
         {
-            this.environment = environment;
-            assembly = environment.Assembly;
-            console = environment.Console;
+            this.context = context;
+            assembly = context.Assembly;
+            console = context.Console;
             bus = new Bus(console, reports);
         }
 
         public async Task DiscoverAsync()
         {
-            var discovery = new BehaviorDiscoverer(environment).GetDiscovery();
+            var discovery = new BehaviorDiscoverer(context).GetDiscovery();
 
             await DiscoverAsync(assembly.GetTypes(), discovery);
         }
@@ -44,7 +44,7 @@
         public async Task<ExecutionSummary> RunAsync(TestPattern testPattern)
         {
             var matchingTests = ImmutableHashSet<string>.Empty;
-            var discovery = new BehaviorDiscoverer(environment).GetDiscovery();
+            var discovery = new BehaviorDiscoverer(context).GetDiscovery();
 
             var candidateTypes = assembly.GetTypes();
             var classDiscoverer = new ClassDiscoverer(discovery);
@@ -64,7 +64,7 @@
 
         async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
-            new BehaviorDiscoverer(environment)
+            new BehaviorDiscoverer(context)
                 .GetBehaviors(out var discovery, out var execution);
 
             return await RunAsync(candidateTypes, discovery, execution, selectedTests);

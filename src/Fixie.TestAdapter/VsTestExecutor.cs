@@ -97,11 +97,11 @@
             
             var console = Console.Out;
             var rootDirectory = Directory.GetCurrentDirectory();
-            var environment = new TestEnvironment(assembly, console, rootDirectory);
+            var context = new TestContext(assembly, console, rootDirectory);
 
             using var boundary = new ConsoleRedirectionBoundary();
 
-            var runner = new Runner(environment, report);
+            var runner = new Runner(context, report);
 
             run(runner);
         }

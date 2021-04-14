@@ -23,7 +23,7 @@
         {
             var console = Console.Out;
             var rootDirectory = Directory.GetCurrentDirectory();
-            var context = new TestContext(assembly, customArguments, console, rootDirectory);
+            var context = new TestContext(assembly, console, rootDirectory, customArguments);
 
             using var boundary = new ConsoleRedirectionBoundary();
 

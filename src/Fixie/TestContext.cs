@@ -8,9 +8,10 @@
     public class TestContext
     {
         public TestContext(Assembly assembly, TextWriter console, string rootDirectory)
-            : this(assembly, Array.Empty<string>(), console, rootDirectory) { }
+            : this(assembly, console, rootDirectory, Array.Empty<string>()) { }
 
-        public TestContext(Assembly assembly, IReadOnlyList<string> customArguments, TextWriter console, string rootDirectory)
+        public TestContext(Assembly assembly, TextWriter console, string rootDirectory,
+            IReadOnlyList<string> customArguments)
         {
             Assembly = assembly;
             CustomArguments = customArguments;

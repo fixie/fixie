@@ -6,13 +6,13 @@
 
     class BehaviorDiscoverer
     {
+        readonly TestContext context;
         readonly Assembly assembly;
-        readonly string[] customArguments;
 
-        public BehaviorDiscoverer(Assembly assembly, string[] customArguments)
+        public BehaviorDiscoverer(TestContext context)
         {
-            this.assembly = assembly;
-            this.customArguments = customArguments;
+            this.context = context;
+            assembly = context.Assembly;
         }
 
         public Discovery GetDiscovery()
@@ -95,7 +95,7 @@
                 
                 return constructor.Invoke(
                     constructor.GetParameters().Length == 1
-                        ? new object?[] {customArguments}
+                        ? new object?[] { context }
                         : Array.Empty<object>());
             }
             catch (Exception ex)

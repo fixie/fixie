@@ -96,9 +96,12 @@
             var report = new ExecutionReport(frameworkHandle, assemblyPath);
             
             var console = Console.Out;
+            var rootDirectory = Directory.GetCurrentDirectory();
+            var context = new TestContext(assembly, console, rootDirectory);
+
             using var boundary = new ConsoleRedirectionBoundary();
 
-            var runner = new Runner(assembly, console, report);
+            var runner = new Runner(context, report);
 
             run(runner);
         }

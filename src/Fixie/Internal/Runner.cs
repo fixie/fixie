@@ -11,25 +11,22 @@
 
     class Runner
     {
+        readonly TestContext context;
         readonly Assembly assembly;
-        readonly string[] customArguments;
         readonly Bus bus;
         readonly TextWriter console;
 
-        public Runner(Assembly assembly, TextWriter console, Report report)
-            : this(assembly, console, new string[] {}, report) { }
-
-        public Runner(Assembly assembly, TextWriter console, string[] customArguments, params Report[] reports)
+        public Runner(TestContext context, params Report[] reports)
         {
-            this.assembly = assembly;
-            this.customArguments = customArguments;
-            this.console = console;
+            this.context = context;
+            assembly = context.Assembly;
+            console = context.Console;
             bus = new Bus(console, reports);
         }
 
         public async Task DiscoverAsync()
         {
-            var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
+            var discovery = new BehaviorDiscoverer(context).GetDiscovery();
 
             await DiscoverAsync(assembly.GetTypes(), discovery);
         }
@@ -47,7 +44,7 @@
         public async Task<ExecutionSummary> RunAsync(TestPattern testPattern)
         {
             var matchingTests = ImmutableHashSet<string>.Empty;
-            var discovery = new BehaviorDiscoverer(assembly, customArguments).GetDiscovery();
+            var discovery = new BehaviorDiscoverer(context).GetDiscovery();
 
             var candidateTypes = assembly.GetTypes();
             var classDiscoverer = new ClassDiscoverer(discovery);
@@ -67,7 +64,7 @@
 
         async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
-            new BehaviorDiscoverer(assembly, customArguments)
+            new BehaviorDiscoverer(context)
                 .GetBehaviors(out var discovery, out var execution);
 
             return await RunAsync(candidateTypes, discovery, execution, selectedTests);

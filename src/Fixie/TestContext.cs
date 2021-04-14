@@ -7,10 +7,10 @@
 
     public class TestContext
     {
-        public TestContext(Assembly assembly, TextWriter console, string rootDirectory)
+        internal TestContext(Assembly assembly, TextWriter console, string rootDirectory)
             : this(assembly, console, rootDirectory, Array.Empty<string>()) { }
 
-        public TestContext(Assembly assembly, TextWriter console, string rootDirectory,
+        internal TestContext(Assembly assembly, TextWriter console, string rootDirectory,
             IReadOnlyList<string> customArguments)
         {
             Assembly = assembly;

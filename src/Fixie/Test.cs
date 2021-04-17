@@ -114,7 +114,7 @@ namespace Fixie
         public async Task PassAsync(object?[] parameters)
         {
             var @case = new Case(this, parameters);
-            await recorder.PassAsync(@case);
+            await recorder.PassAsync(this, @case);
 
             RecordedResult = true;
         }
@@ -133,7 +133,7 @@ namespace Fixie
         public async Task SkipAsync(object?[] parameters, string? reason)
         {
             var @case = new Case(this, parameters);
-            await recorder.SkipAsync(@case, reason);
+            await recorder.SkipAsync(this, @case, reason);
 
             RecordedResult = true;
         }
@@ -159,7 +159,7 @@ namespace Fixie
 
             var @case = new Case(this, parameters);
 
-            await recorder.FailAsync(@case, reason);
+            await recorder.FailAsync(this, @case, reason);
 
             RecordedResult = true;
         }
@@ -189,12 +189,12 @@ namespace Fixie
             TestResult? result;
             if (failureReason != null)
             {
-                await recorder.FailAsync(@case, failureReason);
+                await recorder.FailAsync(this, @case, failureReason);
                 result = TestResult.Failed(failureReason);
             }
             else
             {
-                await recorder.PassAsync(@case);
+                await recorder.PassAsync(this, @case);
                 result = TestResult.Passed;
             }
 

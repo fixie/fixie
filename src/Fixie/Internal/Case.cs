@@ -14,13 +14,7 @@
         {
             this.parameters = parameters;
             ResolvedMethod = method.TryResolveTypeArguments(parameters);
-            Name = CaseNameBuilder.GetName(ResolvedMethod, parameters);
         }
-
-        /// <summary>
-        /// Gets the name of the test case, including any input parameters.
-        /// </summary>
-        public string Name { get; }
 
         /// <summary>
         /// Gets the method that defines this test case.

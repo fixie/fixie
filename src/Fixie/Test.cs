@@ -113,7 +113,8 @@ namespace Fixie
         /// </summary>
         public async Task PassAsync(object?[] parameters)
         {
-            var name = new Case(Method, parameters).Name;
+            var @case = new Case(Method, parameters);
+            var name = CaseNameBuilder.GetName(@case.ResolvedMethod, parameters);
 
             await recorder.PassAsync(this, name);
 
@@ -133,7 +134,8 @@ namespace Fixie
         /// </summary>
         public async Task SkipAsync(object?[] parameters, string? reason)
         {
-            var name = new Case(Method, parameters).Name;
+            var @case = new Case(Method, parameters);
+            var name = CaseNameBuilder.GetName(@case.ResolvedMethod, parameters);
 
             await recorder.SkipAsync(this, name, reason);
 
@@ -159,7 +161,8 @@ namespace Fixie
             if (reason is PreservedException preservedException)
                 reason = preservedException.OriginalException;
 
-            var name = new Case(Method, parameters).Name;
+            var @case = new Case(Method, parameters);
+            var name = CaseNameBuilder.GetName(@case.ResolvedMethod, parameters);
 
             await recorder.FailAsync(this, name, reason);
 
@@ -169,6 +172,8 @@ namespace Fixie
         async Task<TestResult> RunCoreAsync(object? instance, object?[] parameters)
         {
             var @case = new Case(Method, parameters);
+            var name = CaseNameBuilder.GetName(@case.ResolvedMethod, parameters);
+
             Exception? failureReason = null;
 
             await recorder.StartAsync(this);
@@ -191,12 +196,12 @@ namespace Fixie
             TestResult? result;
             if (failureReason != null)
             {
-                await recorder.FailAsync(this, @case.Name, failureReason);
+                await recorder.FailAsync(this, name, failureReason);
                 result = TestResult.Failed(failureReason);
             }
             else
             {
-                await recorder.PassAsync(this, @case.Name);
+                await recorder.PassAsync(this, name);
                 result = TestResult.Passed;
             }
 

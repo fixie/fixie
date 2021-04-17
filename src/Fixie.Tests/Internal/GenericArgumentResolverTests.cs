@@ -242,11 +242,7 @@
             var testClass = typeof(Generic);
             var testMethod = testClass.GetInstanceMethod(methodName);
 
-            var console = TextWriter.Null;
-            var recordNothing = new ExecutionRecorder(new RecordingWriter(console), new Bus(console, new Report[] { }));
-            var test = new Test(recordNothing, testMethod);
-
-            return new Case(test, parameters).Method.GetGenericArguments();
+            return new Case(testMethod, parameters).Method.GetGenericArguments();
         }
 
         class Generic

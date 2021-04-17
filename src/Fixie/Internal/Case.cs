@@ -10,10 +10,10 @@
     {
         readonly object?[] parameters;
 
-        public Case(Test test, object?[] parameters)
+        public Case(MethodInfo method, object?[] parameters)
         {
             this.parameters = parameters;
-            Method = test.Method.TryResolveTypeArguments(parameters);
+            Method = method.TryResolveTypeArguments(parameters);
             Name = CaseNameBuilder.GetName(Method, parameters);
         }
 

@@ -233,7 +233,7 @@
             var recordNothing = new ExecutionRecorder(new RecordingWriter(console), new Bus(console, new Report[] { }));
             var test = new Test(recordNothing, caseMethod);
 
-            return new Case(test, parameters);
+            return new Case(test.Method, parameters);
         }
 
         void Returns()

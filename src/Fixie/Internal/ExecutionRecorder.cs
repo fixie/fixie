@@ -38,12 +38,12 @@
             await bus.PublishAsync(new TestStarted(test));
         }
 
-        public async Task SkipAsync(Test test, Case @case, string? reason)
+        public async Task SkipAsync(Test test, string name, string? reason)
         {
             var duration = caseStopwatch.Elapsed;
             recordingConsole.StopRecording(out var output);
 
-            var message = new TestSkipped(test.Name, @case.Name, duration, output, reason);
+            var message = new TestSkipped(test.Name, name, duration, output, reason);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 
@@ -51,12 +51,12 @@
             recordingConsole.StartRecording();
         }
 
-        public async Task PassAsync(Test test, Case @case)
+        public async Task PassAsync(Test test, string name)
         {
             var duration = caseStopwatch.Elapsed;
             recordingConsole.StopRecording(out var output);
 
-            var message = new TestPassed(test.Name, @case.Name, duration, output);
+            var message = new TestPassed(test.Name, name, duration, output);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 
@@ -64,12 +64,12 @@
             recordingConsole.StartRecording();
         }
 
-        public async Task FailAsync(Test test, Case @case, Exception reason)
+        public async Task FailAsync(Test test, string name, Exception reason)
         {
             var duration = caseStopwatch.Elapsed;
             recordingConsole.StopRecording(out var output);
 
-            var message = new TestFailed(test.Name, @case.Name, duration, output, reason);
+            var message = new TestFailed(test.Name, name, duration, output, reason);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 

@@ -1,12 +1,11 @@
 ﻿namespace Fixie.Reports
 {
     using System;
-    using Internal;
 
     public class TestSkipped : TestCompleted
     {
-        internal TestSkipped(Case @case, TimeSpan duration, string output, string? reason)
-            : base(@case, duration, output)
+        internal TestSkipped(string test, string name, TimeSpan duration, string output, string? reason)
+            : base(test, name, duration, output)
         {
             Reason = reason;
         }

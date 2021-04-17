@@ -1,12 +1,11 @@
 ﻿namespace Fixie.Reports
 {
     using System;
-    using Internal;
 
     public class TestFailed : TestCompleted
     {
-        internal TestFailed(Case @case, TimeSpan duration, string output, Exception reason)
-            : base(@case, duration, output)
+        internal TestFailed(string test, string name, TimeSpan duration, string output, Exception reason)
+            : base(test, name, duration, output)
         {
             Reason = reason;
         }

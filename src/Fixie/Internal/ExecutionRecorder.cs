@@ -43,7 +43,7 @@
             var duration = caseStopwatch.Elapsed;
             recordingConsole.StopRecording(out var output);
 
-            var message = new TestSkipped(@case, duration, output, reason);
+            var message = new TestSkipped(@case.Test.Name, @case.Name, duration, output, reason);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 
@@ -56,7 +56,7 @@
             var duration = caseStopwatch.Elapsed;
             recordingConsole.StopRecording(out var output);
 
-            var message = new TestPassed(@case, duration, output);
+            var message = new TestPassed(@case.Test.Name, @case.Name, duration, output);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 
@@ -69,7 +69,7 @@
             var duration = caseStopwatch.Elapsed;
             recordingConsole.StopRecording(out var output);
 
-            var message = new TestFailed(@case, duration, output, reason);
+            var message = new TestFailed(@case.Test.Name, @case.Name, duration, output, reason);
             assemblySummary.Add(message);
             await bus.PublishAsync(message);
 

@@ -175,8 +175,8 @@ namespace Fixie
 
             try
             {
-                if (instance == null && !@case.Method.IsStatic)
-                    instance = Construct(@case.Method.ReflectedType!);
+                if (instance == null && !@case.ResolvedMethod.IsStatic)
+                    instance = Construct(@case.ResolvedMethod.ReflectedType!);
 
                 await @case.RunAsync(instance);
             }

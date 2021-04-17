@@ -13,8 +13,8 @@
         public Case(MethodInfo method, object?[] parameters)
         {
             this.parameters = parameters;
-            Method = method.TryResolveTypeArguments(parameters);
-            Name = CaseNameBuilder.GetName(Method, parameters);
+            ResolvedMethod = method.TryResolveTypeArguments(parameters);
+            Name = CaseNameBuilder.GetName(ResolvedMethod, parameters);
         }
 
         /// <summary>
@@ -25,9 +25,9 @@
         /// <summary>
         /// Gets the method that defines this test case.
         /// </summary>
-        public MethodInfo Method { get; }
+        public MethodInfo ResolvedMethod { get; }
 
         public async Task RunAsync(object? instance)
-            => await Method.RunTestMethodAsync(instance, parameters);
+            => await ResolvedMethod.RunTestMethodAsync(instance, parameters);
     }
 }

@@ -2,11 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using Assertions;
     using Fixie.Internal;
-    using Fixie.Reports;
 
     public class GenericArgumentResolverTests
     {
@@ -239,10 +237,10 @@
 
         static IEnumerable<Type> Resolve(string methodName, params object?[] parameters)
         {
-            var testClass = typeof(Generic);
-            var testMethod = testClass.GetInstanceMethod(methodName);
-
-            return new Case(testMethod, parameters).ResolvedMethod.GetGenericArguments();
+            return typeof(Generic)
+                .GetInstanceMethod(methodName)
+                .TryResolveTypeArguments(parameters)
+                .GetGenericArguments();
         }
 
         class Generic

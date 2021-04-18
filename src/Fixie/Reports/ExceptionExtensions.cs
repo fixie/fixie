@@ -41,13 +41,12 @@
 
             var lines = exception.StackTrace.Split(NewLine);
 
-            if (lines.Length >= 3)
+            if (lines.Length >= 2)
             {
-                if (lines[^3].Contains(" Fixie.Internal.MethodInfoExtensions.RunTestMethodAsync(MethodInfo method, Object instance, Object[] parameters)") &&
-                    lines[^2].Contains(" Fixie.Internal.Case.RunAsync(Object instance)") &&
+                if (lines[^2].Contains(" Fixie.Internal.MethodInfoExtensions.RunTestMethodAsync(MethodInfo method, Object instance, Object[] parameters)") &&
                     lines[^1].Contains(" Fixie.Test.RunCoreAsync(Object instance, Object[] parameters)"))
 
-                    return string.Join(NewLine, lines[..^3]);
+                    return string.Join(NewLine, lines[..^2]);
             }
 
             return exception.StackTrace;

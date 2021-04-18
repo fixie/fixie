@@ -113,8 +113,9 @@ namespace Fixie
         /// </summary>
         public async Task PassAsync(object?[] parameters)
         {
-            var @case = new Case(this, parameters);
-            await recorder.PassAsync(@case);
+            var name = GetName(Method, parameters);
+
+            await recorder.PassAsync(this, name);
 
             RecordedResult = true;
         }
@@ -132,8 +133,9 @@ namespace Fixie
         /// </summary>
         public async Task SkipAsync(object?[] parameters, string? reason)
         {
-            var @case = new Case(this, parameters);
-            await recorder.SkipAsync(@case, reason);
+            var name = GetName(Method, parameters);
+
+            await recorder.SkipAsync(this, name, reason);
 
             RecordedResult = true;
         }
@@ -157,26 +159,28 @@ namespace Fixie
             if (reason is PreservedException preservedException)
                 reason = preservedException.OriginalException;
 
-            var @case = new Case(this, parameters);
+            var name = GetName(Method, parameters);
 
-            await recorder.FailAsync(@case, reason);
+            await recorder.FailAsync(this, name, reason);
 
             RecordedResult = true;
         }
 
         async Task<TestResult> RunCoreAsync(object? instance, object?[] parameters)
         {
-            var @case = new Case(this, parameters);
+            var resolvedMethod = Method.TryResolveTypeArguments(parameters);
+            var name = CaseNameBuilder.GetName(resolvedMethod, parameters);
+
             Exception? failureReason = null;
 
             await recorder.StartAsync(this);
 
             try
             {
-                if (instance == null && !@case.Method.IsStatic)
-                    instance = Construct(@case.Method.ReflectedType!);
+                if (instance == null && !resolvedMethod.IsStatic)
+                    instance = Construct(resolvedMethod.ReflectedType!);
 
-                await @case.RunAsync(instance);
+                await resolvedMethod.RunTestMethodAsync(instance, parameters);
             }
             catch (Exception exception)
             {
@@ -189,12 +193,12 @@ namespace Fixie
             TestResult? result;
             if (failureReason != null)
             {
-                await recorder.FailAsync(@case, failureReason);
+                await recorder.FailAsync(this, name, failureReason);
                 result = TestResult.Failed(failureReason);
             }
             else
             {
-                await recorder.PassAsync(@case);
+                await recorder.PassAsync(this, name);
                 result = TestResult.Passed;
             }
 
@@ -214,5 +218,8 @@ namespace Fixie
                 throw new PreservedException(exception);
             }
         }
+
+        static string GetName(MethodInfo method, object?[] parameters)
+            => CaseNameBuilder.GetName(method.TryResolveTypeArguments(parameters), parameters);
     }
 }

@@ -168,8 +168,8 @@ namespace Fixie
 
         async Task<TestResult> RunCoreAsync(object? instance, object?[] parameters)
         {
-            var @case = new Case(Method, parameters);
-            var name = CaseNameBuilder.GetName(@case.ResolvedMethod, parameters);
+            var resolvedMethod = Method.TryResolveTypeArguments(parameters);
+            var name = CaseNameBuilder.GetName(resolvedMethod, parameters);
 
             Exception? failureReason = null;
 
@@ -177,10 +177,10 @@ namespace Fixie
 
             try
             {
-                if (instance == null && !@case.ResolvedMethod.IsStatic)
-                    instance = Construct(@case.ResolvedMethod.ReflectedType!);
+                if (instance == null && !resolvedMethod.IsStatic)
+                    instance = Construct(resolvedMethod.ReflectedType!);
 
-                await @case.ResolvedMethod.RunTestMethodAsync(instance, parameters);
+                await resolvedMethod.RunTestMethodAsync(instance, parameters);
             }
             catch (Exception exception)
             {

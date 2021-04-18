@@ -113,8 +113,7 @@ namespace Fixie
         /// </summary>
         public async Task PassAsync(object?[] parameters)
         {
-            var @case = new Case(Method, parameters);
-            var name = CaseNameBuilder.GetName(@case.ResolvedMethod, parameters);
+            var name = GetName(Method, parameters);
 
             await recorder.PassAsync(this, name);
 
@@ -134,8 +133,7 @@ namespace Fixie
         /// </summary>
         public async Task SkipAsync(object?[] parameters, string? reason)
         {
-            var @case = new Case(Method, parameters);
-            var name = CaseNameBuilder.GetName(@case.ResolvedMethod, parameters);
+            var name = GetName(Method, parameters);
 
             await recorder.SkipAsync(this, name, reason);
 
@@ -161,8 +159,7 @@ namespace Fixie
             if (reason is PreservedException preservedException)
                 reason = preservedException.OriginalException;
 
-            var @case = new Case(Method, parameters);
-            var name = CaseNameBuilder.GetName(@case.ResolvedMethod, parameters);
+            var name = GetName(Method, parameters);
 
             await recorder.FailAsync(this, name, reason);
 
@@ -221,5 +218,8 @@ namespace Fixie
                 throw new PreservedException(exception);
             }
         }
+
+        static string GetName(MethodInfo method, object?[] parameters)
+            => CaseNameBuilder.GetName(method.TryResolveTypeArguments(parameters), parameters);
     }
 }

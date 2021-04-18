@@ -1,16 +1,17 @@
-namespace Fixie.Internal
+namespace Fixie
 {
     using System;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
+    using Internal;
 
-    static class MethodInfoExtensions
+    public static class MethodInfoExtensions
     {
         static MethodInfo? startAsTask;
 
-        public static async Task RunTestMethodAsync(this MethodInfo method, object? instance, params object?[] parameters)
+        internal static async Task RunTestMethodAsync(this MethodInfo method, object? instance, params object?[] parameters)
         {
             var returnType = method.ReturnType;
 

@@ -34,7 +34,7 @@
                 "FailDuringAwaitValueTask");
         }
 
-        public async Task ShouldFailWithClearExplanationWhenCaseMethodReturnsNullAwaitable()
+        public async Task ShouldFailWithClearExplanationWhenTestReturnsNullAwaitable()
         {
             var output = await RunAsync<NullTaskTestClass>();
 
@@ -45,7 +45,7 @@
             output.ShouldHaveLifecycle("Test");
         }
 
-        public async Task ShouldFailWithClearExplanationWhenAsyncCaseMethodReturnsNonStartedTask()
+        public async Task ShouldFailWithClearExplanationWhenAsyncTestReturnsNonStartedTask()
         {
             var output = await RunAsync<FailDueToNonStartedTaskTestClass>();
 

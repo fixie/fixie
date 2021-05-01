@@ -83,7 +83,11 @@ namespace Fixie.Tests
         {
             public CannotInvokeConstructorTestClass(int argument) { }
 
-            public void UnreachableCase() { }
+            public void UnreachableCase()
+            {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
         }
 
         static bool ShouldSkip(Test test)

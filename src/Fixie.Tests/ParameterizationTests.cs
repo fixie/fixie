@@ -5,9 +5,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Assertions;
-    using static Utility;
 
-    public class ParameterizationTests
+    public class ParameterizationTests : InstrumentedExecutionTests
     {
         class ParameterizedExecution : Execution
         {
@@ -51,14 +50,16 @@
         public async Task ShouldAllowRunningTestsMultipleTimesWithVaryingInputParameters()
         {
             var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
-            (await RunAsync<ParameterizedTestClass>(execution))
-                .ShouldBe(
-                    For<ParameterizedTestClass>(
-                        ".IntArg(0) passed",
-                        ".Sum(1, 1, 2) passed",
-                        ".Sum(1, 2, 3) passed",
-                        ".Sum(5, 5, 11) failed: Expected sum of 11 but was 10.",
-                        ".ZeroArgs passed"));
+            var output = await RunAsync<ParameterizedTestClass>(execution);
+
+            output.ShouldHaveResults(
+                "ParameterizedTestClass.IntArg(0) passed",
+                "ParameterizedTestClass.Sum(1, 1, 2) passed",
+                "ParameterizedTestClass.Sum(1, 2, 3) passed",
+                "ParameterizedTestClass.Sum(5, 5, 11) failed: Expected sum of 11 but was 10.",
+                "ParameterizedTestClass.ZeroArgs passed");
+
+            output.ShouldHaveLifecycle("IntArg", "Sum", "Sum", "Sum", "ZeroArgs");
         }
 
         public async Task ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
@@ -71,128 +72,156 @@
                 new object[] {0, 1, 2},
                 new object[] {0, 1, 2, 3}
             });
-            (await RunAsync<ParameterizedTestClass>(execution))
-                .ShouldBe(
-                    For<ParameterizedTestClass>(
-                        ".IntArg failed: Parameter count mismatch.",
-                        ".IntArg(0) passed",
-                        ".IntArg(0, 1) failed: Parameter count mismatch.",
-                        ".IntArg(0, 1, 2) failed: Parameter count mismatch.",
-                        ".IntArg(0, 1, 2, 3) failed: Parameter count mismatch.",
+            var output = await RunAsync<ParameterizedTestClass>(execution);
 
-                        ".Sum failed: Parameter count mismatch.",
-                        ".Sum(0) failed: Parameter count mismatch.",
-                        ".Sum(0, 1) failed: Parameter count mismatch.",
-                        ".Sum(0, 1, 2) failed: Expected sum of 2 but was 1.",
-                        ".Sum(0, 1, 2, 3) failed: Parameter count mismatch.",
+            output.ShouldHaveResults(
+                "ParameterizedTestClass.IntArg failed: Parameter count mismatch.",
+                "ParameterizedTestClass.IntArg(0) passed",
+                "ParameterizedTestClass.IntArg(0, 1) failed: Parameter count mismatch.",
+                "ParameterizedTestClass.IntArg(0, 1, 2) failed: Parameter count mismatch.",
+                "ParameterizedTestClass.IntArg(0, 1, 2, 3) failed: Parameter count mismatch.",
 
-                        ".ZeroArgs passed",
-                        ".ZeroArgs(0) failed: Parameter count mismatch.",
-                        ".ZeroArgs(0, 1) failed: Parameter count mismatch.",
-                        ".ZeroArgs(0, 1, 2) failed: Parameter count mismatch.",
-                        ".ZeroArgs(0, 1, 2, 3) failed: Parameter count mismatch."));
+                "ParameterizedTestClass.Sum failed: Parameter count mismatch.",
+                "ParameterizedTestClass.Sum(0) failed: Parameter count mismatch.",
+                "ParameterizedTestClass.Sum(0, 1) failed: Parameter count mismatch.",
+                "ParameterizedTestClass.Sum(0, 1, 2) failed: Expected sum of 2 but was 1.",
+                "ParameterizedTestClass.Sum(0, 1, 2, 3) failed: Parameter count mismatch.",
+
+                "ParameterizedTestClass.ZeroArgs passed",
+                "ParameterizedTestClass.ZeroArgs(0) failed: Parameter count mismatch.",
+                "ParameterizedTestClass.ZeroArgs(0, 1) failed: Parameter count mismatch.",
+                "ParameterizedTestClass.ZeroArgs(0, 1, 2) failed: Parameter count mismatch.",
+                "ParameterizedTestClass.ZeroArgs(0, 1, 2, 3) failed: Parameter count mismatch.");
+
+            output.ShouldHaveLifecycle("IntArg", "Sum", "ZeroArgs");
         }
 
         public async Task ShouldSupportEndingTheRunEarlyWhenParameterGenerationThrows()
         {
             var execution = new ParameterizedExecution(BuggyParameterSource);
-            (await RunAsync<ParameterizedTestClass>(execution))
-                .ShouldBe(
-                    For<ParameterizedTestClass>(
-                        ".IntArg(0) passed",
-                        ".IntArg(1) failed: Expected 0, but was 1",
-                        ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+            var output = await RunAsync<ParameterizedTestClass>(execution);
 
-                        ".Sum failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-                        ".Sum skipped: This test did not run.",
-                        
-                        ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: IntArg",
-                        ".ZeroArgs skipped: This test did not run."));
+            output.ShouldHaveResults(
+                "ParameterizedTestClass.IntArg(0) passed",
+                "ParameterizedTestClass.IntArg(1) failed: Expected 0, but was 1",
+                "ParameterizedTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+
+                "ParameterizedTestClass.Sum failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                "ParameterizedTestClass.Sum skipped: This test did not run.",
+
+                "ParameterizedTestClass.ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+                "ParameterizedTestClass.ZeroArgs skipped: This test did not run.");
+
+            output.ShouldHaveLifecycle("IntArg", "IntArg");
         }
 
         public async Task ShouldSupportIsolatingFailuresToTheAffectedTestMethodWhenParameterGenerationThrows()
         {
             var execution = new IsolatedParameterizedExecution(BuggyParameterSource);
-            (await RunAsync<ParameterizedTestClass>(execution))
-                .ShouldBe(
-                    For<ParameterizedTestClass>(
-                        ".IntArg(0) passed",
-                        ".IntArg(1) failed: Expected 0, but was 1",
-                        ".IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
+            var output = await RunAsync<ParameterizedTestClass>(execution);
 
-                        ".Sum(0) failed: Parameter count mismatch.",
-                        ".Sum(1) failed: Parameter count mismatch.",
-                        ".Sum failed: Exception thrown while attempting to yield input parameters for method: Sum",
+            output.ShouldHaveResults(
+                "ParameterizedTestClass.IntArg(0) passed",
+                "ParameterizedTestClass.IntArg(1) failed: Expected 0, but was 1",
+                "ParameterizedTestClass.IntArg failed: Exception thrown while attempting to yield input parameters for method: IntArg",
 
-                        ".ZeroArgs(0) failed: Parameter count mismatch.",
-                        ".ZeroArgs(1) failed: Parameter count mismatch.",
-                        ".ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs"));
+                "ParameterizedTestClass.Sum(0) failed: Parameter count mismatch.",
+                "ParameterizedTestClass.Sum(1) failed: Parameter count mismatch.",
+                "ParameterizedTestClass.Sum failed: Exception thrown while attempting to yield input parameters for method: Sum",
+
+                "ParameterizedTestClass.ZeroArgs(0) failed: Parameter count mismatch.",
+                "ParameterizedTestClass.ZeroArgs(1) failed: Parameter count mismatch.",
+                "ParameterizedTestClass.ZeroArgs failed: Exception thrown while attempting to yield input parameters for method: ZeroArgs");
+
+            output.ShouldHaveLifecycle("IntArg", "IntArg");
         }
 
         public async Task ShouldFailWithGenericTestNameWhenGenericTypeParametersCannotBeResolved()
         {
             var execution = new IsolatedParameterizedExecution(BuggyParameterSource);
-            (await RunAsync<ConstrainedGenericTestClass>(execution))
-                .ShouldBe(
-                    For<ConstrainedGenericTestClass>(
-                        ".ConstrainedGeneric<System.Int32>(0) passed",
-                        ".ConstrainedGeneric<System.Int32>(1) passed",
-                        ".ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
-                        ".UnconstrainedGeneric<System.Int32>(0) passed",
-                        ".UnconstrainedGeneric<System.Int32>(1) passed",
-                        ".UnconstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric"));
+            var output = await RunAsync<ConstrainedGenericTestClass>(execution);
+
+            output.ShouldHaveResults(
+                "ConstrainedGenericTestClass.ConstrainedGeneric<System.Int32>(0) passed",
+                "ConstrainedGenericTestClass.ConstrainedGeneric<System.Int32>(1) passed",
+                "ConstrainedGenericTestClass.ConstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: ConstrainedGeneric",
+                "ConstrainedGenericTestClass.UnconstrainedGeneric<System.Int32>(0) passed",
+                "ConstrainedGenericTestClass.UnconstrainedGeneric<System.Int32>(1) passed",
+                "ConstrainedGenericTestClass.UnconstrainedGeneric<T> failed: Exception thrown while attempting to yield input parameters for method: UnconstrainedGeneric");
+
+            output.ShouldHaveLifecycle(
+                "ConstrainedGeneric", "ConstrainedGeneric",
+                "UnconstrainedGeneric", "UnconstrainedGeneric");
         }
 
         public async Task ShouldResolveGenericTypeParameters()
         {
             var execution = new IsolatedParameterizedExecution(InputAttributeOrDefaultParameterSource);
-            (await RunAsync<GenericTestClass>(execution))
-                .ShouldBe(
-                    For<GenericTestClass>(
-                        ".ConstrainedGeneric<System.Int32>(1) passed",
-                        ".ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",
-                        
-                        ".ConstrainedGenericMethodWithNoInputsProvided<T> failed: Cannot create an instance of T because Type.ContainsGenericParameters is true.",
+            var output = await RunAsync<GenericTestClass>(execution);
 
-                        ".GenericMethodWithIncorrectParameterCountProvided<System.Int32>(123, 123) failed: Parameter count mismatch.",
+            output.ShouldHaveResults(
+                "GenericTestClass.ConstrainedGeneric<System.Int32>(1) passed",
+                "GenericTestClass.ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",
 
-                        ".GenericMethodWithNoInputsProvided<T>(null) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.ConstrainedGenericMethodWithNoInputsProvided<T> failed: Cannot create an instance of T because Type.ContainsGenericParameters is true.",
 
-                        ".MultipleGenericArgumentsMultipleParameters<T1, T2>(123, null, 456, System.Int32, System.Object) failed: Could not resolve type parameters for generic method.",
-                        ".MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",
-                        ".MultipleGenericArgumentsMultipleParameters<T1, T2>(\"stringArg\", null, null, System.String, System.Object) failed: Could not resolve type parameters for generic method.",
-                        ".MultipleGenericArgumentsMultipleParameters<T1, T2>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) failed: Could not resolve type parameters for generic method.",
-                        ".MultipleGenericArgumentsMultipleParameters<System.String, System.String>(null, \"stringArg1\", \"stringArg2\", System.String, System.String) passed",
+                "GenericTestClass.GenericMethodWithIncorrectParameterCountProvided<System.Int32>(123, 123) failed: Parameter count mismatch.",
 
-                        ".SingleGenericArgument<System.Int32>(123, System.Int32) passed",
-                        ".SingleGenericArgument<T>(null, System.Object) failed: Could not resolve type parameters for generic method.",
-                        ".SingleGenericArgument<System.String>(\"stringArg\", System.String) passed",
+                "GenericTestClass.GenericMethodWithNoInputsProvided<T>(null) failed: Could not resolve type parameters for generic method.",
 
-                        ".SingleGenericArgumentMultipleParameters<System.Int32>(123, 456, System.Int32) passed",
-                        ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", 123, System.Object) failed: Object of type 'System.Int32' cannot be converted to type 'System.String'.",
-                        ".SingleGenericArgumentMultipleParameters<System.Int32>(123, \"stringArg\", System.Object) failed: Object of type 'System.String' cannot be converted to type 'System.Int32'.",
-                        ".SingleGenericArgumentMultipleParameters<System.Int32>(123, null, System.Int32) passed", //MethodInfo.Invoke converts nulls to default(T) for value types.
-                        ".SingleGenericArgumentMultipleParameters<T>(null, null, System.Object) failed: Could not resolve type parameters for generic method.",
-                        ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
-                        ".SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
-                        ".SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed"
-                        ));
+                "GenericTestClass.MultipleGenericArgumentsMultipleParameters<T1, T2>(123, null, 456, System.Int32, System.Object) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",
+                "GenericTestClass.MultipleGenericArgumentsMultipleParameters<T1, T2>(\"stringArg\", null, null, System.String, System.Object) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.MultipleGenericArgumentsMultipleParameters<T1, T2>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.String, System.String>(null, \"stringArg1\", \"stringArg2\", System.String, System.String) passed",
+
+                "GenericTestClass.SingleGenericArgument<System.Int32>(123, System.Int32) passed",
+                "GenericTestClass.SingleGenericArgument<T>(null, System.Object) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.SingleGenericArgument<System.String>(\"stringArg\", System.String) passed",
+
+                "GenericTestClass.SingleGenericArgumentMultipleParameters<System.Int32>(123, 456, System.Int32) passed",
+                "GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", 123, System.Object) failed: Object of type 'System.Int32' cannot be converted to type 'System.String'.",
+                "GenericTestClass.SingleGenericArgumentMultipleParameters<System.Int32>(123, \"stringArg\", System.Object) failed: Object of type 'System.String' cannot be converted to type 'System.Int32'.",
+                "GenericTestClass.SingleGenericArgumentMultipleParameters<System.Int32>(123, null, System.Int32) passed", //MethodInfo.Invoke converts nulls to default(T) for value types.
+                "GenericTestClass.SingleGenericArgumentMultipleParameters<T>(null, null, System.Object) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
+                "GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
+                "GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed");
+
+            output.ShouldHaveLifecycle(
+                "ConstrainedGeneric",
+
+                "MultipleGenericArgumentsMultipleParameters",
+                "MultipleGenericArgumentsMultipleParameters",
+
+                "SingleGenericArgument",
+                "SingleGenericArgument",
+
+                "SingleGenericArgumentMultipleParameters",
+                "SingleGenericArgumentMultipleParameters",
+                "SingleGenericArgumentMultipleParameters",
+                "SingleGenericArgumentMultipleParameters",
+                "SingleGenericArgumentMultipleParameters");
         }
 
         public async Task ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
         {
             var execution = new ParameterizedExecution(ComplexGenericParameterSource);
-            (await RunAsync<ComplexGenericTestClass>(execution))
-                .ShouldBe(
-                    For<ComplexGenericTestClass>(
-                        ".CompoundGenericParameter<System.Int32, System.String>([1, A], \"System.Int32\", \"System.String\") passed",
-                        ".CompoundGenericParameter<System.String, System.Int32>([B, 2], \"System.String\", \"System.Int32\") passed",
+            var output = await RunAsync<ComplexGenericTestClass>(execution);
 
-                        ".GenericFuncParameter<System.Int32>(5, System.Func`2[System.Int32,System.Int32], 10) passed",
-                        ".GenericFuncParameter<System.String>(5, System.Func`2[System.Int32,System.String], \"5\") passed",
+            output.ShouldHaveResults(
+                "ComplexGenericTestClass.CompoundGenericParameter<System.Int32, System.String>([1, A], \"System.Int32\", \"System.String\") passed",
+                "ComplexGenericTestClass.CompoundGenericParameter<System.String, System.Int32>([B, 2], \"System.String\", \"System.Int32\") passed",
 
-                        ".GenericFuncParameter<System.String>(5, System.Func`2[System.Int32,System.String], '5') failed: " +
-                        "Object of type 'System.Char' cannot be converted to type 'System.String'."));
+                "ComplexGenericTestClass.GenericFuncParameter<System.Int32>(5, System.Func`2[System.Int32,System.Int32], 10) passed",
+                "ComplexGenericTestClass.GenericFuncParameter<System.String>(5, System.Func`2[System.Int32,System.String], \"5\") passed",
+
+                "ComplexGenericTestClass.GenericFuncParameter<System.String>(5, System.Func`2[System.Int32,System.String], '5') failed: " +
+                "Object of type 'System.Char' cannot be converted to type 'System.String'.");
+
+            output.ShouldHaveLifecycle(
+                "CompoundGenericParameter", "CompoundGenericParameter",
+                "GenericFuncParameter", "GenericFuncParameter");
         }
 
         static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(Test test)
@@ -241,6 +270,8 @@
         {
             public void IntArg(int i)
             {
+                WhereAmI();
+
                 if (i != 0)
                     throw new Exception("Expected 0, but was " + i);
             }
@@ -250,11 +281,16 @@
             [Input(5, 5, 11)]
             public void Sum(int a, int b, int expectedSum)
             {
+                WhereAmI();
+
                 if (a + b != expectedSum)
                     throw new Exception($"Expected sum of {expectedSum} but was {a + b}.");
             }
 
-            public void ZeroArgs() { }
+            public void ZeroArgs()
+            {
+                WhereAmI();
+            }
         }
 
         class GenericTestClass
@@ -263,22 +299,26 @@
             [Input("Oops")]
             public void ConstrainedGeneric<T>(T input) where T : struct
             {
+                WhereAmI();
                 typeof(T).IsValueType.ShouldBe(true);
             }
 
             public void ConstrainedGenericMethodWithNoInputsProvided<T>(T input) where T : struct
             {
+                WhereAmI();
                 throw new ShouldBeUnreachableException();
             }
 
             [Input(123, 123)]
             public void GenericMethodWithIncorrectParameterCountProvided<T>(T genericArgument)
             {
+                WhereAmI();
                 throw new ShouldBeUnreachableException();
             }
 
             public void GenericMethodWithNoInputsProvided<T>(T genericArgument)
             {
+                WhereAmI();
                 throw new ShouldBeUnreachableException();
             }
 
@@ -289,6 +329,7 @@
             [Input(null, "stringArg1", "stringArg2", typeof(string), typeof(string))]
             public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genericArgument1A, T2 genericArgument2, T1 genericArgument1B, Type expectedT1, Type expectedT2)
             {
+                WhereAmI();
                 typeof(T1).ShouldBe(expectedT1);
                 typeof(T2).ShouldBe(expectedT2);
             }
@@ -298,6 +339,7 @@
             [Input("stringArg", typeof(string))]
             public void SingleGenericArgument<T>(T genericArgument, Type expectedT)
             {
+                WhereAmI();
                 typeof(T).ShouldBe(expectedT);
             }
 
@@ -311,6 +353,7 @@
             [Input(null, "stringArg", typeof(string))]
             public void SingleGenericArgumentMultipleParameters<T>(T genericArgument1, T genericArgument2, Type expectedT)
             {
+                WhereAmI();
                 typeof(T).ShouldBe(expectedT);
             }
 
@@ -324,12 +367,15 @@
         {
             public void CompoundGenericParameter<TKey, TValue>(KeyValuePair<TKey, TValue> pair, string expectedKeyType, string expectedValueType)
             {
+                WhereAmI();
                 typeof(TKey).FullName.ShouldBe(expectedKeyType);
                 typeof(TValue).FullName.ShouldBe(expectedValueType);
             }
 
             public void GenericFuncParameter<TResult>(int input, Func<int, TResult> transform, TResult expectedResult)
             {
+                WhereAmI();
+
                 var result = transform(input);
 
                 result.ShouldBe(expectedResult);
@@ -340,11 +386,13 @@
         {
             public void ConstrainedGeneric<T>(T input) where T : struct
             {
+                WhereAmI();
                 typeof(T).IsValueType.ShouldBe(true);
             }
 
             public void UnconstrainedGeneric<T>(T input)
             {
+                WhereAmI();
             }
         }
     }

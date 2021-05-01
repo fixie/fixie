@@ -21,9 +21,6 @@
         public static string At<T>(string method, [CallerFilePath] string path = default!)
             => $"   at {FullName<T>().Replace("+", ".")}.{method} in {path}:line #";
 
-        public static string[] For<TSampleTestClass>(params string[] entries)
-            => entries.Select(x => FullName<TSampleTestClass>() + x).ToArray();
-
         public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;
 

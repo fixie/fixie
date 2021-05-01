@@ -8,15 +8,6 @@
 
     public class BasicCaseTests
     {
-        public async Task ShouldFailWhenTestClassConstructorCannotBeInvoked()
-        {
-            (await RunAsync<CannotInvokeConstructorTestClass>())
-                .ShouldBe(
-                    For<CannotInvokeConstructorTestClass>(
-                        ".UnreachableCase failed: No parameterless constructor defined " +
-                        $"for type '{FullName<CannotInvokeConstructorTestClass>()}'."));
-        }
-
         public async Task ShouldAwaitAsynchronousTestsToEnsureCompleteExecution()
         {
             (await RunAsync<AsyncTestClass>())
@@ -93,15 +84,6 @@
             UnsupportedReturnTypeDeclarationsTestClass.GenericTaskInvoked.ShouldBe(false);
             UnsupportedReturnTypeDeclarationsTestClass.GenericValueTaskInvoked.ShouldBe(false);
             UnsupportedReturnTypeDeclarationsTestClass.ObjectInvoked.ShouldBe(false);
-        }
-
-        class CannotInvokeConstructorTestClass
-        {
-            public CannotInvokeConstructorTestClass(int argument)
-            {
-            }
-
-            public void UnreachableCase() { }
         }
 
         static void ThrowException([CallerMemberName] string member = default!)

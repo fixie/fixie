@@ -79,6 +79,13 @@ namespace Fixie.Tests
             }
         }
 
+        class CannotInvokeConstructorTestClass
+        {
+            public CannotInvokeConstructorTestClass(int argument) { }
+
+            public void UnreachableCase() { }
+        }
+
         static bool ShouldSkip(Test test)
             => test.Name.Contains("Skip");
 
@@ -331,6 +338,18 @@ namespace Fixie.Tests
             );
 
             output.ShouldHaveLifecycle("Fail", "Pass");
+        }
+
+        public async Task ShouldFailWhenTestClassConstructorCannotBeInvoked()
+        {
+            var output = await RunAsync<CannotInvokeConstructorTestClass, DefaultExecution>();
+
+            output.ShouldHaveResults(
+                "CannotInvokeConstructorTestClass.UnreachableCase failed: " +
+                "No parameterless constructor defined " +
+                $"for type '{FullName<CannotInvokeConstructorTestClass>()}'.");
+
+            output.ShouldHaveLifecycle();
         }
     }
 }

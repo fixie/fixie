@@ -5,6 +5,7 @@ namespace Fixie.Tests
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
+    using Fixie.Internal;
 
     public abstract class InstrumentedExecutionTests
     {
@@ -90,7 +91,10 @@ namespace Fixie.Tests
             => RunAsync(
                 new[] {typeof(TSampleTestClass1), typeof(TSampleTestClass2)},
                 execution);
-        
+   
+        protected Task<Output> RunAsync<TSampleTestClass>()
+            => RunAsync<DefaultExecution>(typeof(TSampleTestClass));
+
         protected Task<Output> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
             => RunAsync<TExecution>(typeof(TSampleTestClass));
 

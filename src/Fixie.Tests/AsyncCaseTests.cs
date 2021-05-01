@@ -3,87 +3,90 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
-    using static Utility;
     using static System.Environment;
 
-    public class AsyncCaseTests
+    public class AsyncCaseTests : InstrumentedExecutionTests
     {
         public async Task ShouldAwaitAsynchronousTestsToEnsureCompleteExecution()
         {
-            (await RunAsync<AsyncTestClass>())
-                .ShouldBe(
-                    For<AsyncTestClass>(
-                        ".AwaitTaskThenPass passed",
-                        ".AwaitValueTaskThenPass passed",
-                        ".CompleteTaskThenPass passed",
-                        ".FailAfterAwaitTask failed: Expected: 0" + NewLine + "Actual:   3",
-                        ".FailAfterAwaitValueTask failed: Expected: 0" + NewLine + "Actual:   3",
-                        ".FailBeforeAwaitTask failed: 'FailBeforeAwaitTask' failed!",
-                        ".FailBeforeAwaitValueTask failed: 'FailBeforeAwaitValueTask' failed!",
-                        ".FailDuringAwaitTask failed: Attempted to divide by zero.",
-                        ".FailDuringAwaitValueTask failed: Attempted to divide by zero."
-                        ));
+            var output = await RunAsync<AsyncTestClass>();
+
+            output.ShouldHaveResults(
+                "AsyncTestClass.AwaitTaskThenPass passed",
+                "AsyncTestClass.AwaitValueTaskThenPass passed",
+                "AsyncTestClass.CompleteTaskThenPass passed",
+                "AsyncTestClass.FailAfterAwaitTask failed: Expected: 0" + NewLine + "Actual:   3",
+                "AsyncTestClass.FailAfterAwaitValueTask failed: Expected: 0" + NewLine + "Actual:   3",
+                "AsyncTestClass.FailBeforeAwaitTask failed: 'FailBeforeAwaitTask' failed!",
+                "AsyncTestClass.FailBeforeAwaitValueTask failed: 'FailBeforeAwaitValueTask' failed!",
+                "AsyncTestClass.FailDuringAwaitTask failed: Attempted to divide by zero.",
+                "AsyncTestClass.FailDuringAwaitValueTask failed: Attempted to divide by zero.");
+
+            output.ShouldHaveLifecycle(
+                "AwaitTaskThenPass",
+                "AwaitValueTaskThenPass",
+                "CompleteTaskThenPass",
+                "FailAfterAwaitTask",
+                "FailAfterAwaitValueTask",
+                "FailBeforeAwaitTask",
+                "FailBeforeAwaitValueTask",
+                "FailDuringAwaitTask",
+                "FailDuringAwaitValueTask");
         }
 
         public async Task ShouldFailWithClearExplanationWhenCaseMethodReturnsNullAwaitable()
         {
-            (await RunAsync<NullTaskTestClass>())
-                .ShouldBe(
-                    For<NullTaskTestClass>(
-                        ".Test failed: This asynchronous test returned null, " +
-                        "but a non-null awaitable object was expected."));
+            var output = await RunAsync<NullTaskTestClass>();
+
+            output.ShouldHaveResults(
+                "NullTaskTestClass.Test failed: This asynchronous test returned null, " +
+                "but a non-null awaitable object was expected.");
+
+            output.ShouldHaveLifecycle("Test");
         }
 
         public async Task ShouldFailWithClearExplanationWhenAsyncCaseMethodReturnsNonStartedTask()
         {
-            (await RunAsync<FailDueToNonStartedTaskTestClass>())
-                .ShouldBe(
-                    For<FailDueToNonStartedTaskTestClass>(
-                        ".Test failed: The test returned a non-started task, which cannot " +
-                        "be awaited. Consider using Task.Run or Task.Factory.StartNew."));
+            var output = await RunAsync<FailDueToNonStartedTaskTestClass>();
+
+            output.ShouldHaveResults(
+                "FailDueToNonStartedTaskTestClass.Test failed: The test returned a non-started task, which cannot " +
+                "be awaited. Consider using Task.Run or Task.Factory.StartNew.");
+
+            output.ShouldHaveLifecycle("Test");
         }
 
         public async Task ShouldFailUnsupportedReturnTypeDeclarationsRatherThanAttemptExecution()
         {
-            UnsupportedReturnTypeDeclarationsTestClass.AsyncGenericTaskInvoked = false;
-            UnsupportedReturnTypeDeclarationsTestClass.AsyncVoidInvoked = false;
-            UnsupportedReturnTypeDeclarationsTestClass.GenericTaskInvoked = false;
-            UnsupportedReturnTypeDeclarationsTestClass.GenericValueTaskInvoked = false;
-            UnsupportedReturnTypeDeclarationsTestClass.ObjectInvoked = false;
+            var output = await RunAsync<UnsupportedReturnTypeDeclarationsTestClass>();
 
-            (await RunAsync<UnsupportedReturnTypeDeclarationsTestClass>())
-                .ShouldBe(
-                    For<UnsupportedReturnTypeDeclarationsTestClass>(
-                        ".AsyncGenericTask failed: " +
-                        "`async Task<T>` test methods are not supported. Declare " +
-                        "the test method as `async Task` to acknowledge that the " +
-                        "`Result` will not be witnessed.",
+            output.ShouldHaveResults(
+                "UnsupportedReturnTypeDeclarationsTestClass.AsyncGenericTask failed: " +
+                "`async Task<T>` test methods are not supported. Declare " +
+                "the test method as `async Task` to acknowledge that the " +
+                "`Result` will not be witnessed.",
 
-                        ".AsyncVoid failed: " +
-                        "`async void` test methods are not supported. Declare " +
-                        "the test method as `async Task` to ensure the task " +
-                        "actually runs to completion.",
+                "UnsupportedReturnTypeDeclarationsTestClass.AsyncVoid failed: " +
+                "`async void` test methods are not supported. Declare " +
+                "the test method as `async Task` to ensure the task " +
+                "actually runs to completion.",
 
-                        ".GenericTask failed: " +
-                        "`Task<T>` test methods are not supported. Declare " +
-                        "the test method as `Task` to acknowledge that the " +
-                        "`Result` will not be witnessed.",
+                "UnsupportedReturnTypeDeclarationsTestClass.GenericTask failed: " +
+                "`Task<T>` test methods are not supported. Declare " +
+                "the test method as `Task` to acknowledge that the " +
+                "`Result` will not be witnessed.",
 
-                        ".GenericValueTask failed: " +
-                        "`async ValueTask<T>` test methods are not supported. Declare " +
-                        "the test method as `async ValueTask` to acknowledge that the " +
-                        "`Result` will not be witnessed.",
+                "UnsupportedReturnTypeDeclarationsTestClass.GenericValueTask failed: " +
+                "`async ValueTask<T>` test methods are not supported. Declare " +
+                "the test method as `async ValueTask` to acknowledge that the " +
+                "`Result` will not be witnessed.",
 
-                        ".Object failed: " +
-                        "Test method return type is not supported. Declare " +
-                        "the test method return type as `void`, `Task`, or `ValueTask`."
-                    ));
+                "UnsupportedReturnTypeDeclarationsTestClass.Object failed: " +
+                "Test method return type is not supported. Declare " +
+                "the test method return type as `void`, `Task`, or `ValueTask`."
+            );
 
-            UnsupportedReturnTypeDeclarationsTestClass.AsyncGenericTaskInvoked.ShouldBe(false);
-            UnsupportedReturnTypeDeclarationsTestClass.AsyncVoidInvoked.ShouldBe(false);
-            UnsupportedReturnTypeDeclarationsTestClass.GenericTaskInvoked.ShouldBe(false);
-            UnsupportedReturnTypeDeclarationsTestClass.GenericValueTaskInvoked.ShouldBe(false);
-            UnsupportedReturnTypeDeclarationsTestClass.ObjectInvoked.ShouldBe(false);
+            output.ShouldHaveLifecycle();
         }
 
         static void ThrowException([CallerMemberName] string member = default!)
@@ -100,6 +103,8 @@
         {
             public async Task AwaitTaskThenPass()
             {
+                WhereAmI();
+
                 var result = await DivideAsync(15, 5);
 
                 result.ShouldBe(3);
@@ -107,6 +112,8 @@
 
             public async ValueTask AwaitValueTaskThenPass()
             {
+                WhereAmI();
+
                 var result = await DivideAsync(15, 5);
 
                 result.ShouldBe(3);
@@ -114,6 +121,8 @@
 
             public Task CompleteTaskThenPass()
             {
+                WhereAmI();
+
                 var divide = DivideAsync(15, 5);
 
                 return divide.ContinueWith(division =>
@@ -124,6 +133,8 @@
 
             public async Task FailAfterAwaitTask()
             {
+                WhereAmI();
+
                 var result = await DivideAsync(15, 5);
 
                 result.ShouldBe(0);
@@ -131,6 +142,8 @@
 
             public async ValueTask FailAfterAwaitValueTask()
             {
+                WhereAmI();
+
                 var result = await DivideAsync(15, 5);
 
                 result.ShouldBe(0);
@@ -138,6 +151,8 @@
 
             public async Task FailBeforeAwaitTask()
             {
+                WhereAmI();
+
                 ThrowException();
 
                 await DivideAsync(15, 5);
@@ -145,6 +160,8 @@
 
             public async ValueTask FailBeforeAwaitValueTask()
             {
+                WhereAmI();
+
                 ThrowException();
 
                 await DivideAsync(15, 5);
@@ -152,6 +169,8 @@
 
             public async Task FailDuringAwaitTask()
             {
+                WhereAmI();
+
                 await DivideAsync(15, 0);
 
                 throw new ShouldBeUnreachableException();
@@ -159,6 +178,8 @@
 
             public async ValueTask FailDuringAwaitValueTask()
             {
+                WhereAmI();
+
                 await DivideAsync(15, 0);
 
                 throw new ShouldBeUnreachableException();
@@ -169,6 +190,8 @@
         {
             public Task? Test()
             {
+                WhereAmI();
+
                 // Although unlikely, we must ensure that
                 // we don't attempt to wait on a Task that
                 // is in fact null.
@@ -180,49 +203,50 @@
         {
             public Task Test()
             {
+                WhereAmI();
+
                 return new Task(() => throw new ShouldBeUnreachableException());
             }
         }
 
         class UnsupportedReturnTypeDeclarationsTestClass
         {
-            public static bool AsyncGenericTaskInvoked;
-            public static bool AsyncVoidInvoked;
-            public static bool GenericTaskInvoked;
-            public static bool GenericValueTaskInvoked;
-            public static bool ObjectInvoked;
-
             public async Task<bool> AsyncGenericTask()
             {
-                AsyncGenericTaskInvoked = true;
+                WhereAmI();
+
                 await DivideAsync(15, 5);
                 throw new ShouldBeUnreachableException();
             }
 
             public async void AsyncVoid()
             {
-                AsyncVoidInvoked = true;
+                WhereAmI();
+
                 await DivideAsync(15, 5);
                 throw new ShouldBeUnreachableException();
             }
 
             public Task<bool> GenericTask()
             {
-                GenericTaskInvoked = true;
+                WhereAmI();
+
                 DivideAsync(15, 5);
                 throw new ShouldBeUnreachableException();
             }
 
             public async ValueTask<bool> GenericValueTask()
             {
-                GenericValueTaskInvoked = true;
+                WhereAmI();
+
                 await DivideAsync(15, 5);
                 throw new ShouldBeUnreachableException();
             }
 
             public object Object()
             {
-                ObjectInvoked = true;
+                WhereAmI();
+
                 throw new ShouldBeUnreachableException();
             }
         }

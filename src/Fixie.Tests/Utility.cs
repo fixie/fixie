@@ -27,17 +27,8 @@
         public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;
 
-        public static Task<IEnumerable<string>> RunAsync<TSampleTestClass>()
-            => RunAsync<TSampleTestClass, DefaultExecution>();
-
-        public static Task<IEnumerable<string>> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
-            => RunAsync<TSampleTestClass>(new TExecution());
-
         public static Task<IEnumerable<string>> RunAsync<TSampleTestClass>(Execution execution)
             => RunAsync(typeof(TSampleTestClass), execution);
-
-        public static Task<IEnumerable<string>> RunAsync<TExecution>(Type testClass) where TExecution : Execution, new()
-            => RunAsync(testClass, new TExecution());
 
         public static async Task<IEnumerable<string>> RunAsync(Type testClass, Execution execution)
         {

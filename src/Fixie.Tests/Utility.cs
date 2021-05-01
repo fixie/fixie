@@ -24,9 +24,6 @@
         public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;
 
-        public static Task<IEnumerable<string>> RunAsync<TSampleTestClass>(Execution execution)
-            => RunAsync(typeof(TSampleTestClass), execution);
-
         public static async Task<IEnumerable<string>> RunAsync(Type testClass, Execution execution)
         {
             var report = new StubReport();

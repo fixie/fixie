@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Assertions;
-    using static Utility;
 
     public class CaseNameTests
     {
@@ -205,7 +204,7 @@
         }
 
         static Task<IEnumerable<string>> RunScriptAsync<TSampleTestClass>(Func<Test, Task> scriptAsync)
-            => RunAsync<TSampleTestClass>(new ScriptedExecution(scriptAsync));
+            => Utility.RunAsync(typeof(TSampleTestClass), new ScriptedExecution(scriptAsync));
 
         static async Task RunAsync(Test test, params object?[] parameters)
         {

@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests.Cases
+﻿namespace Fixie.Tests
 {
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
@@ -6,7 +6,7 @@
     using static Utility;
     using static System.Environment;
 
-    public class BasicCaseTests
+    public class AsyncCaseTests
     {
         public async Task ShouldAwaitAsynchronousTestsToEnsureCompleteExecution()
         {

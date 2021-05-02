@@ -38,10 +38,28 @@
             var output = await RunAsync<SyncTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
-                "SyncTestClass.Fail failed: 'Fail' failed!",
-                "SyncTestClass.Pass passed");
+                "SyncTestClass.Args(1, 2, 3) passed",
+                "SyncTestClass.Args(1, 2, 3, \"Extra\") failed: Parameter count mismatch.",
+                "SyncTestClass.Throws failed: 'Throws' failed!",
+                "SyncTestClass.ZeroArgs passed");
 
-            output.ShouldHaveLifecycle("Fail", "Pass");
+            output.ShouldHaveLifecycle("Args", "Throws", "ZeroArgs");
+        }
+
+        public async Task ShouldResolveGenericTypeParametersWhenPossible()
+        {
+            var output = await RunAsync<GenericTestClass, MethodInfoAccessingExecution>();
+
+            output.ShouldHaveResults(
+                "GenericTestClass.Args<System.Int32, System.Int32>(1, 2, System.Int32, System.Int32) passed",
+                "GenericTestClass.Args<System.Char, System.Double>('a', 3, System.Char, System.Double) passed",
+
+                "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(1, 'a', System.Int32, System.Char) passed",
+                "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(2, 'b', System.Int32, System.Int32) failed: Expected: System.Int32" + NewLine + "Actual:   System.Char",
+                "GenericTestClass.ConstrainedArgs<T1, T2>(1, null, System.Int32, System.Object) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.ConstrainedArgs<T1, T2>(null, 2, System.Object, System.Int32) failed: Could not resolve type parameters for generic method.");
+
+            output.ShouldHaveLifecycle("Args", "Args", "ConstrainedArgs", "ConstrainedArgs");
         }
 
         public async Task ShouldAwaitAsynchronousMethodsToEnsureCompleteExecution()
@@ -138,8 +156,38 @@
 
         class SyncTestClass
         {
-            public void Pass() { WhereAmI(); }
-            public void Fail() { WhereAmI(); ThrowException(); }
+            public void ZeroArgs() { WhereAmI(); }
+
+            public void Throws() { WhereAmI(); ThrowException(); }
+
+            [Input(1, 2, 3)]
+            [Input(1, 2, 3, "Extra")]
+            public void Args(int a, int b, int c) { WhereAmI(); }
+        }
+
+        class GenericTestClass
+        {
+            [Input(1, 2, typeof(int), typeof(int))]
+            [Input('a', 3.0d, typeof(char), typeof(double))]
+            public void Args<T1, T2>(T1 a, T2 b, Type expectedT1, Type expectedT2)
+            {
+                WhereAmI();
+                typeof(T1).ShouldBe(expectedT1);
+                typeof(T2).ShouldBe(expectedT2);
+            }
+
+            [Input(1, 'a', typeof(int), typeof(char))]
+            [Input(2, 'b', typeof(int), typeof(int))]
+            [Input(1, null, typeof(int), typeof(object))]
+            [Input(null, 2, typeof(object), typeof(int))]
+            public void ConstrainedArgs<T1, T2>(T1 a, T2 b, Type expectedT1, Type expectedT2)
+                where T1: struct
+                where T2: struct
+            {
+                WhereAmI();
+                typeof(T1).ShouldBe(expectedT1);
+                typeof(T2).ShouldBe(expectedT2);
+            }
         }
 
         class AsyncTestClass

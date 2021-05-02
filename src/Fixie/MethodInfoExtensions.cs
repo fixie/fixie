@@ -13,7 +13,9 @@ namespace Fixie
 
         public static async Task CallAsync(this MethodInfo method, object? instance, params object?[] parameters)
         {
-            await method.RunTestMethodAsync(instance, parameters);
+            var resolvedMethod = method.TryResolveTypeArguments(parameters);
+
+            await resolvedMethod.RunTestMethodAsync(instance, parameters);
         }
 
         internal static async Task RunTestMethodAsync(this MethodInfo method, object? instance, params object?[] parameters)

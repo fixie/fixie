@@ -94,7 +94,7 @@
             var output = await RunAsync<NullTaskTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
-                "NullTaskTestClass.Test failed: This asynchronous test returned null, " +
+                "NullTaskTestClass.Test failed: This asynchronous method returned null, " +
                 "but a non-null awaitable object was expected.");
 
             output.ShouldHaveLifecycle("Test");
@@ -105,7 +105,7 @@
             var output = await RunAsync<FailDueToNonStartedTaskTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
-                "FailDueToNonStartedTaskTestClass.Test failed: The test returned a non-started task, which cannot " +
+                "FailDueToNonStartedTaskTestClass.Test failed: The method returned a non-started task, which cannot " +
                 "be awaited. Consider using Task.Run or Task.Factory.StartNew.");
 
             output.ShouldHaveLifecycle("Test");
@@ -117,28 +117,28 @@
 
             output.ShouldHaveResults(
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncGenericTask failed: " +
-                "`async Task<T>` test methods are not supported. Declare " +
-                "the test method as `async Task` to acknowledge that the " +
+                "`async Task<T>` methods are not supported. Declare " +
+                "the method as `async Task` to acknowledge that the " +
                 "`Result` will not be witnessed.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncVoid failed: " +
-                "`async void` test methods are not supported. Declare " +
-                "the test method as `async Task` to ensure the task " +
+                "`async void` methods are not supported. Declare " +
+                "the method as `async Task` to ensure the task " +
                 "actually runs to completion.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.GenericTask failed: " +
-                "`Task<T>` test methods are not supported. Declare " +
-                "the test method as `Task` to acknowledge that the " +
+                "`Task<T>` methods are not supported. Declare " +
+                "the method as `Task` to acknowledge that the " +
                 "`Result` will not be witnessed.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.GenericValueTask failed: " +
-                "`async ValueTask<T>` test methods are not supported. Declare " +
-                "the test method as `async ValueTask` to acknowledge that the " +
+                "`async ValueTask<T>` methods are not supported. Declare " +
+                "the method as `async ValueTask` to acknowledge that the " +
                 "`Result` will not be witnessed.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.Object failed: " +
-                "Test method return type is not supported. Declare " +
-                "the test method return type as `void`, `Task`, or `ValueTask`."
+                "Method return type is not supported. Declare " +
+                "the method return type as `void`, `Task`, or `ValueTask`."
             );
 
             output.ShouldHaveLifecycle();

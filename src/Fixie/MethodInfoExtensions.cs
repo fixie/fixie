@@ -23,8 +23,8 @@ namespace Fixie
             {
                 if (resolvedMethod.HasAsyncKeyword())
                     throw new NotSupportedException(
-                        "`async void` test methods are not supported. Declare " +
-                        "the test method as `async Task` to ensure the task " +
+                        "`async void` methods are not supported. Declare " +
+                        "the method as `async Task` to ensure the task " +
                         "actually runs to completion.");
             }
             else
@@ -42,23 +42,23 @@ namespace Fixie
                             var asyncPrefix = resolvedMethod.HasAsyncKeyword() ? "async " : "";
 
                             throw new NotSupportedException(
-                                $"`{asyncPrefix}Task<T>` test methods are not supported. Declare " +
-                                $"the test method as `{asyncPrefix}Task` to acknowledge that the " +
+                                $"`{asyncPrefix}Task<T>` methods are not supported. Declare " +
+                                $"the method as `{asyncPrefix}Task` to acknowledge that the " +
                                 "`Result` will not be witnessed.");
                         }
 
                         if (genericTypeDefinition == typeof(ValueTask<>))
                         {
                             throw new NotSupportedException(
-                                "`async ValueTask<T>` test methods are not supported. Declare " +
-                                "the test method as `async ValueTask` to acknowledge that the " +
+                                "`async ValueTask<T>` methods are not supported. Declare " +
+                                "the method as `async ValueTask` to acknowledge that the " +
                                 "`Result` will not be witnessed.");
                         }
                     }
 
                     throw new NotSupportedException(
-                        "Test method return type is not supported. Declare " +
-                        "the test method return type as `void`, `Task`, or `ValueTask`.");
+                        "Method return type is not supported. Declare " +
+                        "the method return type as `void`, `Task`, or `ValueTask`.");
                 }
             }
 
@@ -81,14 +81,14 @@ namespace Fixie
 
             if (result == null)
                 throw new NullReferenceException(
-                    "This asynchronous test returned null, but " +
+                    "This asynchronous method returned null, but " +
                     "a non-null awaitable object was expected.");
 
             var task = ConvertToTask(result);
 
             if (task.Status == TaskStatus.Created)
                 throw new InvalidOperationException(
-                    "The test returned a non-started task, which cannot be awaited. " +
+                    "The method returned a non-started task, which cannot be awaited. " +
                     "Consider using Task.Run or Task.Factory.StartNew.");
 
             await task;

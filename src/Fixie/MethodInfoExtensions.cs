@@ -15,7 +15,83 @@ namespace Fixie
         {
             var resolvedMethod = method.TryResolveTypeArguments(parameters);
 
-            await resolvedMethod.RunTestMethodAsync(instance, parameters);
+            var returnType = resolvedMethod.ReturnType;
+
+            var isVoid = returnType == typeof(void);
+
+            if (isVoid)
+            {
+                if (resolvedMethod.HasAsyncKeyword())
+                    throw new NotSupportedException(
+                        "`async void` test methods are not supported. Declare " +
+                        "the test method as `async Task` to ensure the task " +
+                        "actually runs to completion.");
+            }
+            else
+            {
+                if (returnType != typeof(Task) &&
+                    returnType != typeof(ValueTask) &&
+                    !IsFSharpAsync(returnType))
+                {
+                    if (returnType.IsGenericType)
+                    {
+                        var genericTypeDefinition = returnType.GetGenericTypeDefinition();
+
+                        if (genericTypeDefinition == typeof(Task<>))
+                        {
+                            var asyncPrefix = resolvedMethod.HasAsyncKeyword() ? "async " : "";
+
+                            throw new NotSupportedException(
+                                $"`{asyncPrefix}Task<T>` test methods are not supported. Declare " +
+                                $"the test method as `{asyncPrefix}Task` to acknowledge that the " +
+                                "`Result` will not be witnessed.");
+                        }
+
+                        if (genericTypeDefinition == typeof(ValueTask<>))
+                        {
+                            throw new NotSupportedException(
+                                "`async ValueTask<T>` test methods are not supported. Declare " +
+                                "the test method as `async ValueTask` to acknowledge that the " +
+                                "`Result` will not be witnessed.");
+                        }
+                    }
+
+                    throw new NotSupportedException(
+                        "Test method return type is not supported. Declare " +
+                        "the test method return type as `void`, `Task`, or `ValueTask`.");
+                }
+            }
+
+            if (resolvedMethod.ContainsGenericParameters)
+                throw new Exception("Could not resolve type parameters for generic method.");
+
+            object? result;
+
+            try
+            {
+                result = resolvedMethod.Invoke(instance, parameters.Length == 0 ? null : parameters);
+            }
+            catch (TargetInvocationException exception)
+            {
+                throw new PreservedException(exception);
+            }
+
+            if (isVoid)
+                return;
+
+            if (result == null)
+                throw new NullReferenceException(
+                    "This asynchronous test returned null, but " +
+                    "a non-null awaitable object was expected.");
+
+            var task = ConvertToTask(result);
+
+            if (task.Status == TaskStatus.Created)
+                throw new InvalidOperationException(
+                    "The test returned a non-started task, which cannot be awaited. " +
+                    "Consider using Task.Run or Task.Factory.StartNew.");
+
+            await task;
         }
 
         internal static async Task RunTestMethodAsync(this MethodInfo method, object? instance, params object?[] parameters)

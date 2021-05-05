@@ -1,6 +1,7 @@
 namespace Fixie
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
@@ -84,14 +85,20 @@ namespace Fixie
                     "This asynchronous method returned null, but " +
                     "a non-null awaitable object was expected.");
 
-            var task = ConvertToTask(result);
+            if (ConvertToTask(result, out var task))
+            {
+                if (task.Status == TaskStatus.Created)
+                    throw new InvalidOperationException(
+                        "The method returned a non-started task, which cannot be awaited. " +
+                        "Consider using Task.Run or Task.Factory.StartNew.");
 
-            if (task.Status == TaskStatus.Created)
+                await task;
+            }
+            else
+            {
                 throw new InvalidOperationException(
-                    "The method returned a non-started task, which cannot be awaited. " +
-                    "Consider using Task.Run or Task.Factory.StartNew.");
-
-            await task;
+                    $"The method returned an object with an unsupported type: {result.GetType().FullName}");
+            }
         }
 
         internal static async Task RunTestMethodAsync(this MethodInfo method, object? instance, params object?[] parameters)
@@ -165,14 +172,20 @@ namespace Fixie
                     "This asynchronous test returned null, but " +
                     "a non-null awaitable object was expected.");
 
-            var task = ConvertToTask(result);
+            if (ConvertToTask(result, out var task))
+            {
+                if (task.Status == TaskStatus.Created)
+                    throw new InvalidOperationException(
+                        "The test returned a non-started task, which cannot be awaited. " +
+                        "Consider using Task.Run or Task.Factory.StartNew.");
 
-            if (task.Status == TaskStatus.Created)
+                await task;
+            }
+            else
+            {
                 throw new InvalidOperationException(
-                    "The test returned a non-started task, which cannot be awaited. " +
-                    "Consider using Task.Run or Task.Factory.StartNew.");
-
-            await task;
+                    $"The test returned an object with an unsupported type: {result.GetType().FullName}");
+            }
         }
 
         static bool HasAsyncKeyword(this MethodInfo method)
@@ -180,21 +193,30 @@ namespace Fixie
             return method.Has<AsyncStateMachineAttribute>();
         }
 
-        static Task ConvertToTask(object result)
+        static bool ConvertToTask(object result, [NotNullWhen(true)] out Task? task)
         {
             if (result is Task t)
-                return t;
+            {
+                task = t;
+                return true;
+            }
 
             if (result is ValueTask vt)
-                return vt.AsTask();
+            {
+                task = vt.AsTask();
+                return true;
+            }
 
             var resultType = result.GetType();
             
             if (IsFSharpAsync(resultType))
-                return ConvertFSharpAsyncToTask(result, resultType);
+            {
+                task = ConvertFSharpAsyncToTask(result, resultType);
+                return true;
+            }
 
-            throw new InvalidOperationException(
-                $"The test returned an object with an unsupported type: {resultType.FullName}");
+            task = null;
+            return false;
         }
 
         static bool IsFSharpAsync(Type resultType)

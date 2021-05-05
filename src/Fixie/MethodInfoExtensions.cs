@@ -96,8 +96,18 @@ namespace Fixie
             }
             else
             {
-                throw new InvalidOperationException(
-                    $"The method returned an object with an unsupported type: {result.GetType().FullName}");
+                var resultType = result.GetType();
+            
+                if (IsFSharpAsync(resultType))
+                {
+                    task = ConvertFSharpAsyncToTask(result, resultType);
+                    await task;
+                }
+                else
+                {
+                    throw new InvalidOperationException(
+                        $"The method returned an object with an unsupported type: {resultType.FullName}");
+                }
             }
         }
 
@@ -183,8 +193,18 @@ namespace Fixie
             }
             else
             {
-                throw new InvalidOperationException(
-                    $"The test returned an object with an unsupported type: {result.GetType().FullName}");
+                var resultType = result.GetType();
+            
+                if (IsFSharpAsync(resultType))
+                {
+                    task = ConvertFSharpAsyncToTask(result, resultType);
+                    await task;
+                }
+                else
+                {
+                    throw new InvalidOperationException(
+                        $"The test returned an object with an unsupported type: {resultType.FullName}");
+                }
             }
         }
 
@@ -204,14 +224,6 @@ namespace Fixie
             if (result is ValueTask vt)
             {
                 task = vt.AsTask();
-                return true;
-            }
-
-            var resultType = result.GetType();
-            
-            if (IsFSharpAsync(resultType))
-            {
-                task = ConvertFSharpAsyncToTask(result, resultType);
                 return true;
             }
 

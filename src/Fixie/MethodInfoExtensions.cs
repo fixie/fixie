@@ -255,7 +255,14 @@ namespace Fixie
 
             var genericStartAsTask = startAsTask.MakeGenericMethod(resultType.GetGenericArguments());
 
-            return (Task) genericStartAsTask.Invoke(null, new[] { result, null, null })!;
+            try
+            {
+                return (Task) genericStartAsTask.Invoke(null, new[] { result, null, null })!;
+            }
+            catch (TargetInvocationException exception)
+            {
+                throw new PreservedException(exception);
+            }
         }
     }
 }

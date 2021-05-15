@@ -97,9 +97,7 @@
             output.ShouldHaveResults(
                 "FSharpAsyncTestClass.AsyncPass passed",
                 "FSharpAsyncTestClass.FailBeforeAsync failed: 'FailBeforeAsync' failed!",
-                
-                "FSharpAsyncTestClass.FailFromAsync failed: Exception has been thrown by the target of an invocation.");
-                //Prefer: "FSharpAsyncTestClass.FailFromAsync failed: Expected: 0" + NewLine + "Actual:   3");
+                "FSharpAsyncTestClass.FailFromAsync failed: Expected: 0" + NewLine + "Actual:   3");
 
             output.ShouldHaveLifecycle(
                 "AsyncPass",

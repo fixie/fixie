@@ -3,6 +3,7 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
+    using Microsoft.FSharp.Control;
     using static System.Environment;
 
     public class AsyncCaseTests : InstrumentedExecutionTests
@@ -32,6 +33,23 @@
                 "FailBeforeAwaitValueTask",
                 "FailDuringAwaitTask",
                 "FailDuringAwaitValueTask");
+        }
+
+        public async Task ShouldRunFSharpAsyncResultsToEnsureCompleteExecution()
+        {
+            var output = await RunAsync<FSharpAsyncTestClass>();
+
+            output.ShouldHaveResults(
+                "FSharpAsyncTestClass.AsyncPass passed",
+                "FSharpAsyncTestClass.FailBeforeAsync failed: 'FailBeforeAsync' failed!",
+                
+                "FSharpAsyncTestClass.FailFromAsync failed: Exception has been thrown by the target of an invocation.");
+                //Prefer: "FSharpAsyncTestClass.FailFromAsync failed: Expected: 0" + NewLine + "Actual:   3");
+
+            output.ShouldHaveLifecycle(
+                "AsyncPass",
+                "FailBeforeAsync",
+                "FailFromAsync");
         }
 
         public async Task ShouldFailWithClearExplanationWhenTestReturnsNullAwaitable()
@@ -97,6 +115,11 @@
         static Task<int> DivideAsync(int numerator, int denominator)
         {
             return Task.Run(() => numerator/denominator);
+        }
+
+        static int Divide(int numerator, int denominator)
+        {
+            return numerator/denominator;
         }
 
         class AsyncTestClass
@@ -183,6 +206,46 @@
                 await DivideAsync(15, 0);
 
                 throw new ShouldBeUnreachableException();
+            }
+        }
+
+        class FSharpAsyncTestClass
+        {
+            public FSharpAsync<int> AsyncPass()
+            {
+                WhereAmI();
+
+                return new FSharpAsync<int>(() =>
+                {
+                    var result = Divide(15, 5);
+
+                    result.ShouldBe(3);
+
+                    return result;
+                });
+            }
+
+            public FSharpAsync<int> FailBeforeAsync()
+            {
+                WhereAmI();
+
+                ThrowException();
+
+                return new FSharpAsync<int>(() => Divide(15, 5));
+            }
+
+            public FSharpAsync<int> FailFromAsync()
+            {
+                WhereAmI();
+
+                return new FSharpAsync<int>(() =>
+                {
+                    var result = Divide(15, 5);
+
+                    result.ShouldBe(0);
+
+                    return result;
+                });
             }
         }
 

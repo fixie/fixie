@@ -23,8 +23,5 @@ namespace Microsoft.FSharp.Control
     {
         public static Task<T> StartAsTask<T>(FSharpAsync<T> computation, TaskCreationOptions? options = null, CancellationToken? cancellationToken = null)
             => Task.FromResult(computation.Result);
-
-        public static T RunSynchronously<T>(FSharpAsync<T> computation, int? timeout = null, CancellationToken? cancellationToken = null)
-            => computation.Result;
     }
 }

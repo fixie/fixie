@@ -195,7 +195,7 @@ namespace Fixie
                 "The method return type is an unsupported awaitable type. " +
                 "To ensure the reliability of the test runner, declare " +
                 "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
-                "or ValueTask<T>.");
+                "or `ValueTask<T>`.");
         }
 
         static bool HasAsyncKeyword(this MethodInfo method)

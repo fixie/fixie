@@ -171,13 +171,13 @@
                 "The method return type is an unsupported awaitable type. " +
                 "To ensure the reliability of the test runner, declare " +
                 "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
-                "or ValueTask<T>.",
+                "or `ValueTask<T>`.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerator failed: " +
                 "The method return type is an unsupported awaitable type. " +
                 "To ensure the reliability of the test runner, declare " +
                 "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
-                "or ValueTask<T>.",
+                "or `ValueTask<T>`.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncVoid failed: " +
                 "`async void` methods are not supported. Declare " +
@@ -188,7 +188,7 @@
                 "The method return type is an unsupported awaitable type. " +
                 "To ensure the reliability of the test runner, declare " +
                 "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
-                "or ValueTask<T>."
+                "or `ValueTask<T>`."
             );
 
             output.ShouldHaveLifecycle();

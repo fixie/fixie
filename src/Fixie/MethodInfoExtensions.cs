@@ -116,14 +116,6 @@ namespace Fixie
             return false;
         }
 
-        [DoesNotReturn]
-        static void ThrowForNullAwaitable()
-        {
-            throw new NullReferenceException(
-                "This asynchronous method returned null, but " +
-                "a non-null awaitable object was expected.");
-        }
-
         internal static async Task RunTestMethodAsync(this MethodInfo method, object? instance, params object?[] parameters)
         {
             var returnType = method.ReturnType;
@@ -144,32 +136,10 @@ namespace Fixie
                     returnType != typeof(ValueTask) &&
                     !IsFSharpAsync(returnType))
                 {
-                    if (returnType.IsGenericType)
-                    {
-                        var genericTypeDefinition = returnType.GetGenericTypeDefinition();
-
-                        if (genericTypeDefinition == typeof(Task<>))
-                        {
-                            var asyncPrefix = method.HasAsyncKeyword() ? "async " : "";
-
-                            throw new NotSupportedException(
-                                $"`{asyncPrefix}Task<T>` test methods are not supported. Declare " +
-                                $"the test method as `{asyncPrefix}Task` to acknowledge that the " +
-                                "`Result` will not be witnessed.");
-                        }
-
-                        if (genericTypeDefinition == typeof(ValueTask<>))
-                        {
-                            throw new NotSupportedException(
-                                "`async ValueTask<T>` test methods are not supported. Declare " +
-                                "the test method as `async ValueTask` to acknowledge that the " +
-                                "`Result` will not be witnessed.");
-                        }
-                    }
-
                     throw new NotSupportedException(
                         "Test method return type is not supported. Declare " +
-                        "the test method return type as `void`, `Task`, or `ValueTask`.");
+                        "the test method return type as `void`, `Task`, or " +
+                        "`ValueTask`.");
                 }
             }
 
@@ -198,6 +168,14 @@ namespace Fixie
                     "Consider using Task.Run or Task.Factory.StartNew.");
 
             await task;
+        }
+
+        [DoesNotReturn]
+        static void ThrowForNullAwaitable()
+        {
+            throw new NullReferenceException(
+                "This asynchronous method returned null, but " +
+                "a non-null awaitable object was expected.");
         }
 
         static bool HasAsyncKeyword(this MethodInfo method)

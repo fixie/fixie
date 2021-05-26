@@ -22,7 +22,14 @@
                             {
                                 var instance = testClass.Construct();
 
-                                await test.Method.CallAsync(instance, parameters);
+                                var result = await test.Method.CallAsync(instance, parameters);
+
+                                if (result != null)
+                                    System.Console.WriteLine($"{test.Method.Name} resulted in {result.GetType().FullName} with value {result}");
+                                else if (test.Method.ReturnType != typeof(void) &&
+                                         test.Method.ReturnType != typeof(Task) &&
+                                         test.Method.ReturnType != typeof(ValueTask))
+                                    System.Console.WriteLine($"{test.Method.Name} resulted in null");
 
                                 await test.PassAsync(parameters);
                             }
@@ -41,10 +48,25 @@
             output.ShouldHaveResults(
                 "SyncTestClass.Args(1, 2, 3) passed",
                 "SyncTestClass.Args(1, 2, 3, \"Extra\") failed: Parameter count mismatch.",
+                "SyncTestClass.ReturnsInteger passed",
+                "SyncTestClass.ReturnsNull passed",
+                "SyncTestClass.ReturnsObject passed",
+                "SyncTestClass.ReturnsString passed",
                 "SyncTestClass.Throws failed: 'Throws' failed!",
                 "SyncTestClass.ZeroArgs passed");
 
-            output.ShouldHaveLifecycle("Args", "Throws", "ZeroArgs");
+            output.ShouldHaveLifecycle(
+                "Args",
+                "ReturnsInteger",
+                "ReturnsInteger resulted in System.Int32 with value 42",
+                "ReturnsNull",
+                "ReturnsNull resulted in null",
+                "ReturnsObject",
+                "ReturnsObject resulted in Fixie.Tests.MethodInfoExtensionsTests+Example with value <example>",
+                "ReturnsString",
+                "ReturnsString resulted in System.String with value ABC",
+                "Throws",
+                "ZeroArgs");
         }
 
         public async Task ShouldResolveGenericTypeParametersWhenPossible()
@@ -76,7 +98,16 @@
                 "AsyncTestClass.FailBeforeAwaitTask failed: 'FailBeforeAwaitTask' failed!",
                 "AsyncTestClass.FailBeforeAwaitValueTask failed: 'FailBeforeAwaitValueTask' failed!",
                 "AsyncTestClass.FailDuringAwaitTask failed: Attempted to divide by zero.",
-                "AsyncTestClass.FailDuringAwaitValueTask failed: Attempted to divide by zero.");
+                "AsyncTestClass.FailDuringAwaitValueTask failed: Attempted to divide by zero.",
+                "AsyncTestClass.GenericAsyncTaskFail failed: Attempted to divide by zero.",
+                "AsyncTestClass.GenericAsyncTaskWithResult passed",
+                "AsyncTestClass.GenericAsyncValueTaskFail failed: Attempted to divide by zero.",
+                "AsyncTestClass.GenericAsyncValueTaskWithResult passed",
+                "AsyncTestClass.GenericTaskFail failed: One or more errors occurred. (Attempted to divide by zero.)",
+                "AsyncTestClass.GenericTaskWithResult passed",
+                "AsyncTestClass.NullTask failed: This asynchronous method returned null, " +
+                "but a non-null awaitable object was expected."
+            );
 
             output.ShouldHaveLifecycle(
                 "AwaitTaskThenPass",
@@ -87,7 +118,17 @@
                 "FailBeforeAwaitTask",
                 "FailBeforeAwaitValueTask",
                 "FailDuringAwaitTask",
-                "FailDuringAwaitValueTask");
+                "FailDuringAwaitValueTask",
+                "GenericAsyncTaskFail",
+                "GenericAsyncTaskWithResult",
+                "GenericAsyncTaskWithResult resulted in System.Int32 with value 3",
+                "GenericAsyncValueTaskFail",
+                "GenericAsyncValueTaskWithResult",
+                "GenericAsyncValueTaskWithResult resulted in System.Int32 with value 4",
+                "GenericTaskFail",
+                "GenericTaskWithResult",
+                "GenericTaskWithResult resulted in System.Boolean with value True",
+                "NullTask");
         }
 
         public async Task ShouldRunFSharpAsyncResultsToEnsureCompleteExecution()
@@ -97,23 +138,16 @@
             output.ShouldHaveResults(
                 "FSharpAsyncTestClass.AsyncPass passed",
                 "FSharpAsyncTestClass.FailBeforeAsync failed: 'FailBeforeAsync' failed!",
-                "FSharpAsyncTestClass.FailFromAsync failed: Expected: 0" + NewLine + "Actual:   3");
+                "FSharpAsyncTestClass.FailFromAsync failed: Expected: 0" + NewLine + "Actual:   3",
+                "FSharpAsyncTestClass.NullAsync failed: This asynchronous method returned null, " +
+                "but a non-null awaitable object was expected.");
 
             output.ShouldHaveLifecycle(
                 "AsyncPass",
+                "AsyncPass resulted in System.Int32 with value 3",
                 "FailBeforeAsync",
-                "FailFromAsync");
-        }
-
-        public async Task ShouldThrowWithClearExplanationWhenMethodReturnsNullAwaitable()
-        {
-            var output = await RunAsync<NullTaskTestClass, MethodInfoAccessingExecution>();
-
-            output.ShouldHaveResults(
-                "NullTaskTestClass.Test failed: This asynchronous method returned null, " +
-                "but a non-null awaitable object was expected.");
-
-            output.ShouldHaveLifecycle("Test");
+                "FailFromAsync",
+                "NullAsync");
         }
 
         public async Task ShouldThrowWithClearExplanationWhenMethodReturnsNonStartedTask()
@@ -132,29 +166,10 @@
             var output = await RunAsync<UnsupportedReturnTypeDeclarationsTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
-                "UnsupportedReturnTypeDeclarationsTestClass.AsyncGenericTask failed: " +
-                "`async Task<T>` methods are not supported. Declare " +
-                "the method as `async Task` to acknowledge that the " +
-                "`Result` will not be witnessed.",
-
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncVoid failed: " +
                 "`async void` methods are not supported. Declare " +
                 "the method as `async Task` to ensure the task " +
-                "actually runs to completion.",
-
-                "UnsupportedReturnTypeDeclarationsTestClass.GenericTask failed: " +
-                "`Task<T>` methods are not supported. Declare " +
-                "the method as `Task` to acknowledge that the " +
-                "`Result` will not be witnessed.",
-
-                "UnsupportedReturnTypeDeclarationsTestClass.GenericValueTask failed: " +
-                "`async ValueTask<T>` methods are not supported. Declare " +
-                "the method as `async ValueTask` to acknowledge that the " +
-                "`Result` will not be witnessed.",
-
-                "UnsupportedReturnTypeDeclarationsTestClass.Object failed: " +
-                "Method return type is not supported. Declare " +
-                "the method return type as `void`, `Task`, or `ValueTask`."
+                "actually runs to completion."
             );
 
             output.ShouldHaveLifecycle();
@@ -184,6 +199,43 @@
             [Input(1, 2, 3)]
             [Input(1, 2, 3, "Extra")]
             public void Args(int a, int b, int c) { WhereAmI(); }
+
+            public int ReturnsInteger()
+            {
+                WhereAmI();
+
+                return 42;
+            }
+
+            public object? ReturnsNull()
+            {
+                WhereAmI();
+
+                return null;
+            }
+
+            public object ReturnsObject()
+            {
+                WhereAmI();
+
+                return new Example("example");
+            }
+
+            public string ReturnsString()
+            {
+                WhereAmI();
+
+                return "ABC";
+            }
+        }
+
+        public class Example
+        {
+            readonly string name;
+
+            public Example(string name) => this.name = name;
+            
+            public override string ToString() => $"<{name}>";
         }
 
         class GenericTestClass
@@ -296,6 +348,62 @@
 
                 throw new ShouldBeUnreachableException();
             }
+
+            public async Task<int> GenericAsyncTaskFail()
+            {
+                WhereAmI();
+
+                return await DivideAsync(15, 0);
+            }
+
+            public async Task<int> GenericAsyncTaskWithResult()
+            {
+                WhereAmI();
+
+                return await DivideAsync(15, 5);
+            }
+
+            public async ValueTask<int> GenericAsyncValueTaskWithResult()
+            {
+                WhereAmI();
+
+                return await DivideAsync(20, 5);
+            }
+
+            public async ValueTask<int> GenericAsyncValueTaskFail()
+            {
+                WhereAmI();
+
+                return await DivideAsync(15, 0);
+            }
+
+            public Task<bool> GenericTaskFail()
+            {
+                WhereAmI();
+
+                var divide = DivideAsync(15, 0);
+                
+                return divide.ContinueWith(division => division.Result == 42);
+            }
+
+            public Task<bool> GenericTaskWithResult()
+            {
+                WhereAmI();
+
+                var divide = DivideAsync(15, 5);
+                
+                return divide.ContinueWith(division => division.Result == 3);
+            }
+
+            public Task? NullTask()
+            {
+                WhereAmI();
+
+                // Although unlikely, we must ensure that
+                // we don't attempt to wait on a Task that
+                // is in fact null.
+                return null;
+            }
         }
 
         class FSharpAsyncTestClass
@@ -336,16 +444,13 @@
                     return result;
                 });
             }
-        }
 
-        class NullTaskTestClass
-        {
-            public Task? Test()
+            public FSharpAsync<int>? NullAsync()
             {
                 WhereAmI();
 
                 // Although unlikely, we must ensure that
-                // we don't attempt to wait on a Task that
+                // we don't attempt to wait on an FSharpAsync that
                 // is in fact null.
                 return null;
             }
@@ -363,42 +468,11 @@
 
         class UnsupportedReturnTypeDeclarationsTestClass
         {
-            public async Task<bool> AsyncGenericTask()
-            {
-                WhereAmI();
-
-                await DivideAsync(15, 5);
-                throw new ShouldBeUnreachableException();
-            }
-
             public async void AsyncVoid()
             {
                 WhereAmI();
 
                 await DivideAsync(15, 5);
-                throw new ShouldBeUnreachableException();
-            }
-
-            public Task<bool> GenericTask()
-            {
-                WhereAmI();
-
-                DivideAsync(15, 5);
-                throw new ShouldBeUnreachableException();
-            }
-
-            public async ValueTask<bool> GenericValueTask()
-            {
-                WhereAmI();
-
-                await DivideAsync(15, 5);
-                throw new ShouldBeUnreachableException();
-            }
-
-            public object Object()
-            {
-                WhereAmI();
-
                 throw new ShouldBeUnreachableException();
             }
         }

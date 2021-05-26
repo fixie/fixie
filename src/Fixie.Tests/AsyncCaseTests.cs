@@ -1,8 +1,10 @@
 ﻿namespace Fixie.Tests
 {
+    using System.Collections.Generic;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
+    using Microsoft.FSharp.Control;
     using static System.Environment;
 
     public class AsyncCaseTests : InstrumentedExecutionTests
@@ -20,7 +22,9 @@
                 "AsyncTestClass.FailBeforeAwaitTask failed: 'FailBeforeAwaitTask' failed!",
                 "AsyncTestClass.FailBeforeAwaitValueTask failed: 'FailBeforeAwaitValueTask' failed!",
                 "AsyncTestClass.FailDuringAwaitTask failed: Attempted to divide by zero.",
-                "AsyncTestClass.FailDuringAwaitValueTask failed: Attempted to divide by zero.");
+                "AsyncTestClass.FailDuringAwaitValueTask failed: Attempted to divide by zero.",
+                "AsyncTestClass.NullTask failed: This asynchronous method returned null, " +
+                "but a non-null awaitable object was expected.");
 
             output.ShouldHaveLifecycle(
                 "AwaitTaskThenPass",
@@ -31,18 +35,26 @@
                 "FailBeforeAwaitTask",
                 "FailBeforeAwaitValueTask",
                 "FailDuringAwaitTask",
-                "FailDuringAwaitValueTask");
+                "FailDuringAwaitValueTask",
+                "NullTask");
         }
 
-        public async Task ShouldFailWithClearExplanationWhenTestReturnsNullAwaitable()
+        public async Task ShouldRunFSharpAsyncResultsToEnsureCompleteExecution()
         {
-            var output = await RunAsync<NullTaskTestClass>();
+            var output = await RunAsync<FSharpAsyncTestClass>();
 
             output.ShouldHaveResults(
-                "NullTaskTestClass.Test failed: This asynchronous test returned null, " +
+                "FSharpAsyncTestClass.AsyncPass passed",
+                "FSharpAsyncTestClass.FailBeforeAsync failed: 'FailBeforeAsync' failed!",
+                "FSharpAsyncTestClass.FailFromAsync failed: Expected: 0" + NewLine + "Actual:   3",
+                "FSharpAsyncTestClass.NullAsync failed: This asynchronous method returned null, " +
                 "but a non-null awaitable object was expected.");
 
-            output.ShouldHaveLifecycle("Test");
+            output.ShouldHaveLifecycle(
+                "AsyncPass",
+                "FailBeforeAsync",
+                "FailFromAsync",
+                "NullAsync");
         }
 
         public async Task ShouldFailWithClearExplanationWhenAsyncTestReturnsNonStartedTask()
@@ -61,10 +73,17 @@
             var output = await RunAsync<UnsupportedReturnTypeDeclarationsTestClass>();
 
             output.ShouldHaveResults(
+                "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerable failed: " +
+                "Test method return type is not supported. Declare " +
+                "the test method return type as `void`, `Task`, or `ValueTask`.",
+
+                "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerator failed: " +
+                "Test method return type is not supported. Declare " +
+                "the test method return type as `void`, `Task`, or `ValueTask`.",
+
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncGenericTask failed: " +
-                "`async Task<T>` test methods are not supported. Declare " +
-                "the test method as `async Task` to acknowledge that the " +
-                "`Result` will not be witnessed.",
+                "Test method return type is not supported. Declare " +
+                "the test method return type as `void`, `Task`, or `ValueTask`.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncVoid failed: " +
                 "`async void` test methods are not supported. Declare " +
@@ -72,16 +91,18 @@
                 "actually runs to completion.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.GenericTask failed: " +
-                "`Task<T>` test methods are not supported. Declare " +
-                "the test method as `Task` to acknowledge that the " +
-                "`Result` will not be witnessed.",
+                "Test method return type is not supported. Declare " +
+                "the test method return type as `void`, `Task`, or `ValueTask`.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.GenericValueTask failed: " +
-                "`async ValueTask<T>` test methods are not supported. Declare " +
-                "the test method as `async ValueTask` to acknowledge that the " +
-                "`Result` will not be witnessed.",
+                "Test method return type is not supported. Declare " +
+                "the test method return type as `void`, `Task`, or `ValueTask`.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.Object failed: " +
+                "Test method return type is not supported. Declare " +
+                "the test method return type as `void`, `Task`, or `ValueTask`.",
+
+                "UnsupportedReturnTypeDeclarationsTestClass.UntrustworthyAwaitable failed: " +
                 "Test method return type is not supported. Declare " +
                 "the test method return type as `void`, `Task`, or `ValueTask`."
             );
@@ -97,6 +118,11 @@
         static Task<int> DivideAsync(int numerator, int denominator)
         {
             return Task.Run(() => numerator/denominator);
+        }
+
+        static int Divide(int numerator, int denominator)
+        {
+            return numerator/denominator;
         }
 
         class AsyncTestClass
@@ -184,16 +210,63 @@
 
                 throw new ShouldBeUnreachableException();
             }
-        }
 
-        class NullTaskTestClass
-        {
-            public Task? Test()
+            public Task? NullTask()
             {
                 WhereAmI();
 
                 // Although unlikely, we must ensure that
                 // we don't attempt to wait on a Task that
+                // is in fact null.
+                return null;
+            }
+        }
+
+        class FSharpAsyncTestClass
+        {
+            public FSharpAsync<int> AsyncPass()
+            {
+                WhereAmI();
+
+                return new FSharpAsync<int>(() =>
+                {
+                    var result = Divide(15, 5);
+
+                    result.ShouldBe(3);
+
+                    return result;
+                });
+            }
+
+            public FSharpAsync<int> FailBeforeAsync()
+            {
+                WhereAmI();
+
+                ThrowException();
+
+                return new FSharpAsync<int>(() => Divide(15, 5));
+            }
+
+            public FSharpAsync<int> FailFromAsync()
+            {
+                WhereAmI();
+
+                return new FSharpAsync<int>(() =>
+                {
+                    var result = Divide(15, 5);
+
+                    result.ShouldBe(0);
+
+                    return result;
+                });
+            }
+
+            public FSharpAsync<int>? NullAsync()
+            {
+                WhereAmI();
+
+                // Although unlikely, we must ensure that
+                // we don't attempt to wait on an FSharpAsync that
                 // is in fact null.
                 return null;
             }
@@ -246,6 +319,33 @@
             public object Object()
             {
                 WhereAmI();
+
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async UntrustworthyAwaitable UntrustworthyAwaitable()
+            {
+                WhereAmI();
+
+                await DivideAsync(15, 0);
+
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async IAsyncEnumerable<int> AsyncEnumerable()
+            {
+                WhereAmI();
+
+                yield return await DivideAsync(15, 5);
+
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async IAsyncEnumerator<int> AsyncEnumerator()
+            {
+                WhereAmI();
+
+                yield return await DivideAsync(15, 5);
 
                 throw new ShouldBeUnreachableException();
             }

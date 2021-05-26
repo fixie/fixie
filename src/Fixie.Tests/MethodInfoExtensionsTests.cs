@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
@@ -166,13 +167,25 @@
             var output = await RunAsync<UnsupportedReturnTypeDeclarationsTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
+                "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerable failed: " +
+                "The method return type is an unsupported awaitable type. " +
+                "To ensure the reliability of the test runner, declare " +
+                "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
+                "or ValueTask<T>.",
+
+                "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerator failed: " +
+                "The method return type is an unsupported awaitable type. " +
+                "To ensure the reliability of the test runner, declare " +
+                "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
+                "or ValueTask<T>.",
+
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncVoid failed: " +
                 "`async void` methods are not supported. Declare " +
                 "the method as `async Task` to ensure the task " +
                 "actually runs to completion.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.UntrustworthyAwaitable failed: " +
-                "The method return type is an untrusted awaitable type. " +
+                "The method return type is an unsupported awaitable type. " +
                 "To ensure the reliability of the test runner, declare " +
                 "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
                 "or ValueTask<T>."
@@ -484,7 +497,27 @@
 
             public async UntrustworthyAwaitable UntrustworthyAwaitable()
             {
+                WhereAmI();
+
                 await DivideAsync(15, 0);
+
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async IAsyncEnumerable<int> AsyncEnumerable()
+            {
+                WhereAmI();
+
+                yield return await DivideAsync(15, 5);
+
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async IAsyncEnumerator<int> AsyncEnumerator()
+            {
+                WhereAmI();
+
+                yield return await DivideAsync(15, 5);
 
                 throw new ShouldBeUnreachableException();
             }

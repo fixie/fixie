@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests
 {
+    using System.Collections.Generic;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
@@ -72,6 +73,14 @@
             var output = await RunAsync<UnsupportedReturnTypeDeclarationsTestClass>();
 
             output.ShouldHaveResults(
+                "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerable failed: " +
+                "Test method return type is not supported. Declare " +
+                "the test method return type as `void`, `Task`, or `ValueTask`.",
+
+                "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerator failed: " +
+                "Test method return type is not supported. Declare " +
+                "the test method return type as `void`, `Task`, or `ValueTask`.",
+
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncGenericTask failed: " +
                 "Test method return type is not supported. Declare " +
                 "the test method return type as `void`, `Task`, or `ValueTask`.",
@@ -316,7 +325,27 @@
 
             public async UntrustworthyAwaitable UntrustworthyAwaitable()
             {
+                WhereAmI();
+
                 await DivideAsync(15, 0);
+
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async IAsyncEnumerable<int> AsyncEnumerable()
+            {
+                WhereAmI();
+
+                yield return await DivideAsync(15, 5);
+
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async IAsyncEnumerator<int> AsyncEnumerator()
+            {
+                WhereAmI();
+
+                yield return await DivideAsync(15, 5);
 
                 throw new ShouldBeUnreachableException();
             }

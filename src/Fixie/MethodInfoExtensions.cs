@@ -1,6 +1,7 @@
 namespace Fixie
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
@@ -95,6 +96,12 @@ namespace Fixie
                     taskHasResult = true;
                     return true;
                 }
+
+                if (genericDefinition == typeof(IAsyncEnumerable<>) ||
+                    genericDefinition == typeof(IAsyncEnumerator<>))
+                {
+                    ThrowForUnsupportedAwaitable();
+                }
             }
             else if (returnType == typeof(Task))
             {
@@ -112,11 +119,7 @@ namespace Fixie
             }
             else if (returnType.Has<AsyncMethodBuilderAttribute>())
             {
-                throw new NotSupportedException(
-                    "The method return type is an untrusted awaitable type. " +
-                    "To ensure the reliability of the test runner, declare " +
-                    "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
-                    "or ValueTask<T>.");
+                ThrowForUnsupportedAwaitable();
             }
             
             task = null;
@@ -184,6 +187,15 @@ namespace Fixie
             throw new NullReferenceException(
                 "This asynchronous method returned null, but " +
                 "a non-null awaitable object was expected.");
+        }
+
+        static void ThrowForUnsupportedAwaitable()
+        {
+            throw new NotSupportedException(
+                "The method return type is an unsupported awaitable type. " +
+                "To ensure the reliability of the test runner, declare " +
+                "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
+                "or ValueTask<T>.");
         }
 
         static bool HasAsyncKeyword(this MethodInfo method)

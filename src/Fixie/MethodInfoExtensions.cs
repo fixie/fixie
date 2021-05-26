@@ -72,9 +72,7 @@ namespace Fixie
 
                 if (genericDefinition == typeof(ValueTask<>))
                 {
-                    task = (Task)typeof(ValueTask<>)
-                        .MakeGenericType(returnType.GetGenericArguments().Single())
-                        .GetMethod("AsTask")!.Invoke(result, null)!;
+                    task = (Task)returnType.GetMethod("AsTask")!.Invoke(result, null)!;
                     taskHasResult = true;
                     return true;
                 }

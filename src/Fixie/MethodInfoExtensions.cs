@@ -190,35 +190,14 @@ namespace Fixie
             if (isVoid)
                 return;
 
-            if (result == null)
-                throw new NullReferenceException(
-                    "This asynchronous test returned null, but " +
-                    "a non-null awaitable object was expected.");
-
-            if (ConvertToTask(result, out var task))
-            {
-                if (task.Status == TaskStatus.Created)
-                    throw new InvalidOperationException(
-                        "The test returned a non-started task, which cannot be awaited. " +
-                        "Consider using Task.Run or Task.Factory.StartNew.");
-
-                await task;
-            }
-            else
-            {
-                var resultType = result.GetType();
+            var task = ConvertToTask(returnType, result);
             
-                if (IsFSharpAsync(resultType))
-                {
-                    task = ConvertFSharpAsyncToTask(result, resultType);
-                    await task;
-                }
-                else
-                {
-                    throw new InvalidOperationException(
-                        $"The test returned an object with an unsupported type: {resultType.FullName}");
-                }
-            }
+            if (task.Status == TaskStatus.Created)
+                throw new InvalidOperationException(
+                    "The test returned a non-started task, which cannot be awaited. " +
+                    "Consider using Task.Run or Task.Factory.StartNew.");
+
+            await task;
         }
 
         static bool HasAsyncKeyword(this MethodInfo method)
@@ -226,22 +205,31 @@ namespace Fixie
             return method.Has<AsyncStateMachineAttribute>();
         }
 
-        static bool ConvertToTask(object result, [NotNullWhen(true)] out Task? task)
+        static Task ConvertToTask(Type returnType, object? result)
         {
-            if (result is Task t)
+            if (returnType == typeof(Task))
             {
-                task = t;
-                return true;
+                if (result == null)
+                    ThrowForNullAwaitable();
+                
+                return (Task)result;
             }
 
-            if (result is ValueTask vt)
+            if (returnType == typeof(ValueTask))
             {
-                task = vt.AsTask();
-                return true;
+                return ((ValueTask)result!).AsTask();
             }
 
-            task = null;
-            return false;
+            if (IsFSharpAsync(returnType))
+            {
+                if (result == null)
+                    ThrowForNullAwaitable();
+
+                return ConvertFSharpAsyncToTask(result, returnType);
+            }
+
+            throw new InvalidOperationException(
+                $"The test returned an object with an unsupported type: {returnType.FullName}");
         }
 
         static bool IsFSharpAsync(Type resultType)

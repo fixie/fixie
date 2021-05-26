@@ -21,7 +21,9 @@
                 "AsyncTestClass.FailBeforeAwaitTask failed: 'FailBeforeAwaitTask' failed!",
                 "AsyncTestClass.FailBeforeAwaitValueTask failed: 'FailBeforeAwaitValueTask' failed!",
                 "AsyncTestClass.FailDuringAwaitTask failed: Attempted to divide by zero.",
-                "AsyncTestClass.FailDuringAwaitValueTask failed: Attempted to divide by zero.");
+                "AsyncTestClass.FailDuringAwaitValueTask failed: Attempted to divide by zero.",
+                "AsyncTestClass.NullTask failed: This asynchronous method returned null, " +
+                "but a non-null awaitable object was expected.");
 
             output.ShouldHaveLifecycle(
                 "AwaitTaskThenPass",
@@ -32,7 +34,8 @@
                 "FailBeforeAwaitTask",
                 "FailBeforeAwaitValueTask",
                 "FailDuringAwaitTask",
-                "FailDuringAwaitValueTask");
+                "FailDuringAwaitValueTask",
+                "NullTask");
         }
 
         public async Task ShouldRunFSharpAsyncResultsToEnsureCompleteExecution()
@@ -42,23 +45,15 @@
             output.ShouldHaveResults(
                 "FSharpAsyncTestClass.AsyncPass passed",
                 "FSharpAsyncTestClass.FailBeforeAsync failed: 'FailBeforeAsync' failed!",
-                "FSharpAsyncTestClass.FailFromAsync failed: Expected: 0" + NewLine + "Actual:   3");
+                "FSharpAsyncTestClass.FailFromAsync failed: Expected: 0" + NewLine + "Actual:   3",
+                "FSharpAsyncTestClass.NullAsync failed: This asynchronous method returned null, " +
+                "but a non-null awaitable object was expected.");
 
             output.ShouldHaveLifecycle(
                 "AsyncPass",
                 "FailBeforeAsync",
-                "FailFromAsync");
-        }
-
-        public async Task ShouldFailWithClearExplanationWhenTestReturnsNullAwaitable()
-        {
-            var output = await RunAsync<NullTaskTestClass>();
-
-            output.ShouldHaveResults(
-                "NullTaskTestClass.Test failed: This asynchronous test returned null, " +
-                "but a non-null awaitable object was expected.");
-
-            output.ShouldHaveLifecycle("Test");
+                "FailFromAsync",
+                "NullAsync");
         }
 
         public async Task ShouldFailWithClearExplanationWhenAsyncTestReturnsNonStartedTask()
@@ -205,6 +200,16 @@
 
                 throw new ShouldBeUnreachableException();
             }
+
+            public Task? NullTask()
+            {
+                WhereAmI();
+
+                // Although unlikely, we must ensure that
+                // we don't attempt to wait on a Task that
+                // is in fact null.
+                return null;
+            }
         }
 
         class FSharpAsyncTestClass
@@ -245,16 +250,13 @@
                     return result;
                 });
             }
-        }
 
-        class NullTaskTestClass
-        {
-            public Task? Test()
+            public FSharpAsync<int>? NullAsync()
             {
                 WhereAmI();
 
                 // Although unlikely, we must ensure that
-                // we don't attempt to wait on a Task that
+                // we don't attempt to wait on an FSharpAsync that
                 // is in fact null.
                 return null;
             }

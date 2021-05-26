@@ -91,6 +91,10 @@
 
                 "UnsupportedReturnTypeDeclarationsTestClass.Object failed: " +
                 "Test method return type is not supported. Declare " +
+                "the test method return type as `void`, `Task`, or `ValueTask`.",
+
+                "UnsupportedReturnTypeDeclarationsTestClass.UntrustworthyAwaitable failed: " +
+                "Test method return type is not supported. Declare " +
                 "the test method return type as `void`, `Task`, or `ValueTask`."
             );
 
@@ -306,6 +310,13 @@
             public object Object()
             {
                 WhereAmI();
+
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async UntrustworthyAwaitable UntrustworthyAwaitable()
+            {
+                await DivideAsync(15, 0);
 
                 throw new ShouldBeUnreachableException();
             }

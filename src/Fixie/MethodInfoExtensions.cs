@@ -110,6 +110,14 @@ namespace Fixie
                 taskHasResult = false;
                 return true;
             }
+            else if (returnType.Has<AsyncMethodBuilderAttribute>())
+            {
+                throw new NotSupportedException(
+                    "The method return type is an untrusted awaitable type. " +
+                    "To ensure the reliability of the test runner, declare " +
+                    "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
+                    "or ValueTask<T>.");
+            }
             
             task = null;
             taskHasResult = false;

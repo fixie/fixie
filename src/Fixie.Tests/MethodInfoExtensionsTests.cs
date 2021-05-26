@@ -169,7 +169,13 @@
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncVoid failed: " +
                 "`async void` methods are not supported. Declare " +
                 "the method as `async Task` to ensure the task " +
-                "actually runs to completion."
+                "actually runs to completion.",
+
+                "UnsupportedReturnTypeDeclarationsTestClass.UntrustworthyAwaitable failed: " +
+                "The method return type is an untrusted awaitable type. " +
+                "To ensure the reliability of the test runner, declare " +
+                "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
+                "or ValueTask<T>."
             );
 
             output.ShouldHaveLifecycle();
@@ -473,6 +479,13 @@
                 WhereAmI();
 
                 await DivideAsync(15, 5);
+                throw new ShouldBeUnreachableException();
+            }
+
+            public async UntrustworthyAwaitable UntrustworthyAwaitable()
+            {
+                await DivideAsync(15, 0);
+
                 throw new ShouldBeUnreachableException();
             }
         }

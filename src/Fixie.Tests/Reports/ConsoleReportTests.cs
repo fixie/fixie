@@ -38,10 +38,8 @@
 
                     "Standard Out: Pass",
 
-                    "Test '" + TestClass + ".SkipWithReason' skipped:",
-                    "⚠ Skipped with reason.",
-                    "",
-                    "Test '" + TestClass + ".SkipWithoutReason' skipped",
+                    "Test '" + TestClass + ".Skip' skipped:",
+                    "⚠ Skipped with attribute.",
                     "",
 
                     "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
@@ -53,7 +51,7 @@
                     At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
                     "",
 
-                    "2 passed, 3 failed, 2 skipped, took 1.23 seconds");
+                    "3 passed, 3 failed, 1 skipped, took 1.23 seconds");
         }
 
         public async Task CanOptionallyIncludePassingResults()
@@ -87,13 +85,12 @@
                     "Test '" + TestClass + ".Pass' passed",
                     "",
 
-                    "Test '" + TestClass + ".SkipWithReason' skipped:",
-                    "⚠ Skipped with reason.",
-                    "",
-                    "Test '" + TestClass + ".SkipWithoutReason' skipped",
+                    "Test '" + TestClass + ".Skip' skipped:",
+                    "⚠ Skipped with attribute.",
                     "",
 
-                    "Test '" + GenericTestClass + ".ShouldBeString<System.String>(\"abc\")' passed",
+                    "Test '" + GenericTestClass + ".ShouldBeString<System.String>(\"A\")' passed",
+                    "Test '" + GenericTestClass + ".ShouldBeString<System.String>(\"B\")' passed",
                     "",
 
                     "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
@@ -105,7 +102,7 @@
                     At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
                     "",
 
-                    "2 passed, 3 failed, 2 skipped, took 1.23 seconds");
+                    "3 passed, 3 failed, 1 skipped, took 1.23 seconds");
         }
 
         class ZeroPassed : SelfTestDiscovery
@@ -123,7 +120,7 @@
             output.Console
                 .CleanDuration()
                 .Last()
-                .ShouldBe("2 failed, 2 skipped, took 1.23 seconds");
+                .ShouldBe("2 failed, 1 skipped, took 1.23 seconds");
         }
 
         class ZeroFailed : SelfTestDiscovery
@@ -141,7 +138,7 @@
             output.Console
                 .CleanDuration()
                 .Last()
-                .ShouldBe("1 passed, 2 skipped, took 1.23 seconds");
+                .ShouldBe("1 passed, 1 skipped, took 1.23 seconds");
         }
 
         class ZeroSkipped : SelfTestDiscovery

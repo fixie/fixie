@@ -116,15 +116,9 @@
                 1.ShouldBe(2);
             }
 
-            [Skip]
-            public void SkipWithoutReason()
-            {
-                throw new ShouldBeUnreachableException();
-            }
-
             const string alert = "\x26A0";
-            [Skip(alert + " Skipped with reason.")]
-            public void SkipWithReason()
+            [Skip(alert + " Skipped with attribute.")]
+            public void Skip()
             {
                 throw new ShouldBeUnreachableException();
             }
@@ -132,7 +126,8 @@
 
         protected class SampleGenericTestClass
         {
-            [Input("abc")]
+            [Input("A")]
+            [Input("B")]
             [Input(123)]
             public void ShouldBeString<T>(T genericArgument)
             {

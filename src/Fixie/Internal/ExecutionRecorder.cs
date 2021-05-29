@@ -38,7 +38,7 @@
             await bus.PublishAsync(new TestStarted(test));
         }
 
-        public async Task SkipAsync(Test test, string name, string? reason)
+        public async Task SkipAsync(Test test, string name, string reason)
         {
             var duration = caseStopwatch.Elapsed;
             recordingConsole.StopRecording(out var output);

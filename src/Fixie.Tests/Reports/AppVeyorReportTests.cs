@@ -37,9 +37,9 @@
             var fail = results[0];
             var failByAssertion = results[1];
             var pass = results[2];
-            var skipWithReason = results[3];
-            var skipWithoutReason = results[4];
-            var shouldBeStringPass = results[5];
+            var skip = results[3];
+            var shouldBeStringPassA = results[4];
+            var shouldBeStringPassB = results[5];
             var shouldBeStringFail = results[6];
 
             fail.TestName.ShouldBe(TestClass + ".Fail");
@@ -71,26 +71,26 @@
             pass.ErrorStackTrace.ShouldBe(null);
             pass.StdOut.Lines().ShouldBe("Standard Out: Pass");
 
-            skipWithReason.TestName.ShouldBe(TestClass + ".SkipWithReason");
-            skipWithReason.Outcome.ShouldBe("Skipped");
-            int.Parse(skipWithReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-            skipWithReason.ErrorMessage.ShouldBe("⚠ Skipped with reason.");
-            skipWithReason.ErrorStackTrace.ShouldBe(null);
-            skipWithReason.StdOut.ShouldBe("");
+            skip.TestName.ShouldBe(TestClass + ".Skip");
+            skip.Outcome.ShouldBe("Skipped");
+            int.Parse(skip.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            skip.ErrorMessage.ShouldBe("⚠ Skipped with attribute.");
+            skip.ErrorStackTrace.ShouldBe(null);
+            skip.StdOut.ShouldBe("");
 
-            skipWithoutReason.TestName.ShouldBe(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.Outcome.ShouldBe("Skipped");
-            int.Parse(skipWithoutReason.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-            skipWithoutReason.ErrorMessage.ShouldBe(null);
-            skipWithoutReason.ErrorStackTrace.ShouldBe(null);
-            skipWithoutReason.StdOut.ShouldBe("");
+            shouldBeStringPassA.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"A\")");
+            shouldBeStringPassA.Outcome.ShouldBe("Passed");
+            int.Parse(shouldBeStringPassA.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            shouldBeStringPassA.ErrorMessage.ShouldBe(null);
+            shouldBeStringPassA.ErrorStackTrace.ShouldBe(null);
+            shouldBeStringPassA.StdOut.ShouldBe("");
 
-            shouldBeStringPass.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"abc\")");
-            shouldBeStringPass.Outcome.ShouldBe("Passed");
-            int.Parse(shouldBeStringPass.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-            shouldBeStringPass.ErrorMessage.ShouldBe(null);
-            shouldBeStringPass.ErrorStackTrace.ShouldBe(null);
-            shouldBeStringPass.StdOut.ShouldBe("");
+            shouldBeStringPassB.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"B\")");
+            shouldBeStringPassB.Outcome.ShouldBe("Passed");
+            int.Parse(shouldBeStringPassB.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+            shouldBeStringPassB.ErrorMessage.ShouldBe(null);
+            shouldBeStringPassB.ErrorStackTrace.ShouldBe(null);
+            shouldBeStringPassB.StdOut.ShouldBe("");
 
             shouldBeStringFail.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
             shouldBeStringFail.Outcome.ShouldBe("Failed");

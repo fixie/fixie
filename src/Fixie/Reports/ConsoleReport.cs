@@ -27,15 +27,12 @@
 
         public void Handle(TestSkipped message)
         {
-            var hasReason = message.Reason != null;
-
             WithPadding(() =>
             {
                 using (Foreground.Yellow)
-                    console.WriteLine($"Test '{message.Name}' skipped{(hasReason ? ":" : null)}");
+                    console.WriteLine($"Test '{message.Name}' skipped:");
 
-                if (hasReason)
-                    console.WriteLine($"{message.Reason}");
+                console.WriteLine(message.Reason);
             });
         }
 

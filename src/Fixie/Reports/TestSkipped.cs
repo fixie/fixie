@@ -4,12 +4,12 @@
 
     public class TestSkipped : TestCompleted
     {
-        internal TestSkipped(string test, string name, TimeSpan duration, string output, string? reason)
+        internal TestSkipped(string test, string name, TimeSpan duration, string output, string reason)
             : base(test, name, duration, output)
         {
             Reason = reason;
         }
 
-        public string? Reason { get; }
+        public string Reason { get; }
     }
 }

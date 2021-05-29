@@ -211,7 +211,7 @@
             await test.RunAsync(parameters);
             await test.PassAsync(parameters);
             await test.FailAsync(parameters, new FailureException());
-            await test.SkipAsync(parameters, reason: null);
+            await test.SkipAsync(parameters, reason: "Exercising Skipped Case Names");
         }
 
         void ShouldHaveNames(IEnumerable<string> actual, params string[] expected)
@@ -228,7 +228,7 @@
                     : $"{name} passed",
                 $"{name} passed",
                 $"{name} failed: 'RunAsync' failed!",
-                $"{name} skipped"
+                $"{name} skipped: Exercising Skipped Case Names"
             }).SelectMany(x => x);
 
             var fullyQualifiedExpectation = expectedVariants.Select(x => GetType().FullName + "+" + x).ToArray();

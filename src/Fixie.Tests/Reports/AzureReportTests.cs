@@ -103,9 +103,9 @@
             var fail = results[0];
             var failByAssertion = results[1];
             var pass = results[2];
-            var skipWithReason = results[3];
-            var skipWithoutReason = results[4];
-            var shouldBeStringPass = results[5];
+            var skip = results[3];
+            var shouldBeStringPassA = results[4];
+            var shouldBeStringPassB = results[5];
             var shouldBeStringFail = results[6];
 
             fail.automatedTestName.ShouldBe(TestClass + ".Fail");
@@ -137,26 +137,26 @@
             pass.errorMessage.ShouldBe(null);
             pass.stackTrace.ShouldBe(null);
 
-            skipWithReason.automatedTestName.ShouldBe(TestClass + ".SkipWithReason");
-            skipWithReason.testCaseTitle.ShouldBe(TestClass + ".SkipWithReason");
-            skipWithReason.outcome.ShouldBe("Warning");
-            skipWithReason.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
-            skipWithReason.errorMessage.ShouldBe("⚠ Skipped with reason.");
-            skipWithReason.stackTrace.ShouldBe(null);
+            skip.automatedTestName.ShouldBe(TestClass + ".Skip");
+            skip.testCaseTitle.ShouldBe(TestClass + ".Skip");
+            skip.outcome.ShouldBe("Warning");
+            skip.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+            skip.errorMessage.ShouldBe("⚠ Skipped with attribute.");
+            skip.stackTrace.ShouldBe(null);
 
-            skipWithoutReason.automatedTestName.ShouldBe(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.testCaseTitle.ShouldBe(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.outcome.ShouldBe("Warning");
-            skipWithoutReason.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
-            skipWithoutReason.errorMessage.ShouldBe(null);
-            skipWithoutReason.stackTrace.ShouldBe(null);
+            shouldBeStringPassA.automatedTestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"A\")");
+            shouldBeStringPassA.testCaseTitle.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"A\")");
+            shouldBeStringPassA.outcome.ShouldBe("Passed");
+            shouldBeStringPassA.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+            shouldBeStringPassA.errorMessage.ShouldBe(null);
+            shouldBeStringPassA.stackTrace.ShouldBe(null);
 
-            shouldBeStringPass.automatedTestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"abc\")");
-            shouldBeStringPass.testCaseTitle.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"abc\")");
-            shouldBeStringPass.outcome.ShouldBe("Passed");
-            shouldBeStringPass.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
-            shouldBeStringPass.errorMessage.ShouldBe(null);
-            shouldBeStringPass.stackTrace.ShouldBe(null);
+            shouldBeStringPassB.automatedTestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"B\")");
+            shouldBeStringPassB.testCaseTitle.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"B\")");
+            shouldBeStringPassB.outcome.ShouldBe("Passed");
+            shouldBeStringPassB.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+            shouldBeStringPassB.errorMessage.ShouldBe(null);
+            shouldBeStringPassB.stackTrace.ShouldBe(null);
 
             shouldBeStringFail.automatedTestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
             shouldBeStringFail.testCaseTitle.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");

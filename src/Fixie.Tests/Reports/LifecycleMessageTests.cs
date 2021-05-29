@@ -15,7 +15,7 @@
 
             await RunAsync(report);
 
-            report.Messages.Count.ShouldBe(14);
+            report.Messages.Count.ShouldBe(15);
             
             var assemblyStarted = (AssemblyStarted)report.Messages[0];
             var failStarted = (TestStarted)report.Messages[1];
@@ -24,13 +24,14 @@
             var failByAssertion = (TestFailed)report.Messages[4];
             var passStarted = (TestStarted)report.Messages[5];
             var pass = (TestPassed)report.Messages[6];
-            var skipWithReason = (TestSkipped)report.Messages[7];
-            var skipWithoutReason = (TestSkipped)report.Messages[8];
-            var shouldBeStringPassStarted = (TestStarted)report.Messages[9];
-            var shouldBeStringPass = (TestPassed)report.Messages[10];
-            var shouldBeStringFailStarted = (TestStarted)report.Messages[11];
-            var shouldBeStringFail = (TestFailed)report.Messages[12];
-            var assemblyCompleted = (AssemblyCompleted)report.Messages[13];
+            var skip = (TestSkipped)report.Messages[7];
+            var shouldBeStringPassAStarted = (TestStarted)report.Messages[8];
+            var shouldBeStringPassA = (TestPassed)report.Messages[9];
+            var shouldBeStringPassBStarted = (TestStarted)report.Messages[10];
+            var shouldBeStringPassB = (TestPassed)report.Messages[11];
+            var shouldBeStringFailStarted = (TestStarted)report.Messages[12];
+            var shouldBeStringFail = (TestFailed)report.Messages[13];
+            var assemblyCompleted = (AssemblyCompleted)report.Messages[14];
 
             assemblyStarted.Assembly.ShouldBe(assembly);
             
@@ -69,24 +70,25 @@
                 "Expected: 2",
                 "Actual:   1");
 
-            skipWithReason.Test.ShouldBe(TestClass + ".SkipWithReason");
-            skipWithReason.Name.ShouldBe(TestClass + ".SkipWithReason");
-            skipWithReason.Output.ShouldBe("");
-            skipWithReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            skipWithReason.Reason.ShouldBe("⚠ Skipped with reason.");
+            skip.Test.ShouldBe(TestClass + ".Skip");
+            skip.Name.ShouldBe(TestClass + ".Skip");
+            skip.Output.ShouldBe("");
+            skip.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            skip.Reason.ShouldBe("⚠ Skipped with attribute.");
 
-            skipWithoutReason.Test.ShouldBe(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.Name.ShouldBe(TestClass + ".SkipWithoutReason");
-            skipWithoutReason.Output.ShouldBe("");
-            skipWithoutReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
-            skipWithoutReason.Reason.ShouldBe(null);
+            shouldBeStringPassAStarted.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
 
-            shouldBeStringPassStarted.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
+            shouldBeStringPassA.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
+            shouldBeStringPassA.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"A\")");
+            shouldBeStringPassA.Output.ShouldBe("");
+            shouldBeStringPassA.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            shouldBeStringPass.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
-            shouldBeStringPass.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"abc\")");
-            shouldBeStringPass.Output.ShouldBe("");
-            shouldBeStringPass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            shouldBeStringPassBStarted.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
+
+            shouldBeStringPassB.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
+            shouldBeStringPassB.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"B\")");
+            shouldBeStringPassB.Output.ShouldBe("");
+            shouldBeStringPassB.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             shouldBeStringFailStarted.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
 

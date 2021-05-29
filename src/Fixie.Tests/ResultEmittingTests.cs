@@ -26,7 +26,7 @@ namespace Fixie.Tests
 
                     await test.PassAsync(new object[] {0, 'A'});
                     await test.FailAsync(new object[] {1, 'B'}, exception);
-                    await test.SkipAsync(new object[] {2, 'C'}, "Explicit skip reason.");
+                    await test.SkipAsync(new object[] {2, 'C'}, reason: "");
                 }
             }
         }
@@ -42,7 +42,7 @@ namespace Fixie.Tests
                 
                 "SampleTestClass.Test0(0, 'A') passed",
                 "SampleTestClass.Test0(1, 'B') failed: Non-invocation Failure",
-                "SampleTestClass.Test0(2, 'C') skipped: Explicit skip reason.",
+                "SampleTestClass.Test0(2, 'C') skipped: This test was explicitly skipped, but no reason was provided.",
                 
                 "SampleTestClass.Test1 skipped: This test did not run.");
         }

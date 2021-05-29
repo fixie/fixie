@@ -123,7 +123,7 @@ namespace Fixie
         /// <summary>
         /// Emits a skip result for this test, with the given reason.
         /// </summary>
-        public async Task SkipAsync(string? reason)
+        public async Task SkipAsync(string reason)
         {
             await SkipAsync(EmptyParameters, reason);
         }
@@ -131,9 +131,12 @@ namespace Fixie
         /// <summary>
         /// Emits a skip result for this test case, with the given reason.
         /// </summary>
-        public async Task SkipAsync(object?[] parameters, string? reason)
+        public async Task SkipAsync(object?[] parameters, string reason)
         {
             var name = GetName(Method, parameters);
+
+            if (string.IsNullOrWhiteSpace(reason))
+                reason = "This test was explicitly skipped, but no reason was provided.";
 
             await recorder.SkipAsync(this, name, reason);
 

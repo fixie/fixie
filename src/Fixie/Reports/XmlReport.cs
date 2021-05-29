@@ -129,8 +129,7 @@
                         new XAttribute("result", "Skip"),
                         new XAttribute("time", Seconds(message.Duration)));
 
-                if (message.Reason != null)
-                    test.Add(new XElement("reason", new XCData(message.Reason)));
+                test.Add(new XElement("reason", new XCData(message.Reason)));
 
                 results.Add(test);
             }

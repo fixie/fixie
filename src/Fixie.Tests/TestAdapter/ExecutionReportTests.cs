@@ -30,7 +30,7 @@
 
             var messages = recorder.Messages;
 
-            messages.Count.ShouldBe(12);
+            messages.Count.ShouldBe(13);
 
             foreach (var message in messages)
             {
@@ -51,14 +51,16 @@
             var passStart = (TestCase)messages[4];
             var pass = (TestResult)messages[5];
             
-            var skipWithReason = (TestResult)messages[6];
+            var skip = (TestResult)messages[6];
             
-            var skipWithoutReason = (TestResult)messages[7];
+            var shouldBeStringPassAStart = (TestCase)messages[7];
+            var shouldBeStringPassA = (TestResult)messages[8];
             
-            var shouldBeStringPassStart = (TestCase)messages[8];
-            var shouldBeStringPass = (TestResult)messages[9];
-            var shouldBeStringFailStart = (TestCase)messages[10];
-            var shouldBeStringFail = (TestResult)messages[11];
+            var shouldBeStringPassBStart = (TestCase)messages[9];
+            var shouldBeStringPassB = (TestResult)messages[10];
+            
+            var shouldBeStringFailStart = (TestCase)messages[11];
+            var shouldBeStringFail = (TestResult)messages[12];
 
             failStart.ShouldBeExecutionTimeTest(TestClass + ".Fail", assemblyPath);
 
@@ -107,34 +109,37 @@
             pass.Messages[0].Text.Lines().ShouldBe("Standard Out: Pass");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            skipWithReason.TestCase.ShouldBeExecutionTimeTest(TestClass+".SkipWithReason", assemblyPath);
-            skipWithReason.TestCase.DisplayName.ShouldBe(TestClass+".SkipWithReason");
-            skipWithReason.Outcome.ShouldBe(TestOutcome.Skipped);
-            skipWithReason.ErrorMessage.ShouldBe("⚠ Skipped with reason.");
-            skipWithReason.ErrorStackTrace.ShouldBe(null);
-            skipWithReason.DisplayName.ShouldBe(TestClass+".SkipWithReason");
-            skipWithReason.Messages.ShouldBeEmpty();
-            skipWithReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            skip.TestCase.ShouldBeExecutionTimeTest(TestClass+".Skip", assemblyPath);
+            skip.TestCase.DisplayName.ShouldBe(TestClass+".Skip");
+            skip.Outcome.ShouldBe(TestOutcome.Skipped);
+            skip.ErrorMessage.ShouldBe("⚠ Skipped with attribute.");
+            skip.ErrorStackTrace.ShouldBe(null);
+            skip.DisplayName.ShouldBe(TestClass+".Skip");
+            skip.Messages.ShouldBeEmpty();
+            skip.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            skipWithoutReason.TestCase.ShouldBeExecutionTimeTest(TestClass+".SkipWithoutReason", assemblyPath);
-            skipWithoutReason.TestCase.DisplayName.ShouldBe(TestClass+".SkipWithoutReason");
-            skipWithoutReason.Outcome.ShouldBe(TestOutcome.Skipped);
-            skipWithoutReason.ErrorMessage.ShouldBe(null);
-            skipWithoutReason.ErrorStackTrace.ShouldBe(null);
-            skipWithoutReason.DisplayName.ShouldBe(TestClass+".SkipWithoutReason");
-            skipWithoutReason.Messages.ShouldBeEmpty();
-            skipWithoutReason.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            shouldBeStringPassAStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
 
-            shouldBeStringPassStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
+            shouldBeStringPassA.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
+            shouldBeStringPassA.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");
+            shouldBeStringPassA.Outcome.ShouldBe(TestOutcome.Passed);
+            shouldBeStringPassA.ErrorMessage.ShouldBe(null);
+            shouldBeStringPassA.ErrorStackTrace.ShouldBe(null);
+            shouldBeStringPassA.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.String>(\"A\")");
+            shouldBeStringPassA.Messages.ShouldBeEmpty();
+            shouldBeStringPassA.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
-            shouldBeStringPass.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
-            shouldBeStringPass.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");
-            shouldBeStringPass.Outcome.ShouldBe(TestOutcome.Passed);
-            shouldBeStringPass.ErrorMessage.ShouldBe(null);
-            shouldBeStringPass.ErrorStackTrace.ShouldBe(null);
-            shouldBeStringPass.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.String>(\"abc\")");
-            shouldBeStringPass.Messages.ShouldBeEmpty();
-            shouldBeStringPass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            shouldBeStringPassBStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
+
+            shouldBeStringPassB.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
+            shouldBeStringPassB.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");
+            shouldBeStringPassB.Outcome.ShouldBe(TestOutcome.Passed);
+            shouldBeStringPassB.ErrorMessage.ShouldBe(null);
+            shouldBeStringPassB.ErrorStackTrace.ShouldBe(null);
+            shouldBeStringPassB.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.String>(\"B\")");
+            shouldBeStringPassB.Messages.ShouldBeEmpty();
+            shouldBeStringPassB.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+
 
             shouldBeStringFailStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
 

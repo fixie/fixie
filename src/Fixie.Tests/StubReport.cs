@@ -18,8 +18,7 @@
 
         public void Handle(TestSkipped message)
         {
-            var optionalReason = message.Reason == null ? null : ": " + message.Reason;
-            log.Add($"{message.Name} skipped{optionalReason}");
+            log.Add($"{message.Name} skipped: {message.Reason}");
         }
 
         public void Handle(TestPassed message)

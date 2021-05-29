@@ -86,7 +86,7 @@ namespace Fixie
         /// <summary>
         /// Runs the test against the given test class instance.
         /// </summary>
-        public Task<TestResult> RunAsync(object? instance)
+        public Task<TestResult> RunAsync(object instance)
         {
             return RunCoreAsync(instance, EmptyParameters);
         }
@@ -95,7 +95,7 @@ namespace Fixie
         /// Runs the test against the given test class instance, using
         /// the given input parameters.
         /// </summary>
-        public Task<TestResult> RunAsync(object? instance, object?[] parameters)
+        public Task<TestResult> RunAsync(object instance, object?[] parameters)
         {
             return RunCoreAsync(instance, parameters);
         }

@@ -116,8 +116,10 @@ namespace Fixie.Tests
                         if (!ShouldSkip(test))
                             foreach (var parameters in FromInputAttributes(test))
                             {
-                                var instance = type.IsStatic() ? null : testClass.Construct();
-                                await test.RunAsync(instance, parameters);
+                                if (type.IsStatic())
+                                    await test.RunAsync(parameters);
+                                else
+                                    await test.RunAsync(testClass.Construct(), parameters);
                             }
                 }
             }
@@ -135,7 +137,12 @@ namespace Fixie.Tests
                     foreach (var test in testClass.Tests)
                         if (!ShouldSkip(test))
                             foreach (var parameters in FromInputAttributes(test))
-                                await test.RunAsync(instance, parameters);
+                            {
+                                if (instance == null)
+                                    await test.RunAsync(parameters);
+                                else
+                                    await test.RunAsync(instance, parameters);
+                            }
                 }
             }
         }

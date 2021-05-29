@@ -30,7 +30,7 @@
         /// Constructs an instance of the test class using
         /// the default constructor.
         /// </summary>
-        public object? Construct()
+        public object Construct()
         {
             return Construct(EmptyParameters);
         }
@@ -40,16 +40,29 @@
         /// the constructor that best matches the specified
         /// parameters.
         /// </summary>
-        public object? Construct(object?[] parameters)
+        public object Construct(object?[] parameters)
         {
+            object? instance;
+
             try
             {
-                return Activator.CreateInstance(Type, parameters);
+                instance = Activator.CreateInstance(Type, parameters);
             }
             catch (TargetInvocationException exception)
             {
                 throw new PreservedException(exception);
             }
+
+            if (instance == null)
+            {
+                throw new InvalidOperationException(
+                    "An attempt to construct an instance of test class '" +
+                    Type.FullName +
+                    "' unexpectedly resulted in null.");
+                ;
+            }
+
+            return instance;
         }
 
         /// <summary>

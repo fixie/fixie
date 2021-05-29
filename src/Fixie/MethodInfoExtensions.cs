@@ -125,7 +125,7 @@ namespace Fixie
             return false;
         }
 
-        internal static async Task RunTestMethodAsync(this MethodInfo method, object? instance, params object?[] parameters)
+        internal static async Task RunTestMethodAsync(this MethodInfo method, object? instance, object?[] parameters)
         {
             var returnType = method.ReturnType;
 

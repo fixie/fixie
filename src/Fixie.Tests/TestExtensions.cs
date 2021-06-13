@@ -46,11 +46,18 @@
 
         public static IEnumerable<string> NormalizeStackTraceLines(this IEnumerable<string> lines)
         {
-            //Avoid brittle assertion introduced by stack trace absolute paths and line numbers.
+            //Avoid brittle assertion introduced by stack trace absolute paths, line numbers,
+            //and platform dependent variations in the rethrow marker.
 
-            return lines.Select(line => Regex.Replace(line,
-                @"\) in .+\\src\\Fixie(.+)\.cs:line \d+",
-                ") in ...\\src\\Fixie$1.cs:line #"));
+            return lines.Select(line =>
+            {
+                if (line == "--- End of stack trace from previous location ---")
+                    line = "--- End of stack trace from previous location where exception was thrown ---";
+
+                return Regex.Replace(line,
+                    @"\) in .+([\\/])src([\\/])Fixie(.+)\.cs:line \d+",
+                    ") in ...$1src$2Fixie$3.cs:line #");
+            });
         }
 
         public static IEnumerable<string> CleanDuration(this IEnumerable<string> lines)

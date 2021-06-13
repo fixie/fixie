@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
     using Assertions;
     using Fixie.Reports;
@@ -34,7 +35,7 @@
                     "Fixie.Tests.FailureException",
                     At<ConstructionFailureTestClass>(".ctor()"),
                     "--- End of stack trace from previous location where exception was thrown ---",
-                    At(typeof(TestClass), "Construct(Object[] parameters)", "...\\src\\Fixie\\TestClass.cs"),
+                    At(typeof(TestClass), "Construct(Object[] parameters)", Path.Join("...", "src", "Fixie", "TestClass.cs")),
                     At<ExplicitExceptionHandling>("RunAsync(TestAssembly testAssembly)"),
                     "",
                     "1 failed, took 1.23 seconds");
@@ -71,7 +72,7 @@
                     "",
                     "Fixie.Tests.FailureException",
                     At<FailureTestClass>("Asynchronous()"),
-                    At(typeof(MethodInfoExtensions), "CallAsync(MethodInfo method, Object instance, Object[] parameters)", "...\\src\\Fixie\\MethodInfoExtensions.cs"),
+                    At(typeof(MethodInfoExtensions), "CallAsync(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
                     At<ExplicitExceptionHandling>("RunAsync(TestAssembly testAssembly)"),
                     "",
                     "Test '" + FullName<FailureTestClass>() + ".Synchronous' failed:",
@@ -81,7 +82,7 @@
                     "Fixie.Tests.FailureException",
                     At<FailureTestClass>("Synchronous()"),
                     "--- End of stack trace from previous location where exception was thrown ---",
-                    At(typeof(MethodInfoExtensions), "CallAsync(MethodInfo method, Object instance, Object[] parameters)", "...\\src\\Fixie\\MethodInfoExtensions.cs"),
+                    At(typeof(MethodInfoExtensions), "CallAsync(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
                     At<ExplicitExceptionHandling>("RunAsync(TestAssembly testAssembly)"),
                     "",
                     "2 failed, took 1.23 seconds");

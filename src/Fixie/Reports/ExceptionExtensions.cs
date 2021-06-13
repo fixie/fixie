@@ -48,7 +48,7 @@
 
             if (lines.Length >= 2)
             {
-                const string synchronousRethrowMarker = "--- End of stack trace from previous location where exception was thrown ---";
+                const string synchronousRethrowMarker = "--- End of stack trace from previous location";
                 const string runTestMethodAsync = " Fixie.MethodInfoExtensions.RunTestMethodAsync(MethodInfo method, Object instance, Object[] parameters)";
                 const string constructTestClass = " Fixie.Test.Construct(Type testClass)";
                 const string runCoreAsync = " Fixie.Test.RunCoreAsync(Object instance, Object[] parameters)";

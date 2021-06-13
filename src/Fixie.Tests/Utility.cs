@@ -32,8 +32,8 @@
 
         public static string NormalizedPath(string path)
             => Regex.Replace(path,
-                @".+\\src\\Fixie(.+)\.cs",
-                "...\\src\\Fixie$1.cs");
+                @".+([\\/])src([\\/])Fixie(.+)\.cs",
+                "...$1src$2Fixie$3.cs");
 
         public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;

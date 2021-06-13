@@ -16,7 +16,7 @@
             var output = await RunAsync(console => new TeamCityReport(console));
 
             output.Console
-                .CleanStackTraceLineNumbers()
+                .NormalizeStackTraceLines()
                 .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'"))
                 .ShouldBe(
                     "##teamcity[testSuiteStarted name='Fixie.Tests']",

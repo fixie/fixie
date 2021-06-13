@@ -51,7 +51,7 @@
             fail.Reason.ShouldBe<FailureException>();
             fail.Reason.LiterateStackTrace()
                 .Lines()
-                .CleanStackTraceLineNumbers()
+                .NormalizeStackTraceLines()
                 .ShouldBe(At("Fail()"));
             fail.Reason.Message.ShouldBe("'Fail' failed!");
 
@@ -64,7 +64,7 @@
             failByAssertion.Reason.ShouldBe<AssertException>();
             failByAssertion.Reason.LiterateStackTrace()
                 .Lines()
-                .CleanStackTraceLineNumbers()
+                .NormalizeStackTraceLines()
                 .ShouldBe(At("FailByAssertion()"));
             failByAssertion.Reason.Message.Lines().ShouldBe(
                 "Expected: 2",
@@ -99,7 +99,7 @@
             shouldBeStringFail.Reason.ShouldBe<AssertException>();
             shouldBeStringFail.Reason.LiterateStackTrace()
                 .Lines()
-                .CleanStackTraceLineNumbers()
+                .NormalizeStackTraceLines()
                 .ShouldBe(At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
             shouldBeStringFail.Reason.Message.Lines().ShouldBe(
                 "Expected: System.String",

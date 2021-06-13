@@ -116,7 +116,7 @@
             await Utility.RunAsync(report, discovery, execution, typeof(TSampleTestClass));
 
             return console.Lines()
-                .CleanStackTraceLineNumbers()
+                .NormalizeStackTraceLines()
                 .CleanDuration();
         }
 

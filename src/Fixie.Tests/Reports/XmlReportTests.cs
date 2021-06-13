@@ -8,6 +8,7 @@
     using System.Xml.Linq;
     using Assertions;
     using Fixie.Reports;
+    using static Utility;
 
     public class XmlReportTests : MessagingTests
     {
@@ -27,9 +28,9 @@
             if (actual == null)
                 throw new Exception("Expected non-null XML report.");
 
-            CleanBrittleValues(actual.ToString(SaveOptions.DisableFormatting))
+            CleanBrittleValues(actual.ToString())
                 .Lines()
-                .CleanStackTraceLineNumbers()
+                .NormalizeStackTraceLines()
                 .ToArray()
                 .ShouldBe(ExpectedReport.Lines().ToArray());
         }
@@ -59,9 +60,9 @@
             get
             {
                 var assemblyLocation = GetType().Assembly.Location;
-                var fileLocation = TestClassPath();
+                var fileLocation = NormalizedPath(TestClassPath());
                 return XDocument.Parse(File.ReadAllText(Path.Combine("Reports", "XUnitXmlReport.xml")))
-                                .ToString(SaveOptions.DisableFormatting)
+                                .ToString()
                                 .Replace("[assemblyLocation]", assemblyLocation)
                                 .Replace("[fileLocation]", fileLocation)
                                 .Replace("[testClass]", TestClass)

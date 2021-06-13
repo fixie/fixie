@@ -6,6 +6,7 @@
     using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Fixie.Internal;
     using Fixie.Reports;
@@ -19,7 +20,13 @@
         }
 
         public static string At<T>(string method, [CallerFilePath] string path = default!)
-            => $"   at {FullName<T>().Replace("+", ".")}.{method} in {path}:line #";
+            => $"   at {FullName<T>().Replace("+", ".")}.{method} in {NormalizedPath(path)}:line #";
+
+
+        public static string NormalizedPath(string path)
+            => Regex.Replace(path,
+                @".+\\src\\Fixie(.+)\.cs",
+                "...\\src\\Fixie$1.cs");
 
         public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;

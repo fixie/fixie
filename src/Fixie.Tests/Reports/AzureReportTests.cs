@@ -115,7 +115,7 @@
             fail.errorMessage.ShouldBe("'Fail' failed!");
             fail.stackTrace
                 .Lines()
-                .CleanStackTraceLineNumbers()
+                .NormalizeStackTraceLines()
                 .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
 
             failByAssertion.automatedTestName.ShouldBe(TestClass + ".FailByAssertion");
@@ -127,7 +127,7 @@
                 "Actual:   1");
             failByAssertion.stackTrace
                 .Lines()
-                .CleanStackTraceLineNumbers()
+                .NormalizeStackTraceLines()
                 .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
 
             pass.automatedTestName.ShouldBe(TestClass + ".Pass");
@@ -167,7 +167,7 @@
                 "Actual:   System.Int32");
             shouldBeStringFail.stackTrace
                 .Lines()
-                .CleanStackTraceLineNumbers()
+                .NormalizeStackTraceLines()
                 .ShouldBe(
                     "Fixie.Tests.Assertions.AssertException",
                     At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));

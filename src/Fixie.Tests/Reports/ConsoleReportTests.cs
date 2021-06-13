@@ -14,7 +14,7 @@
             var output = await RunAsync(console => new ConsoleReport(console));
 
             output.Console
-                .CleanStackTraceLineNumbers()
+                .NormalizeStackTraceLines()
                 .CleanDuration()
                 .ShouldBe(
                     "Standard Out: Fail",
@@ -59,7 +59,7 @@
             var output = await RunAsync(console => new ConsoleReport(console, outputTestPassed: true));
 
             output.Console
-                .CleanStackTraceLineNumbers()
+                .NormalizeStackTraceLines()
                 .CleanDuration()
                 .ShouldBe(
                     "Standard Out: Fail",

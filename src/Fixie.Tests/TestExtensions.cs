@@ -44,11 +44,13 @@
             return lines;
         }
 
-        public static IEnumerable<string> CleanStackTraceLineNumbers(this IEnumerable<string> lines)
+        public static IEnumerable<string> NormalizeStackTraceLines(this IEnumerable<string> lines)
         {
-            //Avoid brittle assertion introduced by stack trace line numbers.
+            //Avoid brittle assertion introduced by stack trace absolute paths and line numbers.
 
-            return lines.Select(line => Regex.Replace(line, @":line \d+", ":line #"));
+            return lines.Select(line => Regex.Replace(line,
+                @"\) in .+\\src\\Fixie(.+)\.cs:line \d+",
+                ") in ...\\src\\Fixie$1.cs:line #"));
         }
 
         public static IEnumerable<string> CleanDuration(this IEnumerable<string> lines)

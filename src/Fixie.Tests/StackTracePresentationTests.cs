@@ -11,7 +11,7 @@
     {
         public async Task ShouldProvideCleanStackTraceForImplicitTestClassConstructionFailures()
         {
-            (await RunAsync<ConstructionFailureTestClass, ImplicitConstruction>())
+            (await RunAsync<ConstructionFailureTestClass, ImplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                     "",
@@ -25,7 +25,7 @@
         
         public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestClassConstructionFailures()
         {
-            (await RunAsync<ConstructionFailureTestClass, ExplicitConstruction>())
+            (await RunAsync<ConstructionFailureTestClass, ExplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                     "",
@@ -34,19 +34,15 @@
                     "Fixie.Tests.FailureException",
                     At<ConstructionFailureTestClass>(".ctor()"),
                     "--- End of stack trace from previous location where exception was thrown ---",
-                    "   at Fixie.TestClass.Construct(Object[] parameters) in C:\\dev\\fixie\\src\\Fixie\\TestClass.cs:line #",
-                    "   at Fixie.Tests.StackTracePresentationTests.ExplicitConstruction.RunAsync(TestAssembly testAssembly) in C:\\dev\\fixie\\src\\Fixie.Tests\\StackTracePresentationTests.cs:line #",
-                    "   at Fixie.Internal.Runner.RunAsync(TestAssembly testAssembly, Execution execution) in C:\\dev\\fixie\\src\\Fixie\\Internal\\Runner.cs:line #",
+                    At(typeof(TestClass), "Construct(Object[] parameters)", "...\\src\\Fixie\\TestClass.cs"),
+                    At<ExplicitExceptionHandling>("RunAsync(TestAssembly testAssembly)"),
                     "",
-                    "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' skipped:",
-                    "This test did not run.",
-                    "",
-                    "1 failed, 1 skipped, took 1.23 seconds");
+                    "1 failed, took 1.23 seconds");
         }
 
         public async Task ShouldProvideCleanStackTraceTestMethodFailures()
         {
-            (await RunAsync<FailureTestClass, ImplicitConstruction>())
+            (await RunAsync<FailureTestClass, ImplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
                     "",
@@ -65,9 +61,35 @@
                     "2 failed, took 1.23 seconds");
         }
 
+        public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestMethodInvocationFailures()
+        {
+            (await RunAsync<FailureTestClass, ExplicitExceptionHandling>())
+                .ShouldBe(
+                    "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
+                    "",
+                    "'Asynchronous' failed!",
+                    "",
+                    "Fixie.Tests.FailureException",
+                    At<FailureTestClass>("Asynchronous()"),
+                    At(typeof(MethodInfoExtensions), "CallAsync(MethodInfo method, Object instance, Object[] parameters)", "...\\src\\Fixie\\MethodInfoExtensions.cs"),
+                    At<ExplicitExceptionHandling>("RunAsync(TestAssembly testAssembly)"),
+                    "",
+                    "Test '" + FullName<FailureTestClass>() + ".Synchronous' failed:",
+                    "",
+                    "'Synchronous' failed!",
+                    "",
+                    "Fixie.Tests.FailureException",
+                    At<FailureTestClass>("Synchronous()"),
+                    "--- End of stack trace from previous location where exception was thrown ---",
+                    At(typeof(MethodInfoExtensions), "CallAsync(MethodInfo method, Object instance, Object[] parameters)", "...\\src\\Fixie\\MethodInfoExtensions.cs"),
+                    At<ExplicitExceptionHandling>("RunAsync(TestAssembly testAssembly)"),
+                    "",
+                    "2 failed, took 1.23 seconds");
+        }
+
         public async Task ShouldProvideLiterateStackTraceIncludingAllNestedExceptions()
         {
-            (await RunAsync<NestedFailureTestClass, ImplicitConstruction>())
+            (await RunAsync<NestedFailureTestClass, ImplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<NestedFailureTestClass>() + ".Asynchronous' failed:",
                     "",
@@ -120,7 +142,7 @@
                 .CleanDuration();
         }
 
-        class ImplicitConstruction : Execution
+        class ImplicitExceptionHandling : Execution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
@@ -129,15 +151,27 @@
             }
         }
 
-        class ExplicitConstruction : Execution
+        class ExplicitExceptionHandling : Execution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
                 foreach (var testClass in testAssembly.TestClasses)
                 {
-                    var instance = testClass.Construct();
-                    foreach (var test in testClass.Tests)
-                        await test.RunAsync(instance);
+                    foreach (var test in testAssembly.Tests)
+                    {
+                        try
+                        {
+                            var instance = testClass.Construct();
+
+                            await test.Method.CallAsync(instance);
+
+                            await test.PassAsync();
+                        }
+                        catch (Exception exception)
+                        {
+                            await test.FailAsync(exception);
+                        }
+                    }
                 }
             }
         }

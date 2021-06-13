@@ -20,8 +20,15 @@
         }
 
         public static string At<T>(string method, [CallerFilePath] string path = default!)
-            => $"   at {FullName<T>().Replace("+", ".")}.{method} in {NormalizedPath(path)}:line #";
+            => At(typeof(T), method, NormalizedPath(path));
 
+        public static string At(Type type, string method, string normalizedPath)
+        {
+            var typeFullName = type.FullName ??
+                   throw new Exception($"Expected type {type.Name} to have a non-null FullName.");
+
+            return $"   at {typeFullName.Replace("+", ".")}.{method} in {normalizedPath}:line #";
+        }
 
         public static string NormalizedPath(string path)
             => Regex.Replace(path,

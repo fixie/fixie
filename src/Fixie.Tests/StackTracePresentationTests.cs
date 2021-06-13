@@ -23,7 +23,7 @@
                     "1 failed, took 1.23 seconds");
         }
         
-        public async Task ShouldProvideCleanStackTraceForExplicitTestClassConstructionFailures()
+        public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestClassConstructionFailures()
         {
             (await RunAsync<ConstructionFailureTestClass, ExplicitConstruction>())
                 .ShouldBe(
@@ -33,6 +33,10 @@
                     "",
                     "Fixie.Tests.FailureException",
                     At<ConstructionFailureTestClass>(".ctor()"),
+                    "--- End of stack trace from previous location where exception was thrown ---",
+                    "   at Fixie.TestClass.Construct(Object[] parameters) in C:\\dev\\fixie\\src\\Fixie\\TestClass.cs:line #",
+                    "   at Fixie.Tests.StackTracePresentationTests.ExplicitConstruction.RunAsync(TestAssembly testAssembly) in C:\\dev\\fixie\\src\\Fixie.Tests\\StackTracePresentationTests.cs:line #",
+                    "   at Fixie.Internal.Runner.RunAsync(TestAssembly testAssembly, Execution execution) in C:\\dev\\fixie\\src\\Fixie\\Internal\\Runner.cs:line #",
                     "",
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' skipped:",
                     "This test did not run.",

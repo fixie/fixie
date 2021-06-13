@@ -4,6 +4,7 @@ namespace Fixie
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.ExceptionServices;
     using System.Threading.Tasks;
     using Internal;
 
@@ -159,9 +160,6 @@ namespace Fixie
             if (reason == null)
                 throw new ArgumentNullException(nameof(reason));
 
-            if (reason is PreservedException preservedException)
-                reason = preservedException.OriginalException;
-
             var name = GetName(Method, parameters);
 
             await recorder.FailAsync(this, name, reason);
@@ -187,9 +185,6 @@ namespace Fixie
             }
             catch (Exception exception)
             {
-                if (exception is PreservedException preservedException)
-                    exception = preservedException.OriginalException;
-
                 failureReason = exception;
             }
 
@@ -218,7 +213,8 @@ namespace Fixie
             }
             catch (TargetInvocationException exception)
             {
-                throw new PreservedException(exception);
+                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
+                throw; // Unreachable.
             }
         }
 

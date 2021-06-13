@@ -6,6 +6,7 @@ namespace Fixie
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
+    using System.Runtime.ExceptionServices;
     using System.Threading.Tasks;
     using Internal;
 
@@ -41,7 +42,8 @@ namespace Fixie
             }
             catch (TargetInvocationException exception)
             {
-                throw new PreservedException(exception);
+                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
+                throw; // Unreachable.
             }
 
             if (isVoid)
@@ -163,7 +165,8 @@ namespace Fixie
             }
             catch (TargetInvocationException exception)
             {
-                throw new PreservedException(exception);
+                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
+                throw; // Unreachable.
             }
 
             if (isVoid)
@@ -258,7 +261,8 @@ namespace Fixie
             }
             catch (TargetInvocationException exception)
             {
-                throw new PreservedException(exception);
+                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
+                throw; // Unreachable.
             }
         }
     }

@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Runtime.ExceptionServices;
     using System.Threading.Tasks;
-    using Internal;
 
     public class TestClass
     {
@@ -39,7 +39,8 @@
             }
             catch (TargetInvocationException exception)
             {
-                throw new PreservedException(exception);
+                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
+                throw; // Unreachable.
             }
 
             if (instance == null)

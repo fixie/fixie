@@ -6,7 +6,6 @@
 
     static class ExceptionExtensions
     {
-
         public static string LiterateStackTrace(this Exception exception)
         {
             var console = new StringBuilder();
@@ -34,8 +33,7 @@
             //
             // Similar to the way that assertion libraries simplify their assertion
             // exception stack traces to omit implementation details of the assertion
-            // library, we omit these test method invocation implementation details as
-            // well.
+            // library, we omit these test runner implementation details as well.
             //
             // When in a code path where the test runner catches, reports, and stops
             // propagation of rethrown reflection exceptions, we have an opportunity

@@ -1,19 +1,19 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
-    using static Maybe;
+    using static Internal.Maybe;
 
-    static class ReflectionExtensions
+    public static class ReflectionExtensions
     {
-        public static string TestName(this MethodInfo method)
+        internal static string TestName(this MethodInfo method)
         {
             return method.ReflectedType!.FullName! + "." + method.Name;
         }
 
-        public static bool IsStatic(this Type type)
+        internal static bool IsStatic(this Type type)
         {
             return type.IsAbstract && type.IsSealed;
         }

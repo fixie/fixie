@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Tests
 {
     using Assertions;
-    using Fixie.Internal;
 
     public class TestNameTests
     {

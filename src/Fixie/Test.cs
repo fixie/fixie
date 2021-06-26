@@ -192,15 +192,15 @@ namespace Fixie
             if (failureReason != null)
             {
                 await recorder.FailAsync(this, name, failureReason);
+                RecordedResult = true;
                 result = TestResult.Failed(failureReason);
             }
             else
             {
                 await recorder.PassAsync(this, name);
+                RecordedResult = true;
                 result = TestResult.Passed;
             }
-
-            RecordedResult = true;
 
             return result;
         }

@@ -7,8 +7,25 @@
     using Microsoft.FSharp.Control;
     using static System.Environment;
 
-    public class AsyncCaseTests : InstrumentedExecutionTests
+    public class ReturnTypeTests : InstrumentedExecutionTests
     {
+        public async Task ShouldInvokeSynchronousTestsDiscardingReturnedValues()
+        {
+            var output = await RunAsync<SyncTestClass>();
+
+            output.ShouldHaveResults(
+                "SyncTestClass.ReturnsInteger passed",
+                "SyncTestClass.ReturnsNull passed",
+                "SyncTestClass.ReturnsObject passed",
+                "SyncTestClass.ReturnsString passed");
+
+            output.ShouldHaveLifecycle(
+                "ReturnsInteger",
+                "ReturnsNull",
+                "ReturnsObject",
+                "ReturnsString");
+        }
+
         public async Task ShouldAwaitAsynchronousTestsToEnsureCompleteExecution()
         {
             var output = await RunAsync<AsyncTestClass>();
@@ -23,6 +40,12 @@
                 "AsyncTestClass.FailBeforeAwaitValueTask failed: 'FailBeforeAwaitValueTask' failed!",
                 "AsyncTestClass.FailDuringAwaitTask failed: Attempted to divide by zero.",
                 "AsyncTestClass.FailDuringAwaitValueTask failed: Attempted to divide by zero.",
+                "AsyncTestClass.GenericAsyncTaskFail failed: Attempted to divide by zero.",
+                "AsyncTestClass.GenericAsyncTaskWithResult passed",
+                "AsyncTestClass.GenericAsyncValueTaskFail failed: Attempted to divide by zero.",
+                "AsyncTestClass.GenericAsyncValueTaskWithResult passed",
+                "AsyncTestClass.GenericTaskFail failed: One or more errors occurred. (Attempted to divide by zero.)",
+                "AsyncTestClass.GenericTaskWithResult passed",
                 "AsyncTestClass.NullTask failed: This asynchronous method returned null, " +
                 "but a non-null awaitable object was expected.");
 
@@ -36,6 +59,12 @@
                 "FailBeforeAwaitValueTask",
                 "FailDuringAwaitTask",
                 "FailDuringAwaitValueTask",
+                "GenericAsyncTaskFail",
+                "GenericAsyncTaskWithResult",
+                "GenericAsyncValueTaskFail",
+                "GenericAsyncValueTaskWithResult",
+                "GenericTaskFail",
+                "GenericTaskWithResult",
                 "NullTask");
         }
 
@@ -74,37 +103,27 @@
 
             output.ShouldHaveResults(
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerable failed: " +
-                "Test method return type is not supported. Declare " +
-                "the test method return type as `void`, `Task`, or `ValueTask`.",
+                "The method return type is an unsupported awaitable type. " +
+                "To ensure the reliability of the test runner, declare " +
+                "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
+                "or `ValueTask<T>`.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerator failed: " +
-                "Test method return type is not supported. Declare " +
-                "the test method return type as `void`, `Task`, or `ValueTask`.",
-
-                "UnsupportedReturnTypeDeclarationsTestClass.AsyncGenericTask failed: " +
-                "Test method return type is not supported. Declare " +
-                "the test method return type as `void`, `Task`, or `ValueTask`.",
+                "The method return type is an unsupported awaitable type. " +
+                "To ensure the reliability of the test runner, declare " +
+                "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
+                "or `ValueTask<T>`.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncVoid failed: " +
                 "`async void` test methods are not supported. Declare " +
                 "the test method as `async Task` to ensure the task " +
                 "actually runs to completion.",
 
-                "UnsupportedReturnTypeDeclarationsTestClass.GenericTask failed: " +
-                "Test method return type is not supported. Declare " +
-                "the test method return type as `void`, `Task`, or `ValueTask`.",
-
-                "UnsupportedReturnTypeDeclarationsTestClass.GenericValueTask failed: " +
-                "Test method return type is not supported. Declare " +
-                "the test method return type as `void`, `Task`, or `ValueTask`.",
-
-                "UnsupportedReturnTypeDeclarationsTestClass.Object failed: " +
-                "Test method return type is not supported. Declare " +
-                "the test method return type as `void`, `Task`, or `ValueTask`.",
-
                 "UnsupportedReturnTypeDeclarationsTestClass.UntrustworthyAwaitable failed: " +
-                "Test method return type is not supported. Declare " +
-                "the test method return type as `void`, `Task`, or `ValueTask`."
+                "The method return type is an unsupported awaitable type. " +
+                "To ensure the reliability of the test runner, declare " +
+                "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
+                "or `ValueTask<T>`."
             );
 
             output.ShouldHaveLifecycle();
@@ -123,6 +142,46 @@
         static int Divide(int numerator, int denominator)
         {
             return numerator/denominator;
+        }
+
+        class SyncTestClass
+        {
+            public int ReturnsInteger()
+            {
+                WhereAmI();
+
+                return 42;
+            }
+
+            public object? ReturnsNull()
+            {
+                WhereAmI();
+
+                return null;
+            }
+
+            public object ReturnsObject()
+            {
+                WhereAmI();
+
+                return new Example("example");
+            }
+
+            public string ReturnsString()
+            {
+                WhereAmI();
+
+                return "ABC";
+            }
+        }
+
+        public class Example
+        {
+            readonly string name;
+
+            public Example(string name) => this.name = name;
+            
+            public override string ToString() => $"<{name}>";
         }
 
         class AsyncTestClass
@@ -211,6 +270,52 @@
                 throw new ShouldBeUnreachableException();
             }
 
+            public async Task<int> GenericAsyncTaskFail()
+            {
+                WhereAmI();
+
+                return await DivideAsync(15, 0);
+            }
+
+            public async Task<int> GenericAsyncTaskWithResult()
+            {
+                WhereAmI();
+
+                return await DivideAsync(15, 5);
+            }
+
+            public async ValueTask<int> GenericAsyncValueTaskWithResult()
+            {
+                WhereAmI();
+
+                return await DivideAsync(20, 5);
+            }
+            
+            public async ValueTask<int> GenericAsyncValueTaskFail()
+            {
+                WhereAmI();
+
+                return await DivideAsync(15, 0);
+            }
+
+            public Task<bool> GenericTaskFail()
+            {
+                WhereAmI();
+
+                var divide = DivideAsync(15, 0);
+
+                return divide.ContinueWith(division => division.Result == 42);
+            }
+
+            public Task<bool> GenericTaskWithResult()
+            {
+                WhereAmI();
+
+                var divide = DivideAsync(15, 5);
+
+                return divide.ContinueWith(division => division.Result == 3);
+            }
+
             public Task? NullTask()
             {
                 WhereAmI();
@@ -284,42 +389,11 @@
 
         class UnsupportedReturnTypeDeclarationsTestClass
         {
-            public async Task<bool> AsyncGenericTask()
-            {
-                WhereAmI();
-
-                await DivideAsync(15, 5);
-                throw new ShouldBeUnreachableException();
-            }
-
             public async void AsyncVoid()
             {
                 WhereAmI();
 
                 await DivideAsync(15, 5);
-                throw new ShouldBeUnreachableException();
-            }
-
-            public Task<bool> GenericTask()
-            {
-                WhereAmI();
-
-                DivideAsync(15, 5);
-                throw new ShouldBeUnreachableException();
-            }
-
-            public async ValueTask<bool> GenericValueTask()
-            {
-                WhereAmI();
-
-                await DivideAsync(15, 5);
-                throw new ShouldBeUnreachableException();
-            }
-
-            public object Object()
-            {
-                WhereAmI();
-
                 throw new ShouldBeUnreachableException();
             }
 

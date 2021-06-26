@@ -121,7 +121,7 @@ namespace Fixie
             {
                 ThrowForUnsupportedAwaitable();
             }
-            
+
             task = null;
             taskHasResult = false;
             return false;
@@ -140,18 +140,6 @@ namespace Fixie
                         "`async void` test methods are not supported. Declare " +
                         "the test method as `async Task` to ensure the task " +
                         "actually runs to completion.");
-            }
-            else
-            {
-                if (returnType != typeof(Task) &&
-                    returnType != typeof(ValueTask) &&
-                    !IsFSharpAsync(returnType))
-                {
-                    throw new NotSupportedException(
-                        "Test method return type is not supported. Declare " +
-                        "the test method return type as `void`, `Task`, or " +
-                        "`ValueTask`.");
-                }
             }
 
             if (resolvedMethod.ContainsGenericParameters)
@@ -172,7 +160,7 @@ namespace Fixie
             if (isVoid)
                 return;
 
-            if (IsAwaitable(returnType, out var task, result))
+            if (IsAwaitable(returnType, result, out var task, out var taskHasResult))
             {
                 if (task.Status == TaskStatus.Created)
                     throw new InvalidOperationException(
@@ -180,11 +168,6 @@ namespace Fixie
                         "Consider using Task.Run or Task.Factory.StartNew.");
 
                 await task;
-            }
-            else
-            {
-                throw new InvalidOperationException(
-                    $"The test returned an object with an unsupported type: {returnType.FullName}");
             }
         }
 
@@ -196,6 +179,7 @@ namespace Fixie
                 "a non-null awaitable object was expected.");
         }
 
+        [DoesNotReturn]
         static void ThrowForUnsupportedAwaitable()
         {
             throw new NotSupportedException(
@@ -208,40 +192,6 @@ namespace Fixie
         static bool HasAsyncKeyword(this MethodInfo method)
         {
             return method.Has<AsyncStateMachineAttribute>();
-        }
-
-        static bool IsAwaitable(Type returnType, [NotNullWhen(true)] out Task? task, object? result)
-        {
-            if (returnType == typeof(Task))
-            {
-                if (result == null)
-                    ThrowForNullAwaitable();
-                
-                task = (Task)result;
-                return true;
-            }
-            else if (returnType == typeof(ValueTask))
-            {
-                task = ((ValueTask)result!).AsTask();
-                return true;
-            }
-            else if (IsFSharpAsync(returnType))
-            {
-                if (result == null)
-                    ThrowForNullAwaitable();
-
-                task = ConvertFSharpAsyncToTask(result, returnType);
-                return true;
-            }
-
-            task = null;
-            return false;
-        }
-
-        static bool IsFSharpAsync(Type resultType)
-        {
-            return resultType.IsGenericType &&
-                   resultType.GetGenericTypeDefinition().FullName == "Microsoft.FSharp.Control.FSharpAsync`1";
         }
 
         static Task ConvertFSharpAsyncToTask(object result, Type resultType)

@@ -127,15 +127,15 @@ namespace Fixie
             return false;
         }
 
-        internal static async Task RunTestMethodAsync(this MethodInfo method, object? instance, object?[] parameters)
+        internal static async Task RunTestMethodAsync(this MethodInfo resolvedMethod, object? instance, object?[] parameters)
         {
-            var returnType = method.ReturnType;
+            var returnType = resolvedMethod.ReturnType;
 
             var isVoid = returnType == typeof(void);
 
             if (isVoid)
             {
-                if (method.HasAsyncKeyword())
+                if (resolvedMethod.HasAsyncKeyword())
                     throw new NotSupportedException(
                         "`async void` test methods are not supported. Declare " +
                         "the test method as `async Task` to ensure the task " +
@@ -154,14 +154,14 @@ namespace Fixie
                 }
             }
 
-            if (method.ContainsGenericParameters)
+            if (resolvedMethod.ContainsGenericParameters)
                 throw new Exception("Could not resolve type parameters for generic method.");
 
             object? result;
 
             try
             {
-                result = method.Invoke(instance, parameters.Length == 0 ? null : parameters);
+                result = resolvedMethod.Invoke(instance, parameters.Length == 0 ? null : parameters);
             }
             catch (TargetInvocationException exception)
             {

@@ -188,21 +188,16 @@ namespace Fixie
                 failureReason = exception;
             }
 
-            TestResult? result;
             if (failureReason != null)
             {
                 await recorder.FailAsync(this, name, failureReason);
                 RecordedResult = true;
-                result = TestResult.Failed(failureReason);
-            }
-            else
-            {
-                await recorder.PassAsync(this, name);
-                RecordedResult = true;
-                result = TestResult.Passed;
+                return TestResult.Failed(failureReason);
             }
 
-            return result;
+            await recorder.PassAsync(this, name);
+            RecordedResult = true;
+            return TestResult.Passed;
         }
 
         static object? Construct(Type testClass)

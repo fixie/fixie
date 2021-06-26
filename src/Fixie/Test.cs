@@ -172,8 +172,6 @@ namespace Fixie
             var resolvedMethod = Method.TryResolveTypeArguments(parameters);
             var name = CaseNameBuilder.GetName(resolvedMethod, parameters);
 
-            Exception? failureReason = null;
-
             await recorder.StartAsync(this);
 
             try
@@ -183,12 +181,7 @@ namespace Fixie
 
                 await resolvedMethod.CallResolvedMethodAsync(instance, parameters);
             }
-            catch (Exception exception)
-            {
-                failureReason = exception;
-            }
-
-            if (failureReason != null)
+            catch (Exception failureReason)
             {
                 await recorder.FailAsync(this, name, failureReason);
                 RecordedResult = true;

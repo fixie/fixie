@@ -117,7 +117,8 @@ namespace Fixie
                 taskHasResult = false;
                 return true;
             }
-            else if (returnType.Has<AsyncMethodBuilderAttribute>())
+            
+            if (returnType.Has<AsyncMethodBuilderAttribute>())
             {
                 ThrowForUnsupportedAwaitable();
             }

@@ -17,6 +17,46 @@ namespace Fixie
         public static async Task<object?> CallAsync(this MethodInfo method, object? instance, params object?[] parameters)
             => await method.TryResolveTypeArguments(parameters).CallResolvedMethodAsync(instance, parameters);
 
+        internal static async Task<object?> CallResolvedMethodAsync(this MethodInfo resolvedMethod, object? instance, object?[] parameters)
+        {
+            var isVoid = resolvedMethod.ReturnType == typeof(void);
+
+            if (isVoid && resolvedMethod.HasAsyncKeyword())
+                ThrowForAsyncVoid(resolvedMethod);
+
+            if (resolvedMethod.ContainsGenericParameters)
+                ThrowForUnresolvedTypeParameters(resolvedMethod);
+
+            object? result;
+
+            try
+            {
+                result = resolvedMethod.Invoke(instance, parameters.Length == 0 ? null : parameters);
+            }
+            catch (TargetInvocationException exception)
+            {
+                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
+                throw; // Unreachable.
+            }
+
+            if (isVoid)
+                return null;
+
+            if (IsAwaitable(resolvedMethod, result, out var task, out var taskHasResult))
+            {
+                if (task.Status == TaskStatus.Created)
+                    ThrowForNonStartedTask(resolvedMethod);
+
+                await task;
+
+                return taskHasResult
+                    ? task.GetType().GetProperty("Result")!.GetValue(task)
+                    : null;
+            }
+
+            return result;
+        }
+
         static bool IsAwaitable(MethodInfo resolvedMethod, object? result, [NotNullWhen(true)] out Task? task, out bool taskHasResult)
         {
             var returnType = resolvedMethod.ReturnType;
@@ -75,46 +115,6 @@ namespace Fixie
             task = null;
             taskHasResult = false;
             return false;
-        }
-
-        internal static async Task<object?> CallResolvedMethodAsync(this MethodInfo resolvedMethod, object? instance, object?[] parameters)
-        {
-            var isVoid = resolvedMethod.ReturnType == typeof(void);
-
-            if (isVoid && resolvedMethod.HasAsyncKeyword())
-                ThrowForAsyncVoid(resolvedMethod);
-
-            if (resolvedMethod.ContainsGenericParameters)
-                ThrowForUnresolvedTypeParameters(resolvedMethod);
-
-            object? result;
-
-            try
-            {
-                result = resolvedMethod.Invoke(instance, parameters.Length == 0 ? null : parameters);
-            }
-            catch (TargetInvocationException exception)
-            {
-                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
-                throw; // Unreachable.
-            }
-
-            if (isVoid)
-                return null;
-
-            if (IsAwaitable(resolvedMethod, result, out var task, out var taskHasResult))
-            {
-                if (task.Status == TaskStatus.Created)
-                    ThrowForNonStartedTask(resolvedMethod);
-
-                await task;
-
-                return taskHasResult
-                    ? task.GetType().GetProperty("Result")!.GetValue(task)
-                    : null;
-            }
-
-            return result;
         }
 
         [DoesNotReturn]

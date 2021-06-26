@@ -290,7 +290,7 @@
 
                 return await DivideAsync(20, 5);
             }
-            
+
             public async ValueTask<int> GenericAsyncValueTaskFail()
             {
                 WhereAmI();

@@ -107,8 +107,7 @@
                 "AsyncTestClass.GenericTaskFail failed: One or more errors occurred. (Attempted to divide by zero.)",
                 "AsyncTestClass.GenericTaskWithResult passed",
                 "AsyncTestClass.NullTask failed: The asynchronous method NullTask returned null, " +
-                "but a non-null awaitable object was expected."
-            );
+                "but a non-null awaitable object was expected.");
 
             output.ShouldHaveLifecycle(
                 "AwaitTaskThenPass",
@@ -401,7 +400,7 @@
                 WhereAmI();
 
                 var divide = DivideAsync(15, 0);
-                
+
                 return divide.ContinueWith(division => division.Result == 42);
             }
 
@@ -410,7 +409,7 @@
                 WhereAmI();
 
                 var divide = DivideAsync(15, 5);
-                
+
                 return divide.ContinueWith(division => division.Result == 3);
             }
 

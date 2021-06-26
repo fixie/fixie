@@ -161,29 +161,29 @@
 
             output.ShouldHaveResults(
                 "GenericTestClass.ConstrainedGeneric<System.Int32>(1) passed",
-                "GenericTestClass.ConstrainedGeneric<T>(\"Oops\") failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.ConstrainedGeneric<T>(\"Oops\") failed: The type parameters for generic method ConstrainedGeneric could not be resolved.",
 
                 "GenericTestClass.ConstrainedGenericMethodWithNoInputsProvided<T> failed: Cannot create an instance of T because Type.ContainsGenericParameters is true.",
 
                 "GenericTestClass.GenericMethodWithIncorrectParameterCountProvided<System.Int32>(123, 123) failed: Parameter count mismatch.",
 
-                "GenericTestClass.GenericMethodWithNoInputsProvided<T>(null) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.GenericMethodWithNoInputsProvided<T>(null) failed: The type parameters for generic method GenericMethodWithNoInputsProvided could not be resolved.",
 
-                "GenericTestClass.MultipleGenericArgumentsMultipleParameters<T1, T2>(123, null, 456, System.Int32, System.Object) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.MultipleGenericArgumentsMultipleParameters<T1, T2>(123, null, 456, System.Int32, System.Object) failed: The type parameters for generic method MultipleGenericArgumentsMultipleParameters could not be resolved.",
                 "GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.Int32, System.String>(123, \"stringArg1\", 456, System.Int32, System.String) passed",
-                "GenericTestClass.MultipleGenericArgumentsMultipleParameters<T1, T2>(\"stringArg\", null, null, System.String, System.Object) failed: Could not resolve type parameters for generic method.",
-                "GenericTestClass.MultipleGenericArgumentsMultipleParameters<T1, T2>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.MultipleGenericArgumentsMultipleParameters<T1, T2>(\"stringArg\", null, null, System.String, System.Object) failed: The type parameters for generic method MultipleGenericArgumentsMultipleParameters could not be resolved.",
+                "GenericTestClass.MultipleGenericArgumentsMultipleParameters<T1, T2>(\"stringArg1\", null, \"stringArg2\", System.String, System.Object) failed: The type parameters for generic method MultipleGenericArgumentsMultipleParameters could not be resolved.",
                 "GenericTestClass.MultipleGenericArgumentsMultipleParameters<System.String, System.String>(null, \"stringArg1\", \"stringArg2\", System.String, System.String) passed",
 
                 "GenericTestClass.SingleGenericArgument<System.Int32>(123, System.Int32) passed",
-                "GenericTestClass.SingleGenericArgument<T>(null, System.Object) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.SingleGenericArgument<T>(null, System.Object) failed: The type parameters for generic method SingleGenericArgument could not be resolved.",
                 "GenericTestClass.SingleGenericArgument<System.String>(\"stringArg\", System.String) passed",
 
                 "GenericTestClass.SingleGenericArgumentMultipleParameters<System.Int32>(123, 456, System.Int32) passed",
                 "GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", 123, System.Object) failed: Object of type 'System.Int32' cannot be converted to type 'System.String'.",
                 "GenericTestClass.SingleGenericArgumentMultipleParameters<System.Int32>(123, \"stringArg\", System.Object) failed: Object of type 'System.String' cannot be converted to type 'System.Int32'.",
                 "GenericTestClass.SingleGenericArgumentMultipleParameters<System.Int32>(123, null, System.Int32) passed", //MethodInfo.Invoke converts nulls to default(T) for value types.
-                "GenericTestClass.SingleGenericArgumentMultipleParameters<T>(null, null, System.Object) failed: Could not resolve type parameters for generic method.",
+                "GenericTestClass.SingleGenericArgumentMultipleParameters<T>(null, null, System.Object) failed: The type parameters for generic method SingleGenericArgumentMultipleParameters could not be resolved.",
                 "GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(\"stringArg\", null, System.String) passed",
                 "GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(\"stringArg1\", \"stringArg2\", System.String) passed",
                 "GenericTestClass.SingleGenericArgumentMultipleParameters<System.String>(null, \"stringArg\", System.String) passed");

@@ -224,7 +224,7 @@
             var expectedVariants = expected.Select(name => new[]
             {
                 name.Contains("Incompatible")
-                    ? $"{name} failed: Could not resolve type parameters for generic method."
+                    ? $"{name} failed: The type parameters for generic method ConstrainedGeneric could not be resolved."
                     : $"{name} passed",
                 $"{name} passed",
                 $"{name} failed: 'RunAsync' failed!",

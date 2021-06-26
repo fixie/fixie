@@ -46,7 +46,7 @@
                 "AsyncTestClass.GenericAsyncValueTaskWithResult passed",
                 "AsyncTestClass.GenericTaskFail failed: One or more errors occurred. (Attempted to divide by zero.)",
                 "AsyncTestClass.GenericTaskWithResult passed",
-                "AsyncTestClass.NullTask failed: This asynchronous method returned null, " +
+                "AsyncTestClass.NullTask failed: The asynchronous method NullTask returned null, " +
                 "but a non-null awaitable object was expected.");
 
             output.ShouldHaveLifecycle(
@@ -76,7 +76,7 @@
                 "FSharpAsyncTestClass.AsyncPass passed",
                 "FSharpAsyncTestClass.FailBeforeAsync failed: 'FailBeforeAsync' failed!",
                 "FSharpAsyncTestClass.FailFromAsync failed: Expected: 0" + NewLine + "Actual:   3",
-                "FSharpAsyncTestClass.NullAsync failed: This asynchronous method returned null, " +
+                "FSharpAsyncTestClass.NullAsync failed: The asynchronous method NullAsync returned null, " +
                 "but a non-null awaitable object was expected.");
 
             output.ShouldHaveLifecycle(
@@ -91,7 +91,7 @@
             var output = await RunAsync<FailDueToNonStartedTaskTestClass>();
 
             output.ShouldHaveResults(
-                "FailDueToNonStartedTaskTestClass.Test failed: The test returned a non-started task, which cannot " +
+                "FailDueToNonStartedTaskTestClass.Test failed: The method Test returned a non-started task, which cannot " +
                 "be awaited. Consider using Task.Run or Task.Factory.StartNew.");
 
             output.ShouldHaveLifecycle("Test");
@@ -103,24 +103,24 @@
 
             output.ShouldHaveResults(
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerable failed: " +
-                "The method return type is an unsupported awaitable type. " +
+                "The return type of method AsyncEnumerable is an unsupported awaitable type. " +
                 "To ensure the reliability of the test runner, declare " +
                 "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
                 "or `ValueTask<T>`.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerator failed: " +
-                "The method return type is an unsupported awaitable type. " +
+                "The return type of method AsyncEnumerator is an unsupported awaitable type. " +
                 "To ensure the reliability of the test runner, declare " +
                 "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
                 "or `ValueTask<T>`.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncVoid failed: " +
-                "`async void` test methods are not supported. Declare " +
-                "the test method as `async Task` to ensure the task " +
-                "actually runs to completion.",
+                "The method AsyncVoid is declared as `async void`, which is not supported. " +
+                "To ensure the reliability of the test runner, declare " +
+                "the method as `async Task`.",
 
                 "UnsupportedReturnTypeDeclarationsTestClass.UntrustworthyAwaitable failed: " +
-                "The method return type is an unsupported awaitable type. " +
+                "The return type of method UntrustworthyAwaitable is an unsupported awaitable type. " +
                 "To ensure the reliability of the test runner, declare " +
                 "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
                 "or `ValueTask<T>`."

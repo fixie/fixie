@@ -172,8 +172,6 @@ namespace Fixie
             var resolvedMethod = Method.TryResolveTypeArguments(parameters);
             var name = CaseNameBuilder.GetName(resolvedMethod, parameters);
 
-            Exception? failureReason = null;
-
             await recorder.StartAsync(this);
 
             try
@@ -181,28 +179,18 @@ namespace Fixie
                 if (instance == null && !resolvedMethod.IsStatic)
                     instance = Construct(resolvedMethod.ReflectedType!);
 
-                await resolvedMethod.RunTestMethodAsync(instance, parameters);
+                await resolvedMethod.CallResolvedMethodAsync(instance, parameters);
             }
-            catch (Exception exception)
-            {
-                failureReason = exception;
-            }
-
-            TestResult? result;
-            if (failureReason != null)
+            catch (Exception failureReason)
             {
                 await recorder.FailAsync(this, name, failureReason);
-                result = TestResult.Failed(failureReason);
-            }
-            else
-            {
-                await recorder.PassAsync(this, name);
-                result = TestResult.Passed;
+                RecordedResult = true;
+                return TestResult.Failed(failureReason);
             }
 
+            await recorder.PassAsync(this, name);
             RecordedResult = true;
-
-            return result;
+            return TestResult.Passed;
         }
 
         static object? Construct(Type testClass)

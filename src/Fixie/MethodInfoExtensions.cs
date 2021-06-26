@@ -15,24 +15,17 @@ namespace Fixie
         static MethodInfo? startAsTask;
 
         public static async Task<object?> CallAsync(this MethodInfo method, object? instance, params object?[] parameters)
+            => await method.TryResolveTypeArguments(parameters).CallResolvedMethodAsync(instance, parameters);
+
+        internal static async Task<object?> CallResolvedMethodAsync(this MethodInfo resolvedMethod, object? instance, object?[] parameters)
         {
-            var resolvedMethod = method.TryResolveTypeArguments(parameters);
+            var isVoid = resolvedMethod.ReturnType == typeof(void);
 
-            var returnType = resolvedMethod.ReturnType;
-
-            var isVoid = returnType == typeof(void);
-
-            if (isVoid)
-            {
-                if (resolvedMethod.HasAsyncKeyword())
-                    throw new NotSupportedException(
-                        "`async void` methods are not supported. Declare " +
-                        "the method as `async Task` to ensure the task " +
-                        "actually runs to completion.");
-            }
+            if (isVoid && resolvedMethod.HasAsyncKeyword())
+                ThrowForAsyncVoid(resolvedMethod);
 
             if (resolvedMethod.ContainsGenericParameters)
-                throw new Exception("Could not resolve type parameters for generic method.");
+                ThrowForUnresolvedTypeParameters(resolvedMethod);
 
             object? result;
 
@@ -49,12 +42,10 @@ namespace Fixie
             if (isVoid)
                 return null;
 
-            if (IsAwaitable(returnType, result, out var task, out var taskHasResult))
+            if (IsAwaitable(resolvedMethod, result, out var task, out var taskHasResult))
             {
                 if (task.Status == TaskStatus.Created)
-                    throw new InvalidOperationException(
-                        "The method returned a non-started task, which cannot be awaited. " +
-                        "Consider using Task.Run or Task.Factory.StartNew.");
+                    ThrowForNonStartedTask(resolvedMethod);
 
                 await task;
 
@@ -66,8 +57,10 @@ namespace Fixie
             return result;
         }
 
-        static bool IsAwaitable(Type returnType, object? result, [NotNullWhen(true)] out Task? task, out bool taskHasResult)
+        static bool IsAwaitable(MethodInfo resolvedMethod, object? result, [NotNullWhen(true)] out Task? task, out bool taskHasResult)
         {
+            var returnType = resolvedMethod.ReturnType;
+
             if (returnType.IsGenericType)
             {
                 var genericDefinition = returnType.GetGenericTypeDefinition();
@@ -82,7 +75,7 @@ namespace Fixie
                 if (genericDefinition == typeof(Task<>))
                 {
                     if (result == null)
-                        ThrowForNullAwaitable();
+                        ThrowForNullAwaitable(resolvedMethod);
                     task = (Task)result;
                     taskHasResult = true;
                     return true;
@@ -91,7 +84,7 @@ namespace Fixie
                 if (genericDefinition.FullName == "Microsoft.FSharp.Control.FSharpAsync`1")
                 {
                     if (result == null)
-                        ThrowForNullAwaitable();
+                        ThrowForNullAwaitable(resolvedMethod);
                     task = ConvertFSharpAsyncToTask(result, returnType);
                     taskHasResult = true;
                     return true;
@@ -99,14 +92,12 @@ namespace Fixie
 
                 if (genericDefinition == typeof(IAsyncEnumerable<>) ||
                     genericDefinition == typeof(IAsyncEnumerator<>))
-                {
-                    ThrowForUnsupportedAwaitable();
-                }
+                    ThrowForUnsupportedAwaitable(resolvedMethod);
             }
             else if (returnType == typeof(Task))
             {
                 if (result == null)
-                    ThrowForNullAwaitable();
+                    ThrowForNullAwaitable(resolvedMethod);
                 task = (Task)result;
                 taskHasResult = false;
                 return true;
@@ -117,124 +108,51 @@ namespace Fixie
                 taskHasResult = false;
                 return true;
             }
-            else if (returnType.Has<AsyncMethodBuilderAttribute>())
-            {
-                ThrowForUnsupportedAwaitable();
-            }
             
+            if (returnType.Has<AsyncMethodBuilderAttribute>())
+                ThrowForUnsupportedAwaitable(resolvedMethod);
+
             task = null;
             taskHasResult = false;
             return false;
         }
 
-        internal static async Task RunTestMethodAsync(this MethodInfo method, object? instance, object?[] parameters)
-        {
-            var returnType = method.ReturnType;
-
-            var isVoid = returnType == typeof(void);
-
-            if (isVoid)
-            {
-                if (method.HasAsyncKeyword())
-                    throw new NotSupportedException(
-                        "`async void` test methods are not supported. Declare " +
-                        "the test method as `async Task` to ensure the task " +
-                        "actually runs to completion.");
-            }
-            else
-            {
-                if (returnType != typeof(Task) &&
-                    returnType != typeof(ValueTask) &&
-                    !IsFSharpAsync(returnType))
-                {
-                    throw new NotSupportedException(
-                        "Test method return type is not supported. Declare " +
-                        "the test method return type as `void`, `Task`, or " +
-                        "`ValueTask`.");
-                }
-            }
-
-            if (method.ContainsGenericParameters)
-                throw new Exception("Could not resolve type parameters for generic method.");
-
-            object? result;
-
-            try
-            {
-                result = method.Invoke(instance, parameters.Length == 0 ? null : parameters);
-            }
-            catch (TargetInvocationException exception)
-            {
-                ExceptionDispatchInfo.Capture(exception.InnerException!).Throw();
-                throw; // Unreachable.
-            }
-
-            if (isVoid)
-                return;
-
-            var task = ConvertToTask(returnType, result);
-            
-            if (task.Status == TaskStatus.Created)
-                throw new InvalidOperationException(
-                    "The test returned a non-started task, which cannot be awaited. " +
-                    "Consider using Task.Run or Task.Factory.StartNew.");
-
-            await task;
-        }
+        [DoesNotReturn]
+        static void ThrowForAsyncVoid(MethodInfo resolvedMethod)
+            => throw new NotSupportedException(
+                $"The method {resolvedMethod.Name} is declared as `async void`, " +
+                "which is not supported. To ensure the reliability of the test " +
+                "runner, declare the method as `async Task`.");
 
         [DoesNotReturn]
-        static void ThrowForNullAwaitable()
-        {
-            throw new NullReferenceException(
-                "This asynchronous method returned null, but " +
-                "a non-null awaitable object was expected.");
-        }
+        static void ThrowForUnresolvedTypeParameters(MethodInfo resolvedMethod)
+            => throw new InvalidOperationException(
+                $"The type parameters for generic method {resolvedMethod.Name} " +
+                "could not be resolved.");
 
-        static void ThrowForUnsupportedAwaitable()
-        {
-            throw new NotSupportedException(
-                "The method return type is an unsupported awaitable type. " +
+        [DoesNotReturn]
+        static void ThrowForNullAwaitable(MethodInfo method)
+            => throw new NullReferenceException(
+                $"The asynchronous method {method.Name} returned null, but " +
+                "a non-null awaitable object was expected.");
+
+        [DoesNotReturn]
+        static void ThrowForNonStartedTask(MethodInfo resolvedMethod)
+            => throw new InvalidOperationException(
+                $"The method {resolvedMethod.Name} returned a non-started task, which " +
+                "cannot be awaited. Consider using Task.Run or Task.Factory.StartNew.");
+
+        [DoesNotReturn]
+        static void ThrowForUnsupportedAwaitable(MethodInfo method)
+            => throw new NotSupportedException(
+                $"The return type of method {method.Name} is an unsupported awaitable type. " +
                 "To ensure the reliability of the test runner, declare " +
                 "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
                 "or `ValueTask<T>`.");
-        }
 
         static bool HasAsyncKeyword(this MethodInfo method)
         {
             return method.Has<AsyncStateMachineAttribute>();
-        }
-
-        static Task ConvertToTask(Type returnType, object? result)
-        {
-            if (returnType == typeof(Task))
-            {
-                if (result == null)
-                    ThrowForNullAwaitable();
-                
-                return (Task)result;
-            }
-
-            if (returnType == typeof(ValueTask))
-            {
-                return ((ValueTask)result!).AsTask();
-            }
-
-            if (IsFSharpAsync(returnType))
-            {
-                if (result == null)
-                    ThrowForNullAwaitable();
-
-                return ConvertFSharpAsyncToTask(result, returnType);
-            }
-
-            throw new InvalidOperationException(
-                $"The test returned an object with an unsupported type: {returnType.FullName}");
-        }
-
-        static bool IsFSharpAsync(Type resultType)
-        {
-            return resultType.IsGenericType &&
-                   resultType.GetGenericTypeDefinition().FullName == "Microsoft.FSharp.Control.FSharpAsync`1";
         }
 
         static Task ConvertFSharpAsyncToTask(object result, Type resultType)

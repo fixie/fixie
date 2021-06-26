@@ -181,7 +181,7 @@ namespace Fixie
                 if (instance == null && !resolvedMethod.IsStatic)
                     instance = Construct(resolvedMethod.ReflectedType!);
 
-                await resolvedMethod.RunTestMethodAsync(instance, parameters);
+                await resolvedMethod.CallResolvedMethodAsync(instance, parameters);
             }
             catch (Exception exception)
             {

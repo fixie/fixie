@@ -16,7 +16,7 @@
             public async Task RunAsync(TestSuite testSuite)
             {
                 foreach (var testClass in testSuite.TestClasses)
-                    foreach (var test in testSuite.Tests)
+                    foreach (var test in testClass.Tests)
                         foreach (var parameters in FromInputAttributes(test))
                         {
                             try

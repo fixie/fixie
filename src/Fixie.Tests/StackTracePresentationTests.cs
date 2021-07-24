@@ -160,7 +160,7 @@
             {
                 foreach (var testClass in testSuite.TestClasses)
                 {
-                    foreach (var test in testSuite.Tests)
+                    foreach (var test in testClass.Tests)
                     {
                         try
                         {

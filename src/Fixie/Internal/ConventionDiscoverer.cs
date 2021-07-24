@@ -15,17 +15,9 @@
             assembly = context.Assembly;
         }
 
-        public IDiscovery GetDiscovery()
+        public Convention GetConvention()
         {
-            return GetConfiguration().Convention.Discovery;
-        }
-
-        public void GetBehaviors(out IDiscovery discovery, out IExecution execution)
-        {
-            var convention = GetConfiguration().Convention;
-
-            discovery = convention.Discovery;
-            execution = convention.Execution;
+            return GetConfiguration().Convention;
         }
 
         Configuration GetConfiguration()

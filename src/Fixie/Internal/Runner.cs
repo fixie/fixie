@@ -26,7 +26,7 @@
 
         public async Task DiscoverAsync()
         {
-            var discovery = new ConventionDiscoverer(context).GetDiscovery();
+            var discovery = new ConventionDiscoverer(context).GetConvention().Discovery;
 
             await DiscoverAsync(assembly.GetTypes(), discovery);
         }
@@ -44,7 +44,7 @@
         public async Task<ExecutionSummary> RunAsync(TestPattern testPattern)
         {
             var matchingTests = ImmutableHashSet<string>.Empty;
-            var discovery = new ConventionDiscoverer(context).GetDiscovery();
+            var discovery = new ConventionDiscoverer(context).GetConvention().Discovery;
 
             var candidateTypes = assembly.GetTypes();
             var classDiscoverer = new ClassDiscoverer(discovery);
@@ -64,8 +64,10 @@
 
         async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
-            new ConventionDiscoverer(context)
-                .GetBehaviors(out var discovery, out var execution);
+            var convention = new ConventionDiscoverer(context).GetConvention();
+
+            var discovery = convention.Discovery;
+            var execution = convention.Execution;
 
             return await RunAsync(candidateTypes, discovery, execution, selectedTests);
         }

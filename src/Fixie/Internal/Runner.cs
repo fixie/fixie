@@ -121,14 +121,14 @@
                 }
             }
 
-            var testAssembly = new TestAssembly(assembly, testClasses);
+            var testAssembly = new TestAssembly(testClasses);
 
             using (new ConsoleRedirectionBoundary())
             {
                 Console.SetOut(recordingConsole);
-                await recorder.StartAsync(testAssembly);
+                await recorder.StartAsync(assembly);
                 await RunAsync(testAssembly, execution);
-                return await recorder.CompleteAsync(testAssembly);
+                return await recorder.CompleteAsync(assembly);
             }
         }
 

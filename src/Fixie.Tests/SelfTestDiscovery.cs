@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public class SelfTestDiscovery : Discovery
+    public class SelfTestDiscovery : IDiscovery
     {
         public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
         {

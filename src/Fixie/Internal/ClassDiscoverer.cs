@@ -7,9 +7,9 @@ namespace Fixie.Internal
 
     class ClassDiscoverer
     {
-        readonly Discovery discovery;
+        readonly IDiscovery discovery;
 
-        public ClassDiscoverer(Discovery discovery)
+        public ClassDiscoverer(IDiscovery discovery)
             => this.discovery = discovery;
 
         public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
@@ -40,7 +40,7 @@ namespace Fixie.Internal
             => !IsDiscovery(type) && !IsExecution(type);
 
         static bool IsDiscovery(Type type)
-            => type.GetInterfaces().Contains(typeof(Discovery));
+            => type.GetInterfaces().Contains(typeof(IDiscovery));
 
         static bool IsExecution(Type type)
             => type.GetInterfaces().Contains(typeof(Execution));

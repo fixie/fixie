@@ -10,7 +10,7 @@
 
     public class MethodDiscovererTests
     {
-        class MaximumDiscovery : Discovery
+        class MaximumDiscovery : IDiscovery
         {
             public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
                 => throw new ShouldBeUnreachableException();
@@ -19,7 +19,7 @@
                 => publicMethods;
         }
 
-        class NarrowDiscovery : Discovery
+        class NarrowDiscovery : IDiscovery
         {
             public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
                 => throw new ShouldBeUnreachableException();
@@ -33,7 +33,7 @@
             }
         }
 
-        class BuggyDiscovery : Discovery
+        class BuggyDiscovery : IDiscovery
         {
             public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
                 => throw new ShouldBeUnreachableException();
@@ -115,7 +115,7 @@
                 .Message.ShouldBe("Unsafe method discovery predicate threw!");
         }
 
-        static IEnumerable<string> DiscoveredTestMethods<TTestClass>(Discovery discovery)
+        static IEnumerable<string> DiscoveredTestMethods<TTestClass>(IDiscovery discovery)
         {
             return new MethodDiscoverer(discovery)
                 .TestMethods(typeof(TTestClass))

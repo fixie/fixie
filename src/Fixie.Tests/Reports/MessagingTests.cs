@@ -52,7 +52,7 @@
             return RunAsync(_ => report);
         }
 
-        protected Task<Output> RunAsync(Report report, Discovery discovery)
+        protected Task<Output> RunAsync(Report report, IDiscovery discovery)
         {
             return RunAsync(_ => report, discovery);
         }
@@ -62,7 +62,7 @@
             return RunAsync(getReport, new SelfTestDiscovery());
         }
 
-        protected async Task<Output> RunAsync(Func<TextWriter, Report> getReport, Discovery discovery)
+        protected async Task<Output> RunAsync(Func<TextWriter, Report> getReport, IDiscovery discovery)
         {
             var execution = new MessagingTestsExecution();
 

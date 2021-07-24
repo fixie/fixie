@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Reflection;
 
-    public interface Discovery
+    public interface IDiscovery
     {
         /// <summary>
         /// Filters a set of candidate classes to those which are to be treated as test classes.

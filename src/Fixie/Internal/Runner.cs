@@ -70,7 +70,7 @@
             return await RunAsync(candidateTypes, discovery, execution, selectedTests);
         }
 
-        internal async Task DiscoverAsync(IReadOnlyList<Type> candidateTypes, Discovery discovery)
+        internal async Task DiscoverAsync(IReadOnlyList<Type> candidateTypes, IDiscovery discovery)
         {
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
@@ -81,7 +81,7 @@
                 await bus.PublishAsync(new TestDiscovered(testMethod.TestName()));
         }
 
-        internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, Discovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)
+        internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)
         {
             var recordingConsole = new RecordingWriter(console);
             var recorder = new ExecutionRecorder(recordingConsole, bus);

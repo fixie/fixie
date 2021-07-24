@@ -26,7 +26,7 @@
             typeof(InheritanceSample)
         };
 
-        class MaximumDiscovery : Discovery
+        class MaximumDiscovery : IDiscovery
         {
             public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
                 => concreteClasses;
@@ -35,7 +35,7 @@
                 => throw new ShouldBeUnreachableException();
         }
 
-        class NarrowDiscovery : Discovery
+        class NarrowDiscovery : IDiscovery
         {
             public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
             {
@@ -49,7 +49,7 @@
                 => throw new ShouldBeUnreachableException();
         }
         
-        class BuggyDiscovery : Discovery
+        class BuggyDiscovery : IDiscovery
         {
             public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
             {
@@ -158,13 +158,13 @@
                 .Message.ShouldBe("Unsafe class-discovery predicate threw!");
         }
 
-        static IEnumerable<Type> DiscoveredTestClasses(Discovery discovery)
+        static IEnumerable<Type> DiscoveredTestClasses(IDiscovery discovery)
         {
             return new ClassDiscoverer(discovery)
                 .TestClasses(CandidateTypes);
         }
 
-        static IEnumerable<Type> DiscoveredTestClasses(Discovery discovery, params Type[] additionalCandidates)
+        static IEnumerable<Type> DiscoveredTestClasses(IDiscovery discovery, params Type[] additionalCandidates)
         {
             return new ClassDiscoverer(discovery)
                 .TestClasses(CandidateTypes.Concat(additionalCandidates));

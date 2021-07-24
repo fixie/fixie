@@ -15,17 +15,17 @@
             assembly = context.Assembly;
         }
 
-        public Discovery GetDiscovery()
+        public IDiscovery GetDiscovery()
         {
-            return (Discovery) Construct(DiscoveryType());
+            return (IDiscovery) Construct(DiscoveryType());
         }
 
-        public void GetBehaviors(out Discovery discovery, out Execution execution)
+        public void GetBehaviors(out IDiscovery discovery, out Execution execution)
         {
             var discoveryType = DiscoveryType();
             var executionType = ExecutionType();
 
-            discovery = (Discovery) Construct(discoveryType);
+            discovery = (IDiscovery) Construct(discoveryType);
             execution = discoveryType == executionType
                 ? (Execution) discovery
                 : (Execution) Construct(executionType);
@@ -46,7 +46,7 @@
             if (customDiscoveryTypes.Length > 1)
             {
                 throw new Exception(
-                    "A test assembly can have at most one Discovery implementation, " +
+                    "A test assembly can have at most one IDiscovery implementation, " +
                     "but the following implementations were discovered:" + Environment.NewLine +
                     string.Join(Environment.NewLine,
                         customDiscoveryTypes
@@ -82,7 +82,7 @@
         }
 
         static bool IsDiscovery(Type type)
-            => type.GetInterfaces().Contains(typeof(Discovery));
+            => type.GetInterfaces().Contains(typeof(IDiscovery));
 
         static bool IsExecution(Type type)
             => type.GetInterfaces().Contains(typeof(Execution));

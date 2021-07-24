@@ -7,9 +7,9 @@
 
     class MethodDiscoverer
     {
-        readonly Discovery discovery;
+        readonly IDiscovery discovery;
 
-        public MethodDiscoverer(Discovery discovery)
+        public MethodDiscoverer(IDiscovery discovery)
             => this.discovery = discovery;
 
         public IReadOnlyList<MethodInfo> TestMethods(Type testClass)

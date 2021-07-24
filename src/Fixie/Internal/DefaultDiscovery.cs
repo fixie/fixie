@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    class DefaultDiscovery : Discovery
+    class DefaultDiscovery : IDiscovery
     {
         public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
             => concreteClasses.Where(x => x.Name.EndsWith("Tests"));

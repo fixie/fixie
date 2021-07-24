@@ -13,7 +13,7 @@
     {
         public TestingConfiguration()
         {
-            Use<DefaultDiscovery, DiffToolExecution>();
+            Conventions.Add<DefaultDiscovery, DiffToolExecution>();
         }
 
         class DiffToolExecution : IExecution

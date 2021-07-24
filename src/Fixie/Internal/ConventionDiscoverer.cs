@@ -17,7 +17,7 @@
 
         public Convention GetConvention()
         {
-            return GetConfiguration().Convention;
+            return GetConfiguration().Conventions.Items.Single();
         }
 
         Configuration GetConfiguration()

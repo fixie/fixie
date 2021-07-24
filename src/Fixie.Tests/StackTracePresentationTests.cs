@@ -36,7 +36,7 @@
                     At<ConstructionFailureTestClass>(".ctor()"),
                     "--- End of stack trace from previous location where exception was thrown ---",
                     At(typeof(TestClass), "Construct(Object[] parameters)", Path.Join("...", "src", "Fixie", "TestClass.cs")),
-                    At<ExplicitExceptionHandling>("RunAsync(TestAssembly testAssembly)"),
+                    At<ExplicitExceptionHandling>("RunAsync(TestSuite testSuite)"),
                     "",
                     "1 failed, took 1.23 seconds");
         }
@@ -74,7 +74,7 @@
                     At<FailureTestClass>("Asynchronous()"),
                     At(typeof(MethodInfoExtensions), "CallResolvedMethodAsync(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
                     At(typeof(MethodInfoExtensions), "CallAsync(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
-                    At<ExplicitExceptionHandling>("RunAsync(TestAssembly testAssembly)"),
+                    At<ExplicitExceptionHandling>("RunAsync(TestSuite testSuite)"),
                     "",
                     "Test '" + FullName<FailureTestClass>() + ".Synchronous' failed:",
                     "",
@@ -85,7 +85,7 @@
                     "--- End of stack trace from previous location where exception was thrown ---",
                     At(typeof(MethodInfoExtensions), "CallResolvedMethodAsync(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
                     At(typeof(MethodInfoExtensions), "CallAsync(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
-                    At<ExplicitExceptionHandling>("RunAsync(TestAssembly testAssembly)"),
+                    At<ExplicitExceptionHandling>("RunAsync(TestSuite testSuite)"),
                     "",
                     "2 failed, took 1.23 seconds");
         }
@@ -147,20 +147,20 @@
 
         class ImplicitExceptionHandling : IExecution
         {
-            public async Task RunAsync(TestAssembly testAssembly)
+            public async Task RunAsync(TestSuite testSuite)
             {
-                foreach (var test in testAssembly.Tests)
+                foreach (var test in testSuite.Tests)
                     await test.RunAsync();
             }
         }
 
         class ExplicitExceptionHandling : IExecution
         {
-            public async Task RunAsync(TestAssembly testAssembly)
+            public async Task RunAsync(TestSuite testSuite)
             {
-                foreach (var testClass in testAssembly.TestClasses)
+                foreach (var testClass in testSuite.TestClasses)
                 {
-                    foreach (var test in testAssembly.Tests)
+                    foreach (var test in testSuite.Tests)
                     {
                         try
                         {

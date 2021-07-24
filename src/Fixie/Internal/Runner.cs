@@ -121,31 +121,31 @@
                 }
             }
 
-            var testAssembly = new TestAssembly(testClasses);
+            var testSuite = new TestSuite(testClasses);
 
             using (new ConsoleRedirectionBoundary())
             {
                 Console.SetOut(recordingConsole);
                 await recorder.StartAsync(assembly);
-                await RunAsync(testAssembly, execution);
+                await RunAsync(testSuite, execution);
                 return await recorder.CompleteAsync(assembly);
             }
         }
 
-        static async Task RunAsync(TestAssembly testAssembly, IExecution execution)
+        static async Task RunAsync(TestSuite testSuite, IExecution execution)
         {
             Exception? assemblyLifecycleFailure = null;
 
             try
             {
-                await execution.RunAsync(testAssembly);
+                await execution.RunAsync(testSuite);
             }
             catch (Exception exception)
             {
                 assemblyLifecycleFailure = exception;
             }
 
-            foreach (var test in testAssembly.Tests)
+            foreach (var test in testSuite.Tests)
             {
                 var testNeverRan = !test.RecordedResult;
 

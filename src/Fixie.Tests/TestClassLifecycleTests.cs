@@ -81,11 +81,11 @@ namespace Fixie.Tests
 
         class InstrumentedExecution : IExecution
         {
-            public async Task RunAsync(TestAssembly testAssembly)
+            public async Task RunAsync(TestSuite testSuite)
             {
                 AssemblySetUp();
 
-                foreach (var testClass in testAssembly.TestClasses)
+                foreach (var testClass in testSuite.TestClasses)
                     await TestClassLifecycle(testClass);
 
                 AssemblyTearDown();
@@ -159,7 +159,7 @@ namespace Fixie.Tests
 
         class ShortCircuitTestExecution : IExecution
         {
-            public Task RunAsync(TestAssembly testAssembly)
+            public Task RunAsync(TestSuite testSuite)
             {
                 //Lifecycle chooses not to invoke any tests.
                 //Since the tests never run, they are all
@@ -170,9 +170,9 @@ namespace Fixie.Tests
 
         class RepeatedExecution : IExecution
         {
-            public async Task RunAsync(TestAssembly testAssembly)
+            public async Task RunAsync(TestSuite testSuite)
             {
-                foreach (var test in testAssembly.Tests)
+                foreach (var test in testSuite.Tests)
                 {
                     if (test.Name.Contains("Skip")) continue;
 
@@ -190,11 +190,11 @@ namespace Fixie.Tests
             public CircuitBreakingExecution(int maxFailures)
                 => this.maxFailures = maxFailures;
 
-            public async Task RunAsync(TestAssembly testAssembly)
+            public async Task RunAsync(TestSuite testSuite)
             {
                 int failures = 0;
 
-                foreach (var test in testAssembly.Tests)
+                foreach (var test in testSuite.Tests)
                 {
                     if (test.Name.Contains("Skip")) continue;
 

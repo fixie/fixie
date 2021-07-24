@@ -4,9 +4,9 @@
 
     class DefaultExecution : IExecution
     {
-        public async Task RunAsync(TestAssembly testAssembly)
+        public async Task RunAsync(TestSuite testSuite)
         {
-            foreach (var test in testAssembly.Tests)
+            foreach (var test in testSuite.Tests)
                 await test.RunAsync();
         }
     }

@@ -3,9 +3,9 @@ namespace Fixie
     using System.Collections.Generic;
     using System.Linq;
 
-    public class TestAssembly
+    public class TestSuite
     {
-        internal TestAssembly(IReadOnlyList<TestClass> testClasses)
+        internal TestSuite(IReadOnlyList<TestClass> testClasses)
         {
             TestClasses = testClasses;
         }

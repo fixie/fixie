@@ -11,12 +11,12 @@
 
     class PrimaryConvention : IExecution
     {
-        public async Task RunAsync(TestAssembly testAssembly)
+        public async Task RunAsync(TestSuite testSuite)
         {
             int failures = 0;
             Exception? singleFailure = null;
 
-            foreach (var test in testAssembly.Tests)
+            foreach (var test in testSuite.Tests)
             {
                 var result = await test.RunAsync();
 

@@ -95,9 +95,9 @@ namespace Fixie.Tests
 
         class CreateInstancePerCaseImplicitly : IExecution
         {
-            public async Task RunAsync(TestAssembly testAssembly)
+            public async Task RunAsync(TestSuite testSuite)
             {
-                foreach (var test in testAssembly.Tests)
+                foreach (var test in testSuite.Tests)
                     if (!ShouldSkip(test))
                         foreach (var parameters in FromInputAttributes(test))
                             await test.RunAsync(parameters);
@@ -106,9 +106,9 @@ namespace Fixie.Tests
 
         class CreateInstancePerCaseExplicitly : IExecution
         {
-            public async Task RunAsync(TestAssembly testAssembly)
+            public async Task RunAsync(TestSuite testSuite)
             {
-                foreach (var testClass in testAssembly.TestClasses)
+                foreach (var testClass in testSuite.TestClasses)
                 {
                     var type = testClass.Type;
 
@@ -127,9 +127,9 @@ namespace Fixie.Tests
 
         class CreateInstancePerClassExplicitly : IExecution
         {
-            public async Task RunAsync(TestAssembly testAssembly)
+            public async Task RunAsync(TestSuite testSuite)
             {
-                foreach (var testClass in testAssembly.TestClasses)
+                foreach (var testClass in testSuite.TestClasses)
                 {
                     var type = testClass.Type;
                     var instance = type.IsStatic() ? null : testClass.Construct();

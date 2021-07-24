@@ -13,10 +13,10 @@
     {
         class MethodInfoAccessingExecution : IExecution
         {
-            public async Task RunAsync(TestAssembly testAssembly)
+            public async Task RunAsync(TestSuite testSuite)
             {
-                foreach (var testClass in testAssembly.TestClasses)
-                    foreach (var test in testAssembly.Tests)
+                foreach (var testClass in testSuite.TestClasses)
+                    foreach (var test in testSuite.Tests)
                         foreach (var parameters in FromInputAttributes(test))
                         {
                             try

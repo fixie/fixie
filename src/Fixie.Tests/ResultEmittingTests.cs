@@ -14,11 +14,11 @@ namespace Fixie.Tests
 
         class ResultEmittingExecution : IExecution
         {
-            public async Task RunAsync(TestAssembly testAssembly)
+            public async Task RunAsync(TestSuite testSuite)
             {
                 var exception = new Exception("Non-invocation Failure");
 
-                foreach (var test in testAssembly.Tests.Where(x => x.Name.EndsWith("Test0")))
+                foreach (var test in testSuite.Tests.Where(x => x.Name.EndsWith("Test0")))
                 {
                     await test.PassAsync();
                     await test.FailAsync(exception);

@@ -62,7 +62,7 @@
 
         class SampleExecution : IExecution
         {
-            public Task RunAsync(TestAssembly testAssembly)
+            public Task RunAsync(TestSuite testSuite)
                 => Task.CompletedTask;
         }
 

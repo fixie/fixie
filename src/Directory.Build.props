@@ -8,7 +8,7 @@
         <PackageIcon>icon.png</PackageIcon>
         <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>8.0</LangVersion>
         <Nullable>enable</Nullable>
         <MinVerMinimumMajorMinor>3.0</MinVerMinimumMajorMinor>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

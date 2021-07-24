@@ -12,7 +12,7 @@ namespace Fixie.Tests
             public void Test1() { throw new ShouldBeUnreachableException(); }
         }
 
-        class ResultEmittingExecution : Execution
+        class ResultEmittingExecution : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {

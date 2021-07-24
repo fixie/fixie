@@ -38,7 +38,7 @@
         public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;
 
-        public static async Task<IEnumerable<string>> RunAsync(Type testClass, Execution execution)
+        public static async Task<IEnumerable<string>> RunAsync(Type testClass, IExecution execution)
         {
             var report = new StubReport();
             var discovery = new SelfTestDiscovery();
@@ -46,7 +46,7 @@
             return report.Entries;
         }
 
-        public static async Task<IEnumerable<string>> RunAsync(Type[] testClasses, Execution execution)
+        public static async Task<IEnumerable<string>> RunAsync(Type[] testClasses, IExecution execution)
         {
             var report = new StubReport();
             var discovery = new SelfTestDiscovery();
@@ -65,7 +65,7 @@
             await runner.DiscoverAsync(candidateTypes, discovery);
         }
 
-        public static async Task RunAsync(Report report, IDiscovery discovery, Execution execution, params Type[] candidateTypes)
+        public static async Task RunAsync(Report report, IDiscovery discovery, IExecution execution, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");

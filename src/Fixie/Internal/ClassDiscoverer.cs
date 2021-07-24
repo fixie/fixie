@@ -43,7 +43,7 @@ namespace Fixie.Internal
             => type.GetInterfaces().Contains(typeof(IDiscovery));
 
         static bool IsExecution(Type type)
-            => type.GetInterfaces().Contains(typeof(Execution));
+            => type.GetInterfaces().Contains(typeof(IExecution));
 
         static bool NonCompilerGeneratedClasses(Type type)
             => !type.Has<CompilerGeneratedAttribute>();

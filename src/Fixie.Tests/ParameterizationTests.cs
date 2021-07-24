@@ -8,7 +8,7 @@
 
     public class ParameterizationTests : InstrumentedExecutionTests
     {
-        class ParameterizedExecution : Execution
+        class ParameterizedExecution : IExecution
         {
             readonly Func<Test, IEnumerable<object?[]>> parameterSource;
 
@@ -23,7 +23,7 @@
             }
         }
 
-        class IsolatedParameterizedExecution : Execution
+        class IsolatedParameterizedExecution : IExecution
         {
             readonly Func<Test, IEnumerable<object?[]>> parameterSource;
 

@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    class DefaultExecution : Execution
+    class DefaultExecution : IExecution
     {
         public async Task RunAsync(TestAssembly testAssembly)
         {

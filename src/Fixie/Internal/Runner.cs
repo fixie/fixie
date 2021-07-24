@@ -81,7 +81,7 @@
                 await bus.PublishAsync(new TestDiscovered(testMethod.TestName()));
         }
 
-        internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, Execution execution, ImmutableHashSet<string> selectedTests)
+        internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, IExecution execution, ImmutableHashSet<string> selectedTests)
         {
             var recordingConsole = new RecordingWriter(console);
             var recorder = new ExecutionRecorder(recordingConsole, bus);
@@ -132,7 +132,7 @@
             }
         }
 
-        static async Task RunAsync(TestAssembly testAssembly, Execution execution)
+        static async Task RunAsync(TestAssembly testAssembly, IExecution execution)
         {
             Exception? assemblyLifecycleFailure = null;
 

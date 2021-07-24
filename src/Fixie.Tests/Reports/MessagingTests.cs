@@ -73,7 +73,7 @@
             return new Output(console.Lines().ToArray());
         }
 
-        class MessagingTestsExecution : Execution
+        class MessagingTestsExecution : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {

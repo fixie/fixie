@@ -79,7 +79,7 @@ namespace Fixie.Tests
             }
         }
 
-        class InstrumentedExecution : Execution
+        class InstrumentedExecution : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
@@ -157,7 +157,7 @@ namespace Fixie.Tests
         static void ClassTearDown() => WhereAmI();
         static void AssemblyTearDown() => WhereAmI();
 
-        class ShortCircuitTestExecution : Execution
+        class ShortCircuitTestExecution : IExecution
         {
             public Task RunAsync(TestAssembly testAssembly)
             {
@@ -168,7 +168,7 @@ namespace Fixie.Tests
             }
         }
 
-        class RepeatedExecution : Execution
+        class RepeatedExecution : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
@@ -183,7 +183,7 @@ namespace Fixie.Tests
             }
         }
 
-        class CircuitBreakingExecution : Execution
+        class CircuitBreakingExecution : IExecution
         {
             readonly int maxFailures;
 

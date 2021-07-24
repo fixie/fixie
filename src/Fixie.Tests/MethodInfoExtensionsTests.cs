@@ -11,7 +11,7 @@
 
     public class MethodInfoExtensionsTests : InstrumentedExecutionTests
     {
-        class MethodInfoAccessingExecution : Execution
+        class MethodInfoAccessingExecution : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {

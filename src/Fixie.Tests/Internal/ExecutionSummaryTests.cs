@@ -52,7 +52,7 @@
             public void SkipC() { }
         }
 
-        class CreateInstancePerCase : Execution
+        class CreateInstancePerCase : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {

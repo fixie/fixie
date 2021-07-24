@@ -82,12 +82,12 @@ namespace Fixie.Tests
         }
 
         protected Task<Output> RunAsync<TSampleTestClass1, TSampleTestClass2, TExecution>()
-            where TExecution : Execution, new()
+            where TExecution : IExecution, new()
             => RunAsync(
                 new[] {typeof(TSampleTestClass1), typeof(TSampleTestClass2)},
                 new TExecution());
 
-        protected Task<Output> RunAsync<TSampleTestClass1, TSampleTestClass2>(Execution execution)
+        protected Task<Output> RunAsync<TSampleTestClass1, TSampleTestClass2>(IExecution execution)
             => RunAsync(
                 new[] {typeof(TSampleTestClass1), typeof(TSampleTestClass2)},
                 execution);
@@ -95,16 +95,16 @@ namespace Fixie.Tests
         protected Task<Output> RunAsync<TSampleTestClass>()
             => RunAsync<DefaultExecution>(typeof(TSampleTestClass));
 
-        protected Task<Output> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
+        protected Task<Output> RunAsync<TSampleTestClass, TExecution>() where TExecution : IExecution, new()
             => RunAsync<TExecution>(typeof(TSampleTestClass));
 
-        protected Task<Output> RunAsync<TSampleTestClass>(Execution execution)
+        protected Task<Output> RunAsync<TSampleTestClass>(IExecution execution)
             => RunAsync(typeof(TSampleTestClass), execution);
 
-        protected Task<Output> RunAsync<TExecution>(Type testClass) where TExecution : Execution, new()
+        protected Task<Output> RunAsync<TExecution>(Type testClass) where TExecution : IExecution, new()
             => RunAsync(testClass, new TExecution());
 
-        async Task<Output> RunAsync(Type testClass, Execution execution)
+        async Task<Output> RunAsync(Type testClass, IExecution execution)
         {
             using var console = new RedirectedConsole();
 
@@ -113,7 +113,7 @@ namespace Fixie.Tests
             return new Output(GetType().FullName!, console.Lines().ToArray(), results.ToArray());
         }
 
-        async Task<Output> RunAsync(Type[] testClasses, Execution execution)
+        async Task<Output> RunAsync(Type[] testClasses, IExecution execution)
         {
             using var console = new RedirectedConsole();
 

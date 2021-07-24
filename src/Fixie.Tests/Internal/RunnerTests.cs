@@ -61,7 +61,7 @@ namespace Fixie.Tests.Internal
                 Self + "+SkipTestClass.SkipB skipped: This test did not run.");
         }
 
-        class CreateInstancePerCase : Execution
+        class CreateInstancePerCase : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {

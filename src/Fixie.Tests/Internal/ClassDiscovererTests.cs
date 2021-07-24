@@ -60,7 +60,7 @@
                 => throw new ShouldBeUnreachableException();
         }
 
-        class SampleExecution : Execution
+        class SampleExecution : IExecution
         {
             public Task RunAsync(TestAssembly testAssembly)
                 => Task.CompletedTask;

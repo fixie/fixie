@@ -93,7 +93,7 @@ namespace Fixie.Tests
         static bool ShouldSkip(Test test)
             => test.Name.Contains("Skip");
 
-        class CreateInstancePerCaseImplicitly : Execution
+        class CreateInstancePerCaseImplicitly : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
@@ -104,7 +104,7 @@ namespace Fixie.Tests
             }
         }
 
-        class CreateInstancePerCaseExplicitly : Execution
+        class CreateInstancePerCaseExplicitly : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
@@ -125,7 +125,7 @@ namespace Fixie.Tests
             }
         }
 
-        class CreateInstancePerClassExplicitly : Execution
+        class CreateInstancePerClassExplicitly : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {

@@ -20,15 +20,15 @@
             return (IDiscovery) Construct(DiscoveryType());
         }
 
-        public void GetBehaviors(out IDiscovery discovery, out Execution execution)
+        public void GetBehaviors(out IDiscovery discovery, out IExecution execution)
         {
             var discoveryType = DiscoveryType();
             var executionType = ExecutionType();
 
             discovery = (IDiscovery) Construct(discoveryType);
             execution = discoveryType == executionType
-                ? (Execution) discovery
-                : (Execution) Construct(executionType);
+                ? (IExecution) discovery
+                : (IExecution) Construct(executionType);
         }
 
         Type DiscoveryType()
@@ -71,7 +71,7 @@
             if (customExecutionTypes.Length > 1)
             {
                 throw new Exception(
-                    "A test assembly can have at most one Execution implementation, " +
+                    "A test assembly can have at most one IExecution implementation, " +
                     "but the following implementations were discovered:" + Environment.NewLine +
                     string.Join(Environment.NewLine,
                         customExecutionTypes
@@ -85,7 +85,7 @@
             => type.GetInterfaces().Contains(typeof(IDiscovery));
 
         static bool IsExecution(Type type)
-            => type.GetInterfaces().Contains(typeof(Execution));
+            => type.GetInterfaces().Contains(typeof(IExecution));
 
         object Construct(Type type)
         {

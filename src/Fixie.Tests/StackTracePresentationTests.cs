@@ -129,7 +129,7 @@
                     "2 failed, took 1.23 seconds");
         }
 
-        static async Task<IEnumerable<string>> RunAsync<TSampleTestClass, TExecution>() where TExecution : Execution, new()
+        static async Task<IEnumerable<string>> RunAsync<TSampleTestClass, TExecution>() where TExecution : IExecution, new()
         {
             var discovery = new SelfTestDiscovery();
             var execution = new TExecution();
@@ -145,7 +145,7 @@
                 .CleanDuration();
         }
 
-        class ImplicitExceptionHandling : Execution
+        class ImplicitExceptionHandling : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {
@@ -154,7 +154,7 @@
             }
         }
 
-        class ExplicitExceptionHandling : Execution
+        class ExplicitExceptionHandling : IExecution
         {
             public async Task RunAsync(TestAssembly testAssembly)
             {

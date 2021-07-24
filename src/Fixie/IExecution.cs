@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    public interface Execution
+    public interface IExecution
     {
         /// <summary>
         /// Runs the given set of discovered tests.

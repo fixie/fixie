@@ -9,7 +9,7 @@
     using static System.Environment;
     using static Fixie.Internal.Maybe;
 
-    class PrimaryConvention : Execution
+    class PrimaryConvention : IExecution
     {
         public async Task RunAsync(TestAssembly testAssembly)
         {

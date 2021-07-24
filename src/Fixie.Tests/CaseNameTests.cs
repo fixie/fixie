@@ -189,7 +189,7 @@
             );
         }
 
-        class ScriptedExecution : Execution
+        class ScriptedExecution : IExecution
         {
             readonly Func<Test, Task> scriptAsync;
 

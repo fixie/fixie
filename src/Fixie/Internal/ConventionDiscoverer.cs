@@ -4,12 +4,12 @@
     using System.Linq;
     using System.Reflection;
 
-    class BehaviorDiscoverer
+    class ConventionDiscoverer
     {
         readonly TestContext context;
         readonly Assembly assembly;
 
-        public BehaviorDiscoverer(TestContext context)
+        public ConventionDiscoverer(TestContext context)
         {
             this.context = context;
             assembly = context.Assembly;

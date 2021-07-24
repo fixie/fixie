@@ -1,4 +1,4 @@
-﻿module Fixie.Internal.___
+﻿module Fixie.Internal.TestProjectEntryPoint
 
 open System
 open System.Reflection

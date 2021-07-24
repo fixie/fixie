@@ -1,8 +1,8 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie
 {
     using System.Threading.Tasks;
 
-    class DefaultExecution : IExecution
+    public sealed class DefaultExecution : IExecution
     {
         public async Task RunAsync(TestSuite testSuite)
         {

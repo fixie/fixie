@@ -74,8 +74,9 @@
 
             var context = new TestContext(candidateTypes[0].Assembly, System.Console.Out, Directory.GetCurrentDirectory());
             var runner = new Runner(context, report);
+            var conventions = new[] { convention };
 
-            await runner.RunAsync(candidateTypes, convention, ImmutableHashSet<string>.Empty);
+            await runner.RunAsync(candidateTypes, conventions, ImmutableHashSet<string>.Empty);
         }
 
         public static IEnumerable<object?[]> FromInputAttributes(Test test)

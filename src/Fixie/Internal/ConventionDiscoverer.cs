@@ -1,6 +1,7 @@
 ﻿namespace Fixie.Internal
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
@@ -15,9 +16,9 @@
             assembly = context.Assembly;
         }
 
-        public Convention GetConvention()
+        public IReadOnlyList<Convention> GetConventions()
         {
-            return GetConfiguration().Conventions.Items.Single();
+            return GetConfiguration().Conventions.Items;
         }
 
         Configuration GetConfiguration()

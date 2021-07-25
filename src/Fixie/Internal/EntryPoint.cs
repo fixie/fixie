@@ -60,7 +60,7 @@
             return ExitCode.Success;
         }
 
-        static IEnumerable<Report> DefaultReports(TestContext context)
+        static IEnumerable<IReport> DefaultReports(TestContext context)
         {
             TextWriter console = context.Console;
 

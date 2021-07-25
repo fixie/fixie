@@ -37,7 +37,7 @@
             public string[] Console { get; }
         }
 
-        protected async Task DiscoverAsync(Report report)
+        protected async Task DiscoverAsync(IReport report)
         {
             var discovery = new SelfTestDiscovery();
 
@@ -48,22 +48,22 @@
             console.Lines().ShouldBeEmpty();
         }
 
-        protected Task<Output> RunAsync(Report report)
+        protected Task<Output> RunAsync(IReport report)
         {
             return RunAsync(_ => report);
         }
 
-        protected Task<Output> RunAsync(Report report, IDiscovery discovery)
+        protected Task<Output> RunAsync(IReport report, IDiscovery discovery)
         {
             return RunAsync(_ => report, discovery);
         }
 
-        protected Task<Output> RunAsync(Func<TextWriter, Report> getReport)
+        protected Task<Output> RunAsync(Func<TextWriter, IReport> getReport)
         {
             return RunAsync(getReport, new SelfTestDiscovery());
         }
 
-        protected async Task<Output> RunAsync(Func<TextWriter, Report> getReport, IDiscovery discovery)
+        protected async Task<Output> RunAsync(Func<TextWriter, IReport> getReport, IDiscovery discovery)
         {
             var execution = new MessagingTestsExecution();
             var convention = new Convention(discovery, execution);

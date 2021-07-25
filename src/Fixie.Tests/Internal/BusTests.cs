@@ -11,7 +11,7 @@
     {
         public async Task ShouldPublishEventsToAllReports()
         {
-            var reports = new Report[]
+            var reports = new IReport[]
             {
                 new EventHandler(),
                 new AnotherEventHandler(),
@@ -37,7 +37,7 @@
 
         public async Task ShouldCatchAndLogExceptionsThrowByProblematicReportsRatherThanInterruptExecution()
         {
-            var reports = new Report[]
+            var reports = new IReport[]
             {
                 new EventHandler(),
                 new FailingEventHandler()

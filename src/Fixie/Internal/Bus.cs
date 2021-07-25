@@ -9,17 +9,17 @@
     class Bus
     {
         readonly TextWriter console;
-        readonly List<Report> reports;
+        readonly List<IReport> reports;
 
-        public Bus(TextWriter console, Report report)
+        public Bus(TextWriter console, IReport report)
             : this(console, new[] { report })
         {
         }
 
-        public Bus(TextWriter console, IReadOnlyList<Report> reports)
+        public Bus(TextWriter console, IReadOnlyList<IReport> reports)
         {
             this.console = console;
-            this.reports = new List<Report>(reports);
+            this.reports = new List<IReport>(reports);
         }
 
         public async Task PublishAsync<TMessage>(TMessage message) where TMessage : Message

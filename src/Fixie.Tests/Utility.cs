@@ -56,7 +56,7 @@
             return report.Entries;
         }
 
-        public static async Task DiscoverAsync(Report report, IDiscovery discovery, params Type[] candidateTypes)
+        public static async Task DiscoverAsync(IReport report, IDiscovery discovery, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
@@ -67,7 +67,7 @@
             await runner.DiscoverAsync(candidateTypes, discovery);
         }
 
-        internal static async Task RunAsync(Report report, Convention convention, params Type[] candidateTypes)
+        internal static async Task RunAsync(IReport report, Convention convention, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");

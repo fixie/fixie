@@ -16,7 +16,7 @@
         readonly Bus bus;
         readonly TextWriter console;
 
-        public Runner(TestContext context, params Report[] reports)
+        public Runner(TestContext context, params IReport[] reports)
         {
             this.context = context;
             assembly = context.Assembly;

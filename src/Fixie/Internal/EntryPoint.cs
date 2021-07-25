@@ -45,7 +45,7 @@
             var reports = DefaultReports(context).ToArray();
             var runner = new Runner(context, reports);
 
-            var pattern = GetEnvironmentVariable("FIXIE:TESTS");
+            var pattern = GetEnvironmentVariable("FIXIE:TESTS_PATTERN");
 
             var summary = pattern == null
                 ? await runner.Run()

@@ -152,7 +152,7 @@
             var environmentVariables = new Dictionary<string, string>();
 
             if (options.Tests != null)
-                environmentVariables["FIXIE:TESTS"] = options.Tests;
+                environmentVariables["FIXIE:TESTS_PATTERN"] = options.Tests;
 
             return Run("dotnet", workingDirectory, arguments.ToArray(), environmentVariables);
         }

@@ -12,33 +12,35 @@
 
     class TestingConfiguration : Configuration
     {
-        public TestingConfiguration(TestContext context)
+        public TestingConfiguration()
         {
-            Conventions.Add<DefaultDiscovery, DiffToolExecution>();
+            if (GetEnvironmentVariable("GITHUB_ACTIONS") == null)
+                Reports.Add<DiffToolReport>();
         }
 
-        class DiffToolExecution : IExecution
+        class DiffToolReport :
+            IHandler<TestFailed>,
+            IHandler<AssemblyCompleted>
         {
-            public async Task Run(TestSuite testSuite)
+            int failures;
+            Exception? singleFailure;
+
+            public Task Handle(TestFailed message)
             {
-                int failures = 0;
-                Exception? singleFailure = null;
+                failures++;
 
-                foreach (var test in testSuite.Tests)
-                {
-                    var result = await test.Run();
+                singleFailure = failures == 1 ? message.Reason : null;
 
-                    if (result is Failed failure)
-                    {
-                        failures++;
+                return Task.CompletedTask;
+            }
 
-                        singleFailure = failures == 1 ? failure.Reason : null;
-                    }
-                }
-
+            public Task Handle(AssemblyCompleted message)
+            {
                 if (singleFailure is AssertException exception)
                     if (!exception.HasCompactRepresentations)
                         LaunchDiffTool(exception);
+
+                return Task.CompletedTask;
             }
 
             static void LaunchDiffTool(AssertException exception)

@@ -104,7 +104,7 @@ namespace Fixie.Tests
                 }
                 catch (Exception exception)
                 {
-                    await testClass.FailAsync(exception);
+                    await testClass.Fail(exception);
                 }
             }
 

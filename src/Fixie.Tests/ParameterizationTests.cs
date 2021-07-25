@@ -15,7 +15,7 @@
             public ParameterizedExecution(Func<Test, IEnumerable<object?[]>> parameterSource)
                 => this.parameterSource = parameterSource;
 
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var test in testSuite.Tests)
                     foreach (var parameters in parameterSource(test))
@@ -30,7 +30,7 @@
             public IsolatedParameterizedExecution(Func<Test, IEnumerable<object?[]>> parameterSource)
                 => this.parameterSource = parameterSource;
 
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var test in testSuite.Tests)
                 {

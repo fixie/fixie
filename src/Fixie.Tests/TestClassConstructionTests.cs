@@ -94,7 +94,7 @@ namespace Fixie.Tests
 
         class CreateInstancePerCaseImplicitly : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var test in testSuite.Tests)
                     if (!ShouldSkip(test))
@@ -105,7 +105,7 @@ namespace Fixie.Tests
 
         class CreateInstancePerCaseExplicitly : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var testClass in testSuite.TestClasses)
                 {
@@ -126,7 +126,7 @@ namespace Fixie.Tests
 
         class CreateInstancePerClassExplicitly : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var testClass in testSuite.TestClasses)
                 {

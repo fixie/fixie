@@ -7,6 +7,6 @@
         /// <summary>
         /// Runs the given set of discovered tests.
         /// </summary>
-        Task RunAsync(TestSuite testSuite);
+        Task Run(TestSuite testSuite);
     }
 }

@@ -18,7 +18,7 @@
 
         class DiffToolExecution : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 int failures = 0;
                 Exception? singleFailure = null;

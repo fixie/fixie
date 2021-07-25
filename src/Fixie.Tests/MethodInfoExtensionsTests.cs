@@ -13,7 +13,7 @@
     {
         class MethodInfoAccessingExecution : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var testClass in testSuite.TestClasses)
                     foreach (var test in testClass.Tests)

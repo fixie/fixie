@@ -58,7 +58,7 @@
 
         class CreateInstancePerCase : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var test in testSuite.Tests)
                     if (!test.Name.Contains("Skip"))

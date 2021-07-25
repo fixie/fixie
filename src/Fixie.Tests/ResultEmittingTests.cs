@@ -14,7 +14,7 @@ namespace Fixie.Tests
 
         class ResultEmittingExecution : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 var exception = new Exception("Non-invocation Failure");
 

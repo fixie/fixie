@@ -153,7 +153,7 @@
 
             try
             {
-                await execution.RunAsync(testSuite);
+                await execution.Run(testSuite);
             }
             catch (Exception exception)
             {

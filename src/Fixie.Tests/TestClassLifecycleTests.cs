@@ -80,7 +80,7 @@ namespace Fixie.Tests
 
         class InstrumentedExecution : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 AssemblySetUp();
 
@@ -158,7 +158,7 @@ namespace Fixie.Tests
 
         class ShortCircuitTestExecution : IExecution
         {
-            public Task RunAsync(TestSuite testSuite)
+            public Task Run(TestSuite testSuite)
             {
                 //Lifecycle chooses not to invoke any tests.
                 //Since the tests never run, they are all
@@ -169,7 +169,7 @@ namespace Fixie.Tests
 
         class RepeatedExecution : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var test in testSuite.Tests)
                 {
@@ -189,7 +189,7 @@ namespace Fixie.Tests
             public CircuitBreakingExecution(int maxFailures)
                 => this.maxFailures = maxFailures;
 
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 int failures = 0;
 

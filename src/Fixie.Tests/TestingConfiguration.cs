@@ -6,14 +6,17 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Assertions;
+    using Fixie.Reports;
     using static System.Environment;
     using static Fixie.Internal.Maybe;
 
     class TestingConfiguration : Configuration
     {
-        public TestingConfiguration()
+        public TestingConfiguration(TestContext context)
         {
             Conventions.Add<DefaultDiscovery, DiffToolExecution>();
+
+            Reports.Add(XmlReport.Create(context, "Report.xml"));
         }
 
         class DiffToolExecution : IExecution

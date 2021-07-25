@@ -23,8 +23,6 @@
 
                 var options = CommandLine.Parse<Options>(runnerArguments);
 
-                options.Validate();
-
                 var overallExitCode = Success;
 
                 foreach(var testProject in TestProjects(options).ToArray())
@@ -153,9 +151,6 @@
 
             var environmentVariables = new Dictionary<string, string>();
 
-            if (options.Report != null)
-                environmentVariables["FIXIE:REPORT"] = options.Report;
-
             if (options.Tests != null)
                 environmentVariables["FIXIE:TESTS"] = options.Tests;
 
@@ -186,11 +181,6 @@
             WriteLine("    -f <framework>");
             WriteLine("    --framework <framework>");
             WriteLine("        Only run test assemblies targeting a specific framework.");
-            WriteLine();
-            WriteLine("    -r <path>");
-            WriteLine("    --report <path>");
-            WriteLine("        Write test results to the specified path, using the");
-            WriteLine("        xUnit XML format.");
             WriteLine();
             WriteLine("    -t <pattern>");
             WriteLine("    --tests <pattern>");

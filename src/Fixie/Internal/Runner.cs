@@ -85,6 +85,21 @@
         {
             var recordingConsole = new RecordingWriter(console);
             var recorder = new ExecutionRecorder(recordingConsole, bus);
+            
+            using (new ConsoleRedirectionBoundary())
+            {
+                Console.SetOut(recordingConsole);
+                await recorder.StartAsync(assembly);
+
+                var testSuite = BuildTestSuite(candidateTypes, discovery, selectedTests, recorder);
+                await RunAsync(testSuite, execution);
+
+                return await recorder.CompleteAsync(assembly);
+            }
+        }
+
+        static TestSuite BuildTestSuite(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, ImmutableHashSet<string> selectedTests, ExecutionRecorder recorder)
+        {
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
             var methodDiscoverer = new MethodDiscoverer(discovery);
@@ -121,15 +136,7 @@
                 }
             }
 
-            var testSuite = new TestSuite(testClasses);
-
-            using (new ConsoleRedirectionBoundary())
-            {
-                Console.SetOut(recordingConsole);
-                await recorder.StartAsync(assembly);
-                await RunAsync(testSuite, execution);
-                return await recorder.CompleteAsync(assembly);
-            }
+            return new TestSuite(testClasses);
         }
 
         static async Task RunAsync(TestSuite testSuite, IExecution execution)

@@ -218,7 +218,7 @@ namespace Fixie.Tests
 
         public async Task ShouldRunAllTestsByDefault()
         {
-            var output = await RunAsync<FirstTestClass, SecondTestClass, DefaultExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, DefaultExecution>();
 
             //NOTE: With no input parameter or skip behaviors,
             //      all test methods are attempted and with zero
@@ -236,7 +236,7 @@ namespace Fixie.Tests
 
         public async Task ShouldSupportExecutionLifecycleHooks()
         {
-            var output = await RunAsync<FirstTestClass, SecondTestClass, InstrumentedExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'Fail' failed!",
@@ -271,7 +271,7 @@ namespace Fixie.Tests
 
         public async Task ShouldSupportStaticTestClassesAndMethods()
         {
-            var output = await RunAsync<InstrumentedExecution>(typeof(StaticTestClass));
+            var output = await Run<InstrumentedExecution>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",
@@ -291,7 +291,7 @@ namespace Fixie.Tests
         {
             FailDuring("AssemblySetUp");
 
-            var output = await RunAsync<FirstTestClass, SecondTestClass, InstrumentedExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'AssemblySetUp' failed!",
@@ -313,7 +313,7 @@ namespace Fixie.Tests
         {
             FailDuring("ClassSetUp", occurrence: 1);
         
-            var output = await RunAsync<FirstTestClass, SecondTestClass, InstrumentedExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
         
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'ClassSetUp' failed!",
@@ -332,7 +332,7 @@ namespace Fixie.Tests
         {
             FailDuring("TestSetUp", occurrence: 2);
 
-            var output = await RunAsync<FirstTestClass, SecondTestClass, InstrumentedExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'Fail' failed!",
@@ -360,7 +360,7 @@ namespace Fixie.Tests
             FailDuring("YieldParameters", 2);
 
             var execution = new InstrumentedExecution();
-            var output = await RunAsync<FirstTestClass>(execution);
+            var output = await Run<FirstTestClass>(execution);
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'Fail' failed!",
@@ -382,7 +382,7 @@ namespace Fixie.Tests
         {
             FailDuring("CaseSetUp", occurrence: 2);
 
-            var output = await RunAsync<FirstTestClass, SecondTestClass, InstrumentedExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'Fail' failed!",
@@ -419,7 +419,7 @@ namespace Fixie.Tests
         {
             FailDuring("CaseTearDown");
 
-            var output = await RunAsync<FirstTestClass, SecondTestClass, InstrumentedExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'Fail' failed!",
@@ -460,7 +460,7 @@ namespace Fixie.Tests
         {
             FailDuring("TestTearDown");
 
-            var output = await RunAsync<FirstTestClass, SecondTestClass, InstrumentedExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'Fail' failed!",
@@ -503,7 +503,7 @@ namespace Fixie.Tests
         {
             FailDuring("ClassTearDown", occurrence: 1);
 
-            var output = await RunAsync<FirstTestClass, SecondTestClass, InstrumentedExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'Fail' failed!",
@@ -544,7 +544,7 @@ namespace Fixie.Tests
         {
             FailDuring("AssemblyTearDown");
 
-            var output = await RunAsync<FirstTestClass, SecondTestClass, InstrumentedExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'Fail' failed!",
@@ -586,7 +586,7 @@ namespace Fixie.Tests
 
         public async Task ShouldSkipTestLifecyclesWhenTestsAreSkipped()
         {
-            var output = await RunAsync<AllSkippedTestClass, InstrumentedExecution>();
+            var output = await Run<AllSkippedTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
                 "AllSkippedTestClass.SkipA skipped: This test did not run.",
@@ -600,7 +600,7 @@ namespace Fixie.Tests
         {
             FailDuring("Pass", occurrence: 3);
 
-            var output = await RunAsync<FirstTestClass, SecondTestClass, RepeatedExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, RepeatedExecution>();
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'Fail' failed!",
@@ -636,7 +636,7 @@ namespace Fixie.Tests
         {
             FailDuring("Pass", occurrence: 3);
 
-            var output = await RunAsync<FirstTestClass, SecondTestClass>(new CircuitBreakingExecution(maxFailures: 3));
+            var output = await Run<FirstTestClass, SecondTestClass>(new CircuitBreakingExecution(maxFailures: 3));
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail failed: 'Fail' failed!",
@@ -661,7 +661,7 @@ namespace Fixie.Tests
 
         public async Task ShouldSkipAllTestsWhenShortCircuitingTestExecution()
         {
-            var output = await RunAsync<FirstTestClass, SecondTestClass, ShortCircuitTestExecution>();
+            var output = await Run<FirstTestClass, SecondTestClass, ShortCircuitTestExecution>();
 
             output.ShouldHaveResults(
                 "FirstTestClass.Fail skipped: This test did not run.",

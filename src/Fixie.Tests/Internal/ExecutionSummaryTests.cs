@@ -15,7 +15,7 @@
 
             var report = new StubExecutionSummaryReport();
 
-            await RunAsync(report, convention, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
+            await Run(report, convention, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
             report.AssemblySummary.Count.ShouldBe(1);
 

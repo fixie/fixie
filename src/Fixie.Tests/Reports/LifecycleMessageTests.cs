@@ -13,7 +13,7 @@
             var assembly = typeof(LifecycleMessageTests).Assembly;
             var report = new StubTestCompletedReport();
 
-            await RunAsync(report);
+            await Run(report);
 
             report.Messages.Count.ShouldBe(15);
             

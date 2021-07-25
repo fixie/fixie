@@ -43,34 +43,34 @@
 
             using var console = new RedirectedConsole();
 
-            await Utility.DiscoverAsync(report, discovery, candidateTypes);
+            await Utility.Discover(report, discovery, candidateTypes);
 
             console.Lines().ShouldBeEmpty();
         }
 
-        protected Task<Output> RunAsync(IReport report)
+        protected Task<Output> Run(IReport report)
         {
-            return RunAsync(_ => report);
+            return Run(_ => report);
         }
 
-        protected Task<Output> RunAsync(IReport report, IDiscovery discovery)
+        protected Task<Output> Run(IReport report, IDiscovery discovery)
         {
-            return RunAsync(_ => report, discovery);
+            return Run(_ => report, discovery);
         }
 
-        protected Task<Output> RunAsync(Func<TextWriter, IReport> getReport)
+        protected Task<Output> Run(Func<TextWriter, IReport> getReport)
         {
-            return RunAsync(getReport, new SelfTestDiscovery());
+            return Run(getReport, new SelfTestDiscovery());
         }
 
-        protected async Task<Output> RunAsync(Func<TextWriter, IReport> getReport, IDiscovery discovery)
+        protected async Task<Output> Run(Func<TextWriter, IReport> getReport, IDiscovery discovery)
         {
             var execution = new MessagingTestsExecution();
             var convention = new Convention(discovery, execution);
 
             using var console = new RedirectedConsole();
 
-            await Utility.RunAsync(getReport(Console.Out), convention, candidateTypes);
+            await Utility.Run(getReport(Console.Out), convention, candidateTypes);
 
             return new Output(console.Lines().ToArray());
         }

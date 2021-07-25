@@ -11,7 +11,7 @@
     {
         public async Task ShouldReportResults()
         {
-            var output = await RunAsync(console => new ConsoleReport(console));
+            var output = await Run(console => new ConsoleReport(console));
 
             output.Console
                 .NormalizeStackTraceLines()
@@ -56,7 +56,7 @@
 
         public async Task CanOptionallyIncludePassingResults()
         {
-            var output = await RunAsync(console => new ConsoleReport(console, outputTestPassed: true));
+            var output = await Run(console => new ConsoleReport(console, outputTestPassed: true));
 
             output.Console
                 .NormalizeStackTraceLines()
@@ -115,7 +115,7 @@
         {
             var discovery = new ZeroPassed();
 
-            var output = await RunAsync(console => new ConsoleReport(console), discovery);
+            var output = await Run(console => new ConsoleReport(console), discovery);
 
             output.Console
                 .CleanDuration()
@@ -133,7 +133,7 @@
         {
             var discovery = new ZeroFailed();
 
-            var output = await RunAsync(console => new ConsoleReport(console), discovery);
+            var output = await Run(console => new ConsoleReport(console), discovery);
 
             output.Console
                 .CleanDuration()
@@ -151,7 +151,7 @@
         {
             var discovery = new ZeroSkipped();
 
-            var output = await RunAsync(console => new ConsoleReport(console), discovery);
+            var output = await Run(console => new ConsoleReport(console), discovery);
 
             output.Console
                 .CleanDuration()
@@ -169,7 +169,7 @@
         {
             var discovery = new NoTestsFound();
 
-            var output = await RunAsync(console => new ConsoleReport(console), discovery);
+            var output = await Run(console => new ConsoleReport(console), discovery);
 
             output.Console
                 .Last()

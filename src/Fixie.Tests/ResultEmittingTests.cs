@@ -33,7 +33,7 @@ namespace Fixie.Tests
 
         public async Task ShouldSupportExplicitlyEmittingResultsWithoutNecessarilyInvokingTestMethods()
         {
-            var output = await RunAsync<SampleTestClass, ResultEmittingExecution>();
+            var output = await Run<SampleTestClass, ResultEmittingExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Test0 passed",

@@ -13,7 +13,7 @@
     {
         public async Task ShouldProvideCleanStackTraceForImplicitTestClassConstructionFailures()
         {
-            (await RunAsync<ConstructionFailureTestClass, ImplicitExceptionHandling>())
+            (await Run<ConstructionFailureTestClass, ImplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                     "",
@@ -27,7 +27,7 @@
         
         public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestClassConstructionFailures()
         {
-            (await RunAsync<ConstructionFailureTestClass, ExplicitExceptionHandling>())
+            (await Run<ConstructionFailureTestClass, ExplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                     "",
@@ -44,7 +44,7 @@
 
         public async Task ShouldProvideCleanStackTraceTestMethodFailures()
         {
-            (await RunAsync<FailureTestClass, ImplicitExceptionHandling>())
+            (await Run<FailureTestClass, ImplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
                     "",
@@ -65,7 +65,7 @@
 
         public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestMethodInvocationFailures()
         {
-            (await RunAsync<FailureTestClass, ExplicitExceptionHandling>())
+            (await Run<FailureTestClass, ExplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
                     "",
@@ -93,7 +93,7 @@
 
         public async Task ShouldProvideLiterateStackTraceIncludingAllNestedExceptions()
         {
-            (await RunAsync<NestedFailureTestClass, ImplicitExceptionHandling>())
+            (await Run<NestedFailureTestClass, ImplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<NestedFailureTestClass>() + ".Asynchronous' failed:",
                     "",
@@ -130,7 +130,7 @@
                     "2 failed, took 1.23 seconds");
         }
 
-        static async Task<IEnumerable<string>> RunAsync<TSampleTestClass, TExecution>() where TExecution : IExecution, new()
+        static async Task<IEnumerable<string>> Run<TSampleTestClass, TExecution>() where TExecution : IExecution, new()
         {
             var convention = new Convention(new SelfTestDiscovery(), new TExecution());
             
@@ -138,7 +138,7 @@
 
             var report = new ConsoleReport(System.Console.Out);
             
-            await Utility.RunAsync(report, convention, typeof(TSampleTestClass));
+            await Utility.Run(report, convention, typeof(TSampleTestClass));
 
             return console.Lines()
                 .NormalizeStackTraceLines()

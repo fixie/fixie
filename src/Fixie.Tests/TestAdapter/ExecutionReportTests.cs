@@ -20,7 +20,7 @@
 
             var report = new ExecutionReport(recorder, assemblyPath);
 
-            var output = await RunAsync(report);
+            var output = await Run(report);
 
             output.Console
                 .ShouldBe(

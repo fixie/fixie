@@ -6,6 +6,7 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
+    using Fixie.Internal;
     using Fixie.Reports;
     using static Utility;
 
@@ -65,10 +66,11 @@
         protected async Task<Output> RunAsync(Func<TextWriter, Report> getReport, IDiscovery discovery)
         {
             var execution = new MessagingTestsExecution();
+            var convention = new Convention(discovery, execution);
 
             using var console = new RedirectedConsole();
 
-            await Utility.RunAsync(getReport(Console.Out), discovery, execution, candidateTypes);
+            await Utility.RunAsync(getReport(Console.Out), convention, candidateTypes);
 
             return new Output(console.Lines().ToArray());
         }

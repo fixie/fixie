@@ -41,16 +41,18 @@
         public static async Task<IEnumerable<string>> RunAsync(Type testClass, IExecution execution)
         {
             var report = new StubReport();
-            var discovery = new SelfTestDiscovery();
-            await RunAsync(report, discovery, execution, testClass);
+            var convention = new Convention(new SelfTestDiscovery(), execution);
+
+            await RunAsync(report, convention, testClass);
             return report.Entries;
         }
 
         public static async Task<IEnumerable<string>> RunAsync(Type[] testClasses, IExecution execution)
         {
             var report = new StubReport();
-            var discovery = new SelfTestDiscovery();
-            await RunAsync(report, discovery, execution, testClasses);
+            var convention = new Convention(new SelfTestDiscovery(), execution);
+
+            await RunAsync(report, convention, testClasses);
             return report.Entries;
         }
 
@@ -65,7 +67,7 @@
             await runner.DiscoverAsync(candidateTypes, discovery);
         }
 
-        public static async Task RunAsync(Report report, IDiscovery discovery, IExecution execution, params Type[] candidateTypes)
+        internal static async Task RunAsync(Report report, Convention convention, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
@@ -73,7 +75,7 @@
             var context = new TestContext(candidateTypes[0].Assembly, System.Console.Out, Directory.GetCurrentDirectory());
             var runner = new Runner(context, report);
 
-            await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
+            await runner.RunAsync(candidateTypes, convention, ImmutableHashSet<string>.Empty);
         }
 
         public static IEnumerable<object?[]> FromInputAttributes(Test test)

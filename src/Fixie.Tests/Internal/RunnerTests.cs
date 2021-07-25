@@ -25,6 +25,7 @@ namespace Fixie.Tests.Internal
             
             var context = new TestContext(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
             var runner = new Runner(context, report);
+
             await runner.DiscoverAsync(candidateTypes, discovery);
 
             report.Entries.ShouldBe(
@@ -50,7 +51,9 @@ namespace Fixie.Tests.Internal
 
             var context = new TestContext(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
             var runner = new Runner(context, report);
-            await runner.RunAsync(candidateTypes, discovery, execution, ImmutableHashSet<string>.Empty);
+            var convention = new Convention(discovery, execution);
+
+            await runner.RunAsync(candidateTypes, convention, ImmutableHashSet<string>.Empty);
 
             report.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",

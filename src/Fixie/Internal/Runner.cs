@@ -66,10 +66,7 @@
         {
             var convention = new ConventionDiscoverer(context).GetConvention();
 
-            var discovery = convention.Discovery;
-            var execution = convention.Execution;
-
-            return await RunAsync(candidateTypes, discovery, execution, selectedTests);
+            return await RunAsync(candidateTypes, convention, selectedTests);
         }
 
         internal async Task DiscoverAsync(IReadOnlyList<Type> candidateTypes, IDiscovery discovery)
@@ -83,7 +80,7 @@
                 await bus.PublishAsync(new TestDiscovered(testMethod.TestName()));
         }
 
-        internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, IExecution execution, ImmutableHashSet<string> selectedTests)
+        internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, Convention convention, ImmutableHashSet<string> selectedTests)
         {
             var recordingConsole = new RecordingWriter(console);
             var recorder = new ExecutionRecorder(recordingConsole, bus);
@@ -93,8 +90,8 @@
                 Console.SetOut(recordingConsole);
                 await recorder.StartAsync(assembly);
 
-                var testSuite = BuildTestSuite(candidateTypes, discovery, selectedTests, recorder);
-                await RunAsync(testSuite, execution);
+                var testSuite = BuildTestSuite(candidateTypes, convention.Discovery, selectedTests, recorder);
+                await RunAsync(testSuite, convention.Execution);
 
                 return await recorder.CompleteAsync(assembly);
             }

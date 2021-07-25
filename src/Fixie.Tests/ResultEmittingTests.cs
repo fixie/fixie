@@ -14,26 +14,26 @@ namespace Fixie.Tests
 
         class ResultEmittingExecution : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 var exception = new Exception("Non-invocation Failure");
 
                 foreach (var test in testSuite.Tests.Where(x => x.Name.EndsWith("Test0")))
                 {
-                    await test.PassAsync();
-                    await test.FailAsync(exception);
-                    await test.SkipAsync("Explicit skip reason.");
+                    await test.Pass();
+                    await test.Fail(exception);
+                    await test.Skip("Explicit skip reason.");
 
-                    await test.PassAsync(new object[] {0, 'A'});
-                    await test.FailAsync(new object[] {1, 'B'}, exception);
-                    await test.SkipAsync(new object[] {2, 'C'}, reason: "");
+                    await test.Pass(new object[] {0, 'A'});
+                    await test.Fail(new object[] {1, 'B'}, exception);
+                    await test.Skip(new object[] {2, 'C'}, reason: "");
                 }
             }
         }
 
         public async Task ShouldSupportExplicitlyEmittingResultsWithoutNecessarilyInvokingTestMethods()
         {
-            var output = await RunAsync<SampleTestClass, ResultEmittingExecution>();
+            var output = await Run<SampleTestClass, ResultEmittingExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Test0 passed",

@@ -29,7 +29,7 @@
 
             try
             {
-                return (int) await RunAssemblyAsync(context);
+                return (int) await RunAssembly(context);
             }
             catch (Exception exception)
             {
@@ -40,7 +40,7 @@
             }
         }
 
-        static async Task<ExitCode> RunAssemblyAsync(TestContext context)
+        static async Task<ExitCode> RunAssembly(TestContext context)
         {
             var reports = DefaultReports(context).ToArray();
             var runner = new Runner(context, reports);
@@ -48,8 +48,8 @@
             var pattern = GetEnvironmentVariable("FIXIE:TESTS");
 
             var summary = pattern == null
-                ? await runner.RunAsync()
-                : await runner.RunAsync(new TestPattern(pattern));
+                ? await runner.Run()
+                : await runner.Run(new TestPattern(pattern));
 
             if (summary.Total == 0)
                 return ExitCode.FatalError;
@@ -60,7 +60,7 @@
             return ExitCode.Success;
         }
 
-        static IEnumerable<Report> DefaultReports(TestContext context)
+        static IEnumerable<IReport> DefaultReports(TestContext context)
         {
             TextWriter console = context.Console;
 

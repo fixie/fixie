@@ -1,12 +1,13 @@
 ﻿namespace Fixie.TestAdapter
 {
     using System;
+    using System.Threading.Tasks;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Reports;
 
-    class DiscoveryReport : Handler<TestDiscovered>
+    class DiscoveryReport : IHandler<TestDiscovered>
     {
         readonly IMessageLogger log;
         readonly ITestCaseDiscoverySink discoverySink;
@@ -22,7 +23,7 @@
             sourceLocationProvider = new SourceLocationProvider(assemblyPath);
         }
 
-        public void Handle(TestDiscovered message)
+        public Task Handle(TestDiscovered message)
         {
             var test = message.Test;
 
@@ -49,6 +50,8 @@
             }
 
             discoverySink.SendTestCase(discoveredTest);
+
+            return Task.CompletedTask;
         }
     }
 }

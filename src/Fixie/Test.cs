@@ -70,53 +70,53 @@ namespace Fixie
         /// Runs the test. The test will be run against a new instance of the test class, using
         /// its default constructor.
         /// </summary> 
-        public Task<TestResult> RunAsync()
+        public Task<TestResult> Run()
         {
-            return RunCoreAsync(instance: null, EmptyParameters);
+            return RunCore(instance: null, EmptyParameters);
         }
 
         /// <summary>
         /// Runs the test, using the given input parameters. The test will be run against a new
         /// instance of the test class, using its default constructor.
         /// </summary>
-        public Task<TestResult> RunAsync(object?[] parameters)
+        public Task<TestResult> Run(object?[] parameters)
         {
-            return RunCoreAsync(instance: null, parameters);
+            return RunCore(instance: null, parameters);
         }
 
         /// <summary>
         /// Runs the test against the given test class instance.
         /// </summary>
-        public Task<TestResult> RunAsync(object instance)
+        public Task<TestResult> Run(object instance)
         {
-            return RunCoreAsync(instance, EmptyParameters);
+            return RunCore(instance, EmptyParameters);
         }
 
         /// <summary>
         /// Runs the test against the given test class instance, using
         /// the given input parameters.
         /// </summary>
-        public Task<TestResult> RunAsync(object instance, object?[] parameters)
+        public Task<TestResult> Run(object instance, object?[] parameters)
         {
-            return RunCoreAsync(instance, parameters);
+            return RunCore(instance, parameters);
         }
 
         /// <summary>
         /// Emits a pass result for this test.
         /// </summary>
-        public async Task PassAsync()
+        public async Task Pass()
         {
-            await PassAsync(EmptyParameters);
+            await Pass(EmptyParameters);
         }
 
         /// <summary>
         /// Emits a pass result for this test case.
         /// </summary>
-        public async Task PassAsync(object?[] parameters)
+        public async Task Pass(object?[] parameters)
         {
             var name = GetName(Method, parameters);
 
-            await recorder.PassAsync(this, name);
+            await recorder.Pass(this, name);
 
             RecordedResult = true;
         }
@@ -124,22 +124,22 @@ namespace Fixie
         /// <summary>
         /// Emits a skip result for this test, with the given reason.
         /// </summary>
-        public async Task SkipAsync(string reason)
+        public async Task Skip(string reason)
         {
-            await SkipAsync(EmptyParameters, reason);
+            await Skip(EmptyParameters, reason);
         }
 
         /// <summary>
         /// Emits a skip result for this test case, with the given reason.
         /// </summary>
-        public async Task SkipAsync(object?[] parameters, string reason)
+        public async Task Skip(object?[] parameters, string reason)
         {
             var name = GetName(Method, parameters);
 
             if (string.IsNullOrWhiteSpace(reason))
                 reason = "This test was explicitly skipped, but no reason was provided.";
 
-            await recorder.SkipAsync(this, name, reason);
+            await recorder.Skip(this, name, reason);
 
             RecordedResult = true;
         }
@@ -147,48 +147,48 @@ namespace Fixie
         /// <summary>
         /// Emits a failure result for this test, with the given reason.
         /// </summary>
-        public async Task FailAsync(Exception reason)
+        public async Task Fail(Exception reason)
         {
-            await FailAsync(EmptyParameters, reason);
+            await Fail(EmptyParameters, reason);
         }
 
         /// <summary>
         /// Emits a failure result for this test case, with the given reason.
         /// </summary>
-        public async Task FailAsync(object?[] parameters, Exception reason)
+        public async Task Fail(object?[] parameters, Exception reason)
         {
             if (reason == null)
                 throw new ArgumentNullException(nameof(reason));
 
             var name = GetName(Method, parameters);
 
-            await recorder.FailAsync(this, name, reason);
+            await recorder.Fail(this, name, reason);
 
             RecordedResult = true;
         }
 
-        async Task<TestResult> RunCoreAsync(object? instance, object?[] parameters)
+        async Task<TestResult> RunCore(object? instance, object?[] parameters)
         {
             var resolvedMethod = Method.TryResolveTypeArguments(parameters);
             var name = CaseNameBuilder.GetName(resolvedMethod, parameters);
 
-            await recorder.StartAsync(this);
+            await recorder.Start(this);
 
             try
             {
                 if (instance == null && !resolvedMethod.IsStatic)
                     instance = Construct(resolvedMethod.ReflectedType!);
 
-                await resolvedMethod.CallResolvedMethodAsync(instance, parameters);
+                await resolvedMethod.CallResolvedMethod(instance, parameters);
             }
             catch (Exception failureReason)
             {
-                await recorder.FailAsync(this, name, failureReason);
+                await recorder.Fail(this, name, failureReason);
                 RecordedResult = true;
                 return TestResult.Failed(failureReason);
             }
 
-            await recorder.PassAsync(this, name);
+            await recorder.Pass(this, name);
             RecordedResult = true;
             return TestResult.Passed;
         }

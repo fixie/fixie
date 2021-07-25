@@ -4,15 +4,16 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Xml.Linq;
     using Internal;
     using static System.Environment;
 
     class XmlReport :
-        Handler<TestSkipped>,
-        Handler<TestPassed>,
-        Handler<TestFailed>,
-        Handler<AssemblyCompleted>
+        IHandler<TestSkipped>,
+        IHandler<TestPassed>,
+        IHandler<TestFailed>,
+        IHandler<AssemblyCompleted>
     {
         readonly Action<XDocument> save;
 
@@ -43,14 +44,23 @@
             this.save = save;
         }
 
-        public void Handle(TestSkipped message)
-            => ForClass(message).Add(message);
+        public Task Handle(TestSkipped message)
+        {
+            ForClass(message).Add(message);
+            return Task.CompletedTask;
+        }
 
-        public void Handle(TestPassed message)
-            => ForClass(message).Add(message);
+        public Task Handle(TestPassed message)
+        {
+            ForClass(message).Add(message);
+            return Task.CompletedTask;
+        }
 
-        public void Handle(TestFailed message)
-            => ForClass(message).Add(message);
+        public Task Handle(TestFailed message)
+        {
+            ForClass(message).Add(message);
+            return Task.CompletedTask;
+        }
 
         ClassResult ForClass(TestCompleted message)
         {
@@ -62,7 +72,7 @@
             return report[type];
         }
 
-        public void Handle(AssemblyCompleted message)
+        public Task Handle(AssemblyCompleted message)
         {
             var now = DateTime.UtcNow;
 
@@ -82,6 +92,8 @@
                         report.Values.Select(x => x.ToElement())))));
 
             report.Clear();
+
+            return Task.CompletedTask;
         }
 
         static string Framework => Environment.Version.ToString();
@@ -123,7 +135,7 @@
                 Parse(message.Test, out var type, out var method);
 
                 var test = new XElement("test",
-                        new XAttribute("name", message.Name),
+                        new XAttribute("name", message.TestCase),
                         new XAttribute("type", type),
                         new XAttribute("method", method),
                         new XAttribute("result", "Skip"),
@@ -143,7 +155,7 @@
 
                 results.Add(
                     new XElement("test",
-                        new XAttribute("name", message.Name),
+                        new XAttribute("name", message.TestCase),
                         new XAttribute("type", type),
                         new XAttribute("method", method),
                         new XAttribute("result", "Pass"),
@@ -159,7 +171,7 @@
 
                 results.Add(
                     new XElement("test",
-                        new XAttribute("name", message.Name),
+                        new XAttribute("name", message.TestCase),
                         new XAttribute("type", type),
                         new XAttribute("method", method),
                         new XAttribute("result", "Fail"),

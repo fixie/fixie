@@ -44,7 +44,7 @@
                 actualAuthorization.Parameter.ShouldBe(accessToken);
             };
 
-            var output = await RunAsync(console =>
+            var output = await Run(console =>
                 new AzureReport(console, "http://localhost:4567", project, accessToken, buildId,
                     (client, method, uri, content) =>
                     {

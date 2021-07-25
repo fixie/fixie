@@ -34,7 +34,7 @@
                 foreach (var assemblyPath in sources)
                     RunTests(log, frameworkHandle, assemblyPath, runner =>
                     {
-                        runner.RunAsync().GetAwaiter().GetResult();
+                        runner.Run().GetAwaiter().GetResult();
                     });
             }
             catch (Exception exception)
@@ -67,7 +67,7 @@
                         var selectedTests =
                             assemblyGroup.Select(x => x.FullyQualifiedName).ToImmutableHashSet();
                         
-                        runner.RunAsync(selectedTests).GetAwaiter().GetResult();
+                        runner.Run(selectedTests).GetAwaiter().GetResult();
                     });
                 }
             }

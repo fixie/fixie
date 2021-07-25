@@ -37,58 +37,58 @@
             public string[] Console { get; }
         }
 
-        protected async Task DiscoverAsync(Report report)
+        protected async Task Discover(IReport report)
         {
             var discovery = new SelfTestDiscovery();
 
             using var console = new RedirectedConsole();
 
-            await Utility.DiscoverAsync(report, discovery, candidateTypes);
+            await Utility.Discover(report, discovery, candidateTypes);
 
             console.Lines().ShouldBeEmpty();
         }
 
-        protected Task<Output> RunAsync(Report report)
+        protected Task<Output> Run(IReport report)
         {
-            return RunAsync(_ => report);
+            return Run(_ => report);
         }
 
-        protected Task<Output> RunAsync(Report report, IDiscovery discovery)
+        protected Task<Output> Run(IReport report, IDiscovery discovery)
         {
-            return RunAsync(_ => report, discovery);
+            return Run(_ => report, discovery);
         }
 
-        protected Task<Output> RunAsync(Func<TextWriter, Report> getReport)
+        protected Task<Output> Run(Func<TextWriter, IReport> getReport)
         {
-            return RunAsync(getReport, new SelfTestDiscovery());
+            return Run(getReport, new SelfTestDiscovery());
         }
 
-        protected async Task<Output> RunAsync(Func<TextWriter, Report> getReport, IDiscovery discovery)
+        protected async Task<Output> Run(Func<TextWriter, IReport> getReport, IDiscovery discovery)
         {
             var execution = new MessagingTestsExecution();
             var convention = new Convention(discovery, execution);
 
             using var console = new RedirectedConsole();
 
-            await Utility.RunAsync(getReport(Console.Out), convention, candidateTypes);
+            await Utility.Run(getReport(Console.Out), convention, candidateTypes);
 
             return new Output(console.Lines().ToArray());
         }
 
         class MessagingTestsExecution : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var test in testSuite.Tests)
                 {
                     if (test.Has<SkipAttribute>(out var skip))
                     {
-                        await test.SkipAsync(skip.Reason);
+                        await test.Skip(skip.Reason);
                         continue;
                     }
 
                     foreach (var parameters in FromInputAttributes(test))
-                        await test.RunAsync(parameters);
+                        await test.Run(parameters);
                 }
             }
         }

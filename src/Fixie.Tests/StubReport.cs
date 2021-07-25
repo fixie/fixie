@@ -1,34 +1,39 @@
 ﻿namespace Fixie.Tests
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Fixie.Reports;
 
     public class StubReport :
-        Handler<TestDiscovered>,
-        Handler<TestSkipped>,
-        Handler<TestPassed>,
-        Handler<TestFailed>
+        IHandler<TestDiscovered>,
+        IHandler<TestSkipped>,
+        IHandler<TestPassed>,
+        IHandler<TestFailed>
     {
         readonly List<string> log = new List<string>();
 
-        public void Handle(TestDiscovered message)
+        public Task Handle(TestDiscovered message)
         {
             log.Add($"{message.Test} discovered");
+            return Task.CompletedTask;
         }
 
-        public void Handle(TestSkipped message)
+        public Task Handle(TestSkipped message)
         {
-            log.Add($"{message.Name} skipped: {message.Reason}");
+            log.Add($"{message.TestCase} skipped: {message.Reason}");
+            return Task.CompletedTask;
         }
 
-        public void Handle(TestPassed message)
+        public Task Handle(TestPassed message)
         {
-            log.Add($"{message.Name} passed");
+            log.Add($"{message.TestCase} passed");
+            return Task.CompletedTask;
         }
 
-        public void Handle(TestFailed message)
+        public Task Handle(TestFailed message)
         {
-            log.Add($"{message.Name} failed: {message.Reason.Message}");
+            log.Add($"{message.TestCase} failed: {message.Reason.Message}");
+            return Task.CompletedTask;
         }
 
         public IEnumerable<string> Entries => log;

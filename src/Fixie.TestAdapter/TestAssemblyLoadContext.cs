@@ -20,7 +20,7 @@
                 // The Fixie assembly itself must be loaded only
                 // into the AssemblyLoadContext.Default context,
                 // so that the Test Adapter can share types with
-                // those loaded by the test assembly such as Report,
+                // those loaded by the test assembly such as IReport,
                 // Handler<T>, IExecution, and IDiscovery. Otherwise,
                 // both contexts would have distinct occurrences of
                 // those types, and they would be mistaken as unrelated.

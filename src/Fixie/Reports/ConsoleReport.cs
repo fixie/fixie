@@ -3,14 +3,15 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading.Tasks;
     using Internal;
     using static System.Environment;
 
     class ConsoleReport :
-        Handler<TestSkipped>,
-        Handler<TestPassed>,
-        Handler<TestFailed>,
-        Handler<AssemblyCompleted>
+        IHandler<TestSkipped>,
+        IHandler<TestPassed>,
+        IHandler<TestFailed>,
+        IHandler<AssemblyCompleted>
     {
         readonly TextWriter console;
         readonly bool outputTestPassed;
@@ -25,41 +26,47 @@
             this.outputTestPassed = outputTestPassed;
         }
 
-        public void Handle(TestSkipped message)
+        public Task Handle(TestSkipped message)
         {
             WithPadding(() =>
             {
                 using (Foreground.Yellow)
-                    console.WriteLine($"Test '{message.Name}' skipped:");
+                    console.WriteLine($"Test '{message.TestCase}' skipped:");
 
                 console.WriteLine(message.Reason);
             });
+
+            return Task.CompletedTask;
         }
 
-        public void Handle(TestPassed message)
+        public Task Handle(TestPassed message)
         {
             if (outputTestPassed)
             {
                 WithoutPadding(() =>
                 {
                     using (Foreground.Green)
-                        console.WriteLine($"Test '{message.Name}' passed");
+                        console.WriteLine($"Test '{message.TestCase}' passed");
                 });
             }
+
+            return Task.CompletedTask;
         }
 
-        public void Handle(TestFailed message)
+        public Task Handle(TestFailed message)
         {
             WithPadding(() =>
             {
                 using (Foreground.Red)
-                    console.WriteLine($"Test '{message.Name}' failed:");
+                    console.WriteLine($"Test '{message.TestCase}' failed:");
                 console.WriteLine();
                 console.WriteLine(message.Reason.Message);
                 console.WriteLine();
                 console.WriteLine(message.Reason.GetType().FullName);
                 console.WriteLine(message.Reason.LiterateStackTrace());
             });
+
+            return Task.CompletedTask;
         }
 
         void WithPadding(Action write)
@@ -79,10 +86,12 @@
             paddingWouldRequireOpeningBlankLine = true;
         }
 
-        public void Handle(AssemblyCompleted message)
+        public Task Handle(AssemblyCompleted message)
         {
             console.WriteLine(Summarize(message));
             console.WriteLine();
+
+            return Task.CompletedTask;
         }
 
         static string Summarize(AssemblyCompleted message)

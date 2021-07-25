@@ -54,7 +54,7 @@
 
             var runner = new Runner(context, report);
 
-            runner.DiscoverAsync().GetAwaiter().GetResult();
+            runner.Discover().GetAwaiter().GetResult();
         }
     }
 }

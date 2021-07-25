@@ -18,11 +18,11 @@
     using static Internal.Maybe;
 
     class AzureReport :
-        AsyncHandler<AssemblyStarted>,
-        AsyncHandler<TestSkipped>,
-        AsyncHandler<TestPassed>,
-        AsyncHandler<TestFailed>,
-        AsyncHandler<AssemblyCompleted>
+        IHandler<AssemblyStarted>,
+        IHandler<TestSkipped>,
+        IHandler<TestPassed>,
+        IHandler<TestFailed>,
+        IHandler<AssemblyCompleted>
     {
         const string AzureDevOpsRestApiVersion = "5.0";
 
@@ -32,9 +32,9 @@
         readonly string collectionUri;
         readonly string project;
         readonly string buildId;
-        readonly ApiAction<CreateRun> sendCreateRunAsync;
-        readonly ApiAction<IReadOnlyList<Result>> sendResultsBatchAsync;
-        readonly ApiAction<CompleteRun> sendCompleteRunAsync;
+        readonly ApiAction<CreateRun> sendCreateRun;
+        readonly ApiAction<IReadOnlyList<Result>> sendResultsBatch;
+        readonly ApiAction<CompleteRun> sendCompleteRun;
         readonly HttpClient client;
 
         string? runUrl;
@@ -65,9 +65,9 @@
                             project,
                             accessToken,
                             buildId,
-                            SendAsync,
-                            SendAsync,
-                            SendAsync,
+                            Send,
+                            Send,
+                            Send,
                             batchSize: 25);
                     }
 
@@ -113,18 +113,18 @@
             string project,
             string accessToken,
             string buildId,
-            ApiAction<CreateRun> sendCreateRunAsync,
-            ApiAction<IReadOnlyList<Result>> sendResultsBatchAsync,
-            ApiAction<CompleteRun> sendCompleteRunAsync,
+            ApiAction<CreateRun> sendCreateRun,
+            ApiAction<IReadOnlyList<Result>> sendResultsBatch,
+            ApiAction<CompleteRun> sendCompleteRun,
             int batchSize)
         {
             this.console = console;
             this.collectionUri = collectionUri;
             this.project = project;
             this.buildId = buildId;
-            this.sendCreateRunAsync = sendCreateRunAsync;
-            this.sendResultsBatchAsync = sendResultsBatchAsync;
-            this.sendCompleteRunAsync = sendCompleteRunAsync;
+            this.sendCreateRun = sendCreateRun;
+            this.sendResultsBatch = sendResultsBatch;
+            this.sendCompleteRun = sendCompleteRun;
             this.batchSize = batchSize;
 
             batch = new List<Result>(batchSize);
@@ -134,7 +134,7 @@
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         }
 
-        public async Task HandleAsync(AssemblyStarted message)
+        public async Task Handle(AssemblyStarted message)
         {
             var runName = Path.GetFileNameWithoutExtension(message.Assembly.Location);
 
@@ -149,33 +149,33 @@
 
             var runsUri = new Uri(new Uri(collectionUri), $"{project}/_apis/test/runs").ToString();
 
-            var response = await sendCreateRunAsync(client, HttpMethod.Post, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", createRun);
+            var response = await sendCreateRun(client, HttpMethod.Post, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", createRun);
 
             runUrl = Deserialize<TestRun>(response).url;
         }
 
-        public async Task HandleAsync(TestSkipped message)
+        public async Task Handle(TestSkipped message)
         {
             if (apiUnavailable) return;
 
-            await IncludeAsync(new Result(message, "Warning")
+            await Include(new Result(message, "Warning")
             {
                 errorMessage = message.Reason
             });
         }
 
-        public async Task HandleAsync(TestPassed message)
+        public async Task Handle(TestPassed message)
         {
             if (apiUnavailable) return;
 
-            await IncludeAsync(new Result(message, "Passed"));
+            await Include(new Result(message, "Passed"));
         }
 
-        public async Task HandleAsync(TestFailed message)
+        public async Task Handle(TestFailed message)
         {
             if (apiUnavailable) return;
 
-            await IncludeAsync(new Result(message, "Failed")
+            await Include(new Result(message, "Failed")
             {
                 errorMessage = message.Reason.Message,
                 stackTrace =
@@ -185,27 +185,27 @@
             });
         }
 
-        public async Task HandleAsync(AssemblyCompleted message)
+        public async Task Handle(AssemblyCompleted message)
         {
             if (apiUnavailable) return;
 
             if (batch.Any())
-                await PostBatchAsync();
+                await PostBatch();
 
             var completeRun = new CompleteRun();
 
-            await sendCompleteRunAsync(client, new HttpMethod("PATCH"), $"{runUrl}?api-version={AzureDevOpsRestApiVersion}", completeRun);
+            await sendCompleteRun(client, new HttpMethod("PATCH"), $"{runUrl}?api-version={AzureDevOpsRestApiVersion}", completeRun);
         }
 
-        async Task IncludeAsync(Result result)
+        async Task Include(Result result)
         {
             batch.Add(result);
 
             if (batch.Count >= batchSize)
-                await PostBatchAsync();
+                await PostBatch();
         }
 
-        async Task PostBatchAsync()
+        async Task PostBatch()
         {
             var attempt = 1;
             const int maxAttempts = 5;
@@ -215,7 +215,7 @@
             {
                 try
                 {
-                    await sendResultsBatchAsync(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", batch.ToList());
+                    await sendResultsBatch(client, HttpMethod.Post, $"{runUrl}/results?api-version={AzureDevOpsRestApiVersion}", batch.ToList());
                     batch.Clear();
 
                     if (attempt > 1)
@@ -245,7 +245,7 @@
             batch.Clear();
         }
 
-        static async Task<string> SendAsync<T>(HttpClient client, HttpMethod method, string uri, T content)
+        static async Task<string> Send<T>(HttpClient client, HttpMethod method, string uri, T content)
         {
             var serialized = Serialize(content);
 
@@ -301,8 +301,8 @@
         {
             public Result(TestCompleted message, string outcome)
             {
-                automatedTestName = message.Name;
-                testCaseTitle = message.Name;
+                automatedTestName = message.TestCase;
+                testCaseTitle = message.TestCase;
                 durationInMs = message.Duration.TotalMilliseconds;
                 this.outcome = outcome;
             }

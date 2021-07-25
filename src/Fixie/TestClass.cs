@@ -58,10 +58,10 @@
         /// <summary>
         /// Emits failure results for all tests in the test class, with the given reason.
         /// </summary>
-        public async Task FailAsync(Exception reason)
+        public async Task Fail(Exception reason)
         {
             foreach (var test in Tests)
-                await test.FailAsync(reason);
+                await test.Fail(reason);
         }
     }
 }

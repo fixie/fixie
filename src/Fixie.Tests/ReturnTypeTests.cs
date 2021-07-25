@@ -11,7 +11,7 @@
     {
         public async Task ShouldInvokeSynchronousTestsDiscardingReturnedValues()
         {
-            var output = await RunAsync<SyncTestClass>();
+            var output = await Run<SyncTestClass>();
 
             output.ShouldHaveResults(
                 "SyncTestClass.ReturnsInteger passed",
@@ -28,7 +28,7 @@
 
         public async Task ShouldAwaitAsynchronousTestsToEnsureCompleteExecution()
         {
-            var output = await RunAsync<AsyncTestClass>();
+            var output = await Run<AsyncTestClass>();
 
             output.ShouldHaveResults(
                 "AsyncTestClass.AwaitTaskThenPass passed",
@@ -70,7 +70,7 @@
 
         public async Task ShouldRunFSharpAsyncResultsToEnsureCompleteExecution()
         {
-            var output = await RunAsync<FSharpAsyncTestClass>();
+            var output = await Run<FSharpAsyncTestClass>();
 
             output.ShouldHaveResults(
                 "FSharpAsyncTestClass.AsyncPass passed",
@@ -88,7 +88,7 @@
 
         public async Task ShouldFailWithClearExplanationWhenAsyncTestReturnsNonStartedTask()
         {
-            var output = await RunAsync<FailDueToNonStartedTaskTestClass>();
+            var output = await Run<FailDueToNonStartedTaskTestClass>();
 
             output.ShouldHaveResults(
                 "FailDueToNonStartedTaskTestClass.Test failed: The method Test returned a non-started task, which cannot " +
@@ -99,7 +99,7 @@
 
         public async Task ShouldFailUnsupportedReturnTypeDeclarationsRatherThanAttemptExecution()
         {
-            var output = await RunAsync<UnsupportedReturnTypeDeclarationsTestClass>();
+            var output = await Run<UnsupportedReturnTypeDeclarationsTestClass>();
 
             output.ShouldHaveResults(
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerable failed: " +

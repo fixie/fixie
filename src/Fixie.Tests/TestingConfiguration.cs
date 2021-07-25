@@ -18,14 +18,14 @@
 
         class DiffToolExecution : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 int failures = 0;
                 Exception? singleFailure = null;
 
                 foreach (var test in testSuite.Tests)
                 {
-                    var result = await test.RunAsync();
+                    var result = await test.Run();
 
                     if (result is Failed failure)
                     {

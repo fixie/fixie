@@ -11,7 +11,7 @@
     {
         public async Task ShouldPublishEventsToAllReports()
         {
-            var reports = new Report[]
+            var reports = new IReport[]
             {
                 new EventHandler(),
                 new AnotherEventHandler(),
@@ -21,9 +21,9 @@
             using var console = new RedirectedConsole();
 
             var bus = new Bus(Console.Out, reports);
-            await bus.PublishAsync(new Event(1));
-            await bus.PublishAsync(new AnotherEvent(2));
-            await bus.PublishAsync(new Event(3));
+            await bus.Publish(new Event(1));
+            await bus.Publish(new AnotherEvent(2));
+            await bus.Publish(new Event(3));
 
             console.Lines()
                 .ShouldBe(
@@ -37,7 +37,7 @@
 
         public async Task ShouldCatchAndLogExceptionsThrowByProblematicReportsRatherThanInterruptExecution()
         {
-            var reports = new Report[]
+            var reports = new IReport[]
             {
                 new EventHandler(),
                 new FailingEventHandler()
@@ -46,9 +46,9 @@
             using var console = new RedirectedConsole();
 
             var bus = new Bus(Console.Out, reports);
-            await bus.PublishAsync(new Event(1));
-            await bus.PublishAsync(new AnotherEvent(2));
-            await bus.PublishAsync(new Event(3));
+            await bus.Publish(new Event(1));
+            await bus.Publish(new AnotherEvent(2));
+            await bus.Publish(new Event(3));
 
             console.Lines()
                 .ShouldBe(
@@ -65,45 +65,54 @@
                     "<<Stack Trace>>");
         }
 
-        class Event : Message
+        class Event : IMessage
         {
             public Event(int id) { Id = id; }
             public int Id { get; }
         }
 
-        class AnotherEvent : Message
+        class AnotherEvent : IMessage
         {
             public AnotherEvent(int id) { Id = id; }
             public int Id { get; }
         }
 
-        class EventHandler : Handler<Event>
+        class EventHandler : IHandler<Event>
         {
-            public void Handle(Event message)
-                => Log<EventHandler, Event>(message.Id);
+            public Task Handle(Event message)
+            {
+                Log<EventHandler, Event>(message.Id);
+                return Task.CompletedTask;
+            }
         }
 
-        class AnotherEventHandler : Handler<AnotherEvent>
+        class AnotherEventHandler : IHandler<AnotherEvent>
         {
-            public void Handle(AnotherEvent message)
-                => Log<AnotherEventHandler, AnotherEvent>(message.Id);
+            public Task Handle(AnotherEvent message)
+            {
+                Log<AnotherEventHandler, AnotherEvent>(message.Id);
+                return Task.CompletedTask;
+            }
         }
 
-        class CombinationEventHandler : Handler<Event>, AsyncHandler<AnotherEvent>
+        class CombinationEventHandler : IHandler<Event>, IHandler<AnotherEvent>
         {
-            public void Handle(Event message)
-                => Log<CombinationEventHandler, Event>(message.Id);
+            public Task Handle(Event message)
+            {
+                Log<CombinationEventHandler, Event>(message.Id);
+                return Task.CompletedTask;
+            }
 
-            public Task HandleAsync(AnotherEvent message)
+            public Task Handle(AnotherEvent message)
             {
                 Log<CombinationEventHandler, AnotherEvent>(message.Id);
                 return Task.CompletedTask;
             }
         }
 
-        class FailingEventHandler : Handler<Event>
+        class FailingEventHandler : IHandler<Event>
         {
-            public void Handle(Event message)
+            public Task Handle(Event message)
                 => throw new StubException($"Could not handle {nameof(Event)} {message.Id}");
         }
 

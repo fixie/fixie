@@ -14,10 +14,10 @@ namespace Fixie
     {
         static MethodInfo? startAsTask;
 
-        public static async Task<object?> CallAsync(this MethodInfo method, object? instance, params object?[] parameters)
-            => await method.TryResolveTypeArguments(parameters).CallResolvedMethodAsync(instance, parameters);
+        public static async Task<object?> Call(this MethodInfo method, object? instance, params object?[] parameters)
+            => await method.TryResolveTypeArguments(parameters).CallResolvedMethod(instance, parameters);
 
-        internal static async Task<object?> CallResolvedMethodAsync(this MethodInfo resolvedMethod, object? instance, object?[] parameters)
+        internal static async Task<object?> CallResolvedMethod(this MethodInfo resolvedMethod, object? instance, object?[] parameters)
         {
             var isVoid = resolvedMethod.ReturnType == typeof(void);
 

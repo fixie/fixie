@@ -13,7 +13,7 @@
             var assembly = typeof(LifecycleMessageTests).Assembly;
             var report = new StubTestCompletedReport();
 
-            await RunAsync(report);
+            await Run(report);
 
             report.Messages.Count.ShouldBe(15);
             
@@ -38,14 +38,14 @@
             passStarted.Test.ShouldBe(TestClass + ".Pass");
 
             pass.Test.ShouldBe(TestClass + ".Pass");
-            pass.Name.ShouldBe(TestClass + ".Pass");
+            pass.TestCase.ShouldBe(TestClass + ".Pass");
             pass.Output.Lines().ShouldBe("Standard Out: Pass");
             pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             failStarted.Test.ShouldBe(TestClass + ".Fail");
 
             fail.Test.ShouldBe(TestClass + ".Fail");
-            fail.Name.ShouldBe(TestClass + ".Fail");
+            fail.TestCase.ShouldBe(TestClass + ".Fail");
             fail.Output.Lines().ShouldBe("Standard Out: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             fail.Reason.ShouldBe<FailureException>();
@@ -58,7 +58,7 @@
             failByAssertionStarted.Test.ShouldBe(TestClass + ".FailByAssertion");
 
             failByAssertion.Test.ShouldBe(TestClass + ".FailByAssertion");
-            failByAssertion.Name.ShouldBe(TestClass + ".FailByAssertion");
+            failByAssertion.TestCase.ShouldBe(TestClass + ".FailByAssertion");
             failByAssertion.Output.Lines().ShouldBe("Standard Out: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             failByAssertion.Reason.ShouldBe<AssertException>();
@@ -71,7 +71,7 @@
                 "Actual:   1");
 
             skip.Test.ShouldBe(TestClass + ".Skip");
-            skip.Name.ShouldBe(TestClass + ".Skip");
+            skip.TestCase.ShouldBe(TestClass + ".Skip");
             skip.Output.ShouldBe("");
             skip.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             skip.Reason.ShouldBe("⚠ Skipped with attribute.");
@@ -79,21 +79,21 @@
             shouldBeStringPassAStarted.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
 
             shouldBeStringPassA.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
-            shouldBeStringPassA.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"A\")");
+            shouldBeStringPassA.TestCase.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"A\")");
             shouldBeStringPassA.Output.ShouldBe("");
             shouldBeStringPassA.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             shouldBeStringPassBStarted.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
 
             shouldBeStringPassB.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
-            shouldBeStringPassB.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"B\")");
+            shouldBeStringPassB.TestCase.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"B\")");
             shouldBeStringPassB.Output.ShouldBe("");
             shouldBeStringPassB.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
 
             shouldBeStringFailStarted.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
 
             shouldBeStringFail.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
-            shouldBeStringFail.Name.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
+            shouldBeStringFail.TestCase.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
             shouldBeStringFail.Output.ShouldBe("");
             shouldBeStringFail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             shouldBeStringFail.Reason.ShouldBe<AssertException>();
@@ -109,17 +109,36 @@
         }
 
         public class StubTestCompletedReport :
-            Handler<AssemblyStarted>,
-            Handler<TestStarted>,
-            Handler<TestCompleted>,
-            Handler<AssemblyCompleted>
+            IHandler<AssemblyStarted>,
+            IHandler<TestStarted>,
+            IHandler<TestCompleted>,
+            IHandler<AssemblyCompleted>
         {
             public List<object> Messages { get; } = new List<object>();
 
-            public void Handle(AssemblyStarted message) => Messages.Add(message);
-            public void Handle(TestStarted message) => Messages.Add(message);
-            public void Handle(TestCompleted message) => Messages.Add(message);
-            public void Handle(AssemblyCompleted message) => Messages.Add(message);
+            public Task Handle(AssemblyStarted message)
+            {
+                Messages.Add(message);
+                return Task.CompletedTask;
+            }
+
+            public Task Handle(TestStarted message)
+            {
+                Messages.Add(message);
+                return Task.CompletedTask;
+            }
+
+            public Task Handle(TestCompleted message)
+            {
+                Messages.Add(message);
+                return Task.CompletedTask;
+            }
+
+            public Task Handle(AssemblyCompleted message)
+            {
+                Messages.Add(message);
+                return Task.CompletedTask;
+            }
         }
     }
 }

@@ -38,25 +38,25 @@
         public static string PathToThisFile([CallerFilePath] string path = default!)
             => path;
 
-        public static async Task<IEnumerable<string>> RunAsync(Type testClass, IExecution execution)
+        public static async Task<IEnumerable<string>> Run(Type testClass, IExecution execution)
         {
             var report = new StubReport();
             var convention = new Convention(new SelfTestDiscovery(), execution);
 
-            await RunAsync(report, convention, testClass);
+            await Run(report, convention, testClass);
             return report.Entries;
         }
 
-        public static async Task<IEnumerable<string>> RunAsync(Type[] testClasses, IExecution execution)
+        public static async Task<IEnumerable<string>> Run(Type[] testClasses, IExecution execution)
         {
             var report = new StubReport();
             var convention = new Convention(new SelfTestDiscovery(), execution);
 
-            await RunAsync(report, convention, testClasses);
+            await Run(report, convention, testClasses);
             return report.Entries;
         }
 
-        public static async Task DiscoverAsync(Report report, IDiscovery discovery, params Type[] candidateTypes)
+        public static async Task Discover(IReport report, IDiscovery discovery, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
@@ -64,10 +64,10 @@
             var context = new TestContext(candidateTypes[0].Assembly, System.Console.Out, Directory.GetCurrentDirectory());
             var runner = new Runner(context, report);
 
-            await runner.DiscoverAsync(candidateTypes, discovery);
+            await runner.Discover(candidateTypes, discovery);
         }
 
-        internal static async Task RunAsync(Report report, Convention convention, params Type[] candidateTypes)
+        internal static async Task Run(IReport report, Convention convention, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
@@ -76,7 +76,7 @@
             var runner = new Runner(context, report);
             var conventions = new[] { convention };
 
-            await runner.RunAsync(candidateTypes, conventions, ImmutableHashSet<string>.Empty);
+            await runner.Run(candidateTypes, conventions, ImmutableHashSet<string>.Empty);
         }
 
         public static IEnumerable<object?[]> FromInputAttributes(Test test)

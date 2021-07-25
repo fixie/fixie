@@ -15,7 +15,7 @@
 
             var report = new StubExecutionSummaryReport();
 
-            await RunAsync(report, convention, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
+            await Run(report, convention, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
             report.AssemblySummary.Count.ShouldBe(1);
 
@@ -28,11 +28,15 @@
         }
 
         class StubExecutionSummaryReport :
-            Handler<AssemblyCompleted>
+            IHandler<AssemblyCompleted>
         {
             public List<AssemblyCompleted> AssemblySummary { get; } = new List<AssemblyCompleted>();
 
-            public void Handle(AssemblyCompleted message) => AssemblySummary.Add(message);
+            public Task Handle(AssemblyCompleted message)
+            {
+                AssemblySummary.Add(message);
+                return Task.CompletedTask;
+            }
         }
 
         class FirstSampleTestClass
@@ -54,11 +58,11 @@
 
         class CreateInstancePerCase : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var test in testSuite.Tests)
                     if (!test.Name.Contains("Skip"))
-                        await test.RunAsync();
+                        await test.Run();
             }
         }
     }

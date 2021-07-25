@@ -13,7 +13,7 @@
     {
         class MethodInfoAccessingExecution : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var testClass in testSuite.TestClasses)
                     foreach (var test in testClass.Tests)
@@ -23,7 +23,7 @@
                             {
                                 var instance = testClass.Construct();
 
-                                var result = await test.Method.CallAsync(instance, parameters);
+                                var result = await test.Method.Call(instance, parameters);
 
                                 if (result != null)
                                     System.Console.WriteLine($"{test.Method.Name} resulted in {result.GetType().FullName} with value {result}");
@@ -32,11 +32,11 @@
                                          test.Method.ReturnType != typeof(ValueTask))
                                     System.Console.WriteLine($"{test.Method.Name} resulted in null");
 
-                                await test.PassAsync(parameters);
+                                await test.Pass(parameters);
                             }
                             catch (Exception exception)
                             {
-                                await test.FailAsync(parameters, exception);
+                                await test.Fail(parameters, exception);
                             }
                         }
             }
@@ -44,7 +44,7 @@
 
         public async Task ShouldCallSynchronousMethods()
         {
-            var output = await RunAsync<SyncTestClass, MethodInfoAccessingExecution>();
+            var output = await Run<SyncTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
                 "SyncTestClass.Args(1, 2, 3) passed",
@@ -72,7 +72,7 @@
 
         public async Task ShouldResolveGenericTypeParametersWhenPossible()
         {
-            var output = await RunAsync<GenericTestClass, MethodInfoAccessingExecution>();
+            var output = await Run<GenericTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
                 "GenericTestClass.Args<System.Int32, System.Int32>(1, 2, System.Int32, System.Int32) passed",
@@ -88,7 +88,7 @@
 
         public async Task ShouldAwaitAsynchronousMethodsToEnsureCompleteExecution()
         {
-            var output = await RunAsync<AsyncTestClass, MethodInfoAccessingExecution>();
+            var output = await Run<AsyncTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
                 "AsyncTestClass.AwaitTaskThenPass passed",
@@ -133,7 +133,7 @@
 
         public async Task ShouldRunFSharpAsyncResultsToEnsureCompleteExecution()
         {
-            var output = await RunAsync<FSharpAsyncTestClass, MethodInfoAccessingExecution>();
+            var output = await Run<FSharpAsyncTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
                 "FSharpAsyncTestClass.AsyncPass passed",
@@ -152,7 +152,7 @@
 
         public async Task ShouldThrowWithClearExplanationWhenMethodReturnsNonStartedTask()
         {
-            var output = await RunAsync<FailDueToNonStartedTaskTestClass, MethodInfoAccessingExecution>();
+            var output = await Run<FailDueToNonStartedTaskTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
                 "FailDueToNonStartedTaskTestClass.Test failed: The method Test returned a non-started task, which cannot " +
@@ -163,7 +163,7 @@
 
         public async Task ShouldThrowForUnsupportedReturnTypeDeclarationsRatherThanAttemptExecution()
         {
-            var output = await RunAsync<UnsupportedReturnTypeDeclarationsTestClass, MethodInfoAccessingExecution>();
+            var output = await Run<UnsupportedReturnTypeDeclarationsTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
                 "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerable failed: " +

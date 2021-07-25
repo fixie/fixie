@@ -49,13 +49,13 @@
             if (lines.Length >= 2)
             {
                 const string synchronousRethrowMarker = "--- End of stack trace from previous location";
-                const string runTestMethodAsync = " Fixie.MethodInfoExtensions.CallResolvedMethodAsync(MethodInfo resolvedMethod, Object instance, Object[] parameters)";
+                const string callResolvedMethod = " Fixie.MethodInfoExtensions.CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)";
                 const string constructTestClass = " Fixie.Test.Construct(Type testClass)";
-                const string runCoreAsync = " Fixie.Test.RunCoreAsync(Object instance, Object[] parameters)";
+                const string runCore = " Fixie.Test.RunCore(Object instance, Object[] parameters)";
 
-                if (lines[^1].Contains(runCoreAsync))
+                if (lines[^1].Contains(runCore))
                 {
-                    if (lines[^2].Contains(runTestMethodAsync) ||
+                    if (lines[^2].Contains(callResolvedMethod) ||
                         lines[^2].Contains(constructTestClass))
                     {
                         var linesToRemove =

@@ -1,6 +1,6 @@
 ﻿namespace Fixie.Reports
 {
-    public class TestDiscovered : Message
+    public class TestDiscovered : IMessage
     {
         internal TestDiscovered(string test)
             => Test = test;

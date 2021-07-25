@@ -2,18 +2,18 @@ namespace Fixie.Reports
 {
     using System;
 
-    public abstract class TestCompleted : Message
+    public abstract class TestCompleted : IMessage
     {
-        internal TestCompleted(string test, string name, TimeSpan duration, string output)
+        internal TestCompleted(string test, string testCase, TimeSpan duration, string output)
         {
             Test = test;
-            Name = name;
+            TestCase = testCase;
             Duration = duration;
             Output = output;
         }
 
         public string Test { get; }
-        public string Name { get; }
+        public string TestCase { get; }
         public TimeSpan Duration { get; }
         public string Output { get; }
     }

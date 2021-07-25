@@ -1,16 +1,17 @@
 ﻿namespace Fixie.TestAdapter
 {
     using System;
+    using System.Threading.Tasks;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Reports;
     using static System.Environment;
 
     class ExecutionReport :
-        Handler<TestStarted>,
-        Handler<TestSkipped>,
-        Handler<TestPassed>,
-        Handler<TestFailed>
+        IHandler<TestStarted>,
+        IHandler<TestSkipped>,
+        IHandler<TestPassed>,
+        IHandler<TestFailed>
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
@@ -21,31 +22,37 @@
             this.assemblyPath = assemblyPath;
         }
 
-        public void Handle(TestStarted message)
+        public Task Handle(TestStarted message)
         {
             var testCase = ToVsTestCase(message.Test);
 
             log.RecordStart(testCase);
+            
+            return Task.CompletedTask;
         }
 
-        public void Handle(TestSkipped message)
+        public Task Handle(TestSkipped message)
         {
             Record(message, x =>
             {
                 x.Outcome = TestOutcome.Skipped;
                 x.ErrorMessage = message.Reason;
             });
+            
+            return Task.CompletedTask;
         }
 
-        public void Handle(TestPassed message)
+        public Task Handle(TestPassed message)
         {
             Record(message, x =>
             {
                 x.Outcome = TestOutcome.Passed;
             });
+
+            return Task.CompletedTask;
         }
 
-        public void Handle(TestFailed message)
+        public Task Handle(TestFailed message)
         {
             Record(message, x =>
             {
@@ -55,6 +62,8 @@
                                     NewLine +
                                     message.Reason.LiterateStackTrace();
             });
+            
+            return Task.CompletedTask;
         }
 
         void Record(TestCompleted result, Action<TestResult> customize)
@@ -63,7 +72,7 @@
 
             var testResult = new TestResult(testCase)
             {
-                DisplayName = result.Name,
+                DisplayName = result.TestCase,
                 Duration = result.Duration,
                 ComputerName = MachineName
             };

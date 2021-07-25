@@ -3,14 +3,15 @@
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using static System.Environment;
 
     class TeamCityReport :
-        Handler<AssemblyStarted>,
-        Handler<TestSkipped>,
-        Handler<TestPassed>,
-        Handler<TestFailed>,
-        Handler<AssemblyCompleted>
+        IHandler<AssemblyStarted>,
+        IHandler<TestSkipped>,
+        IHandler<TestPassed>,
+        IHandler<TestFailed>,
+        IHandler<AssemblyCompleted>
     {
         readonly TextWriter console;
 
@@ -25,27 +26,30 @@
         public TeamCityReport(TextWriter console)
             => this.console = console;
 
-        public void Handle(AssemblyStarted message)
+        public Task Handle(AssemblyStarted message)
         {
             Message("testSuiteStarted name='{0}'", message.Assembly.GetName().Name);
+            return Task.CompletedTask;
         }
 
-        public void Handle(TestSkipped message)
+        public Task Handle(TestSkipped message)
         {
             TestStarted(message);
             Output(message);
-            Message("testIgnored name='{0}' message='{1}'", message.Name, message.Reason);
+            Message("testIgnored name='{0}' message='{1}'", message.TestCase, message.Reason);
             TestFinished(message);
+            return Task.CompletedTask;
         }
 
-        public void Handle(TestPassed message)
+        public Task Handle(TestPassed message)
         {
             TestStarted(message);
             Output(message);
             TestFinished(message);
+            return Task.CompletedTask;
         }
 
-        public void Handle(TestFailed message)
+        public Task Handle(TestFailed message)
         {
             var details =
                 message.Reason.GetType().FullName +
@@ -54,23 +58,25 @@
 
             TestStarted(message);
             Output(message);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Reason.Message, details);
+            Message("testFailed name='{0}' message='{1}' details='{2}'", message.TestCase, message.Reason.Message, details);
             TestFinished(message);
+            return Task.CompletedTask;
         }
 
-        public void Handle(AssemblyCompleted message)
+        public Task Handle(AssemblyCompleted message)
         {
             Message("testSuiteFinished name='{0}'", message.Assembly.GetName().Name);
+            return Task.CompletedTask;
         }
 
         void TestStarted(TestCompleted message)
         {
-            Message("testStarted name='{0}'", message.Name);
+            Message("testStarted name='{0}'", message.TestCase);
         }
 
         void TestFinished(TestCompleted message)
         {
-            Message("testFinished name='{0}' duration='{1}'", message.Name, $"{message.Duration.TotalMilliseconds:0}");
+            Message("testFinished name='{0}' duration='{1}'", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
         }
 
         void Message(string format, params string?[] args)
@@ -82,7 +88,7 @@
         void Output(TestCompleted message)
         {
             if (!string.IsNullOrEmpty(message.Output))
-                Message("testStdOut name='{0}' out='{1}'", message.Name, message.Output);
+                Message("testStdOut name='{0}' out='{1}'", message.TestCase, message.Output);
         }
 
         static string Encode(string? value)

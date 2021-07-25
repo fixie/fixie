@@ -94,18 +94,18 @@ namespace Fixie.Tests
 
         class CreateInstancePerCaseImplicitly : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var test in testSuite.Tests)
                     if (!ShouldSkip(test))
                         foreach (var parameters in FromInputAttributes(test))
-                            await test.RunAsync(parameters);
+                            await test.Run(parameters);
             }
         }
 
         class CreateInstancePerCaseExplicitly : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var testClass in testSuite.TestClasses)
                 {
@@ -116,9 +116,9 @@ namespace Fixie.Tests
                             foreach (var parameters in FromInputAttributes(test))
                             {
                                 if (test.Method.IsStatic)
-                                    await test.RunAsync(parameters);
+                                    await test.Run(parameters);
                                 else
-                                    await test.RunAsync(testClass.Construct(), parameters);
+                                    await test.Run(testClass.Construct(), parameters);
                             }
                 }
             }
@@ -126,7 +126,7 @@ namespace Fixie.Tests
 
         class CreateInstancePerClassExplicitly : IExecution
         {
-            public async Task RunAsync(TestSuite testSuite)
+            public async Task Run(TestSuite testSuite)
             {
                 foreach (var testClass in testSuite.TestClasses)
                 {
@@ -138,9 +138,9 @@ namespace Fixie.Tests
                             foreach (var parameters in FromInputAttributes(test))
                             {
                                 if (test.Method.IsStatic)
-                                    await test.RunAsync(parameters);
+                                    await test.Run(parameters);
                                 else
-                                    await test.RunAsync(instance!, parameters);
+                                    await test.Run(instance!, parameters);
                             }
                 }
             }
@@ -153,7 +153,7 @@ namespace Fixie.Tests
             //      parameters, so Skip() is reached and Pass(int)
             //      is attempted once but never reached.
 
-            var output = await RunAsync<SampleTestClass, DefaultExecution>();
+            var output = await Run<SampleTestClass, DefaultExecution>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -168,7 +168,7 @@ namespace Fixie.Tests
 
         public async Task ShouldAllowConstructingPerCaseImplicitly()
         {
-            var output = await RunAsync<SampleTestClass, CreateInstancePerCaseImplicitly>();
+            var output = await Run<SampleTestClass, CreateInstancePerCaseImplicitly>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -184,7 +184,7 @@ namespace Fixie.Tests
 
         public async Task ShouldAllowConstructingPerCaseExplicitly()
         {
-            var output = await RunAsync<SampleTestClass, CreateInstancePerCaseExplicitly>();
+            var output = await Run<SampleTestClass, CreateInstancePerCaseExplicitly>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -200,7 +200,7 @@ namespace Fixie.Tests
 
         public async Task ShouldAllowConstructingPerClassExplicitly()
         {
-            var output = await RunAsync<SampleTestClass, CreateInstancePerClassExplicitly>();
+            var output = await Run<SampleTestClass, CreateInstancePerClassExplicitly>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: 'Fail' failed!",
@@ -219,7 +219,7 @@ namespace Fixie.Tests
         {
             FailDuring(".ctor");
             
-            var output = await RunAsync<SampleTestClass, CreateInstancePerCaseImplicitly>();
+            var output = await Run<SampleTestClass, CreateInstancePerCaseImplicitly>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: '.ctor' failed!",
@@ -237,7 +237,7 @@ namespace Fixie.Tests
         {
             FailDuring(".ctor");
             
-            var output = await RunAsync<SampleTestClass, CreateInstancePerCaseExplicitly>();
+            var output = await Run<SampleTestClass, CreateInstancePerCaseExplicitly>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: '.ctor' failed!",
@@ -254,7 +254,7 @@ namespace Fixie.Tests
         {
             FailDuring(".ctor");
 
-            var output = await RunAsync<SampleTestClass, CreateInstancePerClassExplicitly>();
+            var output = await Run<SampleTestClass, CreateInstancePerClassExplicitly>();
 
             output.ShouldHaveResults(
                 "SampleTestClass.Fail failed: '.ctor' failed!",
@@ -270,7 +270,7 @@ namespace Fixie.Tests
 
         public async Task ShouldBypassConstructionWhenConstructingPerCaseImplicitlyAndAllCasesAreSkipped()
         {
-            var output = await RunAsync<AllSkippedTestClass, CreateInstancePerCaseImplicitly>();
+            var output = await Run<AllSkippedTestClass, CreateInstancePerCaseImplicitly>();
 
             output.ShouldHaveResults(
                 "AllSkippedTestClass.SkipA skipped: This test did not run.",
@@ -282,7 +282,7 @@ namespace Fixie.Tests
 
         public async Task ShouldBypassConstructionWhenConstructingPerCaseExplicitlyAndAllCasesAreSkipped()
         {
-            var output = await RunAsync<AllSkippedTestClass, CreateInstancePerCaseExplicitly>();
+            var output = await Run<AllSkippedTestClass, CreateInstancePerCaseExplicitly>();
 
             output.ShouldHaveResults(
                 "AllSkippedTestClass.SkipA skipped: This test did not run.",
@@ -294,7 +294,7 @@ namespace Fixie.Tests
 
         public async Task ShouldNotBypassConstructionWhenConstructingPerClassExplicitlyAndAllCasesAreSkipped()
         {
-            var output = await RunAsync<AllSkippedTestClass, CreateInstancePerClassExplicitly>();
+            var output = await Run<AllSkippedTestClass, CreateInstancePerClassExplicitly>();
 
             output.ShouldHaveResults(
                 "AllSkippedTestClass.SkipA skipped: This test did not run.",
@@ -306,7 +306,7 @@ namespace Fixie.Tests
 
         public async Task ShouldBypassConstructionAttemptsWhenTestMethodsAreStatic()
         {
-            var output = await RunAsync<DefaultExecution>(typeof(StaticTestClass));
+            var output = await Run<DefaultExecution>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",
@@ -317,7 +317,7 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle("Fail", "Pass", "Skip");
 
 
-            output = await RunAsync<CreateInstancePerCaseImplicitly>(typeof(StaticTestClass));
+            output = await Run<CreateInstancePerCaseImplicitly>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",
@@ -328,7 +328,7 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle("Fail", "Pass");
 
 
-            output = await RunAsync<CreateInstancePerCaseExplicitly>(typeof(StaticTestClass));
+            output = await Run<CreateInstancePerCaseExplicitly>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",
@@ -339,7 +339,7 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle("Fail", "Pass");
 
 
-            output = await RunAsync<CreateInstancePerClassExplicitly>(typeof(StaticTestClass));
+            output = await Run<CreateInstancePerClassExplicitly>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
                 "StaticTestClass.Fail failed: 'Fail' failed!",
@@ -352,7 +352,7 @@ namespace Fixie.Tests
 
         public async Task ShouldFailWhenTestClassConstructorCannotBeInvoked()
         {
-            var output = await RunAsync<CannotInvokeConstructorTestClass, DefaultExecution>();
+            var output = await Run<CannotInvokeConstructorTestClass, DefaultExecution>();
 
             output.ShouldHaveResults(
                 "CannotInvokeConstructorTestClass.UnreachableCase failed: " +

@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Internal
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
@@ -16,17 +15,7 @@
             assembly = context.Assembly;
         }
 
-        public IReadOnlyList<Convention> GetConventions()
-        {
-            var conventions = GetConfiguration().Conventions.Items;
-
-            if (conventions.Count == 0)
-                return new[] {new Convention(new DefaultDiscovery(), new DefaultExecution())};
-
-            return conventions;
-        }
-
-        Configuration GetConfiguration()
+        public Configuration GetConfiguration()
         {
             var customConfigurationTypes = assembly
                 .GetTypes()
@@ -48,7 +37,12 @@
             if (configurationType is null)
                 return new DefaultConfiguration();
 
-            return (Configuration) ConstructWithOptionalContext(configurationType);
+            var configuration = (Configuration) ConstructWithOptionalContext(configurationType);
+
+            if (configuration.Conventions.Items.Count == 0)
+                configuration.Conventions.Add<DefaultDiscovery, DefaultExecution>();
+
+            return configuration;
         }
 
         object ConstructWithOptionalContext(Type type)

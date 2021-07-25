@@ -12,23 +12,23 @@
     class Runner
     {
         readonly TestContext context;
+        readonly IReport[] defaultReports;
         readonly Assembly assembly;
-        readonly Bus bus;
         readonly TextWriter console;
 
-        public Runner(TestContext context, params IReport[] reports)
+        public Runner(TestContext context, params IReport[] defaultReports)
         {
             this.context = context;
+            this.defaultReports = defaultReports;
             assembly = context.Assembly;
             console = context.Console;
-            bus = new Bus(console, reports);
         }
 
         public async Task Discover()
         {
-            var conventions = new ConfigurationDiscoverer(context).GetConventions();
+            var configuration = new ConfigurationDiscoverer(context).GetConfiguration();
 
-            foreach (var convention in conventions)
+            foreach (var convention in configuration.Conventions.Items)
                 await Discover(assembly.GetTypes(), convention.Discovery);
         }
 
@@ -45,9 +45,9 @@
         public async Task<ExecutionSummary> Run(TestPattern testPattern)
         {
             var matchingTests = ImmutableHashSet<string>.Empty;
-            var conventions = new ConfigurationDiscoverer(context).GetConventions();
+            var configuration = new ConfigurationDiscoverer(context).GetConfiguration();
 
-            foreach (var convention in conventions)
+            foreach (var convention in configuration.Conventions.Items)
             {
                 var discovery = convention.Discovery;
 
@@ -70,13 +70,15 @@
 
         async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
-            var conventions = new ConfigurationDiscoverer(context).GetConventions();
-
-            return await Run(candidateTypes, conventions, selectedTests);
+            var configuration = new ConfigurationDiscoverer(context).GetConfiguration();
+            
+            return await Run(candidateTypes, configuration, selectedTests);
         }
 
         internal async Task Discover(IReadOnlyList<Type> candidateTypes, IDiscovery discovery)
         {
+            var bus = new Bus(console, defaultReports);
+
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
 
@@ -86,8 +88,11 @@
                 await bus.Publish(new TestDiscovered(testMethod.TestName()));
         }
 
-        internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, IReadOnlyList<Convention> conventions, ImmutableHashSet<string> selectedTests)
+        internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, Configuration configuration, ImmutableHashSet<string> selectedTests)
         {
+            var conventions = configuration.Conventions.Items;
+            var bus = new Bus(console, defaultReports.Concat(configuration.Reports.Items).ToArray());
+
             var recordingConsole = new RecordingWriter(console);
             var recorder = new ExecutionRecorder(recordingConsole, bus);
             

@@ -51,9 +51,10 @@ namespace Fixie.Tests.Internal
 
             var context = new TestContext(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
             var runner = new Runner(context, report);
-            var conventions = new[] { new Convention(discovery, execution) };
+            var configuration = new Configuration();
+            configuration.Conventions.Add(discovery, execution);
 
-            await runner.Run(candidateTypes, conventions, ImmutableHashSet<string>.Empty);
+            await runner.Run(candidateTypes, configuration, ImmutableHashSet<string>.Empty);
 
             report.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",

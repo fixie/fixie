@@ -132,13 +132,14 @@
 
         static async Task<IEnumerable<string>> Run<TSampleTestClass, TExecution>() where TExecution : IExecution, new()
         {
-            var convention = new Convention(new SelfTestDiscovery(), new TExecution());
-            
+            var discovery = new SelfTestDiscovery();
+            var execution = new TExecution();
+
             using var console = new RedirectedConsole();
 
             var report = new ConsoleReport(System.Console.Out);
             
-            await Utility.Run(report, convention, typeof(TSampleTestClass));
+            await Utility.Run(report, discovery, execution, typeof(TSampleTestClass));
 
             return console.Lines()
                 .NormalizeStackTraceLines()

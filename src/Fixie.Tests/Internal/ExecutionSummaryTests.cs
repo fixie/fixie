@@ -11,11 +11,11 @@
     {
         public async Task ShouldAccumulateTestResultCounts()
         {
-            var convention = new Convention(new SelfTestDiscovery(), new CreateInstancePerCase());
-
             var report = new StubExecutionSummaryReport();
+            var discovery = new SelfTestDiscovery();
+            var execution = new CreateInstancePerCase();
 
-            await Run(report, convention, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
+            await Run(report, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
             report.AssemblySummary.Count.ShouldBe(1);
 

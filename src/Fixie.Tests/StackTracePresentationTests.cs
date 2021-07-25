@@ -73,8 +73,8 @@
                     "",
                     "Fixie.Tests.FailureException",
                     At<FailureTestClass>("Asynchronous()"),
-                    At(typeof(MethodInfoExtensions), "CallResolvedMethodAsync(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
-                    At(typeof(MethodInfoExtensions), "CallAsync(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                    At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                    At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
                     At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
                     "",
                     "Test '" + FullName<FailureTestClass>() + ".Synchronous' failed:",
@@ -84,8 +84,8 @@
                     "Fixie.Tests.FailureException",
                     At<FailureTestClass>("Synchronous()"),
                     "--- End of stack trace from previous location where exception was thrown ---",
-                    At(typeof(MethodInfoExtensions), "CallResolvedMethodAsync(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
-                    At(typeof(MethodInfoExtensions), "CallAsync(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                    At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                    At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
                     At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
                     "",
                     "2 failed, took 1.23 seconds");
@@ -166,7 +166,7 @@
                         {
                             var instance = testClass.Construct();
 
-                            await test.Method.CallAsync(instance);
+                            await test.Method.Call(instance);
 
                             await test.Pass();
                         }

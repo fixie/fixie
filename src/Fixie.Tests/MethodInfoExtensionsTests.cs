@@ -23,7 +23,7 @@
                             {
                                 var instance = testClass.Construct();
 
-                                var result = await test.Method.CallAsync(instance, parameters);
+                                var result = await test.Method.Call(instance, parameters);
 
                                 if (result != null)
                                     System.Console.WriteLine($"{test.Method.Name} resulted in {result.GetType().FullName} with value {result}");

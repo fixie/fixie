@@ -20,19 +20,19 @@
 
         public Task Handle(TestSkipped message)
         {
-            log.Add($"{message.Name} skipped: {message.Reason}");
+            log.Add($"{message.TestCase} skipped: {message.Reason}");
             return Task.CompletedTask;
         }
 
         public Task Handle(TestPassed message)
         {
-            log.Add($"{message.Name} passed");
+            log.Add($"{message.TestCase} passed");
             return Task.CompletedTask;
         }
 
         public Task Handle(TestFailed message)
         {
-            log.Add($"{message.Name} failed: {message.Reason.Message}");
+            log.Add($"{message.TestCase} failed: {message.Reason.Message}");
             return Task.CompletedTask;
         }
 

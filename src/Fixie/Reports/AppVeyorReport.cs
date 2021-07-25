@@ -107,7 +107,7 @@
             {
                 TestFramework = "Fixie";
                 FileName = runName;
-                TestName = message.Name;
+                TestName = message.TestCase;
                 Outcome = outcome;
                 DurationMilliseconds = $"{message.Duration.TotalMilliseconds:0}";
                 StdOut = message.Output;

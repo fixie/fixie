@@ -301,8 +301,8 @@
         {
             public Result(TestCompleted message, string outcome)
             {
-                automatedTestName = message.Name;
-                testCaseTitle = message.Name;
+                automatedTestName = message.TestCase;
+                testCaseTitle = message.TestCase;
                 durationInMs = message.Duration.TotalMilliseconds;
                 this.outcome = outcome;
             }

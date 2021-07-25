@@ -4,8 +4,8 @@
 
     public class TestFailed : TestCompleted
     {
-        internal TestFailed(string test, string name, TimeSpan duration, string output, Exception reason)
-            : base(test, name, duration, output)
+        internal TestFailed(string test, string testCase, TimeSpan duration, string output, Exception reason)
+            : base(test, testCase, duration, output)
         {
             Reason = reason;
         }

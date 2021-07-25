@@ -72,7 +72,7 @@
 
             var testResult = new TestResult(testCase)
             {
-                DisplayName = result.Name,
+                DisplayName = result.TestCase,
                 Duration = result.Duration,
                 ComputerName = MachineName
             };

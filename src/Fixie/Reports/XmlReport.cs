@@ -135,7 +135,7 @@
                 Parse(message.Test, out var type, out var method);
 
                 var test = new XElement("test",
-                        new XAttribute("name", message.Name),
+                        new XAttribute("name", message.TestCase),
                         new XAttribute("type", type),
                         new XAttribute("method", method),
                         new XAttribute("result", "Skip"),
@@ -155,7 +155,7 @@
 
                 results.Add(
                     new XElement("test",
-                        new XAttribute("name", message.Name),
+                        new XAttribute("name", message.TestCase),
                         new XAttribute("type", type),
                         new XAttribute("method", method),
                         new XAttribute("result", "Pass"),
@@ -171,7 +171,7 @@
 
                 results.Add(
                     new XElement("test",
-                        new XAttribute("name", message.Name),
+                        new XAttribute("name", message.TestCase),
                         new XAttribute("type", type),
                         new XAttribute("method", method),
                         new XAttribute("result", "Fail"),

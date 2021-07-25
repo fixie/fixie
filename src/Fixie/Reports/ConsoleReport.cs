@@ -31,7 +31,7 @@
             WithPadding(() =>
             {
                 using (Foreground.Yellow)
-                    console.WriteLine($"Test '{message.Name}' skipped:");
+                    console.WriteLine($"Test '{message.TestCase}' skipped:");
 
                 console.WriteLine(message.Reason);
             });
@@ -46,7 +46,7 @@
                 WithoutPadding(() =>
                 {
                     using (Foreground.Green)
-                        console.WriteLine($"Test '{message.Name}' passed");
+                        console.WriteLine($"Test '{message.TestCase}' passed");
                 });
             }
 
@@ -58,7 +58,7 @@
             WithPadding(() =>
             {
                 using (Foreground.Red)
-                    console.WriteLine($"Test '{message.Name}' failed:");
+                    console.WriteLine($"Test '{message.TestCase}' failed:");
                 console.WriteLine();
                 console.WriteLine(message.Reason.Message);
                 console.WriteLine();

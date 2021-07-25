@@ -36,7 +36,7 @@
         {
             TestStarted(message);
             Output(message);
-            Message("testIgnored name='{0}' message='{1}'", message.Name, message.Reason);
+            Message("testIgnored name='{0}' message='{1}'", message.TestCase, message.Reason);
             TestFinished(message);
             return Task.CompletedTask;
         }
@@ -58,7 +58,7 @@
 
             TestStarted(message);
             Output(message);
-            Message("testFailed name='{0}' message='{1}' details='{2}'", message.Name, message.Reason.Message, details);
+            Message("testFailed name='{0}' message='{1}' details='{2}'", message.TestCase, message.Reason.Message, details);
             TestFinished(message);
             return Task.CompletedTask;
         }
@@ -71,12 +71,12 @@
 
         void TestStarted(TestCompleted message)
         {
-            Message("testStarted name='{0}'", message.Name);
+            Message("testStarted name='{0}'", message.TestCase);
         }
 
         void TestFinished(TestCompleted message)
         {
-            Message("testFinished name='{0}' duration='{1}'", message.Name, $"{message.Duration.TotalMilliseconds:0}");
+            Message("testFinished name='{0}' duration='{1}'", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
         }
 
         void Message(string format, params string?[] args)
@@ -88,7 +88,7 @@
         void Output(TestCompleted message)
         {
             if (!string.IsNullOrEmpty(message.Output))
-                Message("testStdOut name='{0}' out='{1}'", message.Name, message.Output);
+                Message("testStdOut name='{0}' out='{1}'", message.TestCase, message.Output);
         }
 
         static string Encode(string? value)

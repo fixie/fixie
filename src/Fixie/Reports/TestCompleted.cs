@@ -2,7 +2,7 @@ namespace Fixie.Reports
 {
     using System;
 
-    public abstract class TestCompleted : Message
+    public abstract class TestCompleted : IMessage
     {
         internal TestCompleted(string test, string testCase, TimeSpan duration, string output)
         {

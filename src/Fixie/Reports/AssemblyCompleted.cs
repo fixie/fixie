@@ -4,7 +4,7 @@
     using System.Reflection;
     using Internal;
 
-    public class AssemblyCompleted : Message
+    public class AssemblyCompleted : IMessage
     {
         readonly ExecutionSummary summary;
 

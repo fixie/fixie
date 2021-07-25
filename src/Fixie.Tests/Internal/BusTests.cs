@@ -65,13 +65,13 @@
                     "<<Stack Trace>>");
         }
 
-        class Event : Message
+        class Event : IMessage
         {
             public Event(int id) { Id = id; }
             public int Id { get; }
         }
 
-        class AnotherEvent : Message
+        class AnotherEvent : IMessage
         {
             public AnotherEvent(int id) { Id = id; }
             public int Id { get; }

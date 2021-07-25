@@ -22,7 +22,7 @@
             this.reports = new List<IReport>(reports);
         }
 
-        public async Task Publish<TMessage>(TMessage message) where TMessage : Message
+        public async Task Publish<TMessage>(TMessage message) where TMessage : IMessage
         {
             foreach (var report in reports)
             {

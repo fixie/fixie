@@ -2,7 +2,7 @@
 {
     using System.Reflection;
 
-    public class AssemblyStarted : Message
+    public class AssemblyStarted : IMessage
     {
         internal AssemblyStarted(Assembly assembly)
         {

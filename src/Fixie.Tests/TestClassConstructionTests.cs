@@ -1,7 +1,6 @@
 namespace Fixie.Tests
 {
     using System.Threading.Tasks;
-    using Fixie.Internal;
     using static Utility;
     
     public class TestClassConstructionTests : InstrumentedExecutionTests

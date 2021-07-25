@@ -26,9 +26,10 @@
 
         public async Task DiscoverAsync()
         {
-            var discovery = new BehaviorDiscoverer(context).GetDiscovery();
+            var conventions = new ConventionDiscoverer(context).GetConventions();
 
-            await DiscoverAsync(assembly.GetTypes(), discovery);
+            foreach (var convention in conventions)
+                await DiscoverAsync(assembly.GetTypes(), convention.Discovery);
         }
 
         public Task<ExecutionSummary> RunAsync()
@@ -44,30 +45,34 @@
         public async Task<ExecutionSummary> RunAsync(TestPattern testPattern)
         {
             var matchingTests = ImmutableHashSet<string>.Empty;
-            var discovery = new BehaviorDiscoverer(context).GetDiscovery();
+            var conventions = new ConventionDiscoverer(context).GetConventions();
 
-            var candidateTypes = assembly.GetTypes();
-            var classDiscoverer = new ClassDiscoverer(discovery);
-            var classes = classDiscoverer.TestClasses(candidateTypes);
-            var methodDiscoverer = new MethodDiscoverer(discovery);
-            foreach (var testClass in classes)
-                foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                {
-                    var test = testMethod.TestName();
+            foreach (var convention in conventions)
+            {
+                var discovery = convention.Discovery;
 
-                    if (testPattern.Matches(test))
-                        matchingTests = matchingTests.Add(test);
-                }
+                var candidateTypes = assembly.GetTypes();
+                var classDiscoverer = new ClassDiscoverer(discovery);
+                var classes = classDiscoverer.TestClasses(candidateTypes);
+                var methodDiscoverer = new MethodDiscoverer(discovery);
+                foreach (var testClass in classes)
+                    foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
+                    {
+                        var test = testMethod.TestName();
+
+                        if (testPattern.Matches(test))
+                            matchingTests = matchingTests.Add(test);
+                    }
+            }
 
             return await RunAsync(matchingTests);
         }
 
         async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
-            new BehaviorDiscoverer(context)
-                .GetBehaviors(out var discovery, out var execution);
+            var conventions = new ConventionDiscoverer(context).GetConventions();
 
-            return await RunAsync(candidateTypes, discovery, execution, selectedTests);
+            return await RunAsync(candidateTypes, conventions, selectedTests);
         }
 
         internal async Task DiscoverAsync(IReadOnlyList<Type> candidateTypes, IDiscovery discovery)
@@ -81,7 +86,7 @@
                 await bus.PublishAsync(new TestDiscovered(testMethod.TestName()));
         }
 
-        internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, IExecution execution, ImmutableHashSet<string> selectedTests)
+        internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, IReadOnlyList<Convention> conventions, ImmutableHashSet<string> selectedTests)
         {
             var recordingConsole = new RecordingWriter(console);
             var recorder = new ExecutionRecorder(recordingConsole, bus);
@@ -91,8 +96,11 @@
                 Console.SetOut(recordingConsole);
                 await recorder.StartAsync(assembly);
 
-                var testSuite = BuildTestSuite(candidateTypes, discovery, selectedTests, recorder);
-                await RunAsync(testSuite, execution);
+                foreach (var convention in conventions)
+                {
+                    var testSuite = BuildTestSuite(candidateTypes, convention.Discovery, selectedTests, recorder);
+                    await RunAsync(testSuite, convention.Execution);
+                }
 
                 return await recorder.CompleteAsync(assembly);
             }

@@ -5,7 +5,6 @@ namespace Fixie.Tests
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Assertions;
-    using Fixie.Internal;
 
     public abstract class InstrumentedExecutionTests
     {

@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Assertions;
+    using Fixie.Internal;
     using Fixie.Reports;
     using static Utility;
 
@@ -10,12 +11,11 @@
     {
         public async Task ShouldAccumulateTestResultCounts()
         {
-            var discovery = new SelfTestDiscovery();
-            var execution = new CreateInstancePerCase();
+            var convention = new Convention(new SelfTestDiscovery(), new CreateInstancePerCase());
 
             var report = new StubExecutionSummaryReport();
 
-            await RunAsync(report, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
+            await RunAsync(report, convention, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
             report.AssemblySummary.Count.ShouldBe(1);
 

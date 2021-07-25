@@ -5,12 +5,12 @@
     using System.Linq;
     using System.Reflection;
 
-    class ConventionDiscoverer
+    class ConfigurationDiscoverer
     {
         readonly TestContext context;
         readonly Assembly assembly;
 
-        public ConventionDiscoverer(TestContext context)
+        public ConfigurationDiscoverer(TestContext context)
         {
             this.context = context;
             assembly = context.Assembly;

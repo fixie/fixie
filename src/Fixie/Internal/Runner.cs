@@ -26,7 +26,7 @@
 
         public async Task Discover()
         {
-            var conventions = new ConventionDiscoverer(context).GetConventions();
+            var conventions = new ConfigurationDiscoverer(context).GetConventions();
 
             foreach (var convention in conventions)
                 await Discover(assembly.GetTypes(), convention.Discovery);
@@ -45,7 +45,7 @@
         public async Task<ExecutionSummary> Run(TestPattern testPattern)
         {
             var matchingTests = ImmutableHashSet<string>.Empty;
-            var conventions = new ConventionDiscoverer(context).GetConventions();
+            var conventions = new ConfigurationDiscoverer(context).GetConventions();
 
             foreach (var convention in conventions)
             {
@@ -70,7 +70,7 @@
 
         async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
-            var conventions = new ConventionDiscoverer(context).GetConventions();
+            var conventions = new ConfigurationDiscoverer(context).GetConventions();
 
             return await Run(candidateTypes, conventions, selectedTests);
         }

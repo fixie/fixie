@@ -29,7 +29,7 @@
 
             try
             {
-                return (int) await RunAssemblyAsync(context);
+                return (int) await RunAssembly(context);
             }
             catch (Exception exception)
             {
@@ -40,7 +40,7 @@
             }
         }
 
-        static async Task<ExitCode> RunAssemblyAsync(TestContext context)
+        static async Task<ExitCode> RunAssembly(TestContext context)
         {
             var reports = DefaultReports(context).ToArray();
             var runner = new Runner(context, reports);

@@ -191,15 +191,15 @@
 
         class ScriptedExecution : IExecution
         {
-            readonly Func<Test, Task> scriptAsync;
+            readonly Func<Test, Task> script;
 
-            public ScriptedExecution(Func<Test, Task> scriptAsync)
-                => this.scriptAsync = scriptAsync;
+            public ScriptedExecution(Func<Test, Task> script)
+                => this.script = script;
 
             public async Task Run(TestSuite testSuite)
             {
                 foreach (var test in testSuite.Tests)
-                    await scriptAsync(test);
+                    await script(test);
             }
         }
 

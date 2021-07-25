@@ -37,7 +37,7 @@
             public string[] Console { get; }
         }
 
-        protected async Task DiscoverAsync(IReport report)
+        protected async Task Discover(IReport report)
         {
             var discovery = new SelfTestDiscovery();
 

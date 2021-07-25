@@ -98,7 +98,7 @@ namespace Fixie.Tests
 
                     foreach (var test in testClass.Tests)
                         if (!test.Name.Contains("Skip"))
-                            await TestLifecycleAsync(test);
+                            await TestLifecycle(test);
 
                     ClassTearDown();
                 }
@@ -108,14 +108,14 @@ namespace Fixie.Tests
                 }
             }
 
-            async Task TestLifecycleAsync(Test test)
+            async Task TestLifecycle(Test test)
             {
                 try
                 {
                     TestSetUp();
 
                     foreach (var parameters in YieldParameters(test))
-                        await CaseLifecycleAsync(test, parameters);
+                        await CaseLifecycle(test, parameters);
 
                     TestTearDown();
                 }
@@ -132,7 +132,7 @@ namespace Fixie.Tests
                 return FromInputAttributes(test);
             }
 
-            static async Task CaseLifecycleAsync(Test test, object?[] parameters)
+            static async Task CaseLifecycle(Test test, object?[] parameters)
             {
                 try
                 {

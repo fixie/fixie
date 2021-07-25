@@ -22,7 +22,7 @@
 
             var report = new DiscoveryReport(log, discoverySink, assemblyPath);
 
-            await DiscoverAsync(report);
+            await Discover(report);
 
             log.Messages.ShouldBeEmpty();
 
@@ -43,7 +43,7 @@
 
             var report = new DiscoveryReport(log, discoverySink, invalidAssemblyPath);
 
-            await DiscoverAsync(report);
+            await Discover(report);
 
             var expectedError =
                 $"Error: {typeof(FileNotFoundException).FullName}: " +

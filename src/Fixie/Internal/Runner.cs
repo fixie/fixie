@@ -83,7 +83,7 @@
             var methodDiscoverer = new MethodDiscoverer(discovery);
             foreach (var testClass in classes)
             foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                await bus.PublishAsync(new TestDiscovered(testMethod.TestName()));
+                await bus.Publish(new TestDiscovered(testMethod.TestName()));
         }
 
         internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, IReadOnlyList<Convention> conventions, ImmutableHashSet<string> selectedTests)
@@ -94,7 +94,7 @@
             using (new ConsoleRedirectionBoundary())
             {
                 Console.SetOut(recordingConsole);
-                await recorder.StartAsync(assembly);
+                await recorder.Start(assembly);
 
                 foreach (var convention in conventions)
                 {
@@ -102,7 +102,7 @@
                     await RunAsync(testSuite, convention.Execution);
                 }
 
-                return await recorder.CompleteAsync(assembly);
+                return await recorder.Complete(assembly);
             }
         }
 

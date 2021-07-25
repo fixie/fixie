@@ -22,14 +22,14 @@
             this.reports = new List<IReport>(reports);
         }
 
-        public async Task PublishAsync<TMessage>(TMessage message) where TMessage : Message
+        public async Task Publish<TMessage>(TMessage message) where TMessage : Message
         {
             foreach (var report in reports)
             {
                 try
                 {
-                    if (report is IHandler<TMessage> asyncHandler)
-                        await asyncHandler.Handle(message);
+                    if (report is IHandler<TMessage> handler)
+                        await handler.Handle(message);
                 }
                 catch (Exception exception)
                 {

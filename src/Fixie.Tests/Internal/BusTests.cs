@@ -21,9 +21,9 @@
             using var console = new RedirectedConsole();
 
             var bus = new Bus(Console.Out, reports);
-            await bus.PublishAsync(new Event(1));
-            await bus.PublishAsync(new AnotherEvent(2));
-            await bus.PublishAsync(new Event(3));
+            await bus.Publish(new Event(1));
+            await bus.Publish(new AnotherEvent(2));
+            await bus.Publish(new Event(3));
 
             console.Lines()
                 .ShouldBe(
@@ -46,9 +46,9 @@
             using var console = new RedirectedConsole();
 
             var bus = new Bus(Console.Out, reports);
-            await bus.PublishAsync(new Event(1));
-            await bus.PublishAsync(new AnotherEvent(2));
-            await bus.PublishAsync(new Event(3));
+            await bus.Publish(new Event(1));
+            await bus.Publish(new AnotherEvent(2));
+            await bus.Publish(new Event(3));
 
             console.Lines()
                 .ShouldBe(

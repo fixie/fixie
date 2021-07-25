@@ -116,7 +116,7 @@ namespace Fixie
         {
             var name = GetName(Method, parameters);
 
-            await recorder.PassAsync(this, name);
+            await recorder.Pass(this, name);
 
             RecordedResult = true;
         }
@@ -139,7 +139,7 @@ namespace Fixie
             if (string.IsNullOrWhiteSpace(reason))
                 reason = "This test was explicitly skipped, but no reason was provided.";
 
-            await recorder.SkipAsync(this, name, reason);
+            await recorder.Skip(this, name, reason);
 
             RecordedResult = true;
         }
@@ -162,7 +162,7 @@ namespace Fixie
 
             var name = GetName(Method, parameters);
 
-            await recorder.FailAsync(this, name, reason);
+            await recorder.Fail(this, name, reason);
 
             RecordedResult = true;
         }
@@ -172,7 +172,7 @@ namespace Fixie
             var resolvedMethod = Method.TryResolveTypeArguments(parameters);
             var name = CaseNameBuilder.GetName(resolvedMethod, parameters);
 
-            await recorder.StartAsync(this);
+            await recorder.Start(this);
 
             try
             {
@@ -183,12 +183,12 @@ namespace Fixie
             }
             catch (Exception failureReason)
             {
-                await recorder.FailAsync(this, name, failureReason);
+                await recorder.Fail(this, name, failureReason);
                 RecordedResult = true;
                 return TestResult.Failed(failureReason);
             }
 
-            await recorder.PassAsync(this, name);
+            await recorder.Pass(this, name);
             RecordedResult = true;
             return TestResult.Passed;
         }

@@ -26,66 +26,66 @@
             caseStopwatch = new Stopwatch();
         }
 
-        public async Task StartAsync(Assembly assembly)
+        public async Task Start(Assembly assembly)
         {
-            await bus.PublishAsync(new AssemblyStarted(assembly));
+            await bus.Publish(new AssemblyStarted(assembly));
             assemblyStopwatch.Restart();
             caseStopwatch.Restart();
             recordingConsole.StartRecording();
         }
 
-        public async Task StartAsync(Test test)
+        public async Task Start(Test test)
         {
-            await bus.PublishAsync(new TestStarted(test));
+            await bus.Publish(new TestStarted(test));
         }
 
-        public async Task SkipAsync(Test test, string name, string reason)
+        public async Task Skip(Test test, string name, string reason)
         {
             var duration = caseStopwatch.Elapsed;
             recordingConsole.StopRecording(out var output);
 
             var message = new TestSkipped(test.Name, name, duration, output, reason);
             assemblySummary.Add(message);
-            await bus.PublishAsync(message);
+            await bus.Publish(message);
 
             caseStopwatch.Restart();
             recordingConsole.StartRecording();
         }
 
-        public async Task PassAsync(Test test, string name)
+        public async Task Pass(Test test, string name)
         {
             var duration = caseStopwatch.Elapsed;
             recordingConsole.StopRecording(out var output);
 
             var message = new TestPassed(test.Name, name, duration, output);
             assemblySummary.Add(message);
-            await bus.PublishAsync(message);
+            await bus.Publish(message);
 
             caseStopwatch.Restart();
             recordingConsole.StartRecording();
         }
 
-        public async Task FailAsync(Test test, string name, Exception reason)
+        public async Task Fail(Test test, string name, Exception reason)
         {
             var duration = caseStopwatch.Elapsed;
             recordingConsole.StopRecording(out var output);
 
             var message = new TestFailed(test.Name, name, duration, output, reason);
             assemblySummary.Add(message);
-            await bus.PublishAsync(message);
+            await bus.Publish(message);
 
             caseStopwatch.Restart();
             recordingConsole.StartRecording();
         }
 
-        public async Task<ExecutionSummary> CompleteAsync(Assembly assembly)
+        public async Task<ExecutionSummary> Complete(Assembly assembly)
         {
             var duration = assemblyStopwatch.Elapsed;
             recordingConsole.StopRecording();
             caseStopwatch.Stop();
             assemblyStopwatch.Stop();
 
-            await bus.PublishAsync(new AssemblyCompleted(assembly, assemblySummary, duration));
+            await bus.Publish(new AssemblyCompleted(assembly, assemblySummary, duration));
 
             return assemblySummary;
         }

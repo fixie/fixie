@@ -15,8 +15,6 @@
         public TestingConfiguration(TestContext context)
         {
             Conventions.Add<DefaultDiscovery, DiffToolExecution>();
-
-            Reports.Add(XmlReport.Create(context, "Report.xml"));
         }
 
         class DiffToolExecution : IExecution

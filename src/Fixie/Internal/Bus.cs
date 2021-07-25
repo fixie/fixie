@@ -28,11 +28,8 @@
             {
                 try
                 {
-                    if (report is Handler<TMessage> handler)
-                        handler.Handle(message);
-
-                    if (report is AsyncHandler<TMessage> asyncHandler)
-                        await asyncHandler.HandleAsync(message);
+                    if (report is IHandler<TMessage> asyncHandler)
+                        await asyncHandler.Handle(message);
                 }
                 catch (Exception exception)
                 {

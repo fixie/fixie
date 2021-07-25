@@ -18,11 +18,11 @@
     using static Internal.Maybe;
 
     class AzureReport :
-        AsyncHandler<AssemblyStarted>,
-        AsyncHandler<TestSkipped>,
-        AsyncHandler<TestPassed>,
-        AsyncHandler<TestFailed>,
-        AsyncHandler<AssemblyCompleted>
+        IHandler<AssemblyStarted>,
+        IHandler<TestSkipped>,
+        IHandler<TestPassed>,
+        IHandler<TestFailed>,
+        IHandler<AssemblyCompleted>
     {
         const string AzureDevOpsRestApiVersion = "5.0";
 
@@ -134,7 +134,7 @@
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         }
 
-        public async Task HandleAsync(AssemblyStarted message)
+        public async Task Handle(AssemblyStarted message)
         {
             var runName = Path.GetFileNameWithoutExtension(message.Assembly.Location);
 
@@ -154,7 +154,7 @@
             runUrl = Deserialize<TestRun>(response).url;
         }
 
-        public async Task HandleAsync(TestSkipped message)
+        public async Task Handle(TestSkipped message)
         {
             if (apiUnavailable) return;
 
@@ -164,14 +164,14 @@
             });
         }
 
-        public async Task HandleAsync(TestPassed message)
+        public async Task Handle(TestPassed message)
         {
             if (apiUnavailable) return;
 
             await IncludeAsync(new Result(message, "Passed"));
         }
 
-        public async Task HandleAsync(TestFailed message)
+        public async Task Handle(TestFailed message)
         {
             if (apiUnavailable) return;
 
@@ -185,7 +185,7 @@
             });
         }
 
-        public async Task HandleAsync(AssemblyCompleted message)
+        public async Task Handle(AssemblyCompleted message)
         {
             if (apiUnavailable) return;
 

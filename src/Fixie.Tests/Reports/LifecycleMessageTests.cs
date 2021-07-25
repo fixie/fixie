@@ -109,17 +109,36 @@
         }
 
         public class StubTestCompletedReport :
-            Handler<AssemblyStarted>,
-            Handler<TestStarted>,
-            Handler<TestCompleted>,
-            Handler<AssemblyCompleted>
+            IHandler<AssemblyStarted>,
+            IHandler<TestStarted>,
+            IHandler<TestCompleted>,
+            IHandler<AssemblyCompleted>
         {
             public List<object> Messages { get; } = new List<object>();
 
-            public void Handle(AssemblyStarted message) => Messages.Add(message);
-            public void Handle(TestStarted message) => Messages.Add(message);
-            public void Handle(TestCompleted message) => Messages.Add(message);
-            public void Handle(AssemblyCompleted message) => Messages.Add(message);
+            public Task Handle(AssemblyStarted message)
+            {
+                Messages.Add(message);
+                return Task.CompletedTask;
+            }
+
+            public Task Handle(TestStarted message)
+            {
+                Messages.Add(message);
+                return Task.CompletedTask;
+            }
+
+            public Task Handle(TestCompleted message)
+            {
+                Messages.Add(message);
+                return Task.CompletedTask;
+            }
+
+            public Task Handle(AssemblyCompleted message)
+            {
+                Messages.Add(message);
+                return Task.CompletedTask;
+            }
         }
     }
 }

@@ -77,33 +77,42 @@
             public int Id { get; }
         }
 
-        class EventHandler : Handler<Event>
+        class EventHandler : IHandler<Event>
         {
-            public void Handle(Event message)
-                => Log<EventHandler, Event>(message.Id);
+            public Task Handle(Event message)
+            {
+                Log<EventHandler, Event>(message.Id);
+                return Task.CompletedTask;
+            }
         }
 
-        class AnotherEventHandler : Handler<AnotherEvent>
+        class AnotherEventHandler : IHandler<AnotherEvent>
         {
-            public void Handle(AnotherEvent message)
-                => Log<AnotherEventHandler, AnotherEvent>(message.Id);
+            public Task Handle(AnotherEvent message)
+            {
+                Log<AnotherEventHandler, AnotherEvent>(message.Id);
+                return Task.CompletedTask;
+            }
         }
 
-        class CombinationEventHandler : Handler<Event>, AsyncHandler<AnotherEvent>
+        class CombinationEventHandler : IHandler<Event>, IHandler<AnotherEvent>
         {
-            public void Handle(Event message)
-                => Log<CombinationEventHandler, Event>(message.Id);
+            public Task Handle(Event message)
+            {
+                Log<CombinationEventHandler, Event>(message.Id);
+                return Task.CompletedTask;
+            }
 
-            public Task HandleAsync(AnotherEvent message)
+            public Task Handle(AnotherEvent message)
             {
                 Log<CombinationEventHandler, AnotherEvent>(message.Id);
                 return Task.CompletedTask;
             }
         }
 
-        class FailingEventHandler : Handler<Event>
+        class FailingEventHandler : IHandler<Event>
         {
-            public void Handle(Event message)
+            public Task Handle(Event message)
                 => throw new StubException($"Could not handle {nameof(Event)} {message.Id}");
         }
 

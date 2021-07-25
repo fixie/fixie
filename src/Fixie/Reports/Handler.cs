@@ -2,13 +2,8 @@
 {
     using System.Threading.Tasks;
 
-    public interface Handler<in TMessage> : IReport where TMessage : Message
+    public interface IHandler<in TMessage> : IReport where TMessage : Message
     {
-        void Handle(TMessage message);
-    }
-
-    public interface AsyncHandler<in TMessage> : IReport where TMessage : Message
-    {
-        Task HandleAsync(TMessage message);
+        Task Handle(TMessage message);
     }
 }

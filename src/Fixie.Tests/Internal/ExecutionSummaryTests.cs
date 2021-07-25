@@ -28,11 +28,15 @@
         }
 
         class StubExecutionSummaryReport :
-            Handler<AssemblyCompleted>
+            IHandler<AssemblyCompleted>
         {
             public List<AssemblyCompleted> AssemblySummary { get; } = new List<AssemblyCompleted>();
 
-            public void Handle(AssemblyCompleted message) => AssemblySummary.Add(message);
+            public Task Handle(AssemblyCompleted message)
+            {
+                AssemblySummary.Add(message);
+                return Task.CompletedTask;
+            }
         }
 
         class FirstSampleTestClass

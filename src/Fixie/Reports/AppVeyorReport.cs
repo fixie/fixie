@@ -12,10 +12,10 @@
     using static Internal.Serialization;
 
     class AppVeyorReport :
-        Handler<AssemblyStarted>,
-        AsyncHandler<TestSkipped>,
-        AsyncHandler<TestPassed>,
-        AsyncHandler<TestFailed>
+        IHandler<AssemblyStarted>,
+        IHandler<TestSkipped>,
+        IHandler<TestPassed>,
+        IHandler<TestFailed>
     {
         public delegate Task PostAction(string uri, Result result);
 
@@ -50,7 +50,7 @@
             runName = "Unknown";
         }
 
-        public void Handle(AssemblyStarted message)
+        public Task Handle(AssemblyStarted message)
         {
             runName = Path.GetFileNameWithoutExtension(message.Assembly.Location);
 
@@ -60,9 +60,11 @@
 
             if (!string.IsNullOrEmpty(framework))
                 runName = $"{runName} ({framework})";
+
+            return Task.CompletedTask;
         }
 
-        public async Task HandleAsync(TestSkipped message)
+        public async Task Handle(TestSkipped message)
         {
             await PostAsync(new Result(runName, message, "Skipped")
             {
@@ -70,12 +72,12 @@
             });
         }
 
-        public async Task HandleAsync(TestPassed message)
+        public async Task Handle(TestPassed message)
         {
             await PostAsync(new Result(runName, message, "Passed"));
         }
 
-        public async Task HandleAsync(TestFailed message)
+        public async Task Handle(TestFailed message)
         {
             await PostAsync(new Result(runName, message, "Failed")
             {

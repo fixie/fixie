@@ -18,7 +18,12 @@
 
         public IReadOnlyList<Convention> GetConventions()
         {
-            return GetConfiguration().Conventions.Items;
+            var conventions = GetConfiguration().Conventions.Items;
+
+            if (conventions.Count == 0)
+                return new[] {new Convention(new DefaultDiscovery(), new DefaultExecution())};
+
+            return conventions;
         }
 
         Configuration GetConfiguration()

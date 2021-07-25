@@ -48,8 +48,8 @@
             var pattern = GetEnvironmentVariable("FIXIE:TESTS");
 
             var summary = pattern == null
-                ? await runner.RunAsync()
-                : await runner.RunAsync(new TestPattern(pattern));
+                ? await runner.Run()
+                : await runner.Run(new TestPattern(pattern));
 
             if (summary.Total == 0)
                 return ExitCode.FatalError;

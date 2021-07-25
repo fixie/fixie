@@ -24,25 +24,25 @@
             bus = new Bus(console, reports);
         }
 
-        public async Task DiscoverAsync()
+        public async Task Discover()
         {
             var conventions = new ConventionDiscoverer(context).GetConventions();
 
             foreach (var convention in conventions)
-                await DiscoverAsync(assembly.GetTypes(), convention.Discovery);
+                await Discover(assembly.GetTypes(), convention.Discovery);
         }
 
-        public Task<ExecutionSummary> RunAsync()
+        public Task<ExecutionSummary> Run()
         {
-            return RunAsync(assembly.GetTypes(), ImmutableHashSet<string>.Empty);
+            return Run(assembly.GetTypes(), ImmutableHashSet<string>.Empty);
         }
 
-        public Task<ExecutionSummary> RunAsync(ImmutableHashSet<string> selectedTests)
+        public Task<ExecutionSummary> Run(ImmutableHashSet<string> selectedTests)
         {
-            return RunAsync(assembly.GetTypes(), selectedTests);
+            return Run(assembly.GetTypes(), selectedTests);
         }
 
-        public async Task<ExecutionSummary> RunAsync(TestPattern testPattern)
+        public async Task<ExecutionSummary> Run(TestPattern testPattern)
         {
             var matchingTests = ImmutableHashSet<string>.Empty;
             var conventions = new ConventionDiscoverer(context).GetConventions();
@@ -65,17 +65,17 @@
                     }
             }
 
-            return await RunAsync(matchingTests);
+            return await Run(matchingTests);
         }
 
-        async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
+        async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
             var conventions = new ConventionDiscoverer(context).GetConventions();
 
-            return await RunAsync(candidateTypes, conventions, selectedTests);
+            return await Run(candidateTypes, conventions, selectedTests);
         }
 
-        internal async Task DiscoverAsync(IReadOnlyList<Type> candidateTypes, IDiscovery discovery)
+        internal async Task Discover(IReadOnlyList<Type> candidateTypes, IDiscovery discovery)
         {
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
@@ -86,7 +86,7 @@
                 await bus.Publish(new TestDiscovered(testMethod.TestName()));
         }
 
-        internal async Task<ExecutionSummary> RunAsync(IReadOnlyList<Type> candidateTypes, IReadOnlyList<Convention> conventions, ImmutableHashSet<string> selectedTests)
+        internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, IReadOnlyList<Convention> conventions, ImmutableHashSet<string> selectedTests)
         {
             var recordingConsole = new RecordingWriter(console);
             var recorder = new ExecutionRecorder(recordingConsole, bus);
@@ -99,7 +99,7 @@
                 foreach (var convention in conventions)
                 {
                     var testSuite = BuildTestSuite(candidateTypes, convention.Discovery, selectedTests, recorder);
-                    await RunAsync(testSuite, convention.Execution);
+                    await Run(testSuite, convention.Execution);
                 }
 
                 return await recorder.Complete(assembly);
@@ -147,7 +147,7 @@
             return new TestSuite(testClasses);
         }
 
-        static async Task RunAsync(TestSuite testSuite, IExecution execution)
+        static async Task Run(TestSuite testSuite, IExecution execution)
         {
             Exception? assemblyLifecycleFailure = null;
 

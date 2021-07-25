@@ -121,7 +121,7 @@ namespace Fixie.Tests
                 }
                 catch (Exception exception)
                 {
-                    await test.FailAsync(exception);
+                    await test.Fail(exception);
                 }
             }
 
@@ -137,12 +137,12 @@ namespace Fixie.Tests
                 try
                 {
                     CaseSetUp();
-                    await test.RunAsync(parameters);
+                    await test.Run(parameters);
                     CaseTearDown();
                 }
                 catch (Exception exception)
                 {
-                    await test.FailAsync(parameters, exception);
+                    await test.Fail(parameters, exception);
                 }
             }
         }
@@ -177,7 +177,7 @@ namespace Fixie.Tests
 
                     for (int i = 1; i <= 3; i++)
                         foreach (var parameters in FromInputAttributes(test))
-                            await test.RunAsync(parameters);
+                            await test.Run(parameters);
                 }
             }
         }
@@ -201,7 +201,7 @@ namespace Fixie.Tests
                     {
                         foreach (var parameters in FromInputAttributes(test))
                         {
-                            var result = await test.RunAsync(parameters);
+                            var result = await test.Run(parameters);
 
                             if (result is Failed)
                             {

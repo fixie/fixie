@@ -99,7 +99,7 @@ namespace Fixie.Tests
                 foreach (var test in testSuite.Tests)
                     if (!ShouldSkip(test))
                         foreach (var parameters in FromInputAttributes(test))
-                            await test.RunAsync(parameters);
+                            await test.Run(parameters);
             }
         }
 
@@ -116,9 +116,9 @@ namespace Fixie.Tests
                             foreach (var parameters in FromInputAttributes(test))
                             {
                                 if (test.Method.IsStatic)
-                                    await test.RunAsync(parameters);
+                                    await test.Run(parameters);
                                 else
-                                    await test.RunAsync(testClass.Construct(), parameters);
+                                    await test.Run(testClass.Construct(), parameters);
                             }
                 }
             }
@@ -138,9 +138,9 @@ namespace Fixie.Tests
                             foreach (var parameters in FromInputAttributes(test))
                             {
                                 if (test.Method.IsStatic)
-                                    await test.RunAsync(parameters);
+                                    await test.Run(parameters);
                                 else
-                                    await test.RunAsync(instance!, parameters);
+                                    await test.Run(instance!, parameters);
                             }
                 }
             }

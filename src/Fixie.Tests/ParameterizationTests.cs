@@ -19,7 +19,7 @@
             {
                 foreach (var test in testSuite.Tests)
                     foreach (var parameters in parameterSource(test))
-                        await test.RunAsync(parameters);
+                        await test.Run(parameters);
             }
         }
 
@@ -37,11 +37,11 @@
                     try
                     {
                         foreach (var parameters in parameterSource(test))
-                            await test.RunAsync(parameters);
+                            await test.Run(parameters);
                     }
                     catch (Exception exception)
                     {
-                        await test.FailAsync(exception);
+                        await test.Fail(exception);
                     }
                 }
             }

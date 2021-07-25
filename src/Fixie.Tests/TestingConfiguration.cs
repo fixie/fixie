@@ -25,7 +25,7 @@
 
                 foreach (var test in testSuite.Tests)
                 {
-                    var result = await test.RunAsync();
+                    var result = await test.Run();
 
                     if (result is Failed failure)
                     {

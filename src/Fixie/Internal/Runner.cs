@@ -165,10 +165,10 @@
                 var testNeverRan = !test.RecordedResult;
 
                 if (assemblyLifecycleFailure != null)
-                    await test.FailAsync(assemblyLifecycleFailure);
+                    await test.Fail(assemblyLifecycleFailure);
 
                 if (testNeverRan)
-                    await test.SkipAsync("This test did not run.");
+                    await test.Skip("This test did not run.");
             }
         }
     }

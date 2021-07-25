@@ -61,7 +61,7 @@
         public async Task FailAsync(Exception reason)
         {
             foreach (var test in Tests)
-                await test.FailAsync(reason);
+                await test.Fail(reason);
         }
     }
 }

@@ -7,7 +7,7 @@
         public async Task Run(TestSuite testSuite)
         {
             foreach (var test in testSuite.Tests)
-                await test.RunAsync();
+                await test.Run();
         }
     }
 }

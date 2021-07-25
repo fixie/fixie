@@ -208,10 +208,10 @@
 
         static async Task RunAsync(Test test, params object?[] parameters)
         {
-            await test.RunAsync(parameters);
-            await test.PassAsync(parameters);
-            await test.FailAsync(parameters, new FailureException());
-            await test.SkipAsync(parameters, reason: "Exercising Skipped Case Names");
+            await test.Run(parameters);
+            await test.Pass(parameters);
+            await test.Fail(parameters, new FailureException());
+            await test.Skip(parameters, reason: "Exercising Skipped Case Names");
         }
 
         void ShouldHaveNames(IEnumerable<string> actual, params string[] expected)

@@ -62,7 +62,7 @@
             {
                 foreach (var test in testSuite.Tests)
                     if (!test.Name.Contains("Skip"))
-                        await test.RunAsync();
+                        await test.Run();
             }
         }
     }

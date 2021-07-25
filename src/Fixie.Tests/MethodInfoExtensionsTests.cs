@@ -32,11 +32,11 @@
                                          test.Method.ReturnType != typeof(ValueTask))
                                     System.Console.WriteLine($"{test.Method.Name} resulted in null");
 
-                                await test.PassAsync(parameters);
+                                await test.Pass(parameters);
                             }
                             catch (Exception exception)
                             {
-                                await test.FailAsync(parameters, exception);
+                                await test.Fail(parameters, exception);
                             }
                         }
             }

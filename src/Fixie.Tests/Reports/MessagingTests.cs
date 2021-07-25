@@ -83,12 +83,12 @@
                 {
                     if (test.Has<SkipAttribute>(out var skip))
                     {
-                        await test.SkipAsync(skip.Reason);
+                        await test.Skip(skip.Reason);
                         continue;
                     }
 
                     foreach (var parameters in FromInputAttributes(test))
-                        await test.RunAsync(parameters);
+                        await test.Run(parameters);
                 }
             }
         }

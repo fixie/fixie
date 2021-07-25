@@ -150,7 +150,7 @@
             public async Task Run(TestSuite testSuite)
             {
                 foreach (var test in testSuite.Tests)
-                    await test.RunAsync();
+                    await test.Run();
             }
         }
 
@@ -168,11 +168,11 @@
 
                             await test.Method.CallAsync(instance);
 
-                            await test.PassAsync();
+                            await test.Pass();
                         }
                         catch (Exception exception)
                         {
-                            await test.FailAsync(exception);
+                            await test.Fail(exception);
                         }
                     }
                 }

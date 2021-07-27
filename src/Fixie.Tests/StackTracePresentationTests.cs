@@ -5,7 +5,6 @@
     using System.IO;
     using System.Threading.Tasks;
     using Assertions;
-    using Fixie.Internal;
     using Fixie.Reports;
     using static Utility;
 
@@ -132,13 +131,14 @@
 
         static async Task<IEnumerable<string>> Run<TSampleTestClass, TExecution>() where TExecution : IExecution, new()
         {
-            var convention = new Convention(new SelfTestDiscovery(), new TExecution());
-            
+            var discovery = new SelfTestDiscovery();
+            var execution = new TExecution();
+
             using var console = new RedirectedConsole();
 
             var report = new ConsoleReport(System.Console.Out);
             
-            await Utility.Run(report, convention, typeof(TSampleTestClass));
+            await Utility.Run(report, discovery, execution, typeof(TSampleTestClass));
 
             return console.Lines()
                 .NormalizeStackTraceLines()

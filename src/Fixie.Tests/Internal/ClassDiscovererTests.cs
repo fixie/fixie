@@ -90,30 +90,6 @@
                     typeof(InheritanceSample));
         }
 
-        public void ShouldNotConsiderCustomizationClasses()
-        {
-            var discovery = new MaximumDiscovery();
-
-            // Customization classes include IDiscovery, IExecution, and Configuration implementations.
-            // These naturally appear within a test project, but should never be mistaken for test
-            // classes regardless of how maximal a custom IDiscovery may be.
-
-            DiscoveredTestClasses(discovery,
-                    typeof(TestingConfiguration),
-                    typeof(MaximumDiscovery),
-                    typeof(NarrowDiscovery),
-                    typeof(BuggyDiscovery),
-                    typeof(SampleExecution))
-                .ShouldBe(
-                    typeof(StaticClass),
-                    typeof(DefaultConstructor),
-                    typeof(NoDefaultConstructor),
-                    typeof(NameEndsWithTests),
-                    typeof(String),
-                    typeof(InheritanceSampleBase),
-                    typeof(InheritanceSample));
-        }
-
         public void ShouldNotConsiderCompilerGeneratedClosureClasses()
         {
             var nested = typeof(ClassThatCausesCompilerGeneratedNestedClosureClass)

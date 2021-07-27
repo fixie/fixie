@@ -7,9 +7,11 @@
     using System.Threading.Tasks;
     using System.Xml.Linq;
     using Internal;
-    using static System.Environment;
-
-    class XmlReport :
+    
+    /// <summary>
+    /// Writes test results to the specified path, using the xUnit XML format.
+    /// </summary>
+    public class XmlReport :
         IHandler<TestSkipped>,
         IHandler<TestPassed>,
         IHandler<TestFailed>,
@@ -19,14 +21,9 @@
 
         readonly SortedDictionary<string, ClassResult> report = new SortedDictionary<string, ClassResult>();
 
-        internal static XmlReport? Create(TestContext context)
+        public static XmlReport Create(TestContext context, string absoluteOrRelativePath)
         {
-            var absoluteOrRelativePath = GetEnvironmentVariable("FIXIE:REPORT");
-
-            if (absoluteOrRelativePath != null)
-                return new XmlReport(SaveReport(context, absoluteOrRelativePath));
-
-            return null;
+            return new XmlReport(SaveReport(context, absoluteOrRelativePath));
         }
 
         static Action<XDocument> SaveReport(TestContext context, string absoluteOrRelativePath)
@@ -39,7 +36,7 @@
             return Path.Combine(context.RootDirectory, absoluteOrRelativePath);
         }
 
-        public XmlReport(Action<XDocument> save)
+        internal XmlReport(Action<XDocument> save)
         {
             this.save = save;
         }
@@ -104,7 +101,7 @@
             return FormattableString.Invariant($"{duration.TotalSeconds:0.000}");
         }
 
-        public static void Save(XDocument report, string path)
+        static void Save(XDocument report, string path)
         {
             var directory = Path.GetDirectoryName(path);
 

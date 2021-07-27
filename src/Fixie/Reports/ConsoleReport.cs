@@ -18,7 +18,7 @@
         bool paddingWouldRequireOpeningBlankLine;
 
         internal static ConsoleReport Create(TextWriter console)
-            => new ConsoleReport(console, GetEnvironmentVariable("FIXIE:TESTS") != null);
+            => new ConsoleReport(console, GetEnvironmentVariable("FIXIE:TESTS_PATTERN") != null);
 
         public ConsoleReport(TextWriter console, bool outputTestPassed = false)
         {

@@ -41,18 +41,18 @@
         public static async Task<IEnumerable<string>> Run(Type testClass, IExecution execution)
         {
             var report = new StubReport();
-            var convention = new Convention(new SelfTestDiscovery(), execution);
+            var discovery = new SelfTestDiscovery();
 
-            await Run(report, convention, testClass);
+            await Run(report, discovery, execution, testClass);
             return report.Entries;
         }
 
         public static async Task<IEnumerable<string>> Run(Type[] testClasses, IExecution execution)
         {
             var report = new StubReport();
-            var convention = new Convention(new SelfTestDiscovery(), execution);
+            var discovery = new SelfTestDiscovery();
 
-            await Run(report, convention, testClasses);
+            await Run(report, discovery, execution, testClasses);
             return report.Entries;
         }
 
@@ -67,16 +67,17 @@
             await runner.Discover(candidateTypes, discovery);
         }
 
-        internal static async Task Run(IReport report, Convention convention, params Type[] candidateTypes)
+        internal static async Task Run(IReport report, IDiscovery discovery, IExecution execution, params Type[] candidateTypes)
         {
             if (candidateTypes.Length == 0)
                 throw new InvalidOperationException("At least one type must be specified.");
 
             var context = new TestContext(candidateTypes[0].Assembly, System.Console.Out, Directory.GetCurrentDirectory());
             var runner = new Runner(context, report);
-            var conventions = new[] { convention };
+            var configuration = new Configuration();
+            configuration.Conventions.Add(discovery, execution);
 
-            await runner.Run(candidateTypes, conventions, ImmutableHashSet<string>.Empty);
+            await runner.Run(candidateTypes, configuration, ImmutableHashSet<string>.Empty);
         }
 
         public static IEnumerable<object?[]> FromInputAttributes(Test test)

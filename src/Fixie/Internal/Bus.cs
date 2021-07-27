@@ -11,11 +11,6 @@
         readonly TextWriter console;
         readonly List<IReport> reports;
 
-        public Bus(TextWriter console, IReport report)
-            : this(console, new[] { report })
-        {
-        }
-
         public Bus(TextWriter console, IReadOnlyList<IReport> reports)
         {
             this.console = console;

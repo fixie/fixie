@@ -29,24 +29,11 @@ namespace Fixie.Internal
         static bool IsApplicable(Type candidate)
         {
             return ConcreteClasses(candidate) &&
-                   NonCustomizationClasses(candidate) &&
                    NonCompilerGeneratedClasses(candidate);
         }
 
         static bool ConcreteClasses(Type type)
             => type.IsClass && (!type.IsAbstract || type.IsStatic());
-
-        static bool NonCustomizationClasses(Type type)
-            => !IsDiscovery(type) && !IsExecution(type) && !IsTestProject(type);
-
-        static bool IsDiscovery(Type type)
-            => type.GetInterfaces().Contains(typeof(IDiscovery));
-
-        static bool IsExecution(Type type)
-            => type.GetInterfaces().Contains(typeof(IExecution));
-
-        static bool IsTestProject(Type type)
-            => type.GetInterfaces().Contains(typeof(ITestProject));
 
         static bool NonCompilerGeneratedClasses(Type type)
             => !type.Has<CompilerGeneratedAttribute>();

@@ -88,7 +88,7 @@
                     await bus.Publish(new TestDiscovered(testMethod.TestName()));
         }
 
-        internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, Configuration configuration, ImmutableHashSet<string> selectedTests)
+        internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, TestConfiguration configuration, ImmutableHashSet<string> selectedTests)
         {
             var conventions = configuration.Conventions.Items;
             var bus = new Bus(console, defaultReports.Concat(configuration.Reports.Items).ToArray());
@@ -177,7 +177,7 @@
             }
         }
 
-        Configuration BuildConfiguration()
+        TestConfiguration BuildConfiguration()
         {
             var customTestProjectTypes = assembly
                 .GetTypes()
@@ -194,7 +194,7 @@
                             .Select(x => $"\t{x.FullName}")));
             }
 
-            var configuration = new Configuration();
+            var configuration = new TestConfiguration();
 
             var testProjectType = customTestProjectTypes.SingleOrDefault();
             

@@ -74,7 +74,7 @@
 
             var environment = new TestEnvironment(candidateTypes[0].Assembly, System.Console.Out, Directory.GetCurrentDirectory());
             var runner = new Runner(environment, report);
-            var configuration = new Configuration();
+            var configuration = new TestConfiguration();
             configuration.Conventions.Add(discovery, execution);
 
             await runner.Run(candidateTypes, configuration, ImmutableHashSet<string>.Empty);

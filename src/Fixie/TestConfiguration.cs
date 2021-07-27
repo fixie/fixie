@@ -1,6 +1,6 @@
 ﻿namespace Fixie
 {
-    public class Configuration
+    public class TestConfiguration
     {
         public ConventionCollection Conventions { get; } = new ConventionCollection();
         public ReportCollection Reports { get; } = new ReportCollection();

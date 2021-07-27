@@ -4,7 +4,7 @@
 
     class TestProject : ITestProject
     {
-        public void Configure(Configuration configuration, TestContext context)
+        public void Configure(Configuration configuration, TestEnvironment environment)
         {
             if (GetEnvironmentVariable("GITHUB_ACTIONS") == null)
                 configuration.Reports.Add<DiffToolReport>();

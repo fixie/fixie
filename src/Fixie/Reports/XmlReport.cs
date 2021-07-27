@@ -21,19 +21,19 @@
 
         readonly SortedDictionary<string, ClassResult> report = new SortedDictionary<string, ClassResult>();
 
-        public static XmlReport Create(TestContext context, string absoluteOrRelativePath)
+        public static XmlReport Create(TestEnvironment environment, string absoluteOrRelativePath)
         {
-            return new XmlReport(SaveReport(context, absoluteOrRelativePath));
+            return new XmlReport(SaveReport(environment, absoluteOrRelativePath));
         }
 
-        static Action<XDocument> SaveReport(TestContext context, string absoluteOrRelativePath)
+        static Action<XDocument> SaveReport(TestEnvironment environment, string absoluteOrRelativePath)
         {
-            return report => Save(report, FullPath(context, absoluteOrRelativePath));
+            return report => Save(report, FullPath(environment, absoluteOrRelativePath));
         }
 
-        static string FullPath(TestContext context, string absoluteOrRelativePath)
+        static string FullPath(TestEnvironment environment, string absoluteOrRelativePath)
         {
-            return Path.Combine(context.RootDirectory, absoluteOrRelativePath);
+            return Path.Combine(environment.RootPath, absoluteOrRelativePath);
         }
 
         internal XmlReport(Action<XDocument> save)

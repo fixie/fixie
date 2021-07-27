@@ -2,6 +2,6 @@
 {
     public interface ITestProject
     {
-        void Configure(Configuration configuration, TestContext context);
+        void Configure(Configuration configuration, TestEnvironment environment);
     }
 }

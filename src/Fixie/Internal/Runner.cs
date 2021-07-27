@@ -11,17 +11,17 @@
 
     class Runner
     {
-        readonly TestContext context;
+        readonly TestEnvironment environment;
         readonly IReport[] defaultReports;
         readonly Assembly assembly;
         readonly TextWriter console;
 
-        public Runner(TestContext context, params IReport[] defaultReports)
+        public Runner(TestEnvironment environment, params IReport[] defaultReports)
         {
-            this.context = context;
+            this.environment = environment;
             this.defaultReports = defaultReports;
-            assembly = context.Assembly;
-            console = context.Console;
+            assembly = environment.Assembly;
+            console = environment.Console;
         }
 
         public async Task Discover()
@@ -202,7 +202,7 @@
             {
                 var testProject = (ITestProject) Construct(testProjectType);
 
-                testProject.Configure(configuration, context);
+                testProject.Configure(configuration, environment);
             }
 
             if (configuration.Conventions.Items.Count == 0)

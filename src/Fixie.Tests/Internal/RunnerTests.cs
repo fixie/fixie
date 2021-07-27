@@ -23,8 +23,8 @@ namespace Fixie.Tests.Internal
             };
             var discovery = new SelfTestDiscovery();
             
-            var context = new TestContext(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
-            var runner = new Runner(context, report);
+            var environment = new TestEnvironment(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
+            var runner = new Runner(environment, report);
 
             await runner.Discover(candidateTypes, discovery);
 
@@ -49,8 +49,8 @@ namespace Fixie.Tests.Internal
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();
 
-            var context = new TestContext(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
-            var runner = new Runner(context, report);
+            var environment = new TestEnvironment(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
+            var runner = new Runner(environment, report);
             var configuration = new Configuration();
             configuration.Conventions.Add(discovery, execution);
 

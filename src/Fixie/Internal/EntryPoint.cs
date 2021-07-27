@@ -22,14 +22,14 @@
         public static async Task<int> Main(Assembly assembly, string[] customArguments)
         {
             var console = Console.Out;
-            var rootDirectory = Directory.GetCurrentDirectory();
-            var context = new TestContext(assembly, console, rootDirectory, customArguments);
+            var rootPath = Directory.GetCurrentDirectory();
+            var environment = new TestEnvironment(assembly, console, rootPath, customArguments);
 
             using var boundary = new ConsoleRedirectionBoundary();
 
             try
             {
-                return (int) await RunAssembly(context);
+                return (int) await RunAssembly(environment);
             }
             catch (Exception exception)
             {
@@ -40,10 +40,10 @@
             }
         }
 
-        static async Task<ExitCode> RunAssembly(TestContext context)
+        static async Task<ExitCode> RunAssembly(TestEnvironment environment)
         {
-            var reports = DefaultReports(context).ToArray();
-            var runner = new Runner(context, reports);
+            var reports = DefaultReports(environment).ToArray();
+            var runner = new Runner(environment, reports);
 
             var pattern = GetEnvironmentVariable("FIXIE:TESTS_PATTERN");
 
@@ -60,9 +60,9 @@
             return ExitCode.Success;
         }
 
-        static IEnumerable<IReport> DefaultReports(TestContext context)
+        static IEnumerable<IReport> DefaultReports(TestEnvironment environment)
         {
-            TextWriter console = context.Console;
+            TextWriter console = environment.Console;
 
             if (Try(() => AzureReport.Create(console), out var azure))
                 yield return azure;

@@ -47,12 +47,12 @@
             var report = new DiscoveryReport(log, discoverySink, assemblyPath);
             
             var console = Console.Out;
-            var rootDirectory = Directory.GetCurrentDirectory();
-            var context = new TestContext(assembly, console, rootDirectory);
+            var rootPath = Directory.GetCurrentDirectory();
+            var environment = new TestEnvironment(assembly, console, rootPath);
 
             using var boundary = new ConsoleRedirectionBoundary();
 
-            var runner = new Runner(context, report);
+            var runner = new Runner(environment, report);
 
             runner.Discover().GetAwaiter().GetResult();
         }

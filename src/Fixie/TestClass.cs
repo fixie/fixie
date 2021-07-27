@@ -49,7 +49,6 @@
                     "An attempt to construct an instance of test class '" +
                     Type.FullName +
                     "' unexpectedly resulted in null.");
-                ;
             }
 
             return instance;

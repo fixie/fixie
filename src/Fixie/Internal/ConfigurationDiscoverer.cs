@@ -17,27 +17,31 @@
 
         public Configuration GetConfiguration()
         {
-            var customConfigurationTypes = assembly
+            var customTestProjectTypes = assembly
                 .GetTypes()
-                .Where(type => type.IsSubclassOf(typeof(Configuration)) && !type.IsAbstract)
+                .Where(type => IsTestProject(type) && !type.IsAbstract)
                 .ToArray();
 
-            if (customConfigurationTypes.Length > 1)
+            if (customTestProjectTypes.Length > 1)
             {
                 throw new Exception(
-                    "A test assembly can have at most one Configuration implementation, " +
+                    "A test assembly can have at most one ITestProject implementation, " +
                     "but the following implementations were discovered:" + Environment.NewLine +
                     string.Join(Environment.NewLine,
-                        customConfigurationTypes
+                        customTestProjectTypes
                             .Select(x => $"\t{x.FullName}")));
             }
 
-            var configurationType = customConfigurationTypes.SingleOrDefault();
+            var configuration = new Configuration();
             
-            if (configurationType is null)
-                return new DefaultConfiguration();
+            var testProjectType = customTestProjectTypes.SingleOrDefault();
+            
+            if (testProjectType != null)
+            {
+                var testProject = (ITestProject) Construct(testProjectType);
 
-            var configuration = (Configuration) ConstructWithOptionalContext(configurationType);
+                testProject.Configure(configuration, context);
+            }
 
             if (configuration.Conventions.Items.Count == 0)
                 configuration.Conventions.Add<DefaultDiscovery, DefaultExecution>();
@@ -45,16 +49,14 @@
             return configuration;
         }
 
-        object ConstructWithOptionalContext(Type type)
+        static bool IsTestProject(Type type)
+            => type.GetInterfaces().Contains(typeof(ITestProject));
+
+        static object Construct(Type type)
         {
             try
             {
-                var constructor = type.GetConstructors().Single();
-                
-                return constructor.Invoke(
-                    constructor.GetParameters().Length == 1
-                        ? new object?[] { context }
-                        : Array.Empty<object>());
+                return type.GetConstructors().Single().Invoke(null);
             }
             catch (Exception ex)
             {

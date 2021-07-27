@@ -94,12 +94,12 @@
         {
             var discovery = new MaximumDiscovery();
 
-            // Customization classes include IDiscovery, IExecution, and Configuration implementations.
+            // Customization classes include IDiscovery, IExecution, and ITestProject implementations.
             // These naturally appear within a test project, but should never be mistaken for test
             // classes regardless of how maximal a custom IDiscovery may be.
 
             DiscoveredTestClasses(discovery,
-                    typeof(TestingConfiguration),
+                    typeof(TestProject),
                     typeof(MaximumDiscovery),
                     typeof(NarrowDiscovery),
                     typeof(BuggyDiscovery),

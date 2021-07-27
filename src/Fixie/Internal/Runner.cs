@@ -26,7 +26,7 @@
 
         public async Task Discover()
         {
-            var configuration = new ConfigurationDiscoverer(context).GetConfiguration();
+            var configuration = BuildConfiguration();
 
             foreach (var convention in configuration.Conventions.Items)
                 await Discover(assembly.GetTypes(), convention.Discovery);
@@ -45,7 +45,7 @@
         public async Task<ExecutionSummary> Run(TestPattern testPattern)
         {
             var matchingTests = ImmutableHashSet<string>.Empty;
-            var configuration = new ConfigurationDiscoverer(context).GetConfiguration();
+            var configuration = BuildConfiguration();
 
             foreach (var convention in configuration.Conventions.Items)
             {
@@ -70,7 +70,7 @@
 
         async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
         {
-            var configuration = new ConfigurationDiscoverer(context).GetConfiguration();
+            var configuration = BuildConfiguration();
             
             return await Run(candidateTypes, configuration, selectedTests);
         }
@@ -84,8 +84,8 @@
 
             var methodDiscoverer = new MethodDiscoverer(discovery);
             foreach (var testClass in classes)
-            foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                await bus.Publish(new TestDiscovered(testMethod.TestName()));
+                foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
+                    await bus.Publish(new TestDiscovered(testMethod.TestName()));
         }
 
         internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, Configuration configuration, ImmutableHashSet<string> selectedTests)
@@ -174,6 +174,55 @@
 
                 if (testNeverRan)
                     await test.Skip("This test did not run.");
+            }
+        }
+
+        Configuration BuildConfiguration()
+        {
+            var customTestProjectTypes = assembly
+                .GetTypes()
+                .Where(type => IsTestProject(type) && !type.IsAbstract)
+                .ToArray();
+
+            if (customTestProjectTypes.Length > 1)
+            {
+                throw new Exception(
+                    "A test assembly can have at most one ITestProject implementation, " +
+                    "but the following implementations were discovered:" + Environment.NewLine +
+                    string.Join(Environment.NewLine,
+                        customTestProjectTypes
+                            .Select(x => $"\t{x.FullName}")));
+            }
+
+            var configuration = new Configuration();
+
+            var testProjectType = customTestProjectTypes.SingleOrDefault();
+            
+            if (testProjectType != null)
+            {
+                var testProject = (ITestProject) Construct(testProjectType);
+
+                testProject.Configure(configuration, context);
+            }
+
+            if (configuration.Conventions.Items.Count == 0)
+                configuration.Conventions.Add<DefaultDiscovery, DefaultExecution>();
+
+            return configuration;
+        }
+
+        static bool IsTestProject(Type type)
+            => type.GetInterfaces().Contains(typeof(ITestProject));
+
+        static object Construct(Type type)
+        {
+            try
+            {
+                return type.GetConstructors().Single().Invoke(null);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Could not construct an instance of type '{type.FullName}'.", ex);
             }
         }
     }

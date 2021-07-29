@@ -99,7 +99,7 @@
             using (new ConsoleRedirectionBoundary())
             {
                 Console.SetOut(recordingConsole);
-                await recorder.Start(assembly);
+                await recorder.StartExecution();
 
                 foreach (var convention in conventions)
                 {
@@ -107,7 +107,7 @@
                     await Run(testSuite, convention.Execution);
                 }
 
-                return await recorder.Complete(assembly);
+                return await recorder.CompleteExecution();
             }
         }
 

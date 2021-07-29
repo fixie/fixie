@@ -2,7 +2,6 @@
 {
     using System;
     using System.Diagnostics;
-    using System.Reflection;
     using System.Threading.Tasks;
     using Reports;
 
@@ -26,9 +25,9 @@
             caseStopwatch = new Stopwatch();
         }
 
-        public async Task Start(Assembly assembly)
+        public async Task StartExecution()
         {
-            await bus.Publish(new AssemblyStarted(assembly));
+            await bus.Publish(new ExecutionStarted());
             assemblyStopwatch.Restart();
             caseStopwatch.Restart();
             recordingConsole.StartRecording();
@@ -78,14 +77,14 @@
             recordingConsole.StartRecording();
         }
 
-        public async Task<ExecutionSummary> Complete(Assembly assembly)
+        public async Task<ExecutionSummary> CompleteExecution()
         {
             var duration = assemblyStopwatch.Elapsed;
             recordingConsole.StopRecording();
             caseStopwatch.Stop();
             assemblyStopwatch.Stop();
 
-            await bus.Publish(new AssemblyCompleted(assembly, assemblySummary, duration));
+            await bus.Publish(new ExecutionCompleted(assemblySummary, duration));
 
             return assemblySummary;
         }

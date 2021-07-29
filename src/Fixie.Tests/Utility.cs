@@ -13,6 +13,14 @@
 
     public static class Utility
     {
+        public static TestEnvironment GetTestEnvironment()
+        {
+            return new TestEnvironment(
+                typeof(TestProject).Assembly,
+                System.Console.Out,
+                Directory.GetCurrentDirectory());
+        }
+
         public static string FullName<T>()
         {
             return typeof(T).FullName ??

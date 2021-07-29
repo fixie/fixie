@@ -1,34 +1,35 @@
 ﻿namespace Fixie.Reports
 {
-    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
     using static System.Environment;
 
     class TeamCityReport :
-        IHandler<AssemblyStarted>,
+        IHandler<ExecutionStarted>,
         IHandler<TestSkipped>,
         IHandler<TestPassed>,
         IHandler<TestFailed>,
-        IHandler<AssemblyCompleted>
+        IHandler<ExecutionCompleted>
     {
-        readonly TextWriter console;
+        readonly TestEnvironment environment;
 
-        internal static TeamCityReport? Create(TextWriter console)
+        internal static TeamCityReport? Create(TestEnvironment environment)
         {
             if (GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null)
-                return new TeamCityReport(console);
+                return new TeamCityReport(environment);
 
             return null;
         }
 
-        public TeamCityReport(TextWriter console)
-            => this.console = console;
-
-        public Task Handle(AssemblyStarted message)
+        public TeamCityReport(TestEnvironment environment)
         {
-            Message("testSuiteStarted name='{0}'", message.Assembly.GetName().Name);
+            this.environment = environment;
+        }
+
+        public Task Handle(ExecutionStarted message)
+        {
+            Message("testSuiteStarted name='{0}'", environment.Assembly.GetName().Name);
             return Task.CompletedTask;
         }
 
@@ -63,9 +64,9 @@
             return Task.CompletedTask;
         }
 
-        public Task Handle(AssemblyCompleted message)
+        public Task Handle(ExecutionCompleted message)
         {
-            Message("testSuiteFinished name='{0}'", message.Assembly.GetName().Name);
+            Message("testSuiteFinished name='{0}'", environment.Assembly.GetName().Name);
             return Task.CompletedTask;
         }
 
@@ -82,7 +83,7 @@
         void Message(string format, params string?[] args)
         {
             var encodedArgs = args.Select(Encode).Cast<object>().ToArray();
-            console.WriteLine("##teamcity[" + format + "]", encodedArgs);
+            environment.Console.WriteLine("##teamcity[" + format + "]", encodedArgs);
         }
 
         void Output(TestCompleted message)

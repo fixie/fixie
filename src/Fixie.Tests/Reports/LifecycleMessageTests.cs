@@ -10,14 +10,13 @@
     {
         public async Task ShouldDescribeTestLifecycleMessagesEmittedDuringExecution()
         {
-            var assembly = typeof(LifecycleMessageTests).Assembly;
             var report = new StubTestCompletedReport();
 
             await Run(report);
 
             report.Messages.Count.ShouldBe(15);
             
-            var assemblyStarted = (AssemblyStarted)report.Messages[0];
+            var executionStarted = (ExecutionStarted)report.Messages[0];
             var failStarted = (TestStarted)report.Messages[1];
             var fail = (TestFailed)report.Messages[2];
             var failByAssertionStarted = (TestStarted)report.Messages[3];
@@ -31,9 +30,9 @@
             var shouldBeStringPassB = (TestPassed)report.Messages[11];
             var shouldBeStringFailStarted = (TestStarted)report.Messages[12];
             var shouldBeStringFail = (TestFailed)report.Messages[13];
-            var assemblyCompleted = (AssemblyCompleted)report.Messages[14];
+            var executionCompleted = (ExecutionCompleted)report.Messages[14];
 
-            assemblyStarted.Assembly.ShouldBe(assembly);
+            (executionStarted != null).ShouldBe(true);
             
             passStarted.Test.ShouldBe(TestClass + ".Pass");
 
@@ -105,18 +104,22 @@
                 "Expected: System.String",
                 "Actual:   System.Int32");
 
-            assemblyCompleted.Assembly.ShouldBe(assembly);
+            executionCompleted.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            executionCompleted.Failed.ShouldBe(3);
+            executionCompleted.Skipped.ShouldBe(1);
+            executionCompleted.Passed.ShouldBe(3);
+            executionCompleted.Total.ShouldBe(7);
         }
 
         public class StubTestCompletedReport :
-            IHandler<AssemblyStarted>,
+            IHandler<ExecutionStarted>,
             IHandler<TestStarted>,
             IHandler<TestCompleted>,
-            IHandler<AssemblyCompleted>
+            IHandler<ExecutionCompleted>
         {
             public List<object> Messages { get; } = new List<object>();
 
-            public Task Handle(AssemblyStarted message)
+            public Task Handle(ExecutionStarted message)
             {
                 Messages.Add(message);
                 return Task.CompletedTask;
@@ -134,7 +137,7 @@
                 return Task.CompletedTask;
             }
 
-            public Task Handle(AssemblyCompleted message)
+            public Task Handle(ExecutionCompleted message)
             {
                 Messages.Add(message);
                 return Task.CompletedTask;

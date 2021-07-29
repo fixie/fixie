@@ -10,7 +10,7 @@
     using static System.Environment;
     using static Fixie.Internal.Maybe;
 
-    public class DiffToolReport : IHandler<TestFailed>, IHandler<AssemblyCompleted>
+    public class DiffToolReport : IHandler<TestFailed>, IHandler<ExecutionCompleted>
     {
         int failures;
         Exception? singleFailure;
@@ -24,7 +24,7 @@
             return Task.CompletedTask;
         }
 
-        public Task Handle(AssemblyCompleted message)
+        public Task Handle(ExecutionCompleted message)
         {
             if (singleFailure is AssertException exception)
                 if (!exception.HasCompactRepresentations)

@@ -12,26 +12,27 @@
     using static Internal.Serialization;
 
     class AppVeyorReport :
-        IHandler<AssemblyStarted>,
+        IHandler<ExecutionStarted>,
         IHandler<TestSkipped>,
         IHandler<TestPassed>,
         IHandler<TestFailed>
     {
         public delegate Task PostAction(string uri, Result result);
 
+        readonly TestEnvironment environment;
         readonly PostAction postAction;
         readonly string uri;
         string runName;
 
         static readonly HttpClient Client;
 
-        internal static AppVeyorReport? Create()
+        internal static AppVeyorReport? Create(TestEnvironment environment)
         {
             if (GetEnvironmentVariable("APPVEYOR") == "True")
             {
                 var uri = GetEnvironmentVariable("APPVEYOR_API_URL");
                 if (uri != null)
-                    return new AppVeyorReport(uri, Post);
+                    return new AppVeyorReport(environment, uri, Post);
             }
 
             return null;
@@ -43,18 +44,19 @@
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public AppVeyorReport(string uri, PostAction postAction)
+        public AppVeyorReport(TestEnvironment environment, string uri, PostAction postAction)
         {
+            this.environment = environment;
             this.postAction = postAction;
             this.uri = new Uri(new Uri(uri), "api/tests").ToString();
             runName = "Unknown";
         }
 
-        public Task Handle(AssemblyStarted message)
+        public Task Handle(ExecutionStarted message)
         {
-            runName = Path.GetFileNameWithoutExtension(message.Assembly.Location);
+            runName = Path.GetFileNameWithoutExtension(environment.Assembly.Location);
 
-            var framework = message.Assembly
+            var framework = environment.Assembly
                 .GetCustomAttribute<TargetFrameworkAttribute>()?
                 .FrameworkName;
 

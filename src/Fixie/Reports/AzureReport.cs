@@ -18,17 +18,18 @@
     using static Internal.Maybe;
 
     class AzureReport :
-        IHandler<AssemblyStarted>,
+        IHandler<ExecutionStarted>,
         IHandler<TestSkipped>,
         IHandler<TestPassed>,
         IHandler<TestFailed>,
-        IHandler<AssemblyCompleted>
+        IHandler<ExecutionCompleted>
     {
         const string AzureDevOpsRestApiVersion = "5.0";
 
         public delegate Task<string> ApiAction<in T>(HttpClient client, HttpMethod method, string uri, T content);
 
         readonly TextWriter console;
+        readonly TestEnvironment environment;
         readonly string collectionUri;
         readonly string project;
         readonly string buildId;
@@ -43,8 +44,9 @@
         readonly List<Result> batch;
         bool apiUnavailable;
 
-        internal static AzureReport? Create(TextWriter console)
+        internal static AzureReport? Create(TestEnvironment environment)
         {
+            var console = environment.Console;
             var runningUnderAzure = GetEnvironmentVariable("TF_BUILD") == "True";
 
             if (runningUnderAzure)
@@ -60,7 +62,7 @@
                         && TryGetEnvironmentVariable("BUILD_BUILDID", console, out var buildId))
                     {
                         return new AzureReport(
-                            console,
+                            environment,
                             collectionUri,
                             project,
                             accessToken,
@@ -108,7 +110,7 @@
         }
 
         public AzureReport(
-            TextWriter console,
+            TestEnvironment environment,
             string collectionUri,
             string project,
             string accessToken,
@@ -118,7 +120,8 @@
             ApiAction<CompleteRun> sendCompleteRun,
             int batchSize)
         {
-            this.console = console;
+            this.environment = environment;
+            console = environment.Console;
             this.collectionUri = collectionUri;
             this.project = project;
             this.buildId = buildId;
@@ -134,11 +137,11 @@
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         }
 
-        public async Task Handle(AssemblyStarted message)
+        public async Task Handle(ExecutionStarted message)
         {
-            var runName = Path.GetFileNameWithoutExtension(message.Assembly.Location);
+            var runName = Path.GetFileNameWithoutExtension(environment.Assembly.Location);
 
-            var framework = message.Assembly
+            var framework = environment.Assembly
                 .GetCustomAttribute<TargetFrameworkAttribute>()?
                 .FrameworkName;
 
@@ -185,7 +188,7 @@
             });
         }
 
-        public async Task Handle(AssemblyCompleted message)
+        public async Task Handle(ExecutionCompleted message)
         {
             if (apiUnavailable) return;
 

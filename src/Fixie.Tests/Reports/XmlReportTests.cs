@@ -14,8 +14,10 @@
     {
         public async Task ShouldProduceValidXmlDocument()
         {
+            var environment = GetTestEnvironment();
+
             XDocument? actual = null;
-            var report = new XmlReport(document => actual = document);
+            var report = new XmlReport(environment, document => actual = document);
 
             var output = await Run(report);
 

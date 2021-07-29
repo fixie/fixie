@@ -11,7 +11,7 @@
     {
         public async Task ShouldReportResults()
         {
-            var output = await Run(console => new ConsoleReport(console));
+            var output = await Run(environment => new ConsoleReport(environment));
 
             output.Console
                 .NormalizeStackTraceLines()

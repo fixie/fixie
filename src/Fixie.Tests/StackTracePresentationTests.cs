@@ -136,7 +136,7 @@
 
             using var console = new RedirectedConsole();
 
-            var report = new ConsoleReport(System.Console.Out);
+            var report = new ConsoleReport(GetTestEnvironment());
             
             await Utility.Run(report, discovery, execution, typeof(TSampleTestClass));
 

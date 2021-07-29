@@ -62,18 +62,16 @@
 
         static IEnumerable<IReport> DefaultReports(TestEnvironment environment)
         {
-            TextWriter console = environment.Console;
-
-            if (Try(() => AzureReport.Create(console), out var azure))
+            if (Try(AzureReport.Create, environment, out var azure))
                 yield return azure;
 
-            if (Try(AppVeyorReport.Create, out var appVeyor))
+            if (Try(AppVeyorReport.Create, environment, out var appVeyor))
                 yield return appVeyor;
 
-            if (Try(() => TeamCityReport.Create(console), out var teamCity))
+            if (Try(TeamCityReport.Create, environment, out var teamCity))
                 yield return teamCity;
 
-            yield return ConsoleReport.Create(console);
+            yield return ConsoleReport.Create(environment);
         }
     }
 }

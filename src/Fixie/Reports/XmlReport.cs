@@ -15,15 +15,16 @@
         IHandler<TestSkipped>,
         IHandler<TestPassed>,
         IHandler<TestFailed>,
-        IHandler<AssemblyCompleted>
+        IHandler<ExecutionCompleted>
     {
+        readonly TestEnvironment environment;
         readonly Action<XDocument> save;
 
         readonly SortedDictionary<string, ClassResult> report = new SortedDictionary<string, ClassResult>();
 
         public static XmlReport Create(TestEnvironment environment, string absoluteOrRelativePath)
         {
-            return new XmlReport(SaveReport(environment, absoluteOrRelativePath));
+            return new XmlReport(environment, SaveReport(environment, absoluteOrRelativePath));
         }
 
         static Action<XDocument> SaveReport(TestEnvironment environment, string absoluteOrRelativePath)
@@ -36,8 +37,9 @@
             return Path.Combine(environment.RootPath, absoluteOrRelativePath);
         }
 
-        internal XmlReport(Action<XDocument> save)
+        internal XmlReport(TestEnvironment environment, Action<XDocument> save)
         {
+            this.environment = environment;
             this.save = save;
         }
 
@@ -69,14 +71,14 @@
             return report[type];
         }
 
-        public Task Handle(AssemblyCompleted message)
+        public Task Handle(ExecutionCompleted message)
         {
             var now = DateTime.UtcNow;
 
             save(new XDocument(
                 new XElement("assemblies",
                     new XElement("assembly",
-                        new XAttribute("name", message.Assembly.Location),
+                        new XAttribute("name", environment.Assembly.Location),
                         new XAttribute("run-date", now.ToString("yyyy-MM-dd")),
                         new XAttribute("run-time", now.ToString("HH:mm:ss")),
                         new XAttribute("time", Seconds(message.Duration)),

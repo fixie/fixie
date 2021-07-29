@@ -16,24 +16,24 @@
 
             await Run(report, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
-            report.AssemblySummary.Count.ShouldBe(1);
+            report.ExecutionCompletions.Count.ShouldBe(1);
 
-            var assembly = report.AssemblySummary[0];
+            var executionCompleted = report.ExecutionCompletions[0];
 
-            assembly.Passed.ShouldBe(2);
-            assembly.Failed.ShouldBe(3);
-            assembly.Skipped.ShouldBe(4);
-            assembly.Total.ShouldBe(9);
+            executionCompleted.Passed.ShouldBe(2);
+            executionCompleted.Failed.ShouldBe(3);
+            executionCompleted.Skipped.ShouldBe(4);
+            executionCompleted.Total.ShouldBe(9);
         }
 
         class StubExecutionSummaryReport :
-            IHandler<AssemblyCompleted>
+            IHandler<ExecutionCompleted>
         {
-            public List<AssemblyCompleted> AssemblySummary { get; } = new List<AssemblyCompleted>();
+            public List<ExecutionCompleted> ExecutionCompletions { get; } = new List<ExecutionCompleted>();
 
-            public Task Handle(AssemblyCompleted message)
+            public Task Handle(ExecutionCompleted message)
             {
-                AssemblySummary.Add(message);
+                ExecutionCompletions.Add(message);
                 return Task.CompletedTask;
             }
         }

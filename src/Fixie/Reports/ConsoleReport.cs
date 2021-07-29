@@ -11,18 +11,18 @@
         IHandler<TestSkipped>,
         IHandler<TestPassed>,
         IHandler<TestFailed>,
-        IHandler<AssemblyCompleted>
+        IHandler<ExecutionCompleted>
     {
         readonly TextWriter console;
         readonly bool outputTestPassed;
         bool paddingWouldRequireOpeningBlankLine;
 
-        internal static ConsoleReport Create(TextWriter console)
-            => new ConsoleReport(console, GetEnvironmentVariable("FIXIE:TESTS_PATTERN") != null);
+        internal static ConsoleReport Create(TestEnvironment environment)
+            => new ConsoleReport(environment, GetEnvironmentVariable("FIXIE:TESTS_PATTERN") != null);
 
-        public ConsoleReport(TextWriter console, bool outputTestPassed = false)
+        public ConsoleReport(TestEnvironment environment, bool outputTestPassed = false)
         {
-            this.console = console;
+            console = environment.Console;
             this.outputTestPassed = outputTestPassed;
         }
 
@@ -86,7 +86,7 @@
             paddingWouldRequireOpeningBlankLine = true;
         }
 
-        public Task Handle(AssemblyCompleted message)
+        public Task Handle(ExecutionCompleted message)
         {
             console.WriteLine(Summarize(message));
             console.WriteLine();
@@ -94,7 +94,7 @@
             return Task.CompletedTask;
         }
 
-        static string Summarize(AssemblyCompleted message)
+        static string Summarize(ExecutionCompleted message)
         {
             if (message.Total == 0)
                 return "No tests found.";

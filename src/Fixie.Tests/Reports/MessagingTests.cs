@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Tests.Reports
 {
     using System;
-    using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
@@ -57,18 +56,18 @@
             return Run(_ => report, discovery);
         }
 
-        protected Task<Output> Run(Func<TextWriter, IReport> getReport)
+        protected Task<Output> Run(Func<TestEnvironment, IReport> getReport)
         {
             return Run(getReport, new SelfTestDiscovery());
         }
 
-        protected async Task<Output> Run(Func<TextWriter, IReport> getReport, IDiscovery discovery)
+        protected async Task<Output> Run(Func<TestEnvironment, IReport> getReport, IDiscovery discovery)
         {
             var execution = new MessagingTestsExecution();
 
             using var console = new RedirectedConsole();
 
-            await Utility.Run(getReport(Console.Out), discovery, execution, candidateTypes);
+            await Utility.Run(getReport(GetTestEnvironment()), discovery, execution, candidateTypes);
 
             return new Output(console.Lines().ToArray());
         }

@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Assertions;
     using Fixie.Reports;
+    using static Utility;
 
     public class AppVeyorReportTests : MessagingTests
     {
@@ -11,7 +12,7 @@
         {
             var results = new List<AppVeyorReport.Result>();
 
-            var report = new AppVeyorReport("http://localhost:4567", (uri, content) =>
+            var report = new AppVeyorReport(GetTestEnvironment(), "http://localhost:4567", (uri, content) =>
             {
                 uri.ShouldBe("http://localhost:4567/api/tests");
                 results.Add(content);

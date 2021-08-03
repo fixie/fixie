@@ -16,7 +16,7 @@
       <group targetFramework="netcoreapp3.1">
         <dependency id="Fixie" version="[$version$]" />
         <dependency id="Mono.Cecil" version="0.11.3" />
-        <dependency id="Microsoft.TestPlatform.TestHost" version="16.10.0" />
+        <dependency id="Microsoft.NET.Test.Sdk" version="16.10.0" />
       </group>
     </dependencies>
   </metadata>

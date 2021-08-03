@@ -2,6 +2,7 @@
 <Project>
 
   <PropertyGroup>
+    <TestProject>true</TestProject>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 

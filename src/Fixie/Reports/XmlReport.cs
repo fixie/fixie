@@ -22,9 +22,9 @@
 
         readonly SortedDictionary<string, ClassResult> report = new SortedDictionary<string, ClassResult>();
 
-        public static XmlReport Create(TestEnvironment environment, string absoluteOrRelativePath)
+        public XmlReport(TestEnvironment environment, string absoluteOrRelativePath)
+            : this(environment, SaveReport(environment, absoluteOrRelativePath))
         {
-            return new XmlReport(environment, SaveReport(environment, absoluteOrRelativePath));
         }
 
         static Action<XDocument> SaveReport(TestEnvironment environment, string absoluteOrRelativePath)

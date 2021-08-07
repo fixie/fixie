@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
+    using System.Runtime.Versioning;
     using static System.Environment;
 
     public class TestEnvironment
@@ -24,6 +25,14 @@
         /// The test assembly being executed.
         /// </summary>
         public Assembly Assembly { get; }
+
+        /// <summary>
+        /// Identifies the target framework value that the test assembly was compiled against.
+        /// </summary>
+        public string? TargetFramework
+            => Assembly
+                .GetCustomAttribute<TargetFrameworkAttribute>()?
+                .FrameworkName;
 
         /// <summary>
         /// Optional custom command line arguments provided to the test runner.

@@ -4,8 +4,6 @@
     using System.IO;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using System.Reflection;
-    using System.Runtime.Versioning;
     using System.Text;
     using System.Threading.Tasks;
     using static System.Environment;
@@ -56,9 +54,7 @@
         {
             runName = Path.GetFileNameWithoutExtension(environment.Assembly.Location);
 
-            var framework = environment.Assembly
-                .GetCustomAttribute<TargetFrameworkAttribute>()?
-                .FrameworkName;
+            var framework = environment.TargetFramework;
 
             if (!string.IsNullOrEmpty(framework))
                 runName = $"{runName} ({framework})";

@@ -86,7 +86,7 @@
                         new XAttribute("passed", message.Passed),
                         new XAttribute("failed", message.Failed),
                         new XAttribute("skipped", message.Skipped),
-                        new XAttribute("environment", $"{IntPtr.Size * 8}-bit .NET {Framework}"),
+                        new XAttribute("environment", $"{IntPtr.Size * 8}-bit {environment.TargetFramework}"),
                         new XAttribute("test-framework", Internal.Framework.Version),
                         report.Values.Select(x => x.ToElement())))));
 
@@ -94,8 +94,6 @@
 
             return Task.CompletedTask;
         }
-
-        static string Framework => Environment.Version.ToString();
 
         static string Seconds(TimeSpan duration)
         {

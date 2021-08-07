@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <assemblies>
-<assembly name="[assemblyLocation]" run-date="YYYY-MM-DD" run-time="HH:MM:SS" time="1.234" total="7" passed="3" failed="3" skipped="1" environment="00-bit .NET 1.2.3.4" test-framework="Fixie 1.2.3.4">
+<assembly name="[assemblyLocation]" run-date="YYYY-MM-DD" run-time="HH:MM:SS" time="1.234" total="7" passed="3" failed="3" skipped="1" environment="00-bit .NETCoreApp,Version=vX.Y" test-framework="Fixie 1.2.3.4">
   <collection time="1.234" name="[genericTestClass]" total="3" passed="2" failed="1" skipped="0">
     <test name="[genericTestClass].ShouldBeString&lt;System.String&gt;(&quot;A&quot;)" type="[genericTestClass]" method="ShouldBeString" result="Pass" time="1.234" />
     <test name="[genericTestClass].ShouldBeString&lt;System.String&gt;(&quot;B&quot;)" type="[genericTestClass]" method="ShouldBeString" result="Pass" time="1.234" />

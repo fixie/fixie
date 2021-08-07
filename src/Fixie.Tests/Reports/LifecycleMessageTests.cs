@@ -32,7 +32,7 @@
             var shouldBeStringFail = (TestFailed)report.Messages[13];
             var executionCompleted = (ExecutionCompleted)report.Messages[14];
 
-            (executionStarted != null).ShouldBe(true);
+            executionStarted.ShouldNotBeNull();
             
             passStarted.Test.ShouldBe(TestClass + ".Pass");
 

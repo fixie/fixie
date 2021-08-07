@@ -2,6 +2,7 @@ namespace Fixie.Tests.Assertions
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text.Json;
     using System.Text.Json.Serialization;
@@ -130,6 +131,12 @@ namespace Fixie.Tests.Assertions
             actual.IsGenericParameter.ShouldBe(true);
             actual.FullName.ShouldBe(null);
             actual.Name.ShouldBe(expectedName);
+        }
+
+        public static void ShouldNotBeNull([NotNull] this object? actual)
+        {
+            if (actual == null)
+                throw new AssertException("not null", "null");
         }
 
         static string Json<T>(T @object)

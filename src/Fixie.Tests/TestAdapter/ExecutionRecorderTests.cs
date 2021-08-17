@@ -2,31 +2,25 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Assertions;
+    using Fixie.Reports;
     using Reports;
     using static System.Environment;
 
-    public class ExecutionReportTests : MessagingTests
+    public class ExecutionRecorderTests : MessagingTests
     {
-        public async Task ShouldMapMessagesToVsTestExecutionRecorder()
+        public void ShouldMapMessagesToVsTestExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
-            var report = new ExecutionReport(recorder, assemblyPath);
+            var executionRecorder = new ExecutionRecorder(recorder, assemblyPath);
 
-            var output = await Run(report);
-
-            output.Console
-                .ShouldBe(
-                    "Standard Out: Fail",
-                    "Standard Out: FailByAssertion",
-                    "Standard Out: Pass");
+            RecordAnticipatedPipeMessages(executionRecorder);
 
             var messages = recorder.Messages;
 
@@ -158,6 +152,114 @@
             shouldBeStringFail.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.Int32>(123)");
             shouldBeStringFail.Messages.ShouldBeEmpty();
             shouldBeStringFail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+        }
+
+        void RecordAnticipatedPipeMessages(ExecutionRecorder executionRecorder)
+        {
+            executionRecorder.Record(new PipeMessage.TestStarted
+            {
+                Test = TestClass + ".Fail"
+            });
+
+            executionRecorder.Record(new PipeMessage.TestFailed
+            {
+                Test = TestClass + ".Fail",
+                TestCase = TestClass + ".Fail",
+                Duration = TimeSpan.FromSeconds(2),
+                Output = "Standard Out: Fail",
+                Reason = new PipeMessage.Exception
+                {
+                    Type = "Fixie.Tests.FailureException",
+                    Message = "'Fail' failed!",
+                    StackTrace = At("Fail()")
+                }
+            });
+
+            executionRecorder.Record(new PipeMessage.TestStarted
+            {
+                Test = TestClass + ".FailByAssertion"
+            });
+
+            executionRecorder.Record(new PipeMessage.TestFailed
+            {
+                Test = TestClass + ".FailByAssertion",
+                TestCase = TestClass + ".FailByAssertion",
+                Duration = TimeSpan.FromSeconds(2),
+                Output = "Standard Out: FailByAssertion",
+                Reason = new PipeMessage.Exception
+                {
+                    Type = "Fixie.Tests.Assertions.AssertException",
+                    Message = "Expected: 2" + NewLine + "Actual:   1",
+                    StackTrace = At("FailByAssertion()")
+                }
+            });
+            
+            executionRecorder.Record(new PipeMessage.TestStarted
+            {
+                Test = TestClass + ".Pass"
+            });
+            
+            executionRecorder.Record(new PipeMessage.TestPassed
+            {
+                Test = TestClass+".Pass",
+                TestCase = TestClass+".Pass",
+                Duration = TimeSpan.FromSeconds(1),
+                Output = "Standard Out: Pass"
+            });
+
+            executionRecorder.Record(new PipeMessage.TestSkipped
+            {
+                Test =TestClass+".Skip",
+                TestCase = TestClass+".Skip",
+                Duration = TimeSpan.Zero,
+                Output = "",
+                Reason = "⚠ Skipped with attribute."
+            });
+            
+            executionRecorder.Record(new PipeMessage.TestStarted
+            {
+                Test = GenericTestClass + ".ShouldBeString"
+            });
+            
+            executionRecorder.Record(new PipeMessage.TestPassed
+            {
+                Test = GenericTestClass+".ShouldBeString",
+                TestCase = GenericTestClass+".ShouldBeString<System.String>(\"A\")",
+                Duration = TimeSpan.FromSeconds(1),
+                Output = ""
+            });
+            
+            executionRecorder.Record(new PipeMessage.TestStarted
+            {
+                Test = GenericTestClass + ".ShouldBeString"
+            });
+            
+            executionRecorder.Record(new PipeMessage.TestPassed
+            {
+                Test = GenericTestClass+".ShouldBeString",
+                TestCase = GenericTestClass+".ShouldBeString<System.String>(\"B\")",
+                Duration = TimeSpan.FromSeconds(1),
+                Output = ""
+            });
+            
+            executionRecorder.Record(new PipeMessage.TestStarted
+            {
+                Test = GenericTestClass + ".ShouldBeString"
+            });
+            
+            executionRecorder.Record(new PipeMessage.TestFailed
+            {
+                Test = GenericTestClass+".ShouldBeString",
+                TestCase = GenericTestClass+".ShouldBeString<System.Int32>(123)",
+                Duration = TimeSpan.FromSeconds(2),
+                Output = "",
+                Reason = new PipeMessage.Exception
+                {
+                    Type = "Fixie.Tests.Assertions.AssertException",
+                    Message = "Expected: System.String" + NewLine + "Actual:   System.Int32",
+                    StackTrace = At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
+                }
+            });
         }
 
         class StubExecutionRecorder : ITestExecutionRecorder

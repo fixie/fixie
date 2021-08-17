@@ -2,25 +2,29 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.IO;
+    using System.IO.Pipes;
     using System.Linq;
-    using System.Reflection;
-    using Internal;
+    using Reports;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using static AssemblyPath;
+    using static TestAssembly;
 
     [ExtensionUri(Id)]
-    class VsTestExecutor : ITestExecutor
+    public class VsTestExecutor : ITestExecutor
     {
         public const string Id = "executor://fixie.testadapter/";
         public static readonly Uri Uri = new Uri(Id);
 
         /// <summary>
-        /// Called when running all tests.
+        /// Called by the IDE, when running all tests.
+        /// Called by Azure DevOps, when running all tests.
+        /// Called by Azure DevOps, with a filter within the run context, when running selected tests.
         /// </summary>
+        /// <param name="sources"></param>
+        /// <param name="runContext"></param>
+        /// <param name="frameworkHandle"></param>
         public void RunTests(IEnumerable<string> sources, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             try
@@ -31,11 +35,13 @@
 
                 HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
+                var runAllTests = new PipeMessage.ExecuteTests
+                {
+                    Filter = new string[] { }
+                };
+
                 foreach (var assemblyPath in sources)
-                    RunTests(log, frameworkHandle, assemblyPath, runner =>
-                    {
-                        runner.Run().GetAwaiter().GetResult();
-                    });
+                    RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
             }
             catch (Exception exception)
             {
@@ -44,8 +50,12 @@
         }
 
         /// <summary>
-        /// Called when running selected tests.
+        /// Called by the IDE, when running selected tests.
+        /// Never called from Azure DevOps.
         /// </summary>
+        /// <param name="tests"></param>
+        /// <param name="runContext"></param>
+        /// <param name="frameworkHandle"></param>
         public void RunTests(IEnumerable<TestCase> tests, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             try
@@ -62,12 +72,12 @@
                 {
                     var assemblyPath = assemblyGroup.Key;
 
-                    RunTests(log, frameworkHandle, assemblyPath, runner =>
+                    RunTests(log, frameworkHandle, assemblyPath, pipe =>
                     {
-                        var selectedTests =
-                            assemblyGroup.Select(x => x.FullyQualifiedName).ToImmutableHashSet();
-                        
-                        runner.Run(selectedTests).GetAwaiter().GetResult();
+                        pipe.Send(new PipeMessage.ExecuteTests
+                        {
+                            Filter = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
+                        });
                     });
                 }
             }
@@ -79,7 +89,7 @@
 
         public void Cancel() { }
 
-        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<Runner> run)
+        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<NamedPipeServerStream> sendCommand)
         {
             if (!IsTestAssembly(assemblyPath))
             {
@@ -89,21 +99,78 @@
 
             log.Info("Processing " + assemblyPath);
 
-            Directory.SetCurrentDirectory(FolderPath(assemblyPath));
-            var assemblyName = new AssemblyName(Path.GetFileNameWithoutExtension(assemblyPath));
-            var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
-            var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
-            var report = new ExecutionReport(frameworkHandle, assemblyPath);
-            
-            var console = Console.Out;
-            var rootPath = Directory.GetCurrentDirectory();
-            var environment = new TestEnvironment(assembly, console, rootPath);
+            var pipeName = Guid.NewGuid().ToString();
+            Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
 
-            using var boundary = new ConsoleRedirectionBoundary();
+            using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+            using (var process = Start(assemblyPath, frameworkHandle))
+            {
+                pipe.WaitForConnection();
 
-            var runner = new Runner(environment, report);
+                sendCommand(pipe);
 
-            run(runner);
+                var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
+
+                PipeMessage.TestStarted? lastTestStarted = null;
+
+                while (true)
+                {
+                    var messageType = pipe.ReceiveMessage();
+
+                    if (messageType == typeof(PipeMessage.TestStarted).FullName)
+                    {
+                        var message = pipe.Receive<PipeMessage.TestStarted>();
+                        lastTestStarted = message;
+                        recorder.Record(message);
+                    }
+                    else if (messageType == typeof(PipeMessage.TestSkipped).FullName)
+                    {
+                        var testResult = pipe.Receive<PipeMessage.TestSkipped>();
+                        recorder.Record(testResult);
+                    }
+                    else if (messageType == typeof(PipeMessage.TestPassed).FullName)
+                    {
+                        var testResult = pipe.Receive<PipeMessage.TestPassed>();
+                        recorder.Record(testResult);
+                    }
+                    else if (messageType == typeof(PipeMessage.TestFailed).FullName)
+                    {
+                        var testResult = pipe.Receive<PipeMessage.TestFailed>();
+                        recorder.Record(testResult);
+                    }
+                    else if (messageType == typeof(PipeMessage.Exception).FullName)
+                    {
+                        var exception = pipe.Receive<PipeMessage.Exception>();
+                        throw new RunnerException(exception);
+                    }
+                    else if (messageType == typeof(PipeMessage.Completed).FullName)
+                    {
+                        var completed = pipe.Receive<PipeMessage.Completed>();
+                        break;
+                    }
+                    else if (!string.IsNullOrEmpty(messageType))
+                    {
+                        var body = pipe.ReceiveMessage();
+                        log.Error($"The test runner received an unexpected message of type {messageType}: {body}");
+                    }
+                    else
+                    {
+                        var exception = new TestProcessExitException(process.TryGetExitCode());
+
+                        if (lastTestStarted != null)
+                        {
+                            recorder.Record(new PipeMessage.TestFailed
+                            {
+                                Test = lastTestStarted.Test,
+                                TestCase = lastTestStarted.Test,
+                                Reason = new PipeMessage.Exception(exception)
+                            });
+                        }
+
+                        throw exception;
+                    }
+                }
+            }
         }
 
         static void HandlePoorVsTestImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)

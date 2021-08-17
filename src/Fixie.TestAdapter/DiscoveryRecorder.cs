@@ -1,20 +1,19 @@
 ﻿namespace Fixie.TestAdapter
 {
     using System;
-    using System.Threading.Tasks;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Reports;
 
-    class DiscoveryReport : IHandler<TestDiscovered>
+    class DiscoveryRecorder
     {
         readonly IMessageLogger log;
         readonly ITestCaseDiscoverySink discoverySink;
         readonly string assemblyPath;
         readonly SourceLocationProvider sourceLocationProvider;
 
-        public DiscoveryReport(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)
+        public DiscoveryRecorder(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)
         {
             this.log = log;
             this.discoverySink = discoverySink;
@@ -23,9 +22,9 @@
             sourceLocationProvider = new SourceLocationProvider(assemblyPath);
         }
 
-        public Task Handle(TestDiscovered message)
+        public void Record(PipeMessage.TestDiscovered testDiscovered)
         {
-            var test = message.Test;
+            var test = testDiscovered.Test;
 
             SourceLocation? sourceLocation = null;
 
@@ -50,8 +49,6 @@
             }
 
             discoverySink.SendTestCase(discoveredTest);
-
-            return Task.CompletedTask;
         }
     }
 }

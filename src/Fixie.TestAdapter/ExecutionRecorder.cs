@@ -1,72 +1,59 @@
 ﻿namespace Fixie.TestAdapter
 {
     using System;
-    using System.Threading.Tasks;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Reports;
     using static System.Environment;
 
-    class ExecutionReport :
-        IHandler<TestStarted>,
-        IHandler<TestSkipped>,
-        IHandler<TestPassed>,
-        IHandler<TestFailed>
+    public class ExecutionRecorder
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
 
-        public ExecutionReport(ITestExecutionRecorder log, string assemblyPath)
+        public ExecutionRecorder(ITestExecutionRecorder log, string assemblyPath)
         {
             this.log = log;
             this.assemblyPath = assemblyPath;
         }
 
-        public Task Handle(TestStarted message)
+        public void Record(PipeMessage.TestStarted message)
         {
             var testCase = ToVsTestCase(message.Test);
 
             log.RecordStart(testCase);
-            
-            return Task.CompletedTask;
         }
 
-        public Task Handle(TestSkipped message)
+        public void Record(PipeMessage.TestSkipped result)
         {
-            Record(message, x =>
+            Record(result, x =>
             {
                 x.Outcome = TestOutcome.Skipped;
-                x.ErrorMessage = message.Reason;
+                x.ErrorMessage = result.Reason;
             });
-            
-            return Task.CompletedTask;
         }
 
-        public Task Handle(TestPassed message)
+        public void Record(PipeMessage.TestPassed result)
         {
-            Record(message, x =>
+            Record(result, x =>
             {
                 x.Outcome = TestOutcome.Passed;
             });
-
-            return Task.CompletedTask;
         }
 
-        public Task Handle(TestFailed message)
+        public void Record(PipeMessage.TestFailed result)
         {
-            Record(message, x =>
+            Record(result, x =>
             {
                 x.Outcome = TestOutcome.Failed;
-                x.ErrorMessage = message.Reason.Message;
-                x.ErrorStackTrace = message.Reason.GetType().FullName +
+                x.ErrorMessage = result.Reason.Message;
+                x.ErrorStackTrace = result.Reason.Type +
                                     NewLine +
-                                    message.Reason.LiterateStackTrace();
+                                    result.Reason.StackTrace;
             });
-            
-            return Task.CompletedTask;
         }
 
-        void Record(TestCompleted result, Action<TestResult> customize)
+        void Record(PipeMessage.TestCompleted result, Action<TestResult>? customize = null)
         {
             var testCase = ToVsTestCase(result.Test);
 
@@ -77,16 +64,16 @@
                 ComputerName = MachineName
             };
 
-            customize(testResult);
+            customize?.Invoke(testResult);
 
             AttachCapturedConsoleOutput(result.Output, testResult);
 
             log.RecordResult(testResult);
         }
 
-        TestCase ToVsTestCase(string fullyQualifiedName)
+        TestCase ToVsTestCase(string test)
         {
-            return new TestCase(fullyQualifiedName, VsTestExecutor.Uri, assemblyPath);
+            return new TestCase(test, VsTestExecutor.Uri, assemblyPath);
         }
 
         static void AttachCapturedConsoleOutput(string output, TestResult testResult)

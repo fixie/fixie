@@ -7,7 +7,6 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Reports;
-    using static AssemblyPath;
     using static TestAssembly;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]

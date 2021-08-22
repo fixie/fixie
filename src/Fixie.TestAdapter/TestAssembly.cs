@@ -11,6 +11,24 @@ namespace Fixie.TestAdapter
 
     static class TestAssembly
     {
+        public static bool IsTestAssembly(string assemblyPath)
+        {
+            var fixieAssemblies = new[]
+            {
+                "Fixie.dll", "Fixie.TestAdapter.dll"
+            };
+
+            if (fixieAssemblies.Contains(Path.GetFileName(assemblyPath)))
+                return false;
+
+            return File.Exists(Path.Combine(FolderPath(assemblyPath), "Fixie.dll"));
+        }
+
+        static string FolderPath(string assemblyPath)
+        {
+            return new FileInfo(assemblyPath).Directory!.FullName;
+        }
+
         public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle = null)
         {
             var assemblyFullPath = Path.GetFullPath(assemblyPath);

@@ -3,7 +3,7 @@
     using System;
     using System.Threading.Tasks;
 
-    public class PipeReport :
+    public class TestAdapterReport :
         IHandler<TestDiscovered>,
         IHandler<TestStarted>,
         IHandler<TestSkipped>,
@@ -12,7 +12,7 @@
     {
         readonly TestAdapterPipe pipe;
 
-        public PipeReport(TestAdapterPipe pipe)
+        public TestAdapterReport(TestAdapterPipe pipe)
         {
             this.pipe = pipe;
         }

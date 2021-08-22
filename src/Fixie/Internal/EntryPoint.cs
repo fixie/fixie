@@ -50,7 +50,7 @@
                 pipeStream.Connect();
                 pipeStream.ReadMode = PipeTransmissionMode.Byte;
                 
-                var pipeReport = new PipeReport(pipe);
+                var testAdapterReport = new TestAdapterReport(pipe);
 
                 var exitCode = ExitCode.Success;
 
@@ -61,13 +61,13 @@
                     if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
                     {
                         var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
-                        await DiscoverMethods(environment, pipeReport);
+                        await DiscoverMethods(environment, testAdapterReport);
                     }
                     else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
                     {
                         var executeTests = pipe.Receive<PipeMessage.ExecuteTests>();
 
-                        var reports = new IReport[] { pipeReport };
+                        var reports = new IReport[] { testAdapterReport };
 
                         exitCode = executeTests.Filter.Length == 0
                             ? await Run(environment, reports, async runner => await runner.Run())
@@ -99,9 +99,9 @@
             }
         }
 
-        static async Task DiscoverMethods(TestEnvironment environment, PipeReport pipeReport)
+        static async Task DiscoverMethods(TestEnvironment environment, TestAdapterReport testAdapterReport)
         {
-            var runner = new Runner(environment, pipeReport);
+            var runner = new Runner(environment, testAdapterReport);
             await runner.Discover();
         }
 

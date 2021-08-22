@@ -162,7 +162,9 @@
                             {
                                 Test = lastTestStarted.Test,
                                 TestCase = lastTestStarted.Test,
-                                Reason = new PipeMessage.Exception(exception)
+                                Reason = new PipeMessage.Exception(exception),
+                                Duration = TimeSpan.Zero,
+                                Output = ""
                             });
                         }
 

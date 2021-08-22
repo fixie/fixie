@@ -2,6 +2,12 @@
 {
     using System;
 
+    /*
+     * Nullability hints here are informed by usages. Although these types are serialized and deserialized
+     * to and from JSON, and in theory could be null upon deserialization, we can trace all real
+     * deserialization from corresponding serialization where no nulls are in play.
+     */
+
     public static class PipeMessage
     {
         public class DiscoverTests { }

@@ -44,17 +44,19 @@
                         : (int) await Run(environment, reports, async runner => await runner.Run(new TestPattern(pattern)));
                 }
 
-                using var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
-                var pipeReport = new PipeReport(pipe);
+                using var pipeStream = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
+                using var pipe = new TestAdapterPipe(pipeStream);
 
-                pipe.Connect();
-                pipe.ReadMode = PipeTransmissionMode.Message;
+                pipeStream.Connect();
+                pipeStream.ReadMode = PipeTransmissionMode.Byte;
+                
+                var pipeReport = new PipeReport(pipe);
 
                 var exitCode = ExitCode.Success;
 
                 try
                 {
-                    var messageType = pipe.ReceiveMessage();
+                    var messageType = pipe.ReceiveMessageType();
 
                     if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
                     {
@@ -73,7 +75,7 @@
                     }
                     else
                     {
-                        var body = pipe.ReceiveMessage();
+                        var body = pipe.ReceiveMessageBody();
                         throw new Exception($"Test assembly received unexpected message of type {messageType}: {body}");
                     }
                 }

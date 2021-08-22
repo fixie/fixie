@@ -1,7 +1,6 @@
 ﻿namespace Fixie.Reports
 {
     using System;
-    using System.IO.Pipes;
     using System.Threading.Tasks;
 
     public class PipeReport :
@@ -11,9 +10,9 @@
         IHandler<TestPassed>,
         IHandler<TestFailed>
     {
-        readonly NamedPipeClientStream pipe;
+        readonly TestAdapterPipe pipe;
 
-        public PipeReport(NamedPipeClientStream pipe)
+        public PipeReport(TestAdapterPipe pipe)
         {
             this.pipe = pipe;
         }

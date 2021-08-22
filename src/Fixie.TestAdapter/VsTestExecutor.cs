@@ -88,7 +88,7 @@
 
         public void Cancel() { }
 
-        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<NamedPipeServerStream> sendCommand)
+        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<TestAdapterPipe> sendCommand)
         {
             if (!IsTestAssembly(assemblyPath))
             {
@@ -101,10 +101,11 @@
             var pipeName = Guid.NewGuid().ToString();
             Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
 
-            using (var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message))
+            using (var pipeStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte))
+            using (var pipe = new TestAdapterPipe(pipeStream))
             using (var process = Start(assemblyPath, frameworkHandle))
             {
-                pipe.WaitForConnection();
+                pipeStream.WaitForConnection();
 
                 sendCommand(pipe);
 
@@ -114,7 +115,7 @@
 
                 while (true)
                 {
-                    var messageType = pipe.ReceiveMessage();
+                    var messageType = pipe.ReceiveMessageType();
 
                     if (messageType == typeof(PipeMessage.TestStarted).FullName)
                     {
@@ -149,7 +150,7 @@
                     }
                     else if (!string.IsNullOrEmpty(messageType))
                     {
-                        var body = pipe.ReceiveMessage();
+                        var body = pipe.ReceiveMessageBody();
                         log.Error($"The test runner received an unexpected message of type {messageType}: {body}");
                     }
                     else

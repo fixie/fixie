@@ -142,9 +142,9 @@
                         var exception = pipe.Receive<PipeMessage.Exception>();
                         throw new RunnerException(exception);
                     }
-                    else if (messageType == typeof(PipeMessage.Completed).FullName)
+                    else if (messageType == typeof(PipeMessage.EndOfPipe).FullName)
                     {
-                        var completed = pipe.Receive<PipeMessage.Completed>();
+                        var endOfPipe = pipe.Receive<PipeMessage.EndOfPipe>();
                         break;
                     }
                     else if (!string.IsNullOrEmpty(messageType))

@@ -83,7 +83,7 @@
                 }
                 finally
                 {
-                    pipe.Send<PipeMessage.Completed>();
+                    pipe.Send<PipeMessage.EndOfPipe>();
                 }
 
                 return (int)exitCode;

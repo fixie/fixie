@@ -1,7 +1,5 @@
 ﻿namespace Fixie.Reports
 {
-    using System;
-
     /*
      * Nullability hints here are informed by usages. Although these types are serialized and deserialized
      * to and from JSON, and in theory could be null upon deserialization, we can trace all real
@@ -67,6 +65,6 @@
             public string StackTrace { get; set; } = default!;
         }
 
-        public class Completed { }
+        public class EndOfPipe { }
     }
 }

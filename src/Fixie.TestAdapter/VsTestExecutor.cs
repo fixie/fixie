@@ -108,7 +108,7 @@
 
                 sendCommand(pipe);
 
-                var recorder = new ExecutionRecorder(frameworkHandle, assemblyPath);
+                var recorder = new VsExecutionRecorder(frameworkHandle, assemblyPath);
 
                 PipeMessage.TestStarted? lastTestStarted = null;
 

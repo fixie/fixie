@@ -11,7 +11,7 @@
     using Reports;
     using static System.IO.Directory;
 
-    public class DiscoveryRecorderTests : MessagingTests
+    public class VsDiscoveryRecorderTests : MessagingTests
     {
         public void ShouldMapDiscoveredTestsToVsTestDiscoverySink()
         {
@@ -20,9 +20,9 @@
             var log = new StubMessageLogger();
             var discoverySink = new StubTestCaseDiscoverySink();
 
-            var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
+            var vsDiscoveryRecorder = new VsDiscoveryRecorder(log, discoverySink, assemblyPath);
 
-            RecordAnticipatedPipeMessages(discoveryRecorder);
+            RecordAnticipatedPipeMessages(vsDiscoveryRecorder);
 
             log.Messages.ShouldBeEmpty();
 
@@ -41,7 +41,7 @@
             var log = new StubMessageLogger();
             var discoverySink = new StubTestCaseDiscoverySink();
 
-            var discoveryRecorder = new DiscoveryRecorder(log, discoverySink, invalidAssemblyPath);
+            var discoveryRecorder = new VsDiscoveryRecorder(log, discoverySink, invalidAssemblyPath);
 
             RecordAnticipatedPipeMessages(discoveryRecorder);
 
@@ -63,29 +63,29 @@
                 x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(GenericTestClass + ".ShouldBeString", invalidAssemblyPath));
         }
 
-        void RecordAnticipatedPipeMessages(DiscoveryRecorder discoveryRecorder)
+        void RecordAnticipatedPipeMessages(VsDiscoveryRecorder vsDiscoveryRecorder)
         {
-            discoveryRecorder.Record(new PipeMessage.TestDiscovered
+            vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
             {
                 Test = TestClass + ".Fail"
             });
 
-            discoveryRecorder.Record(new PipeMessage.TestDiscovered
+            vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
             {
                 Test = TestClass + ".FailByAssertion"
             });
 
-            discoveryRecorder.Record(new PipeMessage.TestDiscovered
+            vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
             {
                 Test = TestClass + ".Pass"
             });
 
-            discoveryRecorder.Record(new PipeMessage.TestDiscovered
+            vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
             {
                 Test = TestClass + ".Skip"
             });
 
-            discoveryRecorder.Record(new PipeMessage.TestDiscovered
+            vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
             {
                 Test = GenericTestClass + ".ShouldBeString"
             });

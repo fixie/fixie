@@ -6,14 +6,14 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Reports;
 
-    class DiscoveryRecorder
+    class VsDiscoveryRecorder
     {
         readonly IMessageLogger log;
         readonly ITestCaseDiscoverySink discoverySink;
         readonly string assemblyPath;
         readonly SourceLocationProvider sourceLocationProvider;
 
-        public DiscoveryRecorder(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)
+        public VsDiscoveryRecorder(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)
         {
             this.log = log;
             this.discoverySink = discoverySink;

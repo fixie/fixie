@@ -12,16 +12,16 @@
     using static System.Environment;
     using static Fixie.Internal.Serialization;
 
-    public class ExecutionRecorderTests : MessagingTests
+    public class VsExecutionRecorderTests : MessagingTests
     {
         public void ShouldMapMessagesToVsTestExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
-            var executionRecorder = new ExecutionRecorder(recorder, assemblyPath);
+            var vsExecutionRecorder = new VsExecutionRecorder(recorder, assemblyPath);
 
-            RecordAnticipatedPipeMessages(executionRecorder);
+            RecordAnticipatedPipeMessages(vsExecutionRecorder);
 
             var messages = recorder.Messages;
 
@@ -155,14 +155,14 @@
             shouldBeStringFail.Duration.ShouldBe(TimeSpan.FromMilliseconds(107));
         }
 
-        void RecordAnticipatedPipeMessages(ExecutionRecorder executionRecorder)
+        void RecordAnticipatedPipeMessages(VsExecutionRecorder vsExecutionRecorder)
         {
-            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = TestClass + ".Fail"
             }));
 
-            executionRecorder.Record(Deserialized(new PipeMessage.TestFailed
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestFailed
             {
                 Test = TestClass + ".Fail",
                 TestCase = TestClass + ".Fail",
@@ -176,12 +176,12 @@
                 }
             }));
 
-            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = TestClass + ".FailByAssertion"
             }));
 
-            executionRecorder.Record(Deserialized(new PipeMessage.TestFailed
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestFailed
             {
                 Test = TestClass + ".FailByAssertion",
                 TestCase = TestClass + ".FailByAssertion",
@@ -195,12 +195,12 @@
                 }
             }));
             
-            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = TestClass + ".Pass"
             }));
             
-            executionRecorder.Record(Deserialized(new PipeMessage.TestPassed
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestPassed
             {
                 Test = TestClass+".Pass",
                 TestCase = TestClass+".Pass",
@@ -208,7 +208,7 @@
                 Output = "Standard Out: Pass"
             }));
 
-            executionRecorder.Record(Deserialized(new PipeMessage.TestSkipped
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestSkipped
             {
                 Test =TestClass+".Skip",
                 TestCase = TestClass+".Skip",
@@ -217,12 +217,12 @@
                 Reason = "⚠ Skipped with attribute."
             }));
             
-            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = GenericTestClass + ".ShouldBeString"
             }));
             
-            executionRecorder.Record(Deserialized(new PipeMessage.TestPassed
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestPassed
             {
                 Test = GenericTestClass+".ShouldBeString",
                 TestCase = GenericTestClass+".ShouldBeString<System.String>(\"A\")",
@@ -230,12 +230,12 @@
                 Output = ""
             }));
             
-            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = GenericTestClass + ".ShouldBeString"
             }));
             
-            executionRecorder.Record(Deserialized(new PipeMessage.TestPassed
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestPassed
             {
                 Test = GenericTestClass+".ShouldBeString",
                 TestCase = GenericTestClass+".ShouldBeString<System.String>(\"B\")",
@@ -243,12 +243,12 @@
                 Output = ""
             }));
             
-            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = GenericTestClass + ".ShouldBeString"
             }));
             
-            executionRecorder.Record(Deserialized(new PipeMessage.TestFailed
+            vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestFailed
             {
                 Test = GenericTestClass+".ShouldBeString",
                 TestCase = GenericTestClass+".ShouldBeString<System.Int32>(123)",

@@ -6,12 +6,12 @@
     using Reports;
     using static System.Environment;
 
-    public class ExecutionRecorder
+    public class VsExecutionRecorder
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
 
-        public ExecutionRecorder(ITestExecutionRecorder log, string assemblyPath)
+        public VsExecutionRecorder(ITestExecutionRecorder log, string assemblyPath)
         {
             this.log = log;
             this.assemblyPath = assemblyPath;

@@ -49,7 +49,7 @@
 
                 pipe.Send<PipeMessage.DiscoverTests>();
 
-                var recorder = new DiscoveryRecorder(log, discoverySink, assemblyPath);
+                var recorder = new VsDiscoveryRecorder(log, discoverySink, assemblyPath);
 
                 while (true)
                 {

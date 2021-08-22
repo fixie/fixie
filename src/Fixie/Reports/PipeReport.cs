@@ -72,7 +72,7 @@
             {
                 Test = message.Test,
                 TestCase = message.TestCase,
-                Duration = message.Duration,
+                DurationInMilliseconds = message.Duration.TotalMilliseconds,
                 Output = message.Output
             };
 

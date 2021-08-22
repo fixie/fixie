@@ -31,7 +31,7 @@
         {
             public string Test { get; set; } = default!;
             public string TestCase { get; set; } = default!;
-            public TimeSpan Duration { get; set; }
+            public double DurationInMilliseconds { get; set; }
             public string Output { get; set; } = default!;
         }
 

@@ -60,7 +60,7 @@
             var testResult = new TestResult(testCase)
             {
                 DisplayName = result.TestCase,
-                Duration = result.Duration,
+                Duration = TimeSpan.FromMilliseconds(result.DurationInMilliseconds),
                 ComputerName = MachineName
             };
 

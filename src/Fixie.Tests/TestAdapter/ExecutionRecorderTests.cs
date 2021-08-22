@@ -10,6 +10,7 @@
     using Fixie.Reports;
     using Reports;
     using static System.Environment;
+    using static Fixie.Internal.Serialization;
 
     public class ExecutionRecorderTests : MessagingTests
     {
@@ -70,7 +71,7 @@
             fail.Messages.Count.ShouldBe(1);
             fail.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
             fail.Messages[0].Text.Lines().ShouldBe("Standard Out: Fail");
-            fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            fail.Duration.ShouldBe(TimeSpan.FromMilliseconds(102));
 
             failByAssertionStart.ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion", assemblyPath);
 
@@ -88,7 +89,7 @@
             failByAssertion.Messages.Count.ShouldBe(1);
             failByAssertion.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
             failByAssertion.Messages[0].Text.Lines().ShouldBe("Standard Out: FailByAssertion");
-            failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            failByAssertion.Duration.ShouldBe(TimeSpan.FromMilliseconds(103));
 
             passStart.ShouldBeExecutionTimeTest(TestClass + ".Pass", assemblyPath);
 
@@ -101,7 +102,7 @@
             pass.Messages.Count.ShouldBe(1);
             pass.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
             pass.Messages[0].Text.Lines().ShouldBe("Standard Out: Pass");
-            pass.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            pass.Duration.ShouldBe(TimeSpan.FromMilliseconds(104));
 
             skip.TestCase.ShouldBeExecutionTimeTest(TestClass+".Skip", assemblyPath);
             skip.TestCase.DisplayName.ShouldBe(TestClass+".Skip");
@@ -110,7 +111,7 @@
             skip.ErrorStackTrace.ShouldBe(null);
             skip.DisplayName.ShouldBe(TestClass+".Skip");
             skip.Messages.ShouldBeEmpty();
-            skip.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            skip.Duration.ShouldBe(TimeSpan.Zero);
 
             shouldBeStringPassAStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
 
@@ -121,7 +122,7 @@
             shouldBeStringPassA.ErrorStackTrace.ShouldBe(null);
             shouldBeStringPassA.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.String>(\"A\")");
             shouldBeStringPassA.Messages.ShouldBeEmpty();
-            shouldBeStringPassA.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            shouldBeStringPassA.Duration.ShouldBe(TimeSpan.FromMilliseconds(105));
 
             shouldBeStringPassBStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
 
@@ -132,7 +133,7 @@
             shouldBeStringPassB.ErrorStackTrace.ShouldBe(null);
             shouldBeStringPassB.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.String>(\"B\")");
             shouldBeStringPassB.Messages.ShouldBeEmpty();
-            shouldBeStringPassB.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            shouldBeStringPassB.Duration.ShouldBe(TimeSpan.FromMilliseconds(106));
 
 
             shouldBeStringFailStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
@@ -151,21 +152,21 @@
                     At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
             shouldBeStringFail.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.Int32>(123)");
             shouldBeStringFail.Messages.ShouldBeEmpty();
-            shouldBeStringFail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
+            shouldBeStringFail.Duration.ShouldBe(TimeSpan.FromMilliseconds(107));
         }
 
         void RecordAnticipatedPipeMessages(ExecutionRecorder executionRecorder)
         {
-            executionRecorder.Record(new PipeMessage.TestStarted
+            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = TestClass + ".Fail"
-            });
+            }));
 
-            executionRecorder.Record(new PipeMessage.TestFailed
+            executionRecorder.Record(Deserialized(new PipeMessage.TestFailed
             {
                 Test = TestClass + ".Fail",
                 TestCase = TestClass + ".Fail",
-                Duration = TimeSpan.FromSeconds(2),
+                DurationInMilliseconds = 102,
                 Output = "Standard Out: Fail",
                 Reason = new PipeMessage.Exception
                 {
@@ -173,18 +174,18 @@
                     Message = "'Fail' failed!",
                     StackTrace = At("Fail()")
                 }
-            });
+            }));
 
-            executionRecorder.Record(new PipeMessage.TestStarted
+            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = TestClass + ".FailByAssertion"
-            });
+            }));
 
-            executionRecorder.Record(new PipeMessage.TestFailed
+            executionRecorder.Record(Deserialized(new PipeMessage.TestFailed
             {
                 Test = TestClass + ".FailByAssertion",
                 TestCase = TestClass + ".FailByAssertion",
-                Duration = TimeSpan.FromSeconds(2),
+                DurationInMilliseconds = 103,
                 Output = "Standard Out: FailByAssertion",
                 Reason = new PipeMessage.Exception
                 {
@@ -192,66 +193,66 @@
                     Message = "Expected: 2" + NewLine + "Actual:   1",
                     StackTrace = At("FailByAssertion()")
                 }
-            });
+            }));
             
-            executionRecorder.Record(new PipeMessage.TestStarted
+            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = TestClass + ".Pass"
-            });
+            }));
             
-            executionRecorder.Record(new PipeMessage.TestPassed
+            executionRecorder.Record(Deserialized(new PipeMessage.TestPassed
             {
                 Test = TestClass+".Pass",
                 TestCase = TestClass+".Pass",
-                Duration = TimeSpan.FromSeconds(1),
+                DurationInMilliseconds = 104,
                 Output = "Standard Out: Pass"
-            });
+            }));
 
-            executionRecorder.Record(new PipeMessage.TestSkipped
+            executionRecorder.Record(Deserialized(new PipeMessage.TestSkipped
             {
                 Test =TestClass+".Skip",
                 TestCase = TestClass+".Skip",
-                Duration = TimeSpan.Zero,
+                DurationInMilliseconds = 0,
                 Output = "",
                 Reason = "⚠ Skipped with attribute."
-            });
+            }));
             
-            executionRecorder.Record(new PipeMessage.TestStarted
+            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = GenericTestClass + ".ShouldBeString"
-            });
+            }));
             
-            executionRecorder.Record(new PipeMessage.TestPassed
+            executionRecorder.Record(Deserialized(new PipeMessage.TestPassed
             {
                 Test = GenericTestClass+".ShouldBeString",
                 TestCase = GenericTestClass+".ShouldBeString<System.String>(\"A\")",
-                Duration = TimeSpan.FromSeconds(1),
+                DurationInMilliseconds = 105,
                 Output = ""
-            });
+            }));
             
-            executionRecorder.Record(new PipeMessage.TestStarted
+            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = GenericTestClass + ".ShouldBeString"
-            });
+            }));
             
-            executionRecorder.Record(new PipeMessage.TestPassed
+            executionRecorder.Record(Deserialized(new PipeMessage.TestPassed
             {
                 Test = GenericTestClass+".ShouldBeString",
                 TestCase = GenericTestClass+".ShouldBeString<System.String>(\"B\")",
-                Duration = TimeSpan.FromSeconds(1),
+                DurationInMilliseconds = 106,
                 Output = ""
-            });
+            }));
             
-            executionRecorder.Record(new PipeMessage.TestStarted
+            executionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = GenericTestClass + ".ShouldBeString"
-            });
+            }));
             
-            executionRecorder.Record(new PipeMessage.TestFailed
+            executionRecorder.Record(Deserialized(new PipeMessage.TestFailed
             {
                 Test = GenericTestClass+".ShouldBeString",
                 TestCase = GenericTestClass+".ShouldBeString<System.Int32>(123)",
-                Duration = TimeSpan.FromSeconds(2),
+                DurationInMilliseconds = 107,
                 Output = "",
                 Reason = new PipeMessage.Exception
                 {
@@ -259,7 +260,17 @@
                     Message = "Expected: System.String" + NewLine + "Actual:   System.Int32",
                     StackTrace = At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
                 }
-            });
+            }));
+        }
+
+        static T Deserialized<T>(T original)
+        {
+            // Because the inter-process communication between the VsTest process
+            // and the test assembly process is not exercised in these single-process
+            // tests, put a given sample message through the same serialization round
+            // trip that would be applied at runtime, in order to detect data loss.
+
+            return Deserialize<T>(Serialize(original));
         }
 
         class StubExecutionRecorder : ITestExecutionRecorder

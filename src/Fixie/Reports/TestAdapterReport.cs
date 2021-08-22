@@ -2,8 +2,9 @@
 {
     using System;
     using System.Threading.Tasks;
+    using Internal;
 
-    public class TestAdapterReport :
+    class TestAdapterReport :
         IHandler<TestDiscovered>,
         IHandler<TestStarted>,
         IHandler<TestSkipped>,

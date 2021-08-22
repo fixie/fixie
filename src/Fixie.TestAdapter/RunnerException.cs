@@ -2,7 +2,7 @@
 {
     using System;
     using System.Text;
-    using Reports;
+    using Internal;
 
     class RunnerException : Exception
     {

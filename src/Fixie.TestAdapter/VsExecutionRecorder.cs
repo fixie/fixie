@@ -1,12 +1,12 @@
 ﻿namespace Fixie.TestAdapter
 {
     using System;
+    using Internal;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-    using Reports;
     using static System.Environment;
 
-    public class VsExecutionRecorder
+    class VsExecutionRecorder
     {
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;

@@ -1,12 +1,12 @@
-﻿namespace Fixie.Reports
+﻿namespace Fixie.Internal
 {
     using System;
     using System.IO;
     using System.IO.Pipes;
     using System.Text;
-    using static Internal.Serialization;
+    using static Serialization;
 
-    public class TestAdapterPipe : IDisposable
+    class TestAdapterPipe : IDisposable
     {
         readonly StreamReader reader;
         readonly StreamWriter writer;

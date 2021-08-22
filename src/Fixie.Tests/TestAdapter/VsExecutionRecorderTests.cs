@@ -7,7 +7,7 @@
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
     using Assertions;
-    using Fixie.Reports;
+    using Fixie.Internal;
     using Reports;
     using static System.Environment;
     using static Fixie.Internal.Serialization;

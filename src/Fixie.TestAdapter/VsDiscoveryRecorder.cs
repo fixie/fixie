@@ -1,10 +1,10 @@
 ﻿namespace Fixie.TestAdapter
 {
     using System;
+    using Internal;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Reports;
 
     class VsDiscoveryRecorder
     {

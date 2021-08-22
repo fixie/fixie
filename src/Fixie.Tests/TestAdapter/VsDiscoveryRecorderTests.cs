@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.IO;
     using Assertions;
-    using Fixie.Reports;
+    using Fixie.Internal;
     using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;

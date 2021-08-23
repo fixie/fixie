@@ -53,7 +53,7 @@
             });
         }
 
-        void Record(PipeMessage.TestCompleted result, Action<TestResult>? customize = null)
+        void Record(PipeMessage.TestCompleted result, Action<TestResult> customize)
         {
             var testCase = ToVsTestCase(result.Test);
 
@@ -64,7 +64,7 @@
                 ComputerName = MachineName
             };
 
-            customize?.Invoke(testResult);
+            customize(testResult);
 
             AttachCapturedConsoleOutput(result.Output, testResult);
 

@@ -2,8 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Diagnostics;
+    using System.IO;
     using System.IO.Pipes;
     using System.Linq;
+    using System.Reflection;
     using Internal;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -17,13 +21,8 @@
         public static readonly Uri Uri = new Uri(Id);
 
         /// <summary>
-        /// Called by the IDE, when running all tests.
-        /// Called by Azure DevOps, when running all tests.
-        /// Called by Azure DevOps, with a filter within the run context, when running selected tests.
+        /// Called when running all tests.
         /// </summary>
-        /// <param name="sources"></param>
-        /// <param name="runContext"></param>
-        /// <param name="frameworkHandle"></param>
         public void RunTests(IEnumerable<string> sources, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             try
@@ -34,13 +33,24 @@
 
                 HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
-                var runAllTests = new PipeMessage.ExecuteTests
+                if (ShouldRunTestsInProcess())
                 {
-                    Filter = new string[] { }
-                };
+                    foreach (var assemblyPath in sources)
+                        RunTestsInProcess(log, frameworkHandle, assemblyPath, runner =>
+                        {
+                            runner.Run().GetAwaiter().GetResult();
+                        });
+                }
+                else
+                {
+                    var runAllTests = new PipeMessage.ExecuteTests
+                    {
+                        Filter = new string[] { }
+                    };
 
-                foreach (var assemblyPath in sources)
-                    RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
+                    foreach (var assemblyPath in sources)
+                        RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));                    
+                }
             }
             catch (Exception exception)
             {
@@ -49,12 +59,8 @@
         }
 
         /// <summary>
-        /// Called by the IDE, when running selected tests.
-        /// Never called from Azure DevOps.
+        /// Called when running selected tests.
         /// </summary>
-        /// <param name="tests"></param>
-        /// <param name="runContext"></param>
-        /// <param name="frameworkHandle"></param>
         public void RunTests(IEnumerable<TestCase> tests, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             try
@@ -71,13 +77,26 @@
                 {
                     var assemblyPath = assemblyGroup.Key;
 
-                    RunTests(log, frameworkHandle, assemblyPath, pipe =>
+                    if (ShouldRunTestsInProcess())
                     {
-                        pipe.Send(new PipeMessage.ExecuteTests
+                        RunTestsInProcess(log, frameworkHandle, assemblyPath, runner =>
                         {
-                            Filter = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
+                            var selectedTests =
+                                assemblyGroup.Select(x => x.FullyQualifiedName).ToImmutableHashSet();
+
+                            runner.Run(selectedTests).GetAwaiter().GetResult();
                         });
-                    });
+                    }
+                    else
+                    {
+                        RunTests(log, frameworkHandle, assemblyPath, pipe =>
+                        {
+                            pipe.Send(new PipeMessage.ExecuteTests
+                            {
+                                Filter = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
+                            });
+                        });
+                    }
                 }
             }
             catch (Exception exception)
@@ -173,6 +192,56 @@
                     }
                 }
             }
+        }
+
+        static bool ShouldRunTestsInProcess()
+        {
+            // Usually, the test assembly is running in a separate process, communicating
+            // with this Test Adapter process to ensure natural loading of test assembly
+            // dependencies. However, outside of Visual Studio runs, the debugger attached
+            // to *this* process cannot enlist the separate test assembly process.
+            // If we are running under the debugger but not running in Visual Studio,
+            // we must fall back to a less desirable in-process run. Users may run
+            // into some trouble in atypical assembly loading scenarios, in which case
+            // they will need to run their test project *directly* as a console application
+            // in their IDE.
+
+            // Once VsTest's LaunchProcessWithDebuggerAttached method works outside of Visual Studio,
+            // we can phase out this workaround.
+
+            var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;
+
+            return Debugger.IsAttached && !runningUnderVisualStudio;
+        }
+
+        static void RunTestsInProcess(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<Runner> run)
+        {
+            if (!IsTestAssembly(assemblyPath))
+            {
+                log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
+                return;
+            }
+
+            log.Info("Processing " + assemblyPath);
+
+            log.Info("In order to run under the debugger, your test assembly is running in-process within the Test Adapter.");
+            log.Info("If you experience assembly loading issues at runtime, try instead debugging the test project directly under the debugger, as it is an executable itself.");
+
+            Directory.SetCurrentDirectory(FolderPath(assemblyPath));
+            var assemblyName = new AssemblyName(Path.GetFileNameWithoutExtension(assemblyPath));
+            var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
+            var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
+            var report = new InProcessExecutionReport(frameworkHandle, assemblyPath);
+            
+            var console = Console.Out;
+            var rootPath = Directory.GetCurrentDirectory();
+            var environment = new TestEnvironment(assembly, console, rootPath);
+
+            using var boundary = new ConsoleRedirectionBoundary();
+
+            var runner = new Runner(environment, report);
+
+            run(runner);
         }
 
         static void HandlePoorVsTestImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)

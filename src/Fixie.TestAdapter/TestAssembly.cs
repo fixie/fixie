@@ -24,7 +24,7 @@ namespace Fixie.TestAdapter
             return File.Exists(Path.Combine(FolderPath(assemblyPath), "Fixie.dll"));
         }
 
-        static string FolderPath(string assemblyPath)
+        public static string FolderPath(string assemblyPath)
         {
             return new FileInfo(assemblyPath).Directory!.FullName;
         }

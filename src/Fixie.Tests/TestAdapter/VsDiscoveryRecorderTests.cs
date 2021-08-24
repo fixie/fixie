@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
     using System.IO;
-    using System.Threading.Tasks;
     using Assertions;
+    using Fixie.Internal;
     using Fixie.TestAdapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -11,18 +11,18 @@
     using Reports;
     using static System.IO.Directory;
 
-    public class DiscoveryReportTests : MessagingTests
+    public class VsDiscoveryRecorderTests : MessagingTests
     {
-        public async Task ShouldMapDiscoveredTestsToVsTestDiscoverySink()
+        public void ShouldMapDiscoveredTestsToVsTestDiscoverySink()
         {
             var assemblyPath = typeof(MessagingTests).Assembly.Location;
 
             var log = new StubMessageLogger();
             var discoverySink = new StubTestCaseDiscoverySink();
 
-            var report = new DiscoveryReport(log, discoverySink, assemblyPath);
+            var vsDiscoveryRecorder = new VsDiscoveryRecorder(log, discoverySink, assemblyPath);
 
-            await Discover(report);
+            RecordAnticipatedPipeMessages(vsDiscoveryRecorder);
 
             log.Messages.ShouldBeEmpty();
 
@@ -34,16 +34,16 @@
                 x => x.ShouldBeDiscoveryTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath));
         }
 
-        public async Task ShouldDefaultSourceLocationPropertiesWhenSourceInspectionThrows()
+        public void ShouldDefaultSourceLocationPropertiesWhenSourceInspectionThrows()
         {
             const string invalidAssemblyPath = "assembly.path.dll";
 
             var log = new StubMessageLogger();
             var discoverySink = new StubTestCaseDiscoverySink();
 
-            var report = new DiscoveryReport(log, discoverySink, invalidAssemblyPath);
+            var discoveryRecorder = new VsDiscoveryRecorder(log, discoverySink, invalidAssemblyPath);
 
-            await Discover(report);
+            RecordAnticipatedPipeMessages(discoveryRecorder);
 
             var expectedError =
                 $"Error: {typeof(FileNotFoundException).FullName}: " +
@@ -61,6 +61,34 @@
                 x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", invalidAssemblyPath),
                 x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Skip", invalidAssemblyPath),
                 x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(GenericTestClass + ".ShouldBeString", invalidAssemblyPath));
+        }
+
+        void RecordAnticipatedPipeMessages(VsDiscoveryRecorder vsDiscoveryRecorder)
+        {
+            vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
+            {
+                Test = TestClass + ".Fail"
+            });
+
+            vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
+            {
+                Test = TestClass + ".FailByAssertion"
+            });
+
+            vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
+            {
+                Test = TestClass + ".Pass"
+            });
+
+            vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
+            {
+                Test = TestClass + ".Skip"
+            });
+
+            vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
+            {
+                Test = GenericTestClass + ".ShouldBeString"
+            });
         }
 
         class StubMessageLogger : IMessageLogger

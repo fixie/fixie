@@ -2,13 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Reflection;
+    using System.IO.Pipes;
     using Internal;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using static AssemblyPath;
+    using static TestAssembly;
 
     [DefaultExecutorUri(VsTestExecutor.Id)]
     [FileExtension(".exe")]
@@ -40,21 +39,49 @@
 
             log.Info("Processing " + assemblyPath);
 
-            Directory.SetCurrentDirectory(FolderPath(assemblyPath));
-            var assemblyName = new AssemblyName(Path.GetFileNameWithoutExtension(assemblyPath));
-            var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
-            var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
-            var report = new DiscoveryReport(log, discoverySink, assemblyPath);
-            
-            var console = Console.Out;
-            var rootPath = Directory.GetCurrentDirectory();
-            var environment = new TestEnvironment(assembly, console, rootPath);
+            var pipeName = Guid.NewGuid().ToString();
+            Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
 
-            using var boundary = new ConsoleRedirectionBoundary();
+            using (var pipeStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte))
+            using (var pipe = new TestAdapterPipe(pipeStream))
+            using (var process = Start(assemblyPath))
+            {
+                pipeStream.WaitForConnection();
 
-            var runner = new Runner(environment, report);
+                pipe.Send<PipeMessage.DiscoverTests>();
 
-            runner.Discover().GetAwaiter().GetResult();
+                var recorder = new VsDiscoveryRecorder(log, discoverySink, assemblyPath);
+
+                while (true)
+                {
+                    var messageType = pipe.ReceiveMessageType();
+
+                    if (messageType == typeof(PipeMessage.TestDiscovered).FullName)
+                    {
+                        var testDiscovered = pipe.Receive<PipeMessage.TestDiscovered>();
+                        recorder.Record(testDiscovered);
+                    }
+                    else if (messageType == typeof(PipeMessage.Exception).FullName)
+                    {
+                        var exception = pipe.Receive<PipeMessage.Exception>();
+                        throw new RunnerException(exception);
+                    }
+                    else if (messageType == typeof(PipeMessage.EndOfPipe).FullName)
+                    {
+                        var endOfPipe = pipe.Receive<PipeMessage.EndOfPipe>();
+                        break;
+                    }
+                    else if (!string.IsNullOrEmpty(messageType))
+                    {
+                        var body = pipe.ReceiveMessageBody();
+                        log.Error($"The test runner received an unexpected message of type {messageType}: {body}");
+                    }
+                    else
+                    {
+                        throw new TestProcessExitException(process.TryGetExitCode());
+                    }
+                }
+            }
         }
     }
 }

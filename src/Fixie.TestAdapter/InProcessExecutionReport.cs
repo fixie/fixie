@@ -7,7 +7,7 @@
     using Reports;
     using static System.Environment;
 
-    class ExecutionReport :
+    class InProcessExecutionReport :
         IHandler<TestStarted>,
         IHandler<TestSkipped>,
         IHandler<TestPassed>,
@@ -16,7 +16,7 @@
         readonly ITestExecutionRecorder log;
         readonly string assemblyPath;
 
-        public ExecutionReport(ITestExecutionRecorder log, string assemblyPath)
+        public InProcessExecutionReport(ITestExecutionRecorder log, string assemblyPath)
         {
             this.log = log;
             this.assemblyPath = assemblyPath;

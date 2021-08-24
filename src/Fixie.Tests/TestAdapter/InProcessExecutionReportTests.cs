@@ -11,14 +11,14 @@
     using Reports;
     using static System.Environment;
 
-    public class ExecutionReportTests : MessagingTests
+    public class InProcessExecutionReportTests : MessagingTests
     {
         public async Task ShouldMapMessagesToVsTestExecutionRecorder()
         {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
-            var report = new ExecutionReport(recorder, assemblyPath);
+            var report = new InProcessExecutionReport(recorder, assemblyPath);
 
             var output = await Run(report);
 

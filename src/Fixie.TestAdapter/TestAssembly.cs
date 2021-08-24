@@ -49,8 +49,13 @@ namespace Fixie.TestAdapter
         {
             var serializedArguments = Serialize(arguments);
 
-            if (Debugger.IsAttached)
+            var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;
+
+            if (Debugger.IsAttached && runningUnderVisualStudio)
             {
+                // LaunchProcessWithDebuggerAttached is only trusted when
+                // this Test Adapter is running within Visual Studio.
+
                 // LaunchProcessWithDebuggerAttached, unlike Process.Start,
                 // does not automatically propagate environment variables that
                 // were created within the currently running process, so they

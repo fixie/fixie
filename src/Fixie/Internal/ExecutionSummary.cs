@@ -1,23 +1,29 @@
 ﻿namespace Fixie.Internal
 {
+    using System;
+    using System.Threading;
     using Reports;
 
     class ExecutionSummary
     {
+        int passed;
+        int failed;
+        int skipped;
+
         public ExecutionSummary()
         {
-            Passed = 0;
-            Failed = 0;
-            Skipped = 0;
+            passed = 0;
+            failed = 0;
+            skipped = 0;
         }
 
-        public int Passed { get; private set; }
-        public int Failed { get; private set; }
-        public int Skipped { get; private set; }
+        public int Passed => Interlocked.CompareExchange(ref passed, 0, 0);
+        public int Failed => Interlocked.CompareExchange(ref failed, 0, 0);
+        public int Skipped => Interlocked.CompareExchange(ref skipped, 0, 0);
         public int Total => Passed + Failed + Skipped;
 
-        public void Add(TestSkipped message) => Skipped += 1;
-        public void Add(TestPassed message) => Passed += 1;
-        public void Add(TestFailed message) => Failed += 1;
+        public void Add(TestPassed message) => Interlocked.Increment(ref passed);
+        public void Add(TestFailed message) => Interlocked.Increment(ref failed);
+        public void Add(TestSkipped message) => Interlocked.Increment(ref skipped);
     }
 }

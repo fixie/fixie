@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Fixie.Console": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Repositories\\fixie\\src\\Fixie.Tests.Parallel"
+    }
+  }
+}

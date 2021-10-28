@@ -1,4 +1,5 @@
 /src/.vs/
 /src/**/bin/
 /src/**/obj/
+/src/**/Properties/*.json
 /artifacts/

@@ -172,7 +172,7 @@ namespace Fixie
             var resolvedMethod = Method.TryResolveTypeArguments(parameters);
             var name = CaseNameBuilder.GetName(resolvedMethod, parameters);
 
-            await recorder.Start(this);
+            var executingTest = await recorder.Start(this);
 
             try
             {
@@ -183,12 +183,12 @@ namespace Fixie
             }
             catch (Exception failureReason)
             {
-                await recorder.Fail(this, name, failureReason);
+                await recorder.Fail(executingTest, name, failureReason);
                 RecordedResult = true;
                 return TestResult.Failed(failureReason);
             }
 
-            await recorder.Pass(this, name);
+            await recorder.Pass(executingTest, name);
             RecordedResult = true;
             return TestResult.Passed;
         }

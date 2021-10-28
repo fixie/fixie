@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  
+  <Import Project="..\..\build\Fixie.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <DebugType>embedded</DebugType>
+    <RollForward>Major</RollForward>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fixie.TestAdapter\Fixie.TestAdapter.csproj" />
+    <ProjectReference Include="..\Fixie\Fixie.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\..\build\Fixie.targets" />
+
+</Project>

@@ -1,137 +1,136 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Internal;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.IO;
+using System.IO.Pipes;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Reports;
+using static System.Environment;
+using static Maybe;
+
+public class EntryPoint
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.IO;
-    using System.IO.Pipes;
-    using System.Linq;
-    using System.Reflection;
-    using System.Threading.Tasks;
-    using Reports;
-    using static System.Environment;
-    using static Maybe;
-
-    public class EntryPoint
+    enum ExitCode
     {
-        enum ExitCode
-        {
-            Success = 0,
-            Failure = 1,
-            FatalError = -1
-        }
+        Success = 0,
+        Failure = 1,
+        FatalError = -1
+    }
 
-        public static async Task<int> Main(Assembly assembly, string[] customArguments)
-        {
-            var console = Console.Out;
-            var rootPath = Directory.GetCurrentDirectory();
-            var environment = new TestEnvironment(assembly, console, rootPath, customArguments);
+    public static async Task<int> Main(Assembly assembly, string[] customArguments)
+    {
+        var console = Console.Out;
+        var rootPath = Directory.GetCurrentDirectory();
+        var environment = new TestEnvironment(assembly, console, rootPath, customArguments);
 
-            using var boundary = new ConsoleRedirectionBoundary();
+        using var boundary = new ConsoleRedirectionBoundary();
+
+        try
+        {
+            var pipeName = GetEnvironmentVariable("FIXIE_NAMED_PIPE");
+
+            if (pipeName == null)
+            {
+                var reports = DefaultReports(environment).ToArray();
+
+                var pattern = GetEnvironmentVariable("FIXIE:TESTS_PATTERN");
+
+                return pattern == null
+                    ? (int) await Run(environment, reports, async runner => await runner.Run())
+                    : (int) await Run(environment, reports, async runner => await runner.Run(new TestPattern(pattern)));
+            }
+
+            using var pipeStream = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
+            using var pipe = new TestAdapterPipe(pipeStream);
+
+            pipeStream.Connect();
+            pipeStream.ReadMode = PipeTransmissionMode.Byte;
+                
+            var testAdapterReport = new TestAdapterReport(pipe);
+
+            var exitCode = ExitCode.Success;
 
             try
             {
-                var pipeName = GetEnvironmentVariable("FIXIE_NAMED_PIPE");
+                var messageType = pipe.ReceiveMessageType();
 
-                if (pipeName == null)
+                if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
                 {
-                    var reports = DefaultReports(environment).ToArray();
-
-                    var pattern = GetEnvironmentVariable("FIXIE:TESTS_PATTERN");
-
-                    return pattern == null
-                        ? (int) await Run(environment, reports, async runner => await runner.Run())
-                        : (int) await Run(environment, reports, async runner => await runner.Run(new TestPattern(pattern)));
+                    var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
+                    await DiscoverMethods(environment, testAdapterReport);
                 }
-
-                using var pipeStream = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
-                using var pipe = new TestAdapterPipe(pipeStream);
-
-                pipeStream.Connect();
-                pipeStream.ReadMode = PipeTransmissionMode.Byte;
-                
-                var testAdapterReport = new TestAdapterReport(pipe);
-
-                var exitCode = ExitCode.Success;
-
-                try
+                else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
                 {
-                    var messageType = pipe.ReceiveMessageType();
+                    var executeTests = pipe.Receive<PipeMessage.ExecuteTests>();
 
-                    if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
-                    {
-                        var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
-                        await DiscoverMethods(environment, testAdapterReport);
-                    }
-                    else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
-                    {
-                        var executeTests = pipe.Receive<PipeMessage.ExecuteTests>();
+                    var reports = new IReport[] { testAdapterReport };
 
-                        var reports = new IReport[] { testAdapterReport };
-
-                        exitCode = executeTests.Filter.Length == 0
-                            ? await Run(environment, reports, async runner => await runner.Run())
-                            : await Run(environment, reports, async runner => await runner.Run(executeTests.Filter.ToImmutableHashSet()));
-                    }
-                    else
-                    {
-                        var body = pipe.ReceiveMessageBody();
-                        throw new Exception($"Test assembly received unexpected message of type {messageType}: {body}");
-                    }
+                    exitCode = executeTests.Filter.Length == 0
+                        ? await Run(environment, reports, async runner => await runner.Run())
+                        : await Run(environment, reports, async runner => await runner.Run(executeTests.Filter.ToImmutableHashSet()));
                 }
-                catch (Exception exception)
+                else
                 {
-                    pipe.Send(exception);
+                    var body = pipe.ReceiveMessageBody();
+                    throw new Exception($"Test assembly received unexpected message of type {messageType}: {body}");
                 }
-                finally
-                {
-                    pipe.Send<PipeMessage.EndOfPipe>();
-                }
-
-                return (int)exitCode;
             }
             catch (Exception exception)
             {
-                using (Foreground.Red)
-                    console.WriteLine($"Fatal Error: {exception}");
-
-                return (int)ExitCode.FatalError;
+                pipe.Send(exception);
             }
-        }
+            finally
+            {
+                pipe.Send<PipeMessage.EndOfPipe>();
+            }
 
-        static async Task DiscoverMethods(TestEnvironment environment, TestAdapterReport testAdapterReport)
-        {
-            var runner = new Runner(environment, testAdapterReport);
-            await runner.Discover();
+            return (int)exitCode;
         }
-
-        static async Task<ExitCode> Run(TestEnvironment environment, IReport[] reports, Func<Runner, Task<ExecutionSummary>> run)
+        catch (Exception exception)
         {
-            var runner = new Runner(environment, reports);
+            using (Foreground.Red)
+                console.WriteLine($"Fatal Error: {exception}");
+
+            return (int)ExitCode.FatalError;
+        }
+    }
+
+    static async Task DiscoverMethods(TestEnvironment environment, TestAdapterReport testAdapterReport)
+    {
+        var runner = new Runner(environment, testAdapterReport);
+        await runner.Discover();
+    }
+
+    static async Task<ExitCode> Run(TestEnvironment environment, IReport[] reports, Func<Runner, Task<ExecutionSummary>> run)
+    {
+        var runner = new Runner(environment, reports);
             
-            var summary = await run(runner);
+        var summary = await run(runner);
 
-            if (summary.Total == 0)
-                return ExitCode.FatalError;
+        if (summary.Total == 0)
+            return ExitCode.FatalError;
 
-            if (summary.Failed > 0)
-                return ExitCode.Failure;
+        if (summary.Failed > 0)
+            return ExitCode.Failure;
 
-            return ExitCode.Success;
-        }
+        return ExitCode.Success;
+    }
 
-        static IEnumerable<IReport> DefaultReports(TestEnvironment environment)
-        {
-            if (Try(AzureReport.Create, environment, out var azure))
-                yield return azure;
+    static IEnumerable<IReport> DefaultReports(TestEnvironment environment)
+    {
+        if (Try(AzureReport.Create, environment, out var azure))
+            yield return azure;
 
-            if (Try(AppVeyorReport.Create, environment, out var appVeyor))
-                yield return appVeyor;
+        if (Try(AppVeyorReport.Create, environment, out var appVeyor))
+            yield return appVeyor;
 
-            if (Try(TeamCityReport.Create, environment, out var teamCity))
-                yield return teamCity;
+        if (Try(TeamCityReport.Create, environment, out var teamCity))
+            yield return teamCity;
 
-            yield return ConsoleReport.Create(environment);
-        }
+        yield return ConsoleReport.Create(environment);
     }
 }

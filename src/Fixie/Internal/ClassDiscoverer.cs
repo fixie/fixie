@@ -1,41 +1,40 @@
-namespace Fixie.Internal
+namespace Fixie.Internal;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+
+class ClassDiscoverer
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
+    readonly IDiscovery discovery;
 
-    class ClassDiscoverer
+    public ClassDiscoverer(IDiscovery discovery)
+        => this.discovery = discovery;
+
+    public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
     {
-        readonly IDiscovery discovery;
-
-        public ClassDiscoverer(IDiscovery discovery)
-            => this.discovery = discovery;
-
-        public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
+        try
         {
-            try
-            {
-                return discovery.TestClasses(candidates.Where(IsApplicable)).ToList();
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(
-                    "Exception thrown during test class discovery. " +
-                    "Check the inner exception for more details.", exception);
-            }
+            return discovery.TestClasses(candidates.Where(IsApplicable)).ToList();
         }
-
-        static bool IsApplicable(Type candidate)
+        catch (Exception exception)
         {
-            return ConcreteClasses(candidate) &&
-                   NonCompilerGeneratedClasses(candidate);
+            throw new Exception(
+                "Exception thrown during test class discovery. " +
+                "Check the inner exception for more details.", exception);
         }
-
-        static bool ConcreteClasses(Type type)
-            => type.IsClass && (!type.IsAbstract || type.IsStatic());
-
-        static bool NonCompilerGeneratedClasses(Type type)
-            => !type.Has<CompilerGeneratedAttribute>();
     }
+
+    static bool IsApplicable(Type candidate)
+    {
+        return ConcreteClasses(candidate) &&
+               NonCompilerGeneratedClasses(candidate);
+    }
+
+    static bool ConcreteClasses(Type type)
+        => type.IsClass && (!type.IsAbstract || type.IsStatic());
+
+    static bool NonCompilerGeneratedClasses(Type type)
+        => !type.Has<CompilerGeneratedAttribute>();
 }

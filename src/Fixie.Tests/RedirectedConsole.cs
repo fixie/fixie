@@ -1,26 +1,25 @@
-﻿namespace Fixie.Tests
+﻿namespace Fixie.Tests;
+
+using System;
+using System.IO;
+
+class RedirectedConsole : IDisposable
 {
-    using System;
-    using System.IO;
+    readonly TextWriter original;
+    readonly StringWriter console;
 
-    class RedirectedConsole : IDisposable
+    public RedirectedConsole()
     {
-        readonly TextWriter original;
-        readonly StringWriter console;
+        console = new StringWriter();
+        original = System.Console.Out;
+        System.Console.SetOut(console);
+    }
 
-        public RedirectedConsole()
-        {
-            console = new StringWriter();
-            original = System.Console.Out;
-            System.Console.SetOut(console);
-        }
+    public string Output => console.ToString();
 
-        public string Output => console.ToString();
-
-        public void Dispose()
-        {
-            System.Console.SetOut(original);
-            console.Dispose();
-        }
+    public void Dispose()
+    {
+        System.Console.SetOut(original);
+        console.Dispose();
     }
 }

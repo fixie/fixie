@@ -1,74 +1,73 @@
-﻿namespace Fixie.Reports
+﻿namespace Fixie.Reports;
+
+using System;
+using System.Text;
+using static System.Environment;
+
+static class ExceptionExtensions
 {
-    using System;
-    using System.Text;
-    using static System.Environment;
-
-    static class ExceptionExtensions
+    public static string LiterateStackTrace(this Exception exception)
     {
-        public static string LiterateStackTrace(this Exception exception)
+        var console = new StringBuilder();
+
+        console.Append(StackTraceOmittingInternalTestMethodFrames(exception));
+
+        var walk = exception;
+        while (walk.InnerException != null)
         {
-            var console = new StringBuilder();
-
-            console.Append(StackTraceOmittingInternalTestMethodFrames(exception));
-
-            var walk = exception;
-            while (walk.InnerException != null)
-            {
-                walk = walk.InnerException;
-                console.AppendLine();
-                console.AppendLine();
-                console.AppendLine($"------- Inner Exception: {walk.GetType().FullName} -------");
-                console.AppendLine(walk.Message);
-                console.Append(walk.StackTrace);
-            }
-
-            return console.ToString();
+            walk = walk.InnerException;
+            console.AppendLine();
+            console.AppendLine();
+            console.AppendLine($"------- Inner Exception: {walk.GetType().FullName} -------");
+            console.AppendLine(walk.Message);
+            console.Append(walk.StackTrace);
         }
 
-        static string? StackTraceOmittingInternalTestMethodFrames(Exception exception)
+        return console.ToString();
+    }
+
+    static string? StackTraceOmittingInternalTestMethodFrames(Exception exception)
+    {
+        // Test failure stack traces can include test runner implementation
+        // details which distract the user in their diagnosing of a test failure.
+        //
+        // Similar to the way that assertion libraries simplify their assertion
+        // exception stack traces to omit implementation details of the assertion
+        // library, we omit these test runner implementation details as well.
+        //
+        // When in a code path where the test runner catches, reports, and stops
+        // propagation of rethrown reflection exceptions, we have an opportunity
+        // to trim that fully-managed rethrow noise from the end of the stack
+        // trace. In any other scenario, we provide the full stack trace as it
+        // will contain end user code relevant to diagnosing the exception.
+
+        if (exception.StackTrace == null)
+            return null;
+
+        var lines = exception.StackTrace.Split(NewLine);
+
+        if (lines.Length >= 2)
         {
-            // Test failure stack traces can include test runner implementation
-            // details which distract the user in their diagnosing of a test failure.
-            //
-            // Similar to the way that assertion libraries simplify their assertion
-            // exception stack traces to omit implementation details of the assertion
-            // library, we omit these test runner implementation details as well.
-            //
-            // When in a code path where the test runner catches, reports, and stops
-            // propagation of rethrown reflection exceptions, we have an opportunity
-            // to trim that fully-managed rethrow noise from the end of the stack
-            // trace. In any other scenario, we provide the full stack trace as it
-            // will contain end user code relevant to diagnosing the exception.
+            const string synchronousRethrowMarker = "--- End of stack trace from previous location";
+            const string callResolvedMethod = " Fixie.MethodInfoExtensions.CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)";
+            const string constructTestClass = " Fixie.Test.Construct(Type testClass)";
+            const string runCore = " Fixie.Test.RunCore(Object instance, Object[] parameters)";
 
-            if (exception.StackTrace == null)
-                return null;
-
-            var lines = exception.StackTrace.Split(NewLine);
-
-            if (lines.Length >= 2)
+            if (lines[^1].Contains(runCore))
             {
-                const string synchronousRethrowMarker = "--- End of stack trace from previous location";
-                const string callResolvedMethod = " Fixie.MethodInfoExtensions.CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)";
-                const string constructTestClass = " Fixie.Test.Construct(Type testClass)";
-                const string runCore = " Fixie.Test.RunCore(Object instance, Object[] parameters)";
-
-                if (lines[^1].Contains(runCore))
+                if (lines[^2].Contains(callResolvedMethod) ||
+                    lines[^2].Contains(constructTestClass))
                 {
-                    if (lines[^2].Contains(callResolvedMethod) ||
-                        lines[^2].Contains(constructTestClass))
-                    {
-                        var linesToRemove =
-                            lines.Length >= 3 && lines[^3].Contains(synchronousRethrowMarker)
-                                ? 3
-                                : 2;
+                    var linesToRemove =
+                        lines.Length >= 3 && lines[^3].Contains(synchronousRethrowMarker)
+                            ? 3
+                            : 2;
 
-                        return string.Join(NewLine, lines[..^linesToRemove]);
-                    }
+                    return string.Join(NewLine, lines[..^linesToRemove]);
                 }
             }
-
-            return exception.StackTrace;
         }
+
+        return exception.StackTrace;
     }
 }

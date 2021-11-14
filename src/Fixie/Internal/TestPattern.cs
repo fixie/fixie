@@ -1,40 +1,39 @@
-namespace Fixie.Internal
+namespace Fixie.Internal;
+
+using System.Text.RegularExpressions;
+
+class TestPattern
 {
-    using System.Text.RegularExpressions;
+    readonly Regex regex;
 
-    class TestPattern
+    public TestPattern(string pattern)
     {
-        readonly Regex regex;
-
-        public TestPattern(string pattern)
-        {
-            var patternWithWildcards = "";
+        var patternWithWildcards = "";
             
-            var previousWasUpperCase = false;
+        var previousWasUpperCase = false;
 
-            foreach (var c in pattern)
-            {
-                if (c == '*')
-                {
-                    patternWithWildcards += ".*";
-                    previousWasUpperCase = false;
-                }
-                else
-                {
-                    if (previousWasUpperCase && !char.IsLower(c))
-                        patternWithWildcards += "[a-z]*";
-
-                    patternWithWildcards += Regex.Escape(c.ToString());
-                    previousWasUpperCase = char.IsUpper(c);
-                }
-            }
-
-            regex = new Regex(patternWithWildcards);
-        }
-
-        public bool Matches(string test)
+        foreach (var c in pattern)
         {
-            return regex.IsMatch(test);
+            if (c == '*')
+            {
+                patternWithWildcards += ".*";
+                previousWasUpperCase = false;
+            }
+            else
+            {
+                if (previousWasUpperCase && !char.IsLower(c))
+                    patternWithWildcards += "[a-z]*";
+
+                patternWithWildcards += Regex.Escape(c.ToString());
+                previousWasUpperCase = char.IsUpper(c);
+            }
         }
+
+        regex = new Regex(patternWithWildcards);
+    }
+
+    public bool Matches(string test)
+    {
+        return regex.IsMatch(test);
     }
 }

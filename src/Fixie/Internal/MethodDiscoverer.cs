@@ -1,33 +1,32 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Internal;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+class MethodDiscoverer
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+    readonly IDiscovery discovery;
 
-    class MethodDiscoverer
+    public MethodDiscoverer(IDiscovery discovery)
+        => this.discovery = discovery;
+
+    public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
     {
-        readonly IDiscovery discovery;
-
-        public MethodDiscoverer(IDiscovery discovery)
-            => this.discovery = discovery;
-
-        public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
+        try
         {
-            try
-            {
-                return discovery.TestMethods(
-                        testClass
-                            .GetMethods()
-                            .Where(method => method.DeclaringType != typeof(object)))
-                    .ToList();
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(
-                    "Exception thrown during test method discovery. " +
-                    "Check the inner exception for more details.", exception);
-            }
+            return discovery.TestMethods(
+                    testClass
+                        .GetMethods()
+                        .Where(method => method.DeclaringType != typeof(object)))
+                .ToList();
+        }
+        catch (Exception exception)
+        {
+            throw new Exception(
+                "Exception thrown during test method discovery. " +
+                "Check the inner exception for more details.", exception);
         }
     }
 }

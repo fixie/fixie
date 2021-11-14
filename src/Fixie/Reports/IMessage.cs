@@ -1,4 +1,3 @@
-﻿namespace Fixie.Reports
-{
-    public interface IMessage { }
-}
+﻿namespace Fixie.Reports;
+
+public interface IMessage { }

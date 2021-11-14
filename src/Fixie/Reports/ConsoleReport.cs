@@ -1,118 +1,117 @@
-﻿namespace Fixie.Reports
+﻿namespace Fixie.Reports;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Internal;
+using static System.Environment;
+
+class ConsoleReport :
+    IHandler<TestSkipped>,
+    IHandler<TestPassed>,
+    IHandler<TestFailed>,
+    IHandler<ExecutionCompleted>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-    using Internal;
-    using static System.Environment;
+    readonly TextWriter console;
+    readonly bool outputTestPassed;
+    bool paddingWouldRequireOpeningBlankLine;
 
-    class ConsoleReport :
-        IHandler<TestSkipped>,
-        IHandler<TestPassed>,
-        IHandler<TestFailed>,
-        IHandler<ExecutionCompleted>
+    internal static ConsoleReport Create(TestEnvironment environment)
+        => new ConsoleReport(environment, GetEnvironmentVariable("FIXIE:TESTS_PATTERN") != null);
+
+    public ConsoleReport(TestEnvironment environment, bool outputTestPassed = false)
     {
-        readonly TextWriter console;
-        readonly bool outputTestPassed;
-        bool paddingWouldRequireOpeningBlankLine;
+        console = environment.Console;
+        this.outputTestPassed = outputTestPassed;
+    }
 
-        internal static ConsoleReport Create(TestEnvironment environment)
-            => new ConsoleReport(environment, GetEnvironmentVariable("FIXIE:TESTS_PATTERN") != null);
-
-        public ConsoleReport(TestEnvironment environment, bool outputTestPassed = false)
+    public Task Handle(TestSkipped message)
+    {
+        WithPadding(() =>
         {
-            console = environment.Console;
-            this.outputTestPassed = outputTestPassed;
-        }
+            using (Foreground.Yellow)
+                console.WriteLine($"Test '{message.TestCase}' skipped:");
 
-        public Task Handle(TestSkipped message)
+            console.WriteLine(message.Reason);
+        });
+
+        return Task.CompletedTask;
+    }
+
+    public Task Handle(TestPassed message)
+    {
+        if (outputTestPassed)
         {
-            WithPadding(() =>
+            WithoutPadding(() =>
             {
-                using (Foreground.Yellow)
-                    console.WriteLine($"Test '{message.TestCase}' skipped:");
-
-                console.WriteLine(message.Reason);
+                using (Foreground.Green)
+                    console.WriteLine($"Test '{message.TestCase}' passed");
             });
-
-            return Task.CompletedTask;
         }
 
-        public Task Handle(TestPassed message)
+        return Task.CompletedTask;
+    }
+
+    public Task Handle(TestFailed message)
+    {
+        WithPadding(() =>
         {
-            if (outputTestPassed)
-            {
-                WithoutPadding(() =>
-                {
-                    using (Foreground.Green)
-                        console.WriteLine($"Test '{message.TestCase}' passed");
-                });
-            }
+            using (Foreground.Red)
+                console.WriteLine($"Test '{message.TestCase}' failed:");
+            console.WriteLine();
+            console.WriteLine(message.Reason.Message);
+            console.WriteLine();
+            console.WriteLine(message.Reason.GetType().FullName);
+            console.WriteLine(message.Reason.LiterateStackTrace());
+        });
 
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
+    }
 
-        public Task Handle(TestFailed message)
-        {
-            WithPadding(() =>
-            {
-                using (Foreground.Red)
-                    console.WriteLine($"Test '{message.TestCase}' failed:");
-                console.WriteLine();
-                console.WriteLine(message.Reason.Message);
-                console.WriteLine();
-                console.WriteLine(message.Reason.GetType().FullName);
-                console.WriteLine(message.Reason.LiterateStackTrace());
-            });
+    void WithPadding(Action write)
+    {
+        if (paddingWouldRequireOpeningBlankLine)
+            console.WriteLine();
 
-            return Task.CompletedTask;
-        }
-
-        void WithPadding(Action write)
-        {
-            if (paddingWouldRequireOpeningBlankLine)
-                console.WriteLine();
-
-            write();
+        write();
             
-            console.WriteLine();
-            paddingWouldRequireOpeningBlankLine = false;
-        }
+        console.WriteLine();
+        paddingWouldRequireOpeningBlankLine = false;
+    }
 
-        void WithoutPadding(Action write)
-        {
-            write();
-            paddingWouldRequireOpeningBlankLine = true;
-        }
+    void WithoutPadding(Action write)
+    {
+        write();
+        paddingWouldRequireOpeningBlankLine = true;
+    }
 
-        public Task Handle(ExecutionCompleted message)
-        {
-            console.WriteLine(Summarize(message));
-            console.WriteLine();
+    public Task Handle(ExecutionCompleted message)
+    {
+        console.WriteLine(Summarize(message));
+        console.WriteLine();
 
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
+    }
 
-        static string Summarize(ExecutionCompleted message)
-        {
-            if (message.Total == 0)
-                return "No tests found.";
+    static string Summarize(ExecutionCompleted message)
+    {
+        if (message.Total == 0)
+            return "No tests found.";
 
-            var parts = new List<string>();
+        var parts = new List<string>();
 
-            if (message.Passed > 0)
-                parts.Add($"{message.Passed} passed");
+        if (message.Passed > 0)
+            parts.Add($"{message.Passed} passed");
 
-            if (message.Failed > 0)
-                parts.Add($"{message.Failed} failed");
+        if (message.Failed > 0)
+            parts.Add($"{message.Failed} failed");
 
-            if (message.Skipped > 0)
-                parts.Add($"{message.Skipped} skipped");
+        if (message.Skipped > 0)
+            parts.Add($"{message.Skipped} skipped");
 
-            parts.Add($"took {message.Duration.TotalSeconds:0.00} seconds");
+        parts.Add($"took {message.Duration.TotalSeconds:0.00} seconds");
 
-            return string.Join(", ", parts);
-        }
+        return string.Join(", ", parts);
     }
 }

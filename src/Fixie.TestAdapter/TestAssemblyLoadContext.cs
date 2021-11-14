@@ -1,49 +1,48 @@
-﻿namespace Fixie.TestAdapter
+﻿namespace Fixie.TestAdapter;
+
+using System;
+using System.Reflection;
+using System.Runtime.Loader;
+
+class TestAssemblyLoadContext : AssemblyLoadContext
 {
-    using System;
-    using System.Reflection;
-    using System.Runtime.Loader;
+    readonly AssemblyDependencyResolver resolver;
 
-    class TestAssemblyLoadContext : AssemblyLoadContext
+    public TestAssemblyLoadContext(string testAssemblyPath)
     {
-        readonly AssemblyDependencyResolver resolver;
+        resolver = new AssemblyDependencyResolver(testAssemblyPath);
+    }
 
-        public TestAssemblyLoadContext(string testAssemblyPath)
+    protected override Assembly? Load(AssemblyName assemblyName)
+    {
+        if (assemblyName.Name == "Fixie")
         {
-            resolver = new AssemblyDependencyResolver(testAssemblyPath);
-        }
-
-        protected override Assembly? Load(AssemblyName assemblyName)
-        {
-            if (assemblyName.Name == "Fixie")
-            {
-                // The Fixie assembly itself must be loaded only
-                // into the AssemblyLoadContext.Default context,
-                // so that the Test Adapter can share types with
-                // those loaded by the test assembly such as IReport,
-                // Handler<T>, IExecution, and IDiscovery. Otherwise,
-                // both contexts would have distinct occurrences of
-                // those types, and they would be mistaken as unrelated.
+            // The Fixie assembly itself must be loaded only
+            // into the AssemblyLoadContext.Default context,
+            // so that the Test Adapter can share types with
+            // those loaded by the test assembly such as IReport,
+            // Handler<T>, IExecution, and IDiscovery. Otherwise,
+            // both contexts would have distinct occurrences of
+            // those types, and they would be mistaken as unrelated.
             
-                return null;
-            }
-
-            var assemblyPath = resolver.ResolveAssemblyToPath(assemblyName);
-
-            if (assemblyPath != null)
-                return LoadFromAssemblyPath(assemblyPath);
-
             return null;
         }
 
-        protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
-        {
-            var libraryPath = resolver.ResolveUnmanagedDllToPath(unmanagedDllName);
+        var assemblyPath = resolver.ResolveAssemblyToPath(assemblyName);
 
-            if (libraryPath != null)
-                return LoadUnmanagedDllFromPath(libraryPath);
+        if (assemblyPath != null)
+            return LoadFromAssemblyPath(assemblyPath);
 
-            return IntPtr.Zero;
-        }
+        return null;
+    }
+
+    protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
+    {
+        var libraryPath = resolver.ResolveUnmanagedDllToPath(unmanagedDllName);
+
+        if (libraryPath != null)
+            return LoadUnmanagedDllFromPath(libraryPath);
+
+        return IntPtr.Zero;
     }
 }

@@ -1,9 +1,8 @@
-﻿namespace Fixie.Reports
+﻿namespace Fixie.Reports;
+
+public class ExecutionStarted : IMessage
 {
-    public class ExecutionStarted : IMessage
+    internal ExecutionStarted()
     {
-        internal ExecutionStarted()
-        {
-        }
     }
 }

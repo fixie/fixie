@@ -1,85 +1,84 @@
-﻿namespace Fixie.TestAdapter
+﻿namespace Fixie.TestAdapter;
+
+using System;
+using Internal;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+using static System.Environment;
+
+class VsExecutionRecorder
 {
-    using System;
-    using Internal;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-    using static System.Environment;
+    readonly ITestExecutionRecorder log;
+    readonly string assemblyPath;
 
-    class VsExecutionRecorder
+    public VsExecutionRecorder(ITestExecutionRecorder log, string assemblyPath)
     {
-        readonly ITestExecutionRecorder log;
-        readonly string assemblyPath;
+        this.log = log;
+        this.assemblyPath = assemblyPath;
+    }
 
-        public VsExecutionRecorder(ITestExecutionRecorder log, string assemblyPath)
+    public void Record(PipeMessage.TestStarted message)
+    {
+        var testCase = ToVsTestCase(message.Test);
+
+        log.RecordStart(testCase);
+    }
+
+    public void Record(PipeMessage.TestSkipped result)
+    {
+        Record(result, x =>
         {
-            this.log = log;
-            this.assemblyPath = assemblyPath;
-        }
+            x.Outcome = TestOutcome.Skipped;
+            x.ErrorMessage = result.Reason;
+        });
+    }
 
-        public void Record(PipeMessage.TestStarted message)
+    public void Record(PipeMessage.TestPassed result)
+    {
+        Record(result, x =>
         {
-            var testCase = ToVsTestCase(message.Test);
+            x.Outcome = TestOutcome.Passed;
+        });
+    }
 
-            log.RecordStart(testCase);
-        }
-
-        public void Record(PipeMessage.TestSkipped result)
+    public void Record(PipeMessage.TestFailed result)
+    {
+        Record(result, x =>
         {
-            Record(result, x =>
-            {
-                x.Outcome = TestOutcome.Skipped;
-                x.ErrorMessage = result.Reason;
-            });
-        }
+            x.Outcome = TestOutcome.Failed;
+            x.ErrorMessage = result.Reason.Message;
+            x.ErrorStackTrace = result.Reason.Type +
+                                NewLine +
+                                result.Reason.StackTrace;
+        });
+    }
 
-        public void Record(PipeMessage.TestPassed result)
+    void Record(PipeMessage.TestCompleted result, Action<TestResult> customize)
+    {
+        var testCase = ToVsTestCase(result.Test);
+
+        var testResult = new TestResult(testCase)
         {
-            Record(result, x =>
-            {
-                x.Outcome = TestOutcome.Passed;
-            });
-        }
+            DisplayName = result.TestCase,
+            Duration = TimeSpan.FromMilliseconds(result.DurationInMilliseconds),
+            ComputerName = MachineName
+        };
 
-        public void Record(PipeMessage.TestFailed result)
-        {
-            Record(result, x =>
-            {
-                x.Outcome = TestOutcome.Failed;
-                x.ErrorMessage = result.Reason.Message;
-                x.ErrorStackTrace = result.Reason.Type +
-                                    NewLine +
-                                    result.Reason.StackTrace;
-            });
-        }
+        customize(testResult);
 
-        void Record(PipeMessage.TestCompleted result, Action<TestResult> customize)
-        {
-            var testCase = ToVsTestCase(result.Test);
+        AttachCapturedConsoleOutput(result.Output, testResult);
 
-            var testResult = new TestResult(testCase)
-            {
-                DisplayName = result.TestCase,
-                Duration = TimeSpan.FromMilliseconds(result.DurationInMilliseconds),
-                ComputerName = MachineName
-            };
+        log.RecordResult(testResult);
+    }
 
-            customize(testResult);
+    TestCase ToVsTestCase(string test)
+    {
+        return new TestCase(test, VsTestExecutor.Uri, assemblyPath);
+    }
 
-            AttachCapturedConsoleOutput(result.Output, testResult);
-
-            log.RecordResult(testResult);
-        }
-
-        TestCase ToVsTestCase(string test)
-        {
-            return new TestCase(test, VsTestExecutor.Uri, assemblyPath);
-        }
-
-        static void AttachCapturedConsoleOutput(string output, TestResult testResult)
-        {
-            if (!string.IsNullOrEmpty(output))
-                testResult.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, output));
-        }
+    static void AttachCapturedConsoleOutput(string output, TestResult testResult)
+    {
+        if (!string.IsNullOrEmpty(output))
+            testResult.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, output));
     }
 }

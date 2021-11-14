@@ -1,18 +1,17 @@
-﻿namespace Fixie
+﻿namespace Fixie;
+
+using System.Collections.Generic;
+using Reports;
+
+public class ReportCollection
 {
-    using System.Collections.Generic;
-    using Reports;
+    internal List<IReport> Items { get; }
 
-    public class ReportCollection
-    {
-        internal List<IReport> Items { get; }
+    internal ReportCollection() => Items = new List<IReport>();
 
-        internal ReportCollection() => Items = new List<IReport>();
+    public void Add(IReport report)
+        => Items.Add(report);
 
-        public void Add(IReport report)
-            => Items.Add(report);
-
-        public void Add<TReport>() where TReport : IReport, new()
-            => Add(new TReport());
-    }
+    public void Add<TReport>() where TReport : IReport, new()
+        => Add(new TReport());
 }

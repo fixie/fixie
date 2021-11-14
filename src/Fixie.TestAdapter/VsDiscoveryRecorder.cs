@@ -1,54 +1,53 @@
-﻿namespace Fixie.TestAdapter
+﻿namespace Fixie.TestAdapter;
+
+using System;
+using Internal;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+
+class VsDiscoveryRecorder
 {
-    using System;
-    using Internal;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+    readonly IMessageLogger log;
+    readonly ITestCaseDiscoverySink discoverySink;
+    readonly string assemblyPath;
+    readonly SourceLocationProvider sourceLocationProvider;
 
-    class VsDiscoveryRecorder
+    public VsDiscoveryRecorder(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)
     {
-        readonly IMessageLogger log;
-        readonly ITestCaseDiscoverySink discoverySink;
-        readonly string assemblyPath;
-        readonly SourceLocationProvider sourceLocationProvider;
+        this.log = log;
+        this.discoverySink = discoverySink;
+        this.assemblyPath = assemblyPath;
 
-        public VsDiscoveryRecorder(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)
+        sourceLocationProvider = new SourceLocationProvider(assemblyPath);
+    }
+
+    public void Record(PipeMessage.TestDiscovered testDiscovered)
+    {
+        var test = testDiscovered.Test;
+
+        SourceLocation? sourceLocation = null;
+
+        try
         {
-            this.log = log;
-            this.discoverySink = discoverySink;
-            this.assemblyPath = assemblyPath;
-
-            sourceLocationProvider = new SourceLocationProvider(assemblyPath);
+            sourceLocationProvider.TryGetSourceLocation(test, out sourceLocation);
+        }
+        catch (Exception exception)
+        {
+            log.Error(exception.ToString());
         }
 
-        public void Record(PipeMessage.TestDiscovered testDiscovered)
+        var discoveredTest = new TestCase(test, VsTestExecutor.Uri, assemblyPath)
         {
-            var test = testDiscovered.Test;
+            DisplayName = test
+        };
 
-            SourceLocation? sourceLocation = null;
-
-            try
-            {
-                sourceLocationProvider.TryGetSourceLocation(test, out sourceLocation);
-            }
-            catch (Exception exception)
-            {
-                log.Error(exception.ToString());
-            }
-
-            var discoveredTest = new TestCase(test, VsTestExecutor.Uri, assemblyPath)
-            {
-                DisplayName = test
-            };
-
-            if (sourceLocation != null)
-            {
-                discoveredTest.CodeFilePath = sourceLocation.CodeFilePath;
-                discoveredTest.LineNumber = sourceLocation.LineNumber;
-            }
-
-            discoverySink.SendTestCase(discoveredTest);
+        if (sourceLocation != null)
+        {
+            discoveredTest.CodeFilePath = sourceLocation.CodeFilePath;
+            discoveredTest.LineNumber = sourceLocation.LineNumber;
         }
+
+        discoverySink.SendTestCase(discoveredTest);
     }
 }

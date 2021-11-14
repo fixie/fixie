@@ -1,49 +1,48 @@
-﻿namespace Fixie.Tests
+﻿namespace Fixie.Tests;
+
+using System;
+using System.Runtime.CompilerServices;
+
+// This provides enough structural support for the async/await keywords
+// to be satisfied at compile time, but is not expected to behave well.
+
+[AsyncMethodBuilder(typeof(UntrustworthyMethodBuilder))]
+class UntrustworthyAwaitable
 {
-    using System;
-    using System.Runtime.CompilerServices;
+    public UntrustworthyAwaiter GetAwaiter()
+        => new UntrustworthyAwaiter();
+}
 
-    // This provides enough structural support for the async/await keywords
-    // to be satisfied at compile time, but is not expected to behave well.
+class UntrustworthyAwaiter : INotifyCompletion
+{
+    public void OnCompleted(Action completion)
+        => throw new ShouldBeUnreachableException();
+}
 
-    [AsyncMethodBuilder(typeof(UntrustworthyMethodBuilder))]
-    class UntrustworthyAwaitable
-    {
-        public UntrustworthyAwaiter GetAwaiter()
-            => new UntrustworthyAwaiter();
-    }
+class UntrustworthyMethodBuilder
+{
+    public static UntrustworthyMethodBuilder Create()
+        => new UntrustworthyMethodBuilder();
 
-    class UntrustworthyAwaiter : INotifyCompletion
-    {
-        public void OnCompleted(Action completion)
-            => throw new ShouldBeUnreachableException();
-    }
+    public void Start<TStateMachine>(ref TStateMachine stateMachine)
+        where TStateMachine : IAsyncStateMachine { }
 
-    class UntrustworthyMethodBuilder
-    {
-        public static UntrustworthyMethodBuilder Create()
-            => new UntrustworthyMethodBuilder();
+    public void SetStateMachine(IAsyncStateMachine stateMachine) { }
 
-        public void Start<TStateMachine>(ref TStateMachine stateMachine)
-            where TStateMachine : IAsyncStateMachine { }
+    public void SetException(Exception exception) { }
 
-        public void SetStateMachine(IAsyncStateMachine stateMachine) { }
+    public void SetResult() { }
 
-        public void SetException(Exception exception) { }
+    public void AwaitOnCompleted<TAwaiter, TStateMachine>(
+        ref TAwaiter awaiter, ref TStateMachine stateMachine)
+        where TAwaiter : INotifyCompletion
+        where TStateMachine : IAsyncStateMachine { }
 
-        public void SetResult() { }
-
-        public void AwaitOnCompleted<TAwaiter, TStateMachine>(
-            ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : INotifyCompletion
-            where TStateMachine : IAsyncStateMachine { }
-
-        public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(
-            ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : ICriticalNotifyCompletion
-            where TStateMachine : IAsyncStateMachine { }
+    public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(
+        ref TAwaiter awaiter, ref TStateMachine stateMachine)
+        where TAwaiter : ICriticalNotifyCompletion
+        where TStateMachine : IAsyncStateMachine { }
         
-        public UntrustworthyAwaitable Task
-            => new UntrustworthyAwaitable();
-    }
+    public UntrustworthyAwaitable Task
+        => new UntrustworthyAwaitable();
 }

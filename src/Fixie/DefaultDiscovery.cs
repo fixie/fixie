@@ -1,16 +1,15 @@
-﻿namespace Fixie
+﻿namespace Fixie;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+public sealed class DefaultDiscovery : IDiscovery
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+    public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
+        => concreteClasses.Where(x => x.Name.EndsWith("Tests"));
 
-    public sealed class DefaultDiscovery : IDiscovery
-    {
-        public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
-            => concreteClasses.Where(x => x.Name.EndsWith("Tests"));
-
-        public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
-            => publicMethods.Where(x => !x.IsStatic);
-    }
+    public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+        => publicMethods.Where(x => !x.IsStatic);
 }

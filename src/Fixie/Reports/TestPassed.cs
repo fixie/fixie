@@ -1,12 +1,11 @@
-﻿namespace Fixie.Reports
-{
-    using System;
+﻿namespace Fixie.Reports;
 
-    public class TestPassed : TestCompleted
+using System;
+
+public class TestPassed : TestCompleted
+{
+    internal TestPassed(string test, string testCase, TimeSpan duration, string output)
+        : base(test, testCase, duration, output)
     {
-        internal TestPassed(string test, string testCase, TimeSpan duration, string output)
-            : base(test, testCase, duration, output)
-        {
-        }
     }
 }

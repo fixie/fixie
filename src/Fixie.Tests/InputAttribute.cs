@@ -1,13 +1,12 @@
-﻿namespace Fixie.Tests
+﻿namespace Fixie.Tests;
+
+using System;
+
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+public class InputAttribute : Attribute
 {
-    using System;
+    public InputAttribute(params object?[] parameters)
+        => Parameters = parameters;
 
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-    public class InputAttribute : Attribute
-    {
-        public InputAttribute(params object?[] parameters)
-            => Parameters = parameters;
-
-        public object?[] Parameters { get; }
-    }
+    public object?[] Parameters { get; }
 }

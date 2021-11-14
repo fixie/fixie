@@ -1,241 +1,240 @@
-﻿namespace Fixie.Tests
+﻿namespace Fixie.Tests;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Assertions;
+using Fixie.Reports;
+using static Utility;
+
+public class StackTracePresentationTests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Fixie.Reports;
-    using static Utility;
-
-    public class StackTracePresentationTests
+    public async Task ShouldProvideCleanStackTraceForImplicitTestClassConstructionFailures()
     {
-        public async Task ShouldProvideCleanStackTraceForImplicitTestClassConstructionFailures()
-        {
-            (await Run<ConstructionFailureTestClass, ImplicitExceptionHandling>())
-                .ShouldBe(
-                    "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
-                    "",
-                    "'.ctor' failed!",
-                    "",
-                    "Fixie.Tests.FailureException",
-                    At<ConstructionFailureTestClass>(".ctor()"),
-                    "",
-                    "1 failed, took 1.23 seconds");
-        }
+        (await Run<ConstructionFailureTestClass, ImplicitExceptionHandling>())
+            .ShouldBe(
+                "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
+                "",
+                "'.ctor' failed!",
+                "",
+                "Fixie.Tests.FailureException",
+                At<ConstructionFailureTestClass>(".ctor()"),
+                "",
+                "1 failed, took 1.23 seconds");
+    }
         
-        public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestClassConstructionFailures()
-        {
-            (await Run<ConstructionFailureTestClass, ExplicitExceptionHandling>())
-                .ShouldBe(
-                    "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
-                    "",
-                    "'.ctor' failed!",
-                    "",
-                    "Fixie.Tests.FailureException",
-                    At<ConstructionFailureTestClass>(".ctor()"),
-                    "--- End of stack trace from previous location where exception was thrown ---",
-                    At(typeof(TestClass), "Construct(Object[] parameters)", Path.Join("...", "src", "Fixie", "TestClass.cs")),
-                    At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
-                    "",
-                    "1 failed, took 1.23 seconds");
-        }
+    public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestClassConstructionFailures()
+    {
+        (await Run<ConstructionFailureTestClass, ExplicitExceptionHandling>())
+            .ShouldBe(
+                "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
+                "",
+                "'.ctor' failed!",
+                "",
+                "Fixie.Tests.FailureException",
+                At<ConstructionFailureTestClass>(".ctor()"),
+                "--- End of stack trace from previous location where exception was thrown ---",
+                At(typeof(TestClass), "Construct(Object[] parameters)", Path.Join("...", "src", "Fixie", "TestClass.cs")),
+                At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
+                "",
+                "1 failed, took 1.23 seconds");
+    }
 
-        public async Task ShouldProvideCleanStackTraceTestMethodFailures()
-        {
-            (await Run<FailureTestClass, ImplicitExceptionHandling>())
-                .ShouldBe(
-                    "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
-                    "",
-                    "'Asynchronous' failed!",
-                    "",
-                    "Fixie.Tests.FailureException",
-                    At<FailureTestClass>("Asynchronous()"),
-                    "",
-                    "Test '" + FullName<FailureTestClass>() + ".Synchronous' failed:",
-                    "",
-                    "'Synchronous' failed!",
-                    "",
-                    "Fixie.Tests.FailureException",
-                    At<FailureTestClass>("Synchronous()"),
-                    "",
-                    "2 failed, took 1.23 seconds");
-        }
+    public async Task ShouldProvideCleanStackTraceTestMethodFailures()
+    {
+        (await Run<FailureTestClass, ImplicitExceptionHandling>())
+            .ShouldBe(
+                "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
+                "",
+                "'Asynchronous' failed!",
+                "",
+                "Fixie.Tests.FailureException",
+                At<FailureTestClass>("Asynchronous()"),
+                "",
+                "Test '" + FullName<FailureTestClass>() + ".Synchronous' failed:",
+                "",
+                "'Synchronous' failed!",
+                "",
+                "Fixie.Tests.FailureException",
+                At<FailureTestClass>("Synchronous()"),
+                "",
+                "2 failed, took 1.23 seconds");
+    }
 
-        public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestMethodInvocationFailures()
-        {
-            (await Run<FailureTestClass, ExplicitExceptionHandling>())
-                .ShouldBe(
-                    "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
-                    "",
-                    "'Asynchronous' failed!",
-                    "",
-                    "Fixie.Tests.FailureException",
-                    At<FailureTestClass>("Asynchronous()"),
-                    At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
-                    At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
-                    At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
-                    "",
-                    "Test '" + FullName<FailureTestClass>() + ".Synchronous' failed:",
-                    "",
-                    "'Synchronous' failed!",
-                    "",
-                    "Fixie.Tests.FailureException",
-                    At<FailureTestClass>("Synchronous()"),
-                    "--- End of stack trace from previous location where exception was thrown ---",
-                    At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
-                    At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
-                    At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
-                    "",
-                    "2 failed, took 1.23 seconds");
-        }
+    public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestMethodInvocationFailures()
+    {
+        (await Run<FailureTestClass, ExplicitExceptionHandling>())
+            .ShouldBe(
+                "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
+                "",
+                "'Asynchronous' failed!",
+                "",
+                "Fixie.Tests.FailureException",
+                At<FailureTestClass>("Asynchronous()"),
+                At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
+                "",
+                "Test '" + FullName<FailureTestClass>() + ".Synchronous' failed:",
+                "",
+                "'Synchronous' failed!",
+                "",
+                "Fixie.Tests.FailureException",
+                At<FailureTestClass>("Synchronous()"),
+                "--- End of stack trace from previous location where exception was thrown ---",
+                At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
+                "",
+                "2 failed, took 1.23 seconds");
+    }
 
-        public async Task ShouldProvideLiterateStackTraceIncludingAllNestedExceptions()
-        {
-            (await Run<NestedFailureTestClass, ImplicitExceptionHandling>())
-                .ShouldBe(
-                    "Test '" + FullName<NestedFailureTestClass>() + ".Asynchronous' failed:",
-                    "",
-                    "Primary Exception!",
-                    "",
-                    FullName<PrimaryException>(),
-                    At<StackTracePresentationTests>("ThrowNestedException()"),
-                    At<NestedFailureTestClass>("Asynchronous()"),
-                    "",
-                    "------- Inner Exception: System.AggregateException -------",
-                    "One or more errors occurred. (Divide by Zero Exception!)",
-                    At<StackTracePresentationTests>("ThrowNestedException()"),
-                    "",
-                    "------- Inner Exception: System.DivideByZeroException -------",
-                    "Divide by Zero Exception!",
-                    At<StackTracePresentationTests>("ThrowNestedException()"),
-                    "",
-                    "Test '" + FullName<NestedFailureTestClass>() + ".Synchronous' failed:",
-                    "",
-                    "Primary Exception!",
-                    "",
-                    FullName<PrimaryException>(),
-                    At<StackTracePresentationTests>("ThrowNestedException()"),
-                    At<NestedFailureTestClass>("Synchronous()"),
-                    "",
-                    "------- Inner Exception: System.AggregateException -------",
-                    "One or more errors occurred. (Divide by Zero Exception!)",
-                    At<StackTracePresentationTests>("ThrowNestedException()"),
-                    "",
-                    "------- Inner Exception: System.DivideByZeroException -------",
-                    "Divide by Zero Exception!",
-                    At<StackTracePresentationTests>("ThrowNestedException()"),
-                    "",
-                    "2 failed, took 1.23 seconds");
-        }
+    public async Task ShouldProvideLiterateStackTraceIncludingAllNestedExceptions()
+    {
+        (await Run<NestedFailureTestClass, ImplicitExceptionHandling>())
+            .ShouldBe(
+                "Test '" + FullName<NestedFailureTestClass>() + ".Asynchronous' failed:",
+                "",
+                "Primary Exception!",
+                "",
+                FullName<PrimaryException>(),
+                At<StackTracePresentationTests>("ThrowNestedException()"),
+                At<NestedFailureTestClass>("Asynchronous()"),
+                "",
+                "------- Inner Exception: System.AggregateException -------",
+                "One or more errors occurred. (Divide by Zero Exception!)",
+                At<StackTracePresentationTests>("ThrowNestedException()"),
+                "",
+                "------- Inner Exception: System.DivideByZeroException -------",
+                "Divide by Zero Exception!",
+                At<StackTracePresentationTests>("ThrowNestedException()"),
+                "",
+                "Test '" + FullName<NestedFailureTestClass>() + ".Synchronous' failed:",
+                "",
+                "Primary Exception!",
+                "",
+                FullName<PrimaryException>(),
+                At<StackTracePresentationTests>("ThrowNestedException()"),
+                At<NestedFailureTestClass>("Synchronous()"),
+                "",
+                "------- Inner Exception: System.AggregateException -------",
+                "One or more errors occurred. (Divide by Zero Exception!)",
+                At<StackTracePresentationTests>("ThrowNestedException()"),
+                "",
+                "------- Inner Exception: System.DivideByZeroException -------",
+                "Divide by Zero Exception!",
+                At<StackTracePresentationTests>("ThrowNestedException()"),
+                "",
+                "2 failed, took 1.23 seconds");
+    }
 
-        static async Task<IEnumerable<string>> Run<TSampleTestClass, TExecution>() where TExecution : IExecution, new()
-        {
-            var discovery = new SelfTestDiscovery();
-            var execution = new TExecution();
+    static async Task<IEnumerable<string>> Run<TSampleTestClass, TExecution>() where TExecution : IExecution, new()
+    {
+        var discovery = new SelfTestDiscovery();
+        var execution = new TExecution();
 
-            using var console = new RedirectedConsole();
+        using var console = new RedirectedConsole();
 
-            var report = new ConsoleReport(GetTestEnvironment());
+        var report = new ConsoleReport(GetTestEnvironment());
             
-            await Utility.Run(report, discovery, execution, typeof(TSampleTestClass));
+        await Utility.Run(report, discovery, execution, typeof(TSampleTestClass));
 
-            return console.Lines()
-                .NormalizeStackTraceLines()
-                .CleanDuration();
-        }
+        return console.Lines()
+            .NormalizeStackTraceLines()
+            .CleanDuration();
+    }
 
-        class ImplicitExceptionHandling : IExecution
+    class ImplicitExceptionHandling : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
-                foreach (var test in testSuite.Tests)
-                    await test.Run();
-            }
+            foreach (var test in testSuite.Tests)
+                await test.Run();
         }
+    }
 
-        class ExplicitExceptionHandling : IExecution
+    class ExplicitExceptionHandling : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
+            foreach (var testClass in testSuite.TestClasses)
             {
-                foreach (var testClass in testSuite.TestClasses)
+                foreach (var test in testClass.Tests)
                 {
-                    foreach (var test in testClass.Tests)
+                    try
                     {
-                        try
-                        {
-                            var instance = testClass.Construct();
+                        var instance = testClass.Construct();
 
-                            await test.Method.Call(instance);
+                        await test.Method.Call(instance);
 
-                            await test.Pass();
-                        }
-                        catch (Exception exception)
-                        {
-                            await test.Fail(exception);
-                        }
+                        await test.Pass();
+                    }
+                    catch (Exception exception)
+                    {
+                        await test.Fail(exception);
                     }
                 }
             }
         }
+    }
 
-        class ConstructionFailureTestClass
+    class ConstructionFailureTestClass
+    {
+        public ConstructionFailureTestClass() => throw new FailureException();
+        public void UnreachableTest() => throw new ShouldBeUnreachableException();
+    }
+
+    class FailureTestClass
+    {
+        public void Synchronous()
         {
-            public ConstructionFailureTestClass() => throw new FailureException();
-            public void UnreachableTest() => throw new ShouldBeUnreachableException();
+            throw new FailureException();
         }
 
-        class FailureTestClass
+        public async Task Asynchronous()
         {
-            public void Synchronous()
-            {
-                throw new FailureException();
-            }
+            await Task.Yield();
+            throw new FailureException();
+        }
+    }
 
-            public async Task Asynchronous()
-            {
-                await Task.Yield();
-                throw new FailureException();
-            }
+    class NestedFailureTestClass
+    {
+        public void Synchronous()
+        {
+            ThrowNestedException();
         }
 
-        class NestedFailureTestClass
+        public async Task Asynchronous()
         {
-            public void Synchronous()
-            {
-                ThrowNestedException();
-            }
-
-            public async Task Asynchronous()
-            {
-                await Task.Yield();
-                ThrowNestedException();
-            }
+            await Task.Yield();
+            ThrowNestedException();
         }
+    }
 
-        static void ThrowNestedException()
+    static void ThrowNestedException()
+    {
+        try
         {
             try
             {
-                try
-                {
-                    throw new DivideByZeroException("Divide by Zero Exception!");
-                }
-                catch (Exception exception)
-                {
-                    throw new AggregateException(exception);
-                }
+                throw new DivideByZeroException("Divide by Zero Exception!");
             }
             catch (Exception exception)
             {
-                throw new PrimaryException(exception);
+                throw new AggregateException(exception);
             }
         }
-
-        class PrimaryException : Exception
+        catch (Exception exception)
         {
-            public PrimaryException(Exception innerException)
-                : base("Primary Exception!", innerException) { }
+            throw new PrimaryException(exception);
         }
+    }
+
+    class PrimaryException : Exception
+    {
+        public PrimaryException(Exception innerException)
+            : base("Primary Exception!", innerException) { }
     }
 }

@@ -1,10 +1,9 @@
-﻿namespace Fixie.Reports
-{
-    public class TestDiscovered : IMessage
-    {
-        internal TestDiscovered(string test)
-            => Test = test;
+﻿namespace Fixie.Reports;
 
-        public string Test { get; }
-    }
+public class TestDiscovered : IMessage
+{
+    internal TestDiscovered(string test)
+        => Test = test;
+
+    public string Test { get; }
 }

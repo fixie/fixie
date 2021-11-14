@@ -4,7 +4,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <DebugType>embedded</DebugType>
     <RollForward>Major</RollForward>
   </PropertyGroup>
 

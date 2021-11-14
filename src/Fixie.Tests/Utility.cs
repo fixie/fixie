@@ -35,7 +35,7 @@
             var typeFullName = type.FullName ??
                    throw new Exception($"Expected type {type.Name} to have a non-null FullName.");
 
-            return $"   at {typeFullName.Replace("+", ".")}.{method} in {normalizedPath}:line #";
+            return $"   at {typeFullName.Replace('+', '.')}.{method} in {normalizedPath}:line #";
         }
 
         public static string NormalizedPath(string path)

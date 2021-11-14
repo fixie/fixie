@@ -135,7 +135,7 @@ namespace Fixie.TestAdapter
             //
             //ECMA-335 specifies "/" instead of "+" to indicate a nested type.
 
-            return className.Replace("+", "/");
+            return className.Replace('+', '/');
         }
     }
 }

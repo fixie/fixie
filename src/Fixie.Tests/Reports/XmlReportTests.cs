@@ -71,8 +71,8 @@
                                 .Replace("[fileLocation]", fileLocation)
                                 .Replace("[testClass]", TestClass)
                                 .Replace("[genericTestClass]", GenericTestClass)
-                                .Replace("[testClassForStackTrace]", TestClass.Replace("+", "."))
-                                .Replace("[genericTestClassForStackTrace]", GenericTestClass.Replace("+", "."));
+                                .Replace("[testClassForStackTrace]", TestClass.Replace('+', '.'))
+                                .Replace("[genericTestClassForStackTrace]", GenericTestClass.Replace('+', '.'));
             }
         }
 

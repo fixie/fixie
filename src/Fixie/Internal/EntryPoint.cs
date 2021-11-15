@@ -47,7 +47,7 @@
                 using var pipeStream = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
                 using var pipe = new TestAdapterPipe(pipeStream);
 
-                pipeStream.Connect();
+                await pipeStream.ConnectAsync();
                 pipeStream.ReadMode = PipeTransmissionMode.Byte;
                 
                 var testAdapterReport = new TestAdapterReport(pipe);
@@ -93,7 +93,7 @@
             catch (Exception exception)
             {
                 using (Foreground.Red)
-                    console.WriteLine($"Fatal Error: {exception}");
+                    await console.WriteLineAsync($"Fatal Error: {exception}");
 
                 return (int)ExitCode.FatalError;
             }

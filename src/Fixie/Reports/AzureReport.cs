@@ -219,26 +219,26 @@
 
                     if (attempt > 1)
                     {
-                        console.WriteLine($"Successfully submitted test result batch to Azure DevOps API on attempt #{attempt}.");
-                        console.WriteLine();
+                        await console.WriteLineAsync($"Successfully submitted test result batch to Azure DevOps API on attempt #{attempt}.");
+                        await console.WriteLineAsync();
                     }
 
                     return;
                 }
                 catch (Exception exception)
                 {
-                    console.WriteLine($"Failed to submit test result batch to Azure DevOps API (attempt #{attempt} of {maxAttempts}): " + exception);
-                    console.WriteLine();
+                    await console.WriteLineAsync($"Failed to submit test result batch to Azure DevOps API (attempt #{attempt} of {maxAttempts}): " + exception);
+                    await console.WriteLineAsync();
                     Thread.Sleep(TimeSpan.FromSeconds(coolDownInSeconds));
                     attempt++;
                 }
             }
 
-            console.WriteLine("Due to repeated failures while submitting test results to the Azure DevOps API,");
-            console.WriteLine("further attempts will be suppressed for the remainder of this test run. Full test");
-            console.WriteLine("results will continue to be reported to this console and to the test process exit");
-            console.WriteLine("code, but the Azure DevOps \"Tests\" summary will be incomplete.");
-            console.WriteLine();
+            await console.WriteLineAsync("Due to repeated failures while submitting test results to the Azure DevOps API,");
+            await console.WriteLineAsync("further attempts will be suppressed for the remainder of this test run. Full test");
+            await console.WriteLineAsync("results will continue to be reported to this console and to the test process exit");
+            await console.WriteLineAsync("code, but the Azure DevOps \"Tests\" summary will be incomplete.");
+            await console.WriteLineAsync();
 
             apiUnavailable = true;
             batch.Clear();

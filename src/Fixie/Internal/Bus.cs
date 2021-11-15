@@ -29,12 +29,12 @@
                 catch (Exception exception)
                 {
                     using (Foreground.Yellow)
-                        console.WriteLine(
+                        await console.WriteLineAsync(
                             $"{report.GetType().FullName} threw an exception while " +
                             $"attempting to handle a message of type {typeof(TMessage).FullName}:");
-                    console.WriteLine();
-                    console.WriteLine(exception.ToString());
-                    console.WriteLine();
+                    await console.WriteLineAsync();
+                    await console.WriteLineAsync(exception.ToString());
+                    await console.WriteLineAsync();
                 }
             }
         }

@@ -19,7 +19,13 @@
             var environment = GetTestEnvironment();
 
             XDocument? actual = null;
-            var report = new XmlReport(environment, document => actual = document);
+            var report = new XmlReport(
+                environment,
+                document =>
+                {
+                    actual = document;
+                    return Task.CompletedTask;
+                });
 
             var output = await Run(report);
 

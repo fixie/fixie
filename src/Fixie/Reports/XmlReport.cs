@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Xml.Linq;
     using Internal;
@@ -18,7 +19,7 @@
         IHandler<ExecutionCompleted>
     {
         readonly TestEnvironment environment;
-        readonly Action<XDocument> save;
+        readonly Func<XDocument, Task> save;
 
         readonly SortedDictionary<string, ClassResult> report = new SortedDictionary<string, ClassResult>();
 
@@ -27,7 +28,7 @@
         {
         }
 
-        static Action<XDocument> SaveReport(TestEnvironment environment, string absoluteOrRelativePath)
+        static Func<XDocument, Task> SaveReport(TestEnvironment environment, string absoluteOrRelativePath)
         {
             return report => Save(report, FullPath(environment, absoluteOrRelativePath));
         }
@@ -37,7 +38,7 @@
             return Path.Combine(environment.RootPath, absoluteOrRelativePath);
         }
 
-        internal XmlReport(TestEnvironment environment, Action<XDocument> save)
+        internal XmlReport(TestEnvironment environment, Func<XDocument, Task> save)
         {
             this.environment = environment;
             this.save = save;
@@ -71,11 +72,11 @@
             return report[type];
         }
 
-        public Task Handle(ExecutionCompleted message)
+        public async Task Handle(ExecutionCompleted message)
         {
             var now = DateTime.UtcNow;
 
-            save(new XDocument(
+            await save(new XDocument(
                 new XElement("assemblies",
                     new XElement("assembly",
                         new XAttribute("name", environment.Assembly.Location),
@@ -91,8 +92,6 @@
                         report.Values.Select(x => x.ToElement())))));
 
             report.Clear();
-
-            return Task.CompletedTask;
         }
 
         static string Seconds(TimeSpan duration)
@@ -101,7 +100,7 @@
             return FormattableString.Invariant($"{duration.TotalSeconds:0.000}");
         }
 
-        static void Save(XDocument report, string path)
+        static async Task Save(XDocument report, string path)
         {
             var directory = Path.GetDirectoryName(path);
 
@@ -110,9 +109,9 @@
 
             Directory.CreateDirectory(directory);
 
-            using var stream = new FileStream(path, FileMode.Create);
-            using var writer = new StreamWriter(stream);
-            report.Save(writer, SaveOptions.None);
+            await using var stream = new FileStream(path, FileMode.Create);
+            await using var writer = new StreamWriter(stream);
+            await report.SaveAsync(writer, SaveOptions.None, CancellationToken.None);
         }
 
         class ClassResult

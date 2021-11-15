@@ -242,7 +242,7 @@
             => item.Length == 2 && item[0] == '-' && char.IsLetter(item[1]);
 
         static bool IsNamedArgumentKey(string item)
-            => item.StartsWith("-");
+            => item.StartsWith('-');
 
         static Array CreateTypedArray(Type itemType, IReadOnlyList<object?> values)
         {

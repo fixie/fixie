@@ -58,7 +58,7 @@
             return File.ReadAllLines(gitconfig)
                 .SkipWhile(x => !x.StartsWith("[difftool "))
                 .Skip(1)
-                .TakeWhile(x => !x.StartsWith("["))
+                .TakeWhile(x => !x.StartsWith('['))
                 .Select(x => x.Split(new[] {'='}, 2))
                 .Where(x => x[0].Trim() == "cmd")
                 .Select(x => x[1].Trim()

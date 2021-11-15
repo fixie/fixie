@@ -28,70 +28,62 @@
 
         public Task Handle(TestSkipped message)
         {
-            WithPadding(() =>
+            return WithPadding(async () =>
             {
                 using (Foreground.Yellow)
-                    console.WriteLine($"Test '{message.TestCase}' skipped:");
+                    await console.WriteLineAsync($"Test '{message.TestCase}' skipped:");
 
-                console.WriteLine(message.Reason);
+                await console.WriteLineAsync(message.Reason);
             });
-
-            return Task.CompletedTask;
         }
 
-        public Task Handle(TestPassed message)
+        public async Task Handle(TestPassed message)
         {
             if (outputTestPassed)
             {
-                WithoutPadding(() =>
+                await WithoutPadding(async () =>
                 {
                     using (Foreground.Green)
-                        console.WriteLine($"Test '{message.TestCase}' passed");
+                        await console.WriteLineAsync($"Test '{message.TestCase}' passed");
                 });
             }
-
-            return Task.CompletedTask;
         }
 
-        public Task Handle(TestFailed message)
+        public async Task Handle(TestFailed message)
         {
-            WithPadding(() =>
+            await WithPadding(async () =>
             {
                 using (Foreground.Red)
-                    console.WriteLine($"Test '{message.TestCase}' failed:");
-                console.WriteLine();
-                console.WriteLine(message.Reason.Message);
-                console.WriteLine();
-                console.WriteLine(message.Reason.GetType().FullName);
-                console.WriteLine(message.Reason.LiterateStackTrace());
+                    await console.WriteLineAsync($"Test '{message.TestCase}' failed:");
+                await console.WriteLineAsync();
+                await console.WriteLineAsync(message.Reason.Message);
+                await console.WriteLineAsync();
+                await console.WriteLineAsync(message.Reason.GetType().FullName);
+                await console.WriteLineAsync(message.Reason.LiterateStackTrace());
             });
-
-            return Task.CompletedTask;
         }
 
-        void WithPadding(Action write)
+        async Task WithPadding(Func<Task> write)
         {
             if (paddingWouldRequireOpeningBlankLine)
-                console.WriteLine();
+                await console.WriteLineAsync();
 
-            write();
+            await write();
             
-            console.WriteLine();
+            await console.WriteLineAsync();
             paddingWouldRequireOpeningBlankLine = false;
         }
 
-        void WithoutPadding(Action write)
+        async Task WithoutPadding(Func<Task> write)
         {
-            write();
+            await write();
             paddingWouldRequireOpeningBlankLine = true;
         }
 
-        public Task Handle(ExecutionCompleted message)
+        public async Task Handle(ExecutionCompleted message)
         {
-            console.WriteLine(Summarize(message));
-            console.WriteLine();
-
-            return Task.CompletedTask;
+            await console.WriteLineAsync(Summarize(message));
+            await console.WriteLineAsync();
         }
 
         static string Summarize(ExecutionCompleted message)

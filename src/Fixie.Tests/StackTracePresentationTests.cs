@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
     using Assertions;
     using Fixie.Reports;
@@ -142,7 +143,9 @@
 
             return console.Lines()
                 .NormalizeStackTraceLines()
-                .CleanDuration();
+                .CleanDuration()
+                //Exclude CreateInstanceDefaultCtor which only appears in net6
+                .Where(line => !line.Contains("CreateInstanceDefaultCtor"));
         }
 
         class ImplicitExceptionHandling : IExecution

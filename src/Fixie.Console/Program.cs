@@ -149,7 +149,7 @@
                 new FileInfo(testProject).Directory!.FullName,
                 outputPath);
 
-            var environmentVariables = new Dictionary<string, string>();
+            var environmentVariables = new Dictionary<string, string?>();
 
             if (options.Tests != null)
                 environmentVariables["FIXIE:TESTS_PATTERN"] = options.Tests;

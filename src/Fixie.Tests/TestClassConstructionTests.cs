@@ -353,12 +353,17 @@ namespace Fixie.Tests
         public async Task ShouldFailWhenTestClassConstructorCannotBeInvoked()
         {
             var output = await Run<CannotInvokeConstructorTestClass, DefaultExecution>();
-
-            output.ShouldHaveResults(
-                "CannotInvokeConstructorTestClass.UnreachableCase failed: " +
-                "No parameterless constructor defined " +
-                $"for type '{FullName<CannotInvokeConstructorTestClass>()}'.");
-
+            var fullName = FullName<CannotInvokeConstructorTestClass>();
+#if NETCOREAPP3_1
+            var expected = "CannotInvokeConstructorTestClass.UnreachableCase failed: " +
+                           "No parameterless constructor defined " +
+                           $"for type '{fullName}'.";
+#else
+            var expected = "CannotInvokeConstructorTestClass.UnreachableCase failed: " +
+                           $"Cannot dynamically create an instance of type '{fullName}'. " +
+                           "Reason: No parameterless constructor defined.";
+#endif
+            output.ShouldHaveResults(expected);
             output.ShouldHaveLifecycle();
         }
     }

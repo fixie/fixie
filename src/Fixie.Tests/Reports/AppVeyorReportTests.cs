@@ -1,5 +1,6 @@
 ﻿namespace Fixie.Tests.Reports
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Assertions;
@@ -32,7 +33,7 @@
             foreach (var result in results)
             {
                 result.TestFramework.ShouldBe("Fixie");
-                result.FileName.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.1)");
+                result.FileName.ShouldBe($"Fixie.Tests (.NETCoreApp,Version=v{Environment.Version.ToString(2)})");
             }
 
             var fail = results[0];

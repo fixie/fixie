@@ -39,7 +39,7 @@
                 var actualHeader = client.DefaultRequestHeaders.Accept.Single();
                 actualHeader.MediaType.ShouldBe("application/json");
 
-                var actualAuthorization = client.DefaultRequestHeaders.Authorization;
+                var actualAuthorization = client.DefaultRequestHeaders.Authorization!;
                 actualAuthorization.Scheme.ShouldBe("Bearer");
                 actualAuthorization.Parameter.ShouldBe(accessToken);
             };
@@ -76,7 +76,7 @@
             firstRequest.Uri.ShouldBe($"http://localhost:4567/{project}/_apis/test/runs?api-version=5.0");
 
             var createRun = firstRequest.Content;
-            createRun.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.1)");
+            createRun.name.ShouldBe($"Fixie.Tests (.NETCoreApp,Version=v{Environment.Version.ToString(2)})");
             createRun.build.id.ShouldBe(buildId);
             createRun.isAutomated.ShouldBe(true);
 

@@ -1,4 +1,6 @@
-﻿namespace Fixie.Internal
+﻿#nullable disable
+
+namespace Fixie.Internal
 {
     using System;
     using System.Text;

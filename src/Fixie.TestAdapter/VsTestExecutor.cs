@@ -36,20 +36,22 @@
                 if (ShouldRunTestsInProcess())
                 {
                     foreach (var assemblyPath in sources)
-                        RunTestsInProcess(log, frameworkHandle, assemblyPath, runner =>
-                        {
-                            runner.Run().GetAwaiter().GetResult();
-                        });
+                    {
+                        RunTestsInProcess(log,
+                            frameworkHandle,
+                            assemblyPath,
+                            runner => runner.Run().GetAwaiter().GetResult());
+                    }
                 }
                 else
                 {
                     var runAllTests = new PipeMessage.ExecuteTests
                     {
-                        Filter = new string[] { }
+                        Filter = Array.Empty<string>()
                     };
 
                     foreach (var assemblyPath in sources)
-                        RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));                    
+                        RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
                 }
             }
             catch (Exception exception)
@@ -105,7 +107,7 @@
             }
         }
 
-        public void Cancel() { }
+        public void Cancel() { /* Not needed in this implementation */ }
 
         static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<TestAdapterPipe> sendCommand)
         {
@@ -120,76 +122,76 @@
             var pipeName = Guid.NewGuid().ToString();
             Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
 
-            using (var pipeStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte))
-            using (var pipe = new TestAdapterPipe(pipeStream))
-            using (var process = Start(assemblyPath, frameworkHandle))
+            using var pipeStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte);
+            using var pipe = new TestAdapterPipe(pipeStream);
+            using var process = Start(assemblyPath, frameworkHandle);
+            pipeStream.WaitForConnection();
+
+            sendCommand(pipe);
+
+            var recorder = new VsExecutionRecorder(frameworkHandle, assemblyPath);
+
+            PipeMessage.TestStarted? lastTestStarted = null;
+
+            while (true)
             {
-                pipeStream.WaitForConnection();
+                var messageType = pipe.ReceiveMessageType();
 
-                sendCommand(pipe);
-
-                var recorder = new VsExecutionRecorder(frameworkHandle, assemblyPath);
-
-                PipeMessage.TestStarted? lastTestStarted = null;
-
-                while (true)
+                if (messageType == typeof(PipeMessage.TestStarted).FullName)
                 {
-                    var messageType = pipe.ReceiveMessageType();
+                    var message = pipe.Receive<PipeMessage.TestStarted>();
+                    lastTestStarted = message;
+                    recorder.Record(message);
+                }
+                else if (messageType == typeof(PipeMessage.TestSkipped).FullName)
+                {
+                    var testResult = pipe.Receive<PipeMessage.TestSkipped>();
+                    recorder.Record(testResult);
+                }
+                else if (messageType == typeof(PipeMessage.TestPassed).FullName)
+                {
+                    var testResult = pipe.Receive<PipeMessage.TestPassed>();
+                    recorder.Record(testResult);
+                }
+                else if (messageType == typeof(PipeMessage.TestFailed).FullName)
+                {
+                    var testResult = pipe.Receive<PipeMessage.TestFailed>();
+                    recorder.Record(testResult);
+                }
+                else if (messageType == typeof(PipeMessage.Exception).FullName)
+                {
+                    var exception = pipe.Receive<PipeMessage.Exception>();
+                    throw new RunnerException(exception);
+                }
+                else if (messageType == typeof(PipeMessage.EndOfPipe).FullName)
+                {
+#pragma warning disable S1481 // Unused local variables should be removed
+                    var endOfPipe = pipe.Receive<PipeMessage.EndOfPipe>();
+#pragma warning restore S1481 // Unused local variables should be removed
+                    break;
+                }
+                else if (!string.IsNullOrEmpty(messageType))
+                {
+                    var body = pipe.ReceiveMessageBody();
+                    log.Error($"The test runner received an unexpected message of type {messageType}: {body}");
+                }
+                else
+                {
+                    var exception = new TestProcessExitException(process.TryGetExitCode());
 
-                    if (messageType == typeof(PipeMessage.TestStarted).FullName)
+                    if (lastTestStarted != null)
                     {
-                        var message = pipe.Receive<PipeMessage.TestStarted>();
-                        lastTestStarted = message;
-                        recorder.Record(message);
-                    }
-                    else if (messageType == typeof(PipeMessage.TestSkipped).FullName)
-                    {
-                        var testResult = pipe.Receive<PipeMessage.TestSkipped>();
-                        recorder.Record(testResult);
-                    }
-                    else if (messageType == typeof(PipeMessage.TestPassed).FullName)
-                    {
-                        var testResult = pipe.Receive<PipeMessage.TestPassed>();
-                        recorder.Record(testResult);
-                    }
-                    else if (messageType == typeof(PipeMessage.TestFailed).FullName)
-                    {
-                        var testResult = pipe.Receive<PipeMessage.TestFailed>();
-                        recorder.Record(testResult);
-                    }
-                    else if (messageType == typeof(PipeMessage.Exception).FullName)
-                    {
-                        var exception = pipe.Receive<PipeMessage.Exception>();
-                        throw new RunnerException(exception);
-                    }
-                    else if (messageType == typeof(PipeMessage.EndOfPipe).FullName)
-                    {
-                        var endOfPipe = pipe.Receive<PipeMessage.EndOfPipe>();
-                        break;
-                    }
-                    else if (!string.IsNullOrEmpty(messageType))
-                    {
-                        var body = pipe.ReceiveMessageBody();
-                        log.Error($"The test runner received an unexpected message of type {messageType}: {body}");
-                    }
-                    else
-                    {
-                        var exception = new TestProcessExitException(process.TryGetExitCode());
-
-                        if (lastTestStarted != null)
+                        recorder.Record(new PipeMessage.TestFailed
                         {
-                            recorder.Record(new PipeMessage.TestFailed
-                            {
-                                Test = lastTestStarted.Test,
-                                TestCase = lastTestStarted.Test,
-                                Reason = new PipeMessage.Exception(exception),
-                                DurationInMilliseconds = 0,
-                                Output = ""
-                            });
-                        }
-
-                        throw exception;
+                            Test = lastTestStarted.Test,
+                            TestCase = lastTestStarted.Test,
+                            Reason = new PipeMessage.Exception(exception),
+                            DurationInMilliseconds = 0,
+                            Output = ""
+                        });
                     }
+
+                    throw exception;
                 }
             }
         }
@@ -232,7 +234,7 @@
             var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
             var report = new InProcessExecutionReport(frameworkHandle, assemblyPath);
-            
+
             var console = Console.Out;
             var rootPath = Directory.GetCurrentDirectory();
             var environment = new TestEnvironment(assembly, console, rootPath);

@@ -8,7 +8,7 @@
      * deserialization from corresponding serialization where no nulls are in play.
      */
 
-    static class PipeMessage
+    public static class PipeMessage
     {
         public class DiscoverTests { }
 

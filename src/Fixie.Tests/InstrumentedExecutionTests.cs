@@ -13,8 +13,10 @@ namespace Fixie.Tests
 
         protected InstrumentedExecutionTests()
         {
+#pragma warning disable S3010 // Static fields should not be updated in constructors
             FailingMember = null;
             FailingMemberOccurrence = null;
+#pragma warning restore S3010 // Static fields should not be updated in constructors
         }
 
         protected static void FailDuring(string failingMemberName, int? occurrence = null)
@@ -55,7 +57,7 @@ namespace Fixie.Tests
 
             ProcessScriptedFailure(member);
         }
-        
+
         protected static void WhereAmI([CallerMemberName] string member = default!)
         {
             System.Console.WriteLine(member);
@@ -90,7 +92,7 @@ namespace Fixie.Tests
             => Run(
                 new[] {typeof(TSampleTestClass1), typeof(TSampleTestClass2)},
                 execution);
-   
+
         protected Task<Output> Run<TSampleTestClass>()
             => Run<DefaultExecution>(typeof(TSampleTestClass));
 

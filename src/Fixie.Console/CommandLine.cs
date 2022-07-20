@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public class CommandLine
+    public static class CommandLine
     {
         public static T Parse<T>(string[] arguments) where T : class
             => new Parser<T>(arguments).Model;

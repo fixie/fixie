@@ -2,3 +2,5 @@
 /src/**/bin/
 /src/**/obj/
 /artifacts/
+/src/Fixie.Console.backup
+/src/Fixie.Console/upgrade-assistant.clef

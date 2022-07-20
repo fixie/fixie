@@ -28,19 +28,21 @@
         {
             if (GetEnvironmentVariable("APPVEYOR") == "True")
             {
-                var uri = GetEnvironmentVariable("APPVEYOR_API_URL");
-                if (uri != null)
-                    return new AppVeyorReport(environment, uri, Post);
+                var appVeyorApiUrl = GetEnvironmentVariable("APPVEYOR_API_URL");
+                if (appVeyorApiUrl != null)
+                    return new AppVeyorReport(environment, appVeyorApiUrl, Post);
             }
 
             return null;
         }
 
+#pragma warning disable S3963 // "static" fields should be initialized inline
         static AppVeyorReport()
         {
             Client = new HttpClient();
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
+#pragma warning restore S3963 // "static" fields should be initialized inline
 
         public AppVeyorReport(TestEnvironment environment, string uri, PostAction postAction)
         {
@@ -62,22 +64,22 @@
             return Task.CompletedTask;
         }
 
-        public async Task Handle(TestSkipped message)
+        public Task Handle(TestSkipped message)
         {
-            await Post(new Result(runName, message, "Skipped")
+            return Post(new Result(runName, message, "Skipped")
             {
                 ErrorMessage = message.Reason
             });
         }
 
-        public async Task Handle(TestPassed message)
+        public Task Handle(TestPassed message)
         {
-            await Post(new Result(runName, message, "Passed"));
+            return Post(new Result(runName, message, "Passed"));
         }
 
-        public async Task Handle(TestFailed message)
+        public Task Handle(TestFailed message)
         {
-            await Post(new Result(runName, message, "Failed")
+            return Post(new Result(runName, message, "Failed")
             {
                 ErrorMessage = message.Reason.Message,
                 ErrorStackTrace =
@@ -87,9 +89,9 @@
             });
         }
 
-        async Task Post(Result result)
+        Task Post(Result result)
         {
-            await postAction(uri, result);
+            return postAction(uri, result);
         }
 
         static async Task Post(string uri, Result result)

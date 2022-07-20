@@ -44,7 +44,7 @@
 
         internal static AzureReport? Create(TestEnvironment environment)
         {
-            var console = environment.Console;
+            var environmentConsole = environment.Console;
             var runningUnderAzure = GetEnvironmentVariable("TF_BUILD") == "True";
 
             if (runningUnderAzure)
@@ -54,10 +54,10 @@
 
                 if (accessTokenIsAvailable)
                 {
-                    if (TryGetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", console, out var collectionUri)
-                        && TryGetEnvironmentVariable("SYSTEM_TEAMPROJECT", console, out var project)
-                        && TryGetEnvironmentVariable("SYSTEM_ACCESSTOKEN", console, out var accessToken)
-                        && TryGetEnvironmentVariable("BUILD_BUILDID", console, out var buildId))
+                    if (TryGetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", environmentConsole, out var collectionUri)
+                        && TryGetEnvironmentVariable("SYSTEM_TEAMPROJECT", environmentConsole, out var project)
+                        && TryGetEnvironmentVariable("SYSTEM_ACCESSTOKEN", environmentConsole, out var accessToken)
+                        && TryGetEnvironmentVariable("BUILD_BUILDID", environmentConsole, out var buildId))
                     {
                         return new AzureReport(
                             environment,
@@ -76,16 +76,16 @@
 
                 using (Foreground.Yellow)
                 {
-                    console.WriteLine("The Azure DevOps access token has not been made available to this process, so");
-                    console.WriteLine("test results will not be collected. To resolve this issue, review your pipeline");
-                    console.WriteLine("definition to ensure that the access token is made available as the environment");
-                    console.WriteLine("variable SYSTEM_ACCESSTOKEN.");
-                    console.WriteLine();
-                    console.WriteLine("From https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables#systemaccesstoken");
-                    console.WriteLine();
-                    console.WriteLine("  env:");
-                    console.WriteLine("    SYSTEM_ACCESSTOKEN: $(System.AccessToken)");
-                    console.WriteLine();
+                    environmentConsole.WriteLine("The Azure DevOps access token has not been made available to this process, so");
+                    environmentConsole.WriteLine("test results will not be collected. To resolve this issue, review your pipeline");
+                    environmentConsole.WriteLine("definition to ensure that the access token is made available as the environment");
+                    environmentConsole.WriteLine("variable SYSTEM_ACCESSTOKEN.");
+                    environmentConsole.WriteLine();
+                    environmentConsole.WriteLine("From https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables#systemaccesstoken");
+                    environmentConsole.WriteLine();
+                    environmentConsole.WriteLine("  env:");
+                    environmentConsole.WriteLine("    SYSTEM_ACCESSTOKEN: $(System.AccessToken)");
+                    environmentConsole.WriteLine();
                 }
             }
 
@@ -96,7 +96,7 @@
         {
             if (Try(GetEnvironmentVariable, variable, out value))
                 return true;
-            
+
             using (Foreground.Yellow)
             {
                 console.WriteLine($"The Azure DevOps environment variable '{variable}' has not been made");
@@ -229,7 +229,7 @@
                 {
                     console.WriteLine($"Failed to submit test result batch to Azure DevOps API (attempt #{attempt} of {maxAttempts}): " + exception);
                     console.WriteLine();
-                    Thread.Sleep(TimeSpan.FromSeconds(coolDownInSeconds));
+                    await Task.Delay(TimeSpan.FromSeconds(coolDownInSeconds));
                     attempt++;
                 }
             }
@@ -257,13 +257,15 @@
             var body = await httpResponse.Content.ReadAsStringAsync();
 
             if (!httpResponse.IsSuccessStatusCode)
-                throw new HttpRequestException(new StringBuilder()
-                    .AppendLine($"{typeof(AzureReport).FullName} failed to {method} a message:")
-                    .AppendLine($"{(int) httpResponse.StatusCode} {httpResponse.ReasonPhrase}")
-                    .AppendLine(body)
+			{
+				throw new HttpRequestException(new StringBuilder()
+					.Append(typeof(AzureReport).FullName).Append(" failed to ").Append(method).AppendLine(" a message:")
+					.Append((int)httpResponse.StatusCode).Append(' ').AppendLine(httpResponse.ReasonPhrase)
+					.AppendLine(body)
                     .ToString());
+			}
 
-            return body;
+			return body;
         }
 
         public class CreateRun

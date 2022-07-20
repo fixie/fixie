@@ -2,7 +2,7 @@ namespace Fixie.Tests
 {
     using System.Threading.Tasks;
     using static Utility;
-    
+
     public class TestClassConstructionTests : InstrumentedExecutionTests
     {
         class SampleTestClass
@@ -218,7 +218,7 @@ namespace Fixie.Tests
         public async Task ShouldFailCaseInAbsenseOfPrimaryCaseResultWhenConstructingPerCaseImplicitlyAndConstructorThrows()
         {
             FailDuring(".ctor");
-            
+
             var output = await Run<SampleTestClass, CreateInstancePerCaseImplicitly>();
 
             output.ShouldHaveResults(
@@ -236,7 +236,7 @@ namespace Fixie.Tests
         public async Task ShouldFailAllTestsWithoutHidingPrimarySkipResultsWhenConstructingPerCaseExplicitlyAndConstructorThrows()
         {
             FailDuring(".ctor");
-            
+
             var output = await Run<SampleTestClass, CreateInstancePerCaseExplicitly>();
 
             output.ShouldHaveResults(
@@ -356,8 +356,8 @@ namespace Fixie.Tests
 
             output.ShouldHaveResults(
                 "CannotInvokeConstructorTestClass.UnreachableCase failed: " +
-                "No parameterless constructor defined " +
-                $"for type '{FullName<CannotInvokeConstructorTestClass>()}'.");
+                "Cannot dynamically create an instance of type " +
+                $"'{FullName<CannotInvokeConstructorTestClass>()}'. Reason: No parameterless constructor defined.");
 
             output.ShouldHaveLifecycle();
         }

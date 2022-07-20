@@ -3,7 +3,7 @@
   <Import Project="..\..\build\Fixie.props" />
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <DebugType>embedded</DebugType>
     <RollForward>Major</RollForward>
   </PropertyGroup>

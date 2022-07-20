@@ -30,26 +30,26 @@
                     if (options.ShouldBuild)
                     {
                         WriteLine($"Building {Path.GetFileNameWithoutExtension(testProject)}...");
-                    
+
                         var exitCode = RunTarget(testProject, "Build", options.Configuration);
-                    
+
                         if (exitCode != 0)
                         {
                             Error("Build failed!");
                             return FatalError;
                         }
                     }
-                    
+
                     var targetFrameworks = GetTargetFrameworks(options, testProject);
-                    
+
                     bool runningForMultipleFrameworks = targetFrameworks.Length > 1;
                     foreach (var targetFramework in targetFrameworks)
                     {
                         int exitCode = RunTests(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
-                    
+
                         if (exitCode != Success && exitCode != Failure)
                             Error("Unexpected exit code: " + exitCode);
-                    
+
                         if (exitCode != Success)
                             overallExitCode = Failure;
                     }
@@ -149,7 +149,7 @@
                 new FileInfo(testProject).Directory!.FullName,
                 outputPath);
 
-            var environmentVariables = new Dictionary<string, string>();
+            var environmentVariables = new Dictionary<string, string?>();
 
             if (options.Tests != null)
                 environmentVariables["FIXIE:TESTS_PATTERN"] = options.Tests;

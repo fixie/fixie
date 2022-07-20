@@ -7,7 +7,7 @@
 
     static class Shell
     {
-        public static int Run(string executable, string workingDirectory, string[] arguments, IDictionary<string, string>? environmentVariables = null)
+        public static int Run(string executable, string workingDirectory, string[] arguments, IDictionary<string, string?>? environmentVariables = null)
         {
             var startInfo = new ProcessStartInfo
             {
@@ -37,14 +37,14 @@
 
         static string[] QueryTarget(string project, string target, Func<string, int> msbuild)
         {
-            var outputPath = Path.GetTempFileName();
+            var outputPath = Path.GetRandomFileName();
 
             try
             {
                 var exitCode = msbuild(outputPath);
 
                 if (exitCode != 0)
-                    throw new Exception($"msbuild failed while trying to run target '{target}' in project '{project}'.");
+                    throw new InvalidOperationException($"msbuild failed while trying to run target '{target}' in project '{project}'.");
 
                 return File.ReadAllLines(outputPath);
             }
@@ -94,7 +94,7 @@
             if (process.Start())
                 return process;
 
-            throw new Exception("Failed to start process: " + startInfo.FileName);
+            throw new InvalidOperationException("Failed to start process: " + startInfo.FileName);
         }
     }
 }

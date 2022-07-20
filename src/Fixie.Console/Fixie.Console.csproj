@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <PackageId>Fixie.Console</PackageId>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>fixie</ToolCommandName>
@@ -10,17 +9,17 @@
     <DebugType>embedded</DebugType>
     <RollForward>Major</RollForward>
   </PropertyGroup>
-
   <ItemGroup>
     <None Include="..\..\LICENSE.md" Pack="true" PackagePath="" />
     <None Include="..\..\img\fixie_256.png" Pack="true" PackagePath="icon.png" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="MinVer" Version="2.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.336902">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
-
 </Project>

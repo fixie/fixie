@@ -2,11 +2,13 @@ namespace Fixie.Tests.Assertions
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Serialization;
+
     using static System.Environment;
 
+    [Serializable]
     public class AssertException : Exception
     {
-        public static string FilterStackTraceAssemblyPrefix = typeof(AssertException).Namespace + ".";
 
         public string? Expected { get; }
         public string? Actual { get; }
@@ -48,6 +50,8 @@ namespace Fixie.Tests.Assertions
 
         public override string? StackTrace => FilterStackTrace(base.StackTrace);
 
+        public static string FilterStackTraceAssemblyPrefix { get; set; } = typeof(AssertException).Namespace + ".";
+
         static string? FilterStackTrace(string? stackTrace)
         {
             if (stackTrace == null)
@@ -68,6 +72,28 @@ namespace Fixie.Tests.Assertions
         static string[] Lines(string input)
         {
             return input.Split(new[] {NewLine}, StringSplitOptions.None);
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+        }
+
+        protected AssertException(SerializationInfo serializationInfo, StreamingContext streamingContext)
+            :base(serializationInfo, streamingContext)
+        {
+        }
+
+        public AssertException() : base()
+        {
+        }
+
+        public AssertException(string? message) : base(message)
+        {
+        }
+
+        public AssertException(string? message, Exception? innerException) : base(message, innerException)
+        {
         }
     }
 }

@@ -2,9 +2,12 @@
 {
     using System;
     using System.Threading.Tasks;
+
     using Assertions;
+
     using Fixie.Internal;
     using Fixie.Reports;
+
     using static Utility;
 
     public class BusTests
@@ -119,13 +122,5 @@
         static void Log<THandler, TEvent>(int id)
             => Console.WriteLine($"{typeof(THandler).FullName} handled {typeof(TEvent).Name} {id}");
 
-        class StubException : Exception
-        {
-            public StubException(string message)
-                : base(message) { }
-
-            public override string StackTrace
-                => "<<Stack Trace>>";
-        }
     }
 }

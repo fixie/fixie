@@ -99,6 +99,11 @@
             if (message.Total == 0)
                 return "No tests found.";
 
+            return Summarize(message);
+        }
+
+        static string Summarize(ExecutionCompleted message)
+        {
             var parts = new List<string>();
 
             if (message.Passed > 0)

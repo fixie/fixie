@@ -88,18 +88,21 @@
 
         public Task Handle(ExecutionCompleted message)
         {
-            console.WriteLine(DeprecatedSummarize(message));
+            string? summary;
+            
+            if (message.Total == 0)
+            {
+                summary = "No tests found.";
+            }
+            else
+            {
+                summary = Summarize(message);
+            }
+
+            console.WriteLine(summary);
             console.WriteLine();
 
             return Task.CompletedTask;
-        }
-
-        static string DeprecatedSummarize(ExecutionCompleted message)
-        {
-            if (message.Total == 0)
-                return "No tests found.";
-
-            return Summarize(message);
         }
 
         static string Summarize(ExecutionCompleted message)

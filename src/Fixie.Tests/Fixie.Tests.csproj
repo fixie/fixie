@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="DiffEngine" Version="10.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Fixie.Console\Fixie.Console.csproj" />
     <ProjectReference Include="..\Fixie.TestAdapter\Fixie.TestAdapter.csproj" />
     <ProjectReference Include="..\Fixie\Fixie.csproj" />

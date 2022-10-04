@@ -14,7 +14,7 @@ jobs:
     - name: .NET SDK
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.100'
+        dotnet-version: '5.0.408'
     - name: Build and Test
       run: pwsh ./build.ps1 --pack
     - name: Release to NuGet

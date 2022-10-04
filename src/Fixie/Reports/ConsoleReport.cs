@@ -88,7 +88,16 @@
 
         public Task Handle(ExecutionCompleted message)
         {
-            console.WriteLine(Summarize(message));
+            if (message.Total == 0)
+            {
+                using (Foreground.Red)
+                    console.WriteLine("No tests found.");
+            }
+            else
+            {
+                console.WriteLine(Summarize(message));
+            }
+
             console.WriteLine();
 
             return Task.CompletedTask;
@@ -96,9 +105,6 @@
 
         static string Summarize(ExecutionCompleted message)
         {
-            if (message.Total == 0)
-                return "No tests found.";
-
             var parts = new List<string>();
 
             if (message.Passed > 0)

@@ -88,18 +88,23 @@
 
         public Task Handle(ExecutionCompleted message)
         {
-            string? summary;
-            
             if (message.Total == 0)
             {
+                string? summary;
+
                 summary = "No tests found.";
+                
+                console.WriteLine(summary);
             }
             else
             {
+                string? summary;
+
                 summary = Summarize(message);
+
+                console.WriteLine(summary);
             }
 
-            console.WriteLine(summary);
             console.WriteLine();
 
             return Task.CompletedTask;

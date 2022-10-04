@@ -90,7 +90,8 @@
         {
             if (message.Total == 0)
             {
-                console.WriteLine("No tests found.");
+                using (Foreground.Red)
+                    console.WriteLine("No tests found.");
             }
             else
             {

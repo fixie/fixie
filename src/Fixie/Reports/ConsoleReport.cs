@@ -90,19 +90,11 @@
         {
             if (message.Total == 0)
             {
-                string? summary;
-
-                summary = "No tests found.";
-                
-                console.WriteLine(summary);
+                console.WriteLine("No tests found.");
             }
             else
             {
-                string? summary;
-
-                summary = Summarize(message);
-
-                console.WriteLine(summary);
+                console.WriteLine(Summarize(message));
             }
 
             console.WriteLine();

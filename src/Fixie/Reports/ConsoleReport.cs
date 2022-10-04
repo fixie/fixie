@@ -88,13 +88,13 @@
 
         public Task Handle(ExecutionCompleted message)
         {
-            console.WriteLine(Summarize(message));
+            console.WriteLine(DeprecatedSummarize(message));
             console.WriteLine();
 
             return Task.CompletedTask;
         }
 
-        static string Summarize(ExecutionCompleted message)
+        static string DeprecatedSummarize(ExecutionCompleted message)
         {
             if (message.Total == 0)
                 return "No tests found.";

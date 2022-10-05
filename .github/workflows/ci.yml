@@ -21,6 +21,9 @@ jobs:
           3.1
           6.0
     - name: Build and Test
+      env:
+        DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 'true'
+        TERM: 'xterm'
       run: pwsh ./build.ps1 --pack
     - name: Release to MyGet
       env:

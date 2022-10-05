@@ -8,14 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: .NET SDK
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '5.0.408'
+        dotnet-version: |
+          3.1
+          6.0
     - name: Build and Test
+      env:
+        DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 'true'
+        TERM: 'xterm'
       run: pwsh ./build.ps1 --pack
     - name: Release to NuGet
       env:

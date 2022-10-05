@@ -12,6 +12,7 @@ $fixie = "src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll"
 
 if (test-path artifacts) { remove-item artifacts -Recurse }
 
+step { dotnet --version }
 step { dotnet clean src -c Release --nologo -v minimal }
 step { dotnet build src -c Release --nologo }
 step { dotnet $fixie *.Tests -c Release --no-build }

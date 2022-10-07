@@ -16,7 +16,6 @@ jobs:
       with:
         dotnet-version: |
           3.1
-          6.0
     - run: dotnet --info
     - name: Build and Test
       env:

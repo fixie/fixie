@@ -16,6 +16,6 @@
             => Deserialize<TMessage>(Encoding.UTF8.GetBytes(message));
 
         public static TMessage Deserialize<TMessage>(byte[] bytes)
-            => JsonSerializer.Deserialize<TMessage>(new ReadOnlySpan<byte>(bytes));
+            => JsonSerializer.Deserialize<TMessage>(new ReadOnlySpan<byte>(bytes))!;
     }
 }

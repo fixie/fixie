@@ -40,6 +40,7 @@
                 actualHeader.MediaType.ShouldBe("application/json");
 
                 var actualAuthorization = client.DefaultRequestHeaders.Authorization;
+                actualAuthorization.ShouldNotBeNull();
                 actualAuthorization.Scheme.ShouldBe("Bearer");
                 actualAuthorization.Parameter.ShouldBe(accessToken);
             };

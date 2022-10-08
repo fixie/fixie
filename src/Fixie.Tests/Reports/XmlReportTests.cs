@@ -3,8 +3,6 @@
     using System;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
-    using System.Runtime.Versioning;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using System.Xml.Linq;
@@ -48,7 +46,7 @@
             cleaned = Regex.Replace(cleaned, @"run-time=""\d\d:\d\d:\d\d""", @"run-time=""HH:MM:SS""");
 
             //Avoid brittle assertion introduced by .NET version.
-            cleaned = cleaned.Replace($@"environment=""{IntPtr.Size * 8}-bit {TargetFramework}""", @"environment=""00-bit .NETCoreApp,Version=vX.Y""");
+            cleaned = cleaned.Replace($@"environment=""{IntPtr.Size * 8}-bit .NETCoreApp,Version=v{TargetFrameworkVersion}""", @"environment=""00-bit .NETCoreApp,Version=vX.Y""");
 
             //Avoid brittle assertion introduced by fixie version.
             cleaned = cleaned.Replace($@"test-framework=""{Fixie.Internal.Framework.Version}""", @"test-framework=""Fixie 1.2.3.4""");
@@ -75,8 +73,5 @@
                                 .Replace("[genericTestClassForStackTrace]", GenericTestClass.Replace("+", "."));
             }
         }
-
-        static string? TargetFramework
-            => typeof(XmlReportTests).Assembly.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
     }
 }

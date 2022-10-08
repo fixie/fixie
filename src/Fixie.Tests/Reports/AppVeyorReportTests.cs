@@ -32,7 +32,7 @@
             foreach (var result in results)
             {
                 result.TestFramework.ShouldBe("Fixie");
-                result.FileName.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.1)");
+                result.FileName.ShouldBe($"Fixie.Tests (.NETCoreApp,Version=v{TargetFrameworkVersion})");
             }
 
             var fail = results[0];

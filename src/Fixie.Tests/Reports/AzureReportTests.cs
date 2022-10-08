@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Assertions;
     using Fixie.Reports;
+    using static Utility;
     using static Fixie.Internal.Serialization;
 
     public class AzureReportTests : MessagingTests
@@ -77,7 +78,7 @@
             firstRequest.Uri.ShouldBe($"http://localhost:4567/{project}/_apis/test/runs?api-version=5.0");
 
             var createRun = firstRequest.Content;
-            createRun.name.ShouldBe("Fixie.Tests (.NETCoreApp,Version=v3.1)");
+            createRun.name.ShouldBe($"Fixie.Tests (.NETCoreApp,Version=v{TargetFrameworkVersion})");
             createRun.build.id.ShouldBe(buildId);
             createRun.isAutomated.ShouldBe(true);
 

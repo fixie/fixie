@@ -19,8 +19,5 @@ step { dotnet $fixie *.Tests -c Release --no-build }
 if ($pack) {
     step { dotnet pack src/Fixie -o artifacts -c Release --no-build --nologo }
     step { dotnet pack src/Fixie.Console -o artifacts -c Release --no-build --nologo }
-
-    # While Fixie.TestAdapter packs with a nuspec file, we cannot include --no-build here.
-    # If we did, the MinVer-calculated version would fail to apply to the package.
-    step { dotnet pack src/Fixie.TestAdapter -o artifacts -c Release --nologo }
+    step { dotnet pack src/Fixie.TestAdapter -o artifacts -c Release --no-build --nologo }
 }

@@ -11,7 +11,7 @@
   </Target>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <Description>Visual Studio integration for the Fixie test framework.</Description>
     <NuspecFile>Fixie.TestAdapter.nuspec</NuspecFile>
     <DebugType>embedded</DebugType>
@@ -21,9 +21,9 @@
   <ItemGroup>
     <PackageReference Include="Mono.Cecil" Version="0.11.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
-    <PackageReference Include="MinVer" Version="2.3.0">
+    <PackageReference Include="MinVer" Version="4.2.0">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 

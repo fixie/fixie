@@ -21,6 +21,18 @@
                 Directory.GetCurrentDirectory());
         }
 
+        public static string TargetFrameworkVersion
+        {
+            get
+            {
+#if NETCOREAPP3_1
+                return "3.1";
+#elif NET6_0
+                return "6.0";
+#endif
+            }
+        }
+
         public static string FullName<T>()
         {
             return typeof(T).FullName ??

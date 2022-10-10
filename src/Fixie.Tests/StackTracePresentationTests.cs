@@ -20,6 +20,9 @@
                     "",
                     "Fixie.Tests.FailureException",
                     At<ConstructionFailureTestClass>(".ctor()"),
+                    #if !NETCOREAPP3_1
+                    "   at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean wrapExceptions)",
+                    #endif
                     "",
                     "1 failed, took 1.23 seconds");
         }
@@ -34,6 +37,9 @@
                     "",
                     "Fixie.Tests.FailureException",
                     At<ConstructionFailureTestClass>(".ctor()"),
+                    #if !NETCOREAPP3_1
+                    "   at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean wrapExceptions)",
+                    #endif
                     "--- End of stack trace from previous location where exception was thrown ---",
                     At(typeof(TestClass), "Construct(Object[] parameters)", Path.Join("...", "src", "Fixie", "TestClass.cs")),
                     At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),

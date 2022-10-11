@@ -22,6 +22,28 @@
             }
         },
         {
+            "label": "test",
+            "dependsOn": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "${workspaceFolder}/src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll",
+                "*.Tests",
+                "--no-build"
+            ],
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
             "label": "watch",
             "command": "dotnet",
             "type": "process",

@@ -7,7 +7,8 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/Fixie.Tests/Fixie.Tests.csproj",
+                "${workspaceFolder}/src/",
+                "--nologo",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

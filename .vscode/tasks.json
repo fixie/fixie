@@ -49,11 +49,28 @@
             "type": "process",
             "args": [
                 "watch",
-                "run",
                 "--project",
-                "${workspaceFolder}/src/Fixie.Tests/Fixie.Tests.csproj"
+                "${workspaceFolder}/src/Fixie.Tests/Fixie.Tests.csproj",
+
+                "${workspaceFolder}/src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll",
+                "*.Tests"
             ],
-            "problemMatcher": "$msCompile"
+            "isBackground": true,
+            "problemMatcher": {
+                "base": "$msCompile",
+                "background": {
+                    "activeOnStart": false,
+                    "beginsPattern": "^dotnet watch 🚀 Started$",
+                    "endsPattern": "^dotnet watch ⏳ Waiting for a file to change before restarting dotnet\\.\\.\\.$"
+                }
+            },
+            "presentation": {
+                "reveal": "never",
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true,
+                "revealProblems": "onProblem"
+            }
         }
     ]
 }

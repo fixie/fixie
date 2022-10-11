@@ -7,23 +7,41 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/Fixie.Tests/Fixie.Tests.csproj",
+                "${workspaceFolder}/src/",
+                "--nologo",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "never",
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true,
+                "revealProblems": "onProblem"
+            }
         },
         {
-            "label": "publish",
+            "label": "test",
+            "dependsOn": "build",
             "command": "dotnet",
             "type": "process",
             "args": [
-                "publish",
-                "${workspaceFolder}/src/Fixie.Tests/Fixie.Tests.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "${workspaceFolder}/src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll",
+                "*.Tests",
+                "--no-build"
             ],
-            "problemMatcher": "$msCompile"
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
         },
         {
             "label": "watch",
@@ -31,12 +49,28 @@
             "type": "process",
             "args": [
                 "watch",
-                "run",
+                "--project",
                 "${workspaceFolder}/src/Fixie.Tests/Fixie.Tests.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+
+                "${workspaceFolder}/src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll",
+                "*.Tests"
             ],
-            "problemMatcher": "$msCompile"
+            "isBackground": true,
+            "problemMatcher": {
+                "base": "$msCompile",
+                "background": {
+                    "activeOnStart": false,
+                    "beginsPattern": "^dotnet watch 🚀 Started$",
+                    "endsPattern": "^dotnet watch ⏳ Waiting for a file to change before restarting dotnet\\.\\.\\.$"
+                }
+            },
+            "presentation": {
+                "reveal": "never",
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true,
+                "revealProblems": "onProblem"
+            }
         }
     ]
 }

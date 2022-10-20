@@ -4,7 +4,7 @@
     using System.IO;
     using System.IO.Pipes;
     using System.Text;
-    using static Serialization;
+    using static System.Text.Json.JsonSerializer;
 
     class TestAdapterPipe : IDisposable
     {
@@ -35,7 +35,7 @@
 
         public TMessage Receive<TMessage>()
         {
-            return Deserialize<TMessage>(ReceiveMessageBody());
+            return Deserialize<TMessage>(ReceiveMessageBody())!;
         }
 
         public string ReceiveMessageBody()

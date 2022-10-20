@@ -12,7 +12,7 @@
     using System.Threading.Tasks;
     using Internal;
     using static System.Environment;
-    using static Internal.Serialization;
+    using static System.Text.Json.JsonSerializer;
     using static Internal.Maybe;
 
     class AzureReport :
@@ -150,7 +150,7 @@
 
             var response = await sendCreateRun(client, HttpMethod.Post, $"{runsUri}?api-version={AzureDevOpsRestApiVersion}", createRun);
 
-            runUrl = Deserialize<TestRun>(response).url;
+            runUrl = Deserialize<TestRun>(response)!.url;
         }
 
         public async Task Handle(TestSkipped message)

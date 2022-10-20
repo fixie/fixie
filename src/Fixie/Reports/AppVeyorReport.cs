@@ -7,7 +7,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using static System.Environment;
-    using static Internal.Serialization;
+    using static System.Text.Json.JsonSerializer;
 
     class AppVeyorReport :
         IHandler<ExecutionStarted>,

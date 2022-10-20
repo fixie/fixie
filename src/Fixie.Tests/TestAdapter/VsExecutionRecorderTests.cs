@@ -10,7 +10,7 @@
     using Fixie.Internal;
     using Reports;
     using static System.Environment;
-    using static Fixie.Internal.Serialization;
+    using static System.Text.Json.JsonSerializer;
 
     public class VsExecutionRecorderTests : MessagingTests
     {
@@ -270,7 +270,7 @@
             // tests, put a given sample message through the same serialization round
             // trip that would be applied at runtime, in order to detect data loss.
 
-            return Deserialize<T>(Serialize(original));
+            return Deserialize<T>(Serialize(original))!;
         }
 
         class StubExecutionRecorder : ITestExecutionRecorder

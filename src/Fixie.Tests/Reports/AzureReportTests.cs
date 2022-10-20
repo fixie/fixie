@@ -8,7 +8,7 @@
     using Assertions;
     using Fixie.Reports;
     using static Utility;
-    using static Fixie.Internal.Serialization;
+    using static System.Text.Json.JsonSerializer;
 
     public class AzureReportTests : MessagingTests
     {

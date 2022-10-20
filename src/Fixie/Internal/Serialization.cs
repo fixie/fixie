@@ -1,6 +1,5 @@
 ﻿namespace Fixie.Internal
 {
-    using System;
     using System.Text;
     using System.Text.Json;
 
@@ -10,6 +9,6 @@
             => Encoding.UTF8.GetString(JsonSerializer.SerializeToUtf8Bytes(message));
 
         public static TMessage Deserialize<TMessage>(string message)
-            => JsonSerializer.Deserialize<TMessage>(new ReadOnlySpan<byte>(Encoding.UTF8.GetBytes(message)))!;
+            => JsonSerializer.Deserialize<TMessage>(Encoding.UTF8.GetBytes(message))!;
     }
 }

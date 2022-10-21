@@ -229,7 +229,7 @@
                 {
                     console.WriteLine($"Failed to submit test result batch to Azure DevOps API (attempt #{attempt} of {maxAttempts}): " + exception);
                     console.WriteLine();
-                    Thread.Sleep(TimeSpan.FromSeconds(coolDownInSeconds));
+                    await Task.Delay(TimeSpan.FromSeconds(coolDownInSeconds));
                     attempt++;
                 }
             }

@@ -6,6 +6,8 @@
         {
             if (environment.IsDevelopment())
                 configuration.Reports.Add<DiffToolReport>();
+            else
+                configuration.Reports.Add(new GitHubReport(environment));
         }
     }
 }

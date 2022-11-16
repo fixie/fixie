@@ -46,8 +46,13 @@
 
             var lines = exception.StackTrace.Split(NewLine);
 
-            if (lines.Length >= 2)
+            var totalLines = lines.Length;
+
+            if (totalLines >= 2)
             {
+                const string subsequentInvoke = " InvokeStub_";
+                const string firstInvoke = " System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)";
+                const string methodInvoker = " System.Reflection.MethodInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)";
                 const string synchronousRethrowMarker = "--- End of stack trace from previous location";
                 const string callResolvedMethod = " Fixie.MethodInfoExtensions.CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)";
                 const string constructTestClass = " Fixie.Test.Construct(Type testClass)";
@@ -58,10 +63,26 @@
                     if (lines[^2].Contains(callResolvedMethod) ||
                         lines[^2].Contains(constructTestClass))
                     {
-                        var linesToRemove =
-                            lines.Length >= 3 && lines[^3].Contains(synchronousRethrowMarker)
-                                ? 3
-                                : 2;
+                        int linesToRemove = 2;
+
+                        if (totalLines >= 3 && lines[^3].Contains(synchronousRethrowMarker))
+                        {
+                            linesToRemove++;
+
+                            if (totalLines >= 4 && lines[^4].Contains(methodInvoker))
+                            {
+                                linesToRemove++;
+
+                                if (totalLines >= 5)
+                                {
+                                    if (lines[^5].Contains(firstInvoke) ||
+                                        lines[^5].Contains(subsequentInvoke))
+                                    {
+                                        linesToRemove++;
+                                    }
+                                }
+                            }
+                        }
 
                         return string.Join(NewLine, lines[..^linesToRemove]);
                     }

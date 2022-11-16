@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
     using Assertions;
     using Fixie.Reports;
@@ -70,7 +71,14 @@
 
         public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestMethodInvocationFailures()
         {
-            (await Run<FailureTestClass, ExplicitExceptionHandling>())
+            var output = (await Run<FailureTestClass, ExplicitExceptionHandling>()).ToArray();
+
+            #if NET7_0_OR_GREATER
+            const string optimizedInvoker = "   at InvokeStub_FailureTestClass.Synchronous(Object, Object, IntPtr*)";
+            const string initialInvoker = "   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)";
+            #endif
+
+            output
                 .ShouldBe(
                     "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
                     "",
@@ -88,6 +96,12 @@
                     "",
                     "Fixie.Tests.FailureException",
                     At<FailureTestClass>("Synchronous()"),
+                    #if NET7_0_OR_GREATER
+                    output.Contains(optimizedInvoker)
+                        ? optimizedInvoker
+                        : initialInvoker,
+                    "   at System.Reflection.MethodInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)",
+                    #endif
                     "--- End of stack trace from previous location where exception was thrown ---",
                     At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
                     At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),

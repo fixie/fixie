@@ -29,6 +29,8 @@
                 return "3.1";
 #elif NET6_0
                 return "6.0";
+#elif NET7_0
+                return "7.0";
 #endif
             }
         }

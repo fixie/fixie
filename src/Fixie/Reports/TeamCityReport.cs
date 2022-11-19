@@ -55,7 +55,7 @@
             var details =
                 message.Reason.GetType().FullName +
                 NewLine +
-                message.Reason.LiterateStackTrace();
+                message.Reason.StackTraceSummary();
 
             TestStarted(message);
             Output(message);

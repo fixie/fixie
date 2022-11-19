@@ -59,7 +59,7 @@
             {
                 Type = exception.GetType().FullName!;
                 Message = exception.Message;
-                StackTrace = exception.LiterateStackTrace();
+                StackTrace = exception.StackTraceSummary();
             }
 
             public string Type { get; set; } = default!;

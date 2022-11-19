@@ -60,7 +60,7 @@
                 x.ErrorMessage = message.Reason.Message;
                 x.ErrorStackTrace = message.Reason.GetType().FullName +
                                     NewLine +
-                                    message.Reason.LiterateStackTrace();
+                                    message.Reason.StackTraceSummary();
             });
             
             return Task.CompletedTask;

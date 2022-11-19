@@ -4,9 +4,9 @@
     using System.Text;
     using static System.Environment;
 
-    static class ExceptionExtensions
+    public static class ExceptionExtensions
     {
-        public static string LiterateStackTrace(this Exception exception)
+        public static string StackTraceSummary(this Exception exception)
         {
             var console = new StringBuilder();
 

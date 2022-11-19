@@ -176,7 +176,7 @@
                         new XElement("failure",
                             new XAttribute("exception-type", message.Reason.GetType().FullName!),
                             new XElement("message", new XCData(message.Reason.Message)),
-                            new XElement("stack-trace", new XCData(message.Reason.LiterateStackTrace())))));
+                            new XElement("stack-trace", new XCData(message.Reason.StackTraceSummary())))));
             }
 
             public XElement ToElement()

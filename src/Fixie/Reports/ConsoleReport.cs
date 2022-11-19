@@ -63,7 +63,7 @@
                 console.WriteLine(message.Reason.Message);
                 console.WriteLine();
                 console.WriteLine(message.Reason.GetType().FullName);
-                console.WriteLine(message.Reason.LiterateStackTrace());
+                console.WriteLine(message.Reason.StackTraceSummary());
             });
 
             return Task.CompletedTask;

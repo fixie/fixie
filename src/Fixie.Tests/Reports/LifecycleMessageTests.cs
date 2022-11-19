@@ -48,7 +48,7 @@
             fail.Output.Lines().ShouldBe("Standard Out: Fail");
             fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             fail.Reason.ShouldBe<FailureException>();
-            fail.Reason.LiterateStackTrace()
+            fail.Reason.StackTraceSummary()
                 .Lines()
                 .NormalizeStackTraceLines()
                 .ShouldBe(At("Fail()"));
@@ -61,7 +61,7 @@
             failByAssertion.Output.Lines().ShouldBe("Standard Out: FailByAssertion");
             failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             failByAssertion.Reason.ShouldBe<AssertException>();
-            failByAssertion.Reason.LiterateStackTrace()
+            failByAssertion.Reason.StackTraceSummary()
                 .Lines()
                 .NormalizeStackTraceLines()
                 .ShouldBe(At("FailByAssertion()"));
@@ -96,7 +96,7 @@
             shouldBeStringFail.Output.ShouldBe("");
             shouldBeStringFail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
             shouldBeStringFail.Reason.ShouldBe<AssertException>();
-            shouldBeStringFail.Reason.LiterateStackTrace()
+            shouldBeStringFail.Reason.StackTraceSummary()
                 .Lines()
                 .NormalizeStackTraceLines()
                 .ShouldBe(At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));

@@ -16,17 +16,17 @@
       <group targetFramework="netcoreapp3.1">
         <dependency id="Fixie" version="[$version$]" />
         <dependency id="Mono.Cecil" version="0.11.4" />
-        <dependency id="Microsoft.NET.Test.Sdk" version="16.10.0" />
+        <dependency id="Microsoft.NET.Test.Sdk" version="17.4.0" />
       </group>
 	  <group targetFramework="net6.0">
 	    <dependency id="Fixie" version="[$version$]" />
 	    <dependency id="Mono.Cecil" version="0.11.4" />
-	    <dependency id="Microsoft.NET.Test.Sdk" version="16.10.0" />
+	    <dependency id="Microsoft.NET.Test.Sdk" version="17.4.0" />
 	  </group>
       <group targetFramework="net7.0">
         <dependency id="Fixie" version="[$version$]" />
         <dependency id="Mono.Cecil" version="0.11.4" />
-        <dependency id="Microsoft.NET.Test.Sdk" version="16.10.0" />
+        <dependency id="Microsoft.NET.Test.Sdk" version="17.4.0" />
       </group>
     </dependencies>
   </metadata>

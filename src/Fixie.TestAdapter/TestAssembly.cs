@@ -63,9 +63,9 @@ namespace Fixie.TestAdapter
                 // bare commands (`dotnet`) to the full file path of the
                 // corresponding executable, so we must do so manually.
 
-                var environmentVariables = new Dictionary<string, string>
+                var environmentVariables = new Dictionary<string, string?>
                 {
-                    ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")!
+                    ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
                 };
 
                 var filePath = executable == "dotnet" ? FindDotnet() : executable;

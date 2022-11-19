@@ -31,10 +31,16 @@
         /// protection in the event that VsTest changes back to the more efficient
         /// approach.
         /// </summary>
-        public void RunTests(IEnumerable<string> sources, IRunContext runContext, IFrameworkHandle frameworkHandle)
+        public void RunTests(IEnumerable<string>? sources, IRunContext? runContext, IFrameworkHandle? frameworkHandle)
         {
             try
             {
+                if (sources == null)
+                    throw new ArgumentNullException(nameof(sources));
+
+                if (frameworkHandle == null)
+                    throw new ArgumentNullException(nameof(frameworkHandle));
+
                 IMessageLogger log = frameworkHandle;
 
                 log.Version();
@@ -76,10 +82,16 @@
         /// of test names within each specific test framework at execution time. Still,
         /// this overload is functionally correct even when all tests are passed to it.
         /// </summary>
-        public void RunTests(IEnumerable<TestCase> tests, IRunContext runContext, IFrameworkHandle frameworkHandle)
+        public void RunTests(IEnumerable<TestCase>? tests, IRunContext? runContext, IFrameworkHandle? frameworkHandle)
         {
             try
             {
+                if (tests == null)
+                    throw new ArgumentNullException(nameof(tests));
+
+                if (frameworkHandle == null)
+                    throw new ArgumentNullException(nameof(frameworkHandle));
+
                 IMessageLogger log = frameworkHandle;
 
                 log.Version();
@@ -259,9 +271,9 @@
             run(runner);
         }
 
-        static void HandlePoorVsTestImplementationDetails(IRunContext runContext, IFrameworkHandle frameworkHandle)
+        static void HandlePoorVsTestImplementationDetails(IRunContext? runContext, IFrameworkHandle frameworkHandle)
         {
-            if (runContext.KeepAlive)
+            if (runContext?.KeepAlive == true)
                 frameworkHandle.EnableShutdownAfterTestRun = true;
         }
     }

@@ -48,6 +48,7 @@
 
         static void ShouldHaveSourceLocation(TestCase test)
         {
+            test.CodeFilePath.ShouldNotBeNull();
             test.CodeFilePath.EndsWith("MessagingTests.cs").ShouldBe(true);
             test.LineNumber.ShouldBeGreaterThan(0);
         }

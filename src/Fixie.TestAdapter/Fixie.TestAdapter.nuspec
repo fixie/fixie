@@ -6,6 +6,7 @@
     <authors>$authors$</authors>
     <owners>$authors$</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <readme>README.md</readme>
     <license type="expression">MIT</license>
     <projectUrl>https://fixie.github.io</projectUrl>
     <icon>icon.png</icon>
@@ -31,6 +32,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file target="" src="..\..\README.md" />
     <file target="" src="..\..\LICENSE.md" />
     <file target="icon.png" src="..\..\img\fixie_256.png" />
 

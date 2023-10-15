@@ -143,8 +143,5 @@
 
         protected static string At<T>(string method)
             => Utility.At<T>(method);
-
-        protected static string TestClassPath()
-            => PathToThisFile();
     }
 }

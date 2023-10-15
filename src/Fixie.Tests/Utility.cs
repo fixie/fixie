@@ -52,13 +52,10 @@
             return $"   at {typeFullName.Replace("+", ".")}.{method} in {normalizedPath}:line #";
         }
 
-        public static string NormalizedPath(string path)
+        static string NormalizedPath(string path)
             => Regex.Replace(path,
                 @".+([\\/])src([\\/])Fixie(.+)\.cs",
                 "...$1src$2Fixie$3.cs");
-
-        public static string PathToThisFile([CallerFilePath] string path = default!)
-            => path;
 
         public static async Task<IEnumerable<string>> Run(Type testClass, IExecution execution)
         {

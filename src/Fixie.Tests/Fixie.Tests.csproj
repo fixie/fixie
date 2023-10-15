@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="DiffEngine" Version="10.2.0" />
+	  <PackageReference Include="DiffEngine" Version="12.4.0" />
   </ItemGroup>
 
   <ItemGroup>

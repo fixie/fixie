@@ -80,13 +80,17 @@ namespace Fixie.TestAdapter
                 return null;
             }
 
-            return Start(new ProcessStartInfo
+            var startInfo = new ProcessStartInfo
             {
                 WorkingDirectory = workingDirectory,
                 FileName = executable,
-                Arguments = serializedArguments,
                 UseShellExecute = false
-            });
+            };
+
+            foreach (var argument in arguments)
+                startInfo.ArgumentList.Add(argument);
+
+            return Start(startInfo);
         }
 
         static Process Start(ProcessStartInfo startInfo)

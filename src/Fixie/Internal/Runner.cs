@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -34,17 +33,17 @@
 
         public Task<ExecutionSummary> Run()
         {
-            return Run(assembly.GetTypes(), ImmutableHashSet<string>.Empty);
+            return Run(assembly.GetTypes(), new HashSet<string>());
         }
 
-        public Task<ExecutionSummary> Run(ImmutableHashSet<string> selectedTests)
+        public Task<ExecutionSummary> Run(HashSet<string> selectedTests)
         {
             return Run(assembly.GetTypes(), selectedTests);
         }
 
         public async Task<ExecutionSummary> Run(TestPattern testPattern)
         {
-            var matchingTests = ImmutableHashSet<string>.Empty;
+            var matchingTests = new HashSet<string>();
             var configuration = BuildConfiguration();
 
             foreach (var convention in configuration.Conventions.Items)
@@ -61,14 +60,14 @@
                         var test = testMethod.TestName();
 
                         if (testPattern.Matches(test))
-                            matchingTests = matchingTests.Add(test);
+                            matchingTests.Add(test);
                     }
             }
 
             return await Run(matchingTests);
         }
 
-        async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, ImmutableHashSet<string> selectedTests)
+        async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, HashSet<string> selectedTests)
         {
             var configuration = BuildConfiguration();
             
@@ -88,7 +87,7 @@
                     await bus.Publish(new TestDiscovered(testMethod.TestName()));
         }
 
-        internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, TestConfiguration configuration, ImmutableHashSet<string> selectedTests)
+        internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, TestConfiguration configuration, HashSet<string> selectedTests)
         {
             var conventions = configuration.Conventions.Items;
             var bus = new Bus(console, defaultReports.Concat(configuration.Reports.Items).ToArray());
@@ -111,7 +110,7 @@
             }
         }
 
-        static TestSuite BuildTestSuite(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, ImmutableHashSet<string> selectedTests, ExecutionRecorder recorder)
+        static TestSuite BuildTestSuite(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, HashSet<string> selectedTests, ExecutionRecorder recorder)
         {
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
@@ -124,7 +123,7 @@
             {
                 var methods = methodDiscoverer.TestMethods(@class);
 
-                if (!selectedTests.IsEmpty)
+                if (selectedTests.Count > 0)
                 {
                     selectionWorkingList.AddRange(methods.Where(method => selectedTests.Contains(method.TestName())));
 

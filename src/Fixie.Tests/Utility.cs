@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
@@ -96,7 +95,7 @@
             var configuration = new TestConfiguration();
             configuration.Conventions.Add(discovery, execution);
 
-            await runner.Run(candidateTypes, configuration, ImmutableHashSet<string>.Empty);
+            await runner.Run(candidateTypes, configuration, new HashSet<string>());
         }
 
         public static IEnumerable<object?[]> FromInputAttributes(Test test)

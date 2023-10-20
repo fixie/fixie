@@ -1,7 +1,7 @@
 namespace Fixie.Tests.Internal
 {
     using System;
-    using System.Collections.Immutable;
+    using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
     using Assertions;
@@ -54,7 +54,7 @@ namespace Fixie.Tests.Internal
             var configuration = new TestConfiguration();
             configuration.Conventions.Add(discovery, execution);
 
-            await runner.Run(candidateTypes, configuration, ImmutableHashSet<string>.Empty);
+            await runner.Run(candidateTypes, configuration, new HashSet<string>());
 
             report.Entries.ShouldBe(
                 Self + "+PassTestClass.PassA passed",

@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.IO;
     using System.IO.Pipes;
     using System.Linq;
@@ -71,7 +70,7 @@
 
                         exitCode = executeTests.Filter.Length == 0
                             ? await Run(environment, reports, async runner => await runner.Run())
-                            : await Run(environment, reports, async runner => await runner.Run(executeTests.Filter.ToImmutableHashSet()));
+                            : await Run(environment, reports, async runner => await runner.Run(new HashSet<string>(executeTests.Filter)));
                     }
                     else
                     {

@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.Diagnostics;
     using System.IO;
     using System.IO.Pipes;
@@ -109,7 +108,7 @@
                         RunTestsInProcess(log, frameworkHandle, assemblyPath, runner =>
                         {
                             var selectedTests =
-                                assemblyGroup.Select(x => x.FullyQualifiedName).ToImmutableHashSet();
+                                new HashSet<string>(assemblyGroup.Select(x => x.FullyQualifiedName));
 
                             runner.Run(selectedTests).GetAwaiter().GetResult();
                         });

@@ -17,7 +17,7 @@
         {
             Success = 0,
             Failure = 1,
-            FatalError = -1
+            FatalError = 2
         }
 
         public static async Task<int> Main(Assembly assembly, string[] customArguments)

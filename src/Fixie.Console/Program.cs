@@ -12,7 +12,7 @@
     {
         const int Success = 0;
         const int Failure = 1;
-        const int FatalError = -1;
+        const int FatalError = 2;
 
         [STAThread]
         static int Main(string[] arguments)

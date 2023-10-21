@@ -41,37 +41,16 @@
             return Run(assembly.GetTypes(), selectedTests);
         }
 
-        public async Task<ExecutionSummary> Run(TestPattern testPattern)
+        public Task<ExecutionSummary> Run(TestPattern testPattern)
         {
-            var matchingTests = new HashSet<string>();
-            var configuration = BuildConfiguration();
-
-            foreach (var convention in configuration.Conventions.Items)
-            {
-                var discovery = convention.Discovery;
-
-                var candidateTypes = assembly.GetTypes();
-                var classDiscoverer = new ClassDiscoverer(discovery);
-                var classes = classDiscoverer.TestClasses(candidateTypes);
-                var methodDiscoverer = new MethodDiscoverer(discovery);
-                foreach (var testClass in classes)
-                    foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                    {
-                        var test = testMethod.TestName();
-
-                        if (testPattern.Matches(test))
-                            matchingTests.Add(test);
-                    }
-            }
-
-            return await Run(matchingTests);
+            return Run(assembly.GetTypes(), new HashSet<string>(), testPattern);
         }
 
-        async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, HashSet<string> selectedTests)
+        async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, HashSet<string> selectedTests, TestPattern? testPattern = null)
         {
             var configuration = BuildConfiguration();
             
-            return await Run(candidateTypes, configuration, selectedTests);
+            return await Run(candidateTypes, configuration, selectedTests, testPattern);
         }
 
         internal async Task Discover(IReadOnlyList<Type> candidateTypes, IDiscovery discovery)
@@ -87,7 +66,7 @@
                     await bus.Publish(new TestDiscovered(testMethod.TestName()));
         }
 
-        internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, TestConfiguration configuration, HashSet<string> selectedTests)
+        internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, TestConfiguration configuration, HashSet<string> selectedTests, TestPattern? testPattern = null)
         {
             var conventions = configuration.Conventions.Items;
             var bus = new Bus(console, defaultReports.Concat(configuration.Reports.Items).ToArray());
@@ -102,7 +81,7 @@
 
                 foreach (var convention in conventions)
                 {
-                    var testSuite = BuildTestSuite(candidateTypes, convention.Discovery, selectedTests, recorder);
+                    var testSuite = BuildTestSuite(candidateTypes, convention.Discovery, selectedTests, testPattern, recorder);
                     await Run(testSuite, convention.Execution);
                 }
 
@@ -110,7 +89,7 @@
             }
         }
 
-        static TestSuite BuildTestSuite(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, HashSet<string> selectedTests, ExecutionRecorder recorder)
+        static TestSuite BuildTestSuite(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, HashSet<string> selectedTests, TestPattern? testPattern, ExecutionRecorder recorder)
         {
             var classDiscoverer = new ClassDiscoverer(discovery);
             var classes = classDiscoverer.TestClasses(candidateTypes);
@@ -137,6 +116,9 @@
                         selectionWorkingList = new List<MethodInfo>();
                     }
                 }
+
+                if (testPattern != null)
+                    methods = methods.Where(method => testPattern.Matches(method.TestName())).ToList();
 
                 if (methods.Count > 0)
                 {

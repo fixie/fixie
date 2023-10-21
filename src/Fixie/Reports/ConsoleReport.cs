@@ -13,17 +13,19 @@
         IHandler<TestFailed>,
         IHandler<ExecutionCompleted>
     {
+        readonly string? testPattern;
         readonly TextWriter console;
         readonly bool outputTestPassed;
         bool paddingWouldRequireOpeningBlankLine;
 
         internal static ConsoleReport Create(TestEnvironment environment)
-            => new ConsoleReport(environment, GetEnvironmentVariable("FIXIE_TESTS_PATTERN") != null);
+            => new ConsoleReport(environment, GetEnvironmentVariable("FIXIE_TESTS_PATTERN"));
 
-        public ConsoleReport(TestEnvironment environment, bool outputTestPassed = false)
+        public ConsoleReport(TestEnvironment environment, string? testPattern = null)
         {
             console = environment.Console;
-            this.outputTestPassed = outputTestPassed;
+            this.testPattern = testPattern;
+            this.outputTestPassed = testPattern != null;
         }
 
         public Task Handle(TestSkipped message)
@@ -91,7 +93,11 @@
             if (message.Total == 0)
             {
                 using (Foreground.Red)
-                    console.WriteLine("No tests found.");
+                {
+                    console.WriteLine(testPattern != null
+                        ? $"No tests match the specified pattern: {testPattern}"
+                        : "No tests found.");
+                }
             }
             else
             {

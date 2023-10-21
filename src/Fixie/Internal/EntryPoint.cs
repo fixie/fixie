@@ -111,7 +111,7 @@
             var summary = await run(runner);
 
             if (summary.Total == 0)
-                return ExitCode.FatalError;
+                return ExitCode.Failure;
 
             if (summary.Failed > 0)
                 return ExitCode.Failure;

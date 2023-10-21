@@ -54,9 +54,9 @@
                     "3 passed, 3 failed, 1 skipped, took 1.23 seconds");
         }
 
-        public async Task CanOptionallyIncludePassingResults()
+        public async Task ShouldIncludePassingResultsWhenFilteringByPattern()
         {
-            var output = await Run(console => new ConsoleReport(console, outputTestPassed: true));
+            var output = await Run(console => new ConsoleReport(console, testPattern: "*"));
 
             output.Console
                 .NormalizeStackTraceLines()
@@ -174,6 +174,12 @@
             output.Console
                 .Last()
                 .ShouldBe("No tests found.");
+
+            output = await Run(console => new ConsoleReport(console, testPattern: "Ineffective*Pattern"), discovery);
+
+            output.Console
+                .Last()
+                .ShouldBe("No tests match the specified pattern: Ineffective*Pattern");
         }
     }
 }

@@ -111,7 +111,35 @@
                 }
             }
 
-            // Non-generics provide no new type mappings:
+            // Nullable<T> is a generic type with the unusual property that it can provide a type mapping
+            // when the argument is a non-generic value type. For example, Nullable<T> can receive an int,
+            // giving us a mapping from T to int.
+            //
+            // We cannot simply check for `parameterType == typeof(Nullable<>)`, though, because an unresolved
+            // nullable parameter type would be some generic Nullable<T1> or Nullable<T2> or... Though not yet
+            // resolved, that IS NOT equal to the more general Nullable<> generic type definition.
+            //
+            // The reflection API makes this distinction because the compiler must as well. Consider a generic
+            // method that accepts 2 arguments, `Nullable<T>` and `Nullable<U>`: these must be assumed to be
+            // different types even though they have not been fully resolved yet. The compiler must distinguish
+            // them, and we must likewise avoid conflating them in the genericToSpecific type mapping.
+            //
+            // Instead, we check whether we are dealing with *any* unresolved generic whose generic type
+            // definition is typeof(Nullable<>).
+            if (parameterType.IsGenericType &&
+                parameterType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                parameterType.ContainsGenericParameters)
+            {
+                if (!argumentType.IsGenericType && argumentType.IsValueType)
+                {
+                    var genericTypeParameter = parameterType.GetGenericArguments().Single();
+                    
+                    TraverseTypes(genericToSpecific, genericTypeParameter, argumentType);
+                    return;
+                }
+            }
+
+            // With Nullable<T> handled, any remaining non-generics provide no new type mappings:
             //   Parameter: int, Argument: bool
             //   Parameter: List<int>, Argument: bool
             //   Parameter: int, Argument: List<bool>

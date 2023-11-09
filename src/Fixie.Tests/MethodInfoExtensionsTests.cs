@@ -81,9 +81,13 @@
                 "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(1, 'a', System.Int32, System.Char) passed",
                 "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(2, 'b', System.Int32, System.Int32) failed: Expected: System.Int32" + NewLine + "Actual:   System.Char",
                 "GenericTestClass.ConstrainedArgs<T1, T2>(1, null, System.Int32, System.Object) failed: The type parameters for generic method ConstrainedArgs could not be resolved.",
-                "GenericTestClass.ConstrainedArgs<T1, T2>(null, 2, System.Object, System.Int32) failed: The type parameters for generic method ConstrainedArgs could not be resolved.");
+                "GenericTestClass.ConstrainedArgs<T1, T2>(null, 2, System.Object, System.Int32) failed: The type parameters for generic method ConstrainedArgs could not be resolved.",
 
-            output.ShouldHaveLifecycle("Args", "Args", "ConstrainedArgs", "ConstrainedArgs");
+                "GenericTestClass.NullableValueTypeArgs<System.Int32, System.Int32>(1, 2, System.Int32, System.Int32) passed",
+                "GenericTestClass.NullableValueTypeArgs<System.Char, System.Double>('a', 3, System.Char, System.Double) passed",
+                "GenericTestClass.NullableValueTypeArgs<T1, T2>(1, null, System.Int32, System.Object) failed: The type parameters for generic method NullableValueTypeArgs could not be resolved.");
+
+            output.ShouldHaveLifecycle("Args", "Args", "ConstrainedArgs", "ConstrainedArgs", "NullableValueTypeArgs", "NullableValueTypeArgs");
         }
 
         public async Task ShouldAwaitAsynchronousMethodsToEnsureCompleteExecution()
@@ -274,6 +278,16 @@
             public void ConstrainedArgs<T1, T2>(T1 a, T2 b, Type expectedT1, Type expectedT2)
                 where T1: struct
                 where T2: struct
+            {
+                WhereAmI();
+                typeof(T1).ShouldBe(expectedT1);
+                typeof(T2).ShouldBe(expectedT2);
+            }
+
+            [Input(1, 2, typeof(int), typeof(int))]
+            [Input('a', 3.0d, typeof(char), typeof(double))]
+            [Input(1, null, typeof(int), typeof(object))]
+            public void NullableValueTypeArgs<T1, T2>(T1 a, T2? b, Type expectedT1, Type expectedT2) where T2: struct
             {
                 WhereAmI();
                 typeof(T1).ShouldBe(expectedT1);

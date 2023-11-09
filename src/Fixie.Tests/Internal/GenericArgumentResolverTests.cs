@@ -228,6 +228,21 @@
                     x => x.ShouldBeGenericTypeParameter("T2"));
         }
 
+        public void ShouldResolveNullableValueTypeParametersWithConcreteValueTypes()
+        {
+            Resolve("NullableValueTypeResolution", 1, 2, 3, 4)
+                .ShouldBe(typeof(int), typeof(int));
+
+            Resolve("NullableValueTypeResolution", 'a', 2.0d, 3.0d, 4)
+                .ShouldBe(typeof(char), typeof(double));
+            
+            Resolve("NullableValueTypeResolution", 'a', 2.0d, 3, 4)
+                .ShouldBe(typeof(char), typeof(double));
+            
+            Resolve("NullableValueTypeResolution", 'a', 2, 3.03, 4)
+                .ShouldBe(typeof(char), typeof(int));
+        }
+
         public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()
         {
             var unresolved = Resolve("ConstrainedGeneric", "Incompatible").Single();
@@ -260,6 +275,9 @@
             public void CompoundGenericParameter<TKey, TValue>(KeyValuePair<TKey, TValue> pair) { }
             public void GenericFuncParameter<TResult>(int input, Func<int, TResult> transform, TResult expectedResult) { }
             public void GenericArrayResolution<T1, T2>(T1[] array, T2 arbitrary) { }
+            public void NullableValueTypeResolution<T1, T2>(T1? a, T2? b, T2? c, int? i)
+                where T1: struct
+                where T2: struct { }
         }
     }
 }

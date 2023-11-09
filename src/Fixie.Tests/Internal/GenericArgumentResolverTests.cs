@@ -241,6 +241,17 @@
             
             Resolve("NullableValueTypeResolution", 'a', 2, 3.03, 4)
                 .ShouldBe(typeof(char), typeof(int));
+
+            Resolve("NullableValueTypeResolution", 'a', null, 3.03, 4)
+                .ShouldBe(typeof(char), typeof(double));
+
+            Resolve("NullableValueTypeResolution", 'a', 2, null, 4)
+                .ShouldBe(typeof(char), typeof(int));
+
+            Resolve("NullableValueTypeResolution", null, 2, 3, 4)
+                .ShouldSatisfy(
+                    x => x.ShouldBeGenericTypeParameter("T1"),
+                    x => x.ShouldBeGenericTypeParameter("T2"));
         }
 
         public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()

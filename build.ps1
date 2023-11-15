@@ -8,7 +8,7 @@ function step($command) {
     if ($lastexitcode -ne 0) { throw $lastexitcode }
 }
 
-$fixie = "src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll"
+$fixie = "src/artifacts/bin/Fixie.Console/release/Fixie.Console.dll"
 
 if (test-path artifacts) { remove-item artifacts -Recurse }
 

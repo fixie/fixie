@@ -96,11 +96,17 @@
                     "",
                     "Fixie.Tests.FailureException",
                     At<FailureTestClass>("Synchronous()"),
-                    #if NET7_0_OR_GREATER
+                    #if NET7_0
                     output.Contains(optimizedInvoker)
                         ? optimizedInvoker
                         : initialInvoker,
                     "   at System.Reflection.MethodInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)",
+                    #endif
+                    #if NET8_0_OR_GREATER
+                    output.Contains(optimizedInvoker)
+                        ? optimizedInvoker
+                        : initialInvoker,
+                    "   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)",
                     #endif
                     "--- End of stack trace from previous location where exception was thrown ---",
                     At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),

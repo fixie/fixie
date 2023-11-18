@@ -27,7 +27,7 @@
             "command": "dotnet",
             "type": "process",
             "args": [
-                "${workspaceFolder}/src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll",
+                "${workspaceFolder}/src/artifacts/bin/Fixie.Console/release/Fixie.Console.dll",
                 "*.Tests",
                 "--no-build"
             ],
@@ -52,7 +52,7 @@
                 "--project",
                 "${workspaceFolder}/src/Fixie.Tests/Fixie.Tests.csproj",
 
-                "${workspaceFolder}/src/Fixie.Console/bin/Release/netcoreapp3.1/Fixie.Console.dll",
+                "${workspaceFolder}/src/artifacts/bin/Fixie.Console/release/Fixie.Console.dll",
                 "*.Tests"
             ],
             "isBackground": true,

@@ -20,4 +20,13 @@ if ($pack) {
     step { dotnet pack src/Fixie -o packages -c Release --no-build --nologo }
     step { dotnet pack src/Fixie.Console -o packages -c Release --no-build --nologo }
     step { dotnet pack src/Fixie.TestAdapter -o packages -c Release --no-build --nologo }
+
+    step { dotnet new tool-manifest }
+    step { dotnet tool install dotnet-validate --version 0.0.1-preview.304  }
+
+    $packages = get-childitem packages/*.nupkg
+
+    foreach ($package in $packages) {
+        dotnet validate package local $package
+    }
 }

@@ -21,4 +21,10 @@
             CS1591: Missing XML comment for publicly visible type or member '...'
         -->
     </PropertyGroup>
+
+    <!-- Enable SourceLink's Deterministic Builds -->
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    </PropertyGroup>
 </Project>

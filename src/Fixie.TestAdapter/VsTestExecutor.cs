@@ -46,24 +46,13 @@
 
                 HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
-                if (false)
+                var runAllTests = new PipeMessage.ExecuteTests
                 {
-                    foreach (var assemblyPath in sources)
-                        RunTestsInProcess(log, frameworkHandle, assemblyPath, runner =>
-                        {
-                            runner.Run().GetAwaiter().GetResult();
-                        });
-                }
-                else
-                {
-                    var runAllTests = new PipeMessage.ExecuteTests
-                    {
-                        Filter = new string[] { }
-                    };
+                    Filter = new string[] { }
+                };
 
-                    foreach (var assemblyPath in sources)
-                        RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));                    
-                }
+                foreach (var assemblyPath in sources)
+                    RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
             }
             catch (Exception exception)
             {
@@ -103,26 +92,13 @@
                 {
                     var assemblyPath = assemblyGroup.Key;
 
-                    if (false)
+                    RunTests(log, frameworkHandle, assemblyPath, pipe =>
                     {
-                        RunTestsInProcess(log, frameworkHandle, assemblyPath, runner =>
+                        pipe.Send(new PipeMessage.ExecuteTests
                         {
-                            var selectedTests =
-                                new HashSet<string>(assemblyGroup.Select(x => x.FullyQualifiedName));
-
-                            runner.Run(selectedTests).GetAwaiter().GetResult();
+                            Filter = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
                         });
-                    }
-                    else
-                    {
-                        RunTests(log, frameworkHandle, assemblyPath, pipe =>
-                        {
-                            pipe.Send(new PipeMessage.ExecuteTests
-                            {
-                                Filter = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
-                            });
-                        });
-                    }
+                    });
                 }
             }
             catch (Exception exception)

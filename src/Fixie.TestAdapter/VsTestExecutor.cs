@@ -46,7 +46,7 @@
 
                 HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
-                if (ShouldRunTestsInProcess())
+                if (false)
                 {
                     foreach (var assemblyPath in sources)
                         RunTestsInProcess(log, frameworkHandle, assemblyPath, runner =>
@@ -103,7 +103,7 @@
                 {
                     var assemblyPath = assemblyGroup.Key;
 
-                    if (ShouldRunTestsInProcess())
+                    if (false)
                     {
                         RunTestsInProcess(log, frameworkHandle, assemblyPath, runner =>
                         {
@@ -218,11 +218,6 @@
                     }
                 }
             }
-        }
-
-        static bool ShouldRunTestsInProcess()
-        {
-            return false;
         }
 
         static void RunTestsInProcess(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<Runner> run)

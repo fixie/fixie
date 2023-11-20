@@ -222,22 +222,7 @@
 
         static bool ShouldRunTestsInProcess()
         {
-            // Usually, the test assembly is running in a separate process, communicating
-            // with this Test Adapter process to ensure natural loading of test assembly
-            // dependencies. However, outside of Visual Studio runs, the debugger attached
-            // to *this* process cannot enlist the separate test assembly process.
-            // If we are running under the debugger but not running in Visual Studio,
-            // we must fall back to a less desirable in-process run. Users may run
-            // into some trouble in atypical assembly loading scenarios, in which case
-            // they will need to run their test project *directly* as a console application
-            // in their IDE.
-
-            // Once VsTest's LaunchProcessWithDebuggerAttached method works outside of Visual Studio,
-            // we can phase out this workaround.
-
-            var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;
-
-            return Debugger.IsAttached && !runningUnderVisualStudio;
+            return false;
         }
 
         static void RunTestsInProcess(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<Runner> run)

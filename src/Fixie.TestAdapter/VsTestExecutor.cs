@@ -2,11 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
     using System.IO.Pipes;
     using System.Linq;
-    using System.Reflection;
     using Internal;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -194,36 +191,6 @@
                     }
                 }
             }
-        }
-
-        static void RunTestsInProcess(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<Runner> run)
-        {
-            if (!IsTestAssembly(assemblyPath))
-            {
-                log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
-                return;
-            }
-
-            log.Info("Processing " + assemblyPath);
-
-            log.Info("In order to run under the debugger, your test assembly is running in-process within the Test Adapter.");
-            log.Info("If you experience assembly loading issues at runtime, try instead debugging the test project directly under the debugger, as it is an executable itself.");
-
-            Directory.SetCurrentDirectory(FolderPath(assemblyPath));
-            var assemblyName = new AssemblyName(Path.GetFileNameWithoutExtension(assemblyPath));
-            var testAssemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
-            var assembly = testAssemblyLoadContext.LoadFromAssemblyName(assemblyName);
-            var report = new InProcessExecutionReport(frameworkHandle, assemblyPath);
-            
-            var console = Console.Out;
-            var rootPath = Directory.GetCurrentDirectory();
-            var environment = new TestEnvironment(assembly, console, rootPath);
-
-            using var boundary = new ConsoleRedirectionBoundary();
-
-            var runner = new Runner(environment, report);
-
-            run(runner);
         }
 
         static void HandlePoorVsTestImplementationDetails(IRunContext? runContext, IFrameworkHandle frameworkHandle)

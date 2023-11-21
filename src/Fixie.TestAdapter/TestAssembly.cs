@@ -26,20 +26,20 @@ namespace Fixie.TestAdapter
             return File.Exists(Path.Combine(folderPath, "Fixie.dll"));
         }
 
-        public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle = null)
-        {
-            var assemblyFullPath = Path.GetFullPath(assemblyPath);
-            var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath)!;
-
-            return Start(frameworkHandle, assemblyDirectory, "dotnet", assemblyPath);
-        }
-
         public static int? TryGetExitCode(this Process? process)
         {
             if (process != null && process.WaitForExit(5000))
                 return process.ExitCode;
 
             return null;
+        }
+
+        public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle = null)
+        {
+            var assemblyFullPath = Path.GetFullPath(assemblyPath);
+            var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath)!;
+
+            return Start(frameworkHandle, assemblyDirectory, "dotnet", assemblyPath);
         }
 
         static Process? Start(IFrameworkHandle? frameworkHandle, string workingDirectory, string executable, params string[] arguments)

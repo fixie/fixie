@@ -36,10 +36,7 @@ namespace Fixie.TestAdapter
 
         public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle = null)
         {
-            var assemblyFullPath = Path.GetFullPath(assemblyPath);
-            var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath)!;
-
-            var workingDirectory = assemblyDirectory;
+            var workingDirectory = Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
 
             var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;
 

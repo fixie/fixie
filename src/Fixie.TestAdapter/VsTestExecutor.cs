@@ -43,13 +43,13 @@
 
                 HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
-                var message = new PipeMessage.ExecuteTests
+                var executeTests = new PipeMessage.ExecuteTests
                 {
                     Filter = new string[] { }
                 };
 
                 foreach (var assemblyPath in sources)
-                    RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(message));
+                    RunTests(log, frameworkHandle, assemblyPath, executeTests);
             }
             catch (Exception exception)
             {
@@ -89,12 +89,12 @@
                 {
                     var assemblyPath = assemblyGroup.Key;
 
-                    var message = new PipeMessage.ExecuteTests
+                    var executeTests = new PipeMessage.ExecuteTests
                     {
                         Filter = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
                     };
 
-                    RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(message));
+                    RunTests(log, frameworkHandle, assemblyPath, executeTests);
                 }
             }
             catch (Exception exception)
@@ -105,7 +105,7 @@
 
         public void Cancel() { }
 
-        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<TestAdapterPipe> sendCommand)
+        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, PipeMessage.ExecuteTests executeTests)
         {
             if (!IsTestAssembly(assemblyPath))
             {
@@ -124,7 +124,7 @@
             {
                 pipeStream.WaitForConnection();
 
-                sendCommand(pipe);
+                pipe.Send(executeTests);
 
                 var recorder = new VsExecutionRecorder(frameworkHandle, assemblyPath);
 

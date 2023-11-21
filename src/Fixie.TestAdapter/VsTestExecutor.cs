@@ -29,27 +29,24 @@
         /// </summary>
         public void RunTests(IEnumerable<string>? sources, IRunContext? runContext, IFrameworkHandle? frameworkHandle)
         {
+            ArgumentNullException.ThrowIfNull(sources);
+            ArgumentNullException.ThrowIfNull(frameworkHandle);
+
             try
             {
-                if (sources == null)
-                    throw new ArgumentNullException(nameof(sources));
-
-                if (frameworkHandle == null)
-                    throw new ArgumentNullException(nameof(frameworkHandle));
-
                 IMessageLogger log = frameworkHandle;
 
                 log.Version();
 
                 HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
-                var runAllTests = new PipeMessage.ExecuteTests
+                var executeTests = new PipeMessage.ExecuteTests
                 {
                     Filter = new string[] { }
                 };
 
                 foreach (var assemblyPath in sources)
-                    RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
+                    RunTests(log, frameworkHandle, assemblyPath, executeTests);
             }
             catch (Exception exception)
             {
@@ -69,14 +66,11 @@
         /// </summary>
         public void RunTests(IEnumerable<TestCase>? tests, IRunContext? runContext, IFrameworkHandle? frameworkHandle)
         {
+            ArgumentNullException.ThrowIfNull(tests);
+            ArgumentNullException.ThrowIfNull(frameworkHandle);
+
             try
             {
-                if (tests == null)
-                    throw new ArgumentNullException(nameof(tests));
-
-                if (frameworkHandle == null)
-                    throw new ArgumentNullException(nameof(frameworkHandle));
-
                 IMessageLogger log = frameworkHandle;
 
                 log.Version();
@@ -89,13 +83,12 @@
                 {
                     var assemblyPath = assemblyGroup.Key;
 
-                    RunTests(log, frameworkHandle, assemblyPath, pipe =>
+                    var executeTests = new PipeMessage.ExecuteTests
                     {
-                        pipe.Send(new PipeMessage.ExecuteTests
-                        {
-                            Filter = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
-                        });
-                    });
+                        Filter = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
+                    };
+
+                    RunTests(log, frameworkHandle, assemblyPath, executeTests);
                 }
             }
             catch (Exception exception)
@@ -106,7 +99,7 @@
 
         public void Cancel() { }
 
-        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, Action<TestAdapterPipe> sendCommand)
+        static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath, PipeMessage.ExecuteTests executeTests)
         {
             if (!IsTestAssembly(assemblyPath))
             {
@@ -125,7 +118,7 @@
             {
                 pipeStream.WaitForConnection();
 
-                sendCommand(pipe);
+                pipe.Send(executeTests);
 
                 var recorder = new VsExecutionRecorder(frameworkHandle, assemblyPath);
 

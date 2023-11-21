@@ -21,20 +21,9 @@ namespace Fixie.TestAdapter
             if (fixieAssemblies.Contains(Path.GetFileName(assemblyPath)))
                 return false;
 
-            return File.Exists(Path.Combine(FolderPath(assemblyPath), "Fixie.dll"));
-        }
+            var folderPath = new FileInfo(assemblyPath).Directory!.FullName;
 
-        public static string FolderPath(string assemblyPath)
-        {
-            return new FileInfo(assemblyPath).Directory!.FullName;
-        }
-
-        public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle = null)
-        {
-            var assemblyFullPath = Path.GetFullPath(assemblyPath);
-            var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath)!;
-
-            return Start(frameworkHandle, assemblyDirectory, "dotnet", assemblyPath);
+            return File.Exists(Path.Combine(folderPath, "Fixie.dll"));
         }
 
         public static int? TryGetExitCode(this Process? process)
@@ -45,45 +34,26 @@ namespace Fixie.TestAdapter
             return null;
         }
 
-        static Process? Start(IFrameworkHandle? frameworkHandle, string workingDirectory, string executable, params string[] arguments)
+        public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle = null)
         {
-            var serializedArguments = Serialize(arguments);
+            var workingDirectory = Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
 
             var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;
 
             if (Debugger.IsAttached && runningUnderVisualStudio)
-            {
-                // LaunchProcessWithDebuggerAttached is only trusted when
-                // this Test Adapter is running within Visual Studio.
+                return Debug(workingDirectory, assemblyPath, frameworkHandle);
 
-                // LaunchProcessWithDebuggerAttached, unlike Process.Start,
-                // does not automatically propagate environment variables that
-                // were created within the currently running process, so they
-                // must be explicitly included here. It also does not resolve
-                // bare commands (`dotnet`) to the full file path of the
-                // corresponding executable, so we must do so manually.
+            return Run(workingDirectory, assemblyPath);
+        }
 
-                var environmentVariables = new Dictionary<string, string?>
-                {
-                    ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
-                };
-
-                var filePath = executable == "dotnet" ? FindDotnet() : executable;
-
-                frameworkHandle?
-                    .LaunchProcessWithDebuggerAttached(
-                        filePath,
-                        workingDirectory,
-                        serializedArguments,
-                        environmentVariables);
-
-                return null;
-            }
+        static Process Run(string workingDirectory, string assemblyPath)
+        {
+            var arguments = new[] { assemblyPath };
 
             var startInfo = new ProcessStartInfo
             {
                 WorkingDirectory = workingDirectory,
-                FileName = executable,
+                FileName = "dotnet",
                 UseShellExecute = false
             };
 
@@ -91,6 +61,39 @@ namespace Fixie.TestAdapter
                 startInfo.ArgumentList.Add(argument);
 
             return Start(startInfo);
+        }
+
+        static Process? Debug(string workingDirectory, string assemblyPath, IFrameworkHandle? frameworkHandle)
+        {
+            // LaunchProcessWithDebuggerAttached sends a request back
+            // to the third-party test runner process which started
+            // this TestAdapter's host process. That test runner
+            // process does not know about environment variables
+            // created so far by this TestAdapter. That test runner
+            // cannot reliably resolve the meaning of bare commands
+            // like `dotnet` to the full file path of the corresponding
+            // executable. To ensure the test runner process can
+            // successfully honor the request, we must explicitly
+            // pass along new environment variables and resolve the
+            // full path for the `dotnet` executable.
+
+            var arguments = new[] { assemblyPath };
+
+            var environmentVariables = new Dictionary<string, string?>
+            {
+                ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
+            };
+
+            var filePath = FindDotnet();
+
+            frameworkHandle?
+                .LaunchProcessWithDebuggerAttached(
+                    filePath,
+                    workingDirectory,
+                    Serialize(arguments),
+                    environmentVariables);
+
+            return null;
         }
 
         static Process Start(ProcessStartInfo startInfo)

@@ -43,11 +43,6 @@ namespace Fixie.TestAdapter
             var executable = "dotnet";
             var arguments = new[] { assemblyPath };
 
-            return Start(frameworkHandle, workingDirectory, executable, arguments);
-        }
-
-        static Process? Start(IFrameworkHandle? frameworkHandle, string workingDirectory, string executable, string[] arguments)
-        {
             var serializedArguments = Serialize(arguments);
 
             var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;

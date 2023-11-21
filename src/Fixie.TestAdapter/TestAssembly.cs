@@ -45,35 +45,7 @@ namespace Fixie.TestAdapter
             var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;
 
             if (Debugger.IsAttached && runningUnderVisualStudio)
-            {
-                // LaunchProcessWithDebuggerAttached is only trusted when
-                // this Test Adapter is running within Visual Studio.
-
-                // LaunchProcessWithDebuggerAttached, unlike Process.Start,
-                // does not automatically propagate environment variables that
-                // were created within the currently running process, so they
-                // must be explicitly included here. It also does not resolve
-                // bare commands (`dotnet`) to the full file path of the
-                // corresponding executable, so we must do so manually.
-
-                var environmentVariables = new Dictionary<string, string?>
-                {
-                    ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
-                };
-
-                var filePath = FindDotnet();
-
-                var serializedArguments = Serialize(arguments);
-                
-                frameworkHandle?
-                    .LaunchProcessWithDebuggerAttached(
-                        filePath,
-                        workingDirectory,
-                        serializedArguments,
-                        environmentVariables);
-
-                return null;
-            }
+                return Debug(workingDirectory, arguments, frameworkHandle);
 
             var startInfo = new ProcessStartInfo
             {
@@ -86,6 +58,37 @@ namespace Fixie.TestAdapter
                 startInfo.ArgumentList.Add(argument);
 
             return Start(startInfo);
+        }
+
+        static Process? Debug(string workingDirectory, string[] arguments, IFrameworkHandle? frameworkHandle)
+        {
+            // LaunchProcessWithDebuggerAttached sends a request back
+            // to the third-party test runner process which started
+            // this TestAdapter's host process. That test runner
+            // process does not know about environment variables
+            // created so far by this TestAdapter. That test runner
+            // cannot reliably resolve the meaning of bare commands
+            // like `dotnet` to the full file path of the corresponding
+            // executable. To ensure the test runner process can
+            // successfully honor the request, we must explicitly
+            // pass along new environment variables and resolve the
+            // full path for the `dotnet` executable.
+
+            var environmentVariables = new Dictionary<string, string?>
+            {
+                ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
+            };
+
+            var filePath = FindDotnet();
+
+            frameworkHandle?
+                .LaunchProcessWithDebuggerAttached(
+                    filePath,
+                    workingDirectory,
+                    Serialize(arguments),
+                    environmentVariables);
+
+            return null;
         }
 
         static Process Start(ProcessStartInfo startInfo)

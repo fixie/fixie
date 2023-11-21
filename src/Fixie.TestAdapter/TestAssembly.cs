@@ -40,7 +40,6 @@ namespace Fixie.TestAdapter
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath)!;
 
             var workingDirectory = assemblyDirectory;
-            var executable = "dotnet";
             var arguments = new[] { assemblyPath };
 
             var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;
@@ -62,7 +61,7 @@ namespace Fixie.TestAdapter
                     ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
                 };
 
-                var filePath = executable == "dotnet" ? FindDotnet() : executable;
+                var filePath = FindDotnet();
 
                 var serializedArguments = Serialize(arguments);
                 
@@ -79,7 +78,7 @@ namespace Fixie.TestAdapter
             var startInfo = new ProcessStartInfo
             {
                 WorkingDirectory = workingDirectory,
-                FileName = executable,
+                FileName = "dotnet",
                 UseShellExecute = false
             };
 

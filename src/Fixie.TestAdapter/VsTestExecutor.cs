@@ -43,13 +43,13 @@
 
                 HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
 
-                var runAllTests = new PipeMessage.ExecuteTests
+                var message = new PipeMessage.ExecuteTests
                 {
                     Filter = new string[] { }
                 };
 
                 foreach (var assemblyPath in sources)
-                    RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(runAllTests));
+                    RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(message));
             }
             catch (Exception exception)
             {
@@ -89,13 +89,12 @@
                 {
                     var assemblyPath = assemblyGroup.Key;
 
-                    RunTests(log, frameworkHandle, assemblyPath, pipe =>
+                    var message = new PipeMessage.ExecuteTests
                     {
-                        pipe.Send(new PipeMessage.ExecuteTests
-                        {
-                            Filter = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
-                        });
-                    });
+                        Filter = assemblyGroup.Select(x => x.FullyQualifiedName).ToArray()
+                    };
+
+                    RunTests(log, frameworkHandle, assemblyPath, pipe => pipe.Send(message));
                 }
             }
             catch (Exception exception)

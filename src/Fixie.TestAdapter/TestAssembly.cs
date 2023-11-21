@@ -40,18 +40,19 @@ namespace Fixie.TestAdapter
             var assemblyDirectory = Path.GetDirectoryName(assemblyFullPath)!;
 
             var workingDirectory = assemblyDirectory;
-            var arguments = new[] { assemblyPath };
 
             var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;
 
             if (Debugger.IsAttached && runningUnderVisualStudio)
-                return Debug(workingDirectory, arguments, frameworkHandle);
+                return Debug(workingDirectory, assemblyPath, frameworkHandle);
 
-            return Run(workingDirectory, arguments);
+            return Run(workingDirectory, assemblyPath);
         }
 
-        static Process Run(string workingDirectory, string[] arguments)
+        static Process Run(string workingDirectory, string assemblyPath)
         {
+            var arguments = new[] { assemblyPath };
+
             var startInfo = new ProcessStartInfo
             {
                 WorkingDirectory = workingDirectory,
@@ -65,7 +66,7 @@ namespace Fixie.TestAdapter
             return Start(startInfo);
         }
 
-        static Process? Debug(string workingDirectory, string[] arguments, IFrameworkHandle? frameworkHandle)
+        static Process? Debug(string workingDirectory, string assemblyPath, IFrameworkHandle? frameworkHandle)
         {
             // LaunchProcessWithDebuggerAttached sends a request back
             // to the third-party test runner process which started
@@ -78,6 +79,8 @@ namespace Fixie.TestAdapter
             // successfully honor the request, we must explicitly
             // pass along new environment variables and resolve the
             // full path for the `dotnet` executable.
+
+            var arguments = new[] { assemblyPath };
 
             var environmentVariables = new Dictionary<string, string?>
             {

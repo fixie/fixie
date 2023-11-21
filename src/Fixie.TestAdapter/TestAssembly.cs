@@ -47,6 +47,11 @@ namespace Fixie.TestAdapter
             if (Debugger.IsAttached && runningUnderVisualStudio)
                 return Debug(workingDirectory, arguments, frameworkHandle);
 
+            return Run(workingDirectory, arguments);
+        }
+
+        static Process Run(string workingDirectory, string[] arguments)
+        {
             var startInfo = new ProcessStartInfo
             {
                 WorkingDirectory = workingDirectory,

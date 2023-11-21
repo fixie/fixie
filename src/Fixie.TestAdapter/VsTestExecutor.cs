@@ -29,14 +29,11 @@
         /// </summary>
         public void RunTests(IEnumerable<string>? sources, IRunContext? runContext, IFrameworkHandle? frameworkHandle)
         {
+            ArgumentNullException.ThrowIfNull(sources);
+            ArgumentNullException.ThrowIfNull(frameworkHandle);
+
             try
             {
-                if (sources == null)
-                    throw new ArgumentNullException(nameof(sources));
-
-                if (frameworkHandle == null)
-                    throw new ArgumentNullException(nameof(frameworkHandle));
-
                 IMessageLogger log = frameworkHandle;
 
                 log.Version();
@@ -69,14 +66,11 @@
         /// </summary>
         public void RunTests(IEnumerable<TestCase>? tests, IRunContext? runContext, IFrameworkHandle? frameworkHandle)
         {
+            ArgumentNullException.ThrowIfNull(tests);
+            ArgumentNullException.ThrowIfNull(frameworkHandle);
+
             try
             {
-                if (tests == null)
-                    throw new ArgumentNullException(nameof(tests));
-
-                if (frameworkHandle == null)
-                    throw new ArgumentNullException(nameof(frameworkHandle));
-
                 IMessageLogger log = frameworkHandle;
 
                 log.Version();

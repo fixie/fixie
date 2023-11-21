@@ -38,9 +38,7 @@ namespace Fixie.TestAdapter
         {
             var workingDirectory = Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
 
-            var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;
-
-            if (Debugger.IsAttached && runningUnderVisualStudio)
+            if (Debugger.IsAttached)
                 return Debug(workingDirectory, assemblyPath, frameworkHandle);
 
             return Run(workingDirectory, assemblyPath);

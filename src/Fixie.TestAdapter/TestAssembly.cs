@@ -43,8 +43,6 @@ namespace Fixie.TestAdapter
             var executable = "dotnet";
             var arguments = new[] { assemblyPath };
 
-            var serializedArguments = Serialize(arguments);
-
             var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;
 
             if (Debugger.IsAttached && runningUnderVisualStudio)
@@ -66,6 +64,8 @@ namespace Fixie.TestAdapter
 
                 var filePath = executable == "dotnet" ? FindDotnet() : executable;
 
+                var serializedArguments = Serialize(arguments);
+                
                 frameworkHandle?
                     .LaunchProcessWithDebuggerAttached(
                         filePath,

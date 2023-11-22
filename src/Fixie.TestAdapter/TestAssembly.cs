@@ -38,7 +38,7 @@ namespace Fixie.TestAdapter
         {
             var workingDirectory = Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
 
-            if (Debugger.IsAttached)
+            if (Debugger.IsAttached && frameworkHandle != null)
                 return Debug(workingDirectory, assemblyPath, frameworkHandle);
 
             return Run(workingDirectory, assemblyPath);
@@ -61,7 +61,7 @@ namespace Fixie.TestAdapter
             return Start(startInfo);
         }
 
-        static Process? Debug(string workingDirectory, string assemblyPath, IFrameworkHandle? frameworkHandle)
+        static Process? Debug(string workingDirectory, string assemblyPath, IFrameworkHandle frameworkHandle)
         {
             // LaunchProcessWithDebuggerAttached sends a request back
             // to the third-party test runner process which started
@@ -84,7 +84,7 @@ namespace Fixie.TestAdapter
 
             var filePath = FindDotnet();
 
-            frameworkHandle?
+            frameworkHandle
                 .LaunchProcessWithDebuggerAttached(
                     filePath,
                     workingDirectory,

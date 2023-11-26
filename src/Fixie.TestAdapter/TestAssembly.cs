@@ -36,24 +36,24 @@ namespace Fixie.TestAdapter
 
         public static Process StartDiscovery(string assemblyPath)
         {
-            return Run(WorkingDirectory(assemblyPath), assemblyPath);
+            return Run(assemblyPath);
         }
 
         public static Process? StartExecution(string assemblyPath, IFrameworkHandle frameworkHandle)
         {
             if (Debugger.IsAttached)
-                return Debug(WorkingDirectory(assemblyPath), assemblyPath, frameworkHandle);
+                return Debug(assemblyPath, frameworkHandle);
 
-            return Run(WorkingDirectory(assemblyPath), assemblyPath);
+            return Run(assemblyPath);
         }
 
-        static Process Run(string workingDirectory, string assemblyPath)
+        static Process Run(string assemblyPath)
         {
             var arguments = new[] { assemblyPath };
 
             var startInfo = new ProcessStartInfo
             {
-                WorkingDirectory = workingDirectory,
+                WorkingDirectory = WorkingDirectory(assemblyPath),
                 FileName = "dotnet",
                 UseShellExecute = false
             };
@@ -64,7 +64,7 @@ namespace Fixie.TestAdapter
             return Start(startInfo);
         }
 
-        static Process? Debug(string workingDirectory, string assemblyPath, IFrameworkHandle frameworkHandle)
+        static Process? Debug(string assemblyPath, IFrameworkHandle frameworkHandle)
         {
             // LaunchProcessWithDebuggerAttached sends a request back
             // to the third-party test runner process which started
@@ -90,7 +90,7 @@ namespace Fixie.TestAdapter
             frameworkHandle
                 .LaunchProcessWithDebuggerAttached(
                     filePath,
-                    workingDirectory,
+                    WorkingDirectory(assemblyPath),
                     Serialize(arguments),
                     environmentVariables);
 

@@ -34,7 +34,12 @@ namespace Fixie.TestAdapter
             return null;
         }
 
-        public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle = null)
+        public static Process? Start(string assemblyPath)
+        {
+            return Start(assemblyPath, null);
+        }
+
+        public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle)
         {
             var workingDirectory = Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
 

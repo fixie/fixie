@@ -44,7 +44,7 @@
 
             using (var pipeStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte))
             using (var pipe = new TestAdapterPipe(pipeStream))
-            using (var process = Start(assemblyPath))
+            using (var process = StartDiscovery(assemblyPath))
             {
                 pipeStream.WaitForConnection();
 

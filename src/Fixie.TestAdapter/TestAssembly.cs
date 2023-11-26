@@ -34,12 +34,9 @@ namespace Fixie.TestAdapter
             return null;
         }
 
-        public static Process? StartDiscovery(string assemblyPath)
+        public static Process StartDiscovery(string assemblyPath)
         {
             var workingDirectory = Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
-
-            if (Debugger.IsAttached && null != null)
-                return Debug(workingDirectory, assemblyPath, null);
 
             return Run(workingDirectory, assemblyPath);
         }

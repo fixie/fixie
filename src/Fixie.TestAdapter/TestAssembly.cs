@@ -87,14 +87,23 @@ namespace Fixie.TestAdapter
 
             var filePath = FindDotnet();
 
-            frameworkHandle
-                .LaunchProcessWithDebuggerAttached(
-                    filePath,
-                    WorkingDirectory(assemblyPath),
-                    Serialize(arguments),
-                    environmentVariables);
+            try
+            {
+                frameworkHandle
+                    .LaunchProcessWithDebuggerAttached(
+                        filePath,
+                        WorkingDirectory(assemblyPath),
+                        Serialize(arguments),
+                        environmentVariables);
 
-            return null;
+                return null;
+            }
+            catch (Exception exception)
+            {
+                frameworkHandle.Error(exception);
+
+                return Run(assemblyPath);
+            }
         }
 
         static string WorkingDirectory(string assemblyPath)

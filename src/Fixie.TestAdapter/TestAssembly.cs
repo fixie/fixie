@@ -36,14 +36,14 @@ namespace Fixie.TestAdapter
 
         public static Process StartDiscovery(string assemblyPath)
         {
-            var workingDirectory = Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
+            var workingDirectory = WorkingDirectory(assemblyPath);
 
             return Run(workingDirectory, assemblyPath);
         }
 
         public static Process? StartExecution(string assemblyPath, IFrameworkHandle frameworkHandle)
         {
-            var workingDirectory = Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
+            var workingDirectory = WorkingDirectory(assemblyPath);
 
             if (Debugger.IsAttached)
                 return Debug(workingDirectory, assemblyPath, frameworkHandle);
@@ -99,6 +99,11 @@ namespace Fixie.TestAdapter
                     environmentVariables);
 
             return null;
+        }
+
+        static string WorkingDirectory(string assemblyPath)
+        {
+            return Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
         }
 
         static Process Start(ProcessStartInfo startInfo)

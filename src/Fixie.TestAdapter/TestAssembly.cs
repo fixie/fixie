@@ -41,11 +41,11 @@ namespace Fixie.TestAdapter
             return Run(workingDirectory, assemblyPath);
         }
 
-        public static Process? StartExecution(string assemblyPath, IFrameworkHandle? frameworkHandle)
+        public static Process? StartExecution(string assemblyPath, IFrameworkHandle frameworkHandle)
         {
             var workingDirectory = Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
 
-            if (Debugger.IsAttached && frameworkHandle != null)
+            if (Debugger.IsAttached)
                 return Debug(workingDirectory, assemblyPath, frameworkHandle);
 
             return Run(workingDirectory, assemblyPath);

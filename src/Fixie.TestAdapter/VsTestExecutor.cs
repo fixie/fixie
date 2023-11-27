@@ -114,7 +114,7 @@
 
             using (var pipeStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte))
             using (var pipe = new TestAdapterPipe(pipeStream))
-            using (var process = Start(assemblyPath, frameworkHandle))
+            using (var process = StartExecution(assemblyPath, frameworkHandle, out var attachmentFailure))
             {
                 pipeStream.WaitForConnection();
 
@@ -181,6 +181,30 @@
                         }
 
                         throw exception;
+                    }
+                }
+
+                if (attachmentFailure != null)
+                {
+                    var exception = attachmentFailure.ThirdPartyTestHostException;
+
+                    var reason = new PipeMessage.Exception
+                    {
+                        Type = exception.GetType().FullName!,
+                        Message = attachmentFailure.Message,
+                        StackTrace = exception.StackTrace!
+                    };
+
+                    foreach (var selectedTest in executeTests.Filter)
+                    {
+                        recorder.Record(new PipeMessage.TestFailed
+                        {
+                            Test = selectedTest,
+                            TestCase = selectedTest,
+                            Reason = reason,
+                            DurationInMilliseconds = 0,
+                            Output = ""
+                        });
                     }
                 }
             }

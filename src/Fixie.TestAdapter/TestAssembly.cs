@@ -34,25 +34,29 @@ namespace Fixie.TestAdapter
             return null;
         }
 
-        public static Process? Start(string assemblyPath, IFrameworkHandle? frameworkHandle = null)
+        public static Process StartDiscovery(string assemblyPath)
         {
-            var workingDirectory = Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
-
-            var runningUnderVisualStudio = Environment.GetEnvironmentVariable("VisualStudioVersion") != null;
-
-            if (Debugger.IsAttached && runningUnderVisualStudio)
-                return Debug(workingDirectory, assemblyPath, frameworkHandle);
-
-            return Run(workingDirectory, assemblyPath);
+            return Run(assemblyPath);
         }
 
-        static Process Run(string workingDirectory, string assemblyPath)
+        public static Process? StartExecution(string assemblyPath, IFrameworkHandle frameworkHandle,
+            out DebuggerAttachmentFailure? attachmentFailure)
+        {
+            attachmentFailure = null;
+
+            if (Debugger.IsAttached)
+                return RunAttemptingDebuggerAttachment(assemblyPath, frameworkHandle, out attachmentFailure);
+
+            return Run(assemblyPath);
+        }
+
+        static Process Run(string assemblyPath)
         {
             var arguments = new[] { assemblyPath };
 
             var startInfo = new ProcessStartInfo
             {
-                WorkingDirectory = workingDirectory,
+                WorkingDirectory = WorkingDirectory(assemblyPath),
                 FileName = "dotnet",
                 UseShellExecute = false
             };
@@ -63,8 +67,11 @@ namespace Fixie.TestAdapter
             return Start(startInfo);
         }
 
-        static Process? Debug(string workingDirectory, string assemblyPath, IFrameworkHandle? frameworkHandle)
+        static Process? RunAttemptingDebuggerAttachment(string assemblyPath, IFrameworkHandle frameworkHandle,
+            out DebuggerAttachmentFailure? attachmentFailure)
         {
+            attachmentFailure = null;
+
             // LaunchProcessWithDebuggerAttached sends a request back
             // to the third-party test runner process which started
             // this TestAdapter's host process. That test runner
@@ -86,14 +93,30 @@ namespace Fixie.TestAdapter
 
             var filePath = FindDotnet();
 
-            frameworkHandle?
-                .LaunchProcessWithDebuggerAttached(
-                    filePath,
-                    workingDirectory,
-                    Serialize(arguments),
-                    environmentVariables);
+            try
+            {
+                frameworkHandle
+                    .LaunchProcessWithDebuggerAttached(
+                        filePath,
+                        WorkingDirectory(assemblyPath),
+                        Serialize(arguments),
+                        environmentVariables);
 
-            return null;
+                return null;
+            }
+            catch (Exception thirdPartyTestHostException)
+            {
+                attachmentFailure = new DebuggerAttachmentFailure(thirdPartyTestHostException);
+
+                frameworkHandle.Error(thirdPartyTestHostException);
+
+                return Run(assemblyPath);
+            }
+        }
+
+        static string WorkingDirectory(string assemblyPath)
+        {
+            return Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
         }
 
         static Process Start(ProcessStartInfo startInfo)

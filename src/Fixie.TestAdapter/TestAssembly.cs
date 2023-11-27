@@ -39,10 +39,13 @@ namespace Fixie.TestAdapter
             return Run(assemblyPath);
         }
 
-        public static Process? StartExecution(string assemblyPath, IFrameworkHandle frameworkHandle)
+        public static Process? StartExecution(string assemblyPath, IFrameworkHandle frameworkHandle,
+            out DebuggerAttachmentFailure? attachmentFailure)
         {
+            attachmentFailure = null;
+
             if (Debugger.IsAttached)
-                return Debug(assemblyPath, frameworkHandle);
+                return RunAttemptingDebuggerAttachment(assemblyPath, frameworkHandle, out attachmentFailure);
 
             return Run(assemblyPath);
         }
@@ -64,8 +67,11 @@ namespace Fixie.TestAdapter
             return Start(startInfo);
         }
 
-        static Process? Debug(string assemblyPath, IFrameworkHandle frameworkHandle)
+        static Process? RunAttemptingDebuggerAttachment(string assemblyPath, IFrameworkHandle frameworkHandle,
+            out DebuggerAttachmentFailure? attachmentFailure)
         {
+            attachmentFailure = null;
+
             // LaunchProcessWithDebuggerAttached sends a request back
             // to the third-party test runner process which started
             // this TestAdapter's host process. That test runner
@@ -98,9 +104,11 @@ namespace Fixie.TestAdapter
 
                 return null;
             }
-            catch (Exception exception)
+            catch (Exception thirdPartyTestHostException)
             {
-                frameworkHandle.Error(exception);
+                attachmentFailure = new DebuggerAttachmentFailure(thirdPartyTestHostException);
+
+                frameworkHandle.Error(thirdPartyTestHostException);
 
                 return Run(assemblyPath);
             }

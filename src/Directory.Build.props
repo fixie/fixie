@@ -21,4 +21,9 @@
             CS1591: Missing XML comment for publicly visible type or member '...'
         -->
     </PropertyGroup>
+
+	<!-- Enable Deterministic Builds -->
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
 </Project>

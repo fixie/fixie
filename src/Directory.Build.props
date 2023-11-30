@@ -7,7 +7,8 @@
         <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
         <PackageIcon>icon.png</PackageIcon>
         <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
-        <DebugType>embedded</DebugType>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <Nullable>enable</Nullable>
         <UseArtifactsOutput>true</UseArtifactsOutput>
         <MinVerMinimumMajorMinor>3.0</MinVerMinimumMajorMinor>

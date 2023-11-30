@@ -6,7 +6,6 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>fixie</ToolCommandName>
     <Description>`dotnet fixie` console test runner for the Fixie test framework.</Description>
-    <DebugType>embedded</DebugType>
     <RollForward>Major</RollForward>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

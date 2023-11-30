@@ -8,6 +8,7 @@
         <PackageIcon>icon.png</PackageIcon>
         <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>
+        <DebugType>embedded</DebugType>
         <Nullable>enable</Nullable>
         <UseArtifactsOutput>true</UseArtifactsOutput>
         <MinVerMinimumMajorMinor>3.0</MinVerMinimumMajorMinor>

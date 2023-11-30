@@ -14,7 +14,6 @@
     <TargetFrameworks>netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
     <Description>Visual Studio integration for the Fixie test framework.</Description>
     <NuspecFile>Fixie.TestAdapter.nuspec</NuspecFile>
-    <DebugType>embedded</DebugType>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 

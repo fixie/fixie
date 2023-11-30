@@ -43,8 +43,15 @@
 
     <!-- Run-Time Assets -->
     <file target="lib\netcoreapp3.1" src="..\artifacts\bin\Fixie.TestAdapter\release_netcoreapp3.1\Fixie.TestAdapter.dll" />
+    <file target="lib\netcoreapp3.1" src="..\artifacts\bin\Fixie.TestAdapter\release_netcoreapp3.1\Fixie.TestAdapter.pdb" />
+
     <file target="lib\net6.0" src="..\artifacts\bin\Fixie.TestAdapter\release_net6.0\Fixie.TestAdapter.dll" />
+    <file target="lib\net6.0" src="..\artifacts\bin\Fixie.TestAdapter\release_net6.0\Fixie.TestAdapter.pdb" />
+    
     <file target="lib\net7.0" src="..\artifacts\bin\Fixie.TestAdapter\release_net7.0\Fixie.TestAdapter.dll" />
+    <file target="lib\net7.0" src="..\artifacts\bin\Fixie.TestAdapter\release_net7.0\Fixie.TestAdapter.pdb" />
+    
     <file target="lib\net8.0" src="..\artifacts\bin\Fixie.TestAdapter\release_net8.0\Fixie.TestAdapter.dll" />
+    <file target="lib\net8.0" src="..\artifacts\bin\Fixie.TestAdapter\release_net8.0\Fixie.TestAdapter.pdb" />
   </files>
 </package>

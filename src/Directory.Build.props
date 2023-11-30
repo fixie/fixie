@@ -8,6 +8,7 @@
         <PackageIcon>icon.png</PackageIcon>
         <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <Nullable>enable</Nullable>
         <UseArtifactsOutput>true</UseArtifactsOutput>
         <MinVerMinimumMajorMinor>3.0</MinVerMinimumMajorMinor>
@@ -21,4 +22,9 @@
             CS1591: Missing XML comment for publicly visible type or member '...'
         -->
     </PropertyGroup>
+
+	<!-- Enable Deterministic Builds -->
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
 </Project>

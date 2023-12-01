@@ -29,6 +29,9 @@ namespace Fixie.Internal
                 }
             }
 
+            if (previousWasUpperCase)
+                patternWithWildcards += "[a-z]*";
+
             regex = new Regex(patternWithWildcards + "$");
         }
 

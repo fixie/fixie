@@ -29,7 +29,7 @@ namespace Fixie.Internal
                 }
             }
 
-            regex = new Regex(patternWithWildcards);
+            regex = new Regex(patternWithWildcards + "$");
         }
 
         public bool Matches(string test)

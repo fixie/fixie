@@ -29,7 +29,10 @@ namespace Fixie.Internal
                 }
             }
 
-            regex = new Regex(patternWithWildcards);
+            if (previousWasUpperCase)
+                patternWithWildcards += "[a-z]*";
+
+            regex = new Regex(patternWithWildcards + "$");
         }
 
         public bool Matches(string test)

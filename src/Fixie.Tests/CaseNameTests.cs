@@ -10,6 +10,8 @@
     {
         public async Task ShouldBeNamedAfterTheUnderlyingMethod()
         {
+            System.Threading.Thread.Sleep(10000);
+
             var output = await RunScript<NoParametersTestClass>(async test =>
             {
                 await Run(test);

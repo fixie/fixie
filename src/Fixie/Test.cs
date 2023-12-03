@@ -102,6 +102,14 @@ namespace Fixie
         }
 
         /// <summary>
+        /// Emits a start event for this test.
+        /// </summary>
+        public async Task Start()
+        {
+            await recorder.Start(this);
+        }
+
+        /// <summary>
         /// Emits a pass result for this test.
         /// </summary>
         public async Task Pass()

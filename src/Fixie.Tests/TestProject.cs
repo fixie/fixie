@@ -24,7 +24,7 @@ namespace Fixie.Tests
                 {
                     foreach (var test in testClass.Tests)
                     {
-                        //TODO: await test.Start();
+                        await test.Start();
 
                         try
                         {

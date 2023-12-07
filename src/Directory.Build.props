@@ -11,7 +11,7 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <Nullable>enable</Nullable>
         <UseArtifactsOutput>true</UseArtifactsOutput>
-        <MinVerMinimumMajorMinor>3.0</MinVerMinimumMajorMinor>
+        <MinVerMinimumMajorMinor>4.0</MinVerMinimumMajorMinor>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <NoWarn>1591</NoWarn>
         <WarningsNotAsErrors>162,612,618</WarningsNotAsErrors>

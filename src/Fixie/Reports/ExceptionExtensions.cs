@@ -52,13 +52,7 @@
             {
                 const string subsequentInvoke = " InvokeStub_";
                 const string firstInvoke = " System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)";
-                
-                #if NET7_0
-                const string methodInvoker = " System.Reflection.MethodInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)";
-                #else
                 const string methodInvoker = " System.Reflection.MethodBaseInvoker.Invoke";
-                #endif                
-
                 const string synchronousRethrowMarker = "--- End of stack trace from previous location";
                 const string callResolvedMethod = " Fixie.MethodInfoExtensions.CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)";
                 const string constructTestClass = " Fixie.Test.Construct(Type testClass)";

@@ -354,18 +354,11 @@ namespace Fixie.Tests
         {
             var output = await Run<CannotInvokeConstructorTestClass, DefaultExecution>();
 
-#if NETCOREAPP3_1
-            output.ShouldHaveResults(
-                "CannotInvokeConstructorTestClass.UnreachableCase failed: " +
-                "No parameterless constructor defined " +
-                $"for type '{FullName<CannotInvokeConstructorTestClass>()}'.");
-#else
             output.ShouldHaveResults(
                 "CannotInvokeConstructorTestClass.UnreachableCase failed: " +
                 "Cannot dynamically create an instance " +
                 $"of type '{FullName<CannotInvokeConstructorTestClass>()}'. " +
                 "Reason: No parameterless constructor defined.");
-#endif
 
             output.ShouldHaveLifecycle();
         }

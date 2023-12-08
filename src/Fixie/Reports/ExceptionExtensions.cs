@@ -53,7 +53,7 @@
                 const string subsequentInvoke = " InvokeStub_";
                 const string firstInvoke = " System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)";
                 
-                #if NETCOREAPP3_1 || NET6_0 || NET7_0
+                #if NET6_0 || NET7_0
                 const string methodInvoker = " System.Reflection.MethodInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)";
                 #else
                 const string methodInvoker = " System.Reflection.MethodBaseInvoker.Invoke";

@@ -21,7 +21,7 @@
 
             if (environmentVariables != null)
                 foreach (var pair in environmentVariables)
-                    startInfo.Environment.Add(pair);
+                    startInfo.Environment.Add(pair.Key, pair.Value);
 
             return Run(startInfo);
         }

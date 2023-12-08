@@ -45,7 +45,7 @@
             //Ambiguous Match
             Action attemptAmbiguousAttributeLookup = () => typeof(AttributeSample).Has<AmbiguouslyMultipleAttribute>(out _);
             
-            #if NETCOREAPP3_1 || NET6_0 || NET7_0
+            #if NET6_0 || NET7_0
             var expectedExceptionMessage = "Multiple custom attributes of the same type found.";
             #else
             var expectedExceptionMessage = "Multiple custom attributes of the same type 'Fixie.Tests.ReflectionExtensionsTests+AmbiguouslyMultipleAttribute' found.";

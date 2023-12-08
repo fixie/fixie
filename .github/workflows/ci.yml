@@ -19,7 +19,6 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: |
-          7.0
           8.0
     - run: dotnet --info
     - name: Build and Test

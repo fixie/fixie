@@ -24,9 +24,7 @@
         {
             get
             {
-#if NET6_0
-                return "6.0";
-#elif NET7_0
+#if NET7_0
                 return "7.0";
 #elif NET8_0
                 return "8.0";

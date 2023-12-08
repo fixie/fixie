@@ -20,17 +20,7 @@
                 Directory.GetCurrentDirectory());
         }
 
-        public static string TargetFrameworkVersion
-        {
-            get
-            {
-#if NET7_0
-                return "7.0";
-#elif NET8_0
-                return "8.0";
-#endif
-            }
-        }
+        public static string TargetFrameworkVersion => "8.0";
 
         public static string FullName<T>()
         {

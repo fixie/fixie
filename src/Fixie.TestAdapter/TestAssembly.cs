@@ -1,18 +1,18 @@
-namespace Fixie.TestAdapter
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    using System.Runtime.InteropServices;
-    using System.Text.RegularExpressions;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+namespace Fixie.TestAdapter;
 
-    static class TestAssembly
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+
+static class TestAssembly
+{
+    public static bool IsTestAssembly(string assemblyPath)
     {
-        public static bool IsTestAssembly(string assemblyPath)
-        {
             var fixieAssemblies = new[]
             {
                 "Fixie.dll", "Fixie.TestAdapter.dll"
@@ -26,22 +26,22 @@ namespace Fixie.TestAdapter
             return File.Exists(Path.Combine(folderPath, "Fixie.dll"));
         }
 
-        public static int? TryGetExitCode(this Process? process)
-        {
+    public static int? TryGetExitCode(this Process? process)
+    {
             if (process != null && process.WaitForExit(5000))
                 return process.ExitCode;
 
             return null;
         }
 
-        public static Process StartDiscovery(string assemblyPath)
-        {
+    public static Process StartDiscovery(string assemblyPath)
+    {
             return Run(assemblyPath);
         }
 
-        public static Process? StartExecution(string assemblyPath, IFrameworkHandle frameworkHandle,
-            out DebuggerAttachmentFailure? attachmentFailure)
-        {
+    public static Process? StartExecution(string assemblyPath, IFrameworkHandle frameworkHandle,
+        out DebuggerAttachmentFailure? attachmentFailure)
+    {
             attachmentFailure = null;
 
             if (Debugger.IsAttached)
@@ -50,8 +50,8 @@ namespace Fixie.TestAdapter
             return Run(assemblyPath);
         }
 
-        static Process Run(string assemblyPath)
-        {
+    static Process Run(string assemblyPath)
+    {
             var arguments = new[] { assemblyPath };
 
             var startInfo = new ProcessStartInfo
@@ -67,9 +67,9 @@ namespace Fixie.TestAdapter
             return Start(startInfo);
         }
 
-        static Process? RunAttemptingDebuggerAttachment(string assemblyPath, IFrameworkHandle frameworkHandle,
-            out DebuggerAttachmentFailure? attachmentFailure)
-        {
+    static Process? RunAttemptingDebuggerAttachment(string assemblyPath, IFrameworkHandle frameworkHandle,
+        out DebuggerAttachmentFailure? attachmentFailure)
+    {
             attachmentFailure = null;
 
             // LaunchProcessWithDebuggerAttached sends a request back
@@ -114,13 +114,13 @@ namespace Fixie.TestAdapter
             }
         }
 
-        static string WorkingDirectory(string assemblyPath)
-        {
+    static string WorkingDirectory(string assemblyPath)
+    {
             return Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
         }
 
-        static Process Start(ProcessStartInfo startInfo)
-        {
+    static Process Start(ProcessStartInfo startInfo)
+    {
             var process = new Process
             {
                 StartInfo = startInfo
@@ -132,8 +132,8 @@ namespace Fixie.TestAdapter
             throw new Exception("Failed to start process: " + startInfo.FileName);
         }
 
-        static string FindDotnet()
-        {
+    static string FindDotnet()
+    {
             var fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "dotnet.exe" : "dotnet";
 
             var folderPath = Environment
@@ -149,18 +149,18 @@ namespace Fixie.TestAdapter
             return Path.Combine(folderPath.Trim(), fileName);
         }
 
-        /// <summary>
-        /// Serialize the given string[] to a single string, so that when used as a ProcessStartInfo.Arguments
-        /// value, the process's Main method will receive the original string[].
-        /// 
-        /// See https://blogs.msdn.microsoft.com/twistylittlepassagesallalike/2011/04/23/everyone-quotes-command-line-arguments-the-wrong-way/
-        /// See https://stackoverflow.com/a/6040946 for the regex approach used here.
-        /// </summary>
-        public static string Serialize(string[] arguments)
-            => string.Join(" ", arguments.Select(Quote));
+    /// <summary>
+    /// Serialize the given string[] to a single string, so that when used as a ProcessStartInfo.Arguments
+    /// value, the process's Main method will receive the original string[].
+    /// 
+    /// See https://blogs.msdn.microsoft.com/twistylittlepassagesallalike/2011/04/23/everyone-quotes-command-line-arguments-the-wrong-way/
+    /// See https://stackoverflow.com/a/6040946 for the regex approach used here.
+    /// </summary>
+    public static string Serialize(string[] arguments)
+        => string.Join(" ", arguments.Select(Quote));
 
-        static string Quote(string argument)
-        {
+    static string Quote(string argument)
+    {
             //For each substring of zero or more \ followed by "
             //replace it with twice as many \ followed by \"
             var s = Regex.Replace(argument, @"(\\*)" + '"', @"$1$1\" + '"');
@@ -171,5 +171,4 @@ namespace Fixie.TestAdapter
             //Now that the content has been escaped, surround the value in quotes.
             return '"' + s + '"';
         }
-    }
 }

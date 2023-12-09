@@ -1,11 +1,11 @@
-﻿namespace Fixie.Tests.Reports;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Reports;
+
+namespace Fixie.Tests.Reports;
 
 public class ConsoleReportTests : MessagingTests
 {

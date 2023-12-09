@@ -1,14 +1,14 @@
-﻿namespace Fixie.Tests.Reports;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Reports;
-using static Utility;
+using static Fixie.Tests.Utility;
 using static System.Text.Json.JsonSerializer;
+
+namespace Fixie.Tests.Reports;
 
 public class AzureReportTests : MessagingTests
 {

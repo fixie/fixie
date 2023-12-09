@@ -1,10 +1,10 @@
-﻿namespace Fixie.Tests.Reports;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Reports;
+
+namespace Fixie.Tests.Reports;
 
 public class LifecycleMessageTests : MessagingTests
 {

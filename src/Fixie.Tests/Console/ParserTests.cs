@@ -1,8 +1,8 @@
-﻿namespace Fixie.Tests.Console;
-
-using System;
-using Assertions;
+﻿using System;
+using Fixie.Tests.Assertions;
 using Fixie.Console;
+
+namespace Fixie.Tests.Console;
 
 public class ParserTests
 {

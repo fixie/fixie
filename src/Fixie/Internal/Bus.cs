@@ -1,41 +1,40 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Internal;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Reports;
+
+class Bus
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-    using Reports;
+    readonly TextWriter console;
+    readonly List<IReport> reports;
 
-    class Bus
+    public Bus(TextWriter console, IReadOnlyList<IReport> reports)
     {
-        readonly TextWriter console;
-        readonly List<IReport> reports;
+        this.console = console;
+        this.reports = new List<IReport>(reports);
+    }
 
-        public Bus(TextWriter console, IReadOnlyList<IReport> reports)
+    public async Task Publish<TMessage>(TMessage message) where TMessage : IMessage
+    {
+        foreach (var report in reports)
         {
-            this.console = console;
-            this.reports = new List<IReport>(reports);
-        }
-
-        public async Task Publish<TMessage>(TMessage message) where TMessage : IMessage
-        {
-            foreach (var report in reports)
+            try
             {
-                try
-                {
-                    if (report is IHandler<TMessage> handler)
-                        await handler.Handle(message);
-                }
-                catch (Exception exception)
-                {
-                    using (Foreground.Yellow)
-                        console.WriteLine(
-                            $"{report.GetType().FullName} threw an exception while " +
-                            $"attempting to handle a message of type {typeof(TMessage).FullName}:");
-                    console.WriteLine();
-                    console.WriteLine(exception.ToString());
-                    console.WriteLine();
-                }
+                if (report is IHandler<TMessage> handler)
+                    await handler.Handle(message);
+            }
+            catch (Exception exception)
+            {
+                using (Foreground.Yellow)
+                    console.WriteLine(
+                        $"{report.GetType().FullName} threw an exception while " +
+                        $"attempting to handle a message of type {typeof(TMessage).FullName}:");
+                console.WriteLine();
+                console.WriteLine(exception.ToString());
+                console.WriteLine();
             }
         }
     }

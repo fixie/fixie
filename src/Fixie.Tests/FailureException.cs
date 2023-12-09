@@ -1,11 +1,10 @@
-﻿namespace Fixie.Tests
-{
-    using System;
-    using System.Runtime.CompilerServices;
+﻿namespace Fixie.Tests;
 
-    public class FailureException : Exception
-    {
-        public FailureException([CallerMemberName] string member = default!)
-            : base($"'{member}' failed!") { }
-    }
+using System;
+using System.Runtime.CompilerServices;
+
+public class FailureException : Exception
+{
+    public FailureException([CallerMemberName] string member = default!)
+        : base($"'{member}' failed!") { }
 }

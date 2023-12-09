@@ -1,34 +1,33 @@
-﻿namespace Fixie.Console
+﻿namespace Fixie.Console;
+
+using System.Collections.Generic;
+
+public class CommandLine
 {
-    using System.Collections.Generic;
+    public static T Parse<T>(string[] arguments) where T : class
+        => new Parser<T>(arguments).Model;
 
-    public class CommandLine
+    public static void Partition(string[] arguments, out string[] runnerArguments, out string[] customArguments)
     {
-        public static T Parse<T>(string[] arguments) where T : class
-            => new Parser<T>(arguments).Model;
+        var runnerArgumentsList = new List<string>();
+        var customArgumentsList = new List<string>();
 
-        public static void Partition(string[] arguments, out string[] runnerArguments, out string[] customArguments)
+        bool separatorFound = false;
+        foreach (var arg in arguments)
         {
-            var runnerArgumentsList = new List<string>();
-            var customArgumentsList = new List<string>();
-
-            bool separatorFound = false;
-            foreach (var arg in arguments)
+            if (arg == "--")
             {
-                if (arg == "--")
-                {
-                    separatorFound = true;
-                    continue;
-                }
-
-                if (separatorFound)
-                    customArgumentsList.Add(arg);
-                else
-                    runnerArgumentsList.Add(arg);
+                separatorFound = true;
+                continue;
             }
 
-            runnerArguments = runnerArgumentsList.ToArray();
-            customArguments = customArgumentsList.ToArray();
+            if (separatorFound)
+                customArgumentsList.Add(arg);
+            else
+                runnerArgumentsList.Add(arg);
         }
+
+        runnerArguments = runnerArgumentsList.ToArray();
+        customArguments = customArgumentsList.ToArray();
     }
 }

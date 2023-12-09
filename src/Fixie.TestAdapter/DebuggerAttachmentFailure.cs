@@ -1,27 +1,27 @@
-namespace Fixie.TestAdapter
+namespace Fixie.TestAdapter;
+
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+
+class DebuggerAttachmentFailure
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
+    public string Message { get; }
+    public Exception ThirdPartyTestHostException { get; }
 
-    class DebuggerAttachmentFailure
+    public DebuggerAttachmentFailure(Exception thirdPartyTestHostException)
     {
-        public string Message { get; }
-        public Exception ThirdPartyTestHostException { get; }
+        ThirdPartyTestHostException = thirdPartyTestHostException;
+        Message = UserGuidanceMessage(thirdPartyTestHostException);
+    }
 
-        public DebuggerAttachmentFailure(Exception thirdPartyTestHostException)
-        {
-            ThirdPartyTestHostException = thirdPartyTestHostException;
-            Message = UserGuidanceMessage(thirdPartyTestHostException);
-        }
+    static string UserGuidanceMessage(Exception thirdPartyTestHostException)
+    {
+        var host = TryGetTestHost(out var testHost)
+            ? $"{Environment.NewLine}{testHost}{Environment.NewLine}"
+            : "";
 
-        static string UserGuidanceMessage(Exception thirdPartyTestHostException)
-        {
-            var host = TryGetTestHost(out var testHost)
-                ? $"{Environment.NewLine}{testHost}{Environment.NewLine}"
-                : "";
-
-            return $@"Fixie attempted to run your test assembly
+        return $@"Fixie attempted to run your test assembly
 under the active debugger session, but the
 third-party test host {host}failed to honor the request to attach to the
 test assembly process. The run continued
@@ -74,20 +74,19 @@ debugger session.
 
 
 {thirdPartyTestHostException.Message}";
-        }
+    }
 
-        static bool TryGetTestHost([NotNullWhen(true)] out string? testHost)
+    static bool TryGetTestHost([NotNullWhen(true)] out string? testHost)
+    {
+        try
         {
-            try
-            {
-                testHost = Environment.GetCommandLineArgs().First();
-            }
-            catch
-            {
-                testHost = null;
-            }
-
-            return testHost != null;
+            testHost = Environment.GetCommandLineArgs().First();
         }
+        catch
+        {
+            testHost = null;
+        }
+
+        return testHost != null;
     }
 }

@@ -1,16 +1,15 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Internal;
+
+using System;
+using System.IO;
+
+class ConsoleRedirectionBoundary : IDisposable
 {
-    using System;
-    using System.IO;
+    readonly TextWriter original;
 
-    class ConsoleRedirectionBoundary : IDisposable
-    {
-        readonly TextWriter original;
+    public ConsoleRedirectionBoundary() => original = Console.Out;
 
-        public ConsoleRedirectionBoundary() => original = Console.Out;
+    void Revert() => Console.SetOut(original);
 
-        void Revert() => Console.SetOut(original);
-
-        public void Dispose() => Revert();
-    }
+    public void Dispose() => Revert();
 }

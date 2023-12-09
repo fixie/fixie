@@ -13,141 +13,141 @@ static class TestAssembly
 {
     public static bool IsTestAssembly(string assemblyPath)
     {
-            var fixieAssemblies = new[]
-            {
-                "Fixie.dll", "Fixie.TestAdapter.dll"
-            };
+        var fixieAssemblies = new[]
+        {
+            "Fixie.dll", "Fixie.TestAdapter.dll"
+        };
 
-            if (fixieAssemblies.Contains(Path.GetFileName(assemblyPath)))
-                return false;
+        if (fixieAssemblies.Contains(Path.GetFileName(assemblyPath)))
+            return false;
 
-            var folderPath = new FileInfo(assemblyPath).Directory!.FullName;
+        var folderPath = new FileInfo(assemblyPath).Directory!.FullName;
 
-            return File.Exists(Path.Combine(folderPath, "Fixie.dll"));
-        }
+        return File.Exists(Path.Combine(folderPath, "Fixie.dll"));
+    }
 
     public static int? TryGetExitCode(this Process? process)
     {
-            if (process != null && process.WaitForExit(5000))
-                return process.ExitCode;
+        if (process != null && process.WaitForExit(5000))
+            return process.ExitCode;
 
-            return null;
-        }
+        return null;
+    }
 
     public static Process StartDiscovery(string assemblyPath)
     {
-            return Run(assemblyPath);
-        }
+        return Run(assemblyPath);
+    }
 
     public static Process? StartExecution(string assemblyPath, IFrameworkHandle frameworkHandle,
         out DebuggerAttachmentFailure? attachmentFailure)
     {
-            attachmentFailure = null;
+        attachmentFailure = null;
 
-            if (Debugger.IsAttached)
-                return RunAttemptingDebuggerAttachment(assemblyPath, frameworkHandle, out attachmentFailure);
+        if (Debugger.IsAttached)
+            return RunAttemptingDebuggerAttachment(assemblyPath, frameworkHandle, out attachmentFailure);
 
-            return Run(assemblyPath);
-        }
+        return Run(assemblyPath);
+    }
 
     static Process Run(string assemblyPath)
     {
-            var arguments = new[] { assemblyPath };
+        var arguments = new[] { assemblyPath };
 
-            var startInfo = new ProcessStartInfo
-            {
-                WorkingDirectory = WorkingDirectory(assemblyPath),
-                FileName = "dotnet",
-                UseShellExecute = false
-            };
+        var startInfo = new ProcessStartInfo
+        {
+            WorkingDirectory = WorkingDirectory(assemblyPath),
+            FileName = "dotnet",
+            UseShellExecute = false
+        };
 
-            foreach (var argument in arguments)
-                startInfo.ArgumentList.Add(argument);
+        foreach (var argument in arguments)
+            startInfo.ArgumentList.Add(argument);
 
-            return Start(startInfo);
-        }
+        return Start(startInfo);
+    }
 
     static Process? RunAttemptingDebuggerAttachment(string assemblyPath, IFrameworkHandle frameworkHandle,
         out DebuggerAttachmentFailure? attachmentFailure)
     {
-            attachmentFailure = null;
+        attachmentFailure = null;
 
-            // LaunchProcessWithDebuggerAttached sends a request back
-            // to the third-party test runner process which started
-            // this TestAdapter's host process. That test runner
-            // process does not know about environment variables
-            // created so far by this TestAdapter. That test runner
-            // cannot reliably resolve the meaning of bare commands
-            // like `dotnet` to the full file path of the corresponding
-            // executable. To ensure the test runner process can
-            // successfully honor the request, we must explicitly
-            // pass along new environment variables and resolve the
-            // full path for the `dotnet` executable.
+        // LaunchProcessWithDebuggerAttached sends a request back
+        // to the third-party test runner process which started
+        // this TestAdapter's host process. That test runner
+        // process does not know about environment variables
+        // created so far by this TestAdapter. That test runner
+        // cannot reliably resolve the meaning of bare commands
+        // like `dotnet` to the full file path of the corresponding
+        // executable. To ensure the test runner process can
+        // successfully honor the request, we must explicitly
+        // pass along new environment variables and resolve the
+        // full path for the `dotnet` executable.
 
-            var arguments = new[] { assemblyPath };
+        var arguments = new[] { assemblyPath };
 
-            var environmentVariables = new Dictionary<string, string?>
-            {
-                ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
-            };
+        var environmentVariables = new Dictionary<string, string?>
+        {
+            ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
+        };
 
-            var filePath = FindDotnet();
+        var filePath = FindDotnet();
 
-            try
-            {
-                frameworkHandle
-                    .LaunchProcessWithDebuggerAttached(
-                        filePath,
-                        WorkingDirectory(assemblyPath),
-                        Serialize(arguments),
-                        environmentVariables);
+        try
+        {
+            frameworkHandle
+                .LaunchProcessWithDebuggerAttached(
+                    filePath,
+                    WorkingDirectory(assemblyPath),
+                    Serialize(arguments),
+                    environmentVariables);
 
-                return null;
-            }
-            catch (Exception thirdPartyTestHostException)
-            {
-                attachmentFailure = new DebuggerAttachmentFailure(thirdPartyTestHostException);
-
-                frameworkHandle.Error(thirdPartyTestHostException);
-
-                return Run(assemblyPath);
-            }
+            return null;
         }
+        catch (Exception thirdPartyTestHostException)
+        {
+            attachmentFailure = new DebuggerAttachmentFailure(thirdPartyTestHostException);
+
+            frameworkHandle.Error(thirdPartyTestHostException);
+
+            return Run(assemblyPath);
+        }
+    }
 
     static string WorkingDirectory(string assemblyPath)
     {
-            return Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
-        }
+        return Path.GetDirectoryName(Path.GetFullPath(assemblyPath))!;
+    }
 
     static Process Start(ProcessStartInfo startInfo)
     {
-            var process = new Process
-            {
-                StartInfo = startInfo
-            };
+        var process = new Process
+        {
+            StartInfo = startInfo
+        };
 
-            if (process.Start())
-                return process;
+        if (process.Start())
+            return process;
 
-            throw new Exception("Failed to start process: " + startInfo.FileName);
-        }
+        throw new Exception("Failed to start process: " + startInfo.FileName);
+    }
 
     static string FindDotnet()
     {
-            var fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "dotnet.exe" : "dotnet";
+        var fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "dotnet.exe" : "dotnet";
 
-            var folderPath = Environment
-                .GetEnvironmentVariable("PATH")?
-                .Split(Path.PathSeparator)
-                .FirstOrDefault(path => File.Exists(Path.Combine(path.Trim(), fileName)));
+        var folderPath = Environment
+            .GetEnvironmentVariable("PATH")?
+            .Split(Path.PathSeparator)
+            .FirstOrDefault(path => File.Exists(Path.Combine(path.Trim(), fileName)));
 
-            if (folderPath == null)
-                throw new Exception(
-                    $"Could not locate {fileName} when searching the PATH environment variable. " +
-                    "Verify that you have installed the .NET SDK.");
+        if (folderPath == null)
+            throw new Exception(
+                $"Could not locate {fileName} when searching the PATH environment variable. " +
+                "Verify that you have installed the .NET SDK.");
 
-            return Path.Combine(folderPath.Trim(), fileName);
-        }
+        return Path.Combine(folderPath.Trim(), fileName);
+    }
 
     /// <summary>
     /// Serialize the given string[] to a single string, so that when used as a ProcessStartInfo.Arguments
@@ -161,14 +161,14 @@ static class TestAssembly
 
     static string Quote(string argument)
     {
-            //For each substring of zero or more \ followed by "
-            //replace it with twice as many \ followed by \"
-            var s = Regex.Replace(argument, @"(\\*)" + '"', @"$1$1\" + '"');
+        //For each substring of zero or more \ followed by "
+        //replace it with twice as many \ followed by \"
+        var s = Regex.Replace(argument, @"(\\*)" + '"', @"$1$1\" + '"');
 
-            //When an argument ends in \ double the number of \ at the end.
-            s = Regex.Replace(s, @"(\\+)$", @"$1$1");
+        //When an argument ends in \ double the number of \ at the end.
+        s = Regex.Replace(s, @"(\\+)$", @"$1$1");
 
-            //Now that the content has been escaped, surround the value in quotes.
-            return '"' + s + '"';
-        }
+        //Now that the content has been escaped, surround the value in quotes.
+        return '"' + s + '"';
+    }
 }

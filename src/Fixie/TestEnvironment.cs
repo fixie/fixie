@@ -15,11 +15,11 @@ public class TestEnvironment
     internal TestEnvironment(Assembly assembly, TextWriter console, string rootPath,
         IReadOnlyList<string> customArguments)
     {
-            Assembly = assembly;
-            CustomArguments = customArguments;
-            Console = console;
-            RootPath = rootPath;
-        }
+        Assembly = assembly;
+        CustomArguments = customArguments;
+        Console = console;
+        RootPath = rootPath;
+    }
 
     /// <summary>
     /// The test assembly being executed.
@@ -64,10 +64,10 @@ public class TestEnvironment
     /// </summary>
     public bool IsContinuousIntegration()
     {
-            return 
-                GetEnvironmentVariable("APPVEYOR") == "True" ||          // AppVeyor
-                GetEnvironmentVariable("TF_BUILD") == "True" ||          // Azure DevOps
-                GetEnvironmentVariable("GITHUB_ACTIONS") == "true" ||    // GitHub Actions
-                GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null; // TeamCity
-        }
+        return 
+            GetEnvironmentVariable("APPVEYOR") == "True" ||          // AppVeyor
+            GetEnvironmentVariable("TF_BUILD") == "True" ||          // Azure DevOps
+            GetEnvironmentVariable("GITHUB_ACTIONS") == "true" ||    // GitHub Actions
+            GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null; // TeamCity
+    }
 }

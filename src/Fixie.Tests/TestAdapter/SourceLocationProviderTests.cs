@@ -22,72 +22,72 @@ public class SourceLocationProviderTests
 
     public void ShouldSafelyFailForUnknownMethods()
     {
-            AssertNoLineNumber("NonExistentClass.NonExistentMethod");
-            AssertNoLineNumber(FullName<SourceLocationSamples>() + ".NonExistentMethod");
-        }
+        AssertNoLineNumber("NonExistentClass.NonExistentMethod");
+        AssertNoLineNumber(FullName<SourceLocationSamples>() + ".NonExistentMethod");
+    }
 
     public void ShouldFailForUnparsableTestNames()
     {
-            AssertNoLineNumber("TestNameUnparsableAsFullyQualifiedMethodName");
-            AssertNoLineNumber("TestNameUnparsableAsFullyQualifiedMethodNameEndingWithDot.");
-            AssertNoLineNumber(".TestNameUnparsableAsFullyQualifiedMethodNameStartingWithDot");
-        }
+        AssertNoLineNumber("TestNameUnparsableAsFullyQualifiedMethodName");
+        AssertNoLineNumber("TestNameUnparsableAsFullyQualifiedMethodNameEndingWithDot.");
+        AssertNoLineNumber(".TestNameUnparsableAsFullyQualifiedMethodNameStartingWithDot");
+    }
 
     public void ShouldDetectLineNumbersOfEmptyMethods()
     {
-            AssertLineNumber(FullName<SourceLocationSamples>() + ".Empty_OneLine", 8, 8);
-            AssertLineNumber(FullName<SourceLocationSamples>() + ".Empty_TwoLines", 11, 12);
-            AssertLineNumber(FullName<SourceLocationSamples>() + ".Empty_ThreeLines", 15, 17);
-        }
+        AssertLineNumber(FullName<SourceLocationSamples>() + ".Empty_OneLine", 8, 8);
+        AssertLineNumber(FullName<SourceLocationSamples>() + ".Empty_TwoLines", 11, 12);
+        AssertLineNumber(FullName<SourceLocationSamples>() + ".Empty_ThreeLines", 15, 17);
+    }
 
     public void ShouldDetectLineNumbersOfSynchronousMethods()
     {
-            AssertLineNumber(FullName<SourceLocationSamples>() + ".Simple", 20, 21);
-            AssertLineNumber(FullName<SourceLocationSamples>() + ".Generic", 26, 27);
-        }
+        AssertLineNumber(FullName<SourceLocationSamples>() + ".Simple", 20, 21);
+        AssertLineNumber(FullName<SourceLocationSamples>() + ".Generic", 26, 27);
+    }
 
     public void ShouldDetectLineNumbersOfAsyncMethods()
     {
-            AssertLineNumber(FullName<SourceLocationSamples>() + ".AsyncMethod_Void", 31, 32);
-            AssertLineNumber(FullName<SourceLocationSamples>() + ".AsyncMethod_Task", 38, 39);
-            AssertLineNumber(FullName<SourceLocationSamples>() + ".AsyncMethod_TaskOfT", 45, 46);
-        }
+        AssertLineNumber(FullName<SourceLocationSamples>() + ".AsyncMethod_Void", 31, 32);
+        AssertLineNumber(FullName<SourceLocationSamples>() + ".AsyncMethod_Task", 38, 39);
+        AssertLineNumber(FullName<SourceLocationSamples>() + ".AsyncMethod_TaskOfT", 45, 46);
+    }
 
     public void ShouldDetectLineNumbersOfMethodsWithinNestedClasses()
     {
-            AssertLineNumber(FullName<SourceLocationSamples.NestedClass>() + ".NestedMethod", 54, 55);
-        }
+        AssertLineNumber(FullName<SourceLocationSamples.NestedClass>() + ".NestedMethod", 54, 55);
+    }
 
     public void ShouldSafelyFailForUnknownLineNumbers()
     {
-            AssertNoLineNumber(FullName<SourceLocationSamples>() + ".Hidden");
-        }
+        AssertNoLineNumber(FullName<SourceLocationSamples>() + ".Hidden");
+    }
 
     public void ShouldDetectLineNumberOfFirstOccurrenceOfOverloadedMethods()
     {
-            // VsTest's test running infrastructure is incapable of distinguishing
-            // overloads, even if we were to report accurate line numbers for each individually.
-            // The compromise that all major .NET test frameworks have to make is to report
-            // the line number of *one* of the overload occurrences.
+        // VsTest's test running infrastructure is incapable of distinguishing
+        // overloads, even if we were to report accurate line numbers for each individually.
+        // The compromise that all major .NET test frameworks have to make is to report
+        // the line number of *one* of the overload occurrences.
 
-            AssertLineNumber(FullName<SourceLocationSamples>() + ".Overloaded", 66, 66);
-        }
+        AssertLineNumber(FullName<SourceLocationSamples>() + ".Overloaded", 66, 66);
+    }
 
     public void ShouldSafelyFailForInheritedMethodsBecauseTheRequestIsAmbiguous()
     {
-            AssertLineNumber(FullName<SourceLocationSamples.BaseClass>() + ".Inherited", 72, 72);
-            AssertNoLineNumber(FullName<SourceLocationSamples.ChildClass>() + ".Inherited");
-        }
+        AssertLineNumber(FullName<SourceLocationSamples.BaseClass>() + ".Inherited", 72, 72);
+        AssertNoLineNumber(FullName<SourceLocationSamples.ChildClass>() + ".Inherited");
+    }
 
     static void AssertNoLineNumber(string test)
     {
-            var sourceLocationProvider = new SourceLocationProvider(TestAssemblyPath);
+        var sourceLocationProvider = new SourceLocationProvider(TestAssemblyPath);
 
-            var success = sourceLocationProvider.TryGetSourceLocation(test, out var location);
+        var success = sourceLocationProvider.TryGetSourceLocation(test, out var location);
 
-            success.ShouldBe(false);
-            location.ShouldBe(null);
-        }
+        success.ShouldBe(false);
+        location.ShouldBe(null);
+    }
 
     static void AssertLineNumber(string test, int debugLine, int releaseLine)
     {
@@ -101,7 +101,7 @@ public class SourceLocationProviderTests
 #if DEBUG
         location.LineNumber.ShouldBe(debugLine);
 #else
-            location.LineNumber.ShouldBe(releaseLine);
+        location.LineNumber.ShouldBe(releaseLine);
 #endif
     }
 }

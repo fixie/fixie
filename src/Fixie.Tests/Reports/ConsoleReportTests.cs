@@ -11,99 +11,99 @@ public class ConsoleReportTests : MessagingTests
 {
     public async Task ShouldReportResults()
     {
-            var output = await Run(environment => new ConsoleReport(environment));
+        var output = await Run(environment => new ConsoleReport(environment));
 
-            output.Console
-                .NormalizeStackTraceLines()
-                .CleanDuration()
-                .ShouldBe(
-                    "Standard Out: Fail",
-                    "Test '" + TestClass + ".Fail' failed:",
-                    "",
-                    "'Fail' failed!",
-                    "",
-                    "Fixie.Tests.FailureException",
-                    At("Fail()"),
-                    "",
+        output.Console
+            .NormalizeStackTraceLines()
+            .CleanDuration()
+            .ShouldBe(
+                "Standard Out: Fail",
+                "Test '" + TestClass + ".Fail' failed:",
+                "",
+                "'Fail' failed!",
+                "",
+                "Fixie.Tests.FailureException",
+                At("Fail()"),
+                "",
 
-                    "Standard Out: FailByAssertion",
-                    "Test '" + TestClass + ".FailByAssertion' failed:",
-                    "",
-                    "Expected: 2",
-                    "Actual:   1",
-                    "",
-                    "Fixie.Tests.Assertions.AssertException",
-                    At("FailByAssertion()"),
-                    "",
+                "Standard Out: FailByAssertion",
+                "Test '" + TestClass + ".FailByAssertion' failed:",
+                "",
+                "Expected: 2",
+                "Actual:   1",
+                "",
+                "Fixie.Tests.Assertions.AssertException",
+                At("FailByAssertion()"),
+                "",
 
-                    "Standard Out: Pass",
+                "Standard Out: Pass",
 
-                    "Test '" + TestClass + ".Skip' skipped:",
-                    "⚠ Skipped with attribute.",
-                    "",
+                "Test '" + TestClass + ".Skip' skipped:",
+                "⚠ Skipped with attribute.",
+                "",
 
-                    "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
-                    "",
-                    "Expected: System.String",
-                    "Actual:   System.Int32",
-                    "",
-                    "Fixie.Tests.Assertions.AssertException",
-                    At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
-                    "",
+                "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
+                "",
+                "Expected: System.String",
+                "Actual:   System.Int32",
+                "",
+                "Fixie.Tests.Assertions.AssertException",
+                At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
+                "",
 
-                    "3 passed, 3 failed, 1 skipped, took 1.23 seconds");
-        }
+                "3 passed, 3 failed, 1 skipped, took 1.23 seconds");
+    }
 
     public async Task ShouldIncludePassingResultsWhenFilteringByPattern()
     {
-            var output = await Run(console => new ConsoleReport(console, testPattern: "*"));
+        var output = await Run(console => new ConsoleReport(console, testPattern: "*"));
 
-            output.Console
-                .NormalizeStackTraceLines()
-                .CleanDuration()
-                .ShouldBe(
-                    "Standard Out: Fail",
-                    "Test '" + TestClass + ".Fail' failed:",
-                    "",
-                    "'Fail' failed!",
-                    "",
-                    "Fixie.Tests.FailureException",
-                    At("Fail()"),
-                    "",
+        output.Console
+            .NormalizeStackTraceLines()
+            .CleanDuration()
+            .ShouldBe(
+                "Standard Out: Fail",
+                "Test '" + TestClass + ".Fail' failed:",
+                "",
+                "'Fail' failed!",
+                "",
+                "Fixie.Tests.FailureException",
+                At("Fail()"),
+                "",
 
-                    "Standard Out: FailByAssertion",
-                    "Test '" + TestClass + ".FailByAssertion' failed:",
-                    "",
-                    "Expected: 2",
-                    "Actual:   1",
-                    "",
-                    "Fixie.Tests.Assertions.AssertException",
-                    At("FailByAssertion()"),
-                    "",
+                "Standard Out: FailByAssertion",
+                "Test '" + TestClass + ".FailByAssertion' failed:",
+                "",
+                "Expected: 2",
+                "Actual:   1",
+                "",
+                "Fixie.Tests.Assertions.AssertException",
+                At("FailByAssertion()"),
+                "",
 
-                    "Standard Out: Pass",
-                    "Test '" + TestClass + ".Pass' passed",
-                    "",
+                "Standard Out: Pass",
+                "Test '" + TestClass + ".Pass' passed",
+                "",
 
-                    "Test '" + TestClass + ".Skip' skipped:",
-                    "⚠ Skipped with attribute.",
-                    "",
+                "Test '" + TestClass + ".Skip' skipped:",
+                "⚠ Skipped with attribute.",
+                "",
 
-                    "Test '" + GenericTestClass + ".ShouldBeString<System.String>(\"A\")' passed",
-                    "Test '" + GenericTestClass + ".ShouldBeString<System.String>(\"B\")' passed",
-                    "",
+                "Test '" + GenericTestClass + ".ShouldBeString<System.String>(\"A\")' passed",
+                "Test '" + GenericTestClass + ".ShouldBeString<System.String>(\"B\")' passed",
+                "",
 
-                    "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
-                    "",
-                    "Expected: System.String",
-                    "Actual:   System.Int32",
-                    "",
-                    "Fixie.Tests.Assertions.AssertException",
-                    At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
-                    "",
+                "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
+                "",
+                "Expected: System.String",
+                "Actual:   System.Int32",
+                "",
+                "Fixie.Tests.Assertions.AssertException",
+                At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
+                "",
 
-                    "3 passed, 3 failed, 1 skipped, took 1.23 seconds");
-        }
+                "3 passed, 3 failed, 1 skipped, took 1.23 seconds");
+    }
 
     class ZeroPassed : SelfTestDiscovery
     {
@@ -113,15 +113,15 @@ public class ConsoleReportTests : MessagingTests
 
     public async Task ShouldNotReportPassCountsWhenZeroTestsHavePassed()
     {
-            var discovery = new ZeroPassed();
+        var discovery = new ZeroPassed();
 
-            var output = await Run(console => new ConsoleReport(console), discovery);
+        var output = await Run(console => new ConsoleReport(console), discovery);
 
-            output.Console
-                .CleanDuration()
-                .Last()
-                .ShouldBe("2 failed, 1 skipped, took 1.23 seconds");
-        }
+        output.Console
+            .CleanDuration()
+            .Last()
+            .ShouldBe("2 failed, 1 skipped, took 1.23 seconds");
+    }
 
     class ZeroFailed : SelfTestDiscovery
     {
@@ -131,15 +131,15 @@ public class ConsoleReportTests : MessagingTests
 
     public async Task ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
     {
-            var discovery = new ZeroFailed();
+        var discovery = new ZeroFailed();
 
-            var output = await Run(console => new ConsoleReport(console), discovery);
+        var output = await Run(console => new ConsoleReport(console), discovery);
 
-            output.Console
-                .CleanDuration()
-                .Last()
-                .ShouldBe("1 passed, 1 skipped, took 1.23 seconds");
-        }
+        output.Console
+            .CleanDuration()
+            .Last()
+            .ShouldBe("1 passed, 1 skipped, took 1.23 seconds");
+    }
 
     class ZeroSkipped : SelfTestDiscovery
     {
@@ -149,15 +149,15 @@ public class ConsoleReportTests : MessagingTests
 
     public async Task ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
     {
-            var discovery = new ZeroSkipped();
+        var discovery = new ZeroSkipped();
 
-            var output = await Run(console => new ConsoleReport(console), discovery);
+        var output = await Run(console => new ConsoleReport(console), discovery);
 
-            output.Console
-                .CleanDuration()
-                .Last()
-                .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
-        }
+        output.Console
+            .CleanDuration()
+            .Last()
+            .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
+    }
 
     class NoTestsFound : SelfTestDiscovery
     {
@@ -167,18 +167,18 @@ public class ConsoleReportTests : MessagingTests
 
     public async Task ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
     {
-            var discovery = new NoTestsFound();
+        var discovery = new NoTestsFound();
 
-            var output = await Run(console => new ConsoleReport(console), discovery);
+        var output = await Run(console => new ConsoleReport(console), discovery);
 
-            output.Console
-                .Last()
-                .ShouldBe("No tests found.");
+        output.Console
+            .Last()
+            .ShouldBe("No tests found.");
 
-            output = await Run(console => new ConsoleReport(console, testPattern: "Ineffective*Pattern"), discovery);
+        output = await Run(console => new ConsoleReport(console, testPattern: "Ineffective*Pattern"), discovery);
 
-            output.Console
-                .Last()
-                .ShouldBe("No tests match the specified pattern: Ineffective*Pattern");
-        }
+        output.Console
+            .Last()
+            .ShouldBe("No tests match the specified pattern: Ineffective*Pattern");
+    }
 }

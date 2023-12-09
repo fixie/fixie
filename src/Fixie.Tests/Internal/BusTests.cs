@@ -11,59 +11,59 @@ public class BusTests
 {
     public async Task ShouldPublishEventsToAllReports()
     {
-            var reports = new IReport[]
-            {
-                new EventHandler(),
-                new AnotherEventHandler(),
-                new CombinationEventHandler()
-            };
+        var reports = new IReport[]
+        {
+            new EventHandler(),
+            new AnotherEventHandler(),
+            new CombinationEventHandler()
+        };
 
-            using var console = new RedirectedConsole();
+        using var console = new RedirectedConsole();
 
-            var bus = new Bus(Console.Out, reports);
-            await bus.Publish(new Event(1));
-            await bus.Publish(new AnotherEvent(2));
-            await bus.Publish(new Event(3));
+        var bus = new Bus(Console.Out, reports);
+        await bus.Publish(new Event(1));
+        await bus.Publish(new AnotherEvent(2));
+        await bus.Publish(new Event(3));
 
-            console.Lines()
-                .ShouldBe(
-                    FullName<EventHandler>() + " handled Event 1",
-                    FullName<CombinationEventHandler>() + " handled Event 1",
-                    FullName<AnotherEventHandler>() + " handled AnotherEvent 2",
-                    FullName<CombinationEventHandler>() + " handled AnotherEvent 2",
-                    FullName<EventHandler>() + " handled Event 3",
-                    FullName<CombinationEventHandler>() + " handled Event 3");
-        }
+        console.Lines()
+            .ShouldBe(
+                FullName<EventHandler>() + " handled Event 1",
+                FullName<CombinationEventHandler>() + " handled Event 1",
+                FullName<AnotherEventHandler>() + " handled AnotherEvent 2",
+                FullName<CombinationEventHandler>() + " handled AnotherEvent 2",
+                FullName<EventHandler>() + " handled Event 3",
+                FullName<CombinationEventHandler>() + " handled Event 3");
+    }
 
     public async Task ShouldCatchAndLogExceptionsThrowByProblematicReportsRatherThanInterruptExecution()
     {
-            var reports = new IReport[]
-            {
-                new EventHandler(),
-                new FailingEventHandler()
-            };
+        var reports = new IReport[]
+        {
+            new EventHandler(),
+            new FailingEventHandler()
+        };
 
-            using var console = new RedirectedConsole();
+        using var console = new RedirectedConsole();
 
-            var bus = new Bus(Console.Out, reports);
-            await bus.Publish(new Event(1));
-            await bus.Publish(new AnotherEvent(2));
-            await bus.Publish(new Event(3));
+        var bus = new Bus(Console.Out, reports);
+        await bus.Publish(new Event(1));
+        await bus.Publish(new AnotherEvent(2));
+        await bus.Publish(new Event(3));
 
-            console.Lines()
-                .ShouldBe(
-                    FullName<EventHandler>() + " handled Event 1",
-                    FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
-                    "",
-                    FullName<StubException>() + ": Could not handle Event 1",
-                    "<<Stack Trace>>",
-                    "",
-                    FullName<EventHandler>() + " handled Event 3",
-                    FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
-                    "",
-                    FullName<StubException>() + ": Could not handle Event 3",
-                    "<<Stack Trace>>");
-        }
+        console.Lines()
+            .ShouldBe(
+                FullName<EventHandler>() + " handled Event 1",
+                FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
+                "",
+                FullName<StubException>() + ": Could not handle Event 1",
+                "<<Stack Trace>>",
+                "",
+                FullName<EventHandler>() + " handled Event 3",
+                FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
+                "",
+                FullName<StubException>() + ": Could not handle Event 3",
+                "<<Stack Trace>>");
+    }
 
     class Event : IMessage
     {
@@ -81,33 +81,33 @@ public class BusTests
     {
         public Task Handle(Event message)
         {
-                Log<EventHandler, Event>(message.Id);
-                return Task.CompletedTask;
-            }
+            Log<EventHandler, Event>(message.Id);
+            return Task.CompletedTask;
+        }
     }
 
     class AnotherEventHandler : IHandler<AnotherEvent>
     {
         public Task Handle(AnotherEvent message)
         {
-                Log<AnotherEventHandler, AnotherEvent>(message.Id);
-                return Task.CompletedTask;
-            }
+            Log<AnotherEventHandler, AnotherEvent>(message.Id);
+            return Task.CompletedTask;
+        }
     }
 
     class CombinationEventHandler : IHandler<Event>, IHandler<AnotherEvent>
     {
         public Task Handle(Event message)
         {
-                Log<CombinationEventHandler, Event>(message.Id);
-                return Task.CompletedTask;
-            }
+            Log<CombinationEventHandler, Event>(message.Id);
+            return Task.CompletedTask;
+        }
 
         public Task Handle(AnotherEvent message)
         {
-                Log<CombinationEventHandler, AnotherEvent>(message.Id);
-                return Task.CompletedTask;
-            }
+            Log<CombinationEventHandler, AnotherEvent>(message.Id);
+            return Task.CompletedTask;
+        }
     }
 
     class FailingEventHandler : IHandler<Event>

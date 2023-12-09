@@ -13,56 +13,56 @@ public class XmlReportTests : MessagingTests
 {
     public async Task ShouldProduceValidXmlDocument()
     {
-            var environment = GetTestEnvironment();
+        var environment = GetTestEnvironment();
 
-            XDocument? actual = null;
-            var report = new XmlReport(environment, document => actual = document);
+        XDocument? actual = null;
+        var report = new XmlReport(environment, document => actual = document);
 
-            var output = await Run(report);
+        var output = await Run(report);
 
-            output.Console
-                .ShouldBe(
-                    "Standard Out: Fail",
-                    "Standard Out: FailByAssertion",
-                    "Standard Out: Pass");
+        output.Console
+            .ShouldBe(
+                "Standard Out: Fail",
+                "Standard Out: FailByAssertion",
+                "Standard Out: Pass");
 
-            if (actual == null)
-                throw new Exception("Expected non-null XML report.");
+        if (actual == null)
+            throw new Exception("Expected non-null XML report.");
 
-            CleanBrittleValues(actual.ToString())
-                .Lines()
-                .NormalizeStackTraceLines()
-                .ToArray()
-                .ShouldBe(ExpectedReport.Lines().ToArray());
-        }
+        CleanBrittleValues(actual.ToString())
+            .Lines()
+            .NormalizeStackTraceLines()
+            .ToArray()
+            .ShouldBe(ExpectedReport.Lines().ToArray());
+    }
 
     static string CleanBrittleValues(string actualRawContent)
     {
-            //Avoid brittle assertion introduced by system date.
-            var cleaned = Regex.Replace(actualRawContent, @"run-date=""\d\d\d\d-\d\d-\d\d""", @"run-date=""YYYY-MM-DD""");
+        //Avoid brittle assertion introduced by system date.
+        var cleaned = Regex.Replace(actualRawContent, @"run-date=""\d\d\d\d-\d\d-\d\d""", @"run-date=""YYYY-MM-DD""");
 
-            //Avoid brittle assertion introduced by system time.
-            cleaned = Regex.Replace(cleaned, @"run-time=""\d\d:\d\d:\d\d""", @"run-time=""HH:MM:SS""");
+        //Avoid brittle assertion introduced by system time.
+        cleaned = Regex.Replace(cleaned, @"run-time=""\d\d:\d\d:\d\d""", @"run-time=""HH:MM:SS""");
 
-            //Avoid brittle assertion introduced by .NET version.
-            cleaned = cleaned.Replace($@"environment=""{IntPtr.Size * 8}-bit .NETCoreApp,Version=v{TargetFrameworkVersion}""", @"environment=""00-bit .NETCoreApp,Version=vX.Y""");
+        //Avoid brittle assertion introduced by .NET version.
+        cleaned = cleaned.Replace($@"environment=""{IntPtr.Size * 8}-bit .NETCoreApp,Version=v{TargetFrameworkVersion}""", @"environment=""00-bit .NETCoreApp,Version=vX.Y""");
 
-            //Avoid brittle assertion introduced by fixie version.
-            cleaned = cleaned.Replace($@"test-framework=""{Fixie.Internal.Framework.Version}""", @"test-framework=""Fixie 1.2.3.4""");
+        //Avoid brittle assertion introduced by fixie version.
+        cleaned = cleaned.Replace($@"test-framework=""{Fixie.Internal.Framework.Version}""", @"test-framework=""Fixie 1.2.3.4""");
 
-            //Avoid brittle assertion introduced by test duration.
-            cleaned = Regex.Replace(cleaned, @"time=""\d+\.\d\d\d""", @"time=""1.234""");
+        //Avoid brittle assertion introduced by test duration.
+        cleaned = Regex.Replace(cleaned, @"time=""\d+\.\d\d\d""", @"time=""1.234""");
 
-            return cleaned;
-        }
+        return cleaned;
+    }
 
     string ExpectedReport
     {
         get
         {
-                var assemblyLocation = GetType().Assembly.Location;
+            var assemblyLocation = GetType().Assembly.Location;
 
-                var expected = $@"<?xml version=""1.0"" encoding=""utf-8"" ?>
+            var expected = $@"<?xml version=""1.0"" encoding=""utf-8"" ?>
 <assemblies>
 <assembly name=""{assemblyLocation}"" run-date=""YYYY-MM-DD"" run-time=""HH:MM:SS"" time=""1.234"" total=""7"" passed=""3"" failed=""3"" skipped=""1"" environment=""00-bit .NETCoreApp,Version=vX.Y"" test-framework=""Fixie 1.2.3.4"">
   <collection time=""1.234"" name=""{GenericTestClass}"" total=""3"" passed=""2"" failed=""1"" skipped=""0"">
@@ -98,7 +98,7 @@ Actual:   1]]></message>
 </assembly>
 </assemblies>";
 
-                return XDocument.Parse(expected).ToString();
-            }
+            return XDocument.Parse(expected).ToString();
+        }
     }
 }

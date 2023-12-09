@@ -10,21 +10,21 @@ public class ExecutionSummaryTests
 {
     public async Task ShouldAccumulateTestResultCounts()
     {
-            var report = new StubExecutionSummaryReport();
-            var discovery = new SelfTestDiscovery();
-            var execution = new CreateInstancePerCase();
+        var report = new StubExecutionSummaryReport();
+        var discovery = new SelfTestDiscovery();
+        var execution = new CreateInstancePerCase();
 
-            await Run(report, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
+        await Run(report, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
-            report.ExecutionCompletions.Count.ShouldBe(1);
+        report.ExecutionCompletions.Count.ShouldBe(1);
 
-            var executionCompleted = report.ExecutionCompletions[0];
+        var executionCompleted = report.ExecutionCompletions[0];
 
-            executionCompleted.Passed.ShouldBe(2);
-            executionCompleted.Failed.ShouldBe(3);
-            executionCompleted.Skipped.ShouldBe(4);
-            executionCompleted.Total.ShouldBe(9);
-        }
+        executionCompleted.Passed.ShouldBe(2);
+        executionCompleted.Failed.ShouldBe(3);
+        executionCompleted.Skipped.ShouldBe(4);
+        executionCompleted.Total.ShouldBe(9);
+    }
 
     class StubExecutionSummaryReport :
         IHandler<ExecutionCompleted>
@@ -33,9 +33,9 @@ public class ExecutionSummaryTests
 
         public Task Handle(ExecutionCompleted message)
         {
-                ExecutionCompletions.Add(message);
-                return Task.CompletedTask;
-            }
+            ExecutionCompletions.Add(message);
+            return Task.CompletedTask;
+        }
     }
 
     class FirstSampleTestClass
@@ -59,9 +59,9 @@ public class ExecutionSummaryTests
     {
         public async Task Run(TestSuite testSuite)
         {
-                foreach (var test in testSuite.Tests)
-                    if (!test.Name.Contains("Skip"))
-                        await test.Run();
-            }
+            foreach (var test in testSuite.Tests)
+                if (!test.Name.Contains("Skip"))
+                    await test.Run();
+        }
     }
 }

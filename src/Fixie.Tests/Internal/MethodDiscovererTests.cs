@@ -26,11 +26,11 @@ public class MethodDiscovererTests
 
         public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
         {
-                return publicMethods
-                    .Where(x => x.Name.Contains("Void"))
-                    .Where(x => x.Name.Contains("No"))
-                    .Where(x => !x.IsStatic);
-            }
+            return publicMethods
+                .Where(x => x.Name.Contains("Void"))
+                .Where(x => x.Name.Contains("No"))
+                .Where(x => !x.IsStatic);
+        }
     }
 
     class BuggyDiscovery : IDiscovery
@@ -40,88 +40,88 @@ public class MethodDiscovererTests
 
         public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
         {
-                return publicMethods.Where(x => throw new Exception("Unsafe method discovery predicate threw!"));
-            }
+            return publicMethods.Where(x => throw new Exception("Unsafe method discovery predicate threw!"));
+        }
     }
 
     public void ShouldDiscoverOnlyPublicInstanceMethodsByDefault()
     {
-            var discovery = new DefaultDiscovery();
+        var discovery = new DefaultDiscovery();
 
-            DiscoveredTestMethods<Sample>(discovery)
-                .ShouldBe(
-                    "PublicInstanceNoArgsVoid()",
-                    "PublicInstanceNoArgsWithReturn()",
-                    "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)");
+        DiscoveredTestMethods<Sample>(discovery)
+            .ShouldBe(
+                "PublicInstanceNoArgsVoid()",
+                "PublicInstanceNoArgsWithReturn()",
+                "PublicInstanceWithArgsVoid(x)",
+                "PublicInstanceWithArgsWithReturn(x)");
 
-            DiscoveredTestMethods<AsyncSample>(discovery)
-                .ShouldBe(
-                    "PublicInstanceNoArgsVoid()",
-                    "PublicInstanceNoArgsWithReturn()",
-                    "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)");
-        }
+        DiscoveredTestMethods<AsyncSample>(discovery)
+            .ShouldBe(
+                "PublicInstanceNoArgsVoid()",
+                "PublicInstanceNoArgsWithReturn()",
+                "PublicInstanceWithArgsVoid(x)",
+                "PublicInstanceWithArgsWithReturn(x)");
+    }
 
     public void ShouldSupportMaximalDiscoveryOfAllPublicMethods()
     {
-            var discovery = new MaximumDiscovery();
+        var discovery = new MaximumDiscovery();
 
-            DiscoveredTestMethods<Sample>(discovery)
-                .ShouldBe(
-                    "PublicInstanceNoArgsVoid()",
-                    "PublicInstanceNoArgsWithReturn()",
-                    "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)",
+        DiscoveredTestMethods<Sample>(discovery)
+            .ShouldBe(
+                "PublicInstanceNoArgsVoid()",
+                "PublicInstanceNoArgsWithReturn()",
+                "PublicInstanceWithArgsVoid(x)",
+                "PublicInstanceWithArgsWithReturn(x)",
 
-                    "PublicStaticNoArgsVoid()",
-                    "PublicStaticNoArgsWithReturn()",
-                    "PublicStaticWithArgsVoid(x)",
-                    "PublicStaticWithArgsWithReturn(x)");
+                "PublicStaticNoArgsVoid()",
+                "PublicStaticNoArgsWithReturn()",
+                "PublicStaticWithArgsVoid(x)",
+                "PublicStaticWithArgsWithReturn(x)");
 
-            DiscoveredTestMethods<AsyncSample>(discovery)
-                .ShouldBe(
-                    "PublicInstanceNoArgsVoid()",
-                    "PublicInstanceNoArgsWithReturn()",
-                    "PublicInstanceWithArgsVoid(x)",
-                    "PublicInstanceWithArgsWithReturn(x)",
+        DiscoveredTestMethods<AsyncSample>(discovery)
+            .ShouldBe(
+                "PublicInstanceNoArgsVoid()",
+                "PublicInstanceNoArgsWithReturn()",
+                "PublicInstanceWithArgsVoid(x)",
+                "PublicInstanceWithArgsWithReturn(x)",
 
-                    "PublicStaticNoArgsVoid()",
-                    "PublicStaticNoArgsWithReturn()",
-                    "PublicStaticWithArgsVoid(x)",
-                    "PublicStaticWithArgsWithReturn(x)");
-        }
+                "PublicStaticNoArgsVoid()",
+                "PublicStaticNoArgsWithReturn()",
+                "PublicStaticWithArgsVoid(x)",
+                "PublicStaticWithArgsWithReturn(x)");
+    }
 
     public void ShouldDiscoverMethodsSatisfyingAllSpecifiedConditions()
     {
-            var discovery = new NarrowDiscovery();
+        var discovery = new NarrowDiscovery();
 
-            DiscoveredTestMethods<Sample>(discovery)
-                .ShouldBe("PublicInstanceNoArgsVoid()");
-        }
+        DiscoveredTestMethods<Sample>(discovery)
+            .ShouldBe("PublicInstanceNoArgsVoid()");
+    }
 
     public void ShouldFailWithClearExplanationWhenDiscoveryThrows()
     {
-            var discovery = new BuggyDiscovery();
+        var discovery = new BuggyDiscovery();
 
-            Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(discovery);
+        Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(discovery);
 
-            var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
-                "Exception thrown during test method discovery. " +
-                "Check the inner exception for more details.");
+        var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
+            "Exception thrown during test method discovery. " +
+            "Check the inner exception for more details.");
 
-            exception.InnerException
-                .ShouldBe<Exception>()
-                .Message.ShouldBe("Unsafe method discovery predicate threw!");
-        }
+        exception.InnerException
+            .ShouldBe<Exception>()
+            .Message.ShouldBe("Unsafe method discovery predicate threw!");
+    }
 
     static IEnumerable<string> DiscoveredTestMethods<TTestClass>(IDiscovery discovery)
     {
-            return new MethodDiscoverer(discovery)
-                .TestMethods(typeof(TTestClass))
-                .Select(method => $"{method.Name}({string.Join(", ", method.GetParameters().Select(x => x.Name))})")
-                .OrderBy(name => name, StringComparer.Ordinal);
-        }
+        return new MethodDiscoverer(discovery)
+            .TestMethods(typeof(TTestClass))
+            .Select(method => $"{method.Name}({string.Join(", ", method.GetParameters().Select(x => x.Name))})")
+            .OrderBy(name => name, StringComparer.Ordinal);
+    }
 
     class SampleBase
     {
@@ -175,7 +175,7 @@ public class MethodDiscovererTests
 
         static Task<int> Zero()
         {
-                return Task.Run(() => 0);
-            }
+            return Task.Run(() => 0);
+        }
     }
 }

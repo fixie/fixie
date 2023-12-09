@@ -14,65 +14,65 @@ public class RunnerTests
 
     public async Task ShouldPerformDiscoveryPhase()
     {
-            var report = new StubReport();
+        var report = new StubReport();
 
-            var candidateTypes = new[]
-            {
-                typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
-                typeof(PassFailTestClass), typeof(SkipTestClass)
-            };
-            var discovery = new SelfTestDiscovery();
-            
-            var environment = new TestEnvironment(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
-            var runner = new Runner(environment, report);
+        var candidateTypes = new[]
+        {
+            typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
+            typeof(PassFailTestClass), typeof(SkipTestClass)
+        };
+        var discovery = new SelfTestDiscovery();
+        
+        var environment = new TestEnvironment(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
+        var runner = new Runner(environment, report);
 
-            await runner.Discover(candidateTypes, discovery);
+        await runner.Discover(candidateTypes, discovery);
 
-            report.Entries.ShouldBe(
-                Self + "+PassTestClass.PassA discovered",
-                Self + "+PassTestClass.PassB discovered",
-                Self + "+PassFailTestClass.Fail discovered",
-                Self + "+PassFailTestClass.Pass discovered",
-                Self + "+SkipTestClass.SkipA discovered",
-                Self + "+SkipTestClass.SkipB discovered");
-        }
+        report.Entries.ShouldBe(
+            Self + "+PassTestClass.PassA discovered",
+            Self + "+PassTestClass.PassB discovered",
+            Self + "+PassFailTestClass.Fail discovered",
+            Self + "+PassFailTestClass.Pass discovered",
+            Self + "+SkipTestClass.SkipA discovered",
+            Self + "+SkipTestClass.SkipB discovered");
+    }
 
     public async Task ShouldPerformExecutionPhase()
     {
-            var report = new StubReport();
+        var report = new StubReport();
 
-            var candidateTypes = new[]
-            {
-                typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
-                typeof(PassFailTestClass), typeof(SkipTestClass)
-            };
-            var discovery = new SelfTestDiscovery();
-            var execution = new CreateInstancePerCase();
+        var candidateTypes = new[]
+        {
+            typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
+            typeof(PassFailTestClass), typeof(SkipTestClass)
+        };
+        var discovery = new SelfTestDiscovery();
+        var execution = new CreateInstancePerCase();
 
-            var environment = new TestEnvironment(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
-            var runner = new Runner(environment, report);
-            var configuration = new TestConfiguration();
-            configuration.Conventions.Add(discovery, execution);
+        var environment = new TestEnvironment(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
+        var runner = new Runner(environment, report);
+        var configuration = new TestConfiguration();
+        configuration.Conventions.Add(discovery, execution);
 
-            await runner.Run(candidateTypes, configuration, new HashSet<string>());
+        await runner.Run(candidateTypes, configuration, new HashSet<string>());
 
-            report.Entries.ShouldBe(
-                Self + "+PassTestClass.PassA passed",
-                Self + "+PassTestClass.PassB passed",
-                Self + "+PassFailTestClass.Fail failed: 'Fail' failed!",
-                Self + "+PassFailTestClass.Pass passed",
-                Self + "+SkipTestClass.SkipA skipped: This test did not run.",
-                Self + "+SkipTestClass.SkipB skipped: This test did not run.");
-        }
+        report.Entries.ShouldBe(
+            Self + "+PassTestClass.PassA passed",
+            Self + "+PassTestClass.PassB passed",
+            Self + "+PassFailTestClass.Fail failed: 'Fail' failed!",
+            Self + "+PassFailTestClass.Pass passed",
+            Self + "+SkipTestClass.SkipA skipped: This test did not run.",
+            Self + "+SkipTestClass.SkipB skipped: This test did not run.");
+    }
 
     class CreateInstancePerCase : IExecution
     {
         public async Task Run(TestSuite testSuite)
         {
-                foreach (var test in testSuite.Tests)
-                    if (!test.Name.Contains("Skip"))
-                        await test.Run();
-            }
+            foreach (var test in testSuite.Tests)
+                if (!test.Name.Contains("Skip"))
+                    await test.Run();
+        }
     }
 
     class SampleIrrelevantClass

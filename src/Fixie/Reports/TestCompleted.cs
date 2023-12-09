@@ -6,11 +6,11 @@ public abstract class TestCompleted : IMessage
 {
     internal TestCompleted(string test, string testCase, TimeSpan duration, string output)
     {
-            Test = test;
-            TestCase = testCase;
-            Duration = duration;
-            Output = output;
-        }
+        Test = test;
+        TestCase = testCase;
+        Duration = duration;
+        Output = output;
+    }
 
     /// <summary>
     /// The name of the test.

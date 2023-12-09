@@ -1,6 +1,6 @@
-﻿namespace Fixie.Reports;
+﻿using System;
 
-using System;
+namespace Fixie.Reports;
 
 /// <summary>
 /// Fired when an individual test has passed.

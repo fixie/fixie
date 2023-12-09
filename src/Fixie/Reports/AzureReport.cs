@@ -1,6 +1,4 @@
-﻿namespace Fixie.Reports;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -10,10 +8,12 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Internal;
+using Fixie.Internal;
 using static System.Environment;
 using static System.Text.Json.JsonSerializer;
-using static Internal.Maybe;
+using static Fixie.Internal.Maybe;
+
+namespace Fixie.Reports;
 
 class AzureReport :
     IHandler<ExecutionStarted>,

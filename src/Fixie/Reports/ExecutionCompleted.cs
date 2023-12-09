@@ -1,7 +1,7 @@
-﻿namespace Fixie.Reports;
+﻿using System;
+using Fixie.Internal;
 
-using System;
-using Internal;
+namespace Fixie.Reports;
 
 /// <summary>
 /// Fired once at the end of the execution phase for the test assembly.

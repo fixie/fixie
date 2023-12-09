@@ -1,9 +1,9 @@
-﻿namespace Fixie.Reports;
-
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Environment;
+
+namespace Fixie.Reports;
 
 class TeamCityReport :
     IHandler<ExecutionStarted>,

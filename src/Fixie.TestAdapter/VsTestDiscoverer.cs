@@ -1,13 +1,13 @@
-﻿namespace Fixie.TestAdapter;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
-using Internal;
+using Fixie.Internal;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-using static TestAssembly;
+using static Fixie.TestAdapter.TestAssembly;
+
+namespace Fixie.TestAdapter;
 
 [DefaultExecutorUri(VsTestExecutor.Id)]
 [FileExtension(".exe")]

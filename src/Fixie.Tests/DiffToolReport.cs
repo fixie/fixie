@@ -1,11 +1,11 @@
-﻿namespace Fixie.Tests;
-
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Reports;
 using DiffEngine;
+
+namespace Fixie.Tests;
 
 class DiffToolReport : IHandler<TestFailed>, IHandler<ExecutionCompleted>
 {

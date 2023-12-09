@@ -1,7 +1,7 @@
-﻿namespace Fixie.Tests;
-
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
+
+namespace Fixie.Tests;
 
 // This provides enough structural support for the async/await keywords
 // to be satisfied at compile time, but is not expected to behave well.

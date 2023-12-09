@@ -1,7 +1,7 @@
-﻿namespace Fixie.Tests;
-
-using System;
+﻿using System;
 using System.IO;
+
+namespace Fixie.Tests;
 
 class RedirectedConsole : IDisposable
 {

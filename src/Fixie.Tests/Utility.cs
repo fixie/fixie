@@ -1,6 +1,4 @@
-﻿namespace Fixie.Tests;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +7,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Fixie.Internal;
 using Fixie.Reports;
+
+namespace Fixie.Tests;
 
 public static class Utility
 {

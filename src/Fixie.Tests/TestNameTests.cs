@@ -1,6 +1,6 @@
-﻿namespace Fixie.Tests;
+﻿using Fixie.Tests.Assertions;
 
-using Assertions;
+namespace Fixie.Tests;
 
 public class TestNameTests
 {

@@ -1,8 +1,8 @@
-﻿namespace Fixie.Tests;
-
-using System;
+﻿using System;
 using System.Reflection;
-using Assertions;
+using Fixie.Tests.Assertions;
+
+namespace Fixie.Tests;
 
 public class ReflectionExtensionsTests
 {

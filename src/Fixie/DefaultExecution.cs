@@ -1,6 +1,6 @@
-﻿namespace Fixie;
+﻿using System.Threading.Tasks;
 
-using System.Threading.Tasks;
+namespace Fixie;
 
 public sealed class DefaultExecution : IExecution
 {

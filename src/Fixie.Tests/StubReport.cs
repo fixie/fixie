@@ -1,8 +1,8 @@
-﻿namespace Fixie.Tests;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fixie.Reports;
+
+namespace Fixie.Tests;
 
 public class StubReport :
     IHandler<TestDiscovered>,

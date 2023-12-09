@@ -1,8 +1,8 @@
-﻿namespace Fixie.Reports;
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Internal;
+using Fixie.Internal;
+
+namespace Fixie.Reports;
 
 class TestAdapterReport :
     IHandler<TestDiscovered>,

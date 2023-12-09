@@ -1,12 +1,12 @@
-﻿namespace Fixie.Console;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using static System.Console;
 using static System.IO.Directory;
-using static Shell;
+using static Fixie.Console.Shell;
+
+namespace Fixie.Console;
 
 class Program
 {

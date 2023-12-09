@@ -1,8 +1,8 @@
-namespace Fixie.Tests.Assertions;
-
 using System;
 using System.Collections.Generic;
 using static System.Environment;
+
+namespace Fixie.Tests.Assertions;
 
 public class AssertException : Exception
 {

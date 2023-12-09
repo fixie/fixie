@@ -1,6 +1,6 @@
-﻿namespace Fixie.Reports;
+﻿using System.Threading.Tasks;
 
-using System.Threading.Tasks;
+namespace Fixie.Reports;
 
 public interface IHandler<in TMessage> : IReport where TMessage : IMessage
 {

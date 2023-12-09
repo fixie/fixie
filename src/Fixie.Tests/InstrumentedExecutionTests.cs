@@ -1,10 +1,10 @@
-namespace Fixie.Tests;
-
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
+
+namespace Fixie.Tests;
 
 public abstract class InstrumentedExecutionTests
 {

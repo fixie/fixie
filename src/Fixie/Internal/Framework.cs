@@ -1,6 +1,6 @@
-﻿namespace Fixie.Internal;
+﻿using System.Reflection;
 
-using System.Reflection;
+namespace Fixie.Internal;
 
 static class Framework
 {

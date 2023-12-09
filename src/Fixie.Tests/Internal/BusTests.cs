@@ -1,11 +1,11 @@
-﻿namespace Fixie.Tests.Internal;
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Internal;
 using Fixie.Reports;
-using static Utility;
+using static Fixie.Tests.Utility;
+
+namespace Fixie.Tests.Internal;
 
 public class BusTests
 {
@@ -20,7 +20,7 @@ public class BusTests
 
         using var console = new RedirectedConsole();
 
-        var bus = new Bus(Console.Out, reports);
+        var bus = new Bus(System.Console.Out, reports);
         await bus.Publish(new Event(1));
         await bus.Publish(new AnotherEvent(2));
         await bus.Publish(new Event(3));
@@ -45,7 +45,7 @@ public class BusTests
 
         using var console = new RedirectedConsole();
 
-        var bus = new Bus(Console.Out, reports);
+        var bus = new Bus(System.Console.Out, reports);
         await bus.Publish(new Event(1));
         await bus.Publish(new AnotherEvent(2));
         await bus.Publish(new Event(3));
@@ -117,7 +117,7 @@ public class BusTests
     }
 
     static void Log<THandler, TEvent>(int id)
-        => Console.WriteLine($"{typeof(THandler).FullName} handled {typeof(TEvent).Name} {id}");
+        => System.Console.WriteLine($"{typeof(THandler).FullName} handled {typeof(TEvent).Name} {id}");
 
     class StubException : Exception
     {

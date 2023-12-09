@@ -1,10 +1,10 @@
-﻿namespace Fixie.Tests.Internal;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Reports;
-using static Utility;
+using static Fixie.Tests.Utility;
+
+namespace Fixie.Tests.Internal;
 
 public class ExecutionSummaryTests
 {

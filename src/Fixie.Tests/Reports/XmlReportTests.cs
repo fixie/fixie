@@ -1,13 +1,13 @@
-﻿namespace Fixie.Tests.Reports;
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Reports;
-using static Utility;
+using static Fixie.Tests.Utility;
+
+namespace Fixie.Tests.Reports;
 
 public class XmlReportTests : MessagingTests
 {

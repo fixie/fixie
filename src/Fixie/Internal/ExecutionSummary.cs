@@ -1,6 +1,6 @@
-﻿namespace Fixie.Internal;
+﻿using Fixie.Reports;
 
-using Reports;
+namespace Fixie.Internal;
 
 class ExecutionSummary
 {

@@ -1,8 +1,8 @@
-﻿namespace Fixie.Reports;
-
-using System;
+﻿using System;
 using System.Text;
 using static System.Environment;
+
+namespace Fixie.Reports;
 
 public static class ExceptionExtensions
 {

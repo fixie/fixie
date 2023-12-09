@@ -1,7 +1,7 @@
-﻿namespace Fixie.Console;
-
-using System;
+﻿using System;
 using System.Reflection;
+
+namespace Fixie.Console;
 
 class PositionalArgument
 {

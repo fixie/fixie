@@ -1,13 +1,13 @@
-﻿namespace Fixie.Reports;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Internal;
-    
+using Fixie.Internal;
+
+namespace Fixie.Reports;
+
 /// <summary>
 /// Writes test results to the specified path, using the xUnit XML format.
 /// </summary>

@@ -1,10 +1,10 @@
-﻿namespace Fixie.Tests;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Fixie.Reports;
 using static System.Environment;
+
+namespace Fixie.Tests;
 
 class GitHubReport :
     IHandler<ExecutionStarted>,

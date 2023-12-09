@@ -1,6 +1,6 @@
-﻿namespace Fixie.Internal;
+﻿using System;
 
-using System;
+namespace Fixie.Internal;
 
 class Foreground : IDisposable
 {

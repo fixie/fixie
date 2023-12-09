@@ -1,14 +1,14 @@
-﻿namespace Fixie.TestAdapter;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Linq;
-using Internal;
+using Fixie.Internal;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-using static TestAssembly;
+using static Fixie.TestAdapter.TestAssembly;
+
+namespace Fixie.TestAdapter;
 
 [ExtensionUri(Id)]
 public class VsTestExecutor : ITestExecutor

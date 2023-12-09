@@ -1,10 +1,10 @@
-﻿namespace Fixie.Internal;
-
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+
+namespace Fixie.Internal;
 
 static class CaseNameBuilder
 {

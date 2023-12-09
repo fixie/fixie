@@ -1,11 +1,11 @@
-﻿namespace Fixie.Tests;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Microsoft.FSharp.Control;
 using static System.Environment;
+
+namespace Fixie.Tests;
 
 public class ReturnTypeTests : InstrumentedExecutionTests
 {

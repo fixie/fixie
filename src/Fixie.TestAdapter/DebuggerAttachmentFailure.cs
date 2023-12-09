@@ -1,8 +1,8 @@
-namespace Fixie.TestAdapter;
-
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+
+namespace Fixie.TestAdapter;
 
 class DebuggerAttachmentFailure
 {

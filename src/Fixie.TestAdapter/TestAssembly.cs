@@ -1,5 +1,3 @@
-namespace Fixie.TestAdapter;
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,6 +6,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+
+namespace Fixie.TestAdapter;
 
 static class TestAssembly
 {

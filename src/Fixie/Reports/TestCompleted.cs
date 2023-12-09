@@ -1,6 +1,6 @@
-namespace Fixie.Reports;
-
 using System;
+
+namespace Fixie.Reports;
 
 public abstract class TestCompleted : IMessage
 {

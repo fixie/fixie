@@ -1,8 +1,8 @@
-namespace Fixie.Tests;
-
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+
+namespace Fixie.Tests;
 
 public class ResultEmittingTests : InstrumentedExecutionTests
 {

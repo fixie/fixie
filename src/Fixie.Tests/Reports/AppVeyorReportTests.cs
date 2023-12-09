@@ -1,10 +1,10 @@
-﻿namespace Fixie.Tests.Reports;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Reports;
-using static Utility;
+using static Fixie.Tests.Utility;
+
+namespace Fixie.Tests.Reports;
 
 public class AppVeyorReportTests : MessagingTests
 {

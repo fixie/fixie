@@ -1,13 +1,13 @@
-﻿namespace Fixie.Tests.Internal;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Internal;
+
+namespace Fixie.Tests.Internal;
 
 public class ClassDiscovererTests
 {

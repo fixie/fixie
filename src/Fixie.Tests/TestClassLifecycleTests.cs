@@ -1,9 +1,9 @@
-namespace Fixie.Tests;
-
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static Utility;
+using static Fixie.Tests.Utility;
+
+namespace Fixie.Tests;
 
 public class TestClassLifecycleTests : InstrumentedExecutionTests
 {

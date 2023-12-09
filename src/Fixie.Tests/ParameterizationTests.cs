@@ -1,10 +1,10 @@
-﻿namespace Fixie.Tests;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
+
+namespace Fixie.Tests;
 
 public class ParameterizationTests : InstrumentedExecutionTests
 {

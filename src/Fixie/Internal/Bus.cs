@@ -1,10 +1,10 @@
-﻿namespace Fixie.Internal;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Reports;
+using Fixie.Reports;
+
+namespace Fixie.Internal;
 
 class Bus
 {

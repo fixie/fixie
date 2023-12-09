@@ -1,7 +1,7 @@
-namespace Fixie.Console;
-
 using System;
 using System.Collections.Generic;
+
+namespace Fixie.Console;
 
 class NamedArgument
 {

@@ -1,8 +1,8 @@
-﻿namespace Fixie.TestAdapter;
-
-using System;
+﻿using System;
 using System.Text;
-using Internal;
+using Fixie.Internal;
+
+namespace Fixie.TestAdapter;
 
 class RunnerException : Exception
 {

@@ -1,13 +1,13 @@
-﻿namespace Fixie.Tests;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Reports;
-using static Utility;
+using static Fixie.Tests.Utility;
+
+namespace Fixie.Tests;
 
 public class StackTracePresentationTests
 {

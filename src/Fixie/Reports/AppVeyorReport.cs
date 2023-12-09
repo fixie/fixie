@@ -1,6 +1,4 @@
-﻿namespace Fixie.Reports;
-
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -8,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Environment;
 using static System.Text.Json.JsonSerializer;
+
+namespace Fixie.Reports;
 
 class AppVeyorReport :
     IHandler<ExecutionStarted>,

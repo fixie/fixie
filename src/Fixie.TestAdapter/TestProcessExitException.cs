@@ -1,6 +1,6 @@
-﻿namespace Fixie.TestAdapter;
+﻿using System;
 
-using System;
+namespace Fixie.TestAdapter;
 
 public class TestProcessExitException : Exception
 {

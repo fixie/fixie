@@ -1,12 +1,12 @@
-namespace Fixie;
-
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
-using Internal;
+using Fixie.Internal;
+
+namespace Fixie;
 
 public class Test
 {

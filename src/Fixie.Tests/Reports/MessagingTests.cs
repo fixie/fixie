@@ -1,12 +1,12 @@
-﻿namespace Fixie.Tests.Reports;
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Reports;
-using static Utility;
+using static Fixie.Tests.Utility;
+
+namespace Fixie.Tests.Reports;
 
 public abstract class MessagingTests
 {
@@ -98,7 +98,7 @@ public abstract class MessagingTests
         }
 
         protected static void WhereAmI([CallerMemberName] string member = default!)
-            => Console.WriteLine("Standard Out: " + member);
+            => System.Console.WriteLine("Standard Out: " + member);
     }
 
     class SampleTestClass : Base

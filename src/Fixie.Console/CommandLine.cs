@@ -1,6 +1,6 @@
-﻿namespace Fixie.Console;
+﻿using System.Collections.Generic;
 
-using System.Collections.Generic;
+namespace Fixie.Console;
 
 public class CommandLine
 {

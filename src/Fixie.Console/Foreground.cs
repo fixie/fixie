@@ -1,6 +1,6 @@
-﻿namespace Fixie.Console;
+﻿using System;
 
-using System;
+namespace Fixie.Console;
 
 class Foreground : IDisposable
 {
@@ -8,11 +8,11 @@ class Foreground : IDisposable
 
     public Foreground(ConsoleColor color)
     {
-        before = Console.ForegroundColor;
-        Console.ForegroundColor = color;
+        before = System.Console.ForegroundColor;
+        System.Console.ForegroundColor = color;
     }
 
-    public void Dispose() => Console.ForegroundColor = before;
+    public void Dispose() => System.Console.ForegroundColor = before;
 
     public static Foreground Red => new Foreground(ConsoleColor.Red);
 

@@ -1,21 +1,20 @@
-﻿namespace Fixie.Reports
+﻿namespace Fixie.Reports;
+
+using System;
+
+/// <summary>
+/// Fired when an individual test has been skipped.
+/// </summary>
+public class TestSkipped : TestCompleted
 {
-    using System;
+    internal TestSkipped(string test, string testCase, TimeSpan duration, string output, string reason)
+        : base(test, testCase, duration, output)
+    {
+        Reason = reason;
+    }
 
     /// <summary>
-    /// Fired when an individual test has been skipped.
+    /// An explanation for why the test was skipped.
     /// </summary>
-    public class TestSkipped : TestCompleted
-    {
-        internal TestSkipped(string test, string testCase, TimeSpan duration, string output, string reason)
-            : base(test, testCase, duration, output)
-        {
-            Reason = reason;
-        }
-
-        /// <summary>
-        /// An explanation for why the test was skipped.
-        /// </summary>
-        public string Reason { get; }
-    }
+    public string Reason { get; }
 }

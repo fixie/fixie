@@ -1,7 +1,6 @@
-﻿namespace Fixie
+﻿namespace Fixie;
+
+public interface ITestProject
 {
-    public interface ITestProject
-    {
-        void Configure(TestConfiguration configuration, TestEnvironment environment);
-    }
+    void Configure(TestConfiguration configuration, TestEnvironment environment);
 }

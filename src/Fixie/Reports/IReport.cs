@@ -1,4 +1,3 @@
-﻿namespace Fixie.Reports
-{
-    public interface IReport { }
-}
+﻿namespace Fixie.Reports;
+
+public interface IReport { }

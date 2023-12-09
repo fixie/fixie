@@ -1,210 +1,209 @@
-﻿namespace Fixie.Internal
+﻿namespace Fixie.Internal;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Reports;
+
+class Runner
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-    using System.Threading.Tasks;
-    using Reports;
+    readonly TestEnvironment environment;
+    readonly IReport[] defaultReports;
+    readonly Assembly assembly;
+    readonly TextWriter console;
 
-    class Runner
+    public Runner(TestEnvironment environment, params IReport[] defaultReports)
     {
-        readonly TestEnvironment environment;
-        readonly IReport[] defaultReports;
-        readonly Assembly assembly;
-        readonly TextWriter console;
+        this.environment = environment;
+        this.defaultReports = defaultReports;
+        assembly = environment.Assembly;
+        console = environment.Console;
+    }
 
-        public Runner(TestEnvironment environment, params IReport[] defaultReports)
-        {
-            this.environment = environment;
-            this.defaultReports = defaultReports;
-            assembly = environment.Assembly;
-            console = environment.Console;
-        }
+    public async Task Discover()
+    {
+        var configuration = BuildConfiguration();
 
-        public async Task Discover()
-        {
-            var configuration = BuildConfiguration();
+        foreach (var convention in configuration.Conventions.Items)
+            await Discover(assembly.GetTypes(), convention.Discovery);
+    }
 
-            foreach (var convention in configuration.Conventions.Items)
-                await Discover(assembly.GetTypes(), convention.Discovery);
-        }
+    public Task<ExecutionSummary> Run()
+    {
+        return Run(assembly.GetTypes(), new HashSet<string>());
+    }
 
-        public Task<ExecutionSummary> Run()
-        {
-            return Run(assembly.GetTypes(), new HashSet<string>());
-        }
+    public Task<ExecutionSummary> Run(HashSet<string> selectedTests)
+    {
+        return Run(assembly.GetTypes(), selectedTests);
+    }
 
-        public Task<ExecutionSummary> Run(HashSet<string> selectedTests)
-        {
-            return Run(assembly.GetTypes(), selectedTests);
-        }
+    public Task<ExecutionSummary> Run(TestPattern testPattern)
+    {
+        return Run(assembly.GetTypes(), new HashSet<string>(), testPattern);
+    }
 
-        public Task<ExecutionSummary> Run(TestPattern testPattern)
-        {
-            return Run(assembly.GetTypes(), new HashSet<string>(), testPattern);
-        }
-
-        async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, HashSet<string> selectedTests, TestPattern? testPattern = null)
-        {
-            var configuration = BuildConfiguration();
+    async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, HashSet<string> selectedTests, TestPattern? testPattern = null)
+    {
+        var configuration = BuildConfiguration();
             
-            return await Run(candidateTypes, configuration, selectedTests, testPattern);
-        }
+        return await Run(candidateTypes, configuration, selectedTests, testPattern);
+    }
 
-        internal async Task Discover(IReadOnlyList<Type> candidateTypes, IDiscovery discovery)
-        {
-            var bus = new Bus(console, defaultReports);
+    internal async Task Discover(IReadOnlyList<Type> candidateTypes, IDiscovery discovery)
+    {
+        var bus = new Bus(console, defaultReports);
 
-            var classDiscoverer = new ClassDiscoverer(discovery);
-            var classes = classDiscoverer.TestClasses(candidateTypes);
+        var classDiscoverer = new ClassDiscoverer(discovery);
+        var classes = classDiscoverer.TestClasses(candidateTypes);
 
-            var methodDiscoverer = new MethodDiscoverer(discovery);
-            foreach (var testClass in classes)
-                foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
-                    await bus.Publish(new TestDiscovered(testMethod.TestName()));
-        }
+        var methodDiscoverer = new MethodDiscoverer(discovery);
+        foreach (var testClass in classes)
+            foreach (var testMethod in methodDiscoverer.TestMethods(testClass))
+                await bus.Publish(new TestDiscovered(testMethod.TestName()));
+    }
 
-        internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, TestConfiguration configuration, HashSet<string> selectedTests, TestPattern? testPattern = null)
-        {
-            var conventions = configuration.Conventions.Items;
-            var bus = new Bus(console, defaultReports.Concat(configuration.Reports.Items).ToArray());
+    internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, TestConfiguration configuration, HashSet<string> selectedTests, TestPattern? testPattern = null)
+    {
+        var conventions = configuration.Conventions.Items;
+        var bus = new Bus(console, defaultReports.Concat(configuration.Reports.Items).ToArray());
 
-            var recordingConsole = new RecordingWriter(console);
-            var recorder = new ExecutionRecorder(recordingConsole, bus);
+        var recordingConsole = new RecordingWriter(console);
+        var recorder = new ExecutionRecorder(recordingConsole, bus);
             
-            using (new ConsoleRedirectionBoundary())
+        using (new ConsoleRedirectionBoundary())
+        {
+            Console.SetOut(recordingConsole);
+            await recorder.StartExecution();
+
+            foreach (var convention in conventions)
             {
-                Console.SetOut(recordingConsole);
-                await recorder.StartExecution();
-
-                foreach (var convention in conventions)
-                {
-                    var testSuite = BuildTestSuite(candidateTypes, convention.Discovery, selectedTests, testPattern, recorder);
-                    await Run(testSuite, convention.Execution);
-                }
-
-                return await recorder.CompleteExecution();
+                var testSuite = BuildTestSuite(candidateTypes, convention.Discovery, selectedTests, testPattern, recorder);
+                await Run(testSuite, convention.Execution);
             }
+
+            return await recorder.CompleteExecution();
         }
+    }
 
-        static TestSuite BuildTestSuite(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, HashSet<string> selectedTests, TestPattern? testPattern, ExecutionRecorder recorder)
+    static TestSuite BuildTestSuite(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, HashSet<string> selectedTests, TestPattern? testPattern, ExecutionRecorder recorder)
+    {
+        var classDiscoverer = new ClassDiscoverer(discovery);
+        var classes = classDiscoverer.TestClasses(candidateTypes);
+        var methodDiscoverer = new MethodDiscoverer(discovery);
+
+        var testClasses = new List<TestClass>(selectedTests.Count > 0 ? 0 : classes.Count);
+        var selectionWorkingList = new List<MethodInfo>();
+
+        foreach (var @class in classes)
         {
-            var classDiscoverer = new ClassDiscoverer(discovery);
-            var classes = classDiscoverer.TestClasses(candidateTypes);
-            var methodDiscoverer = new MethodDiscoverer(discovery);
+            var methods = methodDiscoverer.TestMethods(@class);
 
-            var testClasses = new List<TestClass>(selectedTests.Count > 0 ? 0 : classes.Count);
-            var selectionWorkingList = new List<MethodInfo>();
-
-            foreach (var @class in classes)
+            if (selectedTests.Count > 0)
             {
-                var methods = methodDiscoverer.TestMethods(@class);
+                selectionWorkingList.AddRange(methods.Where(method => selectedTests.Contains(method.TestName())));
 
-                if (selectedTests.Count > 0)
+                if (selectionWorkingList.Count == 0)
                 {
-                    selectionWorkingList.AddRange(methods.Where(method => selectedTests.Contains(method.TestName())));
-
-                    if (selectionWorkingList.Count == 0)
-                    {
-                        methods = Array.Empty<MethodInfo>();
-                    }
-                    else
-                    {
-                        methods = selectionWorkingList;
-                        selectionWorkingList = new List<MethodInfo>();
-                    }
+                    methods = Array.Empty<MethodInfo>();
                 }
-
-                if (testPattern != null)
-                    methods = methods.Where(method => testPattern.Matches(method.TestName())).ToList();
-
-                if (methods.Count > 0)
+                else
                 {
-                    var testMethods = methods
-                        .Select(method => new Test(recorder, method))
-                        .ToList();
-
-                    testClasses.Add(new TestClass(@class, testMethods));
+                    methods = selectionWorkingList;
+                    selectionWorkingList = new List<MethodInfo>();
                 }
             }
 
-            return new TestSuite(testClasses);
-        }
+            if (testPattern != null)
+                methods = methods.Where(method => testPattern.Matches(method.TestName())).ToList();
 
-        static async Task Run(TestSuite testSuite, IExecution execution)
-        {
-            Exception? assemblyLifecycleFailure = null;
-
-            try
+            if (methods.Count > 0)
             {
-                await execution.Run(testSuite);
-            }
-            catch (Exception exception)
-            {
-                assemblyLifecycleFailure = exception;
-            }
+                var testMethods = methods
+                    .Select(method => new Test(recorder, method))
+                    .ToList();
 
-            foreach (var test in testSuite.Tests)
-            {
-                var testNeverRan = !test.RecordedResult;
-
-                if (assemblyLifecycleFailure != null)
-                    await test.Fail(assemblyLifecycleFailure);
-
-                if (testNeverRan)
-                    await test.Skip("This test did not run.");
+                testClasses.Add(new TestClass(@class, testMethods));
             }
         }
 
-        TestConfiguration BuildConfiguration()
+        return new TestSuite(testClasses);
+    }
+
+    static async Task Run(TestSuite testSuite, IExecution execution)
+    {
+        Exception? assemblyLifecycleFailure = null;
+
+        try
         {
-            var customTestProjectTypes = assembly
-                .GetTypes()
-                .Where(type => IsTestProject(type) && !type.IsAbstract)
-                .ToArray();
+            await execution.Run(testSuite);
+        }
+        catch (Exception exception)
+        {
+            assemblyLifecycleFailure = exception;
+        }
 
-            if (customTestProjectTypes.Length > 1)
-            {
-                throw new Exception(
-                    "A test assembly can have at most one ITestProject implementation, " +
-                    "but the following implementations were discovered:" + Environment.NewLine +
-                    string.Join(Environment.NewLine,
-                        customTestProjectTypes
-                            .Select(x => $"\t{x.FullName}")));
-            }
+        foreach (var test in testSuite.Tests)
+        {
+            var testNeverRan = !test.RecordedResult;
 
-            var configuration = new TestConfiguration();
+            if (assemblyLifecycleFailure != null)
+                await test.Fail(assemblyLifecycleFailure);
 
-            var testProjectType = customTestProjectTypes.SingleOrDefault();
+            if (testNeverRan)
+                await test.Skip("This test did not run.");
+        }
+    }
+
+    TestConfiguration BuildConfiguration()
+    {
+        var customTestProjectTypes = assembly
+            .GetTypes()
+            .Where(type => IsTestProject(type) && !type.IsAbstract)
+            .ToArray();
+
+        if (customTestProjectTypes.Length > 1)
+        {
+            throw new Exception(
+                "A test assembly can have at most one ITestProject implementation, " +
+                "but the following implementations were discovered:" + Environment.NewLine +
+                string.Join(Environment.NewLine,
+                    customTestProjectTypes
+                        .Select(x => $"\t{x.FullName}")));
+        }
+
+        var configuration = new TestConfiguration();
+
+        var testProjectType = customTestProjectTypes.SingleOrDefault();
             
-            if (testProjectType != null)
-            {
-                var testProject = (ITestProject) Construct(testProjectType);
+        if (testProjectType != null)
+        {
+            var testProject = (ITestProject) Construct(testProjectType);
 
-                testProject.Configure(configuration, environment);
-            }
-
-            if (configuration.Conventions.Items.Count == 0)
-                configuration.Conventions.Add<DefaultDiscovery, DefaultExecution>();
-
-            return configuration;
+            testProject.Configure(configuration, environment);
         }
 
-        static bool IsTestProject(Type type)
-            => type.GetInterfaces().Contains(typeof(ITestProject));
+        if (configuration.Conventions.Items.Count == 0)
+            configuration.Conventions.Add<DefaultDiscovery, DefaultExecution>();
 
-        static object Construct(Type type)
+        return configuration;
+    }
+
+    static bool IsTestProject(Type type)
+        => type.GetInterfaces().Contains(typeof(ITestProject));
+
+    static object Construct(Type type)
+    {
+        try
         {
-            try
-            {
-                return type.GetConstructors().Single().Invoke(null);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Could not construct an instance of type '{type.FullName}'.", ex);
-            }
+            return type.GetConstructors().Single().Invoke(null);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Could not construct an instance of type '{type.FullName}'.", ex);
         }
     }
 }

@@ -1,130 +1,129 @@
-﻿namespace Fixie.Reports
+﻿namespace Fixie.Reports;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Internal;
+using static System.Environment;
+
+class ConsoleReport :
+    IHandler<TestSkipped>,
+    IHandler<TestPassed>,
+    IHandler<TestFailed>,
+    IHandler<ExecutionCompleted>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-    using Internal;
-    using static System.Environment;
+    readonly string? testPattern;
+    readonly TextWriter console;
+    readonly bool outputTestPassed;
+    bool paddingWouldRequireOpeningBlankLine;
 
-    class ConsoleReport :
-        IHandler<TestSkipped>,
-        IHandler<TestPassed>,
-        IHandler<TestFailed>,
-        IHandler<ExecutionCompleted>
+    internal static ConsoleReport Create(TestEnvironment environment)
+        => new ConsoleReport(environment, GetEnvironmentVariable("FIXIE_TESTS_PATTERN"));
+
+    public ConsoleReport(TestEnvironment environment, string? testPattern = null)
     {
-        readonly string? testPattern;
-        readonly TextWriter console;
-        readonly bool outputTestPassed;
-        bool paddingWouldRequireOpeningBlankLine;
+        console = environment.Console;
+        this.testPattern = testPattern;
+        this.outputTestPassed = testPattern != null;
+    }
 
-        internal static ConsoleReport Create(TestEnvironment environment)
-            => new ConsoleReport(environment, GetEnvironmentVariable("FIXIE_TESTS_PATTERN"));
-
-        public ConsoleReport(TestEnvironment environment, string? testPattern = null)
+    public Task Handle(TestSkipped message)
+    {
+        WithPadding(() =>
         {
-            console = environment.Console;
-            this.testPattern = testPattern;
-            this.outputTestPassed = testPattern != null;
-        }
+            using (Foreground.Yellow)
+                console.WriteLine($"Test '{message.TestCase}' skipped:");
 
-        public Task Handle(TestSkipped message)
+            console.WriteLine(message.Reason);
+        });
+
+        return Task.CompletedTask;
+    }
+
+    public Task Handle(TestPassed message)
+    {
+        if (outputTestPassed)
         {
-            WithPadding(() =>
+            WithoutPadding(() =>
             {
-                using (Foreground.Yellow)
-                    console.WriteLine($"Test '{message.TestCase}' skipped:");
-
-                console.WriteLine(message.Reason);
+                using (Foreground.Green)
+                    console.WriteLine($"Test '{message.TestCase}' passed");
             });
-
-            return Task.CompletedTask;
         }
 
-        public Task Handle(TestPassed message)
+        return Task.CompletedTask;
+    }
+
+    public Task Handle(TestFailed message)
+    {
+        WithPadding(() =>
         {
-            if (outputTestPassed)
-            {
-                WithoutPadding(() =>
-                {
-                    using (Foreground.Green)
-                        console.WriteLine($"Test '{message.TestCase}' passed");
-                });
-            }
+            using (Foreground.Red)
+                console.WriteLine($"Test '{message.TestCase}' failed:");
+            console.WriteLine();
+            console.WriteLine(message.Reason.Message);
+            console.WriteLine();
+            console.WriteLine(message.Reason.GetType().FullName);
+            console.WriteLine(message.Reason.StackTraceSummary());
+        });
 
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
+    }
 
-        public Task Handle(TestFailed message)
-        {
-            WithPadding(() =>
-            {
-                using (Foreground.Red)
-                    console.WriteLine($"Test '{message.TestCase}' failed:");
-                console.WriteLine();
-                console.WriteLine(message.Reason.Message);
-                console.WriteLine();
-                console.WriteLine(message.Reason.GetType().FullName);
-                console.WriteLine(message.Reason.StackTraceSummary());
-            });
+    void WithPadding(Action write)
+    {
+        if (paddingWouldRequireOpeningBlankLine)
+            console.WriteLine();
 
-            return Task.CompletedTask;
-        }
-
-        void WithPadding(Action write)
-        {
-            if (paddingWouldRequireOpeningBlankLine)
-                console.WriteLine();
-
-            write();
+        write();
             
-            console.WriteLine();
-            paddingWouldRequireOpeningBlankLine = false;
-        }
+        console.WriteLine();
+        paddingWouldRequireOpeningBlankLine = false;
+    }
 
-        void WithoutPadding(Action write)
-        {
-            write();
-            paddingWouldRequireOpeningBlankLine = true;
-        }
+    void WithoutPadding(Action write)
+    {
+        write();
+        paddingWouldRequireOpeningBlankLine = true;
+    }
 
-        public Task Handle(ExecutionCompleted message)
+    public Task Handle(ExecutionCompleted message)
+    {
+        if (message.Total == 0)
         {
-            if (message.Total == 0)
+            using (Foreground.Red)
             {
-                using (Foreground.Red)
-                {
-                    console.WriteLine(testPattern != null
-                        ? $"No tests match the specified pattern: {testPattern}"
-                        : "No tests found.");
-                }
+                console.WriteLine(testPattern != null
+                    ? $"No tests match the specified pattern: {testPattern}"
+                    : "No tests found.");
             }
-            else
-            {
-                console.WriteLine(Summarize(message));
-            }
-
-            console.WriteLine();
-
-            return Task.CompletedTask;
         }
-
-        static string Summarize(ExecutionCompleted message)
+        else
         {
-            var parts = new List<string>();
-
-            if (message.Passed > 0)
-                parts.Add($"{message.Passed} passed");
-
-            if (message.Failed > 0)
-                parts.Add($"{message.Failed} failed");
-
-            if (message.Skipped > 0)
-                parts.Add($"{message.Skipped} skipped");
-
-            parts.Add($"took {message.Duration.TotalSeconds:0.00} seconds");
-
-            return string.Join(", ", parts);
+            console.WriteLine(Summarize(message));
         }
+
+        console.WriteLine();
+
+        return Task.CompletedTask;
+    }
+
+    static string Summarize(ExecutionCompleted message)
+    {
+        var parts = new List<string>();
+
+        if (message.Passed > 0)
+            parts.Add($"{message.Passed} passed");
+
+        if (message.Failed > 0)
+            parts.Add($"{message.Failed} failed");
+
+        if (message.Skipped > 0)
+            parts.Add($"{message.Skipped} skipped");
+
+        parts.Add($"took {message.Duration.TotalSeconds:0.00} seconds");
+
+        return string.Join(", ", parts);
     }
 }

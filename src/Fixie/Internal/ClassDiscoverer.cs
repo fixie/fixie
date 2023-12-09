@@ -1,19 +1,19 @@
-namespace Fixie.Internal
+namespace Fixie.Internal;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+
+class ClassDiscoverer
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
+    readonly IDiscovery discovery;
 
-    class ClassDiscoverer
+    public ClassDiscoverer(IDiscovery discovery)
+        => this.discovery = discovery;
+
+    public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
     {
-        readonly IDiscovery discovery;
-
-        public ClassDiscoverer(IDiscovery discovery)
-            => this.discovery = discovery;
-
-        public IReadOnlyList<Type> TestClasses(IEnumerable<Type> candidates)
-        {
             try
             {
                 return discovery.TestClasses(candidates.Where(IsApplicable)).ToList();
@@ -26,16 +26,15 @@ namespace Fixie.Internal
             }
         }
 
-        static bool IsApplicable(Type candidate)
-        {
+    static bool IsApplicable(Type candidate)
+    {
             return ConcreteClasses(candidate) &&
                    NonCompilerGeneratedClasses(candidate);
         }
 
-        static bool ConcreteClasses(Type type)
-            => type.IsClass && (!type.IsAbstract || type.IsStatic());
+    static bool ConcreteClasses(Type type)
+        => type.IsClass && (!type.IsAbstract || type.IsStatic());
 
-        static bool NonCompilerGeneratedClasses(Type type)
-            => !type.Has<CompilerGeneratedAttribute>();
-    }
+    static bool NonCompilerGeneratedClasses(Type type)
+        => !type.Has<CompilerGeneratedAttribute>();
 }

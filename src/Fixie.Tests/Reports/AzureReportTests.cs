@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Fixie.Tests.Assertions;
-using Fixie.Reports;
+﻿using Fixie.Reports;
 using static Fixie.Tests.Utility;
 using static System.Text.Json.JsonSerializer;
 

@@ -9,6 +9,7 @@
         <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <UseArtifactsOutput>true</UseArtifactsOutput>
         <MinVerMinimumMajorMinor>4.0</MinVerMinimumMajorMinor>
@@ -23,8 +24,8 @@
         -->
     </PropertyGroup>
 
-	<!-- Enable Deterministic Builds -->
-	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-	</PropertyGroup>
+    <!-- Enable Deterministic Builds -->
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
 </Project>

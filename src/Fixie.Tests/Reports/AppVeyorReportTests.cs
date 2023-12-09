@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Fixie.Tests.Assertions;
-using Fixie.Reports;
+﻿using Fixie.Reports;
 using static Fixie.Tests.Utility;
 
 namespace Fixie.Tests.Reports;

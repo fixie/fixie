@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Fixie.Tests.Assertions;
-using Fixie.Reports;
+﻿using Fixie.Reports;
 using DiffEngine;
 
 namespace Fixie.Tests;

@@ -1,5 +1,4 @@
-﻿using System;
-using Fixie.Internal;
+﻿using Fixie.Internal;
 
 namespace Fixie.Reports;
 

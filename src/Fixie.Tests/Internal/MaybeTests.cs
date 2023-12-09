@@ -1,6 +1,4 @@
-﻿using System;
-using Fixie.Tests.Assertions;
-using static Fixie.Internal.Maybe;
+﻿using static Fixie.Internal.Maybe;
 
 namespace Fixie.Tests.Internal;
 

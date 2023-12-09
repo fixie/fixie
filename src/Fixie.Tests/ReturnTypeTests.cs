@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Fixie.Tests.Assertions;
+﻿using System.Runtime.CompilerServices;
 using Microsoft.FSharp.Control;
 using static System.Environment;
 

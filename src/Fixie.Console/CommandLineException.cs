@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fixie.Console;
+﻿namespace Fixie.Console;
 
 public class CommandLineException : Exception
 {

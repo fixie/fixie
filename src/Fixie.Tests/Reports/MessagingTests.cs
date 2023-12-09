@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Fixie.Tests.Assertions;
+﻿using System.Runtime.CompilerServices;
 using Fixie.Reports;
 using static Fixie.Tests.Utility;
 

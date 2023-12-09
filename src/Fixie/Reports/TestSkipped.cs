@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fixie.Reports;
+﻿namespace Fixie.Reports;
 
 /// <summary>
 /// Fired when an individual test has been skipped.

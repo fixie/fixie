@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace Fixie.Tests.TestAdapter;
 
-namespace Fixie.Tests.TestAdapter;
+// Avoid changes in this file that would move the well-known line numbers indicated in comments.
+// Otherwise, these comments and the associated assertions would need to be updated together
 
 public class SourceLocationSamples
 {

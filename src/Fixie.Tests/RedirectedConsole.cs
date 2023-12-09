@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace Fixie.Tests;
+﻿namespace Fixie.Tests;
 
 class RedirectedConsole : IDisposable
 {

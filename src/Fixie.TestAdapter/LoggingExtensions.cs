@@ -1,5 +1,4 @@
-﻿using System;
-using Fixie.Internal;
+﻿using Fixie.Internal;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
 namespace Fixie.TestAdapter;

@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Fixie;
+﻿namespace Fixie;
 
 public sealed class DefaultExecution : IExecution
 {

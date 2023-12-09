@@ -1,6 +1,6 @@
-namespace Fixie.Internal;
-
 using System.Text.RegularExpressions;
+
+namespace Fixie.Internal;
 
 class TestPattern
 {

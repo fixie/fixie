@@ -1,10 +1,10 @@
-﻿namespace Fixie.Internal;
-
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Text;
 using static System.Text.Json.JsonSerializer;
+
+namespace Fixie.Internal;
 
 class TestAdapterPipe : IDisposable
 {

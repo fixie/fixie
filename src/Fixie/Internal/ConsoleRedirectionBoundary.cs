@@ -1,7 +1,7 @@
-﻿namespace Fixie.Internal;
-
-using System;
+﻿using System;
 using System.IO;
+
+namespace Fixie.Internal;
 
 class ConsoleRedirectionBoundary : IDisposable
 {

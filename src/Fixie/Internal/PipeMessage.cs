@@ -1,6 +1,6 @@
-﻿namespace Fixie.Internal;
+﻿using Fixie.Reports;
 
-using Reports;
+namespace Fixie.Internal;
 
 /*
  * Nullability hints here are informed by usages. Although these types are serialized and deserialized

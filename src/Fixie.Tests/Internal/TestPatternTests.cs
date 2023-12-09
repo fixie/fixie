@@ -1,7 +1,7 @@
-﻿namespace Fixie.Tests.Internal;
-
-using Assertions;
+﻿using Fixie.Tests.Assertions;
 using Fixie.Internal;
+
+namespace Fixie.Tests.Internal;
 
 public class TestPatternTests
 {

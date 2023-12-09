@@ -1,12 +1,14 @@
-namespace Fixie.Tests.Internal;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Internal;
-using static Utility;
+using static Fixie.Tests.Utility;
+
+namespace Fixie.Tests.Internal;
+
+using Console = System.Console;
 
 public class RunnerTests
 {

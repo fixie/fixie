@@ -1,11 +1,13 @@
-﻿namespace Fixie.Tests.Internal;
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Internal;
 using Fixie.Reports;
-using static Utility;
+using static Fixie.Tests.Utility;
+
+namespace Fixie.Tests.Internal;
+
+using Console = System.Console;
 
 public class BusTests
 {

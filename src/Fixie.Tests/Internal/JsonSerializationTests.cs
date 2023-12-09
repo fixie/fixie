@@ -1,9 +1,9 @@
-﻿namespace Fixie.Tests.Internal;
-
-using Assertions;
+﻿using Fixie.Tests.Assertions;
 using Fixie.Internal;
-using Reports;
+using Fixie.Tests.Reports;
 using static System.Text.Json.JsonSerializer;
+
+namespace Fixie.Tests.Internal;
 
 public class JsonSerializationTests : MessagingTests
 {

@@ -1,10 +1,10 @@
-﻿namespace Fixie;
-
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-using static Internal.Maybe;
+using static Fixie.Internal.Maybe;
+
+namespace Fixie;
 
 public static class ReflectionExtensions
 {

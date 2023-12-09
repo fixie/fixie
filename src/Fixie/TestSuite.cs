@@ -1,7 +1,7 @@
-namespace Fixie;
-
 using System.Collections.Generic;
 using System.Linq;
+
+namespace Fixie;
 
 public class TestSuite
 {

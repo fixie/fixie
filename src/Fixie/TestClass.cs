@@ -1,10 +1,10 @@
-﻿namespace Fixie;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+
+namespace Fixie;
 
 public class TestClass
 {

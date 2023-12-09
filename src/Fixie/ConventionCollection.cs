@@ -1,7 +1,7 @@
-﻿namespace Fixie;
+﻿using System.Collections.Generic;
+using Fixie.Internal;
 
-using System.Collections.Generic;
-using Internal;
+namespace Fixie;
 
 public class ConventionCollection
 {

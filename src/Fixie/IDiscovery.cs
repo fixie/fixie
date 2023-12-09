@@ -1,8 +1,8 @@
-﻿namespace Fixie;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+
+namespace Fixie;
 
 public interface IDiscovery
 {

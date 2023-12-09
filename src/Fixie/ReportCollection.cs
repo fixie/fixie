@@ -1,7 +1,7 @@
-﻿namespace Fixie;
+﻿using System.Collections.Generic;
+using Fixie.Reports;
 
-using System.Collections.Generic;
-using Reports;
+namespace Fixie;
 
 public class ReportCollection
 {

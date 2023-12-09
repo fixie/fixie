@@ -1,6 +1,6 @@
-namespace Fixie;
-
 using System;
+
+namespace Fixie;
 
 /// <summary>
 /// A discriminated union representing the result of a single run of a test.

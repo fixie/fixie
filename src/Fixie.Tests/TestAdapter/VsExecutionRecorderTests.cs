@@ -1,16 +1,18 @@
-﻿namespace Fixie.Tests.TestAdapter;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Fixie.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Internal;
-using Reports;
+using Fixie.Tests.Reports;
 using static System.Environment;
 using static System.Text.Json.JsonSerializer;
+
+namespace Fixie.Tests.TestAdapter;
+
+using TestResult = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestResult;
 
 public class VsExecutionRecorderTests : MessagingTests
 {

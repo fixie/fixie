@@ -1,7 +1,7 @@
-﻿namespace Fixie.Tests.TestAdapter;
-
-using Assertions;
+﻿using Fixie.Tests.Assertions;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+
+namespace Fixie.Tests.TestAdapter;
 
 public static class TestCaseMappingAssertions
 {

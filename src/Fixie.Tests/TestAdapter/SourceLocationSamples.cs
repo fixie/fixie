@@ -1,7 +1,7 @@
-﻿namespace Fixie.Tests.TestAdapter;
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
+
+namespace Fixie.Tests.TestAdapter;
 
 public class SourceLocationSamples
 {
@@ -19,26 +19,26 @@ public class SourceLocationSamples
     public void Simple()
     { // Debug = 20
         int answer = 42; // Release = 21
-        Console.Write(answer);
+        System.Console.Write(answer);
     }
 
     public void Generic<T>(T x)
     { // Debug = 26
-        Console.WriteLine(); // Release = 27
+        System.Console.WriteLine(); // Release = 27
     }
 
     public async void AsyncMethod_Void()
     { // Debug = 31
         int answer = 42; // Release = 32
         await Task.Delay(0);
-        Console.Write(answer);
+        System.Console.Write(answer);
     }
 
     public async Task AsyncMethod_Task()
     { // Debug = 38
         int answer = 42; // Release = 39
         await Task.Delay(0);
-        Console.Write(answer);
+        System.Console.Write(answer);
     }
 
     public async Task<int> AsyncMethod_TaskOfT()
@@ -53,7 +53,7 @@ public class SourceLocationSamples
         public void NestedMethod()
         { // Debug = 54
             int answer = 42; // Release = 55
-            Console.Write(answer);
+            System.Console.Write(answer);
         }
     }
 

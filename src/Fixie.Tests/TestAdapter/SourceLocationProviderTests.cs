@@ -1,9 +1,9 @@
-﻿namespace Fixie.Tests.TestAdapter;
-
-using System;
+﻿using System;
 using Fixie.TestAdapter;
-using Assertions;
-using static Utility;
+using Fixie.Tests.Assertions;
+using static Fixie.Tests.Utility;
+
+namespace Fixie.Tests.TestAdapter;
 
 public class SourceLocationProviderTests
 {

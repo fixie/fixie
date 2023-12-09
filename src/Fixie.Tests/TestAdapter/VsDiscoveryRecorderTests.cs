@@ -1,15 +1,15 @@
-﻿namespace Fixie.Tests.TestAdapter;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using Assertions;
+using Fixie.Tests.Assertions;
 using Fixie.Internal;
 using Fixie.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-using Reports;
+using Fixie.Tests.Reports;
 using static System.IO.Directory;
+
+namespace Fixie.Tests.TestAdapter;
 
 public class VsDiscoveryRecorderTests : MessagingTests
 {

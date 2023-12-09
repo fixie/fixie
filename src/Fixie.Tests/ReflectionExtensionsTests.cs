@@ -1,21 +1,21 @@
-﻿namespace Fixie.Tests
-{
-    using System;
-    using System.Reflection;
-    using Assertions;
+﻿namespace Fixie.Tests;
 
-    public class ReflectionExtensionsTests
+using System;
+using System.Reflection;
+using Assertions;
+
+public class ReflectionExtensionsTests
+{
+    public void CanDetectStaticTypes()
     {
-        public void CanDetectStaticTypes()
-        {
             typeof(StaticClass).IsStatic().ShouldBe(true);
             typeof(AbstractClass).IsStatic().ShouldBe(false);
             typeof(ConcreteClass).IsStatic().ShouldBe(false);
             typeof(SealedConcreteClass).IsStatic().ShouldBe(false);
         }
 
-        public void CanDetectAttributes()
-        {
+    public void CanDetectAttributes()
+    {
             typeof(AttributeSample).Has<InheritedAttribute>().ShouldBe(true);
             typeof(AttributeSample).Has<NonInheritedAttribute>().ShouldBe(true);
             typeof(AttributeSample).Has<AttributeUsageAttribute>().ShouldBe(false);
@@ -25,8 +25,8 @@
             Method<AttributeSample>("NoAttribute").Has<SampleMethodAttribute>().ShouldBe(false);
         }
 
-        public void CanDetectAndObtainAttributeWhenOneTimeUseAttributeIsPresent()
-        {
+    public void CanDetectAndObtainAttributeWhenOneTimeUseAttributeIsPresent()
+    {
             //Zero Matches
             var hasMissingAttribute =  typeof(AttributeSample).Has<AttributeUsageAttribute>(out var missingAttribute);
             hasMissingAttribute.ShouldBe(false);
@@ -50,45 +50,44 @@
             attemptAmbiguousAttributeLookup.ShouldThrow<AmbiguousMatchException>(expectedExceptionMessage);
         }
 
-        void ReturnsVoid() { }
-        int ReturnsInt() { return 0; }
+    void ReturnsVoid() { }
+    int ReturnsInt() { return 0; }
 
-        class SampleMethodAttribute : Attribute { }
-        class InheritedAttribute : Attribute { }
-        class NonInheritedAttribute : Attribute { }
+    class SampleMethodAttribute : Attribute { }
+    class InheritedAttribute : Attribute { }
+    class NonInheritedAttribute : Attribute { }
 
-        [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-        class AmbiguouslyMultipleAttribute : Attribute { }
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    class AmbiguouslyMultipleAttribute : Attribute { }
 
-        static class StaticClass { }
-        abstract class AbstractClass { }
-        class ConcreteClass { }
-        sealed class SealedConcreteClass { }
+    static class StaticClass { }
+    abstract class AbstractClass { }
+    class ConcreteClass { }
+    sealed class SealedConcreteClass { }
 
-        [Inherited]
-        [AmbiguouslyMultiple]
-        [AmbiguouslyMultiple]
-        abstract class AttributeSampleBase
-        {
-            [SampleMethod]
-            public virtual void AttributeOnBaseDeclaration() { }
-            public virtual void AttributeOnOverrideDeclaration() { }
-            public virtual void NoAttribute() { }
-        }
-
-        [NonInherited]
-        class AttributeSample : AttributeSampleBase
-        {
-            public override void AttributeOnBaseDeclaration() { }
-            [SampleMethod]
-            public override void AttributeOnOverrideDeclaration() { }
-            public override void NoAttribute() { }
-        }
-
-        static MethodInfo Method(string name)
-            => Method<ReflectionExtensionsTests>(name);
-
-        static MethodInfo Method<T>(string name)
-            => typeof(T).GetInstanceMethod(name);
+    [Inherited]
+    [AmbiguouslyMultiple]
+    [AmbiguouslyMultiple]
+    abstract class AttributeSampleBase
+    {
+        [SampleMethod]
+        public virtual void AttributeOnBaseDeclaration() { }
+        public virtual void AttributeOnOverrideDeclaration() { }
+        public virtual void NoAttribute() { }
     }
+
+    [NonInherited]
+    class AttributeSample : AttributeSampleBase
+    {
+        public override void AttributeOnBaseDeclaration() { }
+        [SampleMethod]
+        public override void AttributeOnOverrideDeclaration() { }
+        public override void NoAttribute() { }
+    }
+
+    static MethodInfo Method(string name)
+        => Method<ReflectionExtensionsTests>(name);
+
+    static MethodInfo Method<T>(string name)
+        => typeof(T).GetInstanceMethod(name);
 }

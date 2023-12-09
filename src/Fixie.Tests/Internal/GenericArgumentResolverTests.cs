@@ -1,41 +1,41 @@
-﻿namespace Fixie.Tests.Internal
+﻿namespace Fixie.Tests.Internal;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Assertions;
+using Fixie.Internal;
+
+public class GenericArgumentResolverTests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Assertions;
-    using Fixie.Internal;
+    static readonly Type[] Empty = { };
 
-    public class GenericArgumentResolverTests
+    public void ShouldResolveNothingWhenThereAreNoInputParameters()
     {
-        static readonly Type[] Empty = { };
-
-        public void ShouldResolveNothingWhenThereAreNoInputParameters()
-        {
             Resolve("NoParameters")
                 .ShouldBe(Empty);
         }
 
-        public void ShouldResolveNothingWhenThereAreNoGenericParameters()
-        {
+    public void ShouldResolveNothingWhenThereAreNoGenericParameters()
+    {
             Resolve("NoGenericArguments", 0, "")
                 .ShouldBe(Empty);
         }
 
-        public void ShouldNotResolveWhenGenericTypeHasNoMatchingParameters()
-        {
+    public void ShouldNotResolveWhenGenericTypeHasNoMatchingParameters()
+    {
             Resolve("NoMatchingParameters", 0, "")
                 .ShouldSatisfy(x => x.ShouldBeGenericTypeParameter("T"));
         }
 
-        public void ShouldNotResolveWhenGenericTypeHasOneNullMatchingParameter()
-        {
+    public void ShouldNotResolveWhenGenericTypeHasOneNullMatchingParameter()
+    {
             Resolve("OneMatchingParameter", new object?[] {null})
                 .ShouldSatisfy(t => t.ShouldBeGenericTypeParameter("T"));
         }
         
-        public void ShouldResolveToConcreteTypeOfValueWhenGenericTypeHasOneNonNullMatchingParameter()
-        {
+    public void ShouldResolveToConcreteTypeOfValueWhenGenericTypeHasOneNonNullMatchingParameter()
+    {
             Resolve("OneMatchingParameter", 1.2m)
                 .ShouldBe(typeof(decimal));
 
@@ -43,8 +43,8 @@
                 .ShouldBe(typeof(string));
         }
 
-        public void ShouldResolveToFirstConcreteTypeWhenGenericTypeHasMultipleMatchingParametersOfInconsistentConcreteTypes()
-        {
+    public void ShouldResolveToFirstConcreteTypeWhenGenericTypeHasMultipleMatchingParametersOfInconsistentConcreteTypes()
+    {
             Resolve("MultipleMatchingParameter", 1.2m, "string", 0)
                 .ShouldBe(typeof(decimal));
             
@@ -52,8 +52,8 @@
                 .ShouldBe(typeof(decimal));
         }
 
-        public void ShouldResolveToConcreteTypeOfValuesWhenGenericTypeHasMultipleMatchingParametersOfTheExactSameConcreteType()
-        {
+    public void ShouldResolveToConcreteTypeOfValuesWhenGenericTypeHasMultipleMatchingParametersOfTheExactSameConcreteType()
+    {
             Resolve("MultipleMatchingParameter", 1.2m, 2.3m, 3.4m)
                 .ShouldBe(typeof(decimal));
 
@@ -61,14 +61,14 @@
                 .ShouldBe(typeof(string));
         }
 
-        public void ShouldNotResolveWhenGenericTypeHasMultipleMatchingParametersButAllAreNull()
-        {
+    public void ShouldNotResolveWhenGenericTypeHasMultipleMatchingParametersButAllAreNull()
+    {
             Resolve("MultipleMatchingParameter", null, null, null)
                 .ShouldSatisfy(x => x.ShouldBeGenericTypeParameter("T"));
         }
 
-        public void ShouldTreatNullsAsTypeCompatibleWithReferenceTypes()
-        {
+    public void ShouldTreatNullsAsTypeCompatibleWithReferenceTypes()
+    {
             Resolve("MultipleMatchingParameter", null, "string b", "string c")
                 .ShouldBe(typeof(string));
 
@@ -79,8 +79,8 @@
                 .ShouldBe(typeof(string));
         }
 
-        public void ShouldIgnoreNullAsTypeIncompatibleWithValueTypes()
-        {
+    public void ShouldIgnoreNullAsTypeIncompatibleWithValueTypes()
+    {
             Resolve("MultipleMatchingParameter", null, 2.3m, 3.4m)
                 .ShouldBe(typeof(decimal));
 
@@ -91,8 +91,8 @@
                 .ShouldBe(typeof(decimal));
         }
 
-        public void ShouldResolveGenericArgumentsIfAndOnlyIfTheyCanAllBeResolved()
-        {
+    public void ShouldResolveGenericArgumentsIfAndOnlyIfTheyCanAllBeResolved()
+    {
             Resolve("MultipleUnsatisfiableGenericArguments", null, 1.2m, "string", 0)
                 .ShouldSatisfy(
                     x => x.ShouldBeGenericTypeParameter("TNoMatch"),
@@ -170,20 +170,20 @@
                 .ShouldBe(typeof(bool), typeof(decimal));
         }
 
-        public void ShouldNotResolveWhenInputParameterCountIsLessThanDeclaredParameterCount()
-        {
+    public void ShouldNotResolveWhenInputParameterCountIsLessThanDeclaredParameterCount()
+    {
             Resolve("MultipleMatchingParameter", 1, 2)
                 .ShouldSatisfy(x => x.ShouldBeGenericTypeParameter("T"));
         }
 
-        public void ShouldAttemptReasonableResolutionByIgnoringExcessParametersWhenInputParameterCountIsGreaterThanDeclaredParameterCount()
-        {
+    public void ShouldAttemptReasonableResolutionByIgnoringExcessParametersWhenInputParameterCountIsGreaterThanDeclaredParameterCount()
+    {
             Resolve("MultipleMatchingParameter", 1, 2, 3, 4)
                 .ShouldBe(typeof(int));
         }
 
-        public void ShouldResolveGenericArgumentsWhenGenericConstraintsAreSatisfied()
-        {
+    public void ShouldResolveGenericArgumentsWhenGenericConstraintsAreSatisfied()
+    {
             Resolve("ConstrainedGeneric", 1)
                 .ShouldBe(typeof(int));
 
@@ -191,8 +191,8 @@
                 .ShouldBe(typeof(bool));
         }
 
-        public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
-        {
+    public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
+    {
             Resolve("CompoundGenericParameter", new KeyValuePair<int, string>(1, "A"))
                 .ShouldBe(typeof(int), typeof(string));
 
@@ -211,8 +211,8 @@
                 .ShouldBe(typeof(string));
         }
 
-        public void ShouldResolveGenericTypeParametersAppearingWithinArrays()
-        {
+    public void ShouldResolveGenericTypeParametersAppearingWithinArrays()
+    {
             Resolve("GenericArrayResolution", new[] {1}, "A")
                 .ShouldBe(typeof(int), typeof(string));
 
@@ -228,8 +228,8 @@
                     x => x.ShouldBeGenericTypeParameter("T2"));
         }
 
-        public void ShouldResolveNullableValueTypeParametersWithConcreteValueTypes()
-        {
+    public void ShouldResolveNullableValueTypeParametersWithConcreteValueTypes()
+    {
             Resolve("NullableValueTypeResolution", 1, 2, 3, 4)
                 .ShouldBe(typeof(int), typeof(int));
 
@@ -254,41 +254,40 @@
                     x => x.ShouldBeGenericTypeParameter("T2"));
         }
 
-        public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()
-        {
+    public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()
+    {
             var unresolved = Resolve("ConstrainedGeneric", "Incompatible").Single();
             unresolved.Name.ShouldBe("T");
             unresolved.IsGenericParameter.ShouldBe(true);
         }
 
-        static IEnumerable<Type> Resolve(string methodName, params object?[] parameters)
-        {
+    static IEnumerable<Type> Resolve(string methodName, params object?[] parameters)
+    {
             return typeof(Generic)
                 .GetInstanceMethod(methodName)
                 .TryResolveTypeArguments(parameters)
                 .GetGenericArguments();
         }
 
-        class Generic
-        {
-            public void NoParameters() { }
-            public void NoGenericArguments(int i, string s) { }
-            public void NoMatchingParameters<T>(int i, string s) { }
-            public void OneMatchingParameter<T>(T match) { }
-            public void MultipleMatchingParameter<T>(T firstMatch, T secondMatch, T thirdMatch) { }
-            public void MultipleUnsatisfiableGenericArguments<TNoMatch, TOneMatch, TMultipleMatch>(
-                TOneMatch oneMatch,
-                TMultipleMatch firstMultiMatch, TMultipleMatch secondMultiMatch, TMultipleMatch thirdMultiMatch) { }
-            public void MultipleSatisfiableGenericArguments<TOneMatch, TMultipleMatch>(
-                TOneMatch oneMatch,
-                TMultipleMatch firstMultiMatch, TMultipleMatch secondMultiMatch, TMultipleMatch thirdMultiMatch) { }
-            void ConstrainedGeneric<T>(T t) where T : struct { }
-            public void CompoundGenericParameter<TKey, TValue>(KeyValuePair<TKey, TValue> pair) { }
-            public void GenericFuncParameter<TResult>(int input, Func<int, TResult> transform, TResult expectedResult) { }
-            public void GenericArrayResolution<T1, T2>(T1[] array, T2 arbitrary) { }
-            public void NullableValueTypeResolution<T1, T2>(T1? a, T2? b, T2? c, int? i)
-                where T1: struct
-                where T2: struct { }
-        }
+    class Generic
+    {
+        public void NoParameters() { }
+        public void NoGenericArguments(int i, string s) { }
+        public void NoMatchingParameters<T>(int i, string s) { }
+        public void OneMatchingParameter<T>(T match) { }
+        public void MultipleMatchingParameter<T>(T firstMatch, T secondMatch, T thirdMatch) { }
+        public void MultipleUnsatisfiableGenericArguments<TNoMatch, TOneMatch, TMultipleMatch>(
+            TOneMatch oneMatch,
+            TMultipleMatch firstMultiMatch, TMultipleMatch secondMultiMatch, TMultipleMatch thirdMultiMatch) { }
+        public void MultipleSatisfiableGenericArguments<TOneMatch, TMultipleMatch>(
+            TOneMatch oneMatch,
+            TMultipleMatch firstMultiMatch, TMultipleMatch secondMultiMatch, TMultipleMatch thirdMultiMatch) { }
+        void ConstrainedGeneric<T>(T t) where T : struct { }
+        public void CompoundGenericParameter<TKey, TValue>(KeyValuePair<TKey, TValue> pair) { }
+        public void GenericFuncParameter<TResult>(int input, Func<int, TResult> transform, TResult expectedResult) { }
+        public void GenericArrayResolution<T1, T2>(T1[] array, T2 arbitrary) { }
+        public void NullableValueTypeResolution<T1, T2>(T1? a, T2? b, T2? c, int? i)
+            where T1: struct
+            where T2: struct { }
     }
 }

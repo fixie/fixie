@@ -1,18 +1,18 @@
-﻿namespace Fixie.Tests
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Fixie.Reports;
-    using static Utility;
+﻿namespace Fixie.Tests;
 
-    public class StackTracePresentationTests
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Assertions;
+using Fixie.Reports;
+using static Utility;
+
+public class StackTracePresentationTests
+{
+    public async Task ShouldProvideCleanStackTraceForImplicitTestClassConstructionFailures()
     {
-        public async Task ShouldProvideCleanStackTraceForImplicitTestClassConstructionFailures()
-        {
             (await Run<ConstructionFailureTestClass, ImplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
@@ -26,8 +26,8 @@
                     "1 failed, took 1.23 seconds");
         }
         
-        public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestClassConstructionFailures()
-        {
+    public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestClassConstructionFailures()
+    {
             (await Run<ConstructionFailureTestClass, ExplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
@@ -44,8 +44,8 @@
                     "1 failed, took 1.23 seconds");
         }
 
-        public async Task ShouldProvideCleanStackTraceTestMethodFailures()
-        {
+    public async Task ShouldProvideCleanStackTraceTestMethodFailures()
+    {
             (await Run<FailureTestClass, ImplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
@@ -65,8 +65,8 @@
                     "2 failed, took 1.23 seconds");
         }
 
-        public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestMethodInvocationFailures()
-        {
+    public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestMethodInvocationFailures()
+    {
             var output = (await Run<FailureTestClass, ExplicitExceptionHandling>()).ToArray();
 
             const string optimizedInvoker = "   at InvokeStub_FailureTestClass.Synchronous(Object, Object, IntPtr*)";
@@ -102,8 +102,8 @@
                     "2 failed, took 1.23 seconds");
         }
 
-        public async Task ShouldProvideLiterateStackTraceIncludingAllNestedExceptions()
-        {
+    public async Task ShouldProvideLiterateStackTraceIncludingAllNestedExceptions()
+    {
             (await Run<NestedFailureTestClass, ImplicitExceptionHandling>())
                 .ShouldBe(
                     "Test '" + FullName<NestedFailureTestClass>() + ".Asynchronous' failed:",
@@ -141,8 +141,8 @@
                     "2 failed, took 1.23 seconds");
         }
 
-        static async Task<IEnumerable<string>> Run<TSampleTestClass, TExecution>() where TExecution : IExecution, new()
-        {
+    static async Task<IEnumerable<string>> Run<TSampleTestClass, TExecution>() where TExecution : IExecution, new()
+    {
             var discovery = new SelfTestDiscovery();
             var execution = new TExecution();
 
@@ -157,19 +157,19 @@
                 .CleanDuration();
         }
 
-        class ImplicitExceptionHandling : IExecution
+    class ImplicitExceptionHandling : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var test in testSuite.Tests)
                     await test.Run();
             }
-        }
+    }
 
-        class ExplicitExceptionHandling : IExecution
+    class ExplicitExceptionHandling : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var testClass in testSuite.TestClasses)
                 {
                     foreach (var test in testClass.Tests)
@@ -189,44 +189,44 @@
                     }
                 }
             }
-        }
+    }
 
-        class ConstructionFailureTestClass
-        {
-            public ConstructionFailureTestClass() => throw new FailureException();
-            public void UnreachableTest() => throw new ShouldBeUnreachableException();
-        }
+    class ConstructionFailureTestClass
+    {
+        public ConstructionFailureTestClass() => throw new FailureException();
+        public void UnreachableTest() => throw new ShouldBeUnreachableException();
+    }
 
-        class FailureTestClass
+    class FailureTestClass
+    {
+        public void Synchronous()
         {
-            public void Synchronous()
-            {
                 throw new FailureException();
             }
 
-            public async Task Asynchronous()
-            {
+        public async Task Asynchronous()
+        {
                 await Task.Yield();
                 throw new FailureException();
             }
-        }
+    }
 
-        class NestedFailureTestClass
+    class NestedFailureTestClass
+    {
+        public void Synchronous()
         {
-            public void Synchronous()
-            {
                 ThrowNestedException();
             }
 
-            public async Task Asynchronous()
-            {
+        public async Task Asynchronous()
+        {
                 await Task.Yield();
                 ThrowNestedException();
             }
-        }
+    }
 
-        static void ThrowNestedException()
-        {
+    static void ThrowNestedException()
+    {
             try
             {
                 try
@@ -244,10 +244,9 @@
             }
         }
 
-        class PrimaryException : Exception
-        {
-            public PrimaryException(Exception innerException)
-                : base("Primary Exception!", innerException) { }
-        }
+    class PrimaryException : Exception
+    {
+        public PrimaryException(Exception innerException)
+            : base("Primary Exception!", innerException) { }
     }
 }

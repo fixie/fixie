@@ -1,12 +1,12 @@
-﻿namespace Fixie.Tests.Internal
-{
-    using Assertions;
-    using Fixie.Internal;
+﻿namespace Fixie.Tests.Internal;
 
-    public class TestPatternTests
+using Assertions;
+using Fixie.Internal;
+
+public class TestPatternTests
+{
+    public void CanDetermineWhetherTestsMatchTheGivenPattern()
     {
-        public void CanDetermineWhetherTestsMatchTheGivenPattern()
-        {
             var childClassChildMethod = "Fixie.Tests.TestTests+ChildClass.MethodDefinedWithinChildClass";
             var parentClassParentMethod = "Fixie.Tests.TestTests+ParentClass.MethodDefinedWithinParentClass";
             var childClassParentMethod = "Fixie.Tests.TestTests+ChildClass.MethodDefinedWithinParentClass";
@@ -200,5 +200,4 @@
             testPattern.Matches(parentClassParentMethod).ShouldBe(true);
             testPattern.Matches(childClassParentMethod).ShouldBe(true);
         }
-    }
 }

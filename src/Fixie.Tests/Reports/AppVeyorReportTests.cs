@@ -1,15 +1,15 @@
-﻿namespace Fixie.Tests.Reports
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Fixie.Reports;
-    using static Utility;
+﻿namespace Fixie.Tests.Reports;
 
-    public class AppVeyorReportTests : MessagingTests
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Assertions;
+using Fixie.Reports;
+using static Utility;
+
+public class AppVeyorReportTests : MessagingTests
+{
+    public async Task ShouldReportResultsToAppVeyorBuildWorkerApi()
     {
-        public async Task ShouldReportResultsToAppVeyorBuildWorkerApi()
-        {
             var results = new List<AppVeyorReport.Result>();
 
             var report = new AppVeyorReport(GetTestEnvironment(), "http://localhost:4567", (uri, content) =>
@@ -105,5 +105,4 @@
                 .ShouldBe("Fixie.Tests.Assertions.AssertException", At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
             shouldBeStringFail.StdOut.ShouldBe("");
         }
-    }
 }

@@ -1,20 +1,20 @@
-﻿namespace Fixie.Tests.TestAdapter
-{
-    using System.Collections.Generic;
-    using System.IO;
-    using Assertions;
-    using Fixie.Internal;
-    using Fixie.TestAdapter;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Reports;
-    using static System.IO.Directory;
+﻿namespace Fixie.Tests.TestAdapter;
 
-    public class VsDiscoveryRecorderTests : MessagingTests
+using System.Collections.Generic;
+using System.IO;
+using Assertions;
+using Fixie.Internal;
+using Fixie.TestAdapter;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+using Reports;
+using static System.IO.Directory;
+
+public class VsDiscoveryRecorderTests : MessagingTests
+{
+    public void ShouldMapDiscoveredTestsToVsTestDiscoverySink()
     {
-        public void ShouldMapDiscoveredTestsToVsTestDiscoverySink()
-        {
             var assemblyPath = typeof(MessagingTests).Assembly.Location;
 
             var log = new StubMessageLogger();
@@ -34,8 +34,8 @@
                 x => x.ShouldBeDiscoveryTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath));
         }
 
-        public void ShouldDefaultSourceLocationPropertiesWhenSourceInspectionThrows()
-        {
+    public void ShouldDefaultSourceLocationPropertiesWhenSourceInspectionThrows()
+    {
             const string invalidAssemblyPath = "assembly.path.dll";
 
             var log = new StubMessageLogger();
@@ -63,8 +63,8 @@
                 x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(GenericTestClass + ".ShouldBeString", invalidAssemblyPath));
         }
 
-        void RecordAnticipatedPipeMessages(VsDiscoveryRecorder vsDiscoveryRecorder)
-        {
+    void RecordAnticipatedPipeMessages(VsDiscoveryRecorder vsDiscoveryRecorder)
+    {
             vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
             {
                 Test = TestClass + ".Fail"
@@ -91,20 +91,19 @@
             });
         }
 
-        class StubMessageLogger : IMessageLogger
-        {
-            public List<string> Messages { get; } = new List<string>();
+    class StubMessageLogger : IMessageLogger
+    {
+        public List<string> Messages { get; } = new List<string>();
 
-            public void SendMessage(TestMessageLevel testMessageLevel, string message)
-                => Messages.Add($"{testMessageLevel}: {message}");
-        }
+        public void SendMessage(TestMessageLevel testMessageLevel, string message)
+            => Messages.Add($"{testMessageLevel}: {message}");
+    }
 
-        class StubTestCaseDiscoverySink : ITestCaseDiscoverySink
-        {
-            public List<TestCase> TestCases { get; } = new List<TestCase>();
+    class StubTestCaseDiscoverySink : ITestCaseDiscoverySink
+    {
+        public List<TestCase> TestCases { get; } = new List<TestCase>();
 
-            public void SendTestCase(TestCase discoveredTest)
-                => TestCases.Add(discoveredTest);
-        }
+        public void SendTestCase(TestCase discoveredTest)
+            => TestCases.Add(discoveredTest);
     }
 }

@@ -1,65 +1,65 @@
-﻿namespace Fixie.Tests.Console
+﻿namespace Fixie.Tests.Console;
+
+using System;
+using Assertions;
+using Fixie.Console;
+
+public class ParserTests
 {
-    using System;
-    using Assertions;
-    using Fixie.Console;
+    enum Level { Information, Warning, Error }
 
-    public class ParserTests
+    class Empty { }
+
+    public void ShouldParseEmptyModels()
     {
-        enum Level { Information, Warning, Error }
-
-        class Empty { }
-
-        public void ShouldParseEmptyModels()
-        {
             Parse<Empty>().ShouldSucceed(new Empty());
         }
 
-        class TooManyConstructors
-        {
-            public TooManyConstructors() { }
-            public TooManyConstructors(int x) { }
-        }
+    class TooManyConstructors
+    {
+        public TooManyConstructors() { }
+        public TooManyConstructors(int x) { }
+    }
 
-        public void ShouldDemandExactlyOneConstructor()
-        {
+    public void ShouldDemandExactlyOneConstructor()
+    {
             Parse<TooManyConstructors>()
                 .ShouldFail($"Could not construct an instance of type '{typeof(TooManyConstructors).FullName}'. " +
                             "Expected to find exactly 1 public constructor, but found 2.");
         }
 
-        class ModelWithConstructor<T>
-        {
-            public T First { get; }
-            public T Second { get; }
-            public T Third { get; }
+    class ModelWithConstructor<T>
+    {
+        public T First { get; }
+        public T Second { get; }
+        public T Third { get; }
 
-            public ModelWithConstructor(T first, T second, T third)
-            {
+        public ModelWithConstructor(T first, T second, T third)
+        {
                 First = first;
                 Second = second;
                 Third = third;
             }
-        }
+    }
 
-        class ModelWithParams<T>
+    class ModelWithParams<T>
+    {
+        public T First { get; }
+        public T Second { get; }
+        public T Third { get; }
+        public T[] Rest { get; }
+
+        public ModelWithParams(T first, T second, T third, params T[] rest)
         {
-            public T First { get; }
-            public T Second { get; }
-            public T Third { get; }
-            public T[] Rest { get; }
-
-            public ModelWithParams(T first, T second, T third, params T[] rest)
-            {
                 First = first;
                 Second = second;
                 Third = third;
                 Rest = rest;
             }
-        }
+    }
 
-        public void ShouldParseArgumentsAsConstructorParameters()
-        {
+    public void ShouldParseArgumentsAsConstructorParameters()
+    {
             Parse<ModelWithConstructor<string>>("--first", "value1", "--second", "value2", "--third", "value3")
                 .ShouldSucceed(new ModelWithConstructor<string>("value1", "value2", "value3"));
 
@@ -99,8 +99,8 @@
                 .ShouldFail("rest was not in the correct format.");
         }
 
-        public void ShouldFailWhenNamedArgumentsAreMissingTheirRequiredValues()
-        {
+    public void ShouldFailWhenNamedArgumentsAreMissingTheirRequiredValues()
+    {
             Parse<ModelWithConstructor<int>>("--first", "1", "--second", "2", "--third")
                 .ShouldFail("--third is missing its required value.");
             
@@ -114,8 +114,8 @@
                 .ShouldFail("--second is missing its required value.");
         }
 
-        public void ShouldLeaveDefaultValuesForMissingNamedArguments()
-        {
+    public void ShouldLeaveDefaultValuesForMissingNamedArguments()
+    {
             Parse<ModelWithConstructor<string?>>("--first", "value1", "--second", "value2")
                 .ShouldSucceed(new ModelWithConstructor<string?>("value1", "value2", null));
 
@@ -130,8 +130,8 @@
                 .ShouldSucceed(new ModelWithParams<int>(1, 2, 0));
         }
 
-        public void ShouldParseNullableValueTypeArguments()
-        {
+    public void ShouldParseNullableValueTypeArguments()
+    {
             Parse<ModelWithConstructor<int?>>("--first", "1", "--third", "3")
                 .ShouldSucceed(new ModelWithConstructor<int?>(1, null, 3));
 
@@ -153,8 +153,8 @@
                 .ShouldSucceed(new ModelWithParams<char?>('a', null, 'c', 'd', 'e'));
         }
 
-        public void ShouldParseBoolArgumentsAsFlagsWithoutExplicitValues()
-        {
+    public void ShouldParseBoolArgumentsAsFlagsWithoutExplicitValues()
+    {
             Parse<ModelWithConstructor<bool>>("--first", "--third")
                 .ShouldSucceed(new ModelWithConstructor<bool>(true, false, true));
             
@@ -182,8 +182,8 @@
                 .ShouldFail("rest was not in the correct format.");
         }
 
-        public void ShouldParseNullableBoolArgumentsAsFlagsWithExplicitValues()
-        {
+    public void ShouldParseNullableBoolArgumentsAsFlagsWithExplicitValues()
+    {
             Parse<ModelWithConstructor<bool?>>("--first", "true", "--third", "false")
                 .ShouldSucceed(new ModelWithConstructor<bool?>(true, null, false));
 
@@ -232,8 +232,8 @@
                 .ShouldFail("rest was not in the correct format.");
         }
 
-        public void ShouldParseEnumArgumentsByTheirCaseInsensitiveStringRepresentation()
-        {
+    public void ShouldParseEnumArgumentsByTheirCaseInsensitiveStringRepresentation()
+    {
             Parse<ModelWithConstructor<Level>>("--first", "Warning", "--third", "ErRoR")
                 .ShouldSucceed(new ModelWithConstructor<Level>(Level.Warning, Level.Information, Level.Error));
 
@@ -273,8 +273,8 @@
                 .ShouldFail("rest must be one of: Information, Warning, Error.");
         }
 
-        public void ShouldFailForUnexpectedArguments()
-        {
+    public void ShouldFailForUnexpectedArguments()
+    {
             Parse<Empty>("first", "second")
                 .ShouldFail("Unexpected argument: first");
 
@@ -300,59 +300,59 @@
                 .ShouldFail("Unexpected argument: -x");
         }
 
-        public void ShouldFailWhenNonArrayArgumentsAreRepeated()
-        {
+    public void ShouldFailWhenNonArrayArgumentsAreRepeated()
+    {
             Parse<ModelWithConstructor<int>>("--first", "1", "--second", "2", "-f", "3")
                 .ShouldFail("--first cannot be specified more than once.");
         }
 
-        class ModelWithArrays
+    class ModelWithArrays
+    {
+        public ModelWithArrays(int[] integer, string[] @string)
         {
-            public ModelWithArrays(int[] integer, string[] @string)
-            {
                 Integer = integer;
                 String = @string;
             }
 
-            public int[] Integer { get; }
-            public string[] String { get; }
-        }
+        public int[] Integer { get; }
+        public string[] String { get; }
+    }
 
-        public void ShouldParseRepeatedArgumentsAsArrayItems()
-        {
+    public void ShouldParseRepeatedArgumentsAsArrayItems()
+    {
             Parse<ModelWithArrays>(
                 "--integer", "1", "--integer", "2",
                 "--string", "three", "--string", "four")
                 .ShouldSucceed(new ModelWithArrays(new[] { 1, 2 }, new[] { "three", "four" }));
         }
 
-        public void ShouldSetEmptyArraysForMissingArrayArguments()
-        {
+    public void ShouldSetEmptyArraysForMissingArrayArguments()
+    {
             Parse<ModelWithArrays>()
                 .ShouldSucceed(new ModelWithArrays(new int[] { }, new string[] { }));
         }
 
-        class AmbiguousParameters
+    class AmbiguousParameters
+    {
+        public AmbiguousParameters(int PARAMETER, int parameter)
         {
-            public AmbiguousParameters(int PARAMETER, int parameter)
-            {
                 this.PARAMETER = PARAMETER;
                 this.parameter = parameter;
             }
 
-            public int PARAMETER { get; }
-            public int parameter { get; }
-        }
+        public int PARAMETER { get; }
+        public int parameter { get; }
+    }
 
-        class AmbiguousFirstLetterParameters
+    class AmbiguousFirstLetterParameters
+    {
+        public AmbiguousFirstLetterParameters(
+            string pattern,
+            string configuration,
+            string password,
+            string convention,
+            string prefix)
         {
-            public AmbiguousFirstLetterParameters(
-                string pattern,
-                string configuration,
-                string password,
-                string convention,
-                string prefix)
-            {
                 Pattern = pattern;
                 Configuration = configuration;
                 Password = password;
@@ -360,23 +360,23 @@
                 Prefix = prefix;
             }
 
-            public string Pattern { get; }
-            public string Configuration { get; }
-            public string Password { get; }
-            public string Convention { get; }
-            public string Prefix { get; } 
-        }
+        public string Pattern { get; }
+        public string Configuration { get; }
+        public string Password { get; }
+        public string Convention { get; }
+        public string Prefix { get; } 
+    }
 
-        public void ShouldDemandUnambiguousParameterNames()
-        {
+    public void ShouldDemandUnambiguousParameterNames()
+    {
             Parse<AmbiguousParameters>()
                 .ShouldFail("Parsing command line arguments for type AmbiguousParameters " +
                             "is ambiguous, because it has more than one parameter corresponding " +
                             "with the --parameter argument.");
         }
 
-        public void ShouldDemandUnambiguousFirstLetterParameterNameAbbreviations()
-        {
+    public void ShouldDemandUnambiguousFirstLetterParameterNameAbbreviations()
+    {
             Parse<AmbiguousFirstLetterParameters>("-p", "a*c", "-c")
                 .ShouldFail("-p is not a recognized option. Did you mean --password, --pattern, or --prefix?");
 
@@ -384,17 +384,17 @@
                 .ShouldFail("-c is not a recognized option. Did you mean --configuration or --convention?");
         }
 
-        class Complex
+    class Complex
+    {
+        public Complex(
+            string? @string,
+            int integer,
+            bool @bool,
+            int? nullableInteger,
+            bool? nullableBoolean,
+            string[] strings,
+            int[] integers)
         {
-            public Complex(
-                string? @string,
-                int integer,
-                bool @bool,
-                int? nullableInteger,
-                bool? nullableBoolean,
-                string[] strings,
-                int[] integers)
-            {
                 String = @string;
                 Integer = integer;
                 Bool = @bool;
@@ -404,17 +404,17 @@
                 Integers = integers;
             }
 
-            public string? String { get; }
-            public int Integer { get; }
-            public bool Bool { get; }
-            public int? NullableInteger { get; }
-            public bool? NullableBoolean { get; }
-            public string[] Strings { get; }
-            public int[] Integers { get; }
-        }
+        public string? String { get; }
+        public int Integer { get; }
+        public bool Bool { get; }
+        public int? NullableInteger { get; }
+        public bool? NullableBoolean { get; }
+        public string[] Strings { get; }
+        public int[] Integers { get; }
+    }
 
-        public void ShouldBindCommandLineArgumentsToComplexModels()
-        {
+    public void ShouldBindCommandLineArgumentsToComplexModels()
+    {
             Parse<Complex>()
                 .ShouldSucceed(new Complex(null, 0, false, null, null,
                     new string[] { }, new int[] { }));
@@ -435,18 +435,18 @@
                         new[] { 78, 90 }));
         }
 
-        class ComplexWithParams
+    class ComplexWithParams
+    {
+        public ComplexWithParams(
+            string? @string,
+            int integer,
+            bool @bool,
+            int? nullableInteger,
+            bool? nullableBoolean,
+            string[] strings,
+            int[] integers,
+            params string[] rest)
         {
-            public ComplexWithParams(
-                string? @string,
-                int integer,
-                bool @bool,
-                int? nullableInteger,
-                bool? nullableBoolean,
-                string[] strings,
-                int[] integers,
-                params string[] rest)
-            {
                 String = @string;
                 Integer = integer;
                 Bool = @bool;
@@ -457,18 +457,18 @@
                 Rest = rest;
             }
 
-            public string? String { get; }
-            public int Integer { get; }
-            public bool Bool { get; }
-            public int? NullableInteger { get; }
-            public bool? NullableBoolean { get; }
-            public string[] Strings { get; }
-            public int[] Integers { get; }
-            public string[] Rest { get; }
-        }
+        public string? String { get; }
+        public int Integer { get; }
+        public bool Bool { get; }
+        public int? NullableInteger { get; }
+        public bool? NullableBoolean { get; }
+        public string[] Strings { get; }
+        public int[] Integers { get; }
+        public string[] Rest { get; }
+    }
 
-        public void ShouldBindCommandLineArgumentsToComplexModelsWithParams()
-        {
+    public void ShouldBindCommandLineArgumentsToComplexModelsWithParams()
+    {
             Parse<ComplexWithParams>()
                 .ShouldSucceed(new ComplexWithParams(null, 0, false, null, null,
                     new string[] { }, new int[] { }));
@@ -493,32 +493,31 @@
                         "positionalArgumentA", "positionalArgumentB", "positionalArgumentC"));
         }
 
-        static Scenario<T> Parse<T>(params string[] arguments) where T : class
-        {
+    static Scenario<T> Parse<T>(params string[] arguments) where T : class
+    {
             return new Scenario<T>(arguments);
         }
 
-        class Scenario<T> where T : class
-        {
-            readonly string[] arguments;
+    class Scenario<T> where T : class
+    {
+        readonly string[] arguments;
 
-            public Scenario(params string[] arguments)
-            {
+        public Scenario(params string[] arguments)
+        {
                 this.arguments = arguments;
             }
 
-            public void ShouldSucceed(T expectedModel)
-            {
+        public void ShouldSucceed(T expectedModel)
+        {
                 var model = CommandLine.Parse<T>(arguments);
                 model.ShouldMatch(expectedModel);
             }
 
-            public void ShouldFail(string expectedExceptionMessage)
-            {
+        public void ShouldFail(string expectedExceptionMessage)
+        {
                 Action shouldThrow = () => CommandLine.Parse<T>(arguments);
 
                 shouldThrow.ShouldThrow<CommandLineException>(expectedExceptionMessage);
             }
-        }
     }
 }

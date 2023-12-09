@@ -1,18 +1,18 @@
-﻿namespace Fixie.Tests.Reports
-{
-    using System;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
-    using System.Xml.Linq;
-    using Assertions;
-    using Fixie.Reports;
-    using static Utility;
+﻿namespace Fixie.Tests.Reports;
 
-    public class XmlReportTests : MessagingTests
+using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Assertions;
+using Fixie.Reports;
+using static Utility;
+
+public class XmlReportTests : MessagingTests
+{
+    public async Task ShouldProduceValidXmlDocument()
     {
-        public async Task ShouldProduceValidXmlDocument()
-        {
             var environment = GetTestEnvironment();
 
             XDocument? actual = null;
@@ -36,8 +36,8 @@
                 .ShouldBe(ExpectedReport.Lines().ToArray());
         }
 
-        static string CleanBrittleValues(string actualRawContent)
-        {
+    static string CleanBrittleValues(string actualRawContent)
+    {
             //Avoid brittle assertion introduced by system date.
             var cleaned = Regex.Replace(actualRawContent, @"run-date=""\d\d\d\d-\d\d-\d\d""", @"run-date=""YYYY-MM-DD""");
 
@@ -56,10 +56,10 @@
             return cleaned;
         }
 
-        string ExpectedReport
+    string ExpectedReport
+    {
+        get
         {
-            get
-            {
                 var assemblyLocation = GetType().Assembly.Location;
 
                 var expected = $@"<?xml version=""1.0"" encoding=""utf-8"" ?>
@@ -100,6 +100,5 @@ Actual:   1]]></message>
 
                 return XDocument.Parse(expected).ToString();
             }
-        }
     }
 }

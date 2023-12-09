@@ -1,21 +1,21 @@
-namespace Fixie.Tests
+namespace Fixie.Tests;
+
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+public class ResultEmittingTests : InstrumentedExecutionTests
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-
-    public class ResultEmittingTests : InstrumentedExecutionTests
+    class SampleTestClass
     {
-        class SampleTestClass
-        {
-            public void Test0() { throw new ShouldBeUnreachableException(); }
-            public void Test1() { throw new ShouldBeUnreachableException(); }
-        }
+        public void Test0() { throw new ShouldBeUnreachableException(); }
+        public void Test1() { throw new ShouldBeUnreachableException(); }
+    }
 
-        class ResultEmittingExecution : IExecution
+    class ResultEmittingExecution : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
                 var exception = new Exception("Non-invocation Failure");
 
                 foreach (var test in testSuite.Tests.Where(x => x.Name.EndsWith("Test0")))
@@ -29,10 +29,10 @@ namespace Fixie.Tests
                     await test.Skip(new object[] {2, 'C'}, reason: "");
                 }
             }
-        }
+    }
 
-        public async Task ShouldSupportExplicitlyEmittingResultsWithoutNecessarilyInvokingTestMethods()
-        {
+    public async Task ShouldSupportExplicitlyEmittingResultsWithoutNecessarilyInvokingTestMethods()
+    {
             var output = await Run<SampleTestClass, ResultEmittingExecution>();
 
             output.ShouldHaveResults(
@@ -46,5 +46,4 @@ namespace Fixie.Tests
                 
                 "SampleTestClass.Test1 skipped: This test did not run.");
         }
-    }
 }

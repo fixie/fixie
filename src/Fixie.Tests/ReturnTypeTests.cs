@@ -1,16 +1,16 @@
-﻿namespace Fixie.Tests
-{
-    using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Microsoft.FSharp.Control;
-    using static System.Environment;
+﻿namespace Fixie.Tests;
 
-    public class ReturnTypeTests : InstrumentedExecutionTests
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Assertions;
+using Microsoft.FSharp.Control;
+using static System.Environment;
+
+public class ReturnTypeTests : InstrumentedExecutionTests
+{
+    public async Task ShouldInvokeSynchronousTestsDiscardingReturnedValues()
     {
-        public async Task ShouldInvokeSynchronousTestsDiscardingReturnedValues()
-        {
             var output = await Run<SyncTestClass>();
 
             output.ShouldHaveResults(
@@ -26,8 +26,8 @@
                 "ReturnsString");
         }
 
-        public async Task ShouldAwaitAsynchronousTestsToEnsureCompleteExecution()
-        {
+    public async Task ShouldAwaitAsynchronousTestsToEnsureCompleteExecution()
+    {
             var output = await Run<AsyncTestClass>();
 
             output.ShouldHaveResults(
@@ -68,8 +68,8 @@
                 "NullTask");
         }
 
-        public async Task ShouldRunFSharpAsyncResultsToEnsureCompleteExecution()
-        {
+    public async Task ShouldRunFSharpAsyncResultsToEnsureCompleteExecution()
+    {
             var output = await Run<FSharpAsyncTestClass>();
 
             output.ShouldHaveResults(
@@ -86,8 +86,8 @@
                 "NullAsync");
         }
 
-        public async Task ShouldFailWithClearExplanationWhenAsyncTestReturnsNonStartedTask()
-        {
+    public async Task ShouldFailWithClearExplanationWhenAsyncTestReturnsNonStartedTask()
+    {
             var output = await Run<FailDueToNonStartedTaskTestClass>();
 
             output.ShouldHaveResults(
@@ -97,8 +97,8 @@
             output.ShouldHaveLifecycle("Test");
         }
 
-        public async Task ShouldFailUnsupportedReturnTypeDeclarationsRatherThanAttemptExecution()
-        {
+    public async Task ShouldFailUnsupportedReturnTypeDeclarationsRatherThanAttemptExecution()
+    {
             var output = await Run<UnsupportedReturnTypeDeclarationsTestClass>();
 
             output.ShouldHaveResults(
@@ -129,65 +129,65 @@
             output.ShouldHaveLifecycle();
         }
 
-        static void ThrowException([CallerMemberName] string member = default!)
-        {
+    static void ThrowException([CallerMemberName] string member = default!)
+    {
             throw new FailureException(member);
         }
 
-        static Task<int> DivideAsync(int numerator, int denominator)
-        {
+    static Task<int> DivideAsync(int numerator, int denominator)
+    {
             return Task.Run(() => numerator/denominator);
         }
 
-        static int Divide(int numerator, int denominator)
-        {
+    static int Divide(int numerator, int denominator)
+    {
             return numerator/denominator;
         }
 
-        class SyncTestClass
+    class SyncTestClass
+    {
+        public int ReturnsInteger()
         {
-            public int ReturnsInteger()
-            {
                 WhereAmI();
 
                 return 42;
             }
 
-            public object? ReturnsNull()
-            {
+        public object? ReturnsNull()
+        {
                 WhereAmI();
 
                 return null;
             }
 
-            public object ReturnsObject()
-            {
+        public object ReturnsObject()
+        {
                 WhereAmI();
 
                 return new Example("example");
             }
 
-            public string ReturnsString()
-            {
+        public string ReturnsString()
+        {
                 WhereAmI();
 
                 return "ABC";
             }
-        }
+    }
 
-        public class Example
-        {
-            readonly string name;
+    public class Example
+    {
+        readonly string name;
 
-            public Example(string name) => this.name = name;
+        public Example(string name) => this.name = name;
             
-            public override string ToString() => $"<{name}>";
-        }
+        public override string ToString() => $"<{name}>";
+    }
 
-        class AsyncTestClass
+    class AsyncTestClass
+    {
+        public async Task AwaitTaskThenPass()
         {
-            public async Task AwaitTaskThenPass()
-            {
                 WhereAmI();
 
                 var result = await DivideAsync(15, 5);
@@ -195,8 +195,8 @@
                 result.ShouldBe(3);
             }
 
-            public async ValueTask AwaitValueTaskThenPass()
-            {
+        public async ValueTask AwaitValueTaskThenPass()
+        {
                 WhereAmI();
 
                 var result = await DivideAsync(15, 5);
@@ -204,8 +204,8 @@
                 result.ShouldBe(3);
             }
 
-            public Task CompleteTaskThenPass()
-            {
+        public Task CompleteTaskThenPass()
+        {
                 WhereAmI();
 
                 var divide = DivideAsync(15, 5);
@@ -216,8 +216,8 @@
                 });
             }
 
-            public async Task FailAfterAwaitTask()
-            {
+        public async Task FailAfterAwaitTask()
+        {
                 WhereAmI();
 
                 var result = await DivideAsync(15, 5);
@@ -225,8 +225,8 @@
                 result.ShouldBe(0);
             }
 
-            public async ValueTask FailAfterAwaitValueTask()
-            {
+        public async ValueTask FailAfterAwaitValueTask()
+        {
                 WhereAmI();
 
                 var result = await DivideAsync(15, 5);
@@ -234,8 +234,8 @@
                 result.ShouldBe(0);
             }
 
-            public async Task FailBeforeAwaitTask()
-            {
+        public async Task FailBeforeAwaitTask()
+        {
                 WhereAmI();
 
                 ThrowException();
@@ -243,8 +243,8 @@
                 await DivideAsync(15, 5);
             }
 
-            public async ValueTask FailBeforeAwaitValueTask()
-            {
+        public async ValueTask FailBeforeAwaitValueTask()
+        {
                 WhereAmI();
 
                 ThrowException();
@@ -252,8 +252,8 @@
                 await DivideAsync(15, 5);
             }
 
-            public async Task FailDuringAwaitTask()
-            {
+        public async Task FailDuringAwaitTask()
+        {
                 WhereAmI();
 
                 await DivideAsync(15, 0);
@@ -261,8 +261,8 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            public async ValueTask FailDuringAwaitValueTask()
-            {
+        public async ValueTask FailDuringAwaitValueTask()
+        {
                 WhereAmI();
 
                 await DivideAsync(15, 0);
@@ -270,36 +270,36 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            public async Task<int> GenericAsyncTaskFail()
-            {
+        public async Task<int> GenericAsyncTaskFail()
+        {
                 WhereAmI();
 
                 return await DivideAsync(15, 0);
             }
 
-            public async Task<int> GenericAsyncTaskWithResult()
-            {
+        public async Task<int> GenericAsyncTaskWithResult()
+        {
                 WhereAmI();
 
                 return await DivideAsync(15, 5);
             }
 
-            public async ValueTask<int> GenericAsyncValueTaskWithResult()
-            {
+        public async ValueTask<int> GenericAsyncValueTaskWithResult()
+        {
                 WhereAmI();
 
                 return await DivideAsync(20, 5);
             }
 
-            public async ValueTask<int> GenericAsyncValueTaskFail()
-            {
+        public async ValueTask<int> GenericAsyncValueTaskFail()
+        {
                 WhereAmI();
 
                 return await DivideAsync(15, 0);
             }
 
-            public Task<bool> GenericTaskFail()
-            {
+        public Task<bool> GenericTaskFail()
+        {
                 WhereAmI();
 
                 var divide = DivideAsync(15, 0);
@@ -307,8 +307,8 @@
                 return divide.ContinueWith(division => division.Result == 42);
             }
 
-            public Task<bool> GenericTaskWithResult()
-            {
+        public Task<bool> GenericTaskWithResult()
+        {
                 WhereAmI();
 
                 var divide = DivideAsync(15, 5);
@@ -316,8 +316,8 @@
                 return divide.ContinueWith(division => division.Result == 3);
             }
 
-            public Task? NullTask()
-            {
+        public Task? NullTask()
+        {
                 WhereAmI();
 
                 // Although unlikely, we must ensure that
@@ -325,12 +325,12 @@
                 // is in fact null.
                 return null;
             }
-        }
+    }
 
-        class FSharpAsyncTestClass
+    class FSharpAsyncTestClass
+    {
+        public FSharpAsync<int> AsyncPass()
         {
-            public FSharpAsync<int> AsyncPass()
-            {
                 WhereAmI();
 
                 return new FSharpAsync<int>(() =>
@@ -343,8 +343,8 @@
                 });
             }
 
-            public FSharpAsync<int> FailBeforeAsync()
-            {
+        public FSharpAsync<int> FailBeforeAsync()
+        {
                 WhereAmI();
 
                 ThrowException();
@@ -352,8 +352,8 @@
                 return new FSharpAsync<int>(() => Divide(15, 5));
             }
 
-            public FSharpAsync<int> FailFromAsync()
-            {
+        public FSharpAsync<int> FailFromAsync()
+        {
                 WhereAmI();
 
                 return new FSharpAsync<int>(() =>
@@ -366,8 +366,8 @@
                 });
             }
 
-            public FSharpAsync<int>? NullAsync()
-            {
+        public FSharpAsync<int>? NullAsync()
+        {
                 WhereAmI();
 
                 // Although unlikely, we must ensure that
@@ -375,30 +375,30 @@
                 // is in fact null.
                 return null;
             }
-        }
+    }
 
-        class FailDueToNonStartedTaskTestClass
+    class FailDueToNonStartedTaskTestClass
+    {
+        public Task Test()
         {
-            public Task Test()
-            {
                 WhereAmI();
 
                 return new Task(() => throw new ShouldBeUnreachableException());
             }
-        }
+    }
 
-        class UnsupportedReturnTypeDeclarationsTestClass
+    class UnsupportedReturnTypeDeclarationsTestClass
+    {
+        public async void AsyncVoid()
         {
-            public async void AsyncVoid()
-            {
                 WhereAmI();
 
                 await DivideAsync(15, 5);
                 throw new ShouldBeUnreachableException();
             }
 
-            public async UntrustworthyAwaitable UntrustworthyAwaitable()
-            {
+        public async UntrustworthyAwaitable UntrustworthyAwaitable()
+        {
                 WhereAmI();
 
                 await DivideAsync(15, 0);
@@ -406,8 +406,8 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            public async IAsyncEnumerable<int> AsyncEnumerable()
-            {
+        public async IAsyncEnumerable<int> AsyncEnumerable()
+        {
                 WhereAmI();
 
                 yield return await DivideAsync(15, 5);
@@ -415,14 +415,13 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            public async IAsyncEnumerator<int> AsyncEnumerator()
-            {
+        public async IAsyncEnumerator<int> AsyncEnumerator()
+        {
                 WhereAmI();
 
                 yield return await DivideAsync(15, 5);
 
                 throw new ShouldBeUnreachableException();
             }
-        }
     }
 }

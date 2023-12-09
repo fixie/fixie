@@ -1,14 +1,14 @@
-namespace Fixie.Tests
+namespace Fixie.Tests;
+
+using System;
+using Assertions;
+
+public class ShuffleExtensionsTests
 {
-    using System;
-    using Assertions;
+    const int Seed = 42;
 
-    public class ShuffleExtensionsTests
+    public void ShouldProvideCollectionItemsInRandomOrder()
     {
-        const int Seed = 42;
-
-        public void ShouldProvideCollectionItemsInRandomOrder()
-        {
             new[] {1, 2, 3, 4, 5}
                 .Shuffle(new Random(Seed))
                 .ShouldBe(3, 2, 5, 1, 4);
@@ -17,5 +17,4 @@ namespace Fixie.Tests
                 .Shuffle(new Random(Seed))
                 .ShouldBe('d', ' ', 'H', 'l', 'l', 'W', 'r', 'o', 'l', 'e', 'o');
         }
-    }
 }

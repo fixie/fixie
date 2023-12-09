@@ -1,15 +1,15 @@
-﻿namespace Fixie.Tests.Reports
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Fixie.Reports;
+﻿namespace Fixie.Tests.Reports;
 
-    public class LifecycleMessageTests : MessagingTests
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Assertions;
+using Fixie.Reports;
+
+public class LifecycleMessageTests : MessagingTests
+{
+    public async Task ShouldDescribeTestLifecycleMessagesEmittedDuringExecution()
     {
-        public async Task ShouldDescribeTestLifecycleMessagesEmittedDuringExecution()
-        {
             var report = new StubTestCompletedReport();
 
             await Run(report);
@@ -111,37 +111,36 @@
             executionCompleted.Total.ShouldBe(7);
         }
 
-        public class StubTestCompletedReport :
-            IHandler<ExecutionStarted>,
-            IHandler<TestStarted>,
-            IHandler<TestCompleted>,
-            IHandler<ExecutionCompleted>
+    public class StubTestCompletedReport :
+        IHandler<ExecutionStarted>,
+        IHandler<TestStarted>,
+        IHandler<TestCompleted>,
+        IHandler<ExecutionCompleted>
+    {
+        public List<object> Messages { get; } = new List<object>();
+
+        public Task Handle(ExecutionStarted message)
         {
-            public List<object> Messages { get; } = new List<object>();
-
-            public Task Handle(ExecutionStarted message)
-            {
                 Messages.Add(message);
                 return Task.CompletedTask;
             }
 
-            public Task Handle(TestStarted message)
-            {
+        public Task Handle(TestStarted message)
+        {
                 Messages.Add(message);
                 return Task.CompletedTask;
             }
 
-            public Task Handle(TestCompleted message)
-            {
+        public Task Handle(TestCompleted message)
+        {
                 Messages.Add(message);
                 return Task.CompletedTask;
             }
 
-            public Task Handle(ExecutionCompleted message)
-            {
+        public Task Handle(ExecutionCompleted message)
+        {
                 Messages.Add(message);
                 return Task.CompletedTask;
             }
-        }
     }
 }

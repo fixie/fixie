@@ -1,16 +1,16 @@
-﻿namespace Fixie.Tests.Reports
-{
-    using System;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Fixie.Reports;
+﻿namespace Fixie.Tests.Reports;
 
-    public class TeamCityReportTests : MessagingTests
+using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Assertions;
+using Fixie.Reports;
+
+public class TeamCityReportTests : MessagingTests
+{
+    public async Task ShouldReportResultsToTheConsoleInTeamCityFormat()
     {
-        public async Task ShouldReportResultsToTheConsoleInTeamCityFormat()
-        {
             var eol = Environment.NewLine == "\r\n" ? "|r|n" : "|n";
 
             var output = await Run(environment => new TeamCityReport(environment));
@@ -54,5 +54,4 @@
 
                     "##teamcity[testSuiteFinished name='Fixie.Tests']");
         }
-    }
 }

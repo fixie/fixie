@@ -1,42 +1,41 @@
-﻿namespace Fixie.Tests
-{
-    using Assertions;
+﻿namespace Fixie.Tests;
 
-    public class TestNameTests
+using Assertions;
+
+public class TestNameTests
+{
+    public void CanRepresentMethodsDeclaredInChildClasses()
     {
-        public void CanRepresentMethodsDeclaredInChildClasses()
-        {
             Test<ChildClass>("MethodDefinedWithinChildClass")
                 .ShouldBe("Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinChildClass");
         }
 
-        public void CanRepresentMethodsDeclaredInParentClasses()
-        {
+    public void CanRepresentMethodsDeclaredInParentClasses()
+    {
             Test<ParentClass>("MethodDefinedWithinParentClass")
                 .ShouldBe("Fixie.Tests.TestNameTests+ParentClass.MethodDefinedWithinParentClass");
         }
 
-        public void CanRepresentParentMethodsInheritedByChildClasses()
-        {
+    public void CanRepresentParentMethodsInheritedByChildClasses()
+    {
             Test<ChildClass>("MethodDefinedWithinParentClass")
                 .ShouldBe("Fixie.Tests.TestNameTests+ChildClass.MethodDefinedWithinParentClass");
         }
 
-        static string Test<TTestClass>(string method)
-            => typeof(TTestClass).GetInstanceMethod(method).TestName();
+    static string Test<TTestClass>(string method)
+        => typeof(TTestClass).GetInstanceMethod(method).TestName();
 
-        class ParentClass
+    class ParentClass
+    {
+        public void MethodDefinedWithinParentClass()
         {
-            public void MethodDefinedWithinParentClass()
-            {
             }
-        }
+    }
 
-        class ChildClass : ParentClass
+    class ChildClass : ParentClass
+    {
+        public void MethodDefinedWithinChildClass()
         {
-            public void MethodDefinedWithinChildClass()
-            {
             }
-        }
     }
 }

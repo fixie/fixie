@@ -1,20 +1,20 @@
-﻿namespace Fixie.Tests
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Microsoft.FSharp.Control;
-    using static System.Environment;
-    using static Utility;
+﻿namespace Fixie.Tests;
 
-    public class MethodInfoExtensionsTests : InstrumentedExecutionTests
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Assertions;
+using Microsoft.FSharp.Control;
+using static System.Environment;
+using static Utility;
+
+public class MethodInfoExtensionsTests : InstrumentedExecutionTests
+{
+    class MethodInfoAccessingExecution : IExecution
     {
-        class MethodInfoAccessingExecution : IExecution
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var testClass in testSuite.TestClasses)
                     foreach (var test in testClass.Tests)
                         foreach (var parameters in FromInputAttributes(test))
@@ -40,10 +40,10 @@
                             }
                         }
             }
-        }
+    }
 
-        public async Task ShouldCallSynchronousMethods()
-        {
+    public async Task ShouldCallSynchronousMethods()
+    {
             var output = await Run<SyncTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
@@ -70,8 +70,8 @@
                 "ZeroArgs");
         }
 
-        public async Task ShouldResolveGenericTypeParametersWhenPossible()
-        {
+    public async Task ShouldResolveGenericTypeParametersWhenPossible()
+    {
             var output = await Run<GenericTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
@@ -90,8 +90,8 @@
             output.ShouldHaveLifecycle("Args", "Args", "ConstrainedArgs", "ConstrainedArgs", "NullableValueTypeArgs", "NullableValueTypeArgs");
         }
 
-        public async Task ShouldAwaitAsynchronousMethodsToEnsureCompleteExecution()
-        {
+    public async Task ShouldAwaitAsynchronousMethodsToEnsureCompleteExecution()
+    {
             var output = await Run<AsyncTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
@@ -135,8 +135,8 @@
                 "NullTask");
         }
 
-        public async Task ShouldRunFSharpAsyncResultsToEnsureCompleteExecution()
-        {
+    public async Task ShouldRunFSharpAsyncResultsToEnsureCompleteExecution()
+    {
             var output = await Run<FSharpAsyncTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
@@ -154,8 +154,8 @@
                 "NullAsync");
         }
 
-        public async Task ShouldThrowWithClearExplanationWhenMethodReturnsNonStartedTask()
-        {
+    public async Task ShouldThrowWithClearExplanationWhenMethodReturnsNonStartedTask()
+    {
             var output = await Run<FailDueToNonStartedTaskTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
@@ -165,8 +165,8 @@
             output.ShouldHaveLifecycle("Test");
         }
 
-        public async Task ShouldThrowForUnsupportedReturnTypeDeclarationsRatherThanAttemptExecution()
-        {
+    public async Task ShouldThrowForUnsupportedReturnTypeDeclarationsRatherThanAttemptExecution()
+    {
             var output = await Run<UnsupportedReturnTypeDeclarationsTestClass, MethodInfoAccessingExecution>();
 
             output.ShouldHaveResults(
@@ -197,108 +197,108 @@
             output.ShouldHaveLifecycle();
         }
 
-        static void ThrowException([CallerMemberName] string member = default!)
-        {
+    static void ThrowException([CallerMemberName] string member = default!)
+    {
             throw new FailureException(member);
         }
 
-        static Task<int> DivideAsync(int numerator, int denominator)
-        {
+    static Task<int> DivideAsync(int numerator, int denominator)
+    {
             return Task.Run(() => numerator/denominator);
         }
 
-        static int Divide(int numerator, int denominator)
-        {
+    static int Divide(int numerator, int denominator)
+    {
             return numerator/denominator;
         }
 
-        class SyncTestClass
+    class SyncTestClass
+    {
+        public void ZeroArgs() { WhereAmI(); }
+
+        public void Throws() { WhereAmI(); ThrowException(); }
+
+        [Input(1, 2, 3)]
+        [Input(1, 2, 3, "Extra")]
+        public void Args(int a, int b, int c) { WhereAmI(); }
+
+        public int ReturnsInteger()
         {
-            public void ZeroArgs() { WhereAmI(); }
-
-            public void Throws() { WhereAmI(); ThrowException(); }
-
-            [Input(1, 2, 3)]
-            [Input(1, 2, 3, "Extra")]
-            public void Args(int a, int b, int c) { WhereAmI(); }
-
-            public int ReturnsInteger()
-            {
                 WhereAmI();
 
                 return 42;
             }
 
-            public object? ReturnsNull()
-            {
+        public object? ReturnsNull()
+        {
                 WhereAmI();
 
                 return null;
             }
 
-            public object ReturnsObject()
-            {
+        public object ReturnsObject()
+        {
                 WhereAmI();
 
                 return new Example("example");
             }
 
-            public string ReturnsString()
-            {
+        public string ReturnsString()
+        {
                 WhereAmI();
 
                 return "ABC";
             }
-        }
+    }
 
-        public class Example
-        {
-            readonly string name;
+    public class Example
+    {
+        readonly string name;
 
-            public Example(string name) => this.name = name;
+        public Example(string name) => this.name = name;
             
-            public override string ToString() => $"<{name}>";
-        }
+        public override string ToString() => $"<{name}>";
+    }
 
-        class GenericTestClass
+    class GenericTestClass
+    {
+        [Input(1, 2, typeof(int), typeof(int))]
+        [Input('a', 3.0d, typeof(char), typeof(double))]
+        public void Args<T1, T2>(T1 a, T2 b, Type expectedT1, Type expectedT2)
         {
-            [Input(1, 2, typeof(int), typeof(int))]
-            [Input('a', 3.0d, typeof(char), typeof(double))]
-            public void Args<T1, T2>(T1 a, T2 b, Type expectedT1, Type expectedT2)
-            {
                 WhereAmI();
                 typeof(T1).ShouldBe(expectedT1);
                 typeof(T2).ShouldBe(expectedT2);
             }
 
-            [Input(1, 'a', typeof(int), typeof(char))]
-            [Input(2, 'b', typeof(int), typeof(int))]
-            [Input(1, null, typeof(int), typeof(object))]
-            [Input(null, 2, typeof(object), typeof(int))]
-            public void ConstrainedArgs<T1, T2>(T1 a, T2 b, Type expectedT1, Type expectedT2)
-                where T1: struct
-                where T2: struct
-            {
-                WhereAmI();
-                typeof(T1).ShouldBe(expectedT1);
-                typeof(T2).ShouldBe(expectedT2);
-            }
-
-            [Input(1, 2, typeof(int), typeof(int))]
-            [Input('a', 3.0d, typeof(char), typeof(double))]
-            [Input(1, null, typeof(int), typeof(object))]
-            public void NullableValueTypeArgs<T1, T2>(T1 a, T2? b, Type expectedT1, Type expectedT2) where T2: struct
-            {
-                WhereAmI();
-                typeof(T1).ShouldBe(expectedT1);
-                typeof(T2).ShouldBe(expectedT2);
-            }
-        }
-
-        class AsyncTestClass
+        [Input(1, 'a', typeof(int), typeof(char))]
+        [Input(2, 'b', typeof(int), typeof(int))]
+        [Input(1, null, typeof(int), typeof(object))]
+        [Input(null, 2, typeof(object), typeof(int))]
+        public void ConstrainedArgs<T1, T2>(T1 a, T2 b, Type expectedT1, Type expectedT2)
+            where T1: struct
+            where T2: struct
         {
-            public async Task AwaitTaskThenPass()
-            {
+                WhereAmI();
+                typeof(T1).ShouldBe(expectedT1);
+                typeof(T2).ShouldBe(expectedT2);
+            }
+
+        [Input(1, 2, typeof(int), typeof(int))]
+        [Input('a', 3.0d, typeof(char), typeof(double))]
+        [Input(1, null, typeof(int), typeof(object))]
+        public void NullableValueTypeArgs<T1, T2>(T1 a, T2? b, Type expectedT1, Type expectedT2) where T2: struct
+        {
+                WhereAmI();
+                typeof(T1).ShouldBe(expectedT1);
+                typeof(T2).ShouldBe(expectedT2);
+            }
+    }
+
+    class AsyncTestClass
+    {
+        public async Task AwaitTaskThenPass()
+        {
                 WhereAmI();
 
                 var result = await DivideAsync(15, 5);
@@ -306,8 +306,8 @@
                 result.ShouldBe(3);
             }
 
-            public async ValueTask AwaitValueTaskThenPass()
-            {
+        public async ValueTask AwaitValueTaskThenPass()
+        {
                 WhereAmI();
 
                 var result = await DivideAsync(15, 5);
@@ -315,8 +315,8 @@
                 result.ShouldBe(3);
             }
 
-            public Task CompleteTaskThenPass()
-            {
+        public Task CompleteTaskThenPass()
+        {
                 WhereAmI();
 
                 var divide = DivideAsync(15, 5);
@@ -327,8 +327,8 @@
                 });
             }
 
-            public async Task FailAfterAwaitTask()
-            {
+        public async Task FailAfterAwaitTask()
+        {
                 WhereAmI();
 
                 var result = await DivideAsync(15, 5);
@@ -336,8 +336,8 @@
                 result.ShouldBe(0);
             }
 
-            public async ValueTask FailAfterAwaitValueTask()
-            {
+        public async ValueTask FailAfterAwaitValueTask()
+        {
                 WhereAmI();
 
                 var result = await DivideAsync(15, 5);
@@ -345,8 +345,8 @@
                 result.ShouldBe(0);
             }
 
-            public async Task FailBeforeAwaitTask()
-            {
+        public async Task FailBeforeAwaitTask()
+        {
                 WhereAmI();
 
                 ThrowException();
@@ -354,8 +354,8 @@
                 await DivideAsync(15, 5);
             }
 
-            public async ValueTask FailBeforeAwaitValueTask()
-            {
+        public async ValueTask FailBeforeAwaitValueTask()
+        {
                 WhereAmI();
 
                 ThrowException();
@@ -363,8 +363,8 @@
                 await DivideAsync(15, 5);
             }
 
-            public async Task FailDuringAwaitTask()
-            {
+        public async Task FailDuringAwaitTask()
+        {
                 WhereAmI();
 
                 await DivideAsync(15, 0);
@@ -372,8 +372,8 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            public async ValueTask FailDuringAwaitValueTask()
-            {
+        public async ValueTask FailDuringAwaitValueTask()
+        {
                 WhereAmI();
 
                 await DivideAsync(15, 0);
@@ -381,36 +381,36 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            public async Task<int> GenericAsyncTaskFail()
-            {
+        public async Task<int> GenericAsyncTaskFail()
+        {
                 WhereAmI();
 
                 return await DivideAsync(15, 0);
             }
 
-            public async Task<int> GenericAsyncTaskWithResult()
-            {
+        public async Task<int> GenericAsyncTaskWithResult()
+        {
                 WhereAmI();
 
                 return await DivideAsync(15, 5);
             }
 
-            public async ValueTask<int> GenericAsyncValueTaskWithResult()
-            {
+        public async ValueTask<int> GenericAsyncValueTaskWithResult()
+        {
                 WhereAmI();
 
                 return await DivideAsync(20, 5);
             }
 
-            public async ValueTask<int> GenericAsyncValueTaskFail()
-            {
+        public async ValueTask<int> GenericAsyncValueTaskFail()
+        {
                 WhereAmI();
 
                 return await DivideAsync(15, 0);
             }
 
-            public Task<bool> GenericTaskFail()
-            {
+        public Task<bool> GenericTaskFail()
+        {
                 WhereAmI();
 
                 var divide = DivideAsync(15, 0);
@@ -418,8 +418,8 @@
                 return divide.ContinueWith(division => division.Result == 42);
             }
 
-            public Task<bool> GenericTaskWithResult()
-            {
+        public Task<bool> GenericTaskWithResult()
+        {
                 WhereAmI();
 
                 var divide = DivideAsync(15, 5);
@@ -427,8 +427,8 @@
                 return divide.ContinueWith(division => division.Result == 3);
             }
 
-            public Task? NullTask()
-            {
+        public Task? NullTask()
+        {
                 WhereAmI();
 
                 // Although unlikely, we must ensure that
@@ -436,12 +436,12 @@
                 // is in fact null.
                 return null;
             }
-        }
+    }
 
-        class FSharpAsyncTestClass
+    class FSharpAsyncTestClass
+    {
+        public FSharpAsync<int> AsyncPass()
         {
-            public FSharpAsync<int> AsyncPass()
-            {
                 WhereAmI();
 
                 return new FSharpAsync<int>(() =>
@@ -454,8 +454,8 @@
                 });
             }
 
-            public FSharpAsync<int> FailBeforeAsync()
-            {
+        public FSharpAsync<int> FailBeforeAsync()
+        {
                 WhereAmI();
 
                 ThrowException();
@@ -463,8 +463,8 @@
                 return new FSharpAsync<int>(() => Divide(15, 5));
             }
 
-            public FSharpAsync<int> FailFromAsync()
-            {
+        public FSharpAsync<int> FailFromAsync()
+        {
                 WhereAmI();
 
                 return new FSharpAsync<int>(() =>
@@ -477,8 +477,8 @@
                 });
             }
 
-            public FSharpAsync<int>? NullAsync()
-            {
+        public FSharpAsync<int>? NullAsync()
+        {
                 WhereAmI();
 
                 // Although unlikely, we must ensure that
@@ -486,30 +486,30 @@
                 // is in fact null.
                 return null;
             }
-        }
+    }
 
-        class FailDueToNonStartedTaskTestClass
+    class FailDueToNonStartedTaskTestClass
+    {
+        public Task Test()
         {
-            public Task Test()
-            {
                 WhereAmI();
 
                 return new Task(() => throw new ShouldBeUnreachableException());
             }
-        }
+    }
 
-        class UnsupportedReturnTypeDeclarationsTestClass
+    class UnsupportedReturnTypeDeclarationsTestClass
+    {
+        public async void AsyncVoid()
         {
-            public async void AsyncVoid()
-            {
                 WhereAmI();
 
                 await DivideAsync(15, 5);
                 throw new ShouldBeUnreachableException();
             }
 
-            public async UntrustworthyAwaitable UntrustworthyAwaitable()
-            {
+        public async UntrustworthyAwaitable UntrustworthyAwaitable()
+        {
                 WhereAmI();
 
                 await DivideAsync(15, 0);
@@ -517,8 +517,8 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            public async IAsyncEnumerable<int> AsyncEnumerable()
-            {
+        public async IAsyncEnumerable<int> AsyncEnumerable()
+        {
                 WhereAmI();
 
                 yield return await DivideAsync(15, 5);
@@ -526,14 +526,13 @@
                 throw new ShouldBeUnreachableException();
             }
 
-            public async IAsyncEnumerator<int> AsyncEnumerator()
-            {
+        public async IAsyncEnumerator<int> AsyncEnumerator()
+        {
                 WhereAmI();
 
                 yield return await DivideAsync(15, 5);
 
                 throw new ShouldBeUnreachableException();
             }
-        }
     }
 }

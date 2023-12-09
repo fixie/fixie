@@ -1,16 +1,16 @@
-﻿namespace Fixie.Tests.Reports
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Fixie.Reports;
+﻿namespace Fixie.Tests.Reports;
 
-    public class ConsoleReportTests : MessagingTests
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Assertions;
+using Fixie.Reports;
+
+public class ConsoleReportTests : MessagingTests
+{
+    public async Task ShouldReportResults()
     {
-        public async Task ShouldReportResults()
-        {
             var output = await Run(environment => new ConsoleReport(environment));
 
             output.Console
@@ -54,8 +54,8 @@
                     "3 passed, 3 failed, 1 skipped, took 1.23 seconds");
         }
 
-        public async Task ShouldIncludePassingResultsWhenFilteringByPattern()
-        {
+    public async Task ShouldIncludePassingResultsWhenFilteringByPattern()
+    {
             var output = await Run(console => new ConsoleReport(console, testPattern: "*"));
 
             output.Console
@@ -105,14 +105,14 @@
                     "3 passed, 3 failed, 1 skipped, took 1.23 seconds");
         }
 
-        class ZeroPassed : SelfTestDiscovery
-        {
-            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
-                => publicMethods.Where(x => !x.Name.StartsWith("Pass") && x.ReflectedType == TestClassType);
-        }
+    class ZeroPassed : SelfTestDiscovery
+    {
+        public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+            => publicMethods.Where(x => !x.Name.StartsWith("Pass") && x.ReflectedType == TestClassType);
+    }
 
-        public async Task ShouldNotReportPassCountsWhenZeroTestsHavePassed()
-        {
+    public async Task ShouldNotReportPassCountsWhenZeroTestsHavePassed()
+    {
             var discovery = new ZeroPassed();
 
             var output = await Run(console => new ConsoleReport(console), discovery);
@@ -123,14 +123,14 @@
                 .ShouldBe("2 failed, 1 skipped, took 1.23 seconds");
         }
 
-        class ZeroFailed : SelfTestDiscovery
-        {
-            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
-                => publicMethods.Where(x => !x.Name.StartsWith("Fail") && x.ReflectedType == TestClassType);
-        }
+    class ZeroFailed : SelfTestDiscovery
+    {
+        public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+            => publicMethods.Where(x => !x.Name.StartsWith("Fail") && x.ReflectedType == TestClassType);
+    }
 
-        public async Task ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
-        {
+    public async Task ShouldNotReportFailCountsWhenZeroTestsHaveFailed()
+    {
             var discovery = new ZeroFailed();
 
             var output = await Run(console => new ConsoleReport(console), discovery);
@@ -141,14 +141,14 @@
                 .ShouldBe("1 passed, 1 skipped, took 1.23 seconds");
         }
 
-        class ZeroSkipped : SelfTestDiscovery
-        {
-            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
-                => publicMethods.Where(x => !x.Name.StartsWith("Skip") && x.ReflectedType == TestClassType);
-        }
+    class ZeroSkipped : SelfTestDiscovery
+    {
+        public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+            => publicMethods.Where(x => !x.Name.StartsWith("Skip") && x.ReflectedType == TestClassType);
+    }
 
-        public async Task ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
-        {
+    public async Task ShouldNotReportSkipCountsWhenZeroTestsHaveBeenSkipped()
+    {
             var discovery = new ZeroSkipped();
 
             var output = await Run(console => new ConsoleReport(console), discovery);
@@ -159,14 +159,14 @@
                 .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
         }
 
-        class NoTestsFound : SelfTestDiscovery
-        {
-            public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
-                => publicMethods.Where(x => false);
-        }
+    class NoTestsFound : SelfTestDiscovery
+    {
+        public override IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+            => publicMethods.Where(x => false);
+    }
 
-        public async Task ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
-        {
+    public async Task ShouldProvideDiagnosticDescriptionWhenNoTestsWereExecuted()
+    {
             var discovery = new NoTestsFound();
 
             var output = await Run(console => new ConsoleReport(console), discovery);
@@ -181,5 +181,4 @@
                 .Last()
                 .ShouldBe("No tests match the specified pattern: Ineffective*Pattern");
         }
-    }
 }

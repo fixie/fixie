@@ -1,37 +1,37 @@
-﻿namespace Fixie.Tests
+﻿namespace Fixie.Tests;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Assertions;
+
+public class ParameterizationTests : InstrumentedExecutionTests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Assertions;
-
-    public class ParameterizationTests : InstrumentedExecutionTests
+    class ParameterizedExecution : IExecution
     {
-        class ParameterizedExecution : IExecution
+        readonly Func<Test, IEnumerable<object?[]>> parameterSource;
+
+        public ParameterizedExecution(Func<Test, IEnumerable<object?[]>> parameterSource)
+            => this.parameterSource = parameterSource;
+
+        public async Task Run(TestSuite testSuite)
         {
-            readonly Func<Test, IEnumerable<object?[]>> parameterSource;
-
-            public ParameterizedExecution(Func<Test, IEnumerable<object?[]>> parameterSource)
-                => this.parameterSource = parameterSource;
-
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var test in testSuite.Tests)
                     foreach (var parameters in parameterSource(test))
                         await test.Run(parameters);
             }
-        }
+    }
 
-        class IsolatedParameterizedExecution : IExecution
+    class IsolatedParameterizedExecution : IExecution
+    {
+        readonly Func<Test, IEnumerable<object?[]>> parameterSource;
+
+        public IsolatedParameterizedExecution(Func<Test, IEnumerable<object?[]>> parameterSource)
+            => this.parameterSource = parameterSource;
+
+        public async Task Run(TestSuite testSuite)
         {
-            readonly Func<Test, IEnumerable<object?[]>> parameterSource;
-
-            public IsolatedParameterizedExecution(Func<Test, IEnumerable<object?[]>> parameterSource)
-                => this.parameterSource = parameterSource;
-
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var test in testSuite.Tests)
                 {
                     try
@@ -45,10 +45,10 @@
                     }
                 }
             }
-        }
+    }
 
-        public async Task ShouldAllowRunningTestsMultipleTimesWithVaryingInputParameters()
-        {
+    public async Task ShouldAllowRunningTestsMultipleTimesWithVaryingInputParameters()
+    {
             var execution = new ParameterizedExecution(InputAttributeOrDefaultParameterSource);
             var output = await Run<ParameterizedTestClass>(execution);
 
@@ -62,8 +62,8 @@
             output.ShouldHaveLifecycle("IntArg", "Sum", "Sum", "Sum", "ZeroArgs");
         }
 
-        public async Task ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
-        {
+    public async Task ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
+    {
             var execution = new ParameterizedExecution(method => new[]
             {
                 new object[] { },
@@ -96,8 +96,8 @@
             output.ShouldHaveLifecycle("IntArg", "Sum", "ZeroArgs");
         }
 
-        public async Task ShouldSupportEndingTheRunEarlyWhenParameterGenerationThrows()
-        {
+    public async Task ShouldSupportEndingTheRunEarlyWhenParameterGenerationThrows()
+    {
             var execution = new ParameterizedExecution(BuggyParameterSource);
             var output = await Run<ParameterizedTestClass>(execution);
 
@@ -115,8 +115,8 @@
             output.ShouldHaveLifecycle("IntArg", "IntArg");
         }
 
-        public async Task ShouldSupportIsolatingFailuresToTheAffectedTestMethodWhenParameterGenerationThrows()
-        {
+    public async Task ShouldSupportIsolatingFailuresToTheAffectedTestMethodWhenParameterGenerationThrows()
+    {
             var execution = new IsolatedParameterizedExecution(BuggyParameterSource);
             var output = await Run<ParameterizedTestClass>(execution);
 
@@ -136,8 +136,8 @@
             output.ShouldHaveLifecycle("IntArg", "IntArg");
         }
 
-        public async Task ShouldFailWithGenericTestNameWhenGenericTypeParametersCannotBeResolved()
-        {
+    public async Task ShouldFailWithGenericTestNameWhenGenericTypeParametersCannotBeResolved()
+    {
             var execution = new IsolatedParameterizedExecution(BuggyParameterSource);
             var output = await Run<ConstrainedGenericTestClass>(execution);
 
@@ -154,8 +154,8 @@
                 "UnconstrainedGeneric", "UnconstrainedGeneric");
         }
 
-        public async Task ShouldResolveGenericTypeParameters()
-        {
+    public async Task ShouldResolveGenericTypeParameters()
+    {
             var execution = new IsolatedParameterizedExecution(InputAttributeOrDefaultParameterSource);
             var output = await Run<GenericTestClass>(execution);
 
@@ -204,8 +204,8 @@
                 "SingleGenericArgumentMultipleParameters");
         }
 
-        public async Task ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
-        {
+    public async Task ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
+    {
             var execution = new ParameterizedExecution(ComplexGenericParameterSource);
             var output = await Run<ComplexGenericTestClass>(execution);
 
@@ -224,8 +224,8 @@
                 "GenericFuncParameter", "GenericFuncParameter");
         }
 
-        static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(Test test)
-        {
+    static IEnumerable<object?[]> InputAttributeOrDefaultParameterSource(Test test)
+    {
             var attributes = test.GetAll<InputAttribute>();
 
             if (attributes.Any())
@@ -239,15 +239,15 @@
             }
         }
 
-        static IEnumerable<object[]> BuggyParameterSource(Test test)
-        {
+    static IEnumerable<object[]> BuggyParameterSource(Test test)
+    {
             yield return new object[] { 0 };
             yield return new object[] { 1 };
             throw new Exception("Exception thrown while attempting to yield input parameters for method: " + test.Method.Name);
         }
 
-        static IEnumerable<object[]> ComplexGenericParameterSource(Test test)
-        {
+    static IEnumerable<object[]> ComplexGenericParameterSource(Test test)
+    {
             if (test.Name.EndsWith(".CompoundGenericParameter"))
             {
                 yield return new object[] {new KeyValuePair<int, string>(1, "A"), "System.Int32", "System.String"};
@@ -261,139 +261,138 @@
             }
         }
 
-        static object? Default(Type type)
-        {
+    static object? Default(Type type)
+    {
             return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
 
-        class ParameterizedTestClass
+    class ParameterizedTestClass
+    {
+        public void IntArg(int i)
         {
-            public void IntArg(int i)
-            {
                 WhereAmI();
 
                 if (i != 0)
                     throw new Exception("Expected 0, but was " + i);
             }
 
-            [Input(1, 1, 2)]
-            [Input(1, 2, 3)]
-            [Input(5, 5, 11)]
-            public void Sum(int a, int b, int expectedSum)
-            {
+        [Input(1, 1, 2)]
+        [Input(1, 2, 3)]
+        [Input(5, 5, 11)]
+        public void Sum(int a, int b, int expectedSum)
+        {
                 WhereAmI();
 
                 if (a + b != expectedSum)
                     throw new Exception($"Expected sum of {expectedSum} but was {a + b}.");
             }
 
-            public void ZeroArgs()
-            {
+        public void ZeroArgs()
+        {
                 WhereAmI();
             }
-        }
+    }
 
-        class GenericTestClass
+    class GenericTestClass
+    {
+        [Input(1)]
+        [Input("Oops")]
+        public void ConstrainedGeneric<T>(T input) where T : struct
         {
-            [Input(1)]
-            [Input("Oops")]
-            public void ConstrainedGeneric<T>(T input) where T : struct
-            {
                 WhereAmI();
                 typeof(T).IsValueType.ShouldBe(true);
             }
 
-            public void ConstrainedGenericMethodWithNoInputsProvided<T>(T input) where T : struct
-            {
+        public void ConstrainedGenericMethodWithNoInputsProvided<T>(T input) where T : struct
+        {
                 WhereAmI();
                 throw new ShouldBeUnreachableException();
             }
 
-            [Input(123, 123)]
-            public void GenericMethodWithIncorrectParameterCountProvided<T>(T genericArgument)
-            {
+        [Input(123, 123)]
+        public void GenericMethodWithIncorrectParameterCountProvided<T>(T genericArgument)
+        {
                 WhereAmI();
                 throw new ShouldBeUnreachableException();
             }
 
-            public void GenericMethodWithNoInputsProvided<T>(T genericArgument)
-            {
+        public void GenericMethodWithNoInputsProvided<T>(T genericArgument)
+        {
                 WhereAmI();
                 throw new ShouldBeUnreachableException();
             }
 
-            [Input(123, null, 456, typeof(int), typeof(object))]
-            [Input(123, "stringArg1", 456, typeof(int), typeof(string))]
-            [Input("stringArg", null, null, typeof(string), typeof(object))]
-            [Input("stringArg1", null, "stringArg2", typeof(string), typeof(object))]
-            [Input(null, "stringArg1", "stringArg2", typeof(string), typeof(string))]
-            public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genericArgument1A, T2 genericArgument2, T1 genericArgument1B, Type expectedT1, Type expectedT2)
-            {
+        [Input(123, null, 456, typeof(int), typeof(object))]
+        [Input(123, "stringArg1", 456, typeof(int), typeof(string))]
+        [Input("stringArg", null, null, typeof(string), typeof(object))]
+        [Input("stringArg1", null, "stringArg2", typeof(string), typeof(object))]
+        [Input(null, "stringArg1", "stringArg2", typeof(string), typeof(string))]
+        public void MultipleGenericArgumentsMultipleParameters<T1, T2>(T1 genericArgument1A, T2 genericArgument2, T1 genericArgument1B, Type expectedT1, Type expectedT2)
+        {
                 WhereAmI();
                 typeof(T1).ShouldBe(expectedT1);
                 typeof(T2).ShouldBe(expectedT2);
             }
 
-            [Input(123, typeof(int))]
-            [Input(null, typeof(object))]
-            [Input("stringArg", typeof(string))]
-            public void SingleGenericArgument<T>(T genericArgument, Type expectedT)
-            {
+        [Input(123, typeof(int))]
+        [Input(null, typeof(object))]
+        [Input("stringArg", typeof(string))]
+        public void SingleGenericArgument<T>(T genericArgument, Type expectedT)
+        {
                 WhereAmI();
                 typeof(T).ShouldBe(expectedT);
             }
 
-            [Input(123, 456, typeof(int))]
-            [Input("stringArg", 123, typeof(object))]
-            [Input(123, "stringArg", typeof(object))]
-            [Input(123, null, typeof(int))]
-            [Input(null, null, typeof(object))]
-            [Input("stringArg", null, typeof(string))]
-            [Input("stringArg1", "stringArg2", typeof(string))]
-            [Input(null, "stringArg", typeof(string))]
-            public void SingleGenericArgumentMultipleParameters<T>(T genericArgument1, T genericArgument2, Type expectedT)
-            {
+        [Input(123, 456, typeof(int))]
+        [Input("stringArg", 123, typeof(object))]
+        [Input(123, "stringArg", typeof(object))]
+        [Input(123, null, typeof(int))]
+        [Input(null, null, typeof(object))]
+        [Input("stringArg", null, typeof(string))]
+        [Input("stringArg1", "stringArg2", typeof(string))]
+        [Input(null, "stringArg", typeof(string))]
+        public void SingleGenericArgumentMultipleParameters<T>(T genericArgument1, T genericArgument2, Type expectedT)
+        {
                 WhereAmI();
                 typeof(T).ShouldBe(expectedT);
             }
 
-            static string Format(object? obj)
-            {
+        static string Format(object? obj)
+        {
                 return obj?.ToString() ?? "[null]";
             }
-        }
+    }
 
-        class ComplexGenericTestClass
+    class ComplexGenericTestClass
+    {
+        public void CompoundGenericParameter<TKey, TValue>(KeyValuePair<TKey, TValue> pair, string expectedKeyType, string expectedValueType)
         {
-            public void CompoundGenericParameter<TKey, TValue>(KeyValuePair<TKey, TValue> pair, string expectedKeyType, string expectedValueType)
-            {
                 WhereAmI();
                 typeof(TKey).FullName.ShouldBe(expectedKeyType);
                 typeof(TValue).FullName.ShouldBe(expectedValueType);
             }
 
-            public void GenericFuncParameter<TResult>(int input, Func<int, TResult> transform, TResult expectedResult)
-            {
+        public void GenericFuncParameter<TResult>(int input, Func<int, TResult> transform, TResult expectedResult)
+        {
                 WhereAmI();
 
                 var result = transform(input);
 
                 result.ShouldBe(expectedResult);
             }
-        }
+    }
 
-        class ConstrainedGenericTestClass
+    class ConstrainedGenericTestClass
+    {
+        public void ConstrainedGeneric<T>(T input) where T : struct
         {
-            public void ConstrainedGeneric<T>(T input) where T : struct
-            {
                 WhereAmI();
                 typeof(T).IsValueType.ShouldBe(true);
             }
 
-            public void UnconstrainedGeneric<T>(T input)
-            {
+        public void UnconstrainedGeneric<T>(T input)
+        {
                 WhereAmI();
             }
-        }
     }
 }

@@ -1,15 +1,15 @@
-﻿namespace Fixie.Tests.Internal
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Fixie.Reports;
-    using static Utility;
+﻿namespace Fixie.Tests.Internal;
 
-    public class ExecutionSummaryTests
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Assertions;
+using Fixie.Reports;
+using static Utility;
+
+public class ExecutionSummaryTests
+{
+    public async Task ShouldAccumulateTestResultCounts()
     {
-        public async Task ShouldAccumulateTestResultCounts()
-        {
             var report = new StubExecutionSummaryReport();
             var discovery = new SelfTestDiscovery();
             var execution = new CreateInstancePerCase();
@@ -26,43 +26,42 @@
             executionCompleted.Total.ShouldBe(9);
         }
 
-        class StubExecutionSummaryReport :
-            IHandler<ExecutionCompleted>
-        {
-            public List<ExecutionCompleted> ExecutionCompletions { get; } = new List<ExecutionCompleted>();
+    class StubExecutionSummaryReport :
+        IHandler<ExecutionCompleted>
+    {
+        public List<ExecutionCompleted> ExecutionCompletions { get; } = new List<ExecutionCompleted>();
 
-            public Task Handle(ExecutionCompleted message)
-            {
+        public Task Handle(ExecutionCompleted message)
+        {
                 ExecutionCompletions.Add(message);
                 return Task.CompletedTask;
             }
-        }
+    }
 
-        class FirstSampleTestClass
-        {
-            public void Pass() { }
-            public void Fail() { throw new FailureException(); }
-            public void Skip() { }
-        }
+    class FirstSampleTestClass
+    {
+        public void Pass() { }
+        public void Fail() { throw new FailureException(); }
+        public void Skip() { }
+    }
 
-        class SecondSampleTestClass
-        {
-            public void Pass() { }
-            public void FailA() { throw new FailureException(); }
-            public void FailB() { throw new FailureException(); }
-            public void SkipA() { }
-            public void SkipB() { }
-            public void SkipC() { }
-        }
+    class SecondSampleTestClass
+    {
+        public void Pass() { }
+        public void FailA() { throw new FailureException(); }
+        public void FailB() { throw new FailureException(); }
+        public void SkipA() { }
+        public void SkipB() { }
+        public void SkipC() { }
+    }
 
-        class CreateInstancePerCase : IExecution
+    class CreateInstancePerCase : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var test in testSuite.Tests)
                     if (!test.Name.Contains("Skip"))
                         await test.Run();
             }
-        }
     }
 }

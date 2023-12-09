@@ -1,112 +1,112 @@
-namespace Fixie.Tests
-{
-    using System.Threading.Tasks;
-    using static Utility;
+namespace Fixie.Tests;
+
+using System.Threading.Tasks;
+using static Utility;
     
-    public class TestClassConstructionTests : InstrumentedExecutionTests
+public class TestClassConstructionTests : InstrumentedExecutionTests
+{
+    class SampleTestClass
     {
-        class SampleTestClass
+        public SampleTestClass()
         {
-            public SampleTestClass()
-            {
                 WhereAmI();
             }
 
-            public void Fail()
-            {
+        public void Fail()
+        {
                 WhereAmI();
                 throw new FailureException();
             }
 
-            [Input(1)]
-            [Input(2)]
-            public void Pass(int i)
-            {
+        [Input(1)]
+        [Input(2)]
+        public void Pass(int i)
+        {
                 WhereAmI(i);
             }
 
-            public void Skip()
-            {
-                WhereAmI();
-                throw new ShouldBeUnreachableException();
-            }
-        }
-
-        class AllSkippedTestClass
+        public void Skip()
         {
-            public AllSkippedTestClass()
-            {
-                WhereAmI();
-            }
-
-            public void SkipA()
-            {
                 WhereAmI();
                 throw new ShouldBeUnreachableException();
             }
+    }
 
-            public void SkipB()
-            {
-                WhereAmI();
-                throw new ShouldBeUnreachableException();
-            }
-
-            public void SkipC()
-            {
-                WhereAmI();
-                throw new ShouldBeUnreachableException();
-            }
-        }
-
-        static class StaticTestClass
+    class AllSkippedTestClass
+    {
+        public AllSkippedTestClass()
         {
-            public static void Fail()
-            {
+                WhereAmI();
+            }
+
+        public void SkipA()
+        {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
+
+        public void SkipB()
+        {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
+
+        public void SkipC()
+        {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
+    }
+
+    static class StaticTestClass
+    {
+        public static void Fail()
+        {
                 WhereAmI();
                 throw new FailureException();
             }
 
-            public static void Pass()
-            {
+        public static void Pass()
+        {
                 WhereAmI();
             }
 
-            public static void Skip()
-            {
+        public static void Skip()
+        {
                 WhereAmI();
                 throw new ShouldBeUnreachableException();
             }
-        }
+    }
 
-        class CannotInvokeConstructorTestClass
+    class CannotInvokeConstructorTestClass
+    {
+        public CannotInvokeConstructorTestClass(int argument) { }
+
+        public void UnreachableCase()
         {
-            public CannotInvokeConstructorTestClass(int argument) { }
-
-            public void UnreachableCase()
-            {
                 WhereAmI();
                 throw new ShouldBeUnreachableException();
             }
-        }
+    }
 
-        static bool ShouldSkip(Test test)
-            => test.Name.Contains("Skip");
+    static bool ShouldSkip(Test test)
+        => test.Name.Contains("Skip");
 
-        class CreateInstancePerCaseImplicitly : IExecution
+    class CreateInstancePerCaseImplicitly : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var test in testSuite.Tests)
                     if (!ShouldSkip(test))
                         foreach (var parameters in FromInputAttributes(test))
                             await test.Run(parameters);
             }
-        }
+    }
 
-        class CreateInstancePerCaseExplicitly : IExecution
+    class CreateInstancePerCaseExplicitly : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var testClass in testSuite.TestClasses)
                 {
                     var type = testClass.Type;
@@ -122,12 +122,12 @@ namespace Fixie.Tests
                             }
                 }
             }
-        }
+    }
 
-        class CreateInstancePerClassExplicitly : IExecution
+    class CreateInstancePerClassExplicitly : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var testClass in testSuite.TestClasses)
                 {
                     var type = testClass.Type;
@@ -144,10 +144,10 @@ namespace Fixie.Tests
                             }
                 }
             }
-        }
+    }
 
-        public async Task ShouldConstructPerCaseByDefault()
-        {
+    public async Task ShouldConstructPerCaseByDefault()
+    {
             //NOTE: With no input parameter or skip behaviors,
             //      all test methods are attempted once and with zero
             //      parameters, so Skip() is reached and Pass(int)
@@ -166,8 +166,8 @@ namespace Fixie.Tests
                 ".ctor", "Skip");
         }
 
-        public async Task ShouldAllowConstructingPerCaseImplicitly()
-        {
+    public async Task ShouldAllowConstructingPerCaseImplicitly()
+    {
             var output = await Run<SampleTestClass, CreateInstancePerCaseImplicitly>();
 
             output.ShouldHaveResults(
@@ -182,8 +182,8 @@ namespace Fixie.Tests
                 ".ctor", "Pass(2)");
         }
 
-        public async Task ShouldAllowConstructingPerCaseExplicitly()
-        {
+    public async Task ShouldAllowConstructingPerCaseExplicitly()
+    {
             var output = await Run<SampleTestClass, CreateInstancePerCaseExplicitly>();
 
             output.ShouldHaveResults(
@@ -198,8 +198,8 @@ namespace Fixie.Tests
                 ".ctor", "Pass(2)");
         }
 
-        public async Task ShouldAllowConstructingPerClassExplicitly()
-        {
+    public async Task ShouldAllowConstructingPerClassExplicitly()
+    {
             var output = await Run<SampleTestClass, CreateInstancePerClassExplicitly>();
 
             output.ShouldHaveResults(
@@ -215,8 +215,8 @@ namespace Fixie.Tests
                 "Pass(2)");
         }
 
-        public async Task ShouldFailCaseInAbsenseOfPrimaryCaseResultWhenConstructingPerCaseImplicitlyAndConstructorThrows()
-        {
+    public async Task ShouldFailCaseInAbsenseOfPrimaryCaseResultWhenConstructingPerCaseImplicitlyAndConstructorThrows()
+    {
             FailDuring(".ctor");
             
             var output = await Run<SampleTestClass, CreateInstancePerCaseImplicitly>();
@@ -233,8 +233,8 @@ namespace Fixie.Tests
                 ".ctor");
         }
 
-        public async Task ShouldFailAllTestsWithoutHidingPrimarySkipResultsWhenConstructingPerCaseExplicitlyAndConstructorThrows()
-        {
+    public async Task ShouldFailAllTestsWithoutHidingPrimarySkipResultsWhenConstructingPerCaseExplicitlyAndConstructorThrows()
+    {
             FailDuring(".ctor");
             
             var output = await Run<SampleTestClass, CreateInstancePerCaseExplicitly>();
@@ -250,8 +250,8 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(".ctor");
         }
 
-        public async Task ShouldFailAllTestsWithoutHidingPrimarySkipResultsWhenConstructingPerClassExplicitlyAndConstructorThrows()
-        {
+    public async Task ShouldFailAllTestsWithoutHidingPrimarySkipResultsWhenConstructingPerClassExplicitlyAndConstructorThrows()
+    {
             FailDuring(".ctor");
 
             var output = await Run<SampleTestClass, CreateInstancePerClassExplicitly>();
@@ -268,8 +268,8 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(".ctor");
         }
 
-        public async Task ShouldBypassConstructionWhenConstructingPerCaseImplicitlyAndAllCasesAreSkipped()
-        {
+    public async Task ShouldBypassConstructionWhenConstructingPerCaseImplicitlyAndAllCasesAreSkipped()
+    {
             var output = await Run<AllSkippedTestClass, CreateInstancePerCaseImplicitly>();
 
             output.ShouldHaveResults(
@@ -280,8 +280,8 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle();
         }
 
-        public async Task ShouldBypassConstructionWhenConstructingPerCaseExplicitlyAndAllCasesAreSkipped()
-        {
+    public async Task ShouldBypassConstructionWhenConstructingPerCaseExplicitlyAndAllCasesAreSkipped()
+    {
             var output = await Run<AllSkippedTestClass, CreateInstancePerCaseExplicitly>();
 
             output.ShouldHaveResults(
@@ -292,8 +292,8 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle();
         }
 
-        public async Task ShouldNotBypassConstructionWhenConstructingPerClassExplicitlyAndAllCasesAreSkipped()
-        {
+    public async Task ShouldNotBypassConstructionWhenConstructingPerClassExplicitlyAndAllCasesAreSkipped()
+    {
             var output = await Run<AllSkippedTestClass, CreateInstancePerClassExplicitly>();
 
             output.ShouldHaveResults(
@@ -304,8 +304,8 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle(".ctor");
         }
 
-        public async Task ShouldBypassConstructionAttemptsWhenTestMethodsAreStatic()
-        {
+    public async Task ShouldBypassConstructionAttemptsWhenTestMethodsAreStatic()
+    {
             var output = await Run<DefaultExecution>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
@@ -350,8 +350,8 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle("Fail", "Pass");
         }
 
-        public async Task ShouldFailWhenTestClassConstructorCannotBeInvoked()
-        {
+    public async Task ShouldFailWhenTestClassConstructorCannotBeInvoked()
+    {
             var output = await Run<CannotInvokeConstructorTestClass, DefaultExecution>();
 
             output.ShouldHaveResults(
@@ -362,5 +362,4 @@ namespace Fixie.Tests
 
             output.ShouldHaveLifecycle();
         }
-    }
 }

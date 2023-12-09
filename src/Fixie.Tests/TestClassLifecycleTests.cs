@@ -1,87 +1,87 @@
-namespace Fixie.Tests
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using static Utility;
+namespace Fixie.Tests;
 
-    public class TestClassLifecycleTests : InstrumentedExecutionTests
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using static Utility;
+
+public class TestClassLifecycleTests : InstrumentedExecutionTests
+{
+    class FirstTestClass
     {
-        class FirstTestClass
+        public void Fail()
         {
-            public void Fail()
-            {
                 WhereAmI();
                 throw new FailureException();
             }
 
-            [Input(1)]
-            [Input(2)]
-            public void Pass(int i)
-            {
+        [Input(1)]
+        [Input(2)]
+        public void Pass(int i)
+        {
                 WhereAmI(i);
             }
 
-            public void Skip()
-            {
-                WhereAmI();
-                throw new ShouldBeUnreachableException();
-            }
-        }
-
-        class SecondTestClass
+        public void Skip()
         {
-            public void SecondPass()
-            {
                 WhereAmI();
+                throw new ShouldBeUnreachableException();
             }
-        }
+    }
 
-        class AllSkippedTestClass
+    class SecondTestClass
+    {
+        public void SecondPass()
         {
-            public void SkipA()
-            {
                 WhereAmI();
-                throw new ShouldBeUnreachableException();
             }
+    }
 
-            public void SkipB()
-            {
-                WhereAmI();
-                throw new ShouldBeUnreachableException();
-            }
-
-            public void SkipC()
-            {
-                WhereAmI();
-                throw new ShouldBeUnreachableException();
-            }
-        }
-
-        static class StaticTestClass
+    class AllSkippedTestClass
+    {
+        public void SkipA()
         {
-            public static void Fail()
-            {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
+
+        public void SkipB()
+        {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
+
+        public void SkipC()
+        {
+                WhereAmI();
+                throw new ShouldBeUnreachableException();
+            }
+    }
+
+    static class StaticTestClass
+    {
+        public static void Fail()
+        {
                 WhereAmI();
                 throw new FailureException();
             }
 
-            public static void Pass()
-            {
+        public static void Pass()
+        {
                 WhereAmI();
             }
 
-            public static void Skip()
-            {
+        public static void Skip()
+        {
                 WhereAmI();
                 throw new ShouldBeUnreachableException();
             }
-        }
+    }
 
-        class InstrumentedExecution : IExecution
+    class InstrumentedExecution : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
                 AssemblySetUp();
 
                 foreach (var testClass in testSuite.TestClasses)
@@ -90,8 +90,8 @@ namespace Fixie.Tests
                 AssemblyTearDown();
             }
 
-            async Task TestClassLifecycle(TestClass testClass)
-            {
+        async Task TestClassLifecycle(TestClass testClass)
+        {
                 try
                 {
                     ClassSetUp();
@@ -108,8 +108,8 @@ namespace Fixie.Tests
                 }
             }
 
-            async Task TestLifecycle(Test test)
-            {
+        async Task TestLifecycle(Test test)
+        {
                 try
                 {
                     TestSetUp();
@@ -125,15 +125,15 @@ namespace Fixie.Tests
                 }
             }
 
-            static IEnumerable<object?[]> YieldParameters(Test test)
-            {
+        static IEnumerable<object?[]> YieldParameters(Test test)
+        {
                 ProcessScriptedFailure();
 
                 return FromInputAttributes(test);
             }
 
-            static async Task CaseLifecycle(Test test, object?[] parameters)
-            {
+        static async Task CaseLifecycle(Test test, object?[] parameters)
+        {
                 try
                 {
                     CaseSetUp();
@@ -145,32 +145,32 @@ namespace Fixie.Tests
                     await test.Fail(parameters, exception);
                 }
             }
-        }
+    }
 
-        static void AssemblySetUp() => WhereAmI();
-        static void ClassSetUp() => WhereAmI();
-        static void TestSetUp() => WhereAmI();
-        static void CaseSetUp() => WhereAmI();
-        static void CaseTearDown() => WhereAmI();
-        static void TestTearDown() => WhereAmI();
-        static void ClassTearDown() => WhereAmI();
-        static void AssemblyTearDown() => WhereAmI();
+    static void AssemblySetUp() => WhereAmI();
+    static void ClassSetUp() => WhereAmI();
+    static void TestSetUp() => WhereAmI();
+    static void CaseSetUp() => WhereAmI();
+    static void CaseTearDown() => WhereAmI();
+    static void TestTearDown() => WhereAmI();
+    static void ClassTearDown() => WhereAmI();
+    static void AssemblyTearDown() => WhereAmI();
 
-        class ShortCircuitTestExecution : IExecution
+    class ShortCircuitTestExecution : IExecution
+    {
+        public Task Run(TestSuite testSuite)
         {
-            public Task Run(TestSuite testSuite)
-            {
                 //Lifecycle chooses not to invoke any tests.
                 //Since the tests never run, they are all
                 //considered 'skipped'.
                 return Task.CompletedTask;
             }
-        }
+    }
 
-        class RepeatedExecution : IExecution
+    class RepeatedExecution : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var test in testSuite.Tests)
                 {
                     if (test.Name.Contains("Skip")) continue;
@@ -180,17 +180,17 @@ namespace Fixie.Tests
                             await test.Run(parameters);
                 }
             }
-        }
+    }
 
-        class CircuitBreakingExecution : IExecution
+    class CircuitBreakingExecution : IExecution
+    {
+        readonly int maxFailures;
+
+        public CircuitBreakingExecution(int maxFailures)
+            => this.maxFailures = maxFailures;
+
+        public async Task Run(TestSuite testSuite)
         {
-            readonly int maxFailures;
-
-            public CircuitBreakingExecution(int maxFailures)
-                => this.maxFailures = maxFailures;
-
-            public async Task Run(TestSuite testSuite)
-            {
                 int failures = 0;
 
                 foreach (var test in testSuite.Tests)
@@ -214,10 +214,10 @@ namespace Fixie.Tests
                     }
                 }
             }
-        }
+    }
 
-        public async Task ShouldRunAllTestsByDefault()
-        {
+    public async Task ShouldRunAllTestsByDefault()
+    {
             var output = await Run<FirstTestClass, SecondTestClass, DefaultExecution>();
 
             //NOTE: With no input parameter or skip behaviors,
@@ -234,8 +234,8 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle("Fail", "Skip", "SecondPass");
         }
 
-        public async Task ShouldSupportExecutionLifecycleHooks()
-        {
+    public async Task ShouldSupportExecutionLifecycleHooks()
+    {
             var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
@@ -269,8 +269,8 @@ namespace Fixie.Tests
                 "AssemblyTearDown");
         }
 
-        public async Task ShouldSupportStaticTestClassesAndMethods()
-        {
+    public async Task ShouldSupportStaticTestClassesAndMethods()
+    {
             var output = await Run<InstrumentedExecution>(typeof(StaticTestClass));
 
             output.ShouldHaveResults(
@@ -287,8 +287,8 @@ namespace Fixie.Tests
                 "AssemblyTearDown");
         }
 
-        public async Task ShouldFailAllTestsWithoutHidingPrimarySkipResultsWhenAssemblySetUpThrows()
-        {
+    public async Task ShouldFailAllTestsWithoutHidingPrimarySkipResultsWhenAssemblySetUpThrows()
+    {
             FailDuring("AssemblySetUp");
 
             var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
@@ -309,8 +309,8 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle("AssemblySetUp");
         }
 
-        public async Task ShouldFailAllTestsInClassWithoutHidingPrimarySkipResultsWhenClassSetUpThrows()
-        {
+    public async Task ShouldFailAllTestsInClassWithoutHidingPrimarySkipResultsWhenClassSetUpThrows()
+    {
             FailDuring("ClassSetUp", occurrence: 1);
         
             var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
@@ -328,8 +328,8 @@ namespace Fixie.Tests
                 "AssemblyTearDown");
         }
 
-        public async Task ShouldFailTestWhenTestSetUpThrows()
-        {
+    public async Task ShouldFailTestWhenTestSetUpThrows()
+    {
             FailDuring("TestSetUp", occurrence: 2);
 
             var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
@@ -355,8 +355,8 @@ namespace Fixie.Tests
                 "AssemblyTearDown");
         }
 
-        public async Task ShouldFailTestWhenCustomParameterGenerationThrows()
-        {
+    public async Task ShouldFailTestWhenCustomParameterGenerationThrows()
+    {
             FailDuring("YieldParameters", 2);
 
             var execution = new InstrumentedExecution();
@@ -378,8 +378,8 @@ namespace Fixie.Tests
                 "AssemblyTearDown");
         }
 
-        public async Task ShouldFailCaseWhenCaseSetUpThrows()
-        {
+    public async Task ShouldFailCaseWhenCaseSetUpThrows()
+    {
             FailDuring("CaseSetUp", occurrence: 2);
 
             var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
@@ -415,8 +415,8 @@ namespace Fixie.Tests
                 "AssemblyTearDown");
         }
 
-        public async Task ShouldFailCaseWithoutHidingPrimaryCaseResultsWhenCaseTearDownThrows()
-        {
+    public async Task ShouldFailCaseWithoutHidingPrimaryCaseResultsWhenCaseTearDownThrows()
+    {
             FailDuring("CaseTearDown");
 
             var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
@@ -456,8 +456,8 @@ namespace Fixie.Tests
                 "AssemblyTearDown");
         }
 
-        public async Task ShouldFailTestWithoutHidingPrimaryCaseResultsWhenTestTearDownThrows()
-        {
+    public async Task ShouldFailTestWithoutHidingPrimaryCaseResultsWhenTestTearDownThrows()
+    {
             FailDuring("TestTearDown");
 
             var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
@@ -499,8 +499,8 @@ namespace Fixie.Tests
                 "AssemblyTearDown");
         }
 
-        public async Task ShouldFailAllTestsInClassWithoutHidingPrimaryCaseResultsWhenClassTearDownThrows()
-        {
+    public async Task ShouldFailAllTestsInClassWithoutHidingPrimaryCaseResultsWhenClassTearDownThrows()
+    {
             FailDuring("ClassTearDown", occurrence: 1);
 
             var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
@@ -540,8 +540,8 @@ namespace Fixie.Tests
                 "AssemblyTearDown");
         }
 
-        public async Task ShouldFailAllTestsWithoutHidingPrimaryCaseResultsWhenAssemblyTearDownThrows()
-        {
+    public async Task ShouldFailAllTestsWithoutHidingPrimaryCaseResultsWhenAssemblyTearDownThrows()
+    {
             FailDuring("AssemblyTearDown");
 
             var output = await Run<FirstTestClass, SecondTestClass, InstrumentedExecution>();
@@ -584,8 +584,8 @@ namespace Fixie.Tests
                 "AssemblyTearDown");
         }
 
-        public async Task ShouldSkipTestLifecyclesWhenTestsAreSkipped()
-        {
+    public async Task ShouldSkipTestLifecyclesWhenTestsAreSkipped()
+    {
             var output = await Run<AllSkippedTestClass, InstrumentedExecution>();
 
             output.ShouldHaveResults(
@@ -596,8 +596,8 @@ namespace Fixie.Tests
             output.ShouldHaveLifecycle("AssemblySetUp", "ClassSetUp", "ClassTearDown", "AssemblyTearDown");
         }
 
-        public async Task ShouldAllowRunningTestsMultipleTimesWithDistinctResultPerInvocation()
-        {
+    public async Task ShouldAllowRunningTestsMultipleTimesWithDistinctResultPerInvocation()
+    {
             FailDuring("Pass", occurrence: 3);
 
             var output = await Run<FirstTestClass, SecondTestClass, RepeatedExecution>();
@@ -632,8 +632,8 @@ namespace Fixie.Tests
                 "SecondPass");
         }
 
-        public async Task ShouldAllowInspectionOfIndividualTestInvocationResultsToDriveExecutionDecisions()
-        {
+    public async Task ShouldAllowInspectionOfIndividualTestInvocationResultsToDriveExecutionDecisions()
+    {
             FailDuring("Pass", occurrence: 3);
 
             var output = await Run<FirstTestClass, SecondTestClass>(new CircuitBreakingExecution(maxFailures: 3));
@@ -659,8 +659,8 @@ namespace Fixie.Tests
                 "Pass(1)");
         }
 
-        public async Task ShouldSkipAllTestsWhenShortCircuitingTestExecution()
-        {
+    public async Task ShouldSkipAllTestsWhenShortCircuitingTestExecution()
+    {
             var output = await Run<FirstTestClass, SecondTestClass, ShortCircuitTestExecution>();
 
             output.ShouldHaveResults(
@@ -671,5 +671,4 @@ namespace Fixie.Tests
 
             output.ShouldHaveLifecycle();
         }
-    }
 }

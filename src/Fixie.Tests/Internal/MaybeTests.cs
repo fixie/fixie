@@ -1,13 +1,13 @@
-﻿namespace Fixie.Tests.Internal
-{
-    using System;
-    using Assertions;
-    using static Fixie.Internal.Maybe;
+﻿namespace Fixie.Tests.Internal;
 
-    public class MaybeTests
+using System;
+using Assertions;
+using static Fixie.Internal.Maybe;
+
+public class MaybeTests
+{
+    public void ShouldProvideTryPatternShorthandForFuncWithZeroParameters()
     {
-        public void ShouldProvideTryPatternShorthandForFuncWithZeroParameters()
-        {
             Func<string?> returnNull = () => null;
             Func<string?> returnNotNull = () => "";
 
@@ -20,8 +20,8 @@
             value.ShouldBe("");
         }
 
-        public void ShouldProvideTryPatternShorthandForFuncWithOneParameter()
-        {
+    public void ShouldProvideTryPatternShorthandForFuncWithOneParameter()
+    {
             Func<string?, string?> returnThis = argument => argument;
 
             var hasValue = Try(returnThis, null, out var value);
@@ -32,5 +32,4 @@
             hasValue.ShouldBe(true);
             value.ShouldBe("Value");
         }
-    }
 }

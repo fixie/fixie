@@ -1,15 +1,15 @@
-﻿namespace Fixie.Tests
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Assertions;
+﻿namespace Fixie.Tests;
 
-    public class CaseNameTests
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Assertions;
+
+public class CaseNameTests
+{
+    public async Task ShouldBeNamedAfterTheUnderlyingMethod()
     {
-        public async Task ShouldBeNamedAfterTheUnderlyingMethod()
-        {
             var output = await RunScript<NoParametersTestClass>(async test =>
             {
                 await Run(test);
@@ -18,8 +18,8 @@
             ShouldHaveNames(output, "NoParametersTestClass.NoParameters");
         }
 
-        public async Task ShouldIncludeParameterValuesInNameWhenTheUnderlyingMethodHasParameters()
-        {
+    public async Task ShouldIncludeParameterValuesInNameWhenTheUnderlyingMethodHasParameters()
+    {
             var output = await RunScript<ParameterizedTestClass>(async test =>
             {
                 await Run(test,
@@ -31,8 +31,8 @@
                 "ParameterizedTestClass.Parameterized(123, True, 'a', \"with \\\"quotes\\\"\", \"long \\\"string\\\" g...\", null, Fixie.Tests.CaseNameTests, Fixie.Tests.CaseNameTests+ObjectWithNullStringRepresentation)");
         }
 
-        public async Task ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasCharParameters()
-        {
+    public async Task ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasCharParameters()
+    {
             // Unicode characters 0085, 2028, and 2029 represent line endings Next Line, Line Separator, and Paragraph Separator, respectively.
             // Just like \r and \n, we escape these in order to present a readable string literal. All other unicode sequences pass through
             // with no additional special treatment.
@@ -103,8 +103,8 @@
             );
         }
 
-        public async Task ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasStringParameters()
-        {
+    public async Task ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasStringParameters()
+    {
             // Unicode characters 0085, 2028, and 2029 represent line endings Next Line, Line Separator, and Paragraph Separator, respectively.
             // Just like \r and \n, we escape these in order to present a readable string literal. All other unicode sequences pass through
             // with no additional special treatment.
@@ -135,8 +135,8 @@
             );
         }
 
-        public async Task ShouldIncludeResolvedGenericArgumentsInNameWhenTheUnderlyingMethodIsGeneric()
-        {
+    public async Task ShouldIncludeResolvedGenericArgumentsInNameWhenTheUnderlyingMethodIsGeneric()
+    {
             var output = await RunScript<GenericTestClass>(async test =>
             {
                 await Run(test, 123, true, "a", "b");
@@ -151,8 +151,8 @@
             );
         }
 
-        public async Task ShouldUseGenericTypeParametersInNameWhenGenericTypeParametersCannotBeResolved()
-        {
+    public async Task ShouldUseGenericTypeParametersInNameWhenGenericTypeParametersCannotBeResolved()
+    {
             var output = await RunScript<ConstrainedGenericTestClass>(async test =>
             {
                 await Run(test, 1);
@@ -167,8 +167,8 @@
             );
         }
 
-        public async Task ShouldInferAppropriateClassUnderInheritance()
-        {
+    public async Task ShouldInferAppropriateClassUnderInheritance()
+    {
             var parent = await RunScript<ParentTestClass>(async test =>
             {
                 await Run(test);
@@ -189,33 +189,33 @@
             );
         }
 
-        class ScriptedExecution : IExecution
+    class ScriptedExecution : IExecution
+    {
+        readonly Func<Test, Task> script;
+
+        public ScriptedExecution(Func<Test, Task> script)
+            => this.script = script;
+
+        public async Task Run(TestSuite testSuite)
         {
-            readonly Func<Test, Task> script;
-
-            public ScriptedExecution(Func<Test, Task> script)
-                => this.script = script;
-
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var test in testSuite.Tests)
                     await script(test);
             }
-        }
+    }
 
-        static Task<IEnumerable<string>> RunScript<TSampleTestClass>(Func<Test, Task> scriptAsync)
-            => Utility.Run(typeof(TSampleTestClass), new ScriptedExecution(scriptAsync));
+    static Task<IEnumerable<string>> RunScript<TSampleTestClass>(Func<Test, Task> scriptAsync)
+        => Utility.Run(typeof(TSampleTestClass), new ScriptedExecution(scriptAsync));
 
-        static async Task Run(Test test, params object?[] parameters)
-        {
+    static async Task Run(Test test, params object?[] parameters)
+    {
             await test.Run(parameters);
             await test.Pass(parameters);
             await test.Fail(parameters, new FailureException());
             await test.Skip(parameters, reason: "Exercising Skipped Case Names");
         }
 
-        void ShouldHaveNames(IEnumerable<string> actual, params string[] expected)
-        {
+    void ShouldHaveNames(IEnumerable<string> actual, params string[] expected)
+    {
             const int variants = 4;
 
             var actualArray = actual.ToArray();
@@ -237,53 +237,52 @@
                 first.ShouldBe(second);
         }
 
-        class ObjectWithNullStringRepresentation
-        {
-            public override string? ToString() => null;
-        }
+    class ObjectWithNullStringRepresentation
+    {
+        public override string? ToString() => null;
+    }
 
-        class NoParametersTestClass
-        {
-            public void NoParameters() { }
-        }
+    class NoParametersTestClass
+    {
+        public void NoParameters() { }
+    }
 
-        class ParameterizedTestClass
-        {
-            public void Parameterized(int i, bool b, char ch, string s1, string s2, object obj, CaseNameTests complex, ObjectWithNullStringRepresentation nullStringRepresentation) { }
-        }
+    class ParameterizedTestClass
+    {
+        public void Parameterized(int i, bool b, char ch, string s1, string s2, object obj, CaseNameTests complex, ObjectWithNullStringRepresentation nullStringRepresentation) { }
+    }
 
-        class CharParametersTestClass
-        {
-            public void Char(char c) { }
-        }
+    class CharParametersTestClass
+    {
+        public void Char(char c) { }
+    }
 
-        class StringParametersTestClass
-        {
-            public void String(string s) { }
-        }
+    class StringParametersTestClass
+    {
+        public void String(string s) { }
+    }
 
-        class GenericTestClass
-        {
-            public void Generic<T1, T2>(int i, T1 t1, T2 t2a, T2 t2b) { }
-        }
+    class GenericTestClass
+    {
+        public void Generic<T1, T2>(int i, T1 t1, T2 t2a, T2 t2b) { }
+    }
 
-        class ConstrainedGenericTestClass
-        {
-            public void ConstrainedGeneric<T>(T t) where T : struct { }
-        }
+    class ConstrainedGenericTestClass
+    {
+        public void ConstrainedGeneric<T>(T t) where T : struct { }
+    }
 
-        class ParentTestClass
+    class ParentTestClass
+    {
+        public void TestMethodDefinedWithinParentClass()
         {
-            public void TestMethodDefinedWithinParentClass()
-            {
             }
-        }
+    }
 
-        class ChildTestClass : ParentTestClass
+    class ChildTestClass : ParentTestClass
+    {
+        public void TestMethodDefinedWithinChildClass()
         {
-            public void TestMethodDefinedWithinChildClass()
-            {
             }
-        }
     }
 }

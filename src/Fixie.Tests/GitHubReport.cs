@@ -1,69 +1,68 @@
-﻿namespace Fixie.Tests
+﻿namespace Fixie.Tests;
+
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Fixie.Reports;
+using static System.Environment;
+
+class GitHubReport :
+    IHandler<ExecutionStarted>,
+    IHandler<ExecutionCompleted>
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-    using Fixie.Reports;
-    using static System.Environment;
+    readonly TestEnvironment environment;
 
-    class GitHubReport :
-        IHandler<ExecutionStarted>,
-        IHandler<ExecutionCompleted>
+    public GitHubReport(TestEnvironment environment)
+        => this.environment = environment;
+
+    public async Task Handle(ExecutionStarted message)
     {
-        readonly TestEnvironment environment;
+        var assembly = Path.GetFileNameWithoutExtension(environment.Assembly.Location);
+        var framework = environment.TargetFramework;
 
-        public GitHubReport(TestEnvironment environment)
-            => this.environment = environment;
+        await AppendToJobSummary($"## {assembly} ({framework}){NewLine}{NewLine}");
+    }
 
-        public async Task Handle(ExecutionStarted message)
+    public async Task Handle(ExecutionCompleted message)
+    {
+        string severity;
+        string detail;
+
+        if (message.Total == 0)
         {
-            var assembly = Path.GetFileNameWithoutExtension(environment.Assembly.Location);
-            var framework = environment.TargetFramework;
-
-            await AppendToJobSummary($"## {assembly} ({framework}){NewLine}{NewLine}");
+            severity = "red";
+            detail = "No tests found.";
         }
-
-        public async Task Handle(ExecutionCompleted message)
+        else
         {
-            string severity;
-            string detail;
+            severity = "green";
 
-            if (message.Total == 0)
+            var parts = new List<string>();
+
+            if (message.Passed > 0)
+                parts.Add($"{message.Passed} passed");
+
+            if (message.Skipped > 0)
+            {
+                severity = "yellow";
+                parts.Add($"{message.Skipped} skipped");
+            }
+
+            if (message.Failed > 0)
             {
                 severity = "red";
-                detail = "No tests found.";
-            }
-            else
-            {
-                severity = "green";
-
-                var parts = new List<string>();
-
-                if (message.Passed > 0)
-                    parts.Add($"{message.Passed} passed");
-
-                if (message.Skipped > 0)
-                {
-                    severity = "yellow";
-                    parts.Add($"{message.Skipped} skipped");
-                }
-
-                if (message.Failed > 0)
-                {
-                    severity = "red";
-                    parts.Add($"{message.Failed} failed");
-                }
-
-                detail = string.Join(", ", parts);
+                parts.Add($"{message.Failed} failed");
             }
 
-            await AppendToJobSummary($":{severity}_circle: {detail}{NewLine}{NewLine}");
+            detail = string.Join(", ", parts);
         }
 
-        static async Task AppendToJobSummary(string summary)
-        {
-            if (GetEnvironmentVariable("GITHUB_STEP_SUMMARY") is string summaryFile)
-                await File.AppendAllTextAsync(summaryFile, summary);
-        }
+        await AppendToJobSummary($":{severity}_circle: {detail}{NewLine}{NewLine}");
+    }
+
+    static async Task AppendToJobSummary(string summary)
+    {
+        if (GetEnvironmentVariable("GITHUB_STEP_SUMMARY") is string summaryFile)
+            await File.AppendAllTextAsync(summaryFile, summary);
     }
 }

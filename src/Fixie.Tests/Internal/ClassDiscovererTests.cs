@@ -1,17 +1,17 @@
-﻿namespace Fixie.Tests.Internal
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Fixie.Internal;
+﻿namespace Fixie.Tests.Internal;
 
-    public class ClassDiscovererTests
-    {
-        static readonly Type[] CandidateTypes =
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Assertions;
+using Fixie.Internal;
+
+public class ClassDiscovererTests
+{
+    static readonly Type[] CandidateTypes =
         {
             typeof(Decimal),
             typeof(StaticClass),
@@ -26,48 +26,48 @@
             typeof(InheritanceSample)
         };
 
-        class MaximumDiscovery : IDiscovery
-        {
-            public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
-                => concreteClasses;
+    class MaximumDiscovery : IDiscovery
+    {
+        public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
+            => concreteClasses;
 
-            public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
-                => throw new ShouldBeUnreachableException();
-        }
+        public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+            => throw new ShouldBeUnreachableException();
+    }
 
-        class NarrowDiscovery : IDiscovery
+    class NarrowDiscovery : IDiscovery
+    {
+        public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
         {
-            public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
-            {
                 return concreteClasses
                     .Where(x => (x.Namespace ?? "").StartsWith("Fixie.Tests"))
                     .Where(x => x.Name.Contains("i"))
                     .Where(x => !x.IsStatic());
             }
 
-            public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
-                => throw new ShouldBeUnreachableException();
-        }
+        public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+            => throw new ShouldBeUnreachableException();
+    }
         
-        class BuggyDiscovery : IDiscovery
+    class BuggyDiscovery : IDiscovery
+    {
+        public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
         {
-            public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
-            {
                 return concreteClasses.Where(x => throw new Exception("Unsafe class-discovery predicate threw!"));
             }
 
-            public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
-                => throw new ShouldBeUnreachableException();
-        }
+        public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+            => throw new ShouldBeUnreachableException();
+    }
 
-        class SampleExecution : IExecution
-        {
-            public Task Run(TestSuite testSuite)
-                => Task.CompletedTask;
-        }
+    class SampleExecution : IExecution
+    {
+        public Task Run(TestSuite testSuite)
+            => Task.CompletedTask;
+    }
 
-        public void ShouldDiscoverClassesWhoseNameEndsWithTestsByDefault()
-        {
+    public void ShouldDiscoverClassesWhoseNameEndsWithTestsByDefault()
+    {
             var discovery = new DefaultDiscovery();
 
             DiscoveredTestClasses(discovery)
@@ -75,8 +75,8 @@
                     typeof(NameEndsWithTests));
         }
 
-        public void ShouldSupportMaximalDiscoveryOfConcreteClasses()
-        {
+    public void ShouldSupportMaximalDiscoveryOfConcreteClasses()
+    {
             var discovery = new MaximumDiscovery();
 
             DiscoveredTestClasses(discovery)
@@ -90,8 +90,8 @@
                     typeof(InheritanceSample));
         }
 
-        public void ShouldNotConsiderCompilerGeneratedClosureClasses()
-        {
+    public void ShouldNotConsiderCompilerGeneratedClosureClasses()
+    {
             var nested = typeof(ClassThatCausesCompilerGeneratedNestedClosureClass)
                 .GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)
                 .Single();
@@ -113,8 +113,8 @@
                     typeof(InheritanceSample));
         }
 
-        public void ShouldDiscoverClassesSatisfyingAllSpecifiedConditions()
-        {
+    public void ShouldDiscoverClassesSatisfyingAllSpecifiedConditions()
+    {
             var discovery = new NarrowDiscovery();
 
             DiscoveredTestClasses(discovery)
@@ -124,8 +124,8 @@
                     typeof(InheritanceSample));
         }
 
-        public void ShouldFailWithClearExplanationWhenDiscoveryThrows()
-        {
+    public void ShouldFailWithClearExplanationWhenDiscoveryThrows()
+    {
             var discovery = new BuggyDiscovery();
 
             Action attemptFaultyDiscovery = () => DiscoveredTestClasses(discovery);
@@ -139,33 +139,33 @@
                 .Message.ShouldBe("Unsafe class-discovery predicate threw!");
         }
 
-        static IEnumerable<Type> DiscoveredTestClasses(IDiscovery discovery)
-        {
+    static IEnumerable<Type> DiscoveredTestClasses(IDiscovery discovery)
+    {
             return new ClassDiscoverer(discovery)
                 .TestClasses(CandidateTypes);
         }
 
-        static IEnumerable<Type> DiscoveredTestClasses(IDiscovery discovery, params Type[] additionalCandidates)
-        {
+    static IEnumerable<Type> DiscoveredTestClasses(IDiscovery discovery, params Type[] additionalCandidates)
+    {
             return new ClassDiscoverer(discovery)
                 .TestClasses(CandidateTypes.Concat(additionalCandidates));
         }
 
-        static class StaticClass { }
-        abstract class AbstractClass { }
-        class DefaultConstructor { }
-        class NoDefaultConstructor { public NoDefaultConstructor(int arg) { } }
-        class NameEndsWithTests { }
-        interface Interface { }
+    static class StaticClass { }
+    abstract class AbstractClass { }
+    class DefaultConstructor { }
+    class NoDefaultConstructor { public NoDefaultConstructor(int arg) { } }
+    class NameEndsWithTests { }
+    interface Interface { }
 
-        class InheritanceSampleBase { }
+    class InheritanceSampleBase { }
 
-        class InheritanceSample : InheritanceSampleBase { }
+    class InheritanceSample : InheritanceSampleBase { }
 
-        class ClassThatCausesCompilerGeneratedNestedClosureClass
+    class ClassThatCausesCompilerGeneratedNestedClosureClass
+    {
+        void MethodThatCausesCompilerGeneratedClosureClass()
         {
-            void MethodThatCausesCompilerGeneratedClosureClass()
-            {
                 //Because this lambda expression refers to a variable in the surrounding
                 //method, the compiler generates a special nested class as an implementation
                 //detail.  Such generated classes should never be mistaken for test classes.
@@ -173,6 +173,5 @@
                 var s = string.Empty;
                 var func = new Func<string, string>(_ => s);
             }
-        }
     }
 }

@@ -1,21 +1,21 @@
-﻿namespace Fixie.Tests.TestAdapter
-{
-    using System;
-    using System.Collections.Generic;
-    using Fixie.TestAdapter;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-    using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-    using Assertions;
-    using Fixie.Internal;
-    using Reports;
-    using static System.Environment;
-    using static System.Text.Json.JsonSerializer;
+﻿namespace Fixie.Tests.TestAdapter;
 
-    public class VsExecutionRecorderTests : MessagingTests
+using System;
+using System.Collections.Generic;
+using Fixie.TestAdapter;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+using Assertions;
+using Fixie.Internal;
+using Reports;
+using static System.Environment;
+using static System.Text.Json.JsonSerializer;
+
+public class VsExecutionRecorderTests : MessagingTests
+{
+    public void ShouldMapMessagesToVsTestExecutionRecorder()
     {
-        public void ShouldMapMessagesToVsTestExecutionRecorder()
-        {
             const string assemblyPath = "assembly.path.dll";
             var recorder = new StubExecutionRecorder();
 
@@ -155,8 +155,8 @@
             shouldBeStringFail.Duration.ShouldBe(TimeSpan.FromMilliseconds(107));
         }
 
-        void RecordAnticipatedPipeMessages(VsExecutionRecorder vsExecutionRecorder)
-        {
+    void RecordAnticipatedPipeMessages(VsExecutionRecorder vsExecutionRecorder)
+    {
             vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestStarted
             {
                 Test = TestClass + ".Fail"
@@ -263,8 +263,8 @@
             }));
         }
 
-        static T Deserialized<T>(T original)
-        {
+    static T Deserialized<T>(T original)
+    {
             // Because the inter-process communication between the VsTest process
             // and the test assembly process is not exercised in these single-process
             // tests, put a given sample message through the same serialization round
@@ -273,24 +273,23 @@
             return Deserialize<T>(Serialize(original))!;
         }
 
-        class StubExecutionRecorder : ITestExecutionRecorder
-        {
-            public List<object> Messages { get; } = new List<object>();
+    class StubExecutionRecorder : ITestExecutionRecorder
+    {
+        public List<object> Messages { get; } = new List<object>();
 
-            public void RecordStart(TestCase testCase)
-                => Messages.Add(testCase);
+        public void RecordStart(TestCase testCase)
+            => Messages.Add(testCase);
 
-            public void RecordResult(TestResult testResult)
-                => Messages.Add(testResult);
+        public void RecordResult(TestResult testResult)
+            => Messages.Add(testResult);
 
-            public void SendMessage(TestMessageLevel testMessageLevel, string message)
-                => throw new NotImplementedException();
+        public void SendMessage(TestMessageLevel testMessageLevel, string message)
+            => throw new NotImplementedException();
 
-            public void RecordEnd(TestCase testCase, TestOutcome outcome)
-                => throw new NotImplementedException();
+        public void RecordEnd(TestCase testCase, TestOutcome outcome)
+            => throw new NotImplementedException();
 
-            public void RecordAttachments(IList<AttachmentSet> attachmentSets)
-                => throw new NotImplementedException();
-        }
+        public void RecordAttachments(IList<AttachmentSet> attachmentSets)
+            => throw new NotImplementedException();
     }
 }

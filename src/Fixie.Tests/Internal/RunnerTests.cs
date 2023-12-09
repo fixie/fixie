@@ -1,19 +1,19 @@
-namespace Fixie.Tests.Internal
+namespace Fixie.Tests.Internal;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Assertions;
+using Fixie.Internal;
+using static Utility;
+
+public class RunnerTests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Fixie.Internal;
-    using static Utility;
+    static readonly string Self = FullName<RunnerTests>();
 
-    public class RunnerTests
+    public async Task ShouldPerformDiscoveryPhase()
     {
-        static readonly string Self = FullName<RunnerTests>();
-
-        public async Task ShouldPerformDiscoveryPhase()
-        {
             var report = new StubReport();
 
             var candidateTypes = new[]
@@ -37,8 +37,8 @@ namespace Fixie.Tests.Internal
                 Self + "+SkipTestClass.SkipB discovered");
         }
 
-        public async Task ShouldPerformExecutionPhase()
-        {
+    public async Task ShouldPerformExecutionPhase()
+    {
             var report = new StubReport();
 
             var candidateTypes = new[]
@@ -65,38 +65,37 @@ namespace Fixie.Tests.Internal
                 Self + "+SkipTestClass.SkipB skipped: This test did not run.");
         }
 
-        class CreateInstancePerCase : IExecution
+    class CreateInstancePerCase : IExecution
+    {
+        public async Task Run(TestSuite testSuite)
         {
-            public async Task Run(TestSuite testSuite)
-            {
                 foreach (var test in testSuite.Tests)
                     if (!test.Name.Contains("Skip"))
                         await test.Run();
             }
-        }
+    }
 
-        class SampleIrrelevantClass
-        {
-            public void PassA() { }
-            public void PassB() { }
-        }
+    class SampleIrrelevantClass
+    {
+        public void PassA() { }
+        public void PassB() { }
+    }
 
-        class PassTestClass
-        {
-            public void PassA() { }
-            public void PassB() { }
-        }
+    class PassTestClass
+    {
+        public void PassA() { }
+        public void PassB() { }
+    }
 
-        class PassFailTestClass
-        {
-            public void Fail() { throw new FailureException(); }
-            public void Pass() { }
-        }
+    class PassFailTestClass
+    {
+        public void Fail() { throw new FailureException(); }
+        public void Pass() { }
+    }
 
-        class SkipTestClass
-        {
-            public void SkipA() { throw new ShouldBeUnreachableException(); }
-            public void SkipB() { throw new ShouldBeUnreachableException(); }
-        }
+    class SkipTestClass
+    {
+        public void SkipA() { throw new ShouldBeUnreachableException(); }
+        public void SkipB() { throw new ShouldBeUnreachableException(); }
     }
 }

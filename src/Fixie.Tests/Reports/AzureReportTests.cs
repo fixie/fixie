@@ -1,33 +1,33 @@
-﻿namespace Fixie.Tests.Reports
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using Assertions;
-    using Fixie.Reports;
-    using static Utility;
-    using static System.Text.Json.JsonSerializer;
+﻿namespace Fixie.Tests.Reports;
 
-    public class AzureReportTests : MessagingTests
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Assertions;
+using Fixie.Reports;
+using static Utility;
+using static System.Text.Json.JsonSerializer;
+
+public class AzureReportTests : MessagingTests
+{
+    class Request<TContent>
     {
-        class Request<TContent>
+        public Request(HttpMethod method, string uri, TContent content)
         {
-            public Request(HttpMethod method, string uri, TContent content)
-            {
                 Method = method;
                 Uri = uri;
                 Content = content;
             }
 
-            public HttpMethod Method { get; }
-            public string Uri { get; }
-            public TContent Content { get; }
-        }
+        public HttpMethod Method { get; }
+        public string Uri { get; }
+        public TContent Content { get; }
+    }
 
-        public async Task ShouldReportResultsToAzureDevOpsApi()
-        {
+    public async Task ShouldReportResultsToAzureDevOpsApi()
+    {
             var project = Guid.NewGuid().ToString();
             var accessToken = Guid.NewGuid().ToString();
             var buildId = Guid.NewGuid().ToString();
@@ -181,5 +181,4 @@
             var updateRun = lastRequest.Content;
             updateRun.state.ShouldBe("Completed");
         }
-    }
 }

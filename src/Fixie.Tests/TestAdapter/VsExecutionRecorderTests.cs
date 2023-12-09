@@ -274,7 +274,7 @@ public class VsExecutionRecorderTests : MessagingTests
 
     class StubExecutionRecorder : ITestExecutionRecorder
     {
-        public List<object> Messages { get; } = new List<object>();
+        public List<object> Messages { get; } = new();
 
         public void RecordStart(TestCase testCase)
             => Messages.Add(testCase);

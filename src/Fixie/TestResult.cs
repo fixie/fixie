@@ -10,8 +10,8 @@ namespace Fixie;
 /// </summary>
 public abstract class TestResult
 {
-    internal static readonly Passed Passed = new Passed();
-    internal static Failed Failed(Exception reason) => new Failed(reason);
+    internal static readonly Passed Passed = new();
+    internal static Failed Failed(Exception reason) => new(reason);
 }
 
 /// <summary>

@@ -2,6 +2,6 @@
 
 public class TestConfiguration
 {
-    public ConventionCollection Conventions { get; } = new ConventionCollection();
-    public ReportCollection Reports { get; } = new ReportCollection();
+    public ConventionCollection Conventions { get; } = new();
+    public ReportCollection Reports { get; } = new();
 }

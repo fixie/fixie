@@ -15,7 +15,7 @@ public class XmlReport :
     readonly TestEnvironment environment;
     readonly Action<XDocument> save;
 
-    readonly SortedDictionary<string, ClassResult> report = new SortedDictionary<string, ClassResult>();
+    readonly SortedDictionary<string, ClassResult> report = new();
 
     public XmlReport(TestEnvironment environment, string absoluteOrRelativePath)
         : this(environment, SaveReport(environment, absoluteOrRelativePath))
@@ -114,8 +114,8 @@ public class XmlReport :
     {
         readonly string name;
         TimeSpan duration = TimeSpan.Zero;
-        readonly List<XElement> results = new List<XElement>();
-        readonly ExecutionSummary summary = new ExecutionSummary();
+        readonly List<XElement> results = new();
+        readonly ExecutionSummary summary = new();
 
         public ClassResult(string name) => this.name = name;
             

@@ -11,7 +11,7 @@ namespace Fixie.TestAdapter;
 public class VsTestExecutor : ITestExecutor
 {
     public const string Id = "executor://fixie.testadapter/";
-    public static readonly Uri Uri = new Uri(Id);
+    public static readonly Uri Uri = new(Id);
 
     /// <summary>
     /// This method was originally intended to be called by VsTest when running

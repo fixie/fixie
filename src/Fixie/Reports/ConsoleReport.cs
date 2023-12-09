@@ -15,7 +15,7 @@ class ConsoleReport :
     bool paddingWouldRequireOpeningBlankLine;
 
     internal static ConsoleReport Create(TestEnvironment environment)
-        => new ConsoleReport(environment, GetEnvironmentVariable("FIXIE_TESTS_PATTERN"));
+        => new(environment, GetEnvironmentVariable("FIXIE_TESTS_PATTERN"));
 
     public ConsoleReport(TestEnvironment environment, string? testPattern = null)
     {

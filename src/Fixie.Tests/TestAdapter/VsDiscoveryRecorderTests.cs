@@ -90,7 +90,7 @@ public class VsDiscoveryRecorderTests : MessagingTests
 
     class StubMessageLogger : IMessageLogger
     {
-        public List<string> Messages { get; } = new List<string>();
+        public List<string> Messages { get; } = new();
 
         public void SendMessage(TestMessageLevel testMessageLevel, string message)
             => Messages.Add($"{testMessageLevel}: {message}");
@@ -98,7 +98,7 @@ public class VsDiscoveryRecorderTests : MessagingTests
 
     class StubTestCaseDiscoverySink : ITestCaseDiscoverySink
     {
-        public List<TestCase> TestCases { get; } = new List<TestCase>();
+        public List<TestCase> TestCases { get; } = new();
 
         public void SendTestCase(TestCase discoveredTest)
             => TestCases.Add(discoveredTest);

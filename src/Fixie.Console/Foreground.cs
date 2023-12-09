@@ -12,9 +12,9 @@ class Foreground : IDisposable
 
     public void Dispose() => System.Console.ForegroundColor = before;
 
-    public static Foreground Red => new Foreground(ConsoleColor.Red);
+    public static Foreground Red => new(ConsoleColor.Red);
 
-    public static Foreground Yellow => new Foreground(ConsoleColor.Yellow);
+    public static Foreground Yellow => new(ConsoleColor.Yellow);
 
-    public static Foreground Green => new Foreground(ConsoleColor.Green);
+    public static Foreground Green => new(ConsoleColor.Green);
 }

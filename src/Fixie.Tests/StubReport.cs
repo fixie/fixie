@@ -8,7 +8,7 @@ public class StubReport :
     IHandler<TestPassed>,
     IHandler<TestFailed>
 {
-    readonly List<string> log = new List<string>();
+    readonly List<string> log = new();
 
     public Task Handle(TestDiscovered message)
     {

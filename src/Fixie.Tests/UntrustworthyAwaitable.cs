@@ -8,8 +8,7 @@ namespace Fixie.Tests;
 [AsyncMethodBuilder(typeof(UntrustworthyMethodBuilder))]
 class UntrustworthyAwaitable
 {
-    public UntrustworthyAwaiter GetAwaiter()
-        => new UntrustworthyAwaiter();
+    public UntrustworthyAwaiter GetAwaiter() => new();
 }
 
 class UntrustworthyAwaiter : INotifyCompletion
@@ -20,8 +19,7 @@ class UntrustworthyAwaiter : INotifyCompletion
 
 class UntrustworthyMethodBuilder
 {
-    public static UntrustworthyMethodBuilder Create()
-        => new UntrustworthyMethodBuilder();
+    public static UntrustworthyMethodBuilder Create() => new();
 
     public void Start<TStateMachine>(ref TStateMachine stateMachine)
         where TStateMachine : IAsyncStateMachine { }
@@ -42,6 +40,5 @@ class UntrustworthyMethodBuilder
         where TAwaiter : ICriticalNotifyCompletion
         where TStateMachine : IAsyncStateMachine { }
         
-    public UntrustworthyAwaitable Task
-        => new UntrustworthyAwaitable();
+    public UntrustworthyAwaitable Task => new();
 }

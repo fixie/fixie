@@ -1,254 +1,253 @@
-﻿namespace Fixie.Console
+﻿namespace Fixie.Console;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+class Parser<T>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+    public T Model { get; }
 
-    class Parser<T>
+    public Parser(string[] arguments)
     {
-        public T Model { get; }
+        var type = typeof(T);
 
-        public Parser(string[] arguments)
+        DemandSingleConstructor(type);
+
+        var positionalArguments = ScanPositionalArguments(type);
+        var namedArguments = ScanNamedArguments(type);
+
+        var paramsPositionalArgumentValues = new List<object?>();
+
+        var queue = new Queue<string>(arguments);
+        while (queue.Any())
         {
-            var type = typeof(T);
+            var item = queue.Dequeue();
 
-            DemandSingleConstructor(type);
+            if (IsFirstLetterAbbreviation(item))
+                item = ExpandFirstLetterAbbreviation(namedArguments, item);
 
-            var positionalArguments = ScanPositionalArguments(type);
-            var namedArguments = ScanNamedArguments(type);
-
-            var paramsPositionalArgumentValues = new List<object?>();
-
-            var queue = new Queue<string>(arguments);
-            while (queue.Any())
+            if (IsNamedArgumentKey(item))
             {
-                var item = queue.Dequeue();
+                var name = NamedArgument.Normalize(item);
 
-                if (IsFirstLetterAbbreviation(item))
-                    item = ExpandFirstLetterAbbreviation(namedArguments, item);
+                if (!namedArguments.ContainsKey(name))
+                    throw new CommandLineException("Unexpected argument: " + item);
 
-                if (IsNamedArgumentKey(item))
+                var namedArgument = namedArguments[name];
+
+                object value;
+
+                bool requireValue = namedArgument.ItemType != typeof(bool);
+
+                if (requireValue)
                 {
-                    var name = NamedArgument.Normalize(item);
+                    if (!queue.Any() || IsNamedArgumentKey(queue.Peek()))
+                        throw new CommandLineException($"{item} is missing its required value.");
 
-                    if (!namedArguments.ContainsKey(name))
-                        throw new CommandLineException("Unexpected argument: " + item);
-
-                    var namedArgument = namedArguments[name];
-
-                    object value;
-
-                    bool requireValue = namedArgument.ItemType != typeof(bool);
-
-                    if (requireValue)
-                    {
-                        if (!queue.Any() || IsNamedArgumentKey(queue.Peek()))
-                            throw new CommandLineException($"{item} is missing its required value.");
-
-                        value = queue.Dequeue();
-                    }
-                    else
-                    {
-                        value = true;
-                    }
-
-                    if (namedArgument.Values.Count == 1 && !namedArgument.IsArray)
-                        throw new CommandLineException($"{item} cannot be specified more than once.");
-
-                    namedArgument.Values.Add(Convert(namedArgument.ItemType, item, value));
+                    value = queue.Dequeue();
                 }
                 else
                 {
-                    if (positionalArguments.Any())
-                        paramsPositionalArgumentValues.Add(item);
-                    else
-                        throw new CommandLineException("Unexpected argument: " + item);
+                    value = true;
                 }
-            }
 
-            foreach (var positionalArgument in positionalArguments)
+                if (namedArgument.Values.Count == 1 && !namedArgument.IsArray)
+                    throw new CommandLineException($"{item} cannot be specified more than once.");
+
+                namedArgument.Values.Add(Convert(namedArgument.ItemType, item, value));
+            }
+            else
             {
-                //Bind all of paramsPositionalArgumentValues to this argument.
-                var itemType = positionalArgument.Type.GetElementType()!;
-
-                paramsPositionalArgumentValues =
-                    paramsPositionalArgumentValues
-                        .Select(x =>
-                            Convert(itemType, positionalArgument.Name, x)).ToList();
-
-                positionalArgument.Value = CreateTypedArray(itemType, paramsPositionalArgumentValues);
+                if (positionalArguments.Any())
+                    paramsPositionalArgumentValues.Add(item);
+                else
+                    throw new CommandLineException("Unexpected argument: " + item);
             }
-
-            Model = Create(type, positionalArguments, namedArguments);
         }
 
-        static object? Convert(Type type, string userFacingName, object? value)
+        foreach (var positionalArgument in positionalArguments)
         {
-            if (type == typeof(bool?) || type == typeof(bool))
+            //Bind all of paramsPositionalArgumentValues to this argument.
+            var itemType = positionalArgument.Type.GetElementType()!;
+
+            paramsPositionalArgumentValues =
+                paramsPositionalArgumentValues
+                    .Select(x =>
+                        Convert(itemType, positionalArgument.Name, x)).ToList();
+
+            positionalArgument.Value = CreateTypedArray(itemType, paramsPositionalArgumentValues);
+        }
+
+        Model = Create(type, positionalArguments, namedArguments);
+    }
+
+    static object? Convert(Type type, string userFacingName, object? value)
+    {
+        if (type == typeof(bool?) || type == typeof(bool))
+        {
+            var stringValue = value as string;
+            if (value != null)
             {
-                var stringValue = value as string;
-                if (value != null)
-                {
-                    stringValue = stringValue?.ToLower();
+                stringValue = stringValue?.ToLower();
 
-                    if (stringValue == "on" || stringValue == "true")
-                        value = true;
-                    else if (stringValue == "off" || stringValue == "false")
-                        value = false;
-                }
+                if (stringValue == "on" || stringValue == "true")
+                    value = true;
+                else if (stringValue == "off" || stringValue == "false")
+                    value = false;
             }
+        }
 
-            if (value == null)
-                return null;
+        if (value == null)
+            return null;
 
-            var conversionType = Nullable.GetUnderlyingType(type) ?? type;
+        var conversionType = Nullable.GetUnderlyingType(type) ?? type;
 
-            if (conversionType.IsEnum && value is string)
-            {
-                try
-                {
-                    return Enum.Parse(conversionType, (string)value, ignoreCase: true);
-                }
-                catch (Exception exception)
-                {
-                    var allowedValues =
-                        string.Join(", ",
-                            Enum.GetValues(conversionType)
-                                .Cast<object>()
-                                .Select(x => x.ToString()));
-
-                    throw new CommandLineException($"{userFacingName} must be one of: {allowedValues}.", exception);
-                }
-            }
-
+        if (conversionType.IsEnum && value is string)
+        {
             try
             {
-                return System.Convert.ChangeType(value, conversionType);
+                return Enum.Parse(conversionType, (string)value, ignoreCase: true);
             }
             catch (Exception exception)
             {
-                throw new CommandLineException($"{userFacingName} was not in the correct format.", exception);
+                var allowedValues =
+                    string.Join(", ",
+                        Enum.GetValues(conversionType)
+                            .Cast<object>()
+                            .Select(x => x.ToString()));
+
+                throw new CommandLineException($"{userFacingName} must be one of: {allowedValues}.", exception);
             }
         }
 
-        static void DemandSingleConstructor(Type type)
+        try
         {
-            var constructors = type.GetConstructors().Length;
-
-            if (constructors > 1)
-                throw new CommandLineException(
-                    $"Could not construct an instance of type '{type.FullName}'. Expected to find exactly 1 public constructor, but found {constructors}.");
+            return System.Convert.ChangeType(value, conversionType);
         }
-
-        static List<PositionalArgument> ScanPositionalArguments(Type type)
-            => GetConstructor(type)
-                .GetParameters()
-                .Where(p => p.GetCustomAttribute<ParamArrayAttribute>() != null)
-                .Select(p => new PositionalArgument(p))
-                .ToList();
-
-        static Dictionary<string, NamedArgument> ScanNamedArguments(Type type)
+        catch (Exception exception)
         {
-            var namedArguments =
-                GetConstructor(type)
+            throw new CommandLineException($"{userFacingName} was not in the correct format.", exception);
+        }
+    }
+
+    static void DemandSingleConstructor(Type type)
+    {
+        var constructors = type.GetConstructors().Length;
+
+        if (constructors > 1)
+            throw new CommandLineException(
+                $"Could not construct an instance of type '{type.FullName}'. Expected to find exactly 1 public constructor, but found {constructors}.");
+    }
+
+    static List<PositionalArgument> ScanPositionalArguments(Type type)
+        => GetConstructor(type)
+            .GetParameters()
+            .Where(p => p.GetCustomAttribute<ParamArrayAttribute>() != null)
+            .Select(p => new PositionalArgument(p))
+            .ToList();
+
+    static Dictionary<string, NamedArgument> ScanNamedArguments(Type type)
+    {
+        var namedArguments =
+            GetConstructor(type)
                 .GetParameters()
                 .Where(p => p.GetCustomAttribute<ParamArrayAttribute>() == null)
                 .Select(p => new NamedArgument(p.ParameterType, p.Name!))
                 .ToArray();
 
-            var dictionary = new Dictionary<string, NamedArgument>();
+        var dictionary = new Dictionary<string, NamedArgument>();
 
-            foreach (var namedArgument in namedArguments)
-            {
-                if (dictionary.ContainsKey(namedArgument.Name))
-                    throw new CommandLineException(
-                        $"Parsing command line arguments for type {type.Name} " +
-                        "is ambiguous, because it has more than one parameter corresponding " +
-                        $"with the --{namedArgument.Name} argument.");
-
-                dictionary.Add(namedArgument.Name, namedArgument);
-            }
-
-            return dictionary;
-        }
-
-        static string ExpandFirstLetterAbbreviation(Dictionary<string, NamedArgument> namedArguments, string item)
+        foreach (var namedArgument in namedArguments)
         {
-            var candidates =
-                namedArguments.Keys
-                    .Where(x => x.StartsWith(NamedArgument.Normalize(item)))
-                    .OrderBy(x => x)
-                    .ToArray();
-
-            if (candidates.Length > 1)
-            {
-                var suggestions = candidates.Select(x => $"--{x}").ToArray();
-
-                suggestions[^1] = $"or {suggestions[^1]}";
-
+            if (dictionary.ContainsKey(namedArgument.Name))
                 throw new CommandLineException(
-                    $"{item} is not a recognized option. Did you mean " +
-                    $"{string.Join(suggestions.Length > 2 ? ", " : " ", suggestions)}?");
-            }
+                    $"Parsing command line arguments for type {type.Name} " +
+                    "is ambiguous, because it has more than one parameter corresponding " +
+                    $"with the --{namedArgument.Name} argument.");
 
-            if (candidates.Length == 0)
-                throw new CommandLineException("Unexpected argument: " + item);
-
-            return $"--{candidates.Single()}";
+            dictionary.Add(namedArgument.Name, namedArgument);
         }
 
-        static T Create(Type type, List<PositionalArgument> arguments, Dictionary<string, NamedArgument> namedArguments)
+        return dictionary;
+    }
+
+    static string ExpandFirstLetterAbbreviation(Dictionary<string, NamedArgument> namedArguments, string item)
+    {
+        var candidates =
+            namedArguments.Keys
+                .Where(x => x.StartsWith(NamedArgument.Normalize(item)))
+                .OrderBy(x => x)
+                .ToArray();
+
+        if (candidates.Length > 1)
         {
-            var constructor = GetConstructor(type);
+            var suggestions = candidates.Select(x => $"--{x}").ToArray();
 
-            var declaredParameters = constructor.GetParameters();
+            suggestions[^1] = $"or {suggestions[^1]}";
 
-            var actualParameters = new List<object?>();
+            throw new CommandLineException(
+                $"{item} is not a recognized option. Did you mean " +
+                $"{string.Join(suggestions.Length > 2 ? ", " : " ", suggestions)}?");
+        }
 
-            foreach (var declaredParameter in declaredParameters)
+        if (candidates.Length == 0)
+            throw new CommandLineException("Unexpected argument: " + item);
+
+        return $"--{candidates.Single()}";
+    }
+
+    static T Create(Type type, List<PositionalArgument> arguments, Dictionary<string, NamedArgument> namedArguments)
+    {
+        var constructor = GetConstructor(type);
+
+        var declaredParameters = constructor.GetParameters();
+
+        var actualParameters = new List<object?>();
+
+        foreach (var declaredParameter in declaredParameters)
+        {
+            var named = declaredParameter.GetCustomAttribute<ParamArrayAttribute>() == null;
+
+            if (named)
             {
-                var named = declaredParameter.GetCustomAttribute<ParamArrayAttribute>() == null;
+                var key = NamedArgument.Normalize(declaredParameter.Name!);
 
-                if (named)
-                {
-                    var key = NamedArgument.Normalize(declaredParameter.Name!);
+                var namedArgument = namedArguments[key];
 
-                    var namedArgument = namedArguments[key];
-
-                    if (namedArgument.IsArray)
-                        actualParameters.Add(CreateTypedArray(namedArgument.ItemType, namedArgument.Values));
-                    else if (namedArgument.Values.Count != 0)
-                        actualParameters.Add(namedArgument.Values.Single());
-                    else
-                        actualParameters.Add(Default(declaredParameter.ParameterType));
-                }
+                if (namedArgument.IsArray)
+                    actualParameters.Add(CreateTypedArray(namedArgument.ItemType, namedArgument.Values));
+                else if (namedArgument.Values.Count != 0)
+                    actualParameters.Add(namedArgument.Values.Single());
                 else
-                {
-                    actualParameters.Add(arguments.Single().Value);
-                }
+                    actualParameters.Add(Default(declaredParameter.ParameterType));
             }
-
-            return (T)constructor.Invoke(actualParameters.ToArray());
+            else
+            {
+                actualParameters.Add(arguments.Single().Value);
+            }
         }
 
-        static object? Default(Type type)
-            => type.IsValueType ? Activator.CreateInstance(type) : null;
+        return (T)constructor.Invoke(actualParameters.ToArray());
+    }
 
-        static ConstructorInfo GetConstructor(Type type)
-            => type.GetConstructors().Single();
+    static object? Default(Type type)
+        => type.IsValueType ? Activator.CreateInstance(type) : null;
 
-        static bool IsFirstLetterAbbreviation(string item)
-            => item.Length == 2 && item[0] == '-' && char.IsLetter(item[1]);
+    static ConstructorInfo GetConstructor(Type type)
+        => type.GetConstructors().Single();
 
-        static bool IsNamedArgumentKey(string item)
-            => item.StartsWith("-");
+    static bool IsFirstLetterAbbreviation(string item)
+        => item.Length == 2 && item[0] == '-' && char.IsLetter(item[1]);
 
-        static Array CreateTypedArray(Type itemType, IReadOnlyList<object?> values)
-        {
-            Array destinationArray = Array.CreateInstance(itemType, values.Count);
-            Array.Copy(values.ToArray(), destinationArray, values.Count);
-            return destinationArray;
-        }
+    static bool IsNamedArgumentKey(string item)
+        => item.StartsWith("-");
+
+    static Array CreateTypedArray(Type itemType, IReadOnlyList<object?> values)
+    {
+        Array destinationArray = Array.CreateInstance(itemType, values.Count);
+        Array.Copy(values.ToArray(), destinationArray, values.Count);
+        return destinationArray;
     }
 }

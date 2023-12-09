@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Fixie.Tests.TestAdapter;
+﻿namespace Fixie.Tests.TestAdapter;
 
 public class SourceLocationSamples
 {

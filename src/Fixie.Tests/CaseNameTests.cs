@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Fixie.Tests.Assertions;
+﻿using Fixie.Tests.Assertions;
 
 namespace Fixie.Tests;
 

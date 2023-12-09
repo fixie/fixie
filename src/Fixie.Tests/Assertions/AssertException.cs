@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using static System.Environment;
 
 namespace Fixie.Tests.Assertions;

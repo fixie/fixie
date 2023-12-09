@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using Fixie.Tests.Assertions;
 
 namespace Fixie.Tests;

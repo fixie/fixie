@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fixie.Tests.Assertions;
+﻿using Fixie.Tests.Assertions;
 using Fixie.Internal;
 using Fixie.Reports;
 using static Fixie.Tests.Utility;

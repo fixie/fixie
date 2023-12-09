@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Fixie.Internal;
+﻿namespace Fixie.Internal;
 
 // The 'Fixie' package includes this file in test projects so
 // that their tests can be executed. Do not modify this file.

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Fixie.Internal;
+﻿using Fixie.Internal;
 
 namespace Fixie;
 

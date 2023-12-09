@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Fixie.TestAdapter;
+﻿using Fixie.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;

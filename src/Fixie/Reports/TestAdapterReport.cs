@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fixie.Internal;
+﻿using Fixie.Internal;
 
 namespace Fixie.Reports;
 

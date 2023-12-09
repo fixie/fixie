@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fixie.Tests;
+﻿namespace Fixie.Tests;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class InputAttribute : Attribute

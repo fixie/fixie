@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Fixie.Tests.Assertions;
+﻿using Fixie.Tests.Assertions;
 using Fixie.Internal;
 using Fixie.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;

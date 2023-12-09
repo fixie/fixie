@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Fixie.Internal;
+﻿using Fixie.Internal;
 using static System.Environment;
 
 namespace Fixie.Reports;

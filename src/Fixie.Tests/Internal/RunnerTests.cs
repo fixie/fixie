@@ -8,8 +8,6 @@ using static Fixie.Tests.Utility;
 
 namespace Fixie.Tests.Internal;
 
-using Console = System.Console;
-
 public class RunnerTests
 {
     static readonly string Self = FullName<RunnerTests>();
@@ -25,7 +23,7 @@ public class RunnerTests
         };
         var discovery = new SelfTestDiscovery();
         
-        var environment = new TestEnvironment(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
+        var environment = new TestEnvironment(GetType().Assembly, System.Console.Out, Directory.GetCurrentDirectory());
         var runner = new Runner(environment, report);
 
         await runner.Discover(candidateTypes, discovery);
@@ -51,7 +49,7 @@ public class RunnerTests
         var discovery = new SelfTestDiscovery();
         var execution = new CreateInstancePerCase();
 
-        var environment = new TestEnvironment(GetType().Assembly, Console.Out, Directory.GetCurrentDirectory());
+        var environment = new TestEnvironment(GetType().Assembly, System.Console.Out, Directory.GetCurrentDirectory());
         var runner = new Runner(environment, report);
         var configuration = new TestConfiguration();
         configuration.Conventions.Add(discovery, execution);

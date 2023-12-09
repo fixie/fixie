@@ -7,8 +7,6 @@ using static Fixie.Tests.Utility;
 
 namespace Fixie.Tests.Internal;
 
-using Console = System.Console;
-
 public class BusTests
 {
     public async Task ShouldPublishEventsToAllReports()
@@ -22,7 +20,7 @@ public class BusTests
 
         using var console = new RedirectedConsole();
 
-        var bus = new Bus(Console.Out, reports);
+        var bus = new Bus(System.Console.Out, reports);
         await bus.Publish(new Event(1));
         await bus.Publish(new AnotherEvent(2));
         await bus.Publish(new Event(3));
@@ -47,7 +45,7 @@ public class BusTests
 
         using var console = new RedirectedConsole();
 
-        var bus = new Bus(Console.Out, reports);
+        var bus = new Bus(System.Console.Out, reports);
         await bus.Publish(new Event(1));
         await bus.Publish(new AnotherEvent(2));
         await bus.Publish(new Event(3));
@@ -119,7 +117,7 @@ public class BusTests
     }
 
     static void Log<THandler, TEvent>(int id)
-        => Console.WriteLine($"{typeof(THandler).FullName} handled {typeof(TEvent).Name} {id}");
+        => System.Console.WriteLine($"{typeof(THandler).FullName} handled {typeof(TEvent).Name} {id}");
 
     class StubException : Exception
     {

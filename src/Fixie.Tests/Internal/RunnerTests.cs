@@ -1,4 +1,3 @@
-using Fixie.Tests.Assertions;
 using Fixie.Internal;
 using static Fixie.Tests.Utility;
 

@@ -1,5 +1,4 @@
 ﻿using Fixie.TestAdapter;
-using Fixie.Tests.Assertions;
 using static Fixie.Tests.Utility;
 
 namespace Fixie.Tests.TestAdapter;

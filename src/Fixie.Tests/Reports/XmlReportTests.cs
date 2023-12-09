@@ -1,6 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using Fixie.Tests.Assertions;
 using Fixie.Reports;
 using static Fixie.Tests.Utility;
 

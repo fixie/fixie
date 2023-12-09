@@ -1,5 +1,4 @@
-﻿using Fixie.Tests.Assertions;
-using Fixie.Internal;
+﻿using Fixie.Internal;
 using Fixie.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;

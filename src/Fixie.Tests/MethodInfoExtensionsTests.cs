@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using Fixie.Tests.Assertions;
 using Microsoft.FSharp.Control;
 using static System.Environment;
 using static Fixie.Tests.Utility;

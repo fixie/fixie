@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
-using Fixie.Tests.Assertions;
 using Fixie.Internal;
 
 namespace Fixie.Tests.Internal;

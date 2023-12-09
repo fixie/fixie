@@ -1,5 +1,4 @@
-﻿using Fixie.Tests.Assertions;
-using Fixie.Internal;
+﻿using Fixie.Internal;
 using Fixie.Reports;
 using static Fixie.Tests.Utility;
 

@@ -1,5 +1,8 @@
 ﻿namespace Fixie.Tests.TestAdapter;
 
+// Avoid changes in this file that would move the well-known line numbers indicated in comments.
+// Otherwise, these comments and the associated assertions would need to be updated together
+
 public class SourceLocationSamples
 {
     public void Empty_OneLine() { } // Debug = Release = 8

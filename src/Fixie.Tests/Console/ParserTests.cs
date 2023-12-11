@@ -6,7 +6,7 @@ public class ParserTests
 {
     enum Level { Information, Warning, Error }
 
-    class Empty { }
+    class Empty     { }
 
     public void ShouldParseEmptyModels()
     {

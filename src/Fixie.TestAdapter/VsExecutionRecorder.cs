@@ -7,17 +7,8 @@ namespace Fixie.TestAdapter;
 
 using TestResult = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestResult;
 
-class VsExecutionRecorder
+class VsExecutionRecorder(ITestExecutionRecorder log, string path)
 {
-    readonly ITestExecutionRecorder log;
-    readonly string assemblyPath;
-
-    public VsExecutionRecorder(ITestExecutionRecorder log, string assemblyPath)
-    {
-        this.log = log;
-        this.assemblyPath = assemblyPath;
-    }
-
     public void Record(PipeMessage.TestStarted message)
     {
         var testCase = ToVsTestCase(message.Test);
@@ -74,7 +65,7 @@ class VsExecutionRecorder
 
     TestCase ToVsTestCase(string test)
     {
-        return new TestCase(test, VsTestExecutor.Uri, assemblyPath);
+        return new TestCase(test, VsTestExecutor.Uri, path);
     }
 
     static void AttachCapturedConsoleOutput(string output, TestResult testResult)

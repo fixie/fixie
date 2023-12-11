@@ -4,15 +4,11 @@
 
 namespace Microsoft.FSharp.Control;
 
-public class FSharpAsync<TResult>
+public class FSharpAsync<TResult>(Func<TResult> result)
 {
-    readonly Func<TResult> getResult;
-
     public FSharpAsync(TResult result) : this(() => result) { }
 
-    public FSharpAsync(Func<TResult> getResult) => this.getResult = getResult;
-
-    public TResult Result => getResult();
+    public TResult Result => result();
 }
 
 public class FSharpAsync

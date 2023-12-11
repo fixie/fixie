@@ -3,26 +3,18 @@ using static System.Environment;
 
 namespace Fixie.Reports;
 
-class ConsoleReport :
+class ConsoleReport(TestEnvironment environment, string? pattern = null) :
     IHandler<TestSkipped>,
     IHandler<TestPassed>,
     IHandler<TestFailed>,
     IHandler<ExecutionCompleted>
 {
-    readonly string? testPattern;
-    readonly TextWriter console;
-    readonly bool outputTestPassed;
+    readonly TextWriter console = environment.Console;
+    readonly bool outputTestPassed = pattern != null;
     bool paddingWouldRequireOpeningBlankLine;
 
     internal static ConsoleReport Create(TestEnvironment environment)
         => new(environment, GetEnvironmentVariable("FIXIE_TESTS_PATTERN"));
-
-    public ConsoleReport(TestEnvironment environment, string? testPattern = null)
-    {
-        console = environment.Console;
-        this.testPattern = testPattern;
-        this.outputTestPassed = testPattern != null;
-    }
 
     public Task Handle(TestSkipped message)
     {
@@ -90,8 +82,8 @@ class ConsoleReport :
         {
             using (Foreground.Red)
             {
-                console.WriteLine(testPattern != null
-                    ? $"No tests match the specified pattern: {testPattern}"
+                console.WriteLine(pattern != null
+                    ? $"No tests match the specified pattern: {pattern}"
                     : "No tests found.");
             }
         }

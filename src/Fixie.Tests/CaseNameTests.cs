@@ -183,13 +183,8 @@ public class CaseNameTests
         );
     }
 
-    class ScriptedExecution : IExecution
+    class ScriptedExecution(Func<Test, Task> script) : IExecution
     {
-        readonly Func<Test, Task> script;
-
-        public ScriptedExecution(Func<Test, Task> script)
-            => this.script = script;
-
         public async Task Run(TestSuite testSuite)
         {
             foreach (var test in testSuite.Tests)

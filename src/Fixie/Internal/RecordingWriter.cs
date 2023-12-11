@@ -3,23 +3,15 @@ using System.Text;
 
 namespace Fixie.Internal;
 
-sealed class RecordingWriter : TextWriter
+sealed class RecordingWriter(TextWriter original) :
+    TextWriter
 {
-    bool recording;
-    readonly TextWriter original;
-    readonly StringWriter copy;
+    bool recording = false;
 
-    public RecordingWriter(TextWriter original)
+    readonly StringWriter copy = new(original.FormatProvider)
     {
-        this.original = original;
-
-        copy = new StringWriter(original.FormatProvider)
-        {
-            NewLine = original.NewLine
-        };
-
-        recording = false;
-    }
+        NewLine = original.NewLine
+    };
 
     public void StartRecording()
     {

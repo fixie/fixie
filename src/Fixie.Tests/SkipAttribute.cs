@@ -1,9 +1,8 @@
 ﻿namespace Fixie.Tests;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-public class SkipAttribute : Attribute
+public class SkipAttribute(string reason) :
+    Attribute
 {
-    public SkipAttribute(string reason) => Reason = reason;
-
-    public string Reason { get; }
+    public string Reason { get; } = reason;
 }

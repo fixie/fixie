@@ -2,13 +2,8 @@
 
 namespace Fixie.Internal;
 
-class MethodDiscoverer
+class MethodDiscoverer(IDiscovery discovery)
 {
-    readonly IDiscovery discovery;
-
-    public MethodDiscoverer(IDiscovery discovery)
-        => this.discovery = discovery;
-
     public IReadOnlyList<MethodInfo> TestMethods(Type testClass)
     {
         try

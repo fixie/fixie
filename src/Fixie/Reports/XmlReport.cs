@@ -110,15 +110,12 @@ public class XmlReport :
         report.Save(writer, SaveOptions.None);
     }
 
-    class ClassResult
+    class ClassResult(string name)
     {
-        readonly string name;
         TimeSpan duration = TimeSpan.Zero;
         readonly List<XElement> results = new();
         readonly ExecutionSummary summary = new();
 
-        public ClassResult(string name) => this.name = name;
-            
         public void Add(TestSkipped message)
         {
             duration += message.Duration;

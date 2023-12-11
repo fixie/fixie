@@ -2,21 +2,14 @@ using static System.Environment;
 
 namespace Fixie.Tests.Assertions;
 
-public class AssertException : Exception
+public class AssertException(string? expected, string? actual) : Exception
 {
     public static string FilterStackTraceAssemblyPrefix = typeof(AssertException).Namespace + ".";
 
-    public string? Expected { get; }
-    public string? Actual { get; }
-    public bool HasCompactRepresentations { get; }
-
-    public AssertException(string? expected, string? actual)
-    {
-        Expected = expected;
-        Actual = actual;
-        HasCompactRepresentations = HasCompactRepresentation(expected) &&
-                                    HasCompactRepresentation(actual);
-    }
+    public string? Expected { get; } = expected;
+    public string? Actual { get; } = actual;
+    public bool HasCompactRepresentations { get; } = HasCompactRepresentation(expected) &&
+                                                     HasCompactRepresentation(actual);
 
     public override string Message
     {

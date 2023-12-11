@@ -4,25 +4,20 @@ using static System.Text.Json.JsonSerializer;
 
 namespace Fixie.Internal;
 
-class TestAdapterPipe : IDisposable
+class TestAdapterPipe(PipeStream pipeStream) :
+    IDisposable
 {
-    readonly StreamReader reader;
-    readonly StreamWriter writer;
+    readonly StreamReader reader = new(pipeStream, leaveOpen: true);
+    readonly StreamWriter writer = new(pipeStream, leaveOpen: true);
 
-    public TestAdapterPipe(PipeStream pipeStream)
-    {
-        // Normal attempts to call dispose on this reader
-        // and writer cause the underlying PipeStream to
-        // throw ObjectDisposedException when the original
-        // PipeStream's 'using' block ends. Here we allow
-        // the reader and writer to be disposed of, ignoring
-        // the PipeStream itself by leaving that open.
-        // Then, the original using block for the PipeStream
-        // is trusted to own that cleanup.
-
-        reader = new StreamReader(pipeStream, leaveOpen: true);
-        writer = new StreamWriter(pipeStream, leaveOpen: true);
-    }
+    // Normal attempts to call dispose on this reader
+    // and writer cause the underlying PipeStream to
+    // throw ObjectDisposedException when the original
+    // PipeStream's 'using' block ends. Here we allow
+    // the reader and writer to be disposed of, ignoring
+    // the PipeStream itself by leaving that open.
+    // Then, the original using block for the PipeStream
+    // is trusted to own that cleanup.
 
     const string EndOfMessage = "--End of Message--";
 

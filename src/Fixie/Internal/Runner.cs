@@ -3,20 +3,10 @@ using Fixie.Reports;
 
 namespace Fixie.Internal;
 
-class Runner
+class Runner(TestEnvironment environment, params IReport[] reports)
 {
-    readonly TestEnvironment environment;
-    readonly IReport[] defaultReports;
-    readonly Assembly assembly;
-    readonly TextWriter console;
-
-    public Runner(TestEnvironment environment, params IReport[] defaultReports)
-    {
-        this.environment = environment;
-        this.defaultReports = defaultReports;
-        assembly = environment.Assembly;
-        console = environment.Console;
-    }
+    readonly Assembly assembly = environment.Assembly;
+    readonly TextWriter console = environment.Console;
 
     public async Task Discover()
     {
@@ -50,7 +40,7 @@ class Runner
 
     internal async Task Discover(IReadOnlyList<Type> candidateTypes, IDiscovery discovery)
     {
-        var bus = new Bus(console, defaultReports);
+        var bus = new Bus(console, reports);
 
         var classDiscoverer = new ClassDiscoverer(discovery);
         var classes = classDiscoverer.TestClasses(candidateTypes);
@@ -64,7 +54,7 @@ class Runner
     internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, TestConfiguration configuration, HashSet<string> selectedTests, TestPattern? testPattern = null)
     {
         var conventions = configuration.Conventions.Items;
-        var bus = new Bus(console, defaultReports.Concat(configuration.Reports.Items).ToArray());
+        var bus = new Bus(console, reports.Concat(configuration.Reports.Items).ToArray());
 
         var recordingConsole = new RecordingWriter(console);
         var recorder = new ExecutionRecorder(recordingConsole, bus);

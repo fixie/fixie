@@ -2,16 +2,10 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Fixie.TestAdapter;
 
-class DebuggerAttachmentFailure
+class DebuggerAttachmentFailure(Exception thirdPartyTestHostException)
 {
-    public string Message { get; }
-    public Exception ThirdPartyTestHostException { get; }
-
-    public DebuggerAttachmentFailure(Exception thirdPartyTestHostException)
-    {
-        ThirdPartyTestHostException = thirdPartyTestHostException;
-        Message = UserGuidanceMessage(thirdPartyTestHostException);
-    }
+    public string Message { get; } = UserGuidanceMessage(thirdPartyTestHostException);
+    public Exception ThirdPartyTestHostException { get; } = thirdPartyTestHostException;
 
     static string UserGuidanceMessage(Exception thirdPartyTestHostException)
     {

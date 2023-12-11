@@ -52,7 +52,7 @@ public class ConsoleReportTests : MessagingTests
 
     public async Task ShouldIncludePassingResultsWhenFilteringByPattern()
     {
-        var output = await Run(console => new ConsoleReport(console, testPattern: "*"));
+        var output = await Run(console => new ConsoleReport(console, pattern: "*"));
 
         output.Console
             .NormalizeStackTraceLines()
@@ -171,7 +171,7 @@ public class ConsoleReportTests : MessagingTests
             .Last()
             .ShouldBe("No tests found.");
 
-        output = await Run(console => new ConsoleReport(console, testPattern: "Ineffective*Pattern"), discovery);
+        output = await Run(console => new ConsoleReport(console, pattern: "Ineffective*Pattern"), discovery);
 
         output.Console
             .Last()

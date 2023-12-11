@@ -6,20 +6,14 @@ using Mono.Cecil.Rocks;
 
 namespace Fixie.TestAdapter;
 
-class SourceLocationProvider
+class SourceLocationProvider(string path)
 {
-    readonly string assemblyPath;
     Dictionary<string, Dictionary<string, SourceLocation>>? sourceLocations;
-
-    public SourceLocationProvider(string assemblyPath)
-    {
-        this.assemblyPath = assemblyPath;
-    }
 
     public bool TryGetSourceLocation(string test, [NotNullWhen(true)] out SourceLocation? sourceLocation)
     {
         if (sourceLocations == null)
-            sourceLocations = CacheLocations(assemblyPath);
+            sourceLocations = CacheLocations(path);
 
         sourceLocation = null;
 

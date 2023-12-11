@@ -2,8 +2,5 @@
 
 namespace Fixie.Tests;
 
-public class ShouldBeUnreachableException : Exception
-{
-    public ShouldBeUnreachableException([CallerMemberName] string member = default!)
-        : base($"'{member}' reached a line of code thought to be unreachable.") { }
-}
+public class ShouldBeUnreachableException([CallerMemberName] string member = default!) :
+    Exception($"'{member}' reached a line of code thought to be unreachable.");

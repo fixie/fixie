@@ -5,18 +5,16 @@ using static System.Text.Json.JsonSerializer;
 
 namespace Fixie.Reports;
 
-class AppVeyorReport :
-    IHandler<ExecutionStarted>,
-    IHandler<TestSkipped>,
-    IHandler<TestPassed>,
-    IHandler<TestFailed>
+class AppVeyorReport(TestEnvironment environment, string uri, AppVeyorReport.PostAction action) :
+        IHandler<ExecutionStarted>,
+        IHandler<TestSkipped>,
+        IHandler<TestPassed>,
+        IHandler<TestFailed>
 {
     public delegate Task PostAction(string uri, Result result);
 
-    readonly TestEnvironment environment;
-    readonly PostAction postAction;
-    readonly string uri;
-    string runName;
+    readonly string uri = new Uri(new Uri(uri), "api/tests").ToString();
+    string runName = "Unknown";
 
     static readonly HttpClient Client;
 
@@ -36,14 +34,6 @@ class AppVeyorReport :
     {
         Client = new HttpClient();
         Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-    }
-
-    public AppVeyorReport(TestEnvironment environment, string uri, PostAction postAction)
-    {
-        this.environment = environment;
-        this.postAction = postAction;
-        this.uri = new Uri(new Uri(uri), "api/tests").ToString();
-        runName = "Unknown";
     }
 
     public Task Handle(ExecutionStarted message)
@@ -85,7 +75,7 @@ class AppVeyorReport :
 
     async Task Post(Result result)
     {
-        await postAction(uri, result);
+        await action(uri, result);
     }
 
     static async Task Post(string uri, Result result)
@@ -95,24 +85,14 @@ class AppVeyorReport :
         response.EnsureSuccessStatusCode();
     }
 
-    public class Result
+    public class Result(string runName, TestCompleted message, string outcome)
     {
-        public Result(string runName, TestCompleted message, string outcome)
-        {
-            TestFramework = "Fixie";
-            FileName = runName;
-            TestName = message.TestCase;
-            Outcome = outcome;
-            DurationMilliseconds = $"{message.Duration.TotalMilliseconds:0}";
-            StdOut = message.Output;
-        }
-
-        public string TestFramework { get; set; }
-        public string FileName { get; set; }
-        public string TestName { get; set; }
-        public string Outcome { get; set; }
-        public string DurationMilliseconds { get; set; }
-        public string StdOut { get; set; }
+        public string TestFramework { get; set; } = "Fixie";
+        public string FileName { get; set; } = runName;
+        public string TestName { get; set; } = message.TestCase;
+        public string Outcome { get; set; } = outcome;
+        public string DurationMilliseconds { get; set; } = $"{message.Duration.TotalMilliseconds:0}";
+        public string StdOut { get; set; } = message.Output;
         public string? ErrorMessage { get; set; }
         public string? ErrorStackTrace { get; set; }
     }

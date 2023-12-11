@@ -2,8 +2,5 @@
 
 namespace Fixie.Tests;
 
-public class FailureException : Exception
-{
-    public FailureException([CallerMemberName] string member = default!)
-        : base($"'{member}' failed!") { }
-}
+public class FailureException([CallerMemberName] string member = default!) :
+    Exception($"'{member}' failed!");

@@ -17,7 +17,7 @@ public class JsonSerializationTests : MessagingTests
         Expect(new PipeMessage.ExecuteTests(),
             "{\"Filter\":null}");
 
-        Expect(new PipeMessage.ExecuteTests { Filter = new string[] { } },
+        Expect(new PipeMessage.ExecuteTests { Filter = [] },
             "{\"Filter\":[]}");
 
         Expect(new PipeMessage.ExecuteTests { Filter = new[]

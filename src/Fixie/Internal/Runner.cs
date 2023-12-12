@@ -28,7 +28,7 @@ class Runner
 
     public Task<ExecutionSummary> Run()
     {
-        return Run(assembly.GetTypes(), new HashSet<string>());
+        return Run(assembly.GetTypes(), []);
     }
 
     public Task<ExecutionSummary> Run(HashSet<string> selectedTests)
@@ -38,7 +38,7 @@ class Runner
 
     public Task<ExecutionSummary> Run(TestPattern testPattern)
     {
-        return Run(assembly.GetTypes(), new HashSet<string>(), testPattern);
+        return Run(assembly.GetTypes(), [], testPattern);
     }
 
     async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, HashSet<string> selectedTests, TestPattern? testPattern = null)

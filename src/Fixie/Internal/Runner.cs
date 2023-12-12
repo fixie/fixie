@@ -108,7 +108,7 @@ class Runner
                 else
                 {
                     methods = selectionWorkingList;
-                    selectionWorkingList = new List<MethodInfo>();
+                    selectionWorkingList = [];
                 }
             }
 

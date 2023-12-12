@@ -103,7 +103,7 @@ class Runner
 
                 if (selectionWorkingList.Count == 0)
                 {
-                    methods = Array.Empty<MethodInfo>();
+                    methods = [];
                 }
                 else
                 {

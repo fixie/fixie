@@ -327,7 +327,7 @@ public class ParserTests
     public void ShouldSetEmptyArraysForMissingArrayArguments()
     {
         Parse<ModelWithArrays>()
-            .ShouldSucceed(new ModelWithArrays(new int[] { }, new string[] { }));
+            .ShouldSucceed(new ModelWithArrays([], []));
     }
 
     class AmbiguousParameters
@@ -414,8 +414,7 @@ public class ParserTests
     public void ShouldBindCommandLineArgumentsToComplexModels()
     {
         Parse<Complex>()
-            .ShouldSucceed(new Complex(null, 0, false, null, null,
-                new string[] { }, new int[] { }));
+            .ShouldSucceed(new Complex(null, 0, false, null, null, [], []));
 
         Parse<Complex>(
             "--string", "def",
@@ -468,8 +467,7 @@ public class ParserTests
     public void ShouldBindCommandLineArgumentsToComplexModelsWithParams()
     {
         Parse<ComplexWithParams>()
-            .ShouldSucceed(new ComplexWithParams(null, 0, false, null, null,
-                new string[] { }, new int[] { }));
+            .ShouldSucceed(new ComplexWithParams(null, 0, false, null, null, [], []));
 
         Parse<ComplexWithParams>(
             "--string", "def",

@@ -91,7 +91,7 @@ class Runner
         var methodDiscoverer = new MethodDiscoverer(discovery);
 
         var testClasses = new List<TestClass>(selectedTests.Count > 0 ? 0 : classes.Count);
-        var selectionWorkingList = new List<MethodInfo>();
+        List<MethodInfo> selectionWorkingList = [];
 
         foreach (var @class in classes)
         {

@@ -26,7 +26,7 @@ public class AzureReportTests : MessagingTests
         var accessToken = Guid.NewGuid().ToString();
         var buildId = Guid.NewGuid().ToString();
         var runUrl = "http://localhost:4567/run/" + Guid.NewGuid();
-        var requests = new List<object>();
+        List<object> requests = [];
         var batchSize = 3;
 
         Action<HttpClient> assertCommonHttpConcerns = client =>

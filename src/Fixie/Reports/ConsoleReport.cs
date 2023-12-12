@@ -107,7 +107,7 @@ class ConsoleReport :
 
     static string Summarize(ExecutionCompleted message)
     {
-        var parts = new List<string>();
+        List<string> parts = [];
 
         if (message.Passed > 0)
             parts.Add($"{message.Passed} passed");

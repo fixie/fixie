@@ -15,7 +15,7 @@ class Parser<T>
         var positionalArguments = ScanPositionalArguments(type);
         var namedArguments = ScanNamedArguments(type);
 
-        var paramsPositionalArgumentValues = new List<object?>();
+        List<object?> paramsPositionalArgumentValues = [];
 
         var queue = new Queue<string>(arguments);
         while (queue.Any())
@@ -201,7 +201,7 @@ class Parser<T>
 
         var declaredParameters = constructor.GetParameters();
 
-        var actualParameters = new List<object?>();
+        List<object?> actualParameters = [];
 
         foreach (var declaredParameter in declaredParameters)
         {

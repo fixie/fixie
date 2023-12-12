@@ -4,7 +4,7 @@ namespace Fixie.Tests.Internal;
 
 public class GenericArgumentResolverTests
 {
-    static readonly Type[] Empty = { };
+    static readonly Type[] Empty = [];
 
     public void ShouldResolveNothingWhenThereAreNoInputParameters()
     {

@@ -7,7 +7,7 @@ namespace Fixie;
 
 public class Test
 {
-    static readonly object[] EmptyParameters = {};
+    static readonly object[] EmptyParameters = [];
 
     readonly ExecutionRecorder recorder;
 

@@ -26,7 +26,7 @@ public class ExecutionSummaryTests
     class StubExecutionSummaryReport :
         IHandler<ExecutionCompleted>
     {
-        public List<ExecutionCompleted> ExecutionCompletions { get; } = new();
+        public List<ExecutionCompleted> ExecutionCompletions { get; } = [];
 
         public Task Handle(ExecutionCompleted message)
         {

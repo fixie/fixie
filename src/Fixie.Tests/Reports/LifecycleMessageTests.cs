@@ -113,7 +113,7 @@ public class LifecycleMessageTests : MessagingTests
         IHandler<TestCompleted>,
         IHandler<ExecutionCompleted>
     {
-        public List<object> Messages { get; } = new();
+        public List<object> Messages { get; } = [];
 
         public Task Handle(ExecutionStarted message)
         {

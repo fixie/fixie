@@ -28,7 +28,7 @@ class Runner
 
     public Task<ExecutionSummary> Run()
     {
-        return Run(assembly.GetTypes(), new HashSet<string>());
+        return Run(assembly.GetTypes(), []);
     }
 
     public Task<ExecutionSummary> Run(HashSet<string> selectedTests)
@@ -38,7 +38,7 @@ class Runner
 
     public Task<ExecutionSummary> Run(TestPattern testPattern)
     {
-        return Run(assembly.GetTypes(), new HashSet<string>(), testPattern);
+        return Run(assembly.GetTypes(), [], testPattern);
     }
 
     async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, HashSet<string> selectedTests, TestPattern? testPattern = null)
@@ -91,7 +91,7 @@ class Runner
         var methodDiscoverer = new MethodDiscoverer(discovery);
 
         var testClasses = new List<TestClass>(selectedTests.Count > 0 ? 0 : classes.Count);
-        var selectionWorkingList = new List<MethodInfo>();
+        List<MethodInfo> selectionWorkingList = [];
 
         foreach (var @class in classes)
         {
@@ -103,12 +103,12 @@ class Runner
 
                 if (selectionWorkingList.Count == 0)
                 {
-                    methods = Array.Empty<MethodInfo>();
+                    methods = [];
                 }
                 else
                 {
                     methods = selectionWorkingList;
-                    selectionWorkingList = new List<MethodInfo>();
+                    selectionWorkingList = [];
                 }
             }
 

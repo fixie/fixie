@@ -7,8 +7,8 @@ public class CommandLine
 
     public static void Partition(string[] arguments, out string[] runnerArguments, out string[] customArguments)
     {
-        var runnerArgumentsList = new List<string>();
-        var customArgumentsList = new List<string>();
+        List<string> runnerArgumentsList = [];
+        List<string> customArgumentsList = [];
 
         bool separatorFound = false;
         foreach (var arg in arguments)

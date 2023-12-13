@@ -7,7 +7,7 @@ namespace Fixie;
 public class TestEnvironment
 {
     internal TestEnvironment(Assembly assembly, TextWriter console, string rootPath)
-        : this(assembly, console, rootPath, Array.Empty<string>()) { }
+        : this(assembly, console, rootPath, []) { }
 
     internal TestEnvironment(Assembly assembly, TextWriter console, string rootPath,
         IReadOnlyList<string> customArguments)

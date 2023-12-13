@@ -12,7 +12,7 @@ class NamedArgument
 
         Identifier = identifier;
         Name = Normalize(Identifier);
-        Values = new List<object?>();
+        Values = [];
     }
 
     public bool IsArray { get; }

@@ -49,7 +49,7 @@ public class RunnerTests
         var configuration = new TestConfiguration();
         configuration.Conventions.Add(discovery, execution);
 
-        await runner.Run(candidateTypes, configuration, new HashSet<string>());
+        await runner.Run(candidateTypes, configuration, []);
 
         report.Entries.ShouldBe(
             Self + "+PassTestClass.PassA passed",

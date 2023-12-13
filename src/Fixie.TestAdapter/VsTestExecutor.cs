@@ -39,7 +39,7 @@ public class VsTestExecutor : ITestExecutor
 
             var executeTests = new PipeMessage.ExecuteTests
             {
-                Filter = new string[] { }
+                Filter = []
             };
 
             foreach (var assemblyPath in sources)

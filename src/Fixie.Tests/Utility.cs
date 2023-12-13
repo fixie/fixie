@@ -78,7 +78,7 @@ public static class Utility
         var configuration = new TestConfiguration();
         configuration.Conventions.Add(discovery, execution);
 
-        await runner.Run(candidateTypes, configuration, new HashSet<string>());
+        await runner.Run(candidateTypes, configuration, []);
     }
 
     public static IEnumerable<object?[]> FromInputAttributes(Test test)
@@ -88,6 +88,6 @@ public static class Utility
             : InvokeOnceWithZeroParameters;
     }
 
-    static readonly object[] EmptyParameters = {};
+    static readonly object[] EmptyParameters = [];
     static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
 }

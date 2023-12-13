@@ -7,7 +7,7 @@ public class AppVeyorReportTests : MessagingTests
 {
     public async Task ShouldReportResultsToAppVeyorBuildWorkerApi()
     {
-        var results = new List<AppVeyorReport.Result>();
+        List<AppVeyorReport.Result> results = [];
 
         var report = new AppVeyorReport(GetTestEnvironment(), "http://localhost:4567", (uri, content) =>
         {

@@ -6,7 +6,7 @@ public class ConventionCollection
 {
     internal List<Convention> Items { get; }
 
-    internal ConventionCollection() => Items = new List<Convention>();
+    internal ConventionCollection() => Items = [];
 
     public void Add(IDiscovery discovery, IExecution execution)
         => Items.Add(new Convention(discovery, execution));

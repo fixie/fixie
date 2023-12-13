@@ -59,7 +59,7 @@ static class GenericArgumentResolver
             TraverseTypes(genericToSpecific, parameterType, argument.GetType());
         }
 
-        var results = new List<Type>();
+        List<Type> results = [];
         foreach (var genericArgument in genericArguments)
         {
             if (genericToSpecific.TryGetValue(genericArgument, out var specificType))

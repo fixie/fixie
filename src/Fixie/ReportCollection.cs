@@ -6,7 +6,7 @@ public class ReportCollection
 {
     internal List<IReport> Items { get; }
 
-    internal ReportCollection() => Items = new List<IReport>();
+    internal ReportCollection() => Items = [];
 
     public void Add(IReport report)
         => Items.Add(report);

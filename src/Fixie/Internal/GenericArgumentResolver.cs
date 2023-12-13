@@ -44,7 +44,7 @@ static class GenericArgumentResolver
             arguments = arguments.Take(parameterTypes.Length).ToArray();
         }
 
-        var genericToSpecific = new Dictionary<Type, Type>();
+        Dictionary<Type, Type> genericToSpecific = [];
 
         for (int i = 0; i < parameterTypes.Length; i++)
         {

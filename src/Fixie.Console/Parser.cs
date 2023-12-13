@@ -154,7 +154,7 @@ class Parser<T>
                 .Select(p => new NamedArgument(p.ParameterType, p.Name!))
                 .ToArray();
 
-        var dictionary = new Dictionary<string, NamedArgument>();
+        Dictionary<string, NamedArgument> dictionary = [];
 
         foreach (var namedArgument in namedArguments)
         {

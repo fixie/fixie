@@ -20,11 +20,11 @@ public class JsonSerializationTests : MessagingTests
         Expect(new PipeMessage.ExecuteTests { Filter = [] },
             "{\"Filter\":[]}");
 
-        Expect(new PipeMessage.ExecuteTests { Filter = new[]
-            {
+        Expect(new PipeMessage.ExecuteTests { Filter =
+            [
                 TestClass + ".Pass",
                 GenericTestClass + ".ShouldBeString"
-            } },
+            ] },
             "{\"Filter\":[\"Fixie.Tests.Reports.MessagingTests\\u002BSampleTestClass.Pass\",\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\"]}");
     }
 

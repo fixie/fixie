@@ -171,7 +171,7 @@ public static class MethodInfoExtensions
 
         try
         {
-            return (Task) genericStartAsTask.Invoke(null, new[] { result, null, null })!;
+            return (Task) genericStartAsTask.Invoke(null, [result, null, null])!;
         }
         catch (TargetInvocationException exception)
         {

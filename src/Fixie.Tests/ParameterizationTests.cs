@@ -58,13 +58,13 @@ public class ParameterizationTests : InstrumentedExecutionTests
 
     public async Task ShouldFailWithClearExplanationWhenParameterCountsAreMismatched()
     {
-        var execution = new ParameterizedExecution(method => new[]
+        var execution = new ParameterizedExecution(method => new object[][]
         {
-            new object[] { },
-            new object[] {0},
-            new object[] {0, 1},
-            new object[] {0, 1, 2},
-            new object[] {0, 1, 2, 3}
+            [],
+            [0],
+            [0, 1],
+            [0, 1, 2],
+            [0, 1, 2, 3]
         });
         var output = await Run<ParameterizedTestClass>(execution);
 

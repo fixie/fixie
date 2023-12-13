@@ -112,7 +112,7 @@ class Program
             return targetFrameworks;
 
         if (targetFrameworks.Contains(options.Framework))
-            return new[] {options.Framework};
+            return [options.Framework];
 
         var availableFrameworks = string.Join(", ", targetFrameworks.Select(x => $"'{x}'"));
 

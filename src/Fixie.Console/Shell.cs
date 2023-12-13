@@ -53,14 +53,14 @@ static class Shell
 
     static int MsBuild(string project, string target, string? configuration = null, string? targetFramework = null, string? outputPath = null)
     {
-        var arguments = new List<string>
-        {
+        List<string> arguments =
+        [
             "msbuild",
             project,
             "/nologo",
             "/verbosity:minimal",
             "/t:" + target
-        };
+        ];
 
         if (configuration != null)
             arguments.Add($"/p:Configuration={configuration}");

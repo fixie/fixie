@@ -11,11 +11,11 @@ public class RunnerTests
     {
         var report = new StubReport();
 
-        var candidateTypes = new[]
-        {
+        Type[] candidateTypes =
+        [
             typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
             typeof(PassFailTestClass), typeof(SkipTestClass)
-        };
+        ];
         var discovery = new SelfTestDiscovery();
         
         var environment = new TestEnvironment(GetType().Assembly, System.Console.Out, Directory.GetCurrentDirectory());
@@ -36,11 +36,11 @@ public class RunnerTests
     {
         var report = new StubReport();
 
-        var candidateTypes = new[]
-        {
+        Type[] candidateTypes =
+        [
             typeof(SampleIrrelevantClass), typeof(PassTestClass), typeof(int),
             typeof(PassFailTestClass), typeof(SkipTestClass)
-        };
+        ];
         var discovery = new SelfTestDiscovery();
         var execution = new CreateInstancePerCase();
 

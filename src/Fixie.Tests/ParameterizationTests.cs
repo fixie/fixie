@@ -235,8 +235,8 @@ public class ParameterizationTests : InstrumentedExecutionTests
 
     static IEnumerable<object[]> BuggyParameterSource(Test test)
     {
-        yield return new object[] { 0 };
-        yield return new object[] { 1 };
+        yield return [0];
+        yield return [1];
         throw new Exception("Exception thrown while attempting to yield input parameters for method: " + test.Method.Name);
     }
 
@@ -244,14 +244,14 @@ public class ParameterizationTests : InstrumentedExecutionTests
     {
         if (test.Name.EndsWith(".CompoundGenericParameter"))
         {
-            yield return new object[] {new KeyValuePair<int, string>(1, "A"), "System.Int32", "System.String"};
-            yield return new object[] {new KeyValuePair<string, int>("B", 2), "System.String", "System.Int32"};
+            yield return [new KeyValuePair<int, string>(1, "A"), "System.Int32", "System.String"];
+            yield return [new KeyValuePair<string, int>("B", 2), "System.String", "System.Int32"];
         }
         else if (test.Name.EndsWith(".GenericFuncParameter"))
         {
-            yield return new object[] {5, new Func<int, int>(i => i * 2), 10};
-            yield return new object[] {5, new Func<int, string>(i => i.ToString()), "5"};
-            yield return new object[] {5, new Func<int, string>(i => i.ToString()), '5'};
+            yield return [5, new Func<int, int>(i => i * 2), 10];
+            yield return [5, new Func<int, string>(i => i.ToString()), "5"];
+            yield return [5, new Func<int, string>(i => i.ToString()), '5'];
         }
     }
 

@@ -20,9 +20,9 @@ public class ResultEmittingTests : InstrumentedExecutionTests
                 await test.Fail(exception);
                 await test.Skip("Explicit skip reason.");
 
-                await test.Pass(new object[] {0, 'A'});
-                await test.Fail(new object[] {1, 'B'}, exception);
-                await test.Skip(new object[] {2, 'C'}, reason: "");
+                await test.Pass([0, 'A']);
+                await test.Fail([1, 'B'], exception);
+                await test.Skip([2, 'C'], reason: "");
             }
         }
     }

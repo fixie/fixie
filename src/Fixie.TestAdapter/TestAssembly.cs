@@ -9,10 +9,10 @@ static class TestAssembly
 {
     public static bool IsTestAssembly(string assemblyPath)
     {
-        var fixieAssemblies = new[]
-        {
+        string[] fixieAssemblies =
+        [
             "Fixie.dll", "Fixie.TestAdapter.dll"
-        };
+        ];
 
         if (fixieAssemblies.Contains(Path.GetFileName(assemblyPath)))
             return false;
@@ -48,7 +48,7 @@ static class TestAssembly
 
     static Process Run(string assemblyPath)
     {
-        var arguments = new[] { assemblyPath };
+        string[] arguments = [assemblyPath];
 
         var startInfo = new ProcessStartInfo
         {
@@ -80,7 +80,7 @@ static class TestAssembly
         // pass along new environment variables and resolve the
         // full path for the `dotnet` executable.
 
-        var arguments = new[] { assemblyPath };
+        string[] arguments = [assemblyPath];
 
         var environmentVariables = new Dictionary<string, string?>
         {

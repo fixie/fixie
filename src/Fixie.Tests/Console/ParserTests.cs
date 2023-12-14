@@ -321,7 +321,7 @@ public class ParserTests
         Parse<ModelWithArrays>(
             "--integer", "1", "--integer", "2",
             "--string", "three", "--string", "four")
-            .ShouldSucceed(new ModelWithArrays(new[] { 1, 2 }, new[] { "three", "four" }));
+            .ShouldSucceed(new ModelWithArrays([1, 2], ["three", "four"]));
     }
 
     public void ShouldSetEmptyArraysForMissingArrayArguments()
@@ -428,8 +428,8 @@ public class ParserTests
             "--integers", "90")
             .ShouldSucceed(new Complex(
                     "def", 34, true, 56, false,
-                    new[] { "first", "second" },
-                    new[] { 78, 90 }));
+                    ["first", "second"],
+                    [78, 90]));
     }
 
     class ComplexWithParams
@@ -484,8 +484,8 @@ public class ParserTests
             "positionalArgumentC")
             .ShouldSucceed(new ComplexWithParams(
                     "def", 34, true, 56, false,
-                    new[] { "first", "second" },
-                    new[] { 78, 90 },
+                    ["first", "second"],
+                    [78, 90],
                     "positionalArgumentA", "positionalArgumentB", "positionalArgumentC"));
     }
 

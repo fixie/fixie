@@ -8,12 +8,12 @@ public class BusTests
 {
     public async Task ShouldPublishEventsToAllReports()
     {
-        var reports = new IReport[]
-        {
+        IReport[] reports =
+        [
             new EventHandler(),
             new AnotherEventHandler(),
             new CombinationEventHandler()
-        };
+        ];
 
         using var console = new RedirectedConsole();
 
@@ -34,11 +34,11 @@ public class BusTests
 
     public async Task ShouldCatchAndLogExceptionsThrowByProblematicReportsRatherThanInterruptExecution()
     {
-        var reports = new IReport[]
-        {
+        IReport[] reports =
+        [
             new EventHandler(),
             new FailingEventHandler()
-        };
+        ];
 
         using var console = new RedirectedConsole();
 

@@ -112,7 +112,7 @@ class Program
             return targetFrameworks;
 
         if (targetFrameworks.Contains(options.Framework))
-            return new[] {options.Framework};
+            return [options.Framework];
 
         var availableFrameworks = string.Join(", ", targetFrameworks.Select(x => $"'{x}'"));
 
@@ -145,7 +145,7 @@ class Program
             new FileInfo(testProject).Directory!.FullName,
             outputPath);
 
-        var environmentVariables = new Dictionary<string, string>();
+        Dictionary<string, string> environmentVariables = [];
 
         if (options.Tests != null)
             environmentVariables["FIXIE_TESTS_PATTERN"] = options.Tests;

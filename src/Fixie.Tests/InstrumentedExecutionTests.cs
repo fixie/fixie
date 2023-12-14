@@ -79,12 +79,12 @@ public abstract class InstrumentedExecutionTests
     protected Task<Output> Run<TSampleTestClass1, TSampleTestClass2, TExecution>()
         where TExecution : IExecution, new()
         => Run(
-            new[] {typeof(TSampleTestClass1), typeof(TSampleTestClass2)},
+            [typeof(TSampleTestClass1), typeof(TSampleTestClass2)],
             new TExecution());
 
     protected Task<Output> Run<TSampleTestClass1, TSampleTestClass2>(IExecution execution)
         => Run(
-            new[] {typeof(TSampleTestClass1), typeof(TSampleTestClass2)},
+            [typeof(TSampleTestClass1), typeof(TSampleTestClass2)],
             execution);
    
     protected Task<Output> Run<TSampleTestClass>()

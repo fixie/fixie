@@ -59,7 +59,7 @@ class SourceLocationProvider
 
     static Dictionary<string, SourceLocation> MethodLocations(TypeDefinition type)
     {
-        var methodLocations = new Dictionary<string, SourceLocation>();
+        Dictionary<string, SourceLocation> methodLocations = [];
 
         foreach (var method in type.GetMethods())
         {

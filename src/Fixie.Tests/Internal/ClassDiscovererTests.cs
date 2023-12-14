@@ -7,7 +7,7 @@ namespace Fixie.Tests.Internal;
 public class ClassDiscovererTests
 {
     static readonly Type[] CandidateTypes =
-    {
+    [
         typeof(Decimal),
         typeof(StaticClass),
         typeof(AbstractClass),
@@ -19,7 +19,7 @@ public class ClassDiscovererTests
         typeof(Interface),
         typeof(InheritanceSampleBase),
         typeof(InheritanceSample)
-    };
+    ];
 
     class MaximumDiscovery : IDiscovery
     {

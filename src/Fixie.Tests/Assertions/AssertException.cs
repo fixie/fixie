@@ -51,7 +51,7 @@ public class AssertException : Exception
         if (stackTrace == null)
             return null;
 
-        var results = new List<string>();
+        List<string> results = [];
 
         foreach (var line in Lines(stackTrace))
         {

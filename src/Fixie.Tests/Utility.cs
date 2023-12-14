@@ -89,5 +89,5 @@ public static class Utility
     }
 
     static readonly object[] EmptyParameters = [];
-    static readonly object[][] InvokeOnceWithZeroParameters = { EmptyParameters };
+    static readonly object[][] InvokeOnceWithZeroParameters = [EmptyParameters];
 }

@@ -137,10 +137,6 @@ class Program
         Heading($"Running {assemblyName}{context}");
         WriteLine();
 
-        var arguments = new List<string> { targetFileName };
-
-        arguments.AddRange(customArguments);
-
         var workingDirectory = Path.Combine(
             new FileInfo(testProject).Directory!.FullName,
             outputPath);
@@ -150,7 +146,7 @@ class Program
         if (options.Tests != null)
             environmentVariables["FIXIE_TESTS_PATTERN"] = options.Tests;
 
-        return Run("dotnet", workingDirectory, arguments.ToArray(), environmentVariables);
+        return Run("dotnet", workingDirectory, [targetFileName, ..customArguments], environmentVariables);
     }
 
     static void Help()

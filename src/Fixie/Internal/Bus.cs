@@ -10,7 +10,7 @@ class Bus
     public Bus(TextWriter console, IReadOnlyList<IReport> reports)
     {
         this.console = console;
-        this.reports = new List<IReport>(reports);
+        this.reports = [..reports];
     }
 
     public async Task Publish<TMessage>(TMessage message) where TMessage : IMessage

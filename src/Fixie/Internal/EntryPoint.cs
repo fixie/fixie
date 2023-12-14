@@ -65,7 +65,7 @@ public class EntryPoint
 
                     exitCode = executeTests.Filter.Length == 0
                         ? await Run(environment, reports, async runner => await runner.Run())
-                        : await Run(environment, reports, async runner => await runner.Run(new HashSet<string>(executeTests.Filter)));
+                        : await Run(environment, reports, async runner => await runner.Run([..executeTests.Filter]));
                 }
                 else
                 {

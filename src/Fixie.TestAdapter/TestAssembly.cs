@@ -48,19 +48,11 @@ static class TestAssembly
 
     static Process Run(string assemblyPath)
     {
-        string[] arguments = [assemblyPath];
-
-        var startInfo = new ProcessStartInfo
+        return Start(new ProcessStartInfo("dotnet", [assemblyPath])
         {
             WorkingDirectory = WorkingDirectory(assemblyPath),
-            FileName = "dotnet",
             UseShellExecute = false
-        };
-
-        foreach (var argument in arguments)
-            startInfo.ArgumentList.Add(argument);
-
-        return Start(startInfo);
+        });
     }
 
     static Process? RunAttemptingDebuggerAttachment(string assemblyPath, IFrameworkHandle frameworkHandle,
@@ -80,8 +72,6 @@ static class TestAssembly
         // pass along new environment variables and resolve the
         // full path for the `dotnet` executable.
 
-        string[] arguments = [assemblyPath];
-
         var environmentVariables = new Dictionary<string, string?>
         {
             ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
@@ -95,7 +85,7 @@ static class TestAssembly
                 .LaunchProcessWithDebuggerAttached(
                     filePath,
                     WorkingDirectory(assemblyPath),
-                    Serialize(arguments),
+                    Serialize([assemblyPath]),
                     environmentVariables);
 
             return null;

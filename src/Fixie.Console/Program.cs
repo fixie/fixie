@@ -137,9 +137,7 @@ class Program
         Heading($"Running {assemblyName}{context}");
         WriteLine();
 
-        var arguments = new List<string> { targetFileName };
-
-        arguments.AddRange(customArguments);
+        List<string> arguments = [targetFileName, ..customArguments];
 
         var workingDirectory = Path.Combine(
             new FileInfo(testProject).Directory!.FullName,

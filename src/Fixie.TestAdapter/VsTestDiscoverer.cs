@@ -1,4 +1,5 @@
-﻿using System.IO.Pipes;
+﻿using System.Diagnostics;
+using System.IO.Pipes;
 using Fixie.Internal;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -14,6 +15,9 @@ class VsTestDiscoverer : ITestDiscoverer
 {
     public void DiscoverTests(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger log, ITestCaseDiscoverySink discoverySink)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+
         try
         {
             log.Version();
@@ -25,6 +29,9 @@ class VsTestDiscoverer : ITestDiscoverer
         {
             throw new RunnerException(exception);
         }
+
+        stopwatch.Stop();
+        log.Info($"DiscoverTests took {stopwatch.Elapsed}");
     }
 
     static void DiscoverTests(IMessageLogger log, ITestCaseDiscoverySink discoverySink, string assemblyPath)

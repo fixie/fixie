@@ -1,4 +1,5 @@
-﻿using System.IO.Pipes;
+﻿using System.Diagnostics;
+using System.IO.Pipes;
 using Fixie.Internal;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -26,13 +27,16 @@ public class VsTestExecutor : ITestExecutor
     /// </summary>
     public void RunTests(IEnumerable<string>? sources, IRunContext? runContext, IFrameworkHandle? frameworkHandle)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+
         ArgumentNullException.ThrowIfNull(sources);
         ArgumentNullException.ThrowIfNull(frameworkHandle);
 
+        IMessageLogger log = frameworkHandle;
+        
         try
         {
-            IMessageLogger log = frameworkHandle;
-
             log.Version();
 
             HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
@@ -49,6 +53,9 @@ public class VsTestExecutor : ITestExecutor
         {
             throw new RunnerException(exception);
         }
+
+        stopwatch.Stop();
+        log.Info($"RunTests[All] took {stopwatch.Elapsed}");
     }
 
     /// <summary>
@@ -63,13 +70,16 @@ public class VsTestExecutor : ITestExecutor
     /// </summary>
     public void RunTests(IEnumerable<TestCase>? tests, IRunContext? runContext, IFrameworkHandle? frameworkHandle)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+
         ArgumentNullException.ThrowIfNull(tests);
         ArgumentNullException.ThrowIfNull(frameworkHandle);
 
+        IMessageLogger log = frameworkHandle;
+        
         try
         {
-            IMessageLogger log = frameworkHandle;
-
             log.Version();
 
             HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
@@ -92,6 +102,9 @@ public class VsTestExecutor : ITestExecutor
         {
             throw new RunnerException(exception);
         }
+
+        stopwatch.Stop();
+        log.Info($"RunTests[Selected] took {stopwatch.Elapsed}");
     }
 
     public void Cancel() { }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.202
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fixie", "Fixie\Fixie.csproj", "{54B62C1C-3C2A-41A6-9D19-008F814D1791}"
 EndProject
@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeleteMe", "DeleteMe\DeleteMe.csproj", "{783983B8-6958-48C2-ACA1-5D41577DC9A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{04605B99-6D68-4BC5-8239-DC2EF4498B6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04605B99-6D68-4BC5-8239-DC2EF4498B6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04605B99-6D68-4BC5-8239-DC2EF4498B6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{783983B8-6958-48C2-ACA1-5D41577DC9A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{783983B8-6958-48C2-ACA1-5D41577DC9A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{783983B8-6958-48C2-ACA1-5D41577DC9A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{783983B8-6958-48C2-ACA1-5D41577DC9A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

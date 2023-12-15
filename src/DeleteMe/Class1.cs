@@ -2,5 +2,4 @@
 
 public class Class1
 {
-    Type type = typeof(TestProjectEntryPoint);
 }

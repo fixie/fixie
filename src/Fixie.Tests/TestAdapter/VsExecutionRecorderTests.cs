@@ -1,11 +1,11 @@
-﻿using Fixie.TestAdapter;
+﻿using System.Text.Json;
+using Fixie.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using Fixie.Internal;
 using Fixie.Tests.Reports;
 using static System.Environment;
-using static System.Text.Json.JsonSerializer;
 
 namespace Fixie.Tests.TestAdapter;
 
@@ -269,7 +269,7 @@ public class VsExecutionRecorderTests : MessagingTests
         // tests, put a given sample message through the same serialization round
         // trip that would be applied at runtime, in order to detect data loss.
 
-        return Deserialize<T>(Serialize(original))!;
+        return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(original))!;
     }
 
     class StubExecutionRecorder : ITestExecutionRecorder

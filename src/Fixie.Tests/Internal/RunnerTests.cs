@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using Fixie.Internal;
 using static Fixie.Tests.Utility;
 
@@ -49,7 +50,7 @@ public class RunnerTests
         var configuration = new TestConfiguration();
         configuration.Conventions.Add(discovery, execution);
 
-        await runner.Run(candidateTypes, configuration, []);
+        await runner.Run(candidateTypes, configuration, FrozenSet<string>.Empty);
 
         report.Entries.ShouldBe(
             Self + "+PassTestClass.PassA passed",

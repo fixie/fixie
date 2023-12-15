@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.Frozen;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Fixie.Internal;
 using Fixie.Reports;
@@ -78,7 +79,7 @@ public static class Utility
         var configuration = new TestConfiguration();
         configuration.Conventions.Add(discovery, execution);
 
-        await runner.Run(candidateTypes, configuration, []);
+        await runner.Run(candidateTypes, configuration, FrozenSet<string>.Empty);
     }
 
     public static IEnumerable<object?[]> FromInputAttributes(Test test)

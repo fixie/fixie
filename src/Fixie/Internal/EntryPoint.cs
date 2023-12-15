@@ -1,4 +1,5 @@
-﻿using System.IO.Pipes;
+﻿using System.Collections.Frozen;
+using System.IO.Pipes;
 using System.Reflection;
 using Fixie.Reports;
 using static System.Environment;
@@ -65,7 +66,7 @@ public class EntryPoint
 
                     exitCode = executeTests.Filter.Length == 0
                         ? await Run(environment, reports, async runner => await runner.Run())
-                        : await Run(environment, reports, async runner => await runner.Run([..executeTests.Filter]));
+                        : await Run(environment, reports, async runner => await runner.Run(executeTests.Filter.ToFrozenSet()));
                 }
                 else
                 {

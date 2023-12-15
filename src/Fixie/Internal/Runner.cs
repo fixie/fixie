@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Frozen;
+using System.Reflection;
 using Fixie.Reports;
 
 namespace Fixie.Internal;
@@ -28,20 +29,20 @@ class Runner
 
     public Task<ExecutionSummary> Run()
     {
-        return Run(assembly.GetTypes(), []);
+        return Run(assembly.GetTypes(), FrozenSet<string>.Empty);
     }
 
-    public Task<ExecutionSummary> Run(HashSet<string> selectedTests)
+    public Task<ExecutionSummary> Run(FrozenSet<string> selectedTests)
     {
         return Run(assembly.GetTypes(), selectedTests);
     }
 
     public Task<ExecutionSummary> Run(TestPattern testPattern)
     {
-        return Run(assembly.GetTypes(), [], testPattern);
+        return Run(assembly.GetTypes(), FrozenSet<string>.Empty, testPattern);
     }
 
-    async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, HashSet<string> selectedTests, TestPattern? testPattern = null)
+    async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, FrozenSet<string> selectedTests, TestPattern? testPattern = null)
     {
         var configuration = BuildConfiguration();
             
@@ -61,7 +62,7 @@ class Runner
                 await bus.Publish(new TestDiscovered(testMethod.TestName()));
     }
 
-    internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, TestConfiguration configuration, HashSet<string> selectedTests, TestPattern? testPattern = null)
+    internal async Task<ExecutionSummary> Run(IReadOnlyList<Type> candidateTypes, TestConfiguration configuration, FrozenSet<string> selectedTests, TestPattern? testPattern = null)
     {
         var conventions = configuration.Conventions.Items;
         var bus = new Bus(console, defaultReports.Concat(configuration.Reports.Items).ToArray());
@@ -84,7 +85,7 @@ class Runner
         }
     }
 
-    static TestSuite BuildTestSuite(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, HashSet<string> selectedTests, TestPattern? testPattern, ExecutionRecorder recorder)
+    static TestSuite BuildTestSuite(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, FrozenSet<string> selectedTests, TestPattern? testPattern, ExecutionRecorder recorder)
     {
         var classDiscoverer = new ClassDiscoverer(discovery);
         var classes = classDiscoverer.TestClasses(candidateTypes);

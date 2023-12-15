@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeleteMe", "DeleteMe\DeleteMe.csproj", "{783983B8-6958-48C2-ACA1-5D41577DC9A4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,10 +38,6 @@ Global
 		{04605B99-6D68-4BC5-8239-DC2EF4498B6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04605B99-6D68-4BC5-8239-DC2EF4498B6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04605B99-6D68-4BC5-8239-DC2EF4498B6F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{783983B8-6958-48C2-ACA1-5D41577DC9A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{783983B8-6958-48C2-ACA1-5D41577DC9A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{783983B8-6958-48C2-ACA1-5D41577DC9A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{783983B8-6958-48C2-ACA1-5D41577DC9A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

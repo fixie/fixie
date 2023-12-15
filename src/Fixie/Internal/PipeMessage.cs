@@ -30,9 +30,14 @@ static class PipeMessage
         return JsonSerializer.Serialize(message, typeof(TMessage), PipeMessageContext.Default);
     }
 
-    public static TMessage? Deserialize<TMessage>(string json) where TMessage: class
+    public static TMessage Deserialize<TMessage>(string json)
     {
-        return JsonSerializer.Deserialize(json, typeof(TMessage), PipeMessageContext.Default) as TMessage;
+        var message = JsonSerializer.Deserialize(json, typeof(TMessage), PipeMessageContext.Default);
+
+        if (message == null)
+            throw new System.Exception($"Message of type {typeof(TMessage).FullName} was unexpectedly null.");
+        
+        return (TMessage)message;
     }
 
     public class DiscoverTests { }

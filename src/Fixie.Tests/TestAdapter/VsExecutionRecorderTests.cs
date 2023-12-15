@@ -261,14 +261,14 @@ public class VsExecutionRecorderTests : MessagingTests
         }));
     }
 
-    static T Deserialized<T>(T original) where T : class
+    static T Deserialized<T>(T original)
     {
         // Because the inter-process communication between the VsTest process
         // and the test assembly process is not exercised in these single-process
         // tests, put a given sample message through the same serialization round
         // trip that would be applied at runtime, in order to detect data loss.
 
-        return PipeMessage.Deserialize<T>(PipeMessage.Serialize(original))!;
+        return PipeMessage.Deserialize<T>(PipeMessage.Serialize(original));
     }
 
     class StubExecutionRecorder : ITestExecutionRecorder

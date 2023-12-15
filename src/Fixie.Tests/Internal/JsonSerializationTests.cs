@@ -124,7 +124,13 @@ public class JsonSerializationTests : MessagingTests
         Expect(new PipeMessage.EndOfPipe(), "{}");
     }
 
-    static void Expect<TMessage>(TMessage message, string expectedJson) where TMessage : class
+    public void ShouldThrowForNullDeserialization()
+    {
+        Action nullMessage = () => PipeMessage.Deserialize<PipeMessage.TestFailed>("null");
+        nullMessage.ShouldThrow<Exception>("Message of type Fixie.Internal.PipeMessage+TestFailed was unexpectedly null.");
+    }
+
+    static void Expect<TMessage>(TMessage message, string expectedJson)
     {
         PipeMessage.Serialize(PipeMessage.Deserialize<TMessage>(expectedJson)).ShouldBe(expectedJson);
         PipeMessage.Serialize(message).ShouldBe(expectedJson);

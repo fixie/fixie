@@ -30,7 +30,7 @@ class TestAdapterPipe : IDisposable
         return reader.ReadLine();
     }
 
-    public TMessage Receive<TMessage>()
+    public TMessage Receive<TMessage>() where TMessage : class
     {
         return PipeMessage.Deserialize<TMessage>(ReceiveMessageBody())!;
     }

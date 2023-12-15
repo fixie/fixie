@@ -261,7 +261,7 @@ public class VsExecutionRecorderTests : MessagingTests
         }));
     }
 
-    static T Deserialized<T>(T original)
+    static T Deserialized<T>(T original) where T : class
     {
         // Because the inter-process communication between the VsTest process
         // and the test assembly process is not exercised in these single-process

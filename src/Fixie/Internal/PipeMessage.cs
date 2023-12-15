@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using Fixie.Reports;
 
 namespace Fixie.Internal;
@@ -9,16 +10,29 @@ namespace Fixie.Internal;
  * deserialization from corresponding serialization where no nulls are in play.
  */
 
+[JsonSerializable(typeof(PipeMessage.DiscoverTests))]
+[JsonSerializable(typeof(PipeMessage.ExecuteTests))]
+[JsonSerializable(typeof(PipeMessage.TestDiscovered))]
+[JsonSerializable(typeof(PipeMessage.TestStarted))]
+[JsonSerializable(typeof(PipeMessage.TestSkipped))]
+[JsonSerializable(typeof(PipeMessage.TestPassed))]
+[JsonSerializable(typeof(PipeMessage.TestFailed))]
+[JsonSerializable(typeof(PipeMessage.Exception))]
+[JsonSerializable(typeof(PipeMessage.EndOfPipe))]
+partial class PipeMessageContext : JsonSerializerContext
+{
+}
+
 static class PipeMessage
 {
     public static string Serialize<TMessage>(TMessage message)
     {
-        return JsonSerializer.Serialize(message);
+        return JsonSerializer.Serialize(message, typeof(TMessage), PipeMessageContext.Default);
     }
 
-    public static TMessage? Deserialize<TMessage>(string json)
+    public static TMessage? Deserialize<TMessage>(string json) where TMessage: class
     {
-        return JsonSerializer.Deserialize<TMessage>(json);
+        return JsonSerializer.Deserialize(json, typeof(TMessage), PipeMessageContext.Default) as TMessage;
     }
 
     public class DiscoverTests { }

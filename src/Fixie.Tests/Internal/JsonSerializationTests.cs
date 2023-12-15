@@ -124,7 +124,7 @@ public class JsonSerializationTests : MessagingTests
         Expect(new PipeMessage.EndOfPipe(), "{}");
     }
 
-    static void Expect<TMessage>(TMessage message, string expectedJson)
+    static void Expect<TMessage>(TMessage message, string expectedJson) where TMessage : class
     {
         PipeMessage.Serialize(PipeMessage.Deserialize<TMessage>(expectedJson)).ShouldBe(expectedJson);
         PipeMessage.Serialize(message).ShouldBe(expectedJson);

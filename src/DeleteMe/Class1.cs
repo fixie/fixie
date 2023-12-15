@@ -1,4 +1,4 @@
-﻿namespace Fixie.Internal;
+﻿namespace DeleteMe;
 
 public class Class1
 {

@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Fixie.TestAdapter;
+﻿using Fixie.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
@@ -269,7 +268,7 @@ public class VsExecutionRecorderTests : MessagingTests
         // tests, put a given sample message through the same serialization round
         // trip that would be applied at runtime, in order to detect data loss.
 
-        return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(original))!;
+        return PipeMessage.Deserialize<T>(PipeMessage.Serialize(original))!;
     }
 
     class StubExecutionRecorder : ITestExecutionRecorder

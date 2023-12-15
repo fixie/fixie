@@ -1,4 +1,5 @@
-﻿using Fixie.Reports;
+﻿using System.Text.Json;
+using Fixie.Reports;
 
 namespace Fixie.Internal;
 
@@ -10,6 +11,16 @@ namespace Fixie.Internal;
 
 static class PipeMessage
 {
+    public static string Serialize<TMessage>(TMessage message)
+    {
+        return JsonSerializer.Serialize(message);
+    }
+
+    public static TMessage? Deserialize<TMessage>(string json)
+    {
+        return JsonSerializer.Deserialize<TMessage>(json);
+    }
+
     public class DiscoverTests { }
 
     public class ExecuteTests

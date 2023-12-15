@@ -10,7 +10,6 @@ class Program
     const int Failure = 1;
     const int FatalError = 2;
 
-    [STAThread]
     static int Main(string[] arguments)
     {
         try

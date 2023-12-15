@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 file class TestProjectEntryPoint
 {
-    [STAThread]
     static async Task<int> Main(string[] customArguments)
         => await Fixie.Internal.EntryPoint.Main(typeof(TestProjectEntryPoint).Assembly, customArguments);
 }

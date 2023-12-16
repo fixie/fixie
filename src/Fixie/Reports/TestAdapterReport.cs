@@ -38,35 +38,7 @@ class TestAdapterReport :
 
     public Task Handle(TestSkipped message)
     {
-        Write<PipeMessage.TestSkipped>(message, x =>
-        {
-            x.Reason = message.Reason;
-        });
-
-        return Task.CompletedTask;
-    }
-
-    public Task Handle(TestPassed message)
-    {
-        Write<PipeMessage.TestPassed>(message);
-
-        return Task.CompletedTask;
-    }
-
-    public Task Handle(TestFailed message)
-    {
-        Write<PipeMessage.TestFailed>(message, x =>
-        {
-            x.Reason = new PipeMessage.Exception(message.Reason);
-        });
-
-        return Task.CompletedTask;
-    }
-
-    void Write<TTestResult>(TestCompleted message, Action<TTestResult>? customize = null)
-        where TTestResult : PipeMessage.TestCompleted, new()
-    {
-        var result = new TTestResult
+        var result = new PipeMessage.TestSkipped
         {
             Test = message.Test,
             TestCase = message.TestCase,
@@ -74,9 +46,51 @@ class TestAdapterReport :
             Output = message.Output
         };
 
-        customize?.Invoke(result);
+        ((Action<PipeMessage.TestSkipped>?)(x =>
+        {
+            x.Reason = message.Reason;
+        }))?.Invoke(result);
 
         Write(result);
+
+        return Task.CompletedTask;
+    }
+
+    public Task Handle(TestPassed message)
+    {
+        var result = new PipeMessage.TestPassed
+        {
+            Test = message.Test,
+            TestCase = message.TestCase,
+            DurationInMilliseconds = message.Duration.TotalMilliseconds,
+            Output = message.Output
+        };
+
+        ((Action<PipeMessage.TestPassed>?)null)?.Invoke(result);
+
+        Write(result);
+
+        return Task.CompletedTask;
+    }
+
+    public Task Handle(TestFailed message)
+    {
+        var result = new PipeMessage.TestFailed
+        {
+            Test = message.Test,
+            TestCase = message.TestCase,
+            DurationInMilliseconds = message.Duration.TotalMilliseconds,
+            Output = message.Output
+        };
+
+        ((Action<PipeMessage.TestFailed>?)(x =>
+        {
+            x.Reason = new PipeMessage.Exception(message.Reason);
+        }))?.Invoke(result);
+
+        Write(result);
+
+        return Task.CompletedTask;
     }
 
     void Write<T>(T message) => pipe.Send(message);

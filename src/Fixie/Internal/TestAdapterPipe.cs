@@ -32,7 +32,7 @@ class TestAdapterPipe : IDisposable
 
     public TMessage Receive<TMessage>()
     {
-        return PipeMessage.Deserialize<TMessage>(ReceiveMessageBody())!;
+        return PipeMessage.Deserialize<TMessage>(ReceiveMessageBody());
     }
 
     public string ReceiveMessageBody()

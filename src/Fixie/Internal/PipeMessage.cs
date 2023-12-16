@@ -11,9 +11,14 @@ static class PipeMessage
         return JsonSerializer.Serialize(message);
     }
 
-    public static TMessage? Deserialize<TMessage>(string json)
+    public static TMessage Deserialize<TMessage>(string json)
     {
-        return JsonSerializer.Deserialize<TMessage>(json);
+        var message = JsonSerializer.Deserialize<TMessage>(json);
+
+        if (message == null)
+            throw new System.Exception($"Message of type {typeof(TMessage).FullName} was unexpectedly null.");
+
+        return message;
     }
 
     public class DiscoverTests { }

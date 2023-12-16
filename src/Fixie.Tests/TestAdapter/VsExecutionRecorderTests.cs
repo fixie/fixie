@@ -268,7 +268,7 @@ public class VsExecutionRecorderTests : MessagingTests
         // tests, put a given sample message through the same serialization round
         // trip that would be applied at runtime, in order to detect data loss.
 
-        return PipeMessage.Deserialize<T>(PipeMessage.Serialize(original))!;
+        return PipeMessage.Deserialize<T>(PipeMessage.Serialize(original));
     }
 
     class StubExecutionRecorder : ITestExecutionRecorder

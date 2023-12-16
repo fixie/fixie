@@ -13,10 +13,6 @@ public class JsonSerializationTests : MessagingTests
 
     public void ShouldSerializeExecuteTestsMessage()
     {
-        // Unintended case allowed by the type system.
-        Expect(new PipeMessage.ExecuteTests(),
-            "{\"Filter\":null}");
-
         Expect(new PipeMessage.ExecuteTests { Filter = [] },
             "{\"Filter\":[]}");
 
@@ -30,28 +26,18 @@ public class JsonSerializationTests : MessagingTests
 
     public void ShouldSerializeTestDiscoveredMessage()
     {
-        // Unintended case allowed by the type system.
-        Expect(new PipeMessage.TestDiscovered(), "{\"Test\":null}");
-
         Expect(new PipeMessage.TestDiscovered { Test = TestClass + ".Pass" },
             "{\"Test\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleTestClass.Pass\"}");
     }
 
     public void ShouldSerializeTestStartedMessage()
     {
-        // Unintended case allowed by the type system.
-        Expect(new PipeMessage.TestStarted(), "{\"Test\":null}");
-
         Expect(new PipeMessage.TestStarted { Test = TestClass + ".Pass" },
             "{\"Test\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleTestClass.Pass\"}");
     }
 
     public void ShouldSerializeTestSkippedMessage()
     {
-        // Unintended case allowed by the type system.
-        Expect(new PipeMessage.TestSkipped(),
-            "{\"Reason\":null,\"Test\":null,\"TestCase\":null,\"DurationInMilliseconds\":0,\"Output\":null}");
-
         Expect(new PipeMessage.TestSkipped
             {
                 Reason = "⚠ Skipped!",
@@ -65,10 +51,6 @@ public class JsonSerializationTests : MessagingTests
 
     public void ShouldSerializeTestPassedMessage()
     {
-        // Unintended case allowed by the type system.
-        Expect(new PipeMessage.TestPassed(),
-            "{\"Test\":null,\"TestCase\":null,\"DurationInMilliseconds\":0,\"Output\":null}");
-
         Expect(new PipeMessage.TestPassed
             {
                 Test = GenericTestClass + ".ShouldBeString",
@@ -81,10 +63,6 @@ public class JsonSerializationTests : MessagingTests
 
     public void ShouldSerializeTestFailedMessage()
     {
-        // Unintended case allowed by the type system.
-        Expect(new PipeMessage.TestFailed(),
-            "{\"Reason\":null,\"Test\":null,\"TestCase\":null,\"DurationInMilliseconds\":0,\"Output\":null}");
-
         var at = At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)").Replace("\\", "\\\\");
 
         Expect(new PipeMessage.TestFailed
@@ -105,10 +83,6 @@ public class JsonSerializationTests : MessagingTests
 
     public void ShouldSerializeExceptionMessage()
     {
-        // Unintended case allowed by the type system.
-        Expect(new PipeMessage.Exception(),
-            "{\"Type\":null,\"Message\":null,\"StackTrace\":null}");
-
         var at = At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)").Replace("\\", "\\\\");
 
         Expect(new PipeMessage.Exception

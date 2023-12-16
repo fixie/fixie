@@ -2,23 +2,16 @@
 
 namespace Fixie.Reports;
 
-class TestAdapterReport :
+class TestAdapterReport(TestAdapterPipe pipe) :
     IHandler<TestDiscovered>,
     IHandler<TestStarted>,
     IHandler<TestSkipped>,
     IHandler<TestPassed>,
     IHandler<TestFailed>
 {
-    readonly TestAdapterPipe pipe;
-
-    public TestAdapterReport(TestAdapterPipe pipe)
-    {
-        this.pipe = pipe;
-    }
-
     public Task Handle(TestDiscovered message)
     {
-        Write(new PipeMessage.TestDiscovered
+        pipe.Send(new PipeMessage.TestDiscovered
         {
             Test = message.Test
         });
@@ -28,7 +21,7 @@ class TestAdapterReport :
 
     public Task Handle(TestStarted message)
     {
-        Write(new PipeMessage.TestStarted
+        pipe.Send(new PipeMessage.TestStarted
         {
             Test = message.Test
         });
@@ -38,9 +31,13 @@ class TestAdapterReport :
 
     public Task Handle(TestSkipped message)
     {
-        Write<PipeMessage.TestSkipped>(message, x =>
+        pipe.Send(new PipeMessage.TestSkipped
         {
-            x.Reason = message.Reason;
+            Test = message.Test,
+            TestCase = message.TestCase,
+            DurationInMilliseconds = message.Duration.TotalMilliseconds,
+            Output = message.Output,
+            Reason = message.Reason
         });
 
         return Task.CompletedTask;
@@ -48,36 +45,28 @@ class TestAdapterReport :
 
     public Task Handle(TestPassed message)
     {
-        Write<PipeMessage.TestPassed>(message);
+        pipe.Send(new PipeMessage.TestPassed
+        {
+            Test = message.Test,
+            TestCase = message.TestCase,
+            DurationInMilliseconds = message.Duration.TotalMilliseconds,
+            Output = message.Output
+        });
 
         return Task.CompletedTask;
     }
 
     public Task Handle(TestFailed message)
     {
-        Write<PipeMessage.TestFailed>(message, x =>
-        {
-            x.Reason = new PipeMessage.Exception(message.Reason);
-        });
-
-        return Task.CompletedTask;
-    }
-
-    void Write<TTestResult>(TestCompleted message, Action<TTestResult>? customize = null)
-        where TTestResult : PipeMessage.TestCompleted, new()
-    {
-        var result = new TTestResult
+        pipe.Send(new PipeMessage.TestFailed
         {
             Test = message.Test,
             TestCase = message.TestCase,
             DurationInMilliseconds = message.Duration.TotalMilliseconds,
-            Output = message.Output
-        };
+            Output = message.Output,
+            Reason = new PipeMessage.Exception(message.Reason)
+        });
 
-        customize?.Invoke(result);
-
-        Write(result);
+        return Task.CompletedTask;
     }
-
-    void Write<T>(T message) => pipe.Send(message);
 }

@@ -46,10 +46,7 @@ class TestAdapterReport :
             Output = message.Output
         };
 
-        ((Action<PipeMessage.TestSkipped>?)(x =>
-        {
-            x.Reason = message.Reason;
-        }))?.Invoke(result);
+        result.Reason = message.Reason;
 
         Write(result);
 
@@ -66,8 +63,6 @@ class TestAdapterReport :
             Output = message.Output
         };
 
-        ((Action<PipeMessage.TestPassed>?)null)?.Invoke(result);
-
         Write(result);
 
         return Task.CompletedTask;
@@ -83,10 +78,7 @@ class TestAdapterReport :
             Output = message.Output
         };
 
-        ((Action<PipeMessage.TestFailed>?)(x =>
-        {
-            x.Reason = new PipeMessage.Exception(message.Reason);
-        }))?.Invoke(result);
+        result.Reason = new PipeMessage.Exception(message.Reason);
 
         Write(result);
 

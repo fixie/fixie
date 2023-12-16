@@ -1,12 +1,7 @@
-﻿using Fixie.Reports;
+﻿using System.Diagnostics.CodeAnalysis;
+using Fixie.Reports;
 
 namespace Fixie.Internal;
-
-/*
- * Nullability hints here are informed by usages. Although these types are serialized and deserialized
- * to and from JSON, and in theory could be null upon deserialization, we can trace all real
- * deserialization from corresponding serialization where no nulls are in play.
- */
 
 static class PipeMessage
 {
@@ -14,30 +9,30 @@ static class PipeMessage
 
     public class ExecuteTests
     {
-        public string[] Filter { get; init; } = default!;
+        public required string[] Filter { get; init; }
     }
 
     public class TestDiscovered
     {
-        public string Test { get; init; } = default!;
+        public required string Test { get; init; }
     }
 
     public class TestStarted
     {
-        public string Test { get; init; } = default!;
+        public required string Test { get; init; }
     }
 
     public abstract class TestCompleted
     {
-        public string Test { get; init; } = default!;
-        public string TestCase { get; init; } = default!;
-        public double DurationInMilliseconds { get; init; }
-        public string Output { get; init; } = default!;
+        public required string Test { get; init; }
+        public required string TestCase { get; init; }
+        public required double DurationInMilliseconds { get; init; }
+        public required string Output { get; init; }
     }
 
     public class TestSkipped : TestCompleted
     {
-        public string Reason { get; init; } = default!;
+        public required string Reason { get; init; }
     }
 
     public class TestPassed : TestCompleted
@@ -46,7 +41,7 @@ static class PipeMessage
 
     public class TestFailed : TestCompleted
     {
-        public Exception Reason { get; init; } = default!;
+        public required Exception Reason { get; init; }
     }
 
     public class Exception
@@ -55,6 +50,7 @@ static class PipeMessage
         {
         }
 
+        [SetsRequiredMembers]
         public Exception(System.Exception exception)
         {
             Type = exception.GetType().FullName!;
@@ -62,9 +58,9 @@ static class PipeMessage
             StackTrace = exception.StackTraceSummary();
         }
 
-        public string Type { get; init; } = default!;
-        public string Message { get; init; } = default!;
-        public string StackTrace { get; init; } = default!;
+        public required string Type { get; init; }
+        public required string Message { get; init; }
+        public required string StackTrace { get; init; }
     }
 
     public class EndOfPipe { }

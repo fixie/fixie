@@ -2,20 +2,13 @@
 
 namespace Fixie.Reports;
 
-class TestAdapterReport :
+class TestAdapterReport(TestAdapterPipe pipe) :
     IHandler<TestDiscovered>,
     IHandler<TestStarted>,
     IHandler<TestSkipped>,
     IHandler<TestPassed>,
     IHandler<TestFailed>
 {
-    readonly TestAdapterPipe pipe;
-
-    public TestAdapterReport(TestAdapterPipe pipe)
-    {
-        this.pipe = pipe;
-    }
-
     public Task Handle(TestDiscovered message)
     {
         Write(new PipeMessage.TestDiscovered

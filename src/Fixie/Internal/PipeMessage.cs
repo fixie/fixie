@@ -14,30 +14,30 @@ static class PipeMessage
 
     public class ExecuteTests
     {
-        public string[] Filter { get; set; } = default!;
+        public string[] Filter { get; init; } = default!;
     }
 
     public class TestDiscovered
     {
-        public string Test { get; set; } = default!;
+        public string Test { get; init; } = default!;
     }
 
     public class TestStarted
     {
-        public string Test { get; set; } = default!;
+        public string Test { get; init; } = default!;
     }
 
     public abstract class TestCompleted
     {
-        public string Test { get; set; } = default!;
-        public string TestCase { get; set; } = default!;
-        public double DurationInMilliseconds { get; set; }
-        public string Output { get; set; } = default!;
+        public string Test { get; init; } = default!;
+        public string TestCase { get; init; } = default!;
+        public double DurationInMilliseconds { get; init; }
+        public string Output { get; init; } = default!;
     }
 
     public class TestSkipped : TestCompleted
     {
-        public string Reason { get; set; } = default!;
+        public string Reason { get; init; } = default!;
     }
 
     public class TestPassed : TestCompleted
@@ -46,7 +46,7 @@ static class PipeMessage
 
     public class TestFailed : TestCompleted
     {
-        public Exception Reason { get; set; } = default!;
+        public Exception Reason { get; init; } = default!;
     }
 
     public class Exception
@@ -62,9 +62,9 @@ static class PipeMessage
             StackTrace = exception.StackTraceSummary();
         }
 
-        public string Type { get; set; } = default!;
-        public string Message { get; set; } = default!;
-        public string StackTrace { get; set; } = default!;
+        public string Type { get; init; } = default!;
+        public string Message { get; init; } = default!;
+        public string StackTrace { get; init; } = default!;
     }
 
     public class EndOfPipe { }

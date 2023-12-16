@@ -43,10 +43,9 @@ class TestAdapterReport :
             Test = message.Test,
             TestCase = message.TestCase,
             DurationInMilliseconds = message.Duration.TotalMilliseconds,
-            Output = message.Output
+            Output = message.Output,
+            Reason = message.Reason
         };
-
-        result.Reason = message.Reason;
 
         Write(result);
 
@@ -75,10 +74,9 @@ class TestAdapterReport :
             Test = message.Test,
             TestCase = message.TestCase,
             DurationInMilliseconds = message.Duration.TotalMilliseconds,
-            Output = message.Output
+            Output = message.Output,
+            Reason = new PipeMessage.Exception(message.Reason)
         };
-
-        result.Reason = new PipeMessage.Exception(message.Reason);
 
         Write(result);
 

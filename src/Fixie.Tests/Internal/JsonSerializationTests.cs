@@ -1,6 +1,6 @@
-﻿using Fixie.Internal;
+﻿using System.Text.Json;
+using Fixie.Internal;
 using Fixie.Tests.Reports;
-using static System.Text.Json.JsonSerializer;
 
 namespace Fixie.Tests.Internal;
 
@@ -101,7 +101,7 @@ public class JsonSerializationTests : MessagingTests
 
     static void Expect<TMessage>(TMessage message, string expectedJson)
     {
-        Serialize(Deserialize<TMessage>(expectedJson)).ShouldBe(expectedJson);
-        Serialize(message).ShouldBe(expectedJson);
+        JsonSerializer.Serialize(JsonSerializer.Deserialize<TMessage>(expectedJson)).ShouldBe(expectedJson);
+        JsonSerializer.Serialize(message).ShouldBe(expectedJson);
     }
 }

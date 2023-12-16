@@ -38,47 +38,41 @@ class TestAdapterReport :
 
     public Task Handle(TestSkipped message)
     {
-        var result = new PipeMessage.TestSkipped
+        Write(new PipeMessage.TestSkipped
         {
             Test = message.Test,
             TestCase = message.TestCase,
             DurationInMilliseconds = message.Duration.TotalMilliseconds,
             Output = message.Output,
             Reason = message.Reason
-        };
-
-        Write(result);
+        });
 
         return Task.CompletedTask;
     }
 
     public Task Handle(TestPassed message)
     {
-        var result = new PipeMessage.TestPassed
+        Write(new PipeMessage.TestPassed
         {
             Test = message.Test,
             TestCase = message.TestCase,
             DurationInMilliseconds = message.Duration.TotalMilliseconds,
             Output = message.Output
-        };
-
-        Write(result);
+        });
 
         return Task.CompletedTask;
     }
 
     public Task Handle(TestFailed message)
     {
-        var result = new PipeMessage.TestFailed
+        Write(new PipeMessage.TestFailed
         {
             Test = message.Test,
             TestCase = message.TestCase,
             DurationInMilliseconds = message.Duration.TotalMilliseconds,
             Output = message.Output,
             Reason = new PipeMessage.Exception(message.Reason)
-        };
-
-        Write(result);
+        });
 
         return Task.CompletedTask;
     }

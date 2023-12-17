@@ -2,19 +2,15 @@
 using static System.IO.Directory;
 using static Fixie.Console.Shell;
 
-namespace Fixie.Console;
+using Fixie.Console;
 
-class Program
-{
     const int Success = 0;
     const int Failure = 1;
     const int FatalError = 2;
 
-    static int Main(string[] arguments)
-    {
         try
         {
-            CommandLine.Partition(arguments, out var runnerArguments, out var customArguments);
+            CommandLine.Partition(args, out var runnerArguments, out var customArguments);
 
             var options = CommandLine.Parse<Options>(runnerArguments);
 
@@ -65,7 +61,6 @@ class Program
 
             return FatalError;
         }
-    }
 
     static IEnumerable<string> TestProjects(Options options)
     {
@@ -198,4 +193,3 @@ class Program
         using (Foreground.Red)
             WriteLine(message);
     }
-}

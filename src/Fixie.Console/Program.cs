@@ -4,192 +4,192 @@ using static Fixie.Console.Shell;
 
 using Fixie.Console;
 
-    const int Success = 0;
-    const int Failure = 1;
-    const int FatalError = 2;
+const int Success = 0;
+const int Failure = 1;
+const int FatalError = 2;
 
-        try
-        {
-            CommandLine.Partition(args, out var runnerArguments, out var customArguments);
+try
+{
+    CommandLine.Partition(args, out var runnerArguments, out var customArguments);
 
-            var options = CommandLine.Parse<Options>(runnerArguments);
+    var options = CommandLine.Parse<Options>(runnerArguments);
 
-            var overallExitCode = Success;
+    var overallExitCode = Success;
 
-            foreach(var testProject in TestProjects(options).ToArray())
-            {
-                if (options.ShouldBuild)
-                {
-                    WriteLine($"Building {Path.GetFileNameWithoutExtension(testProject)}...");
-                    
-                    var exitCode = RunTarget(testProject, "Build", options.Configuration);
-                    
-                    if (exitCode != 0)
-                    {
-                        Error("Build failed!");
-                        return FatalError;
-                    }
-                }
-                    
-                var targetFrameworks = GetTargetFrameworks(options, testProject);
-                    
-                bool runningForMultipleFrameworks = targetFrameworks.Length > 1;
-                foreach (var targetFramework in targetFrameworks)
-                {
-                    int exitCode = RunTests(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
-                    
-                    if (exitCode != Success && exitCode != Failure)
-                        Error("Unexpected exit code: " + exitCode);
-                    
-                    if (exitCode != Success)
-                        overallExitCode = Failure;
-                }
-            }
-
-            return overallExitCode;
-        }
-        catch (CommandLineException exception)
-        {
-            Error(exception.Message);
-            Help();
-
-            return FatalError;
-        }
-        catch (Exception exception)
-        {
-            Error($"Fatal Error: {exception}");
-
-            return FatalError;
-        }
-
-    static IEnumerable<string> TestProjects(Options options)
+    foreach(var testProject in TestProjects(options).ToArray())
     {
-        if (options.ProjectPatterns.Any())
+        if (options.ShouldBuild)
         {
-            foreach (var pattern in options.ProjectPatterns)
+            WriteLine($"Building {Path.GetFileNameWithoutExtension(testProject)}...");
+            
+            var exitCode = RunTarget(testProject, "Build", options.Configuration);
+            
+            if (exitCode != 0)
             {
-                var found = false;
-
-                foreach (var project in EnumerateFiles(GetCurrentDirectory(), pattern + ".*proj", SearchOption.AllDirectories))
-                {
-                    found = true;
-                    yield return project;
-                }
-
-                if (!found)
-                    throw new CommandLineException($"There are no projects matching the pattern '{pattern}'.");
+                Error("Build failed!");
+                return FatalError;
             }
         }
-        else
+            
+        var targetFrameworks = GetTargetFrameworks(options, testProject);
+            
+        bool runningForMultipleFrameworks = targetFrameworks.Length > 1;
+        foreach (var targetFramework in targetFrameworks)
+        {
+            int exitCode = RunTests(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
+            
+            if (exitCode != Success && exitCode != Failure)
+                Error("Unexpected exit code: " + exitCode);
+            
+            if (exitCode != Success)
+                overallExitCode = Failure;
+        }
+    }
+
+    return overallExitCode;
+}
+catch (CommandLineException exception)
+{
+    Error(exception.Message);
+    Help();
+
+    return FatalError;
+}
+catch (Exception exception)
+{
+    Error($"Fatal Error: {exception}");
+
+    return FatalError;
+}
+
+static IEnumerable<string> TestProjects(Options options)
+{
+    if (options.ProjectPatterns.Any())
+    {
+        foreach (var pattern in options.ProjectPatterns)
         {
             var found = false;
 
-            foreach (var project in EnumerateFiles(GetCurrentDirectory(), "*.*proj"))
+            foreach (var project in EnumerateFiles(GetCurrentDirectory(), pattern + ".*proj", SearchOption.AllDirectories))
             {
                 found = true;
                 yield return project;
             }
 
             if (!found)
-                throw new CommandLineException("There are no projects in the current directory.");
+                throw new CommandLineException($"There are no projects matching the pattern '{pattern}'.");
         }
     }
-
-    static string[] GetTargetFrameworks(Options options, string testProject)
+    else
     {
-        var targetFrameworks =
-            QueryTarget(testProject, "_Fixie_GetTargetFrameworks")
-                .SelectMany(line => line.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries))
-                .ToArray();
+        var found = false;
 
-        if (options.Framework == null)
-            return targetFrameworks;
+        foreach (var project in EnumerateFiles(GetCurrentDirectory(), "*.*proj"))
+        {
+            found = true;
+            yield return project;
+        }
 
-        if (targetFrameworks.Contains(options.Framework))
-            return [options.Framework];
-
-        var availableFrameworks = string.Join(", ", targetFrameworks.Select(x => $"'{x}'"));
-
-        throw new CommandLineException(
-            $"Cannot target framework '{options.Framework}'. " +
-            $"The test project targets the following framework(s): {availableFrameworks}");
+        if (!found)
+            throw new CommandLineException("There are no projects in the current directory.");
     }
+}
 
-    static int RunTests(Options options, string testProject, string targetFramework, string[] customArguments, bool runningForMultipleFrameworks)
-    {
-        var assemblyMetadata = QueryTarget(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
+static string[] GetTargetFrameworks(Options options, string testProject)
+{
+    var targetFrameworks =
+        QueryTarget(testProject, "_Fixie_GetTargetFrameworks")
+            .SelectMany(line => line.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries))
+            .ToArray();
 
-        var outputPath = assemblyMetadata[0];
-        var assemblyName = assemblyMetadata[1];
-        var targetFileName = assemblyMetadata[2];
+    if (options.Framework == null)
+        return targetFrameworks;
 
-        var context =
-            runningForMultipleFrameworks
-                ? $" ({targetFramework})"
-                : "";
+    if (targetFrameworks.Contains(options.Framework))
+        return [options.Framework];
 
-        Heading($"Running {assemblyName}{context}");
-        WriteLine();
+    var availableFrameworks = string.Join(", ", targetFrameworks.Select(x => $"'{x}'"));
 
-        var workingDirectory = Path.Combine(
-            new FileInfo(testProject).Directory!.FullName,
-            outputPath);
+    throw new CommandLineException(
+        $"Cannot target framework '{options.Framework}'. " +
+        $"The test project targets the following framework(s): {availableFrameworks}");
+}
 
-        Dictionary<string, string> environmentVariables = [];
+static int RunTests(Options options, string testProject, string targetFramework, string[] customArguments, bool runningForMultipleFrameworks)
+{
+    var assemblyMetadata = QueryTarget(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
 
-        if (options.Tests != null)
-            environmentVariables["FIXIE_TESTS_PATTERN"] = options.Tests;
+    var outputPath = assemblyMetadata[0];
+    var assemblyName = assemblyMetadata[1];
+    var targetFileName = assemblyMetadata[2];
 
-        return Run("dotnet", workingDirectory, [targetFileName, ..customArguments], environmentVariables);
-    }
+    var context =
+        runningForMultipleFrameworks
+            ? $" ({targetFramework})"
+            : "";
 
-    static void Help()
-    {
-        WriteLine();
-        WriteLine("Usage: dotnet fixie [project]... [options] [-- [custom arguments]...]");
-        WriteLine();
-        WriteLine();
-        WriteLine("    project");
-        WriteLine("        The name of a test project to run. When this option");
-        WriteLine("        is omitted, the project in the current directory is");
-        WriteLine("        assumed. Specify multiple project names or use * wildcards");
-        WriteLine("        to run multiple test projects.");
-        WriteLine();
-        WriteLine("    -c <configuration>");
-        WriteLine("    --configuration <configuration>");
-        WriteLine("        The configuration under which to build. When this option");
-        WriteLine("        is omitted, the default configuration is `Debug`.");
-        WriteLine();
-        WriteLine("    -n");
-        WriteLine("    --no-build");
-        WriteLine("        Skip building the test project prior to running it.");
-        WriteLine();
-        WriteLine("    -f <framework>");
-        WriteLine("    --framework <framework>");
-        WriteLine("        Only run test assemblies targeting a specific framework.");
-        WriteLine();
-        WriteLine("    -t <pattern>");
-        WriteLine("    --tests <pattern>");
-        WriteLine("        Run only the tests whose full names match the given pattern.");
-        WriteLine();
-        WriteLine("    --");
-        WriteLine("        Signifies the end of built-in arguments and the beginning");
-        WriteLine("        of custom arguments.");
-        WriteLine();
-        WriteLine("    custom arguments");
-        WriteLine("        Arbitrary arguments made available to custom discovery/execution classes.");
-        WriteLine();
-    }
+    Heading($"Running {assemblyName}{context}");
+    WriteLine();
 
-    static void Heading(string message)
-    {
-        using (Foreground.Green)
-            WriteLine(message);
-    }
+    var workingDirectory = Path.Combine(
+        new FileInfo(testProject).Directory!.FullName,
+        outputPath);
 
-    static void Error(string message)
-    {
-        WriteLine();
-        using (Foreground.Red)
-            WriteLine(message);
-    }
+    Dictionary<string, string> environmentVariables = [];
+
+    if (options.Tests != null)
+        environmentVariables["FIXIE_TESTS_PATTERN"] = options.Tests;
+
+    return Run("dotnet", workingDirectory, [targetFileName, ..customArguments], environmentVariables);
+}
+
+static void Help()
+{
+    WriteLine();
+    WriteLine("Usage: dotnet fixie [project]... [options] [-- [custom arguments]...]");
+    WriteLine();
+    WriteLine();
+    WriteLine("    project");
+    WriteLine("        The name of a test project to run. When this option");
+    WriteLine("        is omitted, the project in the current directory is");
+    WriteLine("        assumed. Specify multiple project names or use * wildcards");
+    WriteLine("        to run multiple test projects.");
+    WriteLine();
+    WriteLine("    -c <configuration>");
+    WriteLine("    --configuration <configuration>");
+    WriteLine("        The configuration under which to build. When this option");
+    WriteLine("        is omitted, the default configuration is `Debug`.");
+    WriteLine();
+    WriteLine("    -n");
+    WriteLine("    --no-build");
+    WriteLine("        Skip building the test project prior to running it.");
+    WriteLine();
+    WriteLine("    -f <framework>");
+    WriteLine("    --framework <framework>");
+    WriteLine("        Only run test assemblies targeting a specific framework.");
+    WriteLine();
+    WriteLine("    -t <pattern>");
+    WriteLine("    --tests <pattern>");
+    WriteLine("        Run only the tests whose full names match the given pattern.");
+    WriteLine();
+    WriteLine("    --");
+    WriteLine("        Signifies the end of built-in arguments and the beginning");
+    WriteLine("        of custom arguments.");
+    WriteLine();
+    WriteLine("    custom arguments");
+    WriteLine("        Arbitrary arguments made available to custom discovery/execution classes.");
+    WriteLine();
+}
+
+static void Heading(string message)
+{
+    using (Foreground.Green)
+        WriteLine(message);
+}
+
+static void Error(string message)
+{
+    WriteLine();
+    using (Foreground.Red)
+        WriteLine(message);
+}

@@ -3,7 +3,7 @@ using Fixie.Tests.Reports;
 
 namespace Fixie.Tests.Internal;
 
-public class JsonSerializationTests : MessagingTests
+public class PipeMessageSerializationTests : MessagingTests
 {
     public void ShouldSerializeDiscoverTestsMessage()
     {

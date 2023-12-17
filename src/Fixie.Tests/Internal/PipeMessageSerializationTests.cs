@@ -1,10 +1,9 @@
 ﻿using Fixie.Internal;
 using Fixie.Tests.Reports;
-using static System.Text.Json.JsonSerializer;
 
 namespace Fixie.Tests.Internal;
 
-public class JsonSerializationTests : MessagingTests
+public class PipeMessageSerializationTests : MessagingTests
 {
     public void ShouldSerializeDiscoverTestsMessage()
     {
@@ -99,9 +98,15 @@ public class JsonSerializationTests : MessagingTests
         Expect(new PipeMessage.EndOfPipe(), "{}");
     }
 
+    public void ShouldThrowForNullDeserialization()
+    {
+        Action nullMessage = () => PipeMessage.Deserialize<PipeMessage.TestFailed>("null");
+        nullMessage.ShouldThrow<Exception>("Message of type Fixie.Internal.PipeMessage+TestFailed was unexpectedly null.");
+    }
+
     static void Expect<TMessage>(TMessage message, string expectedJson)
     {
-        Serialize(Deserialize<TMessage>(expectedJson)).ShouldBe(expectedJson);
-        Serialize(message).ShouldBe(expectedJson);
+        PipeMessage.Serialize(PipeMessage.Deserialize<TMessage>(expectedJson)).ShouldBe(expectedJson);
+        PipeMessage.Serialize(message).ShouldBe(expectedJson);
     }
 }

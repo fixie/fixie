@@ -1,6 +1,5 @@
 ﻿using System.IO.Pipes;
 using System.Text;
-using static System.Text.Json.JsonSerializer;
 
 namespace Fixie.Internal;
 
@@ -33,7 +32,7 @@ class TestAdapterPipe : IDisposable
 
     public TMessage Receive<TMessage>()
     {
-        return Deserialize<TMessage>(ReceiveMessageBody())!;
+        return PipeMessage.Deserialize<TMessage>(ReceiveMessageBody());
     }
 
     public string ReceiveMessageBody()
@@ -68,7 +67,7 @@ class TestAdapterPipe : IDisposable
         var messageType = typeof(TMessage).FullName!;
 
         writer.WriteLine(messageType);
-        writer.WriteLine(Serialize(message));
+        writer.WriteLine(PipeMessage.Serialize(message));
         writer.WriteLine(EndOfMessage);
         writer.Flush();
     }

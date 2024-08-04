@@ -7,6 +7,14 @@ namespace Fixie.Tests;
 
 public static class Utility
 {
+    public static TestEnvironment GetTestEnvironment(TextWriter console)
+    {
+        return new TestEnvironment(
+            typeof(TestProject).Assembly,
+            console,
+            Directory.GetCurrentDirectory());
+    }
+    
     public static TestEnvironment GetTestEnvironment()
     {
         return new TestEnvironment(
